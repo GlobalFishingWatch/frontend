@@ -1,4 +1,4 @@
-import styles from './VesselGroupReportInsightsPlaceholders.module.css'
+import styles from './VGRInsightsPlaceholders.module.css'
 
 // TODO graph bar placeholder
 export const VesselGroupReportInsightPlaceholder = () => {

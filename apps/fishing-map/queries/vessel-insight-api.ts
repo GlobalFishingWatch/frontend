@@ -29,6 +29,7 @@ export const vesselInsightApi = createApi({
   }),
   endpoints: (builder) => ({
     getVesselInsight: builder.mutation<InsightResponse, VesselInsightParams>({
+      // TODO review this in vessel profile
       query: (body) => {
         return { url: '/vessels', method: 'POST', body }
       },

@@ -7,23 +7,23 @@ import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { selectVesselGroupReportData } from '../vessel-group-report.slice'
+import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportIUUParams } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsights.module.css'
-import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
-import { selectVesselGroupReportIUUVessels } from './vessel-group-report-insights.selectors'
-import VesselGroupReportInsightVesselTable from './VesselGroupReportInsightVesselsTable'
+import styles from './VGRInsights.module.css'
+import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
+import { selectVGRIUUVessels } from './vessel-group-report-insights.selectors'
+import VesselGroupReportInsightVesselTable from './VGRInsightVesselsTable'
 
 const VesselGroupReportInsightIUU = () => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
-  const vesselGroup = useSelector(selectVesselGroupReportData)
+  const vesselGroup = useSelector(selectVGRData)
   const fetchVesselGroupParams = useSelector(selectFetchVesselGroupReportIUUParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
     skip: !vesselGroup,
   })
-  const vesselsWithIIU = useSelector(selectVesselGroupReportIUUVessels)
+  const vesselsWithIIU = useSelector(selectVGRIUUVessels)
 
   return (
     <div id="vessel-group-iuu" className={styles.insightContainer}>

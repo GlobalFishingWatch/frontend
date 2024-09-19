@@ -10,24 +10,24 @@ import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { selectVesselGroupReportData } from '../vessel-group-report.slice'
+import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportFlagChangeParams } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsights.module.css'
-import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
-import { selectVesselGroupReportFlagChangesVessels } from './vessel-group-report-insights.selectors'
+import styles from './VGRInsights.module.css'
+import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
+import { selectVGRFlagChangesVessels } from './vessel-group-report-insights.selectors'
 
 const VesselGroupReportInsightFlagChange = () => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const guestUser = useSelector(selectIsGuestUser)
-  const vesselGroup = useSelector(selectVesselGroupReportData)
+  const vesselGroup = useSelector(selectVGRData)
   const fetchVesselGroupParams = useSelector(selectFetchVesselGroupReportFlagChangeParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
     skip: !vesselGroup,
   })
 
-  const vesselsWithFlagChanges = useSelector(selectVesselGroupReportFlagChangesVessels)
+  const vesselsWithFlagChanges = useSelector(selectVGRFlagChangesVessels)
 
   return (
     <div id="vessel-group-flags" className={styles.insightContainer}>

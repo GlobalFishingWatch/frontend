@@ -1,7 +1,7 @@
 import { useGetVesselEventsQuery } from 'queries/vessel-events-api'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import VesselEvent from 'features/vessel/activity/event/Event'
-import styles from './VesselGroupReportInsights.module.css'
+import styles from './VGRInsights.module.css'
 
 const VesselGroupReportInsightVesselEvents = ({
   ids,
@@ -16,13 +16,16 @@ const VesselGroupReportInsightVesselEvents = ({
   start: string
   end: string
 }) => {
-  const { data, isLoading } = useGetVesselEventsQuery({
-    ...(vesselId && { vessels: [vesselId] }),
-    ...(ids && { ids: ids }),
-    datasets: [datasetId],
-    'start-date': start,
-    'end-date': end,
-  })
+  const { data, isLoading } = useGetVesselEventsQuery(
+    {
+      ...(vesselId && { vessels: [vesselId] }),
+      ...(ids && { ids: ids }),
+      datasets: [datasetId],
+      'start-date': start,
+      'end-date': end,
+    },
+    { skip: !ids && !vesselId }
+  )
   if (isLoading) {
     return <Spinner size="small" />
   }

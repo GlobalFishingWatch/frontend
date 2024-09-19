@@ -8,24 +8,24 @@ import { Collapsable } from '@globalfishingwatch/ui-components'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
-import { selectVesselGroupReportData } from '../vessel-group-report.slice'
+import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportGapParams } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsights.module.css'
-import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
-import VesselGroupReportInsightVesselEvents from './VesselGroupReportInsightVesselEvents'
-import { selectVesselGroupReportGapVessels } from './vessel-group-report-insights.selectors'
+import styles from './VGRInsights.module.css'
+import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
+import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
+import { selectVGRGapVessels } from './vessel-group-report-insights.selectors'
 
 const VesselGroupReportInsightGap = () => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const [expandedVesselIds, setExpandedVesselIds] = useState<string[]>([])
-  const vesselGroup = useSelector(selectVesselGroupReportData)
+  const vesselGroup = useSelector(selectVGRData)
   const fetchVesselGroupParams = useSelector(selectFetchVesselGroupReportGapParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
     skip: !vesselGroup,
   })
-  const vesselsWithGaps = useSelector(selectVesselGroupReportGapVessels)
+  const vesselsWithGaps = useSelector(selectVGRGapVessels)
 
   return (
     <div id="vessel-group-gaps" className={styles.insightContainer}>

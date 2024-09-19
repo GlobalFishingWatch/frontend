@@ -171,7 +171,7 @@ const ActivityByVoyage = () => {
         increaseViewportBy={EVENT_HEIGHT * 4}
         customScrollParent={getScrollElement()}
         groupContent={(index) => {
-          const events = voyages[groups[index]]
+          const events = voyages[groups[index] as any]
           if (!events) {
             return null
           }

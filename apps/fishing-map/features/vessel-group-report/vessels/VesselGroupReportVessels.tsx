@@ -3,18 +3,15 @@ import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import ReportVesselsFilter from 'features/area-report/vessels/ReportVesselsFilter'
-import { selectVesselGroupReportVessels } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRVessels } from 'features/vessel-group-report/vessel-group-report.slice'
 import {
-  selectVesselGroupReportVesselsFlags,
-  selectVesselGroupReportVesselsGraphDataGrouped,
-  selectVesselGroupReportVesselsTimeRange,
+  selectVGRVesselsFlags,
+  selectVGRVesselsGraphDataGrouped,
+  selectVGRVesselsTimeRange,
 } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectVesselGroupReportDataview } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  selectVesselGroupReportVesselFilter,
-  selectVesselGroupReportVesselsSubsection,
-} from '../vessel-group.config.selectors'
+import { selectVGRVesselFilter, selectVGRVesselsSubsection } from '../vessel-group.config.selectors'
+import { selectVGRDataview } from '../vessel-group-report.selectors'
 import VesselGroupReportVesselsGraphSelector from './VesselGroupReportVesselsGraphSelector'
 import VesselGroupReportVesselsGraph, {
   VesselGroupReportVesselsGraphProperty,
@@ -24,13 +21,13 @@ import styles from './VesselGroupReportVessels.module.css'
 
 function VesselGroupReportVessels() {
   const { t } = useTranslation()
-  const vessels = useSelector(selectVesselGroupReportVessels)
-  const subsection = useSelector(selectVesselGroupReportVesselsSubsection)
-  const reportDataview = useSelector(selectVesselGroupReportDataview)
-  const timeRange = useSelector(selectVesselGroupReportVesselsTimeRange)
-  const flags = useSelector(selectVesselGroupReportVesselsFlags)
-  const filter = useSelector(selectVesselGroupReportVesselFilter)
-  const data = useSelector(selectVesselGroupReportVesselsGraphDataGrouped)
+  const vessels = useSelector(selectVGRVessels)
+  const subsection = useSelector(selectVGRVesselsSubsection)
+  const reportDataview = useSelector(selectVGRDataview)
+  const timeRange = useSelector(selectVGRVesselsTimeRange)
+  const flags = useSelector(selectVGRVesselsFlags)
+  const filter = useSelector(selectVGRVesselFilter)
+  const data = useSelector(selectVGRVesselsGraphDataGrouped)
   return (
     <div className={styles.container}>
       {timeRange && vessels && flags && (

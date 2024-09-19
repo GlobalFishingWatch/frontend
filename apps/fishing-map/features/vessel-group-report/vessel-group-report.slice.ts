@@ -88,13 +88,12 @@ const vesselGroupReportSlice = createSlice({
 
 export const { resetReportData } = vesselGroupReportSlice.actions
 
-export const selectVesselGroupReportStatus = (state: VesselGroupReportSliceState) =>
+export const selectVGRStatus = (state: VesselGroupReportSliceState) =>
   state.vesselGroupReport.status
-export const selectVesselGroupReportError = (state: VesselGroupReportSliceState) =>
-  state.vesselGroupReport.error
-export const selectVesselGroupReportData = (state: VesselGroupReportSliceState) =>
+export const selectVGRError = (state: VesselGroupReportSliceState) => state.vesselGroupReport.error
+export const selectVGRData = (state: VesselGroupReportSliceState) =>
   state.vesselGroupReport.vesselGroup
-export const selectVesselGroupReportVessels = (state: VesselGroupReportSliceState) =>
+export const selectVGRVessels = (state: VesselGroupReportSliceState) =>
   state.vesselGroupReport.vesselGroup?.vessels
 
 export default vesselGroupReportSlice.reducer

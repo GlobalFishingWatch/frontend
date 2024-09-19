@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { Fragment } from 'react'
 import VesselLink from 'features/vessel/VesselLink'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from 'utils/info'
-import styles from './VesselGroupReportInsightVesselsTable.module.css'
+import styles from './VGRInsightVesselsTable.module.css'
 import { VesselGroupReportInsightVessel } from './vessel-group-report-insights.selectors'
 
 const VesselGroupReportInsightVesselTable = ({

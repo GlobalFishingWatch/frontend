@@ -4,9 +4,9 @@ import { IdentityVessel } from '@globalfishingwatch/api-types'
 import { OTHER_CATEGORY_LABEL } from 'features/vessel-group-report/vessel-group-report.config'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import {
-  selectVesselGroupReportResultsPerPage,
-  selectVesselGroupReportVesselFilter,
-  selectVesselGroupReportVesselPage,
+  selectVGRResultsPerPage,
+  selectVGRVesselFilter,
+  selectVGRVesselPage,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 import { cleanFlagState } from 'features/area-report/reports.selectors'
@@ -17,11 +17,11 @@ import {
   getVesselsFiltered,
 } from 'features/area-report/reports.utils'
 import {
-  selectVesselGroupReportVesselsOrderDirection,
-  selectVesselGroupReportVesselsOrderProperty,
-  selectVesselGroupReportVesselsSubsection,
+  selectVGRVesselsOrderDirection,
+  selectVGRVesselsOrderProperty,
+  selectVGRVesselsSubsection,
 } from '../vessel-group.config.selectors'
-import { selectVesselGroupReportVessels } from '../vessel-group-report.slice'
+import { selectVGRVessels } from '../vessel-group-report.slice'
 import { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
 
 const getVesselSource = (vessel: IdentityVessel) => {
@@ -36,28 +36,25 @@ const getVesselSource = (vessel: IdentityVessel) => {
   return source
 }
 
-export const selectVesselGroupReportVesselsParsed = createSelector(
-  [selectVesselGroupReportVessels],
-  (vessels) => {
-    if (!vessels?.length) return null
-    return vessels.map((vessel, index) => {
-      const { ssvid, ...vesselData } = getSearchIdentityResolved(vessel)
-      const source = getVesselSource(vessel)
-      return {
-        ...vesselData,
-        index: index,
-        shipName: formatInfoField(vesselData.shipname, 'name'),
-        vesselType: getVesselShipTypeLabel(vesselData),
-        gearType: getVesselGearTypeLabel(vesselData),
-        flagTranslated: t(`flags:${vesselData.flag as string}` as any),
-        flagTranslatedClean: cleanFlagState(t(`flags:${vesselData.flag as string}` as any)),
-        source: t(`common.sourceOptions.${source}`, source),
-        mmsi: ssvid,
-        dataset: vessel.dataset,
-      }
-    }) as VesselGroupReportVesselParsed[]
-  }
-)
+export const selectVGRVesselsParsed = createSelector([selectVGRVessels], (vessels) => {
+  if (!vessels?.length) return null
+  return vessels.map((vessel, index) => {
+    const { ssvid, ...vesselData } = getSearchIdentityResolved(vessel)
+    const source = getVesselSource(vessel)
+    return {
+      ...vesselData,
+      index: index,
+      shipName: formatInfoField(vesselData.shipname, 'name'),
+      vesselType: getVesselShipTypeLabel(vesselData),
+      gearType: getVesselGearTypeLabel(vesselData),
+      flagTranslated: t(`flags:${vesselData.flag as string}` as any),
+      flagTranslatedClean: cleanFlagState(t(`flags:${vesselData.flag as string}` as any)),
+      source: t(`common.sourceOptions.${source}`, source),
+      mmsi: ssvid,
+      dataset: vessel.dataset,
+    }
+  }) as VesselGroupReportVesselParsed[]
+})
 
 type ReportFilterProperty = FilterProperty | 'source'
 export const REPORT_FILTER_PROPERTIES: Record<ReportFilterProperty, string[]> = {
@@ -65,40 +62,34 @@ export const REPORT_FILTER_PROPERTIES: Record<ReportFilterProperty, string[]> = 
   source: ['source'],
 }
 
-export const selectVesselGroupReportVesselsTimeRange = createSelector(
-  [selectVesselGroupReportVesselsParsed],
-  (vessels) => {
-    if (!vessels?.length) return null
-    let start: string = ''
-    let end: string = ''
-    vessels.forEach((vessel) => {
-      if (!start || vessel.transmissionDateFrom < start) {
-        start = vessel.transmissionDateFrom
-      }
-      if (!end || vessel.transmissionDateTo > end) {
-        end = vessel.transmissionDateTo
-      }
-    })
-    return { start, end }
-  }
-)
+export const selectVGRVesselsTimeRange = createSelector([selectVGRVesselsParsed], (vessels) => {
+  if (!vessels?.length) return null
+  let start: string = ''
+  let end: string = ''
+  vessels.forEach((vessel) => {
+    if (!start || vessel.transmissionDateFrom < start) {
+      start = vessel.transmissionDateFrom
+    }
+    if (!end || vessel.transmissionDateTo > end) {
+      end = vessel.transmissionDateTo
+    }
+  })
+  return { start, end }
+})
 
-export const selectVesselGroupReportVesselsFlags = createSelector(
-  [selectVesselGroupReportVesselsParsed],
-  (vessels) => {
-    if (!vessels?.length) return null
-    let flags = new Set<string>()
-    vessels.forEach((vessel) => {
-      if (vessel.flag) {
-        flags.add(vessel.flag)
-      }
-    })
-    return flags
-  }
-)
+export const selectVGRVesselsFlags = createSelector([selectVGRVesselsParsed], (vessels) => {
+  if (!vessels?.length) return null
+  let flags = new Set<string>()
+  vessels.forEach((vessel) => {
+    if (vessel.flag) {
+      flags.add(vessel.flag)
+    }
+  })
+  return flags
+})
 
-export const selectVesselGroupReportVesselsFiltered = createSelector(
-  [selectVesselGroupReportVesselsParsed, selectVesselGroupReportVesselFilter],
+export const selectVGRVesselsFiltered = createSelector(
+  [selectVGRVesselsParsed, selectVGRVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
     return getVesselsFiltered<VesselGroupReportVesselParsed>(
@@ -109,12 +100,8 @@ export const selectVesselGroupReportVesselsFiltered = createSelector(
   }
 )
 
-export const selectVesselGroupReportVesselsOrdered = createSelector(
-  [
-    selectVesselGroupReportVesselsFiltered,
-    selectVesselGroupReportVesselsOrderProperty,
-    selectVesselGroupReportVesselsOrderDirection,
-  ],
+export const selectVGRVesselsOrdered = createSelector(
+  [selectVGRVesselsFiltered, selectVGRVesselsOrderProperty, selectVGRVesselsOrderDirection],
   (vessels, property, direction) => {
     if (!vessels?.length) return []
     return vessels.toSorted((a, b) => {
@@ -141,25 +128,21 @@ export const selectVesselGroupReportVesselsOrdered = createSelector(
   }
 )
 
-export const selectVesselGroupReportVesselsPaginated = createSelector(
-  [
-    selectVesselGroupReportVesselsOrdered,
-    selectVesselGroupReportVesselPage,
-    selectVesselGroupReportResultsPerPage,
-  ],
+export const selectVGRVesselsPaginated = createSelector(
+  [selectVGRVesselsOrdered, selectVGRVesselPage, selectVGRResultsPerPage],
   (vessels, page, resultsPerPage) => {
     if (!vessels?.length) return []
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
   }
 )
 
-export const selectVesselGroupReportVesselsPagination = createSelector(
+export const selectVGRVesselsPagination = createSelector(
   [
-    selectVesselGroupReportVesselsPaginated,
-    selectVesselGroupReportVessels,
-    selectVesselGroupReportVesselsFiltered,
-    selectVesselGroupReportVesselPage,
-    selectVesselGroupReportResultsPerPage,
+    selectVGRVesselsPaginated,
+    selectVGRVessels,
+    selectVGRVesselsFiltered,
+    selectVGRVesselPage,
+    selectVGRResultsPerPage,
   ],
   (vessels, allVessels, allVesselsFiltered, page = 0, resultsPerPage) => {
     return {
@@ -174,8 +157,8 @@ export const selectVesselGroupReportVesselsPagination = createSelector(
   }
 )
 
-export const selectVesselGroupReportVesselsGraphDataGrouped = createSelector(
-  [selectVesselGroupReportVesselsFiltered, selectVesselGroupReportVesselsSubsection],
+export const selectVGRVesselsGraphDataGrouped = createSelector(
+  [selectVGRVesselsFiltered, selectVGRVesselsSubsection],
   (vessels, subsection) => {
     if (!vessels) return []
     let vesselsGrouped = {}

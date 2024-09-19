@@ -8,9 +8,7 @@ import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from './vessel-group-report.config'
 
 type VesselGroupReportProperty<P extends VesselGroupReportStateProperty> =
   Required<VesselGroupReportState>[P]
-function selectVesselGroupReportStateProperty<P extends VesselGroupReportStateProperty>(
-  property: P
-) {
+function selectVGRStateProperty<P extends VesselGroupReportStateProperty>(property: P) {
   return createSelector(
     [selectQueryParam(property)],
     (urlProperty): VesselGroupReportProperty<P> => {
@@ -20,39 +18,27 @@ function selectVesselGroupReportStateProperty<P extends VesselGroupReportStatePr
   )
 }
 
-export const selectViewOnlyVesselGroup = selectVesselGroupReportStateProperty('viewOnlyVesselGroup')
-export const selectVesselGroupReportSection = selectVesselGroupReportStateProperty(
-  'vesselGroupReportSection'
-)
-export const selectVesselGroupReportVesselsSubsection = selectVesselGroupReportStateProperty(
+export const selectViewOnlyVesselGroup = selectVGRStateProperty('viewOnlyVesselGroup')
+export const selectVGRSection = selectVGRStateProperty('vesselGroupReportSection')
+export const selectVGRVesselsSubsection = selectVGRStateProperty(
   'vesselGroupReportVesselsSubsection'
 )
-export const selectVesselGroupReportActivitySubsection = selectVesselGroupReportStateProperty(
+export const selectVGRActivitySubsection = selectVGRStateProperty(
   'vesselGroupReportActivitySubsection'
 )
-export const selectVGREventsSubsection = selectVesselGroupReportStateProperty('vGREventsSubsection')
-export const selectVGREventsVesselsProperty = selectVesselGroupReportStateProperty(
-  'vGREventsVesselsProperty'
-)
+export const selectVGREventsSubsection = selectVGRStateProperty('vGREventsSubsection')
+export const selectVGREventsVesselsProperty = selectVGRStateProperty('vGREventsVesselsProperty')
 
-export const selectVesselGroupReportVesselFilter = selectVesselGroupReportStateProperty(
-  'vesselGroupReportVesselFilter'
-)
-export const selectVesselGroupReportVesselPage = selectVesselGroupReportStateProperty(
-  'vesselGroupReportVesselPage'
-)
-export const selectVesselGroupReportResultsPerPage = selectVesselGroupReportStateProperty(
-  'vesselGroupReportResultsPerPage'
-)
-export const selectVesselGroupReportVesselsOrderProperty = selectVesselGroupReportStateProperty(
+export const selectVGRVesselFilter = selectVGRStateProperty('vesselGroupReportVesselFilter')
+export const selectVGRVesselPage = selectVGRStateProperty('vesselGroupReportVesselPage')
+export const selectVGRResultsPerPage = selectVGRStateProperty('vesselGroupReportResultsPerPage')
+export const selectVGRVesselsOrderProperty = selectVGRStateProperty(
   'vesselGroupReportVesselsOrderProperty'
 )
-export const selectVesselGroupReportVesselsOrderDirection = selectVesselGroupReportStateProperty(
+export const selectVGRVesselsOrderDirection = selectVGRStateProperty(
   'vesselGroupReportVesselsOrderDirection'
 )
 
-export const selectVGREventsVesselFilter =
-  selectVesselGroupReportStateProperty('vGREventsVesselFilter')
-export const selectVGREventsVesselPage = selectVesselGroupReportStateProperty('vGREventsVesselPage')
-export const selectVGREventsResultsPerPage =
-  selectVesselGroupReportStateProperty('vGREventsResultsPerPage')
+export const selectVGREventsVesselFilter = selectVGRStateProperty('vGREventsVesselFilter')
+export const selectVGREventsVesselPage = selectVGRStateProperty('vGREventsVesselPage')
+export const selectVGREventsResultsPerPage = selectVGRStateProperty('vGREventsResultsPerPage')

@@ -15,24 +15,24 @@ import {
 import { getSearchIdentityResolved, getVesselId } from 'features/vessel/vessel.utils'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import {
-  selectVesselGroupFishingInsightData,
-  selectVesselGroupFlagChangeInsightData,
-  selectVesselGroupGapInsightData,
-  selectVesselGroupIUUInsightData,
-  selectVesselGroupMOUInsightData,
+  selectVGRFishingInsightData,
+  selectVGRFlagChangeInsightData,
+  selectVGRGapInsightData,
+  selectVGRIUUInsightData,
+  selectVGRMOUInsightData,
 } from '../vessel-group-report.selectors'
-import { selectVesselGroupReportData } from '../vessel-group-report.slice'
+import { selectVGRData } from '../vessel-group-report.slice'
 
 export type VesselGroupReportInsightVessel<Insight = any> = VesselGroupInsight<Insight> & {
   identity: VesselLastIdentity
 }
 
-export const selectVesselGroupReportVesselsByInsight = <Insight = any>(
+export const selectVGRVesselsByInsight = <Insight = any>(
   insightSelector: (state: RootState) => VesselGroupInsightResponse | undefined,
   insightProperty: keyof Omit<VesselGroupInsightResponse, 'period' | 'vesselIdsWithoutIdentity'>,
   insightCounter?: string
 ) => {
-  return createSelector([insightSelector, selectVesselGroupReportData], (data, vesselGroup) => {
+  return createSelector([insightSelector, selectVGRData], (data, vesselGroup) => {
     if (!data || !vesselGroup) {
       return []
     }
@@ -49,38 +49,38 @@ export const selectVesselGroupReportVesselsByInsight = <Insight = any>(
   })
 }
 
-export const selectVesselGroupReportGapVessels =
-  selectVesselGroupReportVesselsByInsight<InsightGaps>(selectVesselGroupGapInsightData, 'gap')
+export const selectVGRGapVessels = selectVGRVesselsByInsight<InsightGaps>(
+  selectVGRGapInsightData,
+  'gap'
+)
 
-export const selectVesselGroupReportVesselsWithNoTakeMpas =
-  selectVesselGroupReportVesselsByInsight<InsightFishing>(
-    selectVesselGroupFishingInsightData,
-    'apparentFishing',
-    'periodSelectedCounters.eventsInNoTakeMPAs'
-  )
+export const selectVGRVesselsWithNoTakeMpas = selectVGRVesselsByInsight<InsightFishing>(
+  selectVGRFishingInsightData,
+  'apparentFishing',
+  'periodSelectedCounters.eventsInNoTakeMPAs'
+)
 
-export const selectVesselGroupReportVesselsInRfmoWithoutKnownAuthorization =
-  selectVesselGroupReportVesselsByInsight<InsightFishing>(
-    selectVesselGroupFishingInsightData,
+export const selectVGRVesselsInRfmoWithoutKnownAuthorization =
+  selectVGRVesselsByInsight<InsightFishing>(
+    selectVGRFishingInsightData,
     'apparentFishing',
     'periodSelectedCounters.eventsInRFMOWithoutKnownAuthorization'
   )
 
-export const selectVesselGroupReportIUUVessels = selectVesselGroupReportVesselsByInsight<
-  InsightIdentity<InsightIdentityIUU>
->(selectVesselGroupIUUInsightData, 'vesselIdentity', 'iuuVesselList.totalTimesListedInThePeriod')
-
-export const selectVesselGroupReportFlagChangesVessels = selectVesselGroupReportVesselsByInsight<
-  InsightIdentity<InsightIdentityFlagsChanges>
->(
-  selectVesselGroupFlagChangeInsightData,
+export const selectVGRIUUVessels = selectVGRVesselsByInsight<InsightIdentity<InsightIdentityIUU>>(
+  selectVGRIUUInsightData,
   'vesselIdentity',
-  'flagsChanges.totalTimesListedInThePeriod'
+  'iuuVesselList.totalTimesListedInThePeriod'
 )
 
-export const selectVesselGroupReportMOUVessels = selectVesselGroupReportVesselsByInsight<
-  InsightIdentity<InsightIdentityMOU>
->(selectVesselGroupMOUInsightData, 'vesselIdentity')
+export const selectVGRFlagChangesVessels = selectVGRVesselsByInsight<
+  InsightIdentity<InsightIdentityFlagsChanges>
+>(selectVGRFlagChangeInsightData, 'vesselIdentity', 'flagsChanges.totalTimesListedInThePeriod')
+
+export const selectVGRMOUVessels = selectVGRVesselsByInsight<InsightIdentity<InsightIdentityMOU>>(
+  selectVGRMOUInsightData,
+  'vesselIdentity'
+)
 
 export type MouVesselByCategoryInsight = {
   vessel: VesselLastIdentity
@@ -91,36 +91,33 @@ export type MOUInsightCountry = 'paris' | 'tokyo'
 export type MOUInsightList = 'black' | 'grey'
 export type MOUVesselByList = Record<MOUInsightList, MouVesselByCategoryInsight[]>
 export type MOUVesselsGrouped = Record<MOUInsightCountry, MOUVesselByList>
-export const selectVesselGroupReportMOUVesselsGrouped = createSelector(
-  [selectVesselGroupReportMOUVessels],
-  (vessels) => {
-    return vessels?.reduce(
-      (acc, vessel) => {
-        if (
-          vessel.mouList?.tokyo?.totalTimesListedInThePeriod &&
-          vessel.mouList?.tokyo?.totalTimesListedInThePeriod > 0
-        ) {
-          vessel.mouList.tokyo.valuesInThePeriod.forEach((value) => {
-            acc.tokyo[value.value.toLowerCase() as keyof MOUVesselByList]?.push({
-              vessel: vessel.identity,
-              insight: value,
-            })
+export const selectVGRMOUVesselsGrouped = createSelector([selectVGRMOUVessels], (vessels) => {
+  return vessels?.reduce(
+    (acc, vessel) => {
+      if (
+        vessel.mouList?.tokyo?.totalTimesListedInThePeriod &&
+        vessel.mouList?.tokyo?.totalTimesListedInThePeriod > 0
+      ) {
+        vessel.mouList.tokyo.valuesInThePeriod.forEach((value) => {
+          acc.tokyo[value.value.toLowerCase() as keyof MOUVesselByList]?.push({
+            vessel: vessel.identity,
+            insight: value,
           })
-        }
-        if (
-          vessel.mouList?.paris?.totalTimesListedInThePeriod &&
-          vessel.mouList?.paris?.totalTimesListedInThePeriod > 0
-        ) {
-          vessel.mouList.paris.valuesInThePeriod.forEach((value) => {
-            acc.paris[value.value.toLowerCase() as keyof MOUVesselByList]?.push({
-              vessel: vessel.identity,
-              insight: value,
-            })
+        })
+      }
+      if (
+        vessel.mouList?.paris?.totalTimesListedInThePeriod &&
+        vessel.mouList?.paris?.totalTimesListedInThePeriod > 0
+      ) {
+        vessel.mouList.paris.valuesInThePeriod.forEach((value) => {
+          acc.paris[value.value.toLowerCase() as keyof MOUVesselByList]?.push({
+            vessel: vessel.identity,
+            insight: value,
           })
-        }
-        return acc
-      },
-      { tokyo: { black: [], grey: [] }, paris: { black: [], grey: [] } } as MOUVesselsGrouped
-    )
-  }
-)
+        })
+      }
+      return acc
+    },
+    { tokyo: { black: [], grey: [] }, paris: { black: [], grey: [] } } as MOUVesselsGrouped
+  )
+})

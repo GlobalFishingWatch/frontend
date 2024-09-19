@@ -11,16 +11,16 @@ import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { formatInfoField } from 'utils/info'
-import { selectVesselGroupReportData } from '../vessel-group-report.slice'
+import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportMOUParams } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsights.module.css'
-import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
+import styles from './VGRInsights.module.css'
+import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
 import {
   MOUInsightCountry,
   MOUInsightList,
   MouVesselByCategoryInsight,
   MOUVesselByList,
-  selectVesselGroupReportMOUVesselsGrouped,
+  selectVGRMOUVesselsGrouped,
 } from './vessel-group-report-insights.selectors'
 
 type ExpandedMOUInsights = `${MOUInsightCountry}-${MOUInsightList}`
@@ -66,14 +66,14 @@ const VesselGroupReportInsightMOU = () => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const [insightsExpanded, setInsightsExpanded] = useState<ExpandedMOUInsights[]>([])
-  const vesselGroup = useSelector(selectVesselGroupReportData)
+  const vesselGroup = useSelector(selectVGRData)
   const fetchVesselGroupParams = useSelector(selectFetchVesselGroupReportMOUParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
     skip: !vesselGroup,
   })
 
-  const MOUVesselsGrouped = useSelector(selectVesselGroupReportMOUVesselsGrouped) || {}
+  const MOUVesselsGrouped = useSelector(selectVGRMOUVesselsGrouped) || {}
 
   const hasVesselsInParisMOU = MOUVesselsGrouped?.paris
     ? Object.values(MOUVesselsGrouped?.paris).some((vessels) => vessels.length > 0)

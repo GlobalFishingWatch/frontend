@@ -8,14 +8,14 @@ import { Collapsable } from '@globalfishingwatch/ui-components'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
-import { selectVesselGroupReportData } from '../vessel-group-report.slice'
+import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportFishingParams } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsights.module.css'
-import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
-import VesselGroupReportInsightVesselEvents from './VesselGroupReportInsightVesselEvents'
+import styles from './VGRInsights.module.css'
+import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
+import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
 import {
-  selectVesselGroupReportVesselsWithNoTakeMpas,
-  selectVesselGroupReportVesselsInRfmoWithoutKnownAuthorization,
+  selectVGRVesselsWithNoTakeMpas,
+  selectVGRVesselsInRfmoWithoutKnownAuthorization,
   VesselGroupReportInsightVessel,
 } from './vessel-group-report-insights.selectors'
 
@@ -24,15 +24,15 @@ const VesselGroupReportInsightFishing = () => {
   const [isMPAExpanded, setIsMPAExpanded] = useState(false)
   const [isRFMOExpanded, setIsRFMOExpanded] = useState(false)
   const [expandedVesselIds, setExpandedVesselIds] = useState<string[]>([])
-  const vesselGroup = useSelector(selectVesselGroupReportData)
+  const vesselGroup = useSelector(selectVGRData)
   const reportFishingParams = useSelector(selectFetchVesselGroupReportFishingParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(reportFishingParams, {
     skip: !vesselGroup,
   })
-  const vesselsWithNoTakeMpas = useSelector(selectVesselGroupReportVesselsWithNoTakeMpas)
+  const vesselsWithNoTakeMpas = useSelector(selectVGRVesselsWithNoTakeMpas)
   const vesselsInRfmoWithoutKnownAuthorization = useSelector(
-    selectVesselGroupReportVesselsInRfmoWithoutKnownAuthorization
+    selectVGRVesselsInRfmoWithoutKnownAuthorization
   )
 
   const onMPAToggle = (isOpen: boolean) => {

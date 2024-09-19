@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, ResponsiveContainer, LabelList } from 'recharts'
 import { groupBy } from 'es-toolkit'
 import { VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
-import { selectVesselGroupReportDataview } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsightCoverageGraph.module.css'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectVGRDataview } from '../vessel-group-report.selectors'
+import styles from './VGRInsightCoverageGraph.module.css'
 
 const CustomTick = (props: any) => {
   const { x, y, payload } = props
@@ -61,7 +62,7 @@ export default function VesselGroupReportInsightCoverageGraph({
   data: VesselGroupInsightResponse['coverage']
 }) {
   const dataGrouped = useMemo(() => parseCoverageGraphData(data), [data])
-  const reportDataview = useSelector(selectVesselGroupReportDataview)
+  const reportDataview = useSelector(selectVGRDataview)
   return (
     <Fragment>
       <div className={styles.graph} data-test="report-vessels-graph">
@@ -81,7 +82,7 @@ export default function VesselGroupReportInsightCoverageGraph({
               <Bar
                 className={styles.bar}
                 dataKey="value"
-                fill={reportDataview?.config?.color || 'rgb(22, 63, 137)'}
+                fill={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
               >
                 <LabelList position="top" valueAccessor={(entry: any) => entry.value} />
               </Bar>

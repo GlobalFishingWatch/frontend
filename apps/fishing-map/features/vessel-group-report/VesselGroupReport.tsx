@@ -12,28 +12,24 @@ import {
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
-import { selectVesselGroupReportDataview } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import VGREvents from 'features/vessel-group-report/events/VGREvents'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
-import {
-  selectVesselGroupReportData,
-  selectVesselGroupReportStatus,
-} from './vessel-group-report.slice'
-import VesselGroupReportError from './VesselGroupReportError'
+import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'
 import VesselGroupReportVessels from './vessels/VesselGroupReportVessels'
-import { selectVesselGroupReportSection } from './vessel-group.config.selectors'
-import VesselGroupReportInsights from './insights/VesselGroupReportInsights'
+import { selectVGRSection } from './vessel-group.config.selectors'
+import VesselGroupReportInsights from './insights/VGRInsights'
 
 function VesselGroupReport() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const fetchVesselGroupReport = useFetchVesselGroupReport()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
-  const vesselGroup = useSelector(selectVesselGroupReportData)!
-  const reportStatus = useSelector(selectVesselGroupReportStatus)
-  const reportSection = useSelector(selectVesselGroupReportSection)
-  const reportDataview = useSelector(selectVesselGroupReportDataview)
+  const vesselGroup = useSelector(selectVGRData)!
+  const reportStatus = useSelector(selectVGRStatus)
+  const reportSection = useSelector(selectVGRSection)
+  const reportDataview = useSelector(selectActiveVesselGroupDataviews)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
 

@@ -17,7 +17,7 @@ export const IUU_INSIGHT_ID = 'VESSEL-IDENTITY-IUU-VESSEL-LIST' as InsightType
 export const FLAG_CHANGE_INSIGHT_ID = 'VESSEL-IDENTITY-FLAG-CHANGES' as InsightType
 export const MOU_INSIGHT_ID = 'VESSEL-IDENTITY-MOU-LIST' as InsightType
 
-export const selectVesselGroupReportDataview = createSelector(
+export const selectVGRDataview = createSelector(
   [selectActiveDataviewInstancesResolved, selectReportVesselGroupId],
   (dataviews, reportVesselGroupId) => {
     return dataviews?.find(({ config }) =>
@@ -37,25 +37,22 @@ export const selectBaseVesselGroupReportParams = createSelector(
   }
 )
 
-export const selectFetchVesselGroupReportParamsByInsight = (insight: InsightType) =>
+export const selectFetchVGRParamsByInsight = (insight: InsightType) =>
   createSelector([selectBaseVesselGroupReportParams], (params) => {
     return { ...params, insight }
   })
 
 export const selectFetchVesselGroupReportFishingParams =
-  selectFetchVesselGroupReportParamsByInsight(FISHING_INSIGHT_ID)
+  selectFetchVGRParamsByInsight(FISHING_INSIGHT_ID)
 export const selectFetchVesselGroupReportCoverageParams =
-  selectFetchVesselGroupReportParamsByInsight(COVERAGE_INSIGHT_ID)
-export const selectFetchVesselGroupReportGapParams =
-  selectFetchVesselGroupReportParamsByInsight(GAP_INSIGHT_ID)
-export const selectFetchVesselGroupReportIUUParams =
-  selectFetchVesselGroupReportParamsByInsight(IUU_INSIGHT_ID)
+  selectFetchVGRParamsByInsight(COVERAGE_INSIGHT_ID)
+export const selectFetchVesselGroupReportGapParams = selectFetchVGRParamsByInsight(GAP_INSIGHT_ID)
+export const selectFetchVesselGroupReportIUUParams = selectFetchVGRParamsByInsight(IUU_INSIGHT_ID)
 export const selectFetchVesselGroupReportFlagChangeParams =
-  selectFetchVesselGroupReportParamsByInsight(FLAG_CHANGE_INSIGHT_ID)
-export const selectFetchVesselGroupReportMOUParams =
-  selectFetchVesselGroupReportParamsByInsight(MOU_INSIGHT_ID)
+  selectFetchVGRParamsByInsight(FLAG_CHANGE_INSIGHT_ID)
+export const selectFetchVesselGroupReportMOUParams = selectFetchVGRParamsByInsight(MOU_INSIGHT_ID)
 
-export const selectVesselGroupGapInsightDataById = (
+export const selectVGRInsightDataById = (
   selector: (state: RootState) => VesselGroupInsightParams
 ) => {
   return createSelector(
@@ -66,21 +63,21 @@ export const selectVesselGroupGapInsightDataById = (
   )
 }
 
-export const selectVesselGroupGapInsightData = selectVesselGroupGapInsightDataById(
+export const selectVGRGapInsightData = selectVGRInsightDataById(
   selectFetchVesselGroupReportGapParams
 )
-export const selectVesselGroupCoverageInsightData = selectVesselGroupGapInsightDataById(
+export const selectVGRCoverageInsightData = selectVGRInsightDataById(
   selectFetchVesselGroupReportCoverageParams
 )
-export const selectVesselGroupFishingInsightData = selectVesselGroupGapInsightDataById(
+export const selectVGRFishingInsightData = selectVGRInsightDataById(
   selectFetchVesselGroupReportFishingParams
 )
-export const selectVesselGroupIUUInsightData = selectVesselGroupGapInsightDataById(
+export const selectVGRIUUInsightData = selectVGRInsightDataById(
   selectFetchVesselGroupReportIUUParams
 )
-export const selectVesselGroupFlagChangeInsightData = selectVesselGroupGapInsightDataById(
+export const selectVGRFlagChangeInsightData = selectVGRInsightDataById(
   selectFetchVesselGroupReportFlagChangeParams
 )
-export const selectVesselGroupMOUInsightData = selectVesselGroupGapInsightDataById(
+export const selectVGRMOUInsightData = selectVGRInsightDataById(
   selectFetchVesselGroupReportMOUParams
 )
