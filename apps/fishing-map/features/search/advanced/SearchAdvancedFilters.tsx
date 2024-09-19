@@ -81,6 +81,16 @@ function AdvancedFilterInputField({
   const value = searchFilters[field] || ''
   const invalid = searchFilterErrors[field]
 
+  const PLACEHOLDER_BY_FIELD: Record<string, string> = useMemo(
+    () => ({
+      ssvid: '123456789, 987654321, ...',
+      imo: '1234567, 7654321, ...',
+      callsign: 'A1BC2, X2YZ, ...',
+      owner: t('search.placeholderFilterMultiple', 'One or more values (comma separated)'),
+    }),
+    [t]
+  )
+
   return (
     <InputText
       onChange={onChange}
@@ -95,7 +105,8 @@ function AdvancedFilterInputField({
           : ''
       }
       value={value}
-      label={t(`vessel.${field}`, field)}
+      placeholder={PLACEHOLDER_BY_FIELD[field as string]}
+      label={t(`vessel.${field === 'ssvid' ? 'mmsi' : field}`, field)}
     />
   )
 }

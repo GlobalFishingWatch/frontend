@@ -704,6 +704,7 @@
     "notValidFilter": "At least one of your selected sources doesn't allow one of your filters",
     "notValidFilterSelection": "At least one of your selected sources doesn't allow one of your filters",
     "placeholder": "Type to search vessels",
+    "placeholderFilterMultiple": "One or more values (comma separated)",
     "result_one": "result",
     "result_other": "results",
     "searching": "Searching more than 100K vessels ...",

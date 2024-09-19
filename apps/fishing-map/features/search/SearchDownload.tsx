@@ -18,7 +18,7 @@ function SearchDownload() {
       const vesselsParsed = vesselsSelected.map((vessel) => {
         return {
           name: formatInfoField(getVesselProperty(vessel, 'shipname'), 'shipname'),
-          ssvid: getVesselProperty(vessel, 'ssvid'),
+          mmsi: getVesselProperty(vessel, 'ssvid'),
           imo: getVesselProperty(vessel, 'imo'),
           'call sign': getVesselProperty(vessel, 'callsign'),
           flag: t(`flags:${getVesselProperty(vessel, 'flag')}` as any),
@@ -42,7 +42,7 @@ function SearchDownload() {
         label: JSON.stringify(
           vesselsParsed.map((vessel) => ({
             name: vessel.name,
-            mmsi: vessel.ssvid,
+            mmsi: vessel.mmsi,
             imo: vessel.imo,
             callsign: vessel['call sign'],
             owner: vessel.owner,

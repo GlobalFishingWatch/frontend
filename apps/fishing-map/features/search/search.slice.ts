@@ -22,6 +22,7 @@ import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datase
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 import { VesselSearchState } from 'features/search/search.types'
+import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
 
 export type VesselLastIdentity = Omit<IdentityVesselData, 'identities' | 'dataset'> & {
   dataset: Dataset | string
@@ -98,9 +99,12 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           const filter = (filters as any)[cleanField]
           if (filter && isInFieldsAllowed) {
             let value = filter
-            // Supports searching by multiple values separated by comma in owners
-            if (field === 'owner' && value?.includes(', ')) {
-              value = (value as string).split(', ')
+            // Supports searching by multiple values separated by comma
+            if (ADVANCED_SEARCH_FIELDS.includes(field as any) && value?.includes(',')) {
+              value = (value as string)
+                .split(',')
+                .map((v) => v.trim())
+                .filter(Boolean)
             }
             return { key: field as AdvancedSearchQueryFieldKey, value }
           }
