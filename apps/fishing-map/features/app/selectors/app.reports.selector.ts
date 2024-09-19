@@ -92,6 +92,7 @@ export const selectReportVesselGraph = createSelector(
     return reportVesselGraph
   }
 )
+
 export const selectReportBufferValue = createSelector(
   [selectReportBufferValueSelector, selectUrlBufferValueQuery],
   (workspaceBufferValue, urlBufferValue): number => {
