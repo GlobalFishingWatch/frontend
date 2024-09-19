@@ -12,11 +12,9 @@ const CustomTick = (props: any) => {
 
   return (
     <text transform={`translate(${x},${y - 3})`}>
-      <Fragment>
-        <tspan textAnchor="middle" x="0" dy={12}>
-          {payload.value}
-        </tspan>
-      </Fragment>
+      <tspan textAnchor="middle" x="0" dy={12}>
+        {payload.value}
+      </tspan>
     </text>
   )
 }
