@@ -75,7 +75,14 @@ const VesselGroupReportInsightGap = () => {
                         open={isExpandedVessel}
                         className={styles.collapsable}
                         labelClassName={styles.collapsableLabel}
-                        label={formatInfoField(vessel.identity.shipname, 'name')}
+                        label={
+                          <span>
+                            {formatInfoField(vessel.identity.shipname, 'name')}{' '}
+                            <span className={styles.secondary}>
+                              ({vessel.periodSelectedCounters.eventsGapOff})
+                            </span>
+                          </span>
+                        }
                         onToggle={(isOpen, id) => {
                           setExpandedVesselIds((expandedIds) => {
                             return isOpen && id

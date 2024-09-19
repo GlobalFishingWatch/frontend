@@ -45,13 +45,22 @@ export const selectVGRVesselsByInsight = <Insight = any>(
       }
       return { ...vesselWithInsight, identity: getSearchIdentityResolved(vessel) }
     })
-    return insightVessels as VesselGroupReportInsightVessel<VesselGroupInsight<Insight>>[]
+    return insightVessels.sort((a, b) => {
+      if (insightCounter) {
+        const countA = get(a, insightCounter)
+        const countB = get(b, insightCounter)
+        if (countA === countB) return a.identity.shipname?.localeCompare(b.identity.shipname) || 0
+        return countB - countA
+      }
+      return a.identity.shipname?.localeCompare(b.identity.shipname) || 0
+    }) as VesselGroupReportInsightVessel<VesselGroupInsight<Insight>>[]
   })
 }
 
 export const selectVGRGapVessels = selectVGRVesselsByInsight<InsightGaps>(
   selectVGRGapInsightData,
-  'gap'
+  'gap',
+  'periodSelectedCounters.eventsGapOff'
 )
 
 export const selectVGRVesselsWithNoTakeMpas = selectVGRVesselsByInsight<InsightFishing>(

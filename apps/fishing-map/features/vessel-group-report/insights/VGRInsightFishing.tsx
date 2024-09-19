@@ -53,7 +53,10 @@ const VesselGroupReportInsightFishing = () => {
     }
   }
 
-  const getVesselGroupReportInsighFishingVessels = (vessels: VesselGroupReportInsightVessel[]) => {
+  const getVesselGroupReportInsighFishingVessels = (
+    vessels: VesselGroupReportInsightVessel[],
+    insight: 'eventsInNoTakeMPAs' | 'eventsInRFMOWithoutKnownAuthorization'
+  ) => {
     return (
       <ul className={cx(styles.nested, styles.row)}>
         {vessels.map((vessel) => {
@@ -66,7 +69,14 @@ const VesselGroupReportInsightFishing = () => {
                 open={isExpandedVessel}
                 className={styles.collapsable}
                 labelClassName={styles.collapsableLabel}
-                label={formatInfoField(vessel.identity.shipname, 'name')}
+                label={
+                  <span>
+                    {formatInfoField(vessel.identity.shipname, 'name')}{' '}
+                    <span className={styles.secondary}>
+                      ({vessel.periodSelectedCounters[insight]})
+                    </span>
+                  </span>
+                }
                 onToggle={(isOpen, id) => {
                   setExpandedVesselIds((expandedIds) => {
                     return isOpen && id
@@ -132,7 +142,10 @@ const VesselGroupReportInsightFishing = () => {
               })}
               onToggle={onMPAToggle}
             >
-              {getVesselGroupReportInsighFishingVessels(vesselsWithNoTakeMpas)}
+              {getVesselGroupReportInsighFishingVessels(
+                vesselsWithNoTakeMpas,
+                'eventsInNoTakeMPAs'
+              )}
             </Collapsable>
           )}
           {!vesselsInRfmoWithoutKnownAuthorization ||
@@ -161,7 +174,10 @@ const VesselGroupReportInsightFishing = () => {
               })}
               onToggle={onRFMOToggle}
             >
-              {getVesselGroupReportInsighFishingVessels(vesselsInRfmoWithoutKnownAuthorization)}
+              {getVesselGroupReportInsighFishingVessels(
+                vesselsInRfmoWithoutKnownAuthorization,
+                'eventsInRFMOWithoutKnownAuthorization'
+              )}
             </Collapsable>
           )}
         </div>
