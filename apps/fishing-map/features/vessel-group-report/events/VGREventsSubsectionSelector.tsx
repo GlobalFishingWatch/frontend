@@ -15,7 +15,7 @@ function VesselGroupReportEventsSubsectionSelector() {
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
   const options: ChoiceOption<VGREventsSubsection>[] = [
     {
-      id: 'encounter-events',
+      id: 'encounter',
       label: t('event.encounter_other', 'Encounters'),
       disabled: loading,
     },

@@ -29,7 +29,7 @@ import {
 } from 'features/datasets/datasets.utils'
 
 // used in workspaces with encounter events layers
-export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
+export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter'
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'

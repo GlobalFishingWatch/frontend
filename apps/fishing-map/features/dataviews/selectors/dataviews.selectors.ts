@@ -149,20 +149,41 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     }
 
     if (isVesselGroupReportLocation && viewOnlyVesselGroup && reportVesselGroupId !== undefined) {
-      return getReportVesselGroupVisibleDataviews(dataviews, reportVesselGroupId)
+      return getReportVesselGroupVisibleDataviews({
+        dataviews,
+        reportVesselGroupId,
+        vesselGroupReportSection: vGRSection,
+        vesselGroupReportSubSection: vGRSubsection,
+      })
     }
 
     return dataviews.filter((dataview) => dataview.config?.visible)
   }
 )
 
-function getReportVesselGroupVisibleDataviews(
-  dataviews: UrlDataviewInstance[],
+type GetReportVesselGroupVisibleDataviewsParams = {
+  dataviews: UrlDataviewInstance[]
   reportVesselGroupId: string
-) {
-  return dataviews.filter(({ category, config }) => {
+  vesselGroupReportSection: VGRSection
+  vesselGroupReportSubSection?: VGRSubsection
+}
+function getReportVesselGroupVisibleDataviews({
+  dataviews,
+  reportVesselGroupId,
+  vesselGroupReportSection,
+  vesselGroupReportSubSection,
+}: GetReportVesselGroupVisibleDataviewsParams) {
+  return dataviews.filter(({ category, datasets, config }) => {
     if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
       return config?.visible
+    }
+    if (vesselGroupReportSection === 'events') {
+      const subcategory = datasets?.find((d) => d.type === DatasetTypes.Events)?.subcategory
+      return (
+        category === DataviewCategory.Events &&
+        config?.filters?.['vessel-groups'].includes(reportVesselGroupId) &&
+        subcategory === vesselGroupReportSubSection
+      )
     }
     return (
       category === DataviewCategory.VesselGroups &&
@@ -172,13 +193,20 @@ function getReportVesselGroupVisibleDataviews(
 }
 
 export const selectHasOtherVesselGroupDataviews = createSelector(
-  [selectDataviewInstancesResolved, selectReportVesselGroupId],
-  (dataviews, reportVesselGroupId) => {
+  [
+    selectDataviewInstancesResolved,
+    selectReportVesselGroupId,
+    selectVGRSection,
+    selectVGRSubsection,
+  ],
+  (dataviews, reportVesselGroupId, vGRSection, vGRSubsection) => {
     if (!dataviews?.length) return false
-    const vesselGroupReportDataviews = getReportVesselGroupVisibleDataviews(
+    const vesselGroupReportDataviews = getReportVesselGroupVisibleDataviews({
       dataviews,
-      reportVesselGroupId
-    )
+      reportVesselGroupId,
+      vesselGroupReportSection: vGRSection,
+      vesselGroupReportSubSection: vGRSubsection,
+    })
     const workspaceVisibleDataviews = dataviews.filter(({ config }) => config?.visible === true)
     return workspaceVisibleDataviews.length > vesselGroupReportDataviews.length
   }

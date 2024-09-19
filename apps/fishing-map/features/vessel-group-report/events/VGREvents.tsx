@@ -37,6 +37,7 @@ function VGREvents() {
   const eventsDataview = eventsDataviews.find(({ id }) => id === eventsSubsection)
   const vesselsGroupByProperty = useSelector(selectVGREventsVesselsProperty)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+
   useEffect(() => {
     if (eventsDataview) {
       upsertDataviewInstance({
@@ -44,7 +45,10 @@ function VGREvents() {
         config: {
           ...eventsDataview.config,
           visible: true,
-          'vessel-groups': [vesselGroupId],
+          filters: {
+            ...eventsDataview.config?.filters,
+            'vessel-groups': [vesselGroupId],
+          },
         },
       })
     }
