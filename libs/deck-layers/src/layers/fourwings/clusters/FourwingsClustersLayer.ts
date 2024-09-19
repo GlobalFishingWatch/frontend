@@ -92,7 +92,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 70,
-        maxZoom: MAX_ZOOM_TO_CLUSTER_POINTS,
+        maxZoom: Math.floor(MAX_ZOOM_TO_CLUSTER_POINTS),
         reduce: (accumulated, props) => {
           accumulated.count += props.count
         },
@@ -284,6 +284,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       return null
     }
     let url = getURLFromTemplate(tile.url!, tile)
+    console.log('url:', url)
     if (this.isInPositionsMode) {
       url = url?.replace('{{type}}', 'position').concat(`&format=MVT`)
       return this._fetchPositions(url!, { signal: tile.signal })
