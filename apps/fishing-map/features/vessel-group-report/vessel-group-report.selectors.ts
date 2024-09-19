@@ -10,6 +10,7 @@ import { selectActiveDataviewInstancesResolved } from 'features/dataviews/select
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { VGRSubsection } from 'features/vessel-groups/vessel-groups.types'
+import { dataviewHasVesselGroupId } from 'features/dataviews/dataviews.utils'
 import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,
@@ -27,9 +28,7 @@ export const MOU_INSIGHT_ID = 'VESSEL-IDENTITY-MOU-LIST' as InsightType
 export const selectVGRDataview = createSelector(
   [selectActiveDataviewInstancesResolved, selectReportVesselGroupId],
   (dataviews, reportVesselGroupId) => {
-    return dataviews?.find(({ config }) =>
-      config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
-    )
+    return dataviews?.find((dataview) => dataviewHasVesselGroupId(dataview, reportVesselGroupId))
   }
 )
 

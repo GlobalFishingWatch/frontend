@@ -284,7 +284,6 @@ export class FourwingsClustersLayer extends CompositeLayer<
       return null
     }
     let url = getURLFromTemplate(tile.url!, tile)
-    console.log('url:', url)
     if (this.isInPositionsMode) {
       url = url?.replace('{{type}}', 'position').concat(`&format=MVT`)
       return this._fetchPositions(url!, { signal: tile.signal })

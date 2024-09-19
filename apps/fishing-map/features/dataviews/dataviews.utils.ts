@@ -43,6 +43,10 @@ export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
 ]
 
+export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
+  return dataview.config?.filters?.['vessel-groups'].includes(vesselGroupId)
+}
+
 export const getVesselInfoDataviewInstanceDatasetConfig = (
   vesselId: string,
   { info }: VesselInstanceDatasets
