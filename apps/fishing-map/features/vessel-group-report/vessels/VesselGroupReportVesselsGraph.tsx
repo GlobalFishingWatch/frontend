@@ -7,7 +7,10 @@ import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
 import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselGroupReportVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
+import {
+  VesselGroupReportState,
+  VesselGroupReportVesselsSubsection,
+} from 'features/vessel-groups/vessel-groups.types'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
@@ -141,8 +144,8 @@ export default function VesselGroupReportVesselsGraph({
   data: VesselGroupEventsStatsResponseGroups
   color?: string
   property: VesselGroupReportVesselsGraphProperty
-  filterQueryParam: string
-  pageQueryParam: string
+  filterQueryParam: keyof VesselGroupReportState
+  pageQueryParam: keyof VesselGroupReportState
 }) {
   return (
     <Fragment>
