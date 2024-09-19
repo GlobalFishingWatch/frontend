@@ -8,19 +8,19 @@ export type VesselGroupReportVesselsOrderDirection = 'asc' | 'desc'
 
 export type VesselGroupReportState = {
   viewOnlyVesselGroup: boolean
-  vesselGroupReportSection: VesselGroupReportSection
-  vesselGroupReportVesselsSubsection?: VesselGroupReportVesselsSubsection
-  vesselGroupReportActivitySubsection?: VesselGroupReportActivitySubsection
+  vGRSection: VesselGroupReportSection
+  vGRVesselsSubsection?: VesselGroupReportVesselsSubsection
+  vGRActivitySubsection?: VesselGroupReportActivitySubsection
   vGREventsSubsection?: VGREventsSubsection
   vGREventsVesselsProperty?: VGREventsVesselsProperty
-  vesselGroupReportVesselPage?: number
-  vesselGroupReportResultsPerPage?: number
-  vesselGroupReportVesselFilter?: string
+  vGRVesselPage?: number
+  vGRResultsPerPage?: number
+  vGRVesselFilter?: string
   vGREventsVesselPage?: number
   vGREventsResultsPerPage?: number
   vGREventsVesselFilter?: string
-  vesselGroupReportVesselsOrderProperty?: VesselGroupReportVesselsOrderProperty
-  vesselGroupReportVesselsOrderDirection?: VesselGroupReportVesselsOrderDirection
+  vGRVesselsOrderProperty?: VesselGroupReportVesselsOrderProperty
+  vGRVesselsOrderDirection?: VesselGroupReportVesselsOrderDirection
 }
 
 export type VesselGroupReportStateProperty = keyof VesselGroupReportState

@@ -42,8 +42,8 @@ export default function VesselGroupReportVesselsTable() {
     userData?.permissions || []
   )
 
-  const onFilterClick = (vesselGroupReportVesselFilter: any) => {
-    dispatchQueryParams({ vesselGroupReportVesselFilter, vesselGroupReportVesselPage: 0 })
+  const onFilterClick = (vGRVesselFilter: any) => {
+    dispatchQueryParams({ vGRVesselFilter, vGRVesselPage: 0 })
   }
 
   const onPinClick = () => {
@@ -55,8 +55,8 @@ export default function VesselGroupReportVesselsTable() {
     direction: VesselGroupReportVesselsOrderDirection
   ) => {
     dispatchQueryParams({
-      vesselGroupReportVesselsOrderProperty: property,
-      vesselGroupReportVesselsOrderDirection: direction,
+      vGRVesselsOrderProperty: property,
+      vGRVesselsOrderDirection: direction,
     })
   }
 

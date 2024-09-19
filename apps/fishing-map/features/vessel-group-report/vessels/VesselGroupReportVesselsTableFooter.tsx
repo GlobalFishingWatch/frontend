@@ -48,15 +48,15 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
 
   const onPrevPageClick = () => {
-    dispatchQueryParams({ vesselGroupReportVesselPage: pagination.page - 1 })
+    dispatchQueryParams({ vGRVesselPage: pagination.page - 1 })
   }
   const onNextPageClick = () => {
-    dispatchQueryParams({ vesselGroupReportVesselPage: pagination.page + 1 })
+    dispatchQueryParams({ vGRVesselPage: pagination.page + 1 })
   }
   const onShowMoreClick = () => {
     dispatchQueryParams({
-      vesselGroupReportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-      vesselGroupReportVesselPage: 0,
+      vGRResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      vGRVesselPage: 0,
     })
     // trackEvent({
     //   category: TrackCategory.Analysis,
@@ -65,7 +65,7 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
   const onShowLessClick = () => {
     dispatchQueryParams({
-      vesselGroupReportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+      vGRResultsPerPage: REPORT_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
     // trackEvent({

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselGroupReportStatus } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRStatus } from 'features/vessel-group-report/vessel-group-report.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGREventsSubsection } from '../vessel-group.config.selectors'
@@ -10,7 +10,7 @@ import { selectVGREventsSubsection } from '../vessel-group.config.selectors'
 function VesselGroupReportEventsSubsectionSelector() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const vesselGroupReportStatus = useSelector(selectVesselGroupReportStatus)
+  const vesselGroupReportStatus = useSelector(selectVGRStatus)
   const subsection = useSelector(selectVGREventsSubsection)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
   const options: ChoiceOption<VGREventsSubsection>[] = [

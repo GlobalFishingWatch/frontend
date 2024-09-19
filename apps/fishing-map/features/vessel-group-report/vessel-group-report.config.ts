@@ -5,15 +5,15 @@ export const OTHER_CATEGORY_LABEL = 'OTHER'
 
 export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
   viewOnlyVesselGroup: true,
-  vesselGroupReportSection: 'vessels',
-  vesselGroupReportVesselsSubsection: 'flag',
-  vesselGroupReportActivitySubsection: 'fishing-effort',
+  vGRSection: 'vessels',
+  vGRVesselsSubsection: 'flag',
+  vGRActivitySubsection: 'fishing-effort',
   vGREventsSubsection: 'encounter-events',
   vGREventsVesselsProperty: 'flag',
-  vesselGroupReportVesselPage: 0,
-  vesselGroupReportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+  vGRVesselPage: 0,
+  vGRResultsPerPage: REPORT_VESSELS_PER_PAGE,
   vGREventsVesselPage: 0,
   vGREventsResultsPerPage: REPORT_VESSELS_PER_PAGE,
-  vesselGroupReportVesselsOrderProperty: 'shipname',
-  vesselGroupReportVesselsOrderDirection: 'asc',
+  vGRVesselsOrderProperty: 'shipname',
+  vGRVesselsOrderDirection: 'asc',
 }

@@ -44,7 +44,7 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
       //   category: TrackCategory.Analysis,
       //   action: `Click on ${option.id} activity graph`,
       // })
-      dispatchQueryParams({ vesselGroupReportVesselsSubsection: option.id })
+      dispatchQueryParams({ vGRVesselsSubsection: option.id })
     }
   }
 

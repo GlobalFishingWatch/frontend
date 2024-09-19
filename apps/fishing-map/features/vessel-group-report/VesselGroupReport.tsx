@@ -12,7 +12,6 @@ import {
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
-import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import VGREvents from 'features/vessel-group-report/events/VGREvents'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
@@ -20,6 +19,7 @@ import VesselGroupReportTitle from './VesselGroupReportTitle'
 import VesselGroupReportVessels from './vessels/VesselGroupReportVessels'
 import { selectVGRSection } from './vessel-group.config.selectors'
 import VesselGroupReportInsights from './insights/VGRInsights'
+import { selectVGRDataview } from './vessel-group-report.selectors'
 
 function VesselGroupReport() {
   const { t } = useTranslation()
@@ -29,7 +29,7 @@ function VesselGroupReport() {
   const vesselGroup = useSelector(selectVGRData)!
   const reportStatus = useSelector(selectVGRStatus)
   const reportSection = useSelector(selectVGRSection)
-  const reportDataview = useSelector(selectActiveVesselGroupDataviews)
+  const reportDataview = useSelector(selectVGRDataview)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
 
@@ -49,7 +49,7 @@ function VesselGroupReport() {
 
   const changeTab = useCallback(
     (tab: Tab<VesselGroupReportSection>) => {
-      dispatchQueryParams({ vesselGroupReportSection: tab.id })
+      dispatchQueryParams({ vGRSection: tab.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: `click_${tab.id}_tab`,

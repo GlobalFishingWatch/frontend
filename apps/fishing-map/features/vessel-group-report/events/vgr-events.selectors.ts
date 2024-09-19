@@ -4,7 +4,7 @@ import {
   selectVesselGroupEventsVessels,
   VesselGroupEventsVesselsParams,
 } from 'queries/vessel-group-events-stats-api'
-import { selectVesselGroupReportData } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRData } from 'features/vessel-group-report/vessel-group-report.slice'
 import { getSearchIdentityResolved, getVesselId } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
@@ -45,7 +45,7 @@ export const selectVGREventsVesselsData = createSelector(
 )
 
 export const selectVGREventsVessels = createSelector(
-  [selectVGREventsVesselsData, selectVesselGroupReportData],
+  [selectVGREventsVesselsData, selectVGRData],
   (data, vesselGroup) => {
     if (!data || !vesselGroup) {
       return
