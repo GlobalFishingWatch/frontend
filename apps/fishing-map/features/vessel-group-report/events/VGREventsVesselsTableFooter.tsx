@@ -9,30 +9,29 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselGroupReportData } from 'features/vessel-group-report/vessel-group-report.slice'
 import { formatInfoField } from 'utils/info'
-import { selectVesselGroupReportVesselFilter } from '../vessel-group.config.selectors'
-import styles from './VesselGroupReportVesselsTableFooter.module.css'
 import {
-  selectVesselGroupReportVesselsFiltered,
-  selectVesselGroupReportVesselsPagination,
-} from './vessel-group-report-vessels.selectors'
+  selectVGREventsVessels,
+  selectVGREventsVesselsPagination,
+} from 'features/vessel-group-report/events/vgr-events.selectors'
+import { selectVGREventsVesselFilter } from '../vessel-group.config.selectors'
+import styles from '../vessels/VesselGroupReportVesselsTableFooter.module.css'
 
 export default function VesselGroupReportVesselsTableFooter() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroup = useSelector(selectVesselGroupReportData)
-  const allVessels = useSelector(selectVesselGroupReportVesselsFiltered)
-  const reportVesselFilter = useSelector(selectVesselGroupReportVesselFilter)
-  const pagination = useSelector(selectVesselGroupReportVesselsPagination)
+  const allVessels = useSelector(selectVGREventsVessels)
+  const reportVesselFilter = useSelector(selectVGREventsVesselFilter)
+  const pagination = useSelector(selectVGREventsVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
 
   if (!allVessels?.length) return null
 
   const onDownloadVesselsClick = () => {
     const vessels = allVessels?.map((vessel) => {
-      const { flagTranslated, flagTranslatedClean, ...rest } = vessel
+      const { ...rest } = vessel
       return rest
     })
     if (vessels?.length) {
@@ -48,15 +47,15 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
 
   const onPrevPageClick = () => {
-    dispatchQueryParams({ vesselGroupReportVesselPage: pagination.page - 1 })
+    dispatchQueryParams({ vGREventsVesselPage: pagination.page - 1 })
   }
   const onNextPageClick = () => {
-    dispatchQueryParams({ vesselGroupReportVesselPage: pagination.page + 1 })
+    dispatchQueryParams({ vGREventsVesselPage: pagination.page + 1 })
   }
   const onShowMoreClick = () => {
     dispatchQueryParams({
-      vesselGroupReportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-      vesselGroupReportVesselPage: 0,
+      vGREventsResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      vGREventsVesselPage: 0,
     })
     // trackEvent({
     //   category: TrackCategory.Analysis,
@@ -65,7 +64,7 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
   const onShowLessClick = () => {
     dispatchQueryParams({
-      vesselGroupReportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+      vGREventsResultsPerPage: REPORT_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
     // trackEvent({

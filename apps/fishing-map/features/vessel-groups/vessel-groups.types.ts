@@ -1,7 +1,8 @@
 export type VesselGroupReportSection = 'vessels' | 'insights' | 'activity' | 'events'
 export type VesselGroupReportVesselsSubsection = 'flag' | 'shiptypes' | 'geartypes' | 'source'
 export type VesselGroupReportActivitySubsection = 'fishing-effort' | 'presence'
-export type VesselGroupReportEventsSubsection = 'fishing' | 'encounters' | 'port' | 'loitering'
+export type VGREventsVesselsProperty = 'flag' | 'geartype'
+export type VGREventsSubsection = 'encounter-events' | 'loitering' | 'gaps' | 'port_visits'
 export type VesselGroupReportVesselsOrderProperty = 'shipname' | 'flag' | 'shiptype'
 export type VesselGroupReportVesselsOrderDirection = 'asc' | 'desc'
 
@@ -10,10 +11,14 @@ export type VesselGroupReportState = {
   vesselGroupReportSection: VesselGroupReportSection
   vesselGroupReportVesselsSubsection?: VesselGroupReportVesselsSubsection
   vesselGroupReportActivitySubsection?: VesselGroupReportActivitySubsection
-  vesselGroupReportEventsSubsection?: VesselGroupReportEventsSubsection
+  vGREventsSubsection?: VGREventsSubsection
+  vGREventsVesselsProperty?: VGREventsVesselsProperty
   vesselGroupReportVesselPage?: number
   vesselGroupReportResultsPerPage?: number
   vesselGroupReportVesselFilter?: string
+  vGREventsVesselPage?: number
+  vGREventsResultsPerPage?: number
+  vGREventsVesselFilter?: string
   vesselGroupReportVesselsOrderProperty?: VesselGroupReportVesselsOrderProperty
   vesselGroupReportVesselsOrderDirection?: VesselGroupReportVesselsOrderDirection
 }

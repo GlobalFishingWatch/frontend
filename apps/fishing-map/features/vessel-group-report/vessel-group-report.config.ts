@@ -8,9 +8,12 @@ export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
   vesselGroupReportSection: 'vessels',
   vesselGroupReportVesselsSubsection: 'flag',
   vesselGroupReportActivitySubsection: 'fishing-effort',
-  vesselGroupReportEventsSubsection: 'encounters',
+  vGREventsSubsection: 'encounter-events',
+  vGREventsVesselsProperty: 'flag',
   vesselGroupReportVesselPage: 0,
   vesselGroupReportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+  vGREventsVesselPage: 0,
+  vGREventsResultsPerPage: REPORT_VESSELS_PER_PAGE,
   vesselGroupReportVesselsOrderProperty: 'shipname',
   vesselGroupReportVesselsOrderDirection: 'asc',
 }

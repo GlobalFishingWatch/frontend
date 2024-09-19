@@ -3,6 +3,7 @@ import { dataviewStatsApi } from 'queries/stats-api'
 import { vesselEventsApi } from 'queries/vessel-events-api'
 import { vesselInsightApi } from 'queries/vessel-insight-api'
 import { vesselSearchApi } from 'queries/search-api'
+import { vesselGroupEventsStatsApi } from 'queries/vessel-group-events-stats-api'
 import areasReducer from 'features/areas/areas.slice'
 import bigQueryReducer from 'features/bigquery/bigquery.slice'
 import connectedRoutes from 'routes/routes'
@@ -36,6 +37,7 @@ export const rootReducer = combineReducers({
   [vesselSearchApi.reducerPath]: vesselSearchApi.reducer,
   [vesselEventsApi.reducerPath]: vesselEventsApi.reducer,
   [vesselInsightApi.reducerPath]: vesselInsightApi.reducer,
+  [vesselGroupEventsStatsApi.reducerPath]: vesselGroupEventsStatsApi.reducer,
   areas: areasReducer,
   bigQuery: bigQueryReducer,
   datasets: datasetsReducer,

@@ -6,21 +6,31 @@ import ReportVesselsFilter from 'features/area-report/vessels/ReportVesselsFilte
 import { selectVesselGroupReportVessels } from 'features/vessel-group-report/vessel-group-report.slice'
 import {
   selectVesselGroupReportVesselsFlags,
+  selectVesselGroupReportVesselsGraphDataGrouped,
   selectVesselGroupReportVesselsTimeRange,
 } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectVesselGroupReportVesselFilter } from '../vessel-group.config.selectors'
+import { selectVesselGroupReportDataview } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  selectVesselGroupReportVesselFilter,
+  selectVesselGroupReportVesselsSubsection,
+} from '../vessel-group.config.selectors'
 import VesselGroupReportVesselsGraphSelector from './VesselGroupReportVesselsGraphSelector'
-import VesselGroupReportVesselsGraph from './VesselGroupReportVesselsGraph'
+import VesselGroupReportVesselsGraph, {
+  VesselGroupReportVesselsGraphProperty,
+} from './VesselGroupReportVesselsGraph'
 import VesselGroupReportVesselsTable from './VesselGroupReportVesselsTable'
 import styles from './VesselGroupReportVessels.module.css'
 
 function VesselGroupReportVessels() {
   const { t } = useTranslation()
   const vessels = useSelector(selectVesselGroupReportVessels)
+  const subsection = useSelector(selectVesselGroupReportVesselsSubsection)
+  const reportDataview = useSelector(selectVesselGroupReportDataview)
   const timeRange = useSelector(selectVesselGroupReportVesselsTimeRange)
   const flags = useSelector(selectVesselGroupReportVesselsFlags)
   const filter = useSelector(selectVesselGroupReportVesselFilter)
+  const data = useSelector(selectVesselGroupReportVesselsGraphDataGrouped)
   return (
     <div className={styles.container}>
       {timeRange && vessels && flags && (
@@ -42,7 +52,13 @@ function VesselGroupReportVessels() {
         </h2>
       )}
       <VesselGroupReportVesselsGraphSelector />
-      <VesselGroupReportVesselsGraph />
+      <VesselGroupReportVesselsGraph
+        data={data}
+        color={reportDataview?.config?.color}
+        property={subsection as VesselGroupReportVesselsGraphProperty}
+        filterQueryParam="vesselGroupReportVesselFilter"
+        pageQueryParam="vesselGroupReportVesselPage"
+      />
       <ReportVesselsFilter
         filter={filter}
         filterQueryParam="vesselGroupReportVesselFilter"

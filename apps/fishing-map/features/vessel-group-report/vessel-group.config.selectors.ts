@@ -30,8 +30,9 @@ export const selectVesselGroupReportVesselsSubsection = selectVesselGroupReportS
 export const selectVesselGroupReportActivitySubsection = selectVesselGroupReportStateProperty(
   'vesselGroupReportActivitySubsection'
 )
-export const selectVesselGroupReportEventsSubsection = selectVesselGroupReportStateProperty(
-  'vesselGroupReportEventsSubsection'
+export const selectVGREventsSubsection = selectVesselGroupReportStateProperty('vGREventsSubsection')
+export const selectVGREventsVesselsProperty = selectVesselGroupReportStateProperty(
+  'vGREventsVesselsProperty'
 )
 
 export const selectVesselGroupReportVesselFilter = selectVesselGroupReportStateProperty(
@@ -49,3 +50,9 @@ export const selectVesselGroupReportVesselsOrderProperty = selectVesselGroupRepo
 export const selectVesselGroupReportVesselsOrderDirection = selectVesselGroupReportStateProperty(
   'vesselGroupReportVesselsOrderDirection'
 )
+
+export const selectVGREventsVesselFilter =
+  selectVesselGroupReportStateProperty('vGREventsVesselFilter')
+export const selectVGREventsVesselPage = selectVesselGroupReportStateProperty('vGREventsVesselPage')
+export const selectVGREventsResultsPerPage =
+  selectVesselGroupReportStateProperty('vGREventsResultsPerPage')
