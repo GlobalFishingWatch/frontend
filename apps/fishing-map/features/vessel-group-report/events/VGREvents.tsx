@@ -57,7 +57,7 @@ function VGREvents() {
   const { data, error, isLoading } = useGetVesselGroupEventsStatsQuery(
     {
       includes: ['TIME_SERIES', 'EVENTS_GROUPED'],
-      datasetId: eventsDataview?.datasets?.[0]?.id as string,
+      dataview: eventsDataview!,
       groupBy: vesselsGroupByProperty.toUpperCase(),
       vesselGroupId,
       interval,

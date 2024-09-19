@@ -2,22 +2,23 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import { RootState } from 'reducers'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type VesselGroupEventsStatsParams = {
   vesselGroupId: string
-  datasetId: string
   includes: string[]
   start: string
   end: string
   interval: FourwingsInterval
   groupBy: string // 'FLAG' | 'GEARTYPE'
+  dataview: UrlDataviewInstance
 }
 
 export type VesselGroupEventsVesselsParams = {
   vesselGroupId: string
-  datasetId: string
   start: string
   end: string
+  dataview: UrlDataviewInstance
 }
 
 export type VesselGroupEventsStatsResponseGroups = { name: string; value: number }[]
@@ -45,15 +46,20 @@ export const vesselGroupEventsStatsApi = createApi({
       VesselGroupEventsStatsResponse,
       VesselGroupEventsStatsParams
     >({
-      query: ({ vesselGroupId, datasetId, includes, start, end, interval, groupBy }) => {
+      query: ({ vesselGroupId, dataview, includes, start, end, interval, groupBy }) => {
+        const encounterTypes =
+          dataview?.datasets?.[0]?.subcategory === 'encounter'
+            ? dataview?.datasetsConfig?.[0]?.filters?.encounter_type
+            : undefined
         const query = {
           includes,
           'vessel-groups': [vesselGroupId],
           'start-date': start,
           'end-date': end,
-          datasets: [datasetId],
+          datasets: [dataview.datasets?.[0]?.id],
           'timeseries-interval': interval,
           'group-by': groupBy,
+          ...(encounterTypes && { 'encounter-types': encounterTypes }),
         }
         return {
           url: `${getQueryParamsResolved(query)}`,
@@ -64,12 +70,17 @@ export const vesselGroupEventsStatsApi = createApi({
       VesselGroupEventsVesselsResponse,
       VesselGroupEventsVesselsParams
     >({
-      query: ({ vesselGroupId, datasetId, start, end }) => {
+      query: ({ vesselGroupId, dataview, start, end }) => {
+        const encounterTypes =
+          dataview?.datasets?.[0]?.subcategory === 'encounter'
+            ? dataview?.datasetsConfig?.[0]?.filters?.encounter_type
+            : undefined
         const query = {
           'vessel-groups': [vesselGroupId],
           'start-date': start,
           'end-date': end,
-          dataset: datasetId,
+          dataset: dataview.datasets?.[0]?.id as string,
+          ...(encounterTypes && { 'encounter-types': encounterTypes }),
         }
         return {
           url: `-by-vessel${getQueryParamsResolved(query)}`,

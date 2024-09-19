@@ -22,14 +22,19 @@ export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectEventsDataviews, selectVGREventsSubsection],
   ({ start, end }, reportVesselGroupId, eventsDataviews, eventsSubsection) => {
     const eventsDataview = eventsDataviews.find(({ id }) => id === eventsSubsection)
+    const encounterTypes =
+      eventsDataview?.datasets?.[0]?.subcategory === 'encounter'
+        ? eventsDataview?.datasetsConfig?.[0]?.filters?.encounter_type
+        : undefined
     if (!reportVesselGroupId || !eventsDataview) {
       return
     }
     return {
-      datasetId: eventsDataview?.datasets?.[0]?.id as string,
+      dataview: eventsDataview,
       vesselGroupId: reportVesselGroupId,
       start,
       end,
+      encounterTypes,
     } as VesselGroupEventsVesselsParams
   }
 )
