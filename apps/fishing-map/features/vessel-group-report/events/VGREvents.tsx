@@ -25,6 +25,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import VGREventsVesselPropertySelector from 'features/vessel-group-report/events/VGREventsVesselPropertySelector'
 import VGREventsVesselsTable from 'features/vessel-group-report/events/VGREventsVesselsTable'
 import ReportVesselsFilter from 'features/area-report/vessels/ReportVesselsFilter'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import styles from './VGREvents.module.css'
 
 function VGREvents() {
@@ -69,7 +70,7 @@ function VGREvents() {
     }
   )
 
-  let color = eventsDataview?.config?.color || 'rgb(22, 63, 137)'
+  let color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
   if (eventsDataview?.id === ENCOUNTER_EVENTS_SOURCE_ID) {
     color = 'rgb(247 222 110)'
   }

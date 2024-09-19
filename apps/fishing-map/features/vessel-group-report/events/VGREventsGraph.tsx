@@ -17,6 +17,7 @@ import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { tickFormatter } from 'features/area-report/reports.utils'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import styles from './VGREventsGraph.module.css'
 
 type VGREventsGraphTooltipProps = {
@@ -61,7 +62,7 @@ const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
 export default function VGREventsGraph({
-  color = 'rgb(22, 63, 137)',
+  color = COLOR_PRIMARY_BLUE,
   end,
   interval,
   start,
