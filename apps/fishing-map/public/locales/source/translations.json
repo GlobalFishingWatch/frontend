@@ -1055,6 +1055,7 @@
       "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists",
       "MOUListsCount_one": "{{vessels}} vessel operated under a flag present on the {{list}} list",
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
+      "fishingEventsError": "There was an error loading the fishing events",
       "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
       "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing event from {{vessels}} vessels detected outside known RFMO authorized areas",

@@ -57,13 +57,15 @@ const VesselGroupReportInsightFishing = () => {
     vessels: VesselGroupReportInsightVessel[],
     insight: 'eventsInNoTakeMPAs' | 'eventsInRFMOWithoutKnownAuthorization'
   ) => {
+    const expandedIdPrefix = insight === 'eventsInNoTakeMPAs' ? 'no-take-' : 'rfmo-'
     return (
       <ul className={cx(styles.nested, styles.row)}>
         {vessels.map((vessel) => {
           const vesselId = vessel.identity.id
-          const isExpandedVessel = expandedVesselIds.includes(vesselId)
+          const expandedVesselId = `${expandedIdPrefix}${vesselId}`
+          const isExpandedVessel = expandedVesselIds.includes(expandedVesselId)
           return (
-            <li className={styles.row}>
+            <li className={styles.row} key={vesselId}>
               <Collapsable
                 id={vesselId}
                 open={isExpandedVessel}
@@ -80,8 +82,8 @@ const VesselGroupReportInsightFishing = () => {
                 onToggle={(isOpen, id) => {
                   setExpandedVesselIds((expandedIds) => {
                     return isOpen && id
-                      ? [...expandedIds, id]
-                      : expandedIds.filter((vesselId) => vesselId !== id)
+                      ? [...expandedIds, expandedVesselId]
+                      : expandedIds.filter((vesselId) => vesselId !== expandedVesselId)
                   })
                 }}
               >

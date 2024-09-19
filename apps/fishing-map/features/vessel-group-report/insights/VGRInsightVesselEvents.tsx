@@ -1,4 +1,5 @@
 import { useGetVesselEventsQuery } from 'queries/vessel-events-api'
+import { useTranslation } from 'react-i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import VesselEvent from 'features/vessel/activity/event/Event'
 import styles from './VGRInsights.module.css'
@@ -16,7 +17,8 @@ const VesselGroupReportInsightVesselEvents = ({
   start: string
   end: string
 }) => {
-  const { data, isLoading } = useGetVesselEventsQuery(
+  const { t } = useTranslation()
+  const { data, isLoading, error } = useGetVesselEventsQuery(
     {
       ...(vesselId && { vessels: [vesselId] }),
       ...(ids && { ids: ids }),
@@ -26,10 +28,19 @@ const VesselGroupReportInsightVesselEvents = ({
     },
     { skip: !ids && !vesselId }
   )
+
   if (isLoading) {
     return <Spinner size="small" />
-  }
-  if (!data?.entries) {
+  } else if (error) {
+    return (
+      <p className={styles.secondary}>
+        {t(
+          'vesselGroupReport.insights.fishingEventsError',
+          'There was an error loading the fishing events'
+        )}
+      </p>
+    )
+  } else if (!data?.entries) {
     return null
   }
 

@@ -16,7 +16,6 @@ import {
 } from './vessel-groups.hooks'
 
 type VesselGroupAddButtonProps = {
-  mode?: 'auto' | 'manual'
   children?: React.ReactNode
   vessels: AddVesselGroupVessel[]
   onAddToVesselGroup?: (vesselGroupId: string) => void

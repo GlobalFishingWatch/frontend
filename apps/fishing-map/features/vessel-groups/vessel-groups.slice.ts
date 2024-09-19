@@ -34,7 +34,7 @@ export const MAX_VESSEL_GROUP_VESSELS = 1000
 export const MAX_VESSEL_GROUP_SEARCH_VESSELS = 400
 
 export type IdField = 'vesselId' | 'mmsi'
-export type VesselGroupConfirmationMode = 'save' | 'saveAndSeeInWorkspace'
+export type VesselGroupConfirmationMode = 'save' | 'saveAndSeeInWorkspace' | 'saveAndDeleteVessels'
 
 interface VesselGroupsState extends AsyncReducer<VesselGroup> {
   isModalOpen: boolean

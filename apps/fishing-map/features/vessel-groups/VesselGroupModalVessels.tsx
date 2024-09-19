@@ -9,8 +9,13 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import I18nDate from 'features/i18n/i18nDate'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getLatestIdentityPrioritised, getVesselProperty } from 'features/vessel/vessel.utils'
+import {
+  getLatestIdentityPrioritised,
+  getVesselProperty,
+  isFieldLoginRequired,
+} from 'features/vessel/vessel.utils'
 import { VesselDataIdentity } from 'features/vessel/vessel.slice'
+import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import {
   setVesselGroupSearchVessels,
   selectVesselGroupSearchVessels,
@@ -41,10 +46,18 @@ function VesselGroupVesselRow({
       <td>{vesselName}</td>
       <td>
         <Tooltip content={t(`flags:${flag as string}` as any)}>
-          <span>{flag || EMPTY_FIELD_PLACEHOLDER}</span>
+          <span>
+            {isFieldLoginRequired(vesselGearType) ? (
+              <VesselIdentityFieldLogin />
+            ) : (
+              vesselGearType || EMPTY_FIELD_PLACEHOLDER
+            )}
+          </span>
         </Tooltip>
       </td>
-      <td>{vesselGearType}</td>
+      <td>
+        {isFieldLoginRequired(vesselGearType) ? <VesselIdentityFieldLogin /> : vesselGearType}
+      </td>
       <td>
         {transmissionDateFrom && transmissionDateTo && (
           // TODO tooltip not working

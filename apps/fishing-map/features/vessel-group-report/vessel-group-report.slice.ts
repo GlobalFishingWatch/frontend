@@ -27,12 +27,12 @@ type FetchVesselGroupReportThunkParams = {
 
 export const fetchVesselGroupReportThunk = createAsyncThunk(
   'vessel-group-report/vessels',
-  async ({ vesselGroupId }: FetchVesselGroupReportThunkParams, { rejectWithValue }) => {
+  async ({ vesselGroupId }: FetchVesselGroupReportThunkParams, { rejectWithValue, signal }) => {
     try {
       const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
       const vesselGroupVessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(
         `/vessels?${stringify({ 'vessel-groups': [vesselGroupId] })}`,
-        { cache: 'reload' }
+        { cache: 'reload', signal }
       )
       return {
         ...vesselGroup,
@@ -52,8 +52,11 @@ export const fetchVesselGroupReportThunk = createAsyncThunk(
   },
   {
     condition: (params: FetchVesselGroupReportThunkParams, { getState }) => {
-      const { status } = (getState() as VesselGroupReportSliceState)?.vesselGroupReport
-      if (status === AsyncReducerStatus.Loading || status === AsyncReducerStatus.Finished) {
+      const { status, vesselGroup } = (getState() as VesselGroupReportSliceState)?.vesselGroupReport
+      if (
+        vesselGroup?.id === params.vesselGroupId &&
+        (status === AsyncReducerStatus.Loading || status === AsyncReducerStatus.Finished)
+      ) {
         return false
       }
       return true
@@ -65,7 +68,7 @@ const vesselGroupReportSlice = createSlice({
   name: 'vesselGroupReport',
   initialState,
   reducers: {
-    resetReportData: (state) => {
+    resetVesselGroupReportData: (state) => {
       state.status = AsyncReducerStatus.Idle
       state.vesselGroup = null
       state.error = null
@@ -86,7 +89,7 @@ const vesselGroupReportSlice = createSlice({
   },
 })
 
-export const { resetReportData } = vesselGroupReportSlice.actions
+export const { resetVesselGroupReportData } = vesselGroupReportSlice.actions
 
 export const selectVGRStatus = (state: VesselGroupReportSliceState) =>
   state.vesselGroupReport.status

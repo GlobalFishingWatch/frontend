@@ -66,6 +66,7 @@ import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { useHighlightReportArea } from 'features/area-report/reports.hooks'
+import { resetVesselGroupReportData } from 'features/vessel-group-report/vessel-group-report.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -355,6 +356,7 @@ function CloseReportButton() {
     resetSidebarScroll()
     highlightArea(undefined)
     dispatch(resetReportData())
+    dispatch(resetVesselGroupReportData())
     dispatch(resetAreaDetail(reportAreaIds))
     dispatch(cleanCurrentWorkspaceReportState())
   }
@@ -424,7 +426,6 @@ function CloseSectionButton() {
   const dispatch = useAppDispatch()
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { dispatchQueryParams } = useLocationConnect()
-
   const onCloseClick = useCallback(() => {
     dispatchQueryParams({ ...EMPTY_FILTERS, userTab: undefined })
     dispatch(cleanVesselSearchResults())
