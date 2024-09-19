@@ -42,9 +42,14 @@ import {
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
-import { selectViewOnlyVesselGroup } from 'features/vessel-group-report/vessel-group.config.selectors'
+import {
+  selectVGRSection,
+  selectViewOnlyVesselGroup,
+} from 'features/vessel-group-report/vessel-group.config.selectors'
 import { ReportCategory } from 'features/area-report/reports.types'
 import { selectReportCategorySelector } from 'features/area-report/reports.config.selectors'
+import { VGRSection, VGRSubsection } from 'features/vessel-groups/vessel-groups.types'
+import { selectVGRSubsection } from 'features/vessel-group-report/vessel-group-report.selectors'
 import {
   selectContextAreasDataviews,
   selectActivityDataviews,
@@ -104,6 +109,8 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectVesselId,
     selectIsVesselGroupReportLocation,
     selectReportVesselGroupId,
+    selectVGRSection,
+    selectVGRSubsection,
     selectViewOnlyVesselGroup,
   ],
   (
@@ -115,6 +122,8 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     vesselId,
     isVesselGroupReportLocation,
     reportVesselGroupId,
+    vGRSection,
+    vGRSubsection,
     viewOnlyVesselGroup
   ) => {
     if (isReportLocation) {

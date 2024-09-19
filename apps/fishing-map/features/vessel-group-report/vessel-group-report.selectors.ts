@@ -9,6 +9,13 @@ import { InsightType } from '@globalfishingwatch/api-types'
 import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { VGRSubsection } from 'features/vessel-groups/vessel-groups.types'
+import {
+  selectVGRActivitySubsection,
+  selectVGREventsSubsection,
+  selectVGRSection,
+  selectVGRVesselsSubsection,
+} from './vessel-group.config.selectors'
 
 export const COVERAGE_INSIGHT_ID = 'COVERAGE' as InsightType
 export const GAP_INSIGHT_ID = 'GAP' as InsightType
@@ -23,6 +30,26 @@ export const selectVGRDataview = createSelector(
     return dataviews?.find(({ config }) =>
       config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
     )
+  }
+)
+
+export const selectVGRSubsection = createSelector(
+  [
+    selectVGRSection,
+    selectVGRVesselsSubsection,
+    selectVGRActivitySubsection,
+    selectVGREventsSubsection,
+  ],
+  (section, vesselsSubsection, activitySubsection, eventsSubsection): VGRSubsection | undefined => {
+    if (section === 'activity') {
+      return activitySubsection
+    }
+    if (section === 'events') {
+      return eventsSubsection
+    }
+    if (section === 'vessels') {
+      return vesselsSubsection
+    }
   }
 )
 

@@ -6,7 +6,7 @@ import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselGroupReportSection } from 'features/vessel-groups/vessel-groups.types'
+import { VGRSection } from 'features/vessel-groups/vessel-groups.types'
 import { TimebarVisualisations } from 'types'
 import {
   useTimebarVesselGroupConnect,
@@ -48,7 +48,7 @@ function VesselGroupReport() {
   ])
 
   const changeTab = useCallback(
-    (tab: Tab<VesselGroupReportSection>) => {
+    (tab: Tab<VGRSection>) => {
       dispatchQueryParams({ vGRSection: tab.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
@@ -58,7 +58,7 @@ function VesselGroupReport() {
     [dispatchQueryParams]
   )
 
-  const sectionTabs: Tab<VesselGroupReportSection>[] = useMemo(
+  const sectionTabs: Tab<VGRSection>[] = useMemo(
     () => [
       {
         id: 'vessels',

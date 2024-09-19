@@ -20,8 +20,8 @@ import {
 } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { selectVGRVessels } from 'features/vessel-group-report/vessel-group-report.slice'
 import {
-  VesselGroupReportVesselsOrderProperty,
-  VesselGroupReportVesselsOrderDirection,
+  VGRVesselsOrderProperty,
+  VGRVesselsOrderDirection,
 } from 'features/vessel-groups/vessel-groups.types'
 import styles from './VesselGroupReportVesselsTable.module.css'
 import { selectVGRVesselsPaginated } from './vessel-group-report-vessels.selectors'
@@ -51,8 +51,8 @@ export default function VesselGroupReportVesselsTable() {
   }
 
   const handleSortClick = (
-    property: VesselGroupReportVesselsOrderProperty,
-    direction: VesselGroupReportVesselsOrderDirection
+    property: VGRVesselsOrderProperty,
+    direction: VGRVesselsOrderDirection
   ) => {
     dispatchQueryParams({
       vGRVesselsOrderProperty: property,
