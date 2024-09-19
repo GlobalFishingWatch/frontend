@@ -18,6 +18,10 @@
   margin-block: var(--space-XS);
 }
 
+.link {
+  text-decoration: underline;
+}
+
 .disclaimer svg {
   margin-top: 0.2rem;
 }
