@@ -447,7 +447,7 @@
     "description": "Indonesia Rare Fishing Effort"
   },
   "private-indonesia-rare-presence": {
-    "name": "Rare : Pélagique Indonésie",
+    "name": "Rare : Pélagique, Indonésie",
     "description": "Rare Presence",
     "schema": {
       "speed": "vitesse",
@@ -474,8 +474,8 @@
     }
   },
   "private-indonesia-zebrax-vessel-identity": {
-    "name": "Pêche côtière navieres",
-    "description": "Pêche côtière navieres"
+    "name": "Zebra X Indonésie (Navires)",
+    "description": "Navires (Zebra X, Indonésie)"
   },
   "private-indonesia-zebrax-vessels": {
     "name": "Pêche côtière navieres",
@@ -513,7 +513,7 @@
       "speed": "vitesse",
       "bearing": "cap",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "type de navire",
         "enum": {
           "carrier": "carrier",
           "fishing": "pêche",
@@ -609,40 +609,40 @@
   },
   "private-peru-vessel-identity-fishing": {
     "name": "VMS Pérou privé (Navires de pêche)",
-    "description": "Dataset for VMS Peru (Private)"
+    "description": "Jeu de données pour VMS Pérou (Privé)"
   },
   "private-png-fishing-effort": {
     "name": "Papua New Guinea VMS",
     "description": "Les données du système de surveillance des navires (VMS) sont fournies par l'Autorité nationale des pêches de Papouasie-Nouvelle-Guinée. Les données sont collectées à l'aide du VMS national de Papouasie-Nouvelle-Guinée et fournies par le Système d'information et de gestion des pêches (FIMS). Les données VMS incluent les identifiants et l'emplacement des navires, et sont publiées avec un délai de cinq jours. Global Fishing Watch déduit la vitesse et le cap de chaque position du navire et analyse ces données à l'aide des mêmes algorithmes développés pour le système d'identification automatique (AIS) afin d'identifier les activités et les comportements de pêche. L'algorithme classe chaque point de données diffusé par les navires comme étant apparemment en train de pêcher ou non et affiche le premier sur la carte thermique des activités de pêche de Global Fishing Watch. Le VMS diffuse les données différemment de l'AIS et peut donner différentes mesures d'exhaustivité, de précision et de qualité. Global Fishing Watch améliore continuellement ses algorithmes dans tous les formats de données de diffusion pour identifier de manière algorithmique «l'activité de pêche apparente». Il est possible que certaines activités de pêche ne soient pas identifiées ou que la carte thermique montre une activité de pêche apparente alors que la pêche n'a pas lieu. Pour ces raisons, Global Fishing Watch qualifie les termes « activité de pêche », « pêche » ou « effort de pêche », d'apparents plutôt que de certains. Toutes les informations de Global Fishing Watch sur «l'activité de pêche apparente» doivent être considérées comme une estimation et doivent être utilisées à la seule discrétion de l'utilisateur. Les algorithmes de détection de pêche de Global Fishing Watch sont développés et testés à l'aide de données d'événements de pêche réelles collectées par des observateurs et sont combinés à une analyse experte des données de mouvement des navires AIS, ce qui permet la classification manuelle de milliers d'événements de pêche connus. Global Fishing Watch collabore également étroitement avec des chercheurs universitaires dans le cadre de notre programme de recherche pour partager les données de classification des activités de pêche et améliorer les techniques de classification automatisées",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "vitesse",
+      "bearing": "cap"
     }
   },
   "private-png-fishing-identity-vessels": {
-    "name": "Papua New Guinea VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Papua New Guinea (Private)"
+    "name": "VMS Papouasie Nouvelle-Guinée (Navires de pêche)",
+    "description": "Jeu de données pour VMS Papouasie Nouvelle-Guinée (Privé)"
   },
   "private-png-fishing-vessels": {
-    "name": "Papua New Guinea VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Papua New Guinea (Private)",
+    "name": "VMS Papouasie Nouvelle-Guinée (Navires de pêche)",
+    "description": "Jeu de données pour VMS Papouasie Nouvelle-Guinée (Privé)",
     "schema": {
       "source": "source"
     }
   },
   "private-png-presence": {
-    "name": "Papua New Guinea VMS",
+    "name": "VMS Papouasie Nouvelle-Guinée",
     "description": "Les données du système de surveillance des navires (VMS) sont fournies par l'Autorité nationale des pêches de Papouasie-Nouvelle-Guinée. Les données sont collectées à l'aide du VMS national de Papouasie-Nouvelle-Guinée fourni par le Système d'information et de gestion des pêches (FIMS). Les données VMS incluent les identifiants et l'emplacement des navires, et sont publiées avec un délai de cinq jours.\n\nLa couche d'activité affiche une carte thermique de la présence des navires. La présence est déterminée en prenant deux positions par heure et par navire à partir des positions transmises par le VMS du navire.",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "vitesse",
+      "bearing": "cap"
     }
   },
   "proto-global-encounters-events-30min": {
-    "name": "PROTOTYPE - Encounter Events of 30min. (AIS)",
-    "description": "The dataset contains encounter events of 30min for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
+    "name": "PROTOTYPE - Événements de rencontre de 30 min. (AIS)",
+    "description": "Le jeu de données contient des événements de rencontre de 30 min. (AIS). [Pêche-Transport, Transport-Pêche, Soutien-Pêche, Pêche-Soutien]",
     "schema": {
-      "duration": "duration"
+      "duration": "durée"
     }
   },
   "proto-global-encounters-events": {
