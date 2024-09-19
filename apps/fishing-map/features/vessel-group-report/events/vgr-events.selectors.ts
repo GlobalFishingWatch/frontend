@@ -22,10 +22,6 @@ export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectEventsDataviews, selectVGREventsSubsection],
   ({ start, end }, reportVesselGroupId, eventsDataviews, eventsSubsection) => {
     const eventsDataview = eventsDataviews.find(({ id }) => id === eventsSubsection)
-    const encounterTypes =
-      eventsDataview?.datasets?.[0]?.subcategory === 'encounter'
-        ? eventsDataview?.datasetsConfig?.[0]?.filters?.encounter_type
-        : undefined
     if (!reportVesselGroupId || !eventsDataview) {
       return
     }
@@ -34,7 +30,6 @@ export const selectFetchVGREventsVesselsParams = createSelector(
       vesselGroupId: reportVesselGroupId,
       start,
       end,
-      encounterTypes,
     } as VesselGroupEventsVesselsParams
   }
 )
