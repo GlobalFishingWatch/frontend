@@ -3,14 +3,19 @@ import cx from 'classnames'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { VesselGroupEventsStatsResponseGroups } from 'queries/vessel-group-events-stats-api'
+import { useSelector } from 'react-redux'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
 import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectVGRVesselsSubsection } from 'features/vessel-group-report/vessel-group.config.selectors'
+import { selectVGRVesselsGraphDataGrouped } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
 import {
   VesselGroupReportState,
   VesselGroupReportVesselsSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectVGRDataview } from '../vessel-group-report.selectors'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
@@ -65,6 +70,7 @@ const CustomTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount, property, filterQueryParam, pageQueryParam } =
     props
   const { t } = useTranslation()
+  const subsection = useSelector(selectVGRVesselsSubsection)
   const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
@@ -136,7 +142,7 @@ export type VesselGroupReportVesselsGraphProperty = 'flag' | 'geartype'
 
 export default function VesselGroupReportVesselsGraph({
   data,
-  color = 'rgb(22, 63, 137)',
+  color = COLOR_PRIMARY_BLUE,
   property,
   filterQueryParam,
   pageQueryParam,

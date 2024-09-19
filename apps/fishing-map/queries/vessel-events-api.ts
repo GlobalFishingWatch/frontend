@@ -1,9 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { stringify } from 'qs'
-import { gfwBaseQuery } from 'queries/base'
+import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
+import { ApiEvents } from '@globalfishingwatch/api-types'
 
 type VesselEventsApiParams = {
-  vessels: string[]
+  vessels?: string[]
+  ids?: string[]
   datasets: string[]
   'start-date': string
   'end-date': string
@@ -16,9 +17,10 @@ export const vesselEventsApi = createApi({
     baseUrl: '/events',
   }),
   endpoints: (builder) => ({
-    getVesselEvents: builder.query({
+    getVesselEvents: builder.query<ApiEvents, VesselEventsApiParams>({
       serializeQueryArgs: ({ queryArgs }: { queryArgs: VesselEventsApiParams }) => {
         return [
+          queryArgs.ids?.join('-'),
           queryArgs.vessels?.join('-'),
           queryArgs.datasets?.join('-'),
           queryArgs['start-date'],
@@ -32,7 +34,7 @@ export const vesselEventsApi = createApi({
           offset: 0,
         }
         return {
-          url: stringify(params, { arrayFormat: 'indices', addQueryPrefix: true }),
+          url: getQueryParamsResolved(params),
         }
       },
     }),

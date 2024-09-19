@@ -9,7 +9,7 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { selectVesselGroupReportData } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRData } from 'features/vessel-group-report/vessel-group-report.slice'
 import { formatInfoField } from 'utils/info'
 import {
   selectVGREventsVessels,
@@ -21,7 +21,7 @@ import styles from '../vessels/VesselGroupReportVesselsTableFooter.module.css'
 export default function VesselGroupReportVesselsTableFooter() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const vesselGroup = useSelector(selectVesselGroupReportData)
+  const vesselGroup = useSelector(selectVGRData)
   const allVessels = useSelector(selectVGREventsVessels)
   const reportVesselFilter = useSelector(selectVGREventsVesselFilter)
   const pagination = useSelector(selectVGREventsVesselsPagination)

@@ -12,27 +12,24 @@ import {
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
-import { selectVesselGroupReportDataview } from 'features/dataviews/selectors/dataviews.selectors'
 import VGREvents from 'features/vessel-group-report/events/VGREvents'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
-import {
-  selectVesselGroupReportData,
-  selectVesselGroupReportStatus,
-} from './vessel-group-report.slice'
-import VesselGroupReportError from './VesselGroupReportError'
+import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'
 import VesselGroupReportVessels from './vessels/VesselGroupReportVessels'
-import { selectVesselGroupReportSection } from './vessel-group.config.selectors'
+import { selectVGRSection } from './vessel-group.config.selectors'
+import VesselGroupReportInsights from './insights/VGRInsights'
+import { selectVGRDataview } from './vessel-group-report.selectors'
 
 function VesselGroupReport() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const fetchVesselGroupReport = useFetchVesselGroupReport()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
-  const vesselGroup = useSelector(selectVesselGroupReportData)!
-  const reportStatus = useSelector(selectVesselGroupReportStatus)
-  const reportSection = useSelector(selectVesselGroupReportSection)
-  const reportDataview = useSelector(selectVesselGroupReportDataview)
+  const vesselGroup = useSelector(selectVGRData)!
+  const reportStatus = useSelector(selectVGRStatus)
+  const reportSection = useSelector(selectVGRSection)
+  const reportDataview = useSelector(selectVGRDataview)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
 
@@ -52,7 +49,7 @@ function VesselGroupReport() {
 
   const changeTab = useCallback(
     (tab: Tab<VesselGroupReportSection>) => {
-      dispatchQueryParams({ vesselGroupReportSection: tab.id })
+      dispatchQueryParams({ vGRSection: tab.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: `click_${tab.id}_tab`,
@@ -70,9 +67,8 @@ function VesselGroupReport() {
       },
       {
         id: 'insights',
-        title: t('common.areas', 'Areas'),
-        disabled: true,
-        content: <p>Coming soon</p>,
+        title: t('common.insights', 'Insights'),
+        content: <VesselGroupReportInsights />,
       },
       {
         id: 'activity',

@@ -2,18 +2,18 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselGroupReportStatus } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRStatus } from 'features/vessel-group-report/vessel-group-report.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { VesselGroupReportVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
-import { selectVesselGroupReportVesselsSubsection } from '../vessel-group.config.selectors'
+import { selectVGRVesselsSubsection } from '../vessel-group.config.selectors'
 
 type VesselGroupReportVesselsGraphSelectorProps = {}
 
 function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGraphSelectorProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const vesselGroupReportStatus = useSelector(selectVesselGroupReportStatus)
-  const subsection = useSelector(selectVesselGroupReportVesselsSubsection)
+  const vesselGroupReportStatus = useSelector(selectVGRStatus)
+  const subsection = useSelector(selectVGRVesselsSubsection)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
   const options: ChoiceOption<VesselGroupReportVesselsSubsection>[] = [
     {
@@ -44,7 +44,7 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
       //   category: TrackCategory.Analysis,
       //   action: `Click on ${option.id} activity graph`,
       // })
-      dispatchQueryParams({ vesselGroupReportVesselsSubsection: option.id })
+      dispatchQueryParams({ vGRVesselsSubsection: option.id })
     }
   }
 

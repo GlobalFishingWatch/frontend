@@ -3,15 +3,12 @@ import { Trans, useTranslation } from 'react-i18next'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import styles from './VesselGroupReport.module.css'
-import {
-  selectVesselGroupReportError,
-  selectVesselGroupReportStatus,
-} from './vessel-group-report.slice'
+import { selectVGRError, selectVGRStatus } from './vessel-group-report.slice'
 
 function VesselGroupReportError() {
   const { t } = useTranslation()
-  const reportStatus = useSelector(selectVesselGroupReportStatus)
-  const reportError = useSelector(selectVesselGroupReportError)
+  const reportStatus = useSelector(selectVGRStatus)
+  const reportError = useSelector(selectVGRError)
 
   if (reportStatus !== AsyncReducerStatus.Error) {
     return null

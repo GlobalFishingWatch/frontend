@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { InsightFishingResponse } from '@globalfishingwatch/api-types'
+import { InsightResponse } from '@globalfishingwatch/api-types'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -15,7 +15,7 @@ const InsightFishing = ({
   isLoading,
   error,
 }: {
-  insightData: InsightFishingResponse
+  insightData?: InsightResponse
   isLoading: boolean
   error: ParsedAPIError
 }) => {

@@ -13,8 +13,6 @@ import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { fetchRegionsThunk } from 'features/regions/regions.slice'
-import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import {
@@ -65,7 +63,6 @@ const Vessel = () => {
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const infoError = useSelector(selectVesselInfoError)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
-  const regionsDatasets = useSelector(selectRegionsDatasets)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselData = useSelector(selectVesselInfoData)
   const hasSelfReportedData =
@@ -125,12 +122,6 @@ const Vessel = () => {
     ],
     [t, updateAreaLayersVisibility, hasEventsDataset]
   )
-
-  useEffect(() => {
-    if (Object.values(regionsDatasets).every((d) => d)) {
-      dispatch(fetchRegionsThunk(regionsDatasets))
-    }
-  }, [dispatch, regionsDatasets])
 
   useEffect(() => {
     const fetchVesselProfileAreaDatasets = async () => {

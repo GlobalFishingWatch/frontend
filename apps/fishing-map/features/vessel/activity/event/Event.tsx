@@ -1,25 +1,28 @@
 import React from 'react'
 import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { ApiEvent } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import EventIcon from 'features/vessel/activity/event/EventIcon'
 import ActivityDate from './ActivityDate'
 import { useActivityEventTranslations } from './event.hook'
 import styles from './Event.module.css'
 
+type VesselEvent = ActivityEvent | ApiEvent
+
 interface EventProps {
   className?: string
-  event: ActivityEvent
+  event: VesselEvent
   children?: React.ReactNode
-  onInfoClick?: (event: ActivityEvent) => void
-  onMapClick?: (event: ActivityEvent) => void
-  onMapHover?: (event?: ActivityEvent) => void
+  onInfoClick?: (event: VesselEvent) => void
+  onMapClick?: (event: VesselEvent) => void
+  onMapHover?: (event?: VesselEvent) => void
   testId?: string
 }
 
 export const EVENT_HEIGHT = 56
 
-const Event: React.FC<EventProps> = (props): React.ReactElement => {
+const VesselEvent: React.FC<EventProps> = (props): React.ReactElement => {
   const { event, children, className = '', onInfoClick, onMapHover, onMapClick, testId } = props
   const { getEventDescription } = useActivityEventTranslations()
   return (
@@ -32,8 +35,10 @@ const Event: React.FC<EventProps> = (props): React.ReactElement => {
       >
         <EventIcon type={event.type} />
         <div className={styles.eventData}>
-          <ActivityDate event={event} />
-          <p className={styles.description}>{getEventDescription(event) as string}</p>
+          <ActivityDate event={event as ActivityEvent} />
+          <p className={styles.description}>
+            {getEventDescription(event as ActivityEvent) as string}
+          </p>
         </div>
         <div className={cx(styles.actions, 'print-hidden')}>
           {onInfoClick && <IconButton icon="info" size="small"></IconButton>}
@@ -47,4 +52,4 @@ const Event: React.FC<EventProps> = (props): React.ReactElement => {
   )
 }
 
-export default Event
+export default VesselEvent

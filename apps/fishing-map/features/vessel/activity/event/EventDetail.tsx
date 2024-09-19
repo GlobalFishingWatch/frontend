@@ -9,9 +9,10 @@ import { useActivityEventTranslations } from 'features/vessel/activity/event/eve
 import { VesselRenderField } from 'features/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
 import styles from './Event.module.css'
+import VesselEvent from './Event'
 
 interface ActivityContentProps {
-  event: ActivityEvent
+  event: VesselEvent
 }
 
 const BASE_FIELDS = [
@@ -88,7 +89,7 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
   return (
     <ul className={styles.detailContainer}>
       {fields.map((field) => {
-        const value = getEventFieldValue(event, field)
+        const value = getEventFieldValue(event as ActivityEvent, field)
         if (!value) return null
         return (
           <li key={field.key} className={styles.detail}>

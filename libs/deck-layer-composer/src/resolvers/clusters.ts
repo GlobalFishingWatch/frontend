@@ -72,6 +72,9 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
             extentEnd,
           }),
         },
+        ...(dataview.config?.['vessel-groups']
+          ? [{ id: 'vessel-groups', value: dataview.config?.['vessel-groups'] }]
+          : []),
       ],
       (p) => p.id
     ),

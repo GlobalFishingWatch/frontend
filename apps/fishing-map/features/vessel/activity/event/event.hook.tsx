@@ -1,5 +1,6 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { getUTCDateTime } from 'utils/dates'
@@ -8,9 +9,23 @@ import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import VesselLink from 'features/vessel/VesselLink'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
+import { selectRegionsDatasets } from 'features/regions/regions.selectors'
+import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './Event.module.css'
 
+export function useFetchRegionsData() {
+  const dispatch = useAppDispatch()
+  const regionsDatasets = useSelector(selectRegionsDatasets)
+  useEffect(() => {
+    if (Object.values(regionsDatasets).every((d) => d)) {
+      dispatch(fetchRegionsThunk(regionsDatasets))
+    }
+  }, [dispatch, regionsDatasets])
+}
+
 export function useActivityEventTranslations() {
+  useFetchRegionsData()
   const { t } = useTranslation()
   const { getRegionNamesByType } = useRegionNamesByType()
 

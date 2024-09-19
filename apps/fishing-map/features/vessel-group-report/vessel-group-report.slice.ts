@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
@@ -30,7 +31,8 @@ export const fetchVesselGroupReportThunk = createAsyncThunk(
     try {
       const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
       const vesselGroupVessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(
-        `/vessels?vessel-groups[0]=${vesselGroupId}`
+        `/vessels?${stringify({ 'vessel-groups': [vesselGroupId] })}`,
+        { cache: 'reload' }
       )
       return {
         ...vesselGroup,
@@ -86,13 +88,12 @@ const vesselGroupReportSlice = createSlice({
 
 export const { resetReportData } = vesselGroupReportSlice.actions
 
-export const selectVesselGroupReportStatus = (state: VesselGroupReportSliceState) =>
+export const selectVGRStatus = (state: VesselGroupReportSliceState) =>
   state.vesselGroupReport.status
-export const selectVesselGroupReportError = (state: VesselGroupReportSliceState) =>
-  state.vesselGroupReport.error
-export const selectVesselGroupReportData = (state: VesselGroupReportSliceState) =>
+export const selectVGRError = (state: VesselGroupReportSliceState) => state.vesselGroupReport.error
+export const selectVGRData = (state: VesselGroupReportSliceState) =>
   state.vesselGroupReport.vesselGroup
-export const selectVesselGroupReportVessels = (state: VesselGroupReportSliceState) =>
+export const selectVGRVessels = (state: VesselGroupReportSliceState) =>
   state.vesselGroupReport.vesselGroup?.vessels
 
 export default vesselGroupReportSlice.reducer

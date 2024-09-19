@@ -226,12 +226,6 @@ export const selectActiveVesselGroupDataviews = createSelector(
   (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectVesselGroupReportDataview = createSelector(
-  [selectActiveVesselGroupDataviews, selectReportVesselGroupId],
-  (dataviews, reportVesselGroupId): UrlDataviewInstance | undefined =>
-    dataviews?.find(({ vesselGroup }) => vesselGroup?.id === reportVesselGroupId)
-)
-
 export const selectDetectionsMergedDataviewId = createSelector(
   [selectActiveDetectionsDataviews],
   (dataviews): string => {

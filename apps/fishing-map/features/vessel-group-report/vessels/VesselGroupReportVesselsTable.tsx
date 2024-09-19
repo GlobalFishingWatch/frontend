@@ -15,35 +15,35 @@ import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
-  selectVesselGroupReportVesselsOrderDirection,
-  selectVesselGroupReportVesselsOrderProperty,
+  selectVGRVesselsOrderDirection,
+  selectVGRVesselsOrderProperty,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
-import { selectVesselGroupReportVessels } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRVessels } from 'features/vessel-group-report/vessel-group-report.slice'
 import {
   VesselGroupReportVesselsOrderProperty,
   VesselGroupReportVesselsOrderDirection,
 } from 'features/vessel-groups/vessel-groups.types'
 import styles from './VesselGroupReportVesselsTable.module.css'
-import { selectVesselGroupReportVesselsPaginated } from './vessel-group-report-vessels.selectors'
+import { selectVGRVesselsPaginated } from './vessel-group-report-vessels.selectors'
 import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTableFooter'
 
 export default function VesselGroupReportVesselsTable() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const vesselsRaw = useSelector(selectVesselGroupReportVessels)
-  const vessels = useSelector(selectVesselGroupReportVesselsPaginated)
+  const vesselsRaw = useSelector(selectVGRVessels)
+  const vessels = useSelector(selectVGRVesselsPaginated)
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const orderProperty = useSelector(selectVesselGroupReportVesselsOrderProperty)
-  const orderDirection = useSelector(selectVesselGroupReportVesselsOrderDirection)
+  const orderProperty = useSelector(selectVGRVesselsOrderProperty)
+  const orderDirection = useSelector(selectVGRVesselsOrderDirection)
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
     userData?.permissions || []
   )
 
-  const onFilterClick = (vesselGroupReportVesselFilter: any) => {
-    dispatchQueryParams({ vesselGroupReportVesselFilter, vesselGroupReportVesselPage: 0 })
+  const onFilterClick = (vGRVesselFilter: any) => {
+    dispatchQueryParams({ vGRVesselFilter, vGRVesselPage: 0 })
   }
 
   const onPinClick = () => {
@@ -55,8 +55,8 @@ export default function VesselGroupReportVesselsTable() {
     direction: VesselGroupReportVesselsOrderDirection
   ) => {
     dispatchQueryParams({
-      vesselGroupReportVesselsOrderProperty: property,
-      vesselGroupReportVesselsOrderDirection: direction,
+      vGRVesselsOrderProperty: property,
+      vGRVesselsOrderDirection: direction,
     })
   }
 
