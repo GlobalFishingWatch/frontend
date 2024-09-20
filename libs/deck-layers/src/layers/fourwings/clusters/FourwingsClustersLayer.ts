@@ -17,6 +17,7 @@ import { ScalePower, scaleSqrt } from 'd3-scale'
 import { max } from 'simple-statistics'
 import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
+import { FourwingsGeolocation } from '@globalfishingwatch/api-types'
 import { PATH_BASENAME } from '../../layers.config'
 import {
   DEFAULT_BACKGROUND_COLOR,
@@ -41,6 +42,8 @@ import {
   FourwingsPointFeature,
 } from './fourwings-clusters.types'
 
+type ClusterMode = FourwingsGeolocation | 'positions'
+
 type FourwingsClustersTileLayerState = {
   error: string
   clusterIndex: Supercluster
@@ -52,15 +55,26 @@ type FourwingsClustersTileLayerState = {
 
 const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
   tilesUrl: HEATMAP_API_TILES_URL,
+  clusterMaxZoomLevels: {
+    default: MAX_ZOOM_TO_CLUSTER_POINTS,
+  },
 }
 
-const ICON_SIZE = 16
+const GEOLOCATION_PRIORITY: FourwingsGeolocation[] = ['country', 'port', 'default']
+
+const ICON_SIZE: Record<FourwingsClusterEventType, number> = {
+  encounter: 16,
+  loitering: 16,
+  gap: 14,
+  port_visit: 12,
+}
 const MIN_CLUSTER_RADIUS = 12
 const MAX_CLUSTER_RADIUS = 30
 const ICON_MAPPING: Record<FourwingsClusterEventType, any> = {
   encounter: { x: 0, y: 0, width: 36, height: 36 },
   gap: { x: 40, y: 0, width: 36, height: 36, mask: true },
   port_visit: { x: 80, y: 0, width: 36, height: 36 },
+  loitering: { x: 120, y: 0, width: 36, height: 36 },
 }
 
 const CLUSTER_LAYER_ID = 'clusters'
@@ -77,8 +91,19 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return super.isLoaded && this.state.viewportLoaded
   }
 
-  get isInPositionsMode(): boolean {
-    return this.context.viewport.zoom > MAX_ZOOM_TO_CLUSTER_POINTS
+  get clusterMode(): ClusterMode {
+    const { clusterMaxZoomLevels } = this.props
+    let clusterMode: ClusterMode = 'positions'
+    for (const geolocation of GEOLOCATION_PRIORITY) {
+      if (
+        clusterMaxZoomLevels?.[geolocation] !== undefined &&
+        Math.floor(this.context.viewport.zoom) <= clusterMaxZoomLevels[geolocation]
+      ) {
+        clusterMode = geolocation
+        break
+      }
+    }
+    return clusterMode
   }
 
   getError(): string {
@@ -92,7 +117,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 70,
-        maxZoom: Math.floor(MAX_ZOOM_TO_CLUSTER_POINTS),
+        maxZoom: Math.floor(this.props.clusterMaxZoomLevels?.default || MAX_ZOOM_TO_CLUSTER_POINTS),
         reduce: (accumulated, props) => {
           accumulated.count += props.count
         },
@@ -122,7 +147,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     const object = {
       ...(info.object || ({} as FourwingsClusterFeature)),
       id: info.object?.properties.id || `${(info.object?.geometry?.coordinates || []).join('-')}`,
-      ...(this.isInPositionsMode &&
+      ...(this.clusterMode === 'positions' &&
         info.object?.properties.id && {
           eventId: info.object?.properties.id,
         }),
@@ -141,7 +166,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
     const { zoom } = this.context.viewport
-    if (this.isInPositionsMode) {
+    if (this.clusterMode === 'positions') {
       const points = tiles.flatMap((tile) => {
         return tile.content
           ? tile.content.map((feature: any) =>
@@ -286,11 +311,13 @@ export class FourwingsClustersLayer extends CompositeLayer<
       return null
     }
     let url = getURLFromTemplate(tile.url!, tile)
-    if (this.isInPositionsMode) {
+    if (this.clusterMode === 'positions') {
       url = url?.replace('{{type}}', 'position').concat(`&format=MVT`)
       return this._fetchPositions(url!, { signal: tile.signal })
     }
-    url = url?.replace('{{type}}', 'heatmap').concat(`&format=4WINGS&temporal-aggregation=true`)
+    url = url
+      ?.replace('{{type}}', 'heatmap')
+      .concat(`&format=4WINGS&temporal-aggregation=true&geolocation=${this.clusterMode}`)
     return this._fetchClusters(url!, { signal: tile.signal, tile })
   }
 
@@ -313,7 +340,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   filterSubLayer({ layer }: FilterContext) {
-    if (this.isInPositionsMode) {
+    if (this.clusterMode === 'positions') {
       return !layer.id.includes(CLUSTER_LAYER_ID)
     } else {
       return true
@@ -321,7 +348,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList | null {
-    const { color, tilesUrl } = this.props
+    const { color, tilesUrl, eventType = 'encounter' } = this.props
     const { clusters, points, radiusScale } = this.state
     return [
       new TileLayer<FourwingsPointFeature, any>(this.props, {
@@ -339,11 +366,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
         id: `${this.props.id}-${POINTS_LAYER_ID}-icons`,
         data: points,
         getPosition: this._getPosition,
-        getSize: ICON_SIZE,
+        getSize: ICON_SIZE[eventType],
         sizeUnits: 'pixels',
         iconAtlas: `${PATH_BASENAME}/events-color-sprite.png`,
         iconMapping: ICON_MAPPING,
-        getIcon: () => 'encounter',
+        getIcon: () => eventType,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         pickable: true,
       }),
