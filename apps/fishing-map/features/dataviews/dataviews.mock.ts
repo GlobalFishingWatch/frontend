@@ -1,5 +1,9 @@
 import { Dataview, DataviewType, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
-import { CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
+import {
+  CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+} from 'data/workspaces'
 
 const dataviews: Dataview[] = [
   {
@@ -10,6 +14,8 @@ const dataviews: Dataview[] = [
     config: {
       type: 'FOURWINGS_TILE_CLUSTER',
       color: '#FAE9A0',
+      icon: 'encounter',
+      maxZoomCluster: 6,
     },
     datasetsConfig: [
       {
@@ -22,6 +28,57 @@ const dataviews: Dataview[] = [
       },
     ],
     description: 'Encounter cluster events',
+    createdAt: '2024-05-16T08:21:11.723Z',
+    updatedAt: '2024-05-16T08:21:11.723Z',
+    category: DataviewCategory.Events,
+  },
+  {
+    id: 22222222,
+    name: 'Loitering cluster events pipe 3',
+    slug: CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+    app: 'fishing-map',
+    config: {
+      type: 'FOURWINGS_TILE_CLUSTER',
+      color: '#CEA9F9',
+      icon: 'loitering',
+      maxZoomCluster: 6,
+    },
+    datasetsConfig: [
+      {
+        filters: {},
+        params: [],
+        endpoint: 'events-cluster-tiles',
+        datasetId: 'public-global-loitering-events:v3.0',
+      },
+    ],
+    description: 'Loitering cluster events',
+    createdAt: '2024-05-16T08:21:11.723Z',
+    updatedAt: '2024-05-16T08:21:11.723Z',
+    category: DataviewCategory.Events,
+  },
+  {
+    id: 33333333,
+    name: 'Port visits cluster events pipe 3',
+    slug: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+    app: 'fishing-map',
+    config: {
+      type: 'FOURWINGS_TILE_CLUSTER',
+      color: '#9AEEFF',
+      icon: 'port_visit',
+      maxCountryZoomCluster: 4,
+      maxZoomCluster: 8,
+    },
+    datasetsConfig: [
+      {
+        params: [],
+        filters: {
+          confidence: 2,
+        },
+        endpoint: 'events-cluster-tiles',
+        datasetId: 'public-global-port-visits-events:v3.0',
+      },
+    ],
+    description: 'Por visit cluster events',
     createdAt: '2024-05-16T08:21:11.723Z',
     updatedAt: '2024-05-16T08:21:11.723Z',
     category: DataviewCategory.Events,

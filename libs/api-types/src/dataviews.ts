@@ -96,7 +96,9 @@ export interface DataviewConfig<Type = DataviewType> {
   locale?: Locale
   dynamicBreaks?: boolean
   maxZoom?: number
+  maxCountryZoomCluster?: number
   maxZoomCluster?: number
+  icon?: string
   layers?: DataviewContexLayerConfig[]
   /** Legacy for duplicated events in the API */
   duplicatedEventsWorkaround?: boolean

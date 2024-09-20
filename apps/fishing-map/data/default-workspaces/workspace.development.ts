@@ -21,8 +21,14 @@ import {
   BASEMAP_DATAVIEW_INSTANCE_ID,
   FIXED_SAR_INFRASTRUCTURE,
   DEFAULT_WORKSPACE_CATEGORY,
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import {
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  LOITERING_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
+} from 'features/dataviews/dataviews.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
@@ -103,6 +109,20 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: ENCOUNTER_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
+    },
+    {
+      id: LOITERING_EVENTS_SOURCE_ID,
+      dataviewId: CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
+    },
+    {
+      id: PORT_VISITS_EVENTS_SOURCE_ID,
+      dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
       config: {
         visible: false,
       },
