@@ -48,8 +48,13 @@ import {
 } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { ReportCategory } from 'features/area-report/reports.types'
 import { selectReportCategorySelector } from 'features/area-report/reports.config.selectors'
-import { VGRSection, VGRSubsection } from 'features/vessel-groups/vessel-groups.types'
+import {
+  VGREventsSubsection,
+  VGRSection,
+  VGRSubsection,
+} from 'features/vessel-groups/vessel-groups.types'
 import { selectVGRSubsection } from 'features/vessel-group-report/vessel-group-report.selectors'
+import { DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS } from 'features/vessel-group-report/vessel-group-report.dataviews'
 import {
   selectContextAreasDataviews,
   selectActivityDataviews,
@@ -149,12 +154,13 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     }
 
     if (isVesselGroupReportLocation && viewOnlyVesselGroup && reportVesselGroupId !== undefined) {
-      return getReportVesselGroupVisibleDataviews({
+      const dataviewsVisible = getReportVesselGroupVisibleDataviews({
         dataviews,
         reportVesselGroupId,
         vesselGroupReportSection: vGRSection,
         vesselGroupReportSubSection: vGRSubsection,
       })
+      return dataviewsVisible
     }
 
     return dataviews.filter((dataview) => dataview.config?.visible)
@@ -173,17 +179,14 @@ function getReportVesselGroupVisibleDataviews({
   vesselGroupReportSection,
   vesselGroupReportSubSection,
 }: GetReportVesselGroupVisibleDataviewsParams) {
-  return dataviews.filter(({ category, datasets, config }) => {
+  return dataviews.filter(({ id, category, config }) => {
     if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
       return config?.visible
     }
     if (vesselGroupReportSection === 'events') {
-      const subcategory = datasets?.find((d) => d.type === DatasetTypes.Events)?.subcategory
-      return (
-        category === DataviewCategory.Events &&
-        config?.filters?.['vessel-groups'].includes(reportVesselGroupId) &&
-        subcategory === vesselGroupReportSubSection
-      )
+      const dataviewIdBySubSection =
+        DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS[vesselGroupReportSubSection as VGREventsSubsection]
+      return id.toString() === dataviewIdBySubSection
     }
     return (
       category === DataviewCategory.VesselGroups &&

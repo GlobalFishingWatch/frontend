@@ -26,10 +26,7 @@ import {
 } from 'features/timebar/timebar-vessel.hooks'
 import { getVesselShipNameLabel } from 'utils/info'
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
-import {
-  getVesselGroupDataviewInstance,
-  VESSEL_DATAVIEW_INSTANCE_PREFIX,
-} from 'features/dataviews/dataviews.utils'
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
@@ -41,6 +38,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getVesselGroupDataviewInstance } from 'features/vessel-group-report/vessel-group-report.dataviews'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'

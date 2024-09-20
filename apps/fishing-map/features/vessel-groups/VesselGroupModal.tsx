@@ -36,8 +36,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getVesselId } from 'features/vessel/vessel.utils'
 import { ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
-import { getVesselGroupDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { getVesselGroupDataviewInstance } from 'features/vessel-group-report/vessel-group-report.dataviews'
 import {
   IdField,
   resetVesselGroup,

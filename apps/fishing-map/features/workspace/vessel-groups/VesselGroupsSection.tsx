@@ -8,7 +8,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import VesselGroupListTooltip from 'features/vessel-groups/VesselGroupListTooltip'
-import { getVesselGroupDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -19,6 +18,7 @@ import {
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getVesselGroupDataviewInstance } from 'features/vessel-group-report/vessel-group-report.dataviews'
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
 function VesselGroupSection(): React.ReactElement {

@@ -22,7 +22,6 @@ import {
   dataviewHasVesselGroupId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
-  getVesselGroupDataviewInstance,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
@@ -49,6 +48,10 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  getVesselGroupDataviewInstance,
+  getVesselGroupEncountersDataviewInstance,
+} from 'features/vessel-group-report/vessel-group-report.dataviews'
 
 const EMPTY_ARRAY: [] = []
 
@@ -125,6 +128,12 @@ export const selectDataviewInstancesMerged = createSelector(
           mergedDataviewInstances.push(dataviewInstance)
         }
       }
+      const encountersDataviewInstance =
+        getVesselGroupEncountersDataviewInstance(reportVesselGroupId)
+      if (encountersDataviewInstance) {
+        mergedDataviewInstances.push(encountersDataviewInstance)
+      }
+      // TODO insert here the port events/activity dataview instance
     }
     return mergedDataviewInstances
   }
