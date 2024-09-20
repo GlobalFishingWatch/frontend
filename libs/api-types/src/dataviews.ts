@@ -51,6 +51,10 @@ export type DataviewSublayerConfig = {
   maxZoom?: number
 }
 
+export type FourwingsGeolocation = 'country' | 'port' | 'default'
+
+export type ClusterMaxZoomLevelConfig = Partial<Record<FourwingsGeolocation, number>>
+
 export interface DataviewConfig<Type = DataviewType> {
   /** Type to define what kind of layer to render, ex: fourwings, context, draw... */
   type?: Type
@@ -96,7 +100,7 @@ export interface DataviewConfig<Type = DataviewType> {
   locale?: Locale
   dynamicBreaks?: boolean
   maxZoom?: number
-  maxCountryZoomCluster?: number
+  clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
   maxZoomCluster?: number
   icon?: string
   layers?: DataviewContexLayerConfig[]

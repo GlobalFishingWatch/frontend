@@ -17,6 +17,7 @@ import { ScalePower, scaleSqrt } from 'd3-scale'
 import { max } from 'simple-statistics'
 import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
+import { FourwingsGeolocation } from '@globalfishingwatch/api-types'
 import { PATH_BASENAME } from '../../layers.config'
 import {
   DEFAULT_BACKGROUND_COLOR,
@@ -41,7 +42,7 @@ import {
   FourwingsPointFeature,
 } from './fourwings-clusters.types'
 
-type ClusterMode = 'positions' | 'country' | 'proximity'
+type ClusterMode = FourwingsGeolocation | 'positions'
 
 type FourwingsClustersTileLayerState = {
   error: string
@@ -54,7 +55,12 @@ type FourwingsClustersTileLayerState = {
 
 const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
   tilesUrl: HEATMAP_API_TILES_URL,
+  clusterMaxZoomLevels: {
+    default: MAX_ZOOM_TO_CLUSTER_POINTS,
+  },
 }
+
+const GEOLOCATION_PRIORITY: FourwingsGeolocation[] = ['country', 'port', 'default']
 
 const ICON_SIZE: Record<FourwingsClusterEventType, number> = {
   encounter: 16,
@@ -86,24 +92,18 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   get clusterMode(): ClusterMode {
-    if (
-      this.props.maxCountryClusterZoom !== undefined &&
-      this.context.viewport.zoom <= this.props.maxCountryClusterZoom + 0.5
-    ) {
-      console.log('country')
-
-      return 'country'
+    const { clusterMaxZoomLevels } = this.props
+    let clusterMode: ClusterMode = 'positions'
+    for (const geolocation of GEOLOCATION_PRIORITY) {
+      if (
+        clusterMaxZoomLevels?.[geolocation] !== undefined &&
+        Math.floor(this.context.viewport.zoom) <= clusterMaxZoomLevels[geolocation]
+      ) {
+        clusterMode = geolocation
+        break
+      }
     }
-    if (
-      this.props.maxProximityClusterZoom !== undefined &&
-      this.context.viewport.zoom <=
-        (this.props.maxProximityClusterZoom || MAX_ZOOM_TO_CLUSTER_POINTS) + 0.5
-    ) {
-      console.log('proximity')
-      return 'proximity'
-    }
-    console.log('positions')
-    return 'positions'
+    return clusterMode
   }
 
   getError(): string {
@@ -117,7 +117,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 70,
-        maxZoom: Math.floor(this.props.maxProximityClusterZoom || MAX_ZOOM_TO_CLUSTER_POINTS),
+        maxZoom: Math.floor(this.props.clusterMaxZoomLevels?.default || MAX_ZOOM_TO_CLUSTER_POINTS),
         reduce: (accumulated, props) => {
           accumulated.count += props.count
         },
@@ -311,13 +311,14 @@ export class FourwingsClustersLayer extends CompositeLayer<
       return null
     }
     let url = getURLFromTemplate(tile.url!, tile)
-    if (this.isInPositionsMode) {
+    if (this.clusterMode === 'positions') {
       url = url?.replace('{{type}}', 'position').concat(`&format=MVT`)
       return this._fetchPositions(url!, { signal: tile.signal })
     }
-    // this.clusterMode === 'positions'
-    url = url?.replace('{{type}}', 'position').concat(`&format=MVT`)
-    return this._fetchPositions(url!, { signal: tile.signal })
+    url = url
+      ?.replace('{{type}}', 'heatmap')
+      .concat(`&format=4WINGS&temporal-aggregation=true&geolocation=${this.clusterMode}`)
+    return this._fetchClusters(url!, { signal: tile.signal, tile })
   }
 
   _getPosition = (d: FourwingsClusterFeature) => {
@@ -347,7 +348,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList | null {
-    const { color, tilesUrl, icon = 'encounter' } = this.props
+    const { color, tilesUrl, eventType = 'encounter' } = this.props
     const { clusters, points, radiusScale } = this.state
     return [
       new TileLayer<FourwingsPointFeature, any>(this.props, {
@@ -365,11 +366,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
         id: `${this.props.id}-${POINTS_LAYER_ID}-icons`,
         data: points,
         getPosition: this._getPosition,
-        getSize: ICON_SIZE[icon],
+        getSize: ICON_SIZE[eventType],
         sizeUnits: 'pixels',
         iconAtlas: `${PATH_BASENAME}/events-color-sprite.png`,
         iconMapping: ICON_MAPPING,
-        getIcon: () => icon,
+        getIcon: () => eventType,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         pickable: true,
       }),

@@ -14,8 +14,9 @@ const dataviews: Dataview[] = [
     config: {
       type: 'FOURWINGS_TILE_CLUSTER',
       color: '#FAE9A0',
-      icon: 'encounter',
-      maxZoomCluster: 6,
+      clusterMaxZoomLevels: {
+        default: 6,
+      },
     },
     datasetsConfig: [
       {
@@ -40,8 +41,9 @@ const dataviews: Dataview[] = [
     config: {
       type: 'FOURWINGS_TILE_CLUSTER',
       color: '#CEA9F9',
-      icon: 'loitering',
-      maxZoomCluster: 6,
+      clusterMaxZoomLevels: {
+        default: 6,
+      },
     },
     datasetsConfig: [
       {
@@ -64,9 +66,11 @@ const dataviews: Dataview[] = [
     config: {
       type: 'FOURWINGS_TILE_CLUSTER',
       color: '#9AEEFF',
-      icon: 'port_visit',
-      maxCountryZoomCluster: 4,
-      maxZoomCluster: 8,
+      clusterMaxZoomLevels: {
+        country: 3,
+        // port: 6,
+        default: 8,
+      },
     },
     datasetsConfig: [
       {
