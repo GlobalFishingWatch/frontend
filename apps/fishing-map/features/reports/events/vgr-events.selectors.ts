@@ -4,7 +4,7 @@ import {
   selectVesselGroupEventsVessels,
   VesselGroupEventsVesselsParams,
 } from 'queries/vessel-group-events-stats-api'
-import { selectVGRData } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { getSearchIdentityResolved, getVesselId } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
@@ -12,10 +12,10 @@ import {
   selectVGREventsResultsPerPage,
   selectVGREventsVesselFilter,
   selectVGREventsVesselPage,
-} from 'features/vessel-group-report/vessel-group.config.selectors'
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { getVesselsFiltered } from 'features/area-report/reports.utils'
-import { REPORT_FILTER_PROPERTIES } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
-import { selectVGREventsSubsectionDataview } from '../vessel-group-report.selectors'
+import { REPORT_FILTER_PROPERTIES } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],

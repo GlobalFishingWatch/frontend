@@ -21,7 +21,7 @@ import {
 import { Bbox, BufferOperation, BufferUnit } from 'types'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
-import { VesselGroupReportVesselParsed } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.types'
+import { VesselGroupReportVesselParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.types'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,

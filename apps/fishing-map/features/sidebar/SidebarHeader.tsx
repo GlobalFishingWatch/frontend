@@ -66,7 +66,7 @@ import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { useHighlightReportArea } from 'features/area-report/reports.hooks'
-import { resetVesselGroupReportData } from 'features/vessel-group-report/vessel-group-report.slice'
+import { resetVesselGroupReportData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 

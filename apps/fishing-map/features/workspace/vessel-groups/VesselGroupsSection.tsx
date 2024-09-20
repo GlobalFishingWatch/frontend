@@ -18,7 +18,7 @@ import {
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { getVesselGroupDataviewInstance } from 'features/vessel-group-report/vessel-group-report.dataviews'
+import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
 function VesselGroupSection(): React.ReactElement {

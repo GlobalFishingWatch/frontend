@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectVGRStatus } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRStatus } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { VGRVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
-import { selectVGRVesselsSubsection } from '../vessel-group.config.selectors'
+import { selectVGRVesselsSubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 
 type VesselGroupReportVesselsGraphSelectorProps = {}
 

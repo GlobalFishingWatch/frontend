@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VGREventsVesselsProperty } from 'features/vessel-groups/vessel-groups.types'
-import { selectVGREventsVesselsProperty } from '../vessel-group.config.selectors'
+import { selectVGREventsVesselsProperty } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 
 function VesselGroupReportEventsVesselPropertySelector() {
   const { t } = useTranslation()

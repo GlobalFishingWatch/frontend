@@ -17,8 +17,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,
-} from 'features/vessel-group-report/vessel-group.config.selectors'
-import { selectVGRVessels } from 'features/vessel-group-report/vessel-group-report.slice'
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { selectVGRVessels } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import {
   VGRVesselsOrderProperty,
   VGRVesselsOrderDirection,

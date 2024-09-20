@@ -10,9 +10,9 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVGRData } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { formatInfoField } from 'utils/info'
-import { selectVGRVesselFilter } from '../vessel-group.config.selectors'
+import { selectVGRVesselFilter } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import styles from './VesselGroupReportVesselsTableFooter.module.css'
 import {
   selectVGRVesselsFiltered,

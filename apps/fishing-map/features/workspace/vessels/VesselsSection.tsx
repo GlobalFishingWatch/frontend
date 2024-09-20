@@ -38,7 +38,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getVesselGroupDataviewInstance } from 'features/vessel-group-report/vessel-group-report.dataviews'
+import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'

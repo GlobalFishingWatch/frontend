@@ -12,7 +12,7 @@ import {
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
-import VGREvents from 'features/vessel-group-report/events/VGREvents'
+import VGREvents from 'features/reports/events/VGREvents'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'

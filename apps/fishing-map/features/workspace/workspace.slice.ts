@@ -54,7 +54,7 @@ import { LIBRARY_LAYERS } from 'data/layer-library'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { DEFAULT_AREA_REPORT_STATE } from 'features/area-report/reports.config'
-import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/vessel-group-report/vessel-group-report.config'
+import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import {
   selectCurrentWorkspaceId,

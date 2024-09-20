@@ -10,7 +10,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { formatInfoField } from 'utils/info'
-import VesselGroupReportLink from 'features/vessel-group-report/VesselGroupReportLink'
+import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setNewVesselGroupSearchVessels,

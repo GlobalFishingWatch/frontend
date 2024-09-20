@@ -8,22 +8,22 @@ import {
 } from 'queries/vessel-group-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import VGREventsSubsectionSelector from 'features/vessel-group-report/events/VGREventsSubsectionSelector'
-import VGREventsGraph from 'features/vessel-group-report/events/VGREventsGraph'
+import VGREventsSubsectionSelector from 'features/reports/events/VGREventsSubsectionSelector'
+import VGREventsGraph from 'features/reports/events/VGREventsGraph'
 import {
   selectVGREventsVesselFilter,
   selectVGREventsVesselsProperty,
-} from 'features/vessel-group-report/vessel-group.config.selectors'
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import VesselGroupReportVesselsGraph from 'features/vessel-group-report/vessels/VesselGroupReportVesselsGraph'
+import VesselGroupReportVesselsGraph from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsGraph'
+import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import VGREventsVesselPropertySelector from 'features/vessel-group-report/events/VGREventsVesselPropertySelector'
-import VGREventsVesselsTable from 'features/vessel-group-report/events/VGREventsVesselsTable'
+import VGREventsVesselPropertySelector from 'features/reports/events/VGREventsVesselPropertySelector'
+import VGREventsVesselsTable from 'features/reports/events/VGREventsVesselsTable'
 import ReportVesselsFilter from 'features/area-report/vessels/ReportVesselsFilter'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from '../vessel-group-report.dataviews'
-import { selectVGREventsSubsectionDataview } from '../vessel-group-report.selectors'
+import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import styles from './VGREvents.module.css'
 
 function VGREvents() {

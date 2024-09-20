@@ -1,13 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
 import { IdentityVessel } from '@globalfishingwatch/api-types'
-import { OTHER_CATEGORY_LABEL } from 'features/vessel-group-report/vessel-group-report.config'
+import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import {
   selectVGRVesselsResultsPerPage,
   selectVGRVesselFilter,
   selectVGRVesselPage,
-} from 'features/vessel-group-report/vessel-group.config.selectors'
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 import { cleanFlagState } from 'features/area-report/reports.selectors'
 import { t } from 'features/i18n/i18n'
@@ -20,7 +20,7 @@ import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,
   selectVGRVesselsSubsection,
-} from '../vessel-group.config.selectors'
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { selectVGRVessels } from '../vessel-group-report.slice'
 import { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
 

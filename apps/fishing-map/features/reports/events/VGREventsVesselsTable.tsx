@@ -15,9 +15,9 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectFetchVGREventsVesselsParams,
   selectVGREventsVesselsPaginated,
-} from 'features/vessel-group-report/events/vgr-events.selectors'
-import VGREventsVesselsTableFooter from 'features/vessel-group-report/events/VGREventsVesselsTableFooter'
-import styles from '../vessels/VesselGroupReportVesselsTable.module.css'
+} from 'features/reports/events/vgr-events.selectors'
+import VGREventsVesselsTableFooter from 'features/reports/events/VGREventsVesselsTableFooter'
+import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTable.module.css'
 
 export default function VesselGroupReportEventsVesselsTable() {
   const { t } = useTranslation()

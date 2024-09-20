@@ -51,7 +51,7 @@ import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slic
 import {
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
-} from 'features/vessel-group-report/vessel-group-report.dataviews'
+} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 
 const EMPTY_ARRAY: [] = []
 

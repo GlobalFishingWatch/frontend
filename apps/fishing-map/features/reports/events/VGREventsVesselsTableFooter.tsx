@@ -9,14 +9,14 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { selectVGRData } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { formatInfoField } from 'utils/info'
 import {
   selectVGREventsVessels,
   selectVGREventsVesselsPagination,
-} from 'features/vessel-group-report/events/vgr-events.selectors'
-import { selectVGREventsVesselFilter } from '../vessel-group.config.selectors'
-import styles from '../vessels/VesselGroupReportVesselsTableFooter.module.css'
+} from 'features/reports/events/vgr-events.selectors'
+import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTableFooter.module.css'
+import { selectVGREventsVesselFilter } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 
 export default function VesselGroupReportVesselsTableFooter() {
   const { t } = useTranslation()

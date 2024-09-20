@@ -3,14 +3,18 @@ import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import ReportVesselsFilter from 'features/area-report/vessels/ReportVesselsFilter'
-import { selectVGRVessels } from 'features/vessel-group-report/vessel-group-report.slice'
+import { selectVGRVessels } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import {
   selectVGRVesselsFlags,
   selectVGRVesselsGraphDataGrouped,
   selectVGRVesselsTimeRange,
-} from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
+} from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectVGRVesselFilter, selectVGRVesselsSubsection } from '../vessel-group.config.selectors'
+import {} from 'features/reports/vessel-groups/vessel-group-report.selectors'
+import {
+  selectVGRVesselFilter,
+  selectVGRVesselsSubsection,
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { selectVGRDataview } from '../vessel-group-report.selectors'
 import VesselGroupReportVesselsGraphSelector from './VesselGroupReportVesselsGraphSelector'
 import VesselGroupReportVesselsGraph, {
