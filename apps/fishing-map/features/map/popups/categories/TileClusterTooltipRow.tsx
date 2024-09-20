@@ -13,6 +13,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/vessel-group-report/vessel-group-report.dataviews'
 import { useMapViewState } from '../../map-viewport.hooks'
 import {
   ExtendedEventVessel,
@@ -169,6 +170,19 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
   )
 }
 
+function TileClusterEventTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
+  const title = getDatasetLabel({ id: feature.datasetId! })
+  return (
+    <div className={styles.popupSection}>
+      <Icon icon="clusters" style={{ color: feature.color }} />
+      <div className={styles.popupSectionContent}>
+        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        {showFeaturesDetails && feature.properties && <div className={styles.row}>TODO</div>}
+      </div>
+    </div>
+  )
+}
+
 function GenericClusterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
   return (
     <div className={styles.popupSection}>
@@ -201,14 +215,25 @@ type TileContextLayersProps = {
   showFeaturesDetails: boolean
 }
 
+const GFW_CLUSTER_LAYERS = [...ENCOUNTER_EVENTS_SOURCES, ...VESSEL_GROUP_EVENTS_DATAVIEW_IDS]
+
 function TileClusterTooltipRow({ features, showFeaturesDetails }: TileContextLayersProps) {
   return (
     <Fragment>
       {features.map((feature, index) => {
         const key = `${feature.title}-${index}`
-        if (ENCOUNTER_EVENTS_SOURCES.some((source) => feature.layerId === source)) {
+        if (GFW_CLUSTER_LAYERS.some((source) => feature.layerId === source)) {
+          if (feature.layerId.includes('encounter')) {
+            return (
+              <EncounterTooltipRow
+                key={key}
+                feature={feature}
+                showFeaturesDetails={showFeaturesDetails}
+              />
+            )
+          }
           return (
-            <EncounterTooltipRow
+            <TileClusterEventTooltipRow
               key={key}
               feature={feature}
               showFeaturesDetails={showFeaturesDetails}

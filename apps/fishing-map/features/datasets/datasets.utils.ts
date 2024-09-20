@@ -286,7 +286,7 @@ export const getDatasetsInDataviews = (
   return uniq(datasets)
 }
 
-const getVesselGroupInDataview = (
+export const getVesselGroupInDataview = (
   dataview: Dataview | DataviewInstance | UrlDataviewInstance,
   guestUser = false
 ): string[] => {

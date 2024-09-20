@@ -36,7 +36,11 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch } from 'store'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+  getVesselGroupInDataview,
+} from 'features/datasets/datasets.utils'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
@@ -403,6 +407,10 @@ export const fetchClusterEventThunk = createAsyncThunk<
     if (dataview) {
       const filters = getDataviewSqlFiltersResolved(dataview)
       datasetConfig.query?.push({ id: 'filters', value: filters })
+      const vesselGroups = getVesselGroupInDataview(dataview!)
+      if (vesselGroups?.length) {
+        datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
+      }
     }
     const interactionUrl = resolveEndpoint(eventsDataset, datasetConfig)
     if (interactionUrl) {
