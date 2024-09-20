@@ -1,11 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { selectQueryParam } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'routes/routes.selectors'
 import { AreaReportState, AreaReportStateProperty } from './reports.types'
 import { DEFAULT_AREA_REPORT_STATE } from './reports.config'
 
 type AreaReportProperty<P extends AreaReportStateProperty> = Required<AreaReportState>[P]
 function selectAreaReportStateProperty<P extends AreaReportStateProperty>(property: P) {
-  return createSelector([selectQueryParam(property)], (urlProperty): AreaReportProperty<P> => {
+  return createSelector([selectLocationQuery], (locationQuery): AreaReportProperty<P> => {
+    const urlProperty = locationQuery?.[property]
     if (urlProperty !== undefined) return urlProperty
     return DEFAULT_AREA_REPORT_STATE[property] as AreaReportProperty<P>
   })
@@ -22,18 +23,5 @@ export const selectReportBufferUnitSelector = selectAreaReportStateProperty('rep
 export const selectReportBufferOperationSelector =
   selectAreaReportStateProperty('reportBufferOperation')
 
-export const selectReportVesselPage = createSelector(
-  [selectAreaReportStateProperty('reportVesselPage')],
-  (reportVesselPage): number => {
-    return typeof reportVesselPage === 'string' ? parseInt(reportVesselPage) : reportVesselPage
-  }
-)
-
-export const selectReportResultsPerPage = createSelector(
-  [selectAreaReportStateProperty('reportResultsPerPage')],
-  (reportResultsPerPage): number => {
-    return typeof reportResultsPerPage === 'string'
-      ? parseInt(reportResultsPerPage)
-      : reportResultsPerPage
-  }
-)
+export const selectReportVesselPage = selectAreaReportStateProperty('reportVesselPage')
+export const selectReportResultsPerPage = selectAreaReportStateProperty('reportResultsPerPage')

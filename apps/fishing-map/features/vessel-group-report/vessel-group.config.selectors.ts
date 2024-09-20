@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { selectQueryParam } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'routes/routes.selectors'
 import {
   VesselGroupReportState,
   VesselGroupReportStateProperty,
@@ -9,13 +9,11 @@ import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from './vessel-group-report.config'
 type VesselGroupReportProperty<P extends VesselGroupReportStateProperty> =
   Required<VesselGroupReportState>[P]
 function selectVGRStateProperty<P extends VesselGroupReportStateProperty>(property: P) {
-  return createSelector(
-    [selectQueryParam(property)],
-    (urlProperty): VesselGroupReportProperty<P> => {
-      if (urlProperty !== undefined) return urlProperty
-      return DEFAULT_VESSEL_GROUP_REPORT_STATE[property] as VesselGroupReportProperty<P>
-    }
-  )
+  return createSelector([selectLocationQuery], (locationQuery): VesselGroupReportProperty<P> => {
+    const urlProperty = locationQuery?.[property]
+    if (urlProperty !== undefined) return urlProperty
+    return DEFAULT_VESSEL_GROUP_REPORT_STATE[property] as VesselGroupReportProperty<P>
+  })
 }
 
 export const selectViewOnlyVesselGroup = selectVGRStateProperty('viewOnlyVesselGroup')

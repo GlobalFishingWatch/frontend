@@ -70,7 +70,7 @@ export default function VesselGroupReportVesselsTable() {
               'Vessels are not included from the following sources:'
             )}{' '}
             {datasetsDownloadNotSupported.map((dataset, index) => (
-              <Fragment>
+              <Fragment key={dataset}>
                 <DatasetLabel key={dataset} dataset={{ id: dataset }} />
                 {index < datasetsDownloadNotSupported.length - 1 && ', '}
               </Fragment>

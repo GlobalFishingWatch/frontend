@@ -109,17 +109,25 @@ if (hasParamToBeAbbreviatedDuplicated()) {
 const TOKEN_PREFIX = '~'
 export const TOKEN_REGEX = /~(\d+)/
 
+const parseIntNumber = (value: any) => (typeof value === 'string' ? parseInt(value) : value)
+
 const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
+  reportVesselPage: parseIntNumber,
+  reportResultsPerPage: parseIntNumber,
+  vGRVesselPage: parseIntNumber,
+  vGRVesselsResultsPerPage: parseIntNumber,
+  vGREventsVesselPage: parseIntNumber,
+  vGREventsResultsPerPage: parseIntNumber,
   vesselIdentityIndex: (index) => parseInt(index),
   reportTimeComparison: (reportTimeComparison = {}) => ({
     ...reportTimeComparison,
     duration: parseInt(reportTimeComparison.duration),
   }),
   mapRulers: (rulers: { id: string }[]) => {
-    return rulers?.map((ruler) => ({ ...ruler, id: parseInt(ruler.id) }))
+    return rulers?.map((ruler) => ({ ...ruler, id: parseIntNumber(ruler.id) }))
   },
   mapDrawing: (drawing: boolean | string) => {
     if (drawing === true || drawing === 'true') {
