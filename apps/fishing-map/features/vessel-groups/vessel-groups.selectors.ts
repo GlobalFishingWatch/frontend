@@ -15,6 +15,7 @@ import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.per
 import { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { getVesselGroupsInDataviews } from 'features/datasets/datasets.utils'
 
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
@@ -47,9 +48,7 @@ export const selectVessselGroupsAllowed = createSelector(
 export const selectWorkspaceVessselGroupsIds = createSelector(
   [selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
   (workspaceDataviewInstances = [], urlDataviewInstances = []) => {
-    return [...workspaceDataviewInstances, ...urlDataviewInstances].flatMap(
-      (dvi) => dvi?.config?.filters?.['vessel-groups'] || []
-    )
+    return getVesselGroupsInDataviews([...workspaceDataviewInstances, ...urlDataviewInstances])
   }
 )
 

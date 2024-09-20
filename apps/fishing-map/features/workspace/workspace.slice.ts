@@ -41,6 +41,7 @@ import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import {
   getDatasetsInDataviews,
   getLatestEndDateFromDatasets,
+  getVesselGroupsInDataviews,
 } from 'features/datasets/datasets.utils'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
@@ -54,6 +55,7 @@ import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.sel
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { DEFAULT_AREA_REPORT_STATE } from 'features/area-report/reports.config'
 import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/vessel-group-report/vessel-group-report.config'
+import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -205,6 +207,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...LIBRARY_LAYERS,
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
+        const vesselGroupsIds = getVesselGroupsInDataviews(
+          [...dataviews, ...dataviewInstances],
+          guestUser
+        )
+        dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
         // Don't abort datasets as they are needed in the search
         // signal.addEventListener('abort', fetchDatasetsAction.abort)

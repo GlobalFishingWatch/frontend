@@ -310,13 +310,20 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
   }
 )
 
-export const fetchUserVesselGroupsThunk = createAsyncThunk(
+export const fetchVesselGroupsThunk = createAsyncThunk<
+  VesselGroup[],
+  { ids: string[] } | undefined
+>(
   'vessel-groups/fetch',
-  async () => {
+  async ({ ids = [] } = {} as { ids: string[] }) => {
     const vesselGroupsParams = {
       ...DEFAULT_PAGINATION_PARAMS,
       cache: false,
-      'logged-user': true,
+      ...(ids?.length
+        ? { ids }
+        : {
+            'logged-user': true,
+          }),
     }
     const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
     const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url, { cache: 'reload' })
@@ -330,6 +337,7 @@ export const fetchUserVesselGroupsThunk = createAsyncThunk(
     },
   }
 )
+
 const removeDuplicatedVesselGroupvessels = (vessels: VesselGroupVessel[]) => {
   return uniqBy(vessels, (vessel) => [vessel.vesselId, vessel.dataset].join(','))
 }
@@ -528,7 +536,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     })
   },
   thunks: {
-    fetchThunk: fetchUserVesselGroupsThunk,
+    fetchThunk: fetchVesselGroupsThunk,
     fetchByIdThunk: fetchVesselGroupByIdThunk,
     updateThunk: updateVesselGroupThunk,
     createThunk: createVesselGroupThunk,

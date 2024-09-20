@@ -128,6 +128,9 @@ export type SchemaFieldDataview =
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   !(dataset?.id || '').startsWith(`${PUBLIC_SUFIX}-`)
 
+export const isPrivateVesselGroup = (vesselGroupId: string) =>
+  !vesselGroupId.endsWith(`-${PUBLIC_SUFIX}`)
+
 const GFW_ONLY_DATASETS = [
   'private-global-other-vessels:v20201001',
   'public-global-presence-speed:v20231026',
@@ -281,6 +284,27 @@ export const getDatasetsInDataviews = (
     return getDatasetsInDataview(dataview, guestUser)
   })
   return uniq(datasets)
+}
+
+const getVesselGroupInDataview = (
+  dataview: Dataview | DataviewInstance | UrlDataviewInstance,
+  guestUser = false
+): string[] => {
+  const vesselGroupIds = (dataview?.config?.filters?.['vessel-groups'] as string[]) || []
+  return guestUser ? vesselGroupIds.filter((id) => !isPrivateVesselGroup(id)) : vesselGroupIds
+}
+
+export const getVesselGroupsInDataviews = (
+  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  guestUser = false
+) => {
+  if (!dataviews?.length) {
+    return []
+  }
+  const vesselGroups = dataviews.flatMap((dataview) => {
+    return getVesselGroupInDataview(dataview, guestUser)
+  })
+  return uniq(vesselGroups)
 }
 
 type RelatedDatasetByTypeParams = {

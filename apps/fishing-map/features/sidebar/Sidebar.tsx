@@ -17,7 +17,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
-import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -64,7 +64,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
   useEffect(() => {
     if (hasUserGroupsPermissions) {
-      dispatch(fetchUserVesselGroupsThunk())
+      dispatch(fetchVesselGroupsThunk())
     }
   }, [dispatch, hasUserGroupsPermissions])
 
