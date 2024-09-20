@@ -50,7 +50,7 @@ import { createDeepEqualSelector } from 'utils/selectors'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
 import {
   getVesselGroupDataviewInstance,
-  getVesselGroupEncountersDataviewInstance,
+  getVesselGroupEventsDataviewInstances,
 } from 'features/vessel-group-report/vessel-group-report.dataviews'
 
 const EMPTY_ARRAY: [] = []
@@ -128,12 +128,7 @@ export const selectDataviewInstancesMerged = createSelector(
           mergedDataviewInstances.push(dataviewInstance)
         }
       }
-      const encountersDataviewInstance =
-        getVesselGroupEncountersDataviewInstance(reportVesselGroupId)
-      if (encountersDataviewInstance) {
-        mergedDataviewInstances.push(encountersDataviewInstance)
-      }
-      // TODO insert here the port events/activity dataview instance
+      mergedDataviewInstances.push(...getVesselGroupEventsDataviewInstances(reportVesselGroupId))
     }
     return mergedDataviewInstances
   }

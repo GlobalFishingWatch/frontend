@@ -11,12 +11,17 @@ import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { VGRSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { dataviewHasVesselGroupId } from 'features/dataviews/dataviews.utils'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,
   selectVGRSection,
   selectVGRVesselsSubsection,
 } from './vessel-group.config.selectors'
+import {
+  VESSEL_GROUP_EVENTS_DATAVIEW_IDS,
+  VesselGroupEventsDataviewId,
+} from './vessel-group-report.dataviews'
 
 export const COVERAGE_INSIGHT_ID = 'COVERAGE' as InsightType
 export const GAP_INSIGHT_ID = 'GAP' as InsightType
@@ -49,6 +54,25 @@ export const selectVGRSubsection = createSelector(
     if (section === 'vessels') {
       return vesselsSubsection
     }
+  }
+)
+
+export const selectVGREventsSubsectionDataview = createSelector(
+  [
+    selectEventsDataviews,
+    selectVGRSubsection,
+    selectVGRActivitySubsection,
+    selectVGREventsSubsection,
+  ],
+  (dataviews, eventsSubsection) => {
+    if (!dataviews?.length || !eventsSubsection) {
+      return
+    }
+    return dataviews.find(
+      ({ id }) =>
+        id.includes(eventsSubsection) &&
+        VESSEL_GROUP_EVENTS_DATAVIEW_IDS.includes(id as VesselGroupEventsDataviewId)
+    )
   }
 )
 

@@ -68,7 +68,7 @@ const dataviews: Dataview[] = [
       color: '#9AEEFF',
       clusterMaxZoomLevels: {
         country: 3,
-        // port: 6,
+        port: 6,
         default: 8,
       },
     },

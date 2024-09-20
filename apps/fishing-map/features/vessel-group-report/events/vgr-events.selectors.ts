@@ -8,21 +8,19 @@ import { selectVGRData } from 'features/vessel-group-report/vessel-group-report.
 import { getSearchIdentityResolved, getVesselId } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
-import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectVGREventsResultsPerPage,
-  selectVGREventsSubsection,
   selectVGREventsVesselFilter,
   selectVGREventsVesselPage,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { getVesselsFiltered } from 'features/area-report/reports.utils'
 import { REPORT_FILTER_PROPERTIES } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
+import { selectVGREventsSubsectionDataview } from '../vessel-group-report.selectors'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
-  [selectTimeRange, selectReportVesselGroupId, selectEventsDataviews, selectVGREventsSubsection],
-  ({ start, end }, reportVesselGroupId, eventsDataviews, eventsSubsection) => {
-    const eventsDataview = eventsDataviews.find(({ id }) => id === eventsSubsection)
-    if (!reportVesselGroupId || !eventsDataview) {
+  [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],
+  ({ start, end }, reportVesselGroupId, eventsDataview) => {
+    if (!eventsDataview) {
       return
     }
     return {

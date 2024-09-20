@@ -22,9 +22,6 @@ function VesselGroupReportEventsSubsectionSelector() {
     {
       id: 'loitering',
       label: t('event.loitering_other', 'Loitering events'),
-      disabled: true,
-      tooltip: t('common.comingSoon', 'Coming Soon!'),
-      tooltipPlacement: 'top',
     },
     {
       id: 'gaps',
@@ -36,9 +33,6 @@ function VesselGroupReportEventsSubsectionSelector() {
     {
       id: 'port_visits',
       label: t('event.port_visit_other', 'Port visits'),
-      disabled: true,
-      tooltip: t('common.comingSoon', 'Coming Soon!'),
-      tooltipPlacement: 'top',
     },
   ]
 
