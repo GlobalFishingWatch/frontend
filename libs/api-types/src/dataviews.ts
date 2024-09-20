@@ -102,7 +102,6 @@ export interface DataviewConfig<Type = DataviewType> {
   maxZoom?: number
   clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
   maxZoomCluster?: number
-  icon?: string
   layers?: DataviewContexLayerConfig[]
   /** Legacy for duplicated events in the API */
   duplicatedEventsWorkaround?: boolean
