@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { FourwingsHeatmapPickingObject } from '@globalfishingwatch/deck-layers'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { useTimeCompareTimeDescription } from 'features/area-report/reports-timecomparison.hooks'
+import { useTimeCompareTimeDescription } from 'features/reports/areas/reports-timecomparison.hooks'
 import styles from '../Popup.module.css'
 
 type ComparisonRowProps = {

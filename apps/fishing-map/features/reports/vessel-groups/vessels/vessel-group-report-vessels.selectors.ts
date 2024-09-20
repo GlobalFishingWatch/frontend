@@ -9,13 +9,13 @@ import {
   selectVGRVesselPage,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
-import { cleanFlagState } from 'features/area-report/reports.selectors'
+import { cleanFlagState } from 'features/reports/areas/reports.selectors'
 import { t } from 'features/i18n/i18n'
 import {
   FILTER_PROPERTIES,
   FilterProperty,
   getVesselsFiltered,
-} from 'features/area-report/reports.utils'
+} from 'features/reports/areas/reports.utils'
 import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,

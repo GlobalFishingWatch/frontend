@@ -22,14 +22,14 @@ import {
   selectReportAreaDataviews,
   selectReportAreaIds,
   selectReportDataviewsWithPermissions,
-} from 'features/area-report/reports.selectors'
+} from 'features/reports/areas/reports.selectors'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
 import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
-import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/area-report/reports.config'
+import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/areas/reports.config'
 import {
   fetchReportVesselsThunk,
   getReportQuery,

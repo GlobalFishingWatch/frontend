@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'r
 import { useTranslation } from 'react-i18next'
 import { VesselGroupEventsStatsResponseGroups } from 'queries/vessel-group-events-stats-api'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
+import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/reports.config'
 import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import {

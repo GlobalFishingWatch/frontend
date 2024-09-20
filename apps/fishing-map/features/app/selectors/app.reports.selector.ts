@@ -5,7 +5,7 @@ import {
   selectActiveReportActivityDataviews,
   selectReportActiveCategories,
 } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectReportById } from 'features/area-report/reports.slice'
+import { selectReportById } from 'features/reports/areas/reports.slice'
 import {
   selectLocationAreaId,
   selectLocationDatasetId,
@@ -22,8 +22,8 @@ import {
   selectReportBufferValueSelector,
   selectReportCategorySelector,
   selectReportVesselGraphSelector,
-} from 'features/area-report/reports.config.selectors'
-import { ReportCategory, ReportVesselGraph } from 'features/area-report/reports.types'
+} from 'features/reports/areas/reports.config.selectors'
+import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/reports.types'
 
 export function isActivityReport(reportCategory: ReportCategory) {
   return reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence

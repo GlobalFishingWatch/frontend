@@ -17,9 +17,9 @@ import { selectLatestAvailableDataDate } from 'features/app/selectors/app.select
 import i18n, { t } from 'features/i18n/i18n'
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { getUTCDateTime } from 'utils/dates'
-import { formatDate, formatTooltipValue, tickFormatter } from 'features/area-report/reports.utils'
+import { formatDate, formatTooltipValue, tickFormatter } from 'features/reports/areas/reports.utils'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { selectReportTimeComparison } from '../reports.config.selectors'
+import { selectReportTimeComparison } from '../areas/reports.config.selectors'
 import styles from './ReportActivityEvolution.module.css'
 
 const DIFFERENCE = 'difference'

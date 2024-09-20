@@ -17,9 +17,9 @@ import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { toFixed } from 'utils/shared'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { ReportActivityProps } from 'features/area-report/activity/ReportActivity'
-import { formatEvolutionData } from 'features/area-report/reports-timeseries.utils'
-import { tickFormatter } from '../reports.utils'
+import { ReportActivityProps } from 'features/reports/activity/ReportActivity'
+import { formatEvolutionData } from 'features/reports/areas/reports-timeseries.utils'
+import { tickFormatter } from '../areas/reports.utils'
 import styles from './ReportActivityEvolution.module.css'
 
 type ReportGraphTooltipProps = {

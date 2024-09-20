@@ -11,7 +11,7 @@ import {
   TemporalResolution,
 } from 'features/download/downloadActivity.config'
 import { BufferOperation, BufferUnit } from 'types'
-import { DateRange } from '../download/downloadActivity.slice'
+import { DateRange } from 'features/download/downloadActivity.slice'
 
 type ReportStateError = AsyncError<{ currentReportUrl: string }>
 interface ReportState {

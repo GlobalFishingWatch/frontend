@@ -10,27 +10,27 @@ import {
   selectActiveReportDataviews,
   selectReportCategory,
 } from 'features/app/selectors/app.reports.selector'
-import ReportSummaryTags from 'features/area-report/summary/ReportSummaryTags'
-import { FIELDS, getCommonProperties } from 'features/area-report/reports.utils'
-import { ReportActivityUnit } from 'features/area-report/Report'
+import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
+import { FIELDS, getCommonProperties } from 'features/reports/areas/reports.utils'
+import { ReportActivityUnit } from 'features/reports/areas/Report'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import {
   useReportFilteredTimeSeries,
   useReportFeaturesLoading,
-} from 'features/area-report/reports-timeseries.hooks'
-import { formatEvolutionData } from 'features/area-report/reports-timeseries.utils'
+} from 'features/reports/areas/reports-timeseries.hooks'
+import { formatEvolutionData } from 'features/reports/areas/reports-timeseries.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import ReportSummaryPlaceholder from 'features/area-report/placeholders/ReportSummaryPlaceholder'
-import ReportSummaryTagsPlaceholder from 'features/area-report/placeholders/ReportSummaryTagsPlaceholder'
+import ReportSummaryPlaceholder from 'features/reports/areas/placeholders/ReportSummaryPlaceholder'
+import ReportSummaryTagsPlaceholder from 'features/reports/areas/placeholders/ReportSummaryTagsPlaceholder'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { listAsSentence } from 'utils/shared'
 import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
-} from 'features/area-report/report.slice'
+} from 'features/reports/areas/report.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { useTimeCompareTimeDescription } from 'features/area-report/reports-timecomparison.hooks'
+import { useTimeCompareTimeDescription } from 'features/reports/areas/reports-timecomparison.hooks'
 import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
 import { selectReportTimeComparison } from '../reports.config.selectors'
 import { ReportCategory } from '../reports.types'

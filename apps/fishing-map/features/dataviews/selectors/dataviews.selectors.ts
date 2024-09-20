@@ -27,7 +27,7 @@ import {
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
 } from 'routes/routes.selectors'
-import { getReportCategoryFromDataview } from 'features/area-report/reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import {
   selectTimebarSelectedEnvId,
@@ -46,8 +46,8 @@ import {
   selectVGRSection,
   selectViewOnlyVesselGroup,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { ReportCategory } from 'features/area-report/reports.types'
-import { selectReportCategorySelector } from 'features/area-report/reports.config.selectors'
+import { ReportCategory } from 'features/reports/areas/reports.types'
+import { selectReportCategorySelector } from 'features/reports/areas/reports.config.selectors'
 import {
   VGREventsSubsection,
   VGRSection,

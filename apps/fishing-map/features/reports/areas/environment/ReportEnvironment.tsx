@@ -11,14 +11,14 @@ import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
   useTimeseriesStats,
-} from 'features/area-report/reports-timeseries.hooks'
-import ReportActivityPlaceholder from 'features/area-report/placeholders/ReportActivityPlaceholder'
+} from 'features/reports/areas/reports-timeseries.hooks'
+import ReportActivityPlaceholder from 'features/reports/areas/placeholders/ReportActivityPlaceholder'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { upperFirst } from 'utils/info'
-import ReportActivityEvolution from '../activity/ReportActivityEvolution'
+import ReportActivityEvolution from '../../activity/ReportActivityEvolution'
 import styles from './ReportEnvironment.module.css'
 
 function ReportEnvironment() {

@@ -22,7 +22,7 @@ import {
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
-import { getReportCategoryFromDataview } from 'features/area-report/reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 
 const selectDatasetsExtent = createSelector(

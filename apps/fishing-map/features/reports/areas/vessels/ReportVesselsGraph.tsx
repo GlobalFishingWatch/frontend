@@ -7,13 +7,13 @@ import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
-import { ReportVesselsGraphPlaceholder } from 'features/area-report/placeholders/ReportVesselsPlaceholder'
+import { ReportVesselsGraphPlaceholder } from 'features/reports/areas/placeholders/ReportVesselsPlaceholder'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
+import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/reports.config'
 import { getVesselGearTypeLabel } from 'utils/info'
 import {
   cleanFlagState,

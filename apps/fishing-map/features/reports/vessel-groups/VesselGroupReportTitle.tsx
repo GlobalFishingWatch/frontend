@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import ReportTitlePlaceholder from 'features/area-report/placeholders/ReportTitlePlaceholder'
+import ReportTitlePlaceholder from 'features/reports/areas/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   setNewVesselGroupSearchVessels,

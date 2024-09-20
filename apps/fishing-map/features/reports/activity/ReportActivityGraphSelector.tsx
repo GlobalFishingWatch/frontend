@@ -9,11 +9,11 @@ import {
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
 } from 'data/config'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
-import { useFitAreaInViewport } from 'features/area-report/reports.hooks'
-import { useSetReportTimeComparison } from 'features/area-report/reports-timecomparison.hooks'
+import { useFitAreaInViewport } from 'features/reports/areas/reports.hooks'
+import { useSetReportTimeComparison } from 'features/reports/areas/reports-timecomparison.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportActivityGraph } from '../reports.config.selectors'
-import { ReportActivityGraph } from '../reports.types'
+import { selectReportActivityGraph } from '../areas/reports.config.selectors'
+import { ReportActivityGraph } from '../areas/reports.types'
 
 type ReportActivityGraphSelectorProps = {
   loading: boolean

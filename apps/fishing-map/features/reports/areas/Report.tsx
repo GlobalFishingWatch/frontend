@@ -28,8 +28,8 @@ import {
   selectReportArea,
   selectReportAreaStatus,
   selectReportDataviewsWithPermissions,
-} from 'features/area-report/reports.selectors'
-import ReportVesselsPlaceholder from 'features/area-report/placeholders/ReportVesselsPlaceholder'
+} from 'features/reports/areas/reports.selectors'
+import ReportVesselsPlaceholder from 'features/reports/areas/placeholders/ReportVesselsPlaceholder'
 import { TimebarVisualisations } from 'types'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
@@ -37,14 +37,14 @@ import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
-import { getReportCategoryFromDataview, parseReportUrl } from 'features/area-report/reports.utils'
+import { getReportCategoryFromDataview, parseReportUrl } from 'features/reports/areas/reports.utils'
 import {
   getDateRangeHash,
   resetReportData,
   selectReportVesselsDateRangeHash,
   selectReportVesselsStatus,
   setDateRangeHash,
-} from 'features/area-report/report.slice'
+} from 'features/reports/areas/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   isActivityReport,
@@ -57,14 +57,15 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   useComputeReportTimeSeries,
   useSetTimeseries,
-} from 'features/area-report/reports-timeseries.hooks'
+} from 'features/reports/areas/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/area-report/reports.config'
+import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/areas/reports.config'
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
+import ReportActivity from '../activity/ReportActivity'
 import {
   useFetchReportArea,
   useFetchReportVessel,
@@ -73,7 +74,6 @@ import {
 } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
-import ReportActivity from './activity/ReportActivity'
 import ReportVessels from './vessels/ReportVessels'
 import ReportDownload from './download/ReportDownload'
 import ReportEnvironment from './environment/ReportEnvironment'

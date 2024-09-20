@@ -12,10 +12,10 @@ import {
   fetchReportsThunk,
   selectReportsStatus,
   selectReportsStatusId,
-} from 'features/area-report/reports.slice'
+} from 'features/reports/areas/reports.slice'
 import { REPORT } from 'routes/routes'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
-import { resetReportData } from 'features/area-report/report.slice'
+import { resetReportData } from 'features/reports/areas/report.slice'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
 import styles from './User.module.css'
 

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
-import ReportVesselsFilter from 'features/area-report/vessels/ReportVesselsFilter'
+import ReportVesselsFilter from 'features/reports/areas/vessels/ReportVesselsFilter'
 import { selectVGRVessels } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import {
   selectVGRVesselsFlags,
