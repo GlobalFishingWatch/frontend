@@ -20,7 +20,6 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselGroupReportVesselsGraph from 'features/vessel-group-report/vessels/VesselGroupReportVesselsGraph'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import VGREventsVesselPropertySelector from 'features/vessel-group-report/events/VGREventsVesselPropertySelector'
 import VGREventsVesselsTable from 'features/vessel-group-report/events/VGREventsVesselsTable'
@@ -34,9 +33,10 @@ function VGREvents() {
   const filter = useSelector(selectVGREventsVesselFilter)
   const eventsSubsection = useSelector(selectVGREventsSubsection)
   const eventsDataviews = useSelector(selectEventsDataviews)
-  const eventsDataview = eventsDataviews.find(({ id }) => id === eventsSubsection)
+  const eventsDataview = eventsDataviews.find(({ id }) => id.includes(eventsSubsection))
   const vesselsGroupByProperty = useSelector(selectVGREventsVesselsProperty)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+
   useEffect(() => {
     if (eventsDataview) {
       upsertDataviewInstance({
@@ -44,7 +44,10 @@ function VGREvents() {
         config: {
           ...eventsDataview.config,
           visible: true,
-          'vessel-groups': [vesselGroupId],
+          filters: {
+            ...eventsDataview.config?.filters,
+            'vessel-groups': [vesselGroupId],
+          },
         },
       })
     }
@@ -70,10 +73,7 @@ function VGREvents() {
     }
   )
 
-  let color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
-  if (eventsDataview?.id === ENCOUNTER_EVENTS_SOURCE_ID) {
-    color = 'rgb(247 222 110)'
-  }
+  const color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
   const filteredGroups = useMemo(() => {
     if (!data) return null
     if (!filter) return data.groups

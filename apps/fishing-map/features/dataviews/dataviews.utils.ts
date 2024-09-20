@@ -19,8 +19,6 @@ import {
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
-  PRESENCE_DATAVIEW_SLUG,
-  DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
 } from 'data/workspaces'
 import {
   VesselInstanceDatasets,
@@ -29,9 +27,8 @@ import {
 } from 'features/datasets/datasets.utils'
 
 // used in workspaces with encounter events layers
-export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
+export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter'
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
-export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
 const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
 const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
@@ -42,6 +39,9 @@ export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
 ]
+export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
+  return dataview.config?.filters?.['vessel-groups'].includes(vesselGroupId)
+}
 
 export const getVesselInfoDataviewInstanceDatasetConfig = (
   vesselId: string,
@@ -213,27 +213,6 @@ export const getContextDataviewInstance = (datasetId: string): DataviewInstance<
     ],
   }
   return contextDataviewInstance
-}
-
-export const getVesselGroupDataviewInstance = (
-  vesselGroupId: string
-): DataviewInstance<DataviewType> | undefined => {
-  if (vesselGroupId) {
-    const contextDataviewInstance = {
-      id: `${VESSEL_GROUP_DATAVIEW_PREFIX}${Date.now()}`,
-      category: DataviewCategory.VesselGroups,
-      config: {
-        colorCyclingType: 'fill' as ColorCyclingType,
-        visible: true,
-        filters: {
-          'vessel-groups': [vesselGroupId],
-        },
-        datasets: DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
-      },
-      dataviewId: PRESENCE_DATAVIEW_SLUG,
-    }
-    return contextDataviewInstance
-  }
 }
 
 export const getDataviewInstanceFromDataview = (dataview: Dataview) => {

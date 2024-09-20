@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
@@ -26,14 +26,19 @@ import {
 } from 'features/timebar/timebar-vessel.hooks'
 import { getVesselShipNameLabel } from 'utils/info'
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
-import {
-  getVesselGroupDataviewInstance,
-  VESSEL_DATAVIEW_INSTANCE_PREFIX,
-} from 'features/dataviews/dataviews.utils'
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import {
+  selectVesselGroupsStatus,
+  setVesselGroupConfirmationMode,
+} from 'features/vessel-groups/vessel-groups.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { getVesselGroupDataviewInstance } from 'features/vessel-group-report/vessel-group-report.dataviews'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
@@ -48,11 +53,13 @@ const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: st
 
 function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { dispatchLocation } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
   const activeDataviews = useSelector(selectActiveVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
+  const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
@@ -82,6 +89,7 @@ function VesselsSection(): React.ReactElement {
 
   const onAddToVesselGroupClick = useCallback(
     (vesselGroupId?: string) => {
+      dispatch(setVesselGroupConfirmationMode('saveAndDeleteVessels'))
       if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
         const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
         const dataviewInstance = !isVesselGroupInWorkspace
@@ -96,7 +104,7 @@ function VesselsSection(): React.ReactElement {
         ])
       }
     },
-    [dataviews, upsertDataviewInstance, vesselGroupsInWorkspace]
+    [dataviews, dispatch, upsertDataviewInstance, vesselGroupsInWorkspace]
   )
 
   const onSetSortOrderClick = useCallback(() => {
@@ -135,6 +143,7 @@ function VesselsSection(): React.ReactElement {
     const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
     return resources[infoUrl] || []
   })
+  const isVesselGroupUpdating = vesselGroupsStatus === AsyncReducerStatus.LoadingUpdate
   const areVesselsLoading = vesselResources.some(
     (resource) => resource.status === ResourceStatus.Loading
   )
@@ -161,14 +170,13 @@ function VesselsSection(): React.ReactElement {
           <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
             {activeDataviews.length > 0 && (
               <VesselGroupAddButton
-                mode="auto"
                 vessels={vesselsToVesselGroup}
                 onAddToVesselGroup={onAddToVesselGroupClick}
               >
-                <IconButton
+                <UserLoggedIconButton
                   icon={'add-to-vessel-group'}
-                  loading={areVesselsLoading}
-                  disabled={areVesselsLoading}
+                  loading={areVesselsLoading || isVesselGroupUpdating}
+                  disabled={areVesselsLoading || isVesselGroupUpdating}
                   size="medium"
                   tooltip={t(
                     'vesselGroup.addVisibleVessels',

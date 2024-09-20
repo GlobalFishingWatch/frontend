@@ -10,6 +10,7 @@ import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import VesselLink from 'features/vessel/VesselLink'
 import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportFlagChangeParams } from '../vessel-group-report.selectors'
 import styles from './VGRInsights.module.css'
@@ -69,7 +70,17 @@ const VesselGroupReportInsightFlagChange = () => {
             <ul className={styles.nested}>
               {vesselsWithFlagChanges.map((vessel) => (
                 <li key={vessel.identity.id} className={cx(styles.vessel, styles.row)}>
-                  {formatInfoField(vessel.identity.shipname, 'name')} (
+                  <VesselLink
+                    className={styles.link}
+                    vesselId={vessel.vesselId}
+                    datasetId={vessel.identity.dataset as string}
+                    query={{
+                      start: fetchVesselGroupParams.start,
+                      end: fetchVesselGroupParams.end,
+                    }}
+                  >
+                    {formatInfoField(vessel.identity.shipname, 'name')} (
+                  </VesselLink>
                   {vessel.flagsChanges?.valuesInThePeriod.map((v) =>
                     formatInfoField(v.value, 'flag')
                   )}

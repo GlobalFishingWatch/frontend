@@ -19,6 +19,7 @@ import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/d
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
+  dataviewHasVesselGroupId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
@@ -41,10 +42,16 @@ import {
   selectIsVesselLocation,
   selectVesselId,
   selectUrlDataviewInstancesOrder,
+  selectIsVesselGroupReportLocation,
+  selectReportVesselGroupId,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  getVesselGroupDataviewInstance,
+  getVesselGroupEncountersDataviewInstance,
+} from 'features/vessel-group-report/vessel-group-report.dataviews'
 
 const EMPTY_ARRAY: [] = []
 
@@ -56,6 +63,8 @@ export const selectDataviewInstancesMerged = createSelector(
     selectUrlDataviewInstances,
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
+    selectIsVesselGroupReportLocation,
+    selectReportVesselGroupId,
     selectVesselId,
     selectVesselInfoData,
   ],
@@ -66,6 +75,8 @@ export const selectDataviewInstancesMerged = createSelector(
     urlDataviewInstances = EMPTY_ARRAY,
     isAnyVesselLocation,
     isVesselLocation,
+    isVesselGroupReportLocation,
+    reportVesselGroupId,
     urlVesselId,
     vessel
   ): UrlDataviewInstance[] | undefined => {
@@ -106,6 +117,23 @@ export const selectDataviewInstancesMerged = createSelector(
           }
         })
       }
+    }
+    if (isVesselGroupReportLocation) {
+      const existingDataviewInstance = mergedDataviewInstances?.find((dataview) =>
+        dataviewHasVesselGroupId(dataview, reportVesselGroupId)
+      )
+      if (!existingDataviewInstance) {
+        const dataviewInstance = getVesselGroupDataviewInstance(reportVesselGroupId)
+        if (dataviewInstance) {
+          mergedDataviewInstances.push(dataviewInstance)
+        }
+      }
+      const encountersDataviewInstance =
+        getVesselGroupEncountersDataviewInstance(reportVesselGroupId)
+      if (encountersDataviewInstance) {
+        mergedDataviewInstances.push(encountersDataviewInstance)
+      }
+      // TODO insert here the port events/activity dataview instance
     }
     return mergedDataviewInstances
   }

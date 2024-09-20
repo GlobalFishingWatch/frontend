@@ -36,7 +36,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getVesselId } from 'features/vessel/vessel.utils'
 import { ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
-import { getVesselGroupDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { getVesselGroupDataviewInstance } from 'features/vessel-group-report/vessel-group-report.dataviews'
 import {
   IdField,
   resetVesselGroup,
@@ -65,6 +66,7 @@ function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
+  const vesselDataviews = useSelector(selectVesselsDataviews)
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupSearchId)
@@ -112,6 +114,7 @@ function VesselGroupModal(): React.ReactElement {
     },
     [dispatch]
   )
+
   useEffect(() => {
     if (editingVesselGroup && editingVesselGroup.vessels?.length > 0) {
       dispatch(getVesselInVesselGroupThunk({ vesselGroup: editingVesselGroup }))
@@ -177,7 +180,7 @@ function VesselGroupModal(): React.ReactElement {
   const onCreateGroupClick = useCallback(
     async (
       e: React.MouseEvent<Element, MouseEvent>,
-      { addToDataviews = false, navigateToWorkspace = false } = {}
+      { addToDataviews = true, removeVessels = false, navigateToWorkspace = false } = {}
     ) => {
       setButtonLoading(navigateToWorkspace ? 'saveAndSeeInWorkspace' : 'save')
       const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
@@ -237,7 +240,14 @@ function VesselGroupModal(): React.ReactElement {
           }
           resetSidebarScroll()
         } else if (addToDataviews && dataviewInstance) {
-          upsertDataviewInstance(dataviewInstance)
+          if (removeVessels) {
+            const dataviewsToDelete = vesselDataviews.flatMap((d) =>
+              d.config?.visible ? { id: d.id, deleted: true } : []
+            )
+            upsertDataviewInstance([...dataviewsToDelete, dataviewInstance])
+          } else {
+            upsertDataviewInstance(dataviewInstance)
+          }
         }
         close()
         setButtonLoading('')
@@ -262,6 +272,7 @@ function VesselGroupModal(): React.ReactElement {
       workspaceToNavigate,
       searchQuery,
       upsertDataviewInstance,
+      vesselDataviews,
     ]
   )
 
@@ -377,10 +388,17 @@ function VesselGroupModal(): React.ReactElement {
               </Button>
             )}
         {!fullModalLoading &&
-          (confirmationMode === 'save' ? (
+          (confirmationMode === 'save' || confirmationMode === 'saveAndDeleteVessels' ? (
             <Button
               disabled={confirmButtonDisabled}
-              onClick={hasVesselGroupsVessels ? onCreateGroupClick : onSearchVesselsClick}
+              onClick={
+                hasVesselGroupsVessels
+                  ? (e) =>
+                      onCreateGroupClick(e, {
+                        removeVessels: confirmationMode === 'saveAndDeleteVessels',
+                      })
+                  : onSearchVesselsClick
+              }
               loading={loading}
               tooltip={confirmButtonTooltip}
             >
@@ -410,9 +428,7 @@ function VesselGroupModal(): React.ReactElement {
                 <Button
                   className={styles.footerButton}
                   disabled={confirmButtonDisabled}
-                  onClick={(e) =>
-                    onCreateGroupClick(e, { addToDataviews: true, navigateToWorkspace: true })
-                  }
+                  onClick={(e) => onCreateGroupClick(e, { navigateToWorkspace: true })}
                   loading={loading && buttonLoading === 'saveAndSeeInWorkspace'}
                   tooltip={confirmButtonTooltip}
                 >

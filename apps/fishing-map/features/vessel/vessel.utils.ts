@@ -1,6 +1,7 @@
 import { uniq, uniqBy } from 'es-toolkit'
 import get from 'lodash/get'
 import {
+  API_LOGIN_REQUIRED,
   GearType,
   IdentityVessel,
   SelfReportedInfo,
@@ -300,4 +301,8 @@ export const getSidebarContentWidth = () => {
   return window.innerWidth <= DEFAULT_BREAKPOINT
     ? window.innerWidth - margins
     : window.innerWidth / 2 - margins
+}
+
+export const isFieldLoginRequired = (field: string) => {
+  return typeof field === 'string' && field.toUpperCase() === API_LOGIN_REQUIRED
 }

@@ -165,6 +165,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       const data = tiles.flatMap((tile) => {
         return tile.content || []
       }) as FourwingsPointFeature[]
+
       this.state.clusterIndex.load(data)
       const allClusters = this.state.clusterIndex.getClusters(
         [-180, -85, 180, 85],
@@ -174,11 +175,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
       let points: FourwingsPointFeature[] = []
       if (allClusters.length) {
         allClusters.forEach((f) => {
-          f.properties.count > 2
+          f.properties.count > 1
             ? clusters.push(f as FourwingsClusterFeature)
             : points.push(f as FourwingsPointFeature)
         })
       }
+
       const counts = clusters.map((cluster) => cluster.properties.count)
       const radiusScale = scaleSqrt()
         .domain([1, counts.length ? max(counts) : 1])
@@ -284,7 +286,6 @@ export class FourwingsClustersLayer extends CompositeLayer<
       return null
     }
     let url = getURLFromTemplate(tile.url!, tile)
-    console.log('url:', url)
     if (this.isInPositionsMode) {
       url = url?.replace('{{type}}', 'position').concat(`&format=MVT`)
       return this._fetchPositions(url!, { signal: tile.signal })
