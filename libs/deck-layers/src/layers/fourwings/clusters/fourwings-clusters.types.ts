@@ -1,7 +1,6 @@
 import { ClusterFeature, PointFeature } from 'supercluster'
 import { PickingInfo } from '@deck.gl/core'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { ClusterEventType } from 'libs/deck-layers/src/layers/cluster'
 import { ClusterMaxZoomLevelConfig, EventTypes } from '@globalfishingwatch/api-types'
 import { DeckLayerProps, DeckPickingObject } from '../../../types'
 
