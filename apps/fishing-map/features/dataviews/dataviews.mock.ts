@@ -76,7 +76,7 @@ const dataviews: Dataview[] = [
       {
         params: [],
         filters: {
-          confidence: 2,
+          confidence: 4,
         },
         endpoint: 'events-cluster-tiles',
         datasetId: 'public-global-port-visits-events:v3.0',

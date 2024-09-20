@@ -2,23 +2,20 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import { RootState } from 'reducers'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-
-export type VesselGroupEventsStatsParams = {
-  vesselGroupId: string
-  includes: string[]
-  start: string
-  end: string
-  interval: FourwingsInterval
-  groupBy: string // 'FLAG' | 'GEARTYPE'
-  dataview: UrlDataviewInstance
-}
+import { getDataviewFilters, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 
 export type VesselGroupEventsVesselsParams = {
   vesselGroupId: string
   start: string
   end: string
   dataview: UrlDataviewInstance
+}
+
+export type VesselGroupEventsStatsParams = VesselGroupEventsVesselsParams & {
+  includes: string[]
+  interval: FourwingsInterval
+  groupBy: string // 'FLAG' | 'GEARTYPE'
 }
 
 export type VesselGroupEventsStatsResponseGroups = { name: string; value: number }[]
@@ -35,6 +32,23 @@ export type VesselGroupEventsVesselsResponse = {
   vesselId: string
 }[]
 
+function getBaseStatsQuery({
+  vesselGroupId,
+  dataview,
+  start,
+  end,
+}: VesselGroupEventsVesselsParams | VesselGroupEventsStatsParams) {
+  const filters = getDataviewFilters(dataview)
+  const query = {
+    'vessel-groups': [vesselGroupId],
+    'start-date': start,
+    'end-date': end,
+    ...(filters.encounter_type && { 'encounter-types': filters.encounter_type }),
+    ...(filters.confidence && { confidences: [filters.confidence] }),
+  }
+  return query
+}
+
 // Define a service using a base URL and expected endpoints
 export const vesselGroupEventsStatsApi = createApi({
   reducerPath: 'vesselGroupEventsStatsApi',
@@ -46,20 +60,14 @@ export const vesselGroupEventsStatsApi = createApi({
       VesselGroupEventsStatsResponse,
       VesselGroupEventsStatsParams
     >({
-      query: ({ vesselGroupId, dataview, includes, start, end, interval, groupBy }) => {
-        const encounterTypes =
-          dataview?.datasets?.[0]?.subcategory === 'encounter'
-            ? dataview?.datasetsConfig?.[0]?.filters?.encounter_type
-            : undefined
+      query: (params) => {
+        const dataset = params.dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
         const query = {
-          includes,
-          'vessel-groups': [vesselGroupId],
-          'start-date': start,
-          'end-date': end,
-          datasets: [dataview.datasets?.[0]?.id],
-          'timeseries-interval': interval,
-          'group-by': groupBy,
-          ...(encounterTypes && { 'encounter-types': encounterTypes }),
+          ...getBaseStatsQuery(params),
+          includes: params.includes,
+          datasets: [dataset?.id],
+          'timeseries-interval': params.interval,
+          'group-by': params.groupBy,
         }
         return {
           url: `${getQueryParamsResolved(query)}`,
@@ -70,18 +78,9 @@ export const vesselGroupEventsStatsApi = createApi({
       VesselGroupEventsVesselsResponse,
       VesselGroupEventsVesselsParams
     >({
-      query: ({ vesselGroupId, dataview, start, end }) => {
-        const encounterTypes =
-          dataview?.datasets?.[0]?.subcategory === 'encounter'
-            ? dataview?.datasetsConfig?.[0]?.filters?.encounter_type
-            : undefined
-        const query = {
-          'vessel-groups': [vesselGroupId],
-          'start-date': start,
-          'end-date': end,
-          dataset: dataview.datasets?.[0]?.id as string,
-          ...(encounterTypes && { 'encounter-types': encounterTypes }),
-        }
+      query: (params) => {
+        const dataset = params.dataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
+        const query = { ...getBaseStatsQuery(params), dataset }
         return {
           url: `-by-vessel${getQueryParamsResolved(query)}`,
         }

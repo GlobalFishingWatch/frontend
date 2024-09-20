@@ -332,6 +332,14 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
+export function getDataviewFilters(dataview: UrlDataviewInstance) {
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
+    return { ...acc, ...(datasetConfig.filters || {}) }
+  }, {} as Record<string, any>)
+  const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
+  return filters
+}
+
 export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDataviewInstance) {
   const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
     return { ...acc, ...(datasetConfig.filters || {}) }
