@@ -37,7 +37,7 @@ import {
   selectReportTimeComparison,
   selectReportVesselFilter,
   selectReportVesselPage,
-} from 'features/area-report/reports.config.selectors'
+} from 'features/reports/areas/reports.config.selectors'
 
 const selectWorkspaceReportState = createSelector(
   [

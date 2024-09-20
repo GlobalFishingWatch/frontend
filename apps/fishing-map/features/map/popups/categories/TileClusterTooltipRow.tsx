@@ -13,7 +13,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/vessel-group-report/vessel-group-report.dataviews'
+import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { useMapViewState } from '../../map-viewport.hooks'
 import {
   ExtendedEventVessel,

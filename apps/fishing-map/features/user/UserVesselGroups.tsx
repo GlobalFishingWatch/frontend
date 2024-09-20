@@ -17,7 +17,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { getVesselGroupLabel } from 'features/vessel-groups/vessel-groups.utils'
 import { sortByCreationDate } from 'utils/dates'
-import VesselGroupReportLink from 'features/vessel-group-report/VesselGroupReportLink'
+import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
 import { selectUserVesselGroups } from './selectors/user.permissions.selectors'
 import styles from './User.module.css'
 

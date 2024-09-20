@@ -37,7 +37,7 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { getVesselId } from 'features/vessel/vessel.utils'
 import { ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { getVesselGroupDataviewInstance } from 'features/vessel-group-report/vessel-group-report.dataviews'
+import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import {
   IdField,
   resetVesselGroup,

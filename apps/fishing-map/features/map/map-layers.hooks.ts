@@ -39,7 +39,7 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
-} from 'features/area-report/reports.selectors'
+} from 'features/reports/areas/reports.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedTime, selectHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useLocationConnect } from 'routes/routes.hook'

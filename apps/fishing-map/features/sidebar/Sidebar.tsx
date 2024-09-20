@@ -26,10 +26,10 @@ import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
 const AreaReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/area-report/Report')
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/areas/Report')
 )
 const VesselGroupReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/vessel-group-report/VesselGroupReport')
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/vessel-groups/VesselGroupReport')
 )
 const VesselDetailWrapper = dynamic(
   () => import(/* webpackChunkName: "VesselDetailWrapper" */ 'features/vessel/Vessel')

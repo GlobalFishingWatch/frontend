@@ -27,7 +27,7 @@ import {
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
 } from 'routes/routes.selectors'
-import { getReportCategoryFromDataview } from 'features/area-report/reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import {
   selectTimebarSelectedEnvId,
@@ -45,16 +45,16 @@ import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import {
   selectVGRSection,
   selectViewOnlyVesselGroup,
-} from 'features/vessel-group-report/vessel-group.config.selectors'
-import { ReportCategory } from 'features/area-report/reports.types'
-import { selectReportCategorySelector } from 'features/area-report/reports.config.selectors'
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { ReportCategory } from 'features/reports/areas/reports.types'
+import { selectReportCategorySelector } from 'features/reports/areas/reports.config.selectors'
 import {
   VGREventsSubsection,
   VGRSection,
   VGRSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
-import { selectVGRSubsection } from 'features/vessel-group-report/vessel-group-report.selectors'
-import { DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS } from 'features/vessel-group-report/vessel-group-report.dataviews'
+import { selectVGRSubsection } from 'features/reports/vessel-groups/vessel-group-report.selectors'
+import { DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import {
   selectContextAreasDataviews,
   selectActivityDataviews,
