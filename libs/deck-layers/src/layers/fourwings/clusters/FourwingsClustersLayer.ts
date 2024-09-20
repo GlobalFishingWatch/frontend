@@ -357,6 +357,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
         binary: false,
         loaders: [GFWMVTLoader],
+        debounceTime: 200,
         onTileError: this._onLayerError,
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: () => null,
