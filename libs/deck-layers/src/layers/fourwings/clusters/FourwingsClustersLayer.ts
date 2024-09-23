@@ -386,7 +386,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         stroked: true,
         getLineColor: DEFAULT_LINE_COLOR,
-        lineWidthMinPixels: 1,
+        lineWidthMinPixels: 0.2,
         pickable: true,
         updateTriggers: {
           getRadius: [radiusScale],
@@ -399,7 +399,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         getPosition: this._getPosition,
         getColor: DEFAULT_BACKGROUND_COLOR,
         getSize: 12,
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.ClusterLabel, params),
         sizeUnits: 'pixels',
         getTextAnchor: 'middle',
         getAlignmentBaseline: 'center',
