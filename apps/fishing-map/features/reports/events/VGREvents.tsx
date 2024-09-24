@@ -21,7 +21,7 @@ import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-group
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import VGREventsVesselPropertySelector from 'features/reports/events/VGREventsVesselPropertySelector'
 import VGREventsVesselsTable from 'features/reports/events/VGREventsVesselsTable'
-import ReportVesselsFilter from 'features/reports/areas/vessels/ReportVesselsFilter'
+import ReportVesselsFilter from 'features/reports/activity/vessels/ReportVesselsFilter'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import styles from './VGREvents.module.css'

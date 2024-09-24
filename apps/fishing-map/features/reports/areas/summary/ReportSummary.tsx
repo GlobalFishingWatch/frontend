@@ -29,7 +29,10 @@ import {
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useTimeCompareTimeDescription } from 'features/reports/areas/reports-timecomparison.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
+import {
+  selectReportVesselsHours,
+  selectReportVesselsNumber,
+} from 'features/reports/activity/vessels/report-activity-vessels.selectors'
 import { selectReportTimeComparison } from '../reports.config.selectors'
 import { ReportCategory } from '../reports.types'
 import styles from './ReportSummary.module.css'

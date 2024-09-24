@@ -17,20 +17,25 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectReportVesselFilter } from 'features/reports/areas/reports.config.selectors'
 import {
-  selectReportVesselsFiltered,
-  selectReportVesselsList,
-  selectReportVesselsListWithAllInfo,
-  selectReportVesselsPagination,
-  ReportVesselWithDatasets,
   selectReportAreaName,
-} from '../reports.selectors'
-import { getVesselsFiltered, parseReportVesselsToIdentity } from '../reports.utils'
-import { selectReportVesselFilter } from '../reports.config.selectors'
+  ReportVesselWithDatasets,
+} from 'features/reports/areas/reports.selectors'
+import {
+  parseReportVesselsToIdentity,
+  getVesselsFiltered,
+} from 'features/reports/areas/reports.utils'
 import styles from './ReportVesselsTableFooter.module.css'
+import {
+  selectReportVesselsListWithAllInfo,
+  selectReportVesselsList,
+  selectReportVesselsFiltered,
+  selectReportVesselsPagination,
+} from './report-activity-vessels.selectors'
 
 type ReportVesselsTableFooterProps = {
-  reportName: string
+  reportName?: string
 }
 
 export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTableFooterProps) {

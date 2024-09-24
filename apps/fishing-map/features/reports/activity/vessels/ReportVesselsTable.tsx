@@ -6,7 +6,6 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
-import ReportVesselsTableFooter from 'features/reports/areas/vessels/ReportVesselsTableFooter'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
@@ -15,14 +14,15 @@ import { EMPTY_API_VALUES } from 'features/reports/areas/reports.config'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
-import { selectReportVesselsPaginated } from '../reports.selectors'
-import { ReportActivityUnit } from '../Report'
-import { ReportCategory } from '../reports.types'
-import styles from './ReportVesselsTable.module.css'
+import { ReportActivityUnit } from 'features/reports/areas/Report'
+import { selectReportVesselsPaginated } from 'features/reports/activity/vessels/report-activity-vessels.selectors'
+import { ReportCategory } from 'features/reports/areas/reports.types'
+import ReportVesselsTableFooter from 'features/reports/activity/vessels/ReportVesselsTableFooter'
+import styles from 'features/reports/activity/vessels/ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {
   activityUnit: ReportActivityUnit
-  reportName: string
+  reportName?: string
 }
 
 export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
