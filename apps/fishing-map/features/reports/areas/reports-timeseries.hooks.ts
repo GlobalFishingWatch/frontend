@@ -18,10 +18,8 @@ import {
   FourwingsInterval,
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
-import {
-  selectActiveReportDataviews,
-  selectReportCategory,
-} from 'features/app/selectors/app.reports.selector'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { FilteredPolygons } from 'features/reports/areas/reports-geo.utils'
 import {
   FeaturesToTimeseriesParams,

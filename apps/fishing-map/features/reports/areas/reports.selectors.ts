@@ -8,12 +8,11 @@ import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data
 import {
   selectReportAreaId,
   selectReportDatasetId,
-  selectActiveReportDataviews,
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
-  selectReportCategory,
   selectReportVesselGraph,
+  selectReportCategory,
 } from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -37,7 +36,8 @@ import {
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
 } from 'features/reports/areas/reports.config'
-import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
 import {
   selectReportVesselFilter,

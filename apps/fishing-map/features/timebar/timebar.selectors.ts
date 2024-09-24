@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TimebarVisualisations } from 'types'
-import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
   selectTimebarSelectedEnvId,
   selectTimebarSelectedVGId,
@@ -15,15 +15,58 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+  selectActiveReportActivityDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+
+export const selectActiveActivityDataviewsByVisualisation = (
+  timebarVisualisation: TimebarVisualisations
+) =>
+  createSelector(
+    [
+      selectActiveReportActivityDataviews,
+      selectActiveDetectionsDataviews,
+      selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+      selectActiveVesselGroupDataviews,
+      selectTimebarSelectedEnvId,
+      selectTimebarSelectedVGId,
+    ],
+    (
+      activityDataviews,
+      detectionsDataviews,
+      environmentDataviews,
+      vesselGroupDataviews,
+      timebarSelectedEnvId,
+      timebarSelectedVGId
+    ) => {
+      if (timebarVisualisation === TimebarVisualisations.HeatmapActivity) {
+        return activityDataviews
+      }
+      if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
+        return detectionsDataviews
+      }
+      if (timebarVisualisation === TimebarVisualisations.VesselGroup) {
+        const selectedVGDataview =
+          timebarSelectedVGId && vesselGroupDataviews.find((d) => d.id === timebarSelectedVGId)
+
+        if (selectedVGDataview) return [selectedVGDataview]
+        else if (vesselGroupDataviews[0]) return [vesselGroupDataviews[0]]
+      }
+      // timebarVisualisation === TimebarVisualisations.Environment
+      const selectedEnvDataview =
+        timebarSelectedEnvId && environmentDataviews.find((d) => d.id === timebarSelectedEnvId)
+
+      if (selectedEnvDataview) return [selectedEnvDataview]
+      else if (environmentDataviews[0]) return [environmentDataviews[0]]
+    }
+  )
 
 const selectDatasetsExtent = createSelector(
   [selectDataviewInstancesResolved, selectAllDatasets],

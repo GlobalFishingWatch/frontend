@@ -1,10 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import {
-  selectActiveDetectionsDataviews,
-  selectActiveHeatmapEnvironmentalDataviews,
-  selectActiveReportActivityDataviews,
-  selectReportActiveCategories,
-} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveDataviewsCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectReportById } from 'features/reports/areas/reports.slice'
 import {
   selectLocationAreaId,
@@ -15,7 +10,6 @@ import {
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
 import { BufferOperation, BufferUnit } from 'types'
-import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectReportBufferOperationSelector,
   selectReportBufferUnitSelector,
@@ -24,10 +18,6 @@ import {
   selectReportVesselGraphSelector,
 } from 'features/reports/areas/reports.config.selectors'
 import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/reports.types'
-
-export function isActivityReport(reportCategory: ReportCategory) {
-  return reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
-}
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
@@ -51,35 +41,27 @@ export const selectReportAreaId = createSelector(
   }
 )
 
+export const selectReportActiveCategories = createSelector(
+  [selectActiveDataviewsCategories],
+  (activeCategories): ReportCategory[] => {
+    const orderedCategories = [
+      ReportCategory.Fishing,
+      ReportCategory.Presence,
+      ReportCategory.Detections,
+      ReportCategory.Environment,
+    ]
+    return orderedCategories.flatMap((category) =>
+      activeCategories.some((a) => a === category) ? category : []
+    )
+  }
+)
+
 export const selectReportCategory = createSelector(
   [selectReportCategorySelector, selectReportActiveCategories],
   (reportCategory, activeCategories): ReportCategory => {
     return activeCategories.some((category) => category === reportCategory)
       ? reportCategory
       : activeCategories[0]
-  }
-)
-
-export const selectActiveReportDataviews = createDeepEqualSelector(
-  [
-    selectReportCategory,
-    selectActiveReportActivityDataviews,
-    selectActiveDetectionsDataviews,
-    selectActiveHeatmapEnvironmentalDataviews,
-  ],
-  (
-    reportCategory,
-    activityDataviews = [],
-    detectionsDataviews = [],
-    environmentalDataviews = []
-  ) => {
-    if (isActivityReport(reportCategory)) {
-      return activityDataviews
-    }
-    if (reportCategory === ReportCategory.Detections) {
-      return detectionsDataviews
-    }
-    return environmentalDataviews
   }
 )
 

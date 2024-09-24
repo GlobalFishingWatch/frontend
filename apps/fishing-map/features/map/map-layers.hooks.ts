@@ -25,9 +25,9 @@ import {
 } from 'routes/routes.selectors'
 import {
   selectActivityMergedDataviewId,
-  selectDataviewInstancesResolvedVisible,
   selectDetectionsMergedDataviewId,
 } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectBivariateDataviews,
   selectActivityVisualizationMode,

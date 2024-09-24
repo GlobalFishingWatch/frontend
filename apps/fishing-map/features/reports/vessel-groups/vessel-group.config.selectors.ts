@@ -3,6 +3,7 @@ import { selectLocationQuery } from 'routes/routes.selectors'
 import {
   VesselGroupReportState,
   VesselGroupReportStateProperty,
+  VGRSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
 import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from './vessel-group-report.config'
 
@@ -32,3 +33,23 @@ export const selectVGREventsVesselsProperty = selectVGRStateProperty('vGREventsV
 export const selectVGREventsVesselFilter = selectVGRStateProperty('vGREventsVesselFilter')
 export const selectVGREventsVesselPage = selectVGRStateProperty('vGREventsVesselPage')
 export const selectVGREventsResultsPerPage = selectVGRStateProperty('vGREventsResultsPerPage')
+
+export const selectVGRSubsection = createSelector(
+  [
+    selectVGRSection,
+    selectVGRVesselsSubsection,
+    selectVGRActivitySubsection,
+    selectVGREventsSubsection,
+  ],
+  (section, vesselsSubsection, activitySubsection, eventsSubsection): VGRSubsection | undefined => {
+    if (section === 'activity') {
+      return activitySubsection
+    }
+    if (section === 'events') {
+      return eventsSubsection
+    }
+    if (section === 'vessels') {
+      return vesselsSubsection
+    }
+  }
+)

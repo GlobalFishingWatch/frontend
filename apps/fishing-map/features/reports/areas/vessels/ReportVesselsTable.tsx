@@ -7,10 +7,8 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import ReportVesselsTableFooter from 'features/reports/areas/vessels/ReportVesselsTableFooter'
-import {
-  selectActiveReportDataviews,
-  selectReportCategory,
-} from 'features/app/selectors/app.reports.selector'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { EMPTY_API_VALUES } from 'features/reports/areas/reports.config'

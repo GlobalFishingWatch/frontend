@@ -6,17 +6,15 @@ import {
 } from 'queries/vessel-insight-api'
 import { RootState } from 'reducers'
 import { InsightType } from '@globalfishingwatch/api-types'
-import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { VGRSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { dataviewHasVesselGroupId } from 'features/dataviews/dataviews.utils'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,
-  selectVGRSection,
-  selectVGRVesselsSubsection,
+  selectVGRSubsection,
 } from './vessel-group.config.selectors'
 import {
   VESSEL_GROUP_EVENTS_DATAVIEW_IDS,
@@ -31,29 +29,9 @@ export const FLAG_CHANGE_INSIGHT_ID = 'VESSEL-IDENTITY-FLAG-CHANGES' as InsightT
 export const MOU_INSIGHT_ID = 'VESSEL-IDENTITY-MOU-LIST' as InsightType
 
 export const selectVGRDataview = createSelector(
-  [selectActiveDataviewInstancesResolved, selectReportVesselGroupId],
+  [selectDataviewInstancesResolvedVisible, selectReportVesselGroupId],
   (dataviews, reportVesselGroupId) => {
     return dataviews?.find((dataview) => dataviewHasVesselGroupId(dataview, reportVesselGroupId))
-  }
-)
-
-export const selectVGRSubsection = createSelector(
-  [
-    selectVGRSection,
-    selectVGRVesselsSubsection,
-    selectVGRActivitySubsection,
-    selectVGREventsSubsection,
-  ],
-  (section, vesselsSubsection, activitySubsection, eventsSubsection): VGRSubsection | undefined => {
-    if (section === 'activity') {
-      return activitySubsection
-    }
-    if (section === 'events') {
-      return eventsSubsection
-    }
-    if (section === 'vessels') {
-      return vesselsSubsection
-    }
   }
 )
 

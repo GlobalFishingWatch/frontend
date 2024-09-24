@@ -1,11 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesResolvedVisible } from './dataviews.instances.selectors'
 
 export const selectDataviewInstancesByCategory = (category?: DataviewCategory) => {
   return createSelector(
-    [selectDataviewInstancesResolved],
+    [selectDataviewInstancesResolvedVisible],
     (dataviews): UrlDataviewInstance<DataviewType>[] => {
       return dataviews?.filter((dataview) => dataview.category === category)
     }

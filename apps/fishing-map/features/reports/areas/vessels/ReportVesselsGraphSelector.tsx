@@ -8,11 +8,9 @@ import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import {
-  selectReportCategory,
-  selectReportVesselGraph,
-} from 'features/app/selectors/app.reports.selector'
+import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { ReportCategory, ReportVesselGraph } from '../reports.types'
 
 export default function ReportVesselsGraphSelector() {

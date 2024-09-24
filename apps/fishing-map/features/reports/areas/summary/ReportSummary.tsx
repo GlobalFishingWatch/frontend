@@ -6,10 +6,7 @@ import parse from 'html-react-parser'
 import Sticky from 'react-sticky-el'
 import { Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import {
-  selectActiveReportDataviews,
-  selectReportCategory,
-} from 'features/app/selectors/app.reports.selector'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/areas/reports.utils'
 import { ReportActivityUnit } from 'features/reports/areas/Report'
@@ -31,6 +28,7 @@ import {
 } from 'features/reports/areas/report.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useTimeCompareTimeDescription } from 'features/reports/areas/reports-timecomparison.hooks'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
 import { selectReportTimeComparison } from '../reports.config.selectors'
 import { ReportCategory } from '../reports.types'

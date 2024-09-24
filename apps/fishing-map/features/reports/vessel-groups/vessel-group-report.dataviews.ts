@@ -39,6 +39,37 @@ export const DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS: Record<
   gaps: VESSEL_GROUP_GAPS_EVENTS_ID,
 }
 
+type GetReportVesselGroupVisibleDataviewsParams = {
+  dataviews: UrlDataviewInstance[]
+  reportVesselGroupId: string
+  vesselGroupReportSection: VGRSection
+  vesselGroupReportSubSection?: VGRSubsection
+}
+export function getReportVesselGroupVisibleDataviews({
+  dataviews,
+  reportVesselGroupId,
+  vesselGroupReportSection,
+  vesselGroupReportSubSection,
+}: GetReportVesselGroupVisibleDataviewsParams) {
+  return dataviews.filter(({ id, category, config }) => {
+    if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
+      return config?.visible
+    }
+    if (vesselGroupReportSection === 'events') {
+      const dataviewIdBySubSection =
+        DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS[vesselGroupReportSubSection as VGREventsSubsection]
+      return id.toString() === dataviewIdBySubSection
+    }
+    if (vesselGroupReportSection === 'activity') {
+      return id.toString() === VESSEL_GROUP_ACTIVITY_ID
+    }
+    return (
+      category === DataviewCategory.VesselGroups &&
+      config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
+    )
+  })
+}
+
 export const getVesselGroupDataviewInstance = (
   vesselGroupId: string
 ): DataviewInstance<DataviewType> | undefined => {

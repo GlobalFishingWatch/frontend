@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
-import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
