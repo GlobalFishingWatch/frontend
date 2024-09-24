@@ -253,30 +253,6 @@ export function useFetchReportVessel() {
     updateWorkspaceReportUrls,
   ])
 
-  // useEffect(() => {
-  //   const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
-  //   if (
-  //     areaId &&
-  //     reportDataviews?.length &&
-  //     timerangeSupported &&
-  //     isDifferentDateRange &&
-  //     workspaceStatus === AsyncReducerStatus.Finished
-  //   ) {
-  //     dispatchFetchReport()
-  //   }
-  //   // Avoid re-fetching when timerange changes
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [
-  //   dispatch,
-  //   areaId,
-  //   datasetId,
-  //   reportBufferHash,
-  //   reportDataviews,
-  //   timerangeSupported,
-  //   reportDateRangeHash,
-  //   workspaceStatus,
-  // ])
-
   return useMemo(
     () => ({ status, data, error, dispatchFetchReport }),
     [status, data, error, dispatchFetchReport]

@@ -20,6 +20,7 @@ import {
 } from 'features/reports/areas/area-reports.config.selectors'
 import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import { WORLD_REGION_ID } from 'features/reports/activity/reports-activity.slice'
+import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
@@ -62,8 +63,21 @@ export const selectReportActiveCategories = createSelector(
 )
 
 export const selectReportCategory = createSelector(
-  [selectReportCategorySelector, selectReportActiveCategories],
-  (reportCategory, activeCategories): ReportCategory => {
+  [
+    selectReportCategorySelector,
+    selectReportActiveCategories,
+    selectIsVesselGroupReportLocation,
+    selectVGRActivitySubsection,
+  ],
+  (
+    reportCategory,
+    activeCategories,
+    isVesselGroupReportLocation,
+    vGRActivitySubsection
+  ): ReportCategory => {
+    if (isVesselGroupReportLocation) {
+      return vGRActivitySubsection as ReportCategory
+    }
     return activeCategories.some((category) => category === reportCategory)
       ? reportCategory
       : activeCategories[0]

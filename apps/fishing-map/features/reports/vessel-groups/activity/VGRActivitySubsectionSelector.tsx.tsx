@@ -18,7 +18,7 @@ function VGRActivitySubsectionSelector() {
   const fitAreaInViewport = useFitAreaInViewport()
   const options: ChoiceOption<VGRActivitySubsection>[] = [
     {
-      id: 'fishing-effort',
+      id: 'fishing',
       label: t('common.apparentFishing', 'Apparent fishing effort'),
       disabled: loading,
     },
