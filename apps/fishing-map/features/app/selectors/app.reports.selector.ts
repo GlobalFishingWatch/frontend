@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { selectActiveDataviewsCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectReportById } from 'features/reports/areas/reports.slice'
 import {
+  selectIsVesselGroupReportLocation,
   selectLocationAreaId,
   selectLocationDatasetId,
   selectReportId,
@@ -18,6 +19,7 @@ import {
   selectReportVesselGraphSelector,
 } from 'features/reports/areas/reports.config.selectors'
 import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/reports.types'
+import { WORLD_REGION_ID } from 'features/reports/areas/report.slice'
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
@@ -35,8 +37,11 @@ export const selectReportDatasetId = createSelector(
 )
 
 export const selectReportAreaId = createSelector(
-  [selectLocationAreaId, selectCurrentReport],
-  (locationAreaId, report) => {
+  [selectLocationAreaId, selectCurrentReport, selectIsVesselGroupReportLocation],
+  (locationAreaId, report, isVesselGroupReportLocation) => {
+    if (isVesselGroupReportLocation) {
+      return WORLD_REGION_ID
+    }
     return locationAreaId || report?.areaId || ''
   }
 )
