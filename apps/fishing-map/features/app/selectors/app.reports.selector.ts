@@ -19,7 +19,7 @@ import {
   selectReportVesselGraphSelector,
 } from 'features/reports/areas/reports.config.selectors'
 import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/reports.types'
-import { WORLD_REGION_ID } from 'features/reports/areas/report.slice'
+import { WORLD_REGION_ID } from 'features/reports/activity/reports-activity.slice'
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],

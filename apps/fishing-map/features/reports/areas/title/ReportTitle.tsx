@@ -19,7 +19,7 @@ import {
   resetReportData,
   selectReportPreviewBuffer,
   setPreviewBuffer,
-} from 'features/reports/areas/report.slice'
+} from 'features/reports/activity/reports-activity.slice'
 import {
   selectReportArea,
   selectReportAreaDataviews,

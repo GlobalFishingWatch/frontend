@@ -24,7 +24,10 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
-import { resetReportData, selectReportVesselsStatus } from 'features/reports/areas/report.slice'
+import {
+  resetReportData,
+  selectReportVesselsStatus,
+} from 'features/reports/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { useSetTimeseries } from 'features/reports/activity/reports-activity-timeseries.hooks'

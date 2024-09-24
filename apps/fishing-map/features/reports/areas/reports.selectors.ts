@@ -1,6 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, uniqBy } from 'es-toolkit'
-import sumBy from 'lodash/sumBy'
 import { t } from 'i18next'
 import { FeatureCollection, MultiPolygon } from 'geojson'
 import { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
@@ -22,14 +20,15 @@ import {
   getReportCategoryFromDataview,
 } from 'features/reports/areas/reports.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { EMPTY_FIELD_PLACEHOLDER, getVesselGearTypeLabel } from 'utils/info'
-import { sortStrings } from 'utils/shared'
 import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
 import { EMPTY_API_VALUES, ENTIRE_WORLD_REPORT_AREA } from 'features/reports/areas/reports.config'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
-import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
+import {
+  selectReportVesselsData,
+  selectReportPreviewBuffer,
+} from '../activity/reports-activity.slice'
 import { selectReportActivityGraph, selectReportTimeComparison } from './reports.config.selectors'
 import { ReportCategory } from './reports.types'
 

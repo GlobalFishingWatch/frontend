@@ -25,7 +25,7 @@ import { listAsSentence } from 'utils/shared'
 import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
-} from 'features/reports/areas/report.slice'
+} from 'features/reports/activity/reports-activity.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useTimeCompareTimeDescription } from 'features/reports/activity/reports-activity-timecomparison.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'

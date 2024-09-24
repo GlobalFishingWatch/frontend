@@ -23,7 +23,7 @@ import {
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { getAreaIdFromFeature } from 'features/map/popups/categories/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { resetReportData } from 'features/reports/areas/report.slice'
+import { resetReportData } from 'features/reports/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {

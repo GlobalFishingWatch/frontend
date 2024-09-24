@@ -38,7 +38,8 @@ import {
   selectReportVesselsData,
   selectReportVesselsError,
   selectReportVesselsStatus,
-} from './report.slice'
+} from 'features/reports/activity/reports-activity.slice'
+import { selectVGRActivityDataview } from '../vessel-groups/vessel-group-report.selectors'
 
 export type DateTimeSeries = {
   date: string

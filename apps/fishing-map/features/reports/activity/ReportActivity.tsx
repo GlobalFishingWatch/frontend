@@ -28,7 +28,7 @@ import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
   setDateRangeHash,
-} from 'features/reports/areas/report.slice'
+} from 'features/reports/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectReportAreaId,
