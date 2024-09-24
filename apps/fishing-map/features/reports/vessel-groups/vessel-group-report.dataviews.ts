@@ -4,19 +4,30 @@ import {
   DataviewInstance,
   DataviewType,
 } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { ColorRampId } from '@globalfishingwatch/deck-layers'
+import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
+  FISHING_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
+import {
+  VGREventsSubsection,
+  VGRSection,
+  VGRSubsection,
+} from 'features/vessel-groups/vessel-groups.types'
 
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 
 export type VesselGroupEventsDataviewId =
   `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${VGREventsSubsection}`
+
+export const VESSEL_GROUP_ACTIVITY_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}activity`
+
 export const VESSEL_GROUP_ENCOUNTER_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}encounter`
 export const VESSEL_GROUP_LOITERING_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}loitering`
 export const VESSEL_GROUP_PORT_VISITS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}port_visits`
@@ -86,6 +97,32 @@ export const getVesselGroupDataviewInstance = (
         datasets: DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
+    }
+  }
+}
+
+export const getVesselGroupActivityDataviewInstance = ({
+  vesselGroupId,
+  color,
+  colorRamp,
+}: {
+  vesselGroupId: string
+  color?: string
+  colorRamp?: ColorRampId
+}): DataviewInstance<DataviewType> | undefined => {
+  if (vesselGroupId) {
+    return {
+      id: VESSEL_GROUP_ACTIVITY_ID,
+      category: DataviewCategory.Activity,
+      config: {
+        visible: true,
+        ...(color && { color }),
+        ...(colorRamp && { colorRamp }),
+        filters: {
+          'vessel-groups': [vesselGroupId],
+        },
+      },
+      dataviewId: FISHING_DATAVIEW_SLUG,
     }
   }
 }

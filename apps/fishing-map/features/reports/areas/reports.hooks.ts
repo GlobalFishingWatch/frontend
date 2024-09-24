@@ -30,6 +30,8 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/areas/reports.config'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchReportVesselsThunk,
   getReportQuery,
@@ -68,7 +70,11 @@ function useReportAreaCenter(bounds?: Bbox) {
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
     })
-    return { latitude, longitude, zoom }
+    return {
+      latitude: parseFloat(latitude.toFixed(8)),
+      longitude: parseFloat(longitude.toFixed(8)),
+      zoom: parseFloat(zoom.toFixed(8)),
+    }
   }, [bounds, map])
 }
 
@@ -109,6 +115,7 @@ function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
 
 export function useFetchReportArea() {
   const dispatch = useAppDispatch()
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
@@ -129,7 +136,10 @@ export function useFetchReportArea() {
     }
   }, [areaId, datasetId, dispatch, areaDataviews])
 
-  return useMemo(() => ({ status, data }), [status, data])
+  return useMemo(
+    () => ({ status: isVesselGroupReportLocation ? AsyncReducerStatus.Finished : status, data }),
+    [isVesselGroupReportLocation, status, data]
+  )
 }
 
 export function useFetchReportVessel() {

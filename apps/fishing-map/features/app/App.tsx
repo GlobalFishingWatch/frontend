@@ -137,6 +137,7 @@ function App() {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -177,7 +178,7 @@ function App() {
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
-        if (!isWorkspacePasswordProtected(workspace)) {
+        if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace)) {
           fitWorkspaceBounds(workspace)
         }
       }

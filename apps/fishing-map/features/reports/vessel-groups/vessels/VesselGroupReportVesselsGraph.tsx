@@ -149,7 +149,7 @@ export default function VesselGroupReportVesselsGraph({
   return (
     <Fragment>
       <div className={styles.graph} data-test="report-vessels-graph">
-        {data && (
+        {data && data.length > 0 && (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               width={500}

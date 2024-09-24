@@ -15,7 +15,11 @@ import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  isActivityReport,
+  selectActiveReportDataviews,
+  selectActiveTemporalgridDataviews,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import WorkspaceError, {
   ErrorPlaceHolder,
   WorkspaceLoginError,
@@ -47,17 +51,12 @@ import {
 } from 'features/reports/areas/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
-  isActivityReport,
-  selectActiveReportDataviews,
   selectReportAreaId,
   selectReportCategory,
   selectReportDatasetId,
 } from 'features/app/selectors/app.reports.selector'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import {
-  useComputeReportTimeSeries,
-  useSetTimeseries,
-} from 'features/reports/areas/reports-timeseries.hooks'
+import { useSetTimeseries } from 'features/reports/areas/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
@@ -66,12 +65,7 @@ import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/ar
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import ReportActivity from '../activity/ReportActivity'
-import {
-  useFetchReportArea,
-  useFetchReportVessel,
-  useFitAreaInViewport,
-  useHighlightReportArea,
-} from './reports.hooks'
+import { useFetchReportVessel, useFitAreaInViewport, useHighlightReportArea } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
 import ReportVessels from './vessels/ReportVessels'
@@ -367,7 +361,6 @@ function ActivityReport({ reportName }: { reportName: string }) {
 }
 
 export default function Report() {
-  useComputeReportTimeSeries()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const setTimeseries = useSetTimeseries()
@@ -406,7 +399,6 @@ export default function Report() {
   })
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const reportAreaError = useSelector(selectReportAreaStatus) === AsyncReducerStatus.Error
-  const { status } = useFetchReportArea()
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
@@ -414,15 +406,6 @@ export default function Report() {
   const hasReportBuffer = useSelector(selectHasReportBuffer)
 
   const fitAreaInViewport = useFitAreaInViewport()
-
-  // This ensures that the area is in viewport when then area load finishes
-  useEffect(() => {
-    if (status === AsyncReducerStatus.Finished && reportArea?.bounds) {
-      fitAreaInViewport()
-    }
-    // Reacting only to the area status and fitting bounds after load
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, reportArea])
 
   useEffect(() => {
     if (reportArea && !hasReportBuffer) {

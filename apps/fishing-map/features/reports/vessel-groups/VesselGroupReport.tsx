@@ -13,6 +13,8 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import VGREvents from 'features/reports/events/VGREvents'
+import ReportActivity from 'features/reports/activity/ReportActivity'
+import { useFitAreaInViewport } from '../areas/reports.hooks'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'
@@ -32,6 +34,7 @@ function VesselGroupReport() {
   const reportDataview = useSelector(selectVGRDataview)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
+  const fitAreaInViewport = useFitAreaInViewport()
 
   useEffect(() => {
     fetchVesselGroupReport(vesselGroupId)
@@ -54,8 +57,11 @@ function VesselGroupReport() {
         category: TrackCategory.VesselGroupReport,
         action: `click_${tab.id}_tab`,
       })
+      if (tab.id === 'activity') {
+        fitAreaInViewport()
+      }
     },
-    [dispatchQueryParams]
+    [dispatchQueryParams, fitAreaInViewport]
   )
 
   const sectionTabs: Tab<VGRSection>[] = useMemo(
@@ -73,8 +79,7 @@ function VesselGroupReport() {
       {
         id: 'activity',
         title: t('common.activity', 'Activity'),
-        disabled: true,
-        content: <p>Coming soon</p>,
+        content: <ReportActivity />,
       },
       {
         id: 'events',

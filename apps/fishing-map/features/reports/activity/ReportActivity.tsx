@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReportActivityGraphSelector from 'features/reports/activity/ReportActivityGraphSelector'
@@ -6,16 +6,22 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   getReportGraphMode,
   ReportGraphProps,
+  useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
 } from 'features/reports/areas/reports-timeseries.hooks'
-import { selectTimeComparisonValues } from 'features/reports/areas/reports.selectors'
+import {
+  selectReportArea,
+  selectTimeComparisonValues,
+} from 'features/reports/areas/reports.selectors'
 import ReportActivityPlaceholder from 'features/reports/areas/placeholders/ReportActivityPlaceholder'
 import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectReportActivityGraph } from '../areas/reports.config.selectors'
 import { ReportActivityGraph } from '../areas/reports.types'
+import { useFetchReportArea, useFitAreaInViewport } from '../areas/reports.hooks'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
@@ -39,7 +45,25 @@ const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> |
 }
 
 const emptyGraphData = {} as ReportGraphProps
+
 export default function ReportActivity() {
+  useComputeReportTimeSeries()
+  const reportArea = useSelector(selectReportArea)
+  const { status } = useFetchReportArea()
+
+  const fitAreaInViewport = useFitAreaInViewport()
+
+  // This ensures that the area is in viewport when then area load finishes
+  useEffect(() => {
+    if (status === AsyncReducerStatus.Finished && reportArea?.bounds) {
+      requestAnimationFrame(() => {
+        fitAreaInViewport()
+      })
+    }
+    // Reacting only to the area status and fitting bounds after load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, reportArea])
+
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)

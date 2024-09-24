@@ -33,11 +33,13 @@ import { sortStrings } from 'utils/shared'
 import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
 import {
   EMPTY_API_VALUES,
+  ENTIRE_WORLD_REPORT_AREA,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
 } from 'features/reports/areas/reports.config'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
 import {
   selectReportVesselFilter,
@@ -506,10 +508,19 @@ export const selectHasReportBuffer = createSelector(
 )
 
 export const selectReportArea = createSelector(
-  [selectReportAreaData, selectHasReportBuffer, selectReportBufferArea],
-  (area, hasReportBuffer, bufferedArea) => {
-    if (!area) return null
-    if (!hasReportBuffer) return area
-    return bufferedArea
+  [
+    selectReportAreaData,
+    selectHasReportBuffer,
+    selectReportBufferArea,
+    selectIsVesselGroupReportLocation,
+  ],
+  (area, hasReportBuffer, bufferedArea, isVesselGroupReportLocation) => {
+    if (isVesselGroupReportLocation) {
+      return ENTIRE_WORLD_REPORT_AREA
+    }
+    if (hasReportBuffer) {
+      return bufferedArea
+    }
+    return area
   }
 )

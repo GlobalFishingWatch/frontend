@@ -33,11 +33,12 @@ import {
   selectShowTimeComparison,
 } from 'features/reports/areas/reports.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { AreaGeometry } from 'features/areas/areas.slice'
+import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { useFilterCellsByPolygonWorker } from 'features/reports/areas/reports-geo.utils.workers.hooks'
 import { TimeRange } from 'features/timebar/timebar.slice'
 import { ReportActivityGraph, ReportCategory } from './reports.types'
 import { selectReportActivityGraph, selectReportTimeComparison } from './reports.config.selectors'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from './reports.config'
 
 interface EvolutionGraphData {
   date: string
@@ -158,15 +159,19 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   ])
 
   const updateFeaturesFiltered = useCallback(
-    async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
+    async (instances: FourwingsLayer[], area: Area<AreaGeometry>, mode?: 'point' | 'cell') => {
       setFeaturesFiltered([])
+
       for (const instance of instances) {
         const features = instance.getData() as FourwingsFeature[]
-        const filteredInstanceFeatures = await filterCellsByPolygon({
-          layersCells: [features],
-          polygon,
-          mode,
-        })
+        const filteredInstanceFeatures =
+          area.id === ENTIRE_WORLD_REPORT_AREA_ID
+            ? ([{ contained: features, overlapping: [] }] as FilteredPolygons[])
+            : await filterCellsByPolygon({
+                layersCells: [features],
+                polygon: area.geometry!,
+                mode,
+              })
         setFeaturesFiltered((prev) => [...prev, filteredInstanceFeatures])
       }
     },
@@ -175,15 +180,11 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   useEffect(() => {
     if (area?.geometry && layersLoaded && featuresFilteredDirtyRef.current && instances.length) {
-      updateFeaturesFiltered(
-        instances,
-        area.geometry,
-        reportCategory === 'environment' ? 'point' : 'cell'
-      )
+      updateFeaturesFiltered(instances, area, reportCategory === 'environment' ? 'point' : 'cell')
       featuresFilteredDirtyRef.current = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.geometry, reportCategory, layersLoaded, reportBufferHash])
+  }, [area, reportCategory, layersLoaded, reportBufferHash])
 
   const computeTimeseries = useCallback(
     (

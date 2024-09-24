@@ -4,6 +4,7 @@ import {
   REPORT_VESSELS_PER_PAGE,
 } from 'data/config'
 import { BufferUnit, BufferOperation } from 'types'
+import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { AreaReportState } from './reports.types'
 
 export const REPORT_BUFFER_FEATURE_ID: string = 'buffer'
@@ -39,4 +40,25 @@ export const DEFAULT_AREA_REPORT_STATE: AreaReportState = {
   reportBufferValue: undefined,
   reportBufferUnit: undefined,
   reportBufferOperation: undefined,
+}
+
+export const ENTIRE_WORLD_REPORT_AREA_ID = 'world'
+export const ENTIRE_WORLD_REPORT_AREA: Area<AreaGeometry> = {
+  id: ENTIRE_WORLD_REPORT_AREA_ID,
+  name: 'Entire World',
+  type: 'Feature',
+  bounds: [-180, -90, 180, 90],
+  geometry: {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [-180, -90],
+        [180, -90],
+        [180, 90],
+        [-180, 90],
+        [-180, -90],
+      ],
+    ],
+  },
+  properties: {},
 }
