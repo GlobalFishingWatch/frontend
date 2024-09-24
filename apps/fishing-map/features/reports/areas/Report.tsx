@@ -27,7 +27,7 @@ import { getReportCategoryFromDataview } from 'features/reports/areas/reports.ut
 import { resetReportData, selectReportVesselsStatus } from 'features/reports/areas/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
-import { useSetTimeseries } from 'features/reports/areas/reports-timeseries.hooks'
+import { useSetTimeseries } from 'features/reports/activity/reports-activity-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import ActivityReport from 'features/reports/activity/ReportActivity'
 import ReportTitle from 'features/reports/areas/title/ReportTitle'

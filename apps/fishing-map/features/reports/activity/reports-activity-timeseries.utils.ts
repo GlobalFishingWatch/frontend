@@ -5,8 +5,11 @@ import {
 } from '@globalfishingwatch/deck-layers'
 import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { ReportGraphMode, ReportGraphProps } from 'features/reports/areas/reports-timeseries.hooks'
-import { FilteredPolygons } from 'features/reports/areas/reports-geo.utils'
+import {
+  ReportGraphMode,
+  ReportGraphProps,
+} from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { FilteredPolygons } from 'features/reports/activity/reports-activity-geo.utils'
 import { DateTimeSeries } from 'features/reports/areas/reports.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { ComparisonGraphData } from 'features/reports/activity/ReportActivityPeriodComparisonGraph'

@@ -43,6 +43,7 @@ export const DEFAULT_AREA_REPORT_STATE: AreaReportState = {
 }
 
 export const ENTIRE_WORLD_REPORT_AREA_ID = 'world'
+
 export const ENTIRE_WORLD_REPORT_AREA: Area<AreaGeometry> = {
   id: ENTIRE_WORLD_REPORT_AREA_ID,
   name: 'Entire World',

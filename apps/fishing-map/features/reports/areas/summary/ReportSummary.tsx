@@ -14,8 +14,8 @@ import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import {
   useReportFilteredTimeSeries,
   useReportFeaturesLoading,
-} from 'features/reports/areas/reports-timeseries.hooks'
-import { formatEvolutionData } from 'features/reports/areas/reports-timeseries.utils'
+} from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { formatEvolutionData } from 'features/reports/activity/reports-activity-timeseries.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import ReportSummaryPlaceholder from 'features/reports/areas/placeholders/ReportSummaryPlaceholder'
@@ -27,7 +27,7 @@ import {
   selectReportVesselsDateRangeHash,
 } from 'features/reports/areas/report.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { useTimeCompareTimeDescription } from 'features/reports/areas/reports-timecomparison.hooks'
+import { useTimeCompareTimeDescription } from 'features/reports/activity/reports-activity-timecomparison.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectReportVesselsHours,

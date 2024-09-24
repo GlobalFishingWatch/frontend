@@ -9,7 +9,7 @@ import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
-} from 'features/reports/areas/reports-timeseries.hooks'
+} from 'features/reports/activity/reports-activity-timeseries.hooks'
 import {
   selectReportArea,
   selectTimeComparisonValues,

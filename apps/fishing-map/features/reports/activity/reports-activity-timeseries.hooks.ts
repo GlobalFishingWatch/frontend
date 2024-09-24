@@ -20,12 +20,12 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { FilteredPolygons } from 'features/reports/areas/reports-geo.utils'
+import { FilteredPolygons } from 'features/reports/activity/reports-activity-geo.utils'
 import {
   FeaturesToTimeseriesParams,
   featuresToTimeseries,
   filterTimeseriesByTimerange,
-} from 'features/reports/areas/reports-timeseries.utils'
+} from 'features/reports/activity/reports-activity-timeseries.utils'
 import { useReportAreaInViewport } from 'features/reports/areas/reports.hooks'
 import {
   selectReportArea,
@@ -34,11 +34,14 @@ import {
 } from 'features/reports/areas/reports.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
-import { useFilterCellsByPolygonWorker } from 'features/reports/areas/reports-geo.utils.workers.hooks'
+import { useFilterCellsByPolygonWorker } from 'features/reports/activity/reports-activity-geo.utils.workers.hooks'
 import { TimeRange } from 'features/timebar/timebar.slice'
-import { ReportActivityGraph, ReportCategory } from './reports.types'
-import { selectReportActivityGraph, selectReportTimeComparison } from './reports.config.selectors'
-import { ENTIRE_WORLD_REPORT_AREA_ID } from './reports.config'
+import { ReportActivityGraph, ReportCategory } from '../areas/reports.types'
+import {
+  selectReportActivityGraph,
+  selectReportTimeComparison,
+} from '../areas/reports.config.selectors'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from '../areas/reports.config'
 
 interface EvolutionGraphData {
   date: string

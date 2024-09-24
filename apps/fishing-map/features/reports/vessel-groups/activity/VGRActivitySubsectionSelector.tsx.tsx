@@ -4,7 +4,7 @@ import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VGRActivitySubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { useReportFeaturesLoading } from 'features/reports/areas/reports-timeseries.hooks'
+import { useReportFeaturesLoading } from 'features/reports/activity/reports-activity-timeseries.hooks'
 
 function VGRActivitySubsectionSelector() {
   const { t } = useTranslation()

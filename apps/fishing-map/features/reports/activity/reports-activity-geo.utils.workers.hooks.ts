@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { FilterByPolygomParams, FilteredPolygons } from './reports-geo.utils'
+import { FilterByPolygomParams, FilteredPolygons } from './reports-activity-geo.utils'
 
 export function useFilterCellsByPolygonWorker() {
   const workerRef = useRef<Worker>()
 
   useEffect(() => {
-    workerRef.current = new Worker(new URL('./reports-geo.utils.workers.ts', import.meta.url))
+    workerRef.current = new Worker(
+      new URL('./reports-activity-geo.utils.workers.ts', import.meta.url)
+    )
     return () => {
       workerRef.current?.terminate()
     }

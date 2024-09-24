@@ -11,7 +11,7 @@ import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
   useTimeseriesStats,
-} from 'features/reports/areas/reports-timeseries.hooks'
+} from 'features/reports/activity/reports-activity-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/areas/placeholders/ReportActivityPlaceholder'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nDate } from 'features/i18n/i18nDate'
