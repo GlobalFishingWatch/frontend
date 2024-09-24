@@ -10,6 +10,7 @@ import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import { ReportVesselWithDatasets } from 'features/reports/areas/reports.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { sortByCreationDate } from 'utils/dates'
 import {
   selectVesselGroupsStatusId,
   setNewVesselGroupSearchVessels,
@@ -32,16 +33,15 @@ export const useVesselGroupsOptions = () => {
   const vesselGroupsStatusId = useSelector(selectVesselGroupsStatusId)
 
   return useMemo(() => {
-    const vesselGroupsOptions: (MultiSelectOption & { loading?: boolean })[] = vesselGroups.map(
-      (vesselGroup) => ({
+    const vesselGroupsOptions: (MultiSelectOption & { loading?: boolean })[] =
+      sortByCreationDate<VesselGroup>(vesselGroups).map((vesselGroup) => ({
         id: vesselGroup.id.toString(),
         label: t('vesselGroup.label', `{{name}} ({{count}} IDs)`, {
           name: getVesselGroupLabel(vesselGroup),
           count: vesselGroup.vessels.length,
         }),
         loading: vesselGroup.id === vesselGroupsStatusId,
-      })
-    )
+      }))
     return vesselGroupsOptions
   }, [t, vesselGroups, vesselGroupsStatusId])
 }
