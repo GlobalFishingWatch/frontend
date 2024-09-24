@@ -16,6 +16,7 @@ import {
   selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+  selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
@@ -252,6 +253,7 @@ export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
+  const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
@@ -259,6 +261,7 @@ export const useTimebarVisualisation = () => {
   // const prevTimebarVisualisation = usePrevious(timebarVisualisation)
   const prevActiveHeatmapDataviewsNum = usePrevious(activeActivityDataviews.length)
   const prevActiveDetectionsDataviewsNum = usePrevious(activeDetectionsDataviews.length)
+  const prevActiveVesselGroupDataviewsNum = usePrevious(activeVesselGroupDataviews.length)
   const prevActiveTrackDataviewsNum = usePrevious(activeTrackDataviews.length)
   const prevactiveEnvDataviewsNum = usePrevious(activeEnvDataviews.length)
 
@@ -270,6 +273,8 @@ export const useTimebarVisualisation = () => {
     ) {
       if (activeDetectionsDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
+      } else if (activeVesselGroupDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews?.length) {
@@ -283,6 +288,8 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
       } else if (activeDetectionsDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
+      } else if (activeVesselGroupDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeEnvDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
@@ -294,6 +301,8 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
       } else if (activeDetectionsDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
+      } else if (activeVesselGroupDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       }
@@ -303,6 +312,11 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
       } else if (activeDetectionsDataviews.length === 1 && prevActiveDetectionsDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
+      } else if (
+        activeVesselGroupDataviews.length === 1 &&
+        prevActiveVesselGroupDataviewsNum === 0
+      ) {
+        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeTrackDataviews.length >= 1 && prevActiveTrackDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews.length === 1 && prevactiveEnvDataviewsNum === 0) {
@@ -313,6 +327,7 @@ export const useTimebarVisualisation = () => {
   }, [
     activeActivityDataviews,
     activeDetectionsDataviews,
+    activeVesselGroupDataviews,
     activeTrackDataviews,
     activeEnvDataviews,
     hasChangedSettingsOnce,
