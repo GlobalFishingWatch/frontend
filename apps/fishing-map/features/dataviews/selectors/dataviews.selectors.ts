@@ -17,7 +17,6 @@ import {
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
 } from 'routes/routes.selectors'
-import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
@@ -29,12 +28,12 @@ import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-gr
 import { ReportCategory } from 'features/reports/areas/reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
 import {
-  selectContextAreasDataviews,
-  selectActivityDataviews,
-  selectDetectionsDataviews,
-  selectEnvironmentalDataviews,
-  selectEventsDataviews,
-  selectVesselGroupDataviews,
+  selectActiveActivityDataviews,
+  selectActiveContextAreasDataviews,
+  selectActiveEventsDataviews,
+  selectActiveVesselsDataviews,
+  selectActiveEnvironmentalDataviews,
+  selectActiveDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectDataviewInstancesResolved,
@@ -73,18 +72,6 @@ export const selectBasemapLabelsDataviewInstance = createSelector(
   }
 )
 
-const selectActiveContextAreasDataviews = createSelector(
-  [selectContextAreasDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
-)
-
-export const selectActiveActivityDataviews = createSelector(
-  [selectActivityDataviews],
-  (dataviews): UrlDataviewInstance[] => {
-    return dataviews?.filter((d) => d.config?.visible)
-  }
-)
-
 export const selectActivityMergedDataviewId = createSelector(
   [selectActiveActivityDataviews],
   (dataviews): string => {
@@ -104,16 +91,6 @@ export const selectActiveReportActivityDataviews = createSelector(
   }
 )
 
-export const selectActiveDetectionsDataviews = createSelector(
-  [selectDetectionsDataviews],
-  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
-)
-
-export const selectActiveVesselGroupDataviews = createSelector(
-  [selectVesselGroupDataviews],
-  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
-)
-
 export const selectDetectionsMergedDataviewId = createSelector(
   [selectActiveDetectionsDataviews],
   (dataviews): string => {
@@ -127,11 +104,6 @@ export const selectActiveActivityAndDetectionsDataviews = createSelector(
     ...activityDataviews,
     ...detectionsDataviews,
   ]
-)
-
-export const selectActiveEnvironmentalDataviews = createSelector(
-  [selectEnvironmentalDataviews],
-  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
@@ -238,10 +210,6 @@ export const selectActiveTemporalgridDataviews: (
   (activityDataviews = [], detectionsDataviews = [], environmentalDataviews = []) => {
     return [...activityDataviews, ...detectionsDataviews, ...environmentalDataviews]
   }
-)
-
-const selectActiveEventsDataviews = createSelector([selectEventsDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectHasReportLayersVisible = createSelector(

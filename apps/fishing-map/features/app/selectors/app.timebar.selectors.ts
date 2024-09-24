@@ -1,10 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import {
+  selectActiveVesselsDataviews,
   selectEnvironmentalDataviews,
   selectVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { TimeRange } from 'features/timebar/timebar.slice'
 import {
   selectWorkspaceStateProperty,

@@ -12,11 +12,8 @@ import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
-  selectActiveActivityDataviews,
-  selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
   selectActiveReportActivityDataviews,
-  selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectActivityVisualizationMode,
@@ -25,6 +22,11 @@ import {
 import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import {
+  selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
+  selectActiveVesselGroupDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 
 export const selectActiveActivityDataviewsByVisualisation = (
   timebarVisualisation: TimebarVisualisations

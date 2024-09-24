@@ -14,7 +14,6 @@ import {
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveReportActivityDataviews,
-  selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
@@ -26,6 +25,7 @@ import { useFitAreaInViewport } from 'features/reports/areas/reports.hooks'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
+import { selectActiveDetectionsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   changeSettings,
   setHighlightedEvents,

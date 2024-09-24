@@ -15,10 +15,7 @@ import { WORKSPACE_SEARCH } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  selectActiveVesselsDataviews,
-  selectVesselsDataviews,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   hasTracksWithNoData,
@@ -39,6 +36,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'

@@ -10,9 +10,7 @@ import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveReportActivityDataviews,
-  selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
-  selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
@@ -22,11 +20,13 @@ import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-dep
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
-import {
-  selectActiveTrackDataviews,
-  selectActiveVesselsDataviews,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { formatInfoField } from 'utils/info'
+import {
+  selectActiveDetectionsDataviews,
+  selectActiveVesselGroupDataviews,
+  selectActiveVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   useTimebarVisualisationConnect,
   useTimebarGraphConnect,
