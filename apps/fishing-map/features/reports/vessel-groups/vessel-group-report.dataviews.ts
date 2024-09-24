@@ -105,10 +105,12 @@ export const getVesselGroupActivityDataviewInstance = ({
   vesselGroupId,
   color,
   colorRamp,
+  dataviewId,
 }: {
   vesselGroupId: string
   color?: string
   colorRamp?: ColorRampId
+  dataviewId: typeof FISHING_DATAVIEW_SLUG | typeof PRESENCE_DATAVIEW_SLUG
 }): DataviewInstance<DataviewType> | undefined => {
   if (vesselGroupId) {
     return {
@@ -122,7 +124,7 @@ export const getVesselGroupActivityDataviewInstance = ({
           'vessel-groups': [vesselGroupId],
         },
       },
-      dataviewId: FISHING_DATAVIEW_SLUG,
+      dataviewId,
     }
   }
 }

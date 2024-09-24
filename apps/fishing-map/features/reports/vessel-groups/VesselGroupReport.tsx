@@ -13,7 +13,7 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import VGREvents from 'features/reports/events/VGREvents'
-import ReportActivity from 'features/reports/activity/ReportActivity'
+import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useFitAreaInViewport } from '../areas/reports.hooks'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
@@ -79,7 +79,7 @@ function VesselGroupReport() {
       {
         id: 'activity',
         title: t('common.activity', 'Activity'),
-        content: <ReportActivity />,
+        content: <VGRActivity />,
       },
       {
         id: 'events',

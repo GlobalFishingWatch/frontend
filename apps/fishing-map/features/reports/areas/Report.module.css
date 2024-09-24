@@ -1,3 +1,7 @@
+.container {
+  padding: var(--space-M);
+}
+
 .error {
   width: 100%;
   text-align: center;

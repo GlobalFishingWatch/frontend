@@ -52,6 +52,8 @@ import {
 } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { ReportCategory } from 'features/reports/areas/reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
+import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { FISHING_DATAVIEW_SLUG, PRESENCE_DATAVIEW_SLUG } from 'data/workspaces'
 
 const EMPTY_ARRAY: [] = []
 
@@ -64,6 +66,7 @@ export const selectDataviewInstancesMerged = createSelector(
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
     selectIsVesselGroupReportLocation,
+    selectVGRActivitySubsection,
     selectReportVesselGroupId,
     selectVesselId,
     selectVesselInfoData,
@@ -76,6 +79,7 @@ export const selectDataviewInstancesMerged = createSelector(
     isAnyVesselLocation,
     isVesselLocation,
     isVesselGroupReportLocation,
+    vGRActivitySubsection,
     reportVesselGroupId,
     urlVesselId,
     vessel
@@ -132,6 +136,8 @@ export const selectDataviewInstancesMerged = createSelector(
         vesselGroupId: reportVesselGroupId,
         color: vesselGroupDataviewInstance?.config?.color,
         colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
+        dataviewId:
+          vGRActivitySubsection === 'presence' ? PRESENCE_DATAVIEW_SLUG : FISHING_DATAVIEW_SLUG,
       })
       if (activityVGRInstance) {
         mergedDataviewInstances.push(activityVGRInstance)
