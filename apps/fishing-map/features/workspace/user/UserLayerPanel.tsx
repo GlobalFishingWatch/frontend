@@ -2,7 +2,12 @@ import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetStatus, DatasetGeometryType, Dataset } from '@globalfishingwatch/api-types'
+import {
+  DatasetStatus,
+  DatasetGeometryType,
+  Dataset,
+  DataviewType,
+} from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
@@ -221,6 +226,12 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
                 onColorClick={changeColor}
                 onToggleClick={onToggleColorOpen}
                 onClickOutside={closeExpandedContainer}
+                colorType={
+                  dataview.config?.type === DataviewType.HeatmapStatic ||
+                  dataview.config?.type === DataviewType.HeatmapAnimated
+                    ? 'fill'
+                    : 'line'
+                }
               />
             </Fragment>
           )}

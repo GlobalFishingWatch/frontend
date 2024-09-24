@@ -112,6 +112,11 @@ export function ProjectForm({
           value={bqTable}
           onChange={(e) => handleChange({ value: e.target.value, field: 'bqTable' })}
         />
+        <span className={styles.preview}>
+          <ul className={styles.bulletedList}>
+            <li>{`Please follow the following format: <project>.<dataset>.<table>`}</li>
+          </ul>
+        </span>
       </div>
       <div className={styles.projectEditProperty}>
         <label>

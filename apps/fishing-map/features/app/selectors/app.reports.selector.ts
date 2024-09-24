@@ -92,9 +92,23 @@ export const selectReportVesselGraph = createSelector(
   }
 )
 
+export const selectReportVesselPage = createSelector(
+  [selectWorkspaceStateProperty('reportVesselPage')],
+  (reportVesselPage): number => {
+    return typeof reportVesselPage === 'string' ? parseInt(reportVesselPage) : reportVesselPage
+  }
+)
+
+export const selectReportResultsPerPage = createSelector(
+  [selectWorkspaceStateProperty('reportResultsPerPage')],
+  (reportResultsPerPage): number => {
+    return typeof reportResultsPerPage === 'string'
+      ? parseInt(reportResultsPerPage)
+      : reportResultsPerPage
+  }
+)
+
 export const selectReportVesselFilter = selectWorkspaceStateProperty('reportVesselFilter')
-export const selectReportVesselPage = selectWorkspaceStateProperty('reportVesselPage')
-export const selectReportResultsPerPage = selectWorkspaceStateProperty('reportResultsPerPage')
 export const selectReportTimeComparison = selectWorkspaceStateProperty('reportTimeComparison')
 
 const selectReportBufferValueSelector = selectWorkspaceStateProperty('reportBufferValue')
