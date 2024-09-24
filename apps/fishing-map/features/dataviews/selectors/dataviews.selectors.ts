@@ -25,8 +25,8 @@ import {
   selectVGRSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { ReportCategory } from 'features/reports/areas/reports.types'
-import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveContextAreasDataviews,

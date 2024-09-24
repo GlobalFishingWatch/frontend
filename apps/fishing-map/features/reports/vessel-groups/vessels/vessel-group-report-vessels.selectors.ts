@@ -14,7 +14,7 @@ import {
   FILTER_PROPERTIES,
   FilterProperty,
   getVesselsFiltered,
-} from 'features/reports/areas/reports.utils'
+} from 'features/reports/areas/area-reports.utils'
 import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,

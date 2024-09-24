@@ -19,7 +19,7 @@ import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
-import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import {

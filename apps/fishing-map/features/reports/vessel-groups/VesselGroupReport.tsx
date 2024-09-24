@@ -14,7 +14,7 @@ import {
 } from 'features/timebar/timebar.hooks'
 import VGREvents from 'features/reports/events/VGREvents'
 import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
-import { useFitAreaInViewport } from '../areas/reports.hooks'
+import { useFitAreaInViewport } from '../areas/area-reports.hooks'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'

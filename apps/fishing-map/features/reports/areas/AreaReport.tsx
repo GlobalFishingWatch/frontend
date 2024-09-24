@@ -17,13 +17,13 @@ import {
   selectHasReportBuffer,
   selectReportArea,
   selectReportAreaStatus,
-} from 'features/reports/areas/reports.selectors'
+} from 'features/reports/areas/area-reports.selectors'
 import { TimebarVisualisations } from 'types'
 import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
-import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
   resetReportData,
   selectReportVesselsStatus,
@@ -34,11 +34,14 @@ import { useSetTimeseries } from 'features/reports/activity/reports-activity-tim
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import ActivityReport from 'features/reports/activity/ReportActivity'
 import ReportTitle from 'features/reports/areas/title/ReportTitle'
-import { ReportCategory } from 'features/reports/areas/reports.types'
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import ReportSummary from 'features/reports/areas/summary/ReportSummary'
 import ReportEnvironment from 'features/reports/areas/environment/ReportEnvironment'
-import { useFitAreaInViewport, useHighlightReportArea } from 'features/reports/areas/reports.hooks'
-import styles from 'features/reports/areas/Report.module.css'
+import {
+  useFitAreaInViewport,
+  useHighlightReportArea,
+} from 'features/reports/areas/area-reports.hooks'
+import styles from 'features/reports/areas/AreaReport.module.css'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 

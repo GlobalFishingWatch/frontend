@@ -11,7 +11,7 @@ import {
 import {
   selectReportPreviewBufferFeature,
   selectReportBufferFeature,
-} from 'features/reports/areas/reports.selectors'
+} from 'features/reports/areas/area-reports.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'

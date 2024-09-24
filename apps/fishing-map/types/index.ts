@@ -8,7 +8,7 @@ import {
   RulerData,
 } from '@globalfishingwatch/deck-layers'
 import { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
-import { AreaReportState, AreaReportStateProperty } from 'features/reports/areas/reports.types'
+import { AreaReportState, AreaReportStateProperty } from 'features/reports/areas/area-reports.types'
 import { VesselProfileState, VesselProfileStateProperty } from 'features/vessel/vessel.types'
 import {
   VesselGroupReportState,

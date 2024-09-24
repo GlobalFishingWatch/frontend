@@ -8,7 +8,7 @@ import { getVesselGroupLabel } from 'features/vessel-groups/vessel-groups.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import { VesselLastIdentity } from 'features/search/search.slice'
-import { ReportVesselWithDatasets } from 'features/reports/areas/reports.selectors'
+import { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { sortByCreationDate } from 'utils/dates'
 import {

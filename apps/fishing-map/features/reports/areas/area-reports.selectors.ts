@@ -18,10 +18,13 @@ import {
   getBufferedArea,
   getBufferedFeature,
   getReportCategoryFromDataview,
-} from 'features/reports/areas/reports.utils'
+} from 'features/reports/areas/area-reports.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
-import { EMPTY_API_VALUES, ENTIRE_WORLD_REPORT_AREA } from 'features/reports/areas/reports.config'
+import {
+  EMPTY_API_VALUES,
+  ENTIRE_WORLD_REPORT_AREA,
+} from 'features/reports/areas/area-reports.config'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
@@ -29,8 +32,11 @@ import {
   selectReportVesselsData,
   selectReportPreviewBuffer,
 } from '../activity/reports-activity.slice'
-import { selectReportActivityGraph, selectReportTimeComparison } from './reports.config.selectors'
-import { ReportCategory } from './reports.types'
+import {
+  selectReportActivityGraph,
+  selectReportTimeComparison,
+} from './area-reports.config.selectors'
+import { ReportCategory } from './area-reports.types'
 
 const EMPTY_ARRAY: [] = []
 

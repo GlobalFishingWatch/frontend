@@ -5,7 +5,7 @@ import {
 } from 'data/config'
 import { BufferUnit, BufferOperation } from 'types'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
-import { AreaReportState } from './reports.types'
+import { AreaReportState } from './area-reports.types'
 
 export const REPORT_BUFFER_FEATURE_ID: string = 'buffer'
 export const DEFAULT_BUFFER_VALUE: number = 50

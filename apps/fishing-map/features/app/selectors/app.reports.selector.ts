@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { selectActiveDataviewsCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { selectReportById } from 'features/reports/areas/reports.slice'
+import { selectReportById } from 'features/reports/areas/area-reports.slice'
 import {
   selectIsVesselGroupReportLocation,
   selectLocationAreaId,
@@ -17,8 +17,8 @@ import {
   selectReportBufferValueSelector,
   selectReportCategorySelector,
   selectReportVesselGraphSelector,
-} from 'features/reports/areas/reports.config.selectors'
-import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/reports.types'
+} from 'features/reports/areas/area-reports.config.selectors'
+import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import { WORLD_REGION_ID } from 'features/reports/activity/reports-activity.slice'
 
 export const selectCurrentReport = createSelector(

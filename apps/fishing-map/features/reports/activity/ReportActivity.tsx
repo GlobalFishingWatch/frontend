@@ -18,12 +18,12 @@ import {
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { selectReportDataviewsWithPermissions } from 'features/reports/areas/reports.selectors'
+import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
 import { selectHasReportVessels } from 'features/reports/activity/vessels/report-activity-vessels.selectors'
 import ReportVesselsPlaceholder from 'features/reports/areas/placeholders/ReportVesselsPlaceholder'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
-import { parseReportUrl } from 'features/reports/areas/reports.utils'
+import { parseReportUrl } from 'features/reports/areas/area-reports.utils'
 import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
@@ -38,15 +38,18 @@ import {
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/areas/reports.config'
+import {
+  LAST_REPORTS_STORAGE_KEY,
+  LastReportStorage,
+} from 'features/reports/areas/area-reports.config'
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import ReportActivityGraph from 'features/reports/activity/ReportActivityGraph'
-import { useFetchReportVessel } from 'features/reports/areas/reports.hooks'
+import { useFetchReportVessel } from 'features/reports/areas/area-reports.hooks'
 import ReportVessels from 'features/reports/activity/vessels/ReportVessels'
 import ReportDownload from 'features/reports/activity/download/ReportDownload'
-import styles from 'features/reports/areas/Report.module.css'
+import styles from 'features/reports/areas/AreaReport.module.css'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 

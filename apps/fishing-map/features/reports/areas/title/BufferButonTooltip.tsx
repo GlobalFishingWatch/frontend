@@ -8,10 +8,10 @@ import {
   NAUTICAL_MILES,
   DISSOLVE,
   DIFFERENCE,
-} from 'features/reports/areas/reports.config'
+} from 'features/reports/areas/area-reports.config'
 import { BufferOperation, BufferUnit } from 'types'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
-import { selectReportPreviewBufferFeature } from 'features/reports/areas/reports.selectors'
+import { selectReportPreviewBufferFeature } from 'features/reports/areas/area-reports.selectors'
 import styles from './ReportTitle.module.css'
 
 type BufferButonTooltipProps = {

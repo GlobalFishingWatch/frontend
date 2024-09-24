@@ -50,8 +50,8 @@ import {
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
 } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { ReportCategory } from 'features/reports/areas/reports.types'
-import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { FISHING_DATAVIEW_SLUG, PRESENCE_DATAVIEW_SLUG } from 'data/workspaces'
 

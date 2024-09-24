@@ -13,7 +13,7 @@ import {
 import { createDeepEqualSelector } from 'utils/selectors'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
-import { getReportCategoryFromDataview } from 'features/reports/areas/reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
   selectVGRSection,
   selectVGRSubsection,

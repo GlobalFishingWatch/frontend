@@ -28,9 +28,9 @@ import {
   DEFAULT_POINT_BUFFER_VALUE,
   DIFFERENCE,
   REPORT_BUFFER_FEATURE_ID,
-} from './reports.config'
-import { ReportVesselWithDatasets } from './reports.selectors'
-import { ReportCategory } from './reports.types'
+} from './area-reports.config'
+import { ReportVesselWithDatasets } from './area-reports.selectors'
+import { ReportCategory } from './area-reports.types'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
 

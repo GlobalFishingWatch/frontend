@@ -18,7 +18,7 @@ import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { formatEvolutionData } from 'features/reports/activity/reports-activity-timeseries.utils'
 import { ReportActivityProps } from 'features/reports/activity/ReportActivityGraph'
-import { tickFormatter } from '../areas/reports.utils'
+import { tickFormatter } from '../areas/area-reports.utils'
 import styles from './ReportActivityEvolution.module.css'
 
 type ReportGraphTooltipProps = {

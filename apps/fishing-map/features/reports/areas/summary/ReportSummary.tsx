@@ -8,8 +8,8 @@ import { Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
-import { FIELDS, getCommonProperties } from 'features/reports/areas/reports.utils'
-import { ReportActivityUnit } from 'features/reports/areas/Report'
+import { FIELDS, getCommonProperties } from 'features/reports/areas/area-reports.utils'
+import { ReportActivityUnit } from 'features/reports/areas/AreaReport'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import {
   useReportFilteredTimeSeries,
@@ -33,8 +33,8 @@ import {
   selectReportVesselsHours,
   selectReportVesselsNumber,
 } from 'features/reports/activity/vessels/report-activity-vessels.selectors'
-import { selectReportTimeComparison } from '../reports.config.selectors'
-import { ReportCategory } from '../reports.types'
+import { selectReportTimeComparison } from '../area-reports.config.selectors'
+import { ReportCategory } from '../area-reports.types'
 import styles from './ReportSummary.module.css'
 
 type ReportSummaryProps = {

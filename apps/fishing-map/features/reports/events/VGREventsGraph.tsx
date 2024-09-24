@@ -16,7 +16,7 @@ import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { tickFormatter } from 'features/reports/areas/reports.utils'
+import { tickFormatter } from 'features/reports/areas/area-reports.utils'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import styles from './VGREventsGraph.module.css'
 

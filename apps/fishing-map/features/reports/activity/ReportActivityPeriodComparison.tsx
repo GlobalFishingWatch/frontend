@@ -5,13 +5,16 @@ import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
 import { useReportTimeCompareConnect } from 'features/reports/activity/reports-activity-timecomparison.hooks'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { selectReportAreaIds } from 'features/reports/areas/reports.selectors'
+import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import Hint from 'features/help/Hint'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { MAX_MONTHS_TO_COMPARE, MAX_DAYS_TO_COMPARE } from 'features/reports/areas/reports.config'
-import { selectReportTimeComparison } from '../areas/reports.config.selectors'
+import {
+  MAX_MONTHS_TO_COMPARE,
+  MAX_DAYS_TO_COMPARE,
+} from 'features/reports/areas/area-reports.config'
+import { selectReportTimeComparison } from '../areas/area-reports.config.selectors'
 import styles from './ReportActivityBeforeAfter.module.css'
 
 export default function ReportActivityGraph() {

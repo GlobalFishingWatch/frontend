@@ -10,14 +10,17 @@ import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
 } from 'features/reports/activity/reports-activity-timeseries.hooks'
-import { selectTimeComparisonValues } from 'features/reports/areas/reports.selectors'
+import { selectTimeComparisonValues } from 'features/reports/areas/area-reports.selectors'
 import ReportActivityPlaceholder from 'features/reports/areas/placeholders/ReportActivityPlaceholder'
 import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { useFitAreaInViewport, useReportAreaBounds } from 'features/reports/areas/reports.hooks'
-import { selectReportActivityGraph } from '../areas/reports.config.selectors'
-import { ReportActivityGraph } from '../areas/reports.types'
+import {
+  useFitAreaInViewport,
+  useReportAreaBounds,
+} from 'features/reports/areas/area-reports.hooks'
+import { selectReportActivityGraph } from '../areas/area-reports.config.selectors'
+import { ReportActivityGraph } from '../areas/area-reports.types'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'

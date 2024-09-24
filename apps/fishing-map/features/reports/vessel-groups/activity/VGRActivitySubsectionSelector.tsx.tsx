@@ -5,7 +5,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { VGRActivitySubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { useReportFeaturesLoading } from 'features/reports/activity/reports-activity-timeseries.hooks'
-import { useFitAreaInViewport } from 'features/reports/areas/reports.hooks'
+import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import { resetReportData } from 'features/reports/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 

@@ -8,22 +8,22 @@ import {
 } from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import { getVesselsFiltered } from 'features/reports/areas/reports.utils'
+import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
-} from 'features/reports/areas/reports.config'
+} from 'features/reports/areas/area-reports.config'
 import {
   ReportVesselWithDatasets,
   selectReportActivityFlatten,
   selectReportDataviewsWithPermissions,
-} from 'features/reports/areas/reports.selectors'
+} from 'features/reports/areas/area-reports.selectors'
 import {
   selectReportResultsPerPage,
   selectReportVesselFilter,
   selectReportVesselPage,
-} from 'features/reports/areas/reports.config.selectors'
+} from 'features/reports/areas/area-reports.config.selectors'
 import {
   cleanFlagState,
   cleanVesselOrGearType,

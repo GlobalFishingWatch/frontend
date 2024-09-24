@@ -30,7 +30,7 @@ import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useHasReportTimeseries } from 'features/reports/activity/reports-activity-timeseries.hooks'
-import { selectReportAreaStatus } from 'features/reports/areas/reports.selectors'
+import { selectReportAreaStatus } from 'features/reports/areas/area-reports.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   MAP_VIEW,

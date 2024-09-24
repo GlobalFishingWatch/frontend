@@ -30,7 +30,7 @@ import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
-} from 'features/reports/areas/reports.config'
+} from 'features/reports/areas/area-reports.config'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import styles from '../Popup.module.css'
 

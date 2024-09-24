@@ -17,15 +17,15 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportVesselFilter } from 'features/reports/areas/reports.config.selectors'
+import { selectReportVesselFilter } from 'features/reports/areas/area-reports.config.selectors'
 import {
   selectReportAreaName,
   ReportVesselWithDatasets,
-} from 'features/reports/areas/reports.selectors'
+} from 'features/reports/areas/area-reports.selectors'
 import {
   parseReportVesselsToIdentity,
   getVesselsFiltered,
-} from 'features/reports/areas/reports.utils'
+} from 'features/reports/areas/area-reports.utils'
 import styles from './ReportVesselsTableFooter.module.css'
 import {
   selectReportVesselsListWithAllInfo,
