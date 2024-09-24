@@ -5,13 +5,13 @@ import { uniq } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
-import { StatField, StatFields, StatType, StatsParams } from '@globalfishingwatch/api-types'
+import { StatFields, StatType, StatsParams } from '@globalfishingwatch/api-types'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 
 type FetchDataviewStatsParams = {
   timerange: TimeRange
   dataview: UrlDataviewInstance
-  fields?: StatField[]
+  fields?: StatsParams[]
 }
 
 interface CustomBaseQueryArg extends FetchBaseQueryArgs {
@@ -26,7 +26,6 @@ const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ que
   ].join('-')
 }
 
-const DEFAULT_STATS_FIELDS: StatsParams[] = ['VESSEL-IDS', 'FLAGS']
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
@@ -36,7 +35,7 @@ export const dataviewStatsApi = createApi({
   endpoints: (builder) => ({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
       serializeQueryArgs: serializeStatsDataviewKey,
-      query: ({ dataview, timerange, fields = DEFAULT_STATS_FIELDS }) => {
+      query: ({ dataview, timerange, fields }) => {
         const datasets = dataview.datasets?.filter((dataset) =>
           dataview.config?.datasets?.includes(dataset.id)
         )
@@ -52,17 +51,25 @@ export const dataviewStatsApi = createApi({
         )
         const statsParams = {
           datasets: [dataview.config?.datasets?.join(',') || []],
-          filters: [dataview.config?.filter] || [],
-          'vessel-groups': [dataview.config?.['vessel-groups']] || [],
           'date-range': [laterStartDate.toISODate(), earlierEndDate.toISODate()].join(','),
+          ...(fields?.length && {
+            fields: fields.join(','),
+          }),
+          ...(dataview.config?.filter && { filters: [dataview.config?.filter] || [] }),
+          ...(dataview.config?.['vessel-groups'] && {
+            'vessel-groups': [dataview.config?.['vessel-groups']] || [],
+          }),
         }
         return {
-          url: `?fields=${fields.join(',')}&${stringify(statsParams, {
+          url: `?${stringify(statsParams, {
             arrayFormat: 'indices',
           })}`,
         }
       },
       transformResponse: (response: StatFields[], meta, args) => {
+        if (!args.fields?.length) {
+          return response?.[0]
+        }
         const units = uniq(args?.dataview?.datasets?.flatMap((d) => d.unit || []) || [])
         if (units.length > 1) {
           console.warn('Incompatible datasets stats unit, using the first type', units[0])

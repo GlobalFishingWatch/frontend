@@ -10,18 +10,14 @@ import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
 } from 'features/reports/activity/reports-activity-timeseries.hooks'
-import {
-  selectReportArea,
-  selectTimeComparisonValues,
-} from 'features/reports/areas/reports.selectors'
+import { selectTimeComparisonValues } from 'features/reports/areas/reports.selectors'
 import ReportActivityPlaceholder from 'features/reports/areas/placeholders/ReportActivityPlaceholder'
 import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { useFitAreaInViewport, useReportAreaBounds } from 'features/reports/areas/reports.hooks'
 import { selectReportActivityGraph } from '../areas/reports.config.selectors'
 import { ReportActivityGraph } from '../areas/reports.types'
-import { useFetchReportArea, useFitAreaInViewport } from '../areas/reports.hooks'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
@@ -48,21 +44,17 @@ const emptyGraphData = {} as ReportGraphProps
 
 export default function ReportActivity() {
   useComputeReportTimeSeries()
-  const reportArea = useSelector(selectReportArea)
-  const { status } = useFetchReportArea()
 
   const fitAreaInViewport = useFitAreaInViewport()
+  const { loaded, bbox } = useReportAreaBounds()
 
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {
-    if (status === AsyncReducerStatus.Finished && reportArea?.bounds) {
-      requestAnimationFrame(() => {
-        fitAreaInViewport()
-      })
+    if (loaded && bbox?.length) {
+      fitAreaInViewport()
     }
-    // Reacting only to the area status and fitting bounds after load
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, reportArea])
+  }, [loaded])
 
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
@@ -21,6 +22,7 @@ import {
   selectReportArea,
   selectReportAreaDataviews,
   selectReportAreaIds,
+  selectReportAreaStatus,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/areas/reports.selectors'
 import { useDeckMap } from 'features/map/map-context.hooks'
@@ -30,7 +32,7 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/areas/reports.config'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { selectIsVesselGroupReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchReportVesselsThunk,
@@ -79,10 +81,47 @@ function useReportAreaCenter(bounds?: Bbox) {
   }, [bounds, map])
 }
 
+function useVesselGroupReportBounds() {
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const dataview = useSelector(selectVGRActivityDataview)!
+  const urlTimeRange = useSelector(selectUrlTimeRange)
+  const {
+    data: stats,
+    isFetching,
+    isSuccess,
+  } = useGetStatsByDataviewQuery(
+    {
+      dataview,
+      timerange: urlTimeRange as any,
+      fields: [],
+    },
+    {
+      skip: !isVesselGroupReportLocation || !dataview || !urlTimeRange,
+    }
+  )
+
+  const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)
+  return {
+    loaded: !isFetching && isSuccess,
+    bbox: statsBbox?.some((v) => v === null || v === undefined) ? null : statsBbox!,
+  }
+}
+
+export function useReportAreaBounds() {
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const { loaded, bbox } = useVesselGroupReportBounds()
+  const area = useSelector(selectReportArea)
+  const areaStatus = useSelector(selectReportAreaStatus)
+  const areaBbox = isVesselGroupReportLocation ? bbox : area?.geometry?.bbox || area!?.bounds
+  return {
+    loaded: isVesselGroupReportLocation ? loaded : areaStatus === AsyncReducerStatus.Finished,
+    bbox: areaBbox,
+  }
+}
+
 export function useReportAreaInViewport() {
   const viewState = useMapViewState()
-  const area = useSelector(selectReportArea)
-  const bbox = area?.geometry?.bbox || area!?.bounds
+  const { bbox } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   return (
     viewState?.latitude === areaCenter?.latitude &&
@@ -93,8 +132,7 @@ export function useReportAreaInViewport() {
 
 export function useFitAreaInViewport() {
   const setMapCoordinates = useSetMapCoordinates()
-  const area = useSelector(selectReportArea)
-  const bbox = area?.geometry?.bbox || area!?.bounds
+  const { bbox } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {

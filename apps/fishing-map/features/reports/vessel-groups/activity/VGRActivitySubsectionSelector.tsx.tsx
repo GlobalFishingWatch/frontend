@@ -5,12 +5,17 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { VGRActivitySubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { useReportFeaturesLoading } from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { useFitAreaInViewport } from 'features/reports/areas/reports.hooks'
+import { resetReportData } from 'features/reports/activity/reports-activity.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 
 function VGRActivitySubsectionSelector() {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const subsection = useSelector(selectVGRActivitySubsection)
   const loading = useReportFeaturesLoading()
+  const fitAreaInViewport = useFitAreaInViewport()
   const options: ChoiceOption<VGRActivitySubsection>[] = [
     {
       id: 'fishing-effort',
@@ -31,6 +36,8 @@ function VGRActivitySubsectionSelector() {
       //   action: `Click on ${option.id} activity graph`,
       // })
       dispatchQueryParams({ vGRActivitySubsection: option.id })
+      fitAreaInViewport()
+      dispatch(resetReportData())
     }
   }
 
