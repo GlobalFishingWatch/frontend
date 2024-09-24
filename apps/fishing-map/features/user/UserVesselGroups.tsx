@@ -79,13 +79,13 @@ function UserVesselGroups() {
               return (
                 <li className={styles.dataset} key={vesselGroup.id}>
                   <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
-                    <span className={styles.workspaceTitle} data-test="workspace-name">
+                    <span className={styles.workspaceLink} data-test="workspace-name">
                       {getVesselGroupLabel(vesselGroup)}{' '}
                       <span className={styles.secondary}>({vesselGroup.vessels.length})</span>
+                      <IconButton icon="analysis" className={styles.right} />
                     </span>
                   </VesselGroupReportLink>
                   <div>
-                    <IconButton icon="arrow-right" />
                     <IconButton
                       icon="edit"
                       loading={vesselGroup.id === editingGroupId}

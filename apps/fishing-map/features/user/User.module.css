@@ -50,6 +50,10 @@
   flex: 1;
 }
 
+.right {
+  margin-left: auto;
+}
+
 .dataset {
   display: flex;
   align-items: center;
