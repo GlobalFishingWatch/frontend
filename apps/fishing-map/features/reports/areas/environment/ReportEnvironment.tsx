@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
-import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
   useTimeseriesStats,
-} from 'features/reports/areas/reports-timeseries.hooks'
+} from 'features/reports/activity/reports-activity-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/areas/placeholders/ReportActivityPlaceholder'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nDate } from 'features/i18n/i18nDate'

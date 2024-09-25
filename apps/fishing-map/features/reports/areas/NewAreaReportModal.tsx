@@ -12,15 +12,15 @@ import {
 } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportAreaIds } from 'features/reports/areas/reports.selectors'
+import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
-import { createReportThunk, updateReportThunk } from 'features/reports/areas/reports.slice'
+import { createReportThunk, updateReportThunk } from 'features/reports/areas/area-reports.slice'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { AsyncError } from 'utils/async-slice'
 import { getViewAccessOptions } from 'features/workspace/save/workspace-save.utils'
-import styles from './NewReportModal.module.css'
+import styles from './NewAreaReportModal.module.css'
 
 type NewReportModalProps = {
   title?: string

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
@@ -21,22 +22,31 @@ import {
   selectReportArea,
   selectReportAreaDataviews,
   selectReportAreaIds,
+  selectReportAreaStatus,
   selectReportDataviewsWithPermissions,
-} from 'features/reports/areas/reports.selectors'
+} from 'features/reports/areas/area-reports.selectors'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
 import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
-import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/areas/reports.config'
+import { FitBoundsParams, getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
+import {
+  ENTIRE_WORLD_REPORT_AREA_BOUNDS,
+  LAST_REPORTS_STORAGE_KEY,
+  LastReportStorage,
+} from 'features/reports/areas/area-reports.config'
+import { selectIsVesselGroupReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchReportVesselsThunk,
   getReportQuery,
   selectReportVesselsData,
   selectReportVesselsError,
   selectReportVesselsStatus,
-} from './report.slice'
+} from 'features/reports/activity/reports-activity.slice'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectVGRActivityDataview } from '../vessel-groups/vessel-group-report.selectors'
 
 export type DateTimeSeries = {
   date: string
@@ -61,21 +71,79 @@ export const useHighlightReportArea = () => {
   )
 }
 
-function useReportAreaCenter(bounds?: Bbox) {
+const defaultParams = {} as FitBoundsParams
+export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
   const map = useDeckMap()
   return useMemo(() => {
     if (!bounds || !map) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
+      ...params,
     })
-    return { latitude, longitude, zoom }
-  }, [bounds, map])
+    return {
+      latitude: parseFloat(latitude.toFixed(8)),
+      longitude: parseFloat(longitude.toFixed(8)),
+      zoom: parseFloat(zoom.toFixed(8)),
+    }
+  }, [bounds, map, params])
+}
+
+export function useStatsBounds(dataview?: UrlDataviewInstance) {
+  const urlTimeRange = useSelector(selectUrlTimeRange)
+  const {
+    data: stats,
+    isFetching,
+    isSuccess,
+  } = useGetStatsByDataviewQuery(
+    {
+      dataview: dataview!,
+      timerange: urlTimeRange as any,
+      fields: [],
+    },
+    {
+      skip: !dataview || !urlTimeRange,
+    }
+  )
+
+  const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)
+  const loaded = !isFetching && isSuccess
+  return {
+    loaded: loaded,
+    bbox: loaded
+      ? statsBbox?.some((v) => v === null || v === undefined)
+        ? ENTIRE_WORLD_REPORT_AREA_BOUNDS
+        : statsBbox!
+      : null,
+  }
+}
+
+export function useVesselGroupActivityBounds() {
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const dataview = useSelector(selectVGRActivityDataview)!
+  return useStatsBounds(isVesselGroupReportLocation ? dataview : undefined)
+}
+
+export function useVesselGroupBounds(dataviewId?: string) {
+  const dataviews = useSelector(selectDataviewInstancesResolvedVisible)
+  const dataview = dataviews?.find((d) => d.id === dataviewId)
+  return useStatsBounds(dataview)
+}
+
+export function useReportAreaBounds() {
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const { loaded, bbox } = useVesselGroupActivityBounds()
+  const area = useSelector(selectReportArea)
+  const areaStatus = useSelector(selectReportAreaStatus)
+  const areaBbox = isVesselGroupReportLocation ? bbox : area?.geometry?.bbox || area!?.bounds
+  return {
+    loaded: isVesselGroupReportLocation ? loaded : areaStatus === AsyncReducerStatus.Finished,
+    bbox: areaBbox,
+  }
 }
 
 export function useReportAreaInViewport() {
   const viewState = useMapViewState()
-  const area = useSelector(selectReportArea)
-  const bbox = area?.geometry?.bbox || area!?.bounds
+  const { bbox } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   return (
     viewState?.latitude === areaCenter?.latitude &&
@@ -86,8 +154,7 @@ export function useReportAreaInViewport() {
 
 export function useFitAreaInViewport() {
   const setMapCoordinates = useSetMapCoordinates()
-  const area = useSelector(selectReportArea)
-  const bbox = area?.geometry?.bbox || area!?.bounds
+  const { bbox } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
@@ -109,6 +176,7 @@ function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
 
 export function useFetchReportArea() {
   const dispatch = useAppDispatch()
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
@@ -129,7 +197,10 @@ export function useFetchReportArea() {
     }
   }, [areaId, datasetId, dispatch, areaDataviews])
 
-  return useMemo(() => ({ status, data }), [status, data])
+  return useMemo(
+    () => ({ status: isVesselGroupReportLocation ? AsyncReducerStatus.Finished : status, data }),
+    [isVesselGroupReportLocation, status, data]
+  )
 }
 
 export function useFetchReportVessel() {
@@ -200,30 +271,6 @@ export function useFetchReportVessel() {
     timerange,
     updateWorkspaceReportUrls,
   ])
-
-  // useEffect(() => {
-  //   const isDifferentDateRange = reportDateRangeHash !== getDateRangeHash(timerange)
-  //   if (
-  //     areaId &&
-  //     reportDataviews?.length &&
-  //     timerangeSupported &&
-  //     isDifferentDateRange &&
-  //     workspaceStatus === AsyncReducerStatus.Finished
-  //   ) {
-  //     dispatchFetchReport()
-  //   }
-  //   // Avoid re-fetching when timerange changes
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [
-  //   dispatch,
-  //   areaId,
-  //   datasetId,
-  //   reportBufferHash,
-  //   reportDataviews,
-  //   timerangeSupported,
-  //   reportDateRangeHash,
-  //   workspaceStatus,
-  // ])
 
   return useMemo(
     () => ({ status, data, error, dispatchFetchReport }),

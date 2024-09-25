@@ -13,6 +13,13 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import VGREvents from 'features/reports/events/VGREvents'
+import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import {
+  useFitAreaInViewport,
+  useReportAreaCenter,
+  useVesselGroupBounds,
+} from '../areas/area-reports.hooks'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'
@@ -32,6 +39,11 @@ function VesselGroupReport() {
   const reportDataview = useSelector(selectVGRDataview)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
+  const fitAreaInViewport = useFitAreaInViewport()
+  const { bbox } = useVesselGroupBounds(reportDataview?.id)
+  const coordinates = useReportAreaCenter(bbox!)
+  const setMapCoordinates = useSetMapCoordinates()
+  const bboxHash = bbox ? bbox.join(',') : ''
 
   useEffect(() => {
     fetchVesselGroupReport(vesselGroupId)
@@ -47,6 +59,13 @@ function VesselGroupReport() {
     vesselGroupId,
   ])
 
+  useEffect(() => {
+    if (reportSection === 'vessels' && coordinates) {
+      setMapCoordinates(coordinates)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bboxHash, setMapCoordinates])
+
   const changeTab = useCallback(
     (tab: Tab<VGRSection>) => {
       dispatchQueryParams({ vGRSection: tab.id })
@@ -54,8 +73,11 @@ function VesselGroupReport() {
         category: TrackCategory.VesselGroupReport,
         action: `click_${tab.id}_tab`,
       })
+      if (tab.id === 'activity') {
+        fitAreaInViewport()
+      }
     },
-    [dispatchQueryParams]
+    [dispatchQueryParams, fitAreaInViewport]
   )
 
   const sectionTabs: Tab<VGRSection>[] = useMemo(
@@ -73,8 +95,7 @@ function VesselGroupReport() {
       {
         id: 'activity',
         title: t('common.activity', 'Activity'),
-        disabled: true,
-        content: <p>Coming soon</p>,
+        content: <VGRActivity />,
       },
       {
         id: 'events',

@@ -1,12 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { selectActiveDataviewsCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectReportById } from 'features/reports/areas/area-reports.slice'
 import {
-  selectActiveDetectionsDataviews,
-  selectActiveHeatmapEnvironmentalDataviews,
-  selectActiveReportActivityDataviews,
-  selectReportActiveCategories,
-} from 'features/dataviews/selectors/dataviews.selectors'
-import { selectReportById } from 'features/reports/areas/reports.slice'
-import {
+  selectIsVesselGroupReportLocation,
   selectLocationAreaId,
   selectLocationDatasetId,
   selectReportId,
@@ -15,19 +11,16 @@ import {
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
 import { BufferOperation, BufferUnit } from 'types'
-import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectReportBufferOperationSelector,
   selectReportBufferUnitSelector,
   selectReportBufferValueSelector,
   selectReportCategorySelector,
   selectReportVesselGraphSelector,
-} from 'features/reports/areas/reports.config.selectors'
-import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/reports.types'
-
-export function isActivityReport(reportCategory: ReportCategory) {
-  return reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
-}
+} from 'features/reports/areas/area-reports.config.selectors'
+import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/area-reports.types'
+import { WORLD_REGION_ID } from 'features/reports/activity/reports-activity.slice'
+import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
@@ -45,41 +38,49 @@ export const selectReportDatasetId = createSelector(
 )
 
 export const selectReportAreaId = createSelector(
-  [selectLocationAreaId, selectCurrentReport],
-  (locationAreaId, report) => {
+  [selectLocationAreaId, selectCurrentReport, selectIsVesselGroupReportLocation],
+  (locationAreaId, report, isVesselGroupReportLocation) => {
+    if (isVesselGroupReportLocation) {
+      return WORLD_REGION_ID
+    }
     return locationAreaId || report?.areaId || ''
   }
 )
 
-export const selectReportCategory = createSelector(
-  [selectReportCategorySelector, selectReportActiveCategories],
-  (reportCategory, activeCategories): ReportCategory => {
-    return activeCategories.some((category) => category === reportCategory)
-      ? reportCategory
-      : activeCategories[0]
+export const selectReportActiveCategories = createSelector(
+  [selectActiveDataviewsCategories],
+  (activeCategories): ReportCategory[] => {
+    const orderedCategories = [
+      ReportCategory.Fishing,
+      ReportCategory.Presence,
+      ReportCategory.Detections,
+      ReportCategory.Environment,
+    ]
+    return orderedCategories.flatMap((category) =>
+      activeCategories.some((a) => a === category) ? category : []
+    )
   }
 )
 
-export const selectActiveReportDataviews = createDeepEqualSelector(
+export const selectReportCategory = createSelector(
   [
-    selectReportCategory,
-    selectActiveReportActivityDataviews,
-    selectActiveDetectionsDataviews,
-    selectActiveHeatmapEnvironmentalDataviews,
+    selectReportCategorySelector,
+    selectReportActiveCategories,
+    selectIsVesselGroupReportLocation,
+    selectVGRActivitySubsection,
   ],
   (
     reportCategory,
-    activityDataviews = [],
-    detectionsDataviews = [],
-    environmentalDataviews = []
-  ) => {
-    if (isActivityReport(reportCategory)) {
-      return activityDataviews
+    activeCategories,
+    isVesselGroupReportLocation,
+    vGRActivitySubsection
+  ): ReportCategory => {
+    if (isVesselGroupReportLocation) {
+      return vGRActivitySubsection as ReportCategory
     }
-    if (reportCategory === ReportCategory.Detections) {
-      return detectionsDataviews
-    }
-    return environmentalDataviews
+    return activeCategories.some((category) => category === reportCategory)
+      ? reportCategory
+      : activeCategories[0]
   }
 )
 

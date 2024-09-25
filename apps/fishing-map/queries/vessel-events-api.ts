@@ -3,8 +3,8 @@ import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import { ApiEvents } from '@globalfishingwatch/api-types'
 
 type VesselEventsApiParams = {
-  vessels?: string[]
   ids?: string[]
+  vessels: string[]
   datasets: string[]
   'start-date': string
   'end-date': string

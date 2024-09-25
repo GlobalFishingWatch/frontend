@@ -234,6 +234,7 @@
     "vessel_one": "Vessel",
     "vessel_many": "common.vessel",
     "vessel_other": "Vessels",
+    "vesselPresence": "Vessel presence",
     "vesselId": "Vessel id",
     "vessels": "Vessels",
     "view_layer": "View the layer",

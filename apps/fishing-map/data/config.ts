@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { AppState, TimebarGraphs, TimebarVisualisations, UserTab, WorkspaceState } from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
@@ -136,3 +136,10 @@ export const POPUP_CATEGORY_ORDER = [
 ]
 
 export const FIT_BOUNDS_REPORT_PADDING = 30
+
+export const REPORT_ONLY_VISIBLE_LAYERS = [
+  DataviewType.Basemap,
+  DataviewType.Context,
+  DataviewType.UserContext,
+  DataviewType.UserPoints,
+]

@@ -6,19 +6,16 @@ import parse from 'html-react-parser'
 import Sticky from 'react-sticky-el'
 import { Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import {
-  selectActiveReportDataviews,
-  selectReportCategory,
-} from 'features/app/selectors/app.reports.selector'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
-import { FIELDS, getCommonProperties } from 'features/reports/areas/reports.utils'
-import { ReportActivityUnit } from 'features/reports/areas/Report'
+import { FIELDS, getCommonProperties } from 'features/reports/areas/area-reports.utils'
+import { ReportActivityUnit } from 'features/reports/areas/AreaReport'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import {
   useReportFilteredTimeSeries,
   useReportFeaturesLoading,
-} from 'features/reports/areas/reports-timeseries.hooks'
-import { formatEvolutionData } from 'features/reports/areas/reports-timeseries.utils'
+} from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { formatEvolutionData } from 'features/reports/activity/reports-activity-timeseries.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import ReportSummaryPlaceholder from 'features/reports/areas/placeholders/ReportSummaryPlaceholder'
@@ -28,12 +25,16 @@ import { listAsSentence } from 'utils/shared'
 import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
-} from 'features/reports/areas/report.slice'
+} from 'features/reports/activity/reports-activity.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { useTimeCompareTimeDescription } from 'features/reports/areas/reports-timecomparison.hooks'
-import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
-import { selectReportTimeComparison } from '../reports.config.selectors'
-import { ReportCategory } from '../reports.types'
+import { useTimeCompareTimeDescription } from 'features/reports/activity/reports-activity-timecomparison.hooks'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  selectReportVesselsHours,
+  selectReportVesselsNumber,
+} from 'features/reports/activity/vessels/report-activity-vessels.selectors'
+import { selectReportTimeComparison } from '../area-reports.config.selectors'
+import { ReportCategory } from '../area-reports.types'
 import styles from './ReportSummary.module.css'
 
 type ReportSummaryProps = {

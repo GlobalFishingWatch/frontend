@@ -35,7 +35,7 @@ export const useMapBounds = (): { bounds: MiniglobeBounds } => {
   return { bounds }
 }
 
-type FitBoundsParams = {
+export type FitBoundsParams = {
   mapWidth?: number
   mapHeight?: number
   padding?: number

@@ -18,28 +18,31 @@ import {
   FourwingsInterval,
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
-import {
-  selectActiveReportDataviews,
-  selectReportCategory,
-} from 'features/app/selectors/app.reports.selector'
-import { FilteredPolygons } from 'features/reports/areas/reports-geo.utils'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { FilteredPolygons } from 'features/reports/activity/reports-activity-geo.utils'
 import {
   FeaturesToTimeseriesParams,
   featuresToTimeseries,
   filterTimeseriesByTimerange,
-} from 'features/reports/areas/reports-timeseries.utils'
-import { useReportAreaInViewport } from 'features/reports/areas/reports.hooks'
+} from 'features/reports/activity/reports-activity-timeseries.utils'
+import { useReportAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import {
   selectReportArea,
   selectReportBufferHash,
   selectShowTimeComparison,
-} from 'features/reports/areas/reports.selectors'
+} from 'features/reports/areas/area-reports.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { AreaGeometry } from 'features/areas/areas.slice'
-import { useFilterCellsByPolygonWorker } from 'features/reports/areas/reports-geo.utils.workers.hooks'
+import { Area, AreaGeometry } from 'features/areas/areas.slice'
+import { useFilterCellsByPolygonWorker } from 'features/reports/activity/reports-activity-geo.utils.workers.hooks'
 import { TimeRange } from 'features/timebar/timebar.slice'
-import { ReportActivityGraph, ReportCategory } from './reports.types'
-import { selectReportActivityGraph, selectReportTimeComparison } from './reports.config.selectors'
+import { ReportActivityGraph, ReportCategory } from '../areas/area-reports.types'
+import {
+  selectReportActivityGraph,
+  selectReportTimeComparison,
+} from '../areas/area-reports.config.selectors'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from '../areas/area-reports.config'
+import { selectVGRActivitySubsection } from '../vessel-groups/vessel-group.config.selectors'
 
 interface EvolutionGraphData {
   date: string
@@ -129,6 +132,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const areaInViewport = useReportAreaInViewport()
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportCategory = useSelector(selectReportCategory)
+  const vGRActivitySubsection = useSelector(selectVGRActivitySubsection)
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -153,6 +157,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   }, [
     area?.id,
     reportCategory,
+    vGRActivitySubsection,
     timeComparisonHash,
     instancesChunkHash,
     reportGraphMode,
@@ -160,15 +165,18 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   ])
 
   const updateFeaturesFiltered = useCallback(
-    async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
+    async (instances: FourwingsLayer[], area: Area<AreaGeometry>, mode?: 'point' | 'cell') => {
       setFeaturesFiltered([])
       for (const instance of instances) {
         const features = instance.getData() as FourwingsFeature[]
-        const filteredInstanceFeatures = await filterCellsByPolygon({
-          layersCells: [features],
-          polygon,
-          mode,
-        })
+        const filteredInstanceFeatures =
+          area.id === ENTIRE_WORLD_REPORT_AREA_ID
+            ? ([{ contained: features, overlapping: [] }] as FilteredPolygons[])
+            : await filterCellsByPolygon({
+                layersCells: [features],
+                polygon: area.geometry!,
+                mode,
+              })
         setFeaturesFiltered((prev) => [...prev, filteredInstanceFeatures])
       }
     },
@@ -176,16 +184,18 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   )
 
   useEffect(() => {
-    if (area?.geometry && layersLoaded && featuresFilteredDirtyRef.current && instances.length) {
-      updateFeaturesFiltered(
-        instances,
-        area.geometry,
-        reportCategory === 'environment' ? 'point' : 'cell'
-      )
+    if (
+      area?.geometry &&
+      areaInViewport &&
+      layersLoaded &&
+      featuresFilteredDirtyRef.current &&
+      instances.length
+    ) {
+      updateFeaturesFiltered(instances, area, reportCategory === 'environment' ? 'point' : 'cell')
       featuresFilteredDirtyRef.current = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.geometry, reportCategory, layersLoaded, reportBufferHash])
+  }, [area, reportCategory, areaInViewport, layersLoaded, reportBufferHash])
 
   const computeTimeseries = useCallback(
     (

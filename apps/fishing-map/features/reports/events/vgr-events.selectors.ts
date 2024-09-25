@@ -13,7 +13,7 @@ import {
   selectVGREventsVesselFilter,
   selectVGREventsVesselPage,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { getVesselsFiltered } from 'features/reports/areas/reports.utils'
+import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import { REPORT_FILTER_PROPERTIES } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 

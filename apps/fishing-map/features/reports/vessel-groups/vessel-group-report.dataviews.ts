@@ -4,19 +4,40 @@ import {
   DataviewInstance,
   DataviewType,
 } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { ColorRampId } from '@globalfishingwatch/deck-layers'
+import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
+  FISHING_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
+import {
+  VGRActivitySubsection,
+  VGREventsSubsection,
+  VGRSection,
+  VGRSubsection,
+} from 'features/vessel-groups/vessel-groups.types'
 
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 
+export type VesselGroupActivityDataviewId =
+  `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${VGRActivitySubsection}`
+
+export const VESSEL_GROUP_FISHING_ACTIVITY_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}fishing`
+export const VESSEL_GROUP_PRESENCE_ACTIVITY_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}presence`
+
+export const VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS: VesselGroupActivityDataviewId[] = [
+  VESSEL_GROUP_FISHING_ACTIVITY_ID,
+  VESSEL_GROUP_PRESENCE_ACTIVITY_ID,
+]
+
 export type VesselGroupEventsDataviewId =
   `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${VGREventsSubsection}`
+
 export const VESSEL_GROUP_ENCOUNTER_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}encounter`
 export const VESSEL_GROUP_LOITERING_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}loitering`
 export const VESSEL_GROUP_PORT_VISITS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}port_visits`
@@ -39,6 +60,39 @@ export const DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS: Record<
   gaps: VESSEL_GROUP_GAPS_EVENTS_ID,
 }
 
+type GetReportVesselGroupVisibleDataviewsParams = {
+  dataviews: UrlDataviewInstance[]
+  reportVesselGroupId: string
+  vesselGroupReportSection: VGRSection
+  vesselGroupReportSubSection?: VGRSubsection
+}
+export function getReportVesselGroupVisibleDataviews({
+  dataviews,
+  reportVesselGroupId,
+  vesselGroupReportSection,
+  vesselGroupReportSubSection,
+}: GetReportVesselGroupVisibleDataviewsParams) {
+  return dataviews.filter(({ id, category, config }) => {
+    if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
+      return config?.visible
+    }
+    if (vesselGroupReportSection === 'events') {
+      const dataviewIdBySubSection =
+        DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS[vesselGroupReportSubSection as VGREventsSubsection]
+      return id.toString() === dataviewIdBySubSection
+    }
+    if (vesselGroupReportSection === 'activity') {
+      return VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS.includes(
+        id.toString() as VesselGroupActivityDataviewId
+      )
+    }
+    return (
+      category === DataviewCategory.VesselGroups &&
+      config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
+    )
+  })
+}
+
 export const getVesselGroupDataviewInstance = (
   vesselGroupId: string
 ): DataviewInstance<DataviewType> | undefined => {
@@ -55,6 +109,34 @@ export const getVesselGroupDataviewInstance = (
         datasets: DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
+    }
+  }
+}
+
+export const getVesselGroupActivityDataviewInstance = ({
+  vesselGroupId,
+  color,
+  colorRamp,
+  activityType,
+}: {
+  vesselGroupId: string
+  color?: string
+  colorRamp?: ColorRampId
+  activityType: VGRActivitySubsection
+}): DataviewInstance<DataviewType> | undefined => {
+  if (vesselGroupId) {
+    return {
+      id: `${VESSEL_GROUP_DATAVIEW_PREFIX}${activityType}`,
+      category: DataviewCategory.Activity,
+      config: {
+        visible: true,
+        ...(color && { color }),
+        ...(colorRamp && { colorRamp }),
+        filters: {
+          'vessel-groups': [vesselGroupId],
+        },
+      },
+      dataviewId: activityType === 'presence' ? PRESENCE_DATAVIEW_SLUG : FISHING_DATAVIEW_SLUG,
     }
   }
 }

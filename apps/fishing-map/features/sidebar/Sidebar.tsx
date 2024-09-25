@@ -20,13 +20,13 @@ import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
 const AreaReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/areas/Report')
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/areas/AreaReport')
 )
 const VesselGroupReport = dynamic(
   () => import(/* webpackChunkName: "Report" */ 'features/reports/vessel-groups/VesselGroupReport')

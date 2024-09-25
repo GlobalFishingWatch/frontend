@@ -1,6 +1,6 @@
 export type VGRSection = 'vessels' | 'insights' | 'activity' | 'events'
 export type VGRVesselsSubsection = 'flag' | 'shiptypes' | 'geartypes' | 'source'
-export type VGRActivitySubsection = 'fishing-effort' | 'presence'
+export type VGRActivitySubsection = 'fishing' | 'presence'
 export type VGREventsVesselsProperty = 'flag' | 'geartype'
 export type VGREventsSubsection = 'encounter' | 'loitering' | 'gaps' | 'port_visits'
 export type VGRVesselsOrderProperty = 'shipname' | 'flag' | 'shiptype'

@@ -23,14 +23,14 @@ import {
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { getAreaIdFromFeature } from 'features/map/popups/categories/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { resetReportData } from 'features/reports/areas/report.slice'
+import { resetReportData } from 'features/reports/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
-} from 'features/reports/areas/reports.config'
+} from 'features/reports/areas/area-reports.config'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import styles from '../Popup.module.css'
 

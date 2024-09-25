@@ -9,10 +9,6 @@ import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import {
-  selectActiveActivityDataviews,
-  selectActiveDetectionsDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
@@ -21,6 +17,10 @@ import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import {
+  selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 
 const MAX_VESSLES_TO_DISPLAY = 10
 

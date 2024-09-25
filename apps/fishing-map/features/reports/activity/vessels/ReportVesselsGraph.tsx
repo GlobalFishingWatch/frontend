@@ -13,15 +13,15 @@ import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/reports.config'
+import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
 import { getVesselGearTypeLabel } from 'utils/info'
+import { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import {
-  cleanFlagState,
-  selectReportDataviewsWithPermissions,
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,
-} from '../reports.selectors'
-import { ReportVesselGraph } from '../reports.types'
+} from 'features/reports/activity/vessels/report-activity-vessels.selectors'
+import { cleanFlagState } from 'features/reports/activity/vessels/report-activity-vessels.utils'
+import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
 import styles from './ReportVesselsGraph.module.css'
 
 const MAX_OTHER_TOOLTIP_ITEMS = 10

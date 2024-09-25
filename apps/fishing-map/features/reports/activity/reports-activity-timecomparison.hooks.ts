@@ -9,10 +9,16 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { useFitAreaInViewport } from 'features/reports/areas/reports.hooks'
-import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from 'features/reports/areas/reports.config'
-import { selectReportActivityGraph, selectReportTimeComparison } from './reports.config.selectors'
-import { ReportActivityGraph } from './reports.types'
+import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
+import {
+  MAX_DAYS_TO_COMPARE,
+  MAX_MONTHS_TO_COMPARE,
+} from 'features/reports/areas/area-reports.config'
+import {
+  selectReportActivityGraph,
+  selectReportTimeComparison,
+} from '../areas/area-reports.config.selectors'
+import { ReportActivityGraph } from '../areas/area-reports.types'
 
 // TODO get this from start and endDate from datasets
 const MIN_DATE = AVAILABLE_START.slice(0, 10)

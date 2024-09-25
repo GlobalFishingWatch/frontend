@@ -33,7 +33,7 @@ import {
 import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectShowTimeComparison } from 'features/reports/areas/reports.selectors'
+import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import {
   HOME,
@@ -59,7 +59,7 @@ import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
-import { selectReportAreaBounds } from 'features/reports/areas/reports.config.selectors'
+import { selectReportAreaBounds } from 'features/reports/areas/area-reports.config.selectors'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
@@ -137,6 +137,7 @@ function App() {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -177,7 +178,7 @@ function App() {
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
-        if (!isWorkspacePasswordProtected(workspace)) {
+        if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace)) {
           fitWorkspaceBounds(workspace)
         }
       }

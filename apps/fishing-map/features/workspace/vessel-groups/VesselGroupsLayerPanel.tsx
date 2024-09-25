@@ -98,7 +98,7 @@ function VesselGroupLayerPanel({
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         <Title
           title={
-            <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+            <VesselGroupReportLink vesselGroupId={vesselGroup?.id!} dataviewId={dataview.id}>
               <Tooltip
                 content={t('vesselGroupReport.clickToSee', 'Click to see the vessel group report')}
               >
@@ -130,7 +130,7 @@ function VesselGroupLayerPanel({
           <Fragment>
             {layerActive && (
               <Fragment>
-                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!} dataviewId={dataview.id}>
                   <IconButton
                     tooltip={t(
                       'vesselGroupReport.clickToSee',

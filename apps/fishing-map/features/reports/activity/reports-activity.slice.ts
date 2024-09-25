@@ -68,6 +68,8 @@ const REPORT_FIELDS_TO_INCLUDE = [
   'vesselType',
 ]
 
+export const WORLD_REGION_ID = 'region-world'
+
 export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
   const {
     region,
@@ -101,8 +103,12 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
       'spatial-resolution': spatialResolution,
       'spatial-aggregation': spatialAggregation,
       format: format,
-      'region-id': region.id,
-      'region-dataset': region.dataset,
+      ...(region.id === WORLD_REGION_ID
+        ? { 'region-world': true }
+        : {
+            'region-id': region.id,
+            'region-dataset': region.dataset,
+          }),
       'buffer-unit': reportBufferUnit?.toUpperCase(),
       'buffer-value': reportBufferValue,
       'buffer-operation': reportBufferOperation?.toUpperCase(),
