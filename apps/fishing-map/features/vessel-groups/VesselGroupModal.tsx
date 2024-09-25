@@ -45,6 +45,7 @@ import {
   selectVesselGroupsStatus,
   VesselGroupConfirmationMode,
   updateVesselGroupVesselsThunk,
+  UpdateVesselGroupThunkParams,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 import {
@@ -192,10 +193,11 @@ function VesselGroupModal(): React.ReactElement {
       })
       let dispatchedAction
       if (editingVesselGroupId) {
-        const vesselGroup = {
+        const vesselGroup: UpdateVesselGroupThunkParams = {
           id: editingVesselGroupId,
           name: groupName,
           vessels,
+          override: true,
         }
         dispatchedAction = await dispatch(updateVesselGroupVesselsThunk(vesselGroup))
       } else {

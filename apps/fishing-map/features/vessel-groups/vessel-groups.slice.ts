@@ -147,6 +147,7 @@ export const createVesselGroupThunk = createAsyncThunk(
 
 export type UpdateVesselGroupThunkParams = VesselGroupUpsert & {
   id: string
+  override?: boolean
 }
 export const updateVesselGroupThunk = createAsyncThunk(
   'vessel-groups/update',
@@ -166,9 +167,12 @@ export const updateVesselGroupThunk = createAsyncThunk(
 
 export const updateVesselGroupVesselsThunk = createAsyncThunk(
   'vessel-groups/update-vessels',
-  async ({ id, vessels = [] }: UpdateVesselGroupThunkParams, { getState, dispatch }) => {
+  async (
+    { id, vessels = [], override = false }: UpdateVesselGroupThunkParams,
+    { getState, dispatch }
+  ) => {
     let vesselGroup = selectVesselGroupById(id)(getState() as any)
-    if (!vesselGroup) {
+    if (!override && !vesselGroup) {
       const action = await dispatch(fetchVesselGroupByIdThunk(id))
       if (fetchVesselGroupByIdThunk.fulfilled.match(action) && action.payload) {
         vesselGroup = action.payload
@@ -178,7 +182,7 @@ export const updateVesselGroupVesselsThunk = createAsyncThunk(
       return dispatch(
         updateVesselGroupThunk({
           id: vesselGroup.id,
-          vessels: [...vesselGroup.vessels, ...vessels],
+          vessels: override ? vessels : [...vesselGroup.vessels, ...vessels],
         })
       )
     }
