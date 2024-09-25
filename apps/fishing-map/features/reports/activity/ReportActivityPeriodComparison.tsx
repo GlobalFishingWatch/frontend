@@ -40,7 +40,7 @@ export default function ReportActivityGraph() {
       action: `Select comparison date in 'period comparison'`,
       label: JSON.stringify({
         date: date.target.value,
-        regionName: reportArea.name,
+        regionName: reportArea?.name,
         sourceNames: dataviews.flatMap((dataview) =>
           getSourcesSelectedInDataview(dataview).map((source) => source.label)
         ),
@@ -55,7 +55,7 @@ export default function ReportActivityGraph() {
       action: `Select baseline date in 'period comparison'`,
       label: JSON.stringify({
         date: date.target.value,
-        regionName: reportArea.name,
+        regionName: reportArea?.name,
         sourceNames: dataviews.flatMap((dataview) =>
           getSourcesSelectedInDataview(dataview).map((source) => source.label)
         ),
@@ -70,7 +70,7 @@ export default function ReportActivityGraph() {
       action: `Select duration in 'period comparison'`,
       label: JSON.stringify({
         duration: duration?.target?.value + ' ' + durationTypeOption?.label,
-        regionName: reportArea.name,
+        regionName: reportArea?.name,
         sourceNames: dataviews.flatMap((dataview) =>
           getSourcesSelectedInDataview(dataview).map((source) => source.label)
         ),
@@ -85,7 +85,7 @@ export default function ReportActivityGraph() {
       action: `Select duration in 'period comparison'`,
       label: JSON.stringify({
         duration: timeComparison?.duration + ' ' + duration?.label,
-        regionName: reportArea.name,
+        regionName: reportArea?.name,
         sourceNames: dataviews.flatMap((dataview) =>
           getSourcesSelectedInDataview(dataview).map((source) => source.label)
         ),

@@ -14,7 +14,12 @@ import {
 } from 'features/timebar/timebar.hooks'
 import VGREvents from 'features/reports/events/VGREvents'
 import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
-import { useFitAreaInViewport } from '../areas/area-reports.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import {
+  useFitAreaInViewport,
+  useReportAreaCenter,
+  useVesselGroupBounds,
+} from '../areas/area-reports.hooks'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'
@@ -35,6 +40,10 @@ function VesselGroupReport() {
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const fitAreaInViewport = useFitAreaInViewport()
+  const { bbox } = useVesselGroupBounds(reportDataview?.id)
+  const coordinates = useReportAreaCenter(bbox!)
+  const setMapCoordinates = useSetMapCoordinates()
+  const bboxHash = bbox ? bbox.join(',') : ''
 
   useEffect(() => {
     fetchVesselGroupReport(vesselGroupId)
@@ -49,6 +58,13 @@ function VesselGroupReport() {
     fetchVesselGroupReport,
     vesselGroupId,
   ])
+
+  useEffect(() => {
+    if (reportSection === 'vessels' && coordinates) {
+      setMapCoordinates(coordinates)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bboxHash, setMapCoordinates])
 
   const changeTab = useCallback(
     (tab: Tab<VGRSection>) => {

@@ -30,7 +30,7 @@ import { Bbox } from 'types'
 import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
+import { FitBoundsParams, getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import {
   ENTIRE_WORLD_REPORT_AREA_BOUNDS,
   LAST_REPORTS_STORAGE_KEY,
@@ -45,6 +45,7 @@ import {
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from 'features/reports/activity/reports-activity.slice'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectVGRActivityDataview } from '../vessel-groups/vessel-group-report.selectors'
 
 export type DateTimeSeries = {
@@ -70,24 +71,24 @@ export const useHighlightReportArea = () => {
   )
 }
 
-function useReportAreaCenter(bounds?: Bbox) {
+const defaultParams = {} as FitBoundsParams
+export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
   const map = useDeckMap()
   return useMemo(() => {
     if (!bounds || !map) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
+      ...params,
     })
     return {
       latitude: parseFloat(latitude.toFixed(8)),
       longitude: parseFloat(longitude.toFixed(8)),
       zoom: parseFloat(zoom.toFixed(8)),
     }
-  }, [bounds, map])
+  }, [bounds, map, params])
 }
 
-function useVesselGroupReportBounds() {
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const dataview = useSelector(selectVGRActivityDataview)!
+export function useStatsBounds(dataview?: UrlDataviewInstance) {
   const urlTimeRange = useSelector(selectUrlTimeRange)
   const {
     data: stats,
@@ -95,12 +96,12 @@ function useVesselGroupReportBounds() {
     isSuccess,
   } = useGetStatsByDataviewQuery(
     {
-      dataview,
+      dataview: dataview!,
       timerange: urlTimeRange as any,
       fields: [],
     },
     {
-      skip: !isVesselGroupReportLocation || !dataview || !urlTimeRange,
+      skip: !dataview || !urlTimeRange,
     }
   )
 
@@ -116,9 +117,21 @@ function useVesselGroupReportBounds() {
   }
 }
 
+export function useVesselGroupActivityBounds() {
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const dataview = useSelector(selectVGRActivityDataview)!
+  return useStatsBounds(isVesselGroupReportLocation ? dataview : undefined)
+}
+
+export function useVesselGroupBounds(dataviewId?: string) {
+  const dataviews = useSelector(selectDataviewInstancesResolvedVisible)
+  const dataview = dataviews?.find((d) => d.id === dataviewId)
+  return useStatsBounds(dataview)
+}
+
 export function useReportAreaBounds() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const { loaded, bbox } = useVesselGroupReportBounds()
+  const { loaded, bbox } = useVesselGroupActivityBounds()
   const area = useSelector(selectReportArea)
   const areaStatus = useSelector(selectReportAreaStatus)
   const areaBbox = isVesselGroupReportLocation ? bbox : area?.geometry?.bbox || area!?.bounds
