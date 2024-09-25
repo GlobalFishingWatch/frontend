@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
+import { uniq } from 'es-toolkit'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
@@ -99,7 +100,7 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
         getUTCDateTime(dateRange?.end)?.toString(),
       ].join(','),
       'group-by': groupBy,
-      includes: [...includes, ...REPORT_FIELDS_TO_INCLUDE].join(','),
+      includes: uniq([...includes, ...REPORT_FIELDS_TO_INCLUDE]).join(','),
       'spatial-resolution': spatialResolution,
       'spatial-aggregation': spatialAggregation,
       format: format,

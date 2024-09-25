@@ -8,6 +8,7 @@ import { Collapsable } from '@globalfishingwatch/ui-components'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
+import VesselLink from 'features/vessel/VesselLink'
 import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportGapParams } from '../vessel-group-report.selectors'
 import styles from './VGRInsights.module.css'
@@ -76,8 +77,14 @@ const VesselGroupReportInsightGap = () => {
                         className={styles.collapsable}
                         labelClassName={styles.collapsableLabel}
                         label={
-                          <span>
-                            {formatInfoField(vessel.identity.shipname, 'name')}{' '}
+                          <span className={styles.vesselName}>
+                            <VesselLink
+                              className={styles.link}
+                              vesselId={vesselId}
+                              datasetId={vessel.identity.dataset as string}
+                            >
+                              {formatInfoField(vessel.identity.shipname, 'name')}
+                            </VesselLink>{' '}
                             <span className={styles.secondary}>
                               ({vessel.periodSelectedCounters.eventsGapOff})
                             </span>

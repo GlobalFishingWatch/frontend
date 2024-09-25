@@ -189,9 +189,19 @@ export const getVesselGroupPortVisitsDataviewInstance = (vesselGroupId: string) 
     dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   })
 
-export const getVesselGroupEventsDataviewInstances = (vesselGroupId: string) =>
-  [
-    getVesselGroupEncountersDataviewInstance(vesselGroupId),
-    getVesselGroupLoiteringDataviewInstance(vesselGroupId),
-    getVesselGroupPortVisitsDataviewInstance(vesselGroupId),
-  ].filter(Boolean) as DataviewInstance<DataviewType>[]
+export const getVesselGroupEventsDataviewInstances = (
+  vesselGroupId: string,
+  subsection: VGREventsSubsection
+) => {
+  let dataviewInstances: (DataviewInstance | undefined)[] = []
+  if (subsection === 'encounter') {
+    dataviewInstances.push(getVesselGroupEncountersDataviewInstance(vesselGroupId))
+  }
+  if (subsection === 'loitering') {
+    dataviewInstances.push(getVesselGroupLoiteringDataviewInstance(vesselGroupId))
+  }
+  if (subsection === 'port_visits') {
+    dataviewInstances.push(getVesselGroupPortVisitsDataviewInstance(vesselGroupId))
+  }
+  return dataviewInstances.filter(Boolean) as DataviewInstance<DataviewType>[]
+}

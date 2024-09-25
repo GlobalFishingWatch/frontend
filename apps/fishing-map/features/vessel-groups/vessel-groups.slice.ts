@@ -284,9 +284,12 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
     const vesselGroupsNotLoaded = Array.from(
       new Set(ids.filter((id) => !vesselGroupsLoaded.includes(id)))
     )
+    if (!vesselGroupsNotLoaded.length) {
+      return []
+    }
     try {
       const vesselGroupsParams = {
-        ...(vesselGroupsNotLoaded?.length && { ids: vesselGroupsNotLoaded }),
+        ids: vesselGroupsNotLoaded,
         cache: false,
         ...DEFAULT_PAGINATION_PARAMS,
       }

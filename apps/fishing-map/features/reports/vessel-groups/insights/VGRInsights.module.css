@@ -34,6 +34,11 @@
   padding-top: var(--space-M);
 }
 
+.vesselName {
+  display: flex;
+  align-items: center;
+}
+
 .insightContainer {
   padding-block: var(--space-M);
   border-bottom: var(--border);
@@ -82,6 +87,10 @@
 
 .secondary {
   color: var(--color-secondary-blue);
+}
+
+.marginLeft {
+  margin-left: var(--space-XS);
 }
 
 .eventDetailsList li {
