@@ -41,6 +41,14 @@ export type FourwingsLayerProps = Omit<
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
 
+  get isHeatmapVisualizationMode(): boolean {
+    return (
+      this.props.visualizationMode !== undefined &&
+      (this.props.visualizationMode?.includes(HEATMAP_ID) ||
+        this.props.visualizationMode?.includes(FOOTPRINT_ID))
+    )
+  }
+
   renderLayers(): Layer<{}> | LayersList {
     const visualizationMode = this.getMode()
     if (visualizationMode === POSITIONS_ID) {
@@ -105,7 +113,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getInterval() {
-    if (this.props.visualizationMode?.includes(HEATMAP_ID) && !this.props.static) {
+    if (this.isHeatmapVisualizationMode && !this.props.static) {
       return (this.getLayer() as FourwingsHeatmapTileLayer)?.getInterval()
     }
     return '' as FourwingsInterval
@@ -116,7 +124,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getChunk() {
-    if (this.props.visualizationMode?.includes(HEATMAP_ID) && !this.props.static) {
+    if (this.isHeatmapVisualizationMode && !this.props.static) {
       return (this.getLayer() as FourwingsHeatmapTileLayer)?.getChunk()
     }
     return {} as FourwingsChunk
