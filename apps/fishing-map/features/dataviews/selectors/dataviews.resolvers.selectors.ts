@@ -52,7 +52,10 @@ import {
 } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
-import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import {
+  selectVGRActivitySubsection,
+  selectVGREventsSubsection,
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { FISHING_DATAVIEW_SLUG, PRESENCE_DATAVIEW_SLUG } from 'data/workspaces'
 
 const EMPTY_ARRAY: [] = []
@@ -67,6 +70,7 @@ export const selectDataviewInstancesMerged = createSelector(
     selectIsVesselLocation,
     selectIsVesselGroupReportLocation,
     selectVGRActivitySubsection,
+    selectVGREventsSubsection,
     selectReportVesselGroupId,
     selectVesselId,
     selectVesselInfoData,
@@ -80,6 +84,7 @@ export const selectDataviewInstancesMerged = createSelector(
     isVesselLocation,
     isVesselGroupReportLocation,
     vGRActivitySubsection,
+    vGREventsSubsection,
     reportVesselGroupId,
     urlVesselId,
     vessel
@@ -142,7 +147,9 @@ export const selectDataviewInstancesMerged = createSelector(
       if (activityVGRInstance) {
         mergedDataviewInstances.push(activityVGRInstance)
       }
-      mergedDataviewInstances.push(...getVesselGroupEventsDataviewInstances(reportVesselGroupId))
+      mergedDataviewInstances.push(
+        ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, vGREventsSubsection)
+      )
     }
     return mergedDataviewInstances
   }
