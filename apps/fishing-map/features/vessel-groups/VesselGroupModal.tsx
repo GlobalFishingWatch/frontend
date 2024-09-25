@@ -17,7 +17,7 @@ import VesselGroupVessels from 'features/vessel-groups/VesselGroupModalVessels'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectAllVesselGroupSearchVessels,
-  selectHasVesselGroupVessels,
+  selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
   selectVesselGroupWorkspaceToNavigate,
   selectWorkspaceVessselGroupsIds,
@@ -50,7 +50,6 @@ import styles from './VesselGroupModal.module.css'
 import {
   getVesselInVesselGroupThunk,
   MAX_VESSEL_GROUP_VESSELS,
-  MAX_VESSEL_GROUP_SEARCH_VESSELS,
   resetVesselGroupModal,
   resetVesselGroupModalStatus,
   searchVesselGroupsVesselsThunk,
@@ -94,12 +93,12 @@ function VesselGroupModal(): React.ReactElement {
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const vesselGroupSearchVessels = useSelector(selectAllVesselGroupSearchVessels)
   const hasVesselsOverflow = useSelector(selectHasVesselGroupVesselsOverflow)
-  const hasVesselGroupsVessels = useSelector(selectHasVesselGroupVessels)
+  const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const searchVesselGroupsVesselsRef = useRef<any>()
   const searchVesselGroupsVesselsAllowed = vesselGroupVessels
-    ? vesselGroupVessels?.length < MAX_VESSEL_GROUP_SEARCH_VESSELS
+    ? vesselGroupVessels?.length < MAX_VESSEL_GROUP_VESSELS
     : true
 
   const dispatchSearchVesselsGroupsThunk = useCallback(
@@ -367,7 +366,7 @@ function VesselGroupModal(): React.ReactElement {
             <span className={styles.errorMsg}>
               {t('vesselGroup.searchLimit', {
                 defaultValue: 'Search is limited up to {{limit}} vessels',
-                limit: MAX_VESSEL_GROUP_SEARCH_VESSELS,
+                limit: MAX_VESSEL_GROUP_VESSELS,
               })}
             </span>
           )}

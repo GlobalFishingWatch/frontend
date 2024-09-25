@@ -1,10 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
-import {
-  MAX_VESSEL_GROUP_VESSELS,
-  selectVesselGroupsVessels,
-} from 'features/vessel-groups/vessel-groups-modal.slice'
+import { MAX_VESSEL_GROUP_VESSELS } from 'features/vessel-groups/vessel-groups-modal.slice'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -34,13 +31,10 @@ export const selectHasVesselGroupVesselsOverflow = createSelector(
   }
 )
 
-export const selectHasVesselGroupVessels = createSelector(
-  [selectVesselGroupsVessels, selectAllVesselGroupSearchVessels],
-  (vessels = [], searchVessels = []) => {
-    return (
-      (vessels !== null && vessels.length > 0) ||
-      (searchVessels !== null && searchVessels.length > 0)
-    )
+export const selectHasVesselGroupSearchVessels = createSelector(
+  [selectAllVesselGroupSearchVessels],
+  (vessels = []) => {
+    return vessels.length > 0
   }
 )
 
