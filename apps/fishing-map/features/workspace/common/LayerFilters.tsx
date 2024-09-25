@@ -31,10 +31,7 @@ import HistogramRangeFilter from 'features/workspace/environmental/HistogramRang
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setVesselGroupCurrentDataviewIds,
-  setVesselGroupsModalOpen,
-} from 'features/vessel-groups/vessel-groups-modal.slice'
+import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { listAsSentence } from 'utils/shared'
 import UserGuideLink from 'features/help/UserGuideLink'
@@ -252,7 +249,6 @@ function LayerFilters({
   }: OnSelectFilterArgs) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
-      dispatch(setVesselGroupCurrentDataviewIds([dataview.id]))
       return
     }
     let filterValues: number | string[]

@@ -27,7 +27,6 @@ export type VesselGroupConfirmationMode = 'save' | 'saveAndSeeInWorkspace' | 'sa
 interface VesselGroupModalState {
   isModalOpen: boolean
   vesselGroupEditId: string | null
-  currentDataviewIds: string[] | null
   confirmationMode: VesselGroupConfirmationMode
   groupVessels: VesselGroupVessel[] | null
   search: {
@@ -81,7 +80,6 @@ const fetchAllSearchVessels = async (params: FetchSearchVessels) => {
 const initialState: VesselGroupModalState = {
   isModalOpen: false,
   vesselGroupEditId: null,
-  currentDataviewIds: null,
   confirmationMode: 'save',
   groupVessels: null,
   search: {
@@ -291,9 +289,6 @@ export const vesselGroupModalSlice = createSlice({
     setVesselGroupConfirmationMode: (state, action: PayloadAction<VesselGroupConfirmationMode>) => {
       state.confirmationMode = action.payload
     },
-    setVesselGroupCurrentDataviewIds: (state, action: PayloadAction<string[]>) => {
-      state.currentDataviewIds = action.payload
-    },
     resetVesselGroupModal: (state) => {
       return { ...initialState }
     },
@@ -343,7 +338,6 @@ export const {
   setVesselGroupsModalOpen,
   setVesselGroupSearchVessels,
   setNewVesselGroupSearchVessels,
-  setVesselGroupCurrentDataviewIds,
   setVesselGroupConfirmationMode,
 } = vesselGroupModalSlice.actions
 
@@ -356,8 +350,6 @@ export const selectVesselGroupSearchVessels = (state: RootState) =>
 export const selectVesselGroupsVessels = (state: RootState) => state.vesselGroupModal.groupVessels
 export const selectNewVesselGroupSearchVessels = (state: RootState) =>
   state.vesselGroupModal.newSearchVessels
-export const selectCurrentDataviewIds = (state: RootState) =>
-  state.vesselGroupModal.currentDataviewIds
 export const selectVesselGroupEditId = (state: RootState) =>
   state.vesselGroupModal.vesselGroupEditId
 export const selectVesselGroupConfirmationMode = (state: RootState) =>
