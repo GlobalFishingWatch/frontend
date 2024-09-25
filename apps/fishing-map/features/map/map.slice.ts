@@ -432,6 +432,9 @@ export const fetchClusterEventThunk = createAsyncThunk<
     const url = resolveEndpoint(eventsDataset, datasetConfig)
     if (url) {
       const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
+      if (!clusterEvent) {
+        return
+      }
       if (clusterEvent.type === 'encounter') {
         // Workaround to grab information about each vessel dataset
         // will need discuss with API team to scale this for other types
@@ -465,40 +468,38 @@ export const fetchClusterEventThunk = createAsyncThunk<
             }).then((r) => r.entries)
           }
         }
-        if (clusterEvent) {
-          const fishingVesselDataset =
-            vesselsInfo.find(
-              (v) =>
-                getVesselProperty(v, 'id', {
-                  identitySource: VesselIdentitySourceEnum.SelfReported,
-                }) === fishingVessel?.id
-            )?.dataset || ''
-          const carrierVesselDataset =
-            vesselsInfo.find(
-              (v) =>
-                getVesselProperty(v, 'id', {
-                  identitySource: VesselIdentitySourceEnum.SelfReported,
-                }) === carrierVessel?.id
-            )?.dataset || ''
-          const carrierExtendedVessel: ExtendedEventVessel = {
-            ...(carrierVessel as EventVessel),
-            dataset: carrierVesselDataset,
-          }
-          const fishingExtendedVessel: ExtendedEventVessel = {
-            ...(fishingVessel as EventVessel),
-            dataset: fishingVesselDataset,
-          }
-          return {
-            ...clusterEvent,
-            vessel: carrierExtendedVessel,
-            ...(clusterEvent.encounter && {
-              encounter: {
-                ...clusterEvent.encounter,
-                vessel: fishingExtendedVessel,
-              },
-            }),
-            dataset: eventsDataset,
-          }
+        const fishingVesselDataset =
+          vesselsInfo.find(
+            (v) =>
+              getVesselProperty(v, 'id', {
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              }) === fishingVessel?.id
+          )?.dataset || ''
+        const carrierVesselDataset =
+          vesselsInfo.find(
+            (v) =>
+              getVesselProperty(v, 'id', {
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              }) === carrierVessel?.id
+          )?.dataset || ''
+        const carrierExtendedVessel: ExtendedEventVessel = {
+          ...(carrierVessel as EventVessel),
+          dataset: carrierVesselDataset,
+        }
+        const fishingExtendedVessel: ExtendedEventVessel = {
+          ...(fishingVessel as EventVessel),
+          dataset: fishingVesselDataset,
+        }
+        return {
+          ...clusterEvent,
+          vessel: carrierExtendedVessel,
+          ...(clusterEvent.encounter && {
+            encounter: {
+              ...clusterEvent.encounter,
+              vessel: fishingExtendedVessel,
+            },
+          }),
+          dataset: eventsDataset,
         }
       }
       return { ...clusterEvent, dataset: eventsDataset }

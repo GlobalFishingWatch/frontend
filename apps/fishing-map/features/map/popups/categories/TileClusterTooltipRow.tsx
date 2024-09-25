@@ -205,7 +205,7 @@ function ClusterEventTooltipRow({ feature, showFeaturesDetails }: EncountersLaye
                 </VesselLink>
                 ({formatInfoField(event.vessel.flag, 'flag')}){' '}
                 <span className={styles.secondary} style={{ display: 'inline' }}>
-                  {getEventDescriptionComponent(event).description}
+                  {getEventDescriptionComponent(event)?.description}
                 </span>
               </div>
             ) : (
@@ -261,7 +261,6 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: TileContextLay
   return (
     <Fragment>
       {features.map((feature, index) => {
-        console.log('feature:', feature)
         const key = `${feature.title}-${index}`
         if (GFW_CLUSTER_LAYERS.some((source) => feature.layerId === source)) {
           if (feature.layerId.includes('encounter')) {
