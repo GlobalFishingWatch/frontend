@@ -3,7 +3,7 @@ import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_PER_PAGE,
 } from 'data/config'
-import { BufferUnit, BufferOperation } from 'types'
+import { BufferUnit, BufferOperation, Bbox } from 'types'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { AreaReportState } from './area-reports.types'
 
@@ -43,12 +43,13 @@ export const DEFAULT_AREA_REPORT_STATE: AreaReportState = {
 }
 
 export const ENTIRE_WORLD_REPORT_AREA_ID = 'world'
+export const ENTIRE_WORLD_REPORT_AREA_BOUNDS = [-180, -90, 180, 90] as Bbox
 
 export const ENTIRE_WORLD_REPORT_AREA: Area<AreaGeometry> = {
   id: ENTIRE_WORLD_REPORT_AREA_ID,
   name: 'Entire World',
   type: 'Feature',
-  bounds: [-180, -90, 180, 90],
+  bounds: ENTIRE_WORLD_REPORT_AREA_BOUNDS,
   geometry: {
     type: 'Polygon',
     coordinates: [

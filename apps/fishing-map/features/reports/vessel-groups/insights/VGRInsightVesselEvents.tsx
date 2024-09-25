@@ -12,7 +12,7 @@ const VesselGroupReportInsightVesselEvents = ({
   end,
 }: {
   ids?: string[]
-  vesselId?: string
+  vesselId: string
   datasetId: string
   start: string
   end: string
@@ -20,7 +20,7 @@ const VesselGroupReportInsightVesselEvents = ({
   const { t } = useTranslation()
   const { data, isLoading, error } = useGetVesselEventsQuery(
     {
-      ...(vesselId && { vessels: [vesselId] }),
+      vessels: [vesselId],
       ...(ids && { ids: ids }),
       datasets: [datasetId],
       'start-date': start,

@@ -50,6 +50,7 @@ export default function ReportActivity() {
 
   const fitAreaInViewport = useFitAreaInViewport()
   const { loaded, bbox } = useReportAreaBounds()
+  const bboxHash = bbox ? bbox.join(',') : ''
 
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function ReportActivity() {
       fitAreaInViewport()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded])
+  }, [loaded, bboxHash])
 
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()

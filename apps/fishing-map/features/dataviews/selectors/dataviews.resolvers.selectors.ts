@@ -56,7 +56,6 @@ import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { FISHING_DATAVIEW_SLUG, PRESENCE_DATAVIEW_SLUG } from 'data/workspaces'
 
 const EMPTY_ARRAY: [] = []
 
@@ -141,8 +140,7 @@ export const selectDataviewInstancesMerged = createSelector(
         vesselGroupId: reportVesselGroupId,
         color: vesselGroupDataviewInstance?.config?.color,
         colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
-        dataviewId:
-          vGRActivitySubsection === 'presence' ? PRESENCE_DATAVIEW_SLUG : FISHING_DATAVIEW_SLUG,
+        activityType: vGRActivitySubsection,
       })
       if (activityVGRInstance) {
         mergedDataviewInstances.push(activityVGRInstance)
