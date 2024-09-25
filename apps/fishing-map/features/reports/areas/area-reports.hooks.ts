@@ -32,6 +32,7 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import {
+  ENTIRE_WORLD_REPORT_AREA_BOUNDS,
   LAST_REPORTS_STORAGE_KEY,
   LastReportStorage,
 } from 'features/reports/areas/area-reports.config'
@@ -104,9 +105,14 @@ function useVesselGroupReportBounds() {
   )
 
   const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)
+  const loaded = !isFetching && isSuccess
   return {
-    loaded: !isFetching && isSuccess,
-    bbox: statsBbox?.some((v) => v === null || v === undefined) ? null : statsBbox!,
+    loaded: loaded,
+    bbox: loaded
+      ? statsBbox?.some((v) => v === null || v === undefined)
+        ? ENTIRE_WORLD_REPORT_AREA_BOUNDS
+        : statsBbox!
+      : null,
   }
 }
 
