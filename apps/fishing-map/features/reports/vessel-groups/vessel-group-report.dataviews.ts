@@ -35,6 +35,10 @@ export const VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS: VesselGroupActivityDataviewId[]
   VESSEL_GROUP_PRESENCE_ACTIVITY_ID,
 ]
 
+export function isVesselGroupActivityDataview(dataviewId: string) {
+  return VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS.includes(dataviewId as VesselGroupActivityDataviewId)
+}
+
 export type VesselGroupEventsDataviewId =
   `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${VGREventsSubsection}`
 
@@ -82,9 +86,7 @@ export function getReportVesselGroupVisibleDataviews({
       return id.toString() === dataviewIdBySubSection
     }
     if (vesselGroupReportSection === 'activity') {
-      return VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS.includes(
-        id.toString() as VesselGroupActivityDataviewId
-      )
+      return isVesselGroupActivityDataview(id.toString())
     }
     return (
       category === DataviewCategory.VesselGroups &&
@@ -127,7 +129,7 @@ export const getVesselGroupActivityDataviewInstance = ({
   if (vesselGroupId) {
     return {
       id: `${VESSEL_GROUP_DATAVIEW_PREFIX}${activityType}`,
-      category: DataviewCategory.Activity,
+      category: DataviewCategory.VesselGroups,
       config: {
         visible: true,
         ...(color && { color }),

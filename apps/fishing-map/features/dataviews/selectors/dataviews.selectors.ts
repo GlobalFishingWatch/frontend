@@ -6,7 +6,6 @@ import {
   getActiveDatasetsInDataview,
   getDatasetsInDataviews,
   getRelatedDatasetByType,
-  getVesselGroupInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
@@ -25,7 +24,10 @@ import {
   selectVGRSection,
   selectVGRSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import {
+  getReportVesselGroupVisibleDataviews,
+  isVesselGroupActivityDataview,
+} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
@@ -35,6 +37,7 @@ import {
   selectActiveVesselsDataviews,
   selectActiveEnvironmentalDataviews,
   selectActiveDetectionsDataviews,
+  selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectDataviewInstancesResolved,
@@ -81,14 +84,29 @@ export const selectActivityMergedDataviewId = createSelector(
 )
 
 export const selectActiveReportActivityDataviews = createSelector(
-  [selectActiveActivityDataviews, selectIsAnyReportLocation, selectReportCategory],
-  (dataviews, isReportLocation, reportCategory): UrlDataviewInstance[] => {
+  [
+    selectActiveActivityDataviews,
+    selectActiveVesselGroupDataviews,
+    selectIsVesselGroupReportLocation,
+    selectIsAnyReportLocation,
+    selectReportCategory,
+  ],
+  (
+    activityDataviews,
+    vesselGroupDataviews,
+    isVGRLocation,
+    isReportLocation,
+    reportCategory
+  ): UrlDataviewInstance[] => {
+    if (isVGRLocation) {
+      return vesselGroupDataviews.filter((d) => isVesselGroupActivityDataview(d.id))
+    }
     if (isReportLocation) {
-      return dataviews.filter((dataview) => {
+      return activityDataviews.filter((dataview) => {
         return getReportCategoryFromDataview(dataview) === reportCategory
       })
     }
-    return dataviews
+    return activityDataviews
   }
 )
 
@@ -125,20 +143,16 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectActiveDetectionsDataviews,
     selectActiveHeatmapEnvironmentalDataviews,
     selectIsVesselGroupReportLocation,
-    selectReportVesselGroupId,
   ],
   (
     reportCategory,
     activityDataviews = [],
     detectionsDataviews = [],
     environmentalDataviews = [],
-    isVesselGroupReportLocation,
-    reportVesselGroupId
+    isVesselGroupReportLocation
   ) => {
     if (isVesselGroupReportLocation) {
-      return activityDataviews.filter((dataview) =>
-        getVesselGroupInDataview(dataview).includes(reportVesselGroupId)
-      )
+      return activityDataviews
     }
     if (isActivityReport(reportCategory)) {
       return activityDataviews

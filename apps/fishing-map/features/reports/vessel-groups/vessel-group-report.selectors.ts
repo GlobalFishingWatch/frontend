@@ -5,18 +5,21 @@ import {
   VesselGroupInsightParams,
 } from 'queries/vessel-insight-api'
 import { RootState } from 'reducers'
-import { DataviewCategory, InsightType } from '@globalfishingwatch/api-types'
-import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { InsightType } from '@globalfishingwatch/api-types'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { dataviewHasVesselGroupId } from 'features/dataviews/dataviews.utils'
-import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import {
+  selectActiveVesselGroupDataviews,
+  selectEventsDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,
   selectVGRSubsection,
 } from './vessel-group.config.selectors'
 import {
+  isVesselGroupActivityDataview,
   VESSEL_GROUP_EVENTS_DATAVIEW_IDS,
   VesselGroupEventsDataviewId,
 } from './vessel-group-report.dataviews'
@@ -28,20 +31,23 @@ export const IUU_INSIGHT_ID = 'VESSEL-IDENTITY-IUU-VESSEL-LIST' as InsightType
 export const FLAG_CHANGE_INSIGHT_ID = 'VESSEL-IDENTITY-FLAG-CHANGES' as InsightType
 export const MOU_INSIGHT_ID = 'VESSEL-IDENTITY-MOU-LIST' as InsightType
 
-export const selectAllVGRDataviews = createSelector(
-  [selectDataviewInstancesResolvedVisible, selectReportVesselGroupId],
+export const selectVGRDataviews = createSelector(
+  [selectActiveVesselGroupDataviews, selectReportVesselGroupId],
   (dataviews, reportVesselGroupId) => {
     return dataviews?.filter((dataview) => dataviewHasVesselGroupId(dataview, reportVesselGroupId))
   }
 )
 
-export const selectVGRDataview = createSelector([selectAllVGRDataviews], (dataviews) => {
-  return dataviews?.find((dataview) => dataview.category === DataviewCategory.VesselGroups)
+export const selectVGRDataview = createSelector([selectVGRDataviews], (vesselGroupDataviews) => {
+  return vesselGroupDataviews?.find((dataview) => !isVesselGroupActivityDataview(dataview.id))
 })
 
-export const selectVGRActivityDataview = createSelector([selectAllVGRDataviews], (dataviews) => {
-  return dataviews?.find((dataview) => dataview.category === DataviewCategory.Activity)
-})
+export const selectVGRActivityDataview = createSelector(
+  [selectVGRDataviews],
+  (vesselGroupDataviews) => {
+    return vesselGroupDataviews?.find((dataview) => isVesselGroupActivityDataview(dataview.id))
+  }
+)
 
 export const selectVGREventsSubsectionDataview = createSelector(
   [
