@@ -6,6 +6,7 @@ import {
   getActiveDatasetsInDataview,
   getDatasetsInDataviews,
   getRelatedDatasetByType,
+  getVesselGroupInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
@@ -124,16 +125,20 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectActiveDetectionsDataviews,
     selectActiveHeatmapEnvironmentalDataviews,
     selectIsVesselGroupReportLocation,
+    selectReportVesselGroupId,
   ],
   (
     reportCategory,
     activityDataviews = [],
     detectionsDataviews = [],
     environmentalDataviews = [],
-    isVesselGroupReportLocation
+    isVesselGroupReportLocation,
+    reportVesselGroupId
   ) => {
     if (isVesselGroupReportLocation) {
-      return activityDataviews
+      return activityDataviews.filter((dataview) =>
+        getVesselGroupInDataview(dataview).includes(reportVesselGroupId)
+      )
     }
     if (isActivityReport(reportCategory)) {
       return activityDataviews

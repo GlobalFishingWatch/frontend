@@ -55,6 +55,7 @@ import { getReportCategoryFromDataview } from 'features/reports/areas/area-repor
 import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,
+  selectVGRSection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 
 const EMPTY_ARRAY: [] = []
@@ -68,6 +69,7 @@ export const selectDataviewInstancesMerged = createSelector(
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
     selectIsVesselGroupReportLocation,
+    selectVGRSection,
     selectVGRActivitySubsection,
     selectVGREventsSubsection,
     selectReportVesselGroupId,
@@ -82,6 +84,7 @@ export const selectDataviewInstancesMerged = createSelector(
     isAnyVesselLocation,
     isVesselLocation,
     isVesselGroupReportLocation,
+    vGRSection,
     vGRActivitySubsection,
     vGREventsSubsection,
     reportVesselGroupId,
@@ -136,18 +139,22 @@ export const selectDataviewInstancesMerged = createSelector(
           mergedDataviewInstances.push(vesselGroupDataviewInstance)
         }
       }
-      const activityVGRInstance = getVesselGroupActivityDataviewInstance({
-        vesselGroupId: reportVesselGroupId,
-        color: vesselGroupDataviewInstance?.config?.color,
-        colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
-        activityType: vGRActivitySubsection,
-      })
-      if (activityVGRInstance) {
-        mergedDataviewInstances.push(activityVGRInstance)
+      if (vGRSection === 'activity') {
+        const activityVGRInstance = getVesselGroupActivityDataviewInstance({
+          vesselGroupId: reportVesselGroupId,
+          color: vesselGroupDataviewInstance?.config?.color,
+          colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
+          activityType: vGRActivitySubsection,
+        })
+        if (activityVGRInstance) {
+          mergedDataviewInstances.push(activityVGRInstance)
+        }
       }
-      mergedDataviewInstances.push(
-        ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, vGREventsSubsection)
-      )
+      if (vGRSection === 'events') {
+        mergedDataviewInstances.push(
+          ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, vGREventsSubsection)
+        )
+      }
     }
     return mergedDataviewInstances
   }
