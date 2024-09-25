@@ -42,6 +42,7 @@ import {
   selectReportTimeComparison,
 } from '../areas/area-reports.config.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from '../areas/area-reports.config'
+import { selectVGRActivitySubsection } from '../vessel-groups/vessel-group.config.selectors'
 
 interface EvolutionGraphData {
   date: string
@@ -131,6 +132,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const areaInViewport = useReportAreaInViewport()
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportCategory = useSelector(selectReportCategory)
+  const vGRActivitySubsection = useSelector(selectVGRActivitySubsection)
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -155,6 +157,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   }, [
     area?.id,
     reportCategory,
+    vGRActivitySubsection,
     timeComparisonHash,
     instancesChunkHash,
     reportGraphMode,
@@ -164,7 +167,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const updateFeaturesFiltered = useCallback(
     async (instances: FourwingsLayer[], area: Area<AreaGeometry>, mode?: 'point' | 'cell') => {
       setFeaturesFiltered([])
-
       for (const instance of instances) {
         const features = instance.getData() as FourwingsFeature[]
         const filteredInstanceFeatures =
@@ -182,12 +184,18 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   )
 
   useEffect(() => {
-    if (area?.geometry && layersLoaded && featuresFilteredDirtyRef.current && instances.length) {
+    if (
+      area?.geometry &&
+      areaInViewport &&
+      layersLoaded &&
+      featuresFilteredDirtyRef.current &&
+      instances.length
+    ) {
       updateFeaturesFiltered(instances, area, reportCategory === 'environment' ? 'point' : 'cell')
       featuresFilteredDirtyRef.current = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area, reportCategory, layersLoaded, reportBufferHash])
+  }, [area, reportCategory, areaInViewport, layersLoaded, reportBufferHash])
 
   const computeTimeseries = useCallback(
     (

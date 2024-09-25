@@ -16,6 +16,7 @@ import {
   PRESENCE_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import {
+  VGRActivitySubsection,
   VGREventsSubsection,
   VGRSection,
   VGRSubsection,
@@ -23,10 +24,19 @@ import {
 
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 
+export type VesselGroupActivityDataviewId =
+  `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${VGRActivitySubsection}`
+
+export const VESSEL_GROUP_FISHING_ACTIVITY_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}fishing`
+export const VESSEL_GROUP_PRESENCE_ACTIVITY_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}presence`
+
+export const VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS: VesselGroupActivityDataviewId[] = [
+  VESSEL_GROUP_FISHING_ACTIVITY_ID,
+  VESSEL_GROUP_PRESENCE_ACTIVITY_ID,
+]
+
 export type VesselGroupEventsDataviewId =
   `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${VGREventsSubsection}`
-
-export const VESSEL_GROUP_ACTIVITY_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}activity`
 
 export const VESSEL_GROUP_ENCOUNTER_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}encounter`
 export const VESSEL_GROUP_LOITERING_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}loitering`
@@ -72,7 +82,9 @@ export function getReportVesselGroupVisibleDataviews({
       return id.toString() === dataviewIdBySubSection
     }
     if (vesselGroupReportSection === 'activity') {
-      return id.toString() === VESSEL_GROUP_ACTIVITY_ID
+      return VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS.includes(
+        id.toString() as VesselGroupActivityDataviewId
+      )
     }
     return (
       category === DataviewCategory.VesselGroups &&
@@ -105,16 +117,16 @@ export const getVesselGroupActivityDataviewInstance = ({
   vesselGroupId,
   color,
   colorRamp,
-  dataviewId,
+  activityType,
 }: {
   vesselGroupId: string
   color?: string
   colorRamp?: ColorRampId
-  dataviewId: typeof FISHING_DATAVIEW_SLUG | typeof PRESENCE_DATAVIEW_SLUG
+  activityType: VGRActivitySubsection
 }): DataviewInstance<DataviewType> | undefined => {
   if (vesselGroupId) {
     return {
-      id: VESSEL_GROUP_ACTIVITY_ID,
+      id: `${VESSEL_GROUP_DATAVIEW_PREFIX}${activityType}`,
       category: DataviewCategory.Activity,
       config: {
         visible: true,
@@ -124,7 +136,7 @@ export const getVesselGroupActivityDataviewInstance = ({
           'vessel-groups': [vesselGroupId],
         },
       },
-      dataviewId,
+      dataviewId: activityType === 'presence' ? PRESENCE_DATAVIEW_SLUG : FISHING_DATAVIEW_SLUG,
     }
   }
 }
