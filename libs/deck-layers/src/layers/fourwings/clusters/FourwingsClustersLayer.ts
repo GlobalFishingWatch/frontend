@@ -399,7 +399,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         getPosition: this._getPosition,
         getColor: DEFAULT_BACKGROUND_COLOR,
         getSize: 12,
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.ClusterLabel, params),
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         sizeUnits: 'pixels',
         getTextAnchor: 'middle',
         getAlignmentBaseline: 'center',
