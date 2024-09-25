@@ -13,7 +13,7 @@ import {
   selectVesselGroupsVessels,
   setVesselGroupSearchId,
   setVesselGroupVessels,
-} from './vessel-groups.slice'
+} from './vessel-groups-modal.slice'
 import styles from './VesselGroupModal.module.css'
 
 function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
@@ -30,7 +30,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
       const vesselIds = debouncedSearchText?.split(/[\s|,]+/).filter(Boolean)
       dispatch(setVesselGroupVessels(vesselIds.map((v) => ({ vesselId: v, dataset: '' }))))
     } else {
-      dispatch(setVesselGroupVessels(undefined))
+      dispatch(setVesselGroupVessels(null))
     }
   }, [dispatch, debouncedSearchText])
 

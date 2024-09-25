@@ -16,13 +16,13 @@ import {
 } from 'features/vessel/vessel.utils'
 import { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
-import {
-  setVesselGroupSearchVessels,
-  selectVesselGroupSearchVessels,
-  selectNewVesselGroupSearchVessels,
-  setNewVesselGroupSearchVessels,
-} from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
+import {
+  selectNewVesselGroupSearchVessels,
+  selectVesselGroupSearchVessels,
+  setNewVesselGroupSearchVessels,
+  setVesselGroupSearchVessels,
+} from './vessel-groups-modal.slice'
 
 type VesselGroupVesselRowProps = {
   vessel: VesselDataIdentity

@@ -34,7 +34,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setVesselGroupCurrentDataviewIds,
   setVesselGroupsModalOpen,
-} from 'features/vessel-groups/vessel-groups.slice'
+} from 'features/vessel-groups/vessel-groups-modal.slice'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { listAsSentence } from 'utils/shared'
 import UserGuideLink from 'features/help/UserGuideLink'

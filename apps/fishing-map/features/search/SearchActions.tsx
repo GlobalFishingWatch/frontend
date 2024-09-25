@@ -17,7 +17,7 @@ import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/s
 import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,
-} from 'features/vessel-groups/vessel-groups.slice'
+} from 'features/vessel-groups/vessel-groups-modal.slice'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'

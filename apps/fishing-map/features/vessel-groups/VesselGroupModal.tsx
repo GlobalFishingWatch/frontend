@@ -17,7 +17,7 @@ import VesselGroupVessels from 'features/vessel-groups/VesselGroupModalVessels'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectAllVesselGroupSearchVessels,
-  selectHasVesselGroupSearchVessels,
+  selectHasVesselGroupVessels,
   selectHasVesselGroupVesselsOverflow,
   selectVesselGroupWorkspaceToNavigate,
   selectWorkspaceVessselGroupsIds,
@@ -40,27 +40,29 @@ import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.i
 import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import {
   IdField,
-  resetVesselGroup,
   createVesselGroupThunk,
   selectVesselGroupById,
-  selectVesselGroupEditId,
-  selectVesselGroupModalOpen,
-  selectVesselGroupSearchId,
-  selectVesselGroupSearchStatus,
   selectVesselGroupsStatus,
-  selectVesselGroupsVessels,
-  setVesselGroupSearchId,
-  resetVesselGroupStatus,
-  setVesselGroupSearchVessels,
-  searchVesselGroupsVesselsThunk,
-  MAX_VESSEL_GROUP_SEARCH_VESSELS,
-  MAX_VESSEL_GROUP_VESSELS,
-  getVesselInVesselGroupThunk,
-  selectVesselGroupConfirmationMode,
   VesselGroupConfirmationMode,
   updateVesselGroupVesselsThunk,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
+import {
+  getVesselInVesselGroupThunk,
+  MAX_VESSEL_GROUP_VESSELS,
+  MAX_VESSEL_GROUP_SEARCH_VESSELS,
+  resetVesselGroupModal,
+  resetVesselGroupModalStatus,
+  searchVesselGroupsVesselsThunk,
+  selectVesselGroupConfirmationMode,
+  selectVesselGroupEditId,
+  selectVesselGroupModalOpen,
+  selectVesselGroupSearchId,
+  selectVesselGroupSearchStatus,
+  selectVesselGroupsVessels,
+  setVesselGroupSearchId,
+  setVesselGroupSearchVessels,
+} from './vessel-groups-modal.slice'
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
@@ -92,7 +94,7 @@ function VesselGroupModal(): React.ReactElement {
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const vesselGroupSearchVessels = useSelector(selectAllVesselGroupSearchVessels)
   const hasVesselsOverflow = useSelector(selectHasVesselGroupVesselsOverflow)
-  const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
+  const hasVesselGroupsVessels = useSelector(selectHasVesselGroupVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const searchVesselGroupsVesselsRef = useRef<any>()
@@ -141,7 +143,7 @@ function VesselGroupModal(): React.ReactElement {
   const close = useCallback(() => {
     setError('')
     setGroupName('')
-    dispatch(resetVesselGroup(''))
+    dispatch(resetVesselGroupModal())
     abortSearch()
   }, [abortSearch, dispatch])
 
@@ -158,8 +160,8 @@ function VesselGroupModal(): React.ReactElement {
       if (confirmed) {
         if (action === 'back') {
           setError('')
-          dispatch(setVesselGroupSearchVessels(undefined))
-          dispatch(resetVesselGroupStatus(''))
+          dispatch(setVesselGroupSearchVessels(null))
+          dispatch(resetVesselGroupModalStatus())
           abortSearch()
           setShowBackButton(false)
         } else {

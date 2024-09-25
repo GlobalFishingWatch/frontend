@@ -5,10 +5,7 @@ import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwa
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
-import {
-  selectAllVesselGroups,
-  selectWorkspaceVesselGroups,
-} from 'features/vessel-groups/vessel-groups.slice'
+import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
 import { selectAllReports } from 'features/reports/areas/area-reports.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { DEFAULT_GROUP_ID } from 'features/user/user.config'
@@ -121,8 +118,8 @@ export const selectUserVesselGroups = createSelector(
 )
 
 export const selectAllVisibleVesselGroups = createSelector(
-  [selectUserVesselGroups, selectWorkspaceVesselGroups],
-  (vesselGroups = [], workspaceVesselGroups = []) => {
-    return uniqBy([...vesselGroups, ...(workspaceVesselGroups || [])], (v) => v.id)
+  [selectUserVesselGroups],
+  (vesselGroups = []) => {
+    return uniqBy([...vesselGroups], (v) => v.id)
   }
 )

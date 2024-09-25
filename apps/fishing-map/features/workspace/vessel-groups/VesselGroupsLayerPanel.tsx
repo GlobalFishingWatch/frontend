@@ -16,7 +16,7 @@ import {
   setNewVesselGroupSearchVessels,
   setVesselGroupEditId,
   setVesselGroupsModalOpen,
-} from 'features/vessel-groups/vessel-groups.slice'
+} from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import Color from '../common/Color'
@@ -66,7 +66,8 @@ function VesselGroupLayerPanel({
   const onEditClick = () => {
     if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
       dispatch(setVesselGroupEditId(vesselGroup.id))
-      dispatch(setNewVesselGroupSearchVessels(vesselGroup.vessels))
+      // TODO:VV3 remove this any
+      dispatch(setNewVesselGroupSearchVessels(vesselGroup.vessels as any))
       dispatch(setVesselGroupsModalOpen(true))
     }
   }

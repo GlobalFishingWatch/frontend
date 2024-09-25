@@ -11,7 +11,7 @@ import {
   setNewVesselGroupSearchVessels,
   setVesselGroupEditId,
   setVesselGroupsModalOpen,
-} from 'features/vessel-groups/vessel-groups.slice'
+} from 'features/vessel-groups/vessel-groups-modal.slice'
 import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasOtherVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'

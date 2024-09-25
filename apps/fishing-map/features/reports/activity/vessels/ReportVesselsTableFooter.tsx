@@ -14,7 +14,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,
-} from 'features/vessel-groups/vessel-groups.slice'
+} from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportVesselFilter } from 'features/reports/areas/area-reports.config.selectors'

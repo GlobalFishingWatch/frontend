@@ -6,18 +6,20 @@ import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
-  setVesselGroupsModalOpen,
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
   deleteVesselGroupThunk,
-  setVesselGroupEditId,
-  selectVesselGroupEditId,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { getVesselGroupLabel } from 'features/vessel-groups/vessel-groups.utils'
 import { sortByCreationDate } from 'utils/dates'
 import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
+import {
+  selectVesselGroupEditId,
+  setVesselGroupEditId,
+  setVesselGroupsModalOpen,
+} from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectUserVesselGroups } from './selectors/user.permissions.selectors'
 import styles from './User.module.css'
 
@@ -88,14 +90,20 @@ function UserVesselGroups() {
                   <div>
                     <IconButton
                       icon="edit"
-                      loading={vesselGroup.id === editingGroupId}
+                      loading={
+                        vesselGroup.id === editingGroupId &&
+                        vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
+                      }
                       tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
                       onClick={() => onEditClick(vesselGroup)}
                     />
                     <IconButton
                       icon="delete"
                       type="warning"
-                      loading={vesselGroup.id === vesselGroupStatusId}
+                      loading={
+                        vesselGroup.id === vesselGroupStatusId &&
+                        vesselGroupStatus === AsyncReducerStatus.LoadingDelete
+                      }
                       tooltip={t('vesselGroup.remove', 'Remove vessel group')}
                       onClick={() => onDeleteClick(vesselGroup)}
                     />

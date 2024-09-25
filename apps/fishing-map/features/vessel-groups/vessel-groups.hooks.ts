@@ -13,12 +13,14 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { sortByCreationDate } from 'utils/dates'
 import {
   selectVesselGroupsStatusId,
-  setNewVesselGroupSearchVessels,
-  setVesselGroupEditId,
-  setVesselGroupsModalOpen,
   UpdateVesselGroupThunkParams,
   updateVesselGroupVesselsThunk,
 } from './vessel-groups.slice'
+import {
+  setNewVesselGroupSearchVessels,
+  setVesselGroupEditId,
+  setVesselGroupsModalOpen,
+} from './vessel-groups-modal.slice'
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
@@ -82,17 +84,18 @@ export const useVesselGroupsModal = () => {
     async (vesselGroupId: string, vessels: AddVesselGroupVessel[]) => {
       const vesselsWithDataset = vessels.map((vessel) => ({
         ...vessel,
-        id: (vessel as VesselLastIdentity)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
-        dataset:
-          typeof vessel?.dataset === 'string'
-            ? vessel.dataset
-            : vessel.dataset?.id || (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
+        vesselId:
+          (vessel as VesselLastIdentity)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
+        dataset: (typeof vessel?.dataset === 'string'
+          ? vessel.dataset
+          : vessel.dataset?.id || (vessel as ReportVesselWithDatasets)?.infoDataset?.id) as string,
       }))
       if (vesselsWithDataset?.length) {
         if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
           dispatch(setVesselGroupEditId(vesselGroupId))
         }
-        dispatch(setNewVesselGroupSearchVessels(vesselsWithDataset))
+        // TODO:VV3 remove this any
+        dispatch(setNewVesselGroupSearchVessels(vesselsWithDataset as any))
         dispatch(setVesselGroupsModalOpen(true))
       } else {
         console.warn('No related activity datasets founds for', vesselsWithDataset)

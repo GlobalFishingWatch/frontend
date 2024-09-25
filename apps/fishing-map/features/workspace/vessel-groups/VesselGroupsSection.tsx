@@ -13,12 +13,12 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectVesselGroupsStatusId,
   selectWorkspaceVesselGroupsStatus,
-  setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups.slice'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
 function VesselGroupSection(): React.ReactElement {
