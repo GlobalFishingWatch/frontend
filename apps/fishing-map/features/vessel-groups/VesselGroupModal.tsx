@@ -62,6 +62,7 @@ import {
   setVesselGroupSearchId,
   setVesselGroupSearchVessels,
 } from './vessel-groups-modal.slice'
+import { getVesselGroupUniqVessels } from './vessel-groups.utils'
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
@@ -184,12 +185,7 @@ function VesselGroupModal(): React.ReactElement {
       { addToDataviews = true, removeVessels = false, navigateToWorkspace = false } = {}
     ) => {
       setButtonLoading(navigateToWorkspace ? 'saveAndSeeInWorkspace' : 'save')
-      const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
-        return {
-          vesselId: vessel.id,
-          dataset: vessel.dataset as string,
-        }
-      })
+      const vessels: VesselGroupVessel[] = getVesselGroupUniqVessels(vesselGroupSearchVessels)
       let dispatchedAction
       if (editingVesselGroupId) {
         const vesselGroup: UpdateVesselGroupThunkParams = {

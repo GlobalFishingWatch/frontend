@@ -18,11 +18,11 @@ import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { selectVGRVessels } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import {
   VGRVesselsOrderProperty,
   VGRVesselsOrderDirection,
 } from 'features/vessel-groups/vessel-groups.types'
+import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import styles from './VesselGroupReportVesselsTable.module.css'
 import { selectVGRVesselsPaginated } from './vessel-group-report-vessels.selectors'
 import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTableFooter'
@@ -30,7 +30,6 @@ import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTable
 export default function VesselGroupReportVesselsTable() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const vesselsRaw = useSelector(selectVGRVessels)
   const vessels = useSelector(selectVGRVesselsPaginated)
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -107,7 +106,8 @@ export default function VesselGroupReportVesselsTable() {
             />
           </div>
           {vessels?.map((vessel, i) => {
-            const { id, shipName, flag, flagTranslatedClean, flagTranslated, mmsi, index } = vessel
+            const { shipName, flagTranslated, flagTranslatedClean, identity } = vessel
+            const { id, flag, ssvid } = getSearchIdentityResolved(identity!)
             const isLastRow = i === vessels.length - 1
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const type = vessel.vesselType
@@ -117,7 +117,7 @@ export default function VesselGroupReportVesselsTable() {
               <Fragment key={id}>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
                   <VesselPin
-                    vessel={vesselsRaw?.[index]}
+                    vessel={vessel.identity}
                     disabled={!workspaceReady}
                     onClick={onPinClick}
                   />
@@ -132,7 +132,7 @@ export default function VesselGroupReportVesselsTable() {
                   )}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
-                  <span>{mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
+                  <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
                 </div>
                 <div
                   className={cx({

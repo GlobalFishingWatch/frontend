@@ -10,15 +10,15 @@ import {
   IdentityVessel,
   VesselGroup,
   VesselGroupVessel,
-  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
-import { VesselDataIdentity } from 'features/vessel/vessel.slice'
+import { getVesselId } from 'features/vessel/vessel.utils'
+import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
+import { mergeVesselGroupVesselIdentities } from './vessel-groups.utils'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
@@ -29,6 +29,8 @@ export type VesselGroupConfirmationMode =
   | 'saveAndSeeInWorkspace'
   | 'saveAndDeleteVessels'
 
+export type VesselGroupVesselIdentity = VesselGroupVessel & { identity?: IdentityVessel }
+
 interface VesselGroupModalState {
   isModalOpen: boolean
   vesselGroupEditId: string | null
@@ -38,9 +40,9 @@ interface VesselGroupModalState {
     id: IdField
     status: AsyncReducerStatus
     error: ParsedAPIError | null
-    vessels: VesselDataIdentity[] | null
+    vessels: VesselGroupVesselIdentity[] | null
   }
-  newSearchVessels: VesselDataIdentity[] | null
+  newSearchVessels: VesselGroupVesselIdentity[] | null
 }
 
 type SearchVesselsBody = { datasets: string[]; where?: string; ids?: string[] }
@@ -94,14 +96,6 @@ const initialState: VesselGroupModalState = {
     error: null,
   },
   newSearchVessels: null,
-}
-
-export function getVesselsGroupIdentities(vessels: IdentityVessel[]): VesselDataIdentity[] {
-  return vessels.flatMap((vessel) => {
-    return getVesselIdentities(vessel, {
-      identitySource: VesselIdentitySourceEnum.SelfReported,
-    })
-  })
 }
 
 export const searchVesselGroupsVesselsThunk = createAsyncThunk(
@@ -182,7 +176,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
               )
             })
           : uniqSearchResults
-        return getVesselsGroupIdentities(searchResultsFiltered)
+        return mergeVesselGroupVesselIdentities(vessels, searchResultsFiltered)
       } catch (e: any) {
         console.warn(e)
         return rejectWithValue(parseAPIError(e))
@@ -236,7 +230,7 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
           },
           {
             id: 'includes',
-            value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+            value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
           },
         ],
       }
@@ -249,11 +243,16 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
             message: 'Missing search url',
           })
         }
-        const vessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(url, {
+        const vesselsIdentities = await GFWAPI.fetch<APIPagination<IdentityVessel>>(url, {
           signal,
           cache: 'reload',
         })
-        return getVesselsGroupIdentities(vessels.entries)
+        const vesselGroupVessels = mergeVesselGroupVesselIdentities(
+          vesselGroup.vessels,
+          vesselsIdentities.entries
+        )
+        console.log('🚀 ~ vesselGroupVessels:', vesselGroupVessels)
+        return vesselGroupVessels
       } catch (e: any) {
         console.warn(e)
         return rejectWithValue(parseAPIError(e))
@@ -288,10 +287,13 @@ export const vesselGroupModalSlice = createSlice({
     resetVesselGroupModalStatus: (state) => {
       state.search.status = AsyncReducerStatus.Idle
     },
-    setVesselGroupSearchVessels: (state, action: PayloadAction<VesselDataIdentity[] | null>) => {
+    setVesselGroupSearchVessels: (
+      state,
+      action: PayloadAction<VesselGroupVesselIdentity[] | null>
+    ) => {
       state.search.vessels = action.payload
     },
-    setNewVesselGroupSearchVessels: (state, action: PayloadAction<VesselDataIdentity[]>) => {
+    setNewVesselGroupSearchVessels: (state, action: PayloadAction<VesselGroupVesselIdentity[]>) => {
       state.newSearchVessels = action.payload
     },
     setVesselGroupVessels: (state, action: PayloadAction<VesselGroupVessel[] | null>) => {

@@ -62,6 +62,8 @@ export const useVesselGroupsUpdate = () => {
           return {
             vesselId: id,
             dataset: dataset,
+            // TODO:VV3 insert vessels with its relationships
+            relationId: '',
           }
         }),
       }

@@ -28,7 +28,9 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   useEffect(() => {
     if (debouncedSearchText) {
       const vesselIds = debouncedSearchText?.split(/[\s|,]+/).filter(Boolean)
-      dispatch(setVesselGroupVessels(vesselIds.map((v) => ({ vesselId: v, dataset: '' }))))
+      dispatch(
+        setVesselGroupVessels(vesselIds.map((v) => ({ vesselId: v, dataset: '', relationId: '' })))
+      )
     } else {
       dispatch(setVesselGroupVessels(null))
     }

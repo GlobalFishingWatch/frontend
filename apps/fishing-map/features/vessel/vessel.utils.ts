@@ -53,20 +53,16 @@ export const getVesselIdentities = (
     return [] as VesselDataIdentity[]
   }
 
-  if ((vessel as IdentityVesselData).identities) {
-    return (vessel as IdentityVesselData).identities.sort((a, b) =>
-      a.transmissionDateTo > b.transmissionDateTo ? -1 : 1
-    )
-  }
-
-  const identities = [
-    ...getVesselIdentitiesBySource(vessel as IdentityVessel, {
-      identitySource: VesselIdentitySourceEnum.Registry,
-    }),
-    ...getVesselIdentitiesBySource(vessel as IdentityVessel, {
-      identitySource: VesselIdentitySourceEnum.SelfReported,
-    }),
-  ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
+  const identities = (vessel as IdentityVesselData).identities?.length
+    ? (vessel as IdentityVesselData).identities
+    : [
+        ...getVesselIdentitiesBySource(vessel as IdentityVessel, {
+          identitySource: VesselIdentitySourceEnum.Registry,
+        }),
+        ...getVesselIdentitiesBySource(vessel as IdentityVessel, {
+          identitySource: VesselIdentitySourceEnum.SelfReported,
+        }),
+      ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
 
   return identitySource ? identities.filter((i) => i.identitySource === identitySource) : identities
 }

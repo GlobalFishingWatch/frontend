@@ -5,7 +5,7 @@ import {
   VesselGroupEventsVesselsParams,
 } from 'queries/vessel-group-events-stats-api'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import { getSearchIdentityResolved, getVesselId } from 'features/vessel/vessel.utils'
+import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import {
@@ -49,11 +49,11 @@ export const selectVGREventsVessels = createSelector(
       return
     }
     const insightVessels = vesselGroup?.vessels?.flatMap((vessel) => {
-      const vesselWithEvents = data?.find((v) => v.vesselId === getVesselId(vessel))
+      const vesselWithEvents = data?.find((v) => v.vesselId === vessel.vesselId)
       if (!vesselWithEvents) {
         return []
       }
-      const identity = getSearchIdentityResolved(vessel)
+      const identity = getSearchIdentityResolved(vessel.identity!)
       return {
         ...vesselWithEvents,
         ...identity,

@@ -21,6 +21,8 @@ import {
   selectVGRVesselsSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { cleanFlagState } from 'features/reports/activity/vessels/report-activity-vessels.utils'
+import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
+import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectVGRVessels } from '../vessel-group-report.slice'
 import { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
 
@@ -36,24 +38,28 @@ const getVesselSource = (vessel: IdentityVessel) => {
   return source
 }
 
+export type VesselGroupVesselTableParsed = VesselGroupVesselIdentity & VesselGroupReportVesselParsed
+
 export const selectVGRVesselsParsed = createSelector([selectVGRVessels], (vessels) => {
-  if (!vessels?.length) return null
-  return vessels.map((vessel, index) => {
-    const { ssvid, ...vesselData } = getSearchIdentityResolved(vessel)
-    const source = getVesselSource(vessel)
+  if (!vessels?.length) {
+    return
+  }
+  return getVesselGroupUniqVessels(vessels).flatMap((vessel) => {
+    if (!vessel.identity) {
+      return []
+    }
+    const { shipname, flag, ...vesselData } = getSearchIdentityResolved(vessel.identity!)
+    const source = getVesselSource(vessel.identity)
     return {
-      ...vesselData,
-      index: index,
-      shipName: formatInfoField(vesselData.shipname, 'name'),
+      ...vessel,
+      shipName: formatInfoField(shipname, 'name') as string,
       vesselType: getVesselShipTypeLabel(vesselData),
       geartype: getVesselGearTypeLabel(vesselData),
-      flagTranslated: t(`flags:${vesselData.flag as string}` as any),
-      flagTranslatedClean: cleanFlagState(t(`flags:${vesselData.flag as string}` as any)),
+      flagTranslated: t(`flags:${flag as string}` as any),
+      flagTranslatedClean: cleanFlagState(t(`flags:${flag as string}` as any)),
       source: t(`common.sourceOptions.${source}`, source),
-      mmsi: ssvid,
-      dataset: vessel.dataset,
-    }
-  }) as VesselGroupReportVesselParsed[]
+    } as VesselGroupVesselTableParsed
+  })
 })
 
 type ReportFilterProperty = FilterProperty | 'source'
@@ -67,11 +73,12 @@ export const selectVGRVesselsTimeRange = createSelector([selectVGRVesselsParsed]
   let start: string = ''
   let end: string = ''
   vessels.forEach((vessel) => {
-    if (!start || vessel.transmissionDateFrom < start) {
-      start = vessel.transmissionDateFrom
+    const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel.identity!)
+    if (!start || transmissionDateFrom < start) {
+      start = transmissionDateFrom
     }
-    if (!end || vessel.transmissionDateTo > end) {
-      end = vessel.transmissionDateTo
+    if (!end || transmissionDateTo > end) {
+      end = transmissionDateTo
     }
   })
   return { start, end }
@@ -92,7 +99,7 @@ export const selectVGRVesselsFiltered = createSelector(
   [selectVGRVesselsParsed, selectVGRVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
-    return getVesselsFiltered<VesselGroupReportVesselParsed>(
+    return getVesselsFiltered<VesselGroupVesselTableParsed>(
       vessels,
       filter,
       REPORT_FILTER_PROPERTIES

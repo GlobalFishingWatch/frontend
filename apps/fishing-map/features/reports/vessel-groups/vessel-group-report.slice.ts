@@ -3,9 +3,13 @@ import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { mergeVesselGroupVesselIdentities } from 'features/vessel-groups/vessel-groups.utils'
+import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 
-export type VesselGroupReport = Omit<VesselGroup, 'vessels'> & { vessels: IdentityVessel[] }
+export type VesselGroupReport = Omit<VesselGroup, 'vessels'> & {
+  vessels: VesselGroupVesselIdentity[]
+}
 
 interface ReportState {
   status: AsyncReducerStatus
@@ -30,20 +34,17 @@ export const fetchVesselGroupReportThunk = createAsyncThunk(
   async ({ vesselGroupId }: FetchVesselGroupReportThunkParams, { rejectWithValue, signal }) => {
     try {
       const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
+      const params = {
+        'vessel-groups': [vesselGroupId],
+        includes: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+      }
       const vesselGroupVessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(
-        `/vessels?${stringify({ 'vessel-groups': [vesselGroupId] })}`,
+        `/vessels?${stringify(params)}`,
         { cache: 'reload', signal }
       )
       return {
         ...vesselGroup,
-        vessels: vesselGroupVessels.entries.toSorted((a, b) => {
-          const aValue = getVesselProperty(a, 'shipname')
-          const bValue = getVesselProperty(b, 'shipname')
-          if (aValue === bValue) {
-            return 0
-          }
-          return aValue > bValue ? 1 : -1
-        }),
+        vessels: mergeVesselGroupVesselIdentities(vesselGroup.vessels, vesselGroupVessels.entries),
       }
     } catch (e) {
       console.warn(e)

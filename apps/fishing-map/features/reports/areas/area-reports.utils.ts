@@ -22,6 +22,7 @@ import { Bbox, BufferOperation, BufferUnit } from 'types'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { VesselGroupReportVesselParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.types'
+import { VesselGroupVesselTableParsed } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
@@ -320,7 +321,7 @@ export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
 }
 
 export function getVesselsFiltered<
-  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed
+  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed | VesselGroupVesselTableParsed
 >(vessels: Vessel[], filter: string, filterProperties = FILTER_PROPERTIES) {
   if (!filter || !filter.length) {
     return vessels

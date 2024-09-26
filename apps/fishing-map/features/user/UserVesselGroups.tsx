@@ -13,6 +13,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import {
   getVesselGroupLabel,
+  getVesselGroupVesselsCount,
   isOutdatedVesselGroup,
 } from 'features/vessel-groups/vessel-groups.utils'
 import { sortByCreationDate } from 'utils/dates'
@@ -88,13 +89,17 @@ function UserVesselGroups() {
                   {isOutdated ? (
                     <span>
                       {getVesselGroupLabel(vesselGroup)}{' '}
-                      <span className={styles.secondary}>({vesselGroup.vessels.length})</span>
+                      <span className={styles.secondary}>
+                        ({getVesselGroupVesselsCount(vesselGroup)})
+                      </span>
                     </span>
                   ) : (
                     <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
                       <span className={styles.workspaceLink} data-test="workspace-name">
                         {getVesselGroupLabel(vesselGroup)}{' '}
-                        <span className={styles.secondary}>({vesselGroup.vessels.length})</span>
+                        <span className={styles.secondary}>
+                          ({getVesselGroupVesselsCount(vesselGroup)})
+                        </span>
                         <IconButton icon="analysis" className={styles.right} />
                       </span>
                     </VesselGroupReportLink>
