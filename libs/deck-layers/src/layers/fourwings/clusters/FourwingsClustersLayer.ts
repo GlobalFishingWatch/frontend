@@ -330,15 +330,6 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return d.properties.value.toString()
   }
 
-  filterSubLayer({ layer }: FilterContext) {
-    return true
-    // if (this.clusterMode === 'positions') {
-    //   return !layer.id.includes(CLUSTER_LAYER_ID)
-    // } else {
-    //   return true
-    // }
-  }
-
   renderLayers(): Layer<{}> | LayersList | null {
     const { color, tilesUrl, eventType = 'encounter' } = this.props
     const { clusters, points, radiusScale } = this.state
