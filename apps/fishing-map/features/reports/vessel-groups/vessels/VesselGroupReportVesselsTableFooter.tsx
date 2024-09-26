@@ -32,8 +32,19 @@ export default function VesselGroupReportVesselsTableFooter() {
 
   const onDownloadVesselsClick = () => {
     const vessels = allVessels?.map((vessel) => {
-      const { flagTranslated, flagTranslatedClean, ...rest } = vessel
-      return rest
+      return {
+        dataset: vessel.dataset,
+        flag: vessel.flag,
+        'flag translated': vessel.flagTranslated,
+        'GFW vessel type': vessel.vesselType,
+        'GFW gear type': vessel.geartype,
+        sources: vessel.source,
+        name: vessel.shipName,
+        MMSI: vessel.mmsi,
+        IMO: vessel.imo,
+        'call sign': vessel.callsign,
+        vesselId: vessel.id,
+      }
     })
     if (vessels?.length) {
       //   trackEvent({
