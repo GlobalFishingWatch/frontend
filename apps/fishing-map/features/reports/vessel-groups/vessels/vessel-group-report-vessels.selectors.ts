@@ -46,7 +46,7 @@ export const selectVGRVesselsParsed = createSelector([selectVGRVessels], (vessel
       index: index,
       shipName: formatInfoField(vesselData.shipname, 'name'),
       vesselType: getVesselShipTypeLabel(vesselData),
-      gearType: getVesselGearTypeLabel(vesselData),
+      geartype: getVesselGearTypeLabel(vesselData),
       flagTranslated: t(`flags:${vesselData.flag as string}` as any),
       flagTranslatedClean: cleanFlagState(t(`flags:${vesselData.flag as string}` as any)),
       source: t(`common.sourceOptions.${source}`, source),
@@ -170,7 +170,7 @@ export const selectVGRVesselsGraphDataGrouped = createSelector(
         vesselsGrouped = groupBy(vessels, (vessel) => vessel.vesselType.split(', ')[0])
         break
       case 'geartypes':
-        vesselsGrouped = groupBy(vessels, (vessel) => vessel.gearType.split(', ')[0])
+        vesselsGrouped = groupBy(vessels, (vessel) => vessel.geartype.split(', ')[0])
         break
       case 'source':
         vesselsGrouped = groupBy(vessels, (vessel) => vessel.source)
