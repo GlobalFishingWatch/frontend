@@ -158,9 +158,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
           ? undefined
           : {
               datasets,
-              where: encodeURIComponent(
-                `${uniqVesselIds.map((ssvid) => `ssvid='${ssvid}'`).join(' OR ')}`
-              ),
+              where: `${uniqVesselIds.map((ssvid) => `ssvid='${ssvid}'`).join(' OR ')}`,
             }
         const searchResults = await fetchAllSearchVessels({
           url: `${url}`,
