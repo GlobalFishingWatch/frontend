@@ -19,6 +19,11 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import {
+  useReportAreaCenter,
+  useVesselGroupBounds,
+} from 'features/reports/areas/area-reports.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -40,17 +45,18 @@ function VesselGroupLayerPanel({
   const readOnly = useSelector(selectReadOnly)
   const { vesselGroup } = dataview
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataview?.id)
   const layerLoaded = activityLayer?.loaded && !vesselGroupLoading
   const layerError = activityLayer?.instance?.getError?.()
-
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
-
   const [colorOpen, setColorOpen] = useState(false)
-
   const layerActive = dataview?.config?.visible ?? true
+
+  const [hovered, setHovered] = useState(false)
+  const { loaded, bbox } = useVesselGroupBounds(hovered ? dataview?.id : undefined)
+  const coordinates = useReportAreaCenter(bbox!)
+  const setMapCoordinates = useSetMapCoordinates()
 
   const changeInstanceColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
@@ -70,9 +76,17 @@ function VesselGroupLayerPanel({
       dispatch(setVesselGroupsModalOpen(true))
     }
   }
+  const onFitBoundsClick = () => {
+    if (coordinates) {
+      setMapCoordinates(coordinates)
+    }
+  }
 
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
+  }
+  const onHover = () => {
+    setHovered(true)
   }
 
   const closeExpandedContainer = () => {
@@ -93,12 +107,13 @@ function VesselGroupLayerPanel({
       ref={setNodeRef}
       style={style}
       {...attributes}
+      onMouseEnter={onHover}
     >
       <div className={styles.header}>
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         <Title
           title={
-            <VesselGroupReportLink vesselGroupId={vesselGroup?.id!} dataviewId={dataview.id}>
+            <VesselGroupReportLink vesselGroupId={vesselGroup?.id!} bbox={bbox || undefined}>
               <Tooltip
                 content={t('vesselGroupReport.clickToSee', 'Click to see the vessel group report')}
               >
@@ -130,7 +145,7 @@ function VesselGroupLayerPanel({
           <Fragment>
             {layerActive && (
               <Fragment>
-                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!} dataviewId={dataview.id}>
+                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!} bbox={bbox || undefined}>
                   <IconButton
                     tooltip={t(
                       'vesselGroupReport.clickToSee',
@@ -146,6 +161,15 @@ function VesselGroupLayerPanel({
                   tooltip={t('common.edit', 'Edit')}
                   onClick={onEditClick}
                   tooltipPlacement="top"
+                />
+                <IconButton
+                  icon="target"
+                  size="small"
+                  tooltip={t('layer.vessel_group_fit_bounds', 'Center map on vessel group')}
+                  onClick={onFitBoundsClick}
+                  tooltipPlacement="top"
+                  loading={!loaded}
+                  disabled={!loaded}
                 />
                 <Color
                   dataview={dataview}
