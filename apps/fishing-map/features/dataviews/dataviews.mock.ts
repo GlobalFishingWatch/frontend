@@ -1,4 +1,4 @@
-import { Dataview, DataviewType, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
@@ -21,7 +21,12 @@ const dataviews: Dataview[] = [
     datasetsConfig: [
       {
         filters: {
-          encounter_type: ['FISHING-CARRIER', 'FISHING-SUPPORT'],
+          encounter_type: [
+            'FISHING-CARRIER',
+            'CARRIER-FISHING',
+            'FISHING-SUPPORT',
+            'SUPPORT-FISHING',
+          ],
         },
         params: [],
         endpoint: 'events-cluster-tiles',
