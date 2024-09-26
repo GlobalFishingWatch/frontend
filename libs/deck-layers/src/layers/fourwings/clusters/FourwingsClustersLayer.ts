@@ -118,7 +118,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 70,
-        maxZoom: 12,
+        maxZoom: this.props.maxZoom - 1,
         reduce: (accumulated, props) => {
           return (accumulated.value += props.value)
         },

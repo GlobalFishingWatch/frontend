@@ -19,6 +19,7 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
   tilesUrl: string
   visible: boolean
   clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
+  maxZoom: number
 }>
 
 export type FourwingsClusterProperties = {
