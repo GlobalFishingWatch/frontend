@@ -62,7 +62,7 @@ export const getPoints = (
         },
         properties: {
           // TODO:deck remove the round as won't be needed with real data
-          count: Math.round(offset + value * scale),
+          value: Math.round(offset + value * scale),
           id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
           tile: tile?.index,
           col,

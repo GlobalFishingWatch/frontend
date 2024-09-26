@@ -5,6 +5,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import {
+  FOURWINGS_MAX_ZOOM,
   FourwingsClusterEventType,
   FourwingsClustersLayerProps,
   getUTCDateTime,
@@ -95,6 +96,7 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
     visible: dataview.config?.visible ?? true,
     tilesUrl: resolveEndpoint(dataset, datasetConfig, { absolute: true }) || '',
     clusterMaxZoomLevels: dataview.config?.clusterMaxZoomLevels,
+    maxZoom: FOURWINGS_MAX_ZOOM,
     eventType: dataset.subcategory as FourwingsClusterEventType,
   }
 }

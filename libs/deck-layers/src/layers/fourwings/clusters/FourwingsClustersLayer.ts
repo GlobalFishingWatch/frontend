@@ -79,6 +79,7 @@ const ICON_MAPPING: Record<FourwingsClusterEventType, any> = {
 
 const CLUSTER_LAYER_ID = 'clusters'
 const POINTS_LAYER_ID = 'points'
+const MAX_INDIVIDUAL_POINTS = 1000
 
 export class FourwingsClustersLayer extends CompositeLayer<
   FourwingsClustersLayerProps & TileLayerProps
@@ -117,9 +118,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 70,
-        maxZoom: Math.floor(this.props.clusterMaxZoomLevels?.default || MAX_ZOOM_TO_CLUSTER_POINTS),
+        maxZoom: this.props.maxZoom - 1,
         reduce: (accumulated, props) => {
-          accumulated.count += props.count
+          return (accumulated.value += props.value)
         },
       }),
     }
@@ -166,59 +167,49 @@ export class FourwingsClustersLayer extends CompositeLayer<
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
     const { zoom } = this.context.viewport
-    if (this.clusterMode === 'positions') {
-      const points = tiles.flatMap((tile) => {
-        return tile.content
-          ? tile.content.map((feature: any) =>
-              transformTileCoordsToWGS84(
-                feature,
-                tile.bbox as GeoBoundingBox,
-                this.context.viewport
-              )
-            )
-          : []
-      }) as FourwingsPointFeature[]
+    const data: FourwingsPointFeature[] = tiles.flatMap((tile) => {
+      return this.clusterMode === 'positions'
+        ? (tile.content || []).map((feature: FourwingsPointFeature) =>
+            transformTileCoordsToWGS84(feature, tile.bbox as GeoBoundingBox, this.context.viewport)
+          )
+        : tile.content || []
+    })
+    if (this.clusterMode === 'positions' && data.length < MAX_INDIVIDUAL_POINTS) {
       requestAnimationFrame(() => {
         this.setState({
           viewportLoaded: true,
-          points,
+          points: data,
           clusters: undefined,
           radiusScale: undefined,
-        } as FourwingsClustersTileLayerState)
-      })
-    } else {
-      const data = tiles.flatMap((tile) => {
-        return tile.content || []
-      }) as FourwingsPointFeature[]
-
-      this.state.clusterIndex.load(data)
-      const allClusters = this.state.clusterIndex.getClusters(
-        [-180, -85, 180, 85],
-        Math.round(zoom)
-      )
-      let clusters: FourwingsClusterFeature[] = []
-      let points: FourwingsPointFeature[] = []
-      if (allClusters.length) {
-        allClusters.forEach((f) => {
-          f.properties.count > 1
-            ? clusters.push(f as FourwingsClusterFeature)
-            : points.push(f as FourwingsPointFeature)
         })
-      }
+      })
+      return
+    }
+    this.state.clusterIndex.load(data)
+    const allClusters = this.state.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
+    let clusters: FourwingsClusterFeature[] = []
+    let points: FourwingsPointFeature[] = []
 
-      const counts = clusters.map((cluster) => cluster.properties.count)
-      const radiusScale = scaleSqrt()
-        .domain([1, counts.length ? max(counts) : 1])
-        .range([MIN_CLUSTER_RADIUS, MAX_CLUSTER_RADIUS])
-      requestAnimationFrame(() => {
-        this.setState({
-          viewportLoaded: true,
-          clusters,
-          points,
-          radiusScale,
-        } as FourwingsClustersTileLayerState)
+    if (allClusters.length) {
+      allClusters.forEach((f) => {
+        f.properties.value > 1
+          ? clusters.push(f as FourwingsClusterFeature)
+          : points.push(f as FourwingsPointFeature)
       })
     }
+
+    const counts = clusters.map((cluster) => cluster.properties.value)
+    const radiusScale = scaleSqrt()
+      .domain([1, counts.length ? max(counts) : 1])
+      .range([MIN_CLUSTER_RADIUS, MAX_CLUSTER_RADIUS])
+    requestAnimationFrame(() => {
+      this.setState({
+        viewportLoaded: true,
+        clusters,
+        points,
+        radiusScale,
+      })
+    })
   }
 
   _fetchClusters = async (
@@ -326,25 +317,17 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _getRadius = (d: FourwingsClusterFeature) => {
-    return this.state.radiusScale?.(d.properties.count) || MIN_CLUSTER_RADIUS
+    return this.state.radiusScale?.(d.properties.value) || MIN_CLUSTER_RADIUS
   }
 
   _getClusterLabel = (d: FourwingsClusterFeature) => {
-    if (d.properties.count > 1000000) {
-      return `>${Math.floor(d.properties.count / 1000000)}M`
+    if (d.properties.value > 1000000) {
+      return `>${Math.floor(d.properties.value / 1000000)}M`
     }
-    if (d.properties.count > 1000) {
-      return `>${Math.floor(d.properties.count / 1000)}k`
+    if (d.properties.value > 1000) {
+      return `>${Math.floor(d.properties.value / 1000)}k`
     }
-    return d.properties.count.toString()
-  }
-
-  filterSubLayer({ layer }: FilterContext) {
-    if (this.clusterMode === 'positions') {
-      return !layer.id.includes(CLUSTER_LAYER_ID)
-    } else {
-      return true
-    }
+    return d.properties.value.toString()
   }
 
   renderLayers(): Layer<{}> | LayersList | null {
@@ -405,8 +388,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
         getAlignmentBaseline: 'center',
         // extensions: [new CollisionFilterExtension()],
         // collisionTestProps: { sizeScale: 1 },
-        // getCollisionPriority: (d: any) => parseInt(d.properties.count || 1),
-        collisionGroup: 'text',
+        // getCollisionPriority: (d: any) => parseInt(d.properties.value || 1),
+        // collisionGroup: 'text',
       }),
     ]
   }

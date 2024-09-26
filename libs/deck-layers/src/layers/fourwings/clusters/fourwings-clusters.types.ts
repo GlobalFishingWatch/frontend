@@ -19,11 +19,12 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
   tilesUrl: string
   visible: boolean
   clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
+  maxZoom: number
 }>
 
 export type FourwingsClusterProperties = {
   id: string
-  count: number
+  value: number
   col: number
   row: number
   tile: Tile2DHeader['index']
