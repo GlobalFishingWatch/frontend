@@ -73,7 +73,7 @@ const VesselGroupReportInsightMOU = () => {
               const name = formatInfoField(vessel.shipname, 'name')
               const flags = Array.from(new Set(insights.map((i) => i.insight.reference)))
               return (
-                <li className={styles.row}>
+                <li className={styles.row} key={vessel.id}>
                   <VesselLink
                     className={styles.link}
                     vesselId={vessel.id}
@@ -114,9 +114,8 @@ const VesselGroupReportInsightMOU = () => {
       }
       const uniqVessels = Array.from(new Set(vesselInsights.map((v) => v.vessel.id)))
       return (
-        <div className={styles.nested}>
+        <div className={styles.nested} key={list}>
           <VesselsInMOUByCategory
-            key={list}
             insights={vesselInsights}
             expanded={insightsExpanded.includes(`${country}-${list}`)}
             onToggle={(isOpen) => onToggle(isOpen, list)}

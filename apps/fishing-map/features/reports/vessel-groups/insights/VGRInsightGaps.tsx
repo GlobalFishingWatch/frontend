@@ -70,7 +70,7 @@ const VesselGroupReportInsightGap = () => {
                   const vesselId = vessel.identity.id
                   const isExpandedVessel = expandedVesselIds.includes(vesselId)
                   return (
-                    <li className={styles.row}>
+                    <li className={styles.row} key={vesselId}>
                       <Collapsable
                         id={vesselId}
                         open={isExpandedVessel}
