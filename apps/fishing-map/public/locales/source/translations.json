@@ -1013,6 +1013,7 @@
     "addToWorkspace": "Add vessel group to workspace",
     "addVessels": "Add vessels to vessel group",
     "addVisibleVessels": "Add visible vessels to vessel group",
+    "clickToUpdate": "Click to migrate your vessel group to latest available data",
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
     "createNewGroup": "Create new group",

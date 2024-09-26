@@ -13,6 +13,7 @@ export interface VesselGroup {
   ownerId?: number
   ownerType?: string
   createdAt?: string
+  updatedAt?: string
 }
 
 export type VesselGroupUpsert = Partial<Pick<VesselGroup, 'id' | 'name' | 'vessels' | 'public'>>
