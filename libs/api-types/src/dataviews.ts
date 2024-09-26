@@ -53,6 +53,7 @@ export type DataviewSublayerConfig = {
 
 export type FourwingsGeolocation = 'country' | 'port' | 'default'
 
+/** Used to define the max zoom level for each geolocation (all levels must be below 12) */
 export type ClusterMaxZoomLevelConfig = Partial<Record<FourwingsGeolocation, number>>
 
 export interface DataviewConfig<Type = DataviewType> {

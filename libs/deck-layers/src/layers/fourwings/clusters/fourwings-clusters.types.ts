@@ -23,7 +23,7 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
 
 export type FourwingsClusterProperties = {
   id: string
-  count: number
+  value: number
   col: number
   row: number
   tile: Tile2DHeader['index']
