@@ -143,7 +143,7 @@ export const useClickedEventConnect = () => {
       (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
     ) as FourwingsClusterPickingObject
 
-    if (clusterFeature?.properties?.count > 2) {
+    if (clusterFeature?.properties?.value > 1) {
       const { expansionZoom } = clusterFeature
       const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
       const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
@@ -364,7 +364,7 @@ export const useMapCursor = () => {
       }
       if (hoverFeatures?.some(isTilesClusterLayer)) {
         const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some(
-          (f) => f.properties?.count > 2
+          (f) => f.properties?.value > 1
         )
         if (!isCluster) {
           return 'pointer'
