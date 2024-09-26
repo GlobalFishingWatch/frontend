@@ -61,7 +61,7 @@ export const useVesselGroupsUpdate = () => {
           }
           return {
             vesselId: id,
-            dataset: typeof dataset === 'string' ? dataset : dataset.id,
+            dataset: dataset,
           }
         }),
       }

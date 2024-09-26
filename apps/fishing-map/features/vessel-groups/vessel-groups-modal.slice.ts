@@ -1,7 +1,6 @@
 import { createAsyncThunk, PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { uniq, uniqBy } from 'es-toolkit'
 import { RootState } from 'reducers'
-import { cache } from 'react'
 import {
   APIPagination,
   APIVesselSearchPagination,
@@ -11,18 +10,24 @@ import {
   IdentityVessel,
   VesselGroup,
   VesselGroupVessel,
+  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { getVesselId } from 'features/vessel/vessel.utils'
+import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
+import { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
 export type IdField = 'vesselId' | 'mmsi'
-export type VesselGroupConfirmationMode = 'save' | 'saveAndSeeInWorkspace' | 'saveAndDeleteVessels'
+export type VesselGroupConfirmationMode =
+  | 'save'
+  | 'update'
+  | 'saveAndSeeInWorkspace'
+  | 'saveAndDeleteVessels'
 
 interface VesselGroupModalState {
   isModalOpen: boolean
@@ -33,9 +38,9 @@ interface VesselGroupModalState {
     id: IdField
     status: AsyncReducerStatus
     error: ParsedAPIError | null
-    vessels: IdentityVessel[] | null
+    vessels: VesselDataIdentity[] | null
   }
-  newSearchVessels: IdentityVessel[] | null
+  newSearchVessels: VesselDataIdentity[] | null
 }
 
 type SearchVesselsBody = { datasets: string[]; where?: string; ids?: string[] }
@@ -89,6 +94,14 @@ const initialState: VesselGroupModalState = {
     error: null,
   },
   newSearchVessels: null,
+}
+
+export function getVesselsGroupIdentities(vessels: IdentityVessel[]): VesselDataIdentity[] {
+  return vessels.flatMap((vessel) => {
+    return getVesselIdentities(vessel, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })
+  })
 }
 
 export const searchVesselGroupsVesselsThunk = createAsyncThunk(
@@ -171,8 +184,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
               )
             })
           : uniqSearchResults
-
-        return searchResultsFiltered
+        return getVesselsGroupIdentities(searchResultsFiltered)
       } catch (e: any) {
         console.warn(e)
         return rejectWithValue(parseAPIError(e))
@@ -224,6 +236,10 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
             id: 'cache',
             value: false,
           },
+          {
+            id: 'includes',
+            value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+          },
         ],
       }
       try {
@@ -239,7 +255,7 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
           signal,
           cache: 'reload',
         })
-        return vessels.entries
+        return getVesselsGroupIdentities(vessels.entries)
       } catch (e: any) {
         console.warn(e)
         return rejectWithValue(parseAPIError(e))
@@ -274,10 +290,10 @@ export const vesselGroupModalSlice = createSlice({
     resetVesselGroupModalStatus: (state) => {
       state.search.status = AsyncReducerStatus.Idle
     },
-    setVesselGroupSearchVessels: (state, action: PayloadAction<IdentityVessel[] | null>) => {
+    setVesselGroupSearchVessels: (state, action: PayloadAction<VesselDataIdentity[] | null>) => {
       state.search.vessels = action.payload
     },
-    setNewVesselGroupSearchVessels: (state, action: PayloadAction<IdentityVessel[]>) => {
+    setNewVesselGroupSearchVessels: (state, action: PayloadAction<VesselDataIdentity[]>) => {
       state.newSearchVessels = action.payload
     },
     setVesselGroupVessels: (state, action: PayloadAction<VesselGroupVessel[] | null>) => {

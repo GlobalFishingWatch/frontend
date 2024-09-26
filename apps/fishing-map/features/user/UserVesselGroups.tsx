@@ -19,6 +19,7 @@ import { sortByCreationDate } from 'utils/dates'
 import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
 import {
   selectVesselGroupEditId,
+  setVesselGroupConfirmationMode,
   setVesselGroupEditId,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -45,6 +46,7 @@ function UserVesselGroups() {
     async (vesselGroup: VesselGroup) => {
       dispatch(setVesselGroupEditId(vesselGroup.id))
       dispatch(setVesselGroupsModalOpen(true))
+      dispatch(setVesselGroupConfirmationMode('update'))
     },
     [dispatch]
   )

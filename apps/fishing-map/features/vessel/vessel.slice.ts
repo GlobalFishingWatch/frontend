@@ -6,12 +6,14 @@ import {
   ApiEvent,
   Dataset,
   DatasetTypes,
+  GearType,
   IdentityVessel,
   Resource,
   ResourceStatus,
   SelfReportedInfo,
   VesselCombinedSourcesInfo,
   VesselRegistryInfo,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import { setResource } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
@@ -42,6 +44,9 @@ export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
   combinedSourcesInfo?: VesselCombinedSourcesInfo
   positionsCounter?: number
+  dataset?: string
+  geartypes?: GearType[]
+  shiptypes?: VesselType[]
 }
 // Merges and plain all the identities of a vessel
 export type IdentityVesselData = {

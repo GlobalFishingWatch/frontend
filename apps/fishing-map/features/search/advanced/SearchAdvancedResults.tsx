@@ -202,7 +202,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           return (
             <VesselLink
               vesselId={vesselData.id}
-              datasetId={typeof dataset === 'string' ? dataset : dataset.id}
+              datasetId={dataset}
               identity={bestIdentityMatch}
               onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}

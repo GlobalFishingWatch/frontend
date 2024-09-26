@@ -8,6 +8,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import ReportTitlePlaceholder from 'features/reports/areas/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
+  getVesselsGroupIdentities,
   setNewVesselGroupSearchVessels,
   setVesselGroupEditId,
   setVesselGroupsModalOpen,
@@ -35,7 +36,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   const onEditClick = useCallback(() => {
     if (vesselGroup?.id || !vesselGroup?.vessels?.length) {
       dispatch(setVesselGroupEditId(vesselGroup.id))
-      dispatch(setNewVesselGroupSearchVessels(vesselGroup.vessels))
+      dispatch(setNewVesselGroupSearchVessels(getVesselsGroupIdentities(vesselGroup.vessels)))
       dispatch(setVesselGroupsModalOpen(true))
     }
   }, [dispatch, vesselGroup?.id, vesselGroup?.vessels])

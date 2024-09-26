@@ -34,7 +34,6 @@ import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { getVesselId } from 'features/vessel/vessel.utils'
 import { ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
@@ -187,7 +186,7 @@ function VesselGroupModal(): React.ReactElement {
       setButtonLoading(navigateToWorkspace ? 'saveAndSeeInWorkspace' : 'save')
       const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
         return {
-          vesselId: getVesselId(vessel),
+          vesselId: vessel.id,
           dataset: vessel.dataset as string,
         }
       })
@@ -391,7 +390,9 @@ function VesselGroupModal(): React.ReactElement {
               </Button>
             )}
         {!fullModalLoading &&
-          (confirmationMode === 'save' || confirmationMode === 'saveAndDeleteVessels' ? (
+          (confirmationMode === 'save' ||
+          confirmationMode === 'update' ||
+          confirmationMode === 'saveAndDeleteVessels' ? (
             <Button
               disabled={confirmButtonDisabled}
               onClick={
@@ -406,7 +407,9 @@ function VesselGroupModal(): React.ReactElement {
               tooltip={confirmButtonTooltip}
             >
               {hasVesselGroupsVessels
-                ? t('common.confirm', 'Confirm')
+                ? confirmationMode === 'update'
+                  ? t('common.update', 'Update')
+                  : t('common.confirm', 'Confirm')
                 : t('common.continue', 'Continue')}
             </Button>
           ) : (
