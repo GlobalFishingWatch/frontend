@@ -1,11 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
-import {
-  MAX_VESSEL_GROUP_VESSELS,
-  selectNewVesselGroupSearchVessels,
-  selectVesselGroupSearchVessels,
-} from 'features/vessel-groups/vessel-groups.slice'
+import { MAX_VESSEL_GROUP_VESSELS } from 'features/vessel-groups/vessel-groups-modal.slice'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -16,25 +12,19 @@ import { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { getVesselGroupsInDataviews } from 'features/datasets/datasets.utils'
-
-export const selectAllVesselGroupSearchVessels = createSelector(
-  [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
-  (vessels, newVessels) => {
-    return [...(newVessels || []), ...(vessels || [])]
-  }
-)
+import { selectVesselGroupModalVessels } from './vessel-groups-modal.slice'
 
 export const selectHasVesselGroupVesselsOverflow = createSelector(
-  [selectAllVesselGroupSearchVessels],
+  [selectVesselGroupModalVessels],
   (vessels = []) => {
-    return vessels.length > MAX_VESSEL_GROUP_VESSELS
+    return vessels !== null && vessels.length > MAX_VESSEL_GROUP_VESSELS
   }
 )
 
 export const selectHasVesselGroupSearchVessels = createSelector(
-  [selectAllVesselGroupSearchVessels],
+  [selectVesselGroupModalVessels],
   (vessels = []) => {
-    return vessels.length > 0
+    return vessels !== null && vessels.length > 0
   }
 )
 

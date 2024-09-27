@@ -6,26 +6,25 @@ import { VesselGroup } from '@globalfishingwatch/api-types'
 import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
 import { getVesselGroupLabel } from 'features/vessel-groups/vessel-groups.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
-import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
-import { VesselLastIdentity } from 'features/search/search.slice'
-import { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+// import { VesselLastIdentity } from 'features/search/search.slice'
+// import { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { sortByCreationDate } from 'utils/dates'
 import {
   selectVesselGroupsStatusId,
-  setNewVesselGroupSearchVessels,
-  setVesselGroupEditId,
-  setVesselGroupsModalOpen,
   UpdateVesselGroupThunkParams,
   updateVesselGroupVesselsThunk,
 } from './vessel-groups.slice'
+import {
+  setVesselGroupEditId,
+  setVesselGroupModalVessels,
+  setVesselGroupsModalOpen,
+  VesselGroupVesselIdentity,
+} from './vessel-groups-modal.slice'
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
-export type AddVesselGroupVessel =
-  | VesselLastIdentity
-  | ReportVesselWithDatasets
-  | IdentityVesselData
+export type AddVesselGroupVessel = IdentityVesselData | VesselGroupVesselIdentity
 
 export const useVesselGroupsOptions = () => {
   const { t } = useTranslation()
@@ -49,19 +48,10 @@ export const useVesselGroupsOptions = () => {
 export const useVesselGroupsUpdate = () => {
   const dispatch = useAppDispatch()
   const addVesselsToVesselGroup = useCallback(
-    async (vesselGroupId: string, vessels: AddVesselGroupVessel[]) => {
+    async (vesselGroupId: string, vessels: VesselGroupVesselIdentity[]) => {
       const vesselGroup: UpdateVesselGroupThunkParams = {
         id: vesselGroupId,
-        vessels: vessels.flatMap((vessel) => {
-          const { id, dataset } = getCurrentIdentityVessel(vessel as IdentityVesselData)
-          if (!id || !dataset) {
-            return []
-          }
-          return {
-            vesselId: id,
-            dataset: typeof dataset === 'string' ? dataset : dataset.id,
-          }
-        }),
+        vessels: vessels,
       }
       const dispatchedAction = await dispatch(updateVesselGroupVesselsThunk(vesselGroup))
       if (updateVesselGroupVesselsThunk.fulfilled.match(dispatchedAction)) {
@@ -79,23 +69,15 @@ export const useVesselGroupsUpdate = () => {
 export const useVesselGroupsModal = () => {
   const dispatch = useAppDispatch()
   const createVesselGroupWithVessels = useCallback(
-    async (vesselGroupId: string, vessels: AddVesselGroupVessel[]) => {
-      const vesselsWithDataset = vessels.map((vessel) => ({
-        ...vessel,
-        id: (vessel as VesselLastIdentity)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
-        dataset:
-          typeof vessel?.dataset === 'string'
-            ? vessel.dataset
-            : vessel.dataset?.id || (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
-      }))
-      if (vesselsWithDataset?.length) {
+    async (vesselGroupId: string, vessels: VesselGroupVesselIdentity[]) => {
+      if (vessels?.length) {
         if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
           dispatch(setVesselGroupEditId(vesselGroupId))
         }
-        dispatch(setNewVesselGroupSearchVessels(vesselsWithDataset))
+        dispatch(setVesselGroupModalVessels(vessels))
         dispatch(setVesselGroupsModalOpen(true))
       } else {
-        console.warn('No related activity datasets founds for', vesselsWithDataset)
+        console.warn('No related activity datasets founds for', vessels)
       }
     },
     [dispatch]

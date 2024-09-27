@@ -14,10 +14,7 @@ import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/vessel-groups/VesselGroupAddButton'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  setVesselGroupConfirmationMode,
-  setVesselGroupCurrentDataviewIds,
-} from 'features/vessel-groups/vessel-groups.slice'
+import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
@@ -76,9 +73,6 @@ function SearchActions() {
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
     dispatch(setVesselGroupConfirmationMode('saveAndSeeInWorkspace'))
-    if (dataviewIds?.length) {
-      dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-    }
     trackEvent({
       category: TrackCategory.SearchVessel,
       action: 'Click add to vessel group',

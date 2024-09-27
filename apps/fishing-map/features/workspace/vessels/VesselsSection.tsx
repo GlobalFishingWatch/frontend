@@ -29,14 +29,14 @@ import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
-import {
-  selectVesselGroupsStatus,
-  setVesselGroupConfirmationMode,
-} from 'features/vessel-groups/vessel-groups.slice'
+import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
@@ -147,7 +147,13 @@ function VesselsSection(): React.ReactElement {
   )
   const vesselsToVesselGroup = areVesselsLoading
     ? []
-    : vesselResources.map((resource) => resource.data)
+    : vesselResources.map(({ data }) => {
+        return {
+          id: getVesselId(data),
+          identities: getVesselIdentities(data),
+          datasetId: data.dataset,
+        } as IdentityVesselData
+      })
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>

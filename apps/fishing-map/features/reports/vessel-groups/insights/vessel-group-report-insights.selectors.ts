@@ -37,13 +37,11 @@ export const selectVGRVesselsByInsight = <Insight = any>(
       return []
     }
     const insightVessels = vesselGroup?.vessels?.flatMap((vessel) => {
-      const vesselWithInsight = data?.[insightProperty]?.find(
-        (v) => v.vesselId === getVesselId(vessel)
-      )
+      const vesselWithInsight = data?.[insightProperty]?.find((v) => v.vesselId === vessel.vesselId)
       if (!vesselWithInsight || (insightCounter && get(vesselWithInsight, insightCounter) === 0)) {
         return []
       }
-      return { ...vesselWithInsight, identity: getSearchIdentityResolved(vessel) }
+      return { ...vesselWithInsight, identity: getSearchIdentityResolved(vessel.identity!) }
     })
     return insightVessels.sort((a, b) => {
       if (insightCounter) {

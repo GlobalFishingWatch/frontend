@@ -13,10 +13,10 @@ import { formatInfoField } from 'utils/info'
 import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
-  setNewVesselGroupSearchVessels,
+  setVesselGroupModalVessels,
   setVesselGroupEditId,
   setVesselGroupsModalOpen,
-} from 'features/vessel-groups/vessel-groups.slice'
+} from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
@@ -79,7 +79,7 @@ function VesselGroupLayerPanel({
   const onEditClick = () => {
     if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
       dispatch(setVesselGroupEditId(vesselGroup.id))
-      dispatch(setNewVesselGroupSearchVessels(vesselGroup.vessels))
+      dispatch(setVesselGroupModalVessels(vesselGroup.vessels))
       dispatch(setVesselGroupsModalOpen(true))
     }
   }

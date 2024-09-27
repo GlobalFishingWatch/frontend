@@ -4,8 +4,12 @@ import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
-import { MAX_VESSEL_GROUP_VESSELS } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  MAX_VESSEL_GROUP_VESSELS,
+  searchVesselGroupsVesselsThunk,
+} from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './VesselGroupListTooltip.module.css'
 import VesselGroupListTooltip from './VesselGroupListTooltip'
 import {
@@ -14,10 +18,13 @@ import {
   useVesselGroupsUpdate,
   NEW_VESSEL_GROUP_ID,
 } from './vessel-groups.hooks'
+import { parseVesselGroupVessels } from './vessel-groups.utils'
 
 type VesselGroupAddButtonProps = {
   children?: React.ReactNode
-  vessels: AddVesselGroupVessel[]
+  vessels?: AddVesselGroupVessel[]
+  vesselsToResolve?: string[]
+  datasetsToResolve?: string[]
   onAddToVesselGroup?: (vesselGroupId: string) => void
 }
 
@@ -69,32 +76,65 @@ export function VesselGroupAddActionButton({
 }
 
 function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
-  const { vessels, onAddToVesselGroup, children = <VesselGroupAddActionButton /> } = props
+  const {
+    vessels,
+    vesselsToResolve,
+    datasetsToResolve,
+    onAddToVesselGroup,
+    children = <VesselGroupAddActionButton />,
+  } = props
   const addVesselsToVesselGroup = useVesselGroupsUpdate()
   const createVesselGroupWithVessels = useVesselGroupsModal()
+  const vesselGroupVessels = parseVesselGroupVessels(vessels!)
+  const dispatch = useAppDispatch()
 
   const handleAddToVesselGroupClick = useCallback(
     async (vesselGroupId: string) => {
+      let resolvedVesselGroupVessels = vesselGroupVessels
+      if (vesselsToResolve && datasetsToResolve) {
+        // TODO:VV3 check if this works properly
+        const action = await dispatch(
+          searchVesselGroupsVesselsThunk({
+            ids: vesselsToResolve,
+            idField: 'vesselId',
+            datasets: datasetsToResolve,
+          })
+        )
+        if (searchVesselGroupsVesselsThunk.fulfilled.match(action)) {
+          resolvedVesselGroupVessels = action.payload
+        }
+      }
       if (vesselGroupId !== NEW_VESSEL_GROUP_ID) {
-        if (vessels.length) {
-          const vesselGroup = await addVesselsToVesselGroup(vesselGroupId, vessels)
+        if (resolvedVesselGroupVessels.length) {
+          const vesselGroup = await addVesselsToVesselGroup(
+            vesselGroupId,
+            resolvedVesselGroupVessels
+          )
           if (onAddToVesselGroup && vesselGroup) {
             onAddToVesselGroup(vesselGroup?.id)
           }
         }
       } else {
-        createVesselGroupWithVessels(vesselGroupId, vessels)
+        createVesselGroupWithVessels(vesselGroupId, resolvedVesselGroupVessels)
         if (onAddToVesselGroup) {
           onAddToVesselGroup(vesselGroupId)
         }
       }
     },
-    [addVesselsToVesselGroup, createVesselGroupWithVessels, onAddToVesselGroup, vessels]
+    [
+      addVesselsToVesselGroup,
+      createVesselGroupWithVessels,
+      datasetsToResolve,
+      dispatch,
+      onAddToVesselGroup,
+      vesselGroupVessels,
+      vesselsToResolve,
+    ]
   )
   return (
     <VesselGroupListTooltip
       onAddToVesselGroup={handleAddToVesselGroupClick}
-      vessels={vessels}
+      vessels={vesselGroupVessels}
       children={children}
     />
   )

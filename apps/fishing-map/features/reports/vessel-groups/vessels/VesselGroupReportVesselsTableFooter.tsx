@@ -87,9 +87,6 @@ export default function VesselGroupReportVesselsTableFooter() {
   // const onAddToVesselGroup = () => {
   //   const dataviewIds = heatmapDataviews.map(({ id }) => id)
   //   dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-  //   if (dataviewIds?.length) {
-  //     dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-  //   }
   //   trackEvent({
   //     category: TrackCategory.VesselGroups,
   //     action: 'add_to_vessel_group',

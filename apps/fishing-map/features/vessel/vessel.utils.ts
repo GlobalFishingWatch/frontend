@@ -18,6 +18,33 @@ import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.s
 import { TimeRange } from 'features/timebar/timebar.slice'
 
 type GetVesselIdentityParams = { identityId?: string; identitySource?: VesselIdentitySourceEnum }
+
+const getVesselIdentitiesBySource = (
+  vessel: IdentityVessel,
+  { identitySource } = {} as Pick<GetVesselIdentityParams, 'identitySource'>
+): VesselDataIdentity[] => {
+  if (!identitySource) {
+    return [] as VesselDataIdentity[]
+  }
+  return (vessel?.[identitySource] || []).map((identity) => {
+    const geartypes = getVesselCombinedSourceProperty(vessel, {
+      vesselId: identity.id,
+      property: 'geartypes',
+    })?.map((i) => i.name as GearType)
+    const shiptypes = getVesselCombinedSourceProperty(vessel, {
+      vesselId: identity.id,
+      property: 'shiptypes',
+    })?.map((i) => i.name as VesselType)
+    return {
+      ...identity,
+      identitySource,
+      geartypes,
+      shiptypes,
+      dataset: vessel.dataset,
+    } as VesselDataIdentity
+  })
+}
+
 export const getVesselIdentities = (
   vessel: IdentityVessel | IdentityVesselData,
   { identitySource } = {} as Pick<GetVesselIdentityParams, 'identitySource'>
@@ -25,18 +52,18 @@ export const getVesselIdentities = (
   if (!vessel) {
     return [] as VesselDataIdentity[]
   }
+
   const identities = (vessel as IdentityVesselData).identities?.length
     ? (vessel as IdentityVesselData).identities
     : [
-        ...((vessel as IdentityVessel).registryInfo || []).map((i) => ({
-          ...i,
+        ...getVesselIdentitiesBySource(vessel as IdentityVessel, {
           identitySource: VesselIdentitySourceEnum.Registry,
-        })),
-        ...((vessel as IdentityVessel).selfReportedInfo || []).map((i) => ({
-          ...i,
+        }),
+        ...getVesselIdentitiesBySource(vessel as IdentityVessel, {
           identitySource: VesselIdentitySourceEnum.SelfReported,
-        })),
+        }),
       ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
+
   return identitySource ? identities.filter((i) => i.identitySource === identitySource) : identities
 }
 

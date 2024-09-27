@@ -47,6 +47,7 @@ import {
   selectEventsDataviews,
   selectVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 
 export const MAX_TOOLTIP_LIST = 5
 
@@ -197,7 +198,7 @@ const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) =
       },
       {
         id: 'includes',
-        value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+        value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
       },
     ],
   }

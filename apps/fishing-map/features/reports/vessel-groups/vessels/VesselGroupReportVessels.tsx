@@ -3,8 +3,8 @@ import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import ReportVesselsFilter from 'features/reports/activity/vessels/ReportVesselsFilter'
-import { selectVGRVessels } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import {
+  selectVGRUniqVessels,
   selectVGRVesselsFlags,
   selectVGRVesselsGraphDataGrouped,
   selectVGRVesselsTimeRange,
@@ -25,7 +25,7 @@ import styles from './VesselGroupReportVessels.module.css'
 
 function VesselGroupReportVessels() {
   const { t } = useTranslation()
-  const vessels = useSelector(selectVGRVessels)
+  const vessels = useSelector(selectVGRUniqVessels)
   const subsection = useSelector(selectVGRVesselsSubsection)
   const reportDataview = useSelector(selectVGRDataview)
   const timeRange = useSelector(selectVGRVesselsTimeRange)

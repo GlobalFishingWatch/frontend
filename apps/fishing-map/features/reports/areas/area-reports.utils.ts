@@ -22,6 +22,7 @@ import { Bbox, BufferOperation, BufferUnit } from 'types'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { VesselGroupReportVesselParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.types'
+import { VesselGroupVesselTableParsed } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
@@ -266,50 +267,6 @@ export const parseReportUrl = (url: string) => {
   }
 }
 
-function parseReportToIdentityVessel(vessel: ReportVesselWithDatasets) {
-  return {
-    id: vessel.id || vessel.vesselId,
-    shipname: vessel.shipName,
-    flag: vessel.flag,
-    gearType: vessel.geartype,
-    vesselType: vessel.vesselType,
-    mmsi: vessel.mmsi,
-    callsign: vessel.callsign,
-    transmissionDateFrom: vessel.firstTransmissionDate,
-    transmissionDateTo: vessel.lastTransmissionDate,
-    identitySource: 'selfReportedInfo',
-    imo: vessel.imo,
-    nShipname: '',
-    ssvid: vessel.mmsi,
-    sourceCode: ['AIS'],
-    geartypes: vessel.geartype ? [vessel.geartype] : [],
-    shiptypes: vessel.vesselType ? [vessel.vesselType] : [],
-  } as VesselDataIdentity
-}
-export function parseReportVesselsToIdentity(
-  vessels?: ReportVesselWithDatasets[] | null
-): IdentityVesselData[] {
-  if (!vessels || !vessels.length) {
-    return []
-  }
-  const identityVessels = vessels.flatMap((vessel) => {
-    if (!vessel) {
-      return []
-    }
-    return {
-      id: vessel.id || vessel.vesselId,
-      dataset: vessel.infoDataset,
-      info: vessel.infoDataset?.id!,
-      track: vessel.trackDataset?.id!,
-      registryOwners: [],
-      registryPublicAuthorizations: [],
-      combinedSourcesInfo: [],
-      identities: [parseReportToIdentityVessel(vessel)],
-    } as IdentityVesselData
-  })
-  return identityVessels
-}
-
 export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
 export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
   name: ['shipName'],
@@ -320,7 +277,7 @@ export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
 }
 
 export function getVesselsFiltered<
-  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed
+  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed | VesselGroupVesselTableParsed
 >(vessels: Vessel[], filter: string, filterProperties = FILTER_PROPERTIES) {
   if (!filter || !filter.length) {
     return vessels

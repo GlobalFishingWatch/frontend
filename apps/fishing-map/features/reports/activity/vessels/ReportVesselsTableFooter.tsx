@@ -4,6 +4,7 @@ import cx from 'classnames'
 import { Fragment, useMemo } from 'react'
 import { unparse as unparseCSV } from 'papaparse'
 import { saveAs } from 'file-saver'
+import { uniq } from 'es-toolkit'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -11,10 +12,7 @@ import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setVesselGroupConfirmationMode,
-  setVesselGroupCurrentDataviewIds,
-} from 'features/vessel-groups/vessel-groups.slice'
+import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportVesselFilter } from 'features/reports/areas/area-reports.config.selectors'
@@ -22,10 +20,7 @@ import {
   selectReportAreaName,
   ReportVesselWithDatasets,
 } from 'features/reports/areas/area-reports.selectors'
-import {
-  parseReportVesselsToIdentity,
-  getVesselsFiltered,
-} from 'features/reports/areas/area-reports.utils'
+import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import styles from './ReportVesselsTableFooter.module.css'
 import {
   selectReportVesselsListWithAllInfo,
@@ -51,8 +46,15 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
-  const vesselGroupIdentityVessels = useMemo(() => {
-    return parseReportVesselsToIdentity(reportVesselFilter ? allFilteredVessels : allVessels)
+  const vesselGroupVessels = useMemo(() => {
+    const vessels = reportVesselFilter ? allFilteredVessels : allVessels
+    if (!vessels?.length) {
+      return null
+    }
+    return {
+      ids: vessels?.flatMap((v) => v.id || v.vesselId || []),
+      datasets: uniq(vessels.flatMap((v) => v.dataset || [])),
+    }
   }, [allFilteredVessels, allVessels, reportVesselFilter])
 
   const onDownloadVesselsClick = () => {
@@ -99,11 +101,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
     })
   }
   const onAddToVesselGroup = () => {
-    const dataviewIds = heatmapDataviews.map(({ id }) => id)
     dispatch(setVesselGroupConfirmationMode('saveAndSeeInWorkspace'))
-    if (dataviewIds?.length) {
-      dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-    }
     trackEvent({
       category: TrackCategory.VesselGroups,
       action: 'add_to_vessel_group',
@@ -171,7 +169,8 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
       </div>
       <div className={cx(styles.flex, styles.expand)}>
         <VesselGroupAddButton
-          vessels={vesselGroupIdentityVessels}
+          vesselsToResolve={vesselGroupVessels?.ids}
+          datasetsToResolve={vesselGroupVessels?.datasets}
           onAddToVesselGroup={onAddToVesselGroup}
         />
         <Button testId="download-vessel-table-report" onClick={onDownloadVesselsClick}>

@@ -7,6 +7,7 @@ import { VesselProfileState } from './vessel.types'
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity'
 export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v3.0'
 export const DEFAULT_VESSEL_IDENTITY_ID = `${DEFAULT_VESSEL_IDENTITY_DATASET}:${DEFAULT_VESSEL_IDENTITY_VERSION}`
+export const INCLUDES_RELATED_SELF_REPORTED_INFO_ID = 'POTENTIAL_RELATED_SELF_REPORTED_INFO'
 export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {

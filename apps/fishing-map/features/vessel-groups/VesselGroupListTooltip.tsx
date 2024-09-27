@@ -5,16 +5,16 @@ import { useSelector } from 'react-redux'
 import React from 'react'
 import { Popover, Spinner } from '@globalfishingwatch/ui-components'
 import {
-  AddVesselGroupVessel,
   NEW_VESSEL_GROUP_ID,
   useVesselGroupsOptions,
 } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import styles from './VesselGroupListTooltip.module.css'
+import { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 
 type VesselGroupListTooltipProps = {
   children?: React.ReactNode
-  vessels?: AddVesselGroupVessel[]
+  vessels?: VesselGroupVesselIdentity[]
   onAddToVesselGroup?: (vesselGroupId: string) => void
 }
 

@@ -25,6 +25,7 @@ import {
   getActiveDatasetsInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
+import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter'
@@ -57,7 +58,7 @@ export const getVesselInfoDataviewInstanceDatasetConfig = (
       { id: 'dataset', value: info },
       {
         id: 'includes',
-        value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+        value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
       },
     ],
     endpoint: EndpointId.Vessel,
