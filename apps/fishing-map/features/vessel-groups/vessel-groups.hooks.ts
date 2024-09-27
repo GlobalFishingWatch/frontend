@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { VesselGroup } from '@globalfishingwatch/api-types'
 import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
-import { getVesselGroupLabel } from 'features/vessel-groups/vessel-groups.utils'
+import {
+  getVesselGroupLabel,
+  getVesselGroupVesselsCount,
+} from 'features/vessel-groups/vessel-groups.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 // import { VesselLastIdentity } from 'features/search/search.slice'
 // import { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
@@ -37,7 +40,7 @@ export const useVesselGroupsOptions = () => {
         id: vesselGroup.id.toString(),
         label: t('vesselGroup.label', `{{name}} ({{count}} IDs)`, {
           name: getVesselGroupLabel(vesselGroup),
-          count: vesselGroup.vessels.length,
+          count: getVesselGroupVesselsCount(vesselGroup),
         }),
         loading: vesselGroup.id === vesselGroupsStatusId,
       }))

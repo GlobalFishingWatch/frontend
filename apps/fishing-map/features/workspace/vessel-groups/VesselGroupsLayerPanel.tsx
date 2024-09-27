@@ -24,6 +24,7 @@ import {
   useVesselGroupBounds,
 } from 'features/reports/areas/area-reports.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -122,7 +123,10 @@ function VesselGroupLayerPanel({
                     <Fragment>
                       {formatInfoField(vesselGroup?.name, 'name')}{' '}
                       {vesselGroup?.vessels?.length && (
-                        <span className={styles.secondary}> ({vesselGroup?.vessels.length})</span>
+                        <span className={styles.secondary}>
+                          {' '}
+                          ({getVesselGroupVesselsCount(vesselGroup)})
+                        </span>
                       )}
                     </Fragment>
                   )}

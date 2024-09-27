@@ -163,7 +163,7 @@ export default function Report() {
       {reportCategory === ReportCategory.Environment ? (
         <ReportEnvironment />
       ) : (
-        <div className={styles.container}>
+        <div>
           <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
           <ActivityReport reportName={reportArea!?.name} />
         </div>
