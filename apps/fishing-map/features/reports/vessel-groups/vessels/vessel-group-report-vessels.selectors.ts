@@ -40,7 +40,14 @@ const getVesselSource = (vessel: IdentityVessel) => {
 
 export type VesselGroupVesselTableParsed = VesselGroupVesselIdentity & VesselGroupReportVesselParsed
 
-export const selectVGRVesselsParsed = createSelector([selectVGRVessels], (vessels) => {
+export const selectVGRUniqVessels = createSelector([selectVGRVessels], (vessels) => {
+  if (!vessels?.length) {
+    return
+  }
+  return getVesselGroupUniqVessels(vessels).filter((v) => v.identity)
+})
+
+export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (vessels) => {
   if (!vessels?.length) {
     return
   }
@@ -146,7 +153,7 @@ export const selectVGRVesselsPaginated = createSelector(
 export const selectVGRVesselsPagination = createSelector(
   [
     selectVGRVesselsPaginated,
-    selectVGRVessels,
+    selectVGRUniqVessels,
     selectVGRVesselsFiltered,
     selectVGRVesselPage,
     selectVGRVesselsResultsPerPage,
