@@ -23,6 +23,16 @@ export const getVesselGroupVesselsCount = (vesselGroup: VesselGroup) => {
   return uniq(vesselGroup.vessels.map((v) => v.relationId || v.vesselId)).filter(Boolean).length
 }
 
+export const removeDuplicatedVesselGroupvessels = (vessels: VesselGroupVesselIdentity[]) => {
+  return uniqBy(vessels, (vessel) => [vessel.vesselId, vessel.dataset].join(','))
+}
+export const removeVesselGroupvesselIdentity = (vessels: VesselGroupVesselIdentity[]) => {
+  return vessels.map(({ identity, ...vessel }) => vessel)
+}
+export const prepareVesselGroupVesselsUpdate = (vessels: VesselGroupVesselIdentity[]) => {
+  return removeDuplicatedVesselGroupvessels(removeVesselGroupvesselIdentity(vessels))
+}
+
 export const getVesselGroupUniqVessels = (
   vessels: VesselGroupVesselIdentity[]
 ): VesselGroupVesselIdentity[] => {

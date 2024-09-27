@@ -2,12 +2,7 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { stringify } from 'qs'
 import { uniqBy } from 'es-toolkit'
 import memoize from 'lodash/memoize'
-import {
-  APIPagination,
-  VesselGroup,
-  VesselGroupUpsert,
-  VesselGroupVessel,
-} from '@globalfishingwatch/api-types'
+import { APIPagination, VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
 import {
   AsyncError,
@@ -18,6 +13,7 @@ import {
 } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { RootState } from 'store'
+import { prepareVesselGroupVesselsUpdate } from './vessel-groups.utils'
 
 export type IdField = 'vesselId' | 'mmsi'
 export type VesselGroupConfirmationMode = 'save' | 'saveAndSeeInWorkspace' | 'saveAndDeleteVessels'
@@ -100,10 +96,6 @@ export const fetchVesselGroupsThunk = createAsyncThunk<
   }
 )
 
-const removeDuplicatedVesselGroupvessels = (vessels: VesselGroupVessel[]) => {
-  return uniqBy(vessels, (vessel) => [vessel.vesselId, vessel.dataset].join(','))
-}
-
 export const fetchVesselGroupByIdThunk = createAsyncThunk(
   'vessel-groups/fetchById',
   async (vesselGroupId: string) => {
@@ -119,7 +111,7 @@ export const createVesselGroupThunk = createAsyncThunk(
   async (vesselGroupCreate: VesselGroupUpsert, { dispatch, getState }) => {
     const vesselGroupUpsert: VesselGroupUpsert = {
       ...vesselGroupCreate,
-      vessels: removeDuplicatedVesselGroupvessels(vesselGroupCreate.vessels || []),
+      vessels: prepareVesselGroupVesselsUpdate(vesselGroupCreate.vessels || []),
     }
     const saveVesselGroup: any = async (vesselGroup: VesselGroupUpsert, tries = 0) => {
       let vesselGroupUpdated: VesselGroup
@@ -155,7 +147,7 @@ export const updateVesselGroupThunk = createAsyncThunk(
     const { id, ...rest } = vesselGroupUpsert
     const vesselGroup: VesselGroupUpsert = {
       ...rest,
-      vessels: removeDuplicatedVesselGroupvessels(rest.vessels || []),
+      vessels: prepareVesselGroupVesselsUpdate(rest.vessels || []),
     }
     const vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`, {
       method: 'PATCH',

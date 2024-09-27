@@ -90,14 +90,14 @@ function VesselGroupVessels() {
   const onVesselRemoveClick = useCallback(
     (vessel: VesselGroupVesselIdentity, list: 'search' | 'new' = 'search') => {
       const vessels = list === 'search' ? vesselGroupSearchVessels : newVesselGroupSearchVessels
-      const action = (
-        list === 'search' ? setVesselGroupSearchVessels : setNewVesselGroupSearchVessels
-      ) as ActionCreatorWithPayload<VesselGroupVesselIdentity[], any>
-      const index = vessels!.findIndex(
-        (v) => v.vesselId === vessel?.vesselId && v.dataset === vessel.dataset
-      )
-      if (index > -1) {
-        dispatch(action([...vessels!.slice(0, index), ...vessels!.slice(index + 1)]))
+      if (vessels) {
+        const action = (
+          list === 'search' ? setVesselGroupSearchVessels : setNewVesselGroupSearchVessels
+        ) as ActionCreatorWithPayload<VesselGroupVesselIdentity[], any>
+        const filteredVessels = vessels.filter(
+          (v) => v.vesselId !== vessel.vesselId && v.relationId !== vessel.vesselId
+        )
+        dispatch(action(filteredVessels))
       }
     },
     [dispatch, newVesselGroupSearchVessels, vesselGroupSearchVessels]
@@ -142,7 +142,7 @@ function VesselGroupVessels() {
               key={`${vessel?.vesselId}-${vessel.dataset}`}
               className={styles.new}
               vessel={vessel}
-              onRemoveClick={(vessel) => onVesselRemoveClick(vessel, 'new')}
+              onRemoveClick={(vessel) => onVesselRemoveClick(vessel, 'search')}
             />
           )
         })}
