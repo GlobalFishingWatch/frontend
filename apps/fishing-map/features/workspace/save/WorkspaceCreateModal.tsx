@@ -49,13 +49,11 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const containsPrivateDatasets = privateDatasets.length > 0
 
   const [name, setName] = useState('')
-  const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(
-    containsPrivateDatasets ? WORKSPACE_PRIVATE_ACCESS : WORKSPACE_PUBLIC_ACCESS
-  )
+  const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(WORKSPACE_PUBLIC_ACCESS)
   const [editAccess, setEditAccess] = useState<WorkspaceEditAccessType>(WORKSPACE_PRIVATE_ACCESS)
   const [password, setPassword] = useState<string>('')
 
-  const viewOptions = getViewAccessOptions()
+  const viewOptions = getViewAccessOptions(containsPrivateDatasets)
   const {
     timeRangeOptions,
     timeRangeOption,
@@ -99,12 +97,6 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
       setName(workspaceName)
     }
   }
-
-  useEffect(() => {
-    if (containsPrivateDatasets) {
-      setViewAccess(WORKSPACE_PRIVATE_ACCESS)
-    }
-  }, [containsPrivateDatasets])
 
   useEffect(() => {
     if (workspaceModalOpen) {
@@ -230,12 +222,11 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             options={viewOptions}
             direction="top"
             label={t('workspace.viewAccess', 'View access')}
-            disabled={containsPrivateDatasets}
             infoTooltip={
               containsPrivateDatasets
                 ? `${t(
-                    'workspace.uploadPublicDisabled',
-                    "This workspace can't be shared publicly because it contains private datasets"
+                    'workspace.sharePrivateDisclaimer',
+                    'This workspace contains datasets that require special permissions'
                   )}: ${privateDatasets.join(', ')}`
                 : ''
             }
