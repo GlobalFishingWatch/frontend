@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -53,10 +53,17 @@ function VesselGroupLayerPanel({
   const [colorOpen, setColorOpen] = useState(false)
   const layerActive = dataview?.config?.visible ?? true
 
-  const [hovered, setHovered] = useState(false)
-  const { loaded, bbox } = useVesselGroupBounds(hovered ? dataview?.id : undefined)
+  const [fitBoundsClicked, setfitBoundsClicked] = useState(false)
+  const { loaded, bbox } = useVesselGroupBounds(fitBoundsClicked ? dataview?.id : undefined)
   const coordinates = useReportAreaCenter(bbox!)
   const setMapCoordinates = useSetMapCoordinates()
+
+  useEffect(() => {
+    if (coordinates && loaded) {
+      setMapCoordinates(coordinates)
+      setfitBoundsClicked(false)
+    }
+  }, [loaded, coordinates, setMapCoordinates])
 
   const changeInstanceColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
@@ -76,17 +83,9 @@ function VesselGroupLayerPanel({
       dispatch(setVesselGroupsModalOpen(true))
     }
   }
-  const onFitBoundsClick = () => {
-    if (coordinates) {
-      setMapCoordinates(coordinates)
-    }
-  }
 
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
-  }
-  const onHover = () => {
-    setHovered(true)
   }
 
   const closeExpandedContainer = () => {
@@ -107,13 +106,12 @@ function VesselGroupLayerPanel({
       ref={setNodeRef}
       style={style}
       {...attributes}
-      onMouseEnter={onHover}
     >
       <div className={styles.header}>
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         <Title
           title={
-            <VesselGroupReportLink vesselGroupId={vesselGroup?.id!} bbox={bbox || undefined}>
+            <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
               <Tooltip
                 content={t('vesselGroupReport.clickToSee', 'Click to see the vessel group report')}
               >
@@ -145,7 +143,7 @@ function VesselGroupLayerPanel({
           <Fragment>
             {layerActive && (
               <Fragment>
-                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!} bbox={bbox || undefined}>
+                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
                   <IconButton
                     tooltip={t(
                       'vesselGroupReport.clickToSee',
@@ -166,10 +164,9 @@ function VesselGroupLayerPanel({
                   icon="target"
                   size="small"
                   tooltip={t('layer.vessel_group_fit_bounds', 'Center map on vessel group')}
-                  onClick={onFitBoundsClick}
+                  onClick={() => setfitBoundsClicked(true)}
                   tooltipPlacement="top"
-                  loading={!loaded}
-                  disabled={!loaded}
+                  loading={fitBoundsClicked}
                 />
                 <Color
                   dataview={dataview}
