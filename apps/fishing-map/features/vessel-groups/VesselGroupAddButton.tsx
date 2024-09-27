@@ -14,6 +14,7 @@ import {
   useVesselGroupsUpdate,
   NEW_VESSEL_GROUP_ID,
 } from './vessel-groups.hooks'
+import { parseVesselGroupVessels } from './vessel-groups.utils'
 
 type VesselGroupAddButtonProps = {
   children?: React.ReactNode
@@ -72,29 +73,30 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
   const { vessels, onAddToVesselGroup, children = <VesselGroupAddActionButton /> } = props
   const addVesselsToVesselGroup = useVesselGroupsUpdate()
   const createVesselGroupWithVessels = useVesselGroupsModal()
+  const vesselGroupVessels = parseVesselGroupVessels(vessels)
 
   const handleAddToVesselGroupClick = useCallback(
     async (vesselGroupId: string) => {
       if (vesselGroupId !== NEW_VESSEL_GROUP_ID) {
-        if (vessels.length) {
-          const vesselGroup = await addVesselsToVesselGroup(vesselGroupId, vessels)
+        if (vesselGroupVessels.length) {
+          const vesselGroup = await addVesselsToVesselGroup(vesselGroupId, vesselGroupVessels)
           if (onAddToVesselGroup && vesselGroup) {
             onAddToVesselGroup(vesselGroup?.id)
           }
         }
       } else {
-        createVesselGroupWithVessels(vesselGroupId, vessels)
+        createVesselGroupWithVessels(vesselGroupId, vesselGroupVessels)
         if (onAddToVesselGroup) {
           onAddToVesselGroup(vesselGroupId)
         }
       }
     },
-    [addVesselsToVesselGroup, createVesselGroupWithVessels, onAddToVesselGroup, vessels]
+    [addVesselsToVesselGroup, createVesselGroupWithVessels, onAddToVesselGroup, vesselGroupVessels]
   )
   return (
     <VesselGroupListTooltip
       onAddToVesselGroup={handleAddToVesselGroupClick}
-      vessels={vessels}
+      vessels={vesselGroupVessels}
       children={children}
     />
   )

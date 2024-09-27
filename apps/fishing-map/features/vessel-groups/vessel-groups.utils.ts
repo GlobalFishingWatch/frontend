@@ -7,8 +7,10 @@ import {
 } from '@globalfishingwatch/api-types'
 import { PUBLIC_SUFIX } from 'data/config'
 import { getVesselId, getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VESSEL_GROUPS_REPORT_RELEASE_DATE } from './vessel-groups.config'
 import { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
+import { AddVesselGroupVessel } from './vessel-groups.hooks'
 
 export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
   const isPrivate = !vesselGroup.id.endsWith(`-${PUBLIC_SUFIX}`)
@@ -95,28 +97,50 @@ export const mergeVesselGroupVesselIdentities = (
 export const flatVesselGroupSearchVessels = (
   vesselIdentities: IdentityVessel[]
 ): VesselGroupVesselIdentity[] => {
-  return vesselIdentities
-    .flatMap((vessel) => {
-      const identities = getVesselIdentities(vessel, {
-        identitySource: VesselIdentitySourceEnum.SelfReported,
-      })
-      if (!identities?.length) {
-        return []
-      }
-      const relationId = getVesselId(vessel)
-      return identities.map((i) => ({
-        vesselId: i.id,
-        dataset: i.dataset as string,
-        relationId,
-        identity: (relationId === i.id ? vessel : undefined) as IdentityVessel,
-      }))
+  return vesselIdentities.flatMap((vessel) => {
+    const identities = getVesselIdentities(vessel, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
     })
-    .toSorted((a, b) => {
-      const aValue = getVesselProperty(a.identity!, 'shipname')
-      const bValue = getVesselProperty(b.identity!, 'shipname')
-      if (aValue === bValue) {
-        return 0
-      }
-      return aValue > bValue ? 1 : -1
-    })
+    if (!identities?.length) {
+      return []
+    }
+    const relationId = getVesselId(vessel)
+    return identities.map((i) => ({
+      vesselId: i.id,
+      dataset: i.dataset as string,
+      relationId,
+      identity: (relationId === i.id ? vessel : undefined) as IdentityVessel,
+    }))
+  })
+}
+
+export function parseVesselGroupVessels(
+  vessels: AddVesselGroupVessel[]
+): VesselGroupVesselIdentity[] {
+  return vessels.map((vessel) => {
+    // TODO:VV3 add support on include area report vessels into a group
+    // if ((vessel as ReportVesselWithDatasets).vesselId) {
+    //   return {
+    //     vesselId: (vessel as ReportVesselWithDatasets).vesselId,
+    //     dataset: (vessel as ReportVesselWithDatasets).infoDataset?.id as string,
+    //     relationId: (vessel as ReportVesselWithDatasets).vesselId,
+    //   } as VesselGroupVesselIdentity
+    // }
+    if ((vessel as IdentityVesselData).identities?.length) {
+      const identityVessel = vessel as IdentityVesselData
+      const relationId = identityVessel.id
+      return {
+        vesselId: identityVessel.id,
+        dataset: identityVessel.datasetId,
+        relationId: relationId,
+        identity:
+          relationId === identityVessel.id
+            ? {
+                selfReportedInfo: identityVessel.identities,
+              }
+            : undefined,
+      } as VesselGroupVesselIdentity
+    }
+    return vessel as VesselGroupVesselIdentity
+  })
 }

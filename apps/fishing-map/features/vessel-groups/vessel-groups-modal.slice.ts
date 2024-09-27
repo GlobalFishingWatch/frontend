@@ -235,6 +235,7 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
           vesselGroup.vessels,
           vesselsIdentities.entries
         )
+        console.log('🚀 ~ vesselGroupVessels:', vesselGroup.vessels)
         console.log('🚀 ~ vesselGroupVessels:', vesselGroupVessels)
         return vesselGroupVessels
       } catch (e: any) {

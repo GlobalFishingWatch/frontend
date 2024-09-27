@@ -53,6 +53,7 @@ export type IdentityVesselData = {
   id: string
   identities: VesselDataIdentity[]
   dataset: Dataset
+  datasetId: string
 } & VesselInstanceDatasets &
   Pick<
     IdentityVessel,
@@ -148,6 +149,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,
+          datasetId: dataset?.id,
           combinedSourcesInfo: vessel?.combinedSourcesInfo,
           registryOwners: vessel?.registryOwners,
           registryPublicAuthorizations: vessel?.registryPublicAuthorizations,
