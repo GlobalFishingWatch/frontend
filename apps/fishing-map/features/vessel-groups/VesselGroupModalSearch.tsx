@@ -9,10 +9,10 @@ import { readBlobAs } from 'utils/files'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { ID_COLUMN_LOOKUP } from 'features/vessel-groups/vessel-groups.config'
 import {
-  selectVesselGroupSearchId,
-  selectVesselGroupsVessels,
-  setVesselGroupSearchId,
-  setVesselGroupVessels,
+  selectVesselGroupModalSearchIdField,
+  selectVesselGroupsModalSearchIds,
+  setVesselGroupSearchIdField,
+  setVesselGroupModalSearchIds,
 } from './vessel-groups-modal.slice'
 import styles from './VesselGroupModal.module.css'
 
@@ -21,18 +21,17 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const dispatch = useAppDispatch()
   const [searchText, setSearchText] = useState('')
   const debouncedSearchText = useDebounce(searchText, 200)
-  const searchIdField = useSelector(selectVesselGroupSearchId)
-  const vesselGroupVessels = useSelector(selectVesselGroupsVessels)
-  const hasGroupVessels = vesselGroupVessels && vesselGroupVessels.length > 0
+  const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
+  const vesselGroupVesselsToSearch = useSelector(selectVesselGroupsModalSearchIds)
+  const hasGroupVesselsToSearch =
+    vesselGroupVesselsToSearch && vesselGroupVesselsToSearch.length > 0
 
   useEffect(() => {
     if (debouncedSearchText) {
       const vesselIds = debouncedSearchText?.split(/[\s|,]+/).filter(Boolean)
-      dispatch(
-        setVesselGroupVessels(vesselIds.map((v) => ({ vesselId: v, dataset: '', relationId: '' })))
-      )
+      dispatch(setVesselGroupModalSearchIds(vesselIds))
     } else {
-      dispatch(setVesselGroupVessels(null))
+      dispatch(setVesselGroupModalSearchIds(null))
     }
   }, [dispatch, debouncedSearchText])
 
@@ -56,7 +55,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
           const presetColumn = ID_COLUMN_LOOKUP[i]
           foundIdColumn = columns.find((c) => c.toLowerCase() === presetColumn)
           if (foundIdColumn) {
-            dispatch(setVesselGroupSearchId(presetColumn))
+            dispatch(setVesselGroupSearchIdField(presetColumn))
             break
           }
         }
@@ -88,7 +87,9 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
           className={styles.idsArea}
           value={searchText}
           label={
-            hasGroupVessels ? `${searchIdField} (${vesselGroupVessels?.length})` : searchIdField
+            hasGroupVesselsToSearch
+              ? `${searchIdField} (${vesselGroupVesselsToSearch?.length})`
+              : searchIdField
           }
           placeholder={t('vesselGroup.idsPlaceholder', {
             field: searchIdField,

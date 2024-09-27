@@ -34,8 +34,11 @@ export const prepareVesselGroupVesselsUpdate = (vessels: VesselGroupVesselIdenti
 }
 
 export const getVesselGroupUniqVessels = (
-  vessels: VesselGroupVesselIdentity[]
+  vessels: VesselGroupVesselIdentity[] | null
 ): VesselGroupVesselIdentity[] => {
+  if (!vessels) {
+    return []
+  }
   return uniqBy(
     vessels.flatMap((vessel) => {
       const identities = getVesselIdentities(vessel.identity!, {
@@ -78,6 +81,35 @@ export const mergeVesselGroupVesselIdentities = (
         relationId,
         identity: (relationId === v.vesselId ? vesselIdentity : undefined) as IdentityVessel,
       }
+    })
+    .toSorted((a, b) => {
+      const aValue = getVesselProperty(a.identity!, 'shipname')
+      const bValue = getVesselProperty(b.identity!, 'shipname')
+      if (aValue === bValue) {
+        return 0
+      }
+      return aValue > bValue ? 1 : -1
+    })
+}
+
+export const flatVesselGroupSearchVessels = (
+  vesselIdentities: IdentityVessel[]
+): VesselGroupVesselIdentity[] => {
+  return vesselIdentities
+    .flatMap((vessel) => {
+      const identities = getVesselIdentities(vessel, {
+        identitySource: VesselIdentitySourceEnum.SelfReported,
+      })
+      if (!identities?.length) {
+        return []
+      }
+      const relationId = getVesselId(vessel)
+      return identities.map((i) => ({
+        vesselId: i.id,
+        dataset: i.dataset as string,
+        relationId,
+        identity: (relationId === i.id ? vessel : undefined) as IdentityVessel,
+      }))
     })
     .toSorted((a, b) => {
       const aValue = getVesselProperty(a.identity!, 'shipname')

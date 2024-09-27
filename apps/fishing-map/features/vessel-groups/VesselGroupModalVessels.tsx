@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { Locale } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from 'utils/info'
@@ -13,10 +12,8 @@ import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFie
 import styles from './VesselGroupModal.module.css'
 import {
   VesselGroupVesselIdentity,
-  selectNewVesselGroupSearchVessels,
-  selectVesselGroupSearchVessels,
-  setNewVesselGroupSearchVessels,
-  setVesselGroupSearchVessels,
+  selectVesselGroupModalVessels,
+  setVesselGroupModalVessels,
 } from './vessel-groups-modal.slice'
 
 type VesselGroupVesselRowProps = {
@@ -40,7 +37,7 @@ function VesselGroupVesselRow({
       <td>{ssvid}</td>
       <td>{vesselName}</td>
       <td>
-        <span>{t(`flags:${flag as string}` as any) || EMPTY_FIELD_PLACEHOLDER}</span>
+        <span>{flag ? t(`flags:${flag as string}` as any) : EMPTY_FIELD_PLACEHOLDER}</span>
       </td>
       <td>
         {isFieldLoginRequired(vesselGearType) ? <VesselIdentityFieldLogin /> : vesselGearType}
@@ -85,25 +82,21 @@ function VesselGroupVesselRow({
 function VesselGroupVessels() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const vesselGroupSearchVessels = useSelector(selectVesselGroupSearchVessels)
-  const newVesselGroupSearchVessels = useSelector(selectNewVesselGroupSearchVessels)
+  const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
+
   const onVesselRemoveClick = useCallback(
-    (vessel: VesselGroupVesselIdentity, list: 'search' | 'new' = 'search') => {
-      const vessels = list === 'search' ? vesselGroupSearchVessels : newVesselGroupSearchVessels
-      if (vessels) {
-        const action = (
-          list === 'search' ? setVesselGroupSearchVessels : setNewVesselGroupSearchVessels
-        ) as ActionCreatorWithPayload<VesselGroupVesselIdentity[], any>
-        const filteredVessels = vessels.filter(
+    (vessel: VesselGroupVesselIdentity) => {
+      if (vesselGroupVessels) {
+        const filteredVessels = vesselGroupVessels.filter(
           (v) => v.vesselId !== vessel.vesselId && v.relationId !== vessel.vesselId
         )
-        dispatch(action(filteredVessels))
+        dispatch(setVesselGroupModalVessels(filteredVessels))
       }
     },
-    [dispatch, newVesselGroupSearchVessels, vesselGroupSearchVessels]
+    [dispatch, vesselGroupVessels]
   )
 
-  if (!vesselGroupSearchVessels?.length && !newVesselGroupSearchVessels?.length) {
+  if (!vesselGroupVessels?.length) {
     return null
   }
 
@@ -120,7 +113,7 @@ function VesselGroupVessels() {
         </tr>
       </thead>
       <tbody>
-        {newVesselGroupSearchVessels?.map((vessel) => {
+        {vesselGroupVessels?.map((vessel) => {
           if (!vessel.identity) {
             return null
           }
@@ -129,20 +122,7 @@ function VesselGroupVessels() {
               key={`${vessel?.vesselId}-${vessel.dataset}`}
               className={styles.new}
               vessel={vessel}
-              onRemoveClick={(vessel) => onVesselRemoveClick(vessel, 'new')}
-            />
-          )
-        })}
-        {vesselGroupSearchVessels?.map((vessel) => {
-          if (!vessel.identity) {
-            return null
-          }
-          return (
-            <VesselGroupVesselRow
-              key={`${vessel?.vesselId}-${vessel.dataset}`}
-              className={styles.new}
-              vessel={vessel}
-              onRemoveClick={(vessel) => onVesselRemoveClick(vessel, 'search')}
+              onRemoveClick={(vessel) => onVesselRemoveClick(vessel)}
             />
           )
         })}

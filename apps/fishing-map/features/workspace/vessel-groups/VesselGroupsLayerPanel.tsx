@@ -13,7 +13,7 @@ import { formatInfoField } from 'utils/info'
 import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
-  setNewVesselGroupSearchVessels,
+  setVesselGroupModalVessels,
   setVesselGroupEditId,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -66,8 +66,7 @@ function VesselGroupLayerPanel({
   const onEditClick = () => {
     if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
       dispatch(setVesselGroupEditId(vesselGroup.id))
-      // TODO:VV3 remove this any
-      dispatch(setNewVesselGroupSearchVessels(vesselGroup.vessels as any))
+      dispatch(setVesselGroupModalVessels(vesselGroup.vessels))
       dispatch(setVesselGroupsModalOpen(true))
     }
   }

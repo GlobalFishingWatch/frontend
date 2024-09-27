@@ -17,7 +17,7 @@ import {
   updateVesselGroupVesselsThunk,
 } from './vessel-groups.slice'
 import {
-  setNewVesselGroupSearchVessels,
+  setVesselGroupModalVessels,
   setVesselGroupEditId,
   setVesselGroupsModalOpen,
 } from './vessel-groups-modal.slice'
@@ -84,6 +84,7 @@ export const useVesselGroupsModal = () => {
   const dispatch = useAppDispatch()
   const createVesselGroupWithVessels = useCallback(
     async (vesselGroupId: string, vessels: AddVesselGroupVessel[]) => {
+      // TODO:VV3 user vessels
       const vesselsWithDataset = vessels.map((vessel) => ({
         ...vessel,
         vesselId:
@@ -96,8 +97,15 @@ export const useVesselGroupsModal = () => {
         if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
           dispatch(setVesselGroupEditId(vesselGroupId))
         }
-        // TODO:VV3 remove this any
-        dispatch(setNewVesselGroupSearchVessels(vesselsWithDataset as any))
+        const vesselGroupDataset = vesselsWithDataset.map((vessel) => {
+          return {
+            vesselId: vessel.vesselId,
+            dataset: vessel.dataset,
+            relationId: vessel.vesselId,
+            identity: vessel,
+          }
+        })
+        // dispatch(setVesselGroupModalVessels(vesselGroupDataset))
         dispatch(setVesselGroupsModalOpen(true))
       } else {
         console.warn('No related activity datasets founds for', vesselsWithDataset)
