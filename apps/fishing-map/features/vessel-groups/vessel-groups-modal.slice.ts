@@ -101,15 +101,19 @@ const initialState: VesselGroupModalState = {
 export const searchVesselGroupsVesselsThunk = createAsyncThunk(
   'vessel-groups/searchVessels',
   async (
-    { ids, idField }: { ids: string[]; idField: IdField },
+    { ids, idField, datasets = [] }: { ids: string[]; idField: IdField; datasets?: string[] },
     { signal, rejectWithValue, getState }
   ) => {
     const state = getState() as any
-    const searchDatasets = (selectVesselsDatasets(state) || []).filter(
-      (d) =>
-        d.status !== DatasetStatus.Deleted && d.configuration?.apiSupportedVersions?.includes('v3')
+    const searchDatasets = (selectVesselsDatasets(state) || []).filter((d) => {
+      const matchesDataset = datasets?.length ? datasets.includes(d.id) : true
+      return (
+        matchesDataset &&
+        d.status !== DatasetStatus.Deleted &&
+        d.configuration?.apiSupportedVersions?.includes('v3')
+      )
       /*&& d.alias?.some((alias) => alias.includes(':latest'))*/
-    )
+    })
 
     if (searchDatasets?.length) {
       const dataset = searchDatasets[0]

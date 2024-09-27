@@ -118,14 +118,6 @@ export function parseVesselGroupVessels(
   vessels: AddVesselGroupVessel[]
 ): VesselGroupVesselIdentity[] {
   return vessels.map((vessel) => {
-    // TODO:VV3 add support on include area report vessels into a group
-    // if ((vessel as ReportVesselWithDatasets).vesselId) {
-    //   return {
-    //     vesselId: (vessel as ReportVesselWithDatasets).vesselId,
-    //     dataset: (vessel as ReportVesselWithDatasets).infoDataset?.id as string,
-    //     relationId: (vessel as ReportVesselWithDatasets).vesselId,
-    //   } as VesselGroupVesselIdentity
-    // }
     if ((vessel as IdentityVesselData).identities?.length) {
       const identityVessel = vessel as IdentityVesselData
       const relationId = identityVessel.id

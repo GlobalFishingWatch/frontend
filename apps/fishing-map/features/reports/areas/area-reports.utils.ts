@@ -267,51 +267,6 @@ export const parseReportUrl = (url: string) => {
   }
 }
 
-function parseReportToIdentityVessel(vessel: ReportVesselWithDatasets) {
-  return {
-    id: vessel.id || vessel.vesselId,
-    shipname: vessel.shipName,
-    flag: vessel.flag,
-    gearType: vessel.geartype,
-    vesselType: vessel.vesselType,
-    mmsi: vessel.mmsi,
-    callsign: vessel.callsign,
-    transmissionDateFrom: vessel.firstTransmissionDate,
-    transmissionDateTo: vessel.lastTransmissionDate,
-    identitySource: 'selfReportedInfo',
-    imo: vessel.imo,
-    nShipname: '',
-    ssvid: vessel.mmsi,
-    sourceCode: ['AIS'],
-    geartypes: vessel.geartype ? [vessel.geartype] : [],
-    shiptypes: vessel.vesselType ? [vessel.vesselType] : [],
-  } as VesselDataIdentity
-}
-export function parseReportVesselsToIdentity(
-  vessels?: ReportVesselWithDatasets[] | null
-): IdentityVesselData[] {
-  if (!vessels || !vessels.length) {
-    return []
-  }
-  const identityVessels = vessels.flatMap((vessel) => {
-    if (!vessel) {
-      return []
-    }
-    return {
-      id: vessel.id || vessel.vesselId,
-      dataset: vessel.infoDataset,
-      datasetId: vessel.infoDataset?.id,
-      info: vessel.infoDataset?.id!,
-      track: vessel.trackDataset?.id!,
-      registryOwners: [],
-      registryPublicAuthorizations: [],
-      combinedSourcesInfo: [],
-      identities: [parseReportToIdentityVessel(vessel)],
-    } as IdentityVesselData
-  })
-  return identityVessels
-}
-
 export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
 export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
   name: ['shipName'],
