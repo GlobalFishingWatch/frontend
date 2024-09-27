@@ -131,11 +131,12 @@ export function parseVesselGroupVessels(
       const relationId = identityVessel.id
       return {
         vesselId: identityVessel.id,
-        dataset: identityVessel.datasetId,
+        dataset: identityVessel.datasetId || (identityVessel.dataset?.id as string),
         relationId: relationId,
         identity:
           relationId === identityVessel.id
             ? {
+                dataset: identityVessel.datasetId || identityVessel.dataset?.id,
                 selfReportedInfo: identityVessel.identities,
               }
             : undefined,

@@ -300,6 +300,7 @@ export function parseReportVesselsToIdentity(
     return {
       id: vessel.id || vessel.vesselId,
       dataset: vessel.infoDataset,
+      datasetId: vessel.infoDataset?.id,
       info: vessel.infoDataset?.id!,
       track: vessel.trackDataset?.id!,
       registryOwners: [],
