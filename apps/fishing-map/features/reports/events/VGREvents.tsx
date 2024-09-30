@@ -24,6 +24,11 @@ import VGREventsVesselsTable from 'features/reports/events/VGREventsVesselsTable
 import ReportVesselsFilter from 'features/reports/activity/vessels/ReportVesselsFilter'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import {
+  selectVGREventsVessels,
+  selectVGREventsVesselsFlags,
+  selectVGREventsVesselsGrouped,
+} from 'features/reports/events/vgr-events.selectors'
 import styles from './VGREvents.module.css'
 
 function VGREvents() {
@@ -32,6 +37,9 @@ function VGREvents() {
   const filter = useSelector(selectVGREventsVesselFilter)
   const eventsDataview = useSelector(selectVGREventsSubsectionDataview)
   const vesselsGroupByProperty = useSelector(selectVGREventsVesselsProperty)
+  const vessels = useSelector(selectVGREventsVessels)
+  const vesselFlags = useSelector(selectVGREventsVesselsFlags)
+  const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
 
   const { start, end } = useTimerangeConnect()
   const startMillis = DateTime.fromISO(start).toMillis()
@@ -40,9 +48,8 @@ function VGREvents() {
 
   const response = useGetVesselGroupEventsStatsQuery(
     {
-      includes: ['TIME_SERIES', 'EVENTS_GROUPED'],
+      includes: ['TIME_SERIES'],
       dataview: eventsDataview!,
-      groupBy: vesselsGroupByProperty.toUpperCase(),
       vesselGroupId,
       interval,
       start,
@@ -60,14 +67,6 @@ function VGREvents() {
   if (eventsDataview?.id === VESSEL_GROUP_ENCOUNTER_EVENTS_ID) {
     color = 'rgb(247 222 110)' // Needed to make the graph lines more visible
   }
-
-  const filteredGroups = useMemo(() => {
-    if (!data) return null
-    if (!filter) return data.groups
-    const [filterProperty, filterValue] = filter.split(':')
-    if (vesselsGroupByProperty !== filterProperty) return data.groups
-    return data.groups.filter(({ name }) => name === filterValue)
-  }, [data, filter, vesselsGroupByProperty])
 
   if (error || !data || isLoading) {
     return (
@@ -88,8 +87,8 @@ function VGREvents() {
             t('vesselGroup.summaryEvents', {
               defaultValue:
                 '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-              vessels: data.groups.reduce((acc, group) => acc + group.value, 0),
-              flags: data.groups.length,
+              vessels: vessels?.length,
+              flags: vesselFlags,
               activityQuantity: data.timeseries.reduce((acc, group) => acc + group.value, 0),
               activityUnit: `${eventsDataview?.datasets?.[0]?.subcategory?.toLowerCase()} ${t(
                 'common.events',
@@ -118,7 +117,7 @@ function VGREvents() {
           <VGREventsVesselPropertySelector />
         </div>
         <VesselGroupReportVesselsGraph
-          data={filteredGroups as VesselGroupEventsStatsResponseGroups}
+          data={vesselGroups as VesselGroupEventsStatsResponseGroups}
           color={eventsDataview?.config?.color}
           property={vesselsGroupByProperty}
           filterQueryParam="vGREventsVesselFilter"

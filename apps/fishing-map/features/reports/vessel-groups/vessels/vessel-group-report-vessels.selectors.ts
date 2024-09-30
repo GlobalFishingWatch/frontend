@@ -95,8 +95,8 @@ export const selectVGRVesselsFlags = createSelector([selectVGRVesselsParsed], (v
   if (!vessels?.length) return null
   let flags = new Set<string>()
   vessels.forEach((vessel) => {
-    if (vessel.flag) {
-      flags.add(vessel.flag)
+    if (vessel.flagTranslated) {
+      flags.add(vessel.flagTranslated)
     }
   })
   return flags
@@ -178,7 +178,7 @@ export const selectVGRVesselsGraphDataGrouped = createSelector(
     let vesselsGrouped = {}
     switch (subsection) {
       case 'flag':
-        vesselsGrouped = groupBy(vessels, (vessel) => vessel.flag)
+        vesselsGrouped = groupBy(vessels, (vessel) => vessel.flagTranslatedClean)
         break
       case 'shiptypes':
         vesselsGrouped = groupBy(vessels, (vessel) => vessel.vesselType.split(', ')[0])
