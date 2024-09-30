@@ -34,11 +34,13 @@ type VesselGroupAddButtonToggleProps = {
   buttonType?: ButtonType
   className?: string
   vessels?: VesselGroupAddButtonProps['vessels']
+  vesselsToResolve?: string[]
   onToggleClick?: () => void
 }
 
 export function VesselGroupAddActionButton({
   vessels,
+  vesselsToResolve,
   showCount = false,
   buttonSize = 'default',
   buttonType = 'secondary',
@@ -48,7 +50,7 @@ export function VesselGroupAddActionButton({
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const tooManyVessels = vessels && vessels?.length > MAX_VESSEL_GROUP_VESSELS
-  const disabled = guestUser || !vessels?.length || tooManyVessels
+  const disabled = guestUser || (!vessels?.length && !vesselsToResolve?.length) || tooManyVessels
 
   return (
     <Button
@@ -81,7 +83,7 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
     vesselsToResolve,
     datasetsToResolve,
     onAddToVesselGroup,
-    children = <VesselGroupAddActionButton />,
+    children = <VesselGroupAddActionButton vesselsToResolve={vesselsToResolve} />,
   } = props
   const addVesselsToVesselGroup = useVesselGroupsUpdate()
   const createVesselGroupWithVessels = useVesselGroupsModal()

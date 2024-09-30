@@ -13,7 +13,6 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportVesselFilter } from 'features/reports/areas/area-reports.config.selectors'
 import {
@@ -43,7 +42,6 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const reportAreaName = useSelector(selectReportAreaName)
   const pagination = useSelector(selectReportVesselsPagination)
-  const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
   const vesselGroupVessels = useMemo(() => {
@@ -53,7 +51,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
     }
     return {
       ids: vessels?.flatMap((v) => v.id || v.vesselId || []),
-      datasets: uniq(vessels.flatMap((v) => v.dataset || [])),
+      datasets: uniq(vessels.flatMap((v) => v.infoDataset?.id || [])),
     }
   }, [allFilteredVessels, allVessels, reportVesselFilter])
 

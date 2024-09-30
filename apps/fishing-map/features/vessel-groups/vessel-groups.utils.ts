@@ -117,7 +117,7 @@ export const flatVesselGroupSearchVessels = (
 export function parseVesselGroupVessels(
   vessels: AddVesselGroupVessel[]
 ): VesselGroupVesselIdentity[] {
-  return vessels.map((vessel) => {
+  return vessels?.map((vessel) => {
     if ((vessel as IdentityVesselData).identities?.length) {
       const identityVessel = vessel as IdentityVesselData
       const relationId = identityVessel.id

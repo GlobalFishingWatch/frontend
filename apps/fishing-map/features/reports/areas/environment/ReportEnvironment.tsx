@@ -8,6 +8,7 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
+  useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
   useTimeseriesStats,
@@ -22,6 +23,7 @@ import ReportActivityEvolution from '../../activity/ReportActivityEvolution'
 import styles from './ReportEnvironment.module.css'
 
 function ReportEnvironment() {
+  useComputeReportTimeSeries()
   const { t } = useTranslation()
   const timerange = useSelector(selectTimeRange)
   const loading = useReportFeaturesLoading()

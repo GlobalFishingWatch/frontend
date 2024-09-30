@@ -124,7 +124,13 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         endpoint: isVesselByIdSearch ? EndpointId.VesselList : EndpointId.VesselSearch,
         datasetId: '',
         params: [],
-        query: [{ id: 'cache', value: false }],
+        query: [
+          { id: 'cache', value: false },
+          {
+            id: 'includes',
+            value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+          },
+        ],
       }
       if (isVesselByIdSearch) {
         datasetConfig.query?.push({ id: 'ids', value: uniqVesselIds })
@@ -136,10 +142,6 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         datasetConfig.query?.push({
           id: 'limit',
           value: SEARCH_PAGINATION,
-        })
-        datasetConfig.query?.push({
-          id: 'includes',
-          value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
         })
       }
       try {

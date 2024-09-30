@@ -139,7 +139,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const timerange = useSelector(selectTimeRange)
 
   const instances = reportLayers.map((l) => l.instance)
-  const layersLoaded = reportLayers?.length ? reportLayers?.every((l) => l.loaded) : false
+  const layersLoaded = instances?.length ? instances?.every((l) => l.isLoaded) : false
 
   const timeComparisonHash = timeComparison ? JSON.stringify(timeComparison) : undefined
   const instancesChunkHash = instances
@@ -191,8 +191,10 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       featuresFilteredDirtyRef.current &&
       instances.length
     ) {
-      updateFeaturesFiltered(instances, area, reportCategory === 'environment' ? 'point' : 'cell')
-      featuresFilteredDirtyRef.current = false
+      if (instances.some((l) => l.getData().length)) {
+        updateFeaturesFiltered(instances, area, reportCategory === 'environment' ? 'point' : 'cell')
+        featuresFilteredDirtyRef.current = false
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [area, reportCategory, areaInViewport, layersLoaded, reportBufferHash])
@@ -343,7 +345,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   return timeseries
 }
 
-// Run only once in Report.tsx parent component
+// Run in ReportActivityGraph.tsx and ReportEnvironmnet.tsx
 export const useComputeReportTimeSeries = () => {
   const reportLayers = useReportInstances()
   useReportTimeseries(reportLayers)
