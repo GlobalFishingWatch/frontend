@@ -1,15 +1,13 @@
-import { Fragment, useCallback, useEffect } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import { Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { ContextFeature } from '@globalfishingwatch/deck-layers'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  isActivityReport,
-  selectActiveTemporalgridDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
+import { isActivityReport } from 'features/dataviews/selectors/dataviews.selectors'
 import WorkspaceError, { ErrorPlaceHolder } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
@@ -38,10 +36,12 @@ import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import ReportSummary from 'features/reports/areas/summary/ReportSummary'
 import ReportEnvironment from 'features/reports/areas/environment/ReportEnvironment'
 import {
+  useFetchReportArea,
   useFitAreaInViewport,
   useHighlightReportArea,
 } from 'features/reports/areas/area-reports.hooks'
 import styles from 'features/reports/areas/AreaReport.module.css'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 
@@ -52,9 +52,31 @@ export default function Report() {
   const highlightArea = useHighlightReportArea()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
-  const dataviews = useSelector(selectActiveTemporalgridDataviews)
   const reportStatus = useSelector(selectReportVesselsStatus)
-  const dataviewCategories = uniq(dataviews.map((d) => getReportCategoryFromDataview(d)))
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const reportAreaError = useSelector(selectReportAreaStatus) === AsyncReducerStatus.Error
+  const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
+  const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
+  const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+  const reportArea = useSelector(selectReportArea)
+  const hasReportBuffer = useSelector(selectHasReportBuffer)
+  const activityUnit = isActivityReport(reportCategory) ? 'hour' : 'detection'
+
+  const dataviews = useSelector(selectAllDataviewInstancesResolved)
+  const heatmapDataviews = useMemo(
+    () =>
+      dataviews?.filter(
+        (d) =>
+          d.config?.visible === true &&
+          (d.config?.type === DataviewType.HeatmapAnimated ||
+            d.config?.type === DataviewType.HeatmapStatic)
+      ),
+    [dataviews]
+  )
+  const dataviewCategories = useMemo(
+    () => uniq(heatmapDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
+    [heatmapDataviews]
+  )
   const categoryTabs: Tab<ReportCategory>[] = [
     {
       id: ReportCategory.Fishing,
@@ -82,16 +104,18 @@ export default function Report() {
       disabled: tab.id !== reportCategory && reportStatus === AsyncReducerStatus.Loading,
     }
   })
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const reportAreaError = useSelector(selectReportAreaStatus) === AsyncReducerStatus.Error
-  const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
-  const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
-  const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
-  const reportArea = useSelector(selectReportArea)
-  const hasReportBuffer = useSelector(selectHasReportBuffer)
-  const activityUnit = isActivityReport(reportCategory) ? 'hour' : 'detection'
 
+  const { status } = useFetchReportArea()
   const fitAreaInViewport = useFitAreaInViewport()
+
+  // This ensures that the area is in viewport when then area load finishes
+  useEffect(() => {
+    if (status === AsyncReducerStatus.Finished && reportArea?.bounds) {
+      fitAreaInViewport()
+    }
+    // Reacting only to the area status and fitting bounds after load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, reportArea])
 
   useEffect(() => {
     if (reportArea && !hasReportBuffer) {
@@ -101,7 +125,7 @@ export default function Report() {
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {
-      if (category === ReportCategory.Environment && dataviews?.length > 0) {
+      if (category === ReportCategory.Environment && dataviews && dataviews.length > 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment)
         dispatchTimebarSelectedEnvId(dataviews[0]?.id)
       } else {
