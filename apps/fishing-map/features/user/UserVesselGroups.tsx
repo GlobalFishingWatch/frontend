@@ -1,7 +1,8 @@
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
+import { Spinner, IconButton, Button, Icon } from '@globalfishingwatch/ui-components'
 import { VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -97,7 +98,7 @@ function UserVesselGroups() {
                     <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
                       <span className={styles.workspaceLink} data-test="workspace-name">
                         {getVesselGroupLabel(vesselGroup)}{' '}
-                        <span className={styles.secondary}>
+                        <span className={cx(styles.secondary, styles.marginLeft)}>
                           ({getVesselGroupVesselsCount(vesselGroup)})
                         </span>
                         <IconButton icon="analysis" className={styles.right} />
@@ -105,23 +106,39 @@ function UserVesselGroups() {
                     </VesselGroupReportLink>
                   )}
                   <div>
-                    <IconButton
-                      icon={isOutdated ? 'warning' : 'edit'}
-                      type={isOutdated ? 'warning' : 'default'}
-                      tooltip={
-                        isOutdated
-                          ? t(
-                              'vesselGroup.clickToUpdate',
-                              'Click to migrate your vessel group to latest available data'
-                            )
-                          : t('vesselGroup.edit', 'Edit list of vessels')
-                      }
-                      loading={
-                        vesselGroup.id === editingGroupId &&
-                        vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
-                      }
-                      onClick={() => onEditClick(vesselGroup)}
-                    />
+                    {isOutdated ? (
+                      <Button
+                        type="border-secondary"
+                        size="small"
+                        tooltip={
+                          isOutdated
+                            ? t(
+                                'vesselGroup.clickToUpdate',
+                                'Click to migrate your vessel group to latest available data'
+                              )
+                            : t('vesselGroup.edit', 'Edit list of vessels')
+                        }
+                        loading={
+                          vesselGroup.id === editingGroupId &&
+                          vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
+                        }
+                        onClick={() => onEditClick(vesselGroup)}
+                        className={styles.warningButton}
+                      >
+                        <Icon icon="warning" />
+                        {t('vesselGroup.updateRequired', 'Update Required')}
+                      </Button>
+                    ) : (
+                      <IconButton
+                        icon="edit"
+                        tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
+                        loading={
+                          vesselGroup.id === editingGroupId &&
+                          vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
+                        }
+                        onClick={() => onEditClick(vesselGroup)}
+                      />
+                    )}
                     <IconButton
                       icon="delete"
                       type="warning"
