@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
+import parse from 'html-react-parser'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -15,6 +17,12 @@ import {
 import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasOtherVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  selectVGRUniqVessels,
+  selectVGRVesselsFlags,
+  selectVGRVesselsTimeRange,
+} from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './VesselGroupReportTitle.module.css'
 import { VesselGroupReport } from './vessel-group-report.slice'
 import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
@@ -31,6 +39,9 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   const isSmallScreen = useSmallScreen()
   const viewOnlyVesselGroup = useSelector(selectViewOnlyVesselGroup)
   const hasOtherLayers = useSelector(selectHasOtherVesselGroupDataviews)
+  const vessels = useSelector(selectVGRUniqVessels)
+  const timeRange = useSelector(selectVGRVesselsTimeRange)
+  const flags = useSelector(selectVGRVesselsFlags)
 
   const onEditClick = useCallback(() => {
     if (vesselGroup?.id || !vesselGroup?.vessels?.length) {
@@ -77,6 +88,24 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
           <h1 className={styles.title} data-test="report-title">
             {formatInfoField(vesselGroup.name, 'name')}
           </h1>
+          {timeRange && vessels && flags && (
+            <h2 className={styles.summary}>
+              {parse(
+                t('vesselGroup.summary', {
+                  defaultValue:
+                    '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>',
+                  vessels: vessels?.length,
+                  flags: flags?.size,
+                  start: formatI18nDate(timeRange.start, {
+                    format: DateTime.DATE_MED,
+                  }),
+                  end: formatI18nDate(timeRange.end, {
+                    format: DateTime.DATE_MED,
+                  }),
+                })
+              )}
+            </h2>
+          )}
         </div>
         <a className={styles.reportLink} href={window.location.href}>
           {t('vesselGroupReport.linkToReport', 'Check the vessel group report here')}

@@ -66,7 +66,6 @@ const ReportGraphTooltip = (props: any) => {
 const CustomTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount, property, filterQueryParam, pageQueryParam } =
     props
-  console.log(props)
 
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
