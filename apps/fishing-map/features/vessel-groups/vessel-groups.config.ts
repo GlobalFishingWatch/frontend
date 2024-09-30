@@ -10,4 +10,4 @@ export const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => 
 }))
 
 // TODO:VV3 set the proper date
-export const VESSEL_GROUPS_REPORT_RELEASE_DATE = '2024-09-25'
+export const VESSEL_GROUPS_REPORT_RELEASE_DATE = '2024-09-30'
