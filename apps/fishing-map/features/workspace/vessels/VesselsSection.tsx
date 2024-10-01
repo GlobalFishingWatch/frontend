@@ -173,13 +173,20 @@ function VesselsSection(): React.ReactElement {
           </div>
         )}
       </SortableContext>
-      {hasVesselsWithNoTrack && guestUser && (
+      {activeDataviews.length > 0 && guestUser && (
         <p className={styles.disclaimer}>
-          <Trans i18nKey="vessel.trackLogin">
-            One of your selected sources requires you to
-            <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink> to see
-            vessel tracks and events
-          </Trans>
+          {hasVesselsWithNoTrack ? (
+            <Trans i18nKey="vessel.trackLogin">
+              One of your selected sources requires you to
+              <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink> to see
+              vessel tracks and events
+            </Trans>
+          ) : (
+            <Trans i18nKey="vessel.trackResolution">
+              <LocalStorageLoginLink className={styles.link}>Login</LocalStorageLoginLink> to see
+              more detailed vessel tracks (free, 2 minutes)
+            </Trans>
+          )}
         </p>
       )}
       <VesselEventsLegend dataviews={dataviews} />
