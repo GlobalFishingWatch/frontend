@@ -235,6 +235,8 @@ const TimebarWrapper = () => {
         DAY_INTERVAL_BUTTON: 'Use day preset',
         MONTH_INTERVAL_BUTTON: 'Use month preset',
         YEAR_INTERVAL_BUTTON: 'Use year preset',
+        SEEK_RELEASE: 'Move timebar slider',
+        BOOKMARK_SELECT: 'Select bookmark period',
       }
       if (e.source && gaActions[e.source]) {
         trackEvent({

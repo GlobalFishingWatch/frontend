@@ -528,7 +528,7 @@ class Timeline extends PureComponent<TimelineProps> {
                 onBookmarkChange && onBookmarkChange('', '')
               }}
               onSelect={() => {
-                onChange(bookmarkStart, bookmarkEnd)
+                onChange(bookmarkStart, bookmarkEnd, EVENT_SOURCE.BOOKMARK_SELECT)
               }}
             />
           )}

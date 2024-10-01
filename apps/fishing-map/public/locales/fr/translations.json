@@ -1054,6 +1054,8 @@
     "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil",
     "saveLogin": "Vous devez vous connecter pour enregistrer les vues (gratuit, 2 minutes)",
     "saveOwnerOnly": "Cet espace de travail ne peut être modifié que par l'utilisateur qui l'a créé",
+    "sharePrivateDisclaimer": "This workspace contains datasets that require special permissions",
+    "sharePrivatePermissionsRequired": "permissions required",
     "siteDescription": {
       "default": "La carte Global Fishing Watch est la première plate-forme libre d'accès pour la visualisation et l'analyse du trafic maritime et de l'activité humaine en mer.",
       "fishing-activity": "La carte Global Fishing Watch est la première plateforme libre d'accès pour la visualisation et l'analyse du trafic maritime et de l'activité humaine en mer.",
