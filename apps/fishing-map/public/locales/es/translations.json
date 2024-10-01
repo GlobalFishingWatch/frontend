@@ -428,6 +428,7 @@
     "trackAction": "Descargar trayectoria de embarcación",
     "trackLimitExceeded": "Ya has descargado {{limit}} trayectorias hoy, por favor inténtalo de nuevo mañana",
     "trackLogin": "Regístrate e inicia sesión para descargar trayectorias de barcos (gratis, 2 minutos)",
+    "trackResolution": "Login to see more detailed vessel tracks (free, 2 minutes)",
     "trackNotAllowed": "No tienes permisos para descargar trayectorias de embarcaciones de esta fuente",
     "trackRemaining_one": "Puedes descargar hoy {{count}} trayectoria más",
     "trackRemaining_other": "Puedes descargar {{count}} trayectorias más hoy",
