@@ -16,7 +16,7 @@ function VesselGroupReportEventsSubsectionSelector() {
   const options: ChoiceOption<VGREventsSubsection>[] = [
     {
       id: 'encounter',
-      label: t('event.encounter_other', 'Encounters'),
+      label: t('event.encountersShort', 'Encounters'),
       disabled: loading,
     },
     {

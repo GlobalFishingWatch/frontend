@@ -103,7 +103,8 @@ function VesselGroupReport() {
         id: 'events',
         title: t('common.events', 'Events'),
         content: <VGREvents />,
-        disabled: !isGFWUser
+        disabled: !isGFWUser,
+        tooltip: !isGFWUser ? t('common.comingSoon', 'Coming Soon!') : '',
       },
     ],
     [t, isGFWUser]
