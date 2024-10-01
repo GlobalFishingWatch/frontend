@@ -13,7 +13,10 @@ import { WORKSPACE_SEARCH } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectActiveVesselsDataviews,
+  selectVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   hasTracksWithNoData,
@@ -39,6 +42,7 @@ function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchLocation } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
+  const activeDataviews = useSelector(selectActiveVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
