@@ -15,6 +15,7 @@ import {
 import VGREvents from 'features/reports/events/VGREvents'
 import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import {
   useFitAreaInViewport,
   useReportAreaCenter,
@@ -33,6 +34,7 @@ function VesselGroupReport() {
   const { dispatchQueryParams } = useLocationConnect()
   const fetchVesselGroupReport = useFetchVesselGroupReport()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const vesselGroup = useSelector(selectVGRData)!
   const reportStatus = useSelector(selectVGRStatus)
   const reportSection = useSelector(selectVGRSection)
@@ -101,9 +103,10 @@ function VesselGroupReport() {
         id: 'events',
         title: t('common.events', 'Events'),
         content: <VGREvents />,
+        disabled: !isGFWUser
       },
     ],
-    [t]
+    [t, isGFWUser]
   )
 
   // if (reportStatus === AsyncReducerStatus.Error) {
