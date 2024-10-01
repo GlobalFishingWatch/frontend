@@ -1,15 +1,6 @@
 import { useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
-import { useTranslation } from 'react-i18next'
-import parse from 'html-react-parser'
 import ReportVesselsFilter from 'features/reports/activity/vessels/ReportVesselsFilter'
-import {
-  selectVGRUniqVessels,
-  selectVGRVesselsFlags,
-  selectVGRVesselsGraphDataGrouped,
-  selectVGRVesselsTimeRange,
-} from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectVGRVesselsGraphDataGrouped } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import {} from 'features/reports/vessel-groups/vessel-group-report.selectors'
 import {
   selectVGRVesselFilter,
@@ -24,34 +15,12 @@ import VesselGroupReportVesselsTable from './VesselGroupReportVesselsTable'
 import styles from './VesselGroupReportVessels.module.css'
 
 function VesselGroupReportVessels() {
-  const { t } = useTranslation()
-  const vessels = useSelector(selectVGRUniqVessels)
   const subsection = useSelector(selectVGRVesselsSubsection)
   const reportDataview = useSelector(selectVGRDataview)
-  const timeRange = useSelector(selectVGRVesselsTimeRange)
-  const flags = useSelector(selectVGRVesselsFlags)
   const filter = useSelector(selectVGRVesselFilter)
   const data = useSelector(selectVGRVesselsGraphDataGrouped)
   return (
     <div className={styles.container}>
-      {timeRange && vessels && flags && (
-        <h2 className={styles.summary}>
-          {parse(
-            t('vesselGroup.summary', {
-              defaultValue:
-                'This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>',
-              vessels: vessels?.length,
-              flags: flags?.size,
-              start: formatI18nDate(timeRange.start, {
-                format: DateTime.DATE_MED,
-              }),
-              end: formatI18nDate(timeRange.end, {
-                format: DateTime.DATE_MED,
-              }),
-            })
-          )}
-        </h2>
-      )}
       <VesselGroupReportVesselsGraphSelector />
       <VesselGroupReportVesselsGraph
         data={data}

@@ -1054,6 +1054,8 @@
     "saved": "Tampilan saat ini telah disimpan dan tersedia di profil Anda",
     "saveLogin": "Anda harus masuk untuk menyimpan tampilan (gratis, 2 menit)",
     "saveOwnerOnly": "This workspace can only be edited by its creator",
+    "sharePrivateDisclaimer": "This workspace contains datasets that require special permissions",
+    "sharePrivatePermissionsRequired": "permissions required",
     "siteDescription": {
       "default": "Peta Global Fishing Watch adalah platform akses terbuka pertama untuk visualisasi dan analisis lalu lintas laut dan aktivitas manusia berbasis kapal di laut.",
       "fishing-activity": "Peta Global Fishing Watch adalah platform akses terbuka pertama untuk visualisasi dan analisis lalu lintas laut dan aktivitas manusia berbasis kapal di laut.",

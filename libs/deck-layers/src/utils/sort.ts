@@ -23,6 +23,7 @@ export enum LayerGroup {
   Cluster = 'cluster', // Cluster circles
   Tool = 'tool', // Tools such as rulers, etc
   Label = 'label', // All non-basemap layers labels
+  ClusterLabel = 'clusterLabel', // Cluster labels
   Overlay = 'overlay', // Popups, ruler tool, etc
 }
 
@@ -47,6 +48,7 @@ export const LAYER_GROUP_ORDER = [
   LayerGroup.OutlinePolygonsHighlighted,
   LayerGroup.Label,
   LayerGroup.Cluster,
+  LayerGroup.ClusterLabel,
   LayerGroup.Tool,
   LayerGroup.Overlay,
 ]

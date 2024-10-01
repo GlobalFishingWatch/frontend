@@ -1054,6 +1054,8 @@
     "saved": "A visualização atual foi salva e está disponível no seu perfil de usuário",
     "saveLogin": "Você precisa fazer login para salvar as visualizações",
     "saveOwnerOnly": "This workspace can only be edited by its creator",
+    "sharePrivateDisclaimer": "This workspace contains datasets that require special permissions",
+    "sharePrivatePermissionsRequired": "permissions required",
     "siteDescription": {
       "default": "O mapa do Global Fishing Watch é a primeira plataforma de acesso aberto para visualização e análise do tráfego marítimo e da atividade humana no mar.",
       "fishing-activity": "O mapa do Global Fishing Watch é a primeira plataforma de acesso aberto para visualização e análise do tráfego marítimo e da atividade humana no mar.",

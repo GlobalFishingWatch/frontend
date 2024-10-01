@@ -170,7 +170,9 @@ export const useFetchSearchResults = () => {
           if (total >= 0) {
             trackEvent({
               category: TrackCategory.SearchVessel,
-              action: 'Search specific vessel',
+              action: searchInBasic
+                ? 'Search specific vessel'
+                : 'add_filters_and_hit_search_in_advanced_search',
               label: query,
               value: total,
             })

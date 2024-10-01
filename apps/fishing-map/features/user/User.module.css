@@ -54,6 +54,10 @@
   margin-left: auto;
 }
 
+.marginLeft {
+  margin-left: var(--space-XS);
+}
+
 .dataset {
   display: flex;
   align-items: center;
@@ -83,4 +87,9 @@
 
 div.modal {
   height: auto;
+}
+
+.warningButton {
+  /* border: 1px solid var(--color-danger-secondary-red); */
+  color: var(--color-danger-secondary-red);
 }

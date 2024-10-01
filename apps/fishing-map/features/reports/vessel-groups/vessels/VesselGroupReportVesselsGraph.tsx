@@ -12,6 +12,7 @@ import {
   VGRVesselsSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
@@ -65,6 +66,7 @@ const ReportGraphTooltip = (props: any) => {
 const CustomTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount, property, filterQueryParam, pageQueryParam } =
     props
+
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
@@ -90,10 +92,14 @@ const CustomTick = (props: any) => {
   }
 
   const onLabelClick = () => {
-    dispatchQueryParams({
-      [filterQueryParam]: `${filterProperties[property as VGRVesselsSubsection]}:${payload.value}`,
-      [pageQueryParam]: 0,
-    })
+    if (payload.value !== OTHER_CATEGORY_LABEL) {
+      dispatchQueryParams({
+        [filterQueryParam]: `${filterProperties[property as VGRVesselsSubsection]}:${
+          payload.value
+        }`,
+        [pageQueryParam]: 0,
+      })
+    }
   }
 
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)

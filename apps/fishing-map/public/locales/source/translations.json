@@ -435,6 +435,7 @@
     "trackAction": "Download vessel track",
     "trackLimitExceeded": "You have already downloaded {{limit}} tracks today, please try again tomorrow",
     "trackLogin": "Register and login to download vessel tracks (free, 2 minutes)",
+    "trackResolution": "Login to see more detailed vessel tracks (free, 2 minutes)",
     "trackNotAllowed": "You don't have permissions to download tracks from this source",
     "trackRemaining_one": "You can download {{count}} more track today",
     "trackRemaining_other": "You can download {{count}} more tracks today",
@@ -1041,6 +1042,7 @@
     "summaryEvents": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
+    "updateRequired": "Update required",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
     "vesselGroups": "Vessel groups"
@@ -1107,6 +1109,8 @@
     "saved": "Current view was saved and it's available in your user profile",
     "saveLogin": "You need to login to save views",
     "saveOwnerOnly": "This workspace can only be edited by its creator",
+    "sharePrivateDisclaimer": "This workspace contains datasets that require special permissions",
+    "sharePrivatePermissionsRequired": "permissions required",
     "siteDescription": {
       "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
       "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",

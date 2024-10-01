@@ -99,13 +99,28 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   }
   const setHeatmapActivityActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.HeatmapActivity}`,
+    })
   }
   const setHeatmapDetectionsActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.HeatmapDetections}`,
+    })
   }
   const setEnvironmentActive = (environmentalDataviewId: string) => {
     dispatchTimebarVisualisation(TimebarVisualisations.Environment)
     dispatchTimebarSelectedEnvId(environmentalDataviewId)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Environment} - ${environmentalDataviewId}`,
+    })
   }
   const setVesselGroupActive = (vesselGroupDataviewId: string) => {
     dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup)
@@ -114,14 +129,29 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
     dispatchTimebarGraph(TimebarGraphs.None)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.None}`,
+    })
   }
   const setVesselGraphSpeed = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
     dispatchTimebarGraph(TimebarGraphs.Speed)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.Speed}`,
+    })
   }
   const setVesselGraphDepth = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
     dispatchTimebarGraph(TimebarGraphs.Depth)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.Depth}`,
+    })
   }
 
   const expandedContainerRef = useClickedOutside(closeOptions)
