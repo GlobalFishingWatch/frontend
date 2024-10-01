@@ -488,7 +488,7 @@
     "dayAbbreviated_other": "{{count}}d",
     "during": "during",
     "encounter": "Encounter event",
-    "encounter_other": "Encounter events",
+    "encounter_other": "Encounters",
     "encounterAction": "had an encounter with",
     "encounterActionWith": "had an encounter with {{vessel}} starting at {{start}} for {{duration}}",
     "encounterActionWithVessels": "had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}",
