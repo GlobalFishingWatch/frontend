@@ -13,7 +13,10 @@ import { WORKSPACE_SEARCH } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectActiveVesselsDataviews,
+  selectVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   hasTracksWithNoData,
@@ -39,6 +42,7 @@ function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchLocation } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
+  const activeDataviews = useSelector(selectActiveVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -173,13 +177,20 @@ function VesselsSection(): React.ReactElement {
           </div>
         )}
       </SortableContext>
-      {hasVesselsWithNoTrack && guestUser && (
+      {activeDataviews.length > 0 && guestUser && (
         <p className={styles.disclaimer}>
-          <Trans i18nKey="vessel.trackLogin">
-            One of your selected sources requires you to
-            <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink> to see
-            vessel tracks and events
-          </Trans>
+          {hasVesselsWithNoTrack ? (
+            <Trans i18nKey="vessel.trackLogin">
+              One of your selected sources requires you to
+              <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink> to see
+              vessel tracks and events
+            </Trans>
+          ) : (
+            <Trans i18nKey="vessel.trackResolution">
+              <LocalStorageLoginLink className={styles.link}>Login</LocalStorageLoginLink> to see
+              more detailed vessel tracks (free, 2 minutes)
+            </Trans>
+          )}
         </p>
       )}
       <VesselEventsLegend dataviews={dataviews} />

@@ -1054,6 +1054,8 @@
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
     "saveLogin": "Necesita iniciar sesión para guardar la vista actual (gratis y toma 2 minutos)",
     "saveOwnerOnly": "Esta área de trabajo solo puede ser editada por su creador",
+    "sharePrivateDisclaimer": "This workspace contains datasets that require special permissions",
+    "sharePrivatePermissionsRequired": "permissions required",
     "siteDescription": {
       "default": "El mapa Global Fishing Watch es la primera plataforma de acceso abierto para la visualización y el análisis del tráfico marítimo y de la actividad humana basada en el comercio marítimo.",
       "fishing-activity": "El mapa Global Fishing Watch es la primera plataforma de acceso abierto para la visualización y el análisis del tráfico marítimo y de la actividad humana basada en el comercio marítimo.",
