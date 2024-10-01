@@ -15,7 +15,6 @@ export type VesselGroupEventsVesselsParams = {
 export type VesselGroupEventsStatsParams = VesselGroupEventsVesselsParams & {
   includes: string[]
   interval: FourwingsInterval
-  groupBy: string // 'FLAG' | 'GEARTYPE'
 }
 
 export type VesselGroupEventsStatsResponseGroups = { name: string; value: number }[]
@@ -67,7 +66,6 @@ export const vesselGroupEventsStatsApi = createApi({
           includes: params.includes,
           datasets: [dataset?.id],
           'timeseries-interval': params.interval,
-          'group-by': params.groupBy,
         }
         return {
           url: `${getQueryParamsResolved(query)}`,

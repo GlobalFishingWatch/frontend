@@ -435,6 +435,7 @@
     "trackAction": "Download vessel track",
     "trackLimitExceeded": "You have already downloaded {{limit}} tracks today, please try again tomorrow",
     "trackLogin": "Register and login to download vessel tracks (free, 2 minutes)",
+    "trackResolution": "Login to see more detailed vessel tracks (free, 2 minutes)",
     "trackNotAllowed": "You don't have permissions to download tracks from this source",
     "trackRemaining_one": "You can download {{count}} more track today",
     "trackRemaining_other": "You can download {{count}} more tracks today",
@@ -1041,6 +1042,7 @@
     "summaryEvents": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
+    "updateRequired": "Update required",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
     "vesselGroups": "Vessel groups"

@@ -48,6 +48,15 @@
   display: none;
 }
 
+.summary {
+  color: var(--color-secondary-blue);
+}
+
+.summary strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
 @media print {
   .actions {
     display: none;
