@@ -428,6 +428,7 @@
     "trackAction": "Download vessel track",
     "trackLimitExceeded": "You have already downloaded {{limit}} tracks today, please try again tomorrow",
     "trackLogin": "Register and login to download vessel tracks (free, 2 minutes)",
+    "trackResolution": "Login to see more detailed vessel tracks (free, 2 minutes)",
     "trackNotAllowed": "You don't have permissions to download tracks from this source",
     "trackRemaining_one": "You can download {{count}} more track today",
     "trackRemaining_other": "You can download {{count}} more tracks today",
