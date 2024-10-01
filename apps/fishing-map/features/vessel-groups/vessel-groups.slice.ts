@@ -80,7 +80,7 @@ export const fetchVesselGroupsThunk = createAsyncThunk<
     const vesselGroupsParams = {
       ...DEFAULT_PAGINATION_PARAMS,
       cache: false,
-      'logged-user': true,
+      // 'logged-user': true,
       ...(ids?.length && { ids }),
     }
     const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
