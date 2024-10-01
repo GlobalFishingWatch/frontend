@@ -428,6 +428,7 @@
     "trackAction": "Télécharger la trajectoires du navire",
     "trackLimitExceeded": "Vous avez déjà téléchargé {{limit}} tracés aujourd'hui, veuillez réessayer demain",
     "trackLogin": "Inscrivez-vous et connectez-vous pour télécharger des tracés de navires (gratuit, 2 minutes)",
+    "trackResolution": "Login to see more detailed vessel tracks (free, 2 minutes)",
     "trackNotAllowed": "Vous n'avez pas la permission de télécharger des trajectoires à partir de cette source",
     "trackRemaining_one": "Vous pouvez télécharger {{count}} tracés supplémentaires aujourd'hui",
     "trackRemaining_other": "Vous pouvez télécharger {{count}} tracés supplémentaires aujourd'hui",
