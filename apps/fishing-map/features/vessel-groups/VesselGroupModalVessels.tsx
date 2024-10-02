@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
@@ -9,6 +9,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getSearchIdentityResolved, isFieldLoginRequired } from 'features/vessel/vessel.utils'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import styles from './VesselGroupModal.module.css'
 import {
   VesselGroupVesselIdentity,
@@ -84,6 +85,10 @@ function VesselGroupVessels() {
   const dispatch = useAppDispatch()
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
 
+  const uniqVesselGroupVessels = useMemo(() => {
+    return getVesselGroupUniqVessels(vesselGroupVessels)
+  }, [vesselGroupVessels])
+
   const onVesselRemoveClick = useCallback(
     (vessel: VesselGroupVesselIdentity) => {
       if (vesselGroupVessels) {
@@ -113,7 +118,7 @@ function VesselGroupVessels() {
         </tr>
       </thead>
       <tbody>
-        {vesselGroupVessels?.map((vessel) => {
+        {uniqVesselGroupVessels?.map((vessel) => {
           if (!vessel.identity) {
             return null
           }

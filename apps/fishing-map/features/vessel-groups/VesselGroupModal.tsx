@@ -62,7 +62,7 @@ import {
   setVesselGroupModalVessels,
   setVesselGroupSearchIdField,
 } from './vessel-groups-modal.slice'
-import { getVesselGroupUniqVessels } from './vessel-groups.utils'
+import { getVesselGroupUniqVessels, getVesselGroupVesselsCount } from './vessel-groups.utils'
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
@@ -341,7 +341,8 @@ function VesselGroupModal(): React.ReactElement {
         <div className={styles.modalFooter}>
           {vesselGroupVessels && vesselGroupVessels?.length > 0 && (
             <label>
-              {t('common.vessel_other', 'Vessels')}: {vesselGroupVessels.length}
+              {t('common.vessel_other', 'Vessels')}:{' '}
+              {getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup)}
             </label>
           )}
           <SwitchRow
