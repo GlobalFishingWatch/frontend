@@ -18,7 +18,10 @@ import {
   FourwingsHeatmapTileLayerProps,
 } from './heatmap/fourwings-heatmap.types'
 import { FourwingsFootprintTileLayerProps } from './footprint/fourwings-footprint.types'
-import { getResolutionByVisualizationMode } from './heatmap/fourwings-heatmap.utils'
+import {
+  getResolutionByVisualizationMode,
+  getZoomOffsetByResolution,
+} from './heatmap/fourwings-heatmap.utils'
 
 export type FourwingsColorRamp = {
   colorDomain: number[]
@@ -140,6 +143,11 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   getResolution() {
     return getResolutionByVisualizationMode(this.props.visualizationMode)
+  }
+
+  getZoomOffset() {
+    const resolution = getResolutionByVisualizationMode(this.props.visualizationMode)
+    return getZoomOffsetByResolution(resolution, this.context.viewport.zoom)
   }
 
   getLayer() {
