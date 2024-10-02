@@ -15,7 +15,7 @@ import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { RootState } from 'store'
 import { prepareVesselGroupVesselsUpdate } from './vessel-groups.utils'
 
-export type IdField = 'vesselId' | 'mmsi'
+export type IdField = 'vesselId' | 'mmsi' | 'imo'
 export type VesselGroupConfirmationMode = 'save' | 'saveAndSeeInWorkspace' | 'saveAndDeleteVessels'
 
 interface VesselGroupsState extends AsyncReducer<VesselGroup> {

@@ -16,6 +16,7 @@ import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
+import { IdField } from 'features/vessel-groups/vessel-groups.slice'
 import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 import {
   flatVesselGroupSearchVessels,
@@ -24,7 +25,6 @@ import {
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
-export type IdField = 'vesselId' | 'mmsi'
 export type VesselGroupConfirmationMode =
   | 'save'
   | 'update'
@@ -157,7 +157,9 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
           ? undefined
           : {
               datasets,
-              where: `${uniqVesselIds.map((ssvid) => `ssvid='${ssvid}'`).join(' OR ')}`,
+              where: `${uniqVesselIds
+                .map((id) => `${idField === 'mmsi' ? 'ssvid' : idField}='${id}'`)
+                .join(' OR ')}`,
             }
         const searchResults = await fetchAllSearchVessels({
           url: `${url}`,
