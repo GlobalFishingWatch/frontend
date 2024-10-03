@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
 import { uniq } from 'es-toolkit'
+import Image from 'next/image'
 import { IconButton, Tab, Tabs, TabsProps, Tooltip } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner, VesselRegistryProperty } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -12,6 +13,7 @@ import {
   CUSTOM_VMS_IDENTITY_FIELD_GROUPS,
   IDENTITY_FIELD_GROUPS,
   REGISTRY_FIELD_GROUPS,
+  REGISTRY_SOURCES,
 } from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
@@ -171,6 +173,14 @@ const VesselIdentity = () => {
       : IDENTITY_FIELD_GROUPS[identitySource]
   }, [identitySource, vesselIdentity?.sourceCode])
 
+  const hasMoreInfo = useMemo(() => {
+    
+    return vesselIdentity?.hasComplianceInfo || vesselIdentity?.iuuStatus === 'Current'
+  }, [vesselIdentity?.hasComplianceInfo, vesselIdentity?.iuuStatus])
+const registrySourceData = useMemo(() => {
+  const source = REGISTRY_SOURCES.find(s => s.key === vesselIdentity.registrySource)
+  return source
+}, [vesselIdentity?.registrySource])
   return (
     <Fragment>
       <Tabs tabs={identityTabs} activeTab={identitySource} onTabClick={onTabClick} />
@@ -285,6 +295,7 @@ const VesselIdentity = () => {
                   vesselIdentity.ssvid
                 )
                 if (!filteredRegistryInfo) return null
+                
                 return (
                   <div className={styles.fieldGroupContainer} key={key}>
                     <div className={styles.labelContainer}>
@@ -367,6 +378,16 @@ const VesselIdentity = () => {
                   </div>
                 )
               })}
+              {identitySource === VesselIdentitySourceEnum.Registry &&
+              hasMoreInfo && registrySourceData &&
+              (<div className={styles.extraInfoContainer}>
+                    <Image src={registrySourceData?.logo} alt={registrySourceData?.key} width={40} height={40}/>
+                    <div>
+                      <label>{`${registrySourceData?.key} ${t(`vessel.extraInfo`, 'has more information')}`}</label>
+                      <p>{`${t(`vessel.extraInfo`, 'Request additional information at')} ${registrySourceData?.contact}`}</p>
+                    </div>
+                  </div>)
+              }
           </div>
         )}
         <VesselIdentitySelector />

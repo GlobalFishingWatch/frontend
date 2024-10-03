@@ -82,6 +82,7 @@ export type VesselIdentityProperty =
   | keyof VesselRegistryInfo
   | 'owner'
   | 'id'
+  // | 'image'
 
 export function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselData) {
   const latestRegistryIdentity = getVesselIdentity(vessel, {
@@ -208,6 +209,9 @@ export function getVesselProperty<P extends VesselIdentityProperty>(
     if (combinedSourcesInfoData?.length) {
       return combinedSourcesInfoData.map((i) => `${i.name}`) as VesselProperty<P>
     }
+    // if (property === 'image') {
+    //   return '/images/cargo-vessel.png' as VesselProperty<P>
+    // }
   }
   return get<VesselProperty<P>>(identity, property as any)
 }
@@ -278,6 +282,7 @@ export function getCurrentIdentityVessel(
   const { dataset, registryPublicAuthorizations, registryOwners } = vessel
   return {
     ...vesselData,
+    ...(vesselData?.extraFields?.length && vesselData.extraFields[0]),
     dataset,
     shiptypes: getVesselProperty(vessel, 'shiptypes', { identityId, identitySource }),
     geartypes: getVesselProperty(vessel, 'geartypes', { identityId, identitySource }),
