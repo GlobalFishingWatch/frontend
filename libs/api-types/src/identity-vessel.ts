@@ -105,6 +105,22 @@ export type SelfReportedInfo = VesselInfo & {
   vesselType?: string
 }
 
+export type RegistryImage = {
+  url: string
+  copyright: string
+}
+
+export type RegistryExtraFields = {
+  builtYear: number | null
+  depthM: number | null
+  hasArchiveInfo: boolean
+  hasComplianceInfo: boolean
+  iuuStatus: string | null
+  operator: string | null
+  registrySource: string
+  images: RegistryImage[]
+}
+
 export type VesselRegistryInfo = VesselInfo & {
   geartypes: GearType[] | RegistryLoginMessage
   latestVesselInfo: true
@@ -113,6 +129,7 @@ export type VesselRegistryInfo = VesselInfo & {
   recordId: string
   tonnageGt: number | RegistryLoginMessage
   vesselInfoReference: string
+  extraFields?: RegistryExtraFields[]
 }
 
 export type VesselRegistryProperty = {
