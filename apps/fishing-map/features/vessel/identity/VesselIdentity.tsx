@@ -6,9 +6,9 @@ import { Fragment, useEffect, useMemo } from 'react'
 import { uniq } from 'es-toolkit'
 import Image from 'next/image'
 import { IconButton, Tab, Tabs, TabsProps, Tooltip } from '@globalfishingwatch/ui-components'
-import { VesselRegistryOwner, VesselRegistryProperty } from '@globalfishingwatch/api-types'
+import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   CUSTOM_VMS_IDENTITY_FIELD_GROUPS,
   IDENTITY_FIELD_GROUPS,
@@ -37,12 +37,12 @@ import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
-import { useRegionTranslationsById } from 'features/regions/regions.hooks'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import VesselIdentityCombinedSourceField from 'features/vessel/identity/VesselIdentityCombinedSourceField'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import styles from './VesselIdentity.module.css'
+import VesselRegistryField from './VesselRegistryField'
 
 const VesselIdentity = () => {
   const { t } = useTranslation()
@@ -50,7 +50,6 @@ const VesselIdentity = () => {
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
-  const { getRegionTranslationsById } = useRegionTranslationsById()
   const { dispatchQueryParams } = useLocationConnect()
   const { setTimerange } = useTimerangeConnect()
 
@@ -177,6 +176,7 @@ const VesselIdentity = () => {
     
     return vesselIdentity?.hasComplianceInfo || vesselIdentity?.iuuStatus === 'Current'
   }, [vesselIdentity?.hasComplianceInfo, vesselIdentity?.iuuStatus])
+  console.log("🚀 ~ VesselIdentity ~ vesselIdentity:", vesselIdentity)
 const registrySourceData = useMemo(() => {
   const source = REGISTRY_SOURCES.find(s => s.key === vesselIdentity.registrySource)
   return source
@@ -282,101 +282,8 @@ const registrySourceData = useMemo(() => {
               </div>
             ))}
             {identitySource === VesselIdentitySourceEnum.Registry &&
-              REGISTRY_FIELD_GROUPS.map(({ key, label, terminologyKey }, index) => {
-                const allRegistryInfo = vesselIdentity[key]
-                if (!allRegistryInfo) return null
-                const timerange = {
-                  start: vesselIdentity.transmissionDateFrom,
-                  end: vesselIdentity.transmissionDateTo,
-                }
-                const filteredRegistryInfo = filterRegistryInfoByDateAndSSVID(
-                  vesselIdentity[key] as VesselRegistryProperty[],
-                  timerange,
-                  vesselIdentity.ssvid
-                )
-                if (!filteredRegistryInfo) return null
-                
-                return (
-                  <div className={styles.fieldGroupContainer} key={key}>
-                    <div className={styles.labelContainer}>
-                      <label className={styles.twoCells}>{t(`vessel.${label}`, label || '')}</label>
-                      {terminologyKey && (
-                        <DataTerminology
-                          size="tiny"
-                          type="default"
-                          title={t(`vessel.${label}`, label || '')}
-                          terminologyKey={terminologyKey}
-                        />
-                      )}
-                    </div>
-                    {allRegistryInfo?.length > 0 ? (
-                      <ul
-                        className={cx(styles.fieldGroup, styles.twoColumns)}
-                        style={
-                          key === 'registryPublicAuthorizations'
-                            ? {
-                                gridTemplateRows: `repeat(${Math.ceil(
-                                  filteredRegistryInfo.length / 2
-                                )}, 1fr)`,
-                              }
-                            : undefined
-                        }
-                      >
-                        {allRegistryInfo.map((registry, index) => {
-                          const registryOverlapsTimeRange = filteredRegistryInfo.includes(registry)
-                          const fieldType = key === 'registryOwners' ? 'owner' : 'authorization'
-                          let Component = <VesselIdentityField value="" />
-                          if (registryOverlapsTimeRange) {
-                            if (fieldType === 'owner') {
-                              const value = `${formatInfoField(
-                                (registry as VesselRegistryOwner).name,
-                                'owner'
-                              )} (${formatInfoField(
-                                (registry as VesselRegistryOwner).flag,
-                                'flag'
-                              )})`
-                              Component = <VesselIdentityField value={value} />
-                            } else {
-                              const sourceTranslations = (registry.sourceCode as any[])
-                                .map(getRegionTranslationsById)
-                                .join(',')
-                              Component = (
-                                <Tooltip content={sourceTranslations}>
-                                  <VesselIdentityField
-                                    className={styles.help}
-                                    value={
-                                      formatInfoField(
-                                        registry.sourceCode.join(','),
-                                        fieldType
-                                      ) as string
-                                    }
-                                  />
-                                </Tooltip>
-                              )
-                            }
-                          }
-                          return (
-                            <li
-                              key={`${registry.recordId}-${index}`}
-                              className={cx({
-                                [styles.twoCells]: key === 'registryOwners',
-                                [styles.hidden]: !registryOverlapsTimeRange,
-                              })}
-                            >
-                              {Component}{' '}
-                              <span className={styles.secondary}>
-                                <I18nDate date={registry.dateFrom} /> -{' '}
-                                <I18nDate date={registry.dateTo} />
-                              </span>
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    ) : (
-                      EMPTY_FIELD_PLACEHOLDER
-                    )}
-                  </div>
-                )
+              REGISTRY_FIELD_GROUPS.map((registryField) => {
+                return <VesselRegistryField registryField={registryField} vesselIdentity={vesselIdentity} />
               })}
               {identitySource === VesselIdentitySourceEnum.Registry &&
               hasMoreInfo && registrySourceData &&

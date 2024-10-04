@@ -88,7 +88,7 @@ export const REGISTRY_FIELD_GROUPS: VesselRenderField<
     key: 'registryPublicAuthorizations',
     label: 'authorization',
     terminologyKey: 'authorization',
-  },
+  }
 ]
 
 export const REGIONS_PRIORITY: RegionType[] = [

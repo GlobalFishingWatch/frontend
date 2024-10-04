@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import { useCallback, useEffect } from 'react'
