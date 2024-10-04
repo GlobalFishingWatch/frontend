@@ -82,7 +82,7 @@ export type VesselIdentityProperty =
   | keyof VesselRegistryInfo
   | 'owner'
   | 'id'
-  // | 'image'
+  | 'image'
 
 export function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVesselData) {
   const latestRegistryIdentity = getVesselIdentity(vessel, {

@@ -15,6 +15,7 @@ import {
   IdentityVessel,
   EndpointId,
   VesselIdentitySourceEnum,
+  RegistryExtraFields,
 } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
@@ -26,7 +27,7 @@ import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search
 
 export type VesselLastIdentity = Omit<IdentityVesselData, 'identities' | 'dataset'> & {
   dataset: Dataset | string
-} & VesselDataIdentity
+} & VesselDataIdentity & RegistryExtraFields
 
 interface SearchState {
   selectedVessels: string[]

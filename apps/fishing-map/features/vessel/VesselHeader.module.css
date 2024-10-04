@@ -4,6 +4,19 @@
   min-height: 5.2rem;
 }
 
+.summaryWrapper {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-S);
+  width: 100%;
+}
+
 .sticky {
   z-index: 2;
   margin-top: 51px;
@@ -11,22 +24,18 @@
   border-top: var(--border);
 }
 
-.titleContainer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: var(--space-S);
-}
-
 .title {
   font: var(--font-L);
-  min-width: max-content;
-  flex: 1;
+  flex-grow: 1;
 }
 
 .secondary {
   color: var(--color-secondary-blue);
+}
+
+.vesselImage {
+  width: 20%;
+  min-width: 200px;
 }
 
 .vesselIcon {
@@ -36,6 +45,7 @@
 .actionsContainer {
   display: flex;
   justify-content: flex-end;
+  align-self: end;
   gap: var(--space-S);
 }
 
