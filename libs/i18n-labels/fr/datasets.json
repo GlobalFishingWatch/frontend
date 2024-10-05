@@ -1053,15 +1053,15 @@
     "description": ""
   },
   "public-fixed-infrastructure": {
-    "name": "Fixed infrastructure",
-    "description": "SAR identified fixed infrastructure",
+    "name": "Infrastructure fixe",
+    "description": "Infrastructure fixe identifiée par SAR",
     "schema": {
       "label": {
-        "keyword": "label",
+        "keyword": "Libellé",
         "enum": {
-          "oil": "oil",
-          "wind": "wind",
-          "unknown": "unknown"
+          "oil": "pétrole",
+          "wind": "éolien",
+          "unknown": "inconnu"
         }
       }
     }
