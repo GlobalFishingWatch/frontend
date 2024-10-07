@@ -176,7 +176,6 @@ const VesselIdentity = () => {
     
     return vesselIdentity?.hasComplianceInfo || vesselIdentity?.iuuStatus === 'Current'
   }, [vesselIdentity?.hasComplianceInfo, vesselIdentity?.iuuStatus])
-  console.log("🚀 ~ VesselIdentity ~ vesselIdentity:", vesselIdentity)
 const registrySourceData = useMemo(() => {
   const source = REGISTRY_SOURCES.find(s => s.key === vesselIdentity.registrySource)
   return source

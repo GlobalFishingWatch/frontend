@@ -145,6 +145,10 @@ export type VesselRegistryOwner = VesselRegistryProperty & {
   flag: string
 }
 
+export type VesselRegistryOperator = {
+  name: string
+}
+
 export type VesselRegistryAuthorization = VesselRegistryProperty
 
 export type VesselIdentitySearchMatch = {
@@ -178,5 +182,6 @@ export interface IdentityVessel {
   registryPublicAuthorizations?: VesselRegistryAuthorization[]
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]
+  operator?: VesselRegistryOperator[]
   selfReportedInfo: SelfReportedInfo[]
 }

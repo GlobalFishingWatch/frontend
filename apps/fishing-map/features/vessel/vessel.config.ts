@@ -78,12 +78,16 @@ export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRende
 }
 
 export const REGISTRY_FIELD_GROUPS: VesselRenderField<
-  keyof Pick<IdentityVesselData, 'registryOwners' | 'registryPublicAuthorizations'>
+  keyof Pick<IdentityVesselData, 'registryOwners' | 'registryPublicAuthorizations' | 'operator'>
 >[] = [
   {
     key: 'registryOwners',
     label: 'owner',
     terminologyKey: 'owner',
+  },
+  {
+    key: 'operator',
+    label: 'operator',
   },
   {
     key: 'registryPublicAuthorizations',

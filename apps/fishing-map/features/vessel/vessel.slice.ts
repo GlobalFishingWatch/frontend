@@ -62,7 +62,7 @@ export type IdentityVesselData = {
 } & VesselInstanceDatasets &
   Pick<
     IdentityVessel,
-    'registryOwners' | 'registryPublicAuthorizations' | 'matchCriteria' | 'combinedSourcesInfo'
+    'registryOwners' | 'registryPublicAuthorizations' | 'matchCriteria' | 'combinedSourcesInfo' | 'operator'
   >
 
 type VesselInfoEntry = {

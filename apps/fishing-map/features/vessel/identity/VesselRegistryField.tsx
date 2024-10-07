@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import { t } from 'i18next'
+import { uniq } from 'es-toolkit'
 import { VesselRegistryOwner, VesselRegistryProperty } from "@globalfishingwatch/api-types"
 import { Tooltip } from "@globalfishingwatch/ui-components"
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from "utils/info"
@@ -11,10 +12,26 @@ import { VesselRenderField } from '../vessel.config'
 import styles from './VesselIdentity.module.css'
 import DataTerminology from "./DataTerminology"
 import VesselIdentityField from "./VesselIdentityField"
+const RegistryOperatorField = ({registryField, vesselIdentity} :{registryField: VesselRenderField ,vesselIdentity: VesselLastIdentity}) => {
+  const { key } = registryField
+  const operator = vesselIdentity[key as keyof VesselLastIdentity] as string
+  const formatedOperator = uniq(operator.split('|').map((s:string) => s.replaceAll('"', '').trim().split(';')).flat())
+  return (  <div className={cx(styles.fieldGroupContainer)}>
+<label>{t(`vessel.registryOperator`, 'Operators')}</label>
+{formatedOperator.map((operator, index) => (
+  <p>
+    <VesselIdentityField key={index} value={operator} />
+  </p>
+))}
+  </div>
+)
+}
 const VesselRegistryField = ({registryField, vesselIdentity} :{registryField: VesselRenderField ,vesselIdentity: VesselLastIdentity}) => {
-    console.log("🚀 ~ VesselRegistryField ~ key:", registryField)
     const { key, label, terminologyKey } = registryField
     const { getRegionTranslationsById } = useRegionTranslationsById()
+    if (key === 'operator') {
+      return <RegistryOperatorField registryField={registryField} vesselIdentity={vesselIdentity} />
+    }
     const allRegistryInfo = vesselIdentity[key as keyof VesselLastIdentity]as VesselRegistryProperty[]
     if (!allRegistryInfo) return null
     const timerange = {
@@ -26,6 +43,7 @@ const VesselRegistryField = ({registryField, vesselIdentity} :{registryField: Ve
       timerange,
       vesselIdentity.ssvid
     )
+
     if (!filteredRegistryInfo) return null
     
     return (
