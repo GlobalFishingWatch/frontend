@@ -2,6 +2,7 @@ import { RegionType, SelfReportedSource } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { I18nNamespaces } from 'features/i18n/i18n.types'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import { PATH_BASENAME } from 'data/config'
 import { VesselProfileState } from './vessel.types'
 
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity'
@@ -9,7 +10,7 @@ export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v3.0'
 export const DEFAULT_VESSEL_IDENTITY_ID = `${DEFAULT_VESSEL_IDENTITY_DATASET}:${DEFAULT_VESSEL_IDENTITY_VERSION}`
 export const INCLUDES_RELATED_SELF_REPORTED_INFO_ID = 'POTENTIAL_RELATED_SELF_REPORTED_INFO'
 export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
-export const REGISTRY_SOURCES = [{key: 'TMT', logo: '/images/tmt-logo.png', contact: 'jac-coord@tm-tracking.org'}]
+export const REGISTRY_SOURCES = [{key: 'TMT', logo: `${PATH_BASENAME}/images/tmt-logo.png`, contact: 'jac-coord@tm-tracking.org'}]
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
