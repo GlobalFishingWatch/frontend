@@ -172,14 +172,9 @@ const VesselIdentity = () => {
       : IDENTITY_FIELD_GROUPS[identitySource]
   }, [identitySource, vesselIdentity?.sourceCode])
 
-  const hasMoreInfo = useMemo(() => {
-    
-    return vesselIdentity?.hasComplianceInfo || vesselIdentity?.iuuStatus === 'Current'
-  }, [vesselIdentity?.hasComplianceInfo, vesselIdentity?.iuuStatus])
-const registrySourceData = useMemo(() => {
-  const source = REGISTRY_SOURCES.find(s => s.key === vesselIdentity.registrySource)
-  return source
-}, [vesselIdentity?.registrySource])
+  const hasMoreInfo = vesselIdentity?.hasComplianceInfo || vesselIdentity?.iuuStatus === 'Current'
+  const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
+
   return (
     <Fragment>
       <Tabs tabs={identityTabs} activeTab={identitySource} onTabClick={onTabClick} />
@@ -251,6 +246,10 @@ const registrySourceData = useMemo(() => {
                     label = 'gfw_' + label
                   }
                   const key = field.key as keyof VesselLastIdentity
+                  let value = vesselIdentity[key] as string
+                  if (key === 'depthM' || key === 'builtYear') {
+                    value = vesselIdentity[key]?.value?.toString()
+                  }
                   return (
                     <div key={field.key}>
                       <div className={styles.labelContainer}>
@@ -271,9 +270,7 @@ const registrySourceData = useMemo(() => {
                           property={key}
                         />
                       ) : (
-                        <VesselIdentityField
-                          value={formatInfoField(vesselIdentity[key] as string, label) as string}
-                        />
+                        <VesselIdentityField value={formatInfoField(value, label) as string} />
                       )}
                     </div>
                   )
@@ -282,18 +279,34 @@ const registrySourceData = useMemo(() => {
             ))}
             {identitySource === VesselIdentitySourceEnum.Registry &&
               REGISTRY_FIELD_GROUPS.map((registryField) => {
-                return <VesselRegistryField registryField={registryField} vesselIdentity={vesselIdentity} />
+                return (
+                  <VesselRegistryField
+                    registryField={registryField}
+                    vesselIdentity={vesselIdentity}
+                  />
+                )
               })}
-              {identitySource === VesselIdentitySourceEnum.Registry &&
-              hasMoreInfo && registrySourceData &&
-              (<div className={styles.extraInfoContainer}>
-                    <Image src={registrySourceData?.logo} alt={registrySourceData?.key} width={40} height={40}/>
-                    <div>
-                      <label>{`${registrySourceData?.key} ${t(`vessel.extraInfo`, 'has more information')}`}</label>
-                      <p>{`${t(`vessel.extraInfo`, 'Request additional information at')} ${registrySourceData?.contact}`}</p>
-                    </div>
-                  </div>)
-              }
+            {identitySource === VesselIdentitySourceEnum.Registry &&
+              hasMoreInfo &&
+              registrySourceData && (
+                <div className={styles.extraInfoContainer}>
+                  <Image
+                    src={registrySourceData?.logo}
+                    alt={registrySourceData?.key}
+                    width={40}
+                    height={40}
+                  />
+                  <div>
+                    <label>{`${registrySourceData?.key} ${t(
+                      `vessel.extraInfo`,
+                      'has more information'
+                    )}`}</label>
+                    <p>{`${t(`vessel.extraInfo`, 'Request additional information at')} ${
+                      registrySourceData?.contact
+                    }`}</p>
+                  </div>
+                </div>
+              )}
           </div>
         )}
         <VesselIdentitySelector />

@@ -27,7 +27,8 @@ import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search
 
 export type VesselLastIdentity = Omit<IdentityVesselData, 'identities' | 'dataset'> & {
   dataset: Dataset | string
-} & VesselDataIdentity & RegistryExtraFields
+} & VesselDataIdentity &
+  RegistryExtraFields
 
 interface SearchState {
   selectedVessels: string[]

@@ -282,6 +282,7 @@ export function getCurrentIdentityVessel(
   const { dataset, registryPublicAuthorizations, registryOwners } = vessel
   return {
     ...vesselData,
+    // TODO:VV3 review if we could have more than one extra field
     ...(vesselData?.extraFields?.length && vesselData.extraFields[0]),
     dataset,
     shiptypes: getVesselProperty(vessel, 'shiptypes', { identityId, identitySource }),

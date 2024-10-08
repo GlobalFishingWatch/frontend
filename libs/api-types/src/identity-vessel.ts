@@ -110,9 +110,17 @@ export type RegistryImage = {
   copyright: string
 }
 
+export type RegistryExtraFieldValue = {
+  dateFrom: string
+  dateFromMask: string
+  // dateTo: ??
+  // dateToMask: ??
+  value: number
+}
+
 export type RegistryExtraFields = {
-  builtYear: number | null
-  depthM: number | null
+  builtYear: RegistryExtraFieldValue
+  depthM: RegistryExtraFieldValue
   hasArchiveInfo: boolean
   hasComplianceInfo: boolean
   iuuStatus: string | null

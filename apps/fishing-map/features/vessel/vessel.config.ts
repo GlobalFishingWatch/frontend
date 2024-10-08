@@ -10,7 +10,13 @@ export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v3.0'
 export const DEFAULT_VESSEL_IDENTITY_ID = `${DEFAULT_VESSEL_IDENTITY_DATASET}:${DEFAULT_VESSEL_IDENTITY_VERSION}`
 export const INCLUDES_RELATED_SELF_REPORTED_INFO_ID = 'POTENTIAL_RELATED_SELF_REPORTED_INFO'
 export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
-export const REGISTRY_SOURCES = [{key: 'TMT', logo: `${PATH_BASENAME}/images/tmt-logo.png`, contact: 'jac-coord@tm-tracking.org'}]
+export const REGISTRY_SOURCES = [
+  {
+    key: 'TMT',
+    logo: `${PATH_BASENAME}/images/tmt-logo.png`,
+    contact: 'jac-coord@tm-tracking.org',
+  },
+]
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
@@ -30,10 +36,13 @@ export type VesselRenderField<Key = string> = {
   terminologyKey?: I18nNamespaces['dataTerminology']
 }
 
-const COMMON_FIELD_GROUPS: VesselRenderField[]= 
-  [{ key: 'shipname' }, { key: 'flag' }]
+const COMMON_FIELD_GROUPS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
 
-const IDENTIFIER_FIELDS: VesselRenderField[] = [{ key: 'ssvid', label: 'mmsi' }, { key: 'imo' }, { key: 'callsign' }]
+const IDENTIFIER_FIELDS: VesselRenderField[] = [
+  { key: 'ssvid', label: 'mmsi' },
+  { key: 'imo' },
+  { key: 'callsign' },
+]
 
 // TODO review private datasets to ensure there are no missing fields
 
@@ -53,6 +62,7 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   ],
   [SelfReportedSource.Chile]: [[{ key: 'fleet' }]],
 }
+
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
   { key: 'lengthM', label: 'length' },
   { key: 'depthM', label: 'draft' },
@@ -68,12 +78,9 @@ export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRende
   [VesselIdentitySourceEnum.SelfReported]: [COMMON_FIELD_GROUPS, VESSEL_CLASSIFICATION_FIELDS],
   [VesselIdentitySourceEnum.Registry]: [
     COMMON_FIELD_GROUPS,
-    [
-      ...VESSEL_CLASSIFICATION_FIELDS,
-      { key: 'builtYear', label: 'year built' },
-    ],
+    [...VESSEL_CLASSIFICATION_FIELDS, { key: 'builtYear', label: 'year built' }],
     IDENTIFIER_FIELDS,
-    VESSEL_FISICAL_FEATURES_FIELDS
+    VESSEL_FISICAL_FEATURES_FIELDS,
   ],
 }
 
@@ -93,7 +100,7 @@ export const REGISTRY_FIELD_GROUPS: VesselRenderField<
     key: 'registryPublicAuthorizations',
     label: 'authorization',
     terminologyKey: 'authorization',
-  }
+  },
 ]
 
 export const REGIONS_PRIORITY: RegionType[] = [
