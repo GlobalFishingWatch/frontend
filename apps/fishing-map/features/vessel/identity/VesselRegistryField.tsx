@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { t } from 'i18next'
 import { uniq } from 'es-toolkit'
-import { VesselRegistryOwner, VesselRegistryProperty } from "@globalfishingwatch/api-types"
+import { VesselRegistryOperator, VesselRegistryOwner, VesselRegistryProperty } from "@globalfishingwatch/api-types"
 import { Tooltip } from "@globalfishingwatch/ui-components"
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from "utils/info"
 import I18nDate from "features/i18n/i18nDate"
@@ -14,8 +14,9 @@ import DataTerminology from "./DataTerminology"
 import VesselIdentityField from "./VesselIdentityField"
 const RegistryOperatorField = ({registryField, vesselIdentity} :{registryField: VesselRenderField ,vesselIdentity: VesselLastIdentity}) => {
   const { key } = registryField
-  const operator = vesselIdentity[key as keyof VesselLastIdentity] as string
-  const formatedOperator = uniq(operator.split('|').map((s:string) => s.replaceAll('"', '').trim().split(';')).flat())
+  const operator = vesselIdentity[key as keyof VesselLastIdentity] as VesselRegistryOperator
+  if (!operator?.name) return null
+  const formatedOperator = uniq(operator.name.split('|').map((s:string) => s.replaceAll('"', '').trim().split(';')).flat())
   return (  <div className={cx(styles.fieldGroupContainer)}>
 <label>{t(`vessel.registryOperator`, 'Operators')}</label>
 {formatedOperator.map((operator, index) => (
