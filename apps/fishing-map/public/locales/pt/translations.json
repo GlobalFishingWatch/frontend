@@ -428,6 +428,7 @@
     "trackAction": "Baixar rota da embarcação",
     "trackLimitExceeded": "Você já baixou {{limit}} rotas hoje. Tente novamente amanhã.",
     "trackLogin": "Registre-se e faça login para baixar a atividade (anômino, 2 minutos)",
+    "trackResolution": "Login to see more detailed vessel tracks (free, 2 minutes)",
     "trackNotAllowed": "Você não tem permissão para baixar rotas desta fonte",
     "trackRemaining_one": "Você pode baixar mais {{count}} rota hoje",
     "trackRemaining_other": "Você pode baixar mais {{count}} rotas hoje",

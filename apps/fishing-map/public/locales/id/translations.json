@@ -428,6 +428,7 @@
     "trackAction": "Unduh trek kapal",
     "trackLimitExceeded": "Anda sudah mengunduh {{limit}} jalur hari ini, silakan coba lagi besok",
     "trackLogin": "Daftar dan masuk untuk mengunduh trek kapal (gratis, 2 menit)",
+    "trackResolution": "Login to see more detailed vessel tracks (free, 2 minutes)",
     "trackNotAllowed": "Anda tidak memiliki izin untuk mengunduh trek dari sumber ini",
     "trackRemaining_one": "Anda bisa mengunduh {{count}} jalur lagi hari ini",
     "trackRemaining_other": "Anda bisa mengunduh {{count}} jalur lagi hari ini",
