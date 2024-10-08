@@ -182,6 +182,6 @@ export interface IdentityVessel {
   registryPublicAuthorizations?: VesselRegistryAuthorization[]
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]
-  operator?: VesselRegistryOperator[]
+  operator?: VesselRegistryOperator
   selfReportedInfo: SelfReportedInfo[]
 }
