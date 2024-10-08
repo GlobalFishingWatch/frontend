@@ -36,6 +36,11 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import {
+  fetchVesselGroupReportThunk,
+  resetVesselGroupReportData,
+} from 'features/reports/vessel-groups/vessel-group-report.slice'
 import {
   IdField,
   createVesselGroupThunk,
@@ -94,6 +99,7 @@ function VesselGroupModal(): React.ReactElement {
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
   const hasVesselsOverflow = useSelector(selectHasVesselGroupVesselsOverflow)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -247,6 +253,10 @@ function VesselGroupModal(): React.ReactElement {
             upsertDataviewInstance(dataviewInstance)
           }
         }
+        if (editingVesselGroupId && isVesselGroupReportLocation) {
+          dispatch(resetVesselGroupReportData())
+          dispatch(fetchVesselGroupReportThunk({ vesselGroupId: editingVesselGroupId }))
+        }
         close()
         setButtonLoading('')
       }
@@ -266,6 +276,7 @@ function VesselGroupModal(): React.ReactElement {
       dispatch,
       createAsPublic,
       vesselGroupsInWorkspace,
+      isVesselGroupReportLocation,
       close,
       workspaceToNavigate,
       searchQuery,
