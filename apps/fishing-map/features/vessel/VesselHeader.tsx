@@ -99,8 +99,8 @@ const VesselHeader = () => {
 
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
-  const vesselImage = '/images/cargo-vessel.png' || vesselIdentity?.images?.[0].url 
-  // const vesselImage = false
+  // TODO remove false when we have a vessel image
+  const vesselImage = false && vesselIdentity?.images?.[0].url 
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
