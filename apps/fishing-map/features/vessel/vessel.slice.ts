@@ -8,6 +8,7 @@ import {
   DatasetTypes,
   GearType,
   IdentityVessel,
+  RegistryExtraFields,
   Resource,
   ResourceStatus,
   SelfReportedInfo,
@@ -47,6 +48,10 @@ export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   dataset?: string
   geartypes?: GearType[]
   shiptypes?: VesselType[]
+  registrySource?: string
+  hasComplianceInfo?: boolean
+  iuuStatus?: string
+  extraFields?: RegistryExtraFields[]
 }
 // Merges and plain all the identities of a vessel
 export type IdentityVesselData = {
@@ -57,7 +62,11 @@ export type IdentityVesselData = {
 } & VesselInstanceDatasets &
   Pick<
     IdentityVessel,
-    'registryOwners' | 'registryPublicAuthorizations' | 'matchCriteria' | 'combinedSourcesInfo'
+    | 'registryOwners'
+    | 'registryPublicAuthorizations'
+    | 'matchCriteria'
+    | 'combinedSourcesInfo'
+    | 'operator'
   >
 
 type VesselInfoEntry = {
