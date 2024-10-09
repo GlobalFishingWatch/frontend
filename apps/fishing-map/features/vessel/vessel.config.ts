@@ -69,16 +69,28 @@ const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
   { key: 'tonnageGt', label: 'grossTonnage' },
 ]
 
+const VESSEL_SHIPTYPES_FIELD: VesselRenderField = {
+  key: 'shiptypes',
+  terminologyKey: 'shiptype',
+  label: 'vessel type',
+}
+
+const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
+  key: 'geartypes',
+  terminologyKey: 'geartype',
+  label: 'gear type',
+}
+
 const VESSEL_CLASSIFICATION_FIELDS: VesselRenderField[] = [
-  { key: 'shiptypes', terminologyKey: 'shiptype', label: 'vessel type' },
-  { key: 'geartypes', terminologyKey: 'geartype', label: 'gear type' },
+  VESSEL_SHIPTYPES_FIELD,
+  VESSEL_GEARTYPES_FIELD,
 ]
 
 export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRenderField[][]> = {
   [VesselIdentitySourceEnum.SelfReported]: [COMMON_FIELD_GROUPS, VESSEL_CLASSIFICATION_FIELDS],
   [VesselIdentitySourceEnum.Registry]: [
     COMMON_FIELD_GROUPS,
-    [...VESSEL_CLASSIFICATION_FIELDS, { key: 'builtYear', label: 'year built' }],
+    [VESSEL_GEARTYPES_FIELD, { key: 'builtYear', label: 'year built' }],
     IDENTIFIER_FIELDS,
     VESSEL_FISICAL_FEATURES_FIELDS,
   ],
