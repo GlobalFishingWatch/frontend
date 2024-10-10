@@ -32,18 +32,21 @@ export default function VesselGroupReportVesselsTableFooter() {
 
   const onDownloadVesselsClick = () => {
     const vessels = allVessels?.map((vessel) => {
+      const vesselRegistryInfo = !!vessel.identity?.registryInfo?.length
+        ? vessel.identity?.registryInfo[0]
+        : null
       return {
         dataset: vessel.dataset,
-        flag: vessel.flag,
+        flag: vesselRegistryInfo?.flag,
         'flag translated': vessel.flagTranslated,
         'GFW vessel type': vessel.vesselType,
         'GFW gear type': vessel.geartype,
         sources: vessel.source,
         name: vessel.shipName,
-        MMSI: vessel.mmsi,
-        IMO: vessel.imo,
-        'call sign': vessel.callsign,
-        vesselId: vessel.id,
+        MMSI: vesselRegistryInfo?.ssvid,
+        IMO: vesselRegistryInfo?.imo,
+        'call sign': vesselRegistryInfo?.callsign,
+        vesselId: vessel.vesselId,
       }
     })
     if (vessels?.length) {
@@ -54,7 +57,7 @@ export default function VesselGroupReportVesselsTableFooter() {
       //   })
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${formatInfoField(vesselGroup?.name, 'name')}-${start}-${end}.csv`)
+      saveAs(blob, `vessel-group-${formatInfoField(vesselGroup?.name, 'name')}-${start}-${end}.csv`)
     }
   }
 

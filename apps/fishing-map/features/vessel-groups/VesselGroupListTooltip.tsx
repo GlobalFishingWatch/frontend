@@ -45,7 +45,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
     <Popover
       open={vesselGroupsOpen}
       onOpenChange={toggleVesselGroupsOpen}
-      placement="right"
+      placement="bottom"
       content={
         <ul className={styles.groupOptions}>
           {hasUserGroupsPermissions && (
