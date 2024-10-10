@@ -1,12 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { uniq } from 'es-toolkit'
-import {
-  DataviewCategory,
-  Dataset,
-  DatasetTypes,
-  Dataview,
-  DataviewType,
-} from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, Dataview, DataviewType } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -15,119 +8,61 @@ import {
   getRelatedDatasetByType,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import {
-  selectWorkspaceDataviewInstances,
-  selectWorkspaceStateProperty,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
-import { ReportCategory, TimebarVisualisations } from 'types'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
-  selectIsAnyVesselLocation,
-  selectVesselId,
   selectIsAnyReportLocation,
+  selectIsVesselGroupReportLocation,
+  selectReportVesselGroupId,
 } from 'routes/routes.selectors'
-import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
-import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
-import { selectTimebarSelectedEnvId } from 'features/app/selectors/app.timebar.selectors'
-import {
-  selectActiveVesselsDataviews,
-  selectAllDataviewInstancesResolved,
-  selectDataviewInstancesMergedOrdered,
-  selectDataviewInstancesResolved,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import {
-  selectContextAreasDataviews,
-  selectActivityDataviews,
-  selectDetectionsDataviews,
-  selectEnvironmentalDataviews,
-  selectEventsDataviews,
-} from './dataviews.categories.selectors'
+  selectVGRSection,
+  selectVGRSubsection,
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import {
+  getReportVesselGroupVisibleDataviews,
+  isVesselGroupActivityDataview,
+} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
+import {
+  selectActiveActivityDataviews,
+  selectActiveContextAreasDataviews,
+  selectActiveEventsDataviews,
+  selectActiveVesselsDataviews,
+  selectActiveEnvironmentalDataviews,
+  selectActiveDetectionsDataviews,
+  selectActiveVesselGroupDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
+import {
+  selectDataviewInstancesResolved,
+  selectAllDataviewInstancesResolved,
+  selectDataviewInstancesMergedOrdered,
+} from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 
-const VESSEL_ONLY_VISIBLE_LAYERS = [
-  DataviewType.Basemap,
-  DataviewType.Context,
-  DataviewType.UserContext,
-  DataviewType.UserPoints,
-]
-
-const selectActiveDataviewsCategories = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviews): ReportCategory[] => {
-    return uniq(
-      dataviews.flatMap((d) => (d.config?.visible ? getReportCategoryFromDataview(d) : []))
-    )
-  }
-)
-
-export const selectReportActiveCategories = createSelector(
-  [selectActiveDataviewsCategories],
-  (activeCategories): ReportCategory[] => {
-    const orderedCategories = [
-      ReportCategory.Fishing,
-      ReportCategory.Presence,
-      ReportCategory.Detections,
-      ReportCategory.Environment,
-    ]
-    return orderedCategories.flatMap((category) =>
-      activeCategories.some((a) => a === category) ? category : []
-    )
-  }
-)
-
-const selectReportCategorySelector = selectWorkspaceStateProperty('reportCategory')
-const selectReportCategory = createSelector(
-  [selectReportCategorySelector, selectReportActiveCategories],
-  (reportCategory, activeCategories): ReportCategory => {
-    return activeCategories.some((category) => category === reportCategory)
-      ? reportCategory
-      : activeCategories[0]
-  }
-)
-
-export const selectDataviewInstancesResolvedVisible = createSelector(
+export const selectHasOtherVesselGroupDataviews = createSelector(
   [
     selectDataviewInstancesResolved,
-    selectIsAnyReportLocation,
-    selectReportCategory,
-    selectIsAnyVesselLocation,
-    selectViewOnlyVessel,
-    selectVesselId,
+    selectReportVesselGroupId,
+    selectVGRSection,
+    selectVGRSubsection,
   ],
-  (
-    dataviews = [],
-    isReportLocation,
-    reportCategory,
-    isVesselLocation,
-    viewOnlyVessel,
-    vesselId
-  ) => {
-    if (isReportLocation) {
-      return dataviews.filter((dataview) => {
-        if (
-          dataview.category === DataviewCategory.Activity ||
-          dataview.category === DataviewCategory.Detections
-        ) {
-          return (
-            dataview.config?.visible && getReportCategoryFromDataview(dataview) === reportCategory
-          )
-        }
-        return dataview.config?.visible
-      })
-    }
-    if (isVesselLocation && viewOnlyVessel && vesselId !== undefined) {
-      return dataviews.filter(({ id, config }) => {
-        if (VESSEL_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
-          return config?.visible
-        }
-        return config?.type === DataviewType.Track && id.includes(vesselId)
-      })
-    }
-    return dataviews.filter((dataview) => dataview.config?.visible)
+  (dataviews, reportVesselGroupId, vGRSection, vGRSubsection) => {
+    if (!dataviews?.length) return false
+    const vesselGroupReportDataviews = getReportVesselGroupVisibleDataviews({
+      dataviews,
+      reportVesselGroupId,
+      vesselGroupReportSection: vGRSection,
+      vesselGroupReportSubSection: vGRSubsection,
+    })
+    const workspaceVisibleDataviews = dataviews.filter(({ config }) => config?.visible === true)
+    return workspaceVisibleDataviews.length > vesselGroupReportDataviews.length
   }
 )
 
@@ -141,18 +76,6 @@ export const selectBasemapLabelsDataviewInstance = createSelector(
   }
 )
 
-const selectActiveContextAreasDataviews = createSelector(
-  [selectContextAreasDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
-)
-
-export const selectActiveActivityDataviews = createSelector(
-  [selectActivityDataviews],
-  (dataviews): UrlDataviewInstance[] => {
-    return dataviews?.filter((d) => d.config?.visible)
-  }
-)
-
 export const selectActivityMergedDataviewId = createSelector(
   [selectActiveActivityDataviews],
   (dataviews): string => {
@@ -161,20 +84,30 @@ export const selectActivityMergedDataviewId = createSelector(
 )
 
 export const selectActiveReportActivityDataviews = createSelector(
-  [selectActiveActivityDataviews, selectIsAnyReportLocation, selectReportCategory],
-  (dataviews, isReportLocation, reportCategory): UrlDataviewInstance[] => {
+  [
+    selectActiveActivityDataviews,
+    selectActiveVesselGroupDataviews,
+    selectIsVesselGroupReportLocation,
+    selectIsAnyReportLocation,
+    selectReportCategory,
+  ],
+  (
+    activityDataviews,
+    vesselGroupDataviews,
+    isVGRLocation,
+    isReportLocation,
+    reportCategory
+  ): UrlDataviewInstance[] => {
+    if (isVGRLocation) {
+      return vesselGroupDataviews.filter((d) => isVesselGroupActivityDataview(d.id))
+    }
     if (isReportLocation) {
-      return dataviews.filter((dataview) => {
+      return activityDataviews.filter((dataview) => {
         return getReportCategoryFromDataview(dataview) === reportCategory
       })
     }
-    return dataviews
+    return activityDataviews
   }
-)
-
-export const selectActiveDetectionsDataviews = createSelector(
-  [selectDetectionsDataviews],
-  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectDetectionsMergedDataviewId = createSelector(
@@ -192,15 +125,42 @@ export const selectActiveActivityAndDetectionsDataviews = createSelector(
   ]
 )
 
-export const selectActiveEnvironmentalDataviews = createSelector(
-  [selectEnvironmentalDataviews],
-  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
-)
-
 export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
   [selectActiveEnvironmentalDataviews],
   (dataviews) => {
     return dataviews.filter((dv) => dv.datasets?.every((ds) => ds.type === DatasetTypes.Fourwings))
+  }
+)
+
+export function isActivityReport(reportCategory: ReportCategory) {
+  return reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
+}
+
+export const selectActiveReportDataviews = createDeepEqualSelector(
+  [
+    selectReportCategory,
+    selectActiveReportActivityDataviews,
+    selectActiveDetectionsDataviews,
+    selectActiveHeatmapEnvironmentalDataviews,
+    selectIsVesselGroupReportLocation,
+  ],
+  (
+    reportCategory,
+    activityDataviews = [],
+    detectionsDataviews = [],
+    environmentalDataviews = [],
+    isVesselGroupReportLocation
+  ) => {
+    if (isVesselGroupReportLocation) {
+      return activityDataviews
+    }
+    if (isActivityReport(reportCategory)) {
+      return activityDataviews
+    }
+    if (reportCategory === ReportCategory.Detections) {
+      return detectionsDataviews
+    }
+    return environmentalDataviews
   }
 )
 
@@ -270,35 +230,6 @@ export const selectActiveTemporalgridDataviews: (
     return [...activityDataviews, ...detectionsDataviews, ...environmentalDataviews]
   }
 )
-
-const selectActiveEventsDataviews = createSelector([selectEventsDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
-)
-
-export const selectActiveActivityDataviewsByVisualisation = (
-  timebarVisualisation: TimebarVisualisations
-) =>
-  createSelector(
-    [
-      selectActiveReportActivityDataviews,
-      selectActiveDetectionsDataviews,
-      selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
-      selectTimebarSelectedEnvId,
-    ],
-    (activityDataviews, detectionsDataviews, environmentDataviews, timebarSelectedEnvId) => {
-      if (timebarVisualisation === TimebarVisualisations.HeatmapActivity) {
-        return activityDataviews
-      }
-      if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
-        return detectionsDataviews
-      }
-      const selectedEnvDataview =
-        timebarSelectedEnvId && environmentDataviews.find((d) => d.id === timebarSelectedEnvId)
-
-      if (selectedEnvDataview) return [selectedEnvDataview]
-      else if (environmentDataviews[0]) return [environmentDataviews[0]]
-    }
-  )
 
 export const selectHasReportLayersVisible = createSelector(
   [selectActiveHeatmapDowloadDataviews],

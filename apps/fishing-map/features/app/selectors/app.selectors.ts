@@ -6,14 +6,13 @@ import {
   getActiveActivityDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
-import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
-import { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
 
 const EMPTY_ARRAY: [] = []
 
 export const selectLatestAvailableDataDate = createSelector(
-  [selectActiveDataviewInstancesResolved],
+  [selectDataviewInstancesResolvedVisible],
   (dataviews) => {
     const activeDatasets = dataviews.flatMap((dataview) => {
       if (dataview.category === DataviewCategory.Context) {

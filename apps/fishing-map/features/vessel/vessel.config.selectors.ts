@@ -1,14 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { VesselProfileState, VesselProfileStateProperty } from 'types'
-import { selectQueryParam } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
+import { VesselProfileStateProperty, VesselProfileState } from './vessel.types'
 
 type VesselProfileProperty<P extends VesselProfileStateProperty> = Required<VesselProfileState>[P]
 export function selectVesselProfileStateProperty<P extends VesselProfileStateProperty>(
   property: P
 ) {
-  return createSelector([selectQueryParam(property)], (urlProperty): VesselProfileProperty<P> => {
+  return createSelector([selectLocationQuery], (locationQuery): VesselProfileProperty<P> => {
+    const urlProperty = locationQuery?.[property]
     if (urlProperty !== undefined) return urlProperty
     return DEFAULT_VESSEL_STATE[property] as VesselProfileProperty<P>
   })

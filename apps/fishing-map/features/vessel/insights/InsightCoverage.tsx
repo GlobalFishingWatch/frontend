@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { InsightCoverageResponse } from '@globalfishingwatch/api-types'
+import { InsightResponse } from '@globalfishingwatch/api-types'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
@@ -11,7 +11,7 @@ const InsightCoverage = ({
   isLoading,
   error,
 }: {
-  insightData: InsightCoverageResponse
+  insightData?: InsightResponse
   isLoading: boolean
   error: ParsedAPIError
 }) => {
@@ -31,7 +31,7 @@ const InsightCoverage = ({
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
       ) : error ? (
         <InsightError error={error} />
-      ) : insightData?.coverage.percentage ? (
+      ) : insightData?.coverage?.percentage ? (
         <div className={styles.coverageBar}>
           <div
             className={styles.coverageIndicator}

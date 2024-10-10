@@ -7,7 +7,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 export const selectDownloadActivityArea = createSelector(
   [selectDownloadActivityAreaKey, selectAreas],
   (areaKey, areas): DatasetAreaDetail => {
-    return areas[areaKey!?.datasetId]!.detail[areaKey!?.areaId]
+    return areas[areaKey!?.datasetId]?.detail?.[areaKey!?.areaId]
   }
 )
 

@@ -71,7 +71,7 @@ export type FourwingsPositionFeatureProperties = {
 
 export type FourwingsPointFeatureProperties = {
   id: number
-  count: number
+  value: number
   [key: string]: any
 }
 

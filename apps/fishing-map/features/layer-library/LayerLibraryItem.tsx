@@ -15,7 +15,7 @@ import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/data
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getHighlightedText } from 'features/layer-library/layer-library.utils'
 import { LibraryLayer } from 'data/layer-library'
-import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './LayerLibraryItem.module.css'
 
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
@@ -35,7 +35,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
     moreInfoLink,
     datasetsConfig,
   } = layer
-  const dataviews = useSelector(selectActiveDataviewInstancesResolved)
+  const dataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const datasetId = dataview.datasetsConfig?.[0].datasetId || ''
   const dataset = useSelector(selectDatasetById(datasetId))
   const { upsertDataviewInstance } = useDataviewInstancesConnect()

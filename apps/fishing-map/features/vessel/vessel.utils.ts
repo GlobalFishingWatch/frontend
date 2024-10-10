@@ -1,6 +1,7 @@
 import { uniq, uniqBy } from 'es-toolkit'
 import get from 'lodash/get'
 import {
+  API_LOGIN_REQUIRED,
   GearType,
   IdentityVessel,
   SelfReportedInfo,
@@ -17,6 +18,33 @@ import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.s
 import { TimeRange } from 'features/timebar/timebar.slice'
 
 type GetVesselIdentityParams = { identityId?: string; identitySource?: VesselIdentitySourceEnum }
+
+const getVesselIdentitiesBySource = (
+  vessel: IdentityVessel,
+  { identitySource } = {} as Pick<GetVesselIdentityParams, 'identitySource'>
+): VesselDataIdentity[] => {
+  if (!identitySource) {
+    return [] as VesselDataIdentity[]
+  }
+  return (vessel?.[identitySource] || []).map((identity) => {
+    const geartypes = getVesselCombinedSourceProperty(vessel, {
+      vesselId: identity.id,
+      property: 'geartypes',
+    })?.map((i) => i.name as GearType)
+    const shiptypes = getVesselCombinedSourceProperty(vessel, {
+      vesselId: identity.id,
+      property: 'shiptypes',
+    })?.map((i) => i.name as VesselType)
+    return {
+      ...identity,
+      identitySource,
+      geartypes,
+      shiptypes,
+      dataset: vessel.dataset,
+    } as VesselDataIdentity
+  })
+}
+
 export const getVesselIdentities = (
   vessel: IdentityVessel | IdentityVesselData,
   { identitySource } = {} as Pick<GetVesselIdentityParams, 'identitySource'>
@@ -24,18 +52,18 @@ export const getVesselIdentities = (
   if (!vessel) {
     return [] as VesselDataIdentity[]
   }
+
   const identities = (vessel as IdentityVesselData).identities?.length
     ? (vessel as IdentityVesselData).identities
     : [
-        ...((vessel as IdentityVessel).registryInfo || []).map((i) => ({
-          ...i,
+        ...getVesselIdentitiesBySource(vessel as IdentityVessel, {
           identitySource: VesselIdentitySourceEnum.Registry,
-        })),
-        ...((vessel as IdentityVessel).selfReportedInfo || []).map((i) => ({
-          ...i,
+        }),
+        ...getVesselIdentitiesBySource(vessel as IdentityVessel, {
           identitySource: VesselIdentitySourceEnum.SelfReported,
-        })),
+        }),
       ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
+
   return identitySource ? identities.filter((i) => i.identitySource === identitySource) : identities
 }
 
@@ -62,10 +90,10 @@ export function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVe
   const latestSelfReportesIdentity = getVesselIdentity(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
-  const identity = latestRegistryIdentity || latestSelfReportesIdentity
-  const identitySource = latestRegistryIdentity
-    ? VesselIdentitySourceEnum.Registry
-    : VesselIdentitySourceEnum.SelfReported
+  const identity = latestSelfReportesIdentity || latestRegistryIdentity
+  const identitySource = latestSelfReportesIdentity
+    ? VesselIdentitySourceEnum.SelfReported
+    : VesselIdentitySourceEnum.Registry
   const geartypes = getVesselProperty(vessel, 'geartypes', {
     identitySource,
     identityId: identity?.id,
@@ -300,4 +328,8 @@ export const getSidebarContentWidth = () => {
   return window.innerWidth <= DEFAULT_BREAKPOINT
     ? window.innerWidth - margins
     : window.innerWidth / 2 - margins
+}
+
+export const isFieldLoginRequired = (field: string) => {
+  return typeof field === 'string' && field.toUpperCase() === API_LOGIN_REQUIRED
 }

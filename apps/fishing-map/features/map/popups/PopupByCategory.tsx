@@ -6,10 +6,12 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   ContextPickingObject,
+  FOOTPRINT_ID,
   FourwingsComparisonMode,
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
   PolygonPickingObject,
+  POSITIONS_ID,
   RulerPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
@@ -19,7 +21,7 @@ import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
-import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import WorkspacePointsTooltipSection from 'features/map/popups/categories/WorkspacePointsLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
@@ -31,6 +33,9 @@ import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayer
 import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
+import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
+import { formatInfoField } from 'utils/info'
+import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
 import {
   SliceExtendedClusterPickingObject,
   SliceExtendedFourwingsPickingObject,
@@ -52,6 +57,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const mapViewport = useMapViewport()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
+  const allVesselGroups = useSelector(selectAllVisibleVesselGroups)
   const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
@@ -83,18 +89,18 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           case DataviewCategory.Activity:
           case DataviewCategory.Detections: {
             const positionFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
-              (feature) => feature.visualizationMode === 'positions'
+              (feature) => feature.visualizationMode === POSITIONS_ID
             )
             const uniqPositionFeatures = uniqBy(positionFeatures, (f) => f.properties.id)
             const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
-              (feature) => feature.visualizationMode !== 'positions'
+              (feature) => feature.visualizationMode?.includes('heatmap')
             )
             const TooltipComponent =
               featureCategory === DataviewCategory.Detections
                 ? DetectionsTooltipRow
                 : ActivityTooltipRow
             return [...uniqPositionFeatures, ...heatmapFeatures].map((feature, i) => {
-              if (feature.visualizationMode === 'positions') {
+              if (feature.visualizationMode === POSITIONS_ID) {
                 return (
                   <PositionsRow
                     key={`${feature.id}-${i}`}
@@ -124,6 +130,28 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     }}
                     showFeaturesDetails={type === 'click'}
                     activityType={dataview?.datasets?.[0]?.subcategory as DatasetSubCategory}
+                  />
+                )
+              })
+            })
+          }
+          case DataviewCategory.VesselGroups: {
+            const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
+              (feature) => feature.visualizationMode === FOOTPRINT_ID
+            )
+            return heatmapFeatures.map((feature, i) => {
+              return feature.sublayers?.map((sublayer, j) => {
+                const vesselGroup = dataviews.find((d) => d.id === sublayer.id)?.vesselGroup
+                return (
+                  <VesselGroupTooltipRow
+                    key={`${i}-${j}`}
+                    loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                    feature={{
+                      ...sublayer,
+                      category: feature.category as DataviewCategory,
+                      title: formatInfoField(vesselGroup?.name, 'name') as string,
+                    }}
+                    showFeaturesDetails={type === 'click'}
                   />
                 )
               })

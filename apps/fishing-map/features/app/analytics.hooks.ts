@@ -23,6 +23,7 @@ export enum TrackCategory {
   Tracks = 'tracks',
   User = 'user',
   VesselGroups = 'vessel_groups',
+  VesselGroupReport = 'vessel_group_report',
   VesselProfile = 'vessel_profile',
   WorkspaceManagement = 'workspace_management',
   MapInteraction = 'map_interaction',

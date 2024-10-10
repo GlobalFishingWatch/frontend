@@ -4,7 +4,12 @@ import {
   getDataviewSqlFiltersResolved,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { FourwingsClustersLayerProps, getUTCDateTime } from '@globalfishingwatch/deck-layers'
+import {
+  FOURWINGS_MAX_ZOOM,
+  FourwingsClusterEventType,
+  FourwingsClustersLayerProps,
+  getUTCDateTime,
+} from '@globalfishingwatch/deck-layers'
 import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { DataviewDatasetConfig, EndpointId } from '@globalfishingwatch/api-types'
 import { DeckResolverFunction, ResolverGlobalConfig } from './types'
@@ -72,6 +77,9 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
             extentEnd,
           }),
         },
+        ...(dataview.config?.filters?.['vessel-groups']
+          ? [{ id: 'vessel-groups', value: dataview.config?.filters?.['vessel-groups'] }]
+          : []),
       ],
       (p) => p.id
     ),
@@ -87,5 +95,8 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
     endTime,
     visible: dataview.config?.visible ?? true,
     tilesUrl: resolveEndpoint(dataset, datasetConfig, { absolute: true }) || '',
+    clusterMaxZoomLevels: dataview.config?.clusterMaxZoomLevels,
+    maxZoom: FOURWINGS_MAX_ZOOM,
+    eventType: dataset.subcategory as FourwingsClusterEventType,
   }
 }

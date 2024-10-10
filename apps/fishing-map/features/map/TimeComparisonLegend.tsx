@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { MapLegend, Tooltip, UILegend } from '@globalfishingwatch/ui-components'
 import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
-import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
+import { useTimeCompareTimeDescription } from 'features/reports/activity/reports-activity-timecomparison.hooks'
 import { selectActivityMergedDataviewId } from 'features/dataviews/selectors/dataviews.selectors'
 import styles from './MapLegends.module.css'
 

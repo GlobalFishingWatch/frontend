@@ -38,7 +38,7 @@ import {
   SliceInteractionEvent,
   fetchBQEventThunk,
   fetchClusterEventThunk,
-  fetchFishingActivityInteractionThunk,
+  fetchHeatmapInteractionThunk,
   fetchLegacyEncounterEventThunk,
   selectApiEventStatus,
   selectClickedEvent,
@@ -48,7 +48,11 @@ import {
 import { useSetMapCoordinates } from './map-viewport.hooks'
 import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 
-export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
+export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.VesselGroups,
+]
 
 const useMapClusterTilesLoading = () => {
   const eventsDataviews = useSelector(selectEventsDataviews)
@@ -139,7 +143,7 @@ export const useClickedEventConnect = () => {
       (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
     ) as FourwingsClusterPickingObject
 
-    if (clusterFeature?.properties?.count > 2) {
+    if (clusterFeature?.properties?.value > 1) {
       const { expansionZoom } = clusterFeature
       const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
       const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
@@ -163,7 +167,7 @@ export const useClickedEventConnect = () => {
     dispatch(setClickedEvent(event))
 
     // get temporal grid clicked features and order them by sublayerindex
-    const fishingActivityFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
+    const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
       (feature) => {
         if (
           feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
@@ -171,19 +175,21 @@ export const useClickedEventConnect = () => {
         ) {
           return false
         }
-        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)
+        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+          feature.category as DataviewCategory
+        )
       }
     )
 
-    if (fishingActivityFeatures?.length) {
+    if (heatmapFeatures?.length) {
       dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
-      const activityProperties = fishingActivityFeatures.map((feature) =>
+      const heatmapProperties = heatmapFeatures.map((feature) =>
         feature.category === 'detections' ? 'detections' : 'hours'
       )
-      const activityPromise = dispatch(
-        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
+      const heatmapPromise = dispatch(
+        fetchHeatmapInteractionThunk({ heatmapFeatures, heatmapProperties })
       )
-      setInteractionPromises((prev) => ({ ...prev, activity: activityPromise as any }))
+      setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise as any }))
     }
 
     const tileClusterFeature = event.features.find(
@@ -358,7 +364,7 @@ export const useMapCursor = () => {
       }
       if (hoverFeatures?.some(isTilesClusterLayer)) {
         const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some(
-          (f) => f.properties?.count > 2
+          (f) => f.properties?.value > 1
         )
         if (!isCluster) {
           return 'pointer'

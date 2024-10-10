@@ -1,7 +1,13 @@
-.modalContainer {
+.modal .modalContainer {
   height: 58rem;
   display: flex;
   flex-direction: column;
+}
+
+@media only screen and (width >= 720px) {
+  .modal .modalContainer {
+    height: 58rem;
+  }
 }
 
 .modalContent {
@@ -81,8 +87,7 @@
 
 .vesselsTableContainer {
   max-height: 340px;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: hidden scroll;
 }
 
 .vesselsTable {

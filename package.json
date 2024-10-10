@@ -137,7 +137,7 @@
     "react-virtualized-auto-sizer": "1.0.24",
     "react-virtuoso": "4.10.2",
     "react-window": "1.8.10",
-    "recharts": "2.12.7",
+    "recharts": "alpha",
     "recoil": "0.7.7",
     "recoil-sync": "0.2.0",
     "recoil-sync-next": "0.0.6",

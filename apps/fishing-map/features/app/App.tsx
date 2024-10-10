@@ -17,6 +17,7 @@ import {
   selectLocationType,
   selectWorkspaceId,
   selectIsMapDrawing,
+  selectIsVesselGroupReportLocation,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
@@ -32,7 +33,7 @@ import {
 import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectShowTimeComparison } from 'features/reports/reports.selectors'
+import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import {
   HOME,
@@ -45,6 +46,7 @@ import {
   WORKSPACE_REPORT,
   SEARCH,
   WORKSPACE_SEARCH,
+  VESSEL_GROUP_REPORT,
 } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
@@ -53,11 +55,11 @@ import AppModals from 'features/modals/Modals'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
-import { selectReportAreaBounds } from 'features/app/selectors/app.reports.selector'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
+import { selectReportAreaBounds } from 'features/reports/areas/area-reports.config.selectors'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
@@ -75,6 +77,7 @@ declare global {
 
 const Main = () => {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const locationType = useSelector(selectLocationType)
   const reportLocation = useSelector(selectIsAnyReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -86,6 +89,7 @@ const Main = () => {
   const isWorkspacesRouteWithTimebar =
     isWorkspaceLocation ||
     locationType === WORKSPACE_VESSEL ||
+    isVesselGroupReportLocation ||
     (reportLocation && !isTimeComparisonReport)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
   const showTimebar =
@@ -128,11 +132,12 @@ function App() {
   const i18n = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
-  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -161,6 +166,7 @@ function App() {
   // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
   const locationNeedsFetch =
     locationType === REPORT ||
+    locationType === VESSEL_GROUP_REPORT ||
     (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
 
@@ -172,7 +178,7 @@ function App() {
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
-        if (!isWorkspacePasswordProtected(workspace)) {
+        if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace)) {
           fitWorkspaceBounds(workspace)
         }
       }
@@ -239,7 +245,7 @@ function App() {
     asideWidth = isReportLocation ? '45%' : '34rem'
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
-  } else if (workspaceLocation) {
+  } else if (isWorkspaceLocation) {
     asideWidth = '39rem'
   }
 
@@ -259,7 +265,7 @@ function App() {
       <ErrorBoundary>
         <SplitView
           isOpen={sidebarOpen && !isMapDrawing}
-          showToggle={workspaceLocation || vesselLocation}
+          showToggle={isWorkspaceLocation || vesselLocation}
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}

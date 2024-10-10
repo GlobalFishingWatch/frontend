@@ -5,9 +5,18 @@ import { IconButton, IconButtonProps } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
-type UserLoggedIconButton = IconButtonProps & { loginTooltip?: string }
+type UserLoggedIconButton = IconButtonProps & {
+  loginTooltip?: string
+  onAddToVesselGroup?: (vesselGroupId: string) => void
+  onToggleClick?: () => void
+}
 
-const UserLoggedIconButton = ({ loginTooltip, ...props }: UserLoggedIconButton) => {
+const UserLoggedIconButton = ({
+  loginTooltip,
+  onAddToVesselGroup,
+  onToggleClick,
+  ...props
+}: UserLoggedIconButton) => {
   const { t } = useTranslation()
   const [isLoginHover, setIsLoginHover] = useState(false)
   const guestUser = useSelector(selectIsGuestUser)

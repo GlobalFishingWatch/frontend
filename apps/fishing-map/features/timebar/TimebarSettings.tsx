@@ -10,7 +10,6 @@ import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveReportActivityDataviews,
-  selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -21,14 +20,18 @@ import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-dep
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
+import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { formatInfoField } from 'utils/info'
 import {
-  selectActiveTrackDataviews,
+  selectActiveDetectionsDataviews,
+  selectActiveVesselGroupDataviews,
   selectActiveVesselsDataviews,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   useTimebarVisualisationConnect,
   useTimebarGraphConnect,
   useTimebarEnvironmentConnect,
+  useTimebarVesselGroupConnect,
 } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
@@ -67,6 +70,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
     selectActiveHeatmapEnvironmentalDataviewsWithoutStatic
   )
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const vesselIds = activeTrackDataviews.map((v) => v.id)
   const trackLayers = useGetDeckLayers<VesselLayer | UserTracksLayer>(vesselIds)
@@ -78,6 +82,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
+  const { timebarSelectedVGId, dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews!?.length <= 2
 
@@ -116,6 +121,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
       action: 'select_timebar_settings',
       label: `${TimebarVisualisations.Environment} - ${environmentalDataviewId}`,
     })
+  }
+  const setVesselGroupActive = (vesselGroupDataviewId: string) => {
+    dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup)
+    dispatchTimebarSelectedVGId(vesselGroupDataviewId)
   }
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
@@ -204,6 +213,26 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   tooltip={detectionsTooltipLabel}
                   onClick={setHeatmapDetectionsActive}
                 />
+                {activeVesselGroupDataviews.map((vgDataview) => {
+                  return (
+                    <Radio
+                      key={vgDataview.id}
+                      label={
+                        <Icon
+                          SvgIcon={AreaIcon}
+                          label={formatInfoField(vgDataview.vesselGroup?.name, 'name') as string}
+                          color={vgDataview?.config?.color || COLOR_PRIMARY_BLUE}
+                        />
+                      }
+                      active={
+                        timebarVisualisation === TimebarVisualisations.VesselGroup &&
+                        timebarSelectedVGId === vgDataview.id
+                      }
+                      tooltip={activityTooltipLabel}
+                      onClick={() => setVesselGroupActive(vgDataview.id)}
+                    />
+                  )
+                })}
               </Fragment>
             )}
             <Radio

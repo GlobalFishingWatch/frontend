@@ -6,7 +6,6 @@ import {
   getBivariateRampLegend,
   ColorRampId,
   POSITIONS_ID,
-  HEATMAP_HIGH_RES_ID,
   rgbaToString,
   FourwingsColorObject,
 } from '@globalfishingwatch/deck-layers'
@@ -35,9 +34,7 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
     if ((label === 'hours' || label === 'detections') && visualizationMode !== POSITIONS_ID) {
       const gridZoom = Math.round(
         Math.min(
-          visualizationMode === HEATMAP_HIGH_RES_ID
-            ? layer.instance.context?.viewport?.zoom + 1
-            : layer.instance.context?.viewport?.zoom,
+          layer.instance.context?.viewport?.zoom + layer.instance.getZoomOffset(),
           HEATMAP_DEFAULT_MAX_ZOOM
         )
       )

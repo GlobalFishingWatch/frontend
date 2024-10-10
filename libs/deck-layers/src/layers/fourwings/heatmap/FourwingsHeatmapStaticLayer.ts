@@ -105,7 +105,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     if (!currentZoomData.length) {
       return this.getColorDomain()
     }
-    const values = currentZoomData.flatMap((d) => d.properties?.[HEATMAP_STATIC_PROPERTY_ID] || [])
+    const values = currentZoomData.flatMap((d) => d?.properties?.[HEATMAP_STATIC_PROPERTY_ID] || [])
     const allValues =
       values.length > MAX_RAMP_VALUES
         ? values.filter((d, i) => filterCells(d, i, minVisibleValue, maxVisibleValue))

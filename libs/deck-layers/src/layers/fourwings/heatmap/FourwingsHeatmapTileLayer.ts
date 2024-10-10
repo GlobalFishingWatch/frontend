@@ -678,6 +678,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   renderLayers(): Layer<{}> | LayersList {
     const { zoom } = this.context.viewport
+    if (!zoom) {
+      return []
+    }
     const { resolution, comparisonMode } = this.props
     const { colorDomain, colorRanges, tilesCache, scales } = this.state
     const cacheKey = this._getTileDataCacheKey()

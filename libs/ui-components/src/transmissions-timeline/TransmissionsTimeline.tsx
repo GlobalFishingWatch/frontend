@@ -35,6 +35,11 @@ export function TransmissionsTimeline({
 
   useLayoutEffect(() => {
     setTimelineWidth(transmissionsRef?.current?.offsetWidth || 0)
+    if (!transmissionsRef.current) return
+    const ro = new ResizeObserver(() => {
+      setTimelineWidth(transmissionsRef?.current?.offsetWidth || 0)
+    })
+    ro.observe(transmissionsRef.current)
   }, [])
 
   return (

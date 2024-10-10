@@ -11,7 +11,7 @@ import {
 import {
   selectReportPreviewBufferFeature,
   selectReportBufferFeature,
-} from 'features/reports/reports.selectors'
+} from 'features/reports/areas/area-reports.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -24,36 +24,33 @@ import {
 
 const EMPTY_ARRAY: [] = []
 
-const selectWorkspacesListFeatures = createSelector(
-  [selectCurrentWorkspacesList],
-  (workspaces) => {
-    if (!workspaces?.length) return []
-    return workspaces.flatMap((workspace) => {
-      if (!workspace.viewport) {
-        return EMPTY_ARRAY
-      }
+const selectWorkspacesListFeatures = createSelector([selectCurrentWorkspacesList], (workspaces) => {
+  if (!workspaces?.length) return []
+  return workspaces.flatMap((workspace) => {
+    if (!workspace.viewport) {
+      return EMPTY_ARRAY
+    }
 
-      const { latitude, longitude, zoom } = workspace.viewport
-      return {
-        type: 'Feature',
-        properties: {
-          id: workspace.id,
-          label: workspace.name,
-          type: WORKSPACES_POINTS_TYPE,
-          category: workspace.category || WorkspaceCategory.FishingActivity,
-          viewAccess: workspace.viewAccess,
-          latitude,
-          longitude,
-          zoom,
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [longitude, latitude],
-        },
-      }
-    })
-  }
-)
+    const { latitude, longitude, zoom } = workspace.viewport
+    return {
+      type: 'Feature',
+      properties: {
+        id: workspace.id,
+        label: workspace.name,
+        type: WORKSPACES_POINTS_TYPE,
+        category: workspace.category || WorkspaceCategory.FishingActivity,
+        viewAccess: workspace.viewAccess,
+        latitude,
+        longitude,
+        zoom,
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      },
+    }
+  })
+})
 export const selectWorkspacesListDataview = createSelector(
   [selectWorkspacesListFeatures],
   (workspaceListFeatures) => {

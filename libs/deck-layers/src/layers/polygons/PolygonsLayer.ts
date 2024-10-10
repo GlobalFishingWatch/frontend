@@ -2,6 +2,7 @@ import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 import { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
+import { PREVIEW_BUFFER_GENERATOR_ID } from '../layers.config'
 import {
   hexToDeckColor,
   LayerGroup,
@@ -82,11 +83,11 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
         data,
         lineWidthUnits: 'pixels',
         lineWidthMinPixels: 0,
-        lineWidthMaxPixels: 1,
+        lineWidthMaxPixels: 2,
         filled: false,
         getPolygonOffset: (params) =>
           getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-        getLineWidth: 1,
+        getLineWidth: id === PREVIEW_BUFFER_GENERATOR_ID ? 2 : 1,
         getLineColor: hexToDeckColor(color),
       }),
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({

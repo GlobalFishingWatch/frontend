@@ -133,6 +133,10 @@
   cursor: pointer;
 }
 
+.disabled {
+  cursor: not-allowed;
+}
+
 .drag {
   opacity: 1;
   transition: opacity 100ms linear;

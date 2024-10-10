@@ -17,7 +17,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,

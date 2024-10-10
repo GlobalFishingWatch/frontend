@@ -8,12 +8,12 @@ import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/Activi
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
-import { VesselProfileActivityMode } from 'types'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../vessel-events.hooks'
 import { useVesselProfileLayer } from '../vessel-bounds.hooks'
+import { VesselProfileActivityMode } from '../vessel.types'
 import styles from './VesselActivity.module.css'
 
 const VesselActivity = () => {

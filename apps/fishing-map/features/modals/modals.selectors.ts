@@ -10,7 +10,7 @@ import {
   selectLayerLibraryModalOpen,
   selectScreenshotModalOpen,
 } from 'features/modals/modals.slice'
-import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
+import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { WelcomeContentKey } from 'features/welcome/welcome.content'
 import {
   selectLocationCategory,

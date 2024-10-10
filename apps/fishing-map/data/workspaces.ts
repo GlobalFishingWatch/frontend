@@ -49,6 +49,8 @@ export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas'
 // Workspaces dataviews
 export const FISHING_DATAVIEW_SLUG = 'apparent-fishing-effort-v-3'
 export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events-v-3'
+export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG = 'loitering-cluster-events-v-3'
+export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG = 'port-visit-cluster-events-v-3'
 export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-3'
 export const SAR_DATAVIEW_SLUG = 'sar-v-3'
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-3'
@@ -74,6 +76,14 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
+]
+
+export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
+  'public-global-presence:v3.0',
+  'public-chile-presence:v20211126',
+  'public-panama-presence:v20211126',
+  'public-norway-presence:v20220112',
+  'public-png-presence:v20230210',
 ]
 
 const PRESENCE_DATAVIEWS = [

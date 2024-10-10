@@ -273,6 +273,10 @@
   margin-left: var(--space-S);
 }
 
+.inlineBtn {
+  transform: translateY(0.4rem);
+}
+
 .secondary {
   opacity: var(--opacity-secondary);
 }

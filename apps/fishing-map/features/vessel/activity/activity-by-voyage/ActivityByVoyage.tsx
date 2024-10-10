@@ -29,6 +29,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
+import VesselEvent from 'features/vessel/activity/event/Event'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
@@ -40,11 +41,11 @@ const ActivityByVoyage = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const visibleEvents = useSelector(selectVisibleEvents)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
-  const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
+  const [selectedEvent, setSelectedEvent] = useState<VesselEvent>()
   const [expandedVoyages, toggleExpandedVoyage] = useExpandedVoyages()
   const fitBounds = useMapFitBounds()
 
-  const onInfoClick = useCallback((event: ActivityEvent) => {
+  const onInfoClick = useCallback((event: VesselEvent) => {
     setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
   }, [])
 
@@ -85,7 +86,7 @@ const ActivityByVoyage = () => {
   )
 
   const onEventMapHover = useCallback(
-    (event?: ActivityEvent) => {
+    (event?: VesselEvent) => {
       if (event?.id) {
         dispatch(setHighlightedEvents([event.id]))
       } else {
@@ -96,7 +97,7 @@ const ActivityByVoyage = () => {
   )
 
   const selectEventOnMap = useCallback(
-    (event: ActivityEvent) => {
+    (event: VesselEvent) => {
       if (viewport?.zoom) {
         const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
         setMapCoordinates({
@@ -170,7 +171,7 @@ const ActivityByVoyage = () => {
         increaseViewportBy={EVENT_HEIGHT * 4}
         customScrollParent={getScrollElement()}
         groupContent={(index) => {
-          const events = voyages[groups[index]]
+          const events = voyages[groups[index] as any]
           if (!events) {
             return null
           }

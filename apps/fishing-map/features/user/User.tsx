@@ -10,7 +10,7 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { UserTab } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserTab } from 'routes/routes.selectors'
@@ -98,7 +98,7 @@ function User() {
 
   useEffect(() => {
     if (hasUserGroupsPermissions) {
-      dispatch(fetchUserVesselGroupsThunk())
+      dispatch(fetchVesselGroupsThunk())
     }
   }, [dispatch, hasUserGroupsPermissions])
 

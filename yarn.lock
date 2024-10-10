@@ -2897,7 +2897,7 @@ __metadata:
     react-virtualized-auto-sizer: "npm:1.0.24"
     react-virtuoso: "npm:4.10.2"
     react-window: "npm:1.8.10"
-    recharts: "npm:2.12.7"
+    recharts: "npm:alpha"
     recoil: "npm:0.7.7"
     recoil-sync: "npm:0.2.0"
     recoil-sync-next: "npm:0.0.6"
@@ -24443,7 +24443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.10.2, react-is@npm:^16.13.1, react-is@npm:^16.6.0, react-is@npm:^16.7.0":
+"react-is@npm:^16.13.1, react-is@npm:^16.6.0, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: 10/5aa564a1cde7d391ac980bedee21202fc90bdea3b399952117f54fb71a932af1e5902020144fb354b4690b2414a0c7aafe798eb617b76a3d441d956db7726fdf
@@ -24796,14 +24796,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recharts@npm:2.12.7":
-  version: 2.12.7
-  resolution: "recharts@npm:2.12.7"
+"recharts@npm:alpha":
+  version: 2.13.0-alpha.5
+  resolution: "recharts@npm:2.13.0-alpha.5"
   dependencies:
     clsx: "npm:^2.0.0"
     eventemitter3: "npm:^4.0.1"
     lodash: "npm:^4.17.21"
-    react-is: "npm:^16.10.2"
+    react-is: "npm:^18.3.1"
     react-smooth: "npm:^4.0.0"
     recharts-scale: "npm:^0.4.4"
     tiny-invariant: "npm:^1.3.1"
@@ -24811,7 +24811,7 @@ __metadata:
   peerDependencies:
     react: ^16.0.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
-  checksum: 10/dd2806978d025abf37ba6eda36fad9361968257c5224286f2881a9f79b18b6045bab520c9c44fd1dc5bb7e35e7ab51d5cde1669e44cb32610e7cb9c49fdd490f
+  checksum: 10/2c634f262798c0ba8e9a7121018075b4c4edc662fc08d78e418865e6ac04435f4115ca7e1e75fc2e7408376aab6e6b5901a677e854b6dd3215d9db6b8ac9be02
   languageName: node
   linkType: hard
 

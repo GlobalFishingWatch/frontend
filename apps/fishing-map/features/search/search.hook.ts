@@ -7,7 +7,7 @@ import {
   selectSearchOption,
   selectSearchQuery,
 } from 'features/search/search.config.selectors'
-import { VesselSearchState } from 'types'
+import { VesselSearchState } from 'features/search/search.types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'

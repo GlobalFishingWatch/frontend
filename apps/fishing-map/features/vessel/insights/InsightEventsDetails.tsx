@@ -1,8 +1,8 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import Event from '../activity/event/Event'
+import VesselEvent from '../activity/event/Event'
 import styles from './Insights.module.css'
 
 const InsightEventDetails = ({
@@ -10,7 +10,7 @@ const InsightEventDetails = ({
   toggleVisibility,
   visible,
 }: {
-  events: ActivityEvent[]
+  events: VesselEvent[]
   toggleVisibility: () => void
   visible: boolean
 }) => {

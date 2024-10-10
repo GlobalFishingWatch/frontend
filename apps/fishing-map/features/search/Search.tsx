@@ -41,7 +41,7 @@ import {
   isBasicSearchAllowed,
   isAdvancedSearchAllowed,
 } from 'features/search/search.selectors'
-import { VesselSearchState } from 'types'
+import { VesselSearchState } from 'features/search/search.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Search.module.css'
 

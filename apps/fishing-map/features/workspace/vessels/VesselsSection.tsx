@@ -4,6 +4,8 @@ import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
 import { IconButton, Switch } from '@globalfishingwatch/ui-components'
+import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
@@ -13,19 +15,28 @@ import { WORKSPACE_SEARCH } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  selectActiveVesselsDataviews,
-  selectVesselsDataviews,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   hasTracksWithNoData,
   useTimebarVesselTracksData,
 } from 'features/timebar/timebar-vessel.hooks'
-import { getVesselLabel } from 'utils/info'
+import { getVesselShipNameLabel } from 'utils/info'
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
+import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
@@ -40,17 +51,20 @@ const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: st
 
 function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { dispatchLocation } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
   const activeDataviews = useSelector(selectActiveVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
+  const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
+  const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
   const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const searchAllowed = useSelector(isBasicSearchAllowed)
-  const someVesselsVisible = dataviews.some((d) => d.config?.visible)
+  const someVesselsVisible = activeDataviews.length > 0
   const readOnly = useSelector(selectReadOnly)
   const resources = useSelector(selectResources)
   const { dispatchQueryParams } = useLocationConnect()
@@ -71,14 +85,34 @@ function VesselsSection(): React.ReactElement {
     deleteDataviewInstance(dataviews.map((d) => d.id))
   }, [dataviews, deleteDataviewInstance])
 
+  const onAddToVesselGroupClick = useCallback(
+    (vesselGroupId?: string) => {
+      dispatch(setVesselGroupConfirmationMode('saveAndDeleteVessels'))
+      if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
+        const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
+        const dataviewInstance = !isVesselGroupInWorkspace
+          ? getVesselGroupDataviewInstance(vesselGroupId)
+          : undefined
+        const dataviewsToDelete = dataviews.flatMap((d) =>
+          d.config?.visible ? { id: d.id, deleted: true } : []
+        )
+        upsertDataviewInstance([
+          ...dataviewsToDelete,
+          ...(dataviewInstance ? [dataviewInstance] : []),
+        ])
+      }
+    },
+    [dataviews, dispatch, upsertDataviewInstance, vesselGroupsInWorkspace]
+  )
+
   const onSetSortOrderClick = useCallback(() => {
     sortOrder.current = sortOrder.current === 'ASC' ? 'DESC' : 'ASC'
     const dataviewsSortedIds = dataviews
       .sort((a, b) => {
         const aResource = getVesselResourceByDataviewId(resources, a.id)
         const bResource = getVesselResourceByDataviewId(resources, b.id)
-        const aVesselLabel = aResource ? getVesselLabel(aResource.data) : ''
-        const bVesselLabel = bResource ? getVesselLabel(bResource.data) : ''
+        const aVesselLabel = aResource ? getVesselShipNameLabel(aResource.data) : ''
+        const bVesselLabel = bResource ? getVesselShipNameLabel(bResource.data) : ''
         if (!aVesselLabel || !bVesselLabel) return 0
         if (sortOrder.current === 'ASC') {
           return aVesselLabel < bVesselLabel ? -1 : 1
@@ -103,6 +137,24 @@ function VesselsSection(): React.ReactElement {
     })
   }, [dispatchLocation, workspace])
 
+  const vesselResources = activeDataviews.flatMap((dataview) => {
+    const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+    return resources[infoUrl] || []
+  })
+  const isVesselGroupUpdating = vesselGroupsStatus === AsyncReducerStatus.LoadingUpdate
+  const areVesselsLoading = vesselResources.some(
+    (resource) => resource.status === ResourceStatus.Loading
+  )
+  const vesselsToVesselGroup = areVesselsLoading
+    ? []
+    : vesselResources.map(({ data }) => {
+        return {
+          id: getVesselId(data),
+          identities: getVesselIdentities(data),
+          datasetId: data.dataset,
+        } as IdentityVesselData
+      })
+
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={cx('print-hidden', styles.header)}>
@@ -120,6 +172,24 @@ function VesselsSection(): React.ReactElement {
         </h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
+            {activeDataviews.length > 0 && (
+              <VesselGroupAddButton
+                vessels={vesselsToVesselGroup}
+                onAddToVesselGroup={onAddToVesselGroupClick}
+              >
+                <UserLoggedIconButton
+                  icon={'add-to-vessel-group'}
+                  loading={areVesselsLoading || isVesselGroupUpdating}
+                  disabled={areVesselsLoading || isVesselGroupUpdating}
+                  size="medium"
+                  tooltip={t(
+                    'vesselGroup.addVisibleVessels',
+                    'Add visible vessels to vessel group'
+                  )}
+                  tooltipPlacement="top"
+                />
+              </VesselGroupAddButton>
+            )}
             {dataviews.length > 1 && (
               <IconButton
                 icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}

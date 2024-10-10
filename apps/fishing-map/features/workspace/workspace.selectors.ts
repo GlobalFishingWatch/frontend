@@ -3,7 +3,7 @@ import type { RootState } from 'reducers'
 import { EventTypes, Workspace, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE, PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
-import { selectIsWorkspaceLocation, selectQueryParam } from 'routes/routes.selectors'
+import { selectIsWorkspaceLocation, selectLocationQuery } from 'routes/routes.selectors'
 import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE,
   DEFAULT_WORKSPACE_CATEGORY,
@@ -100,8 +100,9 @@ const USER_SETTINGS_FALLBACKS: Record<string, string> = {
 
 export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(property: P) {
   return createSelector(
-    [selectQueryParam(property), selectWorkspaceState, selectUserSettings],
-    (urlProperty, workspaceState, userSettings): WorkspaceProperty<P> => {
+    [selectLocationQuery, selectWorkspaceState, selectUserSettings],
+    (locationQuery, workspaceState, userSettings): WorkspaceProperty<P> => {
+      const urlProperty = locationQuery?.[property]
       if (urlProperty !== undefined) return urlProperty
       if (workspaceState[property]) return workspaceState[property] as WorkspaceProperty<P>
       const userSettingsProperty =

@@ -23,8 +23,8 @@ import VesselLink from 'features/vessel/VesselLink'
 import {
   formatInfoField,
   EMPTY_FIELD_PLACEHOLDER,
-  getVesselGearType,
-  getVesselShipType,
+  getVesselGearTypeLabel,
+  getVesselShipTypeLabel,
   getVesselOtherNamesLabel,
 } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -89,7 +89,7 @@ function SearchBasicResult({
     positionsCounter,
   } = vesselData
   const shiptypes = getVesselProperty(vessel, 'shiptypes')
-  const geartypes = getVesselGearType({ geartypes: getVesselProperty(vessel, 'geartypes') })
+  const geartypes = getVesselGearTypeLabel({ geartypes: getVesselProperty(vessel, 'geartypes') })
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
@@ -244,7 +244,7 @@ function SearchBasicResult({
             </div>
             <div className={styles.property}>
               <label>{t('vessel.vesselType', 'Vessel Type')}</label>
-              <span>{getVesselShipType({ shiptypes }) || EMPTY_FIELD_PLACEHOLDER}</span>
+              <span>{getVesselShipTypeLabel({ shiptypes }) || EMPTY_FIELD_PLACEHOLDER}</span>
             </div>
             <div className={styles.property}>
               <label>{t('vessel.geartype', 'Gear Type')}</label>
