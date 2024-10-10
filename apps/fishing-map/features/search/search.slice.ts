@@ -146,6 +146,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       if (url) {
         const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(url, {
           signal,
+          cache: 'no-cache',
         })
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
         const uniqSearchResults = gfwUser
