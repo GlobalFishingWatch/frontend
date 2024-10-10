@@ -13,6 +13,7 @@ export type VesselGroupReport = Omit<VesselGroup, 'vessels'> & {
 
 interface ReportState {
   status: AsyncReducerStatus
+  statusId: string
   error: AsyncError | null
   vesselGroup: VesselGroupReport | null
 }
@@ -21,6 +22,7 @@ type VesselGroupReportSliceState = { vesselGroupReport: ReportState }
 
 const initialState: ReportState = {
   status: AsyncReducerStatus.Idle,
+  statusId: '',
   error: null,
   vesselGroup: null,
 }
@@ -53,12 +55,9 @@ export const fetchVesselGroupReportThunk = createAsyncThunk(
   },
   {
     condition: (params: FetchVesselGroupReportThunkParams, { getState }) => {
-      const { status, vesselGroup } = (getState() as VesselGroupReportSliceState)?.vesselGroupReport
-      if (
-        vesselGroup?.id === params.vesselGroupId &&
-        (status === AsyncReducerStatus.Loading || status === AsyncReducerStatus.Finished)
-      ) {
-        return false
+      const { status, statusId } = (getState() as VesselGroupReportSliceState)?.vesselGroupReport
+      if (status === AsyncReducerStatus.Loading || status === AsyncReducerStatus.Finished) {
+        return statusId !== params.vesselGroupId
       }
       return true
     },
@@ -76,8 +75,9 @@ const vesselGroupReportSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchVesselGroupReportThunk.pending, (state) => {
+    builder.addCase(fetchVesselGroupReportThunk.pending, (state, action) => {
       state.status = AsyncReducerStatus.Loading
+      state.statusId = action.meta.arg.vesselGroupId
     })
     builder.addCase(fetchVesselGroupReportThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
