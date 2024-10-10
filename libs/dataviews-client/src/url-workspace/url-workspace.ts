@@ -52,6 +52,8 @@ const TOKEN_PREFIX = '~'
 export const TOKEN_REGEX = /~(\d+)/
 
 const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
+  start: (start) => decodeURIComponent(start),
+  end: (end) => decodeURIComponent(end),
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
