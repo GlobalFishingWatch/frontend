@@ -26,10 +26,8 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
   const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
 
   const toggleVesselGroupsOpen = useCallback(() => {
-    if (vesselGroupOptions?.length) {
-      setVesselGroupsOpen(!vesselGroupsOpen)
-    }
-  }, [vesselGroupOptions?.length, vesselGroupsOpen])
+    setVesselGroupsOpen(!vesselGroupsOpen)
+  }, [vesselGroupsOpen])
 
   const handleVesselGroupClick = useCallback(
     (vesselGroupId: string) => {
