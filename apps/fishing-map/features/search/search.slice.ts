@@ -99,10 +99,11 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           const filter = (filters as any)[cleanField]
           if (filter && isInFieldsAllowed) {
             let value = filter
-            // Supports searching by multiple values separated by comma
-            if (ADVANCED_SEARCH_FIELDS.includes(field as any) && value?.includes(',')) {
+            // Supports searching by multiple values separated by comma and semicolon
+            const regex = /[,;]/
+            if (ADVANCED_SEARCH_FIELDS.includes(field as any) && regex.test(value)) {
               value = (value as string)
-                .split(',')
+                .split(regex)
                 .map((v) => v.trim())
                 .filter(Boolean)
             }
