@@ -64,6 +64,11 @@
     "moreInfoLink": "crwdns82552:0crwdne82552:0",
     "name": "crwdns82548:0crwdne82548:0"
   },
+  "loitering": {
+    "description": "crwdns83784:0crwdne83784:0",
+    "moreInfoLink": "crwdns83786:0crwdne83786:0",
+    "name": "crwdns83788:0crwdne83788:0"
+  },
   "offshore-fixed-infrastructure": {
     "description": "crwdns83378:0crwdne83378:0",
     "moreInfoLink": "crwdns83380:0crwdne83380:0",
@@ -83,6 +88,11 @@
     "description": "crwdns82568:0crwdne82568:0",
     "moreInfoLink": "crwdns82570:0crwdne82570:0",
     "name": "crwdns82566:0crwdne82566:0"
+  },
+  "port-visits": {
+    "description": "crwdns83790:0crwdne83790:0",
+    "moreInfoLink": "crwdns83792:0crwdne83792:0",
+    "name": "crwdns83794:0crwdne83794:0"
   },
   "presence": {
     "description": "crwdns82574:0crwdne82574:0",
