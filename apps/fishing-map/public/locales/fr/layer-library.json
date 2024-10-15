@@ -64,6 +64,11 @@
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentration d'azote (NO3)"
   },
+  "loitering": {
+    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "moreInfoLink": "",
+    "name": "Loitering events (AIS)"
+  },
   "offshore-fixed-infrastructure": {
     "description": "« Infrastructure fixe offshore » est un jeu de données mondial qui utilise l’IA et l’apprentissage automatique pour détecter et classer les structures dans les océans du monde. Différentes classifications (pétrole, éolien et inconnu) sont fournies, associées à des niveaux de confiance (élevé, moyen ou faible) reflétant notre certitude dans la classification attribuée. Les détections peuvent être filtrées et colorées sur la carte en utilisant à la fois la classification et le niveau de confiance. Les données sont mises à jour mensuellement et de nouvelles détections classifiées sont ajoutées au début de chaque mois. Les changements peuvent être facilement visualisés à l’aide de la barre temporelle, et l’industrialisation rapide des océans du monde devient évidente.",
     "moreInfoLink": "",
@@ -83,6 +88,11 @@
     "description": "Le phosphate est un nutriment majeur pour les réseaux trophiques marins et la productivité des océans, mais des concentrations élevées peuvent également être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris le phosphate, affichés à l'échelle de l'océan mondial avec une résolution horizontale de 1/4 degrés. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentration de phosphate (PO4)"
+  },
+  "port-visits": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",
+    "moreInfoLink": "",
+    "name": "Port Visits (AIS)"
   },
   "presence": {
     "description": "Le calque de présence analyse les données du système d’identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés. La présence est déterminée en affichant les positions transmises par l'AIS du navire sous forme de carte thermique. ",
