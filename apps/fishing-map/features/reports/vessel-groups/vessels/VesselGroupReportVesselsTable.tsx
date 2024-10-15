@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
@@ -45,10 +46,6 @@ export default function VesselGroupReportVesselsTable() {
     dispatchQueryParams({ vGRVesselFilter, vGRVesselPage: 0 })
   }
 
-  const onPinClick = () => {
-    dispatchQueryParams({ viewOnlyVesselGroup: false })
-  }
-
   const handleSortClick = (
     property: VGRVesselsOrderProperty,
     direction: VGRVesselsOrderDirection
@@ -57,6 +54,16 @@ export default function VesselGroupReportVesselsTable() {
       vGRVesselsOrderProperty: property,
       vGRVesselsOrderDirection: direction,
     })
+  }
+
+  const onPinClick = ({
+    vesselInWorkspace,
+  }: {
+    vesselInWorkspace?: UrlDataviewInstance | null | undefined
+  }) => {
+    if (!vesselInWorkspace) {
+      dispatchQueryParams({ viewOnlyVesselGroup: false })
+    }
   }
 
   return (
