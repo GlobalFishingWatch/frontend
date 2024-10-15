@@ -18,6 +18,7 @@ const VesselIdentityCombinedSourceField = ({
       <VesselIdentityField value={formatInfoField(identity[property], property) as string} />
     ) : null
   }
+
   return (
     <ul>
       {[...combinedSource]
