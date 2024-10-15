@@ -66,13 +66,15 @@ export const mergeVesselGroupVesselIdentities = (
   vesselGroupVessels: VesselGroupVessel[],
   vesselIdentities: IdentityVessel[]
 ): VesselGroupVesselIdentity[] => {
+  const vesselIdentityIds = vesselIdentities.map((vesselIdentity) =>
+    getVesselIdentities(vesselIdentity, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })?.map((v) => v.id)
+  )
   return vesselGroupVessels
     .flatMap((v) => {
-      const vesselIdentity = vesselIdentities.find((vesselIdentity) => {
-        const selftReportedIds = getVesselIdentities(vesselIdentity, {
-          identitySource: VesselIdentitySourceEnum.SelfReported,
-        })?.map((v) => v.id)
-        return selftReportedIds?.includes(v.vesselId)
+      const vesselIdentity = vesselIdentities.find((_, index) => {
+        return vesselIdentityIds[index]?.includes(v.vesselId)
       })
       if (!vesselIdentity) {
         return []
