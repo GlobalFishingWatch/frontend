@@ -94,11 +94,13 @@ export const selectDataviewInstancesResolved = createSelector(
     ) {
       return []
     }
+    const vesselGroups = []
 
     const dataviewInstancesResolved = resolveDataviews(
       dataviewInstances as UrlDataviewInstance[],
       dataviews,
-      datasets
+      datasets,
+      vesselGroups
     )
 
     return dataviewInstancesResolved
