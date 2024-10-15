@@ -11,7 +11,7 @@ import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.ut
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
   fetchEditorDataviewsThunk,
   selectEditorDataviews,

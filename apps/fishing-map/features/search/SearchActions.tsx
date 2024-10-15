@@ -10,12 +10,11 @@ import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import VesselGroupAddButton, {
+  VesselGroupAddActionButton,
+} from 'features/vessel-groups/VesselGroupAddButton'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  setVesselGroupConfirmationMode,
-  setVesselGroupCurrentDataviewIds,
-} from 'features/vessel-groups/vessel-groups.slice'
+import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
@@ -73,10 +72,7 @@ function SearchActions() {
 
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-    if (dataviewIds?.length) {
-      dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-    }
+    dispatch(setVesselGroupConfirmationMode('saveAndSeeInWorkspace'))
     trackEvent({
       category: TrackCategory.SearchVessel,
       action: 'Click add to vessel group',
@@ -88,12 +84,9 @@ function SearchActions() {
 
   return (
     <Fragment>
-      <VesselGroupAddButton
-        vessels={vesselsSelected}
-        onAddToVesselGroup={onAddToVesselGroup}
-        showCount={false}
-        buttonClassName={cx(styles.footerAction, styles.vesselGroupButton)}
-      />
+      <VesselGroupAddButton vessels={vesselsSelected} onAddToVesselGroup={onAddToVesselGroup}>
+        <VesselGroupAddActionButton className={cx(styles.footerAction, styles.vesselGroupButton)} />
+      </VesselGroupAddButton>
       <Button
         className={styles.footerAction}
         onClick={onSeeVesselsInMapClick}

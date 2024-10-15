@@ -29,7 +29,7 @@ import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
-import { selectShowTimeComparison } from 'features/reports/reports.selectors'
+import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
 import Hint from 'features/help/Hint'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -410,6 +410,7 @@ const TimebarWrapper = () => {
           <Fragment>
             {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
               timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
+              timebarVisualisation === TimebarVisualisations.VesselGroup ||
               timebarVisualisation === TimebarVisualisations.Environment) && (
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}

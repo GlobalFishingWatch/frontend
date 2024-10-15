@@ -12,7 +12,7 @@ import {
   Resource,
   ResourceStatus,
 } from '@globalfishingwatch/api-types'
-import { setResource } from '@globalfishingwatch/dataviews-client'
+import { setResource, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -57,7 +57,11 @@ function VesselPin({
   className?: string
   disabled?: boolean
   size?: IconButtonSize
-  onClick?: () => void
+  onClick?: ({
+    vesselInWorkspace,
+  }: {
+    vesselInWorkspace?: UrlDataviewInstance | null | undefined
+  }) => void
 }) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -181,7 +185,7 @@ function VesselPin({
       }
     }
     setLoading(false)
-    onClick?.()
+    onClick?.({ vesselInWorkspace })
   }
 
   return (

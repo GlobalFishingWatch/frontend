@@ -10,21 +10,27 @@ import {
   selectIsAnySearchLocation,
   selectIsAnyVesselLocation,
   selectIsUserLocation,
+  selectIsVesselGroupReportLocation,
   selectIsWorkspacesListLocation,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
-import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
-const Report = dynamic(() => import(/* webpackChunkName: "Report" */ 'features/reports/Report'))
+const AreaReport = dynamic(
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/areas/AreaReport')
+)
+const VesselGroupReport = dynamic(
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/vessel-groups/VesselGroupReport')
+)
 const VesselDetailWrapper = dynamic(
   () => import(/* webpackChunkName: "VesselDetailWrapper" */ 'features/vessel/Vessel')
 )
@@ -50,14 +56,15 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const dataviewsResources = useSelector(selectDataviewsResources)
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyReportLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const userLogged = useSelector(selectIsUserLogged)
   const hasUserGroupsPermissions = useSelector(selectHasUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 
   useEffect(() => {
     if (hasUserGroupsPermissions) {
-      dispatch(fetchUserVesselGroupsThunk())
+      dispatch(fetchVesselGroupsThunk())
     }
   }, [dispatch, hasUserGroupsPermissions])
 
@@ -100,8 +107,12 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       )
     }
 
-    if (isReportLocation) {
-      return <Report />
+    if (isAreaReportLocation) {
+      return <AreaReport />
+    }
+
+    if (isVesselGroupReportLocation) {
+      return <VesselGroupReport />
     }
 
     if (isSearchLocation) {
@@ -111,9 +122,10 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     return <Workspace />
   }, [
     highlightedWorkspacesStatus,
-    isReportLocation,
+    isAreaReportLocation,
     isSearchLocation,
     isUserLocation,
+    isVesselGroupReportLocation,
     isVesselLocation,
     isWorkspacesListLocation,
     userLogged,

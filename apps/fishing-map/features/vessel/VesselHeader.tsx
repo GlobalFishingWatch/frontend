@@ -8,7 +8,9 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
-import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import VesselGroupAddButton, {
+  VesselGroupAddActionButton,
+} from 'features/vessel-groups/VesselGroupAddButton'
 import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -180,13 +182,11 @@ const VesselHeader = () => {
             <Icon icon="print" type="default" />
           </Button>
           <VesselGroupAddButton
-            buttonSize="small"
-            buttonType="border-secondary"
             vessels={vessel ? [vessel] : []}
-            showCount={false}
-            buttonClassName="print-hidden"
             onAddToVesselGroup={() => trackAction('add_to_group')}
-          />
+          >
+            <VesselGroupAddActionButton buttonSize="small" buttonType="border-secondary" />
+          </VesselGroupAddButton>
         </div>
       </div>
     </Sticky>

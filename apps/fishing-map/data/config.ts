@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { AppState, TimebarGraphs, TimebarVisualisations, UserTab, WorkspaceState } from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
@@ -108,12 +108,6 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
-  reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
-  reportCategory: undefined,
-  reportVesselFilter: '',
-  reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
-  reportVesselPage: 0,
-  reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
   userTab: UserTab.Info,
 }
 
@@ -142,3 +136,10 @@ export const POPUP_CATEGORY_ORDER = [
 ]
 
 export const FIT_BOUNDS_REPORT_PADDING = 30
+
+export const REPORT_ONLY_VISIBLE_LAYERS = [
+  DataviewType.Basemap,
+  DataviewType.Context,
+  DataviewType.UserContext,
+  DataviewType.UserPoints,
+]

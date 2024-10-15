@@ -1,6 +1,7 @@
 export interface VesselGroupVessel {
   dataset: string
   vesselId: string
+  relationId: string
   flag?: string
   vesselType?: string
 }
@@ -13,6 +14,7 @@ export interface VesselGroup {
   ownerId?: number
   ownerType?: string
   createdAt?: string
+  updatedAt?: string
 }
 
-export type VesselGroupUpsert = Omit<VesselGroup, 'id' | 'public' | 'ownerId' | 'ownerType'>
+export type VesselGroupUpsert = Partial<Pick<VesselGroup, 'id' | 'name' | 'vessels' | 'public'>>

@@ -29,8 +29,8 @@ import { useMapLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useHasReportTimeseries } from 'features/reports/reports-timeseries.hooks'
-import { selectReportAreaStatus } from 'features/reports/reports.selectors'
+import { useHasReportTimeseries } from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { selectReportAreaStatus } from 'features/reports/areas/area-reports.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   MAP_VIEW,

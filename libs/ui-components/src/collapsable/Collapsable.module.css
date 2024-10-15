@@ -8,11 +8,12 @@
   background-color: white;
 }
 
-.details:not([open]) .summary .icon {
+.details > .summary > .icon {
   padding-right: var(--space-M);
 }
 
-.details[open] .summary .icon {
+.details[open] > .summary > .icon {
+  padding-right: 0;
   padding-left: var(--space-M);
   transform: rotate(180deg);
 }

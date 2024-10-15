@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { InsightMOUListResponse, ValueInPeriod } from '@globalfishingwatch/api-types'
+import { InsightResponse, InsightValueInPeriod } from '@globalfishingwatch/api-types'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
@@ -16,14 +16,14 @@ const InsightMOUList = ({
   isLoading,
   error,
 }: {
-  insightData: InsightMOUListResponse
+  insightData?: InsightResponse
   isLoading: boolean
   error: ParsedAPIError
 }) => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const { mouList } = insightData?.vesselIdentity || {}
-  let tokyoAppearences: Record<string, Record<string, ValueInPeriod>> = {
+  let tokyoAppearences: Record<string, Record<string, InsightValueInPeriod>> = {
     BLACK: {},
     GREY: {},
   }
@@ -42,7 +42,7 @@ const InsightMOUList = ({
       }
     }
   })
-  let parisAppearences: Record<string, Record<string, ValueInPeriod>> = {
+  let parisAppearences: Record<string, Record<string, InsightValueInPeriod>> = {
     BLACK: {},
     GREY: {},
   }
@@ -103,6 +103,7 @@ const InsightMOUList = ({
     if (
       !hasTokyoBlackAppearences &&
       !hasTokyoGreyAppearences &&
+      mouList?.tokyo.totalTimesListed &&
       mouList?.tokyo.totalTimesListed > 0
     ) {
       messages.push(
@@ -156,6 +157,7 @@ const InsightMOUList = ({
     if (
       !hasParisBlackAppearences &&
       !hasParisGreyAppearences &&
+      mouList?.paris.totalTimesListed &&
       mouList?.paris.totalTimesListed > 0
     ) {
       messages.push(

@@ -8,22 +8,26 @@ import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
+  selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveReportActivityDataviews,
-  selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useFitAreaInViewport } from 'features/reports/reports.hooks'
+import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
+import {
+  selectActiveDetectionsDataviews,
+  selectActiveVesselGroupDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   changeSettings,
   setHighlightedEvents,
@@ -215,6 +219,20 @@ export const useTimebarEnvironmentConnect = () => {
   return { timebarSelectedEnvId, dispatchTimebarSelectedEnvId }
 }
 
+export const useTimebarVesselGroupConnect = () => {
+  const { dispatchQueryParams } = useLocationConnect()
+  const timebarSelectedVGId = useSelector(selectTimebarSelectedVGId)
+
+  const dispatchTimebarSelectedVGId = useCallback(
+    (timebarSelectedVGId: string) => {
+      dispatchQueryParams({ timebarSelectedVGId })
+    },
+    [dispatchQueryParams]
+  )
+
+  return { timebarSelectedVGId, dispatchTimebarSelectedVGId }
+}
+
 export const useTimebarGraphConnect = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const { dispatchQueryParams } = useLocationConnect()
@@ -237,6 +255,7 @@ export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
+  const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
@@ -244,6 +263,7 @@ export const useTimebarVisualisation = () => {
   // const prevTimebarVisualisation = usePrevious(timebarVisualisation)
   const prevActiveHeatmapDataviewsNum = usePrevious(activeActivityDataviews.length)
   const prevActiveDetectionsDataviewsNum = usePrevious(activeDetectionsDataviews.length)
+  const prevActiveVesselGroupDataviewsNum = usePrevious(activeVesselGroupDataviews.length)
   const prevActiveTrackDataviewsNum = usePrevious(activeTrackDataviews.length)
   const prevactiveEnvDataviewsNum = usePrevious(activeEnvDataviews.length)
 
@@ -255,6 +275,8 @@ export const useTimebarVisualisation = () => {
     ) {
       if (activeDetectionsDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
+      } else if (activeVesselGroupDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews?.length) {
@@ -268,6 +290,8 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
       } else if (activeDetectionsDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
+      } else if (activeVesselGroupDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeEnvDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
@@ -279,6 +303,8 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
       } else if (activeDetectionsDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
+      } else if (activeVesselGroupDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       }
@@ -288,6 +314,11 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
       } else if (activeDetectionsDataviews.length === 1 && prevActiveDetectionsDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
+      } else if (
+        activeVesselGroupDataviews.length === 1 &&
+        prevActiveVesselGroupDataviewsNum === 0
+      ) {
+        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeTrackDataviews.length >= 1 && prevActiveTrackDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews.length === 1 && prevactiveEnvDataviewsNum === 0) {
@@ -298,6 +329,7 @@ export const useTimebarVisualisation = () => {
   }, [
     activeActivityDataviews,
     activeDetectionsDataviews,
+    activeVesselGroupDataviews,
     activeTrackDataviews,
     activeEnvDataviews,
     hasChangedSettingsOnce,

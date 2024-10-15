@@ -1,6 +1,7 @@
 import { ColorRampsIds } from '../../utils'
 import { DeckLayerProps, DeckPickingObject } from '../../types'
 import {
+  FOOTPRINT_ID,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
@@ -26,6 +27,7 @@ export type FourwingsVisualizationMode =
   | typeof HEATMAP_HIGH_RES_ID
   | typeof HEATMAP_LOW_RES_ID
   | typeof POSITIONS_ID
+  | typeof FOOTPRINT_ID
 
 export type GetViewportDataParams = {
   onlyValuesAndDates?: boolean
@@ -51,6 +53,7 @@ export type FourwingsDeckSublayer = {
   filter?: string
   positionProperties?: string[]
   vesselGroups?: string | string[]
+  vesselGroupsLength?: number
   extentStart?: number
   extentEnd?: number
 }
