@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { InsightFlagChangesResponse } from '@globalfishingwatch/api-types'
+import { InsightResponse } from '@globalfishingwatch/api-types'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
@@ -15,7 +15,7 @@ const InsightFlagChanges = ({
   isLoading,
   error,
 }: {
-  insightData: InsightFlagChangesResponse
+  insightData?: InsightResponse
   isLoading: boolean
   error: ParsedAPIError
 }) => {

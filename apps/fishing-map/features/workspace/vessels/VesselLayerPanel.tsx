@@ -18,7 +18,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { VesselLayer } from '@globalfishingwatch/deck-layers'
-import { formatInfoField, getVesselLabel, getVesselOtherNamesLabel } from 'utils/info'
+import { formatInfoField, getVesselShipNameLabel, getVesselOtherNamesLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -151,15 +151,15 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
     setInfoOpen(false)
   }
 
-  const trackLoaded = vesselLayer?.instance.getVesselTracksLayersLoaded()
-  const trackLayerVisible = vesselLayer?.instance.props.visible
+  const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
+  const trackLayerVisible = vesselLayer?.instance?.props?.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = vesselLayer?.instance.getVesselLayersError('track')
   const trackLoading = trackLayerVisible && !trackLoaded && !trackError
 
   const vesselData = infoResource?.data
-  const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
+  const vesselLabel = vesselData ? getVesselShipNameLabel(vesselData) : ''
   const otherVesselsLabel = vesselData
     ? getVesselOtherNamesLabel(getOtherVesselNames(vesselData as IdentityVessel))
     : ''

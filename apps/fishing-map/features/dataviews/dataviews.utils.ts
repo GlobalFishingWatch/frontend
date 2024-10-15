@@ -25,10 +25,14 @@ import {
   getActiveDatasetsInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
+import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 
 // used in workspaces with encounter events layers
-export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
+export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter'
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
+export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visit-events'
+export const LOITERING_EVENTS_SOURCE_ID = 'loitering-events'
+export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
 const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
 const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
@@ -39,6 +43,9 @@ export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
 ]
+export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
+  return dataview.config?.filters?.['vessel-groups']?.includes(vesselGroupId)
+}
 
 export const getVesselInfoDataviewInstanceDatasetConfig = (
   vesselId: string,
@@ -51,7 +58,7 @@ export const getVesselInfoDataviewInstanceDatasetConfig = (
       { id: 'dataset', value: info },
       {
         id: 'includes',
-        value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+        value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
       },
     ],
     endpoint: EndpointId.Vessel,

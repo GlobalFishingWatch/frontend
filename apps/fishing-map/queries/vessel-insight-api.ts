@@ -1,28 +1,67 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { gfwBaseQuery } from 'queries/base'
-import { InsightResponse } from '@globalfishingwatch/api-types'
+import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
+import { RootState } from 'reducers'
+import {
+  InsightResponse,
+  InsightType,
+  VesselGroupInsightResponse,
+} from '@globalfishingwatch/api-types'
 
-type VesselInsightParams = {
-  vessels: { vesselId: string; datasetId: string }[]
-  includes: string[]
-  startDate: string
-  endDate: string
+export type BaseInsightParams = {
+  insight: InsightType
+  start: string
+  end: string
 }
 
-// Define a service using a base URL and expected endpoints
+export type VesselInsightParams = BaseInsightParams & {
+  vessels: { vesselId: string; datasetId: string }[]
+}
+
+export type VesselGroupInsightParams = BaseInsightParams & {
+  vesselGroupId: string
+}
+
+const getBaseQueryParams = (params: BaseInsightParams) => {
+  return {
+    includes: [params.insight],
+    'start-date': params.start,
+    'end-date': params.end,
+  }
+}
+
 export const vesselInsightApi = createApi({
   reducerPath: 'vesselInsightApi',
-  baseQuery: gfwBaseQuery<InsightResponse>({
-    baseUrl: `/insights/vessels`,
-    method: 'POST',
+  baseQuery: gfwBaseQuery<InsightResponse | VesselGroupInsightResponse>({
+    baseUrl: `/insights`,
   }),
   endpoints: (builder) => ({
-    getVesselInsight: builder.mutation<InsightResponse, VesselInsightParams>({
-      query: (body) => ({ url: '', method: 'POST', body }),
+    getVesselInsight: builder.query<InsightResponse, VesselInsightParams>({
+      query: ({ vessels, ...params }) => {
+        const query = {
+          ...getBaseQueryParams(params),
+          vessels: vessels.map((v) => v.vesselId),
+          datasets: vessels.map((v) => v.datasetId),
+        }
+        return { url: `/vessels${getQueryParamsResolved(query)}` }
+      },
+    }),
+    getVesselGroupInsight: builder.query<VesselGroupInsightResponse, VesselGroupInsightParams>({
+      query: ({ vesselGroupId, ...params }) => {
+        const query = {
+          ...getBaseQueryParams(params),
+          'vessel-groups': [vesselGroupId],
+        }
+        return {
+          url: `/vessel-groups${getQueryParamsResolved(query)}`,
+        }
+      },
     }),
   }),
 })
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useGetVesselInsightMutation } = vesselInsightApi
+export const { useGetVesselInsightQuery, useGetVesselGroupInsightQuery } = vesselInsightApi
+
+export const selectVesselGroupInsightApiSlice = (state: RootState) => state.vesselInsightApi
+
+export const selectVesselGroupInsight = (params: VesselGroupInsightParams) =>
+  vesselInsightApi.endpoints.getVesselGroupInsight.select(params)

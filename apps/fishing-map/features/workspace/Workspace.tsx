@@ -31,9 +31,10 @@ import WorkspaceError, { WorkspacePassword } from 'features/workspace/WorkspaceE
 import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import UserSection from 'features/workspace/user/UserSection'
-import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
+import VesselGroupSection from './vessel-groups/VesselGroupsSection'
 import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
@@ -197,6 +198,7 @@ function Workspace() {
       <ActivitySection />
       <DetectionsSection />
       <EventsSection />
+      <VesselGroupSection />
       <VesselsSection />
       <EnvironmentalSection />
       <ContextAreaSection />

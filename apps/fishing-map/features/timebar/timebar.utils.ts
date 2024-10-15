@@ -9,7 +9,7 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from 'utils/dates'
-import { FeaturesToTimeseriesParams } from 'features/reports/reports-timeseries.utils'
+import { FeaturesToTimeseriesParams } from 'features/reports/activity/reports-activity-timeseries.utils'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
   FeaturesToTimeseriesParams,

@@ -11,6 +11,7 @@ import { dataviewStatsApi } from 'queries/stats-api'
 import { vesselSearchApi } from 'queries/search-api'
 import { vesselEventsApi } from 'queries/vessel-events-api'
 import { vesselInsightApi } from 'queries/vessel-insight-api'
+import { vesselGroupEventsStatsApi } from 'queries/vessel-group-events-stats-api'
 import connectedRoutes from 'routes/routes'
 import { routerQueryMiddleware, routerWorkspaceMiddleware } from 'routes/routes.middlewares'
 import { rootReducer } from './reducers'
@@ -58,6 +59,7 @@ const makeStore = () => {
         vesselSearchApi.middleware,
         vesselEventsApi.middleware,
         vesselInsightApi.middleware,
+        vesselGroupEventsStatsApi.middleware,
         routerQueryMiddleware,
         routerWorkspaceMiddleware,
         routerMiddleware as Middleware

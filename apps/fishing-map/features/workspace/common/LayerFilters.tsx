@@ -29,12 +29,8 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import LayerSchemaFilter, { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setVesselGroupCurrentDataviewIds,
-  setVesselGroupsModalOpen,
-} from 'features/vessel-groups/vessel-groups.slice'
+import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { listAsSentence } from 'utils/shared'
 import UserGuideLink from 'features/help/UserGuideLink'
@@ -124,7 +120,6 @@ function LayerFilters({
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
-  const allowVesselGroup = useSelector(selectVessselGroupsAllowed)
   const vesselGroupsOptions = useVesselGroupsOptions()
 
   const dataview = useMemo(() => {
@@ -252,7 +247,6 @@ function LayerFilters({
   }: OnSelectFilterArgs) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
-      dispatch(setVesselGroupCurrentDataviewIds([dataview.id]))
       return
     }
     let filterValues: number | string[]
@@ -413,13 +407,6 @@ function LayerFilters({
         <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />
       )}
       {filtersAllowed.map((schemaFilter) => {
-        if (
-          schemaFilter.id === 'vessel-groups' &&
-          !schemaFilter.optionsSelected.length &&
-          !allowVesselGroup
-        ) {
-          return null
-        }
         if (!showSchemaFilter(schemaFilter)) {
           return null
         }

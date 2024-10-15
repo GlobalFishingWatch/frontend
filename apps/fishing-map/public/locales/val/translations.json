@@ -428,6 +428,7 @@
     "trackAction": "crwdns60059:0crwdne60059:0",
     "trackLimitExceeded": "crwdns68665:0{{limit}}crwdne68665:0",
     "trackLogin": "crwdns68671:0crwdne68671:0",
+    "trackResolution": "crwdns83688:0crwdne83688:0",
     "trackNotAllowed": "crwdns60069:0crwdne60069:0",
     "trackRemaining_one": "crwdns68667:0{{count}}crwdne68667:0",
     "trackRemaining_other": "crwdns68669:0{{count}}crwdne68669:0",

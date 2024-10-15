@@ -19,11 +19,14 @@ import {
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
-import { VesselSearchState } from 'types'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
+import { VesselSearchState } from 'features/search/search.types'
+import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
 
-export type VesselLastIdentity = Omit<IdentityVesselData, 'identities'> & VesselDataIdentity
+export type VesselLastIdentity = Omit<IdentityVesselData, 'identities' | 'dataset'> & {
+  dataset: Dataset | string
+} & VesselDataIdentity
 
 interface SearchState {
   selectedVessels: string[]
@@ -96,9 +99,13 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           const filter = (filters as any)[cleanField]
           if (filter && isInFieldsAllowed) {
             let value = filter
-            // Supports searching by multiple values separated by comma in owners
-            if (field === 'owner' && value?.includes(', ')) {
-              value = (value as string).split(', ')
+            // Supports searching by multiple values separated by comma and semicolon
+            const regex = /[,;]/
+            if (ADVANCED_SEARCH_FIELDS.includes(field as any) && regex.test(value)) {
+              value = (value as string)
+                .split(regex)
+                .map((v) => v.trim())
+                .filter(Boolean)
             }
             return { key: field as AdvancedSearchQueryFieldKey, value }
           }
@@ -139,6 +146,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       if (url) {
         const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(url, {
           signal,
+          cache: 'no-cache',
         })
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
         const uniqSearchResults = gfwUser
