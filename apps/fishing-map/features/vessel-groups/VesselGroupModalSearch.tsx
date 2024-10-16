@@ -13,6 +13,7 @@ import {
   selectVesselGroupsModalSearchIds,
   setVesselGroupSearchIdField,
   setVesselGroupModalSearchIds,
+  setVesselGroupFileColumns,
 } from './vessel-groups-modal.slice'
 import styles from './VesselGroupModal.module.css'
 
@@ -46,9 +47,12 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
         header: true,
         skipEmptyLines: true,
       })
+      console.log('🚀 ~ onCSVLoaded ~ data:', data)
       if (data.length) {
         const firstRow = data[0]
         const columns = Object.keys(firstRow as any)
+        dispatch(setVesselGroupFileColumns(columns))
+        console.log('🚀 ~ columns:', columns)
         let foundIdColumn: string | undefined
         // Try to find a CSV column matching preset ids
         for (let i = 0; i < ID_COLUMN_LOOKUP.length; i++) {
