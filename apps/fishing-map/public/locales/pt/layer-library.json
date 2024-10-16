@@ -64,6 +64,11 @@
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentração de nitrato (NO3)"
   },
+  "loitering": {
+    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "moreInfoLink": "",
+    "name": "Loitering events (AIS)"
+  },
   "offshore-fixed-infrastructure": {
     "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
     "moreInfoLink": "",
@@ -83,6 +88,11 @@
     "description": "O fosfato é um nutriente importante para as cadeias alimentares marinhas e para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser também um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o fosfato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentração de fosfato (PO4)"
+  },
+  "port-visits": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",
+    "moreInfoLink": "",
+    "name": "Port Visits (AIS)"
   },
   "presence": {
     "description": "A camada de presença analisa dados do sistema de identificação automática (AIS) coletados de embarcações identificadas pela nossa pesquisa. A presença é determinada pelas posições assumidas e transmitidas pelo AIS da embarcação e é exibida como um mapa de calor. ",
