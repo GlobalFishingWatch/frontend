@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, Fragment, useRef } from 'react'
+import { useState, useCallback, useEffect, Fragment, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
@@ -59,6 +59,7 @@ import {
   searchVesselGroupsVesselsThunk,
   selectVesselGroupConfirmationMode,
   selectVesselGroupEditId,
+  selectVesselGroupFileColumns,
   selectVesselGroupModalOpen,
   selectVesselGroupModalSearchIdField,
   selectVesselGroupModalVessels,
@@ -79,6 +80,7 @@ function VesselGroupModal(): React.ReactElement {
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
   const vesselGroupVesselsToSearch = useSelector(selectVesselGroupsModalSearchIds)
+  const vesselGroupFileColumns = useSelector(selectVesselGroupFileColumns)
   const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
@@ -285,6 +287,16 @@ function VesselGroupModal(): React.ReactElement {
     ]
   )
 
+  const IdFieldOptions = useMemo(() => {
+    if (!vesselGroupFileColumns) {
+      return ID_COLUMNS_OPTIONS
+    }
+    return vesselGroupFileColumns.map((column) => ({
+      id: column,
+      label: column.toUpperCase(),
+    }))
+  }, [vesselGroupFileColumns])
+
   const confirmButtonDisabled =
     loading ||
     hasVesselsOverflow ||
@@ -325,8 +337,8 @@ function VesselGroupModal(): React.ReactElement {
               <Select
                 key="IDfield"
                 label={t('vesselGroup.idField', 'ID field')}
-                options={ID_COLUMNS_OPTIONS}
-                selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
+                options={IdFieldOptions}
+                selectedOption={IdFieldOptions.find((o) => o.id === searchIdField)}
                 onSelect={onIdFieldChange}
                 disabled={hasVesselGroupsVessels}
               />
