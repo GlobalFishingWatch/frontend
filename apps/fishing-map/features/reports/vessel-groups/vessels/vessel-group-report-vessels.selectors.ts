@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
 import { IdentityVessel } from '@globalfishingwatch/api-types'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
+import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectVGRVesselsResultsPerPage,
   selectVGRVesselFilter,
@@ -77,6 +77,7 @@ export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (ve
       vesselType,
       geartype,
       type,
+      mmsi: getVesselProperty(vessel.identity, 'ssvid'),
       flagTranslated: t(`flags:${flag as string}` as any),
       flagTranslatedClean: cleanFlagState(t(`flags:${flag as string}` as any)),
       source: t(`common.sourceOptions.${source}`, source),
