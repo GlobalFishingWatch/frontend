@@ -160,7 +160,7 @@ export const updateVesselGroupThunk = createAsyncThunk(
 export const updateVesselGroupVesselsThunk = createAsyncThunk(
   'vessel-groups/update-vessels',
   async (
-    { id, vessels = [], override = false }: UpdateVesselGroupThunkParams,
+    { id, name, vessels = [], override = false }: UpdateVesselGroupThunkParams,
     { getState, dispatch }
   ) => {
     let vesselGroup = selectVesselGroupById(id)(getState() as any)
@@ -174,6 +174,7 @@ export const updateVesselGroupVesselsThunk = createAsyncThunk(
       return dispatch(
         updateVesselGroupThunk({
           id: vesselGroup.id,
+          name: name || vesselGroup.name,
           vessels: override
             ? vessels
             : uniqBy([...vesselGroup.vessels, ...vessels], (v) => v.vesselId),

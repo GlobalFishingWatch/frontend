@@ -34,7 +34,6 @@ import EnvironmentTooltipSection from 'features/map/popups/categories/Environmen
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
-import { formatInfoField } from 'utils/info'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
 import {
   SliceExtendedClusterPickingObject,
@@ -149,7 +148,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     feature={{
                       ...sublayer,
                       category: feature.category as DataviewCategory,
-                      title: formatInfoField(vesselGroup?.name, 'name') as string,
+                      title: vesselGroup?.name as string,
                     }}
                     showFeaturesDetails={type === 'click'}
                   />

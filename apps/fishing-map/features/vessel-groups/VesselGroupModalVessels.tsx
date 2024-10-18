@@ -30,7 +30,7 @@ function VesselGroupVesselRow({
   const { t, i18n } = useTranslation()
   const { shipname, flag, ssvid, transmissionDateFrom, transmissionDateTo, geartypes } =
     getSearchIdentityResolved(vessel.identity!)
-  const vesselName = formatInfoField(shipname, 'name')
+  const vesselName = formatInfoField(shipname, 'shipname')
   const vesselGearType = getVesselGearTypeLabel({ geartypes })
 
   return (

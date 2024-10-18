@@ -1213,6 +1213,10 @@
     "name": "crwdns82842:0crwdne82842:0",
     "description": "crwdns83022:0crwdne83022:0"
   },
+  "public-global-port-visits-events": {
+    "name": "crwdns83800:0crwdne83800:0",
+    "description": "crwdns83802:0crwdne83802:0"
+  },
   "public-global-presence-tracks": {
     "name": "crwdns83152:0crwdne83152:0",
     "description": "crwdns83154:0crwdne83154:0",

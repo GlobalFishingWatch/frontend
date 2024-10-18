@@ -195,7 +195,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const { dataset, shipname, nShipname } = vesselData
           const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
           const { transmissionDateFrom, transmissionDateTo } = vesselData
-          const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
+          const name = shipname ? formatInfoField(shipname, 'shipname') : EMPTY_FIELD_PLACEHOLDER
           const label = `${name} ${otherNamesLabel || ''}`
           const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
 

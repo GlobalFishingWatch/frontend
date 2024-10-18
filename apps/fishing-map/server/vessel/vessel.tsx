@@ -31,7 +31,7 @@ const VesselServerComponent = () => {
       </div>
       <div className={styles.content}>
         <h1 className={styles.title}>
-          {formatInfoField(getVesselProperty(vessel, 'shipname'), 'name', serverT)}
+          {formatInfoField(getVesselProperty(vessel, 'shipname'), 'shipname', serverT)}
         </h1>
         {IDENTITY_FIELD_GROUPS[identitySource].map((fieldGroup) => (
           <div key={fieldGroup.join()} className={cx(styles.fieldGroup, styles.border)}>
@@ -43,7 +43,7 @@ const VesselServerComponent = () => {
                 <div key={field.key}>
                   <label>{serverT(`vessel.${label}` as any, label)}</label>
                   {vessel
-                    ? formatInfoField(getVesselProperty(vessel, key), field.key, serverT)
+                    ? formatInfoField(getVesselProperty(vessel, key), field.key as any, serverT)
                     : ''}
                 </div>
               )

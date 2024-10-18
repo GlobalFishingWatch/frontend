@@ -114,7 +114,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                       <div className={styles.centered}>
                         <span className={styles.rowText}>
                           <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
-                            {formatInfoField(event.vessel?.name, 'name')}
+                            {formatInfoField(event.vessel?.name, 'shipname')}
                           </VesselLink>
                         </span>
                         {(event.vessel as ExtendedEventVessel).dataset && (
@@ -135,7 +135,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                               vesselId={event.encounter.vessel?.id}
                               datasetId={event.encounter.vessel?.dataset}
                             >
-                              {formatInfoField(event.encounter.vessel?.name, 'name')}
+                              {formatInfoField(event.encounter.vessel?.name, 'shipname')}
                             </VesselLink>
                           </span>
                           {(event.encounter?.vessel as ExtendedEventVessel).dataset && (
@@ -201,7 +201,7 @@ function ClusterEventTooltipRow({ feature, showFeaturesDetails }: EncountersLaye
                   datasetId={infoDataset?.id}
                   className={styles.marginRight}
                 >
-                  {formatInfoField(event.vessel.name, 'name')}
+                  {formatInfoField(event.vessel.name, 'shipname')}
                 </VesselLink>
                 ({formatInfoField(event.vessel.flag, 'flag')}){' '}
                 <span className={styles.secondary} style={{ display: 'inline' }}>

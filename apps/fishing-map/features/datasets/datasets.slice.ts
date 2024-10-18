@@ -105,6 +105,7 @@ type FetchDatasetsFromApiParams = {
   signal: AbortSignal
   maxDepth?: number
   onlyUserDatasets?: boolean
+  includeRelated?: boolean
 }
 const fetchDatasetsFromApi = async (
   {
@@ -113,6 +114,7 @@ const fetchDatasetsFromApi = async (
     signal,
     maxDepth = 5,
     onlyUserDatasets = true,
+    includeRelated = true,
   } = {} as FetchDatasetsFromApiParams
 ) => {
   const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
@@ -144,9 +146,11 @@ const fetchDatasetsFromApi = async (
       : { default: [] }
   let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)
 
-  const relatedDatasetsIds = uniq(
-    datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
-  )
+  const relatedDatasetsIds = includeRelated
+    ? uniq(
+        datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
+      )
+    : []
   const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
   const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
   if (uniqRelatedDatasetsIds.length > 1 && maxDepth > 0) {
@@ -165,13 +169,16 @@ const fetchDatasetsFromApi = async (
 
 export const fetchDatasetsByIdsThunk = createAsyncThunk<
   Dataset[],
-  { ids: string[]; onlyUserDatasets?: boolean },
+  { ids: string[]; onlyUserDatasets?: boolean; includeRelated?: boolean },
   {
     rejectValue: AsyncError
   }
 >(
   'datasets/fetch',
-  async ({ ids, onlyUserDatasets = true }, { signal, rejectWithValue, getState, dispatch }) => {
+  async (
+    { ids, onlyUserDatasets = true, includeRelated = true },
+    { signal, rejectWithValue, getState, dispatch }
+  ) => {
     const state = getState() as DatasetsSliceState
     const existingIds = selectIds(state) as string[]
 
@@ -181,6 +188,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
         existingIds,
         signal,
         onlyUserDatasets,
+        includeRelated,
       })
       if (Object.keys(datasetsDeprecated).length) {
         dispatch(setDeprecatedDatasets(datasetsDeprecated))

@@ -421,7 +421,7 @@
     "description": "Présence",
     "schema": {
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "type de navire",
         "enum": {
           "Cast Nets": "Filets à lancer",
           "Anchored gillnets": "Filets maillants ancrés",
@@ -1074,17 +1074,17 @@
         "keyword": "libellé",
         "enum": {
           "oil": "pétrole",
-          "wind": "wind",
-          "unknown": "unknown"
+          "wind": "vent",
+          "unknown": "inconnu"
         }
       },
       "structure_id": "structure_id",
       "label_confidence": {
         "keyword": "label_confidence",
         "enum": {
-          "high": "high",
-          "low": "low",
-          "medium": "medium"
+          "high": "élevée",
+          "low": "faible",
+          "medium": "moyenne"
         }
       },
       "structure_end_date": "structure_end_date",
@@ -1107,21 +1107,21 @@
       "label_confidence": {
         "keyword": "label_confidence",
         "enum": {
-          "high": "high",
-          "low": "low",
-          "medium": "medium"
+          "high": "élevée",
+          "low": "faible",
+          "medium": "moyenne"
         }
       },
       "structure_end_date": "structure_end_date",
-      "structure_start_date": "structure_start_date"
+      "structure_start_date": ""
     }
   },
   "public-global-all-tracks": {
     "name": "Trajectoires",
-    "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0",
+    "description": "Le jeu de données contient les tracés de tous les navires (AIS) - Version 3.0",
     "schema": {
       "speed": {
-        "keyword": "speed",
+        "keyword": "vitesse",
         "enum": {
           "0": "0",
           "20": "20"
@@ -1146,11 +1146,11 @@
   },
   "public-global-chlorophyl-max": {
     "name": "Concentration en chloriphylle a",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations."
+    "description": "La chlorophylle-a est le pigment qui capte la lumière et que l'on trouve dans toutes les plantes photosynthétiques. Sa concentration dans l'océan est utilisée comme indice de la biomasse du phytoplancton et, à ce titre, constitue un élément clé des modèles de productivité primaire. L'instrument MODIS (Moderate Resolution Imaging Spectroradiometer) à bord des satellites Terra et Aqua de la NASA mesure chaque jour la couleur de l'océan, à partir de laquelle sont dérivées les concentrations mondiales de chlorophylle-a. Le phytoplancton océanique fixe chimiquement le carbone par photosynthèse, en absorbant le dioxyde de carbone dissous et en produisant de l'oxygène. Grâce à ce processus, les plantes marines capturent à peu près la même quantité de carbone que la photosynthèse de la végétation terrestre. Les variations de la quantité de phytoplancton indiquent l'évolution de la productivité des océans et constituent un lien océanique essentiel pour la surveillance du changement climatique mondial. Les scientifiques utilisent la chlorophylle pour modéliser les cycles biogéochimiques de la Terre, tels que le cycle du carbone ou le cycle de l'azote. De plus, sur de courtes échelles de temps, la chlorophylle peut être utilisée pour suivre les courants océanographiques, les jets et les panaches. La résolution d'un kilomètre et la couverture quasi quotidienne des données MODIS permettent ainsi aux scientifiques d'observer les caractéristiques océanographiques à méso-échelle dans les environnements côtiers et estuariens, qui revêtent une importance croissante dans les études en sciences marines. Source : NASA Earth Observations."
   },
   "public-global-chlorophyl-min": {
     "name": "Concentration en chloriphylle a",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations."
+    "description": "La chlorophylle-a est le pigment qui capte la lumière et que l'on trouve dans toutes les plantes photosynthétiques. Sa concentration dans l'océan est utilisée comme indice de la biomasse du phytoplancton et, à ce titre, constitue un élément clé des modèles de productivité primaire. L'instrument MODIS (Moderate Resolution Imaging Spectroradiometer) à bord des satellites Terra et Aqua de la NASA mesure chaque jour la couleur de l'océan, à partir de laquelle sont dérivées les concentrations mondiales de chlorophylle-a. Le phytoplancton océanique fixe chimiquement le carbone par photosynthèse, en absorbant le dioxyde de carbone dissous et en produisant de l'oxygène. Grâce à ce processus, les plantes marines capturent à peu près la même quantité de carbone que la photosynthèse de la végétation terrestre. Les variations de la quantité de phytoplancton indiquent l'évolution de la productivité des océans et constituent un lien océanique essentiel pour la surveillance du changement climatique mondial. Les scientifiques utilisent la chlorophylle pour modéliser les cycles biogéochimiques de la Terre, tels que le cycle du carbone ou le cycle de l'azote. De plus, sur de courtes échelles de temps, la chlorophylle peut être utilisée pour suivre les courants océanographiques, les jets et les panaches. La résolution d'un kilomètre et la couverture quasi quotidienne des données MODIS permettent ainsi aux scientifiques d'observer les caractéristiques océanographiques à méso-échelle dans les environnements côtiers et estuariens, qui revêtent une importance croissante dans les études en sciences marines. Source : NASA Earth Observations."
   },
   "public-global-chlorophyl": {
     "name": "Concentration en chloriphylle a",
@@ -1162,22 +1162,22 @@
   },
   "public-global-encounters-events": {
     "name": "Événements de rencontre (AIS)",
-    "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
+    "description": "Identifié à partir des données AIS comme des lieux où deux navires (un navire de transport et un navire de pêche) se trouvaient à moins de 500 mètres l'un de l'autre pendant au moins 2 heures et se déplaçaient à une vitesse médiane inférieure à 2 noeuds, à au moins 10 km d'un mouillage côtier.",
     "schema": {
-      "duration": "duration"
+      "duration": "durée"
     }
   },
   "public-global-fishing-effort": {
     "name": "AIS",
     "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "vitesse",
+      "bearing": "cap"
     }
   },
   "public-global-fishing-vessels": {
     "name": "AIS (Fishing Vessels)",
-    "description": "Vessels from AIS",
+    "description": "Navires (AIS)",
     "schema": {
       "source": "source"
     }
@@ -1195,8 +1195,8 @@
     "description": "<h2>Sommaire</h2>\n<ul>\n<li>L'azote est requis par les plantes marines pour la photosynthèse et c'est un nutriment majeur pour la productivité de l'océan, cependant des concentrations élevées peuvent être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris dl'azote, affichés sur l'océan global avec une résolution horizontale de 1/4 degrés.</li>\n<ul>\n<h2>La Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>\""
   },
   "public-global-other-vessels": {
-    "name": "AIS (Other Vessels)",
-    "description": "Other vessels from AIS",
+    "name": "AIS (autres navires)",
+    "description": "Autres navires (AIS)",
     "schema": {
       "source": "source"
     }
@@ -1213,12 +1213,16 @@
     "name": "Concentration de phosphate (PO4)",
     "description": "<h2>Sommaire</h2>\n<ul>\n<li>Le phosphate est un nutriment majeur pour les réseaux trophiques marins et la productivité des océans, mais des concentrations élevées peuvent également être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris le phosphate, affichés sur l'océan global avec une résolution horizontale de 1/4 degrés. </li>\n<ul>\n<h2>La Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>"
   },
+  "public-global-port-visits-events": {
+    "name": "Visites de ports (AIS)",
+    "description": "Le jeu de données contient les visites de ports (AIS)"
+  },
   "public-global-presence-tracks": {
-    "name": "Tracks",
-    "description": "The dataset contains the tracks from all vessels (AIS) - Version 20201001",
+    "name": "Tracés",
+    "description": "Le jeu de données contient les tracés de tous les navires (AIS) - Version 20201001",
     "schema": {
       "speed": {
-        "keyword": "speed",
+        "keyword": "vitesse",
         "enum": {
           "0": "0",
           "20": "20"
@@ -1231,7 +1235,7 @@
     "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessel's AIS.",
     "schema": {
       "speed": {
-        "keyword": "speed",
+        "keyword": "vitesse",
         "enum": {
           "<2": "<2",
           "2-4": "2-4",
@@ -1242,7 +1246,7 @@
           ">25": ">25"
         }
       },
-      "bearing": "bearing"
+      "bearing": "cap"
     }
   },
   "public-global-salinity": {
@@ -1254,62 +1258,62 @@
     "description": "SAR"
   },
   "public-global-sar-presence": {
-    "name": "SAR with Neural classification",
-    "description": "<h2>Overview</h2>\n<p>Satellite synthetic aperture radar (SAR) is a spaceborne radar imaging system that can detect at-sea vessels and structures in any weather conditions. Microwave pulses are transmitted by a satellite-based antenna towards the Earth surface. The microwave energy scattered back to the spacecraft is then measured and integrated to form a “backscatter” image. The SAR image contains rich information about the different objects on the water, such as their size, orientation and texture. SAR imaging systems overcome most weather conditions and illumination levels, including clouds or rain due to the cloud penetrating property of microwaves, and daylight or darkness due to radar being an “active” sensor (it shoots and records back its own energy). SAR gives an advantage over some other “passive” satellite sensors, such as electro-optical imagery, consisting of a satellite-based camera recording the sunlight/infrared radiation reflected from/emitted by objects on the ground. This latter method can be confounded by cloud cover, haze, weather events and seasonal darkness at high latitudes.</p>\n<h2>Use cases</h2>\n<ul>\n <li>Monitor vessel presence (both fishing and non-fishing) in areas of interest such as marine protected areas (MPAs), exclusive economic zones (EEZs), inshore exclusion zones (IEZs) and Regional Fisheries Management Organisations (RFMOs).</li>\n <li>Assess presence of vessels that don’t show up on cooperative tracking systems—including automatic identification system (AIS) and vessel monitoring system (VMS)—near vulnerable marine ecosystems and essential fish habitats.</li>\n</ul>\n<h2>Limitations</h2>\n<ul>\n <li><b>Sentinel-1 SAR data does not sample most of the open ocean.</b></li>\n <ul>\n <li>Sentinel-1 does not sample most of the open ocean. However, the vast majority of industrial activity is close to shore. Also, farther from shore, more fishing vessels use AIS (60-90%), far more than the average for all fishing vessels (about 25%). Thus, for most of the world, our detection data complemented by AIS will capture the vast majority of human activity in the global ocean.</li>\n </ul>\n <li><b>False positives can be produced from image artifacts (noise).</b></li>\n <li><b>We do not provide detections of vessels 1 kilometer from shore as it’s difficult to accurately map where the shoreline begins.</b></li>\n <ul>\n <li>We do not include objects within 1 km of shore because of ambiguous coastlines and rocks. Nor do we include objects in much of the Arctic and Antarctic, where sea ice can create too many false positives; in both regions, however, vessel traffic is either very low (Antarctic) or in countries that have a high adoption of AIS (northern European or northern North American countries). The bulk of industrial activities occur several kilometers from shore, such as fishing along the continental shelf break, ocean transport over shipping lanes, and offshore development on medium-to-large oil rigs and wind farms. Also, much of the vessel activity within 1 km of shore is by smaller boats such as pleasure crafts.</li>\n </ul>\n <li><b>Vessel detection by SAR imagery is limited primarily by the resolution of the images (~20 m in the case of Sentinel-1 IW GRD products).</b></li>\n <ul>\n <li>As a result, we miss most vessels under 15 m in length, although an object smaller than a pixel can still be seen if it is a strong reflector, such as a vessel made of metal rather than wood or fiberglass. Especially for smaller vessels (25 m), detection also depends on wind speed and the state of the ocean, as a rougher sea surface will produce higher backscatter, making it difficult to separate a small target from the sea clutter. Conversely, the higher the radar incidence angle, the higher the probability of detection, as less backscatter from the background will be received by the antenna. The vessel orientation relative to the satellite antenna also matters, as a vessel perpendicular to the radar line of sight will have a larger backscatter cross section, increasing the probability of being detected.</li>\n </ul>\n <li><b>Vessel length estimates are limited by the quality of ground truth data</b></li>\n <ul>\n <li>Although we selected only high-confidence AIS-SAR matches to construct our training data, we found that some AIS records contained an incorrectly reported length. These errors, however, resulted in only a small fraction of imprecise training labels, and deep learning models can accommodate some noise in the training data.</li>\n </ul>\n <li><b>Not all geographies are covered equally</b></li>\n <ul>\n <li>Our fishing classification may be less accurate in certain regions. In areas of high traffic from pleasure crafts and other service boats, such as near cities in some countries and in the fjords of Norway and Iceland, some of these smaller craft might be misclassified as fishing vessels. Conversely, some misclassification of fishing vessels as non-fishing vessels is expected in areas where all activity is not publicly shared. More importantly, however, is that many industrial fishing vessels are between 10 and 20 meters in length, and the detection capability of our model falls off quickly within these lengths. As a result, the total number of industrial fishing vessels is likely significantly higher than what we detect.</li>\n <li>Our data likely underestimates the concentration of fishing in some regions, where we see areas of vessel activity being \"cut off\" by the edge of the Sentinel-1 footprint and we miss very small vessels (e.g., most artisanal fishing) that are less likely to carry AIS devices.</li>\n </ul>\n</ul>\n<h2>Methods</h2>\n<h3>SAR imagery</h3>\n<p>We use SAR imagery from the Copernicus Sentinel-1 mission of the European Space Agency (ESA) [1]. The images are sourced from two satellites (S1A and S1B up until December 2021 when S1B stopped operating, and S1A only from 2022 onward) that orbit 180 degrees out of phase with each other in a polar, sun-synchronous orbit. Each satellite has a repeat-cycle of 12 days, so that together they provide a global mapping of coastal waters around the world approximately every six days for the period that both were operating. The number of images per location, however, varies greatly depending on mission priorities, latitude, and degree of overlap between adjacent satellite passes. Spatial coverage also varies over time [2]. Our data consist of dual-polarization images (VH and VV) from the Interferometric Wide (IW) swath mode, with a resolution of about 20 m.</p>\n<p>[1]\n <a target=\"_blank\" href=\"https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_User_Handbook.pdf\">\n <span style=\"color:rgb(0, 0, 0);\">https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_User_Handbook.pdf</span>\n </a>\n</p>\n<p>[2]<a target=\"_blank\" href=\"https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/observation-scenario\">\n <span style=\"color:rgb(0, 0, 0);\"></span>\n <span style=\"color:rgb(0, 0, 0);\">https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/observation-scenario</span>\n </a>\n</p>\n<h3>Detection footprints</h3>\n<p>Detection footprints are areas within each satellite scan (or scene) that our system uses to perform detections. These filters help to keep relevant detections and exclude data that may be inaccurate. Detection footprints are smaller than the total scene as they exclude any land areas and islands, and exclude a 500 meter buffer from the boundaries of the scene and a 1 kilometer buffer from shorelines.</p>\n<h3>Filtering</h3>\n<p>GFW has post-processed the SAR detections to reduce noise (false positives), remove offshore infrastructure from this layer focused on vessels, and exclude areas with sea ice at high latitudes.</p>\n<h3>Vessel detection by SAR</h3>\n<p>Detecting vessels with SAR is based on an known as Constant False Alarm Rate (CFAR), a threshold algorithm used for anomaly detection in radar imagery. This algorithm is designed to search for pixel values that are unusually bright (the targets) compared to those in the surrounding area (the sea clutter). This method sets a threshold based on the pixel values of the local background (within a window), scanning the whole image pixel-by-pixel. Pixel values above the threshold constitute an anomaly and are likely to be samples from a target, and therefore are included as a detection.</p>\n<h3>Vessel presence and length estimation</h3>\n<p>To estimate the length of every detected object and also to identify when our CFAR algorithm made false detections, we designed a deep convolutional neural network (ConvNet) based on the modern ResNet (Residual Networks) architecture. This single-input/multi-output ConvNet takes dual-band SAR image tiles of 80 by 80 pixels as input, and outputs the probability of object presence (known as a “binary classification task”) and the estimated length of the object (known as a “regression task”).</p>\n<h3>Fishing and non-fishing classification</h3>\n<p>To identify whether a detected vessel was a fishing or non-fishing vessel we use a machine learning model. For this classification task we used a ConvNeXt architecture modified to process the following two inputs: the estimated length of the vessel from SAR (a scalar quantity) and a stack of environmental rasters centered at the vessel’s location (a multi-channel image). This multi-input-mixed-data/single-output model passes the raster stack (11 channels) through a series of convolutional layers and combines the resulting feature maps with the vessel length value to perform a binary classification: fishing or non-fishing.&nbsp;</p>\n<p>The environmental layers used to differentiate between fishing and non-fishing include:</p>\n<ol>\n <li>vessel density (based on SAR)</li>\n <li>average vessel length (based on SAR)</li>\n <li>bathymetry</li>\n <li>distance from port</li>\n <li>hours of non-fishing vessel presence, under 50 m (from AIS)</li>\n <li>hours of non-fishing vessel presence, over 50 m (from AIS)</li>\n <li>average surface temperature</li>\n <li>average current speed</li>\n <li>standard deviation of daily temperature</li>\n <li>standard deviation of daily current speed</li>\n <li>average chlorophyll</li>\n</ol>\n<h3>AIS matching and vessel identity</h3>\n<p>AIS data can reveal the identity of vessels, their owners and corporations, and fishing activity. Not all vessels, however, are required to use AIS devices, as regulations vary by country, vessel size, and activity. Vessels engaged in illicit activities can also turn off their AIS transponders or manipulate the locations they broadcast. Also, large “blind spots” along coastal waters arise from nations that restrict access to AIS data that are captured by terrestrial receptors instead of satellites or from poor reception due to high vessel density and low-quality AIS devices. Unmatched SAR detections therefore provide the missing information about vessel traffic in the ocean.</p>\n<h3>SAR and AIS matching</h3>\n<p>Matching SAR detections to vessels’ GPS coordinates (from the automatic identification system (AIS) is challenging because the timestamp of the SAR images and AIS records do not coincide, and a single AIS message can potentially match to multiple vessels appearing in the image, and vice versa. To determine the likelihood that a vessel broadcasting AIS corresponded to a specific SAR detection, we followed a matching approach based on probability rasters of where a vessel is likely to be minutes before and after an AIS position was recorded. These rasters were developed from one year of global AIS data from the Global Fishing Watch pipeline which uses Spire Global and Orbcomm sources of satellite data, including roughly 10 billion vessel positions, and computed for six different vessel classes, considering six different speeds and 36 time intervals. So we obtain the likely position of a vessel that could match a SAR detection based on the vessel class, speed and time interval.</p>\n<h3>AIS matching and vessel identity</h3>\n<p>Automatic identification system (AIS) data can reveal the identity of vessels, their owners and corporations, and fishing activity. Not all vessels, however, are required to use AIS devices, as regulations vary by country, vessel size, and activity. Vessels engaged in illicit activities can also turn off their AIS transponders or manipulate the locations they broadcast. Also, large “blind spots” along coastal waters arise from nations that restrict access to AIS data that are captured by terrestrial receptors instead of satellites or from poor reception due to high vessel density and low-quality AIS devices. Unmatched SAR detections therefore provide the missing information about vessel traffic in the ocean.</p>\n<h2>Resources, code and other notes</h2>\n<p>All code developed in this study for SAR detection, deep learning models, and analyses is open source and freely available at\n <a target=\"_blank\" href=\"https://github.com/GlobalFishingWatch/paper-industrial-activity\">\n <span style=\"color:rgb(0, 0, 0);\">https://github.com/GlobalFishingWatch/paper-industrial-activity</span>\n </a>.\n</p>\n<h2>Source data and citations</h2>\n<p>All vessel data are freely available through the Global Fishing Watch data portal at\n <a target=\"_blank\" href=\"https://globalfishingwatch.org\">\n <span style=\"color:rgb(0, 0, 0);\">https://globalfishingwatch.org</span>\n </a>. All data to reproduce our supporting scientific paper can be downloaded from\n <a target=\"_blank\" href=\"https://doi.org/10.5281/zenodo.8256932\">\n <span style=\"color:rgb(0, 0, 0);\">https://doi.org/10.6084/m9.figshare.24309475</span>\n </a>\n (statistical analyses and figures) and\n <a target=\"_blank\" href=\"https://doi.org/10.6084/m9.figshare.24309469\">\n <span style=\"color:rgb(0, 0, 0);\">https://doi.org/10.6084/m9.figshare.24309469</span>\n </a>\n (model training and evaluation).\n</p>\n<h2>License</h2>\n<p>Non-Commercial Use Only. The Site and the Services are provided for Non-Commercial use only in accordance with the CC BY-NC 4.0 license. If you would like to use the Site and/or the Services for commercial purposes, please contact us.",
+    "name": "SAR avec classification neuronale",
+    "description": "<h2>Aperçu</h2>\n<p>Le radar à synthèse d'ouverture (SAR) par satellite est un système d'imagerie radar embarqué dans l'espace qui peut détecter des navires et des structures en mer dans toutes les conditions météorologiques. Les impulsions micro-ondes sont transmises par une antenne satellite vers la surface de la Terre. L'énergie micro-onde diffusée vers le navire est ensuite mesurée et intégrée pour former une image de « rétrodiffusion ». L'image SAR contient une grande quantité d'informations sur les différents objets à la surface de l'eau, comme leur taille, leur orientation et leur texture. Les systèmes d'imagerie SAR surmontent la plupart des conditions météorologiques et des niveaux d'éclairage, y compris les nuages ou la pluie en raison de la propriété de pénétration des nuages des micro-ondes, et la lumière du jour ou l'obscurité en raison du radar étant un capteur « actif » (il envoie et enregistre sa propre énergie). Le SAR offre un avantage sur certains autres capteurs satellites « passifs », tels que l'imagerie électro-optique, composée d'une caméra satellite enregistrant le rayonnement solaire/infrarouge réfléchi/émis par les objets au sol. Cette dernière méthode peut être perturbée par la couverture nuageuse, la brume, les événements météorologiques et l'obscurité saisonnière aux hautes latitudes. </p>\n<h2>Cas d'utilisation</h2>\n< ul >\n<li>Suivre la présence de navires (de pêche et non pêche) dans les zones d'intérêt telles que les aires marines protégées (AMP), les zones économiques exclusives (ZEE), les zones d'exclusion côtières (ZEC) et les organisations régionales de gestion des pêches (ORGP ). </li>\n<li>Évaluer la présence de navires qui n'apparaissent pas sur les systèmes de suivi coopératifs, notamment le système d'identification automatique (AIS) et les systèmes de surveillance des navires (VMS), à proximité des écosystèmes marins vulnérables et des habitats essentiels des poissons. </li>\n</ul>\n<h2>Limites</h2>\n< ul >\n<li><b>Les données SAR de Sentinel-1 n'échantillonnent pas la majeure partie de l' océan ouvert.</b> </li>\n< ul >\n<li>Sentinel-1 n'échantillonne pas la majeure partie de l'océan. Cependant, la grande majorité de l'activité industrielle se déroule à proximité des côtes. De plus, plus loin des côtes, davantage de navires de pêche utilisent l'AIS (60 à 90 %), bien plus que la moyenne de tous les navires de pêche (environ 25 %). Ainsi, pour la majeure partie du monde, nos données de détection complétées par l'AIS captureront la grande majorité de l'activité humaine dans l' océan mondial. </li>\n</ul>\n<li><b>Des faux résultats positifs peuvent être produits à partir d'artefacts d'image (bruit ).</b> </li>\n<li><b>Nous ne fournissons pas de détections de navires à 1 kilomètre du rivage car il est difficile de cartographier avec précision où commence le littoral.</b> </li>\n< ul >\n<li>Nous n'incluons pas les objets situés à moins de 1 km du rivage en raison de côtes et de rochers ambigus. Nous n'incluons pas non plus les objets situés dans une grande partie de l'Arctique et de l'Antarctique, où la glace de mer peut créer trop de faux positifs. Dans les deux régions, cependant, le trafic maritime est soit très faible (Antarctique), ou l'AIS est largement adopté (pays d'Europe du Nord ou du Nord de l'Amérique du Nord). La majeure partie des activités industrielles se déroulent à plusieurs kilomètres du rivage, comme la pêche le long de la rupture du plateau continental, le transport maritime sur les voies de navigation et le développement offshore sur les plates-formes pétrolières et les parcs éoliens de moyenne à grande taille. En outre, une grande partie de l'activité maritime à moins de 1 km du rivage concerne des bateaux plus petits tels que des bateaux de plaisance. </li>\n</ul>\n<li><b>La détection des navires par imagerie SAR est limitée principalement par la résolution des images (~20 m dans le cas des produits GRD Sentinel-1 IW ).</b> </li>\n< ul >\n<li>En conséquence, nous ignorons la plupart des navires de moins de 15 m de longueur, même si un objet plus petit qu'un pixel peut tout de même être vu s'il s'agit d'un réflecteur puissant, comme un navire en métal plutôt qu'en bois ou en fibre de verre. En particulier pour les navires plus petits (25 m), la détection dépend également de la vitesse du vent et de l'état de l'océan, car une surface de mer plus agitée produira une rétrodiffusion plus élevée, ce qui rend difficile la distinction d'une petite cible parmis le bruit marin. Inversement, plus l'angle d'incidence du radar est élevé, plus la probabilité de détection est élevée, car moins de rétrodiffusion provenant de l'arrière-plan sera reçue par l'antenne. L'orientation du navire par rapport à l'antenne satellite est également importante, car un navire perpendiculaire à la ligne de visée du radar aura une section transversale de rétrodiffusion plus grande, ce qui augmente la probabilité d'être détecté. </li>\n</ul>\n<li><b>Les estimations de longueur des navires sont limitées par la qualité des données de confirmation</b></li>\n< ul >\n<li>Bien que nous n'ayons sélectionné que des correspondances AIS-SAR d'un niveau de confiance élevé pour construire nos données d'entraînement, nous avons constaté que certains enregistrements AIS indiquaient une longueur incorrecte. Ces erreurs n'ont cependant donné lieu qu'à une petite fraction de libellés d'entraînement imprécis, et les modèles d'apprentissage profond peuvent prendre en compte une partie du bruit dans les données d'entraînement. </li>\n</ul>\n<li><b>Toutes les zones géographiques ne sont pas couvertes de la même manière</b></li>\n< ul >\n<li>Notre classification des navires de pêche peut être moins précise dans certaines régions. Dans les zones de trafic intense de bateaux de plaisance et autres bateaux de service, comme à proximité des villes dans certains pays et dans les fjords de Norvège et d'Islande, certains de ces petits navires peuvent être classés à tort comme des navires de pêche. Inversement, on peut s'attendre à ce que les navires de pêche soient classés à tort comme des navires non pêche dans les zones où toutes les activités ne sont pas partagées publiquement. Mais plus important encore, de nombreux navires de pêche industrielle mesurent entre 10 et 20 mètres de long et la capacité de détection de notre modèle diminue rapidement lorsqu'il s'agit de ces longueurs. En conséquence, le nombre total de navires de pêche industrielle est probablement nettement plus élevé que ce que nous détectons. </li>\n<li>Nos données sous-estiment probablement la concentration de la pêche dans certaines régions, où nous voyons des zones d'activité des navires « coupées » par le bord de l'empreinte Sentinel-1 et nous ignorons de très petits navires (par exemple, la plupart des bateaux de pêche artisanale) qui sont moins susceptibles d'être équipés de dispositifs AIS. </li>\n</ul>\n</ul>\n<h2>Méthodes</h2>\n<h3>Imagerie SAR</h3>\n<p>Nous utilisons des images SAR de la mission Copernicus Sentinel-1 de l'Agence spatiale européenne (ASE) [1]. Les images proviennent de deux satellites (S1A et S1B jusqu'en décembre 2021, date à laquelle S1B a cessé de fonctionner, et S1A seulement à partir de 2022) qui orbitent à 180 degrés de déphasage l'un par rapport à l'autre sur une orbite polaire héliosynchrone. Chaque satellite a un cycle de répétition de 12 jours, de sorte qu'ensemble, ils fournissent une cartographie globale des eaux côtières du monde entier environ tous les six jours pendant la période où les deux satellites étaient en fonctionnement. Le nombre d'images par position varie cependant considérablement en fonction des priorités de la mission, de la latitude et du degré de chevauchement entre les passages de satellites adjacents. La couverture spatiale varie également au fil du temps [2]. Nos données se composent d'images à double polarisation (VH et VV) du mode de balayage interférométrique large (IW), avec une résolution d'environ 20 m.</p>\n<p>[1]\n<a target=\"_blank\" href=\"https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_Manuel_d'utilisation.pdf\">\n<span style=\" color:rgb (0, 0, 0);\">https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_Manuel_d'utilisation.pdf</span>\n</a>\n</p>\n<p>[ 2]< a target=\"_blank\" href=\"https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/scenario-d-observation\">\n<span style=\" couleur:rgb (0, 0, 0);\"></span>\n<span style=\" color:rgb (0, 0, 0); \">https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/scenario-d-observation</span>\n</a>\n</p>\n<h3>Détection des empreintes</h3>\n<p>Les empreintes de détection sont des zones au sein de chaque balayage satellite (ou scène) que notre système utilise pour effectuer des détections. Ces filtres permettent de conserver les détections pertinentes et d'exclure les données qui peuvent être inexactes. Les empreintes de détection sont plus petites que la scène totale car elles excluent toutes les zones terrestres et les îles, et excluent une zone tampon de 500 mètres des limites de la scène et une zone tampon de 1 kilomètre des côtes. </p>\n<h3>Filtrage</h3>\n<p>GFW a post-traité les détections SAR pour réduire le bruit (faux positifs), supprimer les infrastructures offshore de cette couche axée sur les navires et exclure les zones avec de la glace de mer à haute latitude. </p>\n<h3>Détection de navires par SAR</h3>\n<p>La détection des navires par SAR est basée sur un algorithme de seuil connu sous le nom de taux de fausse alarme constant, (CFAR pour Constant False Alarm Rate), utilisé pour la détection d'anomalies dans l'imagerie radar. Cet algorithme est conçu pour rechercher des valeurs de pixels inhabituellement lumineux (les cibles) par rapport à celles de la zone environnante (le bruit marin). Cette méthode définit un seuil basé sur les valeurs de pixels de l'arrière-plan local (dans une fenêtre), en balayant l'image entière pixel par pixel. Les valeurs de pixels supérieures au seuil constituent une anomalie et sont susceptibles d'être des échantillons d'une cible, et sont donc incluses dans la détection. </p>\n<h3>Présence du navire et estimation de sa longueur</h3>\n<p>Pour estimer la longueur de chaque objet détecté ainsi qu'identifier quand notre algorithme CFAR a effectué de fausses détections, nous avons conçu un réseau neuronal convolutif profoond (ConvNet pour Convolutional Neural Network) basé sur l'architecture moderne ResNet (réseau résiduel). Ce ConvNet à entrée unique/sortie multiple prend en entrée des tuiles d'images SAR à double bande de 80 par 80 pixels et génère en sortie la probabilité de présence d'objet (connue sous le nom de « tâche de classification binaire ») et la longueur estimée de l'objet (connue sous le nom de « tâche de régression » ). </p>\n<h3>Classification des activités de pêche et des activités non liées à la pêche</h3>\n<p>Pour déterminer si un navire détecté était un navire de pêche ou non, nous utilisons un modèle d'apprentissage automatique. Pour cette tâche de classification, nous avons utilisé une architecture ConvNeXt modifiée pour traiter les deux entrées suivantes : la longueur estimée du navire à partir du SAR (une quantité scalaire) et une pile de rasters environnementaux centrée sur l'emplacement du navire (une image multicanal). Ce modèle multi-entrées-données mixtes/sortie unique fait passer la pile raster (11 canaux) à travers une série de calques convolutionnels et combine les cartes de caractéristiques résultantes avec la valeur de la longueur du navire pour effectuer une classification binaire : pêche ou non pêche.& nbsp ;</p>\n<p>Les calques environnementaaux utilisées pour différencier la pêche et la non-pêche comprennent :</p>\n< ol >\n<li>densité des navires (basée sur le SAR) </li>\n<li>longueur moyenne du navire (basée sur le SAR) </li>\n<li>bathymétrie</li>\n<li>distance du port</li>\n<li>heures de présence de navires autres que des navires de pêche, à moins de 50 m (d'après l'AIS) </li>\n<li>heures de présence de navires autres que des navires de pêche, à plus de 50 m (d'après l'AIS) </li>\n<li>température moyenne de surface</li>\n<li>vitesse moyenne actuelle</li>\n<li>écart type de la température quotidienne</li>\n<li>écart type de la vitesse quotidienne actuelle</li>\n<li>chlorophylle moyenne</li>\n</ ol >\n<h3>Correspondance AIS et identité du navire</h3>\n<p>Les données AIS peuvent révéler l’identité des navires, de leurs propriétaires et de leurs sociétés, ainsi que l’activité de pêche. Cependant, tous les navires ne sont pas tenus d’utiliser des dispositifs AIS, car les réglementations varient selon le pays, la taille du navire et l’activité. Les navires engagés dans des activités illicites peuvent également désactiver leurs transpondeurs AIS ou manipuler les emplacements qu’ils diffusent. De plus, de grands « angles morts » le long des eaux côtières proviennent des pays qui limitent l’accès aux données AIS captées par des récepteurs terrestres au lieu de satellites ou d’une mauvaise réception due à une forte densité de navires et à des dispositifs AIS de mauvaise qualité. Les détections SAR fournissent donc les informations manquantes sur le trafic maritime dans l’ océan. </p>\n<h3>Correspondance SAR et AIS</h3>\n<p>La mise en correspondance des détections SAR avec les coordonnées GPS des navires (à partir du système d'identification automatique [AIS]) est difficile car l'horodatage des images SAR et des enregistrements AIS ne coïncide pas, et un seul message AIS peut potentiellement correspondre à plusieurs navires apparaissant sur l'image, et vice versa. Pour déterminer la probabilité qu'un navire diffusant AIS corresponde à une détection SAR spécifique, nous avons suivi une approche de mise en correspondance basée sur des rasters de probabilité de l'endroit où un navire est susceptible de se trouver quelques minutes avant et après l'enregistrement d'une position AIS. Ces rasters ont été développés à partir d'une année de données AIS mondiales provenant du pipeline Global Fishing Watch qui utilise les sources de données satellite Spire Global et Orbcomm , comprenant environ 10 milliards de positions de navires, et calculés pour six classes de navires différentes, en tenant compte de six vitesses différentes et de 36 intervalles de temps. Nous obtenons donc la position probable d'un navire qui pourrait correspondre à une détection SAR en fonction de la classe de navire, de la vitesse et de l' intervalle de temps. </p>\n<h3>Correspondance AIS et identité du navire</h3>\n<p>Les données du système d’identification automatique (AIS) peuvent révéler l’identité des navires, de leurs propriétaires et de leurs sociétés, ainsi que l’activité de pêche. Cependant, tous les navires ne sont pas tenus d’utiliser des dispositifs AIS, car les réglementations varient selon le pays, la taille du navire et l’activité. Les navires engagés dans des activités illicites peuvent également désactiver leurs transpondeurs AIS ou manipuler les emplacements qu’ils diffusent. De plus, de grands « angles morts » le long des eaux côtières proviennent des pays qui limitent l’accès aux données AIS capturées par des récepteurs terrestres au lieu de satellites ou d’une mauvaise réception due à une forte densité de navires et à des dispositifs AIS de mauvaise qualité. Les détections SAR fournissent donc les informations manquantes sur le trafic maritime dans l’ océan. </p>\n<h2>Ressources, code et autres notes</h2>\n<p>Tout le code développé dans cette étude pour la détection SAR, les modèles d'apprentissage profond et les analyses est open source et disponible gratuitement sur\n<a target=\"_blank\" href=\"https://github.com/GlobalFishingWatch/activité-industrielle-du-papier\">\n<span style=\" color:rgb (0, 0, 0);\">https://github.com/GlobalFishingWatch/activité-industrielle-du-papier</span>\n</a>.\n</p>\n<h2>Données sources et citations</h2>\n<p>Toutes les données sur les navires sont disponibles gratuitement via le portail de données Global Fishing Watch à l'adresse\n<a target=\"_blank\" href =\"https://globalfishingwatch.org\">\n<span style=\" color:rgb (0, 0, 0);\">https://globalfishingwatch.org</span>\n</a>. Toutes les données permettant de reproduire notre article scientifique justificatif peuvent être téléchargées à partir de\n<a target=\"_blank\" href =\"https://doi.org/10.5281/zenodo.8256932\">\n<span style=\" couleur:rgb (0, 0, 0);\">https://doi.org/10.6084/m9.figshare.24309475</span>\n</a>\n(analyses statistiques et chiffres) et\n<a target=\"_blank\" href =\"https://doi.org/10.6084/m9.figshare.24309469\">\n<span style=\" couleur:rgb (0, 0, 0);\">https://doi.org/10.6084/m9.figshare.24309469</span>\n</a>\n(formation et évaluation du modèle).\n</p>\n<h2>Licence</h2>\n<p> Utilisation non commerciale uniquement. Le site et les services sont fournis pour une utilisation non commerciale uniquement, conformément à la licence CC BY-NC 4.0. Si vous souhaitez utiliser le site et/ou les services à des fins commerciales, veuillez nous contacter.",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing",
+      "speed": "vitesse",
+      "bearing": "cap",
       "matched": {
-        "keyword": "matched",
+        "keyword": "correspondance",
         "enum": {
           "true": "1",
-          "false": "false"
+          "false": "faux"
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "type de navire",
         "enum": {
-          "carrier": "carrier",
+          "carrier": "navire de transport",
           "seismic_vessel": "seismic_vessel",
-          "passenger": "passenger",
-          "other": "other",
-          "support": "support",
-          "bunker": "bunker",
+          "passenger": "navire de transport de passagers",
+          "other": "autre",
+          "support": "navire de soutien",
+          "bunker": "navire ravitailleur",
           "gear": "engin",
-          "cargo": "cargo",
+          "cargo": "navire cargo",
           "fishing": "pêche",
-          "discrepancy": "discrepancy"
+          "discrepancy": "divergence"
         }
       },
       "neural_vessel_type": {
         "keyword": "neural_vessel_type",
         "enum": {
-          "Likely non-fishing": "Likely non-fishing",
-          "Likely Fishing": "Likely Fishing",
+          "Likely non-fishing": "Probablement non pêche",
+          "Likely Fishing": "Probablement pêche",
           "Unknown": "Inconnu"
         }
       }
     }
   },
   "public-global-sst-anomalies-max": {
-    "name": "Sea Surface Temperatures anomalies (Max)",
-    "description": "Sea surface temperatures anomalies (Max)"
+    "name": "Anomalies de température de la surface de la mer (max.)",
+    "description": "Anomalies de température de la surface de la mer (max.)"
   },
   "public-global-sst-anomalies-min": {
-    "name": "Sea Surface Temperatures anomalies (Min)",
-    "description": "Sea surface temperatures anomalies (Max)"
+    "name": "Anomalies de température de la surface de la mer (min.)",
+    "description": "Anomalies de température de la surface de la mer (max.)"
   },
   "public-global-sst-anomalies": {
-    "name": "Sea Surface Temperatures anomalies",
-    "description": "Sea surface temperatures anomalies (Mean)"
+    "name": "Anomalies de température de surface de la mer",
+    "description": "Anomalies de température de la surface de la mer (moy.)"
   },
   "public-global-sst-max": {
-    "name": "Surface Temperature Max",
-    "description": "Surface Temperature"
+    "name": "Température de surface max",
+    "description": "Température de surface"
   },
   "public-global-sst-min": {
-    "name": "Surface Temperature Min",
-    "description": "Surface Temperature"
+    "name": "Température de surface min.",
+    "description": "Température de surface"
   },
   "public-global-sst": {
     "name": "Température à la surface de la mer",
@@ -1327,31 +1331,31 @@
     "description": "<h2>Sommaire</h2>\n<ul>\n<li>La hauteur de houle est la distance verticale entre le creux (bas) et la crête (haut) d'une vague à la surface de la mer. Ce jeu de données utilise la hauteur de houle significative, qui est la moyenne du tiers le plus élevé de toutes les hauteurs de houle sur une période d'échantillonnage donnée.</li>\n<ul>\n<h2>La Source</h2>\n<ul>\n <a href='https://www.pacioos.hawaii.edu/metadata/ww3_global.html'>Cheung, K.F. 2010, updated 2021. WaveWatch III (WW3) Global Wave Model. Distributed by the Pacific Islands Ocean Observing System (PacIOOS), which is a part of the U.S. Integrated Ocean Observing System (IOOS®), funded in part by National Oceanic and Atmospheric Administration (NOAA) Awards #NA16NOS0120024 and #NA21NOS0120091.</a></li>"
   },
   "public-global-tracks": {
-    "name": "Tracks",
-    "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0",
+    "name": "Tracés",
+    "description": "Le jeu de données contient les tracés de tous les navires (AIS) - Version 3.0",
     "schema": {
-      "speed": "speed"
+      "speed": "vitesse"
     }
   },
   "public-global-vessel-identity": {
-    "name": "AIS (all vessel types)",
-    "description": "Vessel Identity (all shiptypes)"
+    "name": "AIS (tous types de navires)",
+    "description": "Identité des navires (tous types de navires)"
   },
   "public-global-vessel-insights": {
     "name": "AIS (Insights)",
     "description": "Vessel Insights from AIS"
   },
   "public-global-viirs-presence": {
-    "name": "Night light detections (VIIRS)",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat presence. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
+    "name": "Détections de lumière de nuit (VIIRS)",
+    "description": "Le calque de détection des navires par la lumière de nuit utilisant une technique connue sous le nom de suite radiométrique d'imagerie infrarouge visible (VIIRS pour Visible Infrared Imaging Radiometer Suite), montre les navires en mer que les satellites ont détectés grâce à la lumière qu'ils émettent la nuit. Bien qu'il ne soit pas exclusivement associé aux navires de pêche, ce calque d'activité est susceptible de montrer les navires associés à des activités comme la pêche au calmar, qui utilisent des lumières vives et pêchent la nuit. Le satellite effectue un seul survol de la planète entière chaque nuit, détectant des lumières non masquées par les nuages, ​afin de donner au moins une observation mondiale chaque jour. Étant donné que les navires sont détectés uniquement sur la base de l'émission de lumière, nous pouvons détecter des navires individuels et même des flottes de pêche entières qui n'émettent pas sur le système d'identification automatique (AIS) et ne sont donc pas représentés dans le calque d'effort de pêche apparent par AIS. Les lumières provenant d'infrastructures offshore fixes et d'autres sources non liées aux navires sont exclues. Global Fishing Watch intègre les détections de navires traitées à partir de données d'imagerie à faible luminosité collectées par la National Oceanic and Atmospheric Administration (NOAA) des États-Unis. Les détections de navires sont traitées en temps quasi réel par le Earth Observation Group de la NOAA, situé à Boulder, dans le Colorado. Les données, connues sous le nom de détections de navires par VIIRS, détectent la présence de navires de pêche utilisant des lumières pour attirer les captures ou pour mener des opérations de nuit. Plus de 85 % des détections proviennent de navires dépourvus de transpondeurs AIS ou de système de suivi des navires (VMS). En raison de la conception de l'orbite des satellites en orbite polaire, les régions plus proches du pôle auront plus de survols par jour, tandis que les régions équatoriales n'en auront qu'un seul par jour. Pour en savoir plus sur ce produit et télécharger les données <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">ici</a>. Les utilisateurs des données de détection de lumière de nuit doivent tenir compte de l'anomalie de l'Atlantique Sud (SAA pour south Atlantic Anomaly), une zone où la ceinture de radiations Van Allen interne de la Terre est à son altitude la plus basse, ce qui permet à davantage de particules énergétiques de pénétrer depuis l'espace. Lorsque de telles particules frappent les capteurs d'un satellite, cela peut créer un faux signal qui peut amener l'algorithme à le reconnaître comme une présence de navire. Un algorithme de filtrage a été appliqué, mais il peut encore y avoir des erreurs d'identification. Le calque GFW comprend des indicateurs de qualité (QF pour Quality Flag), notamment un filtre pour afficher uniquement les détections que la NOAA a classées comme des navires (QF1)",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing",
+      "speed": "vitesse",
+      "bearing": "cap",
       "matched": {
-        "keyword": "matched",
+        "keyword": "correspondance",
         "enum": {
-          "true": "true",
-          "false": "false"
+          "true": "vrai",
+          "false": "faux"
         }
       },
       "radiance": {
@@ -1362,12 +1366,12 @@
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "type de navire",
         "enum": {
-          "unknown": "unknown",
-          "fishing": "fishing",
-          "carrier": "carrier",
-          "support": "support"
+          "unknown": "inconnu",
+          "fishing": "navire de pêche",
+          "carrier": "navire de transport",
+          "support": "navire de soutien"
         }
       },
       "qf_detect": {
@@ -1554,8 +1558,8 @@
     "name": "Norway VMS",
     "description": "Les données du système de surveillance des navires (VMS) sont fournies par la Direction norvégienne des pêches. Les données sont collectées par le système norvégien de surveillance des navires via des satellites, sont publiées dans un délai de trois jours et contiennent des informations sur la localisation, la vitesse, la trajectoire et le mouvement des navires. Global Fishing Watch analyse ces données en utilisant les mêmes algorithmes que ceux développés pour les systèmes d'identification automatique (AIS) afin d'identifier les activités et les comportements de pêche. L'algorithme classe chaque point de données diffusé par les navires comme étant apparemment en train de pêcher ou non et affiche le premier sur la carte thermique de l'activité de pêche de Global Fishing Watch. Le VMS diffuse des données différentes de celles de l'AIS et peut donner des mesures différentes en exhaustivité, précision et qualité. Global Fishing Watch améliore continuellement ses algorithmes pour tous les formats de données diffusées afin d'identifier de manière algorithmique les \\\"activités de pêche apparentes\\\". Il est possible qu'une partie de l'activité de pêche ne soit pas identifiée ou que la carte thermique montre une activité de pêche apparente alors que la pêche n'a pas réellement lieu. Pour ces raisons, Global Fishing Watch utilise les termes \\\"activité de pêche\\\", \\\"pêche\\\" ou \\\"effort de pêche\\\" apparents plutôt que certains. Toutes les informations de Global Fishing Watch concernant \\\"l'activité de pêche apparente\\\" doivent être considérées comme une estimation et doivent être utilisées à la seule discrétion de l'utilisateur. Les algorithmes de détection de pêche de Global Fishing Watch sont développés et testés à partir de données d'événements de pêche réels collectés par des observateurs et sont combinés à une analyse experte des données de mouvement des navires AIS, ce qui permet de classer manuellement des milliers d'événements de pêche connus. Global Fishing Watch collabore également de manière intensive avec des chercheurs universitaires par le biais de notre programme de recherche afin de partager les données de classification des activités de pêche et d'améliorer les techniques de classification automatisée.",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "vitesse",
+      "bearing": "cap"
     }
   },
   "public-norway-fishing-vessels": {
@@ -1567,38 +1571,38 @@
   },
   "public-norway-non-fishing-vessels": {
     "name": "Norway VMS (Non Fishing Vessels)",
-    "description": "Dataset for VMS Norway (Public)",
+    "description": "Jeu de données pour VMS Norvège (public)",
     "schema": {
       "source": "source"
     }
   },
   "public-norway-presence": {
-    "name": "Norway VMS",
+    "name": "VMS Norvège",
     "description": "Les données du système de surveillance des navires (VMS) sont fournies par la direction norvégienne des pêches. Les données sont collectées à l'aide du système de surveillance des navires par satellite de la Norvège et sont publiées avec un délai de trois jours. Ces données contiennent des informations sur la localisation, la vitesse, le cap et les mouvements des navires. Global Fishing Watch analyse ces données à l'aide des mêmes algorithmes développés pour le système d'identification automatique (AIS) afin d'identifier l'activité et les comportements de pêche. L'algorithme classe chaque point de données diffusé par les navires comme étant apparemment en train de pêcher ou non et affiche la pêche sur la carte thermique des activités de pêche de Global Fishing Watch. Le VMS diffuse les données différemment de l'AIS et peut donner des mesures différentes d'exhaustivité, de précision et de qualité. Global Fishing Watch améliore continuellement ses algorithmes dans tous les formats de données diffusés pour identifier de manière algorithmique « l'activité de pêche apparente ». Il est possible que certaines activités de pêche ne soient pas identifiées ou que la carte thermique montre une activité de pêche apparente alors qu'il n'y a pas réellement de pêche. Pour ces raisons, Global Fishing Watch qualifie les termes « activité de pêche », « pêche » ou « effort de pêche » d'apparents plutôt que certains. Toutes les informations de Global Fishing Watch sur les « activités de pêche apparentes » doivent être considérées comme des estimations et doivent être utilisées à la seule discrétion de l’utilisateur. Les algorithmes de présence de pêche de Global Fishing Watch sont développés et testés à l’aide de données réelles sur les événements de pêche collectées par des observateurs et sont combinés à une analyse experte des données de mouvement des navires AIS, ce qui permet la classification manuelle de milliers d’événements de pêche connus. Global Fishing Watch collabore également étroitement avec des chercheurs universitaires dans le cadre de notre programme de recherche pour partager les données de classification des activités de pêche et pour améliorer les techniques de classification automatisée.",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "vitesse",
+      "bearing": "cap"
     }
   },
   "public-norway-vessel-identity-fishing": {
-    "name": "Norway VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Norway (Public)"
+    "name": "VMS Norvège (navires de pêche)",
+    "description": "Jeu de données pour VMS Norvège (public)"
   },
   "public-norway-vessel-identity-non-fishing": {
-    "name": "Norway VMS (Non Fishing Vessels)",
-    "description": "Dataset for VMS Norway (Public)"
+    "name": "VMS Norvège (navires non pêche)",
+    "description": "Jeu de données pour VMS Norvège (public)"
   },
   "public-panama-fishing-effort": {
-    "name": "Panama VMS",
-    "description": "Vessel monitoring system (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). Data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Panama’s carrier vessel data is also available here. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. In the future, we expect to be able to display more positions. Click on a carrier vessel’s position to view the vessel’s complete track. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
+    "name": "VMS Panama",
+    "description": "Données du système de surveillance des navires (VMS) fournies par la Aquatic Resources Authority of Panama (ARAP). Les données sont reçues par le système VMS du Panama via satellite et contiennent les identités des navires, le type d'engin, la localisation, la vitesse, le cap et plus encore. Les données des navires de transport du Panama sont également disponibles ici. Chaque point du calque de données des navires de transport représente une position des navires de transport, mais toutes les positions ne sont pas affichées. Les positions des navires de transport sont affichées une fois par jour. À l'avenir, nous espérons pouvoir afficher davantage de positions. Cliquez sur la position d'un navire de transport pour afficher le tracé complet du navire. Global Fishing Watch analyse ces données à l'aide des mêmes algorithmes que ceux que nous avons développés pour les données du système d'identification automatique (AIS) afin d'identifier l'activité et les comportements de pêche. L'algorithme classe chaque point de données de transmission des navires comme étant apparemment en train de pêcher ou non et affiche la pêche sur la carte thermique des activités de pêche de Global Fishing Watch. Le VMS diffuse les données de manière assez différente de l'AIS et peut donner des mesures différentes de l'exhaustivité, de la précision et de la qualité. Au fil du temps, nos algorithmes s'amélioreront dans tous nos formats de données de transmission. L’algorithme de présence de pêche de Global Fishing Watch pour le VMS, comme pour l'AIS, est un effort optimal pour identifier algorithmiquement « l’activité de pêche apparente ». Il est possible que certaines activités de pêche ne soient pas identifiées ou que la carte thermique montre une activité de pêche apparente alors qu’il n’y a pas réellement de pêche. Pour ces raisons, Global Fishing Watch qualifie les termes « activité de pêche », « pêche » et « effort de pêche » d’« apparents » plutôt que certains. Toutes les informations de Global Fishing Watch sur « l’activité de pêche apparente » doivent être considérées comme une estimation et vous devez vous y fier uniquement à vos propres risques. Les algorithmes de présence de pêche de Global Fishing Watch sont développés et testés à l’aide de données réelles sur les événements de pêche collectées par des observateurs, combinées à une analyse par des experts en données de mouvement des navires AIS, ce qui donne lieu à la classification manuelle de milliers d’événements de pêche connus. Global Fishing Watch collabore également étroitement avec des chercheurs universitaires dans le cadre de notre programme de recherche pour partager des données de classification des activités de pêche et une classification automatisée.",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "vitesse",
+      "bearing": "cap"
     }
   },
   "public-panama-fishing-vessels": {
     "name": "Panama VMS (Public Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Public)",
+    "description": "Jeu de données pour VMS Panama (public)",
     "schema": {
       "source": "source"
     }
@@ -1611,69 +1615,69 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "Panama VMS (Public Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Public)"
+    "name": "VMS Panama (public, navires de pêche)",
+    "description": "Jeu de données pour VMS Panama (public)"
   },
   "public-panama-vessel-identity-non-fishing": {
-    "name": "Panama VMS (Public Non fishing vessels)",
-    "description": "Dataset for VMS Panama - Carriers (Public)"
+    "name": "VMS Panama (public, navires non pêche)",
+    "description": "Jeu de données pour VMS Panama (public, navires de transport)"
   },
   "public-peru-fishing-effort": {
-    "name": "Peru VMS",
-    "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "name": "VMS Pérou",
+    "description": "Données du système de surveillance des navires (VMS) fournies par le ministère de la Production, secteur de la pêche (PRODUCE) du gouvernement péruvien. L'autorisation d'inclure les données péruviennes a nécessité la mise en œuvre d'un délai de publication de 10 jours. Les données sont collectées à l'aide de leur système de surveillance des navires (VMS) via des satellites et des récepteurs terrestres, et contiennent l'identité du navire, le type d'engin, la localisation, la vitesse, le cap et plus encore. Global Fishing Watch analyse ces données en utilisant les mêmes algorithmes développés pour les données du système d'identification automatique (AIS) afin d'identifier l'activité et les comportements de pêche. L'algorithme classe chaque point de données de diffusion pour ces navires comme étant apparemment en train de pêcher ou non et affiche la pêche sur la carte thermique des activités de pêche de Global Fishing Watch. Le VMS diffuse les données de manière assez différente de l'AIS et peut donner des mesures différentes d'exhaustivité, de précision et de qualité. Au fil du temps, nos algorithmes s'amélioreront dans tous nos formats de données de diffusion. L'algorithme de présence de pêche de Global Fishing Watch pour le VMS, comme pour l'AIS, est un effort optimal pour identifier algorithmiquement « l'activité de pêche apparente ». Il est possible que certaines activités de pêche ne soient pas identifiées ou que la carte thermique montre une activité de pêche apparente alors qu'il n'y a pas réellement de pêche. Pour ces raisons, Global Fishing Watch qualifie les termes « activité de pêche », « pêche » ou « effort de pêche » d'« apparents » plutôt que certains. Toutes les informations de Global Fishing Watch sur « l'activité de pêche apparente » doivent être considérées comme une estimation et vous devez vous y fier uniquement à vos propres risques. Les algorithmes de présence de pêche de Global Fishing Watch sont développés et testés à l'aide de données réelles sur les événements de pêche collectées par des observateurs, combinées à une analyse d'experts en données de mouvement des navires AIS, ce qui permet la classification manuelle de milliers d'événements de pêche connus. Global Fishing Watch collabore également étroitement avec des chercheurs universitaires dans le cadre de notre programme de recherche pour partager des données de classification des activités de pêche et des techniques de classification automatisée.",
     "schema": {
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "flotte",
         "enum": {
-          "industrial": "industrial",
-          "artisanal": "artisanal",
-          "small-scale": "small-scale",
-          "not defined": "not defined"
+          "industrial": "industrielle",
+          "artisanal": "artisanale",
+          "small-scale": "à petite échelle",
+          "not defined": "non définie"
         }
       },
-      "speed": "speed",
+      "speed": "vitesse",
       "origin": {
         "keyword": "origin",
         "enum": {
           "PER": "PER",
-          "Foreign": "Foreign"
+          "Foreign": "Étranger"
         }
       },
-      "bearing": "bearing"
+      "bearing": "cap"
     }
   },
   "public-peru-fishing-vessels": {
-    "name": "Peru VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Peru (Public)"
+    "name": "VMS Pérou (navires de pêche)",
+    "description": "Jeu de données pour VMS Pérou (public)"
   },
   "public-peru-presence": {
-    "name": "Peru VMS Presence",
-    "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "name": "Présence VMS Pérou",
+    "description": "Données du système de surveillance des navires (VMS) fournies par le ministère de la Production, secteur de la pêche (PRODUCE) du gouvernement péruvien. L'autorisation d'inclure les données péruviennes a nécessité la mise en œuvre d'un délai de publication de 10 jours. Les données sont collectées à l'aide de leur système de surveillance des navires (VMS) via des satellites et des récepteurs terrestres, et contiennent l'identité du navire, le type d'engin, la localisation, la vitesse, le cap et plus encore. Global Fishing Watch analyse ces données en utilisant les mêmes algorithmes développés pour les données du système d'identification automatique (AIS) afin d'identifier l'activité et les comportements de pêche. L'algorithme classe chaque point de données de diffusion pour ces navires comme étant apparemment en train de pêcher ou non et affiche la pêche sur la carte thermique des activités de pêche de Global Fishing Watch. Le VMS diffuse les données de manière assez différente de l'AIS et peut donner des mesures différentes d'exhaustivité, de précision et de qualité. Au fil du temps, nos algorithmes s'amélioreront dans tous nos formats de données de diffusion. L'algorithme de détection de pêche de Global Fishing Watch pour le VMS, comme pour l'AIS, est un effort optimal pour identifier algorithmiquement « l'activité de pêche apparente ». Il est possible que certaines activités de pêche ne soient pas identifiées ou que la carte thermique montre une activité de pêche apparente alors qu'il n'y a pas réellement de pêche. Pour ces raisons, Global Fishing Watch qualifie les termes « activité de pêche », « pêche » ou « effort de pêche » d'« apparents » plutôt que certains. Toutes les informations de Global Fishing Watch sur « l'activité de pêche apparente » doivent être considérées comme une estimation et vous devez vous y fier uniquement à vos propres risques. Les algorithmes de détection de pêche de Global Fishing Watch sont développés et testés à l'aide de données réelles sur les événements de pêche collectées par des observateurs, combinées à une analyse d'experts en données de mouvement des navires AIS, ce qui permet la classification manuelle de milliers d'événements de pêche connus. Global Fishing Watch collabore également étroitement avec des chercheurs universitaires dans le cadre de notre programme de recherche pour partager des données de classification des activités de pêche et des techniques de classification automatisée.",
     "schema": {
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "flotte",
         "enum": {
-          "industrial": "industrial",
-          "artisanal": "artisanal",
-          "small-scale": "small-scale",
-          "not defined": "not defined"
+          "industrial": "industrielle",
+          "artisanal": "artisanale",
+          "small-scale": "à petite échelle",
+          "not defined": "non définie"
         }
       },
       "origin": {
-        "keyword": "origin",
+        "keyword": "origine",
         "enum": {
           "PER": "PER",
-          "Foreign": "Foreign"
+          "Foreign": "Étranger"
         }
       }
     }
   },
   "public-peru-vessel-identity-fishing": {
-    "name": "Peru VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Peru (Public)"
+    "name": "VMS Pérou (navires de pêche)",
+    "description": "Jeu de données pour VMS Pérou (public)"
   },
   "public-png-fishing-effort": {
-    "name": "Papua New Guinea VMS",
+    "name": "VMS Papouasie Nouvelle-Guinée",
     "description": "Les données du système de surveillance des navires (VMS) sont fournies par l'Autorité nationale des pêches de Papouasie-Nouvelle-Guinée. Les données sont collectées à l'aide du système de surveillance des navires (VMS) par satellite de Papouasie-Nouvelle-Guinée, qui contient des informations d'identification et de localisation des navires, et sont publiées avec un délai de cinq jours. Global Fishing Watch déduit la vitesse et le cap de chaque localisation de navire et analyse ces données à l'aide des mêmes algorithmes développés pour le système d'identification automatique (AIS) afin d'identifier l'activité et les comportements de pêche. L'algorithme classe chaque point de données transmis par les navires comme étant apparemment en train de pêcher ou non et affiche la pêche sur la carte thermique des activités de pêche de Global Fishing Watch. Le VMS diffuse les données différemment de l'AIS et peut donner des mesures différentes d'exhaustivité, de précision et de qualité. Global Fishing Watch améliore continuellement ses algorithmes dans tous les formats de données diffusés pour identifier de manière algorithmique « l'activité de pêche apparente ». Il est possible qu'une certaine activité de pêche ne soit pas identifiée ou que la carte thermique montre une activité de pêche apparente alors qu'il n'y a pas réellement de pêche. Pour ces raisons, Global Fishing Watch qualifie les termes « activité de pêche », « pêche » ou « effort de pêche » d’apparents plutôt que certains. Toutes les informations de Global Fishing Watch sur « l’activité de pêche apparente » doivent être considérées comme une estimation et doivent être utilisées uniquement à la discrétion de l’utilisateur. Les algorithmes de détection de pêche de Global Fishing Watch sont développés et testés à l’aide de données réelles sur les événements de pêche collectées par des observateurs et sont combinés à une analyse d'experts en données de mouvement des navires AIS, ce qui permet la classification manuelle de milliers d’événements de pêche connus. Global Fishing Watch collabore également étroitement avec des chercheurs universitaires dans le cadre de notre programme de recherche pour partager les données de classification des activités de pêche et pour améliorer les techniques de classification automatisée.",
     "schema": {
       "speed": "speed",
