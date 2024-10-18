@@ -11,6 +11,7 @@ export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
 
 export type AdvancedSearchQueryFieldKey = (typeof ADVANCED_SEARCH_QUERY_FIELDS)[number]
 export const ADVANCED_SEARCH_QUERY_FIELDS = [
+  'id' as const,
   'callsign' as const,
   'flag' as const,
   'fleet' as const,
@@ -78,6 +79,9 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   owner: {
     operator: 'LIKE',
     transformation: toUpperCaseWithWildcardsAndQuotationMarks,
+  },
+  id: {
+    operator: '=',
   },
   geartypes: {
     operator: '=',

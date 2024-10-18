@@ -1,9 +1,10 @@
 import { createAsyncThunk, PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { uniq } from 'es-toolkit'
+import { difference, uniq } from 'es-toolkit'
 import { RootState } from 'reducers'
 import {
   APIPagination,
   APIVesselSearchPagination,
+  Dataset,
   DatasetStatus,
   DataviewDatasetConfig,
   EndpointId,
@@ -11,8 +12,14 @@ import {
   VesselGroup,
   VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
-import { GFWAPI, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
+import {
+  getAdvancedSearchQuery,
+  GFWAPI,
+  parseAPIError,
+  ParsedAPIError,
+} from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
@@ -85,6 +92,103 @@ const fetchAllSearchVessels = async (params: FetchSearchVessels) => {
   return searchResults
 }
 
+type SearchVesselsInVGParams = {
+  datasets: Dataset[]
+  signal: AbortSignal
+  ids: string[]
+  idField?: IdField
+}
+const searchVesselsInVesselGroup = async ({
+  datasets,
+  signal,
+  ids,
+  idField = 'vesselId',
+}: SearchVesselsInVGParams) => {
+  if (!datasets || !ids?.length) {
+    throw new Error(ids ? 'No vessel ids provided' : 'No datasets provided')
+  }
+  const datasetIds = datasets.map((d) => d.id)
+  const dataset = datasets[0]
+  const datasetConfig: DataviewDatasetConfig = {
+    endpoint: EndpointId.VesselSearch,
+    datasetId: dataset.id,
+    params: [],
+    query: [
+      { id: 'cache', value: false },
+      {
+        id: 'includes',
+        value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+      },
+      {
+        id: 'limit',
+        value: SEARCH_PAGINATION,
+      },
+    ],
+  }
+  const url = resolveEndpoint(dataset, datasetConfig)
+  if (!url) {
+    throw new Error('Missing search url')
+  }
+  const where = getAdvancedSearchQuery([
+    {
+      key: idField === 'vesselId' ? 'id' : idField === 'mmsi' ? 'ssvid' : idField,
+      value: ids,
+    },
+  ])
+  const searchResults = await fetchAllSearchVessels({
+    url: `${url}`,
+    body: { datasets: datasetIds, where },
+    signal,
+  })
+
+  const vesselGroupVessels = flatVesselGroupSearchVessels(searchResults)
+  return vesselGroupVessels
+}
+
+type GetVesselsInVGParams = {
+  datasets: Dataset[]
+  signal: AbortSignal
+  vesselGroup: VesselGroup
+}
+const getVesselsInVesselGroup = async ({ datasets, signal, vesselGroup }: GetVesselsInVGParams) => {
+  if (!datasets || !vesselGroup) {
+    throw new Error(vesselGroup ? 'No vessel group provided' : 'No datasets provided')
+  }
+  const dataset = datasets[0]
+  const datasetConfig: DataviewDatasetConfig = {
+    endpoint: EndpointId.VesselList,
+    datasetId: '',
+    params: [],
+    query: [
+      {
+        id: 'vessel-groups',
+        value: vesselGroup.id,
+      },
+      {
+        id: 'cache',
+        value: false,
+      },
+      {
+        id: 'includes',
+        value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+      },
+    ],
+  }
+  const url = resolveEndpoint(dataset, datasetConfig)
+  if (!url) {
+    throw new Error('Missing search url')
+  }
+  const vesselsIdentities = await GFWAPI.fetch<APIPagination<IdentityVessel>>(url, {
+    signal,
+    cache: 'reload',
+  })
+  const vesselGroupVessels = mergeVesselGroupVesselIdentities(
+    vesselGroup.vessels,
+    vesselsIdentities.entries
+  )
+  return vesselGroupVessels
+}
+
 const initialState: VesselGroupModalState = {
   isModalOpen: false,
   vesselGroupEditId: null,
@@ -104,81 +208,27 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
     { ids, idField, datasets = [] }: { ids: string[]; idField: IdField; datasets?: string[] },
     { signal, rejectWithValue, getState }
   ) => {
-    const state = getState() as any
-    const searchDatasets = (selectVesselsDatasets(state) || []).filter((d) => {
-      const matchesDataset = datasets?.length ? datasets.includes(d.id) : true
-      return (
-        matchesDataset &&
-        d.status !== DatasetStatus.Deleted &&
-        d.configuration?.apiSupportedVersions?.includes('v3')
-      )
-      /*&& d.alias?.some((alias) => alias.includes(':latest'))*/
-    })
-
-    if (searchDatasets?.length) {
-      const dataset = searchDatasets[0]
-      const datasets = searchDatasets.map((d) => d.id)
-      const uniqVesselIds = uniq(ids)
-      const isVesselByIdSearch = idField === 'vesselId'
-      const datasetConfig: DataviewDatasetConfig = {
-        endpoint: isVesselByIdSearch ? EndpointId.VesselList : EndpointId.VesselSearch,
-        datasetId: '',
-        params: [],
-        query: [
-          { id: 'cache', value: false },
-          {
-            id: 'includes',
-            value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
-          },
-        ],
-      }
-      if (isVesselByIdSearch) {
-        datasetConfig.query?.push({ id: 'ids', value: uniqVesselIds })
-        datasetConfig.query?.push({
-          id: 'datasets',
-          value: datasets,
-        })
-      } else {
-        datasetConfig.query?.push({
-          id: 'limit',
-          value: SEARCH_PAGINATION,
-        })
-      }
-      try {
-        const url = resolveEndpoint(dataset, datasetConfig)
-        if (!url) {
-          console.warn('Missing search url')
-          return rejectWithValue({
-            code: 0,
-            message: 'Missing search url',
-          })
-        }
-        const fetchBody = isVesselByIdSearch
-          ? undefined
-          : {
-              datasets,
-              where: `${uniqVesselIds
-                .map((id) => `${idField === 'mmsi' ? 'ssvid' : idField}='${id}'`)
-                .join(' OR ')}`,
-            }
-        const searchResults = await fetchAllSearchVessels({
-          url: `${url}`,
-          body: fetchBody,
-          signal,
-        })
-
-        const vesselGroupVessels = flatVesselGroupSearchVessels(searchResults)
-        return vesselGroupVessels
-      } catch (e: any) {
-        console.warn(e)
-        return rejectWithValue(parseAPIError(e))
-      }
-    } else {
-      console.warn('No search datasets found')
-      return rejectWithValue({
-        code: 0,
-        message: 'No search datasets found',
+    try {
+      const state = getState() as any
+      const searchDatasets = (selectVesselsDatasets(state) || []).filter((d) => {
+        const matchesDataset = datasets?.length ? datasets.includes(d.id) : true
+        return (
+          matchesDataset &&
+          d.status !== DatasetStatus.Deleted &&
+          d.configuration?.apiSupportedVersions?.includes('v3')
+        )
+        /*&& d.alias?.some((alias) => alias.includes(':latest'))*/
       })
+      const vesselGroupVessels = await searchVesselsInVesselGroup({
+        datasets: searchDatasets,
+        signal,
+        ids,
+        idField,
+      })
+      return vesselGroupVessels
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {
@@ -197,63 +247,42 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
     { signal, rejectWithValue, getState, dispatch }
   ) => {
     const state = getState() as any
-    const datasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
-    const datasetId = datasets[0]
-    let dataset = selectDatasetById(datasetId)(state)
-    if (!dataset) {
-      const action = await dispatch(fetchDatasetByIdThunk(datasetId))
-      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
-        dataset = action.payload
-      }
-    }
-    if (vesselGroup.id && dataset) {
-      const datasetConfig: DataviewDatasetConfig = {
-        endpoint: EndpointId.VesselList,
-        datasetId: '',
-        params: [],
-        query: [
-          {
-            id: 'vessel-groups',
-            value: vesselGroup.id,
-          },
-          {
-            id: 'cache',
-            value: false,
-          },
-          {
-            id: 'includes',
-            value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
-          },
-        ],
-      }
-      try {
-        const url = resolveEndpoint(dataset, datasetConfig)
-        if (!url) {
-          console.warn('Missing search url')
-          return rejectWithValue({
-            code: 0,
-            message: 'Missing search url',
-          })
+    const datasetIds = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
+    const updatedDatasetsIds = datasetIds.map(runDatasetMigrations)
+    const hasOutdatedDatasets = difference(datasetIds, updatedDatasetsIds)?.length > 0
+    const datasetsPromise = updatedDatasetsIds.map(async (datasetId) => {
+      const dataset = selectDatasetById(datasetId)(state)
+      if (!dataset) {
+        const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+        if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+          return action.payload
         }
-        const vesselsIdentities = await GFWAPI.fetch<APIPagination<IdentityVessel>>(url, {
-          signal,
-          cache: 'reload',
-        })
-        const vesselGroupVessels = mergeVesselGroupVesselIdentities(
-          vesselGroup.vessels,
-          vesselsIdentities.entries
-        )
-        return vesselGroupVessels
-      } catch (e: any) {
-        console.warn(e)
-        return rejectWithValue(parseAPIError(e))
       }
-    } else {
-      console.warn('No search datasets found')
-      return rejectWithValue({
-        code: 0,
-        message: 'No search datasets found',
-      })
+      return dataset
+    })
+    const datasets = await Promise.all(datasetsPromise).then((d) => {
+      return d
+    })
+    if (!datasets?.length) {
+      return rejectWithValue({ message: 'No datasets found' })
+    }
+    try {
+      // Vessel groups with outdated datasets doesn't support get by vesselGroupId so need to search by its ids
+      const vessels = hasOutdatedDatasets
+        ? await searchVesselsInVesselGroup({
+            datasets,
+            signal,
+            ids: vesselGroup.vessels.map((v) => v.vesselId),
+          })
+        : await getVesselsInVesselGroup({
+            datasets,
+            signal,
+            vesselGroup,
+          })
+      return vessels
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
   },
   {
