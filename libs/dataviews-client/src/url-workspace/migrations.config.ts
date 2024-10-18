@@ -56,9 +56,9 @@ export const VMS_LEGACY_VESSELS_DATASETS_DICT = {
   'public-costa-rica-fishing-vessels:v20211': 'public-costa-rica-vessel-identity-vessels:v20211126',
   'public-chile-non-fishing-vessels:v20211': 'public-chile-vessel-identity-non-fishing:v20211126',
   'public-chile-fishing-vessels:v20211126': 'public-chile-vessel-identity-fishing:v20211126',
-  'public-brazil-opentuna-fishing-vessels:v20210':
+  'public-brazil-opentuna-fishing-vessels:v20210311':
     'public-brazil-opentuna-vessel-identity-fishing:v20210311',
-  'public-bra-onyxsat-fishing-vessels:v20211':
+  'public-bra-onyxsat-fishing-vessels:v20211126':
     'public-bra-onyxsat-vessel-identity-fishing:v20211126',
   'public-belize-fishing-vessels:v20220304': 'public-belize-vessel-identity-fishing:v20220304',
   'private-peru-fishing-vessels:v20211126': 'private-peru-vessel-identity-fishing:v20211126',
