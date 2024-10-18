@@ -112,7 +112,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     vesselId={vessel.vesselId}
                     datasetId={vessel.infoDataset?.id}
                   >
-                    {formatInfoField(vessel.shipName, 'name')}
+                    {formatInfoField(vessel.shipName, 'shipname')}
                   </VesselLink>
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>

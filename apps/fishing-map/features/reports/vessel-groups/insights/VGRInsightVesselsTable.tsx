@@ -34,7 +34,7 @@ const VesselGroupReportInsightVesselTable = ({
                     : vessel.identity.dataset?.id
                 }
               >
-                {formatInfoField(vessel.identity.shipname, 'name')}
+                {formatInfoField(vessel.identity.shipname, 'shipname')}
               </VesselLink>
             </div>
             <div className={cx({ [styles.border]: !isLastRow })}>

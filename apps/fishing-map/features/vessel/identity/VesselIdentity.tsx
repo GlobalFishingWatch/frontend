@@ -263,7 +263,9 @@ const VesselIdentity = () => {
                         />
                       ) : (
                         <VesselIdentityField
-                          value={formatInfoField(vesselIdentity[key] as string, label) as string}
+                          value={
+                            formatInfoField(vesselIdentity[key] as string, label as any) as string
+                          }
                         />
                       )}
                     </div>

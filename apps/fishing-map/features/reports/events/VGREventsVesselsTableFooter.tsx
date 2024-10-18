@@ -42,7 +42,7 @@ export default function VesselGroupReportVesselsTableFooter() {
       //   })
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${formatInfoField(vesselGroup?.name, 'name')}-${start}-${end}.csv`)
+      saveAs(blob, `${vesselGroup?.name}-${start}-${end}.csv`)
     }
   }
 

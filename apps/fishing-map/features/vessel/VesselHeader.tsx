@@ -127,7 +127,7 @@ const VesselHeader = () => {
               d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
             />
           </svg>
-          {formatInfoField(shipname, 'name')}
+          {formatInfoField(shipname, 'shipname')}
           <span className={styles.secondary}>{otherNamesLabel}</span>
           <div>
             <a className={styles.reportLink} href={window.location.href}>

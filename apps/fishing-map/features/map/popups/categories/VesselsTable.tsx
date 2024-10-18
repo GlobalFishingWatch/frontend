@@ -126,11 +126,11 @@ function VesselsTable({
         }
         const aName = formatInfoField(
           getVesselProperty(a, 'shipname', getVesselPropertyParams),
-          'name'
+          'shipname'
         )
         const bName = formatInfoField(
           getVesselProperty(b, 'shipname', getVesselPropertyParams),
-          'name'
+          'shipname'
         )
         if (aName < bName) return -1
         if (aName > bName) return 1
@@ -178,7 +178,7 @@ function VesselsTable({
               }
               const vesselName = formatInfoField(
                 getVesselProperty(vessel, 'shipname', getVesselPropertyParams),
-                'name'
+                'shipname'
               )
 
               const otherVesselsLabel = vessel

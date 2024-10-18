@@ -133,7 +133,7 @@ function VesselGroupLayerPanel({
                 )}
               >
                 <span>
-                  {formatInfoField(vesselGroup?.name, 'name')}{' '}
+                  {formatInfoField(vesselGroup?.name, 'shipname')}{' '}
                   <span className={styles.secondary}>
                     ({getVesselGroupVesselsCount(vesselGroup)})
                   </span>
@@ -152,7 +152,7 @@ function VesselGroupLayerPanel({
                       t('vesselGroup.loadingInfo', 'Loading vessel group info')
                     ) : (
                       <Fragment>
-                        {formatInfoField(vesselGroup?.name, 'name')}{' '}
+                        {vesselGroup?.name}{' '}
                         {vesselGroup?.vessels?.length && (
                           <span className={styles.secondary}>
                             {' '}
