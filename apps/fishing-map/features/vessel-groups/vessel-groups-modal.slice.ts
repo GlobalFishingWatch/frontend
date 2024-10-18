@@ -132,7 +132,7 @@ const searchVesselsInVesselGroup = async ({
   const where = getAdvancedSearchQuery([
     {
       key: idField === 'vesselId' ? 'id' : idField === 'mmsi' ? 'ssvid' : idField,
-      value: ids,
+      value: uniq(ids),
     },
   ])
   const searchResults = await fetchAllSearchVessels({
