@@ -28,6 +28,7 @@ import {
 import { cleanFlagState } from 'features/reports/activity/vessels/report-activity-vessels.utils'
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { selectVGRVessels } from '../vessel-group-report.slice'
 import { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
 
@@ -185,6 +186,11 @@ export const selectVGRVesselsPagination = createSelector(
   }
 )
 
+type GraphDataGroup = {
+  name: string
+  value: number
+}
+
 export const selectVGRVesselsGraphDataGrouped = createSelector(
   [selectVGRVesselsFiltered, selectVGRVesselsSubsection],
   (vessels, subsection) => {
@@ -209,27 +215,43 @@ export const selectVGRVesselsGraphDataGrouped = createSelector(
         value: (value as any[]).length,
       }))
       .sort((a, b) => {
-        if (a.name === OTHER_CATEGORY_LABEL) {
-          return 1
-        }
-        if (b.name === OTHER_CATEGORY_LABEL) {
-          return -1
-        }
         return b.value - a.value
       })
-
-    if (orderedGroups.length <= 9) {
-      return orderedGroups
+    const groupsWithoutOther: GraphDataGroup[] = []
+    const otherGroups: GraphDataGroup[] = []
+    orderedGroups.forEach((group) => {
+      if (
+        group.name === 'null' ||
+        group.name.toLowerCase() === OTHER_CATEGORY_LABEL.toLowerCase() ||
+        group.name === EMPTY_FIELD_PLACEHOLDER
+      ) {
+        otherGroups.push(group)
+      } else {
+        groupsWithoutOther.push(group)
+      }
+    })
+    const allGroups =
+      otherGroups.length > 0
+        ? [
+            ...groupsWithoutOther,
+            {
+              name: OTHER_CATEGORY_LABEL,
+              value: otherGroups.reduce((acc, group) => acc + group.value, 0),
+            },
+          ]
+        : groupsWithoutOther
+    if (allGroups.length <= MAX_CATEGORIES) {
+      return allGroups
     }
-    const firstNine = orderedGroups.slice(0, 9)
-    const other = orderedGroups.slice(9)
+    const firstGroups = allGroups.slice(0, MAX_CATEGORIES)
+    const restOfGroups = allGroups.slice(MAX_CATEGORIES)
 
     return [
-      ...firstNine,
+      ...firstGroups,
       {
         name: OTHER_CATEGORY_LABEL,
-        value: other.reduce((acc, group) => acc + group.value, 0),
+        value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
-    ]
+    ] as GraphDataGroup[]
   }
 )
