@@ -5,6 +5,7 @@ export type VesselGroupReportVesselParsed = Omit<VesselLastIdentity, 'dataset'> 
   shipName: string
   vesselType: string
   geartype: string
+  type: string
   flagTranslated: string
   flagTranslatedClean: string
   mmsi: string

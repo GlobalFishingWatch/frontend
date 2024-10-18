@@ -58,7 +58,7 @@ export default function VesselGroupReportEventsVesselsTable() {
           {vessels?.map((vessel, i) => {
             const { vesselId, numEvents, shipname, flag, ssvid, dataset } = vessel
             const isLastRow = i === vessels.length - 1
-            const name = formatInfoField(shipname, 'name') as string
+            const name = formatInfoField(shipname, 'shipname') as string
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             return (
               <Fragment key={vesselId}>

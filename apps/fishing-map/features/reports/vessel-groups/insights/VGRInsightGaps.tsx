@@ -83,7 +83,7 @@ const VesselGroupReportInsightGap = () => {
                               vesselId={vesselId}
                               datasetId={vessel.identity.dataset as string}
                             >
-                              {formatInfoField(vessel.identity.shipname, 'name')}
+                              {formatInfoField(vessel.identity.shipname, 'shipname')}
                             </VesselLink>{' '}
                             <span className={styles.secondary}>
                               ({vessel.periodSelectedCounters.eventsGapOff})

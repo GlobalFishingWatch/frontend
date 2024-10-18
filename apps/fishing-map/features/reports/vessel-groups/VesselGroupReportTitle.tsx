@@ -86,7 +86,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
             </label>
           )}
           <h1 className={styles.title} data-test="report-title">
-            {formatInfoField(vesselGroup.name, 'name')}
+            {vesselGroup.name}
           </h1>
           {timeRange && vessels && flags && (
             <h2 className={styles.summary}>

@@ -78,7 +78,7 @@ export function useActivityEventTranslations() {
               <span>
                 {t('event.encounterAction', 'had an encounter with')}{' '}
                 <VesselLink vesselId={id} datasetId={dataset}>
-                  {formatInfoField(name, 'name')} ({formatInfoField(flag, 'flag')})
+                  {formatInfoField(name, 'shipname')} ({formatInfoField(flag, 'flag')})
                 </VesselLink>{' '}
                 {mainRegionDescription && (
                   <Tooltip content={allRegionsDescription}>

@@ -20,6 +20,7 @@ import { REPORT_FILTER_PROPERTIES } from 'features/reports/vessel-groups/vessels
 import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { formatInfoField } from 'utils/info'
+import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],
@@ -65,7 +66,7 @@ export const selectVGREventsVessels = createSelector(
         geartype:
           (identity.geartypes || [])
             .sort()
-            .map((g) => formatInfoField(g, 'geartype'))
+            .map((g) => formatInfoField(g, 'geartypes'))
             .join(', ') || OTHER_CATEGORY_LABEL,
         flagTranslated: formatInfoField(identity.flag, 'flag'),
       }
@@ -102,12 +103,12 @@ export const selectVGREventsVesselsGrouped = createSelector(
       .map(([key, value]) => ({ name: key, property: key, value: value.length }))
       .sort((a, b) => b.value - a.value)
 
-    if (groups.length <= 9) {
+    if (groups.length <= MAX_CATEGORIES) {
       return groups
     }
 
-    const firstNine = groups.slice(0, 9)
-    const other = groups.slice(9)
+    const firstNine = groups.slice(0, MAX_CATEGORIES)
+    const other = groups.slice(MAX_CATEGORIES)
 
     return [
       ...firstNine,

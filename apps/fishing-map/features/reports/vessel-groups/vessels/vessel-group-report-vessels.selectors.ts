@@ -2,13 +2,18 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
 import { IdentityVessel } from '@globalfishingwatch/api-types'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
+import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectVGRVesselsResultsPerPage,
   selectVGRVesselFilter,
   selectVGRVesselPage,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getVesselGearTypeLabel,
+  getVesselShipTypeLabel,
+} from 'utils/info'
 import { t } from 'features/i18n/i18n'
 import {
   FILTER_PROPERTIES,
@@ -23,6 +28,7 @@ import {
 import { cleanFlagState } from 'features/reports/activity/vessels/report-activity-vessels.utils'
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { selectVGRVessels } from '../vessel-group-report.slice'
 import { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
 
@@ -57,11 +63,21 @@ export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (ve
     }
     const { shipname, flag, ...vesselData } = getSearchIdentityResolved(vessel.identity!)
     const source = getVesselSource(vessel.identity)
+    const vesselType = getVesselShipTypeLabel(vesselData) as string
+    const geartype = getVesselGearTypeLabel(vesselData) as string
+    const fishingTranslated = t(`vessel.vesselTypes.fishing`, 'Fishing')
+    const type =
+      vesselType === fishingTranslated && geartype !== EMPTY_FIELD_PLACEHOLDER
+        ? geartype
+        : vesselType
+
     return {
       ...vessel,
-      shipName: formatInfoField(shipname, 'name') as string,
-      vesselType: getVesselShipTypeLabel(vesselData),
-      geartype: getVesselGearTypeLabel(vesselData),
+      shipName: formatInfoField(shipname, 'shipname') as string,
+      vesselType,
+      geartype,
+      type,
+      mmsi: getVesselProperty(vessel.identity, 'ssvid'),
       flagTranslated: t(`flags:${flag as string}` as any),
       flagTranslatedClean: cleanFlagState(t(`flags:${flag as string}` as any)),
       source: t(`common.sourceOptions.${source}`, source),
@@ -171,6 +187,11 @@ export const selectVGRVesselsPagination = createSelector(
   }
 )
 
+type GraphDataGroup = {
+  name: string
+  value: number
+}
+
 export const selectVGRVesselsGraphDataGrouped = createSelector(
   [selectVGRVesselsFiltered, selectVGRVesselsSubsection],
   (vessels, subsection) => {
@@ -195,27 +216,43 @@ export const selectVGRVesselsGraphDataGrouped = createSelector(
         value: (value as any[]).length,
       }))
       .sort((a, b) => {
-        if (a.name === OTHER_CATEGORY_LABEL) {
-          return 1
-        }
-        if (b.name === OTHER_CATEGORY_LABEL) {
-          return -1
-        }
         return b.value - a.value
       })
-
-    if (orderedGroups.length <= 9) {
-      return orderedGroups
+    const groupsWithoutOther: GraphDataGroup[] = []
+    const otherGroups: GraphDataGroup[] = []
+    orderedGroups.forEach((group) => {
+      if (
+        group.name === 'null' ||
+        group.name.toLowerCase() === OTHER_CATEGORY_LABEL.toLowerCase() ||
+        group.name === EMPTY_FIELD_PLACEHOLDER
+      ) {
+        otherGroups.push(group)
+      } else {
+        groupsWithoutOther.push(group)
+      }
+    })
+    const allGroups =
+      otherGroups.length > 0
+        ? [
+            ...groupsWithoutOther,
+            {
+              name: OTHER_CATEGORY_LABEL,
+              value: otherGroups.reduce((acc, group) => acc + group.value, 0),
+            },
+          ]
+        : groupsWithoutOther
+    if (allGroups.length <= MAX_CATEGORIES) {
+      return allGroups
     }
-    const firstNine = orderedGroups.slice(0, 9)
-    const other = orderedGroups.slice(9)
+    const firstGroups = allGroups.slice(0, MAX_CATEGORIES)
+    const restOfGroups = allGroups.slice(MAX_CATEGORIES)
 
     return [
-      ...firstNine,
+      ...firstGroups,
       {
         name: OTHER_CATEGORY_LABEL,
-        value: other.reduce((acc, group) => acc + group.value, 0),
+        value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
-    ]
+    ] as GraphDataGroup[]
   }
 )

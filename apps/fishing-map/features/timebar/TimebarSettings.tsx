@@ -220,7 +220,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                       label={
                         <Icon
                           SvgIcon={AreaIcon}
-                          label={formatInfoField(vgDataview.vesselGroup?.name, 'name') as string}
+                          label={vgDataview.vesselGroup?.name as string}
                           color={vgDataview?.config?.color || COLOR_PRIMARY_BLUE}
                         />
                       }
