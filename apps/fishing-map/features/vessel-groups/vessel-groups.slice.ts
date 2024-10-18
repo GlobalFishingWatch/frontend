@@ -173,7 +173,6 @@ export const updateVesselGroupVesselsThunk = createAsyncThunk(
     if (vesselGroup) {
       return dispatch(
         updateVesselGroupThunk({
-          name,
           id: vesselGroup.id,
           name: name || vesselGroup.name,
           vessels: override

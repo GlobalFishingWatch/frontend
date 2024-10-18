@@ -6,6 +6,7 @@ import {
   APIVesselSearchPagination,
   Dataset,
   DatasetStatus,
+  DatasetTypes,
   DataviewDatasetConfig,
   EndpointId,
   IdentityVessel,
@@ -24,7 +25,7 @@ import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { IdField } from 'features/vessel-groups/vessel-groups.slice'
-import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
+import { fetchDatasetsByIdsThunk, selectDatasetById } from '../datasets/datasets.slice'
 import {
   flatVesselGroupSearchVessels,
   mergeVesselGroupVesselIdentities,
@@ -107,11 +108,12 @@ const searchVesselsInVesselGroup = async ({
   if (!datasets || !ids?.length) {
     throw new Error(ids ? 'No vessel ids provided' : 'No datasets provided')
   }
+
   const datasetIds = datasets.map((d) => d.id)
   const dataset = datasets[0]
   const datasetConfig: DataviewDatasetConfig = {
     endpoint: EndpointId.VesselSearch,
-    datasetId: dataset.id,
+    datasetId: '',
     params: [],
     query: [
       { id: 'cache', value: false },
@@ -250,19 +252,25 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
     const datasetIds = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
     const updatedDatasetsIds = datasetIds.map(runDatasetMigrations)
     const hasOutdatedDatasets = difference(datasetIds, updatedDatasetsIds)?.length > 0
-    const datasetsPromise = updatedDatasetsIds.map(async (datasetId) => {
+    const datasetsToRequest: string[] = []
+    let datasets = updatedDatasetsIds.flatMap((datasetId) => {
       const dataset = selectDatasetById(datasetId)(state)
       if (!dataset) {
-        const action = await dispatch(fetchDatasetByIdThunk(datasetId))
-        if (fetchDatasetByIdThunk.fulfilled.match(action)) {
-          return action.payload
-        }
+        datasetsToRequest.push(datasetId)
       }
-      return dataset
+      return dataset || []
     })
-    const datasets = await Promise.all(datasetsPromise).then((d) => {
-      return d
-    })
+
+    if (datasetsToRequest.length) {
+      const action = await dispatch(
+        fetchDatasetsByIdsThunk({ ids: datasetsToRequest, includeRelated: false })
+      )
+      if (fetchDatasetsByIdsThunk.fulfilled.match(action) && action.payload?.length) {
+        datasets = datasets.concat(
+          action.payload.filter((v) => v.type === DatasetTypes.Vessels) as Dataset[]
+        )
+      }
+    }
     if (!datasets?.length) {
       return rejectWithValue({ message: 'No datasets found' })
     }
