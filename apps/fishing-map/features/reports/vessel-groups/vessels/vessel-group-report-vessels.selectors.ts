@@ -8,7 +8,12 @@ import {
   selectVGRVesselFilter,
   selectVGRVesselPage,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getVesselGearTypeLabel,
+  getVesselShipTypeLabel,
+} from 'utils/info'
 import { t } from 'features/i18n/i18n'
 import {
   FILTER_PROPERTIES,
@@ -58,15 +63,19 @@ export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (ve
     const { shipname, flag, ...vesselData } = getSearchIdentityResolved(vessel.identity!)
     const source = getVesselSource(vessel.identity)
     const vesselType = getVesselShipTypeLabel(vesselData) as string
-    const geartype = getVesselGearTypeLabel(vesselData)
-    console.log(vesselType === 'Fishing' ? geartype : vesselType)
+    const geartype = getVesselGearTypeLabel(vesselData) as string
+    const fishingTranslated = t(`vessel.vesselTypes.fishing`, 'Fishing')
+    const type =
+      vesselType === fishingTranslated && geartype !== EMPTY_FIELD_PLACEHOLDER
+        ? geartype
+        : vesselType
 
     return {
       ...vessel,
       shipName: formatInfoField(shipname, 'shipname') as string,
       vesselType,
       geartype,
-      type: vesselType === 'Fishing' ? geartype : vesselType,
+      type,
       flagTranslated: t(`flags:${flag as string}` as any),
       flagTranslatedClean: cleanFlagState(t(`flags:${flag as string}` as any)),
       source: t(`common.sourceOptions.${source}`, source),
