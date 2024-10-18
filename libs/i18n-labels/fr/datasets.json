@@ -1213,6 +1213,10 @@
     "name": "Concentration de phosphate (PO4)",
     "description": "<h2>Sommaire</h2>\n<ul>\n<li>Le phosphate est un nutriment majeur pour les réseaux trophiques marins et la productivité des océans, mais des concentrations élevées peuvent également être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris le phosphate, affichés sur l'océan global avec une résolution horizontale de 1/4 degrés. </li>\n<ul>\n<h2>La Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>"
   },
+  "public-global-port-visits-events": {
+    "name": "Port Visits (AIS)",
+    "description": "The dataset contains port visits for AIS"
+  },
   "public-global-presence-tracks": {
     "name": "Tracks",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 20201001",
