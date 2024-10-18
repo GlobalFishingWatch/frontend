@@ -149,7 +149,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     feature={{
                       ...sublayer,
                       category: feature.category as DataviewCategory,
-                      title: formatInfoField(vesselGroup?.name, 'name') as string,
+                      title: formatInfoField(vesselGroup?.name, 'shipname') as string,
                     }}
                     showFeaturesDetails={type === 'click'}
                   />

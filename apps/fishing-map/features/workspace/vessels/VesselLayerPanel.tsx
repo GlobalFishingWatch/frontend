@@ -74,7 +74,7 @@ export const getVesselIdentityTooltipSummary = (
       }, '')
 
       const selfReported = selfReportedInfo[0]
-      const name = formatInfoField(selfReported.shipname, 'name')
+      const name = formatInfoField(selfReported.shipname, 'shipname')
       const flag = formatInfoField(selfReported.flag, 'flag')
       let info = `${name} - (${flag}) (${formatI18nDate(
         firstTransmissionDateFrom

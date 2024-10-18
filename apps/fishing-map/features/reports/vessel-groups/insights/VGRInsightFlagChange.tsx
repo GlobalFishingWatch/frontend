@@ -79,7 +79,7 @@ const VesselGroupReportInsightFlagChange = () => {
                       end: fetchVesselGroupParams.end,
                     }}
                   >
-                    {formatInfoField(vessel.identity.shipname, 'name')} (
+                    {formatInfoField(vessel.identity.shipname, 'shipname')} (
                   </VesselLink>
                   {vessel.flagsChanges?.valuesInThePeriod.map((v) =>
                     formatInfoField(v.value, 'flag')

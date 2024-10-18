@@ -57,11 +57,16 @@ export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (ve
     }
     const { shipname, flag, ...vesselData } = getSearchIdentityResolved(vessel.identity!)
     const source = getVesselSource(vessel.identity)
+    const vesselType = getVesselShipTypeLabel(vesselData) as string
+    const geartype = getVesselGearTypeLabel(vesselData)
+    console.log(vesselType === 'Fishing' ? geartype : vesselType)
+
     return {
       ...vessel,
-      shipName: formatInfoField(shipname, 'name') as string,
-      vesselType: getVesselShipTypeLabel(vesselData),
-      geartype: getVesselGearTypeLabel(vesselData),
+      shipName: formatInfoField(shipname, 'shipname') as string,
+      vesselType,
+      geartype,
+      type: vesselType === 'Fishing' ? geartype : vesselType,
       flagTranslated: t(`flags:${flag as string}` as any),
       flagTranslatedClean: cleanFlagState(t(`flags:${flag as string}` as any)),
       source: t(`common.sourceOptions.${source}`, source),

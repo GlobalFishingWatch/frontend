@@ -65,7 +65,7 @@ export const selectVGREventsVessels = createSelector(
         geartype:
           (identity.geartypes || [])
             .sort()
-            .map((g) => formatInfoField(g, 'geartype'))
+            .map((g) => formatInfoField(g, 'geartypes'))
             .join(', ') || OTHER_CATEGORY_LABEL,
         flagTranslated: formatInfoField(identity.flag, 'flag'),
       }

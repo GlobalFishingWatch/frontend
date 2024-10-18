@@ -92,7 +92,7 @@ function SearchBasicResult({
   const geartypes = getVesselGearTypeLabel({ geartypes: getVesselProperty(vessel, 'geartypes') })
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
-  const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
+  const name = shipname ? formatInfoField(shipname, 'shipname') : EMPTY_FIELD_PLACEHOLDER
 
   const identitySource = useMemo(() => {
     const registryIdentities = vessel.identities.filter(

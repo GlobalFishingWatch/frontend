@@ -79,7 +79,7 @@ const VesselGroupReportInsightFishing = () => {
                       vesselId={vesselId}
                       datasetId={vessel.identity.dataset as string}
                     >
-                      {formatInfoField(vessel.identity.shipname, 'name')}
+                      {formatInfoField(vessel.identity.shipname, 'shipname')}
                     </VesselLink>
                     <span className={cx(styles.secondary, styles.marginLeft)}>
                       ({vessel.periodSelectedCounters[insight]})

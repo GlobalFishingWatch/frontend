@@ -118,6 +118,7 @@ export default function VesselGroupReportVesselsTable() {
             const isLastRow = i === vessels.length - 1
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const type = vessel.vesselType
+            console.log('type:', type)
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             return (
