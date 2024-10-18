@@ -34,7 +34,6 @@ import EnvironmentTooltipSection from 'features/map/popups/categories/Environmen
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
-import { formatInfoField } from 'utils/info'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
 import {
   SliceExtendedClusterPickingObject,
