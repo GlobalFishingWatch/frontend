@@ -53,7 +53,8 @@ export const selectVGREventsVessels = createSelector(
     if (!data || !vesselGroup) {
       return
     }
-    const insightVessels = vesselGroup?.vessels?.flatMap((vessel) => {
+    const vesselsWithoutDuplicates = vesselGroup?.vessels.filter((v) => v.identity !== undefined)
+    const insightVessels = vesselsWithoutDuplicates?.flatMap((vessel) => {
       const vesselWithEvents = data?.find((v) => v.vesselId === vessel.vesselId)
       if (!vesselWithEvents) {
         return []
