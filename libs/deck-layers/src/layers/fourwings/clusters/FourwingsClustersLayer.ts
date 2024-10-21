@@ -6,7 +6,6 @@ import {
   LayersList,
   DefaultProps,
   PickingInfo,
-  FilterContext,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 // import { CollisionFilterExtension } from '@deck.gl/extensions'
@@ -370,6 +369,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         stroked: true,
         getLineColor: DEFAULT_LINE_COLOR,
         lineWidthMinPixels: 0.2,
+        lineWidthUnits: 'pixels',
         pickable: true,
         updateTriggers: {
           getRadius: [radiusScale],
