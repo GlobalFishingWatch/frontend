@@ -19,8 +19,9 @@ import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import { REPORT_FILTER_PROPERTIES } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
-import { formatInfoField } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
+import { t } from 'features/i18n/i18n'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],
@@ -69,7 +70,7 @@ export const selectVGREventsVessels = createSelector(
             .sort()
             .map((g) => formatInfoField(g, 'geartypes'))
             .join(', ') || OTHER_CATEGORY_LABEL,
-        flagTranslated: formatInfoField(identity.flag, 'flag'),
+        flagTranslated: t(`flags:${identity.flag as string}` as any),
       }
     })
     return insightVessels.sort((a, b) => b.numEvents - a.numEvents)
@@ -91,39 +92,70 @@ export const selectVGREventsVesselsPaginated = createSelector(
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
   }
 )
+type GraphDataGroup = {
+  name: string
+  value: number
+}
 
 export const selectVGREventsVesselsGrouped = createSelector(
   [selectVGREventsVesselsFiltered, selectVGREventsVesselsProperty],
   (vessels, property) => {
     if (!vessels?.length) return []
-    const groups: { name: string; value: number }[] = Object.entries(
+    const orderedGroups: { name: string; value: number }[] = Object.entries(
       groupBy(vessels, (vessel) => {
-        return property === 'flag' ? (vessel.flagTranslated as string) : (vessel.geartype as string)
+        return property === 'flag' ? vessel.flagTranslated : (vessel.geartype as string)
       })
     )
       .map(([key, value]) => ({ name: key, property: key, value: value.length }))
       .sort((a, b) => b.value - a.value)
 
-    if (groups.length <= MAX_CATEGORIES) {
-      return groups
+    const groupsWithoutOther: GraphDataGroup[] = []
+    const otherGroups: GraphDataGroup[] = []
+    orderedGroups.forEach((group) => {
+      if (
+        group.name === 'null' ||
+        group.name.toLowerCase() === OTHER_CATEGORY_LABEL.toLowerCase() ||
+        group.name === EMPTY_FIELD_PLACEHOLDER
+      ) {
+        otherGroups.push(group)
+      } else {
+        groupsWithoutOther.push(group)
+      }
+    })
+    const allGroups =
+      otherGroups.length > 0
+        ? [
+            ...groupsWithoutOther,
+            {
+              name: OTHER_CATEGORY_LABEL,
+              value: otherGroups.reduce((acc, group) => acc + group.value, 0),
+            },
+          ]
+        : groupsWithoutOther
+    if (allGroups.length <= MAX_CATEGORIES) {
+      return allGroups
     }
-
-    const firstNine = groups.slice(0, MAX_CATEGORIES)
-    const other = groups.slice(MAX_CATEGORIES)
-
+    const firstGroups = allGroups.slice(0, MAX_CATEGORIES)
+    const restOfGroups = allGroups.slice(MAX_CATEGORIES)
     return [
-      ...firstNine,
+      ...firstGroups,
       {
         name: OTHER_CATEGORY_LABEL,
-        property: other.map((g) => g.name).join(', '),
-        value: other.reduce((acc, group) => acc + group.value, 0),
+        value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
-    ]
+    ] as GraphDataGroup[]
   }
 )
 export const selectVGREventsVesselsFlags = createSelector([selectVGREventsVessels], (vessels) => {
-  if (!vessels?.length) return []
-  return Object.keys(groupBy(vessels, (v) => v.flag)).length
+  if (!vessels?.length) return null
+  let flags = new Set<string>()
+  vessels.forEach((vessel) => {
+    if (vessel.flagTranslated && vessel.flagTranslated !== 'null') {
+      flags.add(vessel.flagTranslated as string)
+    }
+  })
+  console.log('flags:', flags)
+  return flags
 })
 
 export const selectVGREventsVesselsPagination = createSelector(

@@ -29,6 +29,7 @@ import {
   selectVGREventsVesselsFlags,
   selectVGREventsVesselsGrouped,
 } from 'features/reports/events/vgr-events.selectors'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './VGREvents.module.css'
 
 function VGREvents() {
@@ -40,6 +41,7 @@ function VGREvents() {
   const vessels = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
   const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
+  console.log('vesselGroups:', vesselGroups)
 
   const { start, end } = useTimerangeConnect()
   const startMillis = DateTime.fromISO(start).toMillis()
@@ -87,8 +89,8 @@ function VGREvents() {
             t('vesselGroup.summaryEvents', {
               defaultValue:
                 '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-              vessels: vessels?.length,
-              flags: vesselFlags,
+              vessels: formatI18nNumber(vessels?.length || 0),
+              flags: vesselFlags?.size,
               activityQuantity: data.timeseries.reduce((acc, group) => acc + group.value, 0),
               activityUnit: `${eventsDataview?.datasets?.[0]?.subcategory?.toLowerCase()} ${t(
                 'common.events',

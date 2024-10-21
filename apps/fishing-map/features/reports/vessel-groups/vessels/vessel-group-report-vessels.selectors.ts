@@ -111,7 +111,7 @@ export const selectVGRVesselsFlags = createSelector([selectVGRVesselsParsed], (v
   if (!vessels?.length) return null
   let flags = new Set<string>()
   vessels.forEach((vessel) => {
-    if (vessel.flagTranslated) {
+    if (vessel.flagTranslated && vessel.flagTranslated !== 'null') {
       flags.add(vessel.flagTranslated)
     }
   })
