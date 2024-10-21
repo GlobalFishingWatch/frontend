@@ -26,7 +26,6 @@
 
 .parameters {
   display: flex;
-  height: 80px;
   margin-bottom: 2rem;
 }
 
@@ -87,7 +86,7 @@
 }
 
 .vesselsTableContainer {
-  max-height: 340px;
+  max-height: 400px;
   max-width: 100%;
   overflow: auto scroll;
   border: var(--border);
@@ -145,10 +144,6 @@
 
 .backButton {
   margin-right: 1rem;
-}
-
-.new {
-  background-color: var(--color-help-yellow);
 }
 
 .openModalLink {

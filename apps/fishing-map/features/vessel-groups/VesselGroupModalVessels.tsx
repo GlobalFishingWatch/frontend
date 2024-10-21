@@ -127,7 +127,6 @@ function VesselGroupVessels() {
           return (
             <VesselGroupVesselRow
               key={`${vessel?.vesselId}-${vessel.dataset}`}
-              className={styles.new}
               vessel={vessel}
               onRemoveClick={(vessel) => onVesselRemoveClick(vessel)}
             />
