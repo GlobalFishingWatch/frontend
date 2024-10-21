@@ -60,6 +60,7 @@
 .idsArea {
   display: flex;
   flex-direction: column;
+  margin-top: var(--space-S);
 }
 
 .idsArea textarea {

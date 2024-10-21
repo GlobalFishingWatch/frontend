@@ -21,7 +21,7 @@ import {
 } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
-import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { IdField } from 'features/vessel-groups/vessel-groups.slice'
@@ -212,13 +212,8 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
   ) => {
     try {
       const state = getState() as any
-      const searchDatasets = (selectVesselsDatasets(state) || []).filter((d) => {
-        const matchesDataset = datasets?.length ? datasets.includes(d.id) : true
-        return (
-          matchesDataset &&
-          d.status !== DatasetStatus.Deleted &&
-          d.configuration?.apiSupportedVersions?.includes('v3')
-        )
+      const searchDatasets = (selectVesselGroupCompatibleDatasets(state) || []).filter((d) => {
+        return datasets?.length ? datasets.includes(d.id) : true
         /*&& d.alias?.some((alias) => alias.includes(':latest'))*/
       })
       const vesselGroupVessels = await searchVesselsInVesselGroup({
