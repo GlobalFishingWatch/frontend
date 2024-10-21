@@ -147,7 +147,7 @@ function VesselsTable({
       return hasDatasets
     })
 
-  const isHoursProperty = vesselProperty !== 'detections'
+  const isHoursProperty = vesselProperty !== 'detections' && vesselProperty !== 'events'
   const isPresenceActivity = activityType === DatasetSubCategory.Presence
   return (
     <Fragment>
@@ -161,7 +161,7 @@ function VesselsTable({
                 {isPresenceActivity ? t('vessel.type', 'Type') : t('vessel.gearType_short', 'Gear')}
               </th>
               {/* Disabled for detections to allocate some space for timestamps interaction */}
-              {vesselProperty !== 'detections' && <th>{t('vessel.source_short', 'source')}</th>}
+              {isHoursProperty && <th>{t('vessel.source_short', 'source')}</th>}
               {showValue && (
                 <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
                   {feature?.unit === 'hours' && t('common.hour_other', 'hours')}

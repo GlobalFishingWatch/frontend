@@ -57,6 +57,7 @@ export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   DataviewCategory.Activity,
   DataviewCategory.Detections,
   DataviewCategory.VesselGroups,
+  DataviewCategory.Events,
 ]
 
 const useMapClusterTilesLoading = () => {

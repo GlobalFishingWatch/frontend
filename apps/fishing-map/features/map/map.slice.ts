@@ -19,6 +19,7 @@ import {
   APIPagination,
   EventTypes,
   FourwingsInteraction,
+  FourwingsEventsInteraction,
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -66,7 +67,7 @@ type ExtendedFeatureVesselDatasets = IdentityVessel & {
 
 // TODO extract this type in app types
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
-  hours: number
+  hours?: number
   [key: string]: any
 }
 
@@ -76,7 +77,7 @@ export type ExtendedFeatureSingleEvent = ApiEvent<EventVessel> & { dataset: Data
 export type ExtendedFeatureByVesselEvent = {
   id: string
   type: EventTypes
-  vessels: IdentityVessel[]
+  vessels: ExtendedFeatureVessel[]
   dataset: Dataset
 }
 export type ExtendedFeatureEvent = ExtendedFeatureSingleEvent | ExtendedFeatureByVesselEvent
@@ -241,7 +242,7 @@ const fetchVesselInfo = async (datasets: Dataset[], vesselIds: string[], signal:
   }
 }
 
-export type ActivityProperty = 'hours' | 'detections'
+export type ActivityProperty = 'hours' | 'detections' | 'events'
 export const fetchHeatmapInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
   {
@@ -462,13 +463,30 @@ export const fetchClusterEventThunk = createAsyncThunk(
       if (!getDatasetByIdsThunk.fulfilled.match(getDatasetsAction)) {
         return rejectWithValue(getDatasetsAction.error)
       }
-      const infoDatasets = getDatasetsAction.payload
-      const vesselIds = interactionResponse!?.map((v) => v.id)
+      const infoDatasets = getDatasetsAction.payload.flatMap((v) => v)
+      const vesselIds = (interactionResponse as FourwingsEventsInteraction[])!
+        ?.sort((a, b) => b.events - a.events)
+        .slice(0, MAX_TOOLTIP_LIST)
+        .map((v) => v.id)
       const vesselsInfo = await fetchVesselInfo(infoDatasets, vesselIds, signal)
+      const vessels = (interactionResponse as FourwingsEventsInteraction[])!.flatMap(
+        (interaction) => {
+          const vesselInfo = vesselsInfo?.find((vesselInfo) => {
+            const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) => s.id)
+            return vesselInfoIds.includes(interaction.id)
+          })
+          return {
+            id: interaction.id,
+            ...vesselInfo,
+            dataset: infoDatasets[0] as any,
+            events: interaction.events,
+          } as ExtendedFeatureVessel
+        }
+      )
       return {
         id: interactionId,
         type: EventTypes.Port,
-        vessels: vesselsInfo,
+        vessels,
       } as ExtendedFeatureByVesselEvent
     } else {
       // TODO:deck get the event dataset from related

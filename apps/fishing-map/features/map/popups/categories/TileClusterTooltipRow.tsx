@@ -2,7 +2,7 @@ import { Fragment, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EventVessel } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -27,6 +27,7 @@ import {
   SliceExtendedClusterPickingObject,
 } from '../../map.slice'
 import styles from '../Popup.module.css'
+import VesselsTable from './VesselsTable'
 
 const parseEncounterEvent = (
   event: ExtendedFeatureSingleEvent | undefined
@@ -183,46 +184,27 @@ type PortVisitLayerProps = {
   showFeaturesDetails: boolean
 }
 function PortVisitEventTooltipRow({ feature, showFeaturesDetails }: PortVisitLayerProps) {
-  console.log('🚀 ~ PortVisitEventTooltipRow ~ feature:', feature)
-  return null
-  // const { t } = useTranslation()
-  // const { datasetId, event, color } = feature
-  // const title = getDatasetLabel({ id: datasetId! })
-  // const infoDataset = event?.dataset?.relatedDatasets?.find((d) => d.type === DatasetTypes.Vessels)
-  // return (
-  //   <div className={styles.popupSection}>
-  //     <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
-  //     <div className={styles.popupSectionContent}>
-  //       {<h3 className={styles.popupSectionTitle}>{title}</h3>}
-  //       {showFeaturesDetails && (
-  //         <div className={styles.row}>
-  //           {event?.vessel ? (
-  //             <div className={styles.rowText}>
-  //               <VesselPin
-  //                 vesselToResolve={{ ...event.vessel, datasetId: infoDataset?.id! }}
-  //                 size="small"
-  //                 className={styles.inlineBtn}
-  //               />
-  //               <VesselLink
-  //                 vesselId={event.vessel.id}
-  //                 datasetId={infoDataset?.id}
-  //                 className={styles.marginRight}
-  //               >
-  //                 {formatInfoField(event.vessel.name, 'shipname')}
-  //               </VesselLink>
-  //               ({formatInfoField(event.vessel.flag, 'flag')}){' '}
-  //               <span className={styles.secondary} style={{ display: 'inline' }}>
-  //                 {getEventDescriptionComponent(event)?.description}
-  //               </span>
-  //             </div>
-  //           ) : (
-  //             t('event.noData', 'No data available')
-  //           )}
-  //         </div>
-  //       )}
-  //     </div>
-  //   </div>
-  // )
+  const { datasetId, event, color } = feature
+  const title = getDatasetLabel({ id: datasetId! })
+  return (
+    <div className={styles.popupSection}>
+      <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
+      <div className={styles.popupSectionContent}>
+        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        {showFeaturesDetails && (
+          <VesselsTable
+            feature={
+              {
+                vessels: event.vessels,
+                category: DataviewCategory.Events,
+              } as any
+            }
+            vesselProperty="events"
+          />
+        )}
+      </div>
+    </div>
+  )
 }
 
 function ClusterEventTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
