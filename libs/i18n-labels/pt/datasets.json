@@ -1213,10 +1213,6 @@
     "name": "Concentração de fosfato (PO4)",
     "description": "<h2>Visão geral</h2>\n<ul>\n<li>O fosfato é um nutriente importante para as cadeias alimentares marinhas e para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser também um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o fosfato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>"
   },
-  "public-global-port-visits-events": {
-    "name": "Port Visits (AIS)",
-    "description": "The dataset contains port visits for AIS"
-  },
   "public-global-presence-tracks": {
     "name": "Tracks",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 20201001",
