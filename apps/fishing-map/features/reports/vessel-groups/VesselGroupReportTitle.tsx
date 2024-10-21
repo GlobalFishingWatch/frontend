@@ -23,6 +23,7 @@ import {
 } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import styles from './VesselGroupReportTitle.module.css'
 import { VesselGroupReport } from './vessel-group-report.slice'
 import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
@@ -94,7 +95,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
                 t('vesselGroup.summary', {
                   defaultValue:
                     '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>',
-                  vessels: formatI18nNumber(vessels?.length),
+                  vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
                   flags: flags?.size,
                   start: formatI18nDate(timeRange.start, {
                     format: DateTime.DATE_MED,

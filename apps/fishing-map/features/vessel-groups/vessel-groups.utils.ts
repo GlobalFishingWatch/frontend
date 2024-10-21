@@ -119,22 +119,28 @@ export const flatVesselGroupSearchVessels = (
 export function parseVesselGroupVessels(
   vessels: AddVesselGroupVessel[]
 ): VesselGroupVesselIdentity[] {
-  return vessels?.map((vessel) => {
+  return vessels?.flatMap((vessel) => {
     if ((vessel as IdentityVesselData).identities?.length) {
       const identityVessel = vessel as IdentityVesselData
-      const relationId = identityVessel.id
-      return {
-        vesselId: identityVessel.id,
-        dataset: identityVessel.datasetId || (identityVessel.dataset?.id as string),
-        relationId: relationId,
-        identity:
-          relationId === identityVessel.id
-            ? {
-                dataset: identityVessel.datasetId || identityVessel.dataset?.id,
-                selfReportedInfo: identityVessel.identities,
-              }
-            : undefined,
-      } as VesselGroupVesselIdentity
+      const selfReportedIdentities = identityVessel.identities?.filter(
+        (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
+      )
+      if (selfReportedIdentities?.length) {
+        const relationId = identityVessel.id
+        return {
+          vesselId: identityVessel.id,
+          dataset: identityVessel.datasetId || (identityVessel.dataset?.id as string),
+          relationId: relationId,
+          identity:
+            relationId === identityVessel.id
+              ? {
+                  dataset: identityVessel.datasetId || identityVessel.dataset?.id,
+                  selfReportedInfo: selfReportedIdentities,
+                }
+              : undefined,
+        } as VesselGroupVesselIdentity
+      }
+      return []
     }
     return vessel as VesselGroupVesselIdentity
   })

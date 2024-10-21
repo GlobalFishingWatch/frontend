@@ -41,7 +41,6 @@ function VGREvents() {
   const vessels = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
   const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
-  console.log('vesselGroups:', vesselGroups)
 
   const { start, end } = useTimerangeConnect()
   const startMillis = DateTime.fromISO(start).toMillis()
