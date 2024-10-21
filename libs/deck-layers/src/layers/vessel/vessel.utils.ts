@@ -24,9 +24,9 @@ export const getVesselResourceChunks = (start: number, end: number) => {
   const finalBuffer = endYearBuffered === endYear ? 0 : 1
 
   // Prebuffering one year before and another after
-  const yearsChunks = [...new Array(yearsDelta + initialBuffer + finalBuffer)].map((_, i) => {
+  const yearsChunks = [...new Array(yearsDelta || 0 + initialBuffer + finalBuffer)].map((_, i) => {
     // Generating one full year per chunk so we could take advantage of browser cache more often
-    const year = startYearBuffered + i
+    const year = startYearBuffered + i || new Date().getFullYear()
     const start = DateTime.fromObject({ year }, { zone: 'utc' }).toISO()
     const end = DateTime.fromObject({ year: year + 1 }, { zone: 'utc' }).toISO()
     return { start, end }
