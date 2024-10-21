@@ -475,10 +475,21 @@ export const fetchClusterEventThunk = createAsyncThunk(
             const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) => s.id)
             return vesselInfoIds.includes(interaction.id)
           })
+          const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
+          const trackFromRelatedDataset = infoDataset || vesselInfo?.dataset
+          const trackDatasetId = getRelatedDatasetByType(
+            trackFromRelatedDataset,
+            DatasetTypes.Tracks,
+            { fullDatasetAllowed: !guestUser }
+          )?.id
+          const trackDataset = selectDatasetById(trackDatasetId as string)(state)
+
           return {
             id: interaction.id,
             ...vesselInfo,
             dataset: infoDatasets[0] as any,
+            infoDataset,
+            trackDataset,
             events: interaction.events,
           } as ExtendedFeatureVessel
         }
