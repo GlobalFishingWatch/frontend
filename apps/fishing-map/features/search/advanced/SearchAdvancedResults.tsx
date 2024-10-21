@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniq } from 'es-toolkit'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { Dataset, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   VesselLastIdentity,
   cleanVesselSearchResults,
@@ -202,7 +202,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           return (
             <VesselLink
               vesselId={vesselData.id}
-              datasetId={dataset}
+              datasetId={(dataset as Dataset)?.id}
               identity={bestIdentityMatch}
               onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
