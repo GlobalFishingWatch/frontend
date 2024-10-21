@@ -26,6 +26,7 @@ type VesselGroupAddButtonProps = {
   vesselsToResolve?: string[]
   datasetsToResolve?: string[]
   onAddToVesselGroup?: (vesselGroupId: string) => void
+  keepOpenWhileAdding?: boolean
 }
 
 type VesselGroupAddButtonToggleProps = {
@@ -84,6 +85,7 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
     datasetsToResolve,
     onAddToVesselGroup,
     children = <VesselGroupAddActionButton vesselsToResolve={vesselsToResolve} />,
+    keepOpenWhileAdding,
   } = props
   const addVesselsToVesselGroup = useVesselGroupsUpdate()
   const createVesselGroupWithVessels = useVesselGroupsModal()
@@ -138,6 +140,7 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
       onAddToVesselGroup={handleAddToVesselGroupClick}
       vessels={vesselGroupVessels}
       children={children}
+      keepOpenWhileAdding={keepOpenWhileAdding}
     />
   )
 }
