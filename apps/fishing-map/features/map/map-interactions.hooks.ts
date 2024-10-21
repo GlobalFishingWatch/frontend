@@ -32,7 +32,12 @@ import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { getAnalyticsEvent, isRulerLayerPoint, isTilesClusterLayer } from './map-interaction.utils'
+import {
+  getAnalyticsEvent,
+  isRulerLayerPoint,
+  isTilesClusterLayer,
+  isTilesClusterLayerCluster,
+} from './map-interaction.utils'
 import {
   SliceExtendedClusterPickingObject,
   SliceInteractionEvent,
@@ -143,7 +148,7 @@ export const useClickedEventConnect = () => {
       (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
     ) as FourwingsClusterPickingObject
 
-    if (clusterFeature?.properties?.value > 1) {
+    if (isTilesClusterLayerCluster(clusterFeature)) {
       const { expansionZoom } = clusterFeature
       const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
       const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
@@ -363,8 +368,8 @@ export const useMapCursor = () => {
         return 'move'
       }
       if (hoverFeatures?.some(isTilesClusterLayer)) {
-        const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some(
-          (f) => f.properties?.value > 1
+        const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some((f) =>
+          isTilesClusterLayerCluster(f)
         )
         if (!isCluster) {
           return 'pointer'
