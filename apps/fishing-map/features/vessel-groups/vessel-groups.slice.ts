@@ -115,23 +115,21 @@ export const createVesselGroupThunk = createAsyncThunk(
     }
     const saveVesselGroup: any = async (vesselGroup: VesselGroupUpsert, tries = 0) => {
       let vesselGroupUpdated: VesselGroup
-      if (tries < 5) {
-        try {
-          const name = tries > 0 ? vesselGroupUpsert.name + `_${tries}` : vesselGroupUpsert.name
-          vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>('/vessel-groups', {
-            method: 'POST',
-            body: { ...vesselGroup, name },
-          } as FetchOptions<any>)
-        } catch (e: any) {
-          // Means we already have a workspace with this name
-          if (e.status === 422 && e.message.includes('Id') && e.message.includes('duplicated')) {
-            return await saveVesselGroup(vesselGroup, tries + 1)
-          }
-          console.warn('Error creating vessel group', e)
-          throw e
+      try {
+        const name = tries > 0 ? vesselGroupUpsert.name + `_${tries}` : vesselGroupUpsert.name
+        vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>('/vessel-groups', {
+          method: 'POST',
+          body: { ...vesselGroup, name },
+        } as FetchOptions<any>)
+      } catch (e: any) {
+        // Means we already have a workspace with this name
+        if (e.status === 422 && e.message.includes('Id') && e.message.includes('duplicated')) {
+          return await saveVesselGroup(vesselGroup, Date.now())
         }
-        return vesselGroupUpdated
+        console.warn('Error creating vessel group', e)
+        throw e
       }
+      return vesselGroupUpdated
     }
     return await saveVesselGroup(vesselGroupUpsert)
   }
