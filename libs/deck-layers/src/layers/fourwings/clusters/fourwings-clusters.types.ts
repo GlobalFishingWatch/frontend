@@ -39,6 +39,7 @@ export type FourwingsClusterPickingObject = FourwingsClusterFeature &
     expansionZoom?: number
     datasetId?: string
     eventId?: string
+    eventType?: FourwingsClusterEventType
   }>
 
 export type FourwingsClusterPickingInfo = PickingInfo<
