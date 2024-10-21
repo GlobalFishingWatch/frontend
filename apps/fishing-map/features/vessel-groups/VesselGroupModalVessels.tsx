@@ -28,14 +28,15 @@ function VesselGroupVesselRow({
   className = '',
 }: VesselGroupVesselRowProps) {
   const { t, i18n } = useTranslation()
-  const { shipname, flag, ssvid, transmissionDateFrom, transmissionDateTo, geartypes } =
+  const { shipname, flag, ssvid, imo, transmissionDateFrom, transmissionDateTo, geartypes } =
     getSearchIdentityResolved(vessel.identity!)
   const vesselName = formatInfoField(shipname, 'shipname')
   const vesselGearType = getVesselGearTypeLabel({ geartypes })
 
   return (
     <tr className={className}>
-      <td>{ssvid}</td>
+      <td>{ssvid || EMPTY_FIELD_PLACEHOLDER}</td>
+      <td>{imo || EMPTY_FIELD_PLACEHOLDER}</td>
       <td>{vesselName}</td>
       <td>
         <span>{flag ? t(`flags:${flag as string}` as any) : EMPTY_FIELD_PLACEHOLDER}</span>
@@ -65,7 +66,7 @@ function VesselGroupVesselRow({
           </Tooltip>
         )}
       </td>
-      <td>
+      <td className={styles.icon}>
         <IconButton
           icon={'delete'}
           style={{
@@ -110,6 +111,7 @@ function VesselGroupVessels() {
       <thead>
         <tr>
           <th>{t('vessel.mmsi', 'MMSI')}</th>
+          <th>{t('vessel.imo', 'IMO')}</th>
           <th>{t('common.name', 'Name')}</th>
           <th>{t('vessel.flag', 'flag')}</th>
           <th>{t('vessel.gearType_short', 'gear')}</th>
