@@ -65,18 +65,12 @@ export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (ve
     const source = getVesselSource(vessel.identity)
     const vesselType = getVesselShipTypeLabel(vesselData) as string
     const geartype = getVesselGearTypeLabel(vesselData) as string
-    const fishingTranslated = t(`vessel.vesselTypes.fishing`, 'Fishing')
-    const type =
-      vesselType === fishingTranslated && geartype !== EMPTY_FIELD_PLACEHOLDER
-        ? geartype
-        : vesselType
 
     return {
       ...vessel,
       shipName: formatInfoField(shipname, 'shipname') as string,
       vesselType,
       geartype,
-      type,
       mmsi: getVesselProperty(vessel.identity, 'ssvid'),
       flagTranslated: t(`flags:${flag as string}` as any),
       flagTranslatedClean: cleanFlagState(t(`flags:${flag as string}` as any)),
