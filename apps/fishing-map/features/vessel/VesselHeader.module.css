@@ -11,7 +11,7 @@
 
 .titleContainer {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--space-S);
   width: 100%;
