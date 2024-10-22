@@ -1045,6 +1045,7 @@
     "tooManyVessels_other": "crwdns60695:0{{count}}crwdne60695:0",
     "updateRequired": "crwdns83738:0crwdne83738:0",
     "uploadPublic": "crwdns60697:0crwdne60697:0",
+    "vesselAddedToGroup": "crwdns83808:0crwdne83808:0",
     "vesselGroup": "crwdns60699:0crwdne60699:0",
     "vesselGroups": "crwdns60701:0crwdne60701:0"
   },
