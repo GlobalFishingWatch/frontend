@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { use, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -24,6 +24,7 @@ import {
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './VesselGroupReportTitle.module.css'
 import { VesselGroupReport } from './vessel-group-report.slice'
 import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
@@ -43,6 +44,8 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   const vessels = useSelector(selectVGRUniqVessels)
   const timeRange = useSelector(selectVGRVesselsTimeRange)
   const flags = useSelector(selectVGRVesselsFlags)
+  const userData = useSelector(selectUserData)
+  const userIsVesselGroupOwner = userData?.id === vesselGroup?.ownerId
 
   const onEditClick = useCallback(() => {
     if (vesselGroup?.id || !vesselGroup?.vessels?.length) {
@@ -128,17 +131,19 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
               onClick={toggleViewOnlyVesselGroup}
             />
           )}
-          <Button
-            type="border-secondary"
-            size="small"
-            className={styles.actionButton}
-            onClick={onEditClick}
-            disabled={loading}
-            tooltip={t('vesselGroup.edit ', 'Edit list of vessels')}
-          >
-            <p>{t('common.edit ', 'edit')}</p>
-            <Icon icon="edit" type="default" />
-          </Button>
+          {userIsVesselGroupOwner && (
+            <Button
+              type="border-secondary"
+              size="small"
+              className={styles.actionButton}
+              onClick={onEditClick}
+              disabled={loading}
+              tooltip={t('vesselGroup.edit ', 'Edit list of vessels')}
+            >
+              <p>{t('common.edit ', 'edit')}</p>
+              <Icon icon="edit" type="default" />
+            </Button>
+          )}
           <Button
             type="border-secondary"
             size="small"
