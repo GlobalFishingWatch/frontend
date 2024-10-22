@@ -1,6 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
-import { IdentityVessel } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  IdentityVessel,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
@@ -29,6 +34,8 @@ import { cleanFlagState } from 'features/reports/activity/vessels/report-activit
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectVGRVessels } from '../vessel-group-report.slice'
 import { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
 
@@ -61,25 +68,26 @@ export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (ve
     if (!vessel.identity) {
       return []
     }
-    const { shipname, flag, ...vesselData } = getSearchIdentityResolved(vessel.identity!)
+    const { shipname, ...vesselData } = getSearchIdentityResolved(vessel.identity!)
     const source = getVesselSource(vessel.identity)
     const vesselType = getVesselShipTypeLabel(vesselData) as string
     const geartype = getVesselGearTypeLabel(vesselData) as string
-    const fishingTranslated = t(`vessel.vesselTypes.fishing`, 'Fishing')
-    const type =
-      vesselType === fishingTranslated && geartype !== EMPTY_FIELD_PLACEHOLDER
-        ? geartype
-        : vesselType
+    const flag = getVesselProperty(vessel.identity, 'flag', {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })
 
     return {
       ...vessel,
       shipName: formatInfoField(shipname, 'shipname') as string,
       vesselType,
       geartype,
-      type,
-      mmsi: getVesselProperty(vessel.identity, 'ssvid'),
-      flagTranslated: t(`flags:${flag as string}` as any),
-      flagTranslatedClean: cleanFlagState(t(`flags:${flag as string}` as any)),
+      mmsi: getVesselProperty(vessel.identity, 'ssvid', {
+        identitySource: VesselIdentitySourceEnum.SelfReported,
+      }),
+      flagTranslated: flag ? t(`flags:${flag}` as any) : EMPTY_FIELD_PLACEHOLDER,
+      flagTranslatedClean: flag
+        ? cleanFlagState(t(`flags:${flag}` as any))
+        : EMPTY_FIELD_PLACEHOLDER,
       source: t(`common.sourceOptions.${source}`, source),
     } as VesselGroupVesselTableParsed
   })
@@ -254,5 +262,21 @@ export const selectVGRVesselsGraphDataGrouped = createSelector(
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
     ] as GraphDataGroup[]
+  }
+)
+
+export const selectVGRVesselDatasetsWithoutEventsRelated = createSelector(
+  [selectVGRVessels, selectVesselsDatasets],
+  (vessels, vesselDatasets) => {
+    const datasets = new Set<Dataset>()
+    vessels?.forEach((vessel) => {
+      const infoDataset = vesselDatasets?.find((dataset) => dataset.id === vessel.dataset)
+      if (!infoDataset || datasets.has(infoDataset)) return
+      const eventsDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Events)
+      if (!eventsDataset) {
+        datasets.add(infoDataset)
+      }
+    })
+    return datasets
   }
 )

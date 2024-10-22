@@ -27,3 +27,15 @@
   height: 30rem;
   color: var(--color-danger-red);
 }
+
+.placeholder {
+  padding-block: var(--space-XL);
+}
+
+.disclaimer {
+  display: flex;
+  align-items: top;
+  margin: var(--space-L) var(--space-M);
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}

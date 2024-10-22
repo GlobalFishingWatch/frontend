@@ -117,6 +117,7 @@ const Vessel = () => {
         id: 'insights' as VesselSection,
         title: t('vessel.sectionInsights', 'Insights'),
         content: <Insights />,
+        disabled: !hasEventsDataset,
         testId: 'vv-insights-tab',
       },
     ],

@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import styles from './VGRInsights.module.css'
 import VesselGroupReportInsightCoverage from './VGRInsightCoverage'
 import VesselGroupReportInsightGap from './VGRInsightGaps'
@@ -17,6 +20,32 @@ import VesselGroupReportInsightMOU from './VGRInsightMOU'
 const VesselGroupReportInsights = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
+  const vesselDatasets = useSelector(selectVesselsDatasets)
+  const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
+
+  if (!vesselDatasets.length) {
+    return (
+      <div className={styles.placeholder}>
+        <Spinner />
+      </div>
+    )
+  }
+
+  if (datasetsWithoutRelatedEvents.size >= 1) {
+    return (
+      <div className={styles.disclaimer}>
+        <Icon icon="warning" type="warning" />
+        {t('vesselGroup.disclaimerFeaturesNotAvailable', {
+          defaultValue:
+            '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
+          features: t('common.insights', 'Insights'),
+          datasets: Array.from(datasetsWithoutRelatedEvents)
+            .map((d) => getDatasetLabel(d))
+            .join(', '),
+        })}
+      </div>
+    )
+  }
 
   if (DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR) {
     return (
@@ -35,8 +64,8 @@ const VesselGroupReportInsights = () => {
     <div className={styles.container}>
       <h2 className="print-only">{t('vessel.sectionInsights', 'Insights')}</h2>
       <p className={styles.title}>
-        {t('vessel.insights.sectionTitle', {
-          defaultValue: 'Vessel insights between {{start}} and {{end}}',
+        {t('vesselGroup.insightSectionTitle', {
+          defaultValue: 'Vessel group insights between {{start}} and {{end}}',
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
