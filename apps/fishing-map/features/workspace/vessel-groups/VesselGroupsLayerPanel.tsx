@@ -202,19 +202,12 @@ function VesselGroupLayerPanel({
                     />
                   </VesselGroupReportLink>
                 )}
-                {isOwnedByUser && (
+                {isOwnedByUser && !isOutdated && (
                   <IconButton
                     size="small"
-                    icon={isOutdated ? 'warning' : 'edit'}
-                    type={isOutdated ? 'warning' : 'default'}
-                    tooltip={
-                      isOutdated
-                        ? t(
-                            'vesselGroup.clickToUpdate',
-                            'Click to migrate your vessel group to latest available data'
-                          )
-                        : t('vesselGroup.edit', 'Edit list of vessels')
-                    }
+                    icon={'edit'}
+                    type={'default'}
+                    tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
                     loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
                     onClick={onEditClick}
                   />
@@ -255,6 +248,19 @@ function VesselGroupLayerPanel({
             )}
           </Fragment>
         </div>
+        {isOwnedByUser && isOutdated && (
+          <IconButton
+            size="small"
+            icon={'warning'}
+            type={'warning'}
+            tooltip={t(
+              'vesselGroup.clickToUpdate',
+              'Click to migrate your vessel group to latest available data'
+            )}
+            loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
+            onClick={onEditClick}
+          />
+        )}
         <IconButton
           icon={layerActive ? (layerError ? 'warning' : 'more') : undefined}
           type={layerError ? 'warning' : 'default'}
