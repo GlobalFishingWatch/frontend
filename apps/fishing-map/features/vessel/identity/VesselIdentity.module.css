@@ -73,3 +73,8 @@
   margin-top: var(--space-M);
   align-items: center;
 }
+
+.registrySourceLogo {
+  width: 98px;
+  height: 26px;
+}

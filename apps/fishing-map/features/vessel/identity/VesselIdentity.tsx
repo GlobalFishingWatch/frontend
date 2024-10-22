@@ -47,6 +47,7 @@ import VesselRegistryField from './VesselRegistryField'
 const VesselIdentity = () => {
   const { t } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
+  console.log('🚀 ~ VesselIdentity ~ vesselData:', vesselData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
@@ -172,7 +173,8 @@ const VesselIdentity = () => {
       : IDENTITY_FIELD_GROUPS[identitySource]
   }, [identitySource, vesselIdentity?.sourceCode])
 
-  const hasMoreInfo = vesselIdentity?.hasComplianceInfo || vesselIdentity?.iuuStatus === 'Current'
+  console.log('🚀 ~ VesselIdentity ~ vesselIdentity:', vesselIdentity)
+  const hasMoreInfo = true
   const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
 
   return (
@@ -292,11 +294,11 @@ const VesselIdentity = () => {
               hasMoreInfo &&
               registrySourceData && (
                 <div className={styles.extraInfoContainer}>
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={registrySourceData?.logo}
                     alt={registrySourceData?.key}
-                    width={40}
-                    height={40}
+                    className={styles.registrySourceLogo}
                   />
                   <div>
                     <label>{`${registrySourceData?.key} ${t(
