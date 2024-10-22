@@ -8,6 +8,7 @@ import {
 } from 'queries/vessel-group-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import VGREventsSubsectionSelector from 'features/reports/events/VGREventsSubsectionSelector'
 import VGREventsGraph from 'features/reports/events/VGREventsGraph'
 import {
@@ -30,6 +31,9 @@ import {
   selectVGREventsVesselsGrouped,
 } from 'features/reports/events/vgr-events.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import styles from './VGREvents.module.css'
 
 function VGREvents() {
@@ -41,11 +45,12 @@ function VGREvents() {
   const vesselsWithEvents = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
   const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
-
   const { start, end } = useTimerangeConnect()
   const startMillis = DateTime.fromISO(start).toMillis()
   const endMillis = DateTime.fromISO(end).toMillis()
   const interval = getFourwingsInterval(startMillis, endMillis)
+  const vesselDatasets = useSelector(selectVesselsDatasets)
+  const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
 
   const response = useGetVesselGroupEventsStatsQuery(
     {
@@ -62,6 +67,30 @@ function VGREvents() {
   )
   const { data, error, status } = response
   const isLoading = status === 'pending'
+
+  if (!vesselDatasets.length) {
+    return (
+      <div className={styles.placeholder}>
+        <Spinner />
+      </div>
+    )
+  }
+
+  if (datasetsWithoutRelatedEvents.size >= 1) {
+    return (
+      <div className={styles.disclaimer}>
+        <Icon icon="warning" type="warning" />
+        {t('vesselGroup.disclaimerFeaturesNotAvailable', {
+          defaultValue:
+            '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
+          features: t('common.Events', 'Events'),
+          datasets: Array.from(datasetsWithoutRelatedEvents)
+            .map((d) => getDatasetLabel(d))
+            .join(', '),
+        })}
+      </div>
+    )
+  }
 
   let color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
 

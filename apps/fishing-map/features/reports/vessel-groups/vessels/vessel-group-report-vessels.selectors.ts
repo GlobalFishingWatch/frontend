@@ -1,6 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
-import { IdentityVessel, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  IdentityVessel,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
@@ -29,6 +34,8 @@ import { cleanFlagState } from 'features/reports/activity/vessels/report-activit
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectVGRVessels } from '../vessel-group-report.slice'
 import { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
 
@@ -255,5 +262,21 @@ export const selectVGRVesselsGraphDataGrouped = createSelector(
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
     ] as GraphDataGroup[]
+  }
+)
+
+export const selectVGRVesselDatasetsWithoutEventsRelated = createSelector(
+  [selectVGRVessels, selectVesselsDatasets],
+  (vessels, vesselDatasets) => {
+    const datasets = new Set<Dataset>()
+    vessels?.forEach((vessel) => {
+      const infoDataset = vesselDatasets?.find((dataset) => dataset.id === vessel.dataset)
+      if (!infoDataset || datasets.has(infoDataset)) return
+      const eventsDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Events)
+      if (!eventsDataset) {
+        datasets.add(infoDataset)
+      }
+    })
+    return datasets
   }
 )

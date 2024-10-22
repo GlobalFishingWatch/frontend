@@ -889,7 +889,6 @@
         "grey": "grey"
       },
       "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
-      "disclaimerVesselsWithoutInsights": "Insights are only available for AIS vessels and your group contains vessels from {{datasets}}.",
       "errorPermisions": "You don't have permissions to see this insight",
       "fishing": "Fishing Events",
       "fishingEventsInNoTakeMpas": "{{count}} fishing events detected in no-take MPAs",
@@ -1022,6 +1021,8 @@
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
     "createNewGroup": "Create new group",
     "csvError": "Uploaded CSV file has multiple columns and there is no obvious ID column",
+    "disclaimerFeaturesNotAvailableGenericPrefix": "Some features",
+    "disclaimerFeaturesNotAvailable": "{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.",
     "edit": "Edit list of vessels",
     "emptyState": "Your vessel groups will appear here",
     "groupName": "Group name",
