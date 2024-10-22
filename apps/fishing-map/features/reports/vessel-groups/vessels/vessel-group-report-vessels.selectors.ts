@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
-import { IdentityVessel } from '@globalfishingwatch/api-types'
+import { IdentityVessel, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
@@ -61,19 +61,26 @@ export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (ve
     if (!vessel.identity) {
       return []
     }
-    const { shipname, flag, ...vesselData } = getSearchIdentityResolved(vessel.identity!)
+    const { shipname, ...vesselData } = getSearchIdentityResolved(vessel.identity!)
     const source = getVesselSource(vessel.identity)
     const vesselType = getVesselShipTypeLabel(vesselData) as string
     const geartype = getVesselGearTypeLabel(vesselData) as string
+    const flag = getVesselProperty(vessel.identity, 'flag', {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })
 
     return {
       ...vessel,
       shipName: formatInfoField(shipname, 'shipname') as string,
       vesselType,
       geartype,
-      mmsi: getVesselProperty(vessel.identity, 'ssvid'),
-      flagTranslated: t(`flags:${flag as string}` as any),
-      flagTranslatedClean: cleanFlagState(t(`flags:${flag as string}` as any)),
+      mmsi: getVesselProperty(vessel.identity, 'ssvid', {
+        identitySource: VesselIdentitySourceEnum.SelfReported,
+      }),
+      flagTranslated: flag ? t(`flags:${flag}` as any) : EMPTY_FIELD_PLACEHOLDER,
+      flagTranslatedClean: flag
+        ? cleanFlagState(t(`flags:${flag}` as any))
+        : EMPTY_FIELD_PLACEHOLDER,
       source: t(`common.sourceOptions.${source}`, source),
     } as VesselGroupVesselTableParsed
   })
