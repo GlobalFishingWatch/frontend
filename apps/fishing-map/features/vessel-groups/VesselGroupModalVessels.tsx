@@ -10,6 +10,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getSearchIdentityResolved, isFieldLoginRequired } from 'features/vessel/vessel.utils'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './VesselGroupModal.module.css'
 import {
   VesselGroupVesselIdentity,
@@ -28,8 +30,17 @@ function VesselGroupVesselRow({
   className = '',
 }: VesselGroupVesselRowProps) {
   const { t, i18n } = useTranslation()
-  const { shipname, flag, ssvid, imo, transmissionDateFrom, transmissionDateTo, geartypes } =
-    getSearchIdentityResolved(vessel.identity!)
+  const {
+    shipname,
+    flag,
+    ssvid,
+    imo,
+    transmissionDateFrom,
+    transmissionDateTo,
+    geartypes,
+    dataset,
+  } = getSearchIdentityResolved(vessel.identity!)
+  const vesselDataset = useSelector(selectDatasetById(dataset))
   const vesselName = formatInfoField(shipname, 'shipname')
   const vesselGearType = getVesselGearTypeLabel({ geartypes })
 
@@ -66,6 +77,7 @@ function VesselGroupVesselRow({
           </Tooltip>
         )}
       </td>
+      <td>{getDatasetLabel(vesselDataset)}</td>
       <td className={styles.icon}>
         <IconButton
           icon={'delete'}
@@ -116,6 +128,7 @@ function VesselGroupVessels() {
           <th>{t('vessel.flag', 'flag')}</th>
           <th>{t('vessel.gearType_short', 'gear')}</th>
           <th>{t('vessel.transmissionDates', 'Transmission dates')}</th>
+          <th>{t('vessel.source', 'Source')}</th>
           <th />
         </tr>
       </thead>
