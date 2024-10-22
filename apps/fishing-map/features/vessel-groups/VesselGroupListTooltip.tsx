@@ -11,6 +11,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { selectVesselGroupsStatusId } from 'features/vessel-groups/vessel-groups.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import styles from './VesselGroupListTooltip.module.css'
 import { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 
@@ -29,6 +30,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
   const vesselGroupsStatusId = useSelector(selectVesselGroupsStatusId)
   const [addingToGroup, setAddingToGroup] = useState(false)
   const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
+  const guestUser = useSelector(selectIsGuestUser)
 
   const toggleVesselGroupsOpen = useCallback(() => {
     setVesselGroupsOpen(!vesselGroupsOpen)
@@ -61,7 +63,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
   return (
     <Popover
       open={vesselGroupsOpen}
-      onOpenChange={toggleVesselGroupsOpen}
+      onOpenChange={guestUser ? undefined : toggleVesselGroupsOpen}
       placement="bottom"
       content={
         <ul className={styles.groupOptions}>
