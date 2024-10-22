@@ -44,6 +44,11 @@
     "moreInfoLink": "",
     "name": "Laut lepas"
   },
+  "loitering": {
+    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "moreInfoLink": "",
+    "name": "Loitering events (AIS)"
+  },
   "mangroves": {
     "description": "Hutan bakau (mangrove) adalah pohon atau semak yang dapat bertahan hidup di lingkungan asin dan biasanya tumbuh di zona pasang surut di daerah tropis dan subtropis. Dianggap sebagai habitat karbon biru, hutan bakau meningkatkan kualitas air, menstabilkan dan melindungi garis pantai, dan menyediakan perlindungan bagi burung, hewan, dan organisme laut. Kumpulan ini menggunakan citra satelit observasi bumi untuk menunjukkan sebaran hutan bakau secara global.  ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/4",
@@ -63,11 +68,6 @@
     "description": "Nitrat diperlukan oleh tanaman laut untuk fotosintesis dan merupakan nutrisi utama bagi produktivitas laut, namun konsentrasi yang tinggi dapat menjadi indikator polusi. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk nitrat, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Konsentrasi nitrat (NO3)"
-  },
-  "loitering": {
-    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
-    "moreInfoLink": "",
-    "name": "Loitering events (AIS)"
   },
   "offshore-fixed-infrastructure": {
     "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
