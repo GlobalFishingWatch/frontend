@@ -32,6 +32,7 @@ export default function VesselGroupReportEventsVesselsTable() {
     }
   )
   const vessels = useSelector(selectVGREventsVesselsPaginated)
+
   const onPinClick = ({
     vesselInWorkspace,
   }: {

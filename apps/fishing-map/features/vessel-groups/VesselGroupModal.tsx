@@ -45,6 +45,7 @@ import {
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
 import {
   IdField,
   createVesselGroupThunk,
@@ -120,7 +121,12 @@ function VesselGroupModal(): React.ReactElement {
     id: d.id,
     label: getDatasetLabel(d),
   }))
-  const [sourcesSelected, setSourcesSelected] = useState<SelectOption[]>([sourceOptions[0]])
+  const defaultSourceSelected = sourceOptions.find((s) =>
+    s.id.includes(DEFAULT_VESSEL_IDENTITY_DATASET)
+  )
+  const [sourcesSelected, setSourcesSelected] = useState<SelectOption[]>(
+    defaultSourceSelected ? [defaultSourceSelected] : []
+  )
 
   const onSelectSourceClick = useCallback(
     (source: SelectOption) => {
@@ -317,7 +323,7 @@ function VesselGroupModal(): React.ReactElement {
 
   const missesRequiredParams = hasVesselGroupsVessels
     ? groupName === ''
-    : searchIdField === '' || !vesselGroupVesselsToSearch?.length
+    : searchIdField === '' || !vesselGroupVesselsToSearch?.length || !sourcesSelected?.length
   const confirmButtonDisabled =
     loading ||
     hasVesselsOverflow ||

@@ -16,3 +16,10 @@
   text-decoration: underline;
   flex: 1;
 }
+
+.updateContainer {
+  display: flex;
+  gap: var(--space-S);
+  flex-direction: column;
+  align-items: center;
+}
