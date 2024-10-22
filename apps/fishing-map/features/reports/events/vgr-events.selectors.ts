@@ -22,6 +22,7 @@ import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-grou
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { t } from 'features/i18n/i18n'
+import { getVesselsWithoutDuplicates } from 'features/vessel-groups/vessel-groups.utils'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],
@@ -54,7 +55,7 @@ export const selectVGREventsVessels = createSelector(
     if (!data || !vesselGroup) {
       return
     }
-    const vesselsWithoutDuplicates = vesselGroup?.vessels.filter((v) => v.identity !== undefined)
+    const vesselsWithoutDuplicates = getVesselsWithoutDuplicates(vesselGroup.vessels)
     const insightVessels = vesselsWithoutDuplicates?.flatMap((vessel) => {
       const vesselWithEvents = data?.find((v) => v.vesselId === vessel.vesselId)
       if (!vesselWithEvents) {
@@ -154,7 +155,6 @@ export const selectVGREventsVesselsFlags = createSelector([selectVGREventsVessel
       flags.add(vessel.flagTranslated as string)
     }
   })
-  console.log('flags:', flags)
   return flags
 })
 

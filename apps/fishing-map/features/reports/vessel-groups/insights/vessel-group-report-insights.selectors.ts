@@ -14,6 +14,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { VesselLastIdentity } from 'features/search/search.slice'
+import { getVesselsWithoutDuplicates } from 'features/vessel-groups/vessel-groups.utils'
 import {
   selectVGRFishingInsightData,
   selectVGRFlagChangeInsightData,
@@ -36,7 +37,7 @@ export const selectVGRVesselsByInsight = <Insight = any>(
     if (!data || !vesselGroup) {
       return []
     }
-    const vesselsWithoutDuplicates = vesselGroup?.vessels.filter((v) => v.identity !== undefined)
+    const vesselsWithoutDuplicates = getVesselsWithoutDuplicates(vesselGroup.vessels)
     const insightVessels = vesselsWithoutDuplicates.flatMap((vessel) => {
       const vesselWithInsight = data?.[insightProperty]?.find((v) => v.vesselId === vessel.vesselId)
       if (!vesselWithInsight || (insightCounter && get(vesselWithInsight, insightCounter) === 0)) {

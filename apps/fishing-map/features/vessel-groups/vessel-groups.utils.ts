@@ -145,3 +145,7 @@ export function parseVesselGroupVessels(
     return vessel as VesselGroupVesselIdentity
   })
 }
+
+export const getVesselsWithoutDuplicates = (vessels: VesselGroupVesselIdentity[]) => {
+  return vessels.filter((v) => v.identity !== undefined)
+}

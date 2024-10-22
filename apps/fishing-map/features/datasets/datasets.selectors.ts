@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
+import { VESSEL_GROUPS_MIN_API_VERSION } from 'features/vessel-groups/vessel-groups.config'
 import { selectAllDatasets } from './datasets.slice'
 
 const EMPTY_ARRAY: [] = []
@@ -30,7 +31,8 @@ export const selectVesselGroupCompatibleDatasets = createSelector(
   (datasets) => {
     return datasets.filter(
       (d) =>
-        d.status !== DatasetStatus.Deleted && d.configuration?.apiSupportedVersions?.includes('v3')
+        d.status !== DatasetStatus.Deleted &&
+        d.configuration?.apiSupportedVersions?.includes(VESSEL_GROUPS_MIN_API_VERSION)
     )
   }
 )

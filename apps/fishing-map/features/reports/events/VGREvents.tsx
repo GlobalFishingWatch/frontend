@@ -38,7 +38,7 @@ function VGREvents() {
   const filter = useSelector(selectVGREventsVesselFilter)
   const eventsDataview = useSelector(selectVGREventsSubsectionDataview)
   const vesselsGroupByProperty = useSelector(selectVGREventsVesselsProperty)
-  const vessels = useSelector(selectVGREventsVessels)
+  const vesselsWithEvents = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
   const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
 
@@ -88,7 +88,7 @@ function VGREvents() {
             t('vesselGroup.summaryEvents', {
               defaultValue:
                 '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-              vessels: formatI18nNumber(vessels?.length || 0),
+              vessels: formatI18nNumber(vesselsWithEvents?.length || 0),
               flags: vesselFlags?.size,
               activityQuantity: data.timeseries.reduce((acc, group) => acc + group.value, 0),
               activityUnit: `${eventsDataview?.datasets?.[0]?.subcategory?.toLowerCase()} ${t(
