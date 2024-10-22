@@ -2,7 +2,6 @@ import { RegionType, SelfReportedSource } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { I18nNamespaces } from 'features/i18n/i18n.types'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
-import { PATH_BASENAME } from 'data/config'
 import { VesselProfileState } from './vessel.types'
 
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity'
@@ -13,7 +12,7 @@ export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
 export const REGISTRY_SOURCES = [
   {
     key: 'TMT',
-    logo: `${PATH_BASENAME}/images/tmt-logo.png`,
+    logo: 'https://globalfishingwatch.org/wp-content/uploads/TMT_logo_primary_RGB@2x.png',
     contact: 'jac-coord@tm-tracking.org',
   },
 ]
