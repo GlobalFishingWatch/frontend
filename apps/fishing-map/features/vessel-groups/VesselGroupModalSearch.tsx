@@ -3,37 +3,39 @@ import { useTranslation } from 'react-i18next'
 import { parse as parseCSV } from 'papaparse'
 import { useSelector } from 'react-redux'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { Select, SelectOption, TextArea } from '@globalfishingwatch/ui-components'
+import { TextArea } from '@globalfishingwatch/ui-components'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import { readBlobAs } from 'utils/files'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { ID_COLUMN_LOOKUP, ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
-import { selectHasVesselGroupSearchVessels } from 'features/vessel-groups/vessel-groups.selectors'
+import { ID_COLUMN_LOOKUP } from 'features/vessel-groups/vessel-groups.config'
 import {
   selectVesselGroupModalSearchIdField,
-  selectVesselGroupsModalSearchIds,
+  selectVesselGroupsModalSearchText,
+  setVesselGroupModalSearchText,
   setVesselGroupSearchIdField,
-  setVesselGroupModalSearchIds,
 } from './vessel-groups-modal.slice'
 import styles from './VesselGroupModal.module.css'
+import { IdField } from './vessel-groups.slice'
+import { selectVesselGroupsModalSearchIds } from './vessel-groups.selectors'
 
 function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const [searchText, setSearchText] = useState('')
+  const [csvData, setCsvData] = useState<string[]>([])
+  const sliceSearchText = useSelector(selectVesselGroupsModalSearchText)
+  const [searchText, setSearchText] = useState(sliceSearchText)
   const debouncedSearchText = useDebounce(searchText, 200)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
+  console.log('🚀 ~ VesselGroupSearch ~ searchIdField:', searchIdField)
   const vesselGroupVesselsToSearch = useSelector(selectVesselGroupsModalSearchIds)
   const hasGroupVesselsToSearch =
     vesselGroupVesselsToSearch && vesselGroupVesselsToSearch.length > 0
-  const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
 
   useEffect(() => {
     if (debouncedSearchText) {
-      const vesselIds = debouncedSearchText?.split(/[\s|,]+/).filter(Boolean)
-      dispatch(setVesselGroupModalSearchIds(vesselIds))
+      dispatch(setVesselGroupModalSearchText(debouncedSearchText))
     } else {
-      dispatch(setVesselGroupModalSearchIds(null))
+      dispatch(setVesselGroupModalSearchText(''))
     }
   }, [dispatch, debouncedSearchText])
 
@@ -41,24 +43,25 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
     setSearchText(e.target.value)
   }, [])
 
-  const onCSVLoaded = useCallback(
-    async (file: File) => {
-      const fileData = await readBlobAs(file, 'text')
-      const { data } = parseCSV(fileData, {
-        header: true,
-        skipEmptyLines: true,
-      })
+  const updateSearchByIdField = useCallback(
+    (data: string[], idField: IdField | '') => {
       if (data.length) {
         const firstRow = data[0]
         const columns = Object.keys(firstRow as any)
-        let foundIdColumn: string | undefined
-        // Try to find a CSV column matching preset ids
-        for (let i = 0; i < ID_COLUMN_LOOKUP.length; i++) {
-          const presetColumn = ID_COLUMN_LOOKUP[i]
-          foundIdColumn = columns.find((c) => c.toLowerCase() === presetColumn)
-          if (foundIdColumn) {
-            dispatch(setVesselGroupSearchIdField(presetColumn))
-            break
+        let foundIdColumn
+        if (idField) {
+          foundIdColumn = columns.find((c) => c.toLowerCase() === idField.toLowerCase())!
+        } else {
+          // Try to find a CSV column matching preset ids
+          for (let i = 0; i < ID_COLUMN_LOOKUP.length; i++) {
+            const presetColumn = ID_COLUMN_LOOKUP[i]
+            foundIdColumn = columns.find((c) => c.toLowerCase() === presetColumn.toLowerCase())
+            if (foundIdColumn) {
+              dispatch(setVesselGroupSearchIdField(presetColumn))
+              break
+            } else {
+              foundIdColumn = columns?.[0]
+            }
           }
         }
 
@@ -70,36 +73,45 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
             )
           )
           return
+        } else {
+          onError('')
         }
-        onError('')
-        foundIdColumn = foundIdColumn || columns[0]
 
         if (foundIdColumn) {
-          const groupvessels = data.map((row: any) => row?.[foundIdColumn as string]).join(',')
+          const groupvessels = data
+            .map((row: any) => row?.[foundIdColumn as string])
+            .filter(Boolean)
+            .join(',')
           setSearchText(groupvessels)
         }
       }
     },
-    [dispatch, onError, t]
+    [dispatch, onError, setSearchText, t]
   )
 
-  const onIdFieldChange = useCallback(
-    (option: SelectOption) => {
-      dispatch(setVesselGroupSearchIdField(option.id))
+  const onCSVLoaded = useCallback(
+    async (file: File) => {
+      const fileData = await readBlobAs(file, 'text')
+      const { data } = parseCSV(fileData, {
+        header: true,
+        skipEmptyLines: true,
+      }) as { data: string[] }
+      setCsvData(data)
+      updateSearchByIdField(data, searchIdField)
     },
-    [dispatch]
+    [searchIdField, updateSearchByIdField]
   )
+
+  useEffect(() => {
+    if (csvData && searchIdField) {
+      updateSearchByIdField(csvData, searchIdField)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchIdField])
 
   return (
     <div className={styles.vesselGroupInput}>
       <div className={styles.ids}>
-        <Select
-          label={t('vesselGroup.idField', 'ID field')}
-          options={ID_COLUMNS_OPTIONS}
-          selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
-          onSelect={onIdFieldChange}
-          disabled={hasVesselGroupsVessels}
-        />
         <TextArea
           className={styles.idsArea}
           value={searchText}

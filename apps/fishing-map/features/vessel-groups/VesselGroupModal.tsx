@@ -10,6 +10,7 @@ import {
   SwitchRow,
   Spinner,
   MultiSelect,
+  Select,
 } from '@globalfishingwatch/ui-components'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import VesselGroupSearch from 'features/vessel-groups/VesselGroupModalSearch'
@@ -18,6 +19,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
+  selectVesselGroupsModalSearchIds,
   selectVesselGroupWorkspaceToNavigate,
   selectWorkspaceVessselGroupsIds,
 } from 'features/vessel-groups/vessel-groups.selectors'
@@ -67,10 +69,11 @@ import {
   selectVesselGroupModalSearchIdField,
   selectVesselGroupModalVessels,
   selectVesselGroupSearchStatus,
-  selectVesselGroupsModalSearchIds,
   setVesselGroupModalVessels,
+  setVesselGroupSearchIdField,
 } from './vessel-groups-modal.slice'
 import { getVesselGroupUniqVessels, getVesselGroupVesselsCount } from './vessel-groups.utils'
+import { ID_COLUMNS_OPTIONS } from './vessel-groups.config'
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
@@ -203,7 +206,7 @@ function VesselGroupModal(): React.ReactElement {
 
   const onSearchVesselsClick = useCallback(async () => {
     setShowBackButton(true)
-    if (vesselGroupVesselsToSearch) {
+    if (vesselGroupVesselsToSearch && searchIdField) {
       dispatchSearchVesselsGroupsThunk(vesselGroupVesselsToSearch, searchIdField)
     }
   }, [dispatchSearchVesselsGroupsThunk, vesselGroupVesselsToSearch, searchIdField])
@@ -308,20 +311,39 @@ function VesselGroupModal(): React.ReactElement {
     ]
   )
 
+  const missesRequiredParams = groupName === '' || searchIdField === ''
   const confirmButtonDisabled =
     loading ||
     hasVesselsOverflow ||
     searchVesselStatus === AsyncReducerStatus.Error ||
     !searchVesselGroupsVesselsAllowed ||
-    (hasVesselGroupsVessels && groupName === '')
-  const confirmButtonTooltip = hasVesselsOverflow
+    (hasVesselGroupsVessels && missesRequiredParams)
+  let confirmButtonTooltip = hasVesselsOverflow
     ? t('vesselGroup.tooManyVessels', {
         count: MAX_VESSEL_GROUP_VESSELS,
         defaultValue: 'Maximum number of vessels is {{count}}',
       })
-    : hasVesselGroupsVessels && groupName === ''
-    ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
     : ''
+  if (hasVesselGroupsVessels) {
+    if (missesRequiredParams) {
+      confirmButtonTooltip = t(
+        'vesselGroup.missingParams',
+        'Vessel group name, source and id field are mandatory'
+      )
+    }
+  } else {
+    confirmButtonTooltip = t(
+      'vesselGroup.searchVesselsRequired',
+      'Search for vessels to create a vessel group'
+    )
+  }
+
+  const onIdFieldChange = useCallback(
+    (option: SelectOption) => {
+      dispatch(setVesselGroupSearchIdField(option.id))
+    },
+    [dispatch]
+  )
 
   return (
     <Modal
@@ -345,17 +367,26 @@ function VesselGroupModal(): React.ReactElement {
           {!fullModalLoading &&
             searchVesselStatus !== AsyncReducerStatus.Error &&
             !hasVesselGroupsVessels && (
-              <MultiSelect
-                label={t('layer.source_other', 'Sources')}
-                placeholder={getPlaceholderBySelections({
-                  selection: sourcesSelected.map(({ id }) => id),
-                  options: sourceOptions,
-                })}
-                options={sourceOptions}
-                selectedOptions={sourcesSelected}
-                onSelect={onSelectSourceClick}
-                onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
-              />
+              <Fragment>
+                <MultiSelect
+                  label={t('layer.source_other', 'Sources')}
+                  placeholder={getPlaceholderBySelections({
+                    selection: sourcesSelected.map(({ id }) => id),
+                    options: sourceOptions,
+                  })}
+                  options={sourceOptions}
+                  selectedOptions={sourcesSelected}
+                  onSelect={onSelectSourceClick}
+                  onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
+                />
+                <Select
+                  label={t('vesselGroup.idField', 'ID field')}
+                  options={ID_COLUMNS_OPTIONS}
+                  selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
+                  onSelect={onIdFieldChange}
+                  disabled={hasVesselGroupsVessels}
+                />
+              </Fragment>
             )}
         </div>
         {fullModalLoading ? (
@@ -374,14 +405,14 @@ function VesselGroupModal(): React.ReactElement {
           </Fragment>
         )}
       </div>
-      {!editingVesselGroup && (
-        <div className={styles.modalFooter}>
-          {vesselGroupVessels && vesselGroupVessels?.length > 0 && (
-            <label>
-              {t('common.vessel_other', 'Vessels')}:{' '}
-              {getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup)}
-            </label>
-          )}
+      <div className={styles.modalFooter}>
+        {vesselGroupVessels && vesselGroupVessels?.length > 0 && (
+          <label>
+            {t('common.vessel_other', 'Vessels')}:{' '}
+            {getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup)}
+          </label>
+        )}
+        {!editingVesselGroup && (
           <SwitchRow
             className={styles.row}
             label={t(
@@ -391,8 +422,8 @@ function VesselGroupModal(): React.ReactElement {
             active={createAsPublic}
             onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
           />
-        </div>
-      )}
+        )}
+      </div>
       <div className={styles.modalFooter}>
         <UserGuideLink section="vesselGroups" />
         <div className={styles.footerMsg}>
@@ -411,18 +442,16 @@ function VesselGroupModal(): React.ReactElement {
             </span>
           )}
         </div>
-        {searchVesselStatus === AsyncReducerStatus.Finished
-          ? showBackButton && hasVesselGroupsVessels
-          : showBackButton && (
-              <Button
-                type="secondary"
-                disabled={loading}
-                className={styles.backButton}
-                onClick={() => onBackClick('back')}
-              >
-                {t('common.back', 'back')}
-              </Button>
-            )}
+        {showBackButton && (
+          <Button
+            type="secondary"
+            disabled={loading}
+            className={styles.backButton}
+            onClick={() => onBackClick('back')}
+          >
+            {t('common.back', 'back')}
+          </Button>
+        )}
         {!fullModalLoading &&
           (confirmationMode === 'save' ||
           confirmationMode === 'update' ||
