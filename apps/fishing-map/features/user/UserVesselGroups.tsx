@@ -21,10 +21,9 @@ import { sortByCreationDate } from 'utils/dates'
 import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
 import {
   selectVesselGroupEditId,
-  setVesselGroupConfirmationMode,
-  setVesselGroupEditId,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { useEditVesselGroupModal } from 'features/reports/vessel-groups/vessel-group-report.hooks'
 import { selectUserVesselGroups } from './selectors/user.permissions.selectors'
 import styles from './User.module.css'
 
@@ -39,19 +38,11 @@ function UserVesselGroups() {
     datasetsStatus === AsyncReducerStatus.Loading ||
     vesselGroupStatus === AsyncReducerStatus.Loading
   const editingGroupId = useSelector(selectVesselGroupEditId)
+  const onEditClick = useEditVesselGroupModal()
 
   const onNewGroupClick = useCallback(() => {
     dispatch(setVesselGroupsModalOpen(true))
   }, [dispatch])
-
-  const onEditClick = useCallback(
-    async (vesselGroup: VesselGroup) => {
-      dispatch(setVesselGroupEditId(vesselGroup.id))
-      dispatch(setVesselGroupsModalOpen(true))
-      dispatch(setVesselGroupConfirmationMode('update'))
-    },
-    [dispatch]
-  )
 
   const onDeleteClick = useCallback(
     (vesselGroup: VesselGroup) => {
