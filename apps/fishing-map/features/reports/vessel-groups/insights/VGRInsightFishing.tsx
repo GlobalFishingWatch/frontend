@@ -56,9 +56,9 @@ const VesselGroupReportInsightFishing = () => {
 
   const getVesselGroupReportInsighFishingVessels = (
     vessels: VesselGroupReportInsightVessel[],
-    insight: 'eventsInNoTakeMPAs' | 'eventsInRFMOWithoutKnownAuthorization'
+    insight: 'eventsInNoTakeMpas' | 'eventsInRfmoWithoutKnownAuthorization'
   ) => {
-    const expandedIdPrefix = insight === 'eventsInNoTakeMPAs' ? 'no-take-' : 'rfmo-'
+    const expandedIdPrefix = insight === 'eventsInNoTakeMpas' ? 'no-take-' : 'rfmo-'
     return (
       <ul className={cx(styles.nested, styles.row)}>
         {vessels.map((vessel) => {
@@ -82,7 +82,7 @@ const VesselGroupReportInsightFishing = () => {
                       {formatInfoField(vessel.identity.shipname, 'shipname')}
                     </VesselLink>
                     <span className={cx(styles.secondary, styles.marginLeft)}>
-                      ({vessel.periodSelectedCounters[insight]})
+                      ({vessel[insight].length})
                     </span>
                   </span>
                 }
@@ -145,7 +145,7 @@ const VesselGroupReportInsightFishing = () => {
                 defaultValue:
                   '{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs',
                 count: vesselsWithNoTakeMpas.reduce(
-                  (acc, vessel) => acc + vessel.periodSelectedCounters.eventsInNoTakeMPAs,
+                  (acc, vessel) => acc + vessel.eventsInNoTakeMpas.length,
                   0
                 ),
                 vessels: vesselsWithNoTakeMpas?.length,
@@ -154,7 +154,7 @@ const VesselGroupReportInsightFishing = () => {
             >
               {getVesselGroupReportInsighFishingVessels(
                 vesselsWithNoTakeMpas,
-                'eventsInNoTakeMPAs'
+                'eventsInNoTakeMpas'
               )}
             </Collapsable>
           )}
@@ -176,8 +176,7 @@ const VesselGroupReportInsightFishing = () => {
                 defaultValue:
                   '{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas',
                 count: vesselsInRfmoWithoutKnownAuthorization.reduce(
-                  (acc, vessel) =>
-                    acc + vessel.periodSelectedCounters.eventsInRFMOWithoutKnownAuthorization,
+                  (acc, vessel) => acc + vessel.eventsInRfmoWithoutKnownAuthorization.length,
                   0
                 ),
                 vessels: vesselsInRfmoWithoutKnownAuthorization.length,
@@ -186,7 +185,7 @@ const VesselGroupReportInsightFishing = () => {
             >
               {getVesselGroupReportInsighFishingVessels(
                 vesselsInRfmoWithoutKnownAuthorization,
-                'eventsInRFMOWithoutKnownAuthorization'
+                'eventsInRfmoWithoutKnownAuthorization'
               )}
             </Collapsable>
           )}
