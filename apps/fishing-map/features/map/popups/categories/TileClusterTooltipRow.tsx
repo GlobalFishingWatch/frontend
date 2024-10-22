@@ -2,7 +2,7 @@ import { Fragment, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EventVessel } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -22,14 +22,16 @@ import { getEventDescriptionComponent } from 'utils/events'
 import { useMapViewState } from '../../map-viewport.hooks'
 import {
   ExtendedEventVessel,
-  ExtendedFeatureEvent,
+  ExtendedFeatureByVesselEvent,
+  ExtendedFeatureSingleEvent,
   SliceExtendedClusterPickingObject,
 } from '../../map.slice'
 import styles from '../Popup.module.css'
+import VesselsTable from './VesselsTable'
 
 const parseEncounterEvent = (
-  event: ExtendedFeatureEvent | undefined
-): ExtendedFeatureEvent | undefined => {
+  event: ExtendedFeatureSingleEvent | undefined
+): ExtendedFeatureSingleEvent | undefined => {
   if (!event) return event
   const carrierVessel: EventVessel =
     event.vessel.type === 'carrier' ? event.vessel : (event.encounter?.vessel as EventVessel)
@@ -48,7 +50,7 @@ const parseEncounterEvent = (
 }
 
 type EncountersLayerProps = {
-  feature: SliceExtendedClusterPickingObject
+  feature: SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
   showFeaturesDetails: boolean
 }
 
@@ -177,6 +179,34 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
   )
 }
 
+type PortVisitLayerProps = {
+  feature: SliceExtendedClusterPickingObject<ExtendedFeatureByVesselEvent>
+  showFeaturesDetails: boolean
+}
+function PortVisitEventTooltipRow({ feature, showFeaturesDetails }: PortVisitLayerProps) {
+  const { datasetId, event, color } = feature
+  const title = getDatasetLabel({ id: datasetId! })
+  return (
+    <div className={styles.popupSection}>
+      <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
+      <div className={styles.popupSectionContent}>
+        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        {showFeaturesDetails && (
+          <VesselsTable
+            feature={
+              {
+                vessels: event.vessels,
+                category: DataviewCategory.Events,
+              } as any
+            }
+            vesselProperty="events"
+          />
+        )}
+      </div>
+    </div>
+  )
+}
+
 function ClusterEventTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
   const { t } = useTranslation()
   const { datasetId, event, color } = feature
@@ -262,12 +292,23 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: TileContextLay
     <Fragment>
       {features.map((feature, index) => {
         const key = `${feature.title}-${index}`
+        const eventFeature =
+          feature as SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
         if (GFW_CLUSTER_LAYERS.some((source) => feature.layerId === source)) {
+          if (feature.layerId.includes('port')) {
+            return (
+              <PortVisitEventTooltipRow
+                key={key}
+                feature={feature as SliceExtendedClusterPickingObject<ExtendedFeatureByVesselEvent>}
+                showFeaturesDetails={showFeaturesDetails}
+              />
+            )
+          }
           if (feature.layerId.includes('encounter')) {
             return (
               <EncounterTooltipRow
                 key={key}
-                feature={feature}
+                feature={eventFeature}
                 showFeaturesDetails={showFeaturesDetails}
               />
             )
@@ -275,7 +316,7 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: TileContextLay
           return (
             <ClusterEventTooltipRow
               key={key}
-              feature={feature}
+              feature={eventFeature}
               showFeaturesDetails={showFeaturesDetails}
             />
           )
@@ -283,7 +324,7 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: TileContextLay
         return (
           <GenericClusterTooltipRow
             key={key}
-            feature={feature}
+            feature={eventFeature}
             showFeaturesDetails={showFeaturesDetails}
           />
         )

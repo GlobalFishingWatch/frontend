@@ -193,6 +193,9 @@ export const selectUrlTimeRange = createSelector(
   [selectUrlStartQuery, selectUrlEndQuery],
   (start, end) => {
     if (!start || !end) return null
-    return { start, end }
+    return {
+      start: decodeURIComponent(start),
+      end: decodeURIComponent(end),
+    }
   }
 )

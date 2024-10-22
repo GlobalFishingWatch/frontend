@@ -8,6 +8,7 @@ import {
   APIPagination,
   Dataset,
   DatasetsMigration,
+  DatasetTypes,
   EndpointId,
   EndpointParam,
   UploadResponse,
@@ -79,6 +80,44 @@ const parsePOCsDatasets = (dataset: Dataset) => {
   }
   return dataset
 }
+
+export const getDatasetByIdsThunk = createAsyncThunk(
+  'datasets/getByIds',
+  async (
+    { ids, includeRelated = true }: { ids: string[]; includeRelated?: boolean },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    try {
+      const state = getState() as any
+      const datasetsToRequest: string[] = []
+      let datasets = ids.flatMap((datasetId) => {
+        const dataset = selectDatasetById(datasetId)(state)
+        if (!dataset) {
+          datasetsToRequest.push(datasetId)
+        }
+        return (dataset as Dataset) || []
+      })
+
+      if (datasetsToRequest.length) {
+        const action = await dispatch(
+          fetchDatasetsByIdsThunk({ ids: datasetsToRequest, includeRelated })
+        )
+        if (fetchDatasetsByIdsThunk.fulfilled.match(action) && action.payload?.length) {
+          datasets = datasets.concat(
+            action.payload.filter((v) => v.type === DatasetTypes.Vessels) as Dataset[]
+          )
+        }
+      }
+      return datasets
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue({
+        status: parseAPIErrorStatus(e),
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
+    }
+  }
+)
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,

@@ -17,6 +17,9 @@ import {
   EventVessel,
   EventVesselTypeEnum,
   APIPagination,
+  EventTypes,
+  FourwingsInteraction,
+  FourwingsEventsInteraction,
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -35,7 +38,11 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch } from 'store'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
+import {
+  fetchDatasetByIdThunk,
+  getDatasetByIdsThunk,
+  selectDatasetById,
+} from 'features/datasets/datasets.slice'
 import {
   getRelatedDatasetByType,
   getRelatedDatasetsByType,
@@ -60,13 +67,20 @@ type ExtendedFeatureVesselDatasets = IdentityVessel & {
 
 // TODO extract this type in app types
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
-  hours: number
+  hours?: number
   [key: string]: any
 }
 
 export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
-export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
+export type ExtendedFeatureSingleEvent = ApiEvent<EventVessel> & { dataset: Dataset }
+export type ExtendedFeatureByVesselEvent = {
+  id: string
+  type: EventTypes
+  vessels: ExtendedFeatureVessel[]
+  dataset: Dataset
+}
+export type ExtendedFeatureEvent = ExtendedFeatureSingleEvent | ExtendedFeatureByVesselEvent
 
 export type SliceExtendedFourwingsDeckSublayer = FourwingsDeckSublayer & {
   vessels?: ExtendedFeatureVessel[]
@@ -78,9 +92,10 @@ export type SliceExtendedFourwingsPickingObject = Omit<
   sublayers: SliceExtendedFourwingsDeckSublayer[]
 }
 
-export type SliceExtendedClusterPickingObject = FourwingsClusterPickingObject & {
-  event: ExtendedFeatureEvent
-}
+export type SliceExtendedClusterPickingObject<Event = ExtendedFeatureEvent> =
+  FourwingsClusterPickingObject & {
+    event: Event
+  }
 
 type SliceExtendedFeature =
   | SliceExtendedFourwingsPickingObject
@@ -227,7 +242,7 @@ const fetchVesselInfo = async (datasets: Dataset[], vesselIds: string[], signal:
   }
 }
 
-export type ActivityProperty = 'hours' | 'detections'
+export type ActivityProperty = 'hours' | 'detections' | 'events'
 export const fetchHeatmapInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
   {
@@ -371,146 +386,212 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
   }
 )
 
-export const fetchClusterEventThunk = createAsyncThunk<
-  ExtendedFeatureEvent | undefined,
-  FourwingsClusterPickingObject,
-  {
-    dispatch: AppDispatch
-  }
->('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
-  const state = getState() as RootState
-  const eventDataviews = selectEventsDataviews(state) || []
-  const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
-  const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  let interactionId = eventFeature.id
-  let eventId: string | undefined = eventFeature.eventId
-  if (!eventId && interactionId && eventsDataset) {
-    const start = getUTCDate(eventFeature?.startTime).toISOString()
-    const end = getUTCDate(eventFeature?.endTime).toISOString()
-    const datasetConfig: DataviewDatasetConfig = {
-      datasetId: eventsDataset?.id,
-      endpoint: EndpointId.ClusterTilesInteraction,
-      params: [
-        { id: 'z', value: eventFeature.properties.tile.z },
-        { id: 'x', value: eventFeature.properties.tile.x },
-        { id: 'y', value: eventFeature.properties.tile.y },
-        { id: 'rows', value: eventFeature.properties.row as number },
-        { id: 'cols', value: eventFeature.properties.col as number },
-      ],
-      query: [
-        { id: 'date-range', value: [start, end].join(',') },
-        {
-          id: 'datasets',
-          value: [eventsDataset.id],
-        },
-      ],
-    }
-    if (dataview) {
-      const filters = getDataviewSqlFiltersResolved(dataview)
-      datasetConfig.query?.push({ id: 'filters', value: filters })
-      const vesselGroups = getVesselGroupInDataview(dataview!)
-      if (vesselGroups?.length) {
-        datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
+export const fetchClusterEventThunk = createAsyncThunk(
+  'map/fetchEncounterEvent',
+  async (
+    eventFeature: FourwingsClusterPickingObject,
+    { signal, getState, dispatch, rejectWithValue }
+  ) => {
+    const state = getState() as RootState
+    const guestUser = selectIsGuestUser(state)
+    const eventDataviews = selectEventsDataviews(state) || []
+    const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
+    const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+    const groupBy =
+      eventFeature.category === 'events' && eventFeature.eventType === EventTypes.Port
+        ? 'vesselId'
+        : 'id'
+    let interactionId = eventFeature.id
+    let interactionResponse: FourwingsInteraction[] | undefined
+    let eventId: string | undefined = eventFeature.eventId
+    if (!eventId && interactionId && eventsDataset) {
+      const start = getUTCDate(eventFeature?.startTime).toISOString()
+      const end = getUTCDate(eventFeature?.endTime).toISOString()
+      const datasetConfig: DataviewDatasetConfig = {
+        datasetId: eventsDataset?.id,
+        endpoint: EndpointId.ClusterTilesInteraction,
+        params: [
+          { id: 'z', value: eventFeature.properties.tile.z },
+          { id: 'x', value: eventFeature.properties.tile.x },
+          { id: 'y', value: eventFeature.properties.tile.y },
+          { id: 'rows', value: eventFeature.properties.row as number },
+          { id: 'cols', value: eventFeature.properties.col as number },
+        ],
+        query: [
+          { id: 'date-range', value: [start, end].join(',') },
+          { id: 'group-by', value: groupBy },
+          {
+            id: 'datasets',
+            value: [eventsDataset.id],
+          },
+        ],
+      }
+      if (dataview) {
+        const filters = getDataviewSqlFiltersResolved(dataview)
+        if (filters) {
+          datasetConfig.query?.push({ id: 'filters', value: filters })
+        }
+        const vesselGroups = getVesselGroupInDataview(dataview!)
+        if (vesselGroups?.length) {
+          datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
+        }
+      }
+      const interactionUrl = resolveEndpoint(eventsDataset, datasetConfig)
+      if (interactionUrl) {
+        const response = await GFWAPI.fetch<APIPagination<FourwingsInteraction[]>>(interactionUrl, {
+          signal,
+        })
+        interactionResponse = response.entries[0]
+        // TODO:deck remove this hardcoded id once the api responds
+        eventId = response.entries[0][0].id
       }
     }
-    const interactionUrl = resolveEndpoint(eventsDataset, datasetConfig)
-    if (interactionUrl) {
-      const eventsIds = await GFWAPI.fetch<APIPagination<{ id: string }[]>>(interactionUrl, {
-        signal,
-      })
-      // TODO:deck remove this hardcoded id once the api responds
-      eventId = eventsIds.entries[0][0].id
-    }
-  }
-  // TODO:deck get the event dataset from related
-  if (eventsDataset && eventId) {
-    const datasetConfig = {
-      datasetId: eventsDataset.id,
-      endpoint: EndpointId.EventsDetail,
-      params: [{ id: 'eventId', value: eventId }],
-      query: [{ id: 'dataset', value: eventsDataset.id }],
-    }
-    const url = resolveEndpoint(eventsDataset, datasetConfig)
-    if (url) {
-      const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
-      if (!clusterEvent) {
-        return
+    if (groupBy === 'vesselId') {
+      const infoDatasetIds = getRelatedDatasetsByType(
+        eventsDataset,
+        DatasetTypes.Vessels,
+        !guestUser
+      )?.map((r) => r.id) as string[]
+      if (!infoDatasetIds?.length) {
+        return rejectWithValue(
+          `No info related datasets found in events datasets: ${JSON.stringify(eventsDataset)}`
+        )
       }
-      if (clusterEvent.type === 'encounter') {
-        // Workaround to grab information about each vessel dataset
-        // will need discuss with API team to scale this for other types
-        const isACarrierTheMainVessel = clusterEvent.vessel.type === EventVesselTypeEnum.Carrier
-        const fishingVessel = isACarrierTheMainVessel
-          ? clusterEvent.encounter?.vessel
-          : clusterEvent.vessel
-        const carrierVessel = isACarrierTheMainVessel
-          ? clusterEvent.vessel
-          : clusterEvent.encounter?.vessel
-        let vesselsInfo: IdentityVessel[] = []
-        const vesselsDatasets = dataview?.datasets
-          ?.flatMap((d) => d.relatedDatasets || [])
-          .filter((d) => d?.type === DatasetTypes.Vessels)
+      const getDatasetsAction = await dispatch(
+        getDatasetByIdsThunk({ ids: infoDatasetIds, includeRelated: false })
+      )
+      if (!getDatasetByIdsThunk.fulfilled.match(getDatasetsAction)) {
+        return rejectWithValue(getDatasetsAction.error)
+      }
+      const infoDatasets = getDatasetsAction.payload.flatMap((v) => v)
+      const vesselIds = (interactionResponse as FourwingsEventsInteraction[])!
+        ?.sort((a, b) => b.events - a.events)
+        .slice(0, MAX_TOOLTIP_LIST)
+        .map((v) => v.id)
+      const vesselsInfo = await fetchVesselInfo(infoDatasets, vesselIds, signal)
+      const vessels = (interactionResponse as FourwingsEventsInteraction[])!.flatMap(
+        (interaction) => {
+          const vesselInfo = vesselsInfo?.find((vesselInfo) => {
+            const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) => s.id)
+            return vesselInfoIds.includes(interaction.id)
+          })
+          const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
+          const trackFromRelatedDataset = infoDataset || vesselInfo?.dataset
+          const trackDatasetId = getRelatedDatasetByType(
+            trackFromRelatedDataset,
+            DatasetTypes.Tracks,
+            { fullDatasetAllowed: !guestUser }
+          )?.id
+          const trackDataset = selectDatasetById(trackDatasetId as string)(state)
 
-        if (vesselsDatasets?.length && fishingVessel && carrierVessel) {
-          const vesselDataset = selectDatasetById(vesselsDatasets[0].id)(state) as Dataset
-          const vesselsDatasetConfig = {
-            datasetId: vesselDataset.id,
-            endpoint: EndpointId.VesselList,
-            params: [],
-            query: [
-              { id: 'ids', value: [fishingVessel.id, carrierVessel.id] },
-              { id: 'datasets', value: vesselsDatasets.map((d) => d.id) },
-            ],
-          }
-          const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
-          if (vesselsUrl) {
-            vesselsInfo = await GFWAPI.fetch<APIPagination<IdentityVessel>>(vesselsUrl, {
-              signal,
-            }).then((r) => r.entries)
-          }
+          return {
+            id: interaction.id,
+            ...vesselInfo,
+            dataset: infoDatasets[0] as any,
+            infoDataset,
+            trackDataset,
+            events: interaction.events,
+          } as ExtendedFeatureVessel
         }
-        const fishingVesselDataset =
-          vesselsInfo.find(
-            (v) =>
-              getVesselProperty(v, 'id', {
-                identitySource: VesselIdentitySourceEnum.SelfReported,
-              }) === fishingVessel?.id
-          )?.dataset || ''
-        const carrierVesselDataset =
-          vesselsInfo.find(
-            (v) =>
-              getVesselProperty(v, 'id', {
-                identitySource: VesselIdentitySourceEnum.SelfReported,
-              }) === carrierVessel?.id
-          )?.dataset || ''
-        const carrierExtendedVessel: ExtendedEventVessel = {
-          ...(carrierVessel as EventVessel),
-          dataset: carrierVesselDataset,
-        }
-        const fishingExtendedVessel: ExtendedEventVessel = {
-          ...(fishingVessel as EventVessel),
-          dataset: fishingVesselDataset,
-        }
-        return {
-          ...clusterEvent,
-          vessel: carrierExtendedVessel,
-          ...(clusterEvent.encounter && {
-            encounter: {
-              ...clusterEvent.encounter,
-              vessel: fishingExtendedVessel,
-            },
-          }),
+      )
+      return {
+        id: interactionId,
+        type: EventTypes.Port,
+        vessels,
+      } as ExtendedFeatureByVesselEvent
+    } else {
+      // TODO:deck get the event dataset from related
+      if (eventsDataset && eventId) {
+        const datasetConfig = {
+          datasetId: eventsDataset.id,
+          endpoint: EndpointId.EventsDetail,
+          params: [{ id: 'eventId', value: eventId }],
+          query: [{ id: 'dataset', value: eventsDataset.id }],
           dataset: eventsDataset,
         }
-      }
-      return { ...clusterEvent, dataset: eventsDataset }
-    } else {
-      console.warn('Missing url for endpoints', eventsDataset, datasetConfig)
-    }
-  }
+        const url = resolveEndpoint(eventsDataset, datasetConfig)
+        if (url) {
+          const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
+          if (!clusterEvent) {
+            return
+          }
+          if (clusterEvent.type === 'encounter') {
+            // Workaround to grab information about each vessel dataset
+            // will need discuss with API team to scale this for other types
+            const isACarrierTheMainVessel = clusterEvent.vessel.type === EventVesselTypeEnum.Carrier
+            const fishingVessel = isACarrierTheMainVessel
+              ? clusterEvent.encounter?.vessel
+              : clusterEvent.vessel
+            const carrierVessel = isACarrierTheMainVessel
+              ? clusterEvent.vessel
+              : clusterEvent.encounter?.vessel
+            let vesselsInfo: IdentityVessel[] = []
+            const vesselsDatasets = dataview?.datasets
+              ?.flatMap((d) => d.relatedDatasets || [])
+              .filter((d) => d?.type === DatasetTypes.Vessels)
 
-  return
-})
+            if (vesselsDatasets?.length && fishingVessel && carrierVessel) {
+              const vesselDataset = selectDatasetById(vesselsDatasets[0].id)(state) as Dataset
+              const vesselsDatasetConfig = {
+                datasetId: vesselDataset.id,
+                endpoint: EndpointId.VesselList,
+                params: [],
+                query: [
+                  { id: 'ids', value: [fishingVessel.id, carrierVessel.id] },
+                  { id: 'datasets', value: vesselsDatasets.map((d) => d.id) },
+                ],
+              }
+              const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
+              if (vesselsUrl) {
+                vesselsInfo = await GFWAPI.fetch<APIPagination<IdentityVessel>>(vesselsUrl, {
+                  signal,
+                }).then((r) => r.entries)
+              }
+            }
+            const fishingVesselDataset =
+              vesselsInfo.find(
+                (v) =>
+                  getVesselProperty(v, 'id', {
+                    identitySource: VesselIdentitySourceEnum.SelfReported,
+                  }) === fishingVessel?.id
+              )?.dataset || ''
+            const carrierVesselDataset =
+              vesselsInfo.find(
+                (v) =>
+                  getVesselProperty(v, 'id', {
+                    identitySource: VesselIdentitySourceEnum.SelfReported,
+                  }) === carrierVessel?.id
+              )?.dataset || ''
+            const carrierExtendedVessel: ExtendedEventVessel = {
+              ...(carrierVessel as EventVessel),
+              dataset: carrierVesselDataset,
+            }
+            const fishingExtendedVessel: ExtendedEventVessel = {
+              ...(fishingVessel as EventVessel),
+              dataset: fishingVesselDataset,
+            }
+            return {
+              ...clusterEvent,
+              vessel: carrierExtendedVessel,
+              ...(clusterEvent.encounter && {
+                encounter: {
+                  ...clusterEvent.encounter,
+                  vessel: fishingExtendedVessel,
+                },
+              }),
+              dataset: eventsDataset,
+            }
+          }
+          return { ...clusterEvent, dataset: eventsDataset }
+        } else {
+          console.warn('Missing url for endpoints', eventsDataset, datasetConfig)
+        }
+      }
+    }
+
+    return
+  }
+)
 
 type BQClusterEvent = Record<string, any>
 export const fetchBQEventThunk = createAsyncThunk<

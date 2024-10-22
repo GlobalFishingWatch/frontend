@@ -1214,8 +1214,8 @@
     "description": "<h2>Resumen</h2>\n<ul>\n<li>El fosfato es un nutriente importante para las redes alimentarias marinas y la productividad del océano, pero las altas concentraciones también pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el fosfato, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. </li>\n<ul>\n<h2>Fuente</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>"
   },
   "public-global-port-visits-events": {
-    "name": "Port Visits (AIS)",
-    "description": "The dataset contains port visits for AIS"
+    "name": "Port Visits Events (AIS)",
+    "description": "The dataset contains port visits events for AIS (Confidence 2)"
   },
   "public-global-presence-tracks": {
     "name": "Tracks",
