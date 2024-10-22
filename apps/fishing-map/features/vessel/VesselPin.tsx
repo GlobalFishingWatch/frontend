@@ -12,7 +12,7 @@ import {
   Resource,
   ResourceStatus,
 } from '@globalfishingwatch/api-types'
-import { setResource } from '@globalfishingwatch/dataviews-client'
+import { setResource, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -29,6 +29,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { ExtendedFeatureVessel } from 'features/map/map.slice'
 
 export type VesselToResolve = {
   id: string
@@ -51,20 +52,27 @@ function VesselPin({
   size = 'small',
   onClick,
 }: {
-  vessel?: IdentityVessel
+  vessel?: IdentityVessel | ExtendedFeatureVessel
   vesselToResolve?: VesselToResolve
   vesselToSearch?: VesselToSearch
   className?: string
   disabled?: boolean
   size?: IconButtonSize
-  onClick?: () => void
+  onClick?: ({
+    vesselInWorkspace,
+  }: {
+    vesselInWorkspace?: UrlDataviewInstance | null | undefined
+  }) => void
 }) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselsInWorkspace = useSelector(selectTrackDataviews)
-  const infoDatasetId = vessel?.dataset || vesselToResolve?.datasetId || ''
+  const infoDatasetId =
+    typeof vessel?.dataset === 'string'
+      ? vessel?.dataset
+      : vessel?.dataset?.id || vesselToResolve?.datasetId || ''
   const infoDataset = useSelector(selectDatasetById(infoDatasetId))
   const vesselInWorkspace = getVesselInWorkspace(
     vesselsInWorkspace,
@@ -181,7 +189,7 @@ function VesselPin({
       }
     }
     setLoading(false)
-    onClick?.()
+    onClick?.({ vesselInWorkspace })
   }
 
   return (

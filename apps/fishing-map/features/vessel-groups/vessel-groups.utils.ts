@@ -66,13 +66,15 @@ export const mergeVesselGroupVesselIdentities = (
   vesselGroupVessels: VesselGroupVessel[],
   vesselIdentities: IdentityVessel[]
 ): VesselGroupVesselIdentity[] => {
+  const vesselIdentityIds = vesselIdentities.map((vesselIdentity) =>
+    getVesselIdentities(vesselIdentity, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })?.map((v) => v.id)
+  )
   return vesselGroupVessels
     .flatMap((v) => {
-      const vesselIdentity = vesselIdentities.find((vesselIdentity) => {
-        const selftReportedIds = getVesselIdentities(vesselIdentity, {
-          identitySource: VesselIdentitySourceEnum.SelfReported,
-        })?.map((v) => v.id)
-        return selftReportedIds?.includes(v.vesselId)
+      const vesselIdentity = vesselIdentities.find((_, index) => {
+        return vesselIdentityIds[index]?.includes(v.vesselId)
       })
       if (!vesselIdentity) {
         return []
@@ -117,23 +119,33 @@ export const flatVesselGroupSearchVessels = (
 export function parseVesselGroupVessels(
   vessels: AddVesselGroupVessel[]
 ): VesselGroupVesselIdentity[] {
-  return vessels?.map((vessel) => {
+  return vessels?.flatMap((vessel) => {
     if ((vessel as IdentityVesselData).identities?.length) {
       const identityVessel = vessel as IdentityVesselData
-      const relationId = identityVessel.id
-      return {
-        vesselId: identityVessel.id,
-        dataset: identityVessel.datasetId || (identityVessel.dataset?.id as string),
-        relationId: relationId,
-        identity:
-          relationId === identityVessel.id
-            ? {
-                dataset: identityVessel.datasetId || identityVessel.dataset?.id,
-                selfReportedInfo: identityVessel.identities,
-              }
-            : undefined,
-      } as VesselGroupVesselIdentity
+      const selfReportedIdentities = identityVessel.identities?.filter(
+        (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
+      )
+      if (selfReportedIdentities?.length) {
+        const relationId = identityVessel.id
+        return {
+          vesselId: identityVessel.id,
+          dataset: identityVessel.datasetId || (identityVessel.dataset?.id as string),
+          relationId: relationId,
+          identity:
+            relationId === identityVessel.id
+              ? {
+                  dataset: identityVessel.datasetId || identityVessel.dataset?.id,
+                  selfReportedInfo: selfReportedIdentities,
+                }
+              : undefined,
+        } as VesselGroupVesselIdentity
+      }
+      return []
     }
     return vessel as VesselGroupVesselIdentity
   })
+}
+
+export const getVesselsWithoutDuplicates = (vessels: VesselGroupVesselIdentity[]) => {
+  return vessels.filter((v) => v.identity !== undefined)
 }

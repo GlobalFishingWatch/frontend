@@ -141,7 +141,7 @@ const VesselHeader = () => {
                   d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
                 />
               </svg>
-              {formatInfoField(shipname, 'name')}
+              {formatInfoField(shipname, 'shipname')}
               <span className={styles.secondary}>{otherNamesLabel}</span>
               <div>
                 <a className={styles.reportLink} href={window.location.href}>
@@ -202,6 +202,22 @@ const VesselHeader = () => {
                 <VesselGroupAddActionButton buttonSize="small" buttonType="border-secondary" />
               </VesselGroupAddButton>
             </div>
+            {/* <div className={cx(styles.summaryContainer, styles.titleContainer)}>
+        <h1 data-test="vv-vessel-name" className={styles.title}>
+          <svg className={styles.vesselIcon} width="16" height="16">
+            <path
+              fill={vesselColor || COLOR_PRIMARY_BLUE}
+              stroke={COLOR_PRIMARY_BLUE}
+              strokeOpacity=".5"
+              d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
+            />
+          </svg>
+          {formatInfoField(shipname, 'shipname')}
+          <span className={styles.secondary}>{otherNamesLabel}</span>
+          <div>
+            <a className={styles.reportLink} href={window.location.href}>
+              {t('vessel.linkToVessel', 'Check the vessel profile here')}
+            </a> */}
           </div>
         </div>
       </div>

@@ -16,6 +16,7 @@ import VGREvents from 'features/reports/events/VGREvents'
 import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   useFitAreaInViewport,
   useReportAreaCenter,
@@ -46,7 +47,7 @@ function VesselGroupReport() {
   const coordinates = useReportAreaCenter(bbox!)
   const setMapCoordinates = useSetMapCoordinates()
   const bboxHash = bbox ? bbox.join(',') : ''
-
+  const vesselsInWorkspace = useSelector(selectTrackDataviews)
   useEffect(() => {
     fetchVesselGroupReport(vesselGroupId)
     if (reportDataview) {
@@ -61,6 +62,11 @@ function VesselGroupReport() {
     vesselGroupId,
   ])
 
+  useEffect(() => {
+    if (vesselsInWorkspace.length) {
+      dispatchQueryParams({ viewOnlyVesselGroup: false })
+    }
+  }, [dispatchQueryParams, vesselsInWorkspace])
   useEffect(() => {
     if (reportSection === 'vessels' && coordinates) {
       setMapCoordinates(coordinates)

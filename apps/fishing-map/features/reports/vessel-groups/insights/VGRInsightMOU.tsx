@@ -70,7 +70,7 @@ const VesselGroupReportInsightMOU = () => {
           <ul className={styles.nested}>
             {Object.values(insightsByVessel).map((insights) => {
               const vessel = insights[0].vessel
-              const name = formatInfoField(vessel.shipname, 'name')
+              const name = formatInfoField(vessel.shipname, 'shipname')
               const flags = Array.from(new Set(insights.map((i) => i.insight.reference)))
               return (
                 <li className={styles.row} key={vessel.id}>

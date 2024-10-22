@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { VesselGroup } from '@globalfishingwatch/api-types'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { MAX_VESSEL_GROUP_VESSELS } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -12,12 +13,16 @@ import { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { getVesselGroupsInDataviews } from 'features/datasets/datasets.utils'
+import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { selectVesselGroupModalVessels } from './vessel-groups-modal.slice'
 
 export const selectHasVesselGroupVesselsOverflow = createSelector(
   [selectVesselGroupModalVessels],
   (vessels = []) => {
-    return vessels !== null && vessels.length > MAX_VESSEL_GROUP_VESSELS
+    return (
+      vessels !== null &&
+      getVesselGroupVesselsCount({ vessels } as VesselGroup) > MAX_VESSEL_GROUP_VESSELS
+    )
   }
 )
 

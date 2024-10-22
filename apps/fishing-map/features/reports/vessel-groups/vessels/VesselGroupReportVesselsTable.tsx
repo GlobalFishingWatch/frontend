@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
@@ -45,10 +46,6 @@ export default function VesselGroupReportVesselsTable() {
     dispatchQueryParams({ vGRVesselFilter, vGRVesselPage: 0 })
   }
 
-  const onPinClick = () => {
-    dispatchQueryParams({ viewOnlyVesselGroup: false })
-  }
-
   const handleSortClick = (
     property: VGRVesselsOrderProperty,
     direction: VGRVesselsOrderDirection
@@ -57,6 +54,16 @@ export default function VesselGroupReportVesselsTable() {
       vGRVesselsOrderProperty: property,
       vGRVesselsOrderDirection: direction,
     })
+  }
+
+  const onPinClick = ({
+    vesselInWorkspace,
+  }: {
+    vesselInWorkspace?: UrlDataviewInstance | null | undefined
+  }) => {
+    if (!vesselInWorkspace) {
+      dispatchQueryParams({ viewOnlyVesselGroup: false })
+    }
   }
 
   return (
@@ -97,7 +104,7 @@ export default function VesselGroupReportVesselsTable() {
             />
           </div>
           <div className={styles.header}>
-            {t('vessel.vessel_type', 'Vessel Type')}
+            {t('vessel.type', 'Type')}
             <IconButton
               size="tiny"
               icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
@@ -110,7 +117,7 @@ export default function VesselGroupReportVesselsTable() {
             const { id, flag, ssvid } = getSearchIdentityResolved(identity!)
             const isLastRow = i === vessels.length - 1
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
-            const type = vessel.vesselType
+            const type = vessel.type
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             return (

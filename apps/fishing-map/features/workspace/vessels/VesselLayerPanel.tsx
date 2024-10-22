@@ -38,6 +38,7 @@ import { t } from 'features/i18n/i18n'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import Filters from '../common/LayerFilters'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -51,7 +52,7 @@ export type VesselLayerPanelProps = {
 }
 
 export const getVesselIdentityTooltipSummary = (
-  vessel: IdentityVessel,
+  vessel: IdentityVessel | ExtendedFeatureVessel,
   { showVesselId } = {} as { showVesselId: boolean }
 ) => {
   if (!vessel || !vessel.selfReportedInfo?.length) {
@@ -74,7 +75,7 @@ export const getVesselIdentityTooltipSummary = (
       }, '')
 
       const selfReported = selfReportedInfo[0]
-      const name = formatInfoField(selfReported.shipname, 'name')
+      const name = formatInfoField(selfReported.shipname, 'shipname')
       const flag = formatInfoField(selfReported.flag, 'flag')
       let info = `${name} - (${flag}) (${formatI18nDate(
         firstTransmissionDateFrom

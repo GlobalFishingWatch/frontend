@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { parse as parseCSV } from 'papaparse'
 import { useSelector } from 'react-redux'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { TextArea } from '@globalfishingwatch/ui-components'
+import { Select, SelectOption, TextArea } from '@globalfishingwatch/ui-components'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import { readBlobAs } from 'utils/files'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { ID_COLUMN_LOOKUP } from 'features/vessel-groups/vessel-groups.config'
+import { ID_COLUMN_LOOKUP, ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
+import { selectHasVesselGroupSearchVessels } from 'features/vessel-groups/vessel-groups.selectors'
 import {
   selectVesselGroupModalSearchIdField,
   selectVesselGroupsModalSearchIds,
@@ -25,6 +26,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const vesselGroupVesselsToSearch = useSelector(selectVesselGroupsModalSearchIds)
   const hasGroupVesselsToSearch =
     vesselGroupVesselsToSearch && vesselGroupVesselsToSearch.length > 0
+  const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
 
   useEffect(() => {
     if (debouncedSearchText) {
@@ -80,9 +82,24 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
     },
     [dispatch, onError, t]
   )
+
+  const onIdFieldChange = useCallback(
+    (option: SelectOption) => {
+      dispatch(setVesselGroupSearchIdField(option.id))
+    },
+    [dispatch]
+  )
+
   return (
     <div className={styles.vesselGroupInput}>
       <div className={styles.ids}>
+        <Select
+          label={t('vesselGroup.idField', 'ID field')}
+          options={ID_COLUMNS_OPTIONS}
+          selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
+          onSelect={onIdFieldChange}
+          disabled={hasVesselGroupsVessels}
+        />
         <TextArea
           className={styles.idsArea}
           value={searchText}

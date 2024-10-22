@@ -167,7 +167,7 @@ export const getEventDescriptionComponent = (
           i18nKey="event.encounterActionWithVesselsPin"
           defaults="had an encounter with <pin></pin>{{encounterVessel}} starting at {{start}} for {{duration}}"
           values={{
-            encounterVessel: formatInfoField(encounterVesselName, 'name'),
+            encounterVessel: formatInfoField(encounterVesselName, 'shipname'),
             ...time,
           }}
           components={{

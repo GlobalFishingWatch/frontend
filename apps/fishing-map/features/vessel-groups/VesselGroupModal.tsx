@@ -5,11 +5,11 @@ import { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
 import {
   Modal,
   Button,
-  Select,
   SelectOption,
   InputText,
   SwitchRow,
   Spinner,
+  MultiSelect,
 } from '@globalfishingwatch/ui-components'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import VesselGroupSearch from 'features/vessel-groups/VesselGroupModalSearch'
@@ -33,9 +33,16 @@ import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import {
+  fetchVesselGroupReportThunk,
+  resetVesselGroupReportData,
+} from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { getPlaceholderBySelections } from 'features/i18n/utils'
+import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   IdField,
   createVesselGroupThunk,
@@ -60,9 +67,8 @@ import {
   selectVesselGroupSearchStatus,
   selectVesselGroupsModalSearchIds,
   setVesselGroupModalVessels,
-  setVesselGroupSearchIdField,
 } from './vessel-groups-modal.slice'
-import { getVesselGroupUniqVessels } from './vessel-groups.utils'
+import { getVesselGroupUniqVessels, getVesselGroupVesselsCount } from './vessel-groups.utils'
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
@@ -94,6 +100,7 @@ function VesselGroupModal(): React.ReactElement {
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
   const hasVesselsOverflow = useSelector(selectHasVesselGroupVesselsOverflow)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -102,10 +109,35 @@ function VesselGroupModal(): React.ReactElement {
     ? vesselGroupVesselsToSearch?.length < MAX_VESSEL_GROUP_VESSELS
     : true
 
+  const vesselDatasets = useSelector(selectVesselGroupCompatibleDatasets)
+  const sourceOptions = vesselDatasets.map((d) => ({
+    id: d.id,
+    label: getDatasetLabel(d),
+  }))
+  const [sourcesSelected, setSourcesSelected] = useState<SelectOption[]>([sourceOptions[0]])
+
+  const onSelectSourceClick = useCallback(
+    (source: SelectOption) => {
+      setSourcesSelected([...sourcesSelected, source])
+    },
+    [sourcesSelected]
+  )
+
+  const onRemoveSourceClick = useCallback(
+    (source: SelectOption) => {
+      setSourcesSelected(sourcesSelected.filter((s) => s.id !== source.id))
+    },
+    [sourcesSelected]
+  )
+
   const dispatchSearchVesselsGroupsThunk = useCallback(
     async (ids: string[], idField: IdField = 'vesselId') => {
       searchVesselGroupsVesselsRef.current = dispatch(
-        searchVesselGroupsVesselsThunk({ ids, idField })
+        searchVesselGroupsVesselsThunk({
+          ids,
+          idField,
+          datasets: sourcesSelected.map(({ id }) => id),
+        })
       )
       const action = await searchVesselGroupsVesselsRef.current
       if (searchVesselGroupsVesselsThunk.fulfilled.match(action)) {
@@ -114,7 +146,7 @@ function VesselGroupModal(): React.ReactElement {
         setError((action.payload as any)?.message || '')
       }
     },
-    [dispatch]
+    [dispatch, sourcesSelected]
   )
 
   useEffect(() => {
@@ -126,13 +158,6 @@ function VesselGroupModal(): React.ReactElement {
   const onGroupNameChange = useCallback((e: any) => {
     setGroupName(e.target.value)
   }, [])
-
-  const onIdFieldChange = useCallback(
-    (option: SelectOption) => {
-      dispatch(setVesselGroupSearchIdField(option.id))
-    },
-    [dispatch]
-  )
 
   const abortSearch = useCallback(() => {
     if (searchVesselGroupsVesselsRef.current?.abort) {
@@ -247,6 +272,10 @@ function VesselGroupModal(): React.ReactElement {
             upsertDataviewInstance(dataviewInstance)
           }
         }
+        if (editingVesselGroupId && isVesselGroupReportLocation) {
+          dispatch(resetVesselGroupReportData())
+          dispatch(fetchVesselGroupReportThunk({ vesselGroupId: editingVesselGroupId }))
+        }
         close()
         setButtonLoading('')
       }
@@ -266,6 +295,7 @@ function VesselGroupModal(): React.ReactElement {
       dispatch,
       createAsPublic,
       vesselGroupsInWorkspace,
+      isVesselGroupReportLocation,
       close,
       workspaceToNavigate,
       searchQuery,
@@ -311,13 +341,16 @@ function VesselGroupModal(): React.ReactElement {
           {!fullModalLoading &&
             searchVesselStatus !== AsyncReducerStatus.Error &&
             !hasVesselGroupsVessels && (
-              <Select
-                key="IDfield"
-                label={t('vesselGroup.idField', 'ID field')}
-                options={ID_COLUMNS_OPTIONS}
-                selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
-                onSelect={onIdFieldChange}
-                disabled={hasVesselGroupsVessels}
+              <MultiSelect
+                label={t('layer.source_other', 'Sources')}
+                placeholder={getPlaceholderBySelections({
+                  selection: sourcesSelected.map(({ id }) => id),
+                  options: sourceOptions,
+                })}
+                options={sourceOptions}
+                selectedOptions={sourcesSelected}
+                onSelect={onSelectSourceClick}
+                onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
               />
             )}
         </div>
@@ -341,7 +374,8 @@ function VesselGroupModal(): React.ReactElement {
         <div className={styles.modalFooter}>
           {vesselGroupVessels && vesselGroupVessels?.length > 0 && (
             <label>
-              {t('common.vessel_other', 'Vessels')}: {vesselGroupVessels.length}
+              {t('common.vessel_other', 'Vessels')}:{' '}
+              {getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup)}
             </label>
           )}
           <SwitchRow

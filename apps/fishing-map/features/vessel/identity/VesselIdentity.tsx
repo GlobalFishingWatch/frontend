@@ -270,7 +270,9 @@ const VesselIdentity = () => {
                           property={key}
                         />
                       ) : (
-                        <VesselIdentityField value={formatInfoField(value, label) as string} />
+                        <VesselIdentityField
+                          value={formatInfoField(value, label as any) as string}
+                        />
                       )}
                     </div>
                   )

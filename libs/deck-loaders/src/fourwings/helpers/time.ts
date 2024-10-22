@@ -32,8 +32,15 @@ export const getFourwingsInterval = (
   end: number | string,
   availableIntervals = FOURWINGS_INTERVALS_ORDER
 ): FourwingsInterval => {
+  if (!start || !end) {
+    return availableIntervals[0]
+  }
   const startMillis = typeof start === 'string' ? DateTime.fromISO(start).toMillis() : start
   const endMillis = typeof end === 'string' ? DateTime.fromISO(end).toMillis() : end
+
+  if (!startMillis && !endMillis) {
+    return availableIntervals[0]
+  }
   const duration = Duration.fromMillis(endMillis - startMillis)
   const validIntervals = Object.entries(LIMITS_BY_INTERVAL).flatMap(([interval, limits]) => {
     if (!availableIntervals.includes(interval as FourwingsInterval)) return []

@@ -112,6 +112,8 @@ export const TOKEN_REGEX = /~(\d+)/
 const parseIntNumber = (value: any) => (typeof value === 'string' ? parseInt(value) : value)
 
 const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
+  start: (start) => decodeURIComponent(start),
+  end: (end) => decodeURIComponent(end),
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),

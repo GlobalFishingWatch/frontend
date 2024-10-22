@@ -195,7 +195,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const { dataset, shipname, nShipname } = vesselData
           const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
           const { transmissionDateFrom, transmissionDateTo } = vesselData
-          const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
+          const name = shipname ? formatInfoField(shipname, 'shipname') : EMPTY_FIELD_PLACEHOLDER
           const label = `${name} ${otherNamesLabel || ''}`
           const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
 
@@ -228,7 +228,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
           if (!transmissionDateFrom || !transmissionDateTo) return
           return (
-            <div>
+            <div className={styles.transmissionDates}>
               <span style={{ font: 'var(--font-XS)' }}>
                 <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
               </span>
@@ -397,6 +397,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         )
       }
       onRowSelectionChange={undefined}
+      enableColumnResizing
       selectAllMode="all"
       getRowId={(row, index) => `${index}-${row.id}`}
       initialState={{ columnPinning: { left: [PINNED_COLUMN] } }}

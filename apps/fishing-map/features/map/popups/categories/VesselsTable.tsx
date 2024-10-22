@@ -126,11 +126,11 @@ function VesselsTable({
         }
         const aName = formatInfoField(
           getVesselProperty(a, 'shipname', getVesselPropertyParams),
-          'name'
+          'shipname'
         )
         const bName = formatInfoField(
           getVesselProperty(b, 'shipname', getVesselPropertyParams),
-          'name'
+          'shipname'
         )
         if (aName < bName) return -1
         if (aName > bName) return 1
@@ -147,7 +147,7 @@ function VesselsTable({
       return hasDatasets
     })
 
-  const isHoursProperty = vesselProperty !== 'detections'
+  const isHoursProperty = vesselProperty !== 'detections' && vesselProperty !== 'events'
   const isPresenceActivity = activityType === DatasetSubCategory.Presence
   return (
     <Fragment>
@@ -161,7 +161,7 @@ function VesselsTable({
                 {isPresenceActivity ? t('vessel.type', 'Type') : t('vessel.gearType_short', 'Gear')}
               </th>
               {/* Disabled for detections to allocate some space for timestamps interaction */}
-              {vesselProperty !== 'detections' && <th>{t('vessel.source_short', 'source')}</th>}
+              {isHoursProperty && <th>{t('vessel.source_short', 'source')}</th>}
               {showValue && (
                 <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
                   {feature?.unit === 'hours' && t('common.hour_other', 'hours')}
@@ -178,7 +178,7 @@ function VesselsTable({
               }
               const vesselName = formatInfoField(
                 getVesselProperty(vessel, 'shipname', getVesselPropertyParams),
-                'name'
+                'shipname'
               )
 
               const otherVesselsLabel = vessel
@@ -248,7 +248,7 @@ function VesselsTable({
                       </Tooltip>
                     </td>
                   )}
-                  {showValue && (
+                  {showValue && vessel[vesselProperty] && (
                     <td
                       className={cx(styles.columnSpace, {
                         [styles.vesselsTableHour]: isHoursProperty,

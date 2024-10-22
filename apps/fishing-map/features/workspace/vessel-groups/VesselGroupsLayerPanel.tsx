@@ -126,12 +126,19 @@ function VesselGroupLayerPanel({
         <Title
           title={
             isOutdated ? (
-              <span>
-                {formatInfoField(vesselGroup?.name, 'name')}{' '}
-                <span className={styles.secondary}>
-                  ({getVesselGroupVesselsCount(vesselGroup)})
+              <Tooltip
+                content={t(
+                  'vesselGroupReport.linkDisabled',
+                  'You need to update the vessel group first to see the report'
+                )}
+              >
+                <span>
+                  {formatInfoField(vesselGroup?.name, 'shipname')}{' '}
+                  <span className={styles.secondary}>
+                    ({getVesselGroupVesselsCount(vesselGroup)})
+                  </span>
                 </span>
-              </span>
+              </Tooltip>
             ) : (
               <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
                 <Tooltip
@@ -145,7 +152,7 @@ function VesselGroupLayerPanel({
                       t('vesselGroup.loadingInfo', 'Loading vessel group info')
                     ) : (
                       <Fragment>
-                        {formatInfoField(vesselGroup?.name, 'name')}{' '}
+                        {vesselGroup?.name}{' '}
                         {vesselGroup?.vessels?.length && (
                           <span className={styles.secondary}>
                             {' '}
@@ -159,7 +166,7 @@ function VesselGroupLayerPanel({
               </VesselGroupReportLink>
             )
           }
-          className={styles.name}
+          className={cx(styles.name, { [styles.disabled]: isOutdated })}
           classNameActive={styles.active}
           dataview={dataview}
           toggleVisibility={false}

@@ -29,17 +29,26 @@ import {
   cleanVesselOrGearType,
 } from 'features/reports/activity/vessels/report-activity-vessels.utils'
 import { getVesselGearTypeLabel } from 'utils/info'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 
 const EMPTY_ARRAY: [] = []
 
 export const selectReportVesselsList = createSelector(
-  [selectReportActivityFlatten, selectAllDatasets, selectReportCategory],
-  (vessels, datasets, reportCategory) => {
+  [
+    selectReportActivityFlatten,
+    selectAllDatasets,
+    selectReportCategory,
+    selectIsVesselGroupReportLocation,
+  ],
+  (vessels, datasets, reportCategory, isVesselGroupReportLocation) => {
     if (!vessels?.length) return null
 
     return Object.values(groupBy(vessels, (v) => v.vesselId))
       .flatMap((vesselActivity) => {
-        if (vesselActivity[0]?.category !== reportCategory) {
+        const notMatchesCurrentCategory = isVesselGroupReportLocation
+          ? !vesselActivity[0]?.dataviewId.includes(reportCategory)
+          : vesselActivity[0]?.category !== reportCategory
+        if (notMatchesCurrentCategory) {
           return EMPTY_ARRAY
         }
         const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)

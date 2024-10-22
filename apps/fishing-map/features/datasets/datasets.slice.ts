@@ -8,6 +8,7 @@ import {
   APIPagination,
   Dataset,
   DatasetsMigration,
+  DatasetTypes,
   EndpointId,
   EndpointParam,
   UploadResponse,
@@ -80,6 +81,44 @@ const parsePOCsDatasets = (dataset: Dataset) => {
   return dataset
 }
 
+export const getDatasetByIdsThunk = createAsyncThunk(
+  'datasets/getByIds',
+  async (
+    { ids, includeRelated = true }: { ids: string[]; includeRelated?: boolean },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    try {
+      const state = getState() as any
+      const datasetsToRequest: string[] = []
+      let datasets = ids.flatMap((datasetId) => {
+        const dataset = selectDatasetById(datasetId)(state)
+        if (!dataset) {
+          datasetsToRequest.push(datasetId)
+        }
+        return (dataset as Dataset) || []
+      })
+
+      if (datasetsToRequest.length) {
+        const action = await dispatch(
+          fetchDatasetsByIdsThunk({ ids: datasetsToRequest, includeRelated })
+        )
+        if (fetchDatasetsByIdsThunk.fulfilled.match(action) && action.payload?.length) {
+          datasets = datasets.concat(
+            action.payload.filter((v) => v.type === DatasetTypes.Vessels) as Dataset[]
+          )
+        }
+      }
+      return datasets
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue({
+        status: parseAPIErrorStatus(e),
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
+    }
+  }
+)
+
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
   string,
@@ -105,6 +144,7 @@ type FetchDatasetsFromApiParams = {
   signal: AbortSignal
   maxDepth?: number
   onlyUserDatasets?: boolean
+  includeRelated?: boolean
 }
 const fetchDatasetsFromApi = async (
   {
@@ -113,6 +153,7 @@ const fetchDatasetsFromApi = async (
     signal,
     maxDepth = 5,
     onlyUserDatasets = true,
+    includeRelated = true,
   } = {} as FetchDatasetsFromApiParams
 ) => {
   const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
@@ -144,9 +185,11 @@ const fetchDatasetsFromApi = async (
       : { default: [] }
   let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)
 
-  const relatedDatasetsIds = uniq(
-    datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
-  )
+  const relatedDatasetsIds = includeRelated
+    ? uniq(
+        datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
+      )
+    : []
   const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
   const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
   if (uniqRelatedDatasetsIds.length > 1 && maxDepth > 0) {
@@ -165,13 +208,16 @@ const fetchDatasetsFromApi = async (
 
 export const fetchDatasetsByIdsThunk = createAsyncThunk<
   Dataset[],
-  { ids: string[]; onlyUserDatasets?: boolean },
+  { ids: string[]; onlyUserDatasets?: boolean; includeRelated?: boolean },
   {
     rejectValue: AsyncError
   }
 >(
   'datasets/fetch',
-  async ({ ids, onlyUserDatasets = true }, { signal, rejectWithValue, getState, dispatch }) => {
+  async (
+    { ids, onlyUserDatasets = true, includeRelated = true },
+    { signal, rejectWithValue, getState, dispatch }
+  ) => {
     const state = getState() as DatasetsSliceState
     const existingIds = selectIds(state) as string[]
 
@@ -181,6 +227,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
         existingIds,
         signal,
         onlyUserDatasets,
+        includeRelated,
       })
       if (Object.keys(datasetsDeprecated).length) {
         dispatch(setDeprecatedDatasets(datasetsDeprecated))

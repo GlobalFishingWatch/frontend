@@ -79,7 +79,7 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
     } else if (field.key.includes('vessel.type')) {
       return t(`vessel.vesselTypes.${value}` as string, value as string)
     } else if (field.key.includes('name')) {
-      return formatInfoField(value, 'name') as string
+      return formatInfoField(value, 'shipname') as string
     } else if (field.key.includes('flag')) {
       return formatInfoField(value, 'flag') as string
     }

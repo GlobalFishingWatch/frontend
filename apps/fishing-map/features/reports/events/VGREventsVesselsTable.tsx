@@ -6,6 +6,7 @@ import {
   useGetVesselGroupEventsVesselsQuery,
   VesselGroupEventsVesselsParams,
 } from 'queries/vessel-group-events-stats-api'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import VesselLink from 'features/vessel/VesselLink'
@@ -21,9 +22,9 @@ import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVess
 
 export default function VesselGroupReportEventsVesselsTable() {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const params = useSelector(selectFetchVGREventsVesselsParams)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const { dispatchQueryParams } = useLocationConnect()
   const { error, isLoading } = useGetVesselGroupEventsVesselsQuery(
     params as VesselGroupEventsVesselsParams,
     {
@@ -31,9 +32,14 @@ export default function VesselGroupReportEventsVesselsTable() {
     }
   )
   const vessels = useSelector(selectVGREventsVesselsPaginated)
-
-  const onPinClick = () => {
-    dispatchQueryParams({ viewOnlyVesselGroup: false })
+  const onPinClick = ({
+    vesselInWorkspace,
+  }: {
+    vesselInWorkspace?: UrlDataviewInstance | null | undefined
+  }) => {
+    if (!vesselInWorkspace) {
+      dispatchQueryParams({ viewOnlyVesselGroup: false })
+    }
   }
 
   return (
@@ -52,7 +58,7 @@ export default function VesselGroupReportEventsVesselsTable() {
           {vessels?.map((vessel, i) => {
             const { vesselId, numEvents, shipname, flag, ssvid, dataset } = vessel
             const isLastRow = i === vessels.length - 1
-            const name = formatInfoField(shipname, 'name') as string
+            const name = formatInfoField(shipname, 'shipname') as string
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             return (
               <Fragment key={vesselId}>

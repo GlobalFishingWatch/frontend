@@ -22,10 +22,20 @@ export const upperFirst = (text: string) => {
 
 export const formatInfoField = (
   fieldValue: string | string[] | number | undefined,
-  type: string,
+  type:
+    | 'shipname'
+    | 'flag'
+    | 'ownerFlag'
+    | 'shiptypes'
+    | 'geartypes'
+    | 'owner'
+    | 'authorization'
+    | 'vesselType'
+    | 'port'
+    | 'fleet',
   translationFn = t
 ) => {
-  if (!fieldValue && (type === 'name' || type === 'shipname')) {
+  if (!fieldValue && type === 'shipname') {
     return translationFn('common.unknownVessel', 'Unknown Vessel')
   }
   if (typeof fieldValue === 'string') {
@@ -38,7 +48,7 @@ export const formatInfoField = (
     if (type === 'geartypes') {
       return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn })
     }
-    if (type === 'name' || type === 'shipname' || type === 'owner' || type === 'port') {
+    if (type === 'shipname' || type === 'owner' || type === 'port') {
       return fieldValue
         .replace('_', ' ')
         .replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ,0-9]+)\b/g, upperFirst)
@@ -115,11 +125,11 @@ export const getVesselShipNameLabel = (
   if (!vesselInfo) return t('common.unknownVessel', 'Unknown vessel')
   if (vesselInfo.shipname && vesselInfo.geartypes && vesselInfo.flag && withGearType) {
     const gearTypes = getVesselGearTypeLabel(vesselInfo)
-    return `${formatInfoField(vesselInfo.shipname, 'name')}
+    return `${formatInfoField(vesselInfo.shipname, 'shipname')}
     (${t(`flags:${vesselInfo.flag}`, vesselInfo.flag)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
   }
   if (vesselInfo.shipname) {
-    return formatInfoField(vesselInfo.shipname, 'name') as string
+    return formatInfoField(vesselInfo.shipname, 'shipname') as string
   }
   if (vesselInfo.geartypes) {
     return `${t('vessel.unkwownVesselByGeartype', {
@@ -132,7 +142,7 @@ export const getVesselShipNameLabel = (
 export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
   return otherVesselsNames?.length
     ? `, ${t('common.aka', 'a.k.a.')} ${otherVesselsNames
-        .map((i) => formatInfoField(i, 'name'))
+        .map((i) => formatInfoField(i, 'shipname'))
         .join(', ')}`
     : ''
 }

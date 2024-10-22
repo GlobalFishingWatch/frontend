@@ -56,7 +56,7 @@ const VesselGroupReportInsightFishing = () => {
 
   const getVesselGroupReportInsighFishingVessels = (
     vessels: VesselGroupReportInsightVessel[],
-    insight: 'eventsInNoTakeMPAs' | 'eventsInRfmoWithoutKnownAuthorization'
+    insight: 'eventsInNoTakeMPAs' | 'eventsInRFMOWithoutKnownAuthorization'
   ) => {
     const expandedIdPrefix = insight === 'eventsInNoTakeMPAs' ? 'no-take-' : 'rfmo-'
     return (
@@ -79,7 +79,7 @@ const VesselGroupReportInsightFishing = () => {
                       vesselId={vesselId}
                       datasetId={vessel.identity.dataset as string}
                     >
-                      {formatInfoField(vessel.identity.shipname, 'name')}
+                      {formatInfoField(vessel.identity.shipname, 'shipname')}
                     </VesselLink>
                     <span className={cx(styles.secondary, styles.marginLeft)}>
                       ({vessel.periodSelectedCounters[insight]})
@@ -186,7 +186,7 @@ const VesselGroupReportInsightFishing = () => {
             >
               {getVesselGroupReportInsighFishingVessels(
                 vesselsInRfmoWithoutKnownAuthorization,
-                'eventsInRfmoWithoutKnownAuthorization'
+                'eventsInRFMOWithoutKnownAuthorization'
               )}
             </Collapsable>
           )}

@@ -1045,11 +1045,13 @@
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
     "updateRequired": "Update required",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
+    "vesselAddedToGroup": "Your vessel group was updated",
     "vesselGroup": "Vessel group",
     "vesselGroups": "Vessel groups"
   },
   "vesselGroupReport": {
     "clickToSee": "Click to see the vessel group report",
+    "linkDisabled": "You need to update the vessel group first to see the report",
     "linkToReport": "Check the vessel group report here",
     "insights": {
       "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",

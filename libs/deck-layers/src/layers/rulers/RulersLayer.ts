@@ -87,6 +87,8 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         getTextColor: color,
         getTextAlignmentBaseline: 'bottom',
         lineWidthMinPixels: 2,
+        lineWidthUnits: 'pixels',
+        lineWidthScale: 1,
         getDashArray: [4, 2],
         extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
       })

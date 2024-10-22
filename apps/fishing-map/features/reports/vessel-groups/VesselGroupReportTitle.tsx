@@ -14,7 +14,6 @@ import {
   setVesselGroupModalVessels,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasOtherVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
@@ -23,6 +22,8 @@ import {
   selectVGRVesselsTimeRange,
 } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import styles from './VesselGroupReportTitle.module.css'
 import { VesselGroupReport } from './vessel-group-report.slice'
 import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
@@ -86,7 +87,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
             </label>
           )}
           <h1 className={styles.title} data-test="report-title">
-            {formatInfoField(vesselGroup.name, 'name')}
+            {vesselGroup.name}
           </h1>
           {timeRange && vessels && flags && (
             <h2 className={styles.summary}>
@@ -94,7 +95,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
                 t('vesselGroup.summary', {
                   defaultValue:
                     '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>',
-                  vessels: vessels?.length,
+                  vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
                   flags: flags?.size,
                   start: formatI18nDate(timeRange.start, {
                     format: DateTime.DATE_MED,
