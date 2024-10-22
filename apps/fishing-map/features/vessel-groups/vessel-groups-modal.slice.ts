@@ -5,8 +5,6 @@ import {
   APIPagination,
   APIVesselSearchPagination,
   Dataset,
-  DatasetStatus,
-  DatasetTypes,
   DataviewDatasetConfig,
   EndpointId,
   IdentityVessel,

@@ -51,6 +51,8 @@ import {
   VesselGroupConfirmationMode,
   updateVesselGroupVesselsThunk,
   UpdateVesselGroupThunkParams,
+  resetVesselGroupStatus,
+  selectVesselGroupsError,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 import {
@@ -83,6 +85,7 @@ function VesselGroupModal(): React.ReactElement {
   const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
+  const vesselGroupsError = useSelector(selectVesselGroupsError)
   const workspaceToNavigate = useSelector(selectVesselGroupWorkspaceToNavigate)
   const searchQuery = useSelector(selectSearchQuery)
   const loading =
@@ -169,6 +172,7 @@ function VesselGroupModal(): React.ReactElement {
     setError('')
     setGroupName('')
     dispatch(resetVesselGroupModal())
+    dispatch(resetVesselGroupStatus(''))
     abortSearch()
   }, [abortSearch, dispatch])
 
@@ -403,7 +407,7 @@ function VesselGroupModal(): React.ReactElement {
           )}
           {vesselGroupAPIError && !error && (
             <span className={styles.errorMsg}>
-              {t('errors.genericShort', 'Something went wrong')}
+              {vesselGroupsError?.message || t('errors.genericShort', 'Something went wrong')}
             </span>
           )}
         </div>
