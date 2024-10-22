@@ -13,6 +13,7 @@ import {
 } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { RootState } from 'store'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { prepareVesselGroupVesselsUpdate } from './vessel-groups.utils'
 
 export type IdField = 'vesselId' | 'mmsi' | 'imo'
@@ -113,10 +114,10 @@ export const createVesselGroupThunk = createAsyncThunk(
       ...vesselGroupCreate,
       vessels: prepareVesselGroupVesselsUpdate(vesselGroupCreate.vessels || []),
     }
-    const saveVesselGroup: any = async (vesselGroup: VesselGroupUpsert, tries = 0) => {
+    const saveVesselGroup: any = async (vesselGroup: VesselGroupUpsert, retrySufix = '') => {
       let vesselGroupUpdated: VesselGroup
       try {
-        const name = tries > 0 ? vesselGroupUpsert.name + `_${tries}` : vesselGroupUpsert.name
+        const name = retrySufix ? vesselGroupUpsert.name + `_${retrySufix}` : vesselGroupUpsert.name
         vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>('/vessel-groups', {
           method: 'POST',
           body: { ...vesselGroup, name },
@@ -124,7 +125,7 @@ export const createVesselGroupThunk = createAsyncThunk(
       } catch (e: any) {
         // Means we already have a workspace with this name
         if (e.status === 422 && e.message.includes('Id') && e.message.includes('duplicated')) {
-          return await saveVesselGroup(vesselGroup, Date.now())
+          return await saveVesselGroup(vesselGroup, formatI18nDate(Date.now()))
         }
         console.warn('Error creating vessel group', e)
         throw e
