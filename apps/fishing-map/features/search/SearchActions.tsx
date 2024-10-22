@@ -84,7 +84,11 @@ function SearchActions() {
 
   return (
     <Fragment>
-      <VesselGroupAddButton vessels={vesselsSelected} onAddToVesselGroup={onAddToVesselGroup}>
+      <VesselGroupAddButton
+        vessels={vesselsSelected}
+        onAddToVesselGroup={onAddToVesselGroup}
+        keepOpenWhileAdding
+      >
         <VesselGroupAddActionButton className={cx(styles.footerAction, styles.vesselGroupButton)} />
       </VesselGroupAddButton>
       <Button

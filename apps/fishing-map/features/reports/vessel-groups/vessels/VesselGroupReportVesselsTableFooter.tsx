@@ -9,10 +9,9 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import { formatInfoField } from 'utils/info'
 import { selectVGRVesselFilter } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 import styles from './VesselGroupReportVesselsTableFooter.module.css'
 import {
   selectVGRVesselsFiltered,
@@ -32,20 +31,17 @@ export default function VesselGroupReportVesselsTableFooter() {
 
   const onDownloadVesselsClick = () => {
     const vessels = allVessels?.map((vessel) => {
-      const vesselRegistryInfo = !!vessel.identity?.registryInfo?.length
-        ? vessel.identity?.registryInfo[0]
-        : null
       return {
         dataset: vessel.dataset,
-        flag: vesselRegistryInfo?.flag,
+        flag: getVesselProperty(vessel.identity!, 'flag'),
         'flag translated': vessel.flagTranslated,
         'GFW vessel type': vessel.vesselType,
         'GFW gear type': vessel.geartype,
         sources: vessel.source,
         name: vessel.shipName,
-        MMSI: vesselRegistryInfo?.ssvid,
-        IMO: vesselRegistryInfo?.imo,
-        'call sign': vesselRegistryInfo?.callsign,
+        MMSI: getVesselProperty(vessel.identity!, 'ssvid'),
+        IMO: getVesselProperty(vessel.identity!, 'imo'),
+        'call sign': getVesselProperty(vessel.identity!, 'callsign'),
         vesselId: vessel.vesselId,
       }
     })
