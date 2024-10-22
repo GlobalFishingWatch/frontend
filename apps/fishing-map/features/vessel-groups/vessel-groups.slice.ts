@@ -142,17 +142,22 @@ export type UpdateVesselGroupThunkParams = VesselGroupUpsert & {
 }
 export const updateVesselGroupThunk = createAsyncThunk(
   'vessel-groups/update',
-  async (vesselGroupUpsert: UpdateVesselGroupThunkParams) => {
-    const { id, ...rest } = vesselGroupUpsert
-    const vesselGroup: VesselGroupUpsert = {
-      ...rest,
-      vessels: prepareVesselGroupVesselsUpdate(rest.vessels || []),
+  async (vesselGroupUpsert: UpdateVesselGroupThunkParams, { rejectWithValue }) => {
+    try {
+      const { id, ...rest } = vesselGroupUpsert
+      const vesselGroup: VesselGroupUpsert = {
+        ...rest,
+        vessels: prepareVesselGroupVesselsUpdate(rest.vessels || []),
+      }
+      const vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`, {
+        method: 'PATCH',
+        body: vesselGroup,
+      } as FetchOptions<any>)
+      return vesselGroupUpdated
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
-    const vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`, {
-      method: 'PATCH',
-      body: vesselGroup,
-    } as FetchOptions<any>)
-    return vesselGroupUpdated
   }
 )
 
@@ -160,25 +165,35 @@ export const updateVesselGroupVesselsThunk = createAsyncThunk(
   'vessel-groups/update-vessels',
   async (
     { id, name, vessels = [], override = false }: UpdateVesselGroupThunkParams,
-    { getState, dispatch }
+    { getState, dispatch, rejectWithValue }
   ) => {
-    let vesselGroup = selectVesselGroupById(id)(getState() as any)
-    if (!override && !vesselGroup) {
-      const action = await dispatch(fetchVesselGroupByIdThunk(id))
-      if (fetchVesselGroupByIdThunk.fulfilled.match(action) && action.payload) {
-        vesselGroup = action.payload
+    try {
+      let vesselGroup = selectVesselGroupById(id)(getState() as any)
+      if (!override && !vesselGroup) {
+        const action = await dispatch(fetchVesselGroupByIdThunk(id))
+        if (fetchVesselGroupByIdThunk.fulfilled.match(action) && action.payload) {
+          vesselGroup = action.payload
+        }
       }
-    }
-    if (vesselGroup) {
-      return dispatch(
-        updateVesselGroupThunk({
-          id: vesselGroup.id,
-          name: name || vesselGroup.name,
-          vessels: override
-            ? vessels
-            : uniqBy([...vesselGroup.vessels, ...vessels], (v) => v.vesselId),
-        })
-      )
+      if (vesselGroup) {
+        const action = await dispatch(
+          updateVesselGroupThunk({
+            id: vesselGroup.id,
+            name: name || vesselGroup.name,
+            vessels: override
+              ? vessels
+              : uniqBy([...vesselGroup.vessels, ...vessels], (v) => v.vesselId),
+          })
+        )
+        if (updateVesselGroupThunk.fulfilled.match(action)) {
+          return action
+        } else {
+          return rejectWithValue(action.payload)
+        }
+      }
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
   }
 )
@@ -211,8 +226,10 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
     resetVesselGroup: () => {
       return { ...initialState }
     },
+    resetVesselGroupStatus: (state) => {
+      state.status = AsyncReducerStatus.Idle
+    },
   },
-
   extraReducers(builder) {
     builder.addCase(fetchWorkspaceVesselGroupsThunk.pending, (state) => {
       state.workspace.status = AsyncReducerStatus.Loading
@@ -242,6 +259,8 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   },
 })
 
+export const { resetVesselGroupStatus } = vesselGroupsSlice.actions
+
 export const { selectAll: selectAllVesselGroups, selectById } =
   entityAdapter.getSelectors<VesselGroupSliceState>((state) => state.vesselGroups)
 
@@ -250,6 +269,7 @@ export const selectVesselGroupById = memoize((id: string) =>
 )
 
 export const selectVesselGroupsStatus = (state: VesselGroupSliceState) => state.vesselGroups.status
+export const selectVesselGroupsError = (state: VesselGroupSliceState) => state.vesselGroups.error
 export const selectWorkspaceVesselGroupsStatus = (state: VesselGroupSliceState) =>
   state.vesselGroups.workspace.status
 

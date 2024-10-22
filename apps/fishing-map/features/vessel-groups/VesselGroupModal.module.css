@@ -1,12 +1,12 @@
 .modal .modalContainer {
-  height: 58rem;
+  height: 62rem;
   display: flex;
   flex-direction: column;
 }
 
 @media only screen and (width >= 720px) {
   .modal .modalContainer {
-    height: 58rem;
+    height: 62rem;
   }
 }
 
@@ -44,7 +44,6 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  max-width: 25rem;
   margin-right: 2rem;
 }
 
