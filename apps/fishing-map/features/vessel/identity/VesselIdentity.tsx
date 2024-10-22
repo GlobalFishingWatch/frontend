@@ -171,7 +171,7 @@ const VesselIdentity = () => {
       : IDENTITY_FIELD_GROUPS[identitySource]
   }, [identitySource, vesselIdentity?.sourceCode])
 
-  const hasMoreInfo = true
+  const hasMoreInfo = vesselIdentity?.hasComplianceInfo || vesselIdentity?.iuuStatus === 'Current'
   const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
 
   return (
