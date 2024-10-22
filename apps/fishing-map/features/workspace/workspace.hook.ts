@@ -17,6 +17,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { LAYERS_LIBRARY_ACTIVITY } from 'data/layer-library/layers-activity'
+import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 export const useFitWorkspaceBounds = () => {
@@ -50,7 +52,10 @@ const createDataviewsInstances = (
   newDataviewInstances: Partial<UrlDataviewInstance>[],
   currentDataviewInstances: UrlDataviewInstance[] = []
 ): UrlDataviewInstance[] => {
-  const currentColors = currentDataviewInstances.flatMap((dv) => dv.config?.color || [])
+  const defaultDataviewInstances = [...LAYERS_LIBRARY_ACTIVITY, ...LAYERS_LIBRARY_DETECTIONS]
+  const currentColors = (currentDataviewInstances || defaultDataviewInstances).flatMap(
+    (dv) => dv.config?.color || []
+  )
   return newDataviewInstances.map((dataview) => {
     if (dataview.config?.colorCyclingType) {
       const nextColor = getNextColor(dataview.config.colorCyclingType, currentColors)
