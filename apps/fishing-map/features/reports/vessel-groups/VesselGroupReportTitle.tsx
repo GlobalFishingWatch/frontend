@@ -134,6 +134,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
             className={styles.actionButton}
             onClick={onEditClick}
             disabled={loading}
+            tooltip={t('vesselGroup.edit ', 'Edit list of vessels')}
           >
             <p>{t('common.edit ', 'edit')}</p>
             <Icon icon="edit" type="default" />

@@ -35,8 +35,8 @@ const VesselGroupReportInsights = () => {
     <div className={styles.container}>
       <h2 className="print-only">{t('vessel.sectionInsights', 'Insights')}</h2>
       <p className={styles.title}>
-        {t('vessel.insights.sectionTitle', {
-          defaultValue: 'Vessel insights between {{start}} and {{end}}',
+        {t('vesselGroup.insightSectionTitle', {
+          defaultValue: 'Vessel group insights between {{start}} and {{end}}',
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}

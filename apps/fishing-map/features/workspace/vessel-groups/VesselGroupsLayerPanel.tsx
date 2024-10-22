@@ -144,7 +144,7 @@ function VesselGroupLayerPanel({
                 <Tooltip
                   content={t(
                     'vesselGroupReport.clickToSee',
-                    'Click to see the vessel group report'
+                    'Click to analyse vessel group and see report'
                   )}
                 >
                   <span>

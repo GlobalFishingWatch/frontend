@@ -1026,6 +1026,7 @@
     "groupName": "Group name",
     "idField": "ID field",
     "idsPlaceholder": "Type here or paste a list of {{field}} separated by commas, spaces or line breaks",
+    "insightSectionTitle": "Vessel group insights between {{start}} and {{end}}",
     "label_one": "{{name}} ({{count}} IDs)",
     "label_other": "{{name}} ({{count}} IDs)",
     "loadingInfo": "Loading vessel group info",
@@ -1039,8 +1040,8 @@
     "saveForLater": "Save for later",
     "saveForLaterTooltip": "You'll find the group in the activity layers filters or your user panel button",
     "searchLimit": "Search is limited up to {{limit}} vessels",
-    "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
-    "summaryEvents": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
+    "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> with active AIS transmission from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
     "updateRequired": "Update required",
@@ -1050,7 +1051,7 @@
     "vesselGroups": "Vessel groups"
   },
   "vesselGroupReport": {
-    "clickToSee": "Click to see the vessel group report",
+    "clickToSee": "Click to analyse vessel group and see report",
     "linkDisabled": "You need to update the vessel group first to see the report",
     "linkToReport": "Check the vessel group report here",
     "insights": {
@@ -1088,6 +1089,7 @@
     "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
     "emptyStateUser": "Upload custom datasets clicking on the plus icon.",
     "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
+    "emptyStateVesselGroups": "Add vessel groups to see group presence and operation footprint.",
     "migrationDisclaimer": "Update your workspace to view the latest data and features.",
     "migrationDisclaimerNote": "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>",
     "migrationMaintain": "Skip",
