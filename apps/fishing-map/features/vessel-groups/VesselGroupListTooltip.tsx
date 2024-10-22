@@ -48,7 +48,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
     (vesselGroupId: string) => {
       if (onAddToVesselGroup) {
         onAddToVesselGroup(vesselGroupId)
-        if (keepOpenWhileAdding) {
+        if (vesselGroupId !== NEW_VESSEL_GROUP_ID && keepOpenWhileAdding) {
           setAddingToGroup(true)
         } else {
           setVesselGroupsOpen(false)
