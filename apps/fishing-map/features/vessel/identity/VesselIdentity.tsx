@@ -37,16 +37,15 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { VesselLastIdentity } from 'features/search/search.slice'
-import VesselIdentityCombinedSourceField from 'features/vessel/identity/VesselIdentityCombinedSourceField'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import styles from './VesselIdentity.module.css'
 import VesselRegistryField from './VesselRegistryField'
+import VesselTypesField from './VesselTypesField'
 
 const VesselIdentity = () => {
   const { t } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
-  console.log('🚀 ~ VesselIdentity ~ vesselData:', vesselData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
@@ -172,7 +171,6 @@ const VesselIdentity = () => {
       : IDENTITY_FIELD_GROUPS[identitySource]
   }, [identitySource, vesselIdentity?.sourceCode])
 
-  console.log('🚀 ~ VesselIdentity ~ vesselIdentity:', vesselIdentity)
   const hasMoreInfo = true
   const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
 
@@ -264,11 +262,11 @@ const VesselIdentity = () => {
                           />
                         )}
                       </div>
-                      {vesselIdentity.combinedSourcesInfo &&
-                      (key === 'shiptypes' || key === 'geartypes') ? (
-                        <VesselIdentityCombinedSourceField
-                          identity={vesselIdentity}
-                          property={key}
+                      {key === 'shiptypes' || key === 'geartypes' ? (
+                        <VesselTypesField
+                          vesselIdentity={vesselIdentity}
+                          fieldKey={key}
+                          identitySource={identitySource}
                         />
                       ) : (
                         <VesselIdentityField
