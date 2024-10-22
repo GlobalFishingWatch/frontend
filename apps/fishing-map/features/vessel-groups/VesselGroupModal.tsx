@@ -147,12 +147,17 @@ function VesselGroupModal(): React.ReactElement {
       )
       const action = await searchVesselGroupsVesselsRef.current
       if (searchVesselGroupsVesselsThunk.fulfilled.match(action)) {
-        setError('')
+        if (action.payload?.length) {
+          setError('')
+          setShowBackButton(true)
+        } else {
+          setError(t('vesselGroup.searchNotFound', 'No vessels found'))
+        }
       } else {
         setError((action.payload as any)?.message || '')
       }
     },
-    [dispatch, sourcesSelected]
+    [dispatch, sourcesSelected, t]
   )
 
   useEffect(() => {
@@ -205,7 +210,6 @@ function VesselGroupModal(): React.ReactElement {
   )
 
   const onSearchVesselsClick = useCallback(async () => {
-    setShowBackButton(true)
     if (vesselGroupVesselsToSearch && searchIdField) {
       dispatchSearchVesselsGroupsThunk(vesselGroupVesselsToSearch, searchIdField)
     }
@@ -311,7 +315,9 @@ function VesselGroupModal(): React.ReactElement {
     ]
   )
 
-  const missesRequiredParams = hasVesselGroupsVessels ? groupName === '' : searchIdField === ''
+  const missesRequiredParams = hasVesselGroupsVessels
+    ? groupName === ''
+    : searchIdField === '' || !vesselGroupVesselsToSearch?.length
   const confirmButtonDisabled =
     loading ||
     hasVesselsOverflow ||
@@ -325,17 +331,20 @@ function VesselGroupModal(): React.ReactElement {
       })
     : ''
   if (hasVesselGroupsVessels) {
-    if (missesRequiredParams) {
-      confirmButtonTooltip = t(
-        'vesselGroup.missingParams',
-        'Vessel group name, source and id field are mandatory'
-      )
+    if (groupName === '') {
+      confirmButtonTooltip = t('vesselGroup.missingParam', {
+        defaultValue: 'Vessel group {{param}} is mandatory',
+        param: t('common.name', 'name').toLowerCase(),
+      })
     }
   } else {
-    confirmButtonTooltip = t(
-      'vesselGroup.searchVesselsRequired',
-      'Search for vessels to create a vessel group'
-    )
+    confirmButtonTooltip =
+      searchIdField === ''
+        ? t('vesselGroup.missingParam', {
+            defaultValue: 'Vessel group {{param}} is mandatory',
+            param: t('vesselGroup.idField', 'ID field').toLowerCase(),
+          })
+        : t('vesselGroup.searchVesselsRequired', 'Search for vessels to create a vessel group')
   }
 
   const onIdFieldChange = useCallback(
