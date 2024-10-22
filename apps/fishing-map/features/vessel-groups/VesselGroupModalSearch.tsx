@@ -26,7 +26,6 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const [searchText, setSearchText] = useState(sliceSearchText)
   const debouncedSearchText = useDebounce(searchText, 200)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
-  console.log('🚀 ~ VesselGroupSearch ~ searchIdField:', searchIdField)
   const vesselGroupVesselsToSearch = useSelector(selectVesselGroupsModalSearchIds)
   const hasGroupVesselsToSearch =
     vesselGroupVesselsToSearch && vesselGroupVesselsToSearch.length > 0

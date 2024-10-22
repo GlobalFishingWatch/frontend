@@ -311,13 +311,13 @@ function VesselGroupModal(): React.ReactElement {
     ]
   )
 
-  const missesRequiredParams = groupName === '' || searchIdField === ''
+  const missesRequiredParams = hasVesselGroupsVessels ? groupName === '' : searchIdField === ''
   const confirmButtonDisabled =
     loading ||
     hasVesselsOverflow ||
     searchVesselStatus === AsyncReducerStatus.Error ||
     !searchVesselGroupsVesselsAllowed ||
-    (hasVesselGroupsVessels && missesRequiredParams)
+    missesRequiredParams
   let confirmButtonTooltip = hasVesselsOverflow
     ? t('vesselGroup.tooManyVessels', {
         count: MAX_VESSEL_GROUP_VESSELS,

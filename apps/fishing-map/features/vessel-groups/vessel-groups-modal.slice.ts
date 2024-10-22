@@ -11,12 +11,7 @@ import {
   VesselGroup,
   VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
-import {
-  getAdvancedSearchQuery,
-  GFWAPI,
-  parseAPIError,
-  ParsedAPIError,
-} from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
@@ -129,15 +124,11 @@ const searchVesselsInVesselGroup = async ({
   if (!url) {
     throw new Error('Missing search url')
   }
-  const where = getAdvancedSearchQuery([
-    {
-      key: idField === 'vesselId' ? 'id' : idField === 'mmsi' ? 'ssvid' : idField,
-      value: uniq(ids),
-    },
-  ])
+
+  const searchKey = idField === 'vesselId' ? 'ids' : idField === 'mmsi' ? 'ssvids' : 'imos'
   const searchResults = await fetchAllSearchVessels({
     url: `${url}`,
-    body: { datasets: datasetIds, where },
+    body: { datasets: datasetIds, [searchKey]: uniq(ids) },
     signal,
   })
 
