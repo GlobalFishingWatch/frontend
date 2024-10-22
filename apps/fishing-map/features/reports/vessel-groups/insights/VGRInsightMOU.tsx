@@ -150,7 +150,7 @@ const VesselGroupReportInsightMOU = () => {
       ) : (
         <div className={styles.insightContent}>
           <div className={styles.nested}>
-            <label className={styles.row}>{t('insights.countries.paris', 'Paris')}</label>
+            <label className={styles.row}>{t('vessel.insights.countries.paris', 'Paris')}</label>
             {hasVesselsInParisMOU ? (
               getVesselsInMOU(MOUVesselsGrouped.paris, 'paris')
             ) : (
@@ -158,7 +158,7 @@ const VesselGroupReportInsightMOU = () => {
                 {t('vesselGroupReport.insights.MOUListsEmpty', {
                   defaultValue:
                     'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
-                  country: t('insights.countries.paris', 'Paris'),
+                  country: t('vessel.insights.countries.paris', 'Paris'),
                 })}
               </p>
             )}

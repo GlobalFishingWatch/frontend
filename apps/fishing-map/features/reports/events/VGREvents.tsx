@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
 import {
@@ -102,7 +102,7 @@ function VGREvents() {
     return (
       <div className={styles.container}>
         <VGREventsSubsectionSelector />
-        {isLoading && <p>{t('common.loading', 'Loading...')}</p>}
+        {isLoading && <Spinner />}
         {error && !isLoading ? <p className={styles.error}>{(error as any).message}</p> : null}
       </div>
     )
