@@ -1045,6 +1045,7 @@
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
     "updateRequired": "Update required",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
+    "vesselAddedToGroup": "Your vessel group was updated",
     "vesselGroup": "Vessel group",
     "vesselGroups": "Vessel groups"
   },
