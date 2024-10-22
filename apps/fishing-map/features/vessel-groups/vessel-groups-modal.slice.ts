@@ -5,20 +5,13 @@ import {
   APIPagination,
   APIVesselSearchPagination,
   Dataset,
-  DatasetStatus,
-  DatasetTypes,
   DataviewDatasetConfig,
   EndpointId,
   IdentityVessel,
   VesselGroup,
   VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
-import {
-  getAdvancedSearchQuery,
-  GFWAPI,
-  parseAPIError,
-  ParsedAPIError,
-} from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
@@ -47,8 +40,8 @@ interface VesselGroupModalState {
   confirmationMode: VesselGroupConfirmationMode
   vessels: VesselGroupVesselIdentity[] | null
   search: {
-    idField: IdField
-    ids: string[] | null
+    idField: IdField | ''
+    text: string | ''
     status: AsyncReducerStatus
     error: ParsedAPIError | null
   }
@@ -131,15 +124,11 @@ const searchVesselsInVesselGroup = async ({
   if (!url) {
     throw new Error('Missing search url')
   }
-  const where = getAdvancedSearchQuery([
-    {
-      key: idField === 'vesselId' ? 'id' : idField === 'mmsi' ? 'ssvid' : idField,
-      value: uniq(ids),
-    },
-  ])
+
+  const searchKey = idField === 'vesselId' ? 'ids' : idField === 'mmsi' ? 'ssvids' : 'imos'
   const searchResults = await fetchAllSearchVessels({
     url: `${url}`,
-    body: { datasets: datasetIds, where },
+    body: { datasets: datasetIds, [searchKey]: uniq(ids) },
     signal,
   })
 
@@ -197,8 +186,8 @@ const initialState: VesselGroupModalState = {
   confirmationMode: 'save',
   vessels: null,
   search: {
-    idField: 'mmsi',
-    ids: null,
+    idField: '',
+    text: '',
     status: AsyncReducerStatus.Idle,
     error: null,
   },
@@ -303,8 +292,8 @@ export const vesselGroupModalSlice = createSlice({
     ) => {
       state.vessels = action.payload
     },
-    setVesselGroupModalSearchIds: (state, action: PayloadAction<string[] | null>) => {
-      state.search.ids = action.payload
+    setVesselGroupModalSearchText: (state, action: PayloadAction<string>) => {
+      state.search.text = action.payload
     },
     setVesselGroupEditId: (state, action: PayloadAction<string>) => {
       state.vesselGroupEditId = action.payload
@@ -357,7 +346,7 @@ export const {
   setVesselGroupSearchIdField,
   resetVesselGroupModalSearchStatus,
   setVesselGroupModalVessels,
-  setVesselGroupModalSearchIds,
+  setVesselGroupModalSearchText,
   setVesselGroupEditId,
   setVesselGroupConfirmationMode,
   resetVesselGroupModal,
@@ -369,8 +358,8 @@ export const selectVesselGroupModalSearchIdField = (state: RootState) =>
 export const selectVesselGroupSearchStatus = (state: RootState) =>
   state.vesselGroupModal.search.status
 export const selectVesselGroupModalVessels = (state: RootState) => state.vesselGroupModal.vessels
-export const selectVesselGroupsModalSearchIds = (state: RootState) =>
-  state.vesselGroupModal.search.ids
+export const selectVesselGroupsModalSearchText = (state: RootState) =>
+  state.vesselGroupModal.search.text
 export const selectVesselGroupEditId = (state: RootState) =>
   state.vesselGroupModal.vesselGroupEditId
 export const selectVesselGroupConfirmationMode = (state: RootState) =>
