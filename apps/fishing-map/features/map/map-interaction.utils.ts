@@ -5,6 +5,7 @@ import {
   DeckLayerPickingObject,
   FourwingsPositionsPickingObject,
   VesselEventPickingObject,
+  FourwingsClusterPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { TrackCategory } from 'features/app/analytics.hooks'
 import { SliceExtendedFourwingsPickingObject } from './map.slice'
@@ -12,6 +13,9 @@ import { SliceExtendedFourwingsPickingObject } from './map.slice'
 export const isTilesClusterLayer = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.subcategory === DataviewType.TileCluster ||
   pickingObject.subcategory === DataviewType.FourwingsTileCluster
+
+export const isTilesClusterLayerCluster = (pickingObject: FourwingsClusterPickingObject) =>
+  pickingObject?.properties?.value > 1 && pickingObject?.properties?.cluster_id !== undefined
 
 export const isRulerLayerPoint = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.category === 'rulers'

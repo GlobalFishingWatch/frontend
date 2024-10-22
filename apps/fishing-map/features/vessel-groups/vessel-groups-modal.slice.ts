@@ -25,7 +25,7 @@ import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { IdField } from 'features/vessel-groups/vessel-groups.slice'
-import { fetchDatasetsByIdsThunk, selectDatasetById } from '../datasets/datasets.slice'
+import { getDatasetByIdsThunk } from '../datasets/datasets.slice'
 import {
   flatVesselGroupSearchVessels,
   mergeVesselGroupVesselIdentities,
@@ -248,29 +248,16 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
     { vesselGroup }: { vesselGroup: VesselGroup },
     { signal, rejectWithValue, getState, dispatch }
   ) => {
-    const state = getState() as any
     const datasetIds = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
     const updatedDatasetsIds = datasetIds.map(runDatasetMigrations)
     const hasOutdatedDatasets = difference(datasetIds, updatedDatasetsIds)?.length > 0
-    const datasetsToRequest: string[] = []
-    let datasets = updatedDatasetsIds.flatMap((datasetId) => {
-      const dataset = selectDatasetById(datasetId)(state)
-      if (!dataset) {
-        datasetsToRequest.push(datasetId)
-      }
-      return dataset || []
-    })
-
-    if (datasetsToRequest.length) {
-      const action = await dispatch(
-        fetchDatasetsByIdsThunk({ ids: datasetsToRequest, includeRelated: false })
-      )
-      if (fetchDatasetsByIdsThunk.fulfilled.match(action) && action.payload?.length) {
-        datasets = datasets.concat(
-          action.payload.filter((v) => v.type === DatasetTypes.Vessels) as Dataset[]
-        )
-      }
+    const getDatasetsAction = await dispatch(
+      getDatasetByIdsThunk({ ids: updatedDatasetsIds, includeRelated: false })
+    )
+    if (!getDatasetByIdsThunk.fulfilled.match(getDatasetsAction)) {
+      return rejectWithValue(getDatasetsAction.error)
     }
+    const datasets = getDatasetsAction.payload
     if (!datasets?.length) {
       return rejectWithValue({ message: 'No datasets found' })
     }

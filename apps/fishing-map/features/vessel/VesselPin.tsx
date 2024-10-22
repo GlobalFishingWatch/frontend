@@ -68,7 +68,10 @@ function VesselPin({
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselsInWorkspace = useSelector(selectTrackDataviews)
-  const infoDatasetId = vessel?.dataset || vesselToResolve?.datasetId || ''
+  const infoDatasetId =
+    typeof vessel?.dataset === 'string'
+      ? vessel?.dataset
+      : (vessel?.dataset as any)?.id || vesselToResolve?.datasetId || ''
   const infoDataset = useSelector(selectDatasetById(infoDatasetId))
   const vesselInWorkspace = getVesselInWorkspace(
     vesselsInWorkspace,
