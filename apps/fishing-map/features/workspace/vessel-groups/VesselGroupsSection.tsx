@@ -84,8 +84,8 @@ function VesselGroupSection(): React.ReactElement {
         ) : (
           <div className={styles.emptyState}>
             {t(
-              'workspace.emptyStateVessels',
-              'The vessels selected in the search or by clicking on activity grid cells will appear here.'
+              'workspace.emptyStateVesselGroups',
+              'Add vessel groups to see group presence and operation footprint.'
             )}
           </div>
         )}

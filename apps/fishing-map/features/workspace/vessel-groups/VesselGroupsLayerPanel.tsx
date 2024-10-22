@@ -125,45 +125,56 @@ function VesselGroupLayerPanel({
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         <Title
           title={
-            isOutdated ? (
-              <Tooltip
-                content={t(
-                  'vesselGroupReport.linkDisabled',
-                  'You need to update the vessel group first to see the report'
-                )}
-              >
-                <span>
-                  {formatInfoField(vesselGroup?.name, 'shipname')}{' '}
-                  <span className={styles.secondary}>
-                    ({getVesselGroupVesselsCount(vesselGroup)})
-                  </span>
-                </span>
-              </Tooltip>
-            ) : (
-              <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+            layerActive ? (
+              isOutdated ? (
                 <Tooltip
                   content={t(
-                    'vesselGroupReport.clickToSee',
-                    'Click to see the vessel group report'
+                    'vesselGroupReport.linkDisabled',
+                    'You need to update the vessel group first to see the report'
                   )}
                 >
                   <span>
-                    {vesselGroupLoading ? (
-                      t('vesselGroup.loadingInfo', 'Loading vessel group info')
-                    ) : (
-                      <Fragment>
-                        {vesselGroup?.name}{' '}
-                        {vesselGroup?.vessels?.length && (
-                          <span className={styles.secondary}>
-                            {' '}
-                            ({getVesselGroupVesselsCount(vesselGroup)})
-                          </span>
-                        )}
-                      </Fragment>
-                    )}
+                    {formatInfoField(vesselGroup?.name, 'shipname')}{' '}
+                    <span className={styles.secondary}>
+                      ({getVesselGroupVesselsCount(vesselGroup)})
+                    </span>
                   </span>
                 </Tooltip>
-              </VesselGroupReportLink>
+              ) : (
+                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                  <Tooltip
+                    content={t(
+                      'vesselGroupReport.clickToSee',
+                      'Click to analyse vessel group and see report'
+                    )}
+                  >
+                    <span>
+                      {vesselGroupLoading ? (
+                        t('vesselGroup.loadingInfo', 'Loading vessel group info')
+                      ) : (
+                        <Fragment>
+                          {vesselGroup?.name}{' '}
+                          {vesselGroup?.vessels?.length && (
+                            <span className={styles.secondary}>
+                              ({getVesselGroupVesselsCount(vesselGroup)})
+                            </span>
+                          )}
+                        </Fragment>
+                      )}
+                    </span>
+                  </Tooltip>
+                </VesselGroupReportLink>
+              )
+            ) : (
+              <span>
+                {vesselGroup?.name}{' '}
+                {vesselGroup?.vessels?.length && (
+                  <span className={styles.secondary}>
+                    {' '}
+                    ({getVesselGroupVesselsCount(vesselGroup)})
+                  </span>
+                )}
+              </span>
             )
           }
           className={cx(styles.name, { [styles.disabled]: isOutdated })}
@@ -191,19 +202,12 @@ function VesselGroupLayerPanel({
                     />
                   </VesselGroupReportLink>
                 )}
-                {isOwnedByUser && (
+                {isOwnedByUser && !isOutdated && (
                   <IconButton
                     size="small"
-                    icon={isOutdated ? 'warning' : 'edit'}
-                    type={isOutdated ? 'warning' : 'default'}
-                    tooltip={
-                      isOutdated
-                        ? t(
-                            'vesselGroup.clickToUpdate',
-                            'Click to migrate your vessel group to latest available data'
-                          )
-                        : t('vesselGroup.edit', 'Edit list of vessels')
-                    }
+                    icon={'edit'}
+                    type={'default'}
+                    tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
                     loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
                     onClick={onEditClick}
                   />
@@ -244,6 +248,19 @@ function VesselGroupLayerPanel({
             )}
           </Fragment>
         </div>
+        {isOwnedByUser && isOutdated && (
+          <IconButton
+            size="small"
+            icon={'warning'}
+            type={'warning'}
+            tooltip={t(
+              'vesselGroup.clickToUpdate',
+              'Click to migrate your vessel group to latest available data'
+            )}
+            loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
+            onClick={onEditClick}
+          />
+        )}
         <IconButton
           icon={layerActive ? (layerError ? 'warning' : 'more') : undefined}
           type={layerError ? 'warning' : 'default'}

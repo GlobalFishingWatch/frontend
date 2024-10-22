@@ -44,6 +44,11 @@
     "moreInfoLink": "",
     "name": "Alta mar"
   },
+  "loitering": {
+    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "moreInfoLink": "",
+    "name": "Loitering events (AIS)"
+  },
   "mangroves": {
     "description": "Los manglares son árboles o arbustos que pueden sobrevivir en ambientes salinos y normalmente crecen dentro de la zona intermareal de las regiones tropicales y subtropicales. Considerados hábitats de carbono azul, los bosques de manglares mejoran la calidad del agua, estabilizan y protegen las costas y proporcionan protección para aves, animales y organismos marinos. Este conjunto de datos utiliza imágenes satelitales de observación de la tierra para mostrar la distribución global de manglares.  ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/4",
@@ -63,11 +68,6 @@
     "description": "El nitrato es requerido por las plantas marinas para su fotosíntesis y es un nutriente importante para la productividad del océano, pero las altas concentraciones pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el nitrato, sobre el océano global mostrado con una resolución horizontal de 1/4 grados.   ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentración de nitrato (NO3)"
-  },
-  "loitering": {
-    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
-    "moreInfoLink": "",
-    "name": "Loitering events (AIS)"
   },
   "offshore-fixed-infrastructure": {
     "description": "La infraestructura fija en altamar es un conjunto de datos global que utiliza IA y el aprendizaje automático para detectar y clasificar estructuras en todos los océanos del mundo. Se proporcionan etiquetas de clasificación (petróleo, viento y desconocidas), así como niveles de confianza (alto, medio o bajo) que reflejan nuestra certeza en cuanto a la etiqueta asignada. Las detecciones se pueden filtrar y colorear en el mapa utilizando tanto la etiqueta como el nivel de confianza. Los datos se actualizan mensualmente y se agregan nuevas detecciones clasificadas a principios de cada mes. Ver los cambios mediante la barra de tiempo es simple y permite reconocer la rápida industrialización de los océanos del mundo.",

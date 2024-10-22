@@ -29,6 +29,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { ExtendedFeatureVessel } from 'features/map/map.slice'
 
 export type VesselToResolve = {
   id: string
@@ -51,7 +52,7 @@ function VesselPin({
   size = 'small',
   onClick,
 }: {
-  vessel?: IdentityVessel
+  vessel?: IdentityVessel | ExtendedFeatureVessel
   vesselToResolve?: VesselToResolve
   vesselToSearch?: VesselToSearch
   className?: string
@@ -71,7 +72,7 @@ function VesselPin({
   const infoDatasetId =
     typeof vessel?.dataset === 'string'
       ? vessel?.dataset
-      : (vessel?.dataset as any)?.id || vesselToResolve?.datasetId || ''
+      : vessel?.dataset?.id || vesselToResolve?.datasetId || ''
   const infoDataset = useSelector(selectDatasetById(infoDatasetId))
   const vesselInWorkspace = getVesselInWorkspace(
     vesselsInWorkspace,

@@ -248,7 +248,7 @@ function VesselsTable({
                       </Tooltip>
                     </td>
                   )}
-                  {showValue && (
+                  {showValue && vessel[vesselProperty] && (
                     <td
                       className={cx(styles.columnSpace, {
                         [styles.vesselsTableHour]: isHoursProperty,

@@ -104,7 +104,7 @@ export default function VesselGroupReportVesselsTable() {
             />
           </div>
           <div className={styles.header}>
-            {t('vessel.type', 'Type')}
+            {t('vessel.gearType', 'Gear Type')}
             <IconButton
               size="tiny"
               icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
@@ -113,12 +113,11 @@ export default function VesselGroupReportVesselsTable() {
             />
           </div>
           {vessels?.map((vessel, i) => {
-            const { shipName, flagTranslated, flagTranslatedClean, identity } = vessel
+            const { shipName, flagTranslated, flagTranslatedClean, identity, geartype } = vessel
             const { id, flag, ssvid } = getSearchIdentityResolved(identity!)
             const isLastRow = i === vessels.length - 1
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
-            const type = vessel.type
-            const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
+            const gearTypeInteractionEnabled = geartype !== EMPTY_FIELD_PLACEHOLDER
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             return (
               <Fragment key={id}>
@@ -162,18 +161,20 @@ export default function VesselGroupReportVesselsTable() {
                 <div
                   className={cx({
                     [styles.border]: !isLastRow,
-                    [styles.pointer]: typeInteractionEnabled,
+                    [styles.pointer]: gearTypeInteractionEnabled,
                   })}
                   title={
-                    typeInteractionEnabled
-                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`
+                    gearTypeInteractionEnabled
+                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${geartype}`
                       : undefined
                   }
                   onClick={
-                    typeInteractionEnabled ? () => onFilterClick(`${'type'}:${type}`) : undefined
+                    gearTypeInteractionEnabled
+                      ? () => onFilterClick(`${'gear'}:${geartype}`)
+                      : undefined
                   }
                 >
-                  {type}
+                  {geartype}
                 </div>
               </Fragment>
             )

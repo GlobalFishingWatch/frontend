@@ -120,6 +120,7 @@ export const getVesselDataviewInstance = (
   const vesselDataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG, datasets),
+    deleted: false,
   }
   return vesselDataviewInstance
 }

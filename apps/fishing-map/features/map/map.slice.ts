@@ -58,17 +58,18 @@ import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.c
 
 export const MAX_TOOLTIP_LIST = 5
 
-type ExtendedFeatureVesselDatasets = IdentityVessel & {
+type ExtendedFeatureVesselDatasets = Omit<IdentityVessel, 'dataset'> & {
   id: string
   dataset: Dataset
+  datasetId: string
   infoDataset?: Dataset
   trackDataset?: Dataset
 }
 
-// TODO extract this type in app types
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
   hours?: number
-  [key: string]: any
+  detections?: number
+  events?: number
 }
 
 export type ExtendedEventVessel = EventVessel & { dataset?: string }
@@ -271,14 +272,13 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
 
     const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
     if (interactionUrl) {
-      const sublayersVesselsIdsResponse = await GFWAPI.fetch<APIPagination<ExtendedFeatureVessel>>(
-        interactionUrl,
-        { signal }
-      )
+      const sublayersVesselsIdsResponse = await GFWAPI.fetch<
+        APIPagination<ExtendedFeatureVessel[]>
+      >(interactionUrl, { signal })
 
       const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
-        sublayer.map((vessel: any) => {
-          const { id, vessel_id, ...rest } = vessel
+        sublayer.map((vessel) => {
+          const { id, vessel_id, ...rest } = vessel as ExtendedFeatureVessel & { vessel_id: string }
           // vessel_id needed for VIIRS layers
           return { ...rest, id: id || vessel_id }
         })
@@ -304,7 +304,7 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
           const activityProperty = heatmapProperties?.[i] || 'hours'
           return source
             .flatMap((source) => source)
-            .sort((a, b) => b[activityProperty] - a[activityProperty])
+            .sort((a, b) => b[activityProperty]! - a[activityProperty]!)
             .filter((v) => v.id !== null)
             .slice(0, MAX_TOOLTIP_LIST)
         })
@@ -487,7 +487,8 @@ export const fetchClusterEventThunk = createAsyncThunk(
           return {
             id: interaction.id,
             ...vesselInfo,
-            dataset: infoDatasets[0] as any,
+            dataset: infoDatasets[0],
+            datasetId: infoDatasets[0]?.id,
             infoDataset,
             trackDataset,
             events: interaction.events,

@@ -195,7 +195,7 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails }: PortVisitLay
           <VesselsTable
             feature={
               {
-                vessels: event.vessels,
+                vessels: event?.vessels,
                 category: DataviewCategory.Events,
               } as any
             }

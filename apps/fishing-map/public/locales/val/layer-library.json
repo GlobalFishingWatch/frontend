@@ -44,6 +44,11 @@
     "moreInfoLink": "crwdns82528:0crwdne82528:0",
     "name": "crwdns82524:0crwdne82524:0"
   },
+  "loitering": {
+    "description": "crwdns83784:0crwdne83784:0",
+    "moreInfoLink": "crwdns83786:0crwdne83786:0",
+    "name": "crwdns83788:0crwdne83788:0"
+  },
   "mangroves": {
     "description": "crwdns82532:0crwdne82532:0",
     "moreInfoLink": "crwdns82534:0crwdne82534:0",
@@ -63,11 +68,6 @@
     "description": "crwdns82550:0crwdne82550:0",
     "moreInfoLink": "crwdns82552:0crwdne82552:0",
     "name": "crwdns82548:0crwdne82548:0"
-  },
-  "loitering": {
-    "description": "crwdns83784:0crwdne83784:0",
-    "moreInfoLink": "crwdns83786:0crwdne83786:0",
-    "name": "crwdns83788:0crwdne83788:0"
   },
   "offshore-fixed-infrastructure": {
     "description": "crwdns83378:0crwdne83378:0",
