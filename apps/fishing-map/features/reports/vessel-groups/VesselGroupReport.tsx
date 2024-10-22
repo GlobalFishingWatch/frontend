@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
-import { Tab, Tabs } from '@globalfishingwatch/ui-components'
+import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -17,18 +17,20 @@ import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
 import {
   useFitAreaInViewport,
   useReportAreaCenter,
   useVesselGroupBounds,
 } from '../areas/area-reports.hooks'
-import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
+import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'
 import VesselGroupReportVessels from './vessels/VesselGroupReportVessels'
 import { selectVGRSection } from './vessel-group.config.selectors'
 import VesselGroupReportInsights from './insights/VGRInsights'
 import { selectVGRDataview } from './vessel-group-report.selectors'
+import styles from './VesselGroupReport.module.css'
 
 function VesselGroupReport() {
   const { t } = useTranslation()
@@ -48,6 +50,9 @@ function VesselGroupReport() {
   const setMapCoordinates = useSetMapCoordinates()
   const bboxHash = bbox ? bbox.join(',') : ''
   const vesselsInWorkspace = useSelector(selectTrackDataviews)
+  const isOutdated = isOutdatedVesselGroup(vesselGroup)
+  const onEditClick = useEditVesselGroupModal()
+
   useEffect(() => {
     fetchVesselGroupReport(vesselGroupId)
     if (reportDataview) {
@@ -115,6 +120,24 @@ function VesselGroupReport() {
     ],
     [t, isGFWUser]
   )
+
+  if (isOutdated) {
+    return (
+      <div className={styles.emptyState}>
+        <div className={styles.updateContainer}>
+          <label>
+            {t(
+              'vesselGroupReport.linkDisabled',
+              'You need to update the vessel group first to see the report'
+            )}
+          </label>
+          <Button onClick={() => onEditClick(vesselGroup)}>
+            {t('vesselGroup.clickToMigrate', 'Click to migrate')}
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   // if (reportStatus === AsyncReducerStatus.Error) {
   //   return <VesselGroupReportError />
