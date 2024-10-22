@@ -29,6 +29,13 @@ const getVesselIdentitiesBySource = (
     return [] as VesselDataIdentity[]
   }
   return (vessel?.[identitySource] || []).map((identity) => {
+    if (identitySource === VesselIdentitySourceEnum.Registry) {
+      return {
+        ...identity,
+        identitySource,
+        dataset: vessel.dataset,
+      } as VesselDataIdentity
+    }
     const geartypes = getVesselCombinedSourceProperty(vessel, {
       vesselId: identity.id,
       property: 'geartypes',
