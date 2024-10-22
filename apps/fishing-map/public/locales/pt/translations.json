@@ -1045,6 +1045,7 @@
     "tooManyVessels_other": "O número máximo de embarcações é {{count}}",
     "updateRequired": "Update required",
     "uploadPublic": "Permitir que outros usuários vejam este grupo de embarcações quando você compartilhar uma área de trabalho",
+    "vesselAddedToGroup": "Your vessel group was updated",
     "vesselGroup": "Grupo de embarcações",
     "vesselGroups": "Grupos de embarcações"
   },
