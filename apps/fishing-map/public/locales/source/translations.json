@@ -889,6 +889,7 @@
         "grey": "grey"
       },
       "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
+      "disclaimerVesselsWithoutInsights": "Insights are only available for AIS vessels and your group contains vessels from {{datasets}}.",
       "errorPermisions": "You don't have permissions to see this insight",
       "fishing": "Fishing Events",
       "fishingEventsInNoTakeMpas": "{{count}} fishing events detected in no-take MPAs",
