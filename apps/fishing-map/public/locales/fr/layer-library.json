@@ -44,6 +44,11 @@
     "moreInfoLink": "",
     "name": "Haute mer"
   },
+  "loitering": {
+    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "moreInfoLink": "",
+    "name": "Loitering events (AIS)"
+  },
   "mangroves": {
     "description": "Les palétuviers sont des arbres ou arbustes qui peuvent survivre dans des environnements salins et qui poussent généralement dans la zone intertidale des régions tropicales et subtropicales. Considérées comme des habitats de carbone bleu, les mangroves améliorent la qualité de l'eau, stabilisent et protègent les côtes, et sont un refuge pour les oiseaux, les animaux et les organismes marins. Ce jeu de données utilise des images satellite d'observation de la Terre pour afficher la distribution globale des mangroves.  ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/4",
@@ -63,11 +68,6 @@
     "description": "L'azote est requis par les plantes marines pour la photosynthèse et c'est un nutriment majeur pour la productivité de l'océan, cependant des concentrations élevées peuvent être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris l'azote, affichés à l'échelle de l'océan mondial avec une résolution horizontale de 1/4 degrés.   ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentration d'azote (NO3)"
-  },
-  "loitering": {
-    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
-    "moreInfoLink": "",
-    "name": "Loitering events (AIS)"
   },
   "offshore-fixed-infrastructure": {
     "description": "« Infrastructure fixe offshore » est un jeu de données mondial qui utilise l’IA et l’apprentissage automatique pour détecter et classer les structures dans les océans du monde. Différentes classifications (pétrole, éolien et inconnu) sont fournies, associées à des niveaux de confiance (élevé, moyen ou faible) reflétant notre certitude dans la classification attribuée. Les détections peuvent être filtrées et colorées sur la carte en utilisant à la fois la classification et le niveau de confiance. Les données sont mises à jour mensuellement et de nouvelles détections classifiées sont ajoutées au début de chaque mois. Les changements peuvent être facilement visualisés à l’aide de la barre temporelle, et l’industrialisation rapide des océans du monde devient évidente.",
