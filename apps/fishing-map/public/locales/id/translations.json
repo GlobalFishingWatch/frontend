@@ -1045,6 +1045,7 @@
     "tooManyVessels_other": "Jumlah maksimum kapal adalah {{count}}",
     "updateRequired": "Update required",
     "uploadPublic": "Izinkan pengguna lain untuk melihat kelompok kapal ini ketika Anda berbagi ruang kerja",
+    "vesselAddedToGroup": "Your vessel group was updated",
     "vesselGroup": "Kelompok kapal",
     "vesselGroups": "Kelompok kapal"
   },
