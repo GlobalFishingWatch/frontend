@@ -15,6 +15,13 @@ const VesselTypesField = ({ vesselIdentity, fieldKey, identitySource }: VesselTy
     return <VesselIdentityCombinedSourceField identity={vesselIdentity} property={fieldKey} />
   }
   if (identitySource === VesselIdentitySourceEnum.Registry) {
+    if (typeof vesselIdentity?.[fieldKey] === 'string') {
+      return (
+        <VesselIdentityField
+          value={formatInfoField(vesselIdentity?.[fieldKey], fieldKey) as string}
+        />
+      )
+    }
     return vesselIdentity?.[fieldKey]?.map((value: string) => (
       <VesselIdentityField key={value} value={formatInfoField(value, fieldKey) as string} />
     ))
