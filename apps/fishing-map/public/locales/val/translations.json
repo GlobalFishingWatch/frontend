@@ -62,7 +62,7 @@
     "statsDisclaimerDynamic": "crwdns82932:0{{interval}}crwdnd82932:0{{min}}crwdnd82932:0{{unit}}crwdnd82932:0{{max}}crwdnd82932:0{{unit}}crwdne82932:0",
     "statsDisclaimerStatic": "crwdns82934:0{{mean}}crwdnd82934:0{{unit}}crwdnd82934:0{{min}}crwdnd82934:0{{unit}}crwdnd82934:0{{max}}crwdnd82934:0{{unit}}crwdne82934:0",
     "summary": "crwdns59649:0{{vessels}}crwdnd59649:0{{sources}}crwdnd59649:0{{activityQuantity}}crwdnd59649:0{{activityUnit}}crwdnd59649:0{{activityType}}crwdnd59649:0{{start}}crwdnd59649:0{{end}}crwdne59649:0",
-    "summaryNoVessels": "crwdns83690:0{{vessels}}crwdnd83690:0{{flags}}crwdnd83690:0{{activityQuantity}}crwdnd83690:0{{activityUnit}}crwdnd83690:0{{start}}crwdnd83690:0{{end}}crwdne83690:0",
+    "summaryNoVessels": "crwdns83874:0{{sources}}crwdnd83874:0{{activityQuantity}}crwdnd83874:0{{activityUnit}}crwdnd83874:0{{activityType}}crwdnd83874:0{{start}}crwdnd83874:0{{end}}crwdne83874:0",
     "timeoutError": "crwdns83504:0crwdne83504:0",
     "timeRangeTooLong": "crwdns59653:0crwdne59653:0",
     "title": "crwdns59655:0crwdne59655:0",
