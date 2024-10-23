@@ -87,7 +87,9 @@ const VesselRegistryField = ({
       </div>
       {allRegistryInfo?.length > 0 ? (
         <ul
-          className={cx(styles.fieldGroup, styles.twoColumns)}
+          className={cx(styles.fieldGroup, {
+            [styles.twoColumns]: key === 'registryPublicAuthorizations',
+          })}
           style={
             key === 'registryPublicAuthorizations'
               ? {
@@ -125,7 +127,7 @@ const VesselRegistryField = ({
               <li
                 key={`${registry.recordId}-${index}`}
                 className={cx({
-                  [styles.twoCells]: key === 'registryOwners',
+                  [styles.threeCells]: key === 'registryOwners',
                   [styles.hidden]: !registryOverlapsTimeRange,
                 })}
               >
