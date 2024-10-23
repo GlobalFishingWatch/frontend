@@ -351,6 +351,7 @@ function CloseReportButton() {
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const highlightArea = useHighlightReportArea()
 
   const onCloseClick = () => {
@@ -373,15 +374,18 @@ function CloseReportButton() {
   }
 
   return (
-    <Link className={styles.workspaceLink} to={linkTo}>
-      <IconButton
-        icon="close"
-        type="border"
-        className="print-hidden"
-        onClick={onCloseClick}
-        tooltip={t('analysis.close', 'Close report and go back to workspace')}
-      />
-    </Link>
+    <Fragment>
+      {isVesselGroupReportLocation && <ShareWorkspaceButton />}
+      <Link className={styles.workspaceLink} to={linkTo}>
+        <IconButton
+          icon="close"
+          type="border"
+          className="print-hidden"
+          onClick={onCloseClick}
+          tooltip={t('analysis.close', 'Close report and go back to workspace')}
+        />
+      </Link>
+    </Fragment>
   )
 }
 
