@@ -135,7 +135,7 @@
     "edit": "Edit",
     "edit ": "edit",
     "environment": "Environment",
-    "event": {
+    "eventLabels": {
       "loitering": "loitering",
       "encounter": "encounter",
       "port_visit": "port visit"
@@ -471,6 +471,7 @@
     "privateProfile": "Your account doesn't have permissions to see this vessel",
     "privateReport": "Register or log in to see the active vessels in this area (free, 2 minutes)",
     "privateSearch": "Your account doesn't have permissions to search on these datasets",
+    "privateVesselGroupReport": "This is a private vessel group report",
     "privateView": "This is a private workspace.",
     "profileEvents": "There was an error requesting the vessel events.",
     "profileLogin": "Login to see this vessel",
@@ -1029,6 +1030,7 @@
     "addToWorkspace": "Add vessel group to workspace",
     "addVessels": "Add vessels to vessel group",
     "addVisibleVessels": "Add visible vessels to vessel group",
+    "clickToMigrate": "Click to migrate",
     "clickToUpdate": "Click to migrate your vessel group to latest available data",
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
