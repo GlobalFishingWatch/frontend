@@ -38,7 +38,10 @@ export type VesselToResolve = {
   datasetId: string
 }
 export type VesselToSearch = { id: string; name?: string; flag?: string; datasets?: string[] }
-
+export type VesselPinClickProps = {
+  vesselInWorkspace?: UrlDataviewInstance | null | undefined
+  vesselId?: string
+}
 // Supports both options:
 // 1. When identity vessel already available: <VesselPin vessel={vessel} />
 // 2. When identity vessel is not available and we only have the vesselId, for example reports or encounters:
@@ -58,11 +61,7 @@ function VesselPin({
   className?: string
   disabled?: boolean
   size?: IconButtonSize
-  onClick?: ({
-    vesselInWorkspace,
-  }: {
-    vesselInWorkspace?: UrlDataviewInstance | null | undefined
-  }) => void
+  onClick?: ({ vesselInWorkspace, vesselId }: VesselPinClickProps) => void
 }) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -189,7 +188,7 @@ function VesselPin({
       }
     }
     setLoading(false)
-    onClick?.({ vesselInWorkspace })
+    onClick?.({ vesselInWorkspace, vesselId: getVesselId(vessel as IdentityVessel) })
   }
 
   return (

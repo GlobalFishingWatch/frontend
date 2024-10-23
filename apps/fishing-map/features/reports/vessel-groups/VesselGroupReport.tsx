@@ -17,6 +17,7 @@ import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
+import { getEventLabel } from 'utils/analytics'
 import {
   useFitAreaInViewport,
   useReportAreaCenter,
@@ -30,6 +31,7 @@ import { selectVGRSection } from './vessel-group.config.selectors'
 import VesselGroupReportInsights from './insights/VGRInsights'
 import { selectVGRDataview } from './vessel-group-report.selectors'
 import styles from './VesselGroupReport.module.css'
+import { selectVGRVesselsTimeRange } from './vessels/vessel-group-report-vessels.selectors'
 
 function VesselGroupReport() {
   const { t } = useTranslation()
@@ -41,6 +43,7 @@ function VesselGroupReport() {
   const reportStatus = useSelector(selectVGRStatus)
   const reportSection = useSelector(selectVGRSection)
   const reportDataview = useSelector(selectVGRDataview)
+  const timeRange = useSelector(selectVGRVesselsTimeRange)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const fitAreaInViewport = useFitAreaInViewport()
@@ -72,18 +75,28 @@ function VesselGroupReport() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bboxHash, setMapCoordinates])
 
+  useEffect(() => {
+    trackEvent({
+      category: TrackCategory.VesselGroupReport,
+      action: 'update_time_range_from_vessel_group_report',
+      label: getEventLabel([timeRange?.start || '', timeRange?.end || '']),
+    })
+  }, [timeRange])
+
   const changeTab = useCallback(
     (tab: Tab<VGRSection>) => {
       dispatchQueryParams({ vGRSection: tab.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
-        action: `click_${tab.id}_tab`,
+        action: `access_vessel_group_${tab.id}_tab`,
+        label: getEventLabel([vesselGroup?.id, timeRange?.start || '', timeRange?.end || '']),
+        value: `number of vessels: ${vesselGroup?.vessels?.length}`,
       })
       if (tab.id === 'activity') {
         fitAreaInViewport()
       }
     },
-    [dispatchQueryParams, fitAreaInViewport]
+    [dispatchQueryParams, fitAreaInViewport, timeRange, vesselGroup]
   )
 
   const sectionTabs: Tab<VGRSection>[] = useMemo(

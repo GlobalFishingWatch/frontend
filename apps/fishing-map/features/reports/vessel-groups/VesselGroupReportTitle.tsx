@@ -25,6 +25,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { selectUserData } from 'features/user/selectors/user.selectors'
+import { getEventLabel } from 'utils/analytics'
 import styles from './VesselGroupReportTitle.module.css'
 import { VesselGroupReport } from './vessel-group-report.slice'
 import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
@@ -56,11 +57,18 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   }, [dispatch, vesselGroup?.id, vesselGroup?.vessels])
 
   const onPrintClick = () => {
+    window.print()
     trackEvent({
       category: TrackCategory.VesselGroupReport,
-      action: `Click print/save as pdf`,
+      action: `print_vessel_group_profile`,
+      label: getEventLabel([
+        vesselGroup?.name,
+        vesselGroup?.vessels?.map((v) => v.vesselId).join(','),
+        timeRange?.start || '',
+        timeRange?.end || '',
+      ]),
+      value: `number of vessels: ${vesselGroup?.vessels?.length}`,
     })
-    window.print()
   }
 
   const toggleViewOnlyVesselGroup = () => {

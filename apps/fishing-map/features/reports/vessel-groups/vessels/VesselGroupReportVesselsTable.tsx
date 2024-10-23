@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
@@ -12,7 +11,7 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { EMPTY_API_VALUES } from 'features/reports/areas/area-reports.config'
 import VesselLink from 'features/vessel/VesselLink'
-import VesselPin from 'features/vessel/VesselPin'
+import VesselPin, { VesselPinClickProps } from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -24,6 +23,7 @@ import {
   VGRVesselsOrderDirection,
 } from 'features/vessel-groups/vessel-groups.types'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './VesselGroupReportVesselsTable.module.css'
 import { selectVGRVesselsPaginated } from './vessel-group-report-vessels.selectors'
 import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTableFooter'
@@ -56,14 +56,15 @@ export default function VesselGroupReportVesselsTable() {
     })
   }
 
-  const onPinClick = ({
-    vesselInWorkspace,
-  }: {
-    vesselInWorkspace?: UrlDataviewInstance | null | undefined
-  }) => {
+  const onPinClick = ({ vesselInWorkspace, vesselId }: VesselPinClickProps) => {
     if (!vesselInWorkspace) {
       dispatchQueryParams({ viewOnlyVesselGroup: false })
     }
+    trackEvent({
+      category: TrackCategory.VesselGroupReport,
+      action: `vessel_group_profile_pin_vessel`,
+      label: vesselId,
+    })
   }
 
   return (
