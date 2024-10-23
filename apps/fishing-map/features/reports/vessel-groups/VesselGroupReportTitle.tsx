@@ -55,13 +55,13 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
     }
   }, [dispatch, vesselGroup?.id, vesselGroup?.vessels])
 
-  const onPrintClick = () => {
-    trackEvent({
-      category: TrackCategory.VesselGroupReport,
-      action: `Click print/save as pdf`,
-    })
-    window.print()
-  }
+  // const onPrintClick = () => {
+  //   trackEvent({
+  //     category: TrackCategory.VesselGroupReport,
+  //     action: `Click print/save as pdf`,
+  //   })
+  //   window.print()
+  // }
 
   const toggleViewOnlyVesselGroup = () => {
     if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
@@ -144,7 +144,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
               <Icon icon="edit" type="default" />
             </Button>
           )}
-          <Button
+          {/* <Button
             type="border-secondary"
             size="small"
             className={styles.actionButton}
@@ -153,7 +153,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
           >
             <p>{t('analysis.print ', 'print')}</p>
             <Icon icon="print" type="default" />
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>
