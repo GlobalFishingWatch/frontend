@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
-import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
+import { Button, Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -115,6 +115,14 @@ function VesselGroupReport() {
     [t, isGFWUser]
   )
 
+  if (reportStatus === AsyncReducerStatus.Loading) {
+    return (
+      <div className={styles.emptyState}>
+        <Spinner />
+      </div>
+    )
+  }
+
   if (isOutdated) {
     return (
       <div className={styles.emptyState}>
@@ -141,7 +149,7 @@ function VesselGroupReport() {
     <div>
       <VesselGroupReportTitle
         vesselGroup={vesselGroup}
-        loading={reportStatus === AsyncReducerStatus.Loading}
+        // loading={reportStatus === AsyncReducerStatus.Loading}
       />
       <Tabs
         tabs={sectionTabs}
