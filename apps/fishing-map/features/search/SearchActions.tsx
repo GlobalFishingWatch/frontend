@@ -78,6 +78,7 @@ function SearchActions() {
           ? 'create_new_vessel_group_from_search'
           : 'add_vessels_to_vessel_group_from_search',
       label: `${activeSearchOption} search`,
+      value: `number of vessel added to group: ${vesselsSelected.length}`,
     })
   }
 

@@ -68,11 +68,12 @@ const VesselHeader = () => {
     })
   }, [])
 
-  const onAddToVesselGroup = (vesselGroupId: string) => {
+  const onAddToVesselGroup = (vesselGroupId: string, vesselsCount?: number) => {
     trackEvent({
       category: TrackCategory.VesselGroups,
       action: 'add_to_vessel_group_from_vessel_profile',
       label: `${vesselGroupId}`,
+      value: `number of vessel identities in group: ${vesselsCount}`,
     })
   }
 
