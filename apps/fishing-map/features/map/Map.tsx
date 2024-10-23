@@ -16,6 +16,7 @@ import MapControls from 'features/map/controls/MapControls'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
+  selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import {
@@ -94,6 +95,7 @@ const MapWrapper = () => {
   }, [setDeckLayers])
 
   const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isVGRReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasReportTimeseries = useHasReportTimeseries()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -105,6 +107,7 @@ const MapWrapper = () => {
 
   const mapLoading = useIsDeckLayersLoading()
   const isReportAreaLoading = isReportLocation && reportAreaStatus === AsyncReducerStatus.Loading
+  const isLoadingReport = (isReportLocation || isVGRReportLocation) && !hasReportTimeseries
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
@@ -132,7 +135,7 @@ const MapWrapper = () => {
         }}
         viewState={viewState}
         // Needs to lock the ui to avoid loading other tiles until report timeseries are loaded
-        onViewStateChange={isReportLocation && !hasReportTimeseries ? undefined : onViewStateChange}
+        onViewStateChange={isLoadingReport ? undefined : onViewStateChange}
         onClick={onMapClick}
         onHover={onMouseMove}
         onDragStart={onMapDragStart}
