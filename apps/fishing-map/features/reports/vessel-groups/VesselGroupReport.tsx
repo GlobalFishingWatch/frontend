@@ -15,7 +15,7 @@ import {
 import VGREvents from 'features/reports/events/VGREvents'
 import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
 import {
   useFitAreaInViewport,
@@ -42,6 +42,7 @@ function VesselGroupReport() {
   const reportStatus = useSelector(selectVGRStatus)
   const reportSection = useSelector(selectVGRSection)
   const reportDataview = useSelector(selectVGRDataview)
+  const userData = useSelector(selectUserData)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const fitAreaInViewport = useFitAreaInViewport()
@@ -123,6 +124,7 @@ function VesselGroupReport() {
     )
   }
 
+  const isOwnedByUser = vesselGroup?.ownerId === userData?.id
   if (isOutdated) {
     return (
       <div className={styles.emptyState}>
@@ -130,12 +132,14 @@ function VesselGroupReport() {
           <label>
             {t(
               'vesselGroupReport.linkDisabled',
-              'You need to update the vessel group first to see the report'
+              'This vessel group needs to be migrated to latest available data'
             )}
           </label>
-          <Button onClick={() => onEditClick(vesselGroup)}>
-            {t('vesselGroup.clickToMigrate', 'Click to migrate')}
-          </Button>
+          {isOwnedByUser && (
+            <Button onClick={() => onEditClick(vesselGroup)}>
+              {t('vesselGroup.clickToMigrate', 'Click to migrate')}
+            </Button>
+          )}
         </div>
       </div>
     )

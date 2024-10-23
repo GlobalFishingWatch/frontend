@@ -362,6 +362,8 @@ function VesselGroupModal(): React.ReactElement {
             defaultValue: 'Vessel group {{param}} is mandatory',
             param: t('vesselGroup.idField', 'ID field').toLowerCase(),
           })
+        : searchVesselStatus === AsyncReducerStatus.Loading
+        ? t('common.loading', 'Loading')
         : t('vesselGroup.searchVesselsRequired', 'Search for vessels to create a vessel group')
   }
 

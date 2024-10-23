@@ -5,7 +5,6 @@ import { VESSEL_GROUP_REPORT } from 'routes/routes'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectLocationQuery } from 'routes/routes.selectors'
-import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './VesselGroupReport.module.css'
 
 type VesselGroupReportLinkProps = {
@@ -16,7 +15,6 @@ type VesselGroupReportLinkProps = {
 function VesselGroupReportLink({ children, vesselGroupId }: VesselGroupReportLinkProps) {
   const workspace = useSelector(selectWorkspace)
   const query = useSelector(selectLocationQuery)
-  const vesselsInWorkspace = useSelector(selectTrackDataviews)
 
   if (!workspace || !vesselGroupId) {
     return children
@@ -30,7 +28,6 @@ function VesselGroupReportLink({ children, vesselGroupId }: VesselGroupReportLin
           category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
           workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
           vesselGroupId: vesselGroupId,
-          ...(vesselsInWorkspace?.length && { viewOnlyVesselGroup: false }),
         },
         query: query,
       }}
