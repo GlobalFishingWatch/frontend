@@ -9,6 +9,13 @@ export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v3.0'
 export const DEFAULT_VESSEL_IDENTITY_ID = `${DEFAULT_VESSEL_IDENTITY_DATASET}:${DEFAULT_VESSEL_IDENTITY_VERSION}`
 export const INCLUDES_RELATED_SELF_REPORTED_INFO_ID = 'POTENTIAL_RELATED_SELF_REPORTED_INFO'
 export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
+export const REGISTRY_SOURCES = [
+  {
+    key: 'TMT',
+    logo: 'https://globalfishingwatch.org/wp-content/uploads/TMT_logo_primary_RGB@2x.png',
+    contact: 'jac-coord@tm-tracking.org',
+  },
+]
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
@@ -28,9 +35,12 @@ export type VesselRenderField<Key = string> = {
   terminologyKey?: I18nNamespaces['dataTerminology']
 }
 
-const COMMON_FIELD_GROUPS: VesselRenderField[][] = [
-  [{ key: 'shipname' }, { key: 'flag' }],
-  [{ key: 'ssvid', label: 'mmsi' }, { key: 'imo' }, { key: 'callsign' }],
+const COMMON_FIELD_GROUPS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
+
+const IDENTIFIER_FIELDS: VesselRenderField[] = [
+  { key: 'ssvid', label: 'mmsi' },
+  { key: 'imo' },
+  { key: 'callsign' },
 ]
 
 // TODO review private datasets to ensure there are no missing fields
@@ -52,32 +62,50 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SelfReportedSource.Chile]: [[{ key: 'fleet' }]],
 }
 
-const SELF_REPORTED_FIELD_GROUPS: VesselRenderField[][] = [
-  [
-    { key: 'shiptypes', terminologyKey: 'shiptype' },
-    { key: 'geartypes', terminologyKey: 'geartype' },
-  ],
+const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
+  { key: 'lengthM', label: 'length' },
+  { key: 'depthM', label: 'draft' },
+  { key: 'tonnageGt', label: 'grossTonnage' },
+]
+
+const VESSEL_SHIPTYPES_FIELD: VesselRenderField = {
+  key: 'shiptypes',
+  terminologyKey: 'shiptype',
+  label: 'vessel type',
+}
+
+const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
+  key: 'geartypes',
+  terminologyKey: 'geartype',
+  label: 'gear type',
+}
+
+const VESSEL_CLASSIFICATION_FIELDS: VesselRenderField[] = [
+  VESSEL_SHIPTYPES_FIELD,
+  VESSEL_GEARTYPES_FIELD,
 ]
 
 export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRenderField[][]> = {
-  [VesselIdentitySourceEnum.SelfReported]: [...COMMON_FIELD_GROUPS, ...SELF_REPORTED_FIELD_GROUPS],
+  [VesselIdentitySourceEnum.SelfReported]: [COMMON_FIELD_GROUPS, VESSEL_CLASSIFICATION_FIELDS],
   [VesselIdentitySourceEnum.Registry]: [
-    ...COMMON_FIELD_GROUPS,
-    [
-      { key: 'geartypes' },
-      { key: 'lengthM', label: 'length' },
-      { key: 'tonnageGt', label: 'grossTonnage' },
-    ],
+    COMMON_FIELD_GROUPS,
+    [VESSEL_GEARTYPES_FIELD, { key: 'builtYear', label: 'year built' }],
+    IDENTIFIER_FIELDS,
+    VESSEL_FISICAL_FEATURES_FIELDS,
   ],
 }
 
 export const REGISTRY_FIELD_GROUPS: VesselRenderField<
-  keyof Pick<IdentityVesselData, 'registryOwners' | 'registryPublicAuthorizations'>
+  keyof Pick<IdentityVesselData, 'registryOwners' | 'registryPublicAuthorizations' | 'operator'>
 >[] = [
   {
     key: 'registryOwners',
     label: 'owner',
     terminologyKey: 'owner',
+  },
+  {
+    key: 'operator',
+    label: 'operator',
   },
   {
     key: 'registryPublicAuthorizations',
