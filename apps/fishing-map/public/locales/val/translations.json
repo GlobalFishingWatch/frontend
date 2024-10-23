@@ -135,10 +135,10 @@
     "edit": "crwdns83692:0crwdne83692:0",
     "edit ": "crwdns83810:0crwdne83810:0",
     "environment": "crwdns59753:0crwdne59753:0",
-    "eventLabels": {
-      "loitering": "crwdns83880:0crwdne83880:0",
-      "encounter": "crwdns83882:0crwdne83882:0",
-      "port_visit": "crwdns83884:0crwdne83884:0"
+    "event": {
+      "loitering": "crwdns83886:0crwdne83886:0",
+      "encounter": "crwdns83888:0crwdne83888:0",
+      "port_visit": "crwdns83890:0crwdne83890:0"
     },
     "event_one": "crwdns69346:0crwdne69346:0",
     "event_other": "crwdns69348:0crwdne69348:0",
