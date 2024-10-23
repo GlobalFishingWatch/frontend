@@ -50,6 +50,7 @@ import { useFetchReportVessel } from 'features/reports/areas/area-reports.hooks'
 import ReportVessels from 'features/reports/activity/vessels/ReportVessels'
 import ReportDownload from 'features/reports/activity/download/ReportDownload'
 import styles from 'features/reports/areas/AreaReport.module.css'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 
@@ -270,6 +271,10 @@ function ActivityReport({ reportName }: { reportName?: string }) {
               onClick={() => {
                 dispatch(setDateRangeHash(''))
                 dispatchFetchReport()
+                trackEvent({
+                  category: TrackCategory.Analysis,
+                  action: 'Click on see vessels button in report activity',
+                })
               }}
             >
               {t('analysis.seeVessels', 'See vessels')}

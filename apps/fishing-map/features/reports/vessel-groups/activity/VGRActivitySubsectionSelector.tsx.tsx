@@ -8,6 +8,7 @@ import { useReportFeaturesLoading } from 'features/reports/activity/reports-acti
 import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import { resetReportData } from 'features/reports/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
 function VGRActivitySubsectionSelector() {
   const { t } = useTranslation()
@@ -31,13 +32,13 @@ function VGRActivitySubsectionSelector() {
 
   const onSelectSubsection = (option: ChoiceOption<VGRActivitySubsection>) => {
     if (subsection !== option.id) {
-      // trackEvent({
-      //   category: TrackCategory.Analysis,
-      //   action: `Click on ${option.id} activity graph`,
-      // })
       dispatchQueryParams({ vGRActivitySubsection: option.id })
       fitAreaInViewport()
       dispatch(resetReportData())
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: `vessel_group_profile_activity_tab_toggle_${option.id}`,
+      })
     }
   }
 

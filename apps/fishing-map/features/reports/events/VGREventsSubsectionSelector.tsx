@@ -6,6 +6,7 @@ import { selectVGRStatus } from 'features/reports/vessel-groups/vessel-group-rep
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGREventsSubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
 function VesselGroupReportEventsSubsectionSelector() {
   const { t } = useTranslation()
@@ -38,11 +39,11 @@ function VesselGroupReportEventsSubsectionSelector() {
 
   const onSelectSubsection = (option: ChoiceOption<VGREventsSubsection>) => {
     if (subsection !== option.id) {
-      // trackEvent({
-      //   category: TrackCategory.Analysis,
-      //   action: `Click on ${option.id} activity graph`,
-      // })
       dispatchQueryParams({ vGREventsSubsection: option.id })
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: `vessel_group_profile_events_tab_${option.id}_graph`,
+      })
     }
   }
 
