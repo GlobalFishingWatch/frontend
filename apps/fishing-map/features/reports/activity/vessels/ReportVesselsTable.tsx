@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -111,6 +112,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     className={styles.link}
                     vesselId={vessel.vesselId}
                     datasetId={vessel.infoDataset?.id}
+                    query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
                   >
                     {formatInfoField(vessel.shipName, 'shipname')}
                   </VesselLink>

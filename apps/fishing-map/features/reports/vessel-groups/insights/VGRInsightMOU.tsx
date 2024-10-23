@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
@@ -81,6 +82,7 @@ const VesselGroupReportInsightMOU = () => {
                     query={{
                       start: fetchVesselGroupParams.start,
                       end: fetchVesselGroupParams.end,
+                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                     }}
                   >
                     {name}

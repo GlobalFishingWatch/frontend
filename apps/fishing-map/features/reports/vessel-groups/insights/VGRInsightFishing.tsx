@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
-import { RegionType } from '@globalfishingwatch/api-types'
+import { RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
@@ -86,6 +86,7 @@ const VesselGroupReportInsightFishing = () => {
                       className={styles.link}
                       vesselId={vesselId}
                       datasetId={vessel.identity.dataset as string}
+                      query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
                     >
                       {formatInfoField(vessel.identity.shipname, 'shipname')}
                     </VesselLink>
