@@ -11,7 +11,6 @@ import {
   selectWorkspace,
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
-import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
@@ -49,9 +48,9 @@ export const selectHasVesselGroupSearchVessels = createSelector(
 )
 
 export const selectVessselGroupsAllowed = createSelector(
-  [selectHasUserGroupsPermissions, isAdvancedSearchAllowed],
-  (hasUserGroupsPermissions, advancedSearchAllowed) => {
-    return hasUserGroupsPermissions && advancedSearchAllowed
+  [isAdvancedSearchAllowed],
+  (advancedSearchAllowed) => {
+    return advancedSearchAllowed
   }
 )
 

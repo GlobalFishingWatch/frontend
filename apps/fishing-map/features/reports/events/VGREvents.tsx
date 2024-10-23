@@ -7,8 +7,10 @@ import {
   VesselGroupEventsStatsResponseGroups,
 } from 'queries/vessel-group-events-stats-api'
 import { useTranslation } from 'react-i18next'
+import { lowerCase } from 'es-toolkit'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import VGREventsSubsectionSelector from 'features/reports/events/VGREventsSubsectionSelector'
 import VGREventsGraph from 'features/reports/events/VGREventsGraph'
 import {
@@ -102,11 +104,18 @@ function VGREvents() {
     return (
       <div className={styles.container}>
         <VGREventsSubsectionSelector />
-        {isLoading && <Spinner />}
+        {isLoading && (
+          <div className={styles.placeholder}>
+            <Spinner />
+          </div>
+        )}
         {error && !isLoading ? <p className={styles.error}>{(error as any).message}</p> : null}
       </div>
     )
   }
+  const subCategoryDataset = eventsDataview?.datasets?.find(
+    (d) => d.type === DatasetTypes.Events
+  )?.subcategory
 
   return (
     <Fragment>
@@ -120,10 +129,14 @@ function VGREvents() {
               vessels: formatI18nNumber(vesselsWithEvents?.length || 0),
               flags: vesselFlags?.size,
               activityQuantity: data.timeseries.reduce((acc, group) => acc + group.value, 0),
-              activityUnit: `${eventsDataview?.datasets?.[0]?.subcategory?.toLowerCase()} ${t(
-                'common.events',
-                'events'
-              ).toLowerCase()}`,
+              activityUnit: `${
+                subCategoryDataset
+                  ? t(
+                      `common.event.${subCategoryDataset.toLowerCase()}`,
+                      lowerCase(subCategoryDataset)
+                    )
+                  : ''
+              } ${t('common.event', 'events').toLowerCase()}`,
               start: formatI18nDate(start, {
                 format: DateTime.DATE_MED,
               }),

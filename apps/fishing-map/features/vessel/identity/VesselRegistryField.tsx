@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import { t } from 'i18next'
-import { uniq } from 'es-toolkit'
+import { Fragment } from 'react'
 import {
   VesselRegistryOperator,
   VesselRegistryOwner,
@@ -26,21 +26,22 @@ const RegistryOperatorField = ({
 }) => {
   const { key } = registryField
   const operator = vesselIdentity[key as keyof VesselLastIdentity] as VesselRegistryOperator
-  if (!operator?.name) return null
-  const formatedOperator = uniq(
-    operator.name
-      .split('|')
-      .map((s: string) => s.replaceAll('"', '').trim().split(';'))
-      .flat()
-  )
   return (
     <div className={cx(styles.fieldGroupContainer)}>
       <label>{t(`vessel.registryOperator`, 'Operators')}</label>
-      {formatedOperator.map((operator, index) => (
-        <p>
-          <VesselIdentityField key={index} value={operator} />
-        </p>
-      ))}
+      {typeof operator === 'string' ? (
+        <VesselIdentityField value={operator} />
+      ) : operator ? (
+        <Fragment>
+          <VesselIdentityField value={operator?.name?.replaceAll('"', '').trim()} />{' '}
+          {operator.flag && `(${formatInfoField(operator.flag, 'flag')}) `}
+          <span className={styles.secondary}>
+            <I18nDate date={operator.dateFrom} /> - <I18nDate date={operator.dateTo} />
+          </span>
+        </Fragment>
+      ) : (
+        <VesselIdentityField value={EMPTY_FIELD_PLACEHOLDER} />
+      )}
     </div>
   )
 }
