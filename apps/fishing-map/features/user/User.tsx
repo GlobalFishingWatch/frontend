@@ -17,7 +17,6 @@ import { selectUserTab } from 'routes/routes.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './User.module.css'
-import { selectHasUserGroupsPermissions } from './selectors/user.permissions.selectors'
 import UserWorkspaces from './UserWorkspaces'
 import UserWorkspacesPrivate from './UserWorkspacesPrivate'
 import UserDatasets from './UserDatasets'
@@ -32,7 +31,6 @@ function User() {
   const userData = useSelector(selectUserData)
   const userTab = useSelector(selectUserTab)
   const { dispatchQueryParams } = useLocationConnect()
-  const hasUserGroupsPermissions = useSelector(selectHasUserGroupsPermissions)
 
   const userTabs = useMemo(() => {
     const tabs = [
@@ -66,16 +64,14 @@ function User() {
         title: t('common.reports', 'Reports'),
         content: <UserReports />,
       },
-    ]
-    if (hasUserGroupsPermissions) {
-      tabs.push({
+      {
         id: UserTab.VesselGroups,
         title: t('vesselGroup.vesselGroups', 'Vessel Groups'),
         content: <UserVesselGroups />,
-      })
-    }
+      },
+    ]
     return tabs
-  }, [hasUserGroupsPermissions, t])
+  }, [t])
 
   const onTabClick = useCallback(
     (tab: Tab<UserTab>) => {
@@ -97,10 +93,8 @@ function User() {
   }, [dispatch])
 
   useEffect(() => {
-    if (hasUserGroupsPermissions) {
-      dispatch(fetchVesselGroupsThunk())
-    }
-  }, [dispatch, hasUserGroupsPermissions])
+    dispatch(fetchVesselGroupsThunk())
+  }, [dispatch])
 
   useEffect(() => {
     if (userData?.type === GUEST_USER_TYPE) {

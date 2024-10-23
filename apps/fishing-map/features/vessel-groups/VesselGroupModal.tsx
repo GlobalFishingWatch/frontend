@@ -48,7 +48,6 @@ import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
-import { getVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import {
   IdField,
   createVesselGroupThunk,
@@ -337,11 +336,7 @@ function VesselGroupModal(): React.ReactElement {
     ? groupName === ''
     : searchIdField === '' || !vesselGroupVesselsToSearch?.length || !sourcesSelected?.length
   const confirmButtonDisabled =
-    loading ||
-    hasVesselsOverflow ||
-    searchVesselStatus === AsyncReducerStatus.Error ||
-    !searchVesselGroupsVesselsAllowed ||
-    missesRequiredParams
+    loading || hasVesselsOverflow || !searchVesselGroupsVesselsAllowed || missesRequiredParams
   let confirmButtonTooltip = hasVesselsOverflow
     ? t('vesselGroup.tooManyVessels', {
         count: MAX_VESSEL_GROUP_VESSELS,
@@ -393,30 +388,28 @@ function VesselGroupModal(): React.ReactElement {
             value={groupName}
             onChange={onGroupNameChange}
           />
-          {!fullModalLoading &&
-            searchVesselStatus !== AsyncReducerStatus.Error &&
-            !hasVesselGroupsVessels && (
-              <Fragment>
-                <MultiSelect
-                  label={t('layer.source_other', 'Sources')}
-                  placeholder={getPlaceholderBySelections({
-                    selection: sourcesSelected.map(({ id }) => id),
-                    options: sourceOptions,
-                  })}
-                  options={sourceOptions}
-                  selectedOptions={sourcesSelected}
-                  onSelect={onSelectSourceClick}
-                  onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
-                />
-                <Select
-                  label={t('vesselGroup.idField', 'ID field')}
-                  options={ID_COLUMNS_OPTIONS}
-                  selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
-                  onSelect={onIdFieldChange}
-                  disabled={hasVesselGroupsVessels}
-                />
-              </Fragment>
-            )}
+          {!fullModalLoading && !hasVesselGroupsVessels && (
+            <Fragment>
+              <MultiSelect
+                label={t('layer.source_other', 'Sources')}
+                placeholder={getPlaceholderBySelections({
+                  selection: sourcesSelected.map(({ id }) => id),
+                  options: sourceOptions,
+                })}
+                options={sourceOptions}
+                selectedOptions={sourcesSelected}
+                onSelect={onSelectSourceClick}
+                onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
+              />
+              <Select
+                label={t('vesselGroup.idField', 'ID field')}
+                options={ID_COLUMNS_OPTIONS}
+                selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
+                onSelect={onIdFieldChange}
+                disabled={hasVesselGroupsVessels}
+              />
+            </Fragment>
+          )}
         </div>
         {fullModalLoading ? (
           <Spinner />
@@ -427,9 +420,7 @@ function VesselGroupModal(): React.ReactElement {
                 <VesselGroupVessels />
               </div>
             ) : (
-              searchVesselStatus !== AsyncReducerStatus.Error && (
-                <VesselGroupSearch onError={setError} />
-              )
+              <VesselGroupSearch onError={setError} />
             )}
           </Fragment>
         )}
