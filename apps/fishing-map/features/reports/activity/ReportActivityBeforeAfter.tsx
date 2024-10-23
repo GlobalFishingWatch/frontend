@@ -37,7 +37,7 @@ export default function ReportActivityBeforeAfter() {
       action: `Select date in 'before/after'`,
       label: JSON.stringify({
         date: date.target.value,
-        regionName: reportArea.name,
+        regionName: reportArea?.name,
         sourceNames: dataviews.flatMap((dataview) =>
           getSourcesSelectedInDataview(dataview).map((source) => source.label)
         ),
@@ -54,7 +54,7 @@ export default function ReportActivityBeforeAfter() {
         duration: duration.target.value + ' ' + durationTypeOption?.label,
         durationAmount: duration.target.value,
         durationType: durationTypeOption?.label,
-        regionName: reportArea.name,
+        regionName: reportArea?.name,
         sourceNames: dataviews.flatMap((dataview) =>
           getSourcesSelectedInDataview(dataview).map((source) => source.label)
         ),
@@ -71,7 +71,7 @@ export default function ReportActivityBeforeAfter() {
         duration: timeComparison?.duration + ' ' + duration.label,
         durationAmount: timeComparison?.duration,
         durationType: duration.label,
-        regionName: reportArea.name,
+        regionName: reportArea?.name,
         sourceNames: dataviews.flatMap((dataview) =>
           getSourcesSelectedInDataview(dataview).map((source) => source.label)
         ),
