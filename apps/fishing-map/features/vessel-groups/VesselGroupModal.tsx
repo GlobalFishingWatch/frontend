@@ -11,6 +11,7 @@ import {
   Spinner,
   MultiSelect,
   Select,
+  Icon,
 } from '@globalfishingwatch/ui-components'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import VesselGroupSearch from 'features/vessel-groups/VesselGroupModalSearch'
@@ -19,6 +20,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
+  selectVesselGroupModalDatasetsWithoutEventsRelated,
   selectVesselGroupsModalSearchIds,
   selectVesselGroupWorkspaceToNavigate,
   selectWorkspaceVessselGroupsIds,
@@ -46,6 +48,7 @@ import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
+import { getVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import {
   IdField,
   createVesselGroupThunk,
@@ -110,6 +113,9 @@ function VesselGroupModal(): React.ReactElement {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
+  const datasetsWithoutRelatedEvents = useSelector(
+    selectVesselGroupModalDatasetsWithoutEventsRelated
+  )
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const searchVesselGroupsVesselsRef = useRef<any>()
   const searchVesselGroupsVesselsAllowed = vesselGroupVesselsToSearch
@@ -449,6 +455,22 @@ function VesselGroupModal(): React.ReactElement {
         <UserGuideLink section="vesselGroups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
+          {datasetsWithoutRelatedEvents.length >= 1 && (
+            <div className={styles.disclaimerFooter}>
+              <Icon icon="warning" type="warning" />
+              {t('vesselGroup.disclaimerFeaturesNotAvailable', {
+                defaultValue:
+                  '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
+                features: t(
+                  'vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix',
+                  'Some features'
+                ),
+                datasets: Array.from(datasetsWithoutRelatedEvents)
+                  .map((d) => getDatasetLabel(d))
+                  .join(', '),
+              })}
+            </div>
+          )}
           {!searchVesselGroupsVesselsAllowed && (
             <span className={styles.errorMsg}>
               {t('vesselGroup.searchLimit', {

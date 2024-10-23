@@ -31,7 +31,7 @@ const VesselGroupReportInsights = () => {
     )
   }
 
-  if (datasetsWithoutRelatedEvents.size >= 1) {
+  if (datasetsWithoutRelatedEvents.length >= 1) {
     return (
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
