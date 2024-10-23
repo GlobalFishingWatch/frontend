@@ -12,6 +12,7 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import { useSetReportTimeComparison } from 'features/reports/activity/reports-activity-timecomparison.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { selectReportActivityGraph } from '../areas/area-reports.config.selectors'
 import { ReportActivityGraph } from '../areas/area-reports.types'
 
@@ -28,6 +29,7 @@ export default function ReportActivityGraphSelector({
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
   const dataviews = useSelector(selectActiveReportDataviews)
+  const isAreaReportLocation = useSelector(selectIsAnyReportLocation)
   const areAllFiltersEqual = dataviews.every(
     (d) => d.config?.filter === dataviews[0].config?.filter
   )
@@ -48,7 +50,7 @@ export default function ReportActivityGraphSelector({
           )
         : '',
       tooltipPlacement: 'bottom',
-      disabled: loading || !areAllFiltersEqual,
+      disabled: loading || !areAllFiltersEqual || !isAreaReportLocation,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
@@ -60,7 +62,7 @@ export default function ReportActivityGraphSelector({
           )
         : '',
       tooltipPlacement: 'bottom',
-      disabled: loading || !areAllFiltersEqual,
+      disabled: loading || !areAllFiltersEqual || !isAreaReportLocation,
     },
   ]
 
