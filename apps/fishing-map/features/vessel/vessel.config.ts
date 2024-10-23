@@ -71,13 +71,11 @@ const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
 const VESSEL_SHIPTYPES_FIELD: VesselRenderField = {
   key: 'shiptypes',
   terminologyKey: 'shiptype',
-  label: 'vessel type',
 }
 
 const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
   key: 'geartypes',
   terminologyKey: 'geartype',
-  label: 'gear type',
 }
 
 const VESSEL_CLASSIFICATION_FIELDS: VesselRenderField[] = [
@@ -86,7 +84,11 @@ const VESSEL_CLASSIFICATION_FIELDS: VesselRenderField[] = [
 ]
 
 export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRenderField[][]> = {
-  [VesselIdentitySourceEnum.SelfReported]: [COMMON_FIELD_GROUPS, VESSEL_CLASSIFICATION_FIELDS],
+  [VesselIdentitySourceEnum.SelfReported]: [
+    COMMON_FIELD_GROUPS,
+    IDENTIFIER_FIELDS,
+    VESSEL_CLASSIFICATION_FIELDS,
+  ],
   [VesselIdentitySourceEnum.Registry]: [
     COMMON_FIELD_GROUPS,
     [VESSEL_GEARTYPES_FIELD, { key: 'builtYear', label: 'year built' }],
