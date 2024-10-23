@@ -218,9 +218,6 @@ export function getVesselProperty<P extends VesselIdentityProperty>(
     if (combinedSourcesInfoData?.length) {
       return combinedSourcesInfoData.map((i) => `${i.name}`) as VesselProperty<P>
     }
-    // if (property === 'image') {
-    //   return '/images/cargo-vessel.png' as VesselProperty<P>
-    // }
   }
   return get<VesselProperty<P>>(identity, property as any)
 }
