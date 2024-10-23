@@ -100,6 +100,11 @@ function VesselsSection(): React.ReactElement {
           ...dataviewsToDelete,
           ...(dataviewInstance ? [dataviewInstance] : []),
         ])
+        trackEvent({
+          category: TrackCategory.VesselGroups,
+          action: 'add_to_vessel_group_from_workspace',
+          label: `${vesselGroupId}`,
+        })
       }
     },
     [dataviews, dispatch, upsertDataviewInstance, vesselGroupsInWorkspace]

@@ -60,21 +60,21 @@ const VesselHeader = () => {
     window.print()
   }, [])
 
-  const trackAction = useCallback((label: 'center_map' | 'print' | 'add_to_group' | 'share') => {
-    if (label === 'add_to_group') {
-      trackEvent({
-        category: TrackCategory.VesselGroups,
-        action: 'add_to_vessel_group',
-        label: 'search',
-      })
-    } else {
-      trackEvent({
-        category: TrackCategory.VesselProfile,
-        action: 'click_vessel_header_actions',
-        label,
-      })
-    }
+  const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: 'click_vessel_header_actions',
+      label,
+    })
   }, [])
+
+  const onAddToVesselGroup = (vesselGroupId: string) => {
+    trackEvent({
+      category: TrackCategory.VesselGroups,
+      action: 'add_to_vessel_group_from_vessel_profile',
+      label: `${vesselGroupId}`,
+    })
+  }
 
   useEffect(() => {
     const enableVesselPrintMode = () => {
@@ -197,7 +197,7 @@ const VesselHeader = () => {
               </Button>
               <VesselGroupAddButton
                 vessels={vessel ? [vessel] : []}
-                onAddToVesselGroup={() => trackAction('add_to_group')}
+                onAddToVesselGroup={onAddToVesselGroup}
               >
                 <VesselGroupAddActionButton buttonSize="small" buttonType="border-secondary" />
               </VesselGroupAddButton>
