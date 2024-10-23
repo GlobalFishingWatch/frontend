@@ -56,7 +56,11 @@ export const fetchVesselGroupReportThunk = createAsyncThunk(
   {
     condition: (params: FetchVesselGroupReportThunkParams, { getState }) => {
       const { status, statusId } = (getState() as VesselGroupReportSliceState)?.vesselGroupReport
-      if (status === AsyncReducerStatus.Loading || status === AsyncReducerStatus.Finished) {
+      if (
+        status === AsyncReducerStatus.Error ||
+        status === AsyncReducerStatus.Loading ||
+        status === AsyncReducerStatus.Finished
+      ) {
         return statusId !== params.vesselGroupId
       }
       return true
