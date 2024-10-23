@@ -62,7 +62,7 @@
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} kapal{{sources}} </strong> selama <strong>{{activityQuantity}} {{activityUnit}}</strong> melakukan <strong>{{activityType}}</strong> di area ini antara <strong>{{start}}</strong> dan <strong>{{end}}</strong>",
-    "summaryNoVessels": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
@@ -135,6 +135,11 @@
     "edit": "Edit",
     "edit ": "edit",
     "environment": "Lingkungan",
+    "eventLabels": {
+      "loitering": "loitering",
+      "encounter": "encounter",
+      "port_visit": "port visit"
+    },
     "event_one": "peristiwa",
     "event_other": "peristiwa",
     "events": "Acara",
@@ -466,6 +471,7 @@
     "privateProfile": "Akun Anda tidak memiliki izin untuk melihat kapal ini",
     "privateReport": "Masuk untuk melihat kapal yang aktif di area ini",
     "privateSearch": "Akun Anda tidak memiliki izin untuk melakukan pencarian pada set data ini",
+    "privateVesselGroupReport": "This is a private vessel group report",
     "privateView": "Ini adalah tampilan pribadi",
     "profileEvents": "Terjadi kesalahan saat meminta info peristiwa kapal.",
     "profileLogin": "Masuk untuk melihat kapal ini",
@@ -1024,6 +1030,7 @@
     "addToWorkspace": "Add vessel group to workspace",
     "addVessels": "Add vessels to vessel group",
     "addVisibleVessels": "Add visible vessels to vessel group",
+    "clickToMigrate": "Click to migrate",
     "clickToUpdate": "Click to migrate your vessel group to latest available data",
     "confirmAbort": "Anda akan kehilangan perubahan apa pun yang dibuat dalam kelompok kapal ini. Apakah Anda yakin?",
     "confirmRemove": "Apakah Anda yakin ingin menghapus kelompok kapal ini secara permanen?",
@@ -1088,7 +1095,7 @@
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
     },
-    "linkDisabled": "You need to update the vessel group first to see the report",
+    "linkDisabled": "This vessel group needs to be migrated to latest available data",
     "linkToReport": "Check the vessel group report here",
     "notFound": "Vessel group not found",
     "user": "User Vessel Group"

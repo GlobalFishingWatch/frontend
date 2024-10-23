@@ -11,6 +11,7 @@ import {
   Spinner,
   MultiSelect,
   Select,
+  Icon,
 } from '@globalfishingwatch/ui-components'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import VesselGroupSearch from 'features/vessel-groups/VesselGroupModalSearch'
@@ -19,6 +20,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
+  selectVesselGroupModalDatasetsWithoutEventsRelated,
   selectVesselGroupsModalSearchIds,
   selectVesselGroupWorkspaceToNavigate,
   selectWorkspaceVessselGroupsIds,
@@ -114,6 +116,9 @@ function VesselGroupModal(): React.ReactElement {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
+  const datasetsWithoutRelatedEvents = useSelector(
+    selectVesselGroupModalDatasetsWithoutEventsRelated
+  )
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const searchVesselGroupsVesselsRef = useRef<any>()
   const searchVesselGroupsVesselsAllowed = vesselGroupVesselsToSearch
@@ -175,6 +180,12 @@ function VesselGroupModal(): React.ReactElement {
       dispatch(getVesselInVesselGroupThunk({ vesselGroup: editingVesselGroup }))
     }
   }, [dispatch, editingVesselGroup])
+
+  useEffect(() => {
+    if (!hasVesselGroupsVessels && showBackButton) {
+      setShowBackButton(false)
+    }
+  }, [showBackButton, hasVesselGroupsVessels])
 
   const onGroupNameChange = useCallback((e: any) => {
     setGroupName(e.target.value)
@@ -330,11 +341,7 @@ function VesselGroupModal(): React.ReactElement {
     ? groupName === ''
     : searchIdField === '' || !vesselGroupVesselsToSearch?.length || !sourcesSelected?.length
   const confirmButtonDisabled =
-    loading ||
-    hasVesselsOverflow ||
-    searchVesselStatus === AsyncReducerStatus.Error ||
-    !searchVesselGroupsVesselsAllowed ||
-    missesRequiredParams
+    loading || hasVesselsOverflow || !searchVesselGroupsVesselsAllowed || missesRequiredParams
   let confirmButtonTooltip = hasVesselsOverflow
     ? t('vesselGroup.tooManyVessels', {
         count: MAX_VESSEL_GROUP_VESSELS,
@@ -355,6 +362,8 @@ function VesselGroupModal(): React.ReactElement {
             defaultValue: 'Vessel group {{param}} is mandatory',
             param: t('vesselGroup.idField', 'ID field').toLowerCase(),
           })
+        : searchVesselStatus === AsyncReducerStatus.Loading
+        ? t('common.loading', 'Loading')
         : t('vesselGroup.searchVesselsRequired', 'Search for vessels to create a vessel group')
   }
 
@@ -384,30 +393,28 @@ function VesselGroupModal(): React.ReactElement {
             value={groupName}
             onChange={onGroupNameChange}
           />
-          {!fullModalLoading &&
-            searchVesselStatus !== AsyncReducerStatus.Error &&
-            !hasVesselGroupsVessels && (
-              <Fragment>
-                <MultiSelect
-                  label={t('layer.source_other', 'Sources')}
-                  placeholder={getPlaceholderBySelections({
-                    selection: sourcesSelected.map(({ id }) => id),
-                    options: sourceOptions,
-                  })}
-                  options={sourceOptions}
-                  selectedOptions={sourcesSelected}
-                  onSelect={onSelectSourceClick}
-                  onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
-                />
-                <Select
-                  label={t('vesselGroup.idField', 'ID field')}
-                  options={ID_COLUMNS_OPTIONS}
-                  selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
-                  onSelect={onIdFieldChange}
-                  disabled={hasVesselGroupsVessels}
-                />
-              </Fragment>
-            )}
+          {!fullModalLoading && !hasVesselGroupsVessels && (
+            <Fragment>
+              <MultiSelect
+                label={t('layer.source_other', 'Sources')}
+                placeholder={getPlaceholderBySelections({
+                  selection: sourcesSelected.map(({ id }) => id),
+                  options: sourceOptions,
+                })}
+                options={sourceOptions}
+                selectedOptions={sourcesSelected}
+                onSelect={onSelectSourceClick}
+                onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
+              />
+              <Select
+                label={t('vesselGroup.idField', 'ID field')}
+                options={ID_COLUMNS_OPTIONS}
+                selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
+                onSelect={onIdFieldChange}
+                disabled={hasVesselGroupsVessels}
+              />
+            </Fragment>
+          )}
         </div>
         {fullModalLoading ? (
           <Spinner />
@@ -418,9 +425,7 @@ function VesselGroupModal(): React.ReactElement {
                 <VesselGroupVessels />
               </div>
             ) : (
-              searchVesselStatus !== AsyncReducerStatus.Error && (
-                <VesselGroupSearch onError={setError} />
-              )
+              <VesselGroupSearch onError={setError} />
             )}
           </Fragment>
         )}
@@ -448,6 +453,22 @@ function VesselGroupModal(): React.ReactElement {
         <UserGuideLink section="vesselGroups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
+          {datasetsWithoutRelatedEvents.length >= 1 && (
+            <div className={styles.disclaimerFooter}>
+              <Icon icon="warning" type="warning" />
+              {t('vesselGroup.disclaimerFeaturesNotAvailable', {
+                defaultValue:
+                  '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
+                features: t(
+                  'vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix',
+                  'Some features'
+                ),
+                datasets: Array.from(datasetsWithoutRelatedEvents)
+                  .map((d) => getDatasetLabel(d))
+                  .join(', '),
+              })}
+            </div>
+          )}
           {!searchVesselGroupsVesselsAllowed && (
             <span className={styles.errorMsg}>
               {t('vesselGroup.searchLimit', {

@@ -62,7 +62,7 @@
     "statsDisclaimerDynamic": "crwdns82932:0{{interval}}crwdnd82932:0{{min}}crwdnd82932:0{{unit}}crwdnd82932:0{{max}}crwdnd82932:0{{unit}}crwdne82932:0",
     "statsDisclaimerStatic": "crwdns82934:0{{mean}}crwdnd82934:0{{unit}}crwdnd82934:0{{min}}crwdnd82934:0{{unit}}crwdnd82934:0{{max}}crwdnd82934:0{{unit}}crwdne82934:0",
     "summary": "crwdns59649:0{{vessels}}crwdnd59649:0{{sources}}crwdnd59649:0{{activityQuantity}}crwdnd59649:0{{activityUnit}}crwdnd59649:0{{activityType}}crwdnd59649:0{{start}}crwdnd59649:0{{end}}crwdne59649:0",
-    "summaryNoVessels": "crwdns83690:0{{vessels}}crwdnd83690:0{{flags}}crwdnd83690:0{{activityQuantity}}crwdnd83690:0{{activityUnit}}crwdnd83690:0{{start}}crwdnd83690:0{{end}}crwdne83690:0",
+    "summaryNoVessels": "crwdns83874:0{{sources}}crwdnd83874:0{{activityQuantity}}crwdnd83874:0{{activityUnit}}crwdnd83874:0{{activityType}}crwdnd83874:0{{start}}crwdnd83874:0{{end}}crwdne83874:0",
     "timeoutError": "crwdns83504:0crwdne83504:0",
     "timeRangeTooLong": "crwdns59653:0crwdne59653:0",
     "title": "crwdns59655:0crwdne59655:0",
@@ -135,6 +135,11 @@
     "edit": "crwdns83692:0crwdne83692:0",
     "edit ": "crwdns83810:0crwdne83810:0",
     "environment": "crwdns59753:0crwdne59753:0",
+    "eventLabels": {
+      "loitering": "crwdns83880:0crwdne83880:0",
+      "encounter": "crwdns83882:0crwdne83882:0",
+      "port_visit": "crwdns83884:0crwdne83884:0"
+    },
     "event_one": "crwdns69346:0crwdne69346:0",
     "event_other": "crwdns69348:0crwdne69348:0",
     "events": "crwdns59755:0crwdne59755:0",
@@ -466,6 +471,7 @@
     "privateProfile": "crwdns69358:0crwdne69358:0",
     "privateReport": "crwdns60097:0crwdne60097:0",
     "privateSearch": "crwdns69360:0crwdne69360:0",
+    "privateVesselGroupReport": "crwdns83876:0crwdne83876:0",
     "privateView": "crwdns60099:0crwdne60099:0",
     "profileEvents": "crwdns69362:0crwdne69362:0",
     "profileLogin": "crwdns69364:0crwdne69364:0",
@@ -1024,6 +1030,7 @@
     "addToWorkspace": "crwdns83720:0crwdne83720:0",
     "addVessels": "crwdns83722:0crwdne83722:0",
     "addVisibleVessels": "crwdns83724:0crwdne83724:0",
+    "clickToMigrate": "crwdns83878:0crwdne83878:0",
     "clickToUpdate": "crwdns83726:0crwdne83726:0",
     "confirmAbort": "crwdns60657:0crwdne60657:0",
     "confirmRemove": "crwdns60659:0crwdne60659:0",
@@ -1088,7 +1095,7 @@
       "MOUListsCount_other": "crwdns83762:0{{vessels}}crwdnd83762:0{{list}}crwdne83762:0",
       "MOUListsEmpty": "crwdns83758:0{{country}}crwdne83758:0"
     },
-    "linkDisabled": "crwdns83742:0crwdne83742:0",
+    "linkDisabled": "crwdns83866:0crwdne83866:0",
     "linkToReport": "crwdns83744:0crwdne83744:0",
     "notFound": "crwdns83780:0crwdne83780:0",
     "user": "crwdns83782:0crwdne83782:0"

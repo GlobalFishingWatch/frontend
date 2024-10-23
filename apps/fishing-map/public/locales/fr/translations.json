@@ -62,7 +62,7 @@
     "statsDisclaimerDynamic": "Au cours de cette plage de temps, les valeurs minimales et maximales par {{interval}} et lieu à l'intérieur de votre zone étaient {{min}} {{unit}} et {{max}} {{unit}}.",
     "statsDisclaimerStatic": "La valeur moyenne pour votre zone est {{mean}} {{unit}}. Le minimum et le maximum sont {{min}} {{unit}} et {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} navires{{sources}} </strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> d'<strong>{{activityType}}</strong> dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
-    "summaryNoVessels": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "Cela prend plus de temps que prévu, merci de patienter",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Analyse",
@@ -135,6 +135,11 @@
     "edit": "Edit",
     "edit ": "edit",
     "environment": "Environnement",
+    "eventLabels": {
+      "loitering": "loitering",
+      "encounter": "encounter",
+      "port_visit": "port visit"
+    },
     "event_one": "événement",
     "event_other": "évènements",
     "events": "Évènements",
@@ -466,6 +471,7 @@
     "privateProfile": "Votre compte n'est pas autorisé pour visionner ce navire",
     "privateReport": "Connectez-vous pour voir les navires actifs dans la zone",
     "privateSearch": "Votre compte n'est pas autorisé à effectuer des recherches dans ces jeux de données",
+    "privateVesselGroupReport": "This is a private vessel group report",
     "privateView": "Ceci est une vue privée",
     "profileEvents": "Une erreur s'est produite lors de la demande de visualisation des événements du navire.",
     "profileLogin": "Connectez-vous pour voir ce navire",
@@ -1024,6 +1030,7 @@
     "addToWorkspace": "Add vessel group to workspace",
     "addVessels": "Add vessels to vessel group",
     "addVisibleVessels": "Add visible vessels to vessel group",
+    "clickToMigrate": "Click to migrate",
     "clickToUpdate": "Click to migrate your vessel group to latest available data",
     "confirmAbort": "Vous perdrez toutes les modifications apportées à ce groupe de navires. Êtes-vous sûr ?",
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement ce groupe de navires ?",
@@ -1088,7 +1095,7 @@
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
     },
-    "linkDisabled": "You need to update the vessel group first to see the report",
+    "linkDisabled": "This vessel group needs to be migrated to latest available data",
     "linkToReport": "Check the vessel group report here",
     "notFound": "Vessel group not found",
     "user": "User Vessel Group"

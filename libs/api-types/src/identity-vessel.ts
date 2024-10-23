@@ -113,8 +113,8 @@ export type RegistryImage = {
 export type RegistryExtraFieldValue = {
   dateFrom: string
   dateFromMask: string
-  // dateTo: ??
-  // dateToMask: ??
+  dateTo: string
+  dateToMask: string
   value: number
 }
 
@@ -153,8 +153,9 @@ export type VesselRegistryOwner = VesselRegistryProperty & {
   flag: string
 }
 
-export type VesselRegistryOperator = {
+export type VesselRegistryOperator = Omit<RegistryExtraFieldValue, 'value'> & {
   name: string
+  flag: string
 }
 
 export type VesselRegistryAuthorization = VesselRegistryProperty

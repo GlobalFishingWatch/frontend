@@ -5,6 +5,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
@@ -77,6 +78,7 @@ const VesselGroupReportInsightFlagChange = () => {
                     query={{
                       start: fetchVesselGroupParams.start,
                       end: fetchVesselGroupParams.end,
+                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                     }}
                   >
                     {formatInfoField(vessel.identity.shipname, 'shipname')} (

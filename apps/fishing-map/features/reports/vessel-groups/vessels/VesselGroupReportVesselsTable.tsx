@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
@@ -131,7 +132,12 @@ export default function VesselGroupReportVesselsTable() {
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   {workspaceReady ? (
-                    <VesselLink className={styles.link} vesselId={id} datasetId={vessel.dataset}>
+                    <VesselLink
+                      className={styles.link}
+                      vesselId={id}
+                      datasetId={vessel.dataset}
+                      query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
+                    >
                       {shipName}
                     </VesselLink>
                   ) : (

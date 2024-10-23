@@ -11,12 +11,13 @@ import {
   selectWorkspace,
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
-import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { getVesselGroupsInDataviews } from 'features/datasets/datasets.utils'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { getVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { selectVesselGroupModalVessels } from './vessel-groups-modal.slice'
 
 export const selectVesselGroupsModalSearchIds = createSelector(
@@ -47,9 +48,9 @@ export const selectHasVesselGroupSearchVessels = createSelector(
 )
 
 export const selectVessselGroupsAllowed = createSelector(
-  [selectHasUserGroupsPermissions, isAdvancedSearchAllowed],
-  (hasUserGroupsPermissions, advancedSearchAllowed) => {
-    return hasUserGroupsPermissions && advancedSearchAllowed
+  [isAdvancedSearchAllowed],
+  (advancedSearchAllowed) => {
+    return advancedSearchAllowed
   }
 )
 
@@ -81,5 +82,12 @@ export const selectIsVessselGroupsFiltering = createSelector(
   [selectWorkspaceVessselGroupsIds],
   (workspaceVesselGroupIds = []) => {
     return workspaceVesselGroupIds.length > 0
+  }
+)
+
+export const selectVesselGroupModalDatasetsWithoutEventsRelated = createSelector(
+  [selectVesselGroupModalVessels, selectVesselsDatasets],
+  (vessels = [], vesselDatasets) => {
+    return getVesselDatasetsWithoutEventsRelated(vessels, vesselDatasets)
   }
 )

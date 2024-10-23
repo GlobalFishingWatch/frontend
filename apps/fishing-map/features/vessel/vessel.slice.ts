@@ -134,7 +134,9 @@ export const fetchVesselInfoThunk = createAsyncThunk(
 
         const vessel = resources[url]?.data
           ? (resources[url].data as IdentityVessel)
-          : await GFWAPI.fetch<IdentityVessel>(url)
+          : await GFWAPI.fetch<IdentityVessel>(url, {
+              cache: 'reload',
+            })
 
         const resource: Resource = {
           url: resolveEndpoint(dataset, datasetConfig) as string,

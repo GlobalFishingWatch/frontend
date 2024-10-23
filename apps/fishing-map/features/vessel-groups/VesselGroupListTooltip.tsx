@@ -9,7 +9,6 @@ import {
   NEW_VESSEL_GROUP_ID,
   useVesselGroupsOptions,
 } from 'features/vessel-groups/vessel-groups.hooks'
-import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { selectVesselGroupsStatusId } from 'features/vessel-groups/vessel-groups.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import styles from './VesselGroupListTooltip.module.css'
@@ -25,7 +24,6 @@ type VesselGroupListTooltipProps = {
 function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
   const { onAddToVesselGroup, children, keepOpenWhileAdding = false } = props
   const { t } = useTranslation()
-  const hasUserGroupsPermissions = useSelector(selectHasUserGroupsPermissions)
   const vesselGroupOptions = useVesselGroupsOptions()
   const vesselGroupsStatusId = useSelector(selectVesselGroupsStatusId)
   const [addingToGroup, setAddingToGroup] = useState(false)
@@ -67,7 +65,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
       placement="bottom"
       content={
         <ul className={styles.groupOptions}>
-          {hasUserGroupsPermissions && (
+          {!guestUser && (
             <li
               className={cx(styles.groupOption, styles.groupOptionNew)}
               onClick={() => handleVesselGroupClick(NEW_VESSEL_GROUP_ID)}

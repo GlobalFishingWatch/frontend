@@ -152,7 +152,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
               <Icon icon="edit" type="default" />
             </Button>
           )}
-          <Button
+          {/* <Button
             type="border-secondary"
             size="small"
             className={styles.actionButton}
@@ -161,7 +161,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
           >
             <p>{t('analysis.print ', 'print')}</p>
             <Icon icon="print" type="default" />
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>
