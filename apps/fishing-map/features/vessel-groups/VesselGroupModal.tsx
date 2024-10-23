@@ -172,6 +172,12 @@ function VesselGroupModal(): React.ReactElement {
     }
   }, [dispatch, editingVesselGroup])
 
+  useEffect(() => {
+    if (!hasVesselGroupsVessels && showBackButton) {
+      setShowBackButton(false)
+    }
+  }, [showBackButton, hasVesselGroupsVessels])
+
   const onGroupNameChange = useCallback((e: any) => {
     setGroupName(e.target.value)
   }, [])
