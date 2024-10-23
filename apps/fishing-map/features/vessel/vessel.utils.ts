@@ -29,6 +29,13 @@ const getVesselIdentitiesBySource = (
     return [] as VesselDataIdentity[]
   }
   return (vessel?.[identitySource] || []).map((identity) => {
+    if (identitySource === VesselIdentitySourceEnum.Registry) {
+      return {
+        ...identity,
+        identitySource,
+        dataset: vessel.dataset,
+      } as VesselDataIdentity
+    }
     const geartypes = getVesselCombinedSourceProperty(vessel, {
       vesselId: identity.id,
       property: 'geartypes',
@@ -84,6 +91,7 @@ export type VesselIdentityProperty =
   | keyof VesselRegistryInfo
   | 'owner'
   | 'id'
+  | 'image'
 
 export function getLatestIdentityPrioritised(vessel: VesselsParamsSupported) {
   const latestRegistryIdentity = getVesselIdentity(vessel, {
@@ -280,6 +288,8 @@ export function getCurrentIdentityVessel(
   const { dataset, registryPublicAuthorizations, registryOwners } = vessel
   return {
     ...vesselData,
+    // TODO:VV3 review if we could have more than one extra field
+    ...(vesselData?.extraFields?.length && vesselData.extraFields[0]),
     dataset,
     shiptypes: getVesselProperty(vessel, 'shiptypes', { identityId, identitySource }),
     geartypes: getVesselProperty(vessel, 'geartypes', { identityId, identitySource }),

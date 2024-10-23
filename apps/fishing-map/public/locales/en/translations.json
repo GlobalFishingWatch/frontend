@@ -466,6 +466,7 @@
     "privateProfile": "Your account doesn't have permissions to see this vessel",
     "privateReport": "Register or log in to see the active vessels in this area (free, 2 minutes)",
     "privateSearch": "Your account doesn't have permissions to search on these datasets",
+    "privateVesselGroupReport": "This is a private vessel group report",
     "privateView": "This is a private workspace.",
     "profileEvents": "There was an error requesting the vessel events.",
     "profileLogin": "Login to see this vessel",
@@ -1089,7 +1090,7 @@
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
     },
-    "linkDisabled": "You need to update the vessel group first to see the report",
+    "linkDisabled": "This vessel group needs to be migrated to latest available data",
     "linkToReport": "Check the vessel group report here",
     "notFound": "Vessel group not found",
     "user": "User Vessel Group"

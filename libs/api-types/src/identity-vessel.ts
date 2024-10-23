@@ -105,6 +105,30 @@ export type SelfReportedInfo = VesselInfo & {
   vesselType?: string
 }
 
+export type RegistryImage = {
+  url: string
+  copyright: string
+}
+
+export type RegistryExtraFieldValue = {
+  dateFrom: string
+  dateFromMask: string
+  // dateTo: ??
+  // dateToMask: ??
+  value: number
+}
+
+export type RegistryExtraFields = {
+  builtYear: RegistryExtraFieldValue
+  depthM: RegistryExtraFieldValue
+  hasArchiveInfo: boolean
+  hasComplianceInfo: boolean
+  iuuStatus: string | null
+  operator: string | null
+  registrySource: string
+  images: RegistryImage[]
+}
+
 export type VesselRegistryInfo = VesselInfo & {
   geartypes: GearType[] | RegistryLoginMessage
   latestVesselInfo: true
@@ -113,6 +137,7 @@ export type VesselRegistryInfo = VesselInfo & {
   recordId: string
   tonnageGt: number | RegistryLoginMessage
   vesselInfoReference: string
+  extraFields?: RegistryExtraFields[]
 }
 
 export type VesselRegistryProperty = {
@@ -126,6 +151,10 @@ export type VesselRegistryProperty = {
 export type VesselRegistryOwner = VesselRegistryProperty & {
   name: string
   flag: string
+}
+
+export type VesselRegistryOperator = {
+  name: string
 }
 
 export type VesselRegistryAuthorization = VesselRegistryProperty
@@ -161,5 +190,6 @@ export interface IdentityVessel {
   registryPublicAuthorizations?: VesselRegistryAuthorization[]
   registryInfo?: VesselRegistryInfo[]
   registryOwners?: VesselRegistryOwner[]
+  operator?: VesselRegistryOperator
   selfReportedInfo: SelfReportedInfo[]
 }

@@ -130,7 +130,7 @@ function VesselGroupLayerPanel({
                 <Tooltip
                   content={t(
                     'vesselGroupReport.linkDisabled',
-                    'You need to update the vessel group first to see the report'
+                    'This vessel group needs to be migrated to latest available data'
                   )}
                 >
                   <span>

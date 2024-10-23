@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
-import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
+import { Button, Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -15,7 +15,7 @@ import {
 import VGREvents from 'features/reports/events/VGREvents'
 import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
 import {
   useFitAreaInViewport,
@@ -30,6 +30,7 @@ import { selectVGRSection } from './vessel-group.config.selectors'
 import VesselGroupReportInsights from './insights/VGRInsights'
 import { selectVGRDataview } from './vessel-group-report.selectors'
 import styles from './VesselGroupReport.module.css'
+import VesselGroupReportError from './VesselGroupReportError'
 
 function VesselGroupReport() {
   const { t } = useTranslation()
@@ -41,6 +42,7 @@ function VesselGroupReport() {
   const reportStatus = useSelector(selectVGRStatus)
   const reportSection = useSelector(selectVGRSection)
   const reportDataview = useSelector(selectVGRDataview)
+  const userData = useSelector(selectUserData)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const fitAreaInViewport = useFitAreaInViewport()
@@ -114,6 +116,15 @@ function VesselGroupReport() {
     [t, isGFWUser]
   )
 
+  if (reportStatus === AsyncReducerStatus.Loading) {
+    return (
+      <div className={styles.emptyState}>
+        <Spinner />
+      </div>
+    )
+  }
+
+  const isOwnedByUser = vesselGroup?.ownerId === userData?.id
   if (isOutdated) {
     return (
       <div className={styles.emptyState}>
@@ -121,26 +132,28 @@ function VesselGroupReport() {
           <label>
             {t(
               'vesselGroupReport.linkDisabled',
-              'You need to update the vessel group first to see the report'
+              'This vessel group needs to be migrated to latest available data'
             )}
           </label>
-          <Button onClick={() => onEditClick(vesselGroup)}>
-            {t('vesselGroup.clickToMigrate', 'Click to migrate')}
-          </Button>
+          {isOwnedByUser && (
+            <Button onClick={() => onEditClick(vesselGroup)}>
+              {t('vesselGroup.clickToMigrate', 'Click to migrate')}
+            </Button>
+          )}
         </div>
       </div>
     )
   }
 
-  // if (reportStatus === AsyncReducerStatus.Error) {
-  //   return <VesselGroupReportError />
-  // }
+  if (reportStatus === AsyncReducerStatus.Error) {
+    return <VesselGroupReportError vesselGroupId={vesselGroupId} />
+  }
 
   return (
     <div>
       <VesselGroupReportTitle
         vesselGroup={vesselGroup}
-        loading={reportStatus === AsyncReducerStatus.Loading}
+        // loading={reportStatus === AsyncReducerStatus.Loading}
       />
       <Tabs
         tabs={sectionTabs}

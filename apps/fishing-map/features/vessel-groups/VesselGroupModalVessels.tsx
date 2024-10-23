@@ -57,7 +57,6 @@ function VesselGroupVesselRow({
       </td>
       <td>
         {transmissionDateFrom && transmissionDateTo && (
-          // TODO:VV3 tooltip not working
           <Tooltip
             content={
               <span>

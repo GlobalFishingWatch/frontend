@@ -16,6 +16,7 @@ import MapControls from 'features/map/controls/MapControls'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
+  selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import {
@@ -32,6 +33,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useHasReportTimeseries } from 'features/reports/activity/reports-activity-timeseries.hooks'
 import { selectReportAreaStatus } from 'features/reports/areas/area-reports.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectVGRSection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import {
   MAP_VIEW,
   useMapSetViewState,
@@ -94,6 +96,8 @@ const MapWrapper = () => {
   }, [setDeckLayers])
 
   const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isVGRReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const vesselGroupSection = useSelector(selectVGRSection)
   const hasReportTimeseries = useHasReportTimeseries()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -105,6 +109,9 @@ const MapWrapper = () => {
 
   const mapLoading = useIsDeckLayersLoading()
   const isReportAreaLoading = isReportLocation && reportAreaStatus === AsyncReducerStatus.Loading
+  const isLoadingReport =
+    (isReportLocation || (isVGRReportLocation && vesselGroupSection === 'activity')) &&
+    !hasReportTimeseries
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
@@ -132,7 +139,7 @@ const MapWrapper = () => {
         }}
         viewState={viewState}
         // Needs to lock the ui to avoid loading other tiles until report timeseries are loaded
-        onViewStateChange={isReportLocation && !hasReportTimeseries ? undefined : onViewStateChange}
+        onViewStateChange={isLoadingReport ? undefined : onViewStateChange}
         onClick={onMapClick}
         onHover={onMouseMove}
         onDragStart={onMapDragStart}

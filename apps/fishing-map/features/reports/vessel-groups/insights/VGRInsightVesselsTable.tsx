@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import VesselLink from 'features/vessel/VesselLink'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from 'utils/info'
 import styles from './VGRInsightVesselsTable.module.css'
@@ -33,6 +34,7 @@ const VesselGroupReportInsightVesselTable = ({
                     ? vessel.identity.dataset
                     : vessel.identity.dataset?.id
                 }
+                query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
               >
                 {formatInfoField(vessel.identity.shipname, 'shipname')}
               </VesselLink>

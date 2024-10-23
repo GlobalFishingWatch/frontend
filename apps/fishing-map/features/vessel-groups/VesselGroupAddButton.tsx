@@ -96,7 +96,6 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
     async (vesselGroupId: string) => {
       let resolvedVesselGroupVessels = vesselGroupVessels
       if (vesselsToResolve && datasetsToResolve) {
-        // TODO:VV3 check if this works properly
         const action = await dispatch(
           searchVesselGroupsVesselsThunk({
             ids: vesselsToResolve,
