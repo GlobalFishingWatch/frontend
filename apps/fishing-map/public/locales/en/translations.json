@@ -1090,7 +1090,7 @@
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
     },
-    "linkDisabled": "You need to update the vessel group first to see the report",
+    "linkDisabled": "This vessel group needs to be migrated to latest available data",
     "linkToReport": "Check the vessel group report here",
     "notFound": "Vessel group not found",
     "user": "User Vessel Group"
