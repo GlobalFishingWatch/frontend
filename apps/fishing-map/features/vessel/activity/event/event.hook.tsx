@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
+import { EventTypes, GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { getUTCDateTime } from 'utils/dates'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
@@ -30,8 +30,8 @@ export function useActivityEventTranslations() {
   const { getRegionNamesByType } = useRegionNamesByType()
 
   const getEventRegionDescription = useCallback(
-    (event: ActivityEvent | GapPosition) => {
-      const mainRegionDescription = REGIONS_PRIORITY.reduce((acc, regionType) => {
+    (event: ActivityEvent | GapPosition, regionsPriority = REGIONS_PRIORITY) => {
+      const mainRegionDescription = regionsPriority.reduce((acc, regionType) => {
         // We already have the most prioritized region, so we don't need to look for more
         if (!acc && event?.regions?.[regionType]?.length) {
           const values =
@@ -66,9 +66,12 @@ export function useActivityEventTranslations() {
   )
 
   const getEventDescription = useCallback(
-    (event?: ActivityEvent) => {
+    (event?: ActivityEvent, regionsPriority?: RegionType[]) => {
       if (!event) return EMPTY_FIELD_PLACEHOLDER
-      const { mainRegionDescription, allRegionsDescription } = getEventRegionDescription(event)
+      const { mainRegionDescription, allRegionsDescription } = getEventRegionDescription(
+        event,
+        regionsPriority
+      )
       switch (event.type) {
         case EventTypes.Encounter:
           if (event.encounter?.vessel) {

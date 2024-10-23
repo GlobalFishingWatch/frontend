@@ -5,6 +5,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
+import { RegionType } from '@globalfishingwatch/api-types'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
@@ -19,6 +20,13 @@ import {
   selectVGRVesselsInRfmoWithoutKnownAuthorization,
   VesselGroupReportInsightVessel,
 } from './vessel-group-report-insights.selectors'
+
+export const RFMO_REGIONS_PRIORITY: RegionType[] = [
+  RegionType.rfmo,
+  RegionType.mpa,
+  RegionType.eez,
+  RegionType.fao,
+]
 
 const VesselGroupReportInsightFishing = () => {
   const { t } = useTranslation()
@@ -98,6 +106,11 @@ const VesselGroupReportInsightFishing = () => {
                   <VesselGroupReportInsightVesselEvents
                     ids={vessel[insight]}
                     vesselId={vesselId}
+                    regionsPriority={
+                      insight === 'eventsInRfmoWithoutKnownAuthorization'
+                        ? RFMO_REGIONS_PRIORITY
+                        : undefined
+                    }
                     datasetId={vessel.datasets[0]}
                     start={reportFishingParams.start}
                     end={reportFishingParams.end}

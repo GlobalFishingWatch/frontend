@@ -1,6 +1,7 @@
 import { useGetVesselEventsQuery } from 'queries/vessel-events-api'
 import { useTranslation } from 'react-i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
+import { RegionType } from '@globalfishingwatch/api-types'
 import VesselEvent from 'features/vessel/activity/event/Event'
 import styles from './VGRInsights.module.css'
 
@@ -10,12 +11,14 @@ const VesselGroupReportInsightVesselEvents = ({
   datasetId,
   start,
   end,
+  regionsPriority,
 }: {
   ids?: string[]
   vesselId: string
   datasetId: string
   start: string
   end: string
+  regionsPriority?: RegionType[]
 }) => {
   const { t } = useTranslation()
   const { data, isLoading, error } = useGetVesselEventsQuery(
@@ -47,7 +50,12 @@ const VesselGroupReportInsightVesselEvents = ({
   return (
     <ul className={styles.eventDetailsList}>
       {data.entries.map((event) => (
-        <VesselEvent key={event.id} event={event} className={styles.event} />
+        <VesselEvent
+          key={event.id}
+          event={event}
+          className={styles.event}
+          regionsPriority={regionsPriority}
+        />
       ))}
     </ul>
   )
