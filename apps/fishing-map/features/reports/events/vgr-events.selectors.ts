@@ -3,10 +3,17 @@ import {
   selectVesselGroupEventsStatsApiSlice,
   selectVesselGroupEventsVessels,
   VesselGroupEventsVesselsParams,
+  VesselGroupEventsVesselsResponse,
+  VesselGroupEventsVesselsResponseItem,
 } from 'queries/vessel-group-events-stats-api'
 import { groupBy } from 'es-toolkit'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
+import {
+  getSearchIdentityResolved,
+  getVesselIdentities,
+  getVesselProperty,
+} from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import {
@@ -55,9 +62,22 @@ export const selectVGREventsVessels = createSelector(
     if (!data || !vesselGroup) {
       return
     }
-    const vesselsWithoutDuplicates = getVesselsWithoutDuplicates(vesselGroup.vessels)
-    const insightVessels = vesselsWithoutDuplicates?.flatMap((vessel) => {
-      const vesselWithEvents = data?.find((v) => v.vesselId === vessel.vesselId)
+
+    let eventsByVesel: Record<string, VesselGroupEventsVesselsResponseItem> = {}
+
+    data.forEach((eventsStat) => {
+      const vessel = vesselGroup.vessels.find((v) => v.vesselId === eventsStat.vesselId)
+      if (vessel) {
+        if (!eventsByVesel[vessel.relationId]) {
+          eventsByVesel[vessel.relationId] = eventsStat
+        } else {
+          eventsByVesel[vessel.relationId].numEvents += eventsStat.numEvents
+        }
+      }
+    })
+
+    const insightVessels = vesselGroup.vessels?.flatMap((vessel) => {
+      const vesselWithEvents = eventsByVesel[vessel.vesselId]
       if (!vesselWithEvents) {
         return []
       }

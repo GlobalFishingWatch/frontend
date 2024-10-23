@@ -23,13 +23,16 @@ export type VesselGroupEventsStatsResponse = {
   timeseries: { date: string; value: number }[]
   groups: VesselGroupEventsStatsResponseGroups
 }
-export type VesselGroupEventsVesselsResponse = {
+
+export type VesselGroupEventsVesselsResponseItem = {
   numEvents: number
   portCountry: string
   portName: string
   totalDuration: number
   vesselId: string
-}[]
+}
+
+export type VesselGroupEventsVesselsResponse = VesselGroupEventsVesselsResponseItem[]
 
 function getBaseStatsQuery({
   vesselGroupId,
