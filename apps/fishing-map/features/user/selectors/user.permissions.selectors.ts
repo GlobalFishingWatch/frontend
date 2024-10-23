@@ -24,12 +24,6 @@ export const selectHasDataviewEditPermissions = hasUserPermission({
   action: 'create-all',
 })
 
-export const selectHasUserGroupsPermissions = hasUserPermission({
-  type: 'entity',
-  value: 'vessel-group',
-  action: 'create',
-})
-
 export const selectHasEditTranslationsPermissions = hasUserPermission({
   type: 'application',
   value: 'fishing-map',

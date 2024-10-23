@@ -15,7 +15,6 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
@@ -59,14 +58,11 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isAreaReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const userLogged = useSelector(selectIsUserLogged)
-  const hasUserGroupsPermissions = useSelector(selectHasUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 
   useEffect(() => {
-    if (hasUserGroupsPermissions) {
-      dispatch(fetchVesselGroupsThunk())
-    }
-  }, [dispatch, hasUserGroupsPermissions])
+    dispatch(fetchVesselGroupsThunk())
+  }, [dispatch])
 
   useEffect(() => {
     if (dataviewsResources?.resources?.length) {
