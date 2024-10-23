@@ -30,6 +30,7 @@ import { selectVGRSection } from './vessel-group.config.selectors'
 import VesselGroupReportInsights from './insights/VGRInsights'
 import { selectVGRDataview } from './vessel-group-report.selectors'
 import styles from './VesselGroupReport.module.css'
+import VesselGroupReportError from './VesselGroupReportError'
 
 function VesselGroupReport() {
   const { t } = useTranslation()
@@ -132,9 +133,9 @@ function VesselGroupReport() {
     )
   }
 
-  // if (reportStatus === AsyncReducerStatus.Error) {
-  //   return <VesselGroupReportError />
-  // }
+  if (reportStatus === AsyncReducerStatus.Error) {
+    return <VesselGroupReportError vesselGroupId={vesselGroupId} />
+  }
 
   return (
     <div>
