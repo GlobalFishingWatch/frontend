@@ -130,9 +130,9 @@ function VGREvents() {
               flags: vesselFlags?.size,
               activityQuantity: data.timeseries.reduce((acc, group) => acc + group.value, 0),
               activityUnit: `${
-                subCategoryDataset
+                subCategoryDataset !== undefined
                   ? t(
-                      `common.event.${subCategoryDataset.toLowerCase()}`,
+                      `common.eventLabels.${subCategoryDataset.toLowerCase()}`,
                       lowerCase(subCategoryDataset)
                     )
                   : ''
