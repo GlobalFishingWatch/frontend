@@ -7,6 +7,7 @@ import {
   VesselGroupEventsVesselsParams,
 } from 'queries/vessel-group-events-stats-api'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import VesselLink from 'features/vessel/VesselLink'
@@ -81,6 +82,7 @@ export default function VesselGroupReportEventsVesselsTable() {
                       className={styles.link}
                       vesselId={vesselId}
                       datasetId={dataset as string}
+                      query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
                     >
                       {name}
                     </VesselLink>

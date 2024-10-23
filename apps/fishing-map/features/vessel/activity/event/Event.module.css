@@ -28,10 +28,10 @@
 .header {
   display: flex;
   align-items: center;
-  cursor: pointer;
 }
 
-.header label {
+.pointer,
+.pointer label {
   cursor: pointer;
 }
 

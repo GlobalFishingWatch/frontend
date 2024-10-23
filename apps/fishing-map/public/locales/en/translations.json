@@ -466,6 +466,7 @@
     "privateProfile": "Your account doesn't have permissions to see this vessel",
     "privateReport": "Register or log in to see the active vessels in this area (free, 2 minutes)",
     "privateSearch": "Your account doesn't have permissions to search on these datasets",
+    "privateVesselGroupReport": "This is a private vessel group report",
     "privateView": "This is a private workspace.",
     "profileEvents": "There was an error requesting the vessel events.",
     "profileLogin": "Login to see this vessel",

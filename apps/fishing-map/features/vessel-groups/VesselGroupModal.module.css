@@ -24,6 +24,11 @@
   gap: var(--space-S);
 }
 
+.disclaimerFooter {
+  display: flex;
+  align-items: center;
+}
+
 .parameters {
   display: flex;
   margin-bottom: 2rem;

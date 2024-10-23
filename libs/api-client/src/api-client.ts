@@ -364,9 +364,9 @@ export class GFW_API_CLASS {
               if (this.debug) {
                 console.log(`GFWAPI: Token refresh worked! trying to fetch again ${url}`)
               }
-            } catch (e: any) {
+            } catch (err: any) {
               if (this.debug) {
-                console.warn(`GFWAPI: Error fetching ${url}`, e)
+                console.warn(`GFWAPI: Error fetching ${url}`, err)
               }
               if (isClientSide) {
                 localStorage.removeItem(this.storageKeys.token)
