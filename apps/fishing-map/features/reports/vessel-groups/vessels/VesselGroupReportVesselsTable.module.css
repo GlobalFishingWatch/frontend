@@ -20,6 +20,7 @@
   color: var(--color-secondary-blue);
   text-transform: uppercase;
   display: flex;
+  margin-right: 1rem;
 }
 
 .sortIcon:not(.active) {
