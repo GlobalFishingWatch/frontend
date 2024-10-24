@@ -56,20 +56,20 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
     }
   }, [dispatch, vesselGroup?.id, vesselGroup?.vessels])
 
-  const onPrintClick = () => {
-    window.print()
-    trackEvent({
-      category: TrackCategory.VesselGroupReport,
-      action: `print_vessel_group_profile`,
-      label: getEventLabel([
-        vesselGroup?.name,
-        vesselGroup?.vessels?.map((v) => v.vesselId).join(','),
-        timeRange?.start || '',
-        timeRange?.end || '',
-      ]),
-      value: `number of vessels: ${vesselGroup?.vessels?.length}`,
-    })
-  }
+  // const onPrintClick = () => {
+  //   window.print()
+  //   trackEvent({
+  //     category: TrackCategory.VesselGroupReport,
+  //     action: `print_vessel_group_profile`,
+  //     label: getEventLabel([
+  //       vesselGroup?.name,
+  //       vesselGroup?.vessels?.map((v) => v.vesselId).join(','),
+  //       timeRange?.start || '',
+  //       timeRange?.end || '',
+  //     ]),
+  //     value: `number of vessels: ${vesselGroup?.vessels?.length}`,
+  //   })
+  // }
 
   const toggleViewOnlyVesselGroup = () => {
     if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
