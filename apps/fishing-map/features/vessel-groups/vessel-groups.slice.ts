@@ -81,8 +81,7 @@ export const fetchVesselGroupsThunk = createAsyncThunk<
     const vesselGroupsParams = {
       ...DEFAULT_PAGINATION_PARAMS,
       cache: false,
-      // 'logged-user': true,
-      ...(ids?.length && { ids }),
+      ...(ids?.length ? { ids } : { 'logged-user': true }),
     }
     const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
     const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url, { cache: 'reload' })
