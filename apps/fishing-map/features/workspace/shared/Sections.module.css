@@ -134,3 +134,8 @@
 .hidden {
   display: none;
 }
+
+.highlightSpan {
+  position: absolute;
+  right: 0;
+}
