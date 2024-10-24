@@ -60,6 +60,7 @@ const HighlightPanel = ({
   }
 
   const highlightContent = config[i18n.language as Locale] || config[Locale.en]
+
   if (!highlightContent) {
     console.warn('Missing every welcome modal content by languages')
     return null

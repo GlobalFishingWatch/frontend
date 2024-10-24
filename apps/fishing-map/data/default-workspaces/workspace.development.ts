@@ -53,7 +53,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'ais',
       config: {
         visible: true,
         datasets: ['public-global-fishing-effort:v3.0'],

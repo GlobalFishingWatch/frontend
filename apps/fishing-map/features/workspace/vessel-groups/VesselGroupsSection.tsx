@@ -19,7 +19,13 @@ import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
+import LayerPanelContainer from '../shared/LayerPanelContainer'
+import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from '../highlight-panel/highlight-panel.content'
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
+
+const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {
+  id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+}
 
 function VesselGroupSection(): React.ReactElement {
   const { t } = useTranslation()
@@ -51,46 +57,48 @@ function VesselGroupSection(): React.ReactElement {
   )
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx('print-hidden', styles.header)}>
-        <h2 className={styles.sectionTitle}>{t('vesselGroup.vesselGroups', 'Vessel groups')}</h2>
-        {!readOnly && (
-          <VesselGroupListTooltip onAddToVesselGroup={onAddVesselGroupClick}>
-            <UserLoggedIconButton
-              type="border"
-              icon="vessel-group"
-              size="medium"
-              tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
-              tooltipPlacement="top"
-            />
-          </VesselGroupListTooltip>
-        )}
-      </div>
-      <SortableContext items={dataviews}>
-        {dataviews.length > 0 ? (
-          dataviews?.map((dataview) => {
-            return (
-              <VesselGroupLayerPanel
-                key={dataview.id}
-                dataview={dataview}
-                vesselGroupLoading={
-                  (!dataview.vesselGroup &&
-                    workspaceVesselGroupsStatus === AsyncReducerStatus.Loading) ||
-                  dataview.vesselGroup?.id === vesselGroupsStatusId
-                }
+    <LayerPanelContainer dataview={MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION}>
+      <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
+        <div className={cx('print-hidden', styles.header)}>
+          <h2 className={styles.sectionTitle}>{t('vesselGroup.vesselGroups', 'Vessel groups')}</h2>
+          {!readOnly && (
+            <VesselGroupListTooltip onAddToVesselGroup={onAddVesselGroupClick}>
+              <UserLoggedIconButton
+                type="border"
+                icon="vessel-group"
+                size="medium"
+                tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
+                tooltipPlacement="top"
               />
-            )
-          })
-        ) : (
-          <div className={styles.emptyState}>
-            {t(
-              'workspace.emptyStateVesselGroups',
-              'Add vessel groups to see group presence and operation footprint.'
-            )}
-          </div>
-        )}
-      </SortableContext>
-    </div>
+            </VesselGroupListTooltip>
+          )}
+        </div>
+        <SortableContext items={dataviews}>
+          {dataviews.length > 0 ? (
+            dataviews?.map((dataview) => {
+              return (
+                <VesselGroupLayerPanel
+                  key={dataview.id}
+                  dataview={dataview}
+                  vesselGroupLoading={
+                    (!dataview.vesselGroup &&
+                      workspaceVesselGroupsStatus === AsyncReducerStatus.Loading) ||
+                    dataview.vesselGroup?.id === vesselGroupsStatusId
+                  }
+                />
+              )
+            })
+          ) : (
+            <div className={styles.emptyState}>
+              {t(
+                'workspace.emptyStateVesselGroups',
+                'Add vessel groups to see group presence and operation footprint.'
+              )}
+            </div>
+          )}
+        </SortableContext>
+      </div>
+    </LayerPanelContainer>
   )
 }
 
