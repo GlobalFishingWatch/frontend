@@ -8,7 +8,6 @@ import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import ReportTitlePlaceholder from 'features/reports/areas/placeholders/ReportTitlePlaceholder'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   setVesselGroupEditId,
   setVesselGroupModalVessels,
@@ -25,6 +24,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { selectUserData } from 'features/user/selectors/user.selectors'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './VesselGroupReportTitle.module.css'
 import { VesselGroupReport } from './vessel-group-report.slice'
 import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
@@ -108,6 +108,12 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
                   }),
                 })
               )}
+              <DataTerminology
+                size="tiny"
+                type="default"
+                title={t('vesselGroupReport.vessels', 'Vessel group report vessels')}
+                terminologyKey="vessels"
+              />
             </h2>
           )}
         </div>

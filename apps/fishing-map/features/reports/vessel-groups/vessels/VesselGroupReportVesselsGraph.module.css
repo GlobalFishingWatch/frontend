@@ -44,3 +44,9 @@
 .bar {
   transition: fill 300ms linear;
 }
+
+.dataTerminology {
+  position: absolute;
+  top: 6px;
+  z-index: 10;
+}

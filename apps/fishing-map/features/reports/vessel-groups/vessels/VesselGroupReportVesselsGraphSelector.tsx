@@ -6,6 +6,8 @@ import { selectVGRStatus } from 'features/reports/vessel-groups/vessel-group-rep
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { VGRVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGRVesselsSubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type VesselGroupReportVesselsGraphSelectorProps = {}
 
@@ -33,7 +35,20 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
     },
     {
       id: 'source',
-      label: t('common.sources', 'Sources'),
+      label: (
+        <span>
+          {t('common.sources', 'Sources')}
+          {subsection === 'source' && (
+            <DataTerminology
+              size="tiny"
+              type="default"
+              title={t('vesselGroupReport.sources', 'Vessel group report sources')}
+              terminologyKey="sources"
+              className={styles.dataTerminology}
+            />
+          )}
+        </span>
+      ),
       disabled: loading,
     },
   ]
