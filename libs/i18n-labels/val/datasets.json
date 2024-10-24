@@ -1175,12 +1175,20 @@
       "bearing": "crwdns83436:0crwdne83436:0"
     }
   },
+  "public-global-fishing-events": {
+    "name": "crwdns83934:0crwdne83934:0",
+    "description": "crwdns83936:0crwdne83936:0"
+  },
   "public-global-fishing-vessels": {
     "name": "crwdns66305:0crwdne66305:0",
     "description": "crwdns66307:0crwdne66307:0",
     "schema": {
       "source": "crwdns66317:0crwdne66317:0"
     }
+  },
+  "public-global-gaps-events": {
+    "name": "crwdns83938:0crwdne83938:0",
+    "description": "crwdns83940:0crwdne83940:0"
   },
   "public-global-loitering-events-carriers": {
     "name": "crwdns66373:0crwdne66373:0",

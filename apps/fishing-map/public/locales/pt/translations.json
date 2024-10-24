@@ -135,7 +135,7 @@
     "edit": "Edit",
     "edit ": "edit",
     "environment": "Ambiente",
-    "event": {
+    "eventLabels": {
       "loitering": "loitering",
       "encounter": "encounter",
       "port_visit": "port visit"
