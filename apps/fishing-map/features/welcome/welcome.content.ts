@@ -37,8 +37,8 @@ const WELCOME_POPUP_CONTENT: {
       <p>We have engaged with a range of partners from across the globe—all utilizing the vessel viewer tool for its various applications —including port inspectors, fisheries enforcement, insurance and seafood supply chains. This collaboration allows us to understand how we can empower stakeholders to achieve their goals and improve the tool over time.</p>
       <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Feedback</h2>
       <p>Help us to improve Vessel Viewer by sending feedback to: <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> </p>
-      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to all features</h2>
-      <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/marine-manager">account</a> to access advanced analysis features, data downloads and advanced search options. Registration takes two minutes.</p>
+      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to additional features</h2>
+      <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/marine-manager">account</a> to access advanced search options, analysis features, and data downloads. Registration takes two minutes.</p>
       `,
     },
     fr: {
@@ -122,9 +122,9 @@ const WELCOME_POPUP_CONTENT: {
       <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-teamwork-orange.png">Partnerships</h2>
       <p>We have engaged with a range of partner sites from across the globe—all utilizing the portal for its various applications. This collaboration allows us to understand how we can empower stakeholders to achieve their goals and improve the portal over time.</p>
       <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Feedback</h2>
-      <p>Help us to improve Global Fishing Watch Marine Manager by sending feedback to: <a href="mailto:marinemanager@globalfishingwatch.org">marinemanager@globalfishingwatch.org</a> </p>
-      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to all features</h2>
-      <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/marine-manager">account</a> to access advanced analysis features, data downloads and advanced search options. Registration takes two minutes.</p>
+      <p>Help us improve the Global Fishing platform through the built-in feedback form in the left sidebar or by sending feedback to <a href="mailto:marinemanager@globalfishingwatch.org">marinemanager@globalfishingwatch.org</a> </p>
+      <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to additional features</h2>
+      <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/marine-manager">account</a> to access advanced search options, analysis features, and data downloads. Registration takes two minutes.</p>
       `,
     },
     es: {
@@ -163,10 +163,8 @@ const WELCOME_POPUP_CONTENT: {
         <p>Reference layers facilitate a better understanding of vessel activity around exclusive economic zones, regional fisheries management organizations and other areas. Add your own reference layers to support detailed analysis or spatial management.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Feedback</h2>
         <p>Help us improve the Global Fishing Watch map by sending feedback to <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> or through the built-in feedback form in the left sidebar on the map.</p>
-        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to all features</h2>
-        <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">account</a> to access advanced analysis features, data downloads and advanced search options. Registration takes two minutes.</p>
-        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Previous Global Fishing Watch map</h2>
-        <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Access the previous Global Fishing Watch map</a> to migrate workspaces until 18 October 2021.</p>
+        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to additional features</h2>
+        <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">account</a> to access advanced search options, analysis features, and data downloads. Registration takes two minutes.</p>
       `,
     },
     es: {
@@ -207,8 +205,6 @@ const WELCOME_POPUP_CONTENT: {
         <p>Aidez-nous à améliorer la carte de Global Fishing Watch en envoyant votre retour d’expérience à <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> ou via le formulaire de retour d’expérience disponible en bas à gauche de l’écran.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Enregistrez-vous pour l’accès à toutes les fonctionnalités</h2>
         <p>Vous pouvez vous <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">créer un compte Global Fishing Watch</a> gratuitement pour accéder aux fonctionnalités avancées d’analyse, téléchargement de données et enregistrement d’espaces de travail. </p>
-        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Previous Global Fishing Watch map</h2>
-        <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Accédez à l’ancienne version de la carte Global Fishing Watch</a> pour migrer vos espaces de travail avant le 18 octobre 2021. </p>
       `,
     },
     id: {
