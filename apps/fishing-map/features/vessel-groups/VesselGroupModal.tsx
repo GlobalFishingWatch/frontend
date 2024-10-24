@@ -75,7 +75,11 @@ import {
   setVesselGroupModalVessels,
   setVesselGroupSearchIdField,
 } from './vessel-groups-modal.slice'
-import { getVesselGroupUniqVessels, getVesselGroupVesselsCount } from './vessel-groups.utils'
+import {
+  calculateVMSVesselsPercentage,
+  getVesselGroupUniqVessels,
+  getVesselGroupVesselsCount,
+} from './vessel-groups.utils'
 import { ID_COLUMNS_OPTIONS } from './vessel-groups.config'
 
 function VesselGroupModal(): React.ReactElement {
@@ -306,15 +310,16 @@ function VesselGroupModal(): React.ReactElement {
         }
         close()
         setButtonLoading('')
+        trackEvent({
+          category: TrackCategory.VesselGroups,
+          action: `${editingVesselGroupId ? 'Edit' : 'Create new'} vessel group`,
+          label: getEventLabel([
+            vesselGroupId,
+            calculateVMSVesselsPercentage(vesselGroupVessels).toString(),
+          ]),
+          value: `number of vessel identities: ${vessels.length}`,
+        })
       }
-      trackEvent({
-        category: TrackCategory.VesselGroups,
-        action: `Create new vessel group`,
-        label: getEventLabel([
-          vessels.length.toString(),
-          ...vessels.map((vessel) => vessel.vesselId),
-        ]),
-      })
     },
     [
       vesselGroupVessels,

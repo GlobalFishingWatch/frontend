@@ -4,6 +4,7 @@ import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VGREventsVesselsProperty } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGREventsVesselsProperty } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
 function VesselGroupReportEventsVesselPropertySelector() {
   const { t } = useTranslation()
@@ -23,6 +24,10 @@ function VesselGroupReportEventsVesselPropertySelector() {
   const onSelectSubsection = (option: ChoiceOption<VGREventsVesselsProperty>) => {
     if (property !== option.id) {
       dispatchQueryParams({ vGREventsVesselsProperty: option.id })
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: `vessel_group_profile_events_tab_${option.id}_filter`,
+      })
     }
   }
 

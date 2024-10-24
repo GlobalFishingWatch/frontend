@@ -25,7 +25,7 @@ type VesselGroupAddButtonProps = {
   vessels?: AddVesselGroupVessel[]
   vesselsToResolve?: string[]
   datasetsToResolve?: string[]
-  onAddToVesselGroup?: (vesselGroupId: string) => void
+  onAddToVesselGroup?: (vesselGroupId: string, vesselCount?: number) => void
   keepOpenWhileAdding?: boolean
 }
 
@@ -114,13 +114,13 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
             resolvedVesselGroupVessels
           )
           if (onAddToVesselGroup && vesselGroup) {
-            onAddToVesselGroup(vesselGroup?.id)
+            onAddToVesselGroup(vesselGroup?.id, vesselGroup?.vessels?.length)
           }
         }
       } else {
         createVesselGroupWithVessels(vesselGroupId, resolvedVesselGroupVessels)
         if (onAddToVesselGroup) {
-          onAddToVesselGroup(vesselGroupId)
+          onAddToVesselGroup(vesselGroupId, resolvedVesselGroupVessels?.length)
         }
       }
     },
