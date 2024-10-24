@@ -165,7 +165,7 @@ const MapWrapper = () => {
       {isWorkspaceLocation && !isReportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
-      {(isWorkspaceLocation || isReportLocation || isVesselLocation) && (
+      {(isWorkspaceLocation || isReportLocation || isVesselLocation || isVGRReportLocation) && (
         <MapInfo center={hoveredCoordinates} />
       )}
 

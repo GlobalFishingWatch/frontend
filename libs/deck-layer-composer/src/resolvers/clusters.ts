@@ -62,7 +62,7 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
   const datasetConfig = {
     datasetId: datasetId,
     endpoint: dataviewDatasetConfig.endpoint || EndpointId.ClusterTiles,
-    params: uniqBy(dataviewDatasetConfig.params, (p) => p.id),
+    params: uniqBy(dataviewDatasetConfig.params || [], (p) => p.id),
     query: uniqBy(
       [
         ...(dataviewDatasetConfig.query || []),
