@@ -69,7 +69,7 @@ export const selectVGREventsVessels = createSelector(
       const vessel = vesselGroup.vessels.find((v) => v.vesselId === eventsStat.vesselId)
       if (vessel) {
         if (!eventsByVesel[vessel.relationId]) {
-          eventsByVesel[vessel.relationId] = eventsStat
+          eventsByVesel[vessel.relationId] = { ...eventsStat }
         } else {
           eventsByVesel[vessel.relationId].numEvents += eventsStat.numEvents
         }
