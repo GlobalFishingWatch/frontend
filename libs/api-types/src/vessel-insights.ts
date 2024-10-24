@@ -21,8 +21,8 @@ export type InsightValueInPeriod = {
 }
 
 export type InsightCoverage = {
-  blocks: number
-  blocksWithPositions: number
+  blocks: string
+  blocksWithPositions: string
   percentage: number
 }
 

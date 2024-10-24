@@ -4,6 +4,9 @@ import { BarChart, Bar, XAxis, ResponsiveContainer, LabelList } from 'recharts'
 import { groupBy } from 'es-toolkit'
 import { VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { weightedMean } from 'utils/statistics'
 import { selectVGRDataview } from '../vessel-group-report.selectors'
 import styles from './VGRInsightCoverageGraph.module.css'
 
@@ -40,13 +43,31 @@ function parseCoverageGraphValueBucket(value: number) {
 }
 
 function parseCoverageGraphData(
-  data: VesselGroupInsightResponse['coverage']
+  data: VesselGroupInsightResponse['coverage'],
+  vessels: VesselGroupVesselIdentity[]
 ): VesselGroupReportCoverageGraphData[] {
   if (!data) return []
-  const dataByCoverage = data.map((d) => ({
-    name: d.vesselId,
-    value: parseCoverageGraphValueBucket(d.percentage),
+  const groupedData: Record<string, any> = {}
+  data.forEach((d) => {
+    const relationId = vessels.find((v) => v.vesselId === d.vesselId)?.relationId
+    if (!relationId) return
+    if (!groupedData[relationId]) {
+      groupedData[relationId] = {
+        name: relationId,
+        values: [d.percentage],
+        counts: [parseInt(d.blocks)],
+      }
+    } else {
+      groupedData[relationId].values.push(d.percentage)
+      groupedData[relationId].counts.push(parseInt(d.blocks))
+    }
+  })
+
+  const dataByCoverage = Object.values(groupedData).map((d) => ({
+    name: d.name,
+    value: parseCoverageGraphValueBucket(weightedMean(d.values, d.counts)),
   }))
+
   const groupedDataByCoverage = groupBy(dataByCoverage, (entry) => entry.value!)
   return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
     name: key,
@@ -59,7 +80,13 @@ export default function VesselGroupReportInsightCoverageGraph({
 }: {
   data: VesselGroupInsightResponse['coverage']
 }) {
-  const dataGrouped = useMemo(() => parseCoverageGraphData(data), [data])
+  const vesselGroup = useSelector(selectVGRData)
+  const dataGrouped = useMemo(() => {
+    if (vesselGroup?.vessels.length) {
+      return parseCoverageGraphData(data, vesselGroup.vessels)
+    } else return []
+  }, [data, vesselGroup?.vessels])
+
   const reportDataview = useSelector(selectVGRDataview)
   return (
     <Fragment>
