@@ -9,5 +9,5 @@ export const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => 
   label: key.toUpperCase(),
 }))
 
-export const VESSEL_GROUPS_REPORT_RELEASE_DATE = '2024-09-30'
+export const VESSEL_GROUPS_REPORT_RELEASE_DATE = '2024-10-24'
 export const VESSEL_GROUPS_MIN_API_VERSION = 'v3'
