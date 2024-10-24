@@ -72,8 +72,8 @@ const VesselGroupReportInsights = () => {
         <DataTerminology
           size="tiny"
           type="default"
-          title={t('vessel.sectionInsights', 'Insights')}
-          terminologyKey="insights"
+          title={t('vesselGroupReport.insights.title', 'Vessel group report insights')}
+          terminologyKey="insightsVesselGroups"
         />
       </p>
       <VesselGroupReportInsightCoverage />

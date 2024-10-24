@@ -1074,6 +1074,7 @@
   "vesselGroupReport": {
     "clickToSee": "Click to analyse vessel group and see report",
     "insights": {
+      "title": "Vessel group report insights",
       "fishingEventsError": "There was an error loading the fishing events",
       "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
       "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
@@ -1098,7 +1099,9 @@
     "linkDisabled": "This vessel group needs to be migrated to latest available data",
     "linkToReport": "Check the vessel group report here",
     "notFound": "Vessel group not found",
-    "user": "User Vessel Group"
+    "sources": "Vessel group report sources",
+    "user": "User Vessel Group",
+    "vessels": "Vessel group report vessels"
   },
   "vesselGroups": {
     "insights": {

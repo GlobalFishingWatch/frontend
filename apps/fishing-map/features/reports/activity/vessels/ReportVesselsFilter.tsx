@@ -1,9 +1,11 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from 'use-debounce'
+import { useSelector } from 'react-redux'
 import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectLocationType } from 'routes/routes.selectors'
 import styles from './ReportVesselsFilter.module.css'
 
 type ReportVesselsFilterProps = {
@@ -21,12 +23,13 @@ export default function ReportVesselsFilter({
   const { dispatchQueryParams } = useLocationConnect()
   const [query, setQuery] = useState(filter)
   const [debouncedQuery] = useDebounce(query, 200)
+  const locationType = useSelector(selectLocationType)
 
   useEffect(() => {
     dispatchQueryParams({ [filterQueryParam]: debouncedQuery, [pageQueryParam]: 0 })
     trackEvent({
       category: TrackCategory.Analysis,
-      action: 'Type search into vessel list',
+      action: `Type search into vessel list from ${locationType}`,
       label: debouncedQuery,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -98,12 +98,12 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
       action: `Click on show less vessels`,
     })
   }
-  const onAddToVesselGroup = () => {
+  const onAddToVesselGroup = (vesselGroupId: string) => {
     dispatch(setVesselGroupConfirmationMode('saveAndSeeInWorkspace'))
     trackEvent({
       category: TrackCategory.VesselGroups,
-      action: 'add_to_vessel_group',
-      label: 'report',
+      action: 'add_to_vessel_group_from_dynamic_report',
+      label: `${vesselGroupId}`,
     })
   }
 
