@@ -24,7 +24,8 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { getEventLabel } from 'utils/analytics'
+// import { getEventLabel } from 'utils/analytics'
+// import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './VesselGroupReportTitle.module.css'
 import { VesselGroupReport } from './vessel-group-report.slice'
@@ -56,20 +57,20 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
     }
   }, [dispatch, vesselGroup?.id, vesselGroup?.vessels])
 
-  const onPrintClick = () => {
-    window.print()
-    trackEvent({
-      category: TrackCategory.VesselGroupReport,
-      action: `print_vessel_group_profile`,
-      label: getEventLabel([
-        vesselGroup?.name,
-        vesselGroup?.vessels?.map((v) => v.vesselId).join(','),
-        timeRange?.start || '',
-        timeRange?.end || '',
-      ]),
-      value: `number of vessels: ${vesselGroup?.vessels?.length}`,
-    })
-  }
+  // const onPrintClick = () => {
+  //   window.print()
+  //   trackEvent({
+  //     category: TrackCategory.VesselGroupReport,
+  //     action: `print_vessel_group_profile`,
+  //     label: getEventLabel([
+  //       vesselGroup?.name,
+  //       vesselGroup?.vessels?.map((v) => v.vesselId).join(','),
+  //       timeRange?.start || '',
+  //       timeRange?.end || '',
+  //     ]),
+  //     value: `number of vessels: ${vesselGroup?.vessels?.length}`,
+  //   })
+  // }
 
   const toggleViewOnlyVesselGroup = () => {
     if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
