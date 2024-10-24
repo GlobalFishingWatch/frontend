@@ -8,6 +8,7 @@ import {
 } from 'queries/vessel-group-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import { lowerCase } from 'es-toolkit'
+import { useDebounce } from 'use-debounce'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -53,15 +54,16 @@ function VGREvents() {
   const interval = getFourwingsInterval(startMillis, endMillis)
   const vesselDatasets = useSelector(selectVesselsDatasets)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
-
+  const [debouncedStart] = useDebounce(start, 500)
+  const [debouncedEnd] = useDebounce(end, 500)
   const response = useGetVesselGroupEventsStatsQuery(
     {
       includes: ['TIME_SERIES'],
       dataview: eventsDataview!,
       vesselGroupId,
       interval,
-      start,
-      end,
+      start: debouncedStart,
+      end: debouncedEnd,
     },
     {
       skip: !vesselGroupId || !eventsDataview,
