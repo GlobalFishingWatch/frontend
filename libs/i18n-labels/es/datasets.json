@@ -1175,12 +1175,20 @@
       "bearing": "bearing"
     }
   },
+  "public-global-fishing-events": {
+    "name": "Fishing Events (AIS)",
+    "description": "The dataset contains fishing events for AIS"
+  },
   "public-global-fishing-vessels": {
     "name": "AIS (Buques de pesca)",
     "description": "Vessels from AIS",
     "schema": {
       "source": "fuente"
     }
+  },
+  "public-global-gaps-events": {
+    "name": "Disabling Events (AIS)",
+    "description": "The dataset contains gaps events for AIS"
   },
   "public-global-loitering-events-carriers": {
     "name": "Loitering Events for Carriers Vessels (AIS)",
