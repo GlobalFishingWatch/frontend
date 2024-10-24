@@ -1074,6 +1074,7 @@
   "vesselGroupReport": {
     "clickToSee": "crwdns83844:0crwdne83844:0",
     "insights": {
+      "title": "crwdns83928:0crwdne83928:0",
       "fishingEventsError": "crwdns83764:0crwdne83764:0",
       "fishingInNoTakeMpas_one": "crwdns83766:0{{count}}crwdnd83766:0{{vessels}}crwdne83766:0",
       "fishingInNoTakeMpas_other": "crwdns83768:0{{count}}crwdnd83768:0{{vessels}}crwdne83768:0",
@@ -1098,7 +1099,9 @@
     "linkDisabled": "crwdns83866:0crwdne83866:0",
     "linkToReport": "crwdns83744:0crwdne83744:0",
     "notFound": "crwdns83780:0crwdne83780:0",
-    "user": "crwdns83782:0crwdne83782:0"
+    "sources": "crwdns83930:0crwdne83930:0",
+    "user": "crwdns83782:0crwdne83782:0",
+    "vessels": "crwdns83932:0crwdne83932:0"
   },
   "vesselGroups": {
     "insights": {
