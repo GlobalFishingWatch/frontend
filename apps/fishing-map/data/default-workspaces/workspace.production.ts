@@ -24,7 +24,7 @@ import {
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
-import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
+// import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -47,7 +47,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'ais',
       config: {
         datasets: ['public-global-fishing-effort:v3.0'],
       },
