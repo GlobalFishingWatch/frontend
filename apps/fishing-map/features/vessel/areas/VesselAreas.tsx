@@ -25,6 +25,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileColor } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
+import { useFetchRegionsData } from 'features/vessel/activity/event/event.hook'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
 import { VesselAreaSubsection } from '../vessel.types'
 import styles from './VesselAreas.module.css'
@@ -98,6 +99,7 @@ const AreaTooltip = ({ payload }: any) => {
 }
 
 const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
+  useFetchRegionsData()
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const events = useSelector(selectVesselEventsFilteredByTimerange)

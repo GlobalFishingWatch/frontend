@@ -21,6 +21,7 @@ import {
   selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
   selectIsMapDrawing,
+  selectIsVesselGroupReportLocation,
 } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { setInlineStyles, cleantInlineStyles } from 'utils/dom'
@@ -70,10 +71,12 @@ const MapControls = ({
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const reportLocation = useSelector(selectIsAnyReportLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const { isErrorNotificationEditing, toggleErrorNotification } = useMapErrorNotification()
   const showExtendedControls =
-    (isWorkspaceLocation || isVesselLocation || reportLocation) && !isMapDrawing
+    (isWorkspaceLocation || isVesselLocation || reportLocation || isVesselGroupReportLocation) &&
+    !isMapDrawing
   const showScreenshot = !isVesselLocation && !reportLocation
   const rootElement = useRootElement()
 
