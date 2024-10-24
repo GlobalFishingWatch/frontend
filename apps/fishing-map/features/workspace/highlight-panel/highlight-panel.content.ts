@@ -49,6 +49,23 @@ const BASE_HIGHLIGHT_CONFIG = {
 const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   {
     ...BASE_HIGHLIGHT_CONFIG,
+    dataviewInstanceId: 'vessel-groups',
+    releaseDateTimestamp: Date.parse('2024-10-24T00:00:00Z'),
+    imageUrl: '',
+    learnMoreUrl: 'https://globalfishingwatch.org/platform-updates/',
+    en: {
+      title: 'New vessel groups feature',
+      description:
+        'Create your vessel group to visualize group activity on the map. Click on the vessel group name to launch an analysis and view group report.',
+    },
+    es: {
+      title: 'Nueva funcionalidad de grupos de embarcaciones',
+      description:
+        'Cree su grupo de embarcaciones para visualizar la actividad del grupo en el mapa. Haga clic en el nombre del grupo de embarcaciones para iniciar un análisis y ver el informe del grupo.',
+    },
+  },
+  {
+    ...BASE_HIGHLIGHT_CONFIG,
     dataviewInstanceId: 'fishing-ais-pipe-3',
     releaseDateTimestamp: Date.parse('2024-08-01T00:00:00Z'),
     imageUrl: `${PATH_BASENAME}/images/before-after@2x.gif`,
