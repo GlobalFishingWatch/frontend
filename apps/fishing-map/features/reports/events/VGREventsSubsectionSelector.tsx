@@ -7,6 +7,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGREventsSubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 
 function VesselGroupReportEventsSubsectionSelector() {
   const { t } = useTranslation()
@@ -14,6 +15,9 @@ function VesselGroupReportEventsSubsectionSelector() {
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
   const subsection = useSelector(selectVGREventsSubsection)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
+  const gfwUser = useSelector(selectIsGFWUser)
+  const jacUser = useSelector(selectIsJACUser)
+  const hasAccessToAllSubsections = gfwUser || jacUser
   const options: ChoiceOption<VGREventsSubsection>[] = [
     {
       id: 'encounter',
@@ -23,6 +27,9 @@ function VesselGroupReportEventsSubsectionSelector() {
     {
       id: 'loitering',
       label: t('event.loitering_other', 'Loitering events'),
+      disabled: !hasAccessToAllSubsections,
+      tooltip: !hasAccessToAllSubsections ? t('common.comingSoon', 'Coming Soon!') : '',
+      tooltipPlacement: 'top',
     },
     {
       id: 'gaps',
@@ -34,6 +41,9 @@ function VesselGroupReportEventsSubsectionSelector() {
     {
       id: 'port_visits',
       label: t('event.port_visit_other', 'Port visits'),
+      disabled: !hasAccessToAllSubsections,
+      tooltip: !hasAccessToAllSubsections ? t('common.comingSoon', 'Coming Soon!') : '',
+      tooltipPlacement: 'top',
     },
   ]
 

@@ -15,7 +15,7 @@ import {
 import VGREvents from 'features/reports/events/VGREvents'
 import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
 import { getEventLabel } from 'utils/analytics'
 import {
@@ -39,7 +39,6 @@ function VesselGroupReport() {
   const { dispatchQueryParams } = useLocationConnect()
   const fetchVesselGroupReport = useFetchVesselGroupReport()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
-  const isGFWUser = useSelector(selectIsGFWUser)
   const vesselGroup = useSelector(selectVGRData)!
   const reportStatus = useSelector(selectVGRStatus)
   const reportSection = useSelector(selectVGRSection)
@@ -122,11 +121,9 @@ function VesselGroupReport() {
         id: 'events',
         title: t('common.events', 'Events'),
         content: <VGREvents />,
-        disabled: !isGFWUser,
-        tooltip: !isGFWUser ? t('common.comingSoon', 'Coming Soon!') : '',
       },
     ],
-    [t, isGFWUser]
+    [t]
   )
 
   if (reportStatus === AsyncReducerStatus.Loading) {
