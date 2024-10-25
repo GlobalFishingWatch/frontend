@@ -33,17 +33,13 @@ const parseEncounterEvent = (
   event: ExtendedFeatureSingleEvent | undefined
 ): ExtendedFeatureSingleEvent | undefined => {
   if (!event) return event
-  const carrierVessel: EventVessel =
-    event.vessel.type === 'carrier' ? event.vessel : (event.encounter?.vessel as EventVessel)
-  const encounterVessel: EventVessel | undefined =
-    event.vessel.type === 'fishing' ? event.vessel : (event.encounter?.vessel as EventVessel)
   return {
     ...event,
-    vessel: carrierVessel,
+    vessel: event.vessel,
     ...(event.encounter && {
       encounter: {
         ...event.encounter,
-        vessel: encounterVessel,
+        vessel: event.encounter?.vessel,
       },
     }),
   }
@@ -112,7 +108,9 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                 <div className={styles.flex}>
                   {event.vessel && (
                     <div className={styles.rowColum}>
-                      <p className={styles.rowTitle}>{t('vessel.carrier', 'Carrier')}</p>
+                      <p className={styles.rowTitle}>
+                        {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
+                      </p>
                       <div className={styles.centered}>
                         <span className={styles.rowText}>
                           <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
@@ -130,7 +128,12 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                   {event.encounter?.vessel && (
                     <div className={styles.row}>
                       <div className={styles.rowColum}>
-                        <span className={styles.rowTitle}>{t('vessel.donor', 'Donor vessel')}</span>
+                        <span className={styles.rowTitle}>
+                          {t(
+                            `vessel.vesselTypes.${event.encounter.vessel.type}`,
+                            event.encounter.vessel.type
+                          )}
+                        </span>
                         <div className={styles.centered}>
                           <span className={styles.rowText}>
                             <VesselLink

@@ -33,7 +33,6 @@ import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayer
 import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
-import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
 import {
   SliceExtendedClusterPickingObject,
@@ -56,7 +55,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const mapViewport = useMapViewport()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
-  const allVesselGroups = useSelector(selectAllVisibleVesselGroups)
   const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
