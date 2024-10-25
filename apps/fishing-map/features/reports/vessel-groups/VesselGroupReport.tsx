@@ -145,12 +145,12 @@ function VesselGroupReport() {
           <label>
             {t(
               'vesselGroupReport.linkDisabled',
-              'This vessel group needs to be migrated to latest available data'
+              'This vessel group needs to be updated to latest available data'
             )}
           </label>
           {isOwnedByUser && (
             <Button onClick={() => onEditClick(vesselGroup)}>
-              {t('vesselGroup.clickToMigrate', 'Click to migrate')}
+              {t('vesselGroup.clickToUpdate', 'Click to update')}
             </Button>
           )}
         </div>
