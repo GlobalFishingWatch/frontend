@@ -1030,8 +1030,8 @@
     "addToWorkspace": "Add vessel group to workspace",
     "addVessels": "Add vessels to vessel group",
     "addVisibleVessels": "Add visible vessels to vessel group",
-    "clickToMigrate": "Click to migrate",
-    "clickToUpdate": "Click to migrate your vessel group to latest available data",
+    "clickToUpdate": "Click to update",
+    "clickToUpdateLong": "Click to update your vessel group to view the latest data and features",
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
     "createNewGroup": "Create new group",
@@ -1074,7 +1074,7 @@
   "vesselGroupReport": {
     "clickToSee": "Click to analyse vessel group and see report",
     "insights": {
-      "title": "Vessel group report insights",
+      "title": "Vessel group insights",
       "fishingEventsError": "There was an error loading the fishing events",
       "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
       "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
@@ -1096,7 +1096,7 @@
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
     },
-    "linkDisabled": "This vessel group needs to be migrated to latest available data",
+    "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",
     "notFound": "Vessel group not found",
     "sources": "Vessel group report sources",
