@@ -162,7 +162,7 @@ const WELCOME_POPUP_CONTENT: {
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-location-map-orange.png">Upload reference layers</h2>
         <p>Reference layers facilitate a better understanding of vessel activity around exclusive economic zones, regional fisheries management organizations and other areas. Add your own reference layers to support detailed analysis or spatial management.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Feedback</h2>
-        <p>Help us improve the Global Fishing Watch map by sending feedback to <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> or through the built-in feedback form in the left sidebar on the map.</p>
+        <p>Help us improve the Global Fishing platform through the built-in feedback form in the left sidebar or by sending feedback to <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> </p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to additional features</h2>
         <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">account</a> to access advanced search options, analysis features, and data downloads. Registration takes two minutes.</p>
       `,
@@ -181,8 +181,7 @@ const WELCOME_POPUP_CONTENT: {
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-location-map-orange.png">Cargar capas de referencia</h2>
         <p>Las capas de referencia facilitan una mejor comprensión de la actividad de los barcos alrededor de las zonas económicas exclusivas, las organizaciones regionales de ordenación pesquera y otras áreas. Agregue sus propias capas de referencia para respaldar el análisis detallado o la gestión espacial.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Comentarios</h2>
-        <p>Ayúdenos a mejorar el mapa Global Fishing Watch enviando comentarios a <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> o mediante el formulario integrado en la barra lateral izquierda del mapa.
-        </p>
+        <p>Ayúdenos a mejorar la plataforma Global Fishing a través del formulario de comentarios integrado en la barra lateral izquierda o enviando comentarios a <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a></p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Regístrese para tener acceso gratuito a todas las funciones</h2>
         <p><a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">Regístrese para obtener una cuenta gratuita de Global Fishing Watch</ a > para acceder a funciones de análisis avanzado, descargas de datos y opciones de búsqueda avanzada. El registro demora dos minutos. </p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Mapa anterior de Global Fishing Watch</h2>

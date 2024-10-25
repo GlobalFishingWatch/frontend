@@ -104,8 +104,8 @@ function UserVesselGroups() {
                         tooltip={
                           isOutdated
                             ? t(
-                                'vesselGroup.clickToUpdate',
-                                'Click to migrate your vessel group to latest available data'
+                                'vesselGroup.clickToUpdateLong',
+                                'Click to update your vessel group to view the latest data and features'
                               )
                             : t('vesselGroup.edit', 'Edit list of vessels')
                         }
