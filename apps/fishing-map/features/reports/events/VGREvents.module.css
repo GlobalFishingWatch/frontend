@@ -1,3 +1,7 @@
+.selector {
+  padding: var(--space-M) var(--space-M) 0;
+}
+
 .container {
   padding: var(--space-M);
   border-bottom: var(--border);
@@ -6,7 +10,7 @@
 .summary {
   font: var(--font-L);
   color: var(--color-secondary-blue);
-  margin-block: var(--space-M);
+  margin-bottom: var(--space-M);
 }
 
 .summary strong {
@@ -38,4 +42,14 @@
   margin: var(--space-L) var(--space-M);
   font: var(--font-S);
   color: var(--color-secondary-blue);
+}
+
+.emptyState {
+  padding: var(--space-L) var(--space-M);
+  color: var(--color-secondary-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-M);
+  flex-direction: column;
 }

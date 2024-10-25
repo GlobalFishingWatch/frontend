@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import parse from 'html-react-parser'
@@ -37,6 +38,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
 import styles from './VGREvents.module.css'
 
 function VGREvents() {
@@ -118,63 +120,82 @@ function VGREvents() {
   const subCategoryDataset = eventsDataview?.datasets?.find(
     (d) => d.type === DatasetTypes.Events
   )?.subcategory
-
+  const totalEvents = data.timeseries.reduce((acc, group) => acc + group.value, 0)
   return (
     <Fragment>
-      <div className={styles.container}>
+      <div className={styles.selector}>
         <VGREventsSubsectionSelector />
-        <h2 className={styles.summary}>
-          {parse(
-            t('vesselGroup.summaryEvents', {
-              defaultValue:
-                '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-              vessels: formatI18nNumber(vesselsWithEvents?.length || 0),
-              flags: vesselFlags?.size,
-              activityQuantity: data.timeseries.reduce((acc, group) => acc + group.value, 0),
-              activityUnit: `${
-                subCategoryDataset !== undefined
-                  ? t(
-                      `common.eventLabels.${subCategoryDataset.toLowerCase()}`,
-                      lowerCase(subCategoryDataset)
-                    )
-                  : ''
-              } ${t('common.event', 'events').toLowerCase()}`,
-              start: formatI18nDate(start, {
-                format: DateTime.DATE_MED,
-              }),
-              end: formatI18nDate(end, {
-                format: DateTime.DATE_MED,
-              }),
-            })
+      </div>
+      {totalEvents > 0 ? (
+        <Fragment>
+          <div className={styles.container}>
+            <h2 className={styles.summary}>
+              {parse(
+                t('vesselGroup.summaryEvents', {
+                  defaultValue:
+                    '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+                  vessels: formatI18nNumber(vesselsWithEvents?.length || 0),
+                  flags: vesselFlags?.size,
+                  activityQuantity: totalEvents,
+                  activityUnit: `${
+                    subCategoryDataset !== undefined
+                      ? t(
+                          `common.eventLabels.${subCategoryDataset.toLowerCase()}`,
+                          lowerCase(subCategoryDataset)
+                        )
+                      : ''
+                  } ${t('common.event', 'events').toLowerCase()}`,
+                  start: formatI18nDate(start, {
+                    format: DateTime.DATE_MED,
+                  }),
+                  end: formatI18nDate(end, {
+                    format: DateTime.DATE_MED,
+                  }),
+                })
+              )}
+            </h2>
+            <VGREventsGraph
+              color={color}
+              start={start}
+              end={end}
+              interval={interval}
+              timeseries={data.timeseries || []}
+            />
+          </div>
+          <div className={styles.container}>
+            <div className={styles.flex}>
+              <label>{t('common.vessels', 'Vessels')}</label>
+              <VGREventsVesselPropertySelector />
+            </div>
+            <VesselGroupReportVesselsGraph
+              data={vesselGroups as VesselGroupEventsStatsResponseGroups}
+              color={eventsDataview?.config?.color}
+              property={vesselsGroupByProperty}
+              filterQueryParam="vGREventsVesselFilter"
+              pageQueryParam="vGREventsVesselPage"
+            />
+            <ReportVesselsFilter
+              filter={filter}
+              filterQueryParam="vGREventsVesselFilter"
+              pageQueryParam="vGREventsVesselPage"
+            />
+            <VGREventsVesselsTable />
+          </div>
+        </Fragment>
+      ) : (
+        <div className={styles.emptyState}>
+          <img
+            src={EventsEmptyState.src}
+            alt=""
+            width={EventsEmptyState.width / 2}
+            height={EventsEmptyState.height / 2}
+          />
+          {t(
+            'vessel.noEventsinTimeRange',
+            'There are no events fully contained in your timerange.'
           )}
-        </h2>
-        <VGREventsGraph
-          color={color}
-          start={start}
-          end={end}
-          interval={interval}
-          timeseries={data.timeseries || []}
-        />
-      </div>
-      <div className={styles.container}>
-        <div className={styles.flex}>
-          <label>{t('common.vessels', 'Vessels')}</label>
-          <VGREventsVesselPropertySelector />
         </div>
-        <VesselGroupReportVesselsGraph
-          data={vesselGroups as VesselGroupEventsStatsResponseGroups}
-          color={eventsDataview?.config?.color}
-          property={vesselsGroupByProperty}
-          filterQueryParam="vGREventsVesselFilter"
-          pageQueryParam="vGREventsVesselPage"
-        />
-        <ReportVesselsFilter
-          filter={filter}
-          filterQueryParam="vGREventsVesselFilter"
-          pageQueryParam="vGREventsVesselPage"
-        />
-        <VGREventsVesselsTable />
-      </div>
+      )}
     </Fragment>
   )
 }
