@@ -1,5 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { selectActiveDataviewsCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import {
+  selectActiveDataviewsCategories,
+  selectDataviewInstancesResolved,
+} from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectReportById } from 'features/reports/areas/area-reports.slice'
 import {
   selectIsVesselGroupReportLocation,
@@ -21,6 +24,7 @@ import {
 import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import { WORLD_REGION_ID } from 'features/reports/activity/reports-activity.slice'
 import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
@@ -68,19 +72,28 @@ export const selectReportCategory = createSelector(
     selectReportActiveCategories,
     selectIsVesselGroupReportLocation,
     selectVGRActivitySubsection,
+    selectDataviewInstancesResolved,
   ],
   (
     reportCategory,
     activeCategories,
     isVesselGroupReportLocation,
-    vGRActivitySubsection
+    vGRActivitySubsection,
+    dataviewsInstances
   ): ReportCategory => {
     if (isVesselGroupReportLocation) {
       return vGRActivitySubsection as ReportCategory
     }
-    return activeCategories.some((category) => category === reportCategory)
-      ? reportCategory
-      : activeCategories[0]
+    if (activeCategories.some((category) => category === reportCategory)) {
+      return reportCategory
+    }
+    const categories = dataviewsInstances
+      .flatMap((dataview) => {
+        if (!dataview.config?.visible) return []
+        return getReportCategoryFromDataview(dataview) || []
+      })
+      .filter((c) => activeCategories.includes(c))
+    return categories[0] || activeCategories[0]
   }
 )
 
