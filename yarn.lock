@@ -2826,7 +2826,6 @@ __metadata:
     pbf: "npm:4.0.1"
     prettier: "npm:2.8.8"
     prettier-eslint: "npm:16.3.0"
-    prop-types: "npm:15.8.1"
     protobufjs: "npm:7.4.0"
     qs: "npm:6.13.0"
     react: "npm:18.3.1"
@@ -24557,7 +24556,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.8.1, prop-types@npm:^15.5.10, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.10, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:

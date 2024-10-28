@@ -18,7 +18,6 @@
     "lodash": "4.x",
     "luxon": "3.x",
     "memoize-one": "6.x",
-    "prop-types": "15.x",
     "react-dom": "18.x",
     "react": "18.x",
     "simple-statistics": "7.x",
