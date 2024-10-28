@@ -424,10 +424,9 @@ export function resolveDataviews(
 ) {
   let dataviewInstancesResolved: UrlDataviewInstance[] = dataviewInstances.flatMap(
     (dataviewInstance) => {
-      // TODO: Check if keeping them here has unintended consecuences
-      // if (dataviewInstance?.deleted) {
-      //   return []
-      // }
+      if (dataviewInstance?.deleted) {
+        return []
+      }
       const dataview = dataviews?.find((dataview) => {
         return (
           dataview.slug === dataviewInstance.dataviewId ||

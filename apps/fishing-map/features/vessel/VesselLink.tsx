@@ -112,13 +112,15 @@ const VesselLink = ({
           ...(locationQuery?.dataviewInstances?.length && {
             dataviewInstances: locationQuery?.dataviewInstances?.map(
               (instance: DataviewInstance) => {
-                if (instance.id === dataviewId) {
+                const matches = instance.id.includes(vesselId) || instance.id === dataviewId
+                if (matches) {
                   return {
                     ...instance,
                     config: {
                       ...instance.config,
                       visible: true,
                     },
+                    deleted: false,
                   }
                 }
                 return instance
