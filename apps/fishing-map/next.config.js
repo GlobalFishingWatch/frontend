@@ -117,7 +117,8 @@ const nextConfig = {
   productionBrowserSourceMaps: !IS_PRODUCTION,
   // to deploy on a node server
   output: 'standalone',
-  outputFileTracing: true,
+  // outputFileTracing: true,
+  outputFileTracingRoot: join(__dirname, '../../'),
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
     esmExternals: true,
