@@ -19,6 +19,7 @@ import VesselPin from 'features/vessel/VesselPin'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { getEventDescriptionComponent } from 'utils/events'
+import { LAYER_LIBRARY_ID_SEPARATOR } from 'features/layer-library/layer-library.utils'
 import { useMapViewState } from '../../map-viewport.hooks'
 import {
   ExtendedEventVessel,
@@ -297,7 +298,11 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: TileContextLay
         const key = `${feature.title}-${index}`
         const eventFeature =
           feature as SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
-        if (GFW_CLUSTER_LAYERS.some((source) => feature.layerId === source)) {
+        if (
+          GFW_CLUSTER_LAYERS.some(
+            (source) => feature.layerId.split(LAYER_LIBRARY_ID_SEPARATOR)[0] === source
+          )
+        ) {
           if (feature.layerId.includes('port')) {
             return (
               <PortVisitEventTooltipRow
