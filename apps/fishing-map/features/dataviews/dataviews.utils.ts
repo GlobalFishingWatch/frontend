@@ -131,7 +131,7 @@ export const getUserPolygonsDataviewInstance = (
   return {
     id: `user-polygons-${Date.now()}`,
     config: {
-      colorCyclingType: 'fill' as ColorCyclingType,
+      colorCyclingType: 'line' as ColorCyclingType,
     },
     dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
     datasetsConfig: [

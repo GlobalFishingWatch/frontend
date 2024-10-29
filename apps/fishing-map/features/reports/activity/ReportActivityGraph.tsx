@@ -11,7 +11,7 @@ import {
   useReportFilteredTimeSeries,
 } from 'features/reports/activity/reports-activity-timeseries.hooks'
 import { selectTimeComparisonValues } from 'features/reports/areas/area-reports.selectors'
-import ReportActivityPlaceholder from 'features/reports/areas/placeholders/ReportActivityPlaceholder'
+import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import UserGuideLink from 'features/help/UserGuideLink'

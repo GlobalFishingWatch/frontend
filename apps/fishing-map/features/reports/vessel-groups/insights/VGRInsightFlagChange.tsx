@@ -18,7 +18,7 @@ import styles from './VGRInsights.module.css'
 import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
 import { selectVGRFlagChangesVessels } from './vessel-group-report-insights.selectors'
 
-const VesselGroupReportInsightFlagChange = () => {
+const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const guestUser = useSelector(selectIsGuestUser)
@@ -26,7 +26,7 @@ const VesselGroupReportInsightFlagChange = () => {
   const fetchVesselGroupParams = useSelector(selectFetchVesselGroupReportFlagChangeParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
-    skip: !vesselGroup,
+    skip: !vesselGroup || skip,
   })
 
   const vesselsWithFlagChanges = useSelector(selectVGRFlagChangesVessels)
@@ -44,7 +44,7 @@ const VesselGroupReportInsightFlagChange = () => {
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />
-      ) : isLoading || !vesselGroup ? (
+      ) : skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />

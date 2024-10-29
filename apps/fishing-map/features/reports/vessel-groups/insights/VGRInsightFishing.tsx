@@ -28,7 +28,7 @@ export const RFMO_REGIONS_PRIORITY: RegionType[] = [
   RegionType.fao,
 ]
 
-const VesselGroupReportInsightFishing = () => {
+const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()
   const [isMPAExpanded, setIsMPAExpanded] = useState(false)
   const [isRFMOExpanded, setIsRFMOExpanded] = useState(false)
@@ -37,7 +37,7 @@ const VesselGroupReportInsightFishing = () => {
   const reportFishingParams = useSelector(selectFetchVesselGroupReportFishingParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(reportFishingParams, {
-    skip: !vesselGroup,
+    skip: !vesselGroup || skip,
   })
   const vesselsWithNoTakeMpas = useSelector(selectVGRVesselsWithNoTakeMpas)
   const vesselsInRfmoWithoutKnownAuthorization = useSelector(
@@ -136,7 +136,7 @@ const VesselGroupReportInsightFishing = () => {
           terminologyKey="insightsFishing"
         />
       </div>
-      {isLoading || !vesselGroup ? (
+      {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />

@@ -7,7 +7,7 @@ import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
-import { ReportVesselsGraphPlaceholder } from 'features/reports/areas/placeholders/ReportVesselsPlaceholder'
+import { ReportVesselsGraphPlaceholder } from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
