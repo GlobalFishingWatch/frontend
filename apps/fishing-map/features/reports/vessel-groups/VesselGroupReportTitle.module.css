@@ -5,6 +5,10 @@
   min-height: 5.2rem;
 }
 
+.placeholder {
+  height: 9.2rem;
+}
+
 .row {
   flex: 1;
   gap: var(--space-S);

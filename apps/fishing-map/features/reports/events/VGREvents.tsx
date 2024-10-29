@@ -5,7 +5,9 @@ import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
 import {
   useGetVesselGroupEventsStatsQuery,
+  useGetVesselGroupEventsVesselsQuery,
   VesselGroupEventsStatsResponseGroups,
+  VesselGroupEventsVesselsParams,
 } from 'queries/vessel-group-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import { lowerCase } from 'es-toolkit'
@@ -30,6 +32,7 @@ import ReportVesselsFilter from 'features/reports/activity/vessels/ReportVessels
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import {
+  selectFetchVGREventsVesselsParams,
   selectVGREventsVessels,
   selectVGREventsVesselsFlags,
   selectVGREventsVesselsGrouped,
@@ -39,6 +42,8 @@ import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/ve
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
+import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
+import ReportEventsPlaceholder from 'features/reports/placeholders/ReportEventsPlaceholder'
 import styles from './VGREvents.module.css'
 
 function VGREvents() {
@@ -58,7 +63,18 @@ function VGREvents() {
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
   const [debouncedStart] = useDebounce(start, 500)
   const [debouncedEnd] = useDebounce(end, 500)
-  const response = useGetVesselGroupEventsStatsQuery(
+  const params = useSelector(selectFetchVGREventsVesselsParams)
+  const { status: vessselStatus } = useGetVesselGroupEventsVesselsQuery(
+    params as VesselGroupEventsVesselsParams,
+    {
+      skip: !params,
+    }
+  )
+  const {
+    data,
+    error,
+    status: statsStatus,
+  } = useGetVesselGroupEventsStatsQuery(
     {
       includes: ['TIME_SERIES'],
       dataview: eventsDataview!,
@@ -71,14 +87,16 @@ function VGREvents() {
       skip: !vesselGroupId || !eventsDataview,
     }
   )
-  const { data, error, status } = response
-  const isLoading = status === 'pending'
+  const isLoading = statsStatus === 'pending' || vessselStatus === 'pending'
 
   if (!vesselDatasets.length) {
     return (
-      <div className={styles.placeholder}>
-        <Spinner />
-      </div>
+      <Fragment>
+        <div className={styles.selector}>
+          <VGREventsSubsectionSelector />
+        </div>
+        <ReportEventsPlaceholder />
+      </Fragment>
     )
   }
 
@@ -106,15 +124,13 @@ function VGREvents() {
 
   if (error || !data || isLoading) {
     return (
-      <div className={styles.container}>
-        <VGREventsSubsectionSelector />
-        {isLoading && (
-          <div className={styles.placeholder}>
-            <Spinner />
-          </div>
-        )}
+      <Fragment>
+        <div className={styles.selector}>
+          <VGREventsSubsectionSelector />
+        </div>
+        {isLoading && <ReportEventsPlaceholder />}
         {error && !isLoading ? <p className={styles.error}>{(error as any).message}</p> : null}
-      </div>
+      </Fragment>
     )
   }
   const subCategoryDataset = eventsDataview?.datasets?.find(

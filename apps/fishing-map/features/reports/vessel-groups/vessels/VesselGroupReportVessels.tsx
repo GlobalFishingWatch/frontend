@@ -6,6 +6,7 @@ import {
   selectVGRVesselFilter,
   selectVGRVesselsSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import { selectVGRDataview } from '../vessel-group-report.selectors'
 import VesselGroupReportVesselsGraphSelector from './VesselGroupReportVesselsGraphSelector'
 import VesselGroupReportVesselsGraph, {
@@ -13,8 +14,9 @@ import VesselGroupReportVesselsGraph, {
 } from './VesselGroupReportVesselsGraph'
 import VesselGroupReportVesselsTable from './VesselGroupReportVesselsTable'
 import styles from './VesselGroupReportVessels.module.css'
+import { Fragment } from 'react'
 
-function VesselGroupReportVessels() {
+function VesselGroupReportVessels({ loading }: { loading: boolean }) {
   const subsection = useSelector(selectVGRVesselsSubsection)
   const reportDataview = useSelector(selectVGRDataview)
   const filter = useSelector(selectVGRVesselFilter)
@@ -22,19 +24,25 @@ function VesselGroupReportVessels() {
   return (
     <div className={styles.container}>
       <VesselGroupReportVesselsGraphSelector />
-      <VesselGroupReportVesselsGraph
-        data={data}
-        color={reportDataview?.config?.color}
-        property={subsection as VesselGroupReportVesselsGraphProperty}
-        filterQueryParam="vGRVesselFilter"
-        pageQueryParam="vGRVesselPage"
-      />
-      <ReportVesselsFilter
-        filter={filter}
-        filterQueryParam="vGRVesselFilter"
-        pageQueryParam="vGRVesselPage"
-      />
-      <VesselGroupReportVesselsTable />
+      {loading ? (
+        <ReportVesselsPlaceholder showGraphHeader={false} />
+      ) : (
+        <Fragment>
+          <VesselGroupReportVesselsGraph
+            data={data}
+            color={reportDataview?.config?.color}
+            property={subsection as VesselGroupReportVesselsGraphProperty}
+            filterQueryParam="vGRVesselFilter"
+            pageQueryParam="vGRVesselPage"
+          />
+          <ReportVesselsFilter
+            filter={filter}
+            filterQueryParam="vGRVesselFilter"
+            pageQueryParam="vGRVesselPage"
+          />
+          <VesselGroupReportVesselsTable />
+        </Fragment>
+      )}
     </div>
   )
 }

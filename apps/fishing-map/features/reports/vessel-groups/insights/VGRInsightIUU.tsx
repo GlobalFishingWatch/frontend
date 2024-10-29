@@ -14,14 +14,14 @@ import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
 import { selectVGRIUUVessels } from './vessel-group-report-insights.selectors'
 import VesselGroupReportInsightVesselTable from './VGRInsightVesselsTable'
 
-const VesselGroupReportInsightIUU = () => {
+const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const vesselGroup = useSelector(selectVGRData)
   const fetchVesselGroupParams = useSelector(selectFetchVesselGroupReportIUUParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
-    skip: !vesselGroup,
+    skip: !vesselGroup || skip,
   })
   const vesselsWithIIU = useSelector(selectVGRIUUVessels)
 
@@ -36,7 +36,7 @@ const VesselGroupReportInsightIUU = () => {
           terminologyKey="insightsIUU"
         />
       </div>
-      {isLoading || !vesselGroup ? (
+      {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />

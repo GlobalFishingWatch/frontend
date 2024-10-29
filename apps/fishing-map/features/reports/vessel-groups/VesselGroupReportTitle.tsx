@@ -7,7 +7,7 @@ import parse from 'html-react-parser'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import ReportTitlePlaceholder from 'features/reports/areas/placeholders/ReportTitlePlaceholder'
+import VGRTitlePlaceholder from 'features/reports/placeholders/VGRTitlePlaceholder'
 import {
   setVesselGroupEditId,
   setVesselGroupModalVessels,
@@ -80,7 +80,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   if (loading) {
     return (
       <div className={cx(styles.container, styles.placeholder)}>
-        <ReportTitlePlaceholder />
+        <VGRTitlePlaceholder />
       </div>
     )
   }

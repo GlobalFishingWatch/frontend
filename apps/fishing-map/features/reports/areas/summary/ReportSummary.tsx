@@ -18,8 +18,8 @@ import {
 import { formatEvolutionData } from 'features/reports/activity/reports-activity-timeseries.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import ReportSummaryPlaceholder from 'features/reports/areas/placeholders/ReportSummaryPlaceholder'
-import ReportSummaryTagsPlaceholder from 'features/reports/areas/placeholders/ReportSummaryTagsPlaceholder'
+import ReportSummaryPlaceholder from 'features/reports/placeholders/ReportSummaryPlaceholder'
+import ReportSummaryTagsPlaceholder from 'features/reports/placeholders/ReportSummaryTagsPlaceholder'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { listAsSentence } from 'utils/shared'
 import {
