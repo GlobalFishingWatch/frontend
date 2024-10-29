@@ -6,9 +6,11 @@ import styles from './placeholders.module.css'
 export default function ReportVesselsPlaceholder({
   children,
   showGraphHeader = true,
+  animate = true,
 }: {
   children?: React.ReactNode
   showGraphHeader?: boolean
+  animate: boolean
 }) {
   const tableRows = Array(11).fill('')
   return (
@@ -21,11 +23,11 @@ export default function ReportVesselsPlaceholder({
               <div style={{ width: '100%' }} className={cx(styles.flex, styles.spaceBetween)}>
                 <div
                   style={{ maxWidth: '10rem' }}
-                  className={cx(styles.block, styles.animate, styles.grow)}
+                  className={cx(styles.block, styles.grow, { [styles.animate]: animate })}
                 />
                 <div
                   style={{ maxWidth: '20rem' }}
-                  className={cx(styles.block, styles.animate, styles.grow)}
+                  className={cx(styles.block, styles.grow, { [styles.animate]: animate })}
                 />
               </div>
             )}
@@ -33,37 +35,31 @@ export default function ReportVesselsPlaceholder({
             {/* search */}
             <div
               style={{ width: '100%', borderRadius: 'var(--border-radius)' }}
-              className={cx(
-                styles.block,
-                styles.animate,
-                styles.grow,
-                styles.thick,
-                styles.marginV
-              )}
+              className={cx(styles.block, styles.grow, styles.thick, styles.marginV, {
+                [styles.animate]: animate,
+              })}
             />
             {/* table */}
             {tableRows.map((_, index) => (
               <Fragment key={index}>
                 <div style={{ width: '100%' }} className={cx(styles.flex, styles.spaceBetween)}>
-                  <div className={cx(styles.block, styles.animate, styles.grow)} />
-                  <div className={cx(styles.block, styles.animate, styles.grow)} />
-                  <div className={cx(styles.block, styles.animate, styles.grow)} />
-                  <div className={cx(styles.block, styles.animate, styles.grow)} />
-                  <div className={cx(styles.block, styles.animate, styles.grow)} />
+                  <div className={cx(styles.block, styles.grow, { [styles.animate]: animate })} />
+                  <div className={cx(styles.block, styles.grow, { [styles.animate]: animate })} />
+                  <div className={cx(styles.block, styles.grow, { [styles.animate]: animate })} />
+                  <div className={cx(styles.block, styles.grow, { [styles.animate]: animate })} />
+                  <div className={cx(styles.block, styles.grow, { [styles.animate]: animate })} />
                   <div
-                    className={cx(
-                      styles.block,
-                      styles.animate,
-                      styles.grow,
-                      styles.short,
-                      styles.marginL
-                    )}
+                    className={cx(styles.block, styles.grow, styles.short, styles.marginL, {
+                      [styles.animate]: animate,
+                    })}
                   />
                 </div>
                 {index > 0 && index < tableRows.length - 1 && (
                   <div
                     style={{ width: '100%' }}
-                    className={cx(styles.block, styles.animate, styles.grow, styles.line)}
+                    className={cx(styles.block, styles.grow, styles.line, {
+                      [styles.animate]: animate,
+                    })}
                   />
                 )}
               </Fragment>
