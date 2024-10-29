@@ -31,7 +31,7 @@ type VesselLinkProps = {
   vesselId?: string
   identity?: VesselDataIdentity
   children: any
-  onClick?: (e: MouseEvent) => void
+  onClick?: (e: MouseEvent, vesselId?: string) => void
   tooltip?: React.ReactNode
   fitBounds?: boolean
   className?: string
@@ -73,7 +73,7 @@ const VesselLink = ({
         dispatch(setVesselFitBoundsOnLoad(fitBounds))
       }
       if (onClick) {
-        onClick(e)
+        onClick(e, vesselId)
       }
     },
     [dispatch, fitBounds, onClick, vesselId, vesselInfoDataId]

@@ -13,6 +13,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { formatInfoField } from 'utils/info'
 import VesselLink from 'features/vessel/VesselLink'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportMOUParams } from '../vessel-group-report.selectors'
 import styles from './VGRInsights.module.css'
@@ -37,6 +38,14 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
   const { error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
     skip: !vesselGroup || skip,
   })
+
+  const onVesselClick = (e: MouseEvent, vesselId?: string) => {
+    trackEvent({
+      category: TrackCategory.VesselGroupReport,
+      action: 'vessel_group_profile_insights_mou_go_to_vessel',
+      label: vesselId,
+    })
+  }
 
   const MOUVesselsGrouped = useSelector(selectVGRMOUVesselsGrouped) || {}
 
@@ -79,6 +88,7 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
                     className={styles.link}
                     vesselId={vessel.id}
                     datasetId={vessel.dataset as string}
+                    onClick={onVesselClick}
                     query={{
                       start: fetchVesselGroupParams.start,
                       end: fetchVesselGroupParams.end,
@@ -102,6 +112,11 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
       setInsightsExpanded((expandedInsights) => {
         const expandedInsight = `${country}-${list}` as ExpandedMOUInsights
         if (isOpen && expandedInsights.includes(expandedInsight)) {
+          trackEvent({
+            category: TrackCategory.VesselGroupReport,
+            action: 'vessel_group_profile_insights_tab_expand_insights',
+            label: `${country} ${list} expanded`,
+          })
           return expandedInsights
         }
         return isOpen

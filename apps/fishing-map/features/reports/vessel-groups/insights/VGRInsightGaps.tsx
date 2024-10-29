@@ -10,6 +10,7 @@ import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
 import VesselLink from 'features/vessel/VesselLink'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportGapParams } from '../vessel-group-report.selectors'
 import styles from './VGRInsights.module.css'
@@ -28,6 +29,26 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
     skip: !vesselGroup || skip,
   })
   const vesselsWithGaps = useSelector(selectVGRGapVessels)
+  const onInsightToggle = (isOpen: boolean) => {
+    if (isOpen !== isExpanded) {
+      setIsExpanded(!isExpanded)
+    }
+    if (isOpen) {
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: 'vessel_group_profile_insights_tab_expand_insights',
+        label: 'gaps expanded',
+      })
+    }
+  }
+
+  const onVesselClick = (e: MouseEvent, vesselId?: string) => {
+    trackEvent({
+      category: TrackCategory.VesselGroupReport,
+      action: 'vessel_group_profile_insights_gaps_go_to_vessel',
+      label: vesselId,
+    })
+  }
 
   return (
     <div id="vessel-group-gaps" className={styles.insightContainer}>
@@ -63,7 +84,7 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
               ),
               vessels: vesselsWithGaps.length,
             })}
-            onToggle={(isOpen) => isOpen !== isExpanded && setIsExpanded(!isExpanded)}
+            onToggle={onInsightToggle}
           >
             {vesselsWithGaps && vesselsWithGaps?.length > 0 && (
               <ul className={styles.nested}>
@@ -83,6 +104,7 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
                               className={styles.link}
                               vesselId={vesselId}
                               datasetId={vessel.identity.dataset as string}
+                              onClick={onVesselClick}
                               query={{
                                 vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                               }}
