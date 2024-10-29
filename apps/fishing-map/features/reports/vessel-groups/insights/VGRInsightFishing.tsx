@@ -10,6 +10,7 @@ import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
 import VesselLink from 'features/vessel/VesselLink'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportFishingParams } from '../vessel-group-report.selectors'
 import styles from './VGRInsights.module.css'
@@ -51,6 +52,13 @@ const VesselGroupReportInsightFishing = () => {
     if (!isOpen) {
       setExpandedVesselIds([])
     }
+    if (isOpen) {
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: 'vessel_group_profile_insights_tab_expand_insights',
+        label: 'fishing in no-take MPAs expanded',
+      })
+    }
   }
 
   const onRFMOToggle = (isOpen: boolean) => {
@@ -59,6 +67,13 @@ const VesselGroupReportInsightFishing = () => {
     }
     if (!isOpen) {
       setExpandedVesselIds([])
+    }
+    if (isOpen) {
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: 'vessel_group_profile_insights_tab_expand_insights',
+        label: 'fishing RFMOs expanded',
+      })
     }
   }
 

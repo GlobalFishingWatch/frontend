@@ -7,6 +7,7 @@ import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportIUUParams } from '../vessel-group-report.selectors'
 import styles from './VGRInsights.module.css'
@@ -24,6 +25,19 @@ const VesselGroupReportInsightIUU = () => {
     skip: !vesselGroup,
   })
   const vesselsWithIIU = useSelector(selectVGRIUUVessels)
+
+  const onInsightToggle = (isOpen: boolean) => {
+    if (isOpen !== isExpanded) {
+      setIsExpanded(!isExpanded)
+    }
+    if (isOpen) {
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: 'vessel_group_profile_insights_tab_expand_insights',
+        label: 'IUU expanded',
+      })
+    }
+  }
 
   return (
     <div id="vessel-group-iuu" className={styles.insightContainer}>
@@ -58,7 +72,7 @@ const VesselGroupReportInsightIUU = () => {
               defaultValue: '{{vessels}} vessels are present on a RFMO IUU vessel list',
               vessels: vesselsWithIIU.length,
             })}
-            onToggle={(isOpen) => isOpen !== isExpanded && setIsExpanded(!isExpanded)}
+            onToggle={onInsightToggle}
           >
             <div className={styles.nested}>
               <VesselGroupReportInsightVesselTable vessels={vesselsWithIIU} />

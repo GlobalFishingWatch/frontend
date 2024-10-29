@@ -12,6 +12,7 @@ import { formatInfoField } from 'utils/info'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselLink from 'features/vessel/VesselLink'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportFlagChangeParams } from '../vessel-group-report.selectors'
 import styles from './VGRInsights.module.css'
@@ -30,6 +31,19 @@ const VesselGroupReportInsightFlagChange = () => {
   })
 
   const vesselsWithFlagChanges = useSelector(selectVGRFlagChangesVessels)
+
+  const onInsightToggle = (isOpen: boolean) => {
+    if (isOpen !== isExpanded) {
+      setIsExpanded(!isExpanded)
+    }
+    if (isOpen) {
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: 'vessel_group_profile_insights_tab_expand_insights',
+        label: 'flag changes expanded',
+      })
+    }
+  }
 
   return (
     <div id="vessel-group-flags" className={styles.insightContainer}>
@@ -66,7 +80,7 @@ const VesselGroupReportInsightFlagChange = () => {
               defaultValue: '{{vessels}} vessels had flag changes',
               vessels: vesselsWithFlagChanges.length,
             })}
-            onToggle={(isOpen) => isOpen !== isExpanded && setIsExpanded(!isExpanded)}
+            onToggle={onInsightToggle}
           >
             <ul className={styles.nested}>
               {vesselsWithFlagChanges.map((vessel) => (
