@@ -66,13 +66,12 @@ const drawEnhancedImageToCanvas = ({
     }
   }
   if (!max) max = 255 // if not found, set to default 255
-
-  const scale = 255 / ((max - min) * 2)
+  const maxScale = 255 / max
   // scale all pixels RGB values
   for (let i = 0; i < data.length; i += 4) {
-    data[i] = Math.max(0, data[i] - min) * scale
-    data[i + 1] = Math.max(0, data[i + 1] - min) * scale
-    data[i + 2] = Math.max(0, data[i + 2] - min) * scale
+    data[i] = Math.max(0, data[i] * maxScale - min)
+    data[i + 1] = Math.max(0, data[i + 1] * maxScale - min)
+    data[i + 2] = Math.max(0, data[i + 2] * maxScale - min)
   }
   ctx.putImageData(idata, 0, 0)
 }
@@ -83,7 +82,7 @@ export function TaskImage({ thumbnail, scale, open, imageStyle }: TaskImageProps
 
   useEffect(() => {
     const draw = () => {
-      drawEnhancedImageToCanvas({ img, thold: 1, canvas: canvasRef.current })
+      drawEnhancedImageToCanvas({ img, thold: 0, canvas: canvasRef.current })
     }
     const img = new Image()
     img.addEventListener('load', draw)
