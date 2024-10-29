@@ -42,6 +42,14 @@ const VesselGroupReportInsightGap = () => {
     }
   }
 
+  const onVesselClick = (e: MouseEvent, vesselId?: string) => {
+    trackEvent({
+      category: TrackCategory.VesselGroupReport,
+      action: 'vessel_group_profile_insights_gaps_go_to_vessel',
+      label: vesselId,
+    })
+  }
+
   return (
     <div id="vessel-group-gaps" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
@@ -96,6 +104,7 @@ const VesselGroupReportInsightGap = () => {
                               className={styles.link}
                               vesselId={vesselId}
                               datasetId={vessel.identity.dataset as string}
+                              onClick={onVesselClick}
                               query={{
                                 vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                               }}

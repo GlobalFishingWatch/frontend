@@ -45,6 +45,14 @@ const VesselGroupReportInsightFlagChange = () => {
     }
   }
 
+  const onVesselClick = (e: MouseEvent, vesselId?: string) => {
+    trackEvent({
+      category: TrackCategory.VesselGroupReport,
+      action: 'vessel_group_profile_insights_flag_changes_go_to_vessel',
+      label: vesselId,
+    })
+  }
+
   return (
     <div id="vessel-group-flags" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
@@ -89,6 +97,7 @@ const VesselGroupReportInsightFlagChange = () => {
                     className={styles.link}
                     vesselId={vessel.vesselId}
                     datasetId={vessel.identity.dataset as string}
+                    onClick={onVesselClick}
                     query={{
                       start: fetchVesselGroupParams.start,
                       end: fetchVesselGroupParams.end,

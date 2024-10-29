@@ -77,6 +77,14 @@ const VesselGroupReportInsightFishing = () => {
     }
   }
 
+  const onVesselClick = (e: MouseEvent, vesselId?: string) => {
+    trackEvent({
+      category: TrackCategory.VesselGroupReport,
+      action: 'vessel_group_profile_insights_fishing_go_to_vessel',
+      label: vesselId,
+    })
+  }
+
   const getVesselGroupReportInsighFishingVessels = (
     vessels: VesselGroupReportInsightVessel[],
     insight: 'eventsInNoTakeMpas' | 'eventsInRfmoWithoutKnownAuthorization'
@@ -101,6 +109,7 @@ const VesselGroupReportInsightFishing = () => {
                       className={styles.link}
                       vesselId={vesselId}
                       datasetId={vessel.identity.dataset as string}
+                      onClick={onVesselClick}
                       query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
                     >
                       {formatInfoField(vessel.identity.shipname, 'shipname')}

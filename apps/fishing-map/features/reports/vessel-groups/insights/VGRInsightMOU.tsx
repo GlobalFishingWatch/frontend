@@ -39,6 +39,14 @@ const VesselGroupReportInsightMOU = () => {
     skip: !vesselGroup,
   })
 
+  const onVesselClick = (e: MouseEvent, vesselId?: string) => {
+    trackEvent({
+      category: TrackCategory.VesselGroupReport,
+      action: 'vessel_group_profile_insights_mou_go_to_vessel',
+      label: vesselId,
+    })
+  }
+
   const MOUVesselsGrouped = useSelector(selectVGRMOUVesselsGrouped) || {}
 
   const hasVesselsInParisMOU = MOUVesselsGrouped?.paris
@@ -80,6 +88,7 @@ const VesselGroupReportInsightMOU = () => {
                     className={styles.link}
                     vesselId={vessel.id}
                     datasetId={vessel.dataset as string}
+                    onClick={onVesselClick}
                     query={{
                       start: fetchVesselGroupParams.start,
                       end: fetchVesselGroupParams.end,
