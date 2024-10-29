@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
+import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import { useLocationConnect } from 'routes/routes.hook'
-import { ReportVesselsGraphPlaceholder } from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
@@ -223,9 +223,9 @@ export default function ReportVesselsGraph() {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <ReportVesselsGraphPlaceholder animate={false}>
+          <ReportVesselsPlaceholder animate={false}>
             {t('analysis.noVesselDataFiltered', 'There are no vessels matching your filter')}
-          </ReportVesselsGraphPlaceholder>
+          </ReportVesselsPlaceholder>
         )}
       </div>
     </Fragment>
