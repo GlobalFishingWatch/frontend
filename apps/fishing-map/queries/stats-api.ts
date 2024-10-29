@@ -55,9 +55,9 @@ export const dataviewStatsApi = createApi({
           ...(fields?.length && {
             fields: fields.join(','),
           }),
-          ...(dataview.config?.filter && { filters: [dataview.config?.filter] || [] }),
+          ...(dataview.config?.filter && { filters: [dataview.config?.filter] }),
           ...(dataview.config?.['vessel-groups'] && {
-            'vessel-groups': [dataview.config?.['vessel-groups']] || [],
+            'vessel-groups': [dataview.config?.['vessel-groups']],
           }),
         }
         return {
