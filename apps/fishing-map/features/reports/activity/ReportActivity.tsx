@@ -102,7 +102,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
 
   const isTimeoutError = getIsTimeoutError(statusError!)
   useEffect(() => {
-    if (isTimeoutError) {
+    if (isTimeoutError || isSameWorkspaceReport) {
       dispatchTimeoutRef.current = setTimeout(() => {
         dispatchFetchReport()
       }, 1000 * 30) // retrying each 30 secs
@@ -112,7 +112,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
         clearTimeout(dispatchTimeoutRef.current)
       }
     }
-  }, [dispatchFetchReport, isTimeoutError])
+  }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {
