@@ -10,7 +10,7 @@ export default function ReportVesselsPlaceholder({
 }: {
   children?: React.ReactNode
   showGraphHeader?: boolean
-  animate: boolean
+  animate?: boolean
 }) {
   const tableRows = Array(11).fill('')
   return (
