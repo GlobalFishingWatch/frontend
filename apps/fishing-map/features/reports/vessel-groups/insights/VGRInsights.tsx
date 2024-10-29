@@ -23,14 +23,6 @@ const VesselGroupReportInsights = () => {
   const vesselDatasets = useSelector(selectVesselsDatasets)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
 
-  if (!vesselDatasets.length) {
-    return (
-      <div className={styles.placeholder}>
-        <Spinner />
-      </div>
-    )
-  }
-
   if (datasetsWithoutRelatedEvents.length >= 1) {
     return (
       <div className={styles.disclaimer}>
@@ -76,12 +68,12 @@ const VesselGroupReportInsights = () => {
           terminologyKey="insightsVesselGroups"
         />
       </p>
-      <VesselGroupReportInsightCoverage />
-      <VesselGroupReportInsightGap />
-      <VesselGroupReportInsightFishing />
-      <VesselGroupReportInsightIUU />
-      <VesselGroupReportInsightFlagChange />
-      <VesselGroupReportInsightMOU />
+      <VesselGroupReportInsightCoverage skip={!vesselDatasets.length} />
+      <VesselGroupReportInsightGap skip={!vesselDatasets.length} />
+      <VesselGroupReportInsightFishing skip={!vesselDatasets.length} />
+      <VesselGroupReportInsightIUU skip={!vesselDatasets.length} />
+      <VesselGroupReportInsightFlagChange skip={!vesselDatasets.length} />
+      <VesselGroupReportInsightMOU skip={!vesselDatasets.length} />
     </div>
   )
 }

@@ -20,7 +20,7 @@ import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
 import { selectHasReportVessels } from 'features/reports/activity/vessels/report-activity-vessels.selectors'
-import ReportVesselsPlaceholder from 'features/reports/areas/placeholders/ReportVesselsPlaceholder'
+import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
 import { parseReportUrl } from 'features/reports/areas/area-reports.utils'
@@ -102,7 +102,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
 
   const isTimeoutError = getIsTimeoutError(statusError!)
   useEffect(() => {
-    if (isTimeoutError) {
+    if (isTimeoutError || isSameWorkspaceReport) {
       dispatchTimeoutRef.current = setTimeout(() => {
         dispatchFetchReport()
       }, 1000 * 30) // retrying each 30 secs
@@ -112,7 +112,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
         clearTimeout(dispatchTimeoutRef.current)
       }
     }
-  }, [dispatchFetchReport, isTimeoutError])
+  }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {

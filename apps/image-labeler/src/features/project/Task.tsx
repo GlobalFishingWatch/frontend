@@ -119,6 +119,9 @@ export function Task({
                 </Fragment>
               )
             })}
+            <div>
+              <span>ID: {JSON.stringify(task.id)}</span>
+            </div>
           </label>
         </div>
       )}

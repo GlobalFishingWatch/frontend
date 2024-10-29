@@ -57,6 +57,10 @@
   margin-bottom: 1rem;
 }
 
+.paragraphS {
+  gap: 0.2rem;
+}
+
 .sentence {
   display: flex;
   gap: 1rem;

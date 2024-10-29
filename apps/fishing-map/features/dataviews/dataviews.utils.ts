@@ -28,10 +28,10 @@ import {
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 
 // used in workspaces with encounter events layers
-export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter'
+export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounters'
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
-export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visit-events'
-export const LOITERING_EVENTS_SOURCE_ID = 'loitering-events'
+export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visits'
+export const LOITERING_EVENTS_SOURCE_ID = 'loitering'
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
 const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
@@ -131,7 +131,7 @@ export const getUserPolygonsDataviewInstance = (
   return {
     id: `user-polygons-${Date.now()}`,
     config: {
-      colorCyclingType: 'fill' as ColorCyclingType,
+      colorCyclingType: 'line' as ColorCyclingType,
     },
     dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
     datasetsConfig: [

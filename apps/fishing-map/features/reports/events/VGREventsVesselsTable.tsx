@@ -2,10 +2,6 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
-import {
-  useGetVesselGroupEventsVesselsQuery,
-  VesselGroupEventsVesselsParams,
-} from 'queries/vessel-group-events-stats-api'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -14,24 +10,14 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import {
-  selectFetchVGREventsVesselsParams,
-  selectVGREventsVesselsPaginated,
-} from 'features/reports/events/vgr-events.selectors'
+import { selectVGREventsVesselsPaginated } from 'features/reports/events/vgr-events.selectors'
 import VGREventsVesselsTableFooter from 'features/reports/events/VGREventsVesselsTableFooter'
 import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTable.module.css'
 
 export default function VesselGroupReportEventsVesselsTable() {
   const { t } = useTranslation()
-  const params = useSelector(selectFetchVGREventsVesselsParams)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { dispatchQueryParams } = useLocationConnect()
-  const { error, isLoading } = useGetVesselGroupEventsVesselsQuery(
-    params as VesselGroupEventsVesselsParams,
-    {
-      skip: !params,
-    }
-  )
   const vessels = useSelector(selectVGREventsVesselsPaginated)
 
   const onPinClick = ({

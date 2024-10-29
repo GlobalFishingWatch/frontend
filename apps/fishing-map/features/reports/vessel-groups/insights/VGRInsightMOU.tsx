@@ -27,7 +27,7 @@ import {
 
 type ExpandedMOUInsights = `${MOUInsightCountry}-${MOUInsightList}`
 
-const VesselGroupReportInsightMOU = () => {
+const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const [insightsExpanded, setInsightsExpanded] = useState<ExpandedMOUInsights[]>([])
@@ -35,7 +35,7 @@ const VesselGroupReportInsightMOU = () => {
   const fetchVesselGroupParams = useSelector(selectFetchVesselGroupReportMOUParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
-    skip: !vesselGroup,
+    skip: !vesselGroup || skip,
   })
 
   const MOUVesselsGrouped = useSelector(selectVGRMOUVesselsGrouped) || {}
@@ -145,7 +145,7 @@ const VesselGroupReportInsightMOU = () => {
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />
-      ) : isLoading || !vesselGroup ? (
+      ) : skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />

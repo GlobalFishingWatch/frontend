@@ -25,7 +25,7 @@ import {
   selectReportAreaDataviews,
   selectReportAreaStatus,
 } from 'features/reports/areas/area-reports.selectors'
-import ReportTitlePlaceholder from 'features/reports/areas/placeholders/ReportTitlePlaceholder'
+import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectCurrentReport,

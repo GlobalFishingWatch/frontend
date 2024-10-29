@@ -3,17 +3,11 @@ import {
   selectVesselGroupEventsStatsApiSlice,
   selectVesselGroupEventsVessels,
   VesselGroupEventsVesselsParams,
-  VesselGroupEventsVesselsResponse,
   VesselGroupEventsVesselsResponseItem,
 } from 'queries/vessel-group-events-stats-api'
 import { groupBy } from 'es-toolkit'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import {
-  getSearchIdentityResolved,
-  getVesselIdentities,
-  getVesselProperty,
-} from 'features/vessel/vessel.utils'
+import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import {
@@ -29,7 +23,6 @@ import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-grou
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { t } from 'features/i18n/i18n'
-import { getVesselsWithoutDuplicates } from 'features/vessel-groups/vessel-groups.utils'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],

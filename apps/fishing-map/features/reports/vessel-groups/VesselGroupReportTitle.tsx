@@ -7,7 +7,7 @@ import parse from 'html-react-parser'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import ReportTitlePlaceholder from 'features/reports/areas/placeholders/ReportTitlePlaceholder'
+import VGRTitlePlaceholder from 'features/reports/placeholders/VGRTitlePlaceholder'
 import {
   setVesselGroupEditId,
   setVesselGroupModalVessels,
@@ -77,20 +77,18 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
     dispatchQueryParams({ viewOnlyVesselGroup: !viewOnlyVesselGroup })
   }
 
-  if (loading) {
+  const showTitle = timeRange && vessels && flags
+
+  if (!vesselGroup || !showTitle || loading) {
     return (
-      <div className={cx(styles.container, styles.placeholder)}>
-        <ReportTitlePlaceholder />
+      <div className={cx(styles.container, styles.minHeight)}>
+        <VGRTitlePlaceholder />
       </div>
     )
   }
 
-  if (!vesselGroup) {
-    return null
-  }
-
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, styles.minHeight)}>
       <div className={cx(styles.row, styles.border)}>
         <div>
           {vesselGroup.ownerType === 'user' && (
@@ -101,30 +99,28 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
           <h1 className={styles.title} data-test="report-title">
             {vesselGroup.name}
           </h1>
-          {timeRange && vessels && flags && (
-            <h2 className={styles.summary}>
-              {parse(
-                t('vesselGroup.summary', {
-                  defaultValue:
-                    '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>',
-                  vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
-                  flags: flags?.size,
-                  start: formatI18nDate(timeRange.start, {
-                    format: DateTime.DATE_MED,
-                  }),
-                  end: formatI18nDate(timeRange.end, {
-                    format: DateTime.DATE_MED,
-                  }),
-                })
-              )}
-              <DataTerminology
-                size="tiny"
-                type="default"
-                title={t('vesselGroupReport.vessels', 'Vessel group report vessels')}
-                terminologyKey="vessels"
-              />
-            </h2>
-          )}
+          <h2 className={styles.summary}>
+            {parse(
+              t('vesselGroup.summary', {
+                defaultValue:
+                  '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>',
+                vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
+                flags: flags?.size,
+                start: formatI18nDate(timeRange.start, {
+                  format: DateTime.DATE_MED,
+                }),
+                end: formatI18nDate(timeRange.end, {
+                  format: DateTime.DATE_MED,
+                }),
+              })
+            )}
+            <DataTerminology
+              size="tiny"
+              type="default"
+              title={t('vesselGroupReport.vessels', 'Vessel group report vessels')}
+              terminologyKey="vessels"
+            />
+          </h2>
         </div>
         <a className={styles.reportLink} href={window.location.href}>
           {t('vesselGroupReport.linkToReport', 'Check the vessel group report here')}

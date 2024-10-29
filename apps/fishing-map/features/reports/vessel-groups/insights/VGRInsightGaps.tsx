@@ -17,7 +17,7 @@ import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
 import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
 import { selectVGRGapVessels } from './vessel-group-report-insights.selectors'
 
-const VesselGroupReportInsightGap = () => {
+const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const [expandedVesselIds, setExpandedVesselIds] = useState<string[]>([])
@@ -25,7 +25,7 @@ const VesselGroupReportInsightGap = () => {
   const fetchVesselGroupParams = useSelector(selectFetchVesselGroupReportGapParams)
 
   const { error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
-    skip: !vesselGroup,
+    skip: !vesselGroup || skip,
   })
   const vesselsWithGaps = useSelector(selectVGRGapVessels)
 
@@ -40,7 +40,7 @@ const VesselGroupReportInsightGap = () => {
           terminologyKey="insightsGaps"
         />
       </div>
-      {isLoading || !vesselGroup ? (
+      {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />

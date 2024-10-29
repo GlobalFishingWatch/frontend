@@ -230,7 +230,9 @@ export function useFetchReportVessel() {
         if (!lastReportUrls?.length) {
           return [newReportUrl]
         }
-        const reportUrlsExists = lastReportUrls.some((report) => report.reportUrl !== undefined)
+        const reportUrlsExists = lastReportUrls.some(
+          (report) => report.workspaceUrl === newReportUrl.workspaceUrl
+        )
         return reportUrlsExists ? lastReportUrls : [newReportUrl, lastReportUrls[0]]
       })
     },

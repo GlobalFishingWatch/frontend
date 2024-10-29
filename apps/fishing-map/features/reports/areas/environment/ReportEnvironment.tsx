@@ -13,7 +13,7 @@ import {
   useReportFilteredTimeSeries,
   useTimeseriesStats,
 } from 'features/reports/activity/reports-activity-timeseries.hooks'
-import ReportActivityPlaceholder from 'features/reports/areas/placeholders/ReportActivityPlaceholder'
+import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
