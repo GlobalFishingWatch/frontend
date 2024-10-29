@@ -10,6 +10,7 @@ import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
 import VesselLink from 'features/vessel/VesselLink'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportFishingParams } from '../vessel-group-report.selectors'
 import styles from './VGRInsights.module.css'
@@ -51,6 +52,13 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
     if (!isOpen) {
       setExpandedVesselIds([])
     }
+    if (isOpen) {
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: 'vessel_group_profile_insights_tab_expand_insights',
+        label: 'fishing in no-take MPAs expanded',
+      })
+    }
   }
 
   const onRFMOToggle = (isOpen: boolean) => {
@@ -60,6 +68,21 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
     if (!isOpen) {
       setExpandedVesselIds([])
     }
+    if (isOpen) {
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: 'vessel_group_profile_insights_tab_expand_insights',
+        label: 'fishing RFMOs expanded',
+      })
+    }
+  }
+
+  const onVesselClick = (e: MouseEvent, vesselId?: string) => {
+    trackEvent({
+      category: TrackCategory.VesselGroupReport,
+      action: 'vessel_group_profile_insights_fishing_go_to_vessel',
+      label: vesselId,
+    })
   }
 
   const getVesselGroupReportInsighFishingVessels = (
@@ -86,6 +109,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
                       className={styles.link}
                       vesselId={vesselId}
                       datasetId={vessel.identity.dataset as string}
+                      onClick={onVesselClick}
                       query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
                     >
                       {formatInfoField(vessel.identity.shipname, 'shipname')}

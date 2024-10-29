@@ -12,6 +12,8 @@ import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { selectVGRVesselFilter } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { getEventLabel } from 'utils/analytics'
 import styles from './VesselGroupReportVesselsTableFooter.module.css'
 import {
   selectVGRVesselsFiltered,
@@ -46,14 +48,19 @@ export default function VesselGroupReportVesselsTableFooter() {
       }
     })
     if (vessels?.length) {
-      //   trackEvent({
-      //     category: TrackCategory.Analysis,
-      //     action: `Click 'Download CSV'`,
-      //     label: `region name: ${reportAreaName} | timerange: ${start} - ${end} | filters: ${reportVesselFilter}`,
-      //   })
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
       saveAs(blob, `vessel-group-${vesselGroup?.name}-${start}-${end}.csv`)
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: 'vessel_group_profile_download_csv',
+        label: getEventLabel([
+          `Groupd id: ${vesselGroup?.id}`,
+          `start date: ${start}`,
+          `end date: ${end}`,
+        ]),
+        value: `number of vessels identities: ${vessels.length}`,
+      })
     }
   }
 
