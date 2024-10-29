@@ -13,9 +13,13 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getHighlightedText } from 'features/layer-library/layer-library.utils'
+import {
+  getHighlightedText,
+  LAYER_LIBRARY_ID_SEPARATOR,
+} from 'features/layer-library/layer-library.utils'
 import { LibraryLayer } from 'data/layer-library'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { LAYER_LIBRARY_EVENTS_IDS } from 'data/layer-library/layers-events'
 import styles from './LayerLibraryItem.module.css'
 
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
@@ -51,14 +55,17 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
     const usedColors = dataviews.flatMap((dataview) => dataview.config?.color || [])
     const isDefaultColorUnused = !usedColors.includes(config?.color as string)
     const firstUnusedcolor = palette.find((c) => !usedColors.includes(c.value))
+    const supportsColorChange = !LAYER_LIBRARY_EVENTS_IDS.includes(id)
     upsertDataviewInstance({
-      id: `${id}-${Date.now()}`,
+      id: `${id}${LAYER_LIBRARY_ID_SEPARATOR}${Date.now()}`,
       dataviewId,
       datasetsConfig,
       config: {
         ...config,
-        color: isDefaultColorUnused ? config?.color : firstUnusedcolor?.value,
-        colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedcolor?.id,
+        ...(supportsColorChange && {
+          color: isDefaultColorUnused ? config?.color : firstUnusedcolor?.value,
+          colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedcolor?.id,
+        }),
       },
     })
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
