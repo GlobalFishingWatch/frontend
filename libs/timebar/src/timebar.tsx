@@ -121,11 +121,16 @@ export type TimebarProps = {
   getCurrentInterval: typeof getFourwingsInterval
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation: TrackGraphOrientation
+  isResizable?: boolean
 }
 
 type TimebarState = {
+  updatedHeight: number
   showTimeRangeSelector: boolean
   absoluteEnd: string | null
+  isDragging: boolean
+  startCursorY: number | null
+  startHeight: number | null
 }
 
 export class Timebar extends Component<TimebarProps> {
@@ -192,6 +197,7 @@ export class Timebar extends Component<TimebarProps> {
     maximumRangeUnit: 'month',
     locale: 'en',
     displayWarningWhenInFuture: true,
+    isResizable: false,
   }
 
   constructor(props: TimebarProps) {
@@ -200,6 +206,10 @@ export class Timebar extends Component<TimebarProps> {
     this.state = {
       showTimeRangeSelector: false,
       absoluteEnd: null,
+      updatedHeight: 70,
+      isDragging: false,
+      startCursorY: null,
+      startHeight: null,
     }
   }
 
@@ -314,6 +324,43 @@ export class Timebar extends Component<TimebarProps> {
     onTogglePlay && onTogglePlay(isPlaying)
   }
 
+  handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    this.setState({
+      isDragging: true,
+      startCursorY: e.clientY,
+      startHeight: this.state.updatedHeight,
+    })
+
+    document.addEventListener('mousemove', this.handleMouseMove)
+    document.addEventListener('mouseup', this.handleMouseUp)
+  }
+
+  handleMouseMove = (e: MouseEvent) => {
+    if (
+      this.state.isDragging &&
+      this.state.startCursorY !== null &&
+      this.state.startHeight !== null
+    ) {
+      const cursorYDelta = this.state.startCursorY - e.clientY
+      let newHeight = Math.min(this.state.startHeight + cursorYDelta, 200)
+      newHeight = Math.max(70, newHeight)
+      this.setState({ updatedHeight: newHeight })
+    }
+  }
+
+  handleMouseUp = () => {
+    this.setState({
+      isDragging: false,
+      startCursorY: null,
+      startHeight: null,
+    })
+    document.removeEventListener('mousemove', this.handleMouseMove)
+    document.removeEventListener('mouseup', this.handleMouseUp)
+  }
+
   render() {
     const {
       labels = {},
@@ -333,6 +380,7 @@ export class Timebar extends Component<TimebarProps> {
       displayWarningWhenInFuture,
       intervals,
       getCurrentInterval,
+      isResizable,
     } = this.props as TimebarProps
 
     // this.setLocale(locale)
@@ -354,7 +402,13 @@ export class Timebar extends Component<TimebarProps> {
       getTime(bookmarkEnd) === getTime(end)
 
     return (
-      <div className={styles.Timebar}>
+      <div
+        className={styles.Timebar}
+        style={isResizable ? { height: `${this.state.updatedHeight}px` } : {}}
+      >
+        {isResizable && (
+          <div className={styles.timebarResizer} onMouseDown={this.handleMouseDown} />
+        )}
         {enablePlayback && (
           <Playback
             labels={labels.playback}
