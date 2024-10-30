@@ -2,7 +2,7 @@ import { Fragment, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, DataviewCategory, EventVessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import {

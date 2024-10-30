@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 
-export const LAYER_LIBRARY_ID_SEPARATOR = '-'
+export const LAYER_LIBRARY_ID_SEPARATOR = '__'
 
 export const getHighlightedText = (
   text: string,
