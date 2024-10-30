@@ -2,8 +2,10 @@ import { createSelector } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 import {
   DatasetTypes,
+  DataviewCategory,
   DataviewDatasetConfig,
   DataviewInstance,
+  DataviewType,
 } from '@globalfishingwatch/api-types'
 import {
   extendDataviewDatasetConfig,
@@ -264,8 +266,28 @@ export const selectDataviewInstancesResolved = createSelector(
   }
 )
 
-export const selectActiveDataviewsCategories = createSelector(
+const SUPPORTED_REPORT_CATEGORIES = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.Environment,
+]
+const SUPPORTED_REPORT_TYPES = [DataviewType.HeatmapAnimated, DataviewType.HeatmapStatic]
+export const selectActiveSupportedReportDataviews = createSelector(
   [selectDataviewInstancesResolved],
+  (dataviews) => {
+    return dataviews.filter(
+      (d) =>
+        d.config?.visible &&
+        d.category &&
+        d.config?.type &&
+        SUPPORTED_REPORT_CATEGORIES.includes(d.category) &&
+        SUPPORTED_REPORT_TYPES.includes(d.config?.type)
+    )
+  }
+)
+
+export const selectActiveReportCategories = createSelector(
+  [selectActiveSupportedReportDataviews],
   (dataviews): ReportCategory[] => {
     return uniq(dataviews.flatMap((d) => getReportCategoryFromDataview(d) || []))
   }

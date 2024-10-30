@@ -20,7 +20,6 @@ import {
 } from 'features/datasets/datasets.utils'
 import { Bbox, BufferOperation, BufferUnit } from 'types'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
-import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { VesselGroupReportVesselParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.types'
 import { VesselGroupVesselTableParsed } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import {
