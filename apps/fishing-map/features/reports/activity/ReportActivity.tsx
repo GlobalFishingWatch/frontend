@@ -51,6 +51,7 @@ import ReportVessels from 'features/reports/activity/vessels/ReportVessels'
 import ReportDownload from 'features/reports/activity/download/ReportDownload'
 import styles from 'features/reports/areas/AreaReport.module.css'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 
@@ -77,6 +78,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   const { status: reportStatus, error: statusError, dispatchFetchReport } = useFetchReportVessel()
   const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
   const hasVessels = useSelector(selectHasReportVessels)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   // TODO get this from datasets config
   const activityUnit = isActivityReport(reportCategory) ? 'hour' : 'detection'
@@ -116,18 +118,19 @@ function ActivityReport({ reportName }: { reportName?: string }) {
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {
+      const errorMsg = guestUser
+        ? isVesselGroupReportLocation
+          ? t('errors.vesselGroupReportLogin', 'Login to see the vessels active')
+          : t('errors.reportLogin', 'Login to see the vessels active in the area')
+        : t(
+            'errors.privateReport',
+            "Your account doesn't have permissions to see the vessels active in this area"
+          )
       return (
         <ReportVesselsPlaceholder>
           <div className={styles.cover}>
             <WorkspaceLoginError
-              title={
-                guestUser
-                  ? t('errors.reportLogin', 'Login to see the vessels active in the area')
-                  : t(
-                      'errors.privateReport',
-                      "Your account doesn't have permissions to see the vessels active in this area"
-                    )
-              }
+              title={errorMsg}
               emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
             />
           </div>
@@ -220,6 +223,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     hasAuthError,
     isSameWorkspaceReport,
     isTimeoutError,
+    isVesselGroupReportLocation,
     lastReport,
     reportDataviews?.length,
     statusError,
@@ -305,7 +309,11 @@ function ActivityReport({ reportName }: { reportName?: string }) {
               ))}
             </p>
           )}
-          <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
+          {isVesselGroupReportLocation ? (
+            <p>{t('vesselGroupReport.noData', 'No data available')}</p>
+          ) : (
+            <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
+          )}
         </div>
       )
     }
@@ -331,6 +339,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     activityUnit,
     reportName,
     datasetsDownloadNotSupported,
+    isVesselGroupReportLocation,
   ])
 
   return (

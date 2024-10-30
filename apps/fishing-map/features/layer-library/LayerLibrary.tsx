@@ -11,6 +11,7 @@ import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import { selectLayerLibraryModal } from 'features/modals/modals.slice'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import styles from './LayerLibrary.module.css'
 
 const LayerLibrary: FC = () => {
@@ -18,6 +19,7 @@ const LayerLibrary: FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const initialCategory = useSelector(selectLayerLibraryModal)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
     initialCategory || DataviewCategory.Activity
   )
@@ -199,9 +201,12 @@ const LayerLibrary: FC = () => {
             >
               {t(`common.${category as DataviewCategory}`, upperFirst(category))}
             </label>
-            {layersByCategory[category].map((layer) => (
-              <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
-            ))}
+            {layersByCategory[category].map((layer) => {
+              if (layer.onlyGFWUser && !isGFWUser) {
+                return null
+              }
+              return <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
+            })}
           </Fragment>
         ))}
         <LayerLibraryUserPanel searchQuery={searchQuery} />
