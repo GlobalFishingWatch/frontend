@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import htmlParse from 'html-react-parser'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +8,7 @@ import {
   IconButtonType,
   IconButton,
   Modal,
+  Spinner,
 } from '@globalfishingwatch/ui-components'
 import { I18nNamespaces } from 'features/i18n/i18n.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -33,11 +34,13 @@ const DataTerminology: React.FC<ModalProps> = ({
 }): React.ReactElement => {
   const { t } = useTranslation(['translations', 'data-terminology'])
   const [showModal, setShowModal] = useState(false)
+  const [loading, setLoading] = useState(false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const vesselSection = useSelector(selectVesselSection)
 
   const onClick = useCallback(() => {
     setShowModal(true)
+    setLoading(true)
     trackEvent({
       category: TrackCategory.VesselProfile,
       action: `open_vessel_info_${vesselSection}_tab`,
@@ -62,9 +65,7 @@ const DataTerminology: React.FC<ModalProps> = ({
         className={cx(styles.container, containerClassName)}
         contentClassName={styles.content}
       >
-        {/*
-        {htmlParse(t(`data-terminology:${terminologyKey}`, terminologyKey))}
-        */}
+        {loading && <div className={styles.spinnerContainer}>{<Spinner />}</div>}
         <iframe
           style={{
             width: '100%',
@@ -72,7 +73,11 @@ const DataTerminology: React.FC<ModalProps> = ({
           }}
           title="info-iframe"
           src={`https://globalfishingwatch.org/map-and-data/${terminologyKey.toLowerCase()}/`}
-        ></iframe>
+          onLoad={(e) => {
+            e.preventDefault()
+            setLoading(false)
+          }}
+        />
       </Modal>
     </Fragment>
   )
