@@ -374,13 +374,17 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
-  const vesselGroupDataviewParsed = vesselGroupDataview.flatMap(
-    (d) =>
+  const vesselGroupDataviewParsed = vesselGroupDataview.flatMap((d) => {
+    const comparisonMode = getComparisonMode([d], params)
+    return (
       getFourwingsDataviewsResolved(d, {
-        visualizationMode: 'footprint',
+        visualizationMode:
+          comparisonMode === FourwingsComparisonMode.TimeCompare ? 'heatmap' : 'footprint',
         colorRampWhiteEnd: false,
+        comparisonMode,
       }) || []
-  )
+    )
+  })
 
   const userHeatmapDataviewsParsed = getFourwingsDataviewsResolved(userHeatmapDataviews)
 

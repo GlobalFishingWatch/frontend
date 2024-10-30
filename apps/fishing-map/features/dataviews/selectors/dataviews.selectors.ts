@@ -45,6 +45,7 @@ import {
   selectDataviewInstancesMergedOrdered,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { selectVGRActivityDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 
 export const selectHasOtherVesselGroupDataviews = createSelector(
   [
@@ -77,8 +78,11 @@ export const selectBasemapLabelsDataviewInstance = createSelector(
 )
 
 export const selectActivityMergedDataviewId = createSelector(
-  [selectActiveActivityDataviews],
-  (dataviews): string => {
+  [selectActiveActivityDataviews, selectVGRActivityDataview],
+  (dataviews, vGRActivityDataview): string => {
+    if (vGRActivityDataview) {
+      return vGRActivityDataview.id
+    }
     return dataviews?.length ? getMergedDataviewId(dataviews) : ''
   }
 )

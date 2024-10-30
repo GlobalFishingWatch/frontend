@@ -89,7 +89,7 @@ const Main = () => {
   const isWorkspacesRouteWithTimebar =
     isWorkspaceLocation ||
     locationType === WORKSPACE_VESSEL ||
-    isVesselGroupReportLocation ||
+    (isVesselGroupReportLocation && !isTimeComparisonReport) ||
     (reportLocation && !isTimeComparisonReport)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
   const showTimebar =
