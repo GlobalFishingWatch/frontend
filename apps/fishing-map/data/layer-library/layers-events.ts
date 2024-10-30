@@ -27,6 +27,7 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     config: {
       color: '#CEA9F9',
     },
+    onlyGFWUser: true,
   },
   {
     id: PORT_VISITS_EVENTS_SOURCE_ID,
@@ -35,6 +36,7 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     config: {
       color: '#9AEEFF',
     },
+    onlyGFWUser: true,
   },
 ]
 
