@@ -62,7 +62,17 @@ const DataTerminology: React.FC<ModalProps> = ({
         className={cx(styles.container, containerClassName)}
         contentClassName={styles.content}
       >
+        {/*
         {htmlParse(t(`data-terminology:${terminologyKey}`, terminologyKey))}
+        */}
+        <iframe
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+          title="info-iframe"
+          src={`https://globalfishingwatch.org/map-and-data/${terminologyKey.toLowerCase()}/`}
+        ></iframe>
       </Modal>
     </Fragment>
   )
