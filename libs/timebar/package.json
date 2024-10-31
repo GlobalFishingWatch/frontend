@@ -8,9 +8,9 @@
   "module": "./index.js",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.0",
-    "@globalfishingwatch/dataviews-client": "^16.0.1",
+    "@globalfishingwatch/dataviews-client": "^16.0.2",
     "@globalfishingwatch/deck-loaders": "^0.1.0",
-    "@globalfishingwatch/ui-components": "14.0.0",
+    "@globalfishingwatch/ui-components": "14.0.4",
     "classnames": "2.x",
     "d3-array": "3.x",
     "d3-scale": "4.x",

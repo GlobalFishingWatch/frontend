@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "14.0.3",
+  "version": "14.0.4",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
