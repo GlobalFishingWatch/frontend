@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/data-transforms",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "license": "MIT",
   "description": "Utils to decode various data formats",
   "main": "./index.cjs",

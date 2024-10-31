@@ -8,7 +8,7 @@
   "module": "./index.js",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.0",
-    "@globalfishingwatch/data-transforms": "^3.0.0",
+    "@globalfishingwatch/data-transforms": "^3.0.2",
     "@globalfishingwatch/fourwings-aggregate": "^6.0.0",
     "@globalfishingwatch/maplibre-gl": "^3.5.1-gfw.2",
     "@turf/great-circle": "7.x",
