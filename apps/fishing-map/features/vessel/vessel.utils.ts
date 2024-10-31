@@ -36,14 +36,18 @@ const getVesselIdentitiesBySource = (
         dataset: vessel.dataset,
       } as VesselDataIdentity
     }
-    const geartypes = getVesselCombinedSourceProperty(vessel, {
+    const combinedSourceGearTypes = getVesselCombinedSourceProperty(vessel, {
       vesselId: identity.id,
       property: 'geartypes',
     })?.map((i) => i.name as GearType)
-    const shiptypes = getVesselCombinedSourceProperty(vessel, {
+    // Fallback with identity.geartypes as VMS data doesn't contain combinedSourceInfo
+    const geartypes = combinedSourceGearTypes?.length ? combinedSourceGearTypes : identity.geartypes
+    const combinedSourceShiptypes = getVesselCombinedSourceProperty(vessel, {
       vesselId: identity.id,
       property: 'shiptypes',
     })?.map((i) => i.name as VesselType)
+    // Fallback with identity.shiptypes as VMS data doesn't contain combinedSourceInfo
+    const shiptypes = combinedSourceShiptypes?.length ? combinedSourceShiptypes : identity.shiptypes
     return {
       ...identity,
       identitySource,
