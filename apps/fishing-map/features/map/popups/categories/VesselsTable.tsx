@@ -118,26 +118,7 @@ function VesselsTable({
   )
 
   // TODO: consider showing more than 5 vessels when oly one layer is active
-  const featureVessels = showValue
-    ? feature?.vessels
-    : feature?.vessels?.toSorted((a, b) => {
-        const getVesselPropertyParams = {
-          identitySource: VesselIdentitySourceEnum.SelfReported,
-        }
-        const aName = formatInfoField(
-          getVesselProperty(a, 'shipname', getVesselPropertyParams),
-          'shipname'
-        )
-        const bName = formatInfoField(
-          getVesselProperty(b, 'shipname', getVesselPropertyParams),
-          'shipname'
-        )
-        if (aName < bName) return -1
-        if (aName > bName) return 1
-        return 0
-      })
-
-  const vessels = featureVessels?.slice(0, MAX_TOOLTIP_LIST)
+  const vessels = feature?.vessels?.slice(0, MAX_TOOLTIP_LIST)
   const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
 
   const hasPinColumn =
