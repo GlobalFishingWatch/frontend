@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/pbf-decoders",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "main": "./index.cjs",
   "module": "./index.js",
   "scripts": {
@@ -10,16 +10,16 @@
     "build:pb:vessels:ts": "yarn pbts decoders/vessels.js -o decoders/vessels.d.ts",
     "build:pb:4wings-tile:js": "yarn pbjs proto/4wings-tile.proto -t static-module -w commonjs -o decoders/4wings-tile.js",
     "build:pb:4wings-tile:ts": "yarn pbts decoders/4wings-tile.js -o decoders/4wings-tile.d.ts",
-    "postinstall": "yarn build"
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "long": "x"
   },
   "devDependencies": {
-    "pbf": "3.2.1",
+    "pbf": "4.0.1",
     "pbjs": "0.0.14",
     "pbts-cli": "1.0.3",
-    "protobufjs": "^7.2.5",
-    "protobufjs-cli": "^1.1.2"
+    "protobufjs": "^7.4.0",
+    "protobufjs-cli": "^1.1.3"
   }
 }
