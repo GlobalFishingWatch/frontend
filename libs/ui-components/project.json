@@ -32,6 +32,11 @@
             "glob": "libs/ui-components/src/header/html",
             "input": ".",
             "output": "."
+          },
+          {
+            "glob": "libs/ui-components/src/icon/icons",
+            "input": ".",
+            "output": "."
           }
         ],
         "styles": "libs/ui-components/src/base.css",
