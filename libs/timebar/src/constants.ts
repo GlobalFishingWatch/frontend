@@ -27,3 +27,7 @@ export const EVENT_INTERVAL_SOURCE: { [key in FourwingsInterval]?: string } = {
   MONTH: 'MONTH_INTERVAL_BUTTON',
   YEAR: 'YEAR_INTERVAL_BUTTON',
 }
+
+// units are in px
+export const MINIMUM_TIMEBAR_HEIGHT = 70
+export const MAXIMUM_TIMEBAR_HEIGHT = 400
