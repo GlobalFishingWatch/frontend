@@ -399,7 +399,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
     const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
     const groupBy =
       eventFeature.category === 'events' && eventFeature.eventType === EventTypes.Port
-        ? 'portIdAndVesselId'
+        ? 'vesselId'
         : 'id'
     let interactionId = eventFeature.id
     let interactionResponse: FourwingsInteraction[] | undefined
