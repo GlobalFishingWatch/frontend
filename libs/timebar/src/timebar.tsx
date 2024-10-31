@@ -18,7 +18,12 @@ import Playback from './components/playback'
 import { ReactComponent as IconTimeRange } from './icons/timeRange.svg'
 import { ReactComponent as IconBookmark } from './icons/bookmark.svg'
 import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg'
-import { EVENT_SOURCE, EVENT_INTERVAL_SOURCE } from './constants'
+import {
+  EVENT_SOURCE,
+  EVENT_INTERVAL_SOURCE,
+  MINIMUM_TIMEBAR_HEIGHT,
+  MAXIMUM_TIMEBAR_HEIGHT,
+} from './constants'
 import { TrackGraphOrientation } from './timelineContext'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
@@ -325,40 +330,45 @@ export class Timebar extends Component<TimebarProps> {
   }
 
   handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    if (this.props.isResizable) {
+      e.preventDefault()
+      e.stopPropagation()
 
-    this.setState({
-      isDragging: true,
-      startCursorY: e.clientY,
-      startHeight: this.state.updatedHeight,
-    })
+      this.setState({
+        isDragging: true,
+        startCursorY: e.clientY,
+        startHeight: this.state.updatedHeight,
+      })
 
-    document.addEventListener('mousemove', this.handleMouseMove)
-    document.addEventListener('mouseup', this.handleMouseUp)
+      document.addEventListener('mousemove', this.handleMouseMove)
+      document.addEventListener('mouseup', this.handleMouseUp)
+    }
   }
 
   handleMouseMove = (e: MouseEvent) => {
     if (
+      this.props.isResizable &&
       this.state.isDragging &&
       this.state.startCursorY !== null &&
       this.state.startHeight !== null
     ) {
       const cursorYDelta = this.state.startCursorY - e.clientY
-      let newHeight = Math.min(this.state.startHeight + cursorYDelta, 200)
-      newHeight = Math.max(70, newHeight)
+      let newHeight = Math.min(this.state.startHeight + cursorYDelta, MAXIMUM_TIMEBAR_HEIGHT)
+      newHeight = Math.max(MINIMUM_TIMEBAR_HEIGHT, newHeight)
       this.setState({ updatedHeight: newHeight })
     }
   }
 
   handleMouseUp = () => {
-    this.setState({
-      isDragging: false,
-      startCursorY: null,
-      startHeight: null,
-    })
-    document.removeEventListener('mousemove', this.handleMouseMove)
-    document.removeEventListener('mouseup', this.handleMouseUp)
+    if (this.props.isResizable) {
+      this.setState({
+        isDragging: false,
+        startCursorY: null,
+        startHeight: null,
+      })
+      document.removeEventListener('mousemove', this.handleMouseMove)
+      document.removeEventListener('mouseup', this.handleMouseUp)
+    }
   }
 
   render() {
