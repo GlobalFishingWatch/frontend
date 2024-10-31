@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/timebar",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "GFW timebar",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -8,7 +8,7 @@
   "module": "./index.js",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.0",
-    "@globalfishingwatch/dataviews-client": "^16.0.0",
+    "@globalfishingwatch/dataviews-client": "^16.0.1",
     "@globalfishingwatch/deck-loaders": "^0.1.0",
     "@globalfishingwatch/ui-components": "14.0.0",
     "classnames": "2.x",
