@@ -47,7 +47,7 @@ import {
   fetchLegacyEncounterEventThunk,
   selectApiEventStatus,
   selectClickedEvent,
-  selectFishingInteractionStatus,
+  selectActivityInteractionStatus,
   setClickedEvent,
 } from './map.slice'
 import { useSetMapCoordinates } from './map-viewport.hooks'
@@ -99,7 +99,7 @@ export const useClickedEventConnect = () => {
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
   const clickedEvent = useSelector(selectClickedEvent)
-  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const fishingInteractionStatus = useSelector(selectActivityInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const setMapCoordinates = useSetMapCoordinates()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()

@@ -116,18 +116,22 @@ type MapState = {
   loaded: boolean
   clicked: SliceInteractionEvent | null
   hovered: SliceInteractionEvent | null
-  fishingStatus: AsyncReducerStatus
-  currentFishingRequestId: string
+  apiActivityStatus: AsyncReducerStatus
+  apiActivityError: string
+  currentActivityRequestId: string
   apiEventStatus: AsyncReducerStatus
+  apiEventError: string
 }
 
 const initialState: MapState = {
   loaded: false,
   clicked: null,
   hovered: null,
-  fishingStatus: AsyncReducerStatus.Idle,
-  currentFishingRequestId: '',
+  apiActivityStatus: AsyncReducerStatus.Idle,
+  apiActivityError: '',
+  currentActivityRequestId: '',
   apiEventStatus: AsyncReducerStatus.Idle,
+  apiEventError: '',
 }
 
 type SublayerVessels = {
@@ -514,7 +518,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
         if (url) {
           const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
           if (!clusterEvent) {
-            return
+            return rejectWithValue(`No event found for id: ${eventId}`)
           }
           if (clusterEvent.type === 'encounter') {
             // Workaround to grab information about each vessel dataset
@@ -739,12 +743,13 @@ const slice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetchHeatmapInteractionThunk.pending, (state, action) => {
-      state.fishingStatus = AsyncReducerStatus.Loading
-      state.currentFishingRequestId = action.meta.requestId
+      state.apiActivityStatus = AsyncReducerStatus.Loading
+      state.apiActivityError = ''
+      state.currentActivityRequestId = action.meta.requestId
     })
     builder.addCase(fetchHeatmapInteractionThunk.fulfilled, (state, action) => {
-      state.fishingStatus = AsyncReducerStatus.Finished
-      state.currentFishingRequestId = ''
+      state.apiActivityStatus = AsyncReducerStatus.Finished
+      state.currentActivityRequestId = ''
       if (state?.clicked?.features?.length && action.payload?.vessels?.length) {
         state.clicked.features = state.clicked.features.map((feature: any) => {
           const sublayers = (feature as FourwingsPickingObject).sublayers?.map((sublayer) => {
@@ -758,16 +763,20 @@ const slice = createSlice({
     })
     builder.addCase(fetchHeatmapInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.fishingStatus =
-          state.currentFishingRequestId !== action.meta.requestId
+        state.apiActivityStatus =
+          state.currentActivityRequestId !== action.meta.requestId
             ? AsyncReducerStatus.Loading
             : AsyncReducerStatus.Idle
       } else {
-        state.fishingStatus = AsyncReducerStatus.Error
+        state.apiActivityStatus = AsyncReducerStatus.Error
+        if (action.error.message) {
+          state.apiActivityError = action.error.message
+        }
       }
     })
     builder.addCase(fetchClusterEventThunk.pending, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Loading
+      state.apiEventError = ''
     })
     builder.addCase(fetchClusterEventThunk.fulfilled, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Finished
@@ -784,6 +793,9 @@ const slice = createSlice({
         state.apiEventStatus = AsyncReducerStatus.Idle
       } else {
         state.apiEventStatus = AsyncReducerStatus.Error
+        if (action.error.message) {
+          state.apiEventError = action.error.message
+        }
       }
     })
     builder.addCase(fetchLegacyEncounterEventThunk.pending, (state, action) => {
@@ -831,8 +843,12 @@ const slice = createSlice({
 
 export const selectIsMapLoaded = (state: { map: MapState }) => state.map.loaded
 export const selectClickedEvent = (state: { map: MapState }) => state.map.clicked
-export const selectFishingInteractionStatus = (state: { map: MapState }) => state.map.fishingStatus
+export const selectActivityInteractionStatus = (state: { map: MapState }) =>
+  state.map.apiActivityStatus
+export const selectActivityInteractionError = (state: { map: MapState }) =>
+  state.map.apiActivityError
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
+export const selectApiEventError = (state: { map: MapState }) => state.map.apiEventError
 
 export const { setMapLoaded, setClickedEvent } = slice.actions
 export default slice.reducer
