@@ -145,7 +145,7 @@ export const getCellTimeseries = (
   return Object.values(features)
 }
 
-function readData(_: any, data: any, pbf: any) {
+function readData(_: unknown, data: unknown[], pbf: Pbf) {
   data.push(pbf.readPackedVarint())
 }
 
