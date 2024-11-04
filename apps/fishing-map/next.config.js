@@ -74,11 +74,6 @@ const nextConfig = {
         ]
       : []
   },
-  nx: {
-    // Set this to true if you would like to to use SVGR
-    // See: https://github.com/gregberge/svgr
-    svgr: true,
-  },
   webpack: function (config, options) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -93,8 +88,12 @@ const nextConfig = {
       //   jotai: path.resolve(__dirname, 'node_modules/jotai'),
       // }),
     }
-    config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
+    // config.externals = [...config.externals, 'mapbox-gl']
+    config.module.rules.push({
+      test: /\.svg$/i,
+      use: ['@svgr/webpack'],
+    })
     config.plugins.push(
       new CircularDependencyPlugin({
         // exclude detection of files based on a RegExp
