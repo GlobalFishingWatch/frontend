@@ -283,7 +283,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
       {style && (
         <Map
           id="map"
-          mapLib={maplibregl}
+          mapLib={maplibregl as any}
           style={mapStyles}
           zoom={viewport.zoom}
           latitude={viewport.latitude}

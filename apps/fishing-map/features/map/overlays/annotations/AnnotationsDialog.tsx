@@ -20,20 +20,21 @@ const MapAnnotationsDialog = (): React.ReactNode | null => {
   const { dispatchQueryParams } = useLocationConnect()
   const { mapAnnotation, resetMapAnnotation, setMapAnnotation } = useMapAnnotation()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
+
   const onConfirmClick = () => {
     if (!mapAnnotation) {
       return
     }
     upsertMapAnnotations({
       ...mapAnnotation,
-      id: mapAnnotation.id || Date.now(),
+      id: mapAnnotation?.id || Date.now(),
     })
     resetMapAnnotation()
     dispatchQueryParams({ mapAnnotationsVisible: true })
   }
 
   const onDeleteClick = () => {
-    deleteMapAnnotation(mapAnnotation.id)
+    deleteMapAnnotation(mapAnnotation?.id)
     resetMapAnnotation()
   }
 

@@ -9,7 +9,7 @@ import { selectFilteredEventsWithMainPortVisit } from './activity-by-type.select
 const calculateQuantity = {
   [EventTypes.Encounter]: (events: RenderedEvent[]) => events.length ?? 0,
   [EventTypes.Fishing]: (events: RenderedEvent[]) =>
-    events?.reduce((p, c) => p + c.duration ?? 0, 0) ?? 0,
+    events?.reduce((p, c) => (c.duration ? p + c.duration : p), 0),
   [EventTypes.Loitering]: (events: RenderedEvent[]) => events.length ?? 0,
   [EventTypes.Port]: (events: RenderedEvent[]) =>
     Math.ceil(events.filter((event) => !event?.subEvent).length ?? 0),
