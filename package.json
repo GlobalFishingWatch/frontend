@@ -270,12 +270,7 @@
     "gaxios@npm:^6.0.0": "patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch",
     "gaxios@npm:^6.1.1": "patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch",
     "gl-matrix": "3.3.0",
-    "minimist": "1.2.6",
-    "mkdirp": "1.0.4",
-    "node-fetch": "2.6.7",
-    "tslib": "2.6.3",
-    "underscore": "1.12.1",
-    "webpack-sources": "3.2.3"
+    "node-fetch": "2.7.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
