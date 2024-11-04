@@ -74,7 +74,7 @@ const MapWrapper = (): React.ReactElement => {
         <Map
           id="map"
           style={style}
-          mapLib={maplibregl}
+          mapLib={maplibregl as any}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           zoom={viewport.zoom}

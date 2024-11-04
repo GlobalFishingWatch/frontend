@@ -66,7 +66,7 @@ export const trackDatasetConfigsCallback = (
               value: chunk.end,
             },
           ]
-          const trackMetadata = { ...trackWithThinning.metadata } || {}
+          const trackMetadata = { ...(trackWithThinning.metadata || {}) }
 
           trackChunk.metadata = {
             ...trackMetadata,

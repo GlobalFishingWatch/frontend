@@ -150,7 +150,7 @@ function readData(_: unknown, data: unknown[], pbf: Pbf) {
 }
 
 export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
-  const { buffersLength } = options?.fourwings || {}
+  const { buffersLength } = options?.fourwings || ({} as ParseFourwingsOptions)
   if (!buffersLength?.length) {
     return []
   }
@@ -166,7 +166,7 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
       )
       start += length
       return new Pbf(buffer).readFields(readData, [])[0]
-    }),
+    }) as FourwingsRawData[],
     options
   )
 }
