@@ -18,6 +18,7 @@ import {
   selectWorkspaceId,
   selectIsMapDrawing,
   selectIsVesselGroupReportLocation,
+  selectIsAnyVesselLocation,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
@@ -137,6 +138,7 @@ function App() {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   const onMenuClick = useCallback(() => {
@@ -167,7 +169,8 @@ function App() {
   const locationNeedsFetch =
     locationType === REPORT ||
     locationType === VESSEL_GROUP_REPORT ||
-    (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
+    ((locationType === WORKSPACE_REPORT || isAnyVesselLocation) &&
+      currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
 
   useEffect(() => {
