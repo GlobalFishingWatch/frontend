@@ -2975,7 +2975,7 @@ __metadata:
     lodash: "npm:4.17.21"
     luxon: "npm:3.5.0"
     mapbox-gl: "npm:empty-npm-package@1.0.0"
-    match-sorter: "npm:7.0.0"
+    match-sorter: "npm:8.0.0"
     material-react-table: "npm:3.0.1"
     memoize-one: "npm:6.0.0"
     mjolnir.js: "npm:2.7.3"
@@ -21557,13 +21557,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"match-sorter@npm:7.0.0":
-  version: 7.0.0
-  resolution: "match-sorter@npm:7.0.0"
+"match-sorter@npm:8.0.0":
+  version: 8.0.0
+  resolution: "match-sorter@npm:8.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.23.8"
     remove-accents: "npm:0.5.0"
-  checksum: 10/2c49e05918c96dd15aa66323739ae5657bcf16e15e4dc93c1f28745df83090810e875012e348c9405dbe3eaf9e2ffdf64f73d6eea454c5debb48bce31d3c3bf9
+  checksum: 10/6138ce25f253d16a4638b71c9d5ceef86113cdfc8af40cc1315445f7b4ce52be9dc3f8bd1f9e34ddefdf6b63b9ba19ee4db95aa52198c067c55fd2d67d7b74fe
   languageName: node
   linkType: hard
 
