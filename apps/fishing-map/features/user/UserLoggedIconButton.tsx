@@ -8,6 +8,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 type UserLoggedIconButton = IconButtonProps & {
   loginTooltip?: string
   onAddToVesselGroup?: (vesselGroupId: string) => void
+  keepOpenWhileAdding?: boolean
   onToggleClick?: () => void
 }
 
@@ -15,6 +16,7 @@ const UserLoggedIconButton = ({
   loginTooltip,
   onAddToVesselGroup,
   onToggleClick,
+  keepOpenWhileAdding,
   ...props
 }: UserLoggedIconButton) => {
   const { t } = useTranslation()

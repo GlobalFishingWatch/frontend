@@ -282,6 +282,7 @@ const VesselIdentity = () => {
               REGISTRY_FIELD_GROUPS.map((registryField) => {
                 return (
                   <VesselRegistryField
+                    key={registryField.key}
                     registryField={registryField}
                     vesselIdentity={vesselIdentity}
                   />
