@@ -84,7 +84,7 @@
     }
   },
   "release": {
-    "projects": ["!linting", "libs/*", "!libs/i18n-labels", "!apps/*", "apps/fishing-map"],
+    "projects": ["!linting", "libs/*", "!libs/i18n-labels", "!apps/*"],
     "projectsRelationship": "independent",
     "releaseTagPattern": "@gfw/{projectName}@{version}",
     "changelog": {
