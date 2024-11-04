@@ -120,7 +120,7 @@ const nextConfig = {
   // outputFileTracing: true,
   outputFileTracingRoot: join(__dirname, '../../'),
   experimental: {
-    reactCompiler: true,
+    // reactCompiler: true,
     esmExternals: true,
     optimizePackageImports: [
       '@globalfishingwatch/api-client',
