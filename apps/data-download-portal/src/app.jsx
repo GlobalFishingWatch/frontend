@@ -56,10 +56,10 @@ const App = () => {
             <Router basename={basename}>
               <Suspense fallback={<Loader />}>
                 <Routes>
-                  <Route exact path="/" element={Home} />
-                  <Route path="/datasets/:datasetId" element={Dataset} />
-                  <Route path="/report/:reportId" element={Report} />
-                  <Navigate to="/" />
+                  <Route exact path="/" element={<Home />} />
+                  <Route path="/datasets/:datasetId" element={<Dataset />} />
+                  <Route path="/report/:reportId" element={<Report />} />
+                  <Route path="*" element={<Navigate replace to="/" />} />
                 </Routes>
               </Suspense>
             </Router>
