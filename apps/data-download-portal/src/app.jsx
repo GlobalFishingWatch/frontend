@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, Fragment, useEffect, useState } from 'react'
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Navigate, Routes } from 'react-router-dom'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Footer } from '@globalfishingwatch/ui-components'
 import { useGFWLogin } from './components/login/use-login'
@@ -55,12 +55,12 @@ const App = () => {
           <div className={styles.column}>
             <Router basename={basename}>
               <Suspense fallback={<Loader />}>
-                <Switch>
-                  <Route exact path="/" component={Home} />
-                  <Route path="/datasets/:datasetId" component={Dataset} />
-                  <Route path="/report/:reportId" component={Report} />
-                  <Redirect to="/" />
-                </Switch>
+                <Routes>
+                  <Route exact path="/" element={Home} />
+                  <Route path="/datasets/:datasetId" element={Dataset} />
+                  <Route path="/report/:reportId" element={Report} />
+                  <Navigate to="/" />
+                </Routes>
               </Suspense>
             </Router>
           </div>
