@@ -442,12 +442,21 @@ export const fetchClusterEventThunk = createAsyncThunk(
       }
       const interactionUrl = resolveEndpoint(eventsDataset, datasetConfig)
       if (interactionUrl) {
-        const response = await GFWAPI.fetch<APIPagination<FourwingsInteraction[]>>(interactionUrl, {
-          signal,
-        })
+        const response = await GFWAPI.fetch<APIPagination<FourwingsEventsInteraction[]>>(
+          interactionUrl,
+          {
+            signal,
+          }
+        )
         interactionResponse = response.entries[0]
         // TODO:deck remove this hardcoded id once the api responds
-        eventId = response.entries[0][0].id
+        eventId = response.entries[0][0]?.id
+        if (groupBy === 'portIdAndVesselId' && response.entries[0][0]?.portId) {
+          interactionId = response.entries[0][0]?.portId
+        }
+        if (!eventId) {
+          return rejectWithValue(`No event id found for interaction`)
+        }
       }
     }
     if (groupBy === 'portIdAndVesselId') {
@@ -456,6 +465,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
         DatasetTypes.Vessels,
         !guestUser
       )?.map((r) => r.id) as string[]
+
       if (!infoDatasetIds?.length) {
         return rejectWithValue(
           `No info related datasets found in events datasets: ${JSON.stringify(eventsDataset)}`
@@ -467,6 +477,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
       if (!getDatasetByIdsThunk.fulfilled.match(getDatasetsAction)) {
         return rejectWithValue(getDatasetsAction.error)
       }
+
       const infoDatasets = getDatasetsAction.payload.flatMap((v) => v)
       const vesselIds = (interactionResponse as FourwingsEventsInteraction[])!
         ?.sort((a, b) => b.events - a.events)
@@ -505,7 +516,6 @@ export const fetchClusterEventThunk = createAsyncThunk(
         vessels,
       } as ExtendedFeatureByVesselEvent
     } else {
-      // TODO:deck get the event dataset from related
       if (eventsDataset && eventId) {
         const datasetConfig = {
           datasetId: eventsDataset.id,
@@ -793,8 +803,8 @@ const slice = createSlice({
         state.apiEventStatus = AsyncReducerStatus.Idle
       } else {
         state.apiEventStatus = AsyncReducerStatus.Error
-        if (action.error.message) {
-          state.apiEventError = action.error.message
+        if (action.payload) {
+          state.apiEventError = action.payload as string
         }
       }
     })
