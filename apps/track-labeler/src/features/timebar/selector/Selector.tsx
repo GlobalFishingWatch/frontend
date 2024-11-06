@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Select, SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components'
+import { Select, SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components/select'
 import { selectProject } from '../../../routes/routes.selectors'
 import { Field } from '../../../data/models'
 import { useTimebarModeConnect } from '../timebar.hooks'

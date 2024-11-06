@@ -1,28 +1,3 @@
-import path from 'path'
-// import { defineConfig } from 'vitest/config'
-// import react from '@vitejs/plugin-react'
-
-// export default defineConfig({
-//   plugins: [react()],
-//   test: {
-//     globals: true,
-//     environment: 'jsdom',
-//     setupFiles: ['./src/setupTests.ts'],
-//     coverage: {
-//       provider: 'v8',
-//       reporter: ['text', 'json', 'html'],
-//     },
-//     include: ['src/**/*.{test,spec}.{js,jsx,ts,tsx}'],
-//   },
-//   resolve: {
-//     alias: {
-//       'src': path.resolve(__dirname, './src'),
-//       // Add other aliases matching vite.config.ts
-//     }
-//   }
-// }) 
-
-
 /// <reference types='vitest' />
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
@@ -34,7 +9,7 @@ import 'dotenv/config'
 
 export default defineConfig({
   root: __dirname,
-  cacheDir: '../../node_modules/.vite/apps/image-labeler',
+  cacheDir: '../../node_modules/.vite/apps/track-labeler',
 
   server: {
     port: 3000,
@@ -46,29 +21,13 @@ export default defineConfig({
     host: 'localhost',
   },
 
-  // resolve: {
-  //   alias: {
-  //     'src': path.resolve(__dirname, './src'),
-  //     'assets': path.resolve(__dirname, './src/assets'),
-  //     'components': path.resolve(__dirname, './src/components'),
-  //     'features': path.resolve(__dirname, './src/features'),
-  //     'types': path.resolve(__dirname, './src/types'),
-  //     'utils': path.resolve(__dirname, './src/utils'),
-  //     'data': path.resolve(__dirname, './src/data'),
-  //     'routes': path.resolve(__dirname, './src/routes'),
-  //   }
-  // },
-
   plugins: [
     react(),
-    svgr({
-      svgrOptions: { exportType: 'default', ref: true, svgo: false, titleProp: true },
-      include: '**/*.svg',
-    }),
+    svgr(),
     nxViteTsPaths(),
     TanStackRouterVite({
-      routesDirectory: './apps/image-labeler/src/routes',
-      generatedRouteTree: './apps/image-labeler/src/routeTree.gen.ts',
+      routesDirectory: './apps/track-labeler/src/routes',
+      generatedRouteTree: './apps/track-labeler/src/routeTree.gen.ts',
     }),
     viteStaticCopy({
       targets: [
@@ -90,7 +49,7 @@ export default defineConfig({
   // },
 
   build: {
-    outDir: '../../dist/apps/image-labeler',
+    outDir: '../../dist/apps/track-labeler',
     reportCompressedSize: true,
     commonjsOptions: {
       transformMixedEsModules: true,
@@ -113,7 +72,7 @@ export default defineConfig({
 
   //   reporters: ['default'],
   //   coverage: {
-  //     reportsDirectory: '../../coverage/apps/image-labeler',
+  //     reportsDirectory: '../../coverage/apps/track-labeler',
   //     provider: 'v8',
   //   },
   // },

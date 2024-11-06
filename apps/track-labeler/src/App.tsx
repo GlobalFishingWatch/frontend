@@ -1,12 +1,13 @@
 import React, { lazy, useState, Fragment, Suspense } from 'react'
 import { useSelector } from 'react-redux'
-import {SplitView} from '@globalfishingwatch/ui-components'
+import { SplitView } from '@globalfishingwatch/ui-components/split-view'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 import Loader from '././features/loader/loader'
 import { MapboxRefProvider } from '././features/map/map.context'
 import { LOGIN } from './routes/routes'
 import Login from '././features/login/Login'
 import { getLocationType } from './routes/routes.selectors'
-// import '@globalfishingwatch/ui-components/dist/base.css'
+import '@globalfishingwatch/ui-components/base.css'
 
 const Main = lazy(() => import(`././features/main/main.container`))
 const Sidebar = lazy(() => import(`././features/sidebar/sidebar.container`))
@@ -33,7 +34,7 @@ function App(): React.ReactElement {
   const sidebarContent = (
     <Suspense fallback={<Fragment />}>
       <Sidebar />
-    </Suspense> 
+    </Suspense>
   )
 
   // Just an effect to init the labeler
@@ -55,7 +56,7 @@ function App(): React.ReactElement {
         aside={sidebarContent}
         main={mainContent}
         asideWidth="44rem"
-        className="split-container" 
+        className="split-container"
       />
     </MapboxRefProvider>
   )

@@ -11,7 +11,10 @@ import { filterSegmentsByTimerange, segmentsToBbox } from '@globalfishingwatch/d
 import brand from '../../assets/images/brand.png'
 import { selectedtracks, SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
 import { selectProject } from '../../routes/routes.selectors'
-import { getVesselInfo, getVesselTrackGeojsonByDateRange } from '../../features/tracks/tracks.selectors'
+import {
+  getVesselInfo,
+  getVesselTrackGeojsonByDateRange,
+} from '../../features/tracks/tracks.selectors'
 import { useViewport } from '../../features/map/map.hooks'
 import { useMapboxInstance } from '../../features/map/map.context'
 import { disableHighlightedEvent, setHighlightedEvent } from '../../features/timebar/timebar.slice'

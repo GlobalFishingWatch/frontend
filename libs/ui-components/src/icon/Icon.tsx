@@ -11,9 +11,7 @@ const IconComponents = icons.reduce((acc, icon) => {
     import(
       /* webpackChunkName: "icon-[request]" */
       `./icons/${icon}.svg?react`
-    ).then((m) => ({
-      default: m.ReactComponent || m.default || m,
-    }))
+    ).then((m) => ({ default: m.ReactComponent || m.default || m }))
   )
   return acc
 }, {} as Record<IconType, any>)
