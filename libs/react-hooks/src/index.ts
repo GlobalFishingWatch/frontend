@@ -1,7 +1,7 @@
 export * from './use-analytics'
 export * from './use-debounce'
 export * from './use-event-listener'
-// export * from './use-layer-composer'
+export * from './use-layer-composer'
 // export * from './use-map-interaction'
 // export * from './use-map-legend'
 export * from './use-local-storage'
