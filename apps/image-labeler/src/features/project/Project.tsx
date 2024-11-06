@@ -1,9 +1,10 @@
 import { Link, getRouteApi, useNavigate } from '@tanstack/react-router'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import uniqBy from 'lodash/uniqBy'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { Slider } from '@globalfishingwatch/ui-components/slider'
 import { Button } from '@globalfishingwatch/ui-components/button'
+import { Switch } from '@globalfishingwatch/ui-components/switch'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks/use-local-storage'
 import {
@@ -21,9 +22,10 @@ export function Project() {
   const { projectId } = route.useParams()
   const { activeTaskId } = route.useSearch()
   const navigate = useNavigate({ from: routePath })
-  const [imageStyleEditorOpen, setImageStyleOpen] = useState<Boolean>(false)
-  const [imageStyleSaturation, setImageStyleSaturation] = useLocalStorage('saturation', 1.5)
+  const [imageStyleEditorOpen, setImageStyleOpen] = useLocalStorage('imageStyleEditorOpen', true)
+  const [imageStyleSaturation, setImageStyleSaturation] = useLocalStorage('saturation', 1)
   const [imageStyleContrast, setImageStyleContrast] = useLocalStorage('contrast', 1)
+  const [showEnhancedImage, setShowEnhancedImage] = useLocalStorage('showEnhancedImage', true)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialActiveTaskId = useMemo(() => activeTaskId as string | undefined, [])
@@ -132,8 +134,17 @@ export function Project() {
       >
         {imageStyleEditorOpen && (
           <div className={styles.editorContent}>
+            <div className={styles.switch}>
+              <Switch
+                active={showEnhancedImage}
+                onClick={() => {
+                  setShowEnhancedImage(!showEnhancedImage)
+                }}
+              />
+              <label>show enhanced image</label>
+            </div>
             <Slider
-              label="Saturation"
+              label="original image Saturation"
               config={{
                 min: 0,
                 max: 4,
@@ -141,10 +152,11 @@ export function Project() {
               }}
               initialValue={imageStyleSaturation}
               onChange={(value) => setImageStyleSaturation(value)}
+              thumbsSize="small"
               className={styles.slider}
             />
             <Slider
-              label="Contrast"
+              label="original image contrast"
               config={{
                 min: 0,
                 max: 4,
@@ -152,6 +164,7 @@ export function Project() {
               }}
               initialValue={imageStyleContrast}
               onChange={(value) => setImageStyleContrast(value)}
+              thumbsSize="small"
               className={styles.slider}
             />
           </div>
