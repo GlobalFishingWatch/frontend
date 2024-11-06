@@ -9,6 +9,7 @@ import {
   selectIsAnyReportLocation,
   selectIsAnySearchLocation,
   selectIsAnyVesselLocation,
+  selectIsPortReportLocation,
   selectIsUserLocation,
   selectIsVesselGroupReportLocation,
   selectIsWorkspacesListLocation,
@@ -26,6 +27,9 @@ import SidebarHeader from './SidebarHeader'
 
 const AreaReport = dynamic(
   () => import(/* webpackChunkName: "Report" */ 'features/reports/areas/AreaReport')
+)
+const PortsReport = dynamic(
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/ports/PortsReport')
 )
 const VesselGroupReport = dynamic(
   () => import(/* webpackChunkName: "Report" */ 'features/reports/vessel-groups/VesselGroupReport')
@@ -56,6 +60,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const dataviewsResources = useSelector(selectDataviewsResources)
   const isAreaReportLocation = useSelector(selectIsAnyReportLocation)
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const userLogged = useSelector(selectIsUserLogged)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -107,6 +112,10 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       return <AreaReport />
     }
 
+    if (isPortReportLocation) {
+      return <PortsReport />
+    }
+
     if (isVesselGroupReportLocation) {
       return <VesselGroupReport />
     }
@@ -119,6 +128,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   }, [
     highlightedWorkspacesStatus,
     isAreaReportLocation,
+    isPortReportLocation,
     isSearchLocation,
     isUserLocation,
     isVesselGroupReportLocation,

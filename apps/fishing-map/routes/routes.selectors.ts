@@ -15,6 +15,7 @@ import {
   WORKSPACES_LIST,
   WORKSPACE_SEARCH,
   VESSEL_GROUP_REPORT,
+  PORT_REPORT,
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -56,6 +57,11 @@ const selectIsWorkspaceReportLocation = createSelector(
 export const selectIsAnyReportLocation = createSelector(
   [selectIsReportLocation, selectIsWorkspaceReportLocation],
   (isReportLocation, isWorkspaceReportLocation) => isReportLocation || isWorkspaceReportLocation
+)
+
+export const selectIsPortReportLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === PORT_REPORT
 )
 
 export const selectIsVesselGroupReportLocation = createSelector(

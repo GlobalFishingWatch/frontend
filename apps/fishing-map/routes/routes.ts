@@ -22,6 +22,7 @@ export const VESSEL = 'VESSEL'
 export const WORKSPACE_VESSEL = 'WORKSPACE_VESSEL'
 export const REPORT = 'REPORT'
 export const VESSEL_GROUP_REPORT = 'VESSEL_GROUP_REPORT'
+export const PORT_REPORT = 'PORT_REPORT'
 export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
 export const REPORT_ROUTES = [REPORT, WORKSPACE_REPORT]
@@ -39,6 +40,7 @@ export type ROUTE_TYPES =
   | typeof SEARCH
   | typeof WORKSPACE_SEARCH
   | typeof REPORT
+  | typeof PORT_REPORT
 
 const MAX_URL_LENGTH_SUPPORTED = 11000
 const confirmLeave = (state: any, action: any) => {
@@ -85,6 +87,9 @@ export const routesMap: RoutesMap = {
   },
   [VESSEL_GROUP_REPORT]: {
     path: '/:category/:workspaceId/vessel-group-report/:vesselGroupId',
+  },
+  [PORT_REPORT]: {
+    path: '/:category/:workspaceId/port-report/:portId',
   },
   [NOT_FOUND]: {
     path: '',

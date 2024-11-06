@@ -19,6 +19,7 @@ import VesselPin from 'features/vessel/VesselPin'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { getEventDescriptionComponent } from 'utils/events'
+import PortsReportLink from 'features/reports/ports/PortsReportLink'
 import { useMapViewState } from '../../map-viewport.hooks'
 import {
   ExtendedEventVessel,
@@ -209,6 +210,11 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
             vesselProperty="events"
           />
         )}
+        <PortsReportLink portId={event?.id}>
+          <Button size="small" className={styles.btnLarge}>
+            See port report TODO:translate
+          </Button>
+        </PortsReportLink>
       </div>
     </div>
   )
