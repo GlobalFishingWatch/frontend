@@ -44,3 +44,11 @@
 .year.highlighted:hover {
   background: var(--color-primary-blue);
 }
+
+.last {
+  height: 0.8rem;
+  width: 0.8rem;
+  border-radius: 0.4rem;
+  transform: translateX(0.6rem);
+  background: var(--color-danger-red);
+}

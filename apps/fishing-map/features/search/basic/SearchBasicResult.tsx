@@ -323,6 +323,7 @@ function SearchBasicResult({
                   firstYearOfData={FIRST_YEAR_OF_DATA}
                   locale={i18n.language as Locale}
                   onYearHover={onYearHover}
+                  showLastTimePoint
                 />
               </div>
             )}
