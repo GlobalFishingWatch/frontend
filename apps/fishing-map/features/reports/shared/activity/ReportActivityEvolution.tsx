@@ -16,9 +16,9 @@ import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { formatEvolutionData } from 'features/reports/activity/reports-activity-timeseries.utils'
-import { ReportActivityProps } from 'features/reports/activity/ReportActivityGraph'
-import { tickFormatter } from '../areas/area-reports.utils'
+import { formatEvolutionData } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
+import { ReportActivityProps } from 'features/reports/shared/activity/ReportActivityGraph'
+import { tickFormatter } from 'features/reports/areas/area-reports.utils'
 import styles from './ReportActivityEvolution.module.css'
 
 type ReportGraphTooltipProps = {

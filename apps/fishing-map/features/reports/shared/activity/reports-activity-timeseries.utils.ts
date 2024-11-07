@@ -7,11 +7,11 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import {
   ReportGraphMode,
   ReportGraphProps,
-} from 'features/reports/activity/reports-activity-timeseries.hooks'
-import { FilteredPolygons } from 'features/reports/activity/reports-activity-geo.utils'
+} from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
+import { FilteredPolygons } from 'features/reports/shared/activity/reports-activity-geo.utils'
 import { DateTimeSeries } from 'features/reports/areas/area-reports.hooks'
 import { getUTCDateTime } from 'utils/dates'
-import { ComparisonGraphData } from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
+import { ComparisonGraphData } from 'features/reports/shared/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
 
 export interface TimeSeriesFrame {

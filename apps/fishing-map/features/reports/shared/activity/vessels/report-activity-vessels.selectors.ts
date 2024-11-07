@@ -27,7 +27,7 @@ import {
 import {
   cleanFlagState,
   cleanVesselOrGearType,
-} from 'features/reports/activity/vessels/report-activity-vessels.utils'
+} from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
 import { getVesselGearTypeLabel } from 'utils/info'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 

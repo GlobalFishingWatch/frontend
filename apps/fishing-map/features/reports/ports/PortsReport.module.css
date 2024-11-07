@@ -7,15 +7,9 @@
   border-bottom: var(--border);
 }
 
-.summary {
+.title {
   font: var(--font-L);
-  color: var(--color-secondary-blue);
-  margin-bottom: var(--space-M);
-}
-
-.summary strong {
-  font-weight: 400;
-  color: var(--color-primary-blue);
+  font-size: 2.2rem;
 }
 
 .flex {

@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { InputDate, InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
-import { useReportTimeCompareConnect } from 'features/reports/activity/reports-activity-timecomparison.hooks'
+import { useReportTimeCompareConnect } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
@@ -12,7 +12,7 @@ import {
   MAX_MONTHS_TO_COMPARE,
   MAX_DAYS_TO_COMPARE,
 } from 'features/reports/areas/area-reports.config'
-import { selectReportTimeComparison } from '../areas/area-reports.config.selectors'
+import { selectReportTimeComparison } from 'features/reports/areas/area-reports.config.selectors'
 import styles from './ReportActivityBeforeAfter.module.css'
 
 export default function ReportActivityBeforeAfter() {

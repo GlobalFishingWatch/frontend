@@ -15,7 +15,7 @@ import { lowerCase } from 'es-toolkit'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import VGREventsSubsectionSelector from 'features/reports/vessel-groups/events/VGREventsSubsectionSelector'
-import VGREventsGraph from 'features/reports/events/EventsReportGraph'
+import VGREventsGraph from 'features/reports/shared/events/EventsReportGraph'
 import {
   selectVGREventsVesselFilter,
   selectVGREventsVesselsProperty,
@@ -24,9 +24,9 @@ import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import VesselGroupReportVesselsGraph from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsGraph'
 import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import VGREventsVesselPropertySelector from 'features/reports/events/EventsReportVesselPropertySelector'
-import VGREventsVesselsTable from 'features/reports/events/EventsReportVesselsTable'
-import ReportVesselsFilter from 'features/reports/activity/vessels/ReportVesselsFilter'
+import VGREventsVesselPropertySelector from 'features/reports/shared/events/EventsReportVesselPropertySelector'
+import VGREventsVesselsTable from 'features/reports/shared/events/EventsReportVesselsTable'
+import ReportVesselsFilter from 'features/reports/shared/activity/vessels/ReportVesselsFilter'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import {
@@ -41,10 +41,10 @@ import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/ve
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
-import ReportEventsPlaceholder from 'features/reports/placeholders/ReportEventsPlaceholder'
+import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
 import { selectVGREventsVesselsPaginated } from 'features/reports/vessel-groups/events/vgr-events.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import VGREventsVesselsTableFooter from '../../events/EventsReportVesselsTableFooter'
+import VGREventsVesselsTableFooter from '../../shared/events/EventsReportVesselsTableFooter'
 import styles from './VGREvents.module.css'
 
 function VGREvents() {

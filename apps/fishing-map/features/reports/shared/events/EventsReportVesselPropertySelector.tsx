@@ -6,7 +6,7 @@ import {
   VGREventsVesselsProperty,
 } from 'features/vessel-groups/vessel-groups.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { PortsReportState } from '../ports/ports-report.types'
+import { PortsReportState } from '../../ports/ports-report.types'
 
 function EventsReportVesselPropertySelector({
   property,

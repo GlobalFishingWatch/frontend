@@ -19,8 +19,8 @@ import {
 import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
-import { selectHasReportVessels } from 'features/reports/activity/vessels/report-activity-vessels.selectors'
-import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
+import { selectHasReportVessels } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
 import { parseReportUrl } from 'features/reports/areas/area-reports.utils'
@@ -28,7 +28,7 @@ import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
   setDateRangeHash,
-} from 'features/reports/activity/reports-activity.slice'
+} from 'features/reports/shared/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectReportAreaId,
@@ -45,10 +45,10 @@ import {
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
-import ReportActivityGraph from 'features/reports/activity/ReportActivityGraph'
+import ReportActivityGraph from 'features/reports/shared/activity/ReportActivityGraph'
 import { useFetchReportVessel } from 'features/reports/areas/area-reports.hooks'
-import ReportVessels from 'features/reports/activity/vessels/ReportVessels'
-import ReportDownload from 'features/reports/activity/download/ReportDownload'
+import ReportVessels from 'features/reports/shared/activity/vessels/ReportVessels'
+import ReportDownload from 'features/reports/shared/activity/download/ReportDownload'
 import styles from 'features/reports/areas/AreaReport.module.css'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'

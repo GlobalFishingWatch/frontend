@@ -18,9 +18,9 @@ import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { getUTCDateTime } from 'utils/dates'
 import { formatDate, tickFormatter } from 'features/reports/areas/area-reports.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { selectReportTimeComparison } from 'features/reports/areas/area-reports.config.selectors'
+import { ReportActivityTimeComparison } from 'features/reports/areas/area-reports.types'
 import { toFixed } from 'utils/shared'
-import { selectReportTimeComparison } from '../areas/area-reports.config.selectors'
-import { ReportActivityTimeComparison } from '../areas/area-reports.types'
 import styles from './ReportActivityEvolution.module.css'
 
 interface ComparisonGraphData {

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
@@ -19,8 +19,8 @@ import { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import {
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,
-} from 'features/reports/activity/vessels/report-activity-vessels.selectors'
-import { cleanFlagState } from 'features/reports/activity/vessels/report-activity-vessels.utils'
+} from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
+import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
 import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
 import styles from './ReportVesselsGraph.module.css'
 

@@ -2,16 +2,20 @@ import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
 import { useTranslation } from 'react-i18next'
-import EventsReportGraph from 'features/reports/events/EventsReportGraph'
+import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import { selectReportPortId } from 'routes/routes.selectors'
-import EventsReportVesselPropertySelector from 'features/reports/events/EventsReportVesselPropertySelector'
-import EventsReportVesselsTable from 'features/reports/events/EventsReportVesselsTable'
+import EventsReportVesselPropertySelector from 'features/reports/shared/events/EventsReportVesselPropertySelector'
+import EventsReportVesselsTable from 'features/reports/shared/events/EventsReportVesselsTable'
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
-import ReportEventsPlaceholder from 'features/reports/placeholders/ReportEventsPlaceholder'
+import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import ReportVesselsFilter from 'features/reports/shared/activity/vessels/ReportVesselsFilter'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import EventsReportVesselsTableFooter from 'features/reports/shared/events/EventsReportVesselsTableFooter'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import EventsReportVesselsGraph from '../vessel-groups/vessels/VesselGroupReportVesselsGraph'
-import ReportVesselsFilter from '../activity/vessels/ReportVesselsFilter'
-import EventsReportVesselsTableFooter from '../events/EventsReportVesselsTableFooter'
 import styles from './PortsReport.module.css'
 import { useFetchPortsReport } from './ports-report.hooks'
 import {
@@ -24,7 +28,7 @@ import {
   selectPortReportVesselsFilter,
   selectPortReportVesselsProperty,
 } from './ports-report.config.selectors'
-import { selectPortsReportData } from './ports-report.slice'
+import { selectPortsReportData, selectPortsReportStatus } from './ports-report.slice'
 
 function PortsReport() {
   useFetchPortsReport()
@@ -36,6 +40,7 @@ function PortsReport() {
   const { start, end } = useSelector(selectTimeRange)
   const portsReportPagination = useSelector(selectPortReportVesselsPagination)
   const portsReportData = useSelector(selectPortsReportData)
+  const portsReportDataStatus = useSelector(selectPortsReportStatus)
   const portsReportVesselsGrouped = useSelector(selectPortReportVesselsGrouped)
   const portsReportVesselsPaginated = useSelector(selectPortReportVesselsPaginated)
   const {
@@ -54,34 +59,9 @@ function PortsReport() {
       skip: !portId,
     }
   )
-  const isLoading = statsStatus === 'pending'
-
-  // if (!vesselDatasets.length) {
-  //   return (
-  //     <Fragment>
-  //       <div className={styles.selector}>
-  //         <VGREventsSubsectionSelector />
-  //       </div>
-  //       <ReportEventsPlaceholder />
-  //     </Fragment>
-  //   )
-  // }
-
-  // if (datasetsWithoutRelatedEvents.length >= 1) {
-  //   return (
-  //     <div className={styles.disclaimer}>
-  //       <Icon icon="warning" type="warning" />
-  //       {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-  //         defaultValue:
-  //           '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
-  //         features: t('common.Events', 'Events'),
-  //         datasets: Array.from(datasetsWithoutRelatedEvents)
-  //           .map((d) => getDatasetLabel(d))
-  //           .join(', '),
-  //       })}
-  //     </div>
-  //   )
-  // }
+  const isPortsStatsLoading = statsStatus === 'pending'
+  const isPortsReportDataLoading = portsReportDataStatus === AsyncReducerStatus.Loading
+  const isLoading = isPortsStatsLoading && isPortsReportDataLoading
 
   // TODO:PORTS
   const color = '#9AEEFF'
@@ -106,45 +86,61 @@ function PortsReport() {
       {totalEvents > 0 ? (
         <Fragment>
           <div className={styles.container}>
-            <h2 className={styles.summary}>{portsReportData.portName}</h2>
-            <EventsReportGraph
-              color={color}
-              start={start}
-              end={end}
-              timeseries={data.timeseries || []}
-            />
+            {isPortsReportDataLoading ? (
+              <ReportTitlePlaceholder />
+            ) : (
+              <h1 className={styles.title}>{portsReportData.portName}</h1>
+            )}
           </div>
           <div className={styles.container}>
-            <div className={styles.flex}>
-              <label>{t('common.vessels', 'Vessels')}</label>
-              <EventsReportVesselPropertySelector
-                property={portReportVesselsProperty}
-                propertyQueryParam="portsReportVesselsProperty"
-              />
-            </div>
-            <EventsReportVesselsGraph
-              data={portsReportVesselsGrouped}
-              color={color}
-              property={portReportVesselsProperty}
-              filterQueryParam="portsReportVesselsFilter"
-              pageQueryParam="portsReportVesselsPage"
-            />
-            <ReportVesselsFilter
-              filter={portReportVesselFilter}
-              filterQueryParam="portsReportVesselsFilter"
-              pageQueryParam="portsReportVesselsPage"
-            />
-            <EventsReportVesselsTable vessels={portsReportVesselsPaginated} />
-            {portsReportData?.vessels && portsReportData?.vessels?.length > 0 && (
-              <EventsReportVesselsTableFooter
-                pageQueryParam="portsReportVesselsPage"
-                resultsPerPageQueryParam="portsReportVesselsResultsPerPage"
-                vessels={portsReportData.vessels}
-                filter={portReportVesselFilter}
-                pagination={portsReportPagination}
+            {isPortsStatsLoading ? (
+              <div className={styles.container}>
+                <ReportActivityPlaceholder showHeader={false} />
+              </div>
+            ) : (
+              <EventsReportGraph
+                color={color}
+                start={start}
+                end={end}
+                timeseries={data.timeseries || []}
               />
             )}
           </div>
+          {isPortsReportDataLoading ? (
+            <ReportVesselsPlaceholder />
+          ) : (
+            <div className={styles.container}>
+              <div className={styles.flex}>
+                <label>{t('common.vessels', 'Vessels')}</label>
+                <EventsReportVesselPropertySelector
+                  property={portReportVesselsProperty}
+                  propertyQueryParam="portsReportVesselsProperty"
+                />
+              </div>
+              <EventsReportVesselsGraph
+                data={portsReportVesselsGrouped}
+                color={color}
+                property={portReportVesselsProperty}
+                filterQueryParam="portsReportVesselsFilter"
+                pageQueryParam="portsReportVesselsPage"
+              />
+              <ReportVesselsFilter
+                filter={portReportVesselFilter}
+                filterQueryParam="portsReportVesselsFilter"
+                pageQueryParam="portsReportVesselsPage"
+              />
+              <EventsReportVesselsTable vessels={portsReportVesselsPaginated} />
+              {portsReportData?.vessels && portsReportData?.vessels?.length > 0 && (
+                <EventsReportVesselsTableFooter
+                  pageQueryParam="portsReportVesselsPage"
+                  resultsPerPageQueryParam="portsReportVesselsResultsPerPage"
+                  vessels={portsReportData.vessels}
+                  filter={portReportVesselFilter}
+                  pagination={portsReportPagination}
+                />
+              )}
+            </div>
+          )}
         </Fragment>
       ) : (
         <div className={styles.emptyState}>

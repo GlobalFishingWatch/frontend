@@ -23,7 +23,7 @@ import {
   tickFormatter,
 } from 'features/reports/areas/area-reports.utils'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { selectReportTimeComparison } from '../areas/area-reports.config.selectors'
+import { selectReportTimeComparison } from 'features/reports/areas/area-reports.config.selectors'
 import styles from './ReportActivityEvolution.module.css'
 
 const DIFFERENCE = 'difference'

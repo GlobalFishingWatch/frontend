@@ -25,12 +25,12 @@ import { getReportCategoryFromDataview } from 'features/reports/areas/area-repor
 import {
   resetReportData,
   selectReportVesselsStatus,
-} from 'features/reports/activity/reports-activity.slice'
+} from 'features/reports/shared/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
-import { useSetTimeseries } from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { useSetTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import ActivityReport from 'features/reports/activity/ReportActivity'
+import ActivityReport from 'features/reports/shared/activity/ReportActivity'
 import ReportTitle from 'features/reports/areas/title/ReportTitle'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import ReportSummary from 'features/reports/areas/summary/ReportSummary'

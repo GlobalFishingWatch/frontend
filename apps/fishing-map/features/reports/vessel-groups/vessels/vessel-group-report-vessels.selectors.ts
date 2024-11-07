@@ -30,7 +30,7 @@ import {
   selectVGRVesselsOrderProperty,
   selectVGRVesselsSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { cleanFlagState } from 'features/reports/activity/vessels/report-activity-vessels.utils'
+import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'

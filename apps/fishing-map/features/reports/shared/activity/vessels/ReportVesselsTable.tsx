@@ -16,10 +16,10 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { ReportActivityUnit } from 'features/reports/areas/AreaReport'
-import { selectReportVesselsPaginated } from 'features/reports/activity/vessels/report-activity-vessels.selectors'
+import { selectReportVesselsPaginated } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
-import ReportVesselsTableFooter from 'features/reports/activity/vessels/ReportVesselsTableFooter'
-import styles from 'features/reports/activity/vessels/ReportVesselsTable.module.css'
+import ReportVesselsTableFooter from 'features/reports/shared/activity/vessels/ReportVesselsTableFooter'
+import styles from 'features/reports/shared/activity/vessels/ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {
   activityUnit: ReportActivityUnit

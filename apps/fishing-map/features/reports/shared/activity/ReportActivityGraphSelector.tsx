@@ -10,10 +10,10 @@ import {
 } from 'data/config'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
-import { useSetReportTimeComparison } from 'features/reports/activity/reports-activity-timecomparison.hooks'
+import { useSetReportTimeComparison } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportActivityGraph } from '../areas/area-reports.config.selectors'
-import { ReportActivityGraph } from '../areas/area-reports.types'
+import { selectReportActivityGraph } from 'features/reports/areas/area-reports.config.selectors'
+import { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
 
 type ReportActivityGraphSelectorProps = {
   loading: boolean

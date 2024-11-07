@@ -2,7 +2,7 @@ import cx from 'classnames'
 import { Fragment } from 'react'
 import styles from './placeholders.module.css'
 
-export default function ReportTitlePlaceholder() {
+export default function VGRTitlePlaceholder() {
   return (
     <Fragment>
       <div className={styles.paragraph}>

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import ReportVesselsGraphSelector from 'features/reports/activity/vessels/ReportVesselsGraphSelector'
+import ReportVesselsGraphSelector from 'features/reports/shared/activity/vessels/ReportVesselsGraphSelector'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'

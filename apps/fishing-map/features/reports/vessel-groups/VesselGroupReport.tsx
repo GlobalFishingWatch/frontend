@@ -22,7 +22,7 @@ import {
   useFitAreaInViewport,
   useReportAreaCenter,
   useVesselGroupBounds,
-} from '../areas/area-reports.hooks'
+} from 'features/reports/areas/area-reports.hooks'
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'

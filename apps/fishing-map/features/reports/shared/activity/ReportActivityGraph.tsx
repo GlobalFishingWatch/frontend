@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import ReportActivityGraphSelector from 'features/reports/activity/ReportActivityGraphSelector'
+import ReportActivityGraphSelector from 'features/reports/shared/activity/ReportActivityGraphSelector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   getReportGraphMode,
@@ -9,18 +9,18 @@ import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
-} from 'features/reports/activity/reports-activity-timeseries.hooks'
+} from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { selectTimeComparisonValues } from 'features/reports/areas/area-reports.selectors'
-import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
-import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
-import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
+import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import ReportActivityPeriodComparison from 'features/reports/shared/activity/ReportActivityPeriodComparison'
+import ReportActivityPeriodComparisonGraph from 'features/reports/shared/activity/ReportActivityPeriodComparisonGraph'
 import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useFitAreaInViewport,
   useReportAreaBounds,
 } from 'features/reports/areas/area-reports.hooks'
-import { selectReportActivityGraph } from '../areas/area-reports.config.selectors'
-import { ReportActivityGraph } from '../areas/area-reports.types'
+import { selectReportActivityGraph } from 'features/reports/areas/area-reports.config.selectors'
+import { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'

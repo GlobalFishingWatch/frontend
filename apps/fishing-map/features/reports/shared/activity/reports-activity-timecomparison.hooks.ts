@@ -17,8 +17,8 @@ import {
 import {
   selectReportActivityGraph,
   selectReportTimeComparison,
-} from '../areas/area-reports.config.selectors'
-import { ReportActivityGraph } from '../areas/area-reports.types'
+} from 'features/reports/areas/area-reports.config.selectors'
+import { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
 
 // TODO get this from start and endDate from datasets
 const MIN_DATE = AVAILABLE_START.slice(0, 10)

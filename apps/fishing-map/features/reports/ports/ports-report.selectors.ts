@@ -1,10 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { getVesselsFiltered } from '../areas/area-reports.utils'
+import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
+import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { REPORT_FILTER_PROPERTIES } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
-import { MAX_CATEGORIES } from '../areas/area-reports.config'
 import { selectPortsReportVessels } from './ports-report.slice'
 import {
   selectPortReportVesselsFilter,

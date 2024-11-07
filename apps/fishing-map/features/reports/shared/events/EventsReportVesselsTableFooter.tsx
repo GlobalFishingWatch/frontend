@@ -13,8 +13,8 @@ import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-repor
 import { VesselsPagination } from 'features/reports/vessel-groups/events/vgr-events.selectors'
 import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTableFooter.module.css'
 import { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
-import { PortsReportState } from '../ports/ports-report.types'
-import { EventsStatsVessel } from '../ports/ports-report.slice'
+import { PortsReportState } from '../../ports/ports-report.types'
+import { EventsStatsVessel } from '../../ports/ports-report.slice'
 
 export default function EventsReportVesselsTableFooter({
   vessels,

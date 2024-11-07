@@ -48,7 +48,7 @@ import { selectSearchOption, selectSearchQuery } from 'features/search/search.co
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { resetReportData } from 'features/reports/activity/reports-activity.slice'
+import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportsStatus } from 'features/reports/areas/area-reports.slice'
 import { selectCurrentReport } from 'features/app/selectors/app.reports.selector'
