@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import cx from 'classnames'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { VesselGroupEventsStatsResponseGroups } from 'queries/vessel-group-events-stats-api'
+import { ReportEventsStatsResponseGroups } from 'queries/report-events-stats-api'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
 import { formatInfoField } from 'utils/info'
@@ -13,6 +13,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.types'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
+import { PortsReportState } from 'features/reports/ports/ports-report.types'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
@@ -146,11 +147,15 @@ export default function VesselGroupReportVesselsGraph({
   filterQueryParam,
   pageQueryParam,
 }: {
-  data: VesselGroupEventsStatsResponseGroups
+  data: ReportEventsStatsResponseGroups
   color?: string
   property: VesselGroupReportVesselsGraphProperty
-  filterQueryParam: keyof VesselGroupReportState
-  pageQueryParam: keyof VesselGroupReportState
+  filterQueryParam:
+    | keyof Pick<VesselGroupReportState, 'vGRVesselFilter' | 'vGREventsVesselFilter'>
+    | keyof Pick<PortsReportState, 'portsReportVesselsFilter'>
+  pageQueryParam:
+    | keyof Pick<VesselGroupReportState, 'vGRVesselPage' | 'vGREventsVesselPage'>
+    | keyof Pick<PortsReportState, 'portsReportVesselsPage'>
 }) {
   return (
     <Fragment>

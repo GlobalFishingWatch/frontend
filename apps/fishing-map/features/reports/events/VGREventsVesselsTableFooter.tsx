@@ -10,52 +10,63 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import { formatInfoField } from 'utils/info'
-import {
-  selectVGREventsVessels,
-  selectVGREventsVesselsPagination,
-} from 'features/reports/events/vgr-events.selectors'
+import { VesselsPagination } from 'features/reports/events/vgr-events.selectors'
 import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTableFooter.module.css'
-import { selectVGREventsVesselFilter } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
+import { PortsReportState } from '../ports/ports-report.types'
+import { EventsStatsVessel } from '../ports/ports-report.slice'
 
-export default function VesselGroupReportVesselsTableFooter() {
+export default function VesselGroupReportVesselsTableFooter({
+  vessels,
+  filter,
+  pagination,
+  pageQueryParam = 'vGREventsVesselPage',
+  resultsPerPageQueryParam = 'vGREventsResultsPerPage',
+}: {
+  vessels: EventsStatsVessel[]
+  filter: string
+  pagination: VesselsPagination
+  pageQueryParam?:
+    | keyof Pick<VesselGroupReportState, 'vGREventsVesselPage'>
+    | keyof Pick<PortsReportState, 'portsReportVesselsPage'>
+  resultsPerPageQueryParam?:
+    | keyof Pick<VesselGroupReportState, 'vGREventsResultsPerPage'>
+    | keyof Pick<PortsReportState, 'portsReportVesselsResultsPerPage'>
+}) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroup = useSelector(selectVGRData)
-  const allVessels = useSelector(selectVGREventsVessels)
-  const reportVesselFilter = useSelector(selectVGREventsVesselFilter)
-  const pagination = useSelector(selectVGREventsVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
 
-  if (!allVessels?.length) return null
+  if (!vessels?.length) return null
 
   const onDownloadVesselsClick = () => {
-    const vessels = allVessels?.map((vessel) => {
+    const vesselsCopy = vessels?.map((vessel) => {
       const { ...rest } = vessel
       return rest
     })
-    if (vessels?.length) {
+    if (vesselsCopy?.length) {
       //   trackEvent({
       //     category: TrackCategory.Analysis,
       //     action: `Click 'Download CSV'`,
       //     label: `region name: ${reportAreaName} | timerange: ${start} - ${end} | filters: ${reportVesselFilter}`,
       //   })
-      const csv = unparseCSV(vessels)
+      const csv = unparseCSV(vesselsCopy)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
       saveAs(blob, `${vesselGroup?.name}-${start}-${end}.csv`)
     }
   }
 
   const onPrevPageClick = () => {
-    dispatchQueryParams({ vGREventsVesselPage: pagination.page - 1 })
+    dispatchQueryParams({ [pageQueryParam]: pagination.page - 1 })
   }
   const onNextPageClick = () => {
-    dispatchQueryParams({ vGREventsVesselPage: pagination.page + 1 })
+    dispatchQueryParams({ [pageQueryParam]: pagination.page + 1 })
   }
   const onShowMoreClick = () => {
     dispatchQueryParams({
-      vGREventsResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-      vGREventsVesselPage: 0,
+      [resultsPerPageQueryParam]: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      [pageQueryParam]: 0,
     })
     // trackEvent({
     //   category: TrackCategory.Analysis,
@@ -64,8 +75,8 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
   const onShowLessClick = () => {
     dispatchQueryParams({
-      vGREventsResultsPerPage: REPORT_VESSELS_PER_PAGE,
-      reportVesselPage: 0,
+      [resultsPerPageQueryParam]: REPORT_VESSELS_PER_PAGE,
+      [pageQueryParam]: 0,
     })
     // trackEvent({
     //   category: TrackCategory.Analysis,
@@ -130,7 +141,7 @@ export default function VesselGroupReportVesselsTableFooter() {
             </label>
           </button>
           <span className={cx(styles.noWrap, styles.right)}>
-            {reportVesselFilter && (
+            {filter && (
               <Fragment>
                 <I18nNumber number={pagination.totalFiltered} /> {t('common.of', 'of')}{' '}
               </Fragment>

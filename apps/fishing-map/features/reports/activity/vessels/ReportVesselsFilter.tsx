@@ -6,12 +6,21 @@ import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectLocationType } from 'routes/routes.selectors'
+import { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
+import { PortsReportState } from 'features/reports/ports/ports-report.types'
+import { AreaReportState } from 'features/reports/areas/area-reports.types'
 import styles from './ReportVesselsFilter.module.css'
 
 type ReportVesselsFilterProps = {
   filter: string
-  filterQueryParam: string
-  pageQueryParam: string
+  filterQueryParam:
+    | keyof Pick<AreaReportState, 'reportVesselFilter'>
+    | keyof Pick<VesselGroupReportState, 'vGRVesselFilter' | 'vGREventsVesselFilter'>
+    | keyof Pick<PortsReportState, 'portsReportVesselsFilter'>
+  pageQueryParam:
+    | keyof Pick<AreaReportState, 'reportVesselPage'>
+    | keyof Pick<VesselGroupReportState, 'vGRVesselPage' | 'vGREventsVesselPage'>
+    | keyof Pick<PortsReportState, 'portsReportVesselsPage'>
 }
 
 export default function ReportVesselsFilter({

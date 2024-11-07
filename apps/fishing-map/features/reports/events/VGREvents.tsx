@@ -4,16 +4,15 @@ import { Fragment } from 'react'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
 import {
-  useGetVesselGroupEventsStatsQuery,
-  useGetVesselGroupEventsVesselsQuery,
-  VesselGroupEventsStatsResponseGroups,
-  VesselGroupEventsVesselsParams,
-} from 'queries/vessel-group-events-stats-api'
+  ReportEventsStatsResponseGroups,
+  ReportEventsVesselsParams,
+  ReportEventsStatsParams,
+  useGetReportEventsStatsQuery,
+  useGetReportEventsVesselsQuery,
+} from 'queries/report-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import { lowerCase } from 'es-toolkit'
-import { useDebounce } from 'use-debounce'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import VGREventsSubsectionSelector from 'features/reports/events/VGREventsSubsectionSelector'
 import VGREventsGraph from 'features/reports/events/VGREventsGraph'
@@ -22,7 +21,6 @@ import {
   selectVGREventsVesselsProperty,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselGroupReportVesselsGraph from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsGraph'
 import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -36,15 +34,18 @@ import {
   selectVGREventsVessels,
   selectVGREventsVesselsFlags,
   selectVGREventsVesselsGrouped,
+  selectVGREventsVesselsPagination,
 } from 'features/reports/events/vgr-events.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
-import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
 import ReportEventsPlaceholder from 'features/reports/placeholders/ReportEventsPlaceholder'
+import { selectVGREventsVesselsPaginated } from 'features/reports/events/vgr-events.selectors'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import styles from './VGREvents.module.css'
+import VGREventsVesselsTableFooter from './VGREventsVesselsTableFooter'
 
 function VGREvents() {
   const { t } = useTranslation()
@@ -55,17 +56,15 @@ function VGREvents() {
   const vesselsWithEvents = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
   const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
-  const { start, end } = useTimerangeConnect()
-  const startMillis = DateTime.fromISO(start).toMillis()
-  const endMillis = DateTime.fromISO(end).toMillis()
-  const interval = getFourwingsInterval(startMillis, endMillis)
+  const vesselsPaginated = useSelector(selectVGREventsVesselsPaginated)
+  const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
-  const [debouncedStart] = useDebounce(start, 500)
-  const [debouncedEnd] = useDebounce(end, 500)
+  const reportVesselFilter = useSelector(selectVGREventsVesselFilter)
+  const pagination = useSelector(selectVGREventsVesselsPagination)
   const params = useSelector(selectFetchVGREventsVesselsParams)
-  const { status: vessselStatus } = useGetVesselGroupEventsVesselsQuery(
-    params as VesselGroupEventsVesselsParams,
+  const { status: vessselStatus } = useGetReportEventsVesselsQuery(
+    params as ReportEventsVesselsParams,
     {
       skip: !params,
     }
@@ -74,15 +73,11 @@ function VGREvents() {
     data,
     error,
     status: statsStatus,
-  } = useGetVesselGroupEventsStatsQuery(
+  } = useGetReportEventsStatsQuery(
     {
+      ...params,
       includes: ['TIME_SERIES'],
-      dataview: eventsDataview!,
-      vesselGroupId,
-      interval,
-      start: debouncedStart,
-      end: debouncedEnd,
-    },
+    } as ReportEventsStatsParams,
     {
       skip: !vesselGroupId || !eventsDataview,
     }
@@ -174,17 +169,19 @@ function VGREvents() {
               color={color}
               start={start}
               end={end}
-              interval={interval}
               timeseries={data.timeseries || []}
             />
           </div>
           <div className={styles.container}>
             <div className={styles.flex}>
               <label>{t('common.vessels', 'Vessels')}</label>
-              <VGREventsVesselPropertySelector />
+              <VGREventsVesselPropertySelector
+                property={vesselsGroupByProperty}
+                propertyQueryParam="vGREventsVesselsProperty"
+              />
             </div>
             <VesselGroupReportVesselsGraph
-              data={vesselGroups as VesselGroupEventsStatsResponseGroups}
+              data={vesselGroups as ReportEventsStatsResponseGroups}
               color={eventsDataview?.config?.color}
               property={vesselsGroupByProperty}
               filterQueryParam="vGREventsVesselFilter"
@@ -195,7 +192,14 @@ function VGREvents() {
               filterQueryParam="vGREventsVesselFilter"
               pageQueryParam="vGREventsVesselPage"
             />
-            <VGREventsVesselsTable />
+            <VGREventsVesselsTable vessels={vesselsPaginated} />
+            {vesselsWithEvents && vesselsWithEvents.length > 0 && (
+              <VGREventsVesselsTableFooter
+                vessels={vesselsWithEvents}
+                filter={reportVesselFilter}
+                pagination={pagination}
+              />
+            )}
           </div>
         </Fragment>
       ) : (

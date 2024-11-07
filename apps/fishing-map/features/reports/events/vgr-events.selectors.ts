@@ -1,11 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit'
 import {
-  selectVesselGroupEventsStatsApiSlice,
-  selectVesselGroupEventsVessels,
-  VesselGroupEventsVesselsParams,
-  VesselGroupEventsVesselsResponseItem,
-} from 'queries/vessel-group-events-stats-api'
+  selectReportEventsStatsApiSlice,
+  selectReportEventsVessels,
+  ReportEventsVesselsParams,
+  ReportEventsVesselsResponseItem,
+} from 'queries/report-events-stats-api'
 import { groupBy } from 'es-toolkit'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -23,6 +25,7 @@ import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-grou
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { t } from 'features/i18n/i18n'
+import { EventsStatsVessel } from '../ports/ports-report.slice'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],
@@ -30,22 +33,27 @@ export const selectFetchVGREventsVesselsParams = createSelector(
     if (!eventsDataview) {
       return
     }
+
+    const dataset = eventsDataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
     return {
-      dataview: eventsDataview,
-      vesselGroupId: reportVesselGroupId,
+      dataset: dataset,
+      filters: {
+        vesselGroupId: reportVesselGroupId,
+        ...getDataviewFilters(eventsDataview),
+      },
       start,
       end,
-    } as VesselGroupEventsVesselsParams
+    } as ReportEventsVesselsParams
   }
 )
 
 export const selectVGREventsVesselsData = createSelector(
-  [selectVesselGroupEventsStatsApiSlice, selectFetchVGREventsVesselsParams],
-  (vesselGroupEventsStatsApi, params) => {
+  [selectReportEventsStatsApiSlice, selectFetchVGREventsVesselsParams],
+  (reportEventsStatsApi, params) => {
     if (!params) {
       return
     }
-    return selectVesselGroupEventsVessels(params)({ vesselGroupEventsStatsApi })?.data
+    return selectReportEventsVessels(params)({ reportEventsStatsApi })?.data
   }
 )
 
@@ -56,7 +64,7 @@ export const selectVGREventsVessels = createSelector(
       return
     }
 
-    let eventsByVesel: Record<string, VesselGroupEventsVesselsResponseItem> = {}
+    let eventsByVesel: Record<string, ReportEventsVesselsResponseItem> = {}
 
     data.forEach((eventsStat) => {
       const vessel = vesselGroup.vessels.find((v) => v.vesselId === eventsStat.vesselId)
@@ -75,17 +83,18 @@ export const selectVGREventsVessels = createSelector(
         return []
       }
       const identity = getSearchIdentityResolved(vessel.identity!)
-
+      const shipName = formatInfoField(identity.shipname, 'shipname') as string
       return {
         ...vesselWithEvents,
         ...identity,
+        shipName,
         geartype:
           (identity.geartypes || [])
             .sort()
             .map((g) => formatInfoField(g, 'geartypes'))
             .join(', ') || OTHER_CATEGORY_LABEL,
         flagTranslated: t(`flags:${identity.flag as string}` as any),
-      }
+      } as EventsStatsVessel
     })
     return insightVessels.sort((a, b) => b.numEvents - a.numEvents)
   }
@@ -106,6 +115,7 @@ export const selectVGREventsVesselsPaginated = createSelector(
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
   }
 )
+
 type GraphDataGroup = {
   name: string
   value: number
@@ -160,6 +170,7 @@ export const selectVGREventsVesselsGrouped = createSelector(
     ] as GraphDataGroup[]
   }
 )
+
 export const selectVGREventsVesselsFlags = createSelector([selectVGREventsVessels], (vessels) => {
   if (!vessels?.length) return null
   let flags = new Set<string>()
@@ -171,6 +182,14 @@ export const selectVGREventsVesselsFlags = createSelector([selectVGREventsVessel
   return flags
 })
 
+export type VesselsPagination = {
+  page: number
+  offset: number
+  resultsPerPage: number
+  resultsNumber: number
+  totalFiltered: number
+  total: number
+}
 export const selectVGREventsVesselsPagination = createSelector(
   [
     selectVGREventsVesselsPaginated,
@@ -179,7 +198,7 @@ export const selectVGREventsVesselsPagination = createSelector(
     selectVGREventsVesselPage,
     selectVGREventsResultsPerPage,
   ],
-  (vessels, allVessels, allVesselsFiltered, page = 0, resultsPerPage) => {
+  (vessels, allVessels, allVesselsFiltered, page = 0, resultsPerPage): VesselsPagination => {
     return {
       page,
       offset: resultsPerPage * page,

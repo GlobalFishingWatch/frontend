@@ -12,7 +12,7 @@ import min from 'lodash/min'
 import max from 'lodash/max'
 import { DateTime, Duration, DurationUnit } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -64,19 +64,18 @@ const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 export default function VGREventsGraph({
   color = COLOR_PRIMARY_BLUE,
   end,
-  interval,
   start,
   timeseries,
 }: {
   color?: string
   end: string
-  interval: FourwingsInterval
   start: string
   timeseries: { date: string; value: number }[]
 }) {
   const { t } = useTranslation()
   const startMillis = DateTime.fromISO(start).toMillis()
   const endMillis = DateTime.fromISO(end).toMillis()
+  const interval = getFourwingsInterval(startMillis, endMillis)
 
   const domain = useMemo(() => {
     if (start && end && interval) {

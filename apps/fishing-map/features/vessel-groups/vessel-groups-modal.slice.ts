@@ -70,7 +70,7 @@ const fetchSearchVessels = async ({
 }
 
 const SEARCH_PAGINATION = 50
-const fetchAllSearchVessels = async (params: FetchSearchVessels) => {
+export const fetchAllSearchVessels = async (params: FetchSearchVessels) => {
   let searchResults = [] as IdentityVessel[]
   let pendingResults = true
   let paginationToken = ''

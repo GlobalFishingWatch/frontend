@@ -10,15 +10,17 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectVGREventsVesselsPaginated } from 'features/reports/events/vgr-events.selectors'
-import VGREventsVesselsTableFooter from 'features/reports/events/VGREventsVesselsTableFooter'
 import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTable.module.css'
+import { EventsStatsVessel } from '../ports/ports-report.slice'
 
-export default function VesselGroupReportEventsVesselsTable() {
+export default function VesselGroupReportEventsVesselsTable({
+  vessels,
+}: {
+  vessels: EventsStatsVessel[]
+}) {
   const { t } = useTranslation()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { dispatchQueryParams } = useLocationConnect()
-  const vessels = useSelector(selectVGREventsVesselsPaginated)
 
   const onPinClick = ({
     vesselInWorkspace,
@@ -90,7 +92,6 @@ export default function VesselGroupReportEventsVesselsTable() {
           })}
         </div>
       </div>
-      <VGREventsVesselsTableFooter />
     </Fragment>
   )
 }

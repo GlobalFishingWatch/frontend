@@ -89,7 +89,7 @@ export const routesMap: RoutesMap = {
     path: '/:category/:workspaceId/vessel-group-report/:vesselGroupId',
   },
   [PORT_REPORT]: {
-    path: '/:category/:workspaceId/port-report/:portId',
+    path: '/:category/:workspaceId/ports-report/:portId',
   },
   [NOT_FOUND]: {
     path: '',

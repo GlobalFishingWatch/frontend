@@ -1,44 +1,136 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { stringify } from 'qs'
+import { getQueryParamsResolved } from 'queries/base'
+import {
+  ReportEventsVesselsResponse,
+  ReportEventsVesselsResponseItem,
+} from 'queries/report-events-stats-api'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
+import {
+  DEFAULT_VESSEL_IDENTITY_ID,
+  INCLUDES_RELATED_SELF_REPORTED_INFO_ID,
+} from 'features/vessel/vessel.config'
+import { fetchAllSearchVessels } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { getSearchIdentityResolved, getVesselIdentities } from 'features/vessel/vessel.utils'
+import { VesselLastIdentity } from 'features/search/search.slice'
+import { t } from 'features/i18n/i18n'
+import { formatInfoField } from 'utils/info'
+import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
 
-interface ReportState {
+export type EventsStatsVessel = ReportEventsVesselsResponseItem &
+  VesselLastIdentity & {
+    shipName: string
+    geartype: string
+    flagTranslated: string
+  }
+
+type PortReportData = {
+  portId: string
+  portName: string
+  portCountry: string
+  vessels: EventsStatsVessel[] | null
+}
+interface PortReportState {
   status: AsyncReducerStatus
   statusId: string
   error: AsyncError | null
-  data: IdentityVessel[] | null
+  data: PortReportData
 }
 
-type PortsReportSliceState = { vesselGroupReport: ReportState }
+type PortsReportSliceState = { portsReport: PortReportState }
 
-const initialState: ReportState = {
+const dataInitialState: PortReportData = {
+  portId: '',
+  portName: '',
+  portCountry: '',
+  vessels: null,
+}
+const initialState: PortReportState = {
   status: AsyncReducerStatus.Idle,
   statusId: '',
   error: null,
-  data: null,
+  data: dataInitialState,
 }
 
 type FetchPortsReportThunkParams = {
   portId: string
+  datasetId: string
+  start: string
+  end: string
 }
 
 export const fetchPortsReportThunk = createAsyncThunk(
-  'vessel-group-report/vessels',
-  async ({ portId }: FetchPortsReportThunkParams, { rejectWithValue, signal }) => {
+  'ports-report/vessels',
+  async (
+    { portId, datasetId, start, end }: FetchPortsReportThunkParams,
+    { rejectWithValue, signal }
+  ) => {
     try {
-      const portVesselsIds = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${portId}`)
-      const params = {
-        'vessel-groups': [portId],
-        includes: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+      const vesselEventsParams = {
+        'start-date': start,
+        'end-date': end,
+        'port-ids': [portId],
+        dataset: datasetId,
       }
-      const vesselGroupVessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(
-        `/vessels?${stringify(params)}`,
-        { cache: 'reload', signal }
+      const portEventsVesselStats = await GFWAPI.fetch<ReportEventsVesselsResponse>(
+        `/events/stats-by-vessel${getQueryParamsResolved(vesselEventsParams)}`
       )
-      return vesselGroupVessels.entries
+      const portsReportVessels = await fetchAllSearchVessels({
+        url: `/vessels/search${getQueryParamsResolved({
+          includes: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+        })}`,
+        body: {
+          datasets: [DEFAULT_VESSEL_IDENTITY_ID],
+          ids: portEventsVesselStats.map((v) => v.vesselId),
+        },
+        signal,
+      })
+      const vesselsIncluded = new Set()
+      const portReportVesselsWithEvents = portsReportVessels.flatMap((vessel) => {
+        const identity = getSearchIdentityResolved(vessel)
+        const identities = getVesselIdentities(vessel, {
+          identitySource: VesselIdentitySourceEnum.SelfReported,
+        })
+        if (!identities.length) {
+          return []
+        }
+        const ids = identities.map((i) => i.id)
+        if (ids.some((id) => vesselsIncluded.has(id))) {
+          return []
+        }
+
+        const eventsVessel = identities.reduce(
+          (acc, identity) => {
+            const vesselEvents = portEventsVesselStats.find((v) => v.vesselId === identity.id)
+            if (!vesselEvents || vesselsIncluded.has(vesselEvents.vesselId)) {
+              return acc
+            }
+            vesselsIncluded.add(vesselEvents.vesselId)
+            acc.numEvents += vesselEvents.numEvents
+            return acc
+          },
+          { numEvents: 0 } as ReportEventsVesselsResponseItem
+        )
+
+        return {
+          ...identity,
+          ...eventsVessel,
+          shipName: formatInfoField(identity.shipname, 'shipname') as string,
+          geartype:
+            (identity.geartypes || [])
+              .sort()
+              .map((g) => formatInfoField(g, 'geartypes'))
+              .join(', ') || OTHER_CATEGORY_LABEL,
+          flagTranslated: t(`flags:${identity.flag as string}` as any),
+        } as EventsStatsVessel
+      })
+      return {
+        portId,
+        portName: portEventsVesselStats[0].portName,
+        portCountry: portEventsVesselStats[0].portCountry,
+        vessels: portReportVesselsWithEvents.sort((a, b) => b.numEvents - a.numEvents),
+      } as PortReportData
     } catch (e) {
       console.warn(e)
       return rejectWithValue(e)
@@ -46,7 +138,7 @@ export const fetchPortsReportThunk = createAsyncThunk(
   },
   {
     condition: (params: FetchPortsReportThunkParams, { getState }) => {
-      const { status, statusId } = (getState() as PortsReportSliceState)?.vesselGroupReport
+      const { status, statusId } = (getState() as PortsReportSliceState)?.portsReport
       if (
         status === AsyncReducerStatus.Error ||
         status === AsyncReducerStatus.Loading ||
@@ -65,7 +157,7 @@ const portsReportSlice = createSlice({
   reducers: {
     resetPortsReportData: (state) => {
       state.status = AsyncReducerStatus.Idle
-      state.data = null
+      state.data = { ...dataInitialState }
       state.error = null
     },
   },
@@ -79,18 +171,22 @@ const portsReportSlice = createSlice({
       state.data = action.payload
     })
     builder.addCase(fetchPortsReportThunk.rejected, (state, action) => {
-      state.status = AsyncReducerStatus.Error
-      state.error = action.payload as AsyncError
+      if (action.error.message === 'Aborted') {
+        state.status = AsyncReducerStatus.Idle
+      } else {
+        state.status = AsyncReducerStatus.Error
+        state.error = action.payload as AsyncError
+      }
     })
   },
 })
 
 export const { resetPortsReportData } = portsReportSlice.actions
 
-export const selectPortsReportStatus = (state: PortsReportSliceState) =>
-  state.vesselGroupReport.status
-export const selectPortsReportError = (state: PortsReportSliceState) =>
-  state.vesselGroupReport.error
-export const selectPortsReportData = (state: PortsReportSliceState) => state.vesselGroupReport.data
+export const selectPortsReportStatus = (state: PortsReportSliceState) => state.portsReport.status
+export const selectPortsReportError = (state: PortsReportSliceState) => state.portsReport.error
+export const selectPortsReportData = (state: PortsReportSliceState) => state.portsReport.data
+export const selectPortsReportVessels = (state: PortsReportSliceState) =>
+  state.portsReport.data.vessels
 
 export default portsReportSlice.reducer

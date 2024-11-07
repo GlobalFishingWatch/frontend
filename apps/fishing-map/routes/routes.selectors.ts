@@ -128,6 +128,11 @@ export const selectReportVesselGroupId = createSelector(
   (payload) => payload?.vesselGroupId as string
 )
 
+export const selectReportPortId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.portId as string
+)
+
 export const selectLocationCategory = createSelector(
   [selectLocationPayload],
   (payload) => payload?.category as WorkspaceCategory

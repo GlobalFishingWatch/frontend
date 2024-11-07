@@ -1,12 +1,11 @@
-export type PortReportVesselsSubsection = 'flag' | 'shiptypes' | 'geartypes' | 'source'
+export type PortsReportVesselsProperty = 'flag' | 'geartype'
 
 export type PortsReportState = {
-  portsReportVesselsSubsection?: PortReportVesselsSubsection
-  portsReportVesselPage?: number
+  portsReportDatasetId?: string
+  portsReportVesselsProperty?: PortsReportVesselsProperty
+  portsReportVesselsPage?: number
   portsReportVesselsResultsPerPage?: number
-  portsReportVesselFilter?: string
-  portsReportVesselsOrderProperty?: string
-  portsReportVesselsOrderDirection?: string
+  portsReportVesselsFilter?: string
 }
 
 export type PortsReportStateProperty = keyof PortsReportState

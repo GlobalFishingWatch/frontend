@@ -12,17 +12,11 @@ function selectVGRStateProperty<P extends PortsReportStateProperty>(property: P)
   })
 }
 
-export const selectPortReportVesselsSubsection = selectVGRStateProperty(
-  'portsReportVesselsSubsection'
-)
-export const selectPortReportVesselFilter = selectVGRStateProperty('portsReportVesselFilter')
-export const selectPortReportVesselPage = selectVGRStateProperty('portsReportVesselPage')
+// TODO:PORTS navigate to portsReportDatasetId query param from sidebar
+export const selectPortReportDatasetId = selectVGRStateProperty('portsReportDatasetId')
+export const selectPortReportVesselsProperty = selectVGRStateProperty('portsReportVesselsProperty')
+export const selectPortReportVesselsFilter = selectVGRStateProperty('portsReportVesselsFilter')
+export const selectPortReportVesselsPage = selectVGRStateProperty('portsReportVesselsPage')
 export const selectPortReportVesselsResultsPerPage = selectVGRStateProperty(
   'portsReportVesselsResultsPerPage'
-)
-export const selectPortReportVesselsOrderProperty = selectVGRStateProperty(
-  'portsReportVesselsOrderProperty'
-)
-export const selectPortReportVesselsOrderDirection = selectVGRStateProperty(
-  'portsReportVesselsOrderDirection'
 )
