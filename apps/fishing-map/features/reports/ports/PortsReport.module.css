@@ -12,6 +12,22 @@
   font-size: 2.2rem;
 }
 
+.titleLabel {
+  line-height: 0.5;
+  margin-top: var(--space-S);
+}
+
+.summary {
+  font: var(--font-L);
+  color: var(--color-secondary-blue);
+  margin-bottom: var(--space-M);
+}
+
+.summary strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
 .flex {
   display: flex;
   align-items: center;
@@ -46,4 +62,28 @@
   justify-content: center;
   gap: var(--space-M);
   flex-direction: column;
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: var(--space-S);
+  padding: var(--space-L);
+  justify-content: center;
+  align-items: center;
+}
+
+.top {
+  justify-content: unset;
+  padding-top: 12rem;
 }

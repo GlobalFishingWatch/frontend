@@ -3,6 +3,8 @@ import { groupBy } from 'es-toolkit'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { REPORT_FILTER_PROPERTIES } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
 import { selectPortsReportVessels } from './ports-report.slice'
@@ -12,6 +14,13 @@ import {
   selectPortReportVesselsProperty,
   selectPortReportVesselsResultsPerPage,
 } from './ports-report.config.selectors'
+
+export const selectPortReportsDataview = createSelector([selectEventsDataviews], (dataviews) => {
+  if (!dataviews?.length) {
+    return
+  }
+  return dataviews.find(({ dataviewId }) => dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG)
+})
 
 export const selectPortReportVesselsFiltered = createSelector(
   [selectPortsReportVessels, selectPortReportVesselsFilter],
@@ -72,6 +81,20 @@ export const selectPortReportVesselsGrouped = createSelector(
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
     ] as GraphDataGroup[]
+  }
+)
+
+export const selectPortsReportVesselsFlags = createSelector(
+  [selectPortsReportVessels],
+  (vessels) => {
+    if (!vessels?.length) return null
+    let flags = new Set<string>()
+    vessels.forEach((vessel) => {
+      if (vessel.flagTranslated && vessel.flagTranslated !== 'null') {
+        flags.add(vessel.flagTranslated as string)
+      }
+    })
+    return flags
   }
 )
 

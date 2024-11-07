@@ -11,7 +11,10 @@ import {
   DEFAULT_VESSEL_IDENTITY_ID,
   INCLUDES_RELATED_SELF_REPORTED_INFO_ID,
 } from 'features/vessel/vessel.config'
-import { fetchAllSearchVessels } from 'features/vessel-groups/vessel-groups-modal.slice'
+import {
+  fetchAllSearchVessels,
+  SEARCH_PAGINATION,
+} from 'features/vessel-groups/vessel-groups-modal.slice'
 import { getSearchIdentityResolved, getVesselIdentities } from 'features/vessel/vessel.utils'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import { t } from 'features/i18n/i18n'
@@ -78,6 +81,7 @@ export const fetchPortsReportThunk = createAsyncThunk(
       )
       const portsReportVessels = await fetchAllSearchVessels({
         url: `/vessels/search${getQueryParamsResolved({
+          limit: SEARCH_PAGINATION,
           includes: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
         })}`,
         body: {

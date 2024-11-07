@@ -1,7 +1,7 @@
 import { Fragment, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
@@ -192,12 +192,20 @@ type PortVisitLayerProps = {
 }
 function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortVisitLayerProps) {
   const { datasetId, event, color } = feature
+  console.log('🚀 ~ PortVisitEventTooltipRow ~ event:', event)
   const title = getDatasetLabel({ id: datasetId! })
   return (
     <div className={styles.popupSection}>
       <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        TODO:PORTS add name and flag
+        <PortsReportLink portId={event?.id}>
+          <div className={styles.textContainer}>
+            {event?.id}
+            <IconButton size="small" icon="analysis" />
+          </div>
+        </PortsReportLink>
         {error && <p className={styles.error}>{error}</p>}
         {showFeaturesDetails && (
           <VesselsTable
@@ -210,11 +218,6 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
             vesselProperty="events"
           />
         )}
-        <PortsReportLink portId={event?.id}>
-          <Button size="small" className={styles.btnLarge}>
-            See port report TODO:translate
-          </Button>
-        </PortsReportLink>
       </div>
     </div>
   )

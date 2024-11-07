@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportPortId, selectUrlTimeRange } from 'routes/routes.selectors'
@@ -11,7 +11,7 @@ export function useFetchPortsReport() {
   const datasetId = useSelector(selectPortReportDatasetId)
   const { start, end } = useSelector(selectUrlTimeRange) || {}
 
-  useEffect(() => {
+  const fetchPortReport = useCallback(() => {
     if (portId && start && end) {
       dispatch(
         fetchPortsReportThunk({
@@ -24,5 +24,5 @@ export function useFetchPortsReport() {
     }
   }, [dispatch, end, portId, start, datasetId])
 
-  return
+  return fetchPortReport
 }

@@ -1,7 +1,11 @@
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { Fragment } from 'react'
 import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
 import { useTranslation } from 'react-i18next'
+import parse from 'html-react-parser'
+import { DateTime } from 'luxon'
+import { Button } from '@globalfishingwatch/ui-components'
 import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import { selectReportPortId } from 'routes/routes.selectors'
 import EventsReportVesselPropertySelector from 'features/reports/shared/events/EventsReportVesselPropertySelector'
@@ -15,13 +19,18 @@ import ReportActivityPlaceholder from 'features/reports/shared/placeholders/Repo
 import EventsReportVesselsTableFooter from 'features/reports/shared/events/EventsReportVesselsTableFooter'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatInfoField } from 'utils/info'
 import EventsReportVesselsGraph from '../vessel-groups/vessels/VesselGroupReportVesselsGraph'
 import styles from './PortsReport.module.css'
 import { useFetchPortsReport } from './ports-report.hooks'
 import {
+  selectPortReportsDataview,
   selectPortReportVesselsGrouped,
   selectPortReportVesselsPaginated,
   selectPortReportVesselsPagination,
+  selectPortsReportVesselsFlags,
 } from './ports-report.selectors'
 import {
   selectPortReportDatasetId,
@@ -31,8 +40,9 @@ import {
 import { selectPortsReportData, selectPortsReportStatus } from './ports-report.slice'
 
 function PortsReport() {
-  useFetchPortsReport()
+  const dispatchFetchReport = useFetchPortsReport()
   const { t } = useTranslation()
+  const dataview = useSelector(selectPortReportsDataview)
   const portId = useSelector(selectReportPortId)
   const datasetId = useSelector(selectPortReportDatasetId)
   const portReportVesselsProperty = useSelector(selectPortReportVesselsProperty)
@@ -40,6 +50,7 @@ function PortsReport() {
   const { start, end } = useSelector(selectTimeRange)
   const portsReportPagination = useSelector(selectPortReportVesselsPagination)
   const portsReportData = useSelector(selectPortsReportData)
+  const vesselFlags = useSelector(selectPortsReportVesselsFlags)
   const portsReportDataStatus = useSelector(selectPortsReportStatus)
   const portsReportVesselsGrouped = useSelector(selectPortReportVesselsGrouped)
   const portsReportVesselsPaginated = useSelector(selectPortReportVesselsPaginated)
@@ -61,20 +72,21 @@ function PortsReport() {
   )
   const isPortsStatsLoading = statsStatus === 'pending'
   const isPortsReportDataLoading = portsReportDataStatus === AsyncReducerStatus.Loading
+  const isPortsReportDataIdle = portsReportDataStatus === AsyncReducerStatus.Idle
   const isLoading = isPortsStatsLoading && isPortsReportDataLoading
-
-  // TODO:PORTS
-  const color = '#9AEEFF'
-  // let color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
-
-  // if (eventsDataview?.id === VESSEL_GROUP_ENCOUNTER_EVENTS_ID) {
-  //   color = 'rgb(247 222 110)' // Needed to make the graph lines more visible
-  // }
+  const color = dataview?.config?.color || '#9AEEFF'
 
   if (error || !data || isLoading) {
     return (
       <Fragment>
-        {isLoading && <ReportEventsPlaceholder />}
+        {isLoading && (
+          <Fragment>
+            <div className={styles.container}>
+              <ReportTitlePlaceholder />
+            </div>
+            <ReportEventsPlaceholder />
+          </Fragment>
+        )}
         {error && !isLoading ? <p className={styles.error}>{(error as any).message}</p> : null}
       </Fragment>
     )
@@ -86,13 +98,56 @@ function PortsReport() {
       {totalEvents > 0 ? (
         <Fragment>
           <div className={styles.container}>
-            {isPortsReportDataLoading ? (
+            {isLoading ? (
               <ReportTitlePlaceholder />
             ) : (
-              <h1 className={styles.title}>{portsReportData.portName}</h1>
+              <Fragment>
+                <h1 className={styles.title}>
+                  {formatInfoField(portsReportData.portName || portId, 'shipname')}
+                  {portsReportData.portCountry &&
+                    ` (${formatInfoField(portsReportData.portCountry, 'flag')})`}
+                </h1>
+              </Fragment>
             )}
           </div>
           <div className={styles.container}>
+            {isLoading ? (
+              <ReportTitlePlaceholder />
+            ) : portsReportData?.vessels?.length && vesselFlags?.size ? (
+              <h2 className={styles.summary}>
+                {parse(
+                  t('portsReport.summaryEvents', {
+                    defaultValue:
+                      '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> visited this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+                    vessels: formatI18nNumber(portsReportData?.vessels?.length || 0),
+                    flags: vesselFlags?.size,
+                    activityQuantity: totalEvents,
+                    start: formatI18nDate(start, {
+                      format: DateTime.DATE_MED,
+                    }),
+                    end: formatI18nDate(end, {
+                      format: DateTime.DATE_MED,
+                    }),
+                  })
+                )}
+              </h2>
+            ) : (
+              <h2 className={styles.summary}>
+                {parse(
+                  t('portsReport.summaryEventsShort', {
+                    defaultValue:
+                      '<strong>{{activityQuantity}}</strong> visits between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+                    activityQuantity: totalEvents,
+                    start: formatI18nDate(start, {
+                      format: DateTime.DATE_MED,
+                    }),
+                    end: formatI18nDate(end, {
+                      format: DateTime.DATE_MED,
+                    }),
+                  })
+                )}
+              </h2>
+            )}
             {isPortsStatsLoading ? (
               <div className={styles.container}>
                 <ReportActivityPlaceholder showHeader={false} />
@@ -106,7 +161,32 @@ function PortsReport() {
               />
             )}
           </div>
-          {isPortsReportDataLoading ? (
+
+          {isPortsReportDataIdle ? (
+            <ReportVesselsPlaceholder>
+              <div className={cx(styles.cover, styles.center, styles.top)}>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: t('portsReport.newTimeRange', {
+                      defaultValue:
+                        'Click the button to see the vessels that visited this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+                      start: formatI18nDate(start),
+                      end: formatI18nDate(end),
+                    }),
+                  }}
+                />
+                <Button
+                  onClick={() => {
+                    // TODO:PORTS save date range hash
+                    // dispatch(setDateRangeHash(''))
+                    dispatchFetchReport()
+                  }}
+                >
+                  {t('analysis.seeVessels', 'See vessels')}
+                </Button>
+              </div>
+            </ReportVesselsPlaceholder>
+          ) : isPortsReportDataLoading ? (
             <ReportVesselsPlaceholder />
           ) : (
             <div className={styles.container}>
