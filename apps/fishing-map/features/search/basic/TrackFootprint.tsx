@@ -128,8 +128,13 @@ function TrackFootprint({
         )
         fullContext.stroke()
       })
-      fullContext.lineWidth = 6 * densityMultiplier
-      fullContext.strokeStyle = '#ff3e62'
+      fullContext.lineWidth = 9 * densityMultiplier
+      fullContext.strokeStyle = '#42639C'
+      fullContext.beginPath()
+      fullPath(lastPosition)
+      fullContext.stroke()
+      fullContext.lineWidth = 5 * densityMultiplier
+      fullContext.strokeStyle = '#6aecf9'
       fullContext.beginPath()
       fullPath(lastPosition)
       fullContext.stroke()
