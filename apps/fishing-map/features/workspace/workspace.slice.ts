@@ -56,6 +56,7 @@ import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { DEFAULT_AREA_REPORT_STATE } from 'features/reports/areas/area-reports.config'
 import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { DEFAULT_PORT_REPORT_STATE } from 'features/reports/ports/ports-report.config'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -426,14 +427,15 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk<
   }
 })
 
+const ALL_REPORTS_STATE = {
+  ...DEFAULT_AREA_REPORT_STATE,
+  ...DEFAULT_VESSEL_GROUP_REPORT_STATE,
+  ...DEFAULT_PORT_REPORT_STATE,
+}
 export function cleanReportQuery(query: QueryParams) {
   return {
     ...query,
-    ...Object.keys(DEFAULT_AREA_REPORT_STATE).reduce((acc, key) => {
-      acc[key] = undefined
-      return acc
-    }, {} as Record<string, undefined>),
-    ...Object.keys(DEFAULT_VESSEL_GROUP_REPORT_STATE).reduce((acc, key) => {
+    ...Object.keys(ALL_REPORTS_STATE).reduce((acc, key) => {
       acc[key] = undefined
       return acc
     }, {} as Record<string, undefined>),

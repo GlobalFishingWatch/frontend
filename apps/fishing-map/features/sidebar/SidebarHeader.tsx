@@ -41,6 +41,7 @@ import {
   selectIsWorkspaceVesselLocation,
   selectIsAnyVesselLocation,
   selectIsVesselGroupReportLocation,
+  selectIsPortReportLocation,
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
@@ -67,6 +68,7 @@ import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils
 import { setModalOpen } from 'features/modals/modals.slice'
 import { useHighlightReportArea } from 'features/reports/areas/area-reports.hooks'
 import { resetVesselGroupReportData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { resetPortsReportData } from 'features/reports/ports/ports-report.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -361,6 +363,7 @@ function CloseReportButton() {
     dispatch(resetVesselGroupReportData())
     dispatch(resetAreaDetail(reportAreaIds))
     dispatch(cleanCurrentWorkspaceReportState())
+    dispatch(resetPortsReportData())
   }
 
   const isWorkspaceRoute = workspaceId !== undefined && workspaceId !== DEFAULT_WORKSPACE_ID
@@ -457,6 +460,7 @@ function SidebarHeader() {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
@@ -512,7 +516,8 @@ function SidebarHeader() {
     dispatchQueryParams({ searchOption: option.id, ...EMPTY_FILTERS, ...additionalParams })
   }
 
-  const showCloseReportButton = isReportLocation || isVesselGroupReportLocation
+  const showCloseReportButton =
+    isReportLocation || isVesselGroupReportLocation || isPortReportLocation
 
   return (
     <Sticky
