@@ -25,7 +25,7 @@ import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-grou
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { t } from 'features/i18n/i18n'
-import { EventsStatsVessel } from '../ports/ports-report.slice'
+import { EventsStatsVessel } from '../../ports/ports-report.slice'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],

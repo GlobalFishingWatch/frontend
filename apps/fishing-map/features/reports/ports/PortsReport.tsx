@@ -2,16 +2,16 @@ import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
 import { useTranslation } from 'react-i18next'
-import VGREventsGraph from 'features/reports/events/VGREventsGraph'
+import EventsReportGraph from 'features/reports/events/EventsReportGraph'
 import { selectReportPortId } from 'routes/routes.selectors'
-import VGREventsVesselPropertySelector from 'features/reports/events/VGREventsVesselPropertySelector'
-import VGREventsVesselsTable from 'features/reports/events/VGREventsVesselsTable'
+import EventsReportVesselPropertySelector from 'features/reports/events/EventsReportVesselPropertySelector'
+import EventsReportVesselsTable from 'features/reports/events/EventsReportVesselsTable'
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
 import ReportEventsPlaceholder from 'features/reports/placeholders/ReportEventsPlaceholder'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import VesselGroupReportVesselsGraph from '../vessel-groups/vessels/VesselGroupReportVesselsGraph'
+import EventsReportVesselsGraph from '../vessel-groups/vessels/VesselGroupReportVesselsGraph'
 import ReportVesselsFilter from '../activity/vessels/ReportVesselsFilter'
-import VGREventsVesselsTableFooter from '../events/VGREventsVesselsTableFooter'
+import EventsReportVesselsTableFooter from '../events/EventsReportVesselsTableFooter'
 import styles from './PortsReport.module.css'
 import { useFetchPortsReport } from './ports-report.hooks'
 import {
@@ -107,7 +107,7 @@ function PortsReport() {
         <Fragment>
           <div className={styles.container}>
             <h2 className={styles.summary}>{portsReportData.portName}</h2>
-            <VGREventsGraph
+            <EventsReportGraph
               color={color}
               start={start}
               end={end}
@@ -117,12 +117,12 @@ function PortsReport() {
           <div className={styles.container}>
             <div className={styles.flex}>
               <label>{t('common.vessels', 'Vessels')}</label>
-              <VGREventsVesselPropertySelector
+              <EventsReportVesselPropertySelector
                 property={portReportVesselsProperty}
                 propertyQueryParam="portsReportVesselsProperty"
               />
             </div>
-            <VesselGroupReportVesselsGraph
+            <EventsReportVesselsGraph
               data={portsReportVesselsGrouped}
               color={color}
               property={portReportVesselsProperty}
@@ -134,9 +134,9 @@ function PortsReport() {
               filterQueryParam="portsReportVesselsFilter"
               pageQueryParam="portsReportVesselsPage"
             />
-            <VGREventsVesselsTable vessels={portsReportVesselsPaginated} />
+            <EventsReportVesselsTable vessels={portsReportVesselsPaginated} />
             {portsReportData?.vessels && portsReportData?.vessels?.length > 0 && (
-              <VGREventsVesselsTableFooter
+              <EventsReportVesselsTableFooter
                 pageQueryParam="portsReportVesselsPage"
                 resultsPerPageQueryParam="portsReportVesselsResultsPerPage"
                 vessels={portsReportData.vessels}

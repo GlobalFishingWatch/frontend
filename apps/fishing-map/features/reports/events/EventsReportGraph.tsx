@@ -18,9 +18,9 @@ import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { tickFormatter } from 'features/reports/areas/area-reports.utils'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import styles from './VGREventsGraph.module.css'
+import styles from './EventsReportGraph.module.css'
 
-type VGREventsGraphTooltipProps = {
+type EventsReportGraphTooltipProps = {
   active: boolean
   payload: {
     name: string
@@ -36,7 +36,7 @@ type VGREventsGraphTooltipProps = {
 }
 
 const ReportGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval } = props as VGREventsGraphTooltipProps
+  const { active, payload, label, timeChunkInterval } = props as EventsReportGraphTooltipProps
 
   if (active && payload && payload.length) {
     const date = getUTCDateTime(label).setLocale(i18n.language)
@@ -61,7 +61,7 @@ const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => 
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
-export default function VGREventsGraph({
+export default function EventsReportGraph({
   color = COLOR_PRIMARY_BLUE,
   end,
   start,

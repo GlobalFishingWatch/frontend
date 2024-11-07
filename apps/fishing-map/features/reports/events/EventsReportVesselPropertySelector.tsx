@@ -8,7 +8,7 @@ import {
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { PortsReportState } from '../ports/ports-report.types'
 
-function ReportEventsVesselPropertySelector({
+function EventsReportVesselPropertySelector({
   property,
   propertyQueryParam,
 }: {
@@ -52,4 +52,4 @@ function ReportEventsVesselPropertySelector({
   )
 }
 
-export default ReportEventsVesselPropertySelector
+export default EventsReportVesselPropertySelector

@@ -10,14 +10,10 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTable.module.css'
+import styles from 'features/reports/events/EventsReportVesselTable.module.css'
 import { EventsStatsVessel } from '../ports/ports-report.slice'
 
-export default function VesselGroupReportEventsVesselsTable({
-  vessels,
-}: {
-  vessels: EventsStatsVessel[]
-}) {
+export default function EventsReportVesselsTable({ vessels }: { vessels: EventsStatsVessel[] }) {
   const { t } = useTranslation()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { dispatchQueryParams } = useLocationConnect()
