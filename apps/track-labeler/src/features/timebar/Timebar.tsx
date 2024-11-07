@@ -10,7 +10,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux'
 import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
 import './range.css'
-import TimebarComponent, {
+import {
   TimebarTracks,
   Timebar,
   // TimebarActivity,
@@ -315,7 +315,7 @@ const TimebarWrapper = () => {
             dispatch(setHighlightedTime({ start, end }))
           }}
         >
-          {(props: any) => (
+          
             <Fragment>
               <DayNightTimebarLayer></DayNightTimebarLayer>
               <DirectionTimebarChildren vesselPoints={vesselPoints} />
@@ -323,7 +323,7 @@ const TimebarWrapper = () => {
                 <Fragment>
                   {tracks.length && <TimebarTracks key="tracks" tracks={tracks} />}
                   {tracksEvents.length && (
-                    <Fragment>{<TimebarTracksEvents key="events" />}</Fragment>
+                    <Fragment>{<TimebarTracksEvents key="events" data={tracksEvents} />}</Fragment>
                   )}
                 </Fragment>
               }
@@ -354,7 +354,6 @@ const TimebarWrapper = () => {
                 )}
               </Fragment>
             </Fragment>
-          )}
         </Timebar>
       </div>
       <div className={styles.filtersContainer}>

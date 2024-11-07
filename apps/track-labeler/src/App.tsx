@@ -7,6 +7,8 @@ import { LOGIN } from './routes/routes'
 import Login from '././features/login/Login'
 import { getLocationType } from './routes/routes.selectors'
 import '@globalfishingwatch/ui-components/base.css'
+import '../../../libs/ui-components/src/base.css'
+import '../../../libs/timebar/src/timebar-settings.css'
 
 const Main = lazy(() => import(`././features/main/main.container`))
 const Sidebar = lazy(() => import(`././features/sidebar/sidebar.container`))
