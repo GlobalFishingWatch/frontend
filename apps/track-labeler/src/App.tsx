@@ -1,7 +1,6 @@
 import React, { lazy, useState, Fragment, Suspense } from 'react'
 import { useSelector } from 'react-redux'
 import { SplitView } from '@globalfishingwatch/ui-components/split-view'
-import { Icon } from '@globalfishingwatch/ui-components/icon'
 import Loader from '././features/loader/loader'
 import { MapboxRefProvider } from '././features/map/map.context'
 import { LOGIN } from './routes/routes'
@@ -46,7 +45,6 @@ function App(): React.ReactElement {
       </Fragment>
     )
   }
-
   return (
     <MapboxRefProvider>
       <SplitView

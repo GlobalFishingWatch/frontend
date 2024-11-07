@@ -9,15 +9,13 @@ import {
   getFourwingsInterval,
   LIMITS_BY_INTERVAL,
 } from '@globalfishingwatch/deck-loaders'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { getTime } from './utils/internal-utils'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'
 import IntervalSelector from './components/interval-selector'
 import Timeline from './components/timeline'
 import Playback from './components/playback'
-import { ReactComponent as IconTimeRange } from './icons/timeRange.svg'
-import { ReactComponent as IconBookmark } from './icons/bookmark.svg'
-import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg'
 import {
   EVENT_SOURCE,
   EVENT_INTERVAL_SOURCE,
@@ -452,7 +450,7 @@ export class Timebar extends Component<TimebarProps> {
             className={cx(styles.uiButton)}
             onClick={this.toggleTimeRangeSelector}
           >
-            <IconTimeRange />
+            <Icon icon="time-range" />
           </button>
           <button
             type="button"
@@ -461,7 +459,7 @@ export class Timebar extends Component<TimebarProps> {
             onClick={this.setBookmark}
             disabled={bookmarkDisabled === true}
           >
-            {hasBookmark ? <IconBookmarkFilled /> : <IconBookmark />}
+            {hasBookmark ? <Icon icon="bookmark-filled" /> : <Icon icon="bookmark" />}
           </button>
         </div>
         <div className={cx('print-hidden', styles.timeActions)}>

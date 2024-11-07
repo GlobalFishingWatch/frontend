@@ -7,7 +7,7 @@ const Main: React.FC = (props): React.ReactElement => {
   return (
     <div className={styles.main}>
       <Map />
-      {/* <Timebar /> */}
+      <Timebar />
     </div>
   )
 }

@@ -7,11 +7,14 @@ import React, {
   useMemo,
   useCallback,
 } from 'react'
-import type { Map } from '@globalfishingwatch/mapbox-gl'
+import type { Map } from 'maplibre-gl'
 
 const MapStateContext = createContext<any>('')
+interface MapboxRefContextProviderProps {
+  children: React.ReactNode
+}
 
-const MapboxRefProvider: React.FC = ({ children }) => {
+const MapboxRefProvider: React.FC<MapboxRefContextProviderProps> = ({ children }) => {
   const mapboxRef = useRef()
   const [mapboxRefReady, seMapboxRefReady] = useState(false)
   const [mapboxInstance, seMapboxInstance] = useState<Map | undefined>()
