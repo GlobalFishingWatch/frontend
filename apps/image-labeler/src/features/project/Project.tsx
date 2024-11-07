@@ -1,12 +1,12 @@
 import { Link, getRouteApi, useNavigate } from '@tanstack/react-router'
-import { useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import uniqBy from 'lodash/uniqBy'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { Slider } from '@globalfishingwatch/ui-components/slider'
 import { Button } from '@globalfishingwatch/ui-components/button'
-import { Switch } from '@globalfishingwatch/ui-components/switch'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks/use-local-storage'
+import { Choice } from '@globalfishingwatch/ui-components/choice'
 import {
   useGetLabellingProjectTasksByIdQuery,
   useGetLabellingProjectTasksQuery,
@@ -135,38 +135,53 @@ export function Project() {
         {imageStyleEditorOpen && (
           <div className={styles.editorContent}>
             <div className={styles.switch}>
-              <Switch
-                active={showEnhancedImage}
-                onClick={() => {
-                  setShowEnhancedImage(!showEnhancedImage)
+              <Choice
+                label="image style"
+                activeOption={showEnhancedImage ? 'normalized' : 'original'}
+                options={[
+                  {
+                    id: 'original',
+                    label: 'original',
+                  },
+                  {
+                    id: 'normalized',
+                    label: 'normalized',
+                  },
+                ]}
+                onSelect={(selected) => {
+                  setShowEnhancedImage(selected.id === 'normalized')
                 }}
+                size="small"
               />
-              <label>show enhanced image</label>
             </div>
-            <Slider
-              label="original image Saturation"
-              config={{
-                min: 0,
-                max: 4,
-                steps: [0, 4],
-              }}
-              initialValue={imageStyleSaturation}
-              onChange={(value) => setImageStyleSaturation(value)}
-              thumbsSize="small"
-              className={styles.slider}
-            />
-            <Slider
-              label="original image contrast"
-              config={{
-                min: 0,
-                max: 4,
-                steps: [0, 4],
-              }}
-              initialValue={imageStyleContrast}
-              onChange={(value) => setImageStyleContrast(value)}
-              thumbsSize="small"
-              className={styles.slider}
-            />
+            {!showEnhancedImage && (
+              <Fragment>
+                <Slider
+                  label="Saturation"
+                  config={{
+                    min: 0,
+                    max: 4,
+                    steps: [0, 4],
+                  }}
+                  initialValue={imageStyleSaturation}
+                  onChange={(value) => setImageStyleSaturation(value)}
+                  thumbsSize="small"
+                  className={styles.slider}
+                />
+                <Slider
+                  label="Contrast"
+                  config={{
+                    min: 0,
+                    max: 4,
+                    steps: [0, 4],
+                  }}
+                  initialValue={imageStyleContrast}
+                  onChange={(value) => setImageStyleContrast(value)}
+                  thumbsSize="small"
+                  className={styles.slider}
+                />
+              </Fragment>
+            )}
           </div>
         )}
         <IconButton
