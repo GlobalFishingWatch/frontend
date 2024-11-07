@@ -139,6 +139,7 @@
     "lodash": "4.17.21",
     "luxon": "3.5.0",
     "mapbox-gl": "npm:empty-npm-package@1.0.0",
+    "maplibre-gl": "4.7.1",
     "match-sorter": "8.0.0",
     "material-react-table": "3.0.1",
     "memoize-one": "6.0.0",

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { throttle } from 'lodash'
-// import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
+import InteractiveMap from 'react-map-gl/maplibre';
 import { useLayerComposer } from '@globalfishingwatch/react-hooks'
 import * as Generators from '@globalfishingwatch/layer-composer'
 import {
@@ -10,7 +10,6 @@ import {
   Group,
   StyleTransformation,
 } from '@globalfishingwatch/layer-composer'
-// import { SymbolLayout } from '@globalfishingwatch/mapbox-gl'
 import { MAP_BACKGROUND_COLOR } from '../../data/config'
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { selectEditing, selectRulers } from '../../features/rulers/rulers.selectors'
@@ -27,16 +26,14 @@ import {
   selectLegendLabels,
 } from './map.selectors'
 import { useGeneratorsConnect, useMapBounds, useMapMove, useViewport } from './map.hooks'
-// import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+import 'maplibre-gl/dist/maplibre-gl.css';
 import styles from './Map.module.css'
 import MapControls from './map-controls/MapControls'
 import MapData from './map-data/map-data'
 import { useMapboxRef, useMapboxRefCallback } from './map.context'
 import { contextSourceStyle, getVisibleContextLayers } from './map-static-layers-style'
-console.log("🚀 ~ selectColorMode:", selectColorMode)
 
-// const MapComponent = InteractiveMap as any
-const MapComponent = () => <div>MAP</div>
+const MapComponent = InteractiveMap as any
 
 const GROUP_ORDER = [
   Group.Background,
@@ -94,7 +91,7 @@ const Map = (): React.ReactElement => {
   )
 
   const handleMapHover = useCallback(
-    ({ lngLat }) => {
+    ({ lngLat }: { lngLat: [number, number] }) => {
       setCursorCoordinatesThrottle({ latitude: lngLat[1], longitude: lngLat[0] })
     },
     [setCursorCoordinatesThrottle]
@@ -130,6 +127,7 @@ const Map = (): React.ReactElement => {
   const rulersEditing = useSelector(selectEditing)
   const handleMapClick = useCallback(
     (e: any) => {
+      console.log("🚀 ~ Map ~ e:", e)
       const { features } = e
       if (!rulersEditing && features && features.length) {
         const position = { latitude: e.lngLat[1], longitude: e.lngLat[0] }
@@ -287,8 +285,6 @@ const Map = (): React.ReactElement => {
     ],
     [actionShortcuts]
   )
-  console.log('🚀 ~ Map ~ style:', style)
-  console.log('🚀 ~ Map ~ mapRef:', mapRef)
 
   return (
     <div className={styles.container}>
@@ -301,7 +297,7 @@ const Map = (): React.ReactElement => {
           longitude={viewport.longitude}
           zoom={viewport.zoom}
           onLoad={onLoadCallback}
-          onViewportChange={onViewportChange}
+          onMove={onViewportChange}
           mapStyle={styleWithArrows}
           onClick={handleMapClick}
           onHover={handleMapHover}

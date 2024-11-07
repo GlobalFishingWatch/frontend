@@ -79,8 +79,8 @@ export function useDebouncedViewport(
     setViewport({ ...viewport })
   }, [])
 
-  const onViewportChange = useCallback((viewport: any) => {
-    const { latitude, longitude, zoom } = viewport
+  const onViewportChange = useCallback(({ viewState }: { viewState: Viewport }) => {
+    const { latitude, longitude, zoom } = viewState
     setViewport({ latitude, longitude, zoom })
   }, [])
 
