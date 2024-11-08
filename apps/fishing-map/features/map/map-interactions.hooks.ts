@@ -138,6 +138,7 @@ export const useClickedEventConnect = () => {
       // }),
       latitude: deckEvent.latitude,
       longitude: deckEvent.longitude,
+      zoom: deckEvent.viewport?.zoom,
       point: { x: deckEvent.point.x, y: deckEvent.point.y },
     } as SliceInteractionEvent
 
@@ -211,7 +212,9 @@ export const useClickedEventConnect = () => {
         tileClusterFeature?.subcategory === DataviewType.TileCluster
           ? fetchLegacyEncounterEventThunk
           : fetchClusterEventThunk
-      const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
+      const eventsPromise = dispatch(
+        clusterFn({ eventFeature: tileClusterFeature, zoom: event.zoom } as any) as any
+      )
       setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
     }
   }

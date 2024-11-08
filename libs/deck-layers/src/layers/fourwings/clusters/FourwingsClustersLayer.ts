@@ -16,7 +16,7 @@ import { ScalePower, scaleSqrt } from 'd3-scale'
 import { max } from 'simple-statistics'
 import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
-import { FourwingsGeolocation } from '@globalfishingwatch/api-types'
+import { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
 import { PATH_BASENAME } from '../../layers.config'
 import {
   DEFAULT_BACKGROUND_COLOR,
@@ -80,6 +80,23 @@ const CLUSTER_LAYER_ID = 'clusters'
 const POINTS_LAYER_ID = 'points'
 const MAX_INDIVIDUAL_POINTS = 1000
 
+export function getFourwingsGeolocation(
+  clusterMaxZoomLevels: ClusterMaxZoomLevelConfig,
+  zoom: number
+) {
+  let clusterMode: FourwingsGeolocation | undefined
+  for (const geolocation of GEOLOCATION_PRIORITY) {
+    if (
+      clusterMaxZoomLevels?.[geolocation] !== undefined &&
+      Math.floor(zoom) <= clusterMaxZoomLevels[geolocation]
+    ) {
+      clusterMode = geolocation
+      break
+    }
+  }
+  return clusterMode
+}
+
 export class FourwingsClustersLayer extends CompositeLayer<
   FourwingsClustersLayerProps & TileLayerProps
 > {
@@ -93,16 +110,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
 
   get clusterMode(): ClusterMode {
     const { clusterMaxZoomLevels } = this.props
-    let clusterMode: ClusterMode = 'positions'
-    for (const geolocation of GEOLOCATION_PRIORITY) {
-      if (
-        clusterMaxZoomLevels?.[geolocation] !== undefined &&
-        Math.floor(this.context.viewport.zoom) <= clusterMaxZoomLevels[geolocation]
-      ) {
-        clusterMode = geolocation
-        break
-      }
+    if (!clusterMaxZoomLevels) {
+      return 'default'
     }
+    const clusterMode =
+      getFourwingsGeolocation(clusterMaxZoomLevels, this.context.viewport.zoom) || 'positions'
     return clusterMode
   }
 
