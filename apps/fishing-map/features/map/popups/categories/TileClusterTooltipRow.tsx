@@ -192,7 +192,6 @@ type PortVisitLayerProps = {
 }
 function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortVisitLayerProps) {
   const { datasetId, event, color } = feature
-  console.log('🚀 ~ PortVisitEventTooltipRow ~ feature:', feature, feature.event)
   const title = getDatasetLabel({ id: datasetId! })
   return (
     <div className={styles.popupSection}>

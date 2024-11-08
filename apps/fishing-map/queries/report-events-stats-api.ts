@@ -24,6 +24,9 @@ export type ReportEventsStatsParams = ReportEventsVesselsParams & {
 export type ReportEventsStatsResponseGroups = { name: string; value: number }[]
 
 export type ReportEventsStatsResponse = {
+  numEvents: number
+  numFlags: number
+  numVessels: number
   timeseries: { date: string; value: number }[]
   groups: ReportEventsStatsResponseGroups
 }

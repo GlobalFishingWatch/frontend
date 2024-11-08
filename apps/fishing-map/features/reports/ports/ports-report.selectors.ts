@@ -84,20 +84,6 @@ export const selectPortReportVesselsGrouped = createSelector(
   }
 )
 
-export const selectPortsReportVesselsFlags = createSelector(
-  [selectPortsReportVessels],
-  (vessels) => {
-    if (!vessels?.length) return null
-    let flags = new Set<string>()
-    vessels.forEach((vessel) => {
-      if (vessel.flagTranslated && vessel.flagTranslated !== 'null') {
-        flags.add(vessel.flagTranslated as string)
-      }
-    })
-    return flags
-  }
-)
-
 export const selectPortReportVesselsPaginated = createSelector(
   [
     selectPortReportVesselsFiltered,

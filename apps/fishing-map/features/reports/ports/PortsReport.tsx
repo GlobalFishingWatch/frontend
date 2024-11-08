@@ -30,7 +30,6 @@ import {
   selectPortReportVesselsGrouped,
   selectPortReportVesselsPaginated,
   selectPortReportVesselsPagination,
-  selectPortsReportVesselsFlags,
 } from './ports-report.selectors'
 import {
   selectPortReportCountry,
@@ -54,7 +53,6 @@ function PortsReport() {
   const { start, end } = useSelector(selectTimeRange)
   const portsReportPagination = useSelector(selectPortReportVesselsPagination)
   const portsReportData = useSelector(selectPortsReportData)
-  const vesselFlags = useSelector(selectPortsReportVesselsFlags)
   const portsReportDataStatus = useSelector(selectPortsReportStatus)
   const portsReportVesselsGrouped = useSelector(selectPortReportVesselsGrouped)
   const portsReportVesselsPaginated = useSelector(selectPortReportVesselsPaginated)
@@ -96,11 +94,9 @@ function PortsReport() {
     )
   }
 
-  const totalEvents = data.timeseries.reduce((acc, group) => acc + group.value, 0)
-
   return (
     <Fragment>
-      {totalEvents > 0 ? (
+      {data.numEvents > 0 ? (
         <Fragment>
           <div className={styles.container}>
             <h1 className={styles.title}>
@@ -111,31 +107,15 @@ function PortsReport() {
           <div className={styles.container}>
             {isPortsStatsLoading ? (
               <ReportTitlePlaceholder />
-            ) : portsReportData?.vessels?.length && vesselFlags?.size ? (
+            ) : (
               <h2 className={styles.summary}>
                 {parse(
                   t('portsReport.summaryEvents', {
                     defaultValue:
                       '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> visited this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-                    vessels: formatI18nNumber(portsReportData?.vessels?.length || 0),
-                    flags: vesselFlags?.size,
-                    activityQuantity: totalEvents,
-                    start: formatI18nDate(start, {
-                      format: DateTime.DATE_MED,
-                    }),
-                    end: formatI18nDate(end, {
-                      format: DateTime.DATE_MED,
-                    }),
-                  })
-                )}
-              </h2>
-            ) : (
-              <h2 className={styles.summary}>
-                {parse(
-                  t('portsReport.summaryEventsShort', {
-                    defaultValue:
-                      '<strong>{{activityQuantity}}</strong> visits between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-                    activityQuantity: totalEvents,
+                    vessels: formatI18nNumber(data.numVessels || 0),
+                    flags: data?.numFlags,
+                    activityQuantity: data.numEvents,
                     start: formatI18nDate(start, {
                       format: DateTime.DATE_MED,
                     }),
