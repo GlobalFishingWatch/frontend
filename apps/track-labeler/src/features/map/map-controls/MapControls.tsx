@@ -12,7 +12,6 @@ import { ContextLayer } from '../../../types'
 import { selectSatellite } from '../../../routes/routes.selectors'
 import { useViewportConnect } from '../map.hooks'
 import styles from './MapControls.module.css'
-import { useClickOutside } from './mapControls.hooks'
 import { getContextualLayers } from './mapControls.container'
 
 const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
@@ -39,7 +38,6 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
     dispatch(updateQueryParams({ hiddenLayers: activeLayersFiltered.join(',') }))
   }
 
-  const layerSelectorRef = useClickOutside(switchContextLayers)
   const [showCoords, setShowCoords] = useState(false)
   const [pinned, setPinned] = useState(false)
   const [showDMS, setShowDMS] = useState(false)
@@ -100,8 +98,8 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
       ></button>
 
       {showContextLayers && (
-        <div className={styles.contextLayersContainer} ref={layerSelectorRef}>
-          <div className={styles.contextLayers}>
+        <div className={styles.contextLayersContainer} >
+          <div className={styles.contextLayers} >
             {layers !== null &&
               layers.map((layer: ContextLayer) => (
                 <label
