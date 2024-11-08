@@ -2,7 +2,13 @@ import { useMemo, useState } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, Choice, ChoiceOption, IconButton } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  Choice,
+  ChoiceOption,
+  IconButton,
+  InputText,
+} from '@globalfishingwatch/ui-components'
 import {
   KILOMETERS,
   NAUTICAL_MILES,
@@ -41,7 +47,7 @@ export const BufferButtonTooltip = ({
   const STEP = 1
   const MIN = -100
   const MAX = 100
-  const [values, setValues] = useState([0, defaultValue])
+  const [values, setValues] = useState<number[]>([0, defaultValue])
   const previewBuffer = useSelector(selectReportPreviewBufferFeature)
   const negativePointBuffer = areaType === 'Point' && values[1] <= 0
   const bufferUnitOptions: ChoiceOption<BufferUnit>[] = useMemo(
@@ -62,6 +68,14 @@ export const BufferButtonTooltip = ({
     }
   }, [t, values, areaType])
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const values = e.target.value ? [0, Number(e.target.value)] : []
+    setValues(values)
+    if (values) {
+      handleBufferValueChange(values)
+    }
+  }
+
   return (
     <div className={styles.bufferTooltipContent}>
       <div className={styles.actionContainer}>
@@ -75,67 +89,78 @@ export const BufferButtonTooltip = ({
       </div>
       <div className={styles.actionContainer}>
         <label>{t('common.value', 'value')}</label>
-        <Range
-          allowOverlap
-          values={values}
-          step={STEP}
-          min={MIN}
-          max={MAX}
-          onChange={setValues}
-          onFinalChange={handleBufferValueChange}
-          renderTrack={({ props, children }) => (
-            <div
-              style={{
-                ...props.style,
-                height: '36px',
-                display: 'flex',
-                width: '100%',
-              }}
-            >
+        <div className={styles.bufferValueControls}>
+          <Range
+            allowOverlap
+            values={values || [0, 0]}
+            step={STEP}
+            min={MIN}
+            max={MAX}
+            onChange={setValues}
+            onFinalChange={handleBufferValueChange}
+            renderTrack={({ props, children }) => (
               <div
-                ref={props.ref}
-                style={{
-                  height: '2px',
-                  width: '100%',
-                  borderRadius: '2px',
-                  background: getTrackBackground({
-                    values,
-                    colors: ['#ccc', BUFFER_PREVIEW_COLOR, '#ccc'],
-                    min: MIN,
-                    max: MAX,
-                  }),
-                  alignSelf: 'center',
-                }}
-              >
-                {children}
-              </div>
-            </div>
-          )}
-          renderThumb={({ props, index }) => {
-            const { key, ...rest } = props
-            return (
-              <div
-                key={key}
-                {...rest}
                 style={{
                   ...props.style,
-                  height: index === 1 ? '30px' : '8px',
-                  width: index === 1 ? '30px' : '3px',
-                  borderRadius: '50px',
-                  backgroundColor: index === 1 ? '#FFF' : '#ccc',
+                  height: '36px',
                   display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  fontSize: '14px',
-                  boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
-                  pointerEvents: index === 1 ? 'auto' : 'none',
+                  width: '100%',
                 }}
               >
-                {index === 1 ? Math.round(values[index]) : null}
+                <div
+                  ref={props.ref}
+                  style={{
+                    height: '2px',
+                    width: '100%',
+                    borderRadius: '2px',
+                    background: getTrackBackground({
+                      values,
+                      colors: ['#ccc', BUFFER_PREVIEW_COLOR, '#ccc'],
+                      min: MIN,
+                      max: MAX,
+                    }),
+                    alignSelf: 'center',
+                  }}
+                >
+                  {children}
+                </div>
               </div>
-            )
-          }}
-        />
+            )}
+            renderThumb={({ props, index }) => {
+              const { key, ...rest } = props
+              return (
+                <div
+                  key={key}
+                  {...rest}
+                  style={{
+                    ...props.style,
+                    height: index === 1 ? '30px' : '8px',
+                    width: index === 1 ? '30px' : '3px',
+                    borderRadius: '50px',
+                    backgroundColor: index === 1 ? '#FFF' : '#ccc',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontSize: '14px',
+                    boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
+                    pointerEvents: index === 1 ? 'auto' : 'none',
+                  }}
+                >
+                  {index === 1 ? Math.round(values[index]) || 0 : null}
+                </div>
+              )
+            }}
+          />
+          <InputText
+            className={styles.bufferValueInput}
+            value={values[1]}
+            type="number"
+            min={MIN}
+            max={MAX}
+            onChange={handleInputChange}
+            inputSize="small"
+          />
+        </div>
       </div>
       <div className={styles.actionContainer}>
         <label>{t('analysis.bufferOperationLabel', 'Analysis area')}</label>
@@ -160,7 +185,9 @@ export const BufferButtonTooltip = ({
         <Button
           size="small"
           onClick={handleConfirmBuffer}
-          disabled={!previewBuffer || negativePointBuffer}
+          disabled={
+            !previewBuffer || negativePointBuffer || !values || values[1] < MIN || values[1] > MAX
+          }
         >
           {t('common.confirm', 'Confirm')}
         </Button>
