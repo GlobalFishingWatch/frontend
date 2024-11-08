@@ -9,7 +9,7 @@ import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataview
 import styles from '../Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
-import { getContextLayerId, getContextLayerLabel } from './UserContextLayers'
+import { getContextLayerId, getUserContextLayerLabel } from './UserContextLayers'
 
 type UserPointsLayersProps = {
   features: (ContextPickingObject | UserLayerPickingObject)[]
@@ -37,7 +37,7 @@ function UserPointsTooltipSection({
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>}
               {featureByType.map((feature, index) => {
                 const id = getContextLayerId(feature)
-                const label = getContextLayerLabel(feature)
+                const label = getUserContextLayerLabel(feature, dataset)
                 return (
                   <ContextLayersRow
                     id={id}
