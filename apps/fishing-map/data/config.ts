@@ -54,6 +54,8 @@ export const AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX = 'gfw-feedback-auto-saved
 
 export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
 
+export const LAYER_LIBRARY_ID_SEPARATOR = '__'
+
 const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
 export const LAST_DATA_UPDATE = DateTime.fromObject(

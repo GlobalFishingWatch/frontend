@@ -211,25 +211,28 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
   }
 
   onStartChange = (e: ChangeEvent<HTMLInputElement>, property: DateProperty) => {
+    const eventValue = parseInt(e.target.value)
     const startDate = DateTime.fromObject(this.state.startInputValues, { zone: 'utc' })
-    const eventValue =
-      parseInt(e.target.value) || (property === 'year' ? parseInt(this.bounds.min.slice(0, 4)) : 1)
-
-    const currentMonthDays = DateTime.fromObject(
-      {
-        year: property === 'year' ? eventValue : startDate.year,
-        month: property === 'month' ? eventValue : startDate.month,
-      },
-      { zone: 'utc' }
-    ).daysInMonth
-
+    const currentMonthDays = eventValue
+      ? DateTime.fromObject(
+          {
+            year: property === 'year' ? eventValue : startDate.year,
+            month: property === 'month' ? eventValue : startDate.month,
+          },
+          { zone: 'utc' }
+        ).daysInMonth
+      : undefined
     const dateHigherThanDaysInMonth = startDate.day > currentMonthDays!
+    const startInputValues = {
+      ...this.state.startInputValues,
+      day: dateHigherThanDaysInMonth ? currentMonthDays : startDate.day,
+      [property]: eventValue || undefined,
+    }
+    if (!DateTime.fromObject(startInputValues).isValid) {
+      return
+    }
     this.setState((state: TimeRangeSelectorState) => ({
-      startInputValues: {
-        ...state.startInputValues,
-        day: dateHigherThanDaysInMonth ? currentMonthDays : startDate.day,
-        [property]: eventValue,
-      },
+      startInputValues,
       startInputValids: {
         ...state.startInputValids,
         [property]: e.target.validity.valid,
@@ -242,7 +245,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
       this.setState((state: TimeRangeSelectorState) => ({
         startInputValues: {
           ...state.startInputValues,
-          [property]: property === 'year' ? this.bounds.min.slice(0, 4) : 1,
+          [property]: undefined,
         },
         startInputValids: {
           ...state.startInputValids,
@@ -253,23 +256,28 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
   }
 
   onEndChange = (e: ChangeEvent<HTMLInputElement>, property: DateProperty) => {
+    const eventValue = parseInt(e.target.value)
     const endDate = DateTime.fromObject(this.state.endInputValues, { zone: 'utc' })
-    const eventValue =
-      parseInt(e.target.value) || (property === 'year' ? parseInt(this.bounds.max.slice(0, 4)) : 1)
-    const currentMonthDays = DateTime.fromObject(
-      {
-        year: property === 'year' ? eventValue : endDate.year,
-        month: property === 'month' ? eventValue : endDate.month,
-      },
-      { zone: 'utc' }
-    ).daysInMonth
+    const currentMonthDays = eventValue
+      ? DateTime.fromObject(
+          {
+            year: property === 'year' ? eventValue : endDate.year,
+            month: property === 'month' ? eventValue : endDate.month,
+          },
+          { zone: 'utc' }
+        ).daysInMonth
+      : undefined
     const dateHigherThanDaysInMonth = endDate.day > currentMonthDays!
+    const endInputValues = {
+      ...this.state.endInputValues,
+      day: dateHigherThanDaysInMonth ? currentMonthDays : endDate.day,
+      [property]: eventValue || undefined,
+    }
+    if (!DateTime.fromObject(endInputValues).isValid) {
+      return
+    }
     this.setState((state: TimeRangeSelectorState) => ({
-      endInputValues: {
-        ...state.endInputValues,
-        day: dateHigherThanDaysInMonth ? currentMonthDays : endDate.day,
-        [property]: eventValue,
-      },
+      endInputValues,
       endInputValids: {
         ...state.endInputValids,
         [property]: e.target.validity.valid,
@@ -282,7 +290,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
       this.setState((state: TimeRangeSelectorState) => ({
         endInputValues: {
           ...state.endInputValues,
-          [property]: property === 'year' ? parseInt(this.bounds.max.slice(0, 4)) + 1 : 1,
+          [property]: undefined,
         },
         endInputValids: {
           ...state.endInputValids,
@@ -373,7 +381,11 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                         type="number"
                         min="1"
                         max="12"
-                        value={disabledFields['MONTH'] ? 1 : startInputValues.month}
+                        value={
+                          disabledFields['MONTH'] && startInputValues.month
+                            ? 1
+                            : startInputValues.month
+                        }
                         onChange={(e) => this.onStartChange(e, 'month')}
                         onBlur={(e) => this.onStartBlur(e, 'month')}
                         step={'1'}
@@ -398,7 +410,9 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                         type="number"
                         min={'1'}
                         max={startDate.daysInMonth}
-                        value={disabledFields['DAY'] ? 1 : startInputValues.day}
+                        value={
+                          disabledFields['DAY'] && startInputValues.day ? 1 : startInputValues.day
+                        }
                         onChange={(e) => this.onStartChange(e, 'day')}
                         onBlur={(e) => this.onStartBlur(e, 'day')}
                         step={'1'}
@@ -444,7 +458,9 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                         type="number"
                         min="1"
                         max="12"
-                        value={disabledFields['MONTH'] ? 1 : endInputValues.month}
+                        value={
+                          disabledFields['MONTH'] && endInputValues.month ? 1 : endInputValues.month
+                        }
                         onChange={(e) => this.onEndChange(e, 'month')}
                         onBlur={(e) => this.onEndBlur(e, 'month')}
                         step={'1'}
@@ -472,7 +488,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                         type="number"
                         min={'1'}
                         max={endDate.daysInMonth}
-                        value={disabledFields['DAY'] ? 1 : endInputValues.day}
+                        value={disabledFields['DAY'] && endInputValues.day ? 1 : endInputValues.day}
                         onChange={(e) => this.onEndChange(e, 'day')}
                         onBlur={(e) => this.onEndBlur(e, 'day')}
                         step={'1'}
