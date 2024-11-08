@@ -5,6 +5,7 @@ import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
+import { useGetPortInfoQuery } from 'queries/port-info-api'
 import { Button } from '@globalfishingwatch/ui-components'
 import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import { selectReportPortId } from 'routes/routes.selectors'
@@ -70,10 +71,18 @@ function PortsReport() {
       skip: !portId,
     }
   )
+  const { data: portInfoData, status: infoStatus } = useGetPortInfoQuery({
+    dataset: datasetId,
+    start,
+    end,
+  })
+  console.log('🚀 ~ PortsReport ~ portInfoData:', portInfoData)
+
+  const isPortInfoLoading = infoStatus === 'pending'
   const isPortsStatsLoading = statsStatus === 'pending'
   const isPortsReportDataLoading = portsReportDataStatus === AsyncReducerStatus.Loading
   const isPortsReportDataIdle = portsReportDataStatus === AsyncReducerStatus.Idle
-  const isLoading = isPortsStatsLoading && isPortsReportDataLoading
+  const isLoading = isPortsStatsLoading && isPortsReportDataLoading && isPortInfoLoading
   const color = dataview?.config?.color || '#9AEEFF'
 
   if (error || !data || isLoading) {
@@ -93,12 +102,13 @@ function PortsReport() {
   }
 
   const totalEvents = data.timeseries.reduce((acc, group) => acc + group.value, 0)
+
   return (
     <Fragment>
       {totalEvents > 0 ? (
         <Fragment>
           <div className={styles.container}>
-            {isLoading ? (
+            {isPortInfoLoading ? (
               <ReportTitlePlaceholder />
             ) : (
               <Fragment>
@@ -111,7 +121,7 @@ function PortsReport() {
             )}
           </div>
           <div className={styles.container}>
-            {isLoading ? (
+            {isPortsStatsLoading ? (
               <ReportTitlePlaceholder />
             ) : portsReportData?.vessels?.length && vesselFlags?.size ? (
               <h2 className={styles.summary}>
@@ -149,9 +159,7 @@ function PortsReport() {
               </h2>
             )}
             {isPortsStatsLoading ? (
-              <div className={styles.container}>
-                <ReportActivityPlaceholder showHeader={false} />
-              </div>
+              <ReportActivityPlaceholder showHeader={false} />
             ) : (
               <EventsReportGraph
                 color={color}
