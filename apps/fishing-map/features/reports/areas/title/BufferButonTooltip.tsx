@@ -32,6 +32,10 @@ type BufferButonTooltipProps = {
   handleBufferOperationChange: (option: ChoiceOption<BufferOperation>) => void
 }
 
+const STEP = 1
+const MIN = -100
+const MAX = 100
+
 export const BufferButtonTooltip = ({
   areaType,
   activeUnit,
@@ -44,12 +48,10 @@ export const BufferButtonTooltip = ({
   handleBufferOperationChange,
 }: BufferButonTooltipProps) => {
   const { t } = useTranslation()
-  const STEP = 1
-  const MIN = -100
-  const MAX = 100
+  const minValue = areaType === 'Point' ? 0 : MIN
+  const maxValue = MAX
   const [values, setValues] = useState<number[]>([0, defaultValue])
   const previewBuffer = useSelector(selectReportPreviewBufferFeature)
-  const negativePointBuffer = areaType === 'Point' && values[1] <= 0
   const bufferUnitOptions: ChoiceOption<BufferUnit>[] = useMemo(
     () => [
       { id: NAUTICAL_MILES, label: t('analysis.nauticalmiles', 'nautical miles') },
@@ -94,8 +96,8 @@ export const BufferButtonTooltip = ({
             allowOverlap
             values={values || [0, 0]}
             step={STEP}
-            min={MIN}
-            max={MAX}
+            min={minValue}
+            max={maxValue}
             onChange={setValues}
             onFinalChange={handleBufferValueChange}
             renderTrack={({ props, children }) => (
@@ -116,8 +118,8 @@ export const BufferButtonTooltip = ({
                     background: getTrackBackground({
                       values,
                       colors: ['#ccc', BUFFER_PREVIEW_COLOR, '#ccc'],
-                      min: MIN,
-                      max: MAX,
+                      min: minValue,
+                      max: maxValue,
                     }),
                     alignSelf: 'center',
                   }}
@@ -155,8 +157,8 @@ export const BufferButtonTooltip = ({
             className={styles.bufferValueInput}
             value={values[1]}
             type="number"
-            min={MIN}
-            max={MAX}
+            min={minValue}
+            max={maxValue}
             onChange={handleInputChange}
             inputSize="small"
           />
@@ -185,9 +187,7 @@ export const BufferButtonTooltip = ({
         <Button
           size="small"
           onClick={handleConfirmBuffer}
-          disabled={
-            !previewBuffer || negativePointBuffer || !values || values[1] < MIN || values[1] > MAX
-          }
+          disabled={!previewBuffer || !values || values[1] < minValue || values[1] > maxValue}
         >
           {t('common.confirm', 'Confirm')}
         </Button>
