@@ -86,7 +86,13 @@ const MapAnnotations = (): React.ReactNode | null => {
         {mapAnnotations.map((annotation) => (
           <HtmlOverlayItem
             key={annotation.id}
-            style={{ pointerEvents: 'all', transform: 'translate(-50%,-50%)' }}
+            style={{
+              pointerEvents: 'all',
+              transform: 'translate(-50%,-50%)',
+              maxWidth: '32rem',
+              textAlign: 'center',
+              fontWeight: 500,
+            }}
             coordinates={
               (selectedAnnotationRef?.current === annotation.id && (newCoords as number[])) || [
                 Number(annotation.lon),
