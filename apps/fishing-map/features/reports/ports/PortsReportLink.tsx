@@ -3,12 +3,14 @@ import React from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from '@globalfishingwatch/ui-components'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { PORT_REPORT } from 'routes/routes'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
 import styles from './PortsReport.module.css'
+import { getPortClusterDataviewForReport } from './ports-report.utils'
 
 type PortsReportLinkProps = {
   port: ExtendedFeatureByVesselEventPort
@@ -23,6 +25,7 @@ function PortsReportLink({ children, port }: PortsReportLinkProps) {
   if (!workspace || !port) {
     return children
   }
+
   return (
     <Link
       className={styles.link}
@@ -38,6 +41,11 @@ function PortsReportLink({ children, port }: PortsReportLinkProps) {
           portsReportName: port.name,
           portsReportCountry: port.country,
           portsReportDatasetId: port.datasetId,
+          ...(query?.dataviewInstances?.length && {
+            dataviewInstances: query?.dataviewInstances?.map((instance: UrlDataviewInstance) =>
+              getPortClusterDataviewForReport(instance, { portId: port.id })
+            ),
+          }),
         },
       }}
     >

@@ -57,6 +57,7 @@ import { DEFAULT_AREA_REPORT_STATE } from 'features/reports/areas/area-reports.c
 import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { DEFAULT_PORT_REPORT_STATE } from 'features/reports/ports/ports-report.config'
+import { cleanPortClusterDataviewFromReport } from 'features/reports/ports/ports-report.utils'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -439,6 +440,10 @@ export function cleanReportQuery(query: QueryParams) {
       acc[key] = undefined
       return acc
     }, {} as Record<string, undefined>),
+
+    ...(query?.dataviewInstances?.length && {
+      dataviewInstances: query?.dataviewInstances?.map(cleanPortClusterDataviewFromReport),
+    }),
   }
 }
 
