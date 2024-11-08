@@ -11,10 +11,11 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { sortByCreationDate } from 'utils/dates'
+import { getHighlightedText } from 'utils/text'
 import { selectUserWorkspacesPrivate } from './selectors/user.permissions.selectors'
 import styles from './User.module.css'
 
-function UserWorkspacesPrivate() {
+function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   const { t } = useTranslation()
   const workspaces = useSelector(selectUserWorkspacesPrivate)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
@@ -44,6 +45,10 @@ function UserWorkspacesPrivate() {
       </div>
       <ul>
         {sortByCreationDate<Workspace>(workspaces).map((workspace) => {
+          const label = getWorkspaceLabel(workspace as any)
+          if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
+            return null
+          }
           return (
             <li className={styles.workspace} key={workspace.id}>
               <Link
@@ -58,7 +63,9 @@ function UserWorkspacesPrivate() {
                 }}
                 onClick={() => onWorkspaceClick(workspace)}
               >
-                <span className={styles.workspaceTitle}>{getWorkspaceLabel(workspace as any)}</span>
+                <span className={styles.workspaceTitle}>
+                  {getHighlightedText(label as string, searchQuery, styles)}
+                </span>
                 <IconButton icon="arrow-right" />
               </Link>
             </li>

@@ -11,7 +11,7 @@ import {
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
-import { CARRIER_PORTAL_URL } from 'data/config'
+import { CARRIER_PORTAL_URL, LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselLink from 'features/vessel/VesselLink'
@@ -19,7 +19,6 @@ import VesselPin from 'features/vessel/VesselPin'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { getEventDescriptionComponent } from 'utils/events'
-import { LAYER_LIBRARY_ID_SEPARATOR } from 'features/layer-library/layer-library.utils'
 import { useMapViewState } from '../../map-viewport.hooks'
 import {
   ExtendedEventVessel,
