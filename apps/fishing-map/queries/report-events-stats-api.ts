@@ -3,6 +3,7 @@ import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import { RootState } from 'reducers'
 import { DateTime } from 'luxon'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { StatsIncludes } from '@globalfishingwatch/api-types'
 
 export type ReportEventsVesselsParams = {
   start: string
@@ -17,7 +18,7 @@ export type ReportEventsVesselsParams = {
 }
 
 export type ReportEventsStatsParams = ReportEventsVesselsParams & {
-  includes: string[]
+  includes?: StatsIncludes[]
 }
 
 export type ReportEventsStatsResponseGroups = { name: string; value: number }[]
