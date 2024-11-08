@@ -7,19 +7,20 @@ import { PORT_REPORT } from 'routes/routes'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectLocationQuery } from 'routes/routes.selectors'
+import { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
 import styles from './PortsReport.module.css'
 
 type PortsReportLinkProps = {
-  portId: string
+  port: ExtendedFeatureByVesselEventPort
   children: React.ReactNode
 }
 
-function PortsReportLink({ children, portId }: PortsReportLinkProps) {
+function PortsReportLink({ children, port }: PortsReportLinkProps) {
   const workspace = useSelector(selectWorkspace)
   const query = useSelector(selectLocationQuery)
   const { t } = useTranslation()
 
-  if (!workspace || !portId) {
+  if (!workspace || !port) {
     return children
   }
   return (
@@ -30,9 +31,14 @@ function PortsReportLink({ children, portId }: PortsReportLinkProps) {
         payload: {
           category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
           workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-          portId,
+          portId: port.id,
         },
-        query: query,
+        query: {
+          ...query,
+          portsReportName: port.name,
+          portsReportCountry: port.country,
+          portsReportDatasetId: port.datasetId,
+        },
       }}
     >
       <Tooltip content={t('portsReport.seePortReport', 'See all visits to this port')}>

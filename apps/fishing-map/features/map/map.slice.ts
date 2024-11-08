@@ -18,7 +18,6 @@ import {
   EventVesselTypeEnum,
   APIPagination,
   EventTypes,
-  FourwingsInteraction,
   FourwingsEventsInteraction,
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -76,11 +75,18 @@ export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
 export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
 export type ExtendedFeatureSingleEvent = ApiEvent<EventVessel> & { dataset: Dataset }
+export type ExtendedFeatureByVesselEventPort = {
+  id?: string
+  name?: string
+  country?: string
+  datasetId?: string
+}
 export type ExtendedFeatureByVesselEvent = {
   id: string
   type: EventTypes
   vessels: ExtendedFeatureVessel[]
   dataset: Dataset
+  port?: ExtendedFeatureByVesselEventPort
 }
 export type ExtendedFeatureEvent = ExtendedFeatureSingleEvent | ExtendedFeatureByVesselEvent
 
@@ -405,10 +411,10 @@ export const fetchClusterEventThunk = createAsyncThunk(
     const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
     const groupBy =
       eventFeature.category === 'events' && eventFeature.eventType === EventTypes.Port
-        ? 'portIdAndVesselId'
+        ? 'portAndVesselId'
         : 'id'
     let interactionId = eventFeature.id
-    let interactionResponse: FourwingsInteraction[] | undefined
+    let interactionResponse: FourwingsEventsInteraction[] | undefined
     let eventId: string | undefined = eventFeature.eventId
     if (!eventId && interactionId && eventsDataset) {
       const start = getUTCDate(eventFeature?.startTime).toISOString()
@@ -459,7 +465,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
         interactionResponse = response.entries[0]
         // TODO:deck remove this hardcoded id once the api responds
         eventId = response.entries[0][0]?.id
-        if (groupBy === 'portIdAndVesselId' && response.entries[0][0]?.portId) {
+        if (groupBy === 'portAndVesselId' && response.entries[0][0]?.portId) {
           interactionId = response.entries[0][0]?.portId
         }
         if (!eventId) {
@@ -467,7 +473,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
         }
       }
     }
-    if (groupBy === 'portIdAndVesselId') {
+    if (groupBy === 'portAndVesselId') {
       const infoDatasetIds = getRelatedDatasetsByType(
         eventsDataset,
         DatasetTypes.Vessels,
@@ -522,6 +528,12 @@ export const fetchClusterEventThunk = createAsyncThunk(
         id: interactionId,
         type: EventTypes.Port,
         vessels,
+        port: {
+          id: interactionResponse?.find((r) => r?.portId)?.portId!,
+          name: interactionResponse?.find((r) => r?.portName)?.portName!,
+          country: interactionResponse?.find((r) => r?.portCountry)?.portCountry!,
+          datasetId: eventsDataset?.id,
+        },
       } as ExtendedFeatureByVesselEvent
     } else {
       if (eventsDataset && eventId) {

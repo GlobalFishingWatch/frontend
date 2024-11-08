@@ -5,7 +5,6 @@ import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
-import { useGetPortInfoQuery } from 'queries/port-info-api'
 import { Button } from '@globalfishingwatch/ui-components'
 import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import { selectReportPortId } from 'routes/routes.selectors'
@@ -34,7 +33,9 @@ import {
   selectPortsReportVesselsFlags,
 } from './ports-report.selectors'
 import {
-  selectPortReportDatasetId,
+  selectPortReportCountry,
+  selectPortsReportDatasetId,
+  selectPortReportName,
   selectPortReportVesselsFilter,
   selectPortReportVesselsProperty,
 } from './ports-report.config.selectors'
@@ -45,7 +46,9 @@ function PortsReport() {
   const { t } = useTranslation()
   const dataview = useSelector(selectPortReportsDataview)
   const portId = useSelector(selectReportPortId)
-  const datasetId = useSelector(selectPortReportDatasetId)
+  const reportName = useSelector(selectPortReportName)
+  const reportCountry = useSelector(selectPortReportCountry)
+  const datasetId = useSelector(selectPortsReportDatasetId)
   const portReportVesselsProperty = useSelector(selectPortReportVesselsProperty)
   const portReportVesselFilter = useSelector(selectPortReportVesselsFilter)
   const { start, end } = useSelector(selectTimeRange)
@@ -61,7 +64,6 @@ function PortsReport() {
     status: statsStatus,
   } = useGetReportEventsStatsQuery(
     {
-      includes: ['TIME_SERIES'],
       filters: { portId },
       dataset: datasetId,
       start,
@@ -71,18 +73,11 @@ function PortsReport() {
       skip: !portId,
     }
   )
-  const { data: portInfoData, status: infoStatus } = useGetPortInfoQuery({
-    dataset: datasetId,
-    start,
-    end,
-  })
-  console.log('🚀 ~ PortsReport ~ portInfoData:', portInfoData)
 
-  const isPortInfoLoading = infoStatus === 'pending'
   const isPortsStatsLoading = statsStatus === 'pending'
   const isPortsReportDataLoading = portsReportDataStatus === AsyncReducerStatus.Loading
   const isPortsReportDataIdle = portsReportDataStatus === AsyncReducerStatus.Idle
-  const isLoading = isPortsStatsLoading && isPortsReportDataLoading && isPortInfoLoading
+  const isLoading = isPortsStatsLoading && isPortsReportDataLoading
   const color = dataview?.config?.color || '#9AEEFF'
 
   if (error || !data || isLoading) {
@@ -108,17 +103,10 @@ function PortsReport() {
       {totalEvents > 0 ? (
         <Fragment>
           <div className={styles.container}>
-            {isPortInfoLoading ? (
-              <ReportTitlePlaceholder />
-            ) : (
-              <Fragment>
-                <h1 className={styles.title}>
-                  {formatInfoField(portsReportData.portName || portId, 'shipname')}
-                  {portsReportData.portCountry &&
-                    ` (${formatInfoField(portsReportData.portCountry, 'flag')})`}
-                </h1>
-              </Fragment>
-            )}
+            <h1 className={styles.title}>
+              {formatInfoField(reportName || portId, 'shipname')} (
+              {formatInfoField(reportCountry, 'flag')})
+            </h1>
           </div>
           <div className={styles.container}>
             {isPortsStatsLoading ? (

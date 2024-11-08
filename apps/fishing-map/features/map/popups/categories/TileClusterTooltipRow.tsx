@@ -192,16 +192,17 @@ type PortVisitLayerProps = {
 }
 function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortVisitLayerProps) {
   const { datasetId, event, color } = feature
+  console.log('🚀 ~ PortVisitEventTooltipRow ~ feature:', feature, feature.event)
   const title = getDatasetLabel({ id: datasetId! })
   return (
     <div className={styles.popupSection}>
       <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{title}</h3>}
-        TODO:PORTS add name and flag
-        <PortsReportLink portId={event?.id}>
+        <PortsReportLink port={event?.port!}>
           <div className={styles.textContainer}>
-            {event?.id}
+            {event?.port?.name}
+            {event?.port?.country && ` (${formatInfoField(event.port.country, 'flag')})`}
             <IconButton size="small" icon="analysis" />
           </div>
         </PortsReportLink>

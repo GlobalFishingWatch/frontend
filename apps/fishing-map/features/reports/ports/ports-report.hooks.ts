@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportPortId, selectUrlTimeRange } from 'routes/routes.selectors'
 import { fetchPortsReportThunk } from './ports-report.slice'
-import { selectPortReportDatasetId } from './ports-report.config.selectors'
+import { selectPortsReportDatasetId } from './ports-report.config.selectors'
 
 export function useFetchPortsReport() {
   const dispatch = useAppDispatch()
   const portId = useSelector(selectReportPortId)
-  const datasetId = useSelector(selectPortReportDatasetId)
+  const datasetId = useSelector(selectPortsReportDatasetId)
   const { start, end } = useSelector(selectUrlTimeRange) || {}
 
   const fetchPortReport = useCallback(() => {
