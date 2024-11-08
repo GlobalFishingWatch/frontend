@@ -43,7 +43,10 @@ function PortsReportLink({ children, port }: PortsReportLinkProps) {
           portsReportDatasetId: port.datasetId,
           ...(query?.dataviewInstances?.length && {
             dataviewInstances: query?.dataviewInstances?.map((instance: UrlDataviewInstance) =>
-              getPortClusterDataviewForReport(instance, { portId: port.id })
+              getPortClusterDataviewForReport(instance, {
+                portId: port.id,
+                clusterMaxZoomLevels: { default: 20 },
+              })
             ),
           }),
         },
