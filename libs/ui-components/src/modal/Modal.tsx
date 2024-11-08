@@ -53,6 +53,7 @@ export function Modal(props: ModalProps) {
     <ReactModal
       portalClassName={portalClassName}
       overlayClassName={cx(styles.modalOverlay, overlayClassName)}
+      shouldCloseOnOverlayClick={shouldCloseOnEsc}
       shouldCloseOnEsc={shouldCloseOnEsc}
       className={cx(styles.modalContentWrapper, className, { [styles.fullScreen]: fullScreen })}
       appElement={appElement}
