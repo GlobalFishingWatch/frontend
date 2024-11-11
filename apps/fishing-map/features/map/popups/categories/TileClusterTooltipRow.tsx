@@ -1,6 +1,7 @@
 import { Fragment, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
+import { useSelector } from 'react-redux'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -20,6 +21,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { getEventDescriptionComponent } from 'utils/events'
 import PortsReportLink from 'features/reports/ports/PortsReportLink'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useMapViewState } from '../../map-viewport.hooks'
 import {
   ExtendedEventVessel,
@@ -193,18 +195,21 @@ type PortVisitLayerProps = {
 function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortVisitLayerProps) {
   const { datasetId, event, color } = feature
   const title = getDatasetLabel({ id: datasetId! })
+  const isGFWUser = useSelector(selectIsGFWUser)
   return (
     <div className={styles.popupSection}>
       <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{title}</h3>}
-        <PortsReportLink port={event?.port!}>
-          <div className={styles.textContainer}>
-            {event?.port?.name}
-            {event?.port?.country && ` (${formatInfoField(event.port.country, 'flag')})`}
-            <IconButton size="small" icon="analysis" />
-          </div>
-        </PortsReportLink>
+        {isGFWUser && (
+          <PortsReportLink port={event?.port!}>
+            <div className={styles.textContainer}>
+              {event?.port?.name}
+              {event?.port?.country && ` (${formatInfoField(event.port.country, 'flag')})`}
+              <IconButton size="small" icon="analysis" />
+            </div>
+          </PortsReportLink>
+        )}
         {error && <p className={styles.error}>{error}</p>}
         {showFeaturesDetails && (
           <VesselsTable
