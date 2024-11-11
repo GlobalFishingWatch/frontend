@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { getQueryParamsResolved } from 'queries/base'
 import {
   EVENTS_TIME_FILTER_MODE,
@@ -21,6 +21,7 @@ import { VesselLastIdentity } from 'features/search/search.slice'
 import { t } from 'features/i18n/i18n'
 import { formatInfoField } from 'utils/info'
 import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
+import { getDateRangeHash } from '../shared/activity/reports-activity.slice'
 
 export type EventsStatsVessel = ReportEventsVesselsResponseItem &
   VesselLastIdentity & {
@@ -40,6 +41,7 @@ interface PortReportState {
   statusId: string
   error: AsyncError | null
   data: PortReportData
+  dateRangeHash: string
 }
 
 type PortsReportSliceState = { portsReport: PortReportState }
@@ -55,6 +57,7 @@ const initialState: PortReportState = {
   statusId: '',
   error: null,
   data: dataInitialState,
+  dateRangeHash: '',
 }
 
 type FetchPortsReportThunkParams = {
@@ -79,7 +82,8 @@ export const fetchPortsReportThunk = createAsyncThunk(
         dataset: datasetId,
       }
       const portEventsVesselStats = await GFWAPI.fetch<ReportEventsVesselsResponse>(
-        `/events/stats-by-vessel${getQueryParamsResolved(vesselEventsParams)}`
+        `/events/stats-by-vessel${getQueryParamsResolved(vesselEventsParams)}`,
+        { signal }
       )
       const portsReportVessels = await fetchAllSearchVessels({
         url: `/vessels/search${getQueryParamsResolved({
@@ -164,7 +168,11 @@ const portsReportSlice = createSlice({
     resetPortsReportData: (state) => {
       state.status = AsyncReducerStatus.Idle
       state.data = { ...dataInitialState }
+      state.dateRangeHash = ''
       state.error = null
+    },
+    setPortReportDateRangeHash: (state, action: PayloadAction<string>) => {
+      state.dateRangeHash = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -175,6 +183,8 @@ const portsReportSlice = createSlice({
     builder.addCase(fetchPortsReportThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       state.data = action.payload
+      const { start, end } = action.meta.arg
+      state.dateRangeHash = getDateRangeHash({ start, end })
     })
     builder.addCase(fetchPortsReportThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
@@ -187,12 +197,14 @@ const portsReportSlice = createSlice({
   },
 })
 
-export const { resetPortsReportData } = portsReportSlice.actions
+export const { resetPortsReportData, setPortReportDateRangeHash } = portsReportSlice.actions
 
 export const selectPortsReportStatus = (state: PortsReportSliceState) => state.portsReport.status
 export const selectPortsReportError = (state: PortsReportSliceState) => state.portsReport.error
 export const selectPortsReportData = (state: PortsReportSliceState) => state.portsReport.data
 export const selectPortsReportVessels = (state: PortsReportSliceState) =>
   state.portsReport.data.vessels
+export const selectPortsReportDateRangeHash = (state: PortsReportSliceState) =>
+  state.portsReport.dateRangeHash
 
 export default portsReportSlice.reducer
