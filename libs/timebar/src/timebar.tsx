@@ -9,7 +9,7 @@ import {
   getFourwingsInterval,
   LIMITS_BY_INTERVAL,
 } from '@globalfishingwatch/deck-loaders'
-import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { getTime } from './utils/internal-utils'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'

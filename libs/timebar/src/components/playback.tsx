@@ -8,7 +8,7 @@ import {
   FOURWINGS_INTERVALS_ORDER,
   FourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
-import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
 import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
