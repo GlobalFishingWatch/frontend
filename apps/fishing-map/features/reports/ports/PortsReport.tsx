@@ -22,6 +22,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatInfoField } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getDownloadReportSupported } from 'features/download/download.utils'
 import EventsReportVesselsGraph from '../vessel-groups/vessels/VesselGroupReportVesselsGraph'
 import { getDateRangeHash } from '../shared/activity/reports-activity.slice'
 import styles from './PortsReport.module.css'
@@ -45,6 +46,8 @@ import {
   selectPortsReportStatus,
   selectPortsReportDateRangeHash,
 } from './ports-report.slice'
+
+const MAX_VESSELS_REPORT = 500
 
 function PortsReport() {
   const dispatchFetchReport = useFetchPortsReport()
@@ -85,6 +88,10 @@ function PortsReport() {
   const color = dataview?.config?.color || '#9AEEFF'
   const reportDateRangeHash = useSelector(selectPortsReportDateRangeHash)
   const reportOutdated = reportDateRangeHash !== getDateRangeHash({ start, end })
+  const timerangeSupported = getDownloadReportSupported(start, end)
+  const isVesselSupported = data !== undefined && data.numVessels < MAX_VESSELS_REPORT
+  console.log('🚀 ~ isVesselSupported:', isVesselSupported)
+  const allowsVesselsReport = timerangeSupported && isVesselSupported
 
   if (error) {
     return (
@@ -153,7 +160,24 @@ function PortsReport() {
         )}
       </div>
 
-      {isPortsReportDataLoading ? (
+      {!allowsVesselsReport ? (
+        <ReportVesselsPlaceholder>
+          <div className={cx(styles.cover, styles.error)}>
+            <p>
+              {!isVesselSupported &&
+                t('portsReport.maxVessels', {
+                  defaultValue: 'Vessels report is available for up to {{vessels}} vessels',
+                  vessels: MAX_VESSELS_REPORT,
+                })}
+              {!timerangeSupported &&
+                t(
+                  'analysis.timeRangeTooLong',
+                  'The selected time range is too long, please select a shorter time range'
+                )}
+            </p>
+          </div>
+        </ReportVesselsPlaceholder>
+      ) : isPortsReportDataLoading ? (
         <ReportVesselsPlaceholder />
       ) : isPortsReportDataIdle || reportOutdated ? (
         <ReportVesselsPlaceholder>
