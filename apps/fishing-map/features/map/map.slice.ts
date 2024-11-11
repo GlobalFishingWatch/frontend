@@ -30,7 +30,6 @@ import {
   FourwingsHeatmapPickingObject,
   FourwingsPickingObject,
   FourwingsPositionsPickingObject,
-  getFourwingsGeolocation,
   UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
@@ -448,9 +447,8 @@ export const fetchClusterEventThunk = createAsyncThunk(
           datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
         }
         if (dataview?.config?.clusterMaxZoomLevels) {
-          const geolocation = getFourwingsGeolocation(dataview?.config?.clusterMaxZoomLevels, zoom)
-          if (geolocation) {
-            datasetConfig.query?.push({ id: 'geolocation', value: geolocation })
+          if (eventFeature.clusterMode !== 'positions' && eventFeature.clusterMode !== 'default') {
+            datasetConfig.query?.push({ id: 'geolocation', value: eventFeature.clusterMode })
           }
         }
       }

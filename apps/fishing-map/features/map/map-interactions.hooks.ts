@@ -162,6 +162,13 @@ export const useClickedEventConnect = () => {
         })
       }
       return
+    } else if (clusterFeature.clusterMode === 'country') {
+      setMapCoordinates({
+        latitude: event.latitude,
+        longitude: event.longitude,
+        zoom: (event.zoom as number) + 1,
+      })
+      return
     }
 
     if (!event || !event.features) {
@@ -375,7 +382,10 @@ export const useMapCursor = () => {
         const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some((f) =>
           isTilesClusterLayerCluster(f)
         )
-        if (!isCluster) {
+        const isCountryClusterMode = (hoverFeatures as FourwingsClusterPickingObject[]).some(
+          (f) => f.clusterMode === 'country'
+        )
+        if (!isCluster && !isCountryClusterMode) {
           return 'pointer'
         }
         return areClusterTilesLoading ? 'wait' : 'zoom-in'

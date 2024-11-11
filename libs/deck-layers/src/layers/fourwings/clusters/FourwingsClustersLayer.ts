@@ -36,12 +36,11 @@ import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
 import {
   FourwingsClusterEventType,
   FourwingsClusterFeature,
+  FourwingsClusterMode,
   FourwingsClusterPickingInfo,
   FourwingsClustersLayerProps,
   FourwingsPointFeature,
 } from './fourwings-clusters.types'
-
-type ClusterMode = FourwingsGeolocation | 'positions'
 
 type FourwingsClustersTileLayerState = {
   error: string
@@ -108,7 +107,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return super.isLoaded && this.state.viewportLoaded
   }
 
-  get clusterMode(): ClusterMode {
+  get clusterMode(): FourwingsClusterMode {
     const { clusterMaxZoomLevels } = this.props
     if (!clusterMaxZoomLevels) {
       return 'default'
@@ -172,6 +171,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       endTime: this.props.endTime,
       eventType: this.props.eventType,
       uniqueFeatureInteraction: true,
+      clusterMode: this.clusterMode,
       expansionZoom,
     }
     return { ...info, object }
