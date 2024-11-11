@@ -44,7 +44,7 @@ export const selectIsAnyVesselLocation = createSelector(
   (isVesselLocation, isWorkspaceVesselLocation) => isVesselLocation || isWorkspaceVesselLocation
 )
 
-const selectIsReportLocation = createSelector(
+const selectisAreaReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT
 )
@@ -54,9 +54,10 @@ const selectIsWorkspaceReportLocation = createSelector(
   (locationType) => locationType === WORKSPACE_REPORT
 )
 
-export const selectIsAnyReportLocation = createSelector(
-  [selectIsReportLocation, selectIsWorkspaceReportLocation],
-  (isReportLocation, isWorkspaceReportLocation) => isReportLocation || isWorkspaceReportLocation
+export const selectIsAnyAreaReportLocation = createSelector(
+  [selectisAreaReportLocation, selectIsWorkspaceReportLocation],
+  (isAreaReportLocation, isWorkspaceReportLocation) =>
+    isAreaReportLocation || isWorkspaceReportLocation
 )
 
 export const selectIsPortReportLocation = createSelector(
@@ -67,6 +68,12 @@ export const selectIsPortReportLocation = createSelector(
 export const selectIsVesselGroupReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === VESSEL_GROUP_REPORT
+)
+
+export const selectIsAnyReportLocation = createSelector(
+  [selectIsAnyAreaReportLocation, selectIsPortReportLocation, selectIsVesselGroupReportLocation],
+  (isAreaReportLocation, isPortReportLocation, isVesselGroupReportLocation) =>
+    isAreaReportLocation || isPortReportLocation || isVesselGroupReportLocation
 )
 
 export const selectIsWorkspacesListLocation = createSelector(

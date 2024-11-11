@@ -12,7 +12,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectIsAnySearchLocation,
   selectIsVesselLocation,
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectWorkspaceId,
@@ -83,7 +83,7 @@ const Main = () => {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const locationType = useSelector(selectLocationType)
-  const reportLocation = useSelector(selectIsAnyReportLocation)
+  const reportLocation = useSelector(selectIsAnyAreaReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isSmallScreen = useSmallScreen()
@@ -139,7 +139,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -210,7 +210,7 @@ function App() {
   }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
-    if (isReportLocation) {
+    if (isAreaReportLocation) {
       if (reportAreaBounds) {
         fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
@@ -244,13 +244,13 @@ function App() {
       return t('search.title', 'Search')
     if (locationType === VESSEL || locationType === WORKSPACE_VESSEL)
       return t('vessel.title', 'Vessel profile')
-    if (isReportLocation) return t('analysis.title', 'Analysis')
+    if (isAreaReportLocation) return t('analysis.title', 'Analysis')
     return t('common.layerList', 'Layer list')
-  }, [locationType, isReportLocation])
+  }, [locationType, isAreaReportLocation])
 
   let asideWidth = '50%'
   if (readOnly) {
-    asideWidth = isReportLocation ? '45%' : '34rem'
+    asideWidth = isAreaReportLocation ? '45%' : '34rem'
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
   } else if (isWorkspaceLocation) {

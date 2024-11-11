@@ -14,6 +14,7 @@ import { useSetMapInstance } from 'features/map/map-context.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapControls from 'features/map/controls/MapControls'
 import {
+  selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsVesselGroupReportLocation,
@@ -95,8 +96,9 @@ const MapWrapper = () => {
     }
   }, [setDeckLayers])
 
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isVGRReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const vesselGroupSection = useSelector(selectVGRSection)
   const hasReportTimeseries = useHasReportTimeseries()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -108,9 +110,10 @@ const MapWrapper = () => {
   }, [dispatch])
 
   const mapLoading = useIsDeckLayersLoading()
-  const isReportAreaLoading = isReportLocation && reportAreaStatus === AsyncReducerStatus.Loading
+  const isReportAreaLoading =
+    isAreaReportLocation && reportAreaStatus === AsyncReducerStatus.Loading
   const isLoadingReport =
-    (isReportLocation || (isVGRReportLocation && vesselGroupSection === 'activity')) &&
+    (isAreaReportLocation || (isVGRReportLocation && vesselGroupSection === 'activity')) &&
     !hasReportTimeseries
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
@@ -159,13 +162,13 @@ const MapWrapper = () => {
       <ErrorNotificationDialog />
       <MapAnnotationsDialog />
       <MapControls mapLoading={mapLoading || isReportAreaLoading} />
-      {isWorkspaceLocation && !isReportLocation && (
+      {isWorkspaceLocation && !isAnyReportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}
-      {isWorkspaceLocation && !isReportLocation && (
+      {isWorkspaceLocation && !isAnyReportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
-      {(isWorkspaceLocation || isReportLocation || isVesselLocation || isVGRReportLocation) && (
+      {(isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && (
         <MapInfo center={hoveredCoordinates} />
       )}
 

@@ -8,7 +8,7 @@ import {
   selectVesselId,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
 } from 'routes/routes.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
@@ -28,7 +28,7 @@ import {
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [
     selectDataviewInstancesResolved,
-    selectIsAnyReportLocation,
+    selectIsAnyAreaReportLocation,
     selectReportCategory,
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
@@ -41,7 +41,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
   ],
   (
     dataviews = [],
-    isReportLocation,
+    isAreaReportLocation,
     reportCategory,
     isVesselLocation,
     viewOnlyVessel,
@@ -53,7 +53,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     viewOnlyVesselGroup
   ) => {
     const visibleDataviews = dataviews.filter((dataview) => dataview.config?.visible)
-    if (isReportLocation) {
+    if (isAreaReportLocation) {
       return visibleDataviews.filter((dataview) => {
         if (
           dataview.category === DataviewCategory.Activity ||

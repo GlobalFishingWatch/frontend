@@ -6,7 +6,7 @@ import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/reac
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
   selectIsAnyVesselLocation,
   selectIsPortReportLocation,
@@ -59,7 +59,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const dataviewsResources = useSelector(selectDataviewsResources)
-  const isAreaReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const userLogged = useSelector(selectIsUserLogged)
