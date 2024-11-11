@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { getQueryParamsResolved } from 'queries/base'
 import {
+  EVENTS_TIME_FILTER_MODE,
   ReportEventsVesselsResponse,
   ReportEventsVesselsResponseItem,
 } from 'queries/report-events-stats-api'
@@ -74,6 +75,7 @@ export const fetchPortsReportThunk = createAsyncThunk(
         'start-date': start,
         'end-date': end,
         'port-ids': [portId],
+        'time-filter-mode': EVENTS_TIME_FILTER_MODE,
         dataset: datasetId,
       }
       const portEventsVesselStats = await GFWAPI.fetch<ReportEventsVesselsResponse>(

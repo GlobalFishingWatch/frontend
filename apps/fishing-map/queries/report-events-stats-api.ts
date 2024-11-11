@@ -41,6 +41,8 @@ export type ReportEventsVesselsResponseItem = {
 
 export type ReportEventsVesselsResponse = ReportEventsVesselsResponseItem[]
 
+export const EVENTS_TIME_FILTER_MODE = 'START-DATE'
+
 function getBaseStatsQuery({
   filters,
   start,
@@ -49,6 +51,7 @@ function getBaseStatsQuery({
   const query = {
     'start-date': start,
     'end-date': end,
+    'time-filter-mode': EVENTS_TIME_FILTER_MODE,
     ...(filters?.portId && { 'port-ids': [filters.portId] }),
     ...(filters?.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
     ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),
