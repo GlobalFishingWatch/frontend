@@ -52,7 +52,7 @@ function PortsReportLink({ children, port }: PortsReportLinkProps) {
         },
       }}
     >
-      <Tooltip content={t('portsReport.seePortReport', 'See all visits to this port')}>
+      <Tooltip content={t('portsReport.seePortReport', 'See all entry events to this port')}>
         <span>{children}</span>
       </Tooltip>
     </Link>

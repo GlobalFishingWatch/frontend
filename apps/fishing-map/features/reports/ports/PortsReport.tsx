@@ -75,13 +75,12 @@ function PortsReport() {
   const isPortsStatsLoading = statsStatus === 'pending'
   const isPortsReportDataLoading = portsReportDataStatus === AsyncReducerStatus.Loading
   const isPortsReportDataIdle = portsReportDataStatus === AsyncReducerStatus.Idle
-  const isLoading = isPortsStatsLoading && isPortsReportDataLoading
   const color = dataview?.config?.color || '#9AEEFF'
 
-  if (error || !data || isLoading) {
+  if (error || !data || isPortsStatsLoading) {
     return (
       <Fragment>
-        {isLoading && (
+        {isPortsStatsLoading && (
           <Fragment>
             <div className={styles.container}>
               <ReportTitlePlaceholder />
@@ -89,7 +88,9 @@ function PortsReport() {
             <ReportEventsPlaceholder />
           </Fragment>
         )}
-        {error && !isLoading ? <p className={styles.error}>{(error as any).message}</p> : null}
+        {error && !isPortsStatsLoading ? (
+          <p className={styles.error}>{(error as any).message}</p>
+        ) : null}
       </Fragment>
     )
   }
@@ -112,7 +113,7 @@ function PortsReport() {
                 {parse(
                   t('portsReport.summaryEvents', {
                     defaultValue:
-                      '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> visited this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+                      '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
                     vessels: formatI18nNumber(data.numVessels || 0),
                     flags: data?.numFlags,
                     activityQuantity: data.numEvents,
@@ -145,7 +146,7 @@ function PortsReport() {
                   dangerouslySetInnerHTML={{
                     __html: t('portsReport.newTimeRange', {
                       defaultValue:
-                        'Click the button to see the vessels that visited this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+                        'Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
                       start: formatI18nDate(start),
                       end: formatI18nDate(end),
                     }),

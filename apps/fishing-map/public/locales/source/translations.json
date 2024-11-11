@@ -699,9 +699,9 @@
     "zoom_out": "Zoom out"
   },
   "portsReport": {
-    "newTimeRange": "Click the button to see the vessels that visited this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "seePortReport": "See all visits to this port",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> visited this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
+    "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "seePortReport": "See all entry events to this port",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
   },
   "search": {
     "advanced": "Advanced",
