@@ -90,6 +90,12 @@ export const downloadActivityLastReportThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(parseAPIError(error))
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { downloadActivity } = getState() as RootState
+      return downloadActivity?.hadTimeoutError
+    },
   }
 )
 
