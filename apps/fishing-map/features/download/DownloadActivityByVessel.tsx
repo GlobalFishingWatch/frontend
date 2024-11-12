@@ -160,7 +160,7 @@ function DownloadActivityByVessel() {
     return action
   }
 
-  useActivityDownloadTimeoutRefresh(onDownloadClick)
+  useActivityDownloadTimeoutRefresh()
 
   const parsedLabel =
     typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName

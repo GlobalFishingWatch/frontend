@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
+  downloadActivityLastReportThunk,
   selectDownloadActivityErrorMsg,
   selectHadDownloadActivityTimeoutError,
   selectIsDownloadActivityConcurrentError,
@@ -12,21 +14,25 @@ import {
 } from './downloadActivity.slice'
 import styles from './DownloadModal.module.css'
 
-export function useActivityDownloadTimeoutRefresh(callback: () => void) {
-  const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
-  const isDownloadConcurrentError = useSelector(selectIsDownloadActivityConcurrentError)
+export function useActivityDownloadTimeoutRefresh() {
+  const dispatch = useAppDispatch()
   const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
+  const intervalRef = useRef<NodeJS.Timeout | undefined>()
 
   useEffect(() => {
-    if (isDownloadTimeoutError || (isDownloadConcurrentError && hadDownloadTimeoutError)) {
-      const timeout = setTimeout(() => {
-        callback()
-      }, 5000)
-
-      return () => clearTimeout(timeout)
+    if (!hadDownloadTimeoutError && intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = undefined
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDownloadTimeoutError, hadDownloadTimeoutError, isDownloadConcurrentError])
+  }, [hadDownloadTimeoutError])
+
+  useEffect(() => {
+    if (hadDownloadTimeoutError && !intervalRef.current) {
+      intervalRef.current = setInterval(() => {
+        dispatch(downloadActivityLastReportThunk())
+      }, 10000)
+    }
+  }, [dispatch, hadDownloadTimeoutError])
 }
 
 function ActivityDownloadError() {
