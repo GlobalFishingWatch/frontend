@@ -190,7 +190,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       </div>
       {summary ? (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-          {dataviews?.length > 1 && (
+          {dataviews?.length > 0 && (
             <div className={styles.tagsContainer}>
               {dataviews?.map((dataview, index) => (
                 <ReportSummaryTags
