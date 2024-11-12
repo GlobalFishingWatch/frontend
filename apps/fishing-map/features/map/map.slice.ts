@@ -400,7 +400,7 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
 export const fetchClusterEventThunk = createAsyncThunk(
   'map/fetchEncounterEvent',
   async (
-    { eventFeature, zoom }: { eventFeature: FourwingsClusterPickingObject; zoom: number },
+    eventFeature: FourwingsClusterPickingObject,
     { signal, getState, dispatch, rejectWithValue }
   ) => {
     const state = getState() as RootState
@@ -446,10 +446,8 @@ export const fetchClusterEventThunk = createAsyncThunk(
         if (vesselGroups?.length) {
           datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
         }
-        if (dataview?.config?.clusterMaxZoomLevels) {
-          if (eventFeature.clusterMode !== 'positions' && eventFeature.clusterMode !== 'default') {
-            datasetConfig.query?.push({ id: 'geolocation', value: eventFeature.clusterMode })
-          }
+        if (eventFeature.clusterMode !== 'positions' && eventFeature.clusterMode !== 'default') {
+          datasetConfig.query?.push({ id: 'geolocation', value: eventFeature.clusterMode })
         }
       }
       const interactionUrl = resolveEndpoint(eventsDataset, datasetConfig)
@@ -658,7 +656,7 @@ export const fetchBQEventThunk = createAsyncThunk<
 
 export const fetchLegacyEncounterEventThunk = createAsyncThunk(
   'map/fetchLegacyEncounterEvent',
-  async ({ eventFeature }: { eventFeature: ClusterPickingObject }, { signal, getState }) => {
+  async (eventFeature: ClusterPickingObject, { signal, getState }) => {
     const state = getState() as any
     const eventDataviews = selectEventsDataviews(state) || []
     const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
@@ -807,7 +805,7 @@ const slice = createSlice({
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
       const feature = state.clicked?.features?.find(
-        (feature) => feature.id && action.meta.arg.eventFeature.id
+        (feature) => feature.id && action.meta.arg.id
       ) as any
       if (feature) {
         feature.event = action.payload
@@ -830,7 +828,7 @@ const slice = createSlice({
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
       const feature = state.clicked?.features?.find(
-        (feature) => feature.id && action.meta.arg.eventFeature.id
+        (feature) => feature.id && action.meta.arg.id
       ) as any
       if (feature) {
         feature.event = action.payload

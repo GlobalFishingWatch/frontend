@@ -89,8 +89,8 @@ function PortsReport() {
   const reportDateRangeHash = useSelector(selectPortsReportDateRangeHash)
   const reportOutdated = reportDateRangeHash !== getDateRangeHash({ start, end })
   const timerangeSupported = getDownloadReportSupported(start, end)
-  const isVesselSupported = data !== undefined && data.numVessels < MAX_VESSELS_REPORT
-  console.log('🚀 ~ isVesselSupported:', isVesselSupported)
+  const isVesselSupported =
+    statsStatus === 'fulfilled' ? data !== undefined && data.numVessels < MAX_VESSELS_REPORT : true
   const allowsVesselsReport = timerangeSupported && isVesselSupported
 
   if (error) {

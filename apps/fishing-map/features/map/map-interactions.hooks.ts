@@ -150,25 +150,27 @@ export const useClickedEventConnect = () => {
       (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
     ) as FourwingsClusterPickingObject
 
-    if (isTilesClusterLayerCluster(clusterFeature)) {
-      const { expansionZoom } = clusterFeature
-      const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
-      const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
-      if (!areTilesClusterLoading && expansionZoomValue) {
+    if (clusterFeature) {
+      if (isTilesClusterLayerCluster(clusterFeature)) {
+        const { expansionZoom } = clusterFeature
+        const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
+        const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
+        if (!areTilesClusterLoading && expansionZoomValue) {
+          setMapCoordinates({
+            latitude: event.latitude,
+            longitude: event.longitude,
+            zoom: expansionZoomValue,
+          })
+        }
+        return
+      } else if (clusterFeature.clusterMode === 'country') {
         setMapCoordinates({
           latitude: event.latitude,
           longitude: event.longitude,
-          zoom: expansionZoomValue,
+          zoom: (event.zoom as number) + 1,
         })
+        return
       }
-      return
-    } else if (clusterFeature.clusterMode === 'country') {
-      setMapCoordinates({
-        latitude: event.latitude,
-        longitude: event.longitude,
-        zoom: (event.zoom as number) + 1,
-      })
-      return
     }
 
     if (!event || !event.features) {
@@ -219,9 +221,7 @@ export const useClickedEventConnect = () => {
         tileClusterFeature?.subcategory === DataviewType.TileCluster
           ? fetchLegacyEncounterEventThunk
           : fetchClusterEventThunk
-      const eventsPromise = dispatch(
-        clusterFn({ eventFeature: tileClusterFeature, zoom: event.zoom } as any) as any
-      )
+      const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
       setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
     }
   }
