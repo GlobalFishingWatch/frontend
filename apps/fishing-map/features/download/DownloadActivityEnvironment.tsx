@@ -181,7 +181,7 @@ function DownloadActivityGridded() {
     })
     return action.payload
   }
-  useActivityDownloadTimeoutRefresh(onDownloadClick)
+  useActivityDownloadTimeoutRefresh()
 
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const parsedLabel =
