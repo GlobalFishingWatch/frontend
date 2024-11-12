@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
 import {
   selectDownloadActivityErrorMsg,
+  selectHadDownloadActivityTimeoutError,
   selectIsDownloadActivityConcurrentError,
+  selectIsDownloadActivityError,
   selectIsDownloadActivityTimeoutError,
   selectIsDownloadAreaTooBig,
 } from './downloadActivity.slice'
@@ -12,9 +14,11 @@ import styles from './DownloadModal.module.css'
 
 export function useActivityDownloadTimeoutRefresh(callback: () => void) {
   const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
+  const isDownloadConcurrentError = useSelector(selectIsDownloadActivityConcurrentError)
+  const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
 
   useEffect(() => {
-    if (isDownloadTimeoutError) {
+    if (isDownloadTimeoutError || (isDownloadConcurrentError && hadDownloadTimeoutError)) {
       const timeout = setTimeout(() => {
         callback()
       }, 5000)
@@ -22,23 +26,29 @@ export function useActivityDownloadTimeoutRefresh(callback: () => void) {
       return () => clearTimeout(timeout)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDownloadTimeoutError])
+  }, [isDownloadTimeoutError, hadDownloadTimeoutError, isDownloadConcurrentError])
 }
 
 function ActivityDownloadError() {
   const { t } = useTranslation()
+  const isDownloadActivityError = useSelector(selectIsDownloadActivityError)
   const apiDownloadErrorMsg = useSelector(selectDownloadActivityErrorMsg)
   const isDownloadAreaTooBig = useSelector(selectIsDownloadAreaTooBig)
   const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
   const isDownloadConcurrentError = useSelector(selectIsDownloadActivityConcurrentError)
+  const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
+
+  if (!isDownloadActivityError && !hadDownloadTimeoutError) {
+    return null
+  }
 
   let downloadErrorMsg = apiDownloadErrorMsg
-  if (isDownloadConcurrentError) {
+  if (isDownloadConcurrentError && !hadDownloadTimeoutError) {
     downloadErrorMsg = t(
       'download.errorConcurrentReport',
       'Your account is currently loading an analysis report, please wait for the report to finish before downloading data'
     )
-  } else if (isDownloadTimeoutError) {
+  } else if (isDownloadTimeoutError || hadDownloadTimeoutError) {
     downloadErrorMsg = t('analysis.timeoutError', 'This is taking more than expected, please wait')
   } else if (isDownloadAreaTooBig) {
     downloadErrorMsg = `${t(

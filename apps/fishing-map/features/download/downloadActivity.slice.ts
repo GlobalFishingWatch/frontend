@@ -32,6 +32,7 @@ interface DownloadActivityState {
   areaDataview: Dataview | UrlDataviewInstance | undefined
   error: AsyncError | undefined
   status: AsyncReducerStatus
+  hadTimeoutError: boolean
   activeTabId: HeatmapDownloadTab
 }
 
@@ -40,6 +41,7 @@ const initialState: DownloadActivityState = {
   areaDataview: undefined,
   error: undefined,
   status: AsyncReducerStatus.Idle,
+  hadTimeoutError: false,
   activeTabId: HeatmapDownloadTab.ByVessel,
 }
 
@@ -148,6 +150,7 @@ const downloadActivitySlice = createSlice({
     resetDownloadActivityState: (state) => {
       state.areaKey = undefined
       state.status = AsyncReducerStatus.Idle
+      state.hadTimeoutError = false
     },
   },
   extraReducers: (builder) => {
@@ -157,12 +160,20 @@ const downloadActivitySlice = createSlice({
     })
     builder.addCase(downloadActivityThunk.fulfilled, (state) => {
       state.status = AsyncReducerStatus.Finished
+      state.hadTimeoutError = false
     })
     builder.addCase(downloadActivityThunk.rejected, (state, action) => {
-      state.status =
-        action.error.message === 'Aborted' ? AsyncReducerStatus.Aborted : AsyncReducerStatus.Error
-      if (action.payload?.message) {
-        state.error = action.payload
+      if (action.error.message === 'Aborted') {
+        state.status = AsyncReducerStatus.Aborted
+      } else {
+        state.status = AsyncReducerStatus.Error
+        if (action.payload?.message) {
+          const isTimeoutError = getIsTimeoutError(action.payload)
+          if (isTimeoutError) {
+            state.hadTimeoutError = isTimeoutError
+          }
+          state.error = action.payload
+        }
       }
     })
   },
@@ -173,6 +184,8 @@ export const { setDownloadActiveTab, setDownloadActivityAreaKey, resetDownloadAc
 
 const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
 export const selectDownloadActivityError = (state: RootState) => state.downloadActivity.error
+export const selectHadDownloadActivityTimeoutError = (state: RootState) =>
+  state.downloadActivity.hadTimeoutError
 export const selectDownloadActivityErrorMsg = (state: RootState) =>
   state.downloadActivity.error?.message
 export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey

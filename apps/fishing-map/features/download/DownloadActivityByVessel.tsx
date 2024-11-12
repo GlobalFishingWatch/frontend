@@ -15,10 +15,9 @@ import {
   downloadActivityThunk,
   selectIsDownloadActivityLoading,
   selectIsDownloadActivityFinished,
-  selectIsDownloadActivityError,
   DateRange,
   selectDownloadActivityAreaKey,
-  selectIsDownloadActivityTimeoutError,
+  selectHadDownloadActivityTimeoutError,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -70,9 +69,8 @@ function DownloadActivityByVessel() {
     userData?.permissions || []
   )
   const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
-  const isDownloadError = useSelector(selectIsDownloadActivityError)
   const isDownloadFinished = useSelector(selectIsDownloadActivityFinished)
-  const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
+  const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
@@ -232,13 +230,15 @@ function DownloadActivityByVessel() {
               ))}
             </p>
           ) : null}
-          {isDownloadError && <ActivityDownloadError />}
+          <ActivityDownloadError />
           <Button
             testId="download-activity-vessel-button"
             onClick={onDownloadClick}
             className={styles.downloadBtn}
-            loading={isDownloadAreaLoading || isDownloadLoading || isDownloadTimeoutError}
-            disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
+            loading={isDownloadAreaLoading || isDownloadLoading || hadDownloadTimeoutError}
+            disabled={
+              isDownloadAreaLoading || !isDownloadReportSupported || hadDownloadTimeoutError
+            }
           >
             {isDownloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>
