@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon'
 import { uniqBy } from 'es-toolkit'
-import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import {
   AggregationOperation,
   getTimeSeries,
@@ -13,6 +12,7 @@ import {
   Interval,
   quantizeOffsetToDate,
 } from '@globalfishingwatch/layer-composer'
+import { GeoJSONFeature } from './features'
 
 export type TilesSourceState = {
   loaded: boolean

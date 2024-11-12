@@ -1,4 +1,3 @@
-import { TimeSeries, TimeSeriesFrame } from '@globalfishingwatch/fourwings-aggregate'
 import {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
@@ -14,6 +13,20 @@ import { DateTimeSeries } from 'features/reports/areas/area-reports.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { ComparisonGraphData } from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
+
+export interface TimeSeriesFrame {
+  frame: number
+  // key will be "0", "1", etc corresponding to a stringified sublayer index.
+  // This is intended to accomodate the d3 layouts we use. The associated value corresponds to
+  // the sum or avg (depending on aggregationOp used) for all cells at this frame for this sublayer
+  [key: string]: number
+}
+
+export type TimeSeries = {
+  values: TimeSeriesFrame[]
+  minFrame: number
+  maxFrame: number
+}
 
 export const filterTimeseriesByTimerange = (
   timeseries: ReportGraphProps[],

@@ -77,7 +77,10 @@ const VesselIdentitySelector = () => {
           const end = formatI18nDate(identity.transmissionDateTo)
           const identityId = getVesselIdentityId(identity)
           return (
-            <Tooltip content={t('vessel.selectIdentity', 'See the identity for this dates')}>
+            <Tooltip
+              key={identity.id}
+              content={t('vessel.selectIdentity', 'See the identity for this dates')}
+            >
               <li
                 key={identityId}
                 className={cx(styles.icon, {

@@ -8,8 +8,8 @@ import {
   ViewMode,
   Pick,
 } from '@deck.gl-community/editable-layers'
-import { EditHandleFeature } from '@deck.gl-community/editable-layers/src/edit-modes/types'
 import uniqBy from 'lodash/uniqBy'
+import { EditHandleFeature } from './draw.types'
 
 export type DrawLayerMode =
   | CustomDrawPolygonMode

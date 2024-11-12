@@ -205,7 +205,7 @@ function DownloadActivityGridded() {
     })
     return action
   }
-  useActivityDownloadTimeoutRefresh(onDownloadClick)
+  useActivityDownloadTimeoutRefresh()
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const parsedLabel =
     typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName

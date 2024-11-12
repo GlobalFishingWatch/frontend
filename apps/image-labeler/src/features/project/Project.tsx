@@ -1,11 +1,12 @@
 import { Link, getRouteApi, useNavigate } from '@tanstack/react-router'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import uniqBy from 'lodash/uniqBy'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { Slider } from '@globalfishingwatch/ui-components/slider'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks/use-local-storage'
+import { Choice } from '@globalfishingwatch/ui-components/choice'
 import {
   useGetLabellingProjectTasksByIdQuery,
   useGetLabellingProjectTasksQuery,
@@ -21,9 +22,10 @@ export function Project() {
   const { projectId } = route.useParams()
   const { activeTaskId } = route.useSearch()
   const navigate = useNavigate({ from: routePath })
-  const [imageStyleEditorOpen, setImageStyleOpen] = useState<Boolean>(false)
-  const [imageStyleSaturation, setImageStyleSaturation] = useLocalStorage('saturation', 1.5)
+  const [imageStyleEditorOpen, setImageStyleOpen] = useLocalStorage('imageStyleEditorOpen', true)
+  const [imageStyleSaturation, setImageStyleSaturation] = useLocalStorage('saturation', 1)
   const [imageStyleContrast, setImageStyleContrast] = useLocalStorage('contrast', 1)
+  const [showEnhancedImage, setShowEnhancedImage] = useLocalStorage('showEnhancedImage', true)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialActiveTaskId = useMemo(() => activeTaskId as string | undefined, [])
@@ -132,28 +134,54 @@ export function Project() {
       >
         {imageStyleEditorOpen && (
           <div className={styles.editorContent}>
-            <Slider
-              label="Saturation"
-              config={{
-                min: 0,
-                max: 4,
-                steps: [0, 4],
-              }}
-              initialValue={imageStyleSaturation}
-              onChange={(value) => setImageStyleSaturation(value)}
-              className={styles.slider}
-            />
-            <Slider
-              label="Contrast"
-              config={{
-                min: 0,
-                max: 4,
-                steps: [0, 4],
-              }}
-              initialValue={imageStyleContrast}
-              onChange={(value) => setImageStyleContrast(value)}
-              className={styles.slider}
-            />
+            <div className={styles.switch}>
+              <Choice
+                label="image style"
+                activeOption={showEnhancedImage ? 'normalized' : 'original'}
+                options={[
+                  {
+                    id: 'original',
+                    label: 'original',
+                  },
+                  {
+                    id: 'normalized',
+                    label: 'normalized',
+                  },
+                ]}
+                onSelect={(selected) => {
+                  setShowEnhancedImage(selected.id === 'normalized')
+                }}
+                size="small"
+              />
+            </div>
+            {!showEnhancedImage && (
+              <Fragment>
+                <Slider
+                  label="Saturation"
+                  config={{
+                    min: 0,
+                    max: 4,
+                    steps: [0, 4],
+                  }}
+                  initialValue={imageStyleSaturation}
+                  onChange={(value) => setImageStyleSaturation(value)}
+                  thumbsSize="small"
+                  className={styles.slider}
+                />
+                <Slider
+                  label="Contrast"
+                  config={{
+                    min: 0,
+                    max: 4,
+                    steps: [0, 4],
+                  }}
+                  initialValue={imageStyleContrast}
+                  onChange={(value) => setImageStyleContrast(value)}
+                  thumbsSize="small"
+                  className={styles.slider}
+                />
+              </Fragment>
+            )}
           </div>
         )}
         <IconButton

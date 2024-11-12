@@ -10,6 +10,9 @@
     ]
   },
   "exclude": [
+    "node_modules",
+    ".next",
+    "exported",
     "src/**/*.spec.ts",
     "src/**/*.test.ts",
     "src/**/*.spec.tsx",

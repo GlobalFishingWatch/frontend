@@ -28,8 +28,6 @@ module.exports = {
         pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
-    'react/prop-types': 1,
-    'react/require-default-props': 1,
     'react/jsx-fragments': ['error', 'element'],
   },
 }

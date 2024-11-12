@@ -84,7 +84,7 @@
     }
   },
   "release": {
-    "projects": ["!linting", "libs/*", "!libs/i18n-labels", "apps/fishing-map"],
+    "projects": ["!linting", "libs/*", "!libs/i18n-labels", "!apps/*"],
     "projectsRelationship": "independent",
     "releaseTagPattern": "@gfw/{projectName}@{version}",
     "changelog": {
@@ -95,7 +95,8 @@
     },
     "version": {
       "generatorOptions": {
-        "currentVersionResolver": "git-tag"
+        "currentVersionResolver": "git-tag",
+        "fallbackCurrentVersionResolver": "disk"
         // "specifierSource": "conventional-commits"
       }
     },
@@ -130,4 +131,5 @@
   },
   "nxCloudAccessToken": "",
   "defaultBase": "develop"
+  // "useLegacyCache": true
 }

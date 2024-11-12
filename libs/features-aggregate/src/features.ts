@@ -4,7 +4,26 @@ import {
   pickActiveTimeChunk,
   TimeChunks,
 } from '@globalfishingwatch/layer-composer'
-import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+
+// Copied from below to avoid importing the dependency
+// import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+export declare class GeoJSONFeature<P = Record<string, any>> {
+  type: 'Feature'
+  _geometry: GeoJSON.Geometry
+  properties: P
+  id: number | string | undefined
+  _vectorTileFeature: any
+  constructor(
+    vectorTileFeature: any,
+    z: number,
+    x: number,
+    y: number,
+    id: string | number | undefined
+  )
+  get geometry(): GeoJSON.Geometry
+  set geometry(g: GeoJSON.Geometry)
+  toJSON(): any
+}
 
 export const aggregateFeatures = (features: GeoJSONFeature[], metadata: HeatmapLayerMeta) => {
   const timeChunks = metadata.timeChunks as TimeChunks

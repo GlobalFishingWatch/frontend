@@ -1,6 +1,4 @@
-/* eslint-disable react/prop-types */
 import React, { useCallback, useState, Fragment } from 'react'
-import PropTypes from 'prop-types'
 import { matchSorter } from 'match-sorter'
 import escapeRegExp from 'lodash/escapeRegExp'
 import { useTable, useSortBy, useRowSelect, useFlexLayout, useGlobalFilter } from 'react-table'
@@ -58,6 +56,21 @@ function HighlightedCell({ cell, state }) {
   )
 }
 
+// TODO: migrate to typescript and remove this deprected prop-types
+// Table.propTypes = {
+//   columns: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       Header: PropTypes.string.isRequired,
+//       accessor: PropTypes.func.isRequired,
+//     }).isRequired
+//   ).isRequired,
+//   data: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       name: PropTypes.string.isRequired,
+//       lastUpdate: PropTypes.string.isRequired,
+//     }).isRequired
+//   ).isRequired,
+// }
 function Table({ columns, data }) {
   const [searchInput, setSearchInput] = useState(false)
   const [downloadLoading, setDownloadLoading] = useState(false)
@@ -267,21 +280,6 @@ function Table({ columns, data }) {
       </div>
     </div>
   )
-}
-
-Table.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      Header: PropTypes.string.isRequired,
-      accessor: PropTypes.func.isRequired,
-    }).isRequired
-  ).isRequired,
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      lastUpdate: PropTypes.string.isRequired,
-    }).isRequired
-  ).isRequired,
 }
 
 export default Table

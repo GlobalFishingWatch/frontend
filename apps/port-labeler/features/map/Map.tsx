@@ -75,7 +75,7 @@ const MapWrapper = (): React.ReactElement => {
         latitude={viewport.latitude}
         longitude={viewport.longitude}
         zoom={viewport.zoom}
-        mapLib={maplibregl}
+        mapLib={maplibregl as any}
         mapStyle={style as unknown as MapboxStyle}
         onMouseDown={onMouseDown as any}
         onMouseMove={onMouseMove as any}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { geoEqualEarth, geoPath } from 'd3'
-import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry, Point } from 'geojson'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 import area from '@turf/area'
@@ -41,6 +41,7 @@ function TrackFootprint({
 }: TrackFootprintProps) {
   const { t } = useTranslation()
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
+  const [lastPosition, setLastPosition] = useState<Point>()
   const [error, setError] = useState(false)
   const fullCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const highlightCanvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -91,6 +92,14 @@ function TrackFootprint({
       ])
       const geoJson = segmentsToGeoJSON(segments)
       setTrackData(geoJson)
+      const lastSegment = segments[segments.length - 1]
+      const lastPosition = lastSegment[lastSegment.length - 1]
+      if (lastPosition.longitude && lastPosition.latitude) {
+        setLastPosition({
+          type: 'Point',
+          coordinates: [lastPosition.longitude, lastPosition.latitude],
+        })
+      }
       if (onDataLoad) onDataLoad(geoJson)
     },
     [onDataLoad, trackDatasetId]
@@ -103,7 +112,7 @@ function TrackFootprint({
   }, [error, fetchData, onScreen, trackData, vesselIds])
 
   useEffect(() => {
-    if (fullContext && trackData) {
+    if (fullContext && trackData && lastPosition) {
       const isSmallFootprint = area(bboxPolygon(bbox(trackData))) < MAX_SMALL_AREA_M
       const fullPath = geoPath(projection, fullContext).pointRadius(1)
       fullContext.lineCap = 'round'
@@ -119,8 +128,26 @@ function TrackFootprint({
         )
         fullContext.stroke()
       })
+      fullContext.lineWidth = 9 * densityMultiplier
+      fullContext.strokeStyle = '#42639C'
+      fullContext.beginPath()
+      fullPath(lastPosition)
+      fullContext.stroke()
+      fullContext.lineWidth = 5 * densityMultiplier
+      fullContext.strokeStyle = '#6aecf9'
+      fullContext.beginPath()
+      fullPath(lastPosition)
+      fullContext.stroke()
     }
-  }, [densityMultiplier, fullContext, isHighDensityDisplay, projection, trackData, vesselIds])
+  }, [
+    densityMultiplier,
+    fullContext,
+    isHighDensityDisplay,
+    lastPosition,
+    projection,
+    trackData,
+    vesselIds,
+  ])
 
   useEffect(() => {
     highlightContext?.clearRect(0, 0, footprintWidth, footprintHeight)

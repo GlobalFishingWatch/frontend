@@ -128,3 +128,5 @@ affected-apps
 *.parquet
 .nx/cache
 .nx/workspace-data
+
+**/vite.config.{js,ts,mjs,mts,cjs,cts}.timestamp*

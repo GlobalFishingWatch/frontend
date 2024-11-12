@@ -64,10 +64,8 @@ const nextConfig = {
 
   // to deploy on a node server
   output: 'standalone',
-  outputFileTracing: true,
-  experimental: {
-    outputFileTracingRoot: join(__dirname, '../../'),
-  },
+  outputFileTracingRoot: join(__dirname, '../../'),
+  experimental: {},
   cleanDistDir: true,
   distDir: '.next',
 }

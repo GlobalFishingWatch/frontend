@@ -10,7 +10,7 @@ const IconComponents = icons.reduce((acc, icon) => {
   acc[icon] = lazy(() =>
     import(
       /* webpackChunkName: "icon-[request]" */
-      `../assets/icons/${icon}.svg?react`
+      `./icons/${icon}.svg?react`
     ).then((m) => ({
       default: m.ReactComponent || m.default || m,
     }))
