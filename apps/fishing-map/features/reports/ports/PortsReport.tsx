@@ -181,26 +181,28 @@ function PortsReport() {
         <ReportVesselsPlaceholder />
       ) : isPortsReportDataIdle || reportOutdated ? (
         <ReportVesselsPlaceholder>
-          <div className={cx(styles.cover, styles.center, styles.top)}>
-            <p
-              dangerouslySetInnerHTML={{
-                __html: t('portsReport.newTimeRange', {
-                  defaultValue:
-                    'Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-                  start: formatI18nDate(start),
-                  end: formatI18nDate(end),
-                }),
-              }}
-            />
-            <Button
-              onClick={() => {
-                dispatch(resetPortsReportData())
-                dispatchFetchReport()
-              }}
-            >
-              {t('analysis.seeVessels', 'See vessels')}
-            </Button>
-          </div>
+          {!isPortsStatsLoading && (
+            <div className={cx(styles.cover, styles.center, styles.top)}>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t('portsReport.newTimeRange', {
+                    defaultValue:
+                      'Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+                    start: formatI18nDate(start),
+                    end: formatI18nDate(end),
+                  }),
+                }}
+              />
+              <Button
+                onClick={() => {
+                  dispatch(resetPortsReportData())
+                  dispatchFetchReport()
+                }}
+              >
+                {t('analysis.seeVessels', 'See vessels')}
+              </Button>
+            </div>
+          )}
         </ReportVesselsPlaceholder>
       ) : (
         <div className={styles.container}>
