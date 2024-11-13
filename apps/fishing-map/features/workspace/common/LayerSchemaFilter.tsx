@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import {
   Choice,
@@ -163,6 +163,8 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   ]
 }
 
+const UNSORTED_FILTERS = ['speed']
+
 function LayerSchemaFilter({
   schemaFilter,
   onSelect,
@@ -182,6 +184,10 @@ function LayerSchemaFilter({
     unit,
     singleSelection,
   } = schemaFilter
+  const sortedOptions = useMemo(() => {
+    if (UNSORTED_FILTERS.includes(id)) return options
+    return options.sort((a, b) => a.label.localeCompare(b.label))
+  }, [id, options])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues | number) => {
@@ -261,7 +267,7 @@ function LayerSchemaFilter({
           selection: optionsSelected.map(({ id }) => id),
           options,
         })}
-        options={options}
+        options={sortedOptions}
         selectedOption={optionsSelected?.[0]}
         containerClassName={cx(styles.multiSelect, {
           experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
@@ -294,7 +300,7 @@ function LayerSchemaFilter({
             options,
             filterOperator,
           })}
-          options={options}
+          options={sortedOptions}
           selectedOption={optionsSelected[0]}
           className={cx({
             experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
