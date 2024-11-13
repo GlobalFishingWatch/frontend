@@ -204,7 +204,7 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
         {isGFWUser && (
           <PortsReportLink port={event?.port!}>
             <div className={styles.textContainer}>
-              {event?.port?.name}
+              {event?.port?.name || event?.port?.id}
               {event?.port?.country && ` (${formatInfoField(event.port.country, 'flag')})`}
               <IconButton size="small" icon="analysis" />
             </div>
