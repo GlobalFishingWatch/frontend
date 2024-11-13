@@ -47,7 +47,7 @@ import {
   fetchLegacyEncounterEventThunk,
   selectApiEventStatus,
   selectClickedEvent,
-  selectFishingInteractionStatus,
+  selectActivityInteractionStatus,
   setClickedEvent,
 } from './map.slice'
 import { useSetMapCoordinates } from './map-viewport.hooks'
@@ -99,7 +99,7 @@ export const useClickedEventConnect = () => {
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
   const clickedEvent = useSelector(selectClickedEvent)
-  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const fishingInteractionStatus = useSelector(selectActivityInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const setMapCoordinates = useSetMapCoordinates()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
@@ -138,6 +138,7 @@ export const useClickedEventConnect = () => {
       // }),
       latitude: deckEvent.latitude,
       longitude: deckEvent.longitude,
+      zoom: deckEvent.viewport?.zoom,
       point: { x: deckEvent.point.x, y: deckEvent.point.y },
     } as SliceInteractionEvent
 
@@ -149,18 +150,27 @@ export const useClickedEventConnect = () => {
       (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
     ) as FourwingsClusterPickingObject
 
-    if (isTilesClusterLayerCluster(clusterFeature)) {
-      const { expansionZoom } = clusterFeature
-      const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
-      const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
-      if (!areTilesClusterLoading && expansionZoomValue) {
+    if (clusterFeature) {
+      if (isTilesClusterLayerCluster(clusterFeature)) {
+        const { expansionZoom } = clusterFeature
+        const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
+        const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
+        if (!areTilesClusterLoading && expansionZoomValue) {
+          setMapCoordinates({
+            latitude: event.latitude,
+            longitude: event.longitude,
+            zoom: expansionZoomValue,
+          })
+        }
+        return
+      } else if (clusterFeature.clusterMode === 'country') {
         setMapCoordinates({
           latitude: event.latitude,
           longitude: event.longitude,
-          zoom: expansionZoomValue,
+          zoom: (event.zoom as number) + 1,
         })
+        return
       }
-      return
     }
 
     if (!event || !event.features) {
@@ -372,7 +382,10 @@ export const useMapCursor = () => {
         const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some((f) =>
           isTilesClusterLayerCluster(f)
         )
-        if (!isCluster) {
+        const isCountryClusterMode = (hoverFeatures as FourwingsClusterPickingObject[]).some(
+          (f) => f.clusterMode === 'country'
+        )
+        if (!isCluster && !isCountryClusterMode) {
           return 'pointer'
         }
         return areClusterTilesLoading ? 'wait' : 'zoom-in'

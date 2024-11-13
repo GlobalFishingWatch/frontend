@@ -32,7 +32,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectIsAnySearchLocation,
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
   selectLocationPayload,
@@ -40,7 +40,7 @@ import {
   selectLocationType,
   selectIsWorkspaceVesselLocation,
   selectIsAnyVesselLocation,
-  selectIsVesselGroupReportLocation,
+  selectIsAnyReportLocation,
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
@@ -48,7 +48,7 @@ import { selectSearchOption, selectSearchQuery } from 'features/search/search.co
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { resetReportData } from 'features/reports/activity/reports-activity.slice'
+import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportsStatus } from 'features/reports/areas/area-reports.slice'
 import { selectCurrentReport } from 'features/app/selectors/app.reports.selector'
@@ -67,6 +67,7 @@ import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils
 import { setModalOpen } from 'features/modals/modals.slice'
 import { useHighlightReportArea } from 'features/reports/areas/area-reports.hooks'
 import { resetVesselGroupReportData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { resetPortsReportData } from 'features/reports/ports/ports-report.slice'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
@@ -351,7 +352,7 @@ function CloseReportButton() {
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const highlightArea = useHighlightReportArea()
 
   const onCloseClick = () => {
@@ -361,6 +362,7 @@ function CloseReportButton() {
     dispatch(resetVesselGroupReportData())
     dispatch(resetAreaDetail(reportAreaIds))
     dispatch(cleanCurrentWorkspaceReportState())
+    dispatch(resetPortsReportData())
   }
 
   const isWorkspaceRoute = workspaceId !== undefined && workspaceId !== DEFAULT_WORKSPACE_ID
@@ -375,7 +377,7 @@ function CloseReportButton() {
 
   return (
     <Fragment>
-      {isVesselGroupReportLocation && <ShareWorkspaceButton />}
+      {!isAreaReportLocation && <ShareWorkspaceButton />}
       <Link className={styles.workspaceLink} to={linkTo}>
         <IconButton
           icon="close"
@@ -454,9 +456,9 @@ function SidebarHeader() {
   const locationCategory = useSelector(selectLocationCategory)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
@@ -512,7 +514,7 @@ function SidebarHeader() {
     dispatchQueryParams({ searchOption: option.id, ...EMPTY_FILTERS, ...additionalParams })
   }
 
-  const showCloseReportButton = isReportLocation || isVesselGroupReportLocation
+  const showCloseReportButton = isAnyReportLocation
 
   return (
     <Sticky
@@ -526,9 +528,9 @@ function SidebarHeader() {
         </a>
         {!readOnly && (
           <Fragment>
-            {isReportLocation && <SaveReportButton />}
+            {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && <SaveWorkspaceButton />}
-            {(isWorkspaceLocation || isReportLocation || isAnyVesselLocation) && (
+            {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) && (
               <ShareWorkspaceButton />
             )}
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
@@ -544,7 +546,7 @@ function SidebarHeader() {
                 className={styles.searchOption}
               />
             )}
-            {!isReportLocation &&
+            {!isAreaReportLocation &&
               !isVesselLocation &&
               !showCloseReportButton &&
               showBackToWorkspaceButton && <CloseSectionButton />}

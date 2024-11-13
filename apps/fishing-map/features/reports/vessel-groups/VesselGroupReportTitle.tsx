@@ -7,7 +7,7 @@ import parse from 'html-react-parser'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import VGRTitlePlaceholder from 'features/reports/placeholders/VGRTitlePlaceholder'
+import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePlaceholder'
 import {
   setVesselGroupEditId,
   setVesselGroupModalVessels,

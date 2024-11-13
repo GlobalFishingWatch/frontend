@@ -1,7 +1,11 @@
 import { ClusterFeature, PointFeature } from 'supercluster'
 import { PickingInfo } from '@deck.gl/core'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { ClusterMaxZoomLevelConfig, EventTypes } from '@globalfishingwatch/api-types'
+import {
+  ClusterMaxZoomLevelConfig,
+  EventTypes,
+  FourwingsGeolocation,
+} from '@globalfishingwatch/api-types'
 import { DeckLayerProps, DeckPickingObject } from '../../../types'
 
 export type FourwingsClusterEventType =
@@ -9,6 +13,8 @@ export type FourwingsClusterEventType =
   | `${EventTypes.Gap}`
   | `${EventTypes.Port}`
   | `${EventTypes.Loitering}`
+
+export type FourwingsClusterMode = FourwingsGeolocation | 'positions'
 
 export type FourwingsClustersLayerProps = DeckLayerProps<{
   startTime: number
@@ -40,6 +46,7 @@ export type FourwingsClusterPickingObject = FourwingsClusterFeature &
     datasetId?: string
     eventId?: string
     eventType?: FourwingsClusterEventType
+    clusterMode: FourwingsClusterMode
   }>
 
 export type FourwingsClusterPickingInfo = PickingInfo<

@@ -10,6 +10,7 @@ import VesselsTable from './VesselsTable'
 type ActivityTooltipRowProps = {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory; title?: string }
   loading?: boolean
+  error?: string
   showFeaturesDetails: boolean
   activityType?: DatasetSubCategory
 }
@@ -18,6 +19,7 @@ function ActivityTooltipRow({
   feature,
   showFeaturesDetails,
   loading,
+  error,
   activityType,
 }: ActivityTooltipRowProps) {
   const { t } = useTranslation()
@@ -47,6 +49,7 @@ function ActivityTooltipRow({
               <Spinner size="small" />
             </div>
           )}
+          {!loading && error && <p className={popupStyles.error}>{error}</p>}
           {!loading && showFeaturesDetails && (
             <VesselsTable feature={feature} activityType={activityType} />
           )}
