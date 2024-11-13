@@ -10,10 +10,10 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux'
 import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
 import './range.css'
+import { NumberValue } from 'd3-scale'
 import {
   TimebarTracks,
   Timebar,
-  // TimebarActivity,
   TimebarTracksEvents,
   TimelineContext,
   TimebarHighlighter,
@@ -46,7 +46,6 @@ import {
 import styles from './Timebar.module.css'
 import {
   getTracksData,
-  selectTracksGraphs,
   selectVesselDirectionPoints,
   getEventsForTracks,
   selectNightLayer,
@@ -62,19 +61,16 @@ const DirectionTimebarChildren = ({ vesselPoints }: { vesselPoints: VesselPoint[
   const colorMode = useSelector(selectColorMode)
   const projectColors = useSelector(selectProjectColors)
   const [positionScale, minValue, maxValue] = useMemo(() => {
-    // TODO: When loading the track detect the min and max values for
-    // all the fields and store them in the state to use them here
-    const { min, max } =
-      timebarMode === Field.speed
-        ? { min: 0, max: 22 }
-        : timebarMode === Field.distanceFromPort
-        ? { min: 0, max: 13000 }
-        : timebarMode === Field.elevation
-        ? { min: -4000, max: 500 }
-        : { min: null, max: null }
-    const range = max !== null && min !== null ? max - min : null
-    return [range, min, max]
-  }, [timebarMode])
+    const {min, max} = vesselPoints.reduce(
+      (acc, point) => ({
+        min: Math.min(acc.min, (point?.[timebarMode as keyof VesselPoint] || 0) as number),
+        max: Math.max(acc.max, (point?.[timebarMode as keyof VesselPoint] || 500) as number),
+      }),
+      { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
+    )
+    const positionScale = max !== null && min !== null ? max - min : null
+    return [positionScale, min, max]
+  }, [timebarMode, vesselPoints])
 
   const segments = useSelector(selectedtracks)
   const dispatch = useDispatch()
@@ -255,8 +251,6 @@ const TimebarWrapper = () => {
   const { minDistanceFromPort, maxDistanceFromPort } = useSelector(selectFilteredDistanceFromPort)
   const { fromHour, toHour } = useSelector(selectFilteredHours)
   const vesselPoints = useSelector(selectVesselDirectionPoints)
-
-  const tracksGraph = useSelector(selectTracksGraphs)
   const tracksEvents = useSelector(getEventsForTracks)
 
   //Those three handlers update the filters when we modify the Range
@@ -299,12 +293,13 @@ const TimebarWrapper = () => {
           absoluteEnd={absoluteEnd.toISOString()}
           onChange={dispatchTimerange}
           isResizable={true}
+          trackGraphOrientation={'up'}
           //bookmarkStart={bookmarkStart}
           //bookmarkEnd={bookmarkEnd}
-          showLastUpdate={false}
+          // showLastUpdate={false}
           //onBookmarkChange={dispatchBookmarkTimerange}
-          onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
-            if (clientX === null) {
+          onMouseMove={(clientX: number | null, scale: ((arg: NumberValue) => Date) | null) => {
+            if (clientX === null || scale === null) {
               if (highlightedTime !== undefined) {
                 dispatch(disableHighlightedTime())
               }
@@ -313,8 +308,7 @@ const TimebarWrapper = () => {
             const start = scale(clientX - 10).toISOString()
             const end = scale(clientX + 10).toISOString()
             dispatch(setHighlightedTime({ start, end }))
-          }}
-        >
+          } }         >
           
             <Fragment>
               <DayNightTimebarLayer></DayNightTimebarLayer>
@@ -340,7 +334,6 @@ const TimebarWrapper = () => {
                   <TimebarHighlighter
                     hoverStart={highlightedTime.start}
                     hoverEnd={highlightedTime.end}
-                    unit="knots"
                   />
                 )}
               </Fragment>
@@ -349,7 +342,6 @@ const TimebarWrapper = () => {
                   <TimebarHighlighter
                     hoverStart={highlightedEvent.start}
                     hoverEnd={highlightedEvent.end}
-                    unit="knots"
                   />
                 )}
               </Fragment>
