@@ -120,7 +120,8 @@ function PortsReport() {
 
   return (
     <Fragment>
-      <div className={styles.container}>
+      <div className={styles.titleContainer}>
+        <label className={styles.portLabel}>{t('event.port', 'Port')}</label>
         <h1 className={styles.title}>
           {formatInfoField(reportName || portId, 'shipname')} (
           {formatInfoField(reportCountry, 'flag')})

@@ -1,3 +1,13 @@
+.portLabel {
+  line-height: 0.5;
+  margin-top: var(--space-S);
+}
+
+.titleContainer {
+  padding: var(--space-S) var(--space-M);
+  border-bottom: var(--border);
+}
+
 .selector {
   padding: var(--space-M) var(--space-M) 0;
 }
