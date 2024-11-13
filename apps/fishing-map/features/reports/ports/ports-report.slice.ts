@@ -126,6 +126,7 @@ export const fetchPortsReportThunk = createAsyncThunk(
         return {
           ...identity,
           ...eventsVessel,
+          vesselId: identity.id,
           shipName: formatInfoField(identity.shipname, 'shipname') as string,
           geartype:
             (identity.geartypes || [])
