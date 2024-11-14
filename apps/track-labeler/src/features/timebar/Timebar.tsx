@@ -4,8 +4,6 @@ import React, {
   useEffect,
   createRef,
   useContext,
-  useCallback,
-  useMemo,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
@@ -19,178 +17,33 @@ import {
   TimebarHighlighter,
 } from '@globalfishingwatch/timebar'
 import {
-  useSegmentsLabeledConnect,
   useTimebarModeConnect,
   useTimerangeConnect,
 } from '../../features/timebar/timebar.hooks'
 import {
-  selectColorMode,
   selectFilteredDistanceFromPort,
   selectFilteredElevation,
   selectFilteredHours,
   selectFilteredSpeed,
-  selectProjectColors,
-  selectTimebarMode,
 } from '../../routes/routes.selectors'
-import { VesselPoint } from '../../types'
-import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { Field } from '../../data/models'
 import {
   setHighlightedTime,
   disableHighlightedTime,
   selectHighlightedTime,
   selectTooltip,
-  setTooltip,
   selectHighlightedEvent,
 } from './timebar.slice'
 import styles from './Timebar.module.css'
 import {
   getTracksData,
-  selectVesselDirectionPoints,
   getEventsForTracks,
   selectNightLayer,
 } from './timebar.selectors'
 import TimebarSelector from './selector/Selector'
+import { VesselEventsPointsGraph } from './VesselEventsPointsGraph'
 
-// This displays the positions of the vessel in the timebar styled by speed and adds the
-// posibility of click them to select a segment
-const DirectionTimebarChildren = ({ vesselPoints }: { vesselPoints: VesselPoint[] }) => {
-  // TODO: Performance issue if we have lot of points
-  const { outerScale, outerHeight } = useContext(TimelineContext)
-  const timebarMode = useSelector(selectTimebarMode)
-  const colorMode = useSelector(selectColorMode)
-  const projectColors = useSelector(selectProjectColors)
-  const [positionScale, minValue, maxValue] = useMemo(() => {
-    const {min, max} = vesselPoints.reduce(
-      (acc, point) => ({
-        min: Math.min(acc.min, (point?.[timebarMode as keyof VesselPoint] || 0) as number),
-        max: Math.max(acc.max, (point?.[timebarMode as keyof VesselPoint] || 500) as number),
-      }),
-      { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
-    )
-    const positionScale = max !== null && min !== null ? max - min : null
-    return [positionScale, min, max]
-  }, [timebarMode, vesselPoints])
 
-  const segments = useSelector(selectedtracks)
-  const dispatch = useDispatch()
-  const { onEventPointClick } = useSegmentsLabeledConnect()
-  const handleEventClick = useCallback(
-    (e: VesselPoint) => {
-      const position = {
-        latitude: e.position.lat,
-        longitude: e.position.lon ?? 1,
-      }
-      onEventPointClick(segments, e.timestamp, position)
-    },
-    [onEventPointClick, segments]
-  )
-
-  const gradient = 'linear-gradient(0deg, #FF6B6B 0px, #CC4AA9 40px, #185AD0 80px)'
-  const topMargin = 15
-  const points = useMemo(
-    () =>
-      minValue === null || maxValue === null || positionScale === null
-        ? []
-        : vesselPoints.map((vesselPoint) => {
-            const startX = outerScale(new Date(vesselPoint.timestamp))
-            const yPosition =
-              timebarMode === Field.speed
-                ? vesselPoint.speed
-                : timebarMode === Field.distanceFromPort
-                ? vesselPoint.distanceFromPort
-                : timebarMode === Field.elevation
-                ? vesselPoint.elevation
-                : 1
-            const backgroundPositionY =
-              Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale)
-            const bottom =
-              Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale) + 15
-            return {
-              vesselPoint,
-              startX,
-              backgroundImage: colorMode === 'all' || colorMode === 'content' ? gradient : '',
-              backgroundPositionY,
-              bottom,
-              borderColor:
-                colorMode === 'all' || colorMode === 'labels'
-                  ? projectColors[vesselPoint.action]
-                  : 'transparent',
-            }
-          }),
-    [
-      colorMode,
-      maxValue,
-      minValue,
-      outerHeight,
-      outerScale,
-      positionScale,
-      projectColors,
-      timebarMode,
-      vesselPoints,
-    ]
-  )
-  if (!positionScale || minValue === null || maxValue === null) {
-    return null
-  }
-  return (
-    <Fragment>
-      {points.map(
-        (
-          { vesselPoint, startX, backgroundImage, backgroundPositionY, borderColor, bottom },
-          index: number
-        ) => {
-          return (
-            <Fragment key={`dtc-${index}`}>
-              <span
-                key={index}
-                onClick={() => handleEventClick(vesselPoint)}
-                style={{
-                  borderRadius: '50%',
-                  backgroundImage,
-                  backgroundPositionY: backgroundPositionY,
-                  backgroundAttachment: 'fixed',
-                  position: 'absolute',
-                  left: startX,
-                  cursor: 'default',
-                  border: '1px solid #8091AB',
-                  borderColor,
-                  width: '7px',
-                  bottom: bottom,
-                  height: 7,
-                }}
-              ></span>
-              <span
-                key={`vertical-${index}`}
-                className={styles.vesselEventPlaceholder}
-                onMouseEnter={() =>
-                  dispatch(
-                    setTooltip({
-                      tooltip:
-                        Math.round(vesselPoint.speed * 100) / 100 +
-                        'kt' +
-                        (vesselPoint.elevation
-                          ? ', ' + Math.round(vesselPoint.elevation) + 'm'
-                          : ''),
-                    })
-                  )
-                }
-                style={{
-                  width: '2px',
-                  position: 'absolute',
-                  cursor: 'default',
-                  bottom: 0,
-                  left: startX + 2,
-                  height: outerHeight,
-                }}
-              ></span>
-            </Fragment>
-          )
-        }
-      )}
-    </Fragment>
-  )
-}
 
 const DayNightTimebarLayer = () => {
   // TODO: Performance issue if we have lot of points
@@ -250,7 +103,6 @@ const TimebarWrapper = () => {
   const { minElevation, maxElevation } = useSelector(selectFilteredElevation)
   const { minDistanceFromPort, maxDistanceFromPort } = useSelector(selectFilteredDistanceFromPort)
   const { fromHour, toHour } = useSelector(selectFilteredHours)
-  const vesselPoints = useSelector(selectVesselDirectionPoints)
   const tracksEvents = useSelector(getEventsForTracks)
 
   //Those three handlers update the filters when we modify the Range
@@ -308,11 +160,12 @@ const TimebarWrapper = () => {
             const start = scale(clientX - 10).toISOString()
             const end = scale(clientX + 10).toISOString()
             dispatch(setHighlightedTime({ start, end }))
-          } }         >
+          } }         
+          >
           
             <Fragment>
               <DayNightTimebarLayer></DayNightTimebarLayer>
-              <DirectionTimebarChildren vesselPoints={vesselPoints} />
+              <VesselEventsPointsGraph />
               {
                 <Fragment>
                   {tracks.length && <TimebarTracks key="tracks" tracks={tracks} />}
