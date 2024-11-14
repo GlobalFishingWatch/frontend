@@ -70,8 +70,10 @@ export const VesselEventsPointsGraphDeckGL = () => {
           : timebarMode === Field.elevation
           ? vesselPoint.elevation
           : 1
-      const bottom =
+      
+      const bottom = outerHeight - (
         Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale) + 15
+      )
 
       return {
         position: [startX, bottom],
@@ -139,7 +141,7 @@ export const VesselEventsPointsGraphDeckGL = () => {
 
   return (
     <DeckGL
-      views={new OrthographicView({ id: 'ortho' })}
+      views={new OrthographicView({ id: 'ortho', flipY: true })}
       initialViewState={{
         // Center the view on the data
         target: [outerScale.range()[1] / 2, outerHeight / 2, 0],
