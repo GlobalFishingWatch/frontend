@@ -41,7 +41,7 @@ import {
   selectNightLayer,
 } from './timebar.selectors'
 import TimebarSelector from './selector/Selector'
-import { VesselEventsPointsGraph } from './VesselEventsPointsGraph'
+import { VesselEventsPointsGraphDeckGL } from './VesselEventsPointsGraphDeckGL'
 
 
 
@@ -165,7 +165,7 @@ const TimebarWrapper = () => {
           
             <Fragment>
               <DayNightTimebarLayer></DayNightTimebarLayer>
-              <VesselEventsPointsGraph />
+              <VesselEventsPointsGraphDeckGL />
               {
                 <Fragment>
                   {tracks.length && <TimebarTracks key="tracks" tracks={tracks} />}
