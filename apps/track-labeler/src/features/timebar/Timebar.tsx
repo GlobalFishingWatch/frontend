@@ -39,6 +39,7 @@ import {
   getTracksData,
   getEventsForTracks,
   selectNightLayer,
+  selectRangeFilterLimits,
 } from './timebar.selectors'
 import TimebarSelector from './selector/Selector'
 import { VesselEventsPointsGraphDeckGL } from './VesselEventsPointsGraphDeckGL'
@@ -104,7 +105,7 @@ const TimebarWrapper = () => {
   const { minDistanceFromPort, maxDistanceFromPort } = useSelector(selectFilteredDistanceFromPort)
   const { fromHour, toHour } = useSelector(selectFilteredHours)
   const tracksEvents = useSelector(getEventsForTracks)
-
+  const rangeLimits = useSelector(selectRangeFilterLimits)
   //Those three handlers update the filters when we modify the Range
   const handleSpeedChange = (values: number[]) => {
     dispatchSpeed(values)
@@ -204,8 +205,8 @@ const TimebarWrapper = () => {
       <div className={styles.filtersContainer}>
         {filterMode === Field.speed && (
           <Range
-            min={0}
-            max={15}
+          min={rangeLimits.speed.min}
+          max={rangeLimits.speed.max}
             step={0.1}
             vertical
             onAfterChange={handleSpeedChange}
@@ -217,8 +218,8 @@ const TimebarWrapper = () => {
         )}
         {filterMode === Field.timestamp && (
           <Range
-            min={0}
-            max={24}
+            min={rangeLimits.hours.min}
+            max={rangeLimits.hours.max}
             step={1}
             vertical
             onAfterChange={handleTimeChange}
@@ -230,8 +231,8 @@ const TimebarWrapper = () => {
         )}
         {filterMode === Field.elevation && (
           <Range
-            min={-4000}
-            max={500}
+            min={rangeLimits.elevation.min}
+            max={rangeLimits.elevation.max}
             step={1}
             vertical
             onAfterChange={handleElevationChange}
@@ -243,8 +244,8 @@ const TimebarWrapper = () => {
         )}
         {filterMode === Field.distanceFromPort && (
           <Range
-            min={0}
-            max={10000}
+            min={rangeLimits.distanceFromPort.min}
+            max={rangeLimits.distanceFromPort.max}
             step={1}
             vertical
             onAfterChange={handleDistanceFromPortChange}

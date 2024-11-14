@@ -163,3 +163,47 @@ export const selectVesselDirectionsPositionScale = createSelector(
     return max !== null && min !== null ? max - min : null
   }
 )
+
+export const selectRangeFilterLimits = createSelector(
+  [selectVesselDirectionPoints],
+  (vesselPoints) => {
+    const limits = {
+      speed: { min: 0, max: 15 },
+      elevation: { min: -4000, max: 500 },
+      distanceFromPort: { min: 0, max: 10000 },
+      hours: { min: 0, max: 24 }
+    }
+
+    // TODO: Bring back this logic when we do not remove 
+    // the points from the vessel track
+    // we would need to add an outOfRange boolean property to handle rendering in map and in timebar differently
+    // to mute styles on timeline
+    // if (vesselPoints.length > 0) {
+    //   limits.speed = vesselPoints.reduce(
+    //     (acc, point) => ({
+    //       min: Math.min(acc.min, point.speed || 0),
+    //       max: Math.max(acc.max, point.speed || 0)
+    //     }),
+    //     { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
+    //   )
+
+    //   limits.elevation = vesselPoints.reduce(
+    //     (acc, point) => ({
+    //       min: Math.min(acc.min, point.elevation || 0),
+    //       max: Math.max(acc.max, point.elevation || 0)
+    //     }),
+    //     { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
+    //   )
+
+    //   limits.distanceFromPort = vesselPoints.reduce(
+    //     (acc, point) => ({
+    //       min: Math.min(acc.min, point.distanceFromPort || 0),
+    //       max: Math.max(acc.max, point.distanceFromPort || 0)
+    //     }),
+    //     { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
+    //   )
+    // }
+
+    return limits
+  }
+)
