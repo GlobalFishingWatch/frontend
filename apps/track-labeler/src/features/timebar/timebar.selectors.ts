@@ -101,6 +101,7 @@ const maxTimebarValues: any = {
   hours: 12,
   bathymetry: 2000,
 }
+
 export const selectTracksGraphs = createSelector(
   [getVesselFilteredTrackGeojsonByDateRange, selectTimebarMode],
   (tracskData, currentTimebarMode) => {
@@ -141,4 +142,24 @@ export const selectTracksGraphs = createSelector(
 export const selectVesselDirectionPoints = createSelector(
   [getVesselParsedFilteredTrack, getDateRangeTS],
   (vesselTrack, dates): VesselPoint[] => extractVesselDirectionPoints(vesselTrack, dates, [])
+)
+
+export const selectVesselDirectionsMinMaxValues = createSelector(
+  [selectVesselDirectionPoints, selectTimebarMode],
+  (vesselPoints, timebarMode) => {
+    return vesselPoints.reduce(
+      (acc, point) => ({
+        min: Math.min(acc.min, point[timebarMode as keyof VesselPoint] as number),
+        max: Math.max(acc.max, point[timebarMode as keyof VesselPoint] as number),
+      }),
+      { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
+    )
+  }
+)
+
+export const selectVesselDirectionsPositionScale = createSelector(
+  [selectVesselDirectionsMinMaxValues],
+  ({ min, max }) => {
+    return max !== null && min !== null ? max - min : null
+  }
 )
