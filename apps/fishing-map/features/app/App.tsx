@@ -12,13 +12,14 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectIsAnySearchLocation,
   selectIsVesselLocation,
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectWorkspaceId,
   selectIsMapDrawing,
   selectIsVesselGroupReportLocation,
   selectIsAnyVesselLocation,
+  selectIsPortReportLocation,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
@@ -48,6 +49,7 @@ import {
   SEARCH,
   WORKSPACE_SEARCH,
   VESSEL_GROUP_REPORT,
+  PORT_REPORT,
 } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
@@ -79,8 +81,9 @@ declare global {
 const Main = () => {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const locationType = useSelector(selectLocationType)
-  const reportLocation = useSelector(selectIsAnyReportLocation)
+  const reportLocation = useSelector(selectIsAnyAreaReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isSmallScreen = useSmallScreen()
@@ -90,6 +93,7 @@ const Main = () => {
   const isWorkspacesRouteWithTimebar =
     isWorkspaceLocation ||
     locationType === WORKSPACE_VESSEL ||
+    isPortReportLocation ||
     (isVesselGroupReportLocation && !isTimeComparisonReport) ||
     (reportLocation && !isTimeComparisonReport)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
@@ -135,7 +139,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -169,6 +173,7 @@ function App() {
   const locationNeedsFetch =
     locationType === REPORT ||
     locationType === VESSEL_GROUP_REPORT ||
+    locationType === PORT_REPORT ||
     ((locationType === WORKSPACE_REPORT || isAnyVesselLocation) &&
       currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
@@ -205,7 +210,7 @@ function App() {
   }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
-    if (isReportLocation) {
+    if (isAreaReportLocation) {
       if (reportAreaBounds) {
         fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
@@ -239,13 +244,13 @@ function App() {
       return t('search.title', 'Search')
     if (locationType === VESSEL || locationType === WORKSPACE_VESSEL)
       return t('vessel.title', 'Vessel profile')
-    if (isReportLocation) return t('analysis.title', 'Analysis')
+    if (isAreaReportLocation) return t('analysis.title', 'Analysis')
     return t('common.layerList', 'Layer list')
-  }, [locationType, isReportLocation])
+  }, [locationType, isAreaReportLocation])
 
   let asideWidth = '50%'
   if (readOnly) {
-    asideWidth = isReportLocation ? '45%' : '34rem'
+    asideWidth = isAreaReportLocation ? '45%' : '34rem'
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
   } else if (isWorkspaceLocation) {

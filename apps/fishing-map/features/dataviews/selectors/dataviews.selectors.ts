@@ -13,7 +13,7 @@ import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
 } from 'routes/routes.selectors'
@@ -92,20 +92,20 @@ export const selectActiveReportActivityDataviews = createSelector(
     selectActiveActivityDataviews,
     selectActiveVesselGroupDataviews,
     selectIsVesselGroupReportLocation,
-    selectIsAnyReportLocation,
+    selectIsAnyAreaReportLocation,
     selectReportCategory,
   ],
   (
     activityDataviews,
     vesselGroupDataviews,
     isVGRLocation,
-    isReportLocation,
+    isAreaReportLocation,
     reportCategory
   ): UrlDataviewInstance[] => {
     if (isVGRLocation) {
       return vesselGroupDataviews.filter((d) => isVesselGroupActivityDataview(d.id))
     }
-    if (isReportLocation) {
+    if (isAreaReportLocation) {
       return activityDataviews.filter((dataview) => {
         return getReportCategoryFromDataview(dataview) === reportCategory
       })

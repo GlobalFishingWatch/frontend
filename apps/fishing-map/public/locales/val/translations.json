@@ -698,6 +698,12 @@
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
   },
+  "portsReport": {
+    "newTimeRange": "crwdns84000:0{{start}}crwdnd84000:0{{end}}crwdne84000:0",
+    "seePortReport": "crwdns84002:0crwdne84002:0",
+    "maxVessels": "crwdns84004:0{{vessels}}crwdne84004:0",
+    "summaryEvents": "crwdns84006:0{{vessels}}crwdnd84006:0{{flags}}crwdnd84006:0{{activityQuantity}}crwdnd84006:0{{start}}crwdnd84006:0{{end}}crwdne84006:0"
+  },
   "search": {
     "advanced": "crwdns60363:0crwdne60363:0",
     "advancedDisabled": "crwdns60365:0crwdne60365:0",

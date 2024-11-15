@@ -13,12 +13,14 @@ import styles from '../Popup.module.css'
 type ViirsMatchTooltipRowProps = {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory; title?: string }
   loading?: boolean
+  error?: string
   showFeaturesDetails: boolean
 }
 function ViirsMatchTooltipRow({
   feature,
   showFeaturesDetails,
   loading,
+  error,
 }: ViirsMatchTooltipRowProps) {
   const { t } = useTranslation()
   // Avoid showing not matched detections
@@ -72,6 +74,7 @@ function ViirsMatchTooltipRow({
             <Spinner size="small" />
           </div>
         )}
+        {!loading && error && <p className={styles.error}>{error}</p>}
         {!loading && showFeaturesDetails && (
           <VesselsTable
             feature={{ ...featureVesselsFilter, category: feature.category }}

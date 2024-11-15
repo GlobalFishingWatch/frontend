@@ -63,6 +63,11 @@
   height: 50px;
 }
 
+.click .error {
+  color: var(--color-danger-red);
+  padding-block: var(--space-XS);
+}
+
 .popupSection {
   display: flex;
   position: relative;

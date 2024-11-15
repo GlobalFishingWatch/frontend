@@ -23,19 +23,8 @@ export default function ReportSummaryTags({
   availableFields,
 }: LayerPanelProps) {
   const { t } = useTranslation()
-
-  const activityDataview = isActivityDataview(dataview)
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
   const hasFilters = dataview.config?.filters && Object.keys(dataview.config.filters).length > 0
 
-  let datasetName = dataset ? getDatasetLabel(dataset) : dataview.name || ''
-  if (activityDataview) {
-    datasetName =
-      dataset?.subcategory === 'presence'
-        ? t(`common.presence`, 'Vessel presence')
-        : t(`common.apparentFishing`, 'Apparent Fishing Effort')
-  }
-  const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
   const showDot =
     !hiddenProperties?.includes('dataset') ||
     !hiddenProperties?.includes('source') ||
@@ -57,16 +46,6 @@ export default function ReportSummaryTags({
     <div className={cx(styles.row)}>
       <div className={cx(styles.content, { [styles.contentDot]: showDot })}>
         {showDot && <span className={styles.dot} style={{ color: dataview.config?.color }} />}
-        {!hiddenProperties?.includes('dataset') && (
-          <div className={layerPanelStyles.filter}>
-            <label>{t('dataset.title', 'Dataset')}</label>
-            {datasetName.length > 24 ? (
-              <Tooltip content={datasetName}>{TitleComponent}</Tooltip>
-            ) : (
-              TitleComponent
-            )}
-          </div>
-        )}
         {!hiddenProperties?.includes('source') && <DatasetFilterSource dataview={dataview} />}
         {!hiddenProperties?.includes('flag') && (
           <DatasetFlagField dataview={dataview} showWhenEmpty />

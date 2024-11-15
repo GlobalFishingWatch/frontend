@@ -17,7 +17,7 @@ import {
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
-import { selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
@@ -117,7 +117,7 @@ export const useSetTimerange = () => {
 export const useTimerangeConnect = () => {
   const timerangeAtom = useAtomValue(timerangeState)
   const setTimerange = useSetTimerange()
-  const reportLocation = useSelector(selectIsAnyReportLocation)
+  const reportLocation = useSelector(selectIsAnyAreaReportLocation)
   const fitAreaInViewport = useFitAreaInViewport()
 
   const onTimebarChange = useCallback(

@@ -80,12 +80,13 @@ export const FIELDS = [
   ['vessel-groups', 'vesselGroup.vesselGroup', 'Vessel Group'],
   ['origin', 'vessel.origin', 'Origin'],
   ['vessel_type', 'vessel.vesselType_other', 'Vessel types'],
+  ['speed', 'layer.speed', 'Speed'],
 ]
 
 export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
   const commonProperties: string[] = []
 
-  if (dataviews && dataviews?.length > 0) {
+  if (dataviews && dataviews?.length > 1) {
     if (
       dataviews?.every((dataview) => dataview.category === dataviews[0].category) &&
       dataviews?.every((dataview) => dataview.name === dataviews[0].name)

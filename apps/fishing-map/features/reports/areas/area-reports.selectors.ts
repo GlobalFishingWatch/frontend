@@ -31,7 +31,7 @@ import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import {
   selectReportVesselsData,
   selectReportPreviewBuffer,
-} from '../activity/reports-activity.slice'
+} from 'features/reports/shared/activity/reports-activity.slice'
 import {
   selectReportActivityGraph,
   selectReportTimeComparison,

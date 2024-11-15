@@ -44,7 +44,7 @@ import {
   selectReportVesselsData,
   selectReportVesselsError,
   selectReportVesselsStatus,
-} from 'features/reports/activity/reports-activity.slice'
+} from 'features/reports/shared/activity/reports-activity.slice'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectVGRActivityDataview } from '../vessel-groups/vessel-group-report.selectors'
 

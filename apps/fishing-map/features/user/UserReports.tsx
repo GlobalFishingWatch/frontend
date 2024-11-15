@@ -15,7 +15,7 @@ import {
 } from 'features/reports/areas/area-reports.slice'
 import { REPORT } from 'routes/routes'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
-import { resetReportData } from 'features/reports/activity/reports-activity.slice'
+import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
 import { getHighlightedText } from 'utils/text'
 import styles from './User.module.css'
