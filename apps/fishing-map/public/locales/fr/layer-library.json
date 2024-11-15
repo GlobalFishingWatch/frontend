@@ -45,9 +45,9 @@
     "name": "Haute mer"
   },
   "loitering": {
-    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "description": "Un épisode de dérive se produit lorsqu'un navire dstinct présente un comportement indiquant une rencontre potentielle. La déive est estimée à l'aide des données du système d'identification automatique (AIS), notamment la vitesse du navire, le temps passé dans un endroit donné et la distance par rapport à la côte. La dérive se produit lorsqu'un navire se déplace à une vitesse moyenne inférieure à deux nœuds, tout en se trouvant à au moins 20 milles nautiques en moyenne de la côte. Pour réduire le bruit dans le portail des navires de transport, seuls les épisodes de dérive d'une durée supérieure à une heure sont affichés.",
     "moreInfoLink": "",
-    "name": "Loitering events (AIS)"
+    "name": "Épisodes de dérive (AIS)"
   },
   "mangroves": {
     "description": "Les palétuviers sont des arbres ou arbustes qui peuvent survivre dans des environnements salins et qui poussent généralement dans la zone intertidale des régions tropicales et subtropicales. Considérées comme des habitats de carbone bleu, les mangroves améliorent la qualité de l'eau, stabilisent et protègent les côtes, et sont un refuge pour les oiseaux, les animaux et les organismes marins. Ce jeu de données utilise des images satellite d'observation de la Terre pour afficher la distribution globale des mangroves.  ",
@@ -90,9 +90,9 @@
     "name": "Concentration de phosphate (PO4)"
   },
   "port-visits": {
-    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",
+    "description": "Les ports sont basés sur le jeu de données des mouillages de Global Fishing Watch, qui et une base de données mondiale des emplacements de mouillage où les navires se rassemblent. Le jeu de données contient plus de 160 000 emplacements de mouillage individuels, qui sont eux-mêmes regroupés en près de 32 000 ports. ",
     "moreInfoLink": "",
-    "name": "Port Visits (AIS)"
+    "name": "Visites de ports (AIS)"
   },
   "presence": {
     "description": "Le calque de présence analyse les données du système d’identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés. La présence est déterminée en affichant les positions transmises par l'AIS du navire sous forme de carte thermique. ",
