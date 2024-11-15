@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import InteractiveMap from 'react-map-gl/maplibre';
-import { useLayerComposer } from '@globalfishingwatch/react-hooks'
+import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import * as Generators from '@globalfishingwatch/layer-composer'
 import {
   ExtendedLayer,

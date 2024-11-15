@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { ScaleControl } from 'react-map-gl'
-import { InteractionEvent } from '@globalfishingwatch/react-hooks/use-map-interaction'
+import { InteractionEvent } from '@globalfishingwatch/layer-composer'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import styles from './MapInfo.module.css'
 
