@@ -47,7 +47,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
   const actionShortcuts = useSelector(getActionShortcuts)
   const dispatch = useAppDispatch()
   const track = useSelector(getVesselTrackGeojsonByDateRange)
-  const { allowedAppAccess, allowedProjectAccess, projects, user } = useUser()
+  const { allowedAppAccess, allowedProjectAccess, projects, user, logged } = useUser()
   const formatedDate = (timestamp: number | null | undefined) => {
     if (timestamp) {
       const date = DateTime.fromMillis(timestamp, { zone: 'UTC' })
@@ -201,7 +201,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
     [dispatch]
   )
 
-  if (!allowedAppAccess) {
+  if (logged && !allowedAppAccess) {
     return (
       <ErrorPlaceHolder
         title={`Only some specific registered users can use this product  (logged in as: ${user?.email})`}
