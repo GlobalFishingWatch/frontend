@@ -12,7 +12,11 @@ import {
   selectFilterMode,
 } from '../../routes/routes.selectors'
 import { selectedtracks, SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
-import { selectOriginalTracks, selectTracks, selectVessels } from '../../features/vessels/vessels.slice'
+import {
+  selectOriginalTracks,
+  selectTracks,
+  selectVessels,
+} from '../../features/vessels/vessels.slice'
 import { ActionType, LayersData } from '../../types'
 import { Field } from '../../data/models'
 
@@ -174,19 +178,13 @@ export const getVesselTrackGeojsonByDateRange = createSelector([getVesselTrackDa
  * @param point a specific point in the track
  * @param selectedTracks selected tracks tree
  */
-const getCurrentVesselAction = (
-  point: TrackPoint,
-  selectedTracks: any
-) => {
+const getCurrentVesselAction = (point: TrackPoint, selectedTracks: any) => {
   const defaultAction: ActionType = ActionType.untracked
   if (!point.timestamp || selectedTracks.length === 0) {
     return defaultAction
   }
 
-  const getNodeAction = (
-    node: any,
-    timestamp: number
-  ) => {
+  const getNodeAction = (node: any, timestamp: number) => {
     if (!node.valid) {
       return
     }
@@ -205,18 +203,15 @@ const getCurrentVesselAction = (
 /**
  * Convert the selected tracks to a b-tree so it's faster to find the points inside selected tracks
  */
-export const getSelectedTracksTree = createSelector(
-  [selectedtracks],
-  (selectedtracks): any => {
-    let tree = createTree<number, SelectedTrackType>()
-    selectedtracks
-      .filter((track: SelectedTrackType) => track.end && track.start)
-      .forEach((track: SelectedTrackType) => {
-        tree = tree.insert(track.start as number, track)
-      })
-    return tree
-  }
-)
+export const getSelectedTracksTree = createSelector([selectedtracks], (selectedtracks): any => {
+  let tree = createTree<number, SelectedTrackType>()
+  selectedtracks
+    .filter((track: SelectedTrackType) => track.end && track.start)
+    .forEach((track: SelectedTrackType) => {
+      tree = tree.insert(track.start as number, track)
+    })
+  return tree
+})
 
 /**
  * Transform the original track into segments by the action specified in the selected segments by the user
@@ -288,7 +283,7 @@ export const getVesselParsedFilteredTrack = createSelector(
       .filter((segment: TrackSegment) => segment.length)
       .forEach((segment: TrackSegment) => {
         let trackPoints: TrackPoint[] = []
-        let actionFlag: ActionType | string = segment[0].action
+        let actionFlag: ActionType | string = (segment[0] as any).action
         segment.forEach((point: TrackPoint) => {
           const currentAction: ActionType | string | null = getCurrentVesselAction(
             point,

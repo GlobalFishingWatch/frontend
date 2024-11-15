@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { throttle } from 'lodash'
-import InteractiveMap from 'react-map-gl/maplibre';
+import InteractiveMap from 'react-map-gl/maplibre'
 import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import * as Generators from '@globalfishingwatch/layer-composer'
 import {
@@ -16,7 +16,11 @@ import { selectEditing, selectRulers } from '../../features/rulers/rulers.select
 import { editRuler } from '../../features/rulers/rulers.slice'
 import { ActionType, CoordinatePosition } from '../../types'
 import { useSegmentsLabeledConnect } from '../../features/timebar/timebar.hooks'
-import { selectColorMode, selectHiddenLayers, selectProjectColors } from '../../routes/routes.selectors'
+import {
+  selectColorMode,
+  selectHiddenLayers,
+  selectProjectColors,
+} from '../../routes/routes.selectors'
 import { typedKeys } from '../../utils/shared'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
@@ -26,7 +30,7 @@ import {
   selectLegendLabels,
 } from './map.selectors'
 import { useGeneratorsConnect, useMapBounds, useMapMove, useViewport } from './map.hooks'
-import 'maplibre-gl/dist/maplibre-gl.css';
+import 'maplibre-gl/dist/maplibre-gl.css'
 import styles from './Map.module.css'
 import MapControls from './map-controls/MapControls'
 import MapData from './map-data/map-data'
@@ -127,7 +131,6 @@ const Map = (): React.ReactElement => {
   const rulersEditing = useSelector(selectEditing)
   const handleMapClick = useCallback(
     (e: any) => {
-      console.log("🚀 ~ Map ~ e:", e)
       const { features } = e
       if (!rulersEditing && features && features.length) {
         const position = { latitude: e.lngLat[1], longitude: e.lngLat[0] }
@@ -182,7 +185,8 @@ const Map = (): React.ReactElement => {
   const styleWithArrows = useMemo(() => {
     const newStyle: any = {
       ...style,
-      layers: (style?.layers ?? []).filter((layer) => layer.id !== 'bathymetry'),
+      layers: style?.layers ?? [],
+      // .filter((layer) => layer.id !== 'bathymetry'),
     }
 
     if (
@@ -223,7 +227,7 @@ const Map = (): React.ReactElement => {
           'text-size': 8,
           'text-allow-overlap': true,
           visibility: 'none',
-        } ,
+        },
         paint: {
           'text-halo-color': 'hsl(320, 0%, 100%)',
           'text-halo-width': 2,

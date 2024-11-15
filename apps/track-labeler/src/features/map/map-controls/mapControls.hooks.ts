@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 export const useClickOutside = (callback: any) => {
   const [node, setNode] = useState<HTMLElement | null>(null)
 
-  const ref = useCallback((node) => {
+  const ref = useCallback((node: any) => {
     setNode(node)
   }, [])
 

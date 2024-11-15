@@ -1,4 +1,4 @@
-import { Point } from '@globalfishingwatch/data-transforms'
+import { TrackPoint } from '@globalfishingwatch/api-types'
 
 export type WorkspaceParam =
   | 'zoom'
@@ -125,7 +125,7 @@ export const TRACK_COLORS: TrackColor = {
 
 export type LayersData = {
   action: ActionType | string
-  trackPoints: Point[]
+  trackPoints: TrackPoint[]
 }
 
 export type DayNightLayer = {

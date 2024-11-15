@@ -1,5 +1,5 @@
-import { ExportData, ExportFeature } from 'types'
-import { SelectedTrackType } from './features/vessels/selectedTracks.slice'
+import { ExportData, ExportFeature } from '../../types'
+import { SelectedTrackType } from '../vessels/selectedTracks.slice'
 
 export const extractLabeledTrack = (
   geojson: ExportData
@@ -78,8 +78,8 @@ export const extractLabeledTrack = (
 export const fixCoordinates = (geojson: ExportData): ExportData => {
   // Hack for renderes like mapbox gl or leaflet to fix antimeridian issues
   // https://macwright.org/2016/09/26/the-180th-meridian.html
-  let currentLon: number;
-  let lonOffset = 0;
+  let currentLon: number
+  let lonOffset = 0
   return {
     ...geojson,
     features: geojson.features.map((feature: ExportFeature) => {
@@ -93,16 +93,16 @@ export const fixCoordinates = (geojson: ExportData): ExportData => {
             }
             if (currentLon) {
               if (lon - currentLon < -180) {
-                lonOffset += 360;
+                lonOffset += 360
               } else if (lon - currentLon > 180) {
-                lonOffset -= 360;
+                lonOffset -= 360
               }
             }
-            currentLon = lon;
-            return [lon + lonOffset, lat];
-          })
-        }
+            currentLon = lon
+            return [lon + lonOffset, lat]
+          }),
+        },
       }
-    })
+    }),
   }
 }

@@ -22,7 +22,7 @@ export const userLoginThunk = async (
       return true
     }
     return false
-  } catch (e) {
+  } catch (e: any) {
     dispatch(fetchUserError({ error: e }))
     return false
   }

@@ -1,9 +1,4 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  combineReducers,
-} from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
 import vessels from '././features/vessels/vessels.slice'
 import selectedtracks from '././features/vessels/selectedTracks.slice'
 import project from '././features/projects/projects.slice'
@@ -22,7 +17,6 @@ const {
   enhancer: routerEnhancer,
   // initialDispatch,
 } = connectedRoutes
-console.log("🚀 ~ connectedRoutes:", connectedRoutes)
 
 const rootReducer = combineReducers({
   dataviews,
@@ -36,7 +30,6 @@ const rootReducer = combineReducers({
   timebar: timebarReducer,
   location: location,
 })
-console.log("🚀 ~ rootReducer:", rootReducer)
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
 const defaultMiddlewareOptions: any = {
@@ -58,10 +51,9 @@ const store = configureStore({
       routerQueryMiddleware,
       routerRefreshTokenMiddleware,
       routerMiddleware,
-    ]),
+    ]) as any,
   // enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
-console.log("🚀 ~ store:", store)
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppThunk<ReturnType = void> = ThunkAction<

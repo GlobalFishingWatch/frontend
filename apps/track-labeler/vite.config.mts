@@ -4,7 +4,6 @@ import svgr from 'vite-plugin-svgr'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
-import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
 import 'dotenv/config'
 
 export default defineConfig({
@@ -25,10 +24,6 @@ export default defineConfig({
     react(),
     svgr(),
     nxViteTsPaths(),
-    TanStackRouterVite({
-      routesDirectory: './apps/track-labeler/src/routes',
-      generatedRouteTree: './apps/track-labeler/src/routeTree.gen.ts',
-    }),
     viteStaticCopy({
       targets: [
         {

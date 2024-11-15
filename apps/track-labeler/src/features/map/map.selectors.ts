@@ -186,7 +186,7 @@ export const selectVesselDirectionPoints = createSelector(
   [getVesselTrackGeojsonByDateRange, getDateRangeTS, selectedtracks],
   (trackSegments, dates, selectedTracks) =>
     extractVesselDirectionPoints(
-      [{ trackPoints: trackSegments?.flat(), action: ActionType.untracked }],
+      [{ trackPoints: (trackSegments || [])?.flat(), action: ActionType.untracked }],
       dates,
       selectedTracks
     )

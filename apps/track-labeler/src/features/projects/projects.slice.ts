@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ActionType } from 'types'
-import { RootState } from 'store'
-import { Project } from 'data/projects'
+import { ActionType } from '../../types'
+import { Project } from '../../data/projects'
+import { RootState } from '../../store'
 
 export type SelectedTrackType = {
   start?: number | null

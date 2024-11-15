@@ -144,7 +144,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
   )
 
   const onShortcutPress = useCallback(
-    (keyName, e, handle) => {
+    (keyName: string, e: KeyboardEvent, handle: any) => {
       if (keyName === 'control+z' || keyName === 'command+z') {
         dispatchUndo()
       }
@@ -161,7 +161,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
   )
 
   const onLabelShortcutPress = useCallback(
-    (keyName) => {
+    (keyName: string) => {
       const key = keyName.replace('shift+', '')
       if (actionShortcuts[key]) {
         segments.forEach((segment, index) => {
@@ -285,7 +285,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
       <div className={styles.segments} data-testid="segments">
         {segments && segments.length > 0 && (
           <AutoSizer disableWidth={true}>
-            {({ width, height }) => (
+            {({ width, height }: any) => (
               <List
                 width={width}
                 height={height}

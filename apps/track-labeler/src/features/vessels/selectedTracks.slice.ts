@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import undoable from 'redux-undo'
-import { ActionType } from 'types'
-import { RootState } from 'store'
+import { ActionType } from '../../types'
+import { RootState } from '../../store'
 
 export type SelectedTrackType = {
   start?: number | null

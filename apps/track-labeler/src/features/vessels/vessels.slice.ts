@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { FeatureCollection } from '@turf/helpers'
-import { Segment } from '@globalfishingwatch/data-transforms'
-import { ExportData } from 'types'
-import { RootState } from 'store'
+import { FeatureCollection } from 'geojson'
+import { TrackSegment } from '@globalfishingwatch/api-types'
+import { ExportData } from '../../types'
+import { RootState } from '../../store'
 
 interface Dictionary<T> {
   [Key: string]: T
@@ -35,7 +35,7 @@ export type TrackGeometry = FeatureCollection<any, CoordinateProperties>
 
 export type TrackInterface = {
   id: string
-  data: Segment[]
+  data: TrackSegment[]
   startDate: string
   endDate: string
 }
@@ -121,9 +121,12 @@ const slice = createSlice({
         state.originalTrack[vesselId] = track
       }
     },
-    setSearchableTimstamps: (state, action: PayloadAction<{ id: string; data: Segment[] }>) => {
+    setSearchableTimstamps: (
+      state,
+      action: PayloadAction<{ id: string; data: TrackSegment[] }>
+    ) => {
       if (action.payload.data) {
-        state.searchableTimestamps = action.payload.data.flatMap((segment: Segment) => {
+        state.searchableTimestamps = action.payload.data.flatMap((segment) => {
           return segment.map((record) => record.timestamp as number)
         })
       }

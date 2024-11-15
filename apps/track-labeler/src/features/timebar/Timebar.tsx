@@ -1,10 +1,4 @@
-import React, {
-  memo,
-  Fragment,
-  useEffect,
-  createRef,
-  useContext,
-} from 'react'
+import React, { memo, Fragment, useEffect, createRef, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
 import './range.css'
@@ -16,10 +10,7 @@ import {
   TimelineContext,
   TimebarHighlighter,
 } from '@globalfishingwatch/timebar'
-import {
-  useTimebarModeConnect,
-  useTimerangeConnect,
-} from '../../features/timebar/timebar.hooks'
+import { useTimebarModeConnect, useTimerangeConnect } from '../../features/timebar/timebar.hooks'
 import {
   selectFilteredDistanceFromPort,
   selectFilteredElevation,
@@ -43,8 +34,6 @@ import {
 } from './timebar.selectors'
 import TimebarSelector from './selector/Selector'
 import { VesselEventsPointsGraphDeckGL } from './VesselEventsPointsGraphDeckGL'
-
-
 
 const DayNightTimebarLayer = () => {
   // TODO: Performance issue if we have lot of points
@@ -161,21 +150,20 @@ const TimebarWrapper = () => {
             const start = scale(clientX - 10).toISOString()
             const end = scale(clientX + 10).toISOString()
             dispatch(setHighlightedTime({ start, end }))
-          } }         
-          >
-          
-            <Fragment>
-              <DayNightTimebarLayer></DayNightTimebarLayer>
-              <VesselEventsPointsGraphDeckGL />
-              {
-                <Fragment>
-                  {tracks.length && <TimebarTracks key="tracks" tracks={tracks} />}
-                  {tracksEvents.length && (
-                    <Fragment>{<TimebarTracksEvents key="events" data={tracksEvents} />}</Fragment>
-                  )}
-                </Fragment>
-              }
-              {/* {tracks.length && false && (
+          }}
+        >
+          <Fragment>
+            <DayNightTimebarLayer></DayNightTimebarLayer>
+            <VesselEventsPointsGraphDeckGL />
+            {
+              <Fragment>
+                {tracks.length && <TimebarTracks key="tracks" data={tracks as any} />}
+                {tracksEvents.length && (
+                  <Fragment>{<TimebarTracksEvents key="events" data={tracksEvents} />}</Fragment>
+                )}
+              </Fragment>
+            }
+            {/* {tracks.length && false && (
                 <TimebarActivity
                   key="trackActivity"
                   opacity={0.7}
@@ -183,30 +171,30 @@ const TimebarWrapper = () => {
                   graphTracks={tracksGraph}
                 />
               )} */}
-              <Fragment>
-                {highlightedTime && (
-                  <TimebarHighlighter
-                    hoverStart={highlightedTime.start}
-                    hoverEnd={highlightedTime.end}
-                  />
-                )}
-              </Fragment>
-              <Fragment>
-                {highlightedEvent && (
-                  <TimebarHighlighter
-                    hoverStart={highlightedEvent.start}
-                    hoverEnd={highlightedEvent.end}
-                  />
-                )}
-              </Fragment>
+            <Fragment>
+              {highlightedTime && (
+                <TimebarHighlighter
+                  hoverStart={highlightedTime.start}
+                  hoverEnd={highlightedTime.end}
+                />
+              )}
             </Fragment>
+            <Fragment>
+              {highlightedEvent && (
+                <TimebarHighlighter
+                  hoverStart={highlightedEvent.start}
+                  hoverEnd={highlightedEvent.end}
+                />
+              )}
+            </Fragment>
+          </Fragment>
         </Timebar>
       </div>
       <div className={styles.filtersContainer}>
         {filterMode === Field.speed && (
           <Range
-          min={rangeLimits.speed.min}
-          max={rangeLimits.speed.max}
+            min={rangeLimits.speed.min}
+            max={rangeLimits.speed.max}
             step={0.1}
             vertical
             onAfterChange={handleSpeedChange}

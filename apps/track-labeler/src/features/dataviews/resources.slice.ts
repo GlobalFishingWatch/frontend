@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Resource } from '@globalfishingwatch/api-types'
+import { Vessel } from '../vessels/vessels.slice'
 import { RootState } from '../../store'
-import { Vessel } from './features/vessels/vessels.slice'
 
-//TODO: Remove this file
 export interface AppResource extends Resource {
   loaded?: boolean
+  type?: string
+  resolvedUrl?: string
 }
 
 const initialState: { resources: AppResource[] } = {
@@ -16,7 +17,7 @@ const slice = createSlice({
   name: 'resources',
   initialState,
   reducers: {
-    addResources: (state, action: PayloadAction<Resource[]>) => {
+    addResources: (state, action: PayloadAction<AppResource[]>) => {
       action.payload.forEach((resource) => {
         const existingResourceIndex = state.resources.findIndex(
           (r) => r.resolvedUrl === resource.resolvedUrl
@@ -32,7 +33,7 @@ const slice = createSlice({
         }
       })
     },
-    completeLoading: (state, action: PayloadAction<Resource>) => {
+    completeLoading: (state, action: PayloadAction<AppResource>) => {
       const resource = state.resources.find(
         (resource) => resource.resolvedUrl === action.payload.resolvedUrl
       )

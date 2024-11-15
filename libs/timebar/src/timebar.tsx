@@ -121,7 +121,7 @@ export type TimebarProps = {
   // val is used to live edit translations in crowdin
   locale: 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'
   intervals?: FourwingsInterval[]
-  getCurrentInterval: typeof getFourwingsInterval
+  getCurrentInterval?: typeof getFourwingsInterval
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation: TrackGraphOrientation
   isResizable?: boolean
