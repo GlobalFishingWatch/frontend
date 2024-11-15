@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ActionCreators as UndoActionCreators } from 'redux-undo'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { kebabCase } from 'lodash'
 import { TrackPoint } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -23,11 +23,12 @@ import { selectUserData } from '../../features/user/user.slice'
 import { getVesselInfo, selectVesselOriginalTrack } from '../../features/tracks/tracks.selectors'
 import { extractLabeledTrack, fixCoordinates } from '../../features/tracks/tracks.utils'
 import { setProject } from '../../features/projects/projects.slice'
+import { useAppDispatch } from '../../store.hooks'
 import { selectProject, selectProjectId, selectVessel } from './../../routes/routes.selectors'
 import { setImportedData, setVesselInfo, TrackInterface } from './../vessels/vessels.slice'
 
 export const useSelectedTracksConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [uploadingTrack, setUploadingTrack] = useState(false)
   const dispatchUpdateActionSelectedTrack = (index: number, action: ActionType | string) =>
     dispatch(updateActionSelectedTrack({ index, action }))

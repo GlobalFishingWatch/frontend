@@ -1,17 +1,10 @@
-import {
-  useContext,
-  useCallback,
-  useMemo,
-} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import * as d3 from 'd3-scale'
+import { useContext, useCallback, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import DeckGL from '@deck.gl/react'
 import { OrthographicView } from '@deck.gl/core'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import { TimelineContext } from '@globalfishingwatch/timebar'
-import {
-  useSegmentsLabeledConnect,
-} from '../../features/timebar/timebar.hooks'
+import { useSegmentsLabeledConnect } from '../../features/timebar/timebar.hooks'
 import {
   selectColorMode,
   selectProjectColors,
@@ -19,9 +12,8 @@ import {
 } from '../../routes/routes.selectors'
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { Field } from '../../data/models'
-import {
-  setTooltip,
-} from './timebar.slice'
+import { useAppDispatch } from '../../store.hooks'
+import { setTooltip } from './timebar.slice'
 import {
   selectVesselDirectionPoints,
   selectVesselDirectionsMinMaxValues,
@@ -38,7 +30,7 @@ export const VesselEventsPointsGraphDeckGL = () => {
   const positionScale = useSelector(selectVesselDirectionsPositionScale)
 
   const segments = useSelector(selectedtracks)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { onEventPointClick } = useSegmentsLabeledConnect()
 
   const handleEventClick = useCallback(
@@ -70,19 +62,21 @@ export const VesselEventsPointsGraphDeckGL = () => {
           : timebarMode === Field.elevation
           ? vesselPoint.elevation
           : 1
-      
-      const bottom = outerHeight - (
-        Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale) + 15
-      )
+
+      const bottom =
+        outerHeight -
+        (Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale) + 15)
 
       return {
         position: [startX, bottom],
         vesselPoint,
-        color: colorMode === 'all' || colorMode === 'labels'
-          ? projectColors[vesselPoint.action]
-          : '#8091AB',
+        color:
+          colorMode === 'all' || colorMode === 'labels'
+            ? projectColors[vesselPoint.action]
+            : '#8091AB',
         gradient: colorMode === 'all' || colorMode === 'content',
-        yPosition: Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale)
+        yPosition:
+          Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale),
       }
     })
 
@@ -98,11 +92,10 @@ export const VesselEventsPointsGraphDeckGL = () => {
         radiusMinPixels: 3.5,
         radiusMaxPixels: 3.5,
         lineWidthMinPixels: 1,
-        getPosition: d => d.position,
-        getFillColor: d => d.gradient 
-          ? getGradientColor(d.yPosition / outerHeight)
-          : hexToRgb(d.color),
-        getLineColor: d => hexToRgb(d.color),
+        getPosition: (d) => d.position,
+        getFillColor: (d) =>
+          d.gradient ? getGradientColor(d.yPosition / outerHeight) : hexToRgb(d.color),
+        getLineColor: (d) => hexToRgb(d.color),
         onClick: handleEventClick,
         onHover: (info) => {
           if (info.object) {
@@ -112,14 +105,12 @@ export const VesselEventsPointsGraphDeckGL = () => {
                 tooltip:
                   Math.round(point.speed * 100) / 100 +
                   'kt' +
-                  (point.elevation
-                    ? ', ' + Math.round(point.elevation) + 'm'
-                    : ''),
+                  (point.elevation ? ', ' + Math.round(point.elevation) + 'm' : ''),
               })
             )
           }
-        }
-      })
+        },
+      }),
     ]
   }, [
     colorMode,
@@ -132,7 +123,7 @@ export const VesselEventsPointsGraphDeckGL = () => {
     timebarMode,
     vesselPoints,
     handleEventClick,
-    dispatch
+    dispatch,
   ])
 
   if (!positionScale || minValue === null || maxValue === null) {
@@ -145,7 +136,7 @@ export const VesselEventsPointsGraphDeckGL = () => {
       initialViewState={{
         // Center the view on the data
         target: [outerScale.range()[1] / 2, outerHeight / 2, 0],
-        zoom: 0
+        zoom: 0,
       }}
       controller={false}
       layers={layers}
@@ -155,7 +146,7 @@ export const VesselEventsPointsGraphDeckGL = () => {
         left: '0px',
         top: '0px',
         width: '100%',
-        height: '100%'
+        height: '100%',
       }}
     />
   )
@@ -164,12 +155,8 @@ export const VesselEventsPointsGraphDeckGL = () => {
 // Helper function to convert hex colors to RGB array
 function hexToRgb(hex: string): [number, number, number] {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return result 
-    ? [
-        parseInt(result[1], 16),
-        parseInt(result[2], 16),
-        parseInt(result[3], 16)
-      ]
+  return result
+    ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
     : [128, 128, 128]
 }
 
@@ -179,20 +166,24 @@ function getGradientColor(position: number): [number, number, number] {
   // #FF6B6B -> #CC4AA9 -> #185AD0
   const colors = [
     [255, 107, 107], // #FF6B6B
-    [204, 74, 169],  // #CC4AA9
-    [24, 90, 208]    // #185AD0
+    [204, 74, 169], // #CC4AA9
+    [24, 90, 208], // #185AD0
   ]
-  
+
   const p = Math.max(0, Math.min(1, position))
   if (p < 0.5) {
     const t = p * 2
-    return colors[0].map((start, i) => 
-      Math.round(start + (colors[1][i] - start) * t)
-    ) as [number, number, number]
+    return colors[0].map((start, i) => Math.round(start + (colors[1][i] - start) * t)) as [
+      number,
+      number,
+      number
+    ]
   } else {
     const t = (p - 0.5) * 2
-    return colors[1].map((start, i) => 
-      Math.round(start + (colors[2][i] - start) * t)
-    ) as [number, number, number]
+    return colors[1].map((start, i) => Math.round(start + (colors[2][i] - start) * t)) as [
+      number,
+      number,
+      number
+    ]
   }
-} 
+}

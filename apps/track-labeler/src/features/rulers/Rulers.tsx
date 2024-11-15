@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import mapControlsStyles from '../map/map-controls/MapControls.module.css'
+import { useAppDispatch } from '../../store.hooks'
 import { selectEditing, selectNumRulers } from './rulers.selectors'
 import { toggleRulersEditing, resetRulers } from './rulers.slice'
 import styles from './Rulers.module.css'
@@ -11,7 +12,7 @@ const Rulers = () => {
   const editing = useSelector(selectEditing)
   const numRulers = useSelector(selectNumRulers)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [deleteVisible, setDeleteVisible] = useState(false)
 

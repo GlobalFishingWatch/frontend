@@ -1,4 +1,3 @@
-import { log } from 'console'
 import { RootState } from 'reducers'
 import { TimeRange } from 'features/timebar/timebar.slice'
 import { AppDispatch } from 'store'

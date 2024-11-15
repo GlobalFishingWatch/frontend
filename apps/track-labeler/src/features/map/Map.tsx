@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import InteractiveMap from 'react-map-gl/maplibre'
 import { useLayerComposer } from '@globalfishingwatch/layer-composer'
@@ -36,6 +36,7 @@ import MapControls from './map-controls/MapControls'
 import MapData from './map-data/map-data'
 import { useMapboxRef, useMapboxRefCallback } from './map.context'
 import { contextSourceStyle, getVisibleContextLayers } from './map-static-layers-style'
+import { useAppDispatch } from '../../store.hooks'
 
 const MapComponent = InteractiveMap as any
 
@@ -78,7 +79,7 @@ const Map = (): React.ReactElement => {
   const onRefReady = useMapboxRefCallback()
   const { viewport, onViewportChange } = useViewport()
   const { globalConfig } = useGeneratorsConnect()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const generatorConfigs = useSelector(getLayerComposerLayers)
   const projectColors = useSelector(selectProjectColors)
   const hiddenLayers = useSelector(selectHiddenLayers)
