@@ -1086,7 +1086,7 @@
       "fishingInNoTakeMpas_one": "{{count}} événement de pêche par le navire {{vessels}} détecté dans une AMP interdite à la pêche de capture",
       "fishingInNoTakeMpas_other": "{{count}} événements de pêche par les navires {{vessels}} détectés dans des AMP interdites à la pêche de capture",
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} événement de pêche par le navire {{vessels}} détecté en dehors d'une zone soumise à une autorisation connue d'une ORGP",
-      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} événements de pêche par les navires {{vessels}} détectés en dehors d'une zone soumise à une autorisation connue d'une ORGP",
+      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} événements de pêche par les navires {{vessels}} détectés en dehors de zones soumises à une autorisation connue d'une ORGP",
       "flagChangesCount": "Les navires {{vessels}} ont effectué des changements de pavillon",
       "flagChangesCount_one": "Le navire {{vessels}} a effectué des changements de pavillon",
       "flagChangesCount_other": "Les navires {{vessels}} ont effectué des changements de pavillon",
@@ -1096,29 +1096,29 @@
       "IUUBlackListsCount": "Les navires {{vessels}} sont inscrits sur une liste des navires INN d'une ORGP",
       "IUUBlackListsCount_one": "Le navire {{vessels}} est inscrit une liste des navires INN d'une ORGP",
       "IUUBlackListsCount_other": "Les navires {{vessels}} sont inscrits sur une liste des navires INN d'une ORGP",
-      "IUUBlackListsEmpty": "No vessels are present on a RFMO IUU vessel list",
-      "MOULists": "MOU Lists",
-      "MOUListsCount": "{{vessels}} vessels operated under a flag present on the {{list}} list",
-      "MOUListsCount_one": "{{vessels}} vessel operated under a flag present on the {{list}} list",
-      "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
-      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
+      "IUUBlackListsEmpty": "Aucun navire n'est présent sur une liste de navires INN d'une ORGP",
+      "MOULists": "Listes MOU",
+      "MOUListsCount": "Les navires {{vessels}} ont été exploités sous un pavillon inscrit sur la liste {{list}}",
+      "MOUListsCount_one": "Le navire {{vessels}} a été exploité sous un pavillon inscrit sur la liste {{list}}",
+      "MOUListsCount_other": "Les navires {{vessels}} ont été exploités sous un pavillon inscrit sur la liste {{list}}",
+      "MOUListsEmpty": "Aucun des navire be bat un pavillon inscrit sur la liste noire ou grise du MOU de {{country}}"
     },
-    "linkDisabled": "This vessel group needs to be updated to latest available data",
-    "linkToReport": "Check the vessel group report here",
-    "noData": "Vessel group not found",
-    "notFound": "Vessel group not found",
-    "sources": "Vessel group report sources",
-    "user": "User Vessel Group",
-    "vessels": "Vessel group report vessels"
+    "linkDisabled": "Ce groupe de navires doit être mis à jour avec les dernières données disponibles",
+    "linkToReport": "Consultez le rapport de groupe de navires ici",
+    "noData": "Groupe de navires introuvable",
+    "notFound": "Groupe de navires introuvable",
+    "sources": "Sources de rapport du groupe de navires",
+    "user": "Groupe de navires utilisateur",
+    "vessels": "Navires du rapport du groupe de navires"
   },
   "vesselGroups": {
     "insights": {
-      "fishingInNoTakeMpas_one": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
-      "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
-      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
-      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
-      "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
+      "fishingInNoTakeMpas_one": "{{count}} événement de pêche par le navire {{vessels}} détecté dans une AMP interdite à la pêche de capture",
+      "fishingInNoTakeMpas_other": "{{count}} événements de pêche par les navires {{vessels}} détectés dans des AMP interdites à la pêche de capture",
+      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} événement de pêche par le navire {{vessels}} détecté en dehors d'une zone soumise à une autorisation connue d'une ORGP",
+      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} événements de pêche par les navires {{vessels}} détectés en dehors de zones soumises à une autorisation connue d'une ORGP",
+      "gaps_one": "{{count}} événement de désactivation de l'AIS détecté pour le navire {{vessels}}",
+      "gaps_other": "{{count}} événements de désactivation de l'AIS détectés pour les navires {{vessels}}"
     }
   },
   "workspace": {
@@ -1133,7 +1133,7 @@
     "emptyState": "Vos vues apparaîtront ici",
     "emptyStateEnvironment": "Chargez des jeux de données personnalisés comme la télémétrie animale, en cliquant sur l'icône plus.",
     "emptyStateUser": "Téléchargez des jeux de données personnalisés en cliquant sur l'icône +.",
-    "emptyStateVesselGroups": "Add vessel groups to see group presence and operation footprint.",
+    "emptyStateVesselGroups": "Ajouter des groupes de navires pour voir la présence et l'empreinte de l'opération du groupe.",
     "emptyStateVessels": "Les navires sélectionnés dans la recherche ou en cliquant sur la carte de chaleur apparaîtront ici.",
     "migrationDisclaimer": "Mettez à jour votre espace de travail pour afficher les dernières données et fonctionnalités.",
     "migrationDisclaimerNote": "Remarque : certaines informations d'identité et d'activité du navire peuvent changer. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> En savoir plus.</a>",
@@ -1159,8 +1159,8 @@
     "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil",
     "saveLogin": "Vous devez vous connecter pour enregistrer les vues (gratuit, 2 minutes)",
     "saveOwnerOnly": "Cet espace de travail ne peut être modifié que par l'utilisateur qui l'a créé",
-    "sharePrivateDisclaimer": "This workspace contains datasets that require special permissions",
-    "sharePrivatePermissionsRequired": "permissions required",
+    "sharePrivateDisclaimer": "Cet espace de travail contient des jeux de données qui nécessitent des autorisations spéciales",
+    "sharePrivatePermissionsRequired": "autorisations requises",
     "siteDescription": {
       "default": "La carte Global Fishing Watch est la première plate-forme libre d'accès pour la visualisation et l'analyse du trafic maritime et de l'activité humaine en mer.",
       "fishing-activity": "La carte Global Fishing Watch est la première plateforme libre d'accès pour la visualisation et l'analyse du trafic maritime et de l'activité humaine en mer.",
