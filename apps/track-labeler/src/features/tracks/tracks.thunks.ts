@@ -1,4 +1,3 @@
-import { Dispatch } from 'redux'
 import { StateGetter } from 'redux-first-router'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
@@ -20,6 +19,7 @@ import {
   setSearchableTimstamps,
 } from '../../features/vessels/vessels.slice'
 import { updateQueryParams } from '../../routes/routes.actions'
+import { AppDispatch } from '../../store'
 import { ExportData, ExportFeature } from './../../types/index'
 
 const fetchTrack = async (
@@ -121,7 +121,7 @@ const extractTrackData = (geojson: ExportData /*, fields_: Field[]*/): any => {
  * @param dispatch
  * @param getState
  */
-export const trackThunk = async (dispatch: Dispatch, getState: StateGetter<AppState>) => {
+export const trackThunk = async (dispatch: AppDispatch, getState: StateGetter<AppState>) => {
   const state = getState()
   const id = selectVessel(state)
   const project = selectProject(state)
