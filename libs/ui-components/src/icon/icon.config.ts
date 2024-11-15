@@ -33,6 +33,7 @@ const icons = [
   'dots',
   'download',
   'drag',
+  'drag-timebar',
   'draw',
   'draw-points',
   'edit-off',
