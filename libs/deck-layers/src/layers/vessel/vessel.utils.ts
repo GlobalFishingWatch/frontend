@@ -121,7 +121,7 @@ export const getSegmentsFromData = memoize(
     return segments
   },
   (data, params) => {
-    return `${data?.length}-${JSON.stringify(params || {})}`
+    return `${data?.startIndices?.join(',')}-${JSON.stringify(params || {})}`
   }
 )
 
