@@ -25,7 +25,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.types'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import styles from './VesselGroupReportVesselsTable.module.css'
+import styles from 'features/reports/shared/events/EventsReportVesselsTable.module.css'
 import { selectVGRVesselsPaginated } from './vessel-group-report-vessels.selectors'
 import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTableFooter'
 

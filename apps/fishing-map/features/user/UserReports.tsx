@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import Link from 'redux-first-router-link'
-import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
+import { Spinner, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { Locale, Report } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -15,8 +15,9 @@ import {
 } from 'features/reports/areas/area-reports.slice'
 import { REPORT } from 'routes/routes'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
-import { resetReportData } from 'features/reports/activity/reports-activity.slice'
+import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
+import { getHighlightedText } from 'utils/text'
 import styles from './User.module.css'
 
 function getUserGuideReportLinkByLocale(locale: Locale) {
@@ -34,6 +35,12 @@ function UserReports() {
   const reports = useSelector(selectUserReports)
   const reportsStatus = useSelector(selectReportsStatus)
   const reportsStatusId = useSelector(selectReportsStatusId)
+
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }
 
   useEffect(() => {
     dispatch(fetchReportsThunk([]))
@@ -64,63 +71,79 @@ function UserReports() {
   const loading = reportsStatus === AsyncReducerStatus.Loading
 
   return (
-    <div className={styles.views}>
-      <div className={styles.viewsHeader}>
-        <label>{t('common.reports', 'Reports')}</label>
+    <Fragment>
+      <div className={styles.search}>
+        <InputText
+          type="search"
+          value={searchQuery}
+          onChange={onSearchQueryChange}
+          placeholder="Search"
+        />
       </div>
-      {loading ? (
-        <div className={styles.placeholder}>
-          <Spinner size="small" />
+      <div className={styles.views}>
+        <div className={styles.viewsHeader}>
+          <label>{t('common.reports', 'Reports')}</label>
         </div>
-      ) : reports && reports.length > 0 ? (
-        <ul>
-          {sortByCreationDate<Report>(reports).map((report) => {
-            return (
-              <li className={styles.dataset} key={report.id}>
-                <Link
-                  className={styles.workspaceLink}
-                  to={{
-                    type: REPORT,
-                    payload: { reportId: report.id },
-                    query: {},
-                  }}
-                  onClick={() => onReportClick(report)}
-                >
-                  <span className={styles.workspaceTitle}>{report.name}</span>
-                  <IconButton icon="arrow-right" />
-                </Link>
-                <div>
-                  <IconButton
-                    icon="delete"
-                    type="warning"
-                    loading={report.id === reportsStatusId}
-                    tooltip={'Delete'}
-                    onClick={() => onDeleteClick(report)}
-                  />
-                </div>
-              </li>
-            )
-          })}
-        </ul>
-      ) : (
-        <div className={styles.placeholder}>
-          <p>
-            {t(
-              'analysis.createReportHelp',
-              'To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.'
-            )}{' '}
-            <a
-              className={styles.link}
-              href={getUserGuideReportLinkByLocale(i18n.language as Locale)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t('analysis.createReportHelpLink', 'Learn more.')}
-            </a>
-          </p>
-        </div>
-      )}
-    </div>
+        {loading ? (
+          <div className={styles.placeholder}>
+            <Spinner size="small" />
+          </div>
+        ) : reports && reports.length > 0 ? (
+          <ul>
+            {sortByCreationDate<Report>(reports).map((report) => {
+              const label = report.name
+              if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
+                return null
+              }
+              return (
+                <li className={styles.dataset} key={report.id}>
+                  <Link
+                    className={styles.workspaceLink}
+                    to={{
+                      type: REPORT,
+                      payload: { reportId: report.id },
+                      query: {},
+                    }}
+                    onClick={() => onReportClick(report)}
+                  >
+                    <span className={styles.workspaceTitle}>
+                      {getHighlightedText(label as string, searchQuery, styles)}
+                    </span>
+                    <IconButton icon="arrow-right" />
+                  </Link>
+                  <div>
+                    <IconButton
+                      icon="delete"
+                      type="warning"
+                      loading={report.id === reportsStatusId}
+                      tooltip={'Delete'}
+                      onClick={() => onDeleteClick(report)}
+                    />
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        ) : (
+          <div className={styles.placeholder}>
+            <p>
+              {t(
+                'analysis.createReportHelp',
+                'To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.'
+              )}{' '}
+              <a
+                className={styles.link}
+                href={getUserGuideReportLinkByLocale(i18n.language as Locale)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t('analysis.createReportHelpLink', 'Learn more.')}
+              </a>
+            </p>
+          </div>
+        )}
+      </div>
+    </Fragment>
   )
 }
 

@@ -20,7 +20,7 @@ import {
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
-import { selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import {
   selectActiveActivityDataviews,
@@ -107,7 +107,7 @@ export const selectTimebarSelectedDataviews = createSelector(
     selectActiveVesselGroupDataviews,
     selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
     selectReportCategory,
-    selectIsAnyReportLocation,
+    selectIsAnyAreaReportLocation,
   ],
   (
     timebarVisualisation,
@@ -118,7 +118,7 @@ export const selectTimebarSelectedDataviews = createSelector(
     vesselGroupDataviews,
     environmentalDataviews,
     reportCategory,
-    isReportLocation
+    isAreaReportLocation
   ) => {
     if (!timebarVisualisation) return []
     if (timebarVisualisation === TimebarVisualisations.Environment) {
@@ -131,7 +131,7 @@ export const selectTimebarSelectedDataviews = createSelector(
       return detectionsDataviews
     }
 
-    return isReportLocation
+    return isAreaReportLocation
       ? activityDataviews.filter((d) => getReportCategoryFromDataview(d) === reportCategory)
       : activityDataviews
   }

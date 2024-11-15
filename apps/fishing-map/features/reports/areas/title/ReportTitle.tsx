@@ -19,13 +19,13 @@ import {
   resetReportData,
   selectReportPreviewBuffer,
   setPreviewBuffer,
-} from 'features/reports/activity/reports-activity.slice'
+} from 'features/reports/shared/activity/reports-activity.slice'
 import {
   selectReportArea,
   selectReportAreaDataviews,
   selectReportAreaStatus,
 } from 'features/reports/areas/area-reports.selectors'
-import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
+import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectCurrentReport,
@@ -38,7 +38,8 @@ import { BufferOperation, BufferUnit } from 'types'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { useReportFeaturesLoading } from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { useReportFeaturesLoading } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { useHighlightReportArea } from '../area-reports.hooks'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
@@ -193,17 +194,17 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     if (!areaName) {
       if (
         areaDataview?.config?.type === DataviewType.Context ||
-        areaDataview?.config?.type === DataviewType.UserContext
+        areaDataview?.config?.type === DataviewType.UserContext ||
+        areaDataview?.config?.type === DataviewType.UserPoints
       ) {
         if (reportAreaStatus === AsyncReducerStatus.Finished) {
           if (dataset?.source === DRAW_DATASET_SOURCE) {
-            areaName = dataset.name
+            areaName = getDatasetLabel(dataset)
           } else {
             areaName =
               reportArea?.properties?.[propertyToInclude] ||
               reportArea?.properties?.[valueProperty] ||
-              reportArea?.name ||
-              dataset?.name
+              getDatasetLabel(dataset)
           }
         }
       } else {
@@ -242,7 +243,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     areaDataview?.config?.type,
     reportAreaStatus,
     reportArea?.properties,
-    reportArea?.name,
     area?.name,
     t,
     urlBufferUnit,

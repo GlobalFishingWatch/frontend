@@ -12,7 +12,7 @@ import {
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
-import VGREvents from 'features/reports/events/VGREvents'
+import VGREvents from 'features/reports/vessel-groups/events/VGREvents'
 import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
@@ -22,7 +22,7 @@ import {
   useFitAreaInViewport,
   useReportAreaCenter,
   useVesselGroupBounds,
-} from '../areas/area-reports.hooks'
+} from 'features/reports/areas/area-reports.hooks'
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportTitle from './VesselGroupReportTitle'

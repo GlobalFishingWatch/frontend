@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { groupBy, uniqBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { DatasetSubCategory, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -38,7 +39,9 @@ import {
   SliceExtendedClusterPickingObject,
   SliceExtendedFourwingsPickingObject,
   selectApiEventStatus,
-  selectFishingInteractionStatus,
+  selectActivityInteractionStatus,
+  selectApiEventError,
+  selectActivityInteractionError,
 } from '../map.slice'
 import styles from './Popup.module.css'
 import UserContextTooltipSection from './categories/UserContextLayers'
@@ -52,11 +55,14 @@ type PopupByCategoryProps = {
 const OMITED_CATEGORIES = ['draw']
 
 function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) {
+  const { t } = useTranslation()
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const mapViewport = useMapViewport()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
-  const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const activityInteractionStatus = useSelector(selectActivityInteractionStatus)
+  const activityInteractionError = useSelector(selectActivityInteractionError)
   const apiEventStatus = useSelector(selectApiEventStatus)
+  const apiEventError = useSelector(selectApiEventError)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
 
   const visibleFeatures = interaction?.features.filter(
@@ -118,6 +124,12 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   <TooltipComponent
                     key={`${i}-${j}`}
                     loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                    error={
+                      activityInteractionStatus === AsyncReducerStatus.Error
+                        ? activityInteractionError ||
+                          t('errors.genericShort', 'Something went wrong')
+                        : undefined
+                    }
                     feature={{
                       ...sublayer,
                       category: feature.category as DataviewCategory,
@@ -167,6 +179,11 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 key={featureCategory}
                 features={features as SliceExtendedClusterPickingObject[]}
                 showFeaturesDetails={type === 'click'}
+                error={
+                  apiEventStatus === AsyncReducerStatus.Error
+                    ? apiEventError || t('errors.genericShort', 'Something went wrong')
+                    : undefined
+                }
               />
             )
           }

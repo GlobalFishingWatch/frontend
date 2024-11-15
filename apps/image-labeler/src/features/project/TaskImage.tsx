@@ -1,5 +1,7 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
+import { Jimp } from 'jimp'
 import cx from 'classnames'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks/use-local-storage'
 import styles from './TaskImage.module.css'
 
 type TaskImageProps = {
@@ -11,18 +13,14 @@ type TaskImageProps = {
 
 const SCALE_LINE_WIDTH_PERCENTAGE = 10
 
-const rgb2luma = ({ r, g, b }: { r: number; g: number; b: number }) => {
-  return Math.round(r * 0.299 + g * 0.587 + b * 0.114)
-}
-
-const drawEnhancedImageToCanvas = ({
+const drawEnhancedImageToCanvas = async ({
   img,
-  thold,
   canvas,
+  src,
 }: {
   img: HTMLImageElement
-  thold: number
   canvas?: HTMLCanvasElement | null
+  src: string
 }) => {
   if (!canvas) return
   // set canvas size based on image
@@ -34,55 +32,27 @@ const drawEnhancedImageToCanvas = ({
   if (!ctx) return
   ctx.drawImage(img, 0, 0)
 
-  const { width, height } = img
-  let min
-  let max // to find min-max
-
-  // get image data
-  const idata = ctx.getImageData(0, 0, width, height) // needed for later
-  const data = idata.data // the bitmap itself
-  const hgram = new Uint32Array(data.length / 4) // histogram buffer (or use Float32)
-
-  // get lumas and build histogram
-  for (let i = 0; i < data.length; i += 4) {
-    var luma = rgb2luma({ r: data[i], g: data[i + 1], b: data[i + 2] })
-    hgram[luma]++ // add to the luma bar (and why we need an integer)
-  }
-
-  // find min value
-  for (let i = 0; i < width * 0.5; i++) {
-    if (hgram[i] > thold) {
-      min = i
-      break
-    }
-  }
-  if (!min) min = 0 // if not found, set to default 0
-
-  // find max value
-  for (let i = width - 1; i > width * 0.5; i--) {
-    if (hgram[i] > thold) {
-      max = i
-      break
-    }
-  }
-  if (!max) max = 255 // if not found, set to default 255
-  const maxScale = 255 / max
-  // scale all pixels RGB values
-  for (let i = 0; i < data.length; i += 4) {
-    data[i] = Math.max(0, data[i] * maxScale - min)
-    data[i + 1] = Math.max(0, data[i + 1] * maxScale - min)
-    data[i + 2] = Math.max(0, data[i + 2] * maxScale - min)
-  }
-  ctx.putImageData(idata, 0, 0)
+  const image = await Jimp.read(src)
+  image.normalize()
+  const imageData = new ImageData(
+    new Uint8ClampedArray(image.bitmap.data),
+    image.bitmap.width,
+    image.bitmap.height
+  )
+  ctx.putImageData(imageData, 0, 0)
 }
 
 export function TaskImage({ thumbnail, scale, open, imageStyle }: TaskImageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [enhancedImageVisible, setEnhancedImageVisible] = useState(true)
+  const [showEnhancedImage] = useLocalStorage('showEnhancedImage', true)
 
   useEffect(() => {
     const draw = () => {
-      drawEnhancedImageToCanvas({ img, thold: 0, canvas: canvasRef.current })
+      drawEnhancedImageToCanvas({
+        img,
+        canvas: canvasRef.current,
+        src: `data:${thumbnail}`,
+      })
     }
     const img = new Image()
     img.addEventListener('load', draw)
@@ -93,22 +63,19 @@ export function TaskImage({ thumbnail, scale, open, imageStyle }: TaskImageProps
   }, [thumbnail])
 
   return (
-    <div
-      className={cx(styles.imgContainer, { [styles.disabled]: !enhancedImageVisible })}
-      onMouseDown={() => {
-        setEnhancedImageVisible(false)
-      }}
-      onMouseUp={() => {
-        setEnhancedImageVisible(true)
-      }}
-    >
-      <img className={styles.img} src={`data:${thumbnail}`} alt="original thumbnail" />
+    <div className={cx(styles.imgContainer)}>
+      <img
+        className={styles.img}
+        src={`data:${thumbnail}`}
+        alt="original thumbnail"
+        style={imageStyle}
+      />
       <canvas
         className={styles.img}
         ref={canvasRef}
-        style={{ visibility: enhancedImageVisible ? 'visible' : 'hidden', ...imageStyle }}
-        title="Press and hold to see original image"
+        style={{ visibility: showEnhancedImage ? 'visible' : 'hidden' }}
       />
+
       {open && scale !== undefined && canvasRef.current?.width !== undefined && (
         <Fragment>
           <span className={styles.scaleValue}>

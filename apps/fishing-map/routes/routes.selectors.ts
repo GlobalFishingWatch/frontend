@@ -15,6 +15,7 @@ import {
   WORKSPACES_LIST,
   WORKSPACE_SEARCH,
   VESSEL_GROUP_REPORT,
+  PORT_REPORT,
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -43,7 +44,7 @@ export const selectIsAnyVesselLocation = createSelector(
   (isVesselLocation, isWorkspaceVesselLocation) => isVesselLocation || isWorkspaceVesselLocation
 )
 
-const selectIsReportLocation = createSelector(
+const selectisAreaReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT
 )
@@ -53,14 +54,26 @@ const selectIsWorkspaceReportLocation = createSelector(
   (locationType) => locationType === WORKSPACE_REPORT
 )
 
-export const selectIsAnyReportLocation = createSelector(
-  [selectIsReportLocation, selectIsWorkspaceReportLocation],
-  (isReportLocation, isWorkspaceReportLocation) => isReportLocation || isWorkspaceReportLocation
+export const selectIsAnyAreaReportLocation = createSelector(
+  [selectisAreaReportLocation, selectIsWorkspaceReportLocation],
+  (isAreaReportLocation, isWorkspaceReportLocation) =>
+    isAreaReportLocation || isWorkspaceReportLocation
+)
+
+export const selectIsPortReportLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === PORT_REPORT
 )
 
 export const selectIsVesselGroupReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === VESSEL_GROUP_REPORT
+)
+
+export const selectIsAnyReportLocation = createSelector(
+  [selectIsAnyAreaReportLocation, selectIsPortReportLocation, selectIsVesselGroupReportLocation],
+  (isAreaReportLocation, isPortReportLocation, isVesselGroupReportLocation) =>
+    isAreaReportLocation || isPortReportLocation || isVesselGroupReportLocation
 )
 
 export const selectIsWorkspacesListLocation = createSelector(
@@ -120,6 +133,11 @@ export const selectVesselId = createSelector(
 export const selectReportVesselGroupId = createSelector(
   [selectLocationPayload],
   (payload) => payload?.vesselGroupId as string
+)
+
+export const selectReportPortId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.portId as string
 )
 
 export const selectLocationCategory = createSelector(

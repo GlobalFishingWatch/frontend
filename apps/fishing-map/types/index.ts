@@ -15,6 +15,10 @@ import {
   VesselGroupReportStateProperty,
 } from 'features/vessel-groups/vessel-groups.types'
 import { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
+import {
+  PortsReportState,
+  PortsReportStateProperty,
+} from 'features/reports/ports/ports-report.types'
 export { Locale } from '@globalfishingwatch/api-types'
 
 type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -34,6 +38,7 @@ export type WorkspaceParam =
   | AreaReportStateProperty
   | VesselProfileStateProperty
   | VesselGroupReportStateProperty
+  | PortsReportStateProperty
   | VesselSearchStateProperty
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
@@ -62,7 +67,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
 }
 
 export type AnyWorkspaceState = Partial<
-  WorkspaceState & AreaReportState & VesselProfileState & VesselGroupReportState
+  WorkspaceState & AreaReportState & VesselProfileState & VesselGroupReportState & PortsReportState
 >
 
 type RedirectParam = {
@@ -89,6 +94,7 @@ export type QueryParams = Partial<WorkspaceViewport> &
   Partial<VesselProfileState> &
   Partial<AreaReportState> &
   Partial<VesselGroupReportState> &
+  Partial<PortsReportState> &
   AppState &
   RedirectParam &
   VesselSearchState

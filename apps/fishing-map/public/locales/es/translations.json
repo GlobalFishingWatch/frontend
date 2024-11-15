@@ -698,6 +698,12 @@
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
+  "portsReport": {
+    "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "seePortReport": "See all entry events to this port",
+    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
+  },
   "search": {
     "advanced": "Avanzada",
     "advancedDisabled": "Necesita <1>iniciar sesión</1> para realizar una búsqueda avanzada (gratis y toma 2 minutos)",
@@ -969,7 +975,7 @@
     "onScreen": "Embarcaciones en pantalla",
     "origin": "Origen",
     "owner": "Propietario",
-    "owners": "Owners",
+    "owners": "Propietarios",
     "registeredGearType": "Arte de pesca registrado",
     "registryGeartype": "Registry Gear Type",
     "registrySources": "Fuentes",

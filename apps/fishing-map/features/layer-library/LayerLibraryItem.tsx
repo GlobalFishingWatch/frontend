@@ -13,13 +13,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import {
-  getHighlightedText,
-  LAYER_LIBRARY_ID_SEPARATOR,
-} from 'features/layer-library/layer-library.utils'
 import { LibraryLayer } from 'data/layer-library'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { LAYER_LIBRARY_EVENTS_IDS } from 'data/layer-library/layers-events'
+import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
+import { getHighlightedText } from 'utils/text'
 import styles from './LayerLibraryItem.module.css'
 
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
