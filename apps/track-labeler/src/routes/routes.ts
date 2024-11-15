@@ -61,13 +61,13 @@ export const routesMap: RoutesMap = {
     path: '/logout',
     thunk: async (dispatch: Dispatch) => {
       await GFWAPI.logout()
-      dispatch(redirect({ type: LOGIN }))
+      dispatch(redirect({ type: LOGIN }) as any)
     },
   },
   [NOT_FOUND]: {
     path: '',
     thunk: async (dispatch: Dispatch) => {
-      dispatch(redirect({ type: HOME }))
+      dispatch(redirect({ type: HOME }) as any)
     },
   },
 }

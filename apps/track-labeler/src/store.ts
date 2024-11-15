@@ -1,4 +1,12 @@
-import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  combineReducers,
+  Middleware,
+  ThunkDispatch,
+  AnyAction,
+} from '@reduxjs/toolkit'
 import vessels from '././features/vessels/vessels.slice'
 import selectedtracks from '././features/vessels/selectedTracks.slice'
 import project from '././features/projects/projects.slice'
@@ -50,17 +58,19 @@ const store = configureStore({
     getDefaultMiddleware(defaultMiddlewareOptions).concat([
       routerQueryMiddleware,
       routerRefreshTokenMiddleware,
-      routerMiddleware,
-    ]) as any,
-  // enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
+      routerMiddleware as Middleware,
+    ]),
+  enhancers: (getDefaultEnhancers) => [routerEnhancer, ...getDefaultEnhancers()] as any,
 })
 
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof rootReducer>
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   RootState,
   unknown,
   Action<string>
 >
+type TypedDispatch<T> = ThunkDispatch<T, any, AnyAction>
+export type AppDispatch = TypedDispatch<RootState>
 
 export default store

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { fitBounds } from 'viewport-mercator-project'
 import Hotkeys from 'react-hot-keys'
@@ -26,6 +26,7 @@ import { LABEL_HOTKEYS, SUPPORT_EMAIL, UNDO_HOTKEYS } from '../../data/constants
 import { useUser } from '../../features/user/user.hooks'
 import ErrorPlaceHolder from '../../features/error/ErrorPlaceholder'
 import { updateQueryParams } from '../../routes/routes.actions'
+import { useAppDispatch } from '../../store.hooks'
 import styles from './Sidebar.module.css'
 import { useSelectedTracksConnect } from './sidebar.hooks'
 
@@ -44,9 +45,9 @@ const Sidebar: React.FC = (props): React.ReactElement => {
   const project = useSelector(selectProject)
   const vessel = useSelector(getVesselInfo)
   const actionShortcuts = useSelector(getActionShortcuts)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const track = useSelector(getVesselTrackGeojsonByDateRange)
-  const { allowedAppAccess, allowedProjectAccess, projects, user } = useUser()
+  const { allowedAppAccess, allowedProjectAccess, projects, user, logged } = useUser()
   const formatedDate = (timestamp: number | null | undefined) => {
     if (timestamp) {
       const date = DateTime.fromMillis(timestamp, { zone: 'UTC' })
@@ -200,7 +201,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
     [dispatch]
   )
 
-  if (!allowedAppAccess) {
+  if (logged && !allowedAppAccess) {
     return (
       <ErrorPlaceHolder
         title={`Only some specific registered users can use this product  (logged in as: ${user?.email})`}

@@ -1,11 +1,12 @@
 import { useCallback, useState } from 'react'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { MiniglobeBounds, MiniGlobe } from '@globalfishingwatch/ui-components/miniglobe'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import * as Generators from '@globalfishingwatch/layer-composer'
+import { useAppDispatch } from '../../../store.hooks'
 import Rulers from '../../../features/rulers/Rulers'
 import { updateQueryParams } from '../../../routes/routes.actions'
 import { ContextLayer } from '../../../types'
@@ -16,7 +17,7 @@ import { getContextualLayers } from './mapControls.container'
 
 const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
   const { zoom, latitude, longitude, dispatchViewport } = useViewportConnect()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [showContextLayers, setShowContextLayers] = useState<boolean>(false)
 
   const switchContextLayers = useCallback(() => {
@@ -98,8 +99,8 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
       ></button>
 
       {showContextLayers && (
-        <div className={styles.contextLayersContainer} >
-          <div className={styles.contextLayers} >
+        <div className={styles.contextLayersContainer}>
+          <div className={styles.contextLayers}>
             {layers !== null &&
               layers.map((layer: ContextLayer) => (
                 <label

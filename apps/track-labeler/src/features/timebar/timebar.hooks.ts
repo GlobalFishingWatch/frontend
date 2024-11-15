@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import {
   selectTimebarMode,
   getDateRange,
@@ -15,9 +15,10 @@ import {
 } from '../../features/vessels/selectedTracks.slice'
 import { selectTimestamps } from '../../features/vessels/vessels.slice'
 import { findNextTimestamp, findPreviousTimestamp } from '../../utils/shared'
+import { useAppDispatch } from '../../store.hooks'
 
 export const useTimerangeConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const dateRange = useSelector(getDateRange)
   // TODO needs to be debounced like viewport
   const dispatchTimerange = ({ start, end }: { start: string; end: string }) => {
@@ -63,7 +64,7 @@ export const useTimerangeConnect = () => {
 }
 
 export const useTimebarModeConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const timebarMode = useSelector(selectTimebarMode)
   const colorMode = useSelector(selectColorMode)
   const filterMode = useSelector(selectFilterMode)
@@ -83,7 +84,7 @@ export const useTimebarModeConnect = () => {
 }
 
 export const useSegmentsLabeledConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const timestamps = useSelector(selectTimestamps)
   const onEventPointClick = (
     segments: SelectedTrackType[],

@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useState } from 'react'
 // import { ViewportProps } from 'react-map-gl'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
@@ -8,6 +8,7 @@ import { updateQueryParams } from '../../routes/routes.actions'
 import { MapCoordinates } from '../../types'
 import { selectEditing } from '../../features/rulers/rulers.selectors'
 import { moveCurrentRuler } from '../../features/rulers/rulers.slice'
+import { useAppDispatch } from '../../store.hooks'
 import {
   selectGeneratorsConfig,
   updateGenerator,
@@ -16,7 +17,7 @@ import {
 } from './map.slice'
 
 export const useMapMove = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const rulersEditing = useSelector(selectEditing)
   const [hoverCenter, setHoverCenter] = useState<LatLon | null>(null)
   const onMapMove = useCallback(
@@ -37,7 +38,7 @@ export const useMapMove = () => {
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   return {
     globalConfig: useSelector(selectGlobalGeneratorsConfig),
     generatorsConfig: useSelector(selectGeneratorsConfig),
@@ -61,7 +62,7 @@ export interface Viewport extends LatLon {
   zoom: number
 }
 export const useViewportConnect = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { zoom, latitude, longitude } = useSelector(selectViewport)
   const dispatchViewport = (newViewport: Partial<Viewport>) =>
     dispatch(updateQueryParams(newViewport))
@@ -110,7 +111,7 @@ export function useDebouncedViewport(
 }
 
 export function useViewport(): UseViewport {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const urlViewport = useSelector(selectViewport)
   const callback = useCallback((viewport: any) => dispatch(updateQueryParams(viewport)), [dispatch])
   return useDebouncedViewport(urlViewport, callback)

@@ -1,5 +1,5 @@
 import React, { memo, Fragment, useEffect, createRef, useContext } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
 import './range.css'
 import { NumberValue } from 'd3-scale'
@@ -18,6 +18,7 @@ import {
   selectFilteredSpeed,
 } from '../../routes/routes.selectors'
 import { Field } from '../../data/models'
+import { useAppDispatch } from '../../store.hooks'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -86,7 +87,7 @@ const TimebarWrapper = () => {
   const { filterMode } = useTimebarModeConnect()
   const tracks = useSelector(getTracksData)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const myRef = createRef<any>()
   const { minSpeed, maxSpeed } = useSelector(selectFilteredSpeed)

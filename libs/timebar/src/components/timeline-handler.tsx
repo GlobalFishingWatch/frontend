@@ -22,7 +22,7 @@ const Handler = (props: HandlerProps) => (
     })}
     style={{ left: props.dragging === true ? props.mouseX || 0 : props.x }}
   >
-    <Icon icon="drag" />
+    <Icon icon="drag-timebar" />
   </button>
 )
 
