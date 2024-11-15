@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap');
+
+#root {
+  height: 100%;
+}
+
+:root {
+  --block-height-M: 4rem;
+  --block-height-S: 3.2rem;
+  --font-size-XS: 1rem;
+  --font-size-S: 1.2rem;
+  --font-size-M: 1.4rem;
+  --font-size-L: 1.6rem;
+  --font-size-XL: 2rem;
+  --color-background: #fff;
+  --color-loading-background: rgb(22, 63, 137);
+  --color-loading-content: #fff;
+  --color-brand: #163f89;
+  --color-brand-highlight: #d1dee7;
+  --color-brand-secondary: rgba(22, 63, 137, 0.7);
+  --track-labeler-timebar-size: 280px;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+button {
+  font-family: var(--font-family);
+  font-size: var(--font-size-S);
+  line-height: 2rem;
+  color: var(--color-foreground);
+  fill: var(--color-foreground);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 150ms ease-out;
+  background-repeat: no-repeat;
+  background-position: center center;
+}

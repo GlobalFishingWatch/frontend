@@ -644,6 +644,7 @@ export type Ruler = {
     latitude: number
     longitude: number
   }
+  isNew: boolean
 }
 
 export type MapAnnotation = {

@@ -1,0 +1,50 @@
+$loader-size: 30px;
+$loader-size-mini: 10px;
+
+.loaderContainer {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--color-loading-content);
+  background: url('https://globalfishingwatch.org/wp-content/uploads/map_option-4.jpg');
+  background-size: cover;
+}
+
+.placeholder {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.spinner {
+  margin: 20px;
+  height: $loader-size;
+  width: $loader-size;
+  color: var(--color-brand);
+  position: relative;
+  display: inline-block;
+  border: 3px solid;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: rotate 1s linear infinite;
+}
+
+.logoImage {
+  margin-top: 10px;
+  display: block;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  border: 1px solid var(--color-loading-background);
+  padding: 10px 25px;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -24,7 +24,7 @@ const applyStyleTransformations = (
 
 export const defaultStyleTransformations: StyleTransformation[] = [sort, getInteractiveLayerIds]
 
-let styleSpecValidate: any
+// let styleSpecValidate: any
 
 const defaultLayerComposerInstance = new LayerComposer()
 export function useLayerComposer(
@@ -46,22 +46,22 @@ export function useLayerComposer(
           globalGeneratorConfig
         )
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
-        if (process.env.NODE_ENV === 'development' && window.location.hostname === 'localhost') {
-          if (!styleSpecValidate) {
-            styleSpecValidate = await import(
-              '@globalfishingwatch/maplibre-gl/dist/style-spec'
-            ).then((m) => {
-              return m.validate
-            })
-          }
-          if (styleSpecValidate) {
-            const styleErrors = styleSpecValidate(afterTransformations)
-            if (styleErrors && styleErrors.length) {
-              console.warn(style)
-              throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
-            }
-          }
-        }
+        // if (process.env.NODE_ENV === 'development' && window.location.hostname === 'localhost') {
+        //   if (!styleSpecValidate) {
+        //     styleSpecValidate = await import(
+        //       '@globalfishingwatch/maplibre-gl/dist/style-spec'
+        //     ).then((m) => {
+        //       return m.validate
+        //     })
+        //   }
+        //   if (styleSpecValidate) {
+        //     const styleErrors = styleSpecValidate(afterTransformations)
+        //     if (styleErrors && styleErrors.length) {
+        //       console.warn(style)
+        //       throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
+        //     }
+        //   }
+        // }
         setStyle(afterTransformations)
         if (promises && promises.length) {
           setLoading(true)

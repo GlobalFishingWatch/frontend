@@ -1,6 +1,6 @@
 import React, { ReactEventHandler } from 'react'
 import cx from 'classnames'
-import { ReactComponent as IconDrag } from '../icons/drag.svg'
+import { Icon } from '@globalfishingwatch/ui-components'
 import styles from './timeline-handler.module.css'
 
 type HandlerProps = {
@@ -22,7 +22,7 @@ const Handler = (props: HandlerProps) => (
     })}
     style={{ left: props.dragging === true ? props.mouseX || 0 : props.x }}
   >
-    <IconDrag />
+    <Icon icon="drag" />
   </button>
 )
 

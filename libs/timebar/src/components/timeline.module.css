@@ -17,7 +17,7 @@
 
 .graphContainer {
   width: 100%;
-  height: var(--timebar-size);
+  height: 100%;
   z-index: 0;
   overflow: hidden;
 }

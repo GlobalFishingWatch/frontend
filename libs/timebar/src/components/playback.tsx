@@ -8,12 +8,8 @@ import {
   FOURWINGS_INTERVALS_ORDER,
   FourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
-import { ReactComponent as IconLoop } from '../icons/loop.svg'
-import { ReactComponent as IconBack } from '../icons/back.svg'
-import { ReactComponent as IconPlay } from '../icons/play.svg'
-import { ReactComponent as IconPause } from '../icons/pause.svg'
-import { ReactComponent as IconForward } from '../icons/forward.svg'
 import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
 
@@ -234,7 +230,7 @@ class Playback extends Component<PlaybackProps> {
             [styles.secondaryActive]: loop,
           })}
         >
-          <IconLoop />
+          <Icon icon="loop" />
         </button>
         <button
           type="button"
@@ -242,7 +238,7 @@ class Playback extends Component<PlaybackProps> {
           onClick={this.onBackwardClick}
           className={cx(uiStyles.uiButton, styles.secondary, styles.back)}
         >
-          <IconBack />
+          <Icon icon="back" />
         </button>
         <button
           type="button"
@@ -251,7 +247,7 @@ class Playback extends Component<PlaybackProps> {
           disabled={stoppedAtEnd}
           className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play)}
         >
-          {playing === true ? <IconPause /> : <IconPlay />}
+          {playing === true ? <Icon icon="pause" /> : <Icon icon="play" />}
         </button>
         <button
           type="button"
@@ -259,7 +255,7 @@ class Playback extends Component<PlaybackProps> {
           onClick={this.onForwardClick}
           className={cx(uiStyles.uiButton, styles.secondary, styles.forward)}
         >
-          <IconForward />
+          <Icon icon="forward" />
         </button>
         <button
           type="button"

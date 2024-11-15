@@ -1,0 +1,149 @@
+.aside {
+  background-color: #fff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.aside label {
+  opacity: 0.65;
+  color: #163f89;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.15px;
+  line-height: 12px;
+}
+
+.brand {
+  border-bottom: 1px solid rgba(22, 63, 137, 0.2);
+  height: 75px;
+}
+
+.brand img {
+  max-height: 100%;
+}
+
+.logoImage {
+  max-width: 50%;
+}
+
+.projectDetails {
+  padding-top: var(--space-S);
+  float: right;
+  width: 50%;
+}
+
+.vesselContainer {
+  display: flex;
+  border-bottom: 1px solid rgba(22, 63, 137, 0.2);
+}
+
+.vesselDetail {
+  padding: var(--space-S);
+}
+
+.segment {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(22, 63, 137, 0.2);
+  padding: 1rem;
+}
+
+.segmentField {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.segmentTimestamp {
+  flex-direction: column;
+  font-size: 14px;
+  color: #163f89;
+}
+
+.segmentButton {
+  font-size: 14px;
+}
+
+.segmentActivity {
+  flex-grow: 1;
+}
+
+.segmentActivity select {
+  background: #fff;
+  color: #163f89;
+  font-family: Roboto, Arial, sans-serif;
+  height: 40px;
+  border: none;
+  font-size: 16px;
+  box-shadow: inset 0 -1px 0 0 #163f89;
+  min-width: 150px;
+}
+
+.segmentAction {
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  color: red;
+  font-size: 30px;
+  margin-left: auto;
+}
+
+.segments {
+  flex-grow: 1;
+  overflow: auto;
+  height: calc(100% - 194px);
+}
+
+.actionButtons {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 1rem;
+}
+
+.importButton {
+  font: var(--font-S);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  padding: 0 var(--space-S);
+  text-transform: uppercase;
+  width: 30%;
+  line-height: 1;
+  height: var(--size-M);
+  color: var(--color-secondary-blue) !important;
+  background-color: var(--color-terthiary-blue);
+  opacity: 1 !important;
+}
+
+.importButton:hover {
+  color: var(--color-primary-blue);
+  background-color: var(--color-border);
+}
+
+.actionButtons .actionButton {
+  width: 30%;
+  min-width: auto;
+}
+
+.shortSelect,
+.shortSelect:hover {
+  width: 15rem;
+}
+
+.logoutButton {
+  position: absolute;
+  right: 0;
+}
+
+.errorAction {
+  margin: var(--space-M) 0;
+}
