@@ -228,10 +228,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
 
 export const getVesselInVesselGroupThunk = createAsyncThunk(
   'vessel-groups/getVessels',
-  async (
-    { vesselGroup }: { vesselGroup: VesselGroup },
-    { signal, rejectWithValue, getState, dispatch }
-  ) => {
+  async ({ vesselGroup }: { vesselGroup: VesselGroup }, { signal, rejectWithValue, dispatch }) => {
     const datasetIds = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
     const updatedDatasetsIds = datasetIds.map(runDatasetMigrations)
     const hasOutdatedDatasets = difference(datasetIds, updatedDatasetsIds)?.length > 0
