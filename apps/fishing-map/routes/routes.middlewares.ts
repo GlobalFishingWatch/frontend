@@ -26,7 +26,7 @@ export const routerQueryMiddleware: Middleware =
           ...prevQuery,
           ...newAction.query,
         }
-        if (newAction.query[ACCESS_TOKEN_STRING]) {
+        if (newAction?.query[ACCESS_TOKEN_STRING]) {
           delete newAction.query[ACCESS_TOKEN_STRING]
         }
       }
