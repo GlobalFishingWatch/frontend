@@ -27,6 +27,7 @@ import {
   LayerGroup,
 } from '../../../utils'
 import {
+  FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
   MAX_ZOOM_TO_CLUSTER_POINTS,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
@@ -53,6 +54,7 @@ type FourwingsClustersTileLayerState = {
 
 const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
   tilesUrl: HEATMAP_API_TILES_URL,
+  maxZoom: FOURWINGS_MAX_ZOOM,
   clusterMaxZoomLevels: {
     default: MAX_ZOOM_TO_CLUSTER_POINTS,
   },
@@ -87,7 +89,7 @@ export function getFourwingsGeolocation(
   for (const geolocation of GEOLOCATION_PRIORITY) {
     if (
       clusterMaxZoomLevels?.[geolocation] !== undefined &&
-      Math.floor(zoom) <= clusterMaxZoomLevels[geolocation]
+      zoom <= clusterMaxZoomLevels[geolocation] + 0.5
     ) {
       clusterMode = geolocation
       break
@@ -112,8 +114,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
     if (!clusterMaxZoomLevels) {
       return 'default'
     }
-    const clusterMode =
-      getFourwingsGeolocation(clusterMaxZoomLevels, this.context.viewport.zoom) || 'positions'
+    const geolocation = getFourwingsGeolocation(clusterMaxZoomLevels, this.context.viewport.zoom)
+    const clusterMode = geolocation || 'positions'
     return clusterMode
   }
 
@@ -186,6 +188,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
           )
         : tile.content || []
     })
+
     if (this.clusterMode === 'positions' && data.length < MAX_INDIVIDUAL_POINTS) {
       requestAnimationFrame(() => {
         this.setState({
@@ -345,6 +348,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   renderLayers(): Layer<{}> | LayersList | null {
     const { color, tilesUrl, eventType = 'encounter' } = this.props
     const { clusters, points, radiusScale } = this.state
+
     return [
       new TileLayer<FourwingsPointFeature, any>(this.props, {
         id: `${this.props.id}-tiles`,
