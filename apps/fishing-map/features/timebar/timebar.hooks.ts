@@ -268,36 +268,16 @@ export const useTimebarVisualisation = () => {
   const prevactiveEnvDataviewsNum = usePrevious(activeEnvDataviews.length)
 
   useEffect(() => {
-    // Fallback mechanisms to avoid empty timebar
+    // Fallback mechanism to avoid empty timebar
     if (
-      timebarVisualisation === TimebarVisualisations.HeatmapActivity &&
-      !activeActivityDataviews?.length
-    ) {
-      if (activeDetectionsDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
-      } else if (activeVesselGroupDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
-      } else if (activeTrackDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
-      } else if (activeEnvDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
-      }
-    } else if (
-      timebarVisualisation === TimebarVisualisations.Vessel &&
-      !activeTrackDataviews?.length
-    ) {
-      if (activeActivityDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
-      } else if (activeDetectionsDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
-      } else if (activeVesselGroupDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
-      } else if (activeEnvDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
-      }
-    } else if (
-      timebarVisualisation === TimebarVisualisations.Environment &&
-      !activeEnvDataviews?.length
+      (timebarVisualisation === TimebarVisualisations.HeatmapActivity &&
+        !activeActivityDataviews?.length) ||
+      (timebarVisualisation === TimebarVisualisations.HeatmapDetections &&
+        !activeDetectionsDataviews?.length) ||
+      (timebarVisualisation === TimebarVisualisations.VesselGroup &&
+        !activeVesselGroupDataviews?.length) ||
+      (timebarVisualisation === TimebarVisualisations.Vessel && !activeTrackDataviews?.length) ||
+      (timebarVisualisation === TimebarVisualisations.Environment && !activeEnvDataviews?.length)
     ) {
       if (activeActivityDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
@@ -307,8 +287,9 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
+      } else if (activeEnvDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
-      // Automatically switch to last-activated layer type if settings never have been changed manually
     } else if (!hasChangedSettingsOnce) {
       if (activeActivityDataviews.length === 1 && prevActiveHeatmapDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)

@@ -21,7 +21,6 @@ import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { formatInfoField } from 'utils/info'
 import {
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
