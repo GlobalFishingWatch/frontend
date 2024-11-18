@@ -14,7 +14,8 @@
     "knip:fix": "knip --fix",
     "clean": "yarn clean:deps && yarn clean:cache",
     "clean:deps": "rm -rf ./node_modules && rm -rf ./yarn.lock && yarn cache clean --all && yarn install",
-    "clean:cache": "rm -rf .nx && rm -rf ./dist"
+    "clean:cache": "rm -rf .nx && rm -rf ./dist",
+    "purge": "node scripts/purge-css.js"
   },
   "workspaces": [
     "apps/fishing-map"
@@ -268,6 +269,7 @@
     "nx": "20.0.8",
     "prettier": "2.8.8",
     "prettier-eslint": "16.3.0",
+    "purgecss": "^6.0.0",
     "react-fps": "1.0.6",
     "sass": "^1.70.0",
     "shx": "0.3.4",

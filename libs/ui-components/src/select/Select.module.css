@@ -40,10 +40,6 @@
   cursor: help;
 }
 
-.labelIconWarning {
-  margin: 0 0.9rem;
-}
-
 .placeholderShown {
   color: var(--color-secondary-blue);
 }

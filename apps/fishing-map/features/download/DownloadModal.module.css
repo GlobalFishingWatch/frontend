@@ -28,14 +28,6 @@
   justify-content: flex-end;
 }
 
-.disclaimerContainer {
-  font: var(--font-S);
-}
-
-.disclaimerContainer a {
-  color: var(--color-danger-red);
-}
-
 .downloadFooterContainer {
   height: 0;
   overflow: hidden;

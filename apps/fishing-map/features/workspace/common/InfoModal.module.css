@@ -75,7 +75,3 @@ div.modalContent {
 .title {
   flex: 1;
 }
-
-.defaultCursor {
-  cursor: default;
-}
