@@ -1,6 +1,9 @@
-import React, { useContext, useMemo } from 'react'
-import cx from 'classnames'
+import React, { useContext, useMemo, useRef } from 'react'
+import DeckGL from '@deck.gl/react'
+import { OrthographicView } from '@deck.gl/core'
+import { PolygonLayer } from '@deck.gl/layers'
 import { useSetAtom } from 'jotai'
+import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import {
   TimebarChartData,
@@ -18,6 +21,13 @@ import {
 import { getTrackY } from './common/utils'
 import { hoveredEventState, useUpdateChartsData } from './chartsData.atom'
 
+const ICON_MAPPING = {
+  encounter: { x: 0, y: 0, width: 36, height: 36 },
+  gap: { x: 40, y: 0, width: 36, height: 36, mask: true },
+  port_visit: { x: 80, y: 0, width: 36, height: 36 },
+  loitering: { x: 120, y: 0, width: 36, height: 36 },
+}
+
 const getTracksEventsWithCoords = (
   tracksEvents: TimebarChartData<any>,
   outerScale: TimelineScale,
@@ -33,12 +43,13 @@ const getTracksEventsWithCoords = (
       chunks: !trackEvents.chunks
         ? []
         : trackEvents.chunks.map((chunk) => {
-            const x = outerScale(chunk.start)
-            const x2 = chunk.end ? outerScale(chunk.end) : x
-            const width = Math.max(1, x2 - x)
+            const startX = outerScale(chunk.start)
+            const endX = chunk.end ? outerScale(chunk.end) : startX
+            const width = Math.max(1, endX - startX)
             return {
               ...chunk,
-              x,
+              x: startX,
+              y: baseTrackY.defaultY,
               width,
             }
           }),
@@ -62,6 +73,7 @@ const TracksEvents = ({
 }) => {
   const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
   const outerScale = useOuterScale()
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const sortedTracksEvents = useSortedChartData(data)
   const clusteredTracksEvents = useClusteredChartData(sortedTracksEvents)
@@ -84,55 +96,61 @@ const TracksEvents = ({
 
   const updateHoveredEvent = useSetAtom(hoveredEventState)
 
-  const trackEvents = useMemo(() => {
-    return tracksEventsWithCoords.map((trackEvents, index) => (
-      <div
-        key={index}
-        className={styles.track}
-        style={{
-          top: `${trackEvents.y}px`,
-        }}
-      >
-        {trackEvents.chunks.map((event) => (
-          <div
-            key={event.id}
-            className={cx(styles.event, styles[event.type || 'none'], {
-              [styles.compact]: tracksEventsWithCoords.length >= 5,
-              [styles.highlighted]:
-                highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
-            })}
-            style={
-              {
-                left: `${event.x}px`,
-                width: `${event.width}px`,
-                '--background-color':
-                  useTrackColor || event.type === 'fishing'
-                    ? trackEvents.color
-                    : event.props?.color || 'white',
-              } as React.CSSProperties
-            }
-            onClick={() => {
-              if (onEventClick) onEventClick(event)
-            }}
-            onMouseEnter={() => {
-              updateHoveredEvent(event.id as string)
-            }}
-            onMouseLeave={() => {
-              updateHoveredEvent(undefined)
-            }}
-          />
-        ))}
-      </div>
-    ))
-  }, [
-    highlightedEventsIds,
-    onEventClick,
-    tracksEventsWithCoords,
-    updateHoveredEvent,
-    useTrackColor,
-  ])
+  const layerData = useMemo(() => {
+    return tracksEventsWithCoords.flatMap((trackEvents) =>
+      trackEvents.chunks.map((event) => {
+        const halfHeight = event.type === 'fishing' ? 1 : 2
+        return {
+          // Define rectangle vertices (clockwise from top-left)
+          polygon: [
+            [event.x, event.y - halfHeight],
+            [event.x + event.width, event.y - halfHeight],
+            [event.x + event.width, event.y + halfHeight],
+            [event.x, event.y + halfHeight],
+          ],
+          id: event.id,
+          color:
+            useTrackColor || event.type === 'fishing'
+              ? trackEvents.color
+              : event.props?.color || 'white',
+          highlighted: highlightedEventsIds?.includes(event.id as string),
+          type: event.type,
+        }
+      })
+    )
+  }, [tracksEventsWithCoords, useTrackColor, highlightedEventsIds])
 
-  return <div className={styles.Events}>{trackEvents}</div>
+  const layer = new PolygonLayer({
+    id: 'events-layer',
+    data: layerData,
+    getPolygon: (d) => d.polygon,
+    getFillColor: (d) => hexToDeckColor(d.color),
+    getLineColor: [0, 0, 0, 0], // Transparent border
+    pickable: true,
+    onClick: ({ object }) => onEventClick?.(object),
+    onHover: ({ object }) => {
+      updateHoveredEvent(object?.id)
+    },
+  })
+
+  const view = new OrthographicView({
+    id: 'ortho',
+    controller: false,
+  })
+
+  return (
+    <div className={styles.Events} ref={containerRef}>
+      <DeckGL
+        views={view}
+        layers={[layer]}
+        initialViewState={{
+          target: [(containerRef.current?.clientWidth || 100) / 2, 36, 0],
+          zoom: 0,
+        }}
+        style={{ width: '100%', height: '100%' }}
+      />
+    </div>
+  )
 }
 
 export default TracksEvents

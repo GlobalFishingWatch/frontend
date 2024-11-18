@@ -60,7 +60,7 @@ const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
 
 const GEOLOCATION_PRIORITY: FourwingsGeolocation[] = ['country', 'port', 'default']
 
-const ICON_SIZE: Record<FourwingsClusterEventType, number> = {
+export const ICON_SIZE: Record<FourwingsClusterEventType, number> = {
   encounter: 16,
   loitering: 16,
   gap: 14,
