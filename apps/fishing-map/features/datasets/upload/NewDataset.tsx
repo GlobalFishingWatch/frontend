@@ -13,7 +13,7 @@ import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
 import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -64,6 +64,7 @@ function NewDataset() {
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const [rawFile, setRawFile] = useState<File | undefined>()
   const isGuestUser = useSelector(selectIsGuestUser)
+  const isUserExpired = useSelector(selectIsUserExpired)
   const [error, setError] = useState('')
   const locationType = useSelector(selectLocationType)
   const { dispatchUpsertDataset } = useDatasetsAPI()
@@ -190,7 +191,7 @@ function NewDataset() {
     >
       {error ? (
         <div className={cx(styles.errorMsgContainer, styles.errorMsg)}>{error}</div>
-      ) : isGuestUser ? (
+      ) : isGuestUser || isUserExpired ? (
         <div
           className={styles.placeholder}
           onDrop={(e) => {
