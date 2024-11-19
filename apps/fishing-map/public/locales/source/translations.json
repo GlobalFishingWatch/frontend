@@ -41,6 +41,7 @@
     "noDataByArea": "No data available for the selected area",
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Others",
     "periodComparison": "period comparison",
     "periodComparison1st": "baseline start",
