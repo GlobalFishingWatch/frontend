@@ -214,16 +214,21 @@ export const useAutoRefreshImportingDataset = (
   }, [dataset, dispatchFetchDataset, refreshTimeout])
 }
 
-export const useAddDataset = ({ onSelect }: NewDatasetProps) => {
+export const useAddDataset = ({ onSelect } = {} as NewDatasetProps) => {
+  const dispatch = useAppDispatch()
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
-  return () => {
+
+  const onAddClick = useCallback(() => {
     trackEvent({
       category: TrackCategory.ReferenceLayer,
       action: 'Start uploading user dataset',
     })
     dispatchDatasetModalOpen(true)
+    dispatch(setDatasetUploadConfig({ style: 'default' }))
     if (onSelect) {
       onSelect()
     }
-  }
+  }, [dispatch, dispatchDatasetModalOpen, onSelect])
+
+  return onAddClick
 }

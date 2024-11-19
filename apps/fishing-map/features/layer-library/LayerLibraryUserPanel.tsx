@@ -35,7 +35,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   const datasets = useSelector(selectUserDatasets)
   const datasetStatus = useSelector(selectDatasetsStatus)
   const guestUser = useSelector(selectIsGuestUser)
-  const onAddNewClick = useAddDataset({})
+  const onAddNewClick = useAddDataset()
 
   const filteredDatasets = useMemo(
     () =>

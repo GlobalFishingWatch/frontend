@@ -6,6 +6,7 @@ import {
   listToTrackSegments,
   segmentsToGeoJSON,
   kmlToGeoJSON,
+  zipToFiles,
   shpToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
 import {
@@ -15,7 +16,7 @@ import {
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
-import { getFileType, readBlobAs } from 'utils/files'
+import { DatasetGeometryTypesSupported, getFileType, readBlobAs } from 'utils/files'
 
 // interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
 //   extensions?: string[]
@@ -24,13 +25,32 @@ import { getFileType, readBlobAs } from 'utils/files'
 export type DataList = Record<string, any>[]
 export type DataParsed = FeatureCollection | DataList
 
-export async function getDatasetParsed(file: File, type: DatasetGeometryType): Promise<DataParsed> {
-  const fileType = getFileType(file)
+export async function getDatasetParsed(
+  file: File,
+  type: DatasetGeometryTypesSupported
+): Promise<DataParsed> {
+  const fileType = getFileType(file, type)
   if (!fileType) {
     throw new Error('File type not supported')
   }
   try {
+    // Using the comparison with Shapefile to account for every .zip upload
     if (fileType === 'Shapefile') {
+      if (type === 'tracks') {
+        const files = await zipToFiles(file, /\.csv$/)
+        const csvFile = files?.find((f) => f.name.endsWith('.csv'))
+        if (!csvFile) {
+          throw new Error('No .csv found in .zip file')
+        }
+        const fileText = await csvFile.async('string')
+        const { data } = parse(fileText, {
+          download: false,
+          dynamicTyping: true,
+          header: true,
+        })
+        console.log('🚀 ~ getDatasetParsed ~ data:', data)
+        return data as DataList
+      }
       const fileData = await readBlobAs(file, 'arrayBuffer')
       return shpToGeoJSON(fileData, type)
     } else if (fileType === 'CSV') {

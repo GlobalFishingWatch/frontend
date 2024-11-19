@@ -1,4 +1,4 @@
-import { ReactComponentElement, useCallback, useState } from 'react'
+import { ReactElement, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { FileRejection, useDropzone } from 'react-dropzone'
@@ -22,7 +22,7 @@ const DatasetType = ({
   title: string
   description: string
   style?: DatasetUploadStyle
-  icon: ReactComponentElement<any, any>
+  icon: ReactElement<any, any>
   onFileLoaded: (file: File) => void
 }) => {
   const { t } = useTranslation()

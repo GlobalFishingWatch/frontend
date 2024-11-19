@@ -55,7 +55,7 @@ function NewTrackDataset({
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
-  const fileType = getFileType(file)
+  const fileType = getFileType(file, 'tracks')
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const isCSVFile = fileType === 'CSV' || sourceFormat === 'CSV'
   const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
@@ -99,7 +99,7 @@ function NewTrackDataset({
       setProcessingData(true)
       try {
         const data = await getDatasetParsed(file, 'tracks')
-        const fileType = getFileType(file)
+        const fileType = getFileType(file, 'tracks')
         const datasetMetadata = getTracksDatasetMetadata({
           data,
           name: getFileName(file),
