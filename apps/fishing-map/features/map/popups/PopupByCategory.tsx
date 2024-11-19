@@ -112,15 +112,18 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   />
                 )
               }
-              return feature.sublayers?.map((sublayer, j) => {
-                const dataview = dataviews.find((d) => d.id === sublayer.id)
-                return feature.comparisonMode === FourwingsComparisonMode.TimeCompare ? (
+              if (feature.comparisonMode === FourwingsComparisonMode.TimeCompare) {
+                return (
                   <ComparisonRow
                     key={featureCategory}
                     feature={features[0] as FourwingsHeatmapPickingObject}
                     showFeaturesDetails={type === 'click'}
                   />
-                ) : (
+                )
+              }
+              return feature.sublayers?.map((sublayer, j) => {
+                const dataview = dataviews.find((d) => d.id === sublayer.id)
+                return (
                   <TooltipComponent
                     key={`${i}-${j}`}
                     loading={activityInteractionStatus === AsyncReducerStatus.Loading}
