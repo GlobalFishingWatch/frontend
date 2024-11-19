@@ -71,7 +71,7 @@ function NewDataset() {
 
   const isDatasetEdit = dataset !== undefined
 
-  const onFileLoaded = useCallback(async (file: File) => {
+  const onFileLoaded = useCallback((file: File) => {
     setRawFile(file)
   }, [])
 

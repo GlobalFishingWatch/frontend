@@ -8,6 +8,7 @@ import {
   kmlToGeoJSON,
   zipToFiles,
   shpToGeoJSON,
+  isZipFile,
 } from '@globalfishingwatch/data-transforms'
 import {
   DatasetGeometryToGeoJSONGeometry,
@@ -34,27 +35,22 @@ export async function getDatasetParsed(
     throw new Error('File type not supported')
   }
   try {
-    // Using the comparison with Shapefile to account for every .zip upload
     if (fileType === 'Shapefile') {
-      if (type === 'tracks') {
+      const fileData = await readBlobAs(file, 'arrayBuffer')
+      return shpToGeoJSON(fileData, type)
+    } else if (fileType === 'CSV') {
+      let fileText: string | undefined
+      if (isZipFile(file)) {
+        debugger
         const files = await zipToFiles(file, /\.csv$/)
         const csvFile = files?.find((f) => f.name.endsWith('.csv'))
         if (!csvFile) {
           throw new Error('No .csv found in .zip file')
         }
-        const fileText = await csvFile.async('string')
-        const { data } = parse(fileText, {
-          download: false,
-          dynamicTyping: true,
-          header: true,
-        })
-        console.log('🚀 ~ getDatasetParsed ~ data:', data)
-        return data as DataList
+        fileText = await csvFile.async('string')
+      } else {
+        fileText = await file.text()
       }
-      const fileData = await readBlobAs(file, 'arrayBuffer')
-      return shpToGeoJSON(fileData, type)
-    } else if (fileType === 'CSV') {
-      const fileText = await file.text()
       const { data } = parse(fileText, {
         download: false,
         dynamicTyping: true,

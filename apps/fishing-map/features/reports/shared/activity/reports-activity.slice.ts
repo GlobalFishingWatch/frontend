@@ -129,7 +129,6 @@ export const fetchReportVesselsThunk = createAsyncThunk(
       const vessels = await GFWAPI.fetch<APIPagination<ReportVesselsByDataset>>(
         `/4wings/report?${query}`
       )
-      console.log('🚀 ~ vessels:', vessels)
       return vessels.entries
     } catch (e) {
       console.warn(e)
