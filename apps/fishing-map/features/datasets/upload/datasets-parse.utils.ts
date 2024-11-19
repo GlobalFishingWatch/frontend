@@ -40,16 +40,22 @@ export async function getDatasetParsed(
       return shpToGeoJSON(fileData, type)
     } else if (fileType === 'CSV') {
       let fileText: string | undefined
-      if (isZipFile(file)) {
-        debugger
-        const files = await zipToFiles(file, /\.csv$/)
-        const csvFile = files?.find((f) => f.name.endsWith('.csv'))
-        if (!csvFile) {
-          throw new Error('No .csv found in .zip file')
+      try {
+        if (isZipFile(file)) {
+          const files = await zipToFiles(file, /\.csv$/)
+          const csvFile = files?.find((f) => f.name.endsWith('.csv'))
+          if (!csvFile) {
+            throw new Error('No .csv found in .zip file')
+          }
+          fileText = await csvFile.async('string')
+        } else {
+          fileText = await file.text()
         }
-        fileText = await csvFile.async('string')
-      } else {
-        fileText = await file.text()
+      } catch (e) {
+        throw new Error('datasetUpload.errors.csv.invalidData')
+      }
+      if (!fileText) {
+        throw new Error('datasetUpload.errors.csv.invalidData')
       }
       const { data } = parse(fileText, {
         download: false,

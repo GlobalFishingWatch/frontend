@@ -320,6 +320,9 @@
     "date": "Date",
     "dateRange": "Time Range",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "There was an error uploading your dataset",
       "geoJSON": {
         "noValidFeatures": "No valid feature types found in the geoJSON file"
