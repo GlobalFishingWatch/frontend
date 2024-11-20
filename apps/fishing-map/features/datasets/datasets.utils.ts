@@ -662,16 +662,27 @@ export const getIncompatibleFilterSelection = (
     if (!incompatibilityDict?.length) {
       return []
     }
+    let alreadyMatched = false
     return incompatibilityDict.filter(({ id, value, disabled }) => {
-      const selectedFilterValue = dataview.config?.filters?.[id]
-      if (value === 'undefined' && selectedFilterValue === undefined) {
+      if (alreadyMatched) {
+        return false
+      }
+      const selectedFilterValue = dataview.config?.filters?.[id] as string | string[] | undefined
+
+      if (value === '*' || (value === 'undefined' && selectedFilterValue === undefined)) {
         return disabled.includes(schema)
       }
-      return (
-        disabled.includes(schema) &&
-        selectedFilterValue?.length === 1 &&
-        (selectedFilterValue?.includes(value) || selectedFilterValue?.includes(value.toString()))
-      )
+
+      const selectedFilterValues = Array.isArray(selectedFilterValue)
+        ? selectedFilterValue
+        : [selectedFilterValue]
+      const matchedValue =
+        selectedFilterValues.length === 1 &&
+        selectedFilterValues.some((f) => f?.includes(value.toString()))
+      if (matchedValue) {
+        alreadyMatched = true
+      }
+      return disabled.includes(schema) && matchedValue
     })
   })
 }
