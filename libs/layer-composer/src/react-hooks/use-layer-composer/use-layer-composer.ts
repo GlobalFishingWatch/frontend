@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
   sort,
-  LayerComposer,
   ExtendedStyle,
   StyleTransformation,
   getInteractiveLayerIds,
@@ -9,6 +8,7 @@ import {
   GlobalGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '../use-debounce'
+import { LayerComposer } from '../../layer-composer'
 
 const applyStyleTransformations = (
   style: ExtendedStyle,
