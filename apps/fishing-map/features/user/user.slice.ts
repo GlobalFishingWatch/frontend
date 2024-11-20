@@ -20,6 +20,7 @@ export interface UserSettings {
 
 interface UserState {
   logged: boolean
+  expired: boolean
   status: AsyncReducerStatus
   data: UserData | null
   settings: UserSettings
@@ -27,6 +28,7 @@ interface UserState {
 
 const initialState: UserState = {
   logged: false,
+  expired: false,
   status: AsyncReducerStatus.Idle,
   data: null,
   settings: {},
@@ -81,7 +83,7 @@ export const fetchUserThunk = createAsyncThunk(
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
   async (
-    { loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false },
+    { loginRedirect }: { loginRedirect: boolean } | undefined = { loginRedirect: false },
     { dispatch }
   ) => {
     try {
@@ -105,6 +107,9 @@ const userSlice = createSlice({
     return { ...initialState, settings }
   },
   reducers: {
+    setLoginExpired: (state, action: PayloadAction<boolean>) => {
+      state.expired = action.payload
+    },
     setUserSetting: (state, action: PayloadAction<Partial<UserSettings>>) => {
       state.settings = { ...state.settings, ...action.payload }
       localStorage.setItem(USER_SETTINGS, JSON.stringify(state.settings))
@@ -129,6 +134,6 @@ const userSlice = createSlice({
   },
 })
 
-export const { setUserSetting } = userSlice.actions
+export const { setUserSetting, setLoginExpired } = userSlice.actions
 
 export default userSlice.reducer

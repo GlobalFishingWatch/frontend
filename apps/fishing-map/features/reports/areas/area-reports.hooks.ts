@@ -24,6 +24,7 @@ import {
   selectReportAreaIds,
   selectReportAreaStatus,
   selectReportDataviewsWithPermissions,
+  selectTimeComparisonValues,
 } from 'features/reports/areas/area-reports.selectors'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
@@ -218,6 +219,7 @@ export function useFetchReportVessel() {
   const reportBufferUnit = useSelector(selectReportBufferUnit)
   const reportBufferValue = useSelector(selectReportBufferValue)
   const reportBufferOperation = useSelector(selectReportBufferOperation)
+  const timeComparisonValues = useSelector(selectTimeComparisonValues)
   // const reportBufferHash = useSelector(selectReportBufferHash)
 
   const updateWorkspaceReportUrls = useCallback(
@@ -258,6 +260,7 @@ export function useFetchReportVessel() {
       reportBufferUnit,
       reportBufferValue,
       reportBufferOperation,
+      timeComparison: timeComparisonValues,
     }
     const query = getReportQuery(params)
     updateWorkspaceReportUrls(query)
@@ -270,6 +273,7 @@ export function useFetchReportVessel() {
     reportBufferUnit,
     reportBufferValue,
     reportDataviews,
+    timeComparisonValues,
     timerange,
     updateWorkspaceReportUrls,
   ])

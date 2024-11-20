@@ -15,7 +15,6 @@ import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectSearchStatus,
-  selectSearchStatusCode,
   setSuggestionClicked,
   selectSelectedVessels,
   setSelectedVessels,

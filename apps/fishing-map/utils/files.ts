@@ -77,18 +77,24 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
     files: ['.json', '.geojson'],
     icon: 'geojson',
   },
+  // TODO: replace with zip
   Shapefile: { id: 'Shapefile', files: ['.zip', '.ZIP'], icon: 'zip' },
   CSV: { id: 'CSV', files: ['.csv', '.tsv', '.CSV', '.TSV'], icon: 'csv' },
   KML: { id: 'KML', files: ['.kml', '.kmz', '.KML', '.KMZ'], icon: 'kml' },
 }
 
-export function getFileType(file?: File) {
+export function getFileType(
+  file?: File,
+  geometryType?: DatasetGeometryTypesSupported
+): FileType | undefined {
   if (!file) {
     return undefined
   }
-  return Object.values(FILE_TYPES_CONFIG).find(({ files }) => {
+  const fileType = Object.values(FILE_TYPES_CONFIG).find(({ files }) => {
     return files.some((ext) => file.name.endsWith(ext))
   })?.id
+
+  return fileType === 'Shapefile' && geometryType === 'tracks' ? 'CSV' : fileType
 }
 
 export function getFilesAcceptedByMime(fileTypes: FileType[]) {

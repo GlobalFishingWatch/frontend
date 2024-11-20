@@ -49,6 +49,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
     },
     [onFileLoaded]
   )
+
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
     accept: fileAcceptedByMime,
     onDropAccepted,

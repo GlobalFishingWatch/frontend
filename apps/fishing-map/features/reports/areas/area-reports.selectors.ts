@@ -36,7 +36,7 @@ import {
   selectReportActivityGraph,
   selectReportTimeComparison,
 } from './area-reports.config.selectors'
-import { ReportCategory } from './area-reports.types'
+import { ReportCategory, ReportTimeComparisonValues } from './area-reports.types'
 
 const EMPTY_ARRAY: [] = []
 
@@ -146,8 +146,8 @@ export const selectShowTimeComparison = createSelector(
 
 export const selectTimeComparisonValues = createSelector(
   [selectReportTimeComparison],
-  (timeComparison) => {
-    if (!timeComparison) return null
+  (timeComparison): ReportTimeComparisonValues | undefined => {
+    if (!timeComparison) return
 
     const end = getUTCDateTime(timeComparison.start)
       .plus({ [timeComparison.durationType]: timeComparison.duration })
