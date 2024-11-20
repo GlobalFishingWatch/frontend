@@ -17,8 +17,7 @@
 
 .mouseCoordinates {
   position: absolute;
-  bottom: 0;
-  right: var(--space-S);
+  inset: auto var(--space-S) 0 auto;
   font: var(--font-XS);
   opacity: var(--opacity-secondary);
   text-align: right;

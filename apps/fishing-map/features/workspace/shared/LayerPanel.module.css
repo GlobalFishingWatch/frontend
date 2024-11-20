@@ -101,17 +101,9 @@
   opacity: 1;
 }
 
-.LayerPanel:hover .errorIcon {
-  display: none;
-}
-
 .LayerPanel.expandedContainerOpen .shownUntilHovered,
 .LayerPanel:hover .shownUntilHovered {
   display: none;
-}
-
-.selectLabel:not(:first-child) {
-  margin-top: var(--space-S);
 }
 
 .properties {
@@ -162,20 +154,6 @@
 
 .tagList.hidden {
   display: none;
-}
-
-.megedTagList {
-  width: 100%;
-  white-space: normal;
-}
-
-.infoContent {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.infoContentItem {
-  margin-right: var(--space-M);
 }
 
 .infoLogin {

@@ -5,12 +5,20 @@ import {
   getVesselIdFromDatasetConfig,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { Tabs, Tab, Modal, IconButton } from '@globalfishingwatch/ui-components'
+import {
+  Modal,
+  IconButton,
+  Choice,
+  Select,
+  ChoiceOption,
+  SelectOption,
+} from '@globalfishingwatch/ui-components'
 import { DatasetStatus, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import UserGuideLink, { UserGuideSection } from 'features/help/UserGuideLink'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
@@ -32,34 +40,36 @@ const InfoModal = ({
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
 
-  const tabs = useMemo(() => {
+  const options = useMemo(() => {
     const uniqDatasets = dataview.datasets ? uniqBy(dataview.datasets, (dataset) => dataset.id) : []
-    return uniqDatasets.flatMap((dataset) => {
-      if (dataview.config?.type === DataviewType.Track) {
-        const datasetConfig = dataview.datasetsConfig?.find(
-          (datasetConfig) => datasetConfig.datasetId === dataset.id
-        )
-        if (!datasetConfig) return []
-        const hasDatasetVesselId = getVesselIdFromDatasetConfig(datasetConfig)
-        if (!hasDatasetVesselId) return []
-      } else if (
-        !showAllDatasets &&
-        dataview.config?.datasets &&
-        !dataview.config?.datasets?.includes(dataset.id)
-      ) {
-        return []
-      }
-      return {
-        id: dataset.id,
-        title: <DatasetLabel dataset={dataset} />,
-        content: <InfoModalContent dataset={dataset} />,
-      }
-    })
-    // Updating tabs when t changes to ensure the content is updated on lang change
+    return uniqDatasets
+      .flatMap((dataset) => {
+        if (dataview.config?.type === DataviewType.Track) {
+          const datasetConfig = dataview.datasetsConfig?.find(
+            (datasetConfig) => datasetConfig.datasetId === dataset.id
+          )
+          if (!datasetConfig) return []
+          const hasDatasetVesselId = getVesselIdFromDatasetConfig(datasetConfig)
+          if (!hasDatasetVesselId) return []
+        } else if (
+          !showAllDatasets &&
+          dataview.config?.datasets &&
+          !dataview.config?.datasets?.includes(dataset.id)
+        ) {
+          return []
+        }
+        return {
+          id: dataset.id,
+          label: <DatasetLabel dataset={dataset} />,
+          labelString: getDatasetLabel(dataset),
+        }
+      })
+      .sort((a, b) => a.labelString.localeCompare(b.labelString))
+    // Updating options when t changes to ensure the content is updated on lang change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataview, t])
 
-  const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
+  const [activeTab, setActiveTab] = useState<SelectOption | undefined>(options?.[0])
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       setModalInfoOpen(true)
@@ -75,7 +85,7 @@ const InfoModal = ({
     if (onModalStateChange) onModalStateChange(false)
   }, [onModalStateChange])
 
-  const isSingleTab = tabs?.length === 1
+  const isSingleTab = options?.length === 1
 
   const datasetImporting = dataset?.status === DatasetStatus.Importing
   const datasetError = dataset?.status === DatasetStatus.Error
@@ -89,6 +99,10 @@ const InfoModal = ({
       dataset?.importLogs
     }`
   }
+  const selectedDataset = useMemo(
+    () => dataview.datasets?.find((d) => d.id === activeTab?.id),
+    [dataview.datasets, activeTab]
+  )
 
   if (dataset?.configuration?.geometryType === 'draw') {
     return datasetImporting || datasetError ? (
@@ -103,7 +117,6 @@ const InfoModal = ({
       />
     ) : null
   }
-  const hasLongTitleTab = tabs.some((tab) => (tab.title as any).length > 30)
 
   let userGuideLink: UserGuideSection | undefined
   if (dataview.category === DataviewCategory.Activity) {
@@ -133,12 +146,12 @@ const InfoModal = ({
         tooltipPlacement="top"
         onClick={handleClick}
       />
-      {tabs && tabs.length > 0 && modalInfoOpen && (
+      {options && options.length > 0 && modalInfoOpen && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
           title={
             <div className={styles.titleContainer}>
-              <span className={styles.title}>{isSingleTab ? tabs[0].title : dataview.name}</span>
+              <span className={styles.title}>{isSingleTab ? options[0].label : dataview.name}</span>
               {userGuideLink && <UserGuideLink section={userGuideLink} />}
             </div>
           }
@@ -146,16 +159,25 @@ const InfoModal = ({
           onClose={onModalClose}
           contentClassName={styles.modalContent}
         >
-          {isSingleTab ? (
-            tabs[0]?.content
-          ) : (
-            <Tabs
-              tabs={tabs}
-              activeTab={activeTab?.id}
-              onTabClick={(tab: Tab) => setActiveTab(tab)}
-              buttonSize={hasLongTitleTab ? 'verybig' : 'default'}
-            />
+          {!isSingleTab && (
+            <div className={styles.sourceSelector}>
+              {options.length <= 3 ? (
+                <Choice
+                  options={options}
+                  activeOption={activeTab?.id}
+                  onSelect={(option) => setActiveTab(option as ChoiceOption)}
+                  size="medium"
+                />
+              ) : (
+                <Select
+                  options={options}
+                  selectedOption={activeTab as SelectOption}
+                  onSelect={(option) => setActiveTab(option as SelectOption)}
+                />
+              )}
+            </div>
           )}
+          {selectedDataset && <InfoModalContent dataset={selectedDataset} />}
         </Modal>
       )}
     </Fragment>

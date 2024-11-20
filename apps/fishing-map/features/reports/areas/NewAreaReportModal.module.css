@@ -30,11 +30,6 @@ div.modal {
   margin-left: auto;
 }
 
-.adminWarning {
-  margin-top: var(--space-M);
-  color: var(--color-secondary-blue);
-}
-
 .error {
   color: var(--color-danger-red);
 }
