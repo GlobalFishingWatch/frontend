@@ -12,6 +12,7 @@ import {
 export const selectUserData = (state: RootState) => state.user.data
 const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
+export const selectIsUserExpired = (state: RootState) => state.user.expired
 export const selectUserSettings = (state: RootState) => state.user.settings
 
 export const selectIsGFWUser = createSelector([selectUserData], (userData) => {

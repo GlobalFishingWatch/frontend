@@ -2,8 +2,20 @@ div.modal {
   height: auto;
 }
 
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+  margin-bottom: var(--space-S);
+}
+
 .input {
-  margin-bottom: var(--space-M);
+  flex: 1;
+}
+
+.select {
+  flex: 1;
+  width: 100%;
 }
 
 .footer {

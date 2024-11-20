@@ -95,7 +95,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   }, [setModalDataWarningOpen])
   const guestUser = useSelector(selectIsGuestUser)
   const viewport = useSelector(selectViewport)
-  const onAddNewClick = useAddDataset({})
+  const onAddNewClick = useAddDataset()
   const layerActive = dataview?.config?.visible ?? true
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext

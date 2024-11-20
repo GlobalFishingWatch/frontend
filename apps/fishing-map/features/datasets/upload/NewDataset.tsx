@@ -13,7 +13,7 @@ import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
 import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -27,6 +27,8 @@ import {
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
 import styles from './NewDataset.module.css'
+
+export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 
 type OnConfirmParams = { isEditing: boolean; file?: File }
 export type NewDatasetProps = {
@@ -64,13 +66,14 @@ function NewDataset() {
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const [rawFile, setRawFile] = useState<File | undefined>()
   const isGuestUser = useSelector(selectIsGuestUser)
+  const isUserExpired = useSelector(selectIsUserExpired)
   const [error, setError] = useState('')
   const locationType = useSelector(selectLocationType)
   const { dispatchUpsertDataset } = useDatasetsAPI()
 
   const isDatasetEdit = dataset !== undefined
 
-  const onFileLoaded = useCallback(async (file: File) => {
+  const onFileLoaded = useCallback((file: File) => {
     setRawFile(file)
   }, [])
 
@@ -180,6 +183,7 @@ function NewDataset() {
           : t('dataset.uploadNew', 'Upload new dataset')
       }
       isOpen={datasetModalOpen}
+      contentId={NEW_DATASET_MODAL_ID}
       contentClassName={cx(styles.modalContainer, {
         [styles.fullheight]: isGuestUser,
       })}
@@ -190,7 +194,7 @@ function NewDataset() {
     >
       {error ? (
         <div className={cx(styles.errorMsgContainer, styles.errorMsg)}>{error}</div>
-      ) : isGuestUser ? (
+      ) : isGuestUser || isUserExpired ? (
         <div
           className={styles.placeholder}
           onDrop={(e) => {

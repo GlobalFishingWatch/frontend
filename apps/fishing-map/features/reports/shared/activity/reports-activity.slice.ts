@@ -13,6 +13,7 @@ import {
 } from 'features/download/downloadActivity.config'
 import { BufferOperation, BufferUnit } from 'types'
 import { DateRange } from 'features/download/downloadActivity.slice'
+import { ReportTimeComparisonValues } from 'features/reports/areas/area-reports.types'
 
 type ReportStateError = AsyncError<{ currentReportUrl: string }>
 interface ReportState {
@@ -56,6 +57,7 @@ type FetchReportVesselsThunkParams = {
   reportBufferUnit?: BufferUnit
   reportBufferValue?: number
   reportBufferOperation?: BufferOperation
+  timeComparison?: ReportTimeComparisonValues
 }
 
 const REPORT_FIELDS_TO_INCLUDE = [

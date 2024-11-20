@@ -55,7 +55,7 @@ function UserSection(): React.ReactElement {
   const dataviews = useSelector(selectCustomUserDataviews)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
-  const onAddNewClick = useAddDataset({})
+  const onAddNewClick = useAddDataset()
 
   const onDrawClick = useCallback(
     (drawFeatureType: DrawFeatureType) => {

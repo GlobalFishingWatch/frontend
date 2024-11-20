@@ -424,7 +424,7 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk<
     }
     return workspaceUpdated
   } catch (e: any) {
-    return rejectWithValue({ error: parseAPIError(e) })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
