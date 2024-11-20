@@ -28,6 +28,8 @@ import {
 import DatasetTypeSelect from './DatasetTypeSelect'
 import styles from './NewDataset.module.css'
 
+export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
+
 type OnConfirmParams = { isEditing: boolean; file?: File }
 export type NewDatasetProps = {
   file?: File
@@ -181,6 +183,7 @@ function NewDataset() {
           : t('dataset.uploadNew', 'Upload new dataset')
       }
       isOpen={datasetModalOpen}
+      contentId={NEW_DATASET_MODAL_ID}
       contentClassName={cx(styles.modalContainer, {
         [styles.fullheight]: isGuestUser,
       })}
