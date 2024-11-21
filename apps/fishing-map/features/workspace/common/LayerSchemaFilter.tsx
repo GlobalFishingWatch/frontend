@@ -111,6 +111,13 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
   const supportsRounding = Math.abs(schemaMax - schemaMin) > 1
   const min = supportsRounding ? getSchemaValueRounded(schemaMin) : schemaMin
   const max = supportsRounding ? getSchemaValueRounded(schemaMax) : schemaMax
+  if (min > max) {
+    return {
+      steps: [max, min],
+      min: max,
+      max: min,
+    }
+  }
   return {
     steps: [min, max],
     min,
@@ -157,13 +164,19 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   const maxValue =
     rangeValues[rangeValues.length - 1] > max ? max : rangeValues[rangeValues.length - 1]
   const supportsRounding = Math.abs(maxValue - minValue) > 1
-  return [
+  const values = [
     supportsRounding ? getSchemaValueRounded(minValue) : minValue,
     supportsRounding ? getSchemaValueRounded(maxValue) : maxValue,
   ]
+
+  if (values[0] > values[1]) {
+    return [values[1], values[0]]
+  }
+
+  return values
 }
 
-const UNSORTED_FILTERS = ['speed']
+const UNSORTED_FILTERS = ['speed', 'elevation']
 
 function LayerSchemaFilter({
   schemaFilter,
@@ -185,9 +198,9 @@ function LayerSchemaFilter({
     singleSelection,
   } = schemaFilter
   const sortedOptions = useMemo(() => {
-    if (UNSORTED_FILTERS.includes(id)) return options
+    if (UNSORTED_FILTERS.includes(id) || type === 'range') return options
     return options.sort((a, b) => a.label.localeCompare(b.label))
-  }, [id, options])
+  }, [id, options, type])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues | number) => {
