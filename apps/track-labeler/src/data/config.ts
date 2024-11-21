@@ -88,6 +88,7 @@ export const CONTEXT_LAYERS: ContextLayer[] = [
     label: 'Landmass',
     color: '#6b67e5',
     description: 'Landmass',
+    visible: true,
   },
   {
     id: CONTEXT_LAYERS_IDS.rfmo,
@@ -95,6 +96,7 @@ export const CONTEXT_LAYERS: ContextLayer[] = [
     color: '#6b67e5',
     description:
       'RFMO stands for Regional Fishery Management Organization. These organizations are international organizations formed by countries with a shared interest in managing or conserving an area’s fish stock. Source: GFW',
+    visible: true,
   },
   // {
   //   id: CONTEXT_LAYERS_IDS.otherRfmos,
@@ -109,12 +111,14 @@ export const CONTEXT_LAYERS: ContextLayer[] = [
     color: '#93c96c',
     description:
       'Exclusive Economic Zones (EEZ) are states’ sovereign waters, which extend 200 nautical miles from the coast. Source: marineregions.org',
+    visible: true,
   },
   {
     id: CONTEXT_LAYERS_IDS.mpant,
     label: 'Marine Protected Areas',
     color: '#e5777c',
     description: 'Source: Protected Planet WDPA',
+    visible: true,
   },
   // {
   //   id: CONTEXT_LAYERS_IDS.bluefinRfmo,
