@@ -3,6 +3,19 @@ import {
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 
+const invalidDataErrorHandler = (type: DatasetGeometryType) => {
+  switch (type) {
+    case 'tracks':
+      throw new Error('datasetUpload.errors.shapefile.noLineData')
+    case 'points':
+      throw new Error('datasetUpload.errors.shapefile.noPointData')
+    case 'polygons':
+      throw new Error('datasetUpload.errors.shapefile.noPolygonData')
+    default:
+      throw new Error('datasetUpload.errors.shapefile.invalidData')
+  }
+}
+
 export const shpToGeoJSON = async (data: string, type: DatasetGeometryType) => {
   const shpjs = await import('shpjs').then((module) => module.default)
   const expandedShp = await shpjs(data)
@@ -27,18 +40,5 @@ export const shpToGeoJSON = async (data: string, type: DatasetGeometryType) => {
       invalidDataErrorHandler(type)
     }
     return expandedShp
-  }
-}
-
-const invalidDataErrorHandler = (type: DatasetGeometryType) => {
-  switch (type) {
-    case 'tracks':
-      throw new Error('datasetUpload.errors.shapefile.noLineData')
-    case 'points':
-      throw new Error('datasetUpload.errors.shapefile.noPointData')
-    case 'polygons':
-      throw new Error('datasetUpload.errors.shapefile.noPolygonData')
-    default:
-      throw new Error('datasetUpload.errors.shapefile.invalidData')
   }
 }

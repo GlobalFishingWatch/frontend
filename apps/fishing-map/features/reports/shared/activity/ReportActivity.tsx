@@ -18,7 +18,10 @@ import {
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
+import {
+  selectReportDataviewsWithPermissions,
+  selectTimeComparisonValues,
+} from 'features/reports/areas/area-reports.selectors'
 import { selectHasReportVessels } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { getDownloadReportSupported } from 'features/download/download.utils'
@@ -79,6 +82,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
   // TODO get this from datasets config
   const activityUnit = isActivityReport(reportCategory) ? 'hour' : 'detection'
@@ -251,6 +255,23 @@ function ActivityReport({ reportName }: { reportName?: string }) {
 
     if (reportError || (!reportLoading && !reportDataviews?.length)) {
       return ReportVesselError
+    }
+
+    if (timeComparisonValues) {
+      return (
+        <ReportVesselsPlaceholder>
+          <div className={cx(styles.cover, styles.center, styles.top)}>
+            <p
+              dangerouslySetInnerHTML={{
+                __html: t(
+                  'analysis.onlyEvolutionSupported',
+                  'Click the evolution button above to see the vessels active in the area'
+                ),
+              }}
+            />
+          </div>
+        </ReportVesselsPlaceholder>
+      )
     }
 
     if (

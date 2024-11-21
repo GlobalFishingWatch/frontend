@@ -32,6 +32,7 @@ import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/worksp
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import UserSection from 'features/workspace/user/UserSection'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { useUserExpiredToast } from 'features/user/user-expired.hooks'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import VesselGroupSection from './vessel-groups/VesselGroupsSection'
@@ -44,6 +45,7 @@ import { useMigrateWorkspaceToast } from './workspace-migration.hooks'
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   useMigrateWorkspaceToast()
+  useUserExpiredToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)

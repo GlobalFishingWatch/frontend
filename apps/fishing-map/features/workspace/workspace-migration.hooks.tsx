@@ -149,6 +149,7 @@ export const useMigrateWorkspaceToast = () => {
   const closeToast = () => {
     toast.dismiss(toastId.current)
   }
+
   const dissmissToast = () => {
     trackEvent({
       category: TrackCategory.WorkspaceManagement,

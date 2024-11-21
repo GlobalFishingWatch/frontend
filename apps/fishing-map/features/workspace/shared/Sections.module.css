@@ -56,14 +56,6 @@
   gap: var(--space-XS);
 }
 
-.sectionButtons > .lastBtn {
-  display: inline-block;
-}
-
-.sectionButtons > *:not(:last-child).lastBtn {
-  margin-right: 0;
-}
-
 .sectionButtonsSecondary {
   opacity: 0;
   transition: var(--transition);
@@ -98,15 +90,6 @@
 .surveyLink {
   padding: var(--space-M) var(--space-S);
   color: var(--color-secondary-blue);
-}
-
-.visualizationsSwitch {
-  transition: var(--transition);
-}
-
-.visualizationsSwitch > ul {
-  min-width: unset;
-  gap: 0;
 }
 
 .vesselsOnScreen summary {

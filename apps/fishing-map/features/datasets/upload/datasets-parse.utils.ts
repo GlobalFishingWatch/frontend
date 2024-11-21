@@ -6,7 +6,9 @@ import {
   listToTrackSegments,
   segmentsToGeoJSON,
   kmlToGeoJSON,
+  zipToFiles,
   shpToGeoJSON,
+  isZipFile,
 } from '@globalfishingwatch/data-transforms'
 import {
   DatasetGeometryToGeoJSONGeometry,
@@ -15,7 +17,7 @@ import {
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
-import { getFileType, readBlobAs } from 'utils/files'
+import { DatasetGeometryTypesSupported, getFileType, readBlobAs } from 'utils/files'
 
 // interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
 //   extensions?: string[]
@@ -24,8 +26,11 @@ import { getFileType, readBlobAs } from 'utils/files'
 export type DataList = Record<string, any>[]
 export type DataParsed = FeatureCollection | DataList
 
-export async function getDatasetParsed(file: File, type: DatasetGeometryType): Promise<DataParsed> {
-  const fileType = getFileType(file)
+export async function getDatasetParsed(
+  file: File,
+  type: DatasetGeometryTypesSupported
+): Promise<DataParsed> {
+  const fileType = getFileType(file, type)
   if (!fileType) {
     throw new Error('File type not supported')
   }
@@ -34,7 +39,24 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
       const fileData = await readBlobAs(file, 'arrayBuffer')
       return shpToGeoJSON(fileData, type)
     } else if (fileType === 'CSV') {
-      const fileText = await file.text()
+      let fileText: string | undefined
+      try {
+        if (isZipFile(file)) {
+          const files = await zipToFiles(file, /\.csv$/)
+          const csvFile = files?.find((f) => f.name.endsWith('.csv'))
+          if (!csvFile) {
+            throw new Error('No .csv found in .zip file')
+          }
+          fileText = await csvFile.async('string')
+        } else {
+          fileText = await file.text()
+        }
+      } catch (e) {
+        throw new Error('datasetUpload.errors.csv.invalidData')
+      }
+      if (!fileText) {
+        throw new Error('datasetUpload.errors.csv.invalidData')
+      }
       const { data } = parse(fileText, {
         download: false,
         dynamicTyping: true,
