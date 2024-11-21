@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { throttle } from 'lodash'
-import InteractiveMap from 'react-map-gl/maplibre'
+import MapComponent from 'react-map-gl/maplibre'
+import type { MapRef } from 'react-map-gl/maplibre'
 import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import * as Generators from '@globalfishingwatch/layer-composer'
 import {
@@ -11,11 +11,8 @@ import {
   StyleTransformation,
 } from '@globalfishingwatch/layer-composer'
 import { MAP_BACKGROUND_COLOR } from '../../data/config'
-import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
-import { selectEditing, selectRulers } from '../../features/rulers/rulers.selectors'
-import { editRuler } from '../../features/rulers/rulers.slice'
-import { ActionType, CoordinatePosition } from '../../types'
-import { useSegmentsLabeledConnect } from '../../features/timebar/timebar.hooks'
+import { selectRulers } from '../../features/rulers/rulers.selectors'
+import { ActionType } from '../../types'
 import {
   selectColorMode,
   selectHiddenLayers,
@@ -23,14 +20,13 @@ import {
 } from '../../routes/routes.selectors'
 import { typedKeys } from '../../utils/shared'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
-import { useAppDispatch } from '../../store.hooks'
 import {
   getLayerComposerLayers,
   getMapboxPaintIcon,
   selectDirectionPointsLayers,
   selectLegendLabels,
 } from './map.selectors'
-import { useGeneratorsConnect, useMapBounds, useMapMove, useViewport } from './map.hooks'
+import { useGeneratorsConnect, useMapBounds, useMapMove, useViewport, useMapClick } from './map.hooks'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import styles from './Map.module.css'
 import MapControls from './map-controls/MapControls'
@@ -38,7 +34,6 @@ import MapData from './map-data/map-data'
 import { useMapboxRef, useMapboxRefCallback } from './map.context'
 import { contextSourceStyle, getVisibleContextLayers } from './map-static-layers-style'
 
-const MapComponent = InteractiveMap as any
 
 const GROUP_ORDER = [
   Group.Background,
@@ -74,47 +69,22 @@ const sort: StyleTransformation = (style) => {
 const defaultTransformations: StyleTransformation[] = [sort, getInteractiveLayerIds as any]
 
 const Map = (): React.ReactElement => {
-  const mapRef = useMapboxRef()
 
+  const mapRef = useMapboxRef() as React.RefObject<MapRef>
   const onRefReady = useMapboxRefCallback()
   const { viewport, onViewportChange } = useViewport()
   const { globalConfig } = useGeneratorsConnect()
-  const dispatch = useAppDispatch()
   const generatorConfigs = useSelector(getLayerComposerLayers)
   const projectColors = useSelector(selectProjectColors)
   const hiddenLayers = useSelector(selectHiddenLayers)
-  const [cursorCoordinates, setCursorCoordinates] = useState<CoordinatePosition | null>(null)
   const actionShortcuts = useSelector(getActionShortcuts)
-  const segments = useSelector(selectedtracks)
-
-  const setCursorCoordinatesThrottle = useCallback(
-    (position: { latitude: number; longitude: number }) =>
-      throttle((position: { latitude: number; longitude: number }) => {
-        setCursorCoordinates(position)
-      }, 50),
-    []
-  )
-
-  const handleMapHover = useCallback(
-    ({ lngLat }: { lngLat: { lat: number; lng: number } }) => {
-      setCursorCoordinatesThrottle({ latitude: lngLat.lat, longitude: lngLat.lng })
-    },
-    [setCursorCoordinatesThrottle]
-  )
-  /**
-   * This handler manage the click events on the arrows to select track segments by actions
-   */
-  const { onEventPointClick } = useSegmentsLabeledConnect()
-
-  const onEventClick = useCallback(
-    (feature: any, position: CoordinatePosition) => {
-      const event = feature.properties
-      onEventPointClick(segments, event.timestamp, position)
-      return true
-    },
-    [onEventPointClick, segments]
-  )
-
+  const rulers = useSelector(selectRulers)
+  const ruleColors = useSelector(getMapboxPaintIcon)
+  const colorMode = useSelector(selectColorMode)
+  const trackArrowsLayer = useSelector(selectDirectionPointsLayers)
+  const legengLabels = useSelector(selectLegendLabels)
+  const { onMapMove, hoverCenter } = useMapMove()
+  const { onMapClick } = useMapClick()
   // added load state to improve the view of the globe
   const [loaded, setLoaded] = useState(false)
   const onLoadCallback = useCallback(() => {
@@ -122,44 +92,7 @@ const Map = (): React.ReactElement => {
     onRefReady()
   }, [onRefReady])
   const mapBounds = useMapBounds(loaded ? mapRef : null)
-  const layerMapClickHandlers: any = useMemo(
-    () => ({
-      trackDirections: onEventClick,
-    }),
-    [onEventClick]
-  )
 
-  const rulersEditing = useSelector(selectEditing)
-  const handleMapClick = useCallback(
-    (e: any) => {
-      const { features } = e
-      if (!rulersEditing && features && features.length) {
-        const position = { latitude: e.lngLat[1], longitude: e.lngLat[0] }
-        // .some() returns true as soon as any of the callbacks return true, short-circuiting the execution of the rest
-        features.some((feature: any) => {
-          const eventHandler = layerMapClickHandlers[feature.source]
-          // returns true when is a single event so won't run the following ones
-          return eventHandler ? eventHandler(feature, position) : false
-        })
-      } else {
-        if (rulersEditing === true) {
-          dispatch(
-            editRuler({
-              longitude: e.lngLat.lng,
-              latitude: e.lngLat.lat,
-            })
-          )
-          return
-        }
-      }
-    },
-    [rulersEditing, layerMapClickHandlers, dispatch]
-  )
-
-  const { onMapMove } = useMapMove()
-
-  const rulers = useSelector(selectRulers)
-  const ruleColors = useSelector(getMapboxPaintIcon)
   const generatorConfigsWithRulers = useMemo(() => {
     const rulersConfig: Generators.RulersGeneratorConfig = {
       type: Generators.GeneratorType.Rulers,
@@ -175,13 +108,6 @@ const Map = (): React.ReactElement => {
     defaultTransformations
   )
 
-  const colorMode = useSelector(selectColorMode)
-
-  // Here we set the sorce needed to render the direction arrows layer
-  const trackArrowsLayer = useSelector(selectDirectionPointsLayers)
-
-  const legengLabels = useSelector(selectLegendLabels)
-  //const trackArrowsImportedLayer = useSelector(selectDirectionPointsFromImportedDataLayers)
 
   const styleWithArrows = useMemo(() => {
     const newStyle: any = {
@@ -296,22 +222,17 @@ const Map = (): React.ReactElement => {
       {style && (
         <MapComponent
           ref={mapRef}
-          width="100%"
-          height="100%"
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           zoom={viewport.zoom}
           onLoad={onLoadCallback}
           onMove={onViewportChange}
           mapStyle={styleWithArrows}
-          onClick={handleMapClick}
-          onHover={handleMapHover}
+          onClick={onMapClick}
           onMouseMove={onMapMove}
-          mapOptions={{
-            customAttribution: '© Copyright Global Fishing Watch 2020',
-          }}
+          customAttribution="© Copyright Global Fishing Watch 2020"
         >
-          <MapData coordinates={cursorCoordinates} floating={true} />
+          <MapData coordinates={hoverCenter} floating={true} />
         </MapComponent>
       )}
       <div className={styles.legendContainer}>
