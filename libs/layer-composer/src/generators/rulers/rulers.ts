@@ -2,6 +2,7 @@ import memoizeOne from 'memoize-one'
 import { FeatureCollection, Feature, LineString, Point } from 'geojson'
 import length from '@turf/length'
 import greatCircle from '@turf/great-circle'
+import { point } from '@turf/helpers'
 import { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { Dictionary, Group } from '../../types'
@@ -45,8 +46,6 @@ const getRuleLengthLabel = (ruler: Ruler) => {
 }
 
 const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
-  const { start, end } = ruler
-
   const rawFeature: Feature<LineString> = {
     type: 'Feature',
     properties: {},
@@ -55,24 +54,23 @@ const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
       coordinates: [],
     },
   }
-
-  if (!start || !end) {
+  const { start, end } = ruler
+  if (!start.longitude || !start.latitude || !end.longitude || !end.latitude) {
     return rawFeature
-  } else {
-    rawFeature.geometry.coordinates = [
-      [start.longitude, start.latitude],
-      [end.longitude, end.latitude],
-    ]
   }
+  const startPoint = point([start.longitude, start.latitude])
+  const endPoint = point([end.longitude, end.latitude])
+
+  rawFeature.geometry.coordinates = [
+    [start.longitude, start.latitude],
+    [end.longitude, end.latitude],
+  ]
 
   const lengthKm = getRulerLength(ruler)
   const finalFeature =
     lengthKm < 100
       ? rawFeature
-      : (greatCircle(
-          [start.longitude, start.latitude],
-          [end.longitude, end.latitude]
-        ) as Feature<LineString>)
+      : (greatCircle(startPoint, endPoint) as Feature<LineString>)
 
   finalFeature.properties = {}
   finalFeature.properties.label = getRuleLengthLabel(ruler)

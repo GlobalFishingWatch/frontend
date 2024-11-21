@@ -23,6 +23,7 @@ import {
 } from '../../routes/routes.selectors'
 import { typedKeys } from '../../utils/shared'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
+import { useAppDispatch } from '../../store.hooks'
 import {
   getLayerComposerLayers,
   getMapboxPaintIcon,
@@ -36,7 +37,6 @@ import MapControls from './map-controls/MapControls'
 import MapData from './map-data/map-data'
 import { useMapboxRef, useMapboxRefCallback } from './map.context'
 import { contextSourceStyle, getVisibleContextLayers } from './map-static-layers-style'
-import { useAppDispatch } from '../../store.hooks'
 
 const MapComponent = InteractiveMap as any
 
@@ -96,8 +96,8 @@ const Map = (): React.ReactElement => {
   )
 
   const handleMapHover = useCallback(
-    ({ lngLat }: { lngLat: [number, number] }) => {
-      setCursorCoordinatesThrottle({ latitude: lngLat[1], longitude: lngLat[0] })
+    ({ lngLat }: { lngLat: { lat: number; lng: number } }) => {
+      setCursorCoordinatesThrottle({ latitude: lngLat.lat, longitude: lngLat.lng })
     },
     [setCursorCoordinatesThrottle]
   )
@@ -145,8 +145,8 @@ const Map = (): React.ReactElement => {
         if (rulersEditing === true) {
           dispatch(
             editRuler({
-              longitude: e.lngLat[0],
-              latitude: e.lngLat[1],
+              longitude: e.lngLat.lng,
+              latitude: e.lngLat.lat,
             })
           )
           return

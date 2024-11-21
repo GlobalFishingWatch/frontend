@@ -23,8 +23,8 @@ export const useMapMove = () => {
   const onMapMove = useCallback(
     (event: any) => {
       const center = {
-        longitude: event.lngLat[0],
-        latitude: event.lngLat[1],
+        longitude: event.lngLat.lng,
+        latitude: event.lngLat.lat,
       }
       setHoverCenter(center)
       if (rulersEditing === true) {
