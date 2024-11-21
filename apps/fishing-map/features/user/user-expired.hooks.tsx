@@ -27,6 +27,5 @@ export const useUserExpiredToast = () => {
         closeButton: true,
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUserExpired])
 }
