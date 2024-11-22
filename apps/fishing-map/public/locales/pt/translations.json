@@ -41,6 +41,7 @@
     "noDataByArea": "Não há dados disponíveis para a área selecionada",
     "noTimeComparisonAllowed": "Os modos de comparação de tempo não ficam disponíveis quando as camadas têm filtros diferentes",
     "noVesselDataFiltered": "Não há nenhuma embarcação correspondente ao seu filtro",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Outros",
     "periodComparison": "comparação por período",
     "periodComparison1st": "início da base de referência",
@@ -319,6 +320,9 @@
     "date": "Data",
     "dateRange": "Date Range",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "Houve um erro ao carregar seus dados",
       "geoJSON": {
         "noValidFeatures": "Nenhum tipo de recurso válido encontrado no arquivo geoJSON"
