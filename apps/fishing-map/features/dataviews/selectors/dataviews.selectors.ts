@@ -16,8 +16,13 @@ import {
   selectIsAnyAreaReportLocation,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
+  selectUrlDataviewInstances,
+  selectVesselId,
 } from 'routes/routes.selectors'
-import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
+import {
+  isBathymetryDataview,
+  VESSEL_DATAVIEW_INSTANCE_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import {
@@ -295,5 +300,15 @@ export const selectPrivateDatasetsInWorkspace = createSelector(
   (dataviews) => {
     const workspaceDatasets = getDatasetsInDataviews(dataviews || [])
     return workspaceDatasets.filter((dataset) => isPrivateDataset({ id: dataset }))
+  }
+)
+
+export const selectHasVesselProfileInstancePinned = createSelector(
+  [selectWorkspaceDataviewInstances, selectUrlDataviewInstances, selectVesselId],
+  (workspaceDataviewInstances = [], urlDataviewInstances = [], vesselId) => {
+    const dataviews = [...workspaceDataviewInstances, ...urlDataviewInstances]
+    return dataviews?.some(({ config, id }) => {
+      return id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` && config?.visible
+    })
   }
 )
