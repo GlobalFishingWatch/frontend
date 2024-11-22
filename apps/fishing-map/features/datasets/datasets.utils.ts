@@ -662,27 +662,29 @@ export const getIncompatibleFilterSelection = (
     if (!incompatibilityDict?.length) {
       return []
     }
-    let alreadyMatched = false
-    return incompatibilityDict.filter(({ id, value, disabled }) => {
-      if (alreadyMatched) {
-        return false
-      }
-      const selectedFilterValue = dataview.config?.filters?.[id] as string | string[] | undefined
-
-      if (value === '*' || (value === 'undefined' && selectedFilterValue === undefined)) {
+    return incompatibilityDict.filter(({ id, value, valueNot, disabled }) => {
+      const selectedFilterValue = dataview.config?.filters?.[id]
+      if (value === 'undefined' && selectedFilterValue === undefined && valueNot === undefined) {
         return disabled.includes(schema)
       }
 
       const selectedFilterValues = Array.isArray(selectedFilterValue)
         ? selectedFilterValue
         : [selectedFilterValue]
-      const matchedValue =
-        selectedFilterValues.length === 1 &&
-        selectedFilterValues.some((f) => f?.includes(value.toString()))
-      if (matchedValue) {
-        alreadyMatched = true
+
+      if (value !== undefined) {
+        const matchedValue =
+          selectedFilterValue?.length === 1 &&
+          (selectedFilterValue?.includes(value) || selectedFilterValue?.includes(value.toString()))
+        return matchedValue && disabled.includes(schema)
       }
-      return disabled.includes(schema) && matchedValue
+      if (valueNot !== undefined) {
+        const matchedValue = selectedFilterValue
+          ? selectedFilterValues.some((f) => f !== value && f !== valueNot.toString())
+          : true
+        return matchedValue && disabled.includes(schema)
+      }
+      return false
     })
   })
 }
