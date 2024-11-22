@@ -41,6 +41,7 @@
     "noDataByArea": "Data tidak tersedia untuk area yang dipilih",
     "noTimeComparisonAllowed": "Mode perbandingan waktu tidak tersedia saat lapisan memiliki filter yang berbeda",
     "noVesselDataFiltered": "Tidak ada kapal yang cocok dengan filter Anda",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Lain-lain",
     "periodComparison": "perbandingan periode",
     "periodComparison1st": "acuan dasar awal",
@@ -319,6 +320,9 @@
     "date": "Tanggal",
     "dateRange": "Date Range",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "Terjadi kesalahan saat mengunggah dataset Anda",
       "geoJSON": {
         "noValidFeatures": "Tidak ditemukan jenis fitur valid dalam file geoJSON ini"

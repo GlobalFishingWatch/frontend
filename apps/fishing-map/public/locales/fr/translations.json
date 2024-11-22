@@ -41,6 +41,7 @@
     "noDataByArea": "Aucune donnée disponible pour la zone sélectionnée",
     "noTimeComparisonAllowed": "Les modes de comparaison temporelle ne sont pas disponibles lorsque des filtres différents ont été appliqués aux calques",
     "noVesselDataFiltered": "Aucun navire ne correspond à votre filtre",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Autres",
     "periodComparison": "Comparaison de périodes",
     "periodComparison1st": "début référence",
@@ -319,6 +320,9 @@
     "date": "Date",
     "dateRange": "Plage de temps",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "Une erreur s’est produite lors du chargement de votre jeu de données",
       "geoJSON": {
         "noValidFeatures": "Aucune donnée géospatiale valide trouvée dans le fichier geoJSON"

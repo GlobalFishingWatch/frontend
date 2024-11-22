@@ -41,6 +41,7 @@
     "noDataByArea": "crwdns59609:0crwdne59609:0",
     "noTimeComparisonAllowed": "crwdns59611:0crwdne59611:0",
     "noVesselDataFiltered": "crwdns59613:0crwdne59613:0",
+    "onlyEvolutionSupported": "crwdns84008:0crwdne84008:0",
     "others": "crwdns59617:0crwdne59617:0",
     "periodComparison": "crwdns59619:0crwdne59619:0",
     "periodComparison1st": "crwdns59621:0crwdne59621:0",
@@ -319,6 +320,9 @@
     "date": "crwdns82702:0crwdne82702:0",
     "dateRange": "crwdns82704:0crwdne82704:0",
     "errors": {
+      "csv": {
+        "invalidData": "crwdns84010:0crwdne84010:0"
+      },
       "default": "crwdns82718:0crwdne82718:0",
       "geoJSON": {
         "noValidFeatures": "crwdns82720:0crwdne82720:0"
