@@ -99,6 +99,8 @@ export type QueryParams = Partial<WorkspaceViewport> &
   RedirectParam &
   VesselSearchState
 
+export type QueryParam = keyof QueryParams
+
 export enum TimebarVisualisations {
   HeatmapActivity = 'heatmap',
   HeatmapDetections = 'heatmapDetections',
