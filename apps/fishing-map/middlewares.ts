@@ -1,9 +1,10 @@
 import { Middleware } from 'redux'
 import { RootState } from 'reducers'
 import { isRejectedWithValue, ThunkDispatch } from '@reduxjs/toolkit'
-import { isAuthError } from '@globalfishingwatch/api-client'
+import { isUnauthorized } from '@globalfishingwatch/api-client'
 import { AsyncError } from 'utils/async-slice'
 import { setLoginExpired } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 export const logoutUserMiddleware: Middleware =
   ({
@@ -16,7 +17,9 @@ export const logoutUserMiddleware: Middleware =
   (next) =>
   (action) => {
     if (isRejectedWithValue(action)) {
-      if (isAuthError(action.payload as AsyncError)) {
+      const state = getState()
+      const isGuestUser = selectIsGuestUser(state)
+      if (!isGuestUser && isUnauthorized(action.payload as AsyncError)) {
         dispatch(setLoginExpired(true))
       }
     }
