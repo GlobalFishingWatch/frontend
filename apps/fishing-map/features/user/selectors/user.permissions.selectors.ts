@@ -1,11 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { orderBy, uniqBy } from 'es-toolkit'
+import { orderBy } from 'es-toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
-import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
 import { selectAllReports } from 'features/reports/areas/area-reports.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { DEFAULT_GROUP_ID } from 'features/user/user.config'
@@ -103,17 +102,4 @@ const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
 export const selectUserContextDatasets = selectUserDatasetsByCategory(DatasetCategory.Context)
 export const selectUserEnvironmentDatasets = selectUserDatasetsByCategory(
   DatasetCategory.Environment
-)
-export const selectUserVesselGroups = createSelector(
-  [selectAllVesselGroups, selectUserId],
-  (vesselGroups, userId) => {
-    return vesselGroups?.filter((d) => d.ownerId === userId)
-  }
-)
-
-export const selectAllVisibleVesselGroups = createSelector(
-  [selectUserVesselGroups],
-  (vesselGroups = []) => {
-    return uniqBy([...vesselGroups], (v) => v.id)
-  }
 )

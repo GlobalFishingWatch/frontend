@@ -35,6 +35,7 @@ import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { listAsSentence } from 'utils/shared'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   areAllSourcesSelectedInDataview,
   getSourcesOptionsInDataview,
@@ -58,7 +59,8 @@ const trackEventCb = debounce((filterKey: string, label: string) => {
 
 const cleanDataviewFiltersNotAllowed = (
   dataview: UrlDataviewInstance,
-  vesselGroups: MultiSelectOption[]
+  vesselGroups: MultiSelectOption[],
+  isGuestUser?: boolean
 ) => {
   const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
   Object.keys(filters).forEach((k) => {
@@ -66,6 +68,7 @@ const cleanDataviewFiltersNotAllowed = (
     if (filters[key]) {
       const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, {
         vesselGroups,
+        isGuestUser,
       })
       const newFilterSelection = newFilterOptions?.filter((option) =>
         dataview.config?.filters?.[key]?.includes(option.id)
@@ -108,6 +111,7 @@ function LayerFilters({
   onConfirmCallback,
 }: LayerFiltersProps): React.ReactElement {
   const { t } = useTranslation()
+  const isGuestUser = useSelector(selectIsGuestUser)
   const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))
 
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
@@ -147,6 +151,7 @@ function LayerFilters({
 
   const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
+    isGuestUser,
   })
 
   const onDataviewFilterChange = useCallback(
@@ -205,7 +210,7 @@ function LayerFilters({
     }
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
-    const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions)
+    const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions, isGuestUser)
     setNewDataviewInstanceConfig({
       id: dataview.id,
       config: {

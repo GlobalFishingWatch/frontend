@@ -12,7 +12,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { SchemaFilter } from 'features/datasets/datasets.utils'
+import { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -176,7 +176,7 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   return values
 }
 
-const UNSORTED_FILTERS = ['speed', 'elevation']
+const UNSORTED_FILTERS: SupportedDatasetSchema[] = ['speed', 'elevation', 'vessel-groups']
 
 function LayerSchemaFilter({
   schemaFilter,
