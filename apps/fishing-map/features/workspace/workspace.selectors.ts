@@ -16,6 +16,7 @@ import { VALID_PASSWORD } from 'data/config'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
 export const selectWorkspacePassword = (state: RootState) => state.workspace?.password
+export const selectSuggestWorkspaceSave = (state: RootState) => state.workspace?.suggestSave
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
 export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
 export const selectLastVisitedWorkspace = (state: RootState) => state.workspace?.lastVisited
