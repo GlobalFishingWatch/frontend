@@ -18,6 +18,7 @@ import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selec
 import { LAYER_LIBRARY_EVENTS_IDS } from 'data/layer-library/layers-events'
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import { getHighlightedText } from 'utils/text'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import styles from './LayerLibraryItem.module.css'
 
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
@@ -67,6 +68,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       },
     })
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+    dispatch(setWorkspaceSuggestSave(true))
   }
 
   return (
