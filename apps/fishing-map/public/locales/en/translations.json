@@ -815,6 +815,7 @@
     "capacity": "Capacity",
     "carrier": "Carrier",
     "casco": "Casco",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Center map on the events inside",
     "clickToSeeMore": "Click to see more information",
     "close": "Close vessel profile and go back to workspace",
