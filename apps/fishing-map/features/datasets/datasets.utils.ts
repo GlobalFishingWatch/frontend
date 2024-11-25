@@ -80,6 +80,7 @@ type SupportedActivityDatasetSchema =
   | 'codMarinha'
   | 'targetSpecies' // TODO: normalice format in API and decide
   | 'target_species' // between camelCase or snake_case
+  | 'casco'
   | 'license_category'
   | 'vessel-groups'
   | 'neural_vessel_type'
