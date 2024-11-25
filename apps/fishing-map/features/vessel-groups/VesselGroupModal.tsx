@@ -48,6 +48,7 @@ import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import {
   IdField,
   createVesselGroupThunk,
@@ -288,6 +289,7 @@ function VesselGroupModal(): React.ReactElement {
                 replaceQuery,
               })
             )
+            dispatch(setWorkspaceSuggestSave(true))
           } else if (searchQuery) {
             // TODO check if is search location and navigate back to workspace
             upsertDataviewInstance(dataviewInstance)

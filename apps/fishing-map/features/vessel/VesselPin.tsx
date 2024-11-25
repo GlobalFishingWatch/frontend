@@ -30,6 +30,7 @@ import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 
 export type VesselToResolve = {
   id: string
@@ -188,6 +189,7 @@ function VesselPin({
       }
     }
     setLoading(false)
+    dispatch(setWorkspaceSuggestSave(true))
     onClick?.({ vesselInWorkspace, vesselId: getVesselId(vessel as IdentityVessel) })
   }
 

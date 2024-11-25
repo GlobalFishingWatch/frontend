@@ -187,7 +187,8 @@ export interface DataviewEventsConfig {
 
 export interface IncomatibleFilterConfig {
   id: string // id of the filter
-  value: boolean | string // value to match
+  value?: boolean | string // value to match
+  valueNot?: boolean | string // value to match
   disabled: string[] // disabled filter on matches
 }
 

@@ -74,6 +74,7 @@ export type LastWorkspaceVisited = {
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
+  suggestSave: boolean
   // used to identify when someone saves its own version of the workspace
   customStatus: AsyncReducerStatus
   error: AsyncError
@@ -84,6 +85,7 @@ interface WorkspaceSliceState {
 
 const initialState: WorkspaceSliceState = {
   status: AsyncReducerStatus.Idle,
+  suggestSave: false,
   customStatus: AsyncReducerStatus.Idle,
   error: {} as AsyncError,
   data: null,
@@ -463,6 +465,9 @@ const workspaceSlice = createSlice({
     setWorkspacePassword: (state, action: PayloadAction<string>) => {
       state.password = action.payload
     },
+    setWorkspaceSuggestSave: (state, action: PayloadAction<boolean>) => {
+      state.suggestSave = action.payload
+    },
     resetWorkspaceSlice: (state) => {
       state.status = initialState.status
       state.customStatus = initialState.customStatus
@@ -552,6 +557,7 @@ const workspaceSlice = createSlice({
 export const {
   setWorkspaceProperty,
   setWorkspacePassword,
+  setWorkspaceSuggestSave,
   resetWorkspaceSlice,
   setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,

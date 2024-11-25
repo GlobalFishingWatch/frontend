@@ -18,6 +18,8 @@ import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-u
 import UserGuideLink from 'features/help/UserGuideLink'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -56,6 +58,7 @@ export type DatasetMetadata = Partial<
 
 function NewDataset() {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const [isGuestUserDismissVisible, setIsGuestUserDismissVisible] = useState(false)
   const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -107,6 +110,7 @@ function NewDataset() {
             const dataset = { ...payload }
             if (!isEditing) {
               addDataviewFromDatasetToWorkspace(dataset)
+              dispatch(setWorkspaceSuggestSave(true))
             } else if (dataviewId) {
               const dataviewInstance = dataviewInstances?.find((d) => d.id === dataviewId)
               if (dataviewInstance) {
@@ -139,6 +143,7 @@ function NewDataset() {
       addDataviewFromDatasetToWorkspace,
       dataviewId,
       dataviewInstances,
+      dispatch,
       dispatchUpsertDataset,
       locationType,
       onClose,
