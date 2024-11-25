@@ -78,7 +78,7 @@ export const getFieldSchema = (
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {
         const isDates = values.every((d) => !isNaN(Date.parse(d)))
-        const isNumeric = values.some((d) => parseCoords(d, d))
+        const isNumeric = values.every((d) => parseCoords(d, d))
         if (isDates) {
           const valuesOrdered = values.sort((a, b) => a - b)
           schema.type = 'timestamp'
