@@ -815,6 +815,7 @@
     "capacity": "Capacidade",
     "carrier": "Navio cargueiro",
     "casco": "Casco",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Centralizar mapa nos eventos",
     "clickToSeeMore": "Clique para ver mais informações",
     "close": "Fechar",
