@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { VesselGroup } from '@globalfishingwatch/api-types'
-import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
 import {
   getVesselGroupLabel,
   getVesselGroupVesselsCount,
@@ -24,6 +23,7 @@ import {
   setVesselGroupsModalOpen,
   VesselGroupVesselIdentity,
 } from './vessel-groups-modal.slice'
+import { selectAllVisibleVesselGroups } from './vessel-groups.selectors'
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
