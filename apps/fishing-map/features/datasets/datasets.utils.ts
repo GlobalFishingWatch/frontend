@@ -119,6 +119,7 @@ type GetSchemaInDataviewParams = {
   vesselGroups?: MultiSelectOption[]
   compatibilityOperation?: SchemaCompatibilityOperation
   schemaOrigin?: SchemaOriginParam
+  isGuestUser?: boolean
 }
 
 export type SchemaFieldDataview =
@@ -639,7 +640,7 @@ const getSupportedSchemaFieldsDatasets = (
   return datasetsWithSchemaFieldsSupport
 }
 
-const getNotSupportedSchemaFieldsDatasets = (
+export const getNotSupportedSchemaFieldsDatasets = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
@@ -724,6 +725,7 @@ export const getCommonSchemaFieldsInDataview = (
   schema: SupportedDatasetSchema,
   {
     vesselGroups = [],
+    isGuestUser = true,
     compatibilityOperation = 'every',
     schemaOrigin,
   } = {} as GetSchemaInDataviewParams
@@ -733,6 +735,9 @@ export const getCommonSchemaFieldsInDataview = (
     return getFlags()
   } else if (schema === 'vessel-groups') {
     if (activeDatasets?.every((d) => d.fieldsAllowed?.includes(schema))) {
+      if (isGuestUser) {
+        return vesselGroups
+      }
       const addNewGroup = {
         id: VESSEL_GROUPS_MODAL_ID,
         label: t('vesselGroup.createNewGroup', 'Create new group'),
@@ -857,9 +862,9 @@ export const getSchemaFilterUnitInDataview = (
 export const getSchemaFieldsSelectedInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema,
-  vesselGroups?: MultiSelectOption[]
+  params = {} as Pick<GetSchemaInDataviewParams, 'vesselGroups' | 'isGuestUser'>
 ) => {
-  const options = getCommonSchemaFieldsInDataview(dataview, schema, { vesselGroups })
+  const options = getCommonSchemaFieldsInDataview(dataview, schema, params)
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   return optionsSelected
 }
@@ -882,12 +887,14 @@ export const getFiltersBySchema = (
     vesselGroups = [],
     compatibilityOperation = 'every',
     schemaOrigin,
+    isGuestUser,
   } = {} as GetSchemaInDataviewParams
 ): SchemaFilter => {
   const options = getCommonSchemaFieldsInDataview(dataview, schema, {
     vesselGroups,
     compatibilityOperation,
     schemaOrigin,
+    isGuestUser,
   })
   const type = getCommonSchemaTypeInDataview(dataview, schema) as DatasetSchemaType
   const singleSelection = getSchemaFilterSingleSelection(schema)
@@ -925,7 +932,7 @@ export const getFiltersBySchema = (
 
 export const getSchemaFiltersInDataview = (
   dataview: SchemaFieldDataview,
-  { vesselGroups, fieldsToInclude } = {} as GetSchemaInDataviewParams
+  { vesselGroups, fieldsToInclude, isGuestUser } = {} as GetSchemaInDataviewParams
 ): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
   let fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || []) || []
@@ -952,12 +959,14 @@ export const getSchemaFiltersInDataview = (
   const filtersAllowed = fielsAllowedOrdered.map((id) => {
     return getFiltersBySchema(dataview, id, {
       vesselGroups,
+      isGuestUser,
       compatibilityOperation: id === 'speed' || id === 'elevation' ? 'some' : 'every',
     })
   })
   const filtersDisabled = fieldsDisabled.map((id) => {
     return getFiltersBySchema(dataview, id, {
       vesselGroups,
+      isGuestUser,
       compatibilityOperation: id === 'speed' || id === 'elevation' ? 'some' : 'every',
     })
   })
