@@ -147,7 +147,7 @@ export const selectShowTimeComparison = createSelector(
 export const selectTimeComparisonValues = createSelector(
   [selectReportTimeComparison],
   (timeComparison): ReportTimeComparisonValues | undefined => {
-    if (!timeComparison) return
+    if (!timeComparison?.start || !timeComparison.compareStart) return
 
     const end = getUTCDateTime(timeComparison.start)
       .plus({ [timeComparison.durationType]: timeComparison.duration })
