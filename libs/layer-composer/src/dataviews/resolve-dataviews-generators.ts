@@ -37,16 +37,11 @@ import {
   isActivityDataview,
   isDetectionsDataview,
   isTrackDataview,
+  pickTrackResource,
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
   UrlDataviewInstance,
-} from './resolve-dataviews'
-import { pickTrackResource } from './resources'
-import {
-  setGeneratorConfigCircleRadius,
-  setGeneratorConfigPolygonColor,
-  setGeneratorConfigTimeFilter,
-} from './dataviews.config'
+} from '@globalfishingwatch/dataviews-client'
 
 const MULTILAYER_SEPARATOR = '__'
 const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedActivityHeatmap'
@@ -627,4 +622,15 @@ export function getDataviewsGeneratorConfigs(
     return getGeneratorConfig(dataview, params, resources)
   })
   return generatorsConfig
+}
+function setGeneratorConfigCircleRadius(arg0: { dataset: Dataset; generator: any }) {
+  throw new Error('Function not implemented.')
+}
+
+function setGeneratorConfigTimeFilter(arg0: { dataset: Dataset; generator: any }) {
+  throw new Error('Function not implemented.')
+}
+
+function setGeneratorConfigPolygonColor(arg0: { dataset: Dataset; generator: any }) {
+  throw new Error('Function not implemented.')
 }

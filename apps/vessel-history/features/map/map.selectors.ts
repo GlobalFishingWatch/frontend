@@ -3,8 +3,11 @@ import { GFWApiClient } from 'http-client/http-client'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client/resolve-dataviews-generators'
-import { GeneratorType, GlGeneratorConfig } from '@globalfishingwatch/layer-composer'
+import {
+  GeneratorType,
+  getDataviewsGeneratorConfigs,
+  GlGeneratorConfig,
+} from '@globalfishingwatch/layer-composer'
 import {
   selectDataviewsForResourceQuerying,
   selectDefaultBasemapGenerator,
