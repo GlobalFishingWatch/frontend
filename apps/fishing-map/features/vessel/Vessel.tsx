@@ -208,7 +208,7 @@ const Vessel = () => {
           {isGFWUser && !includeRelatedIdentities && (
             <div className={styles.fullProfileMessage}>
               <div>
-                You're seeing the identity and activity of a single vesselId:
+                Identity and activity of a single vessel id (only for GFW users):
                 <br />
                 {vesselId}
               </div>

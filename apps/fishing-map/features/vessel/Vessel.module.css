@@ -13,6 +13,7 @@
 }
 
 .fullProfileMessage {
+  color: var(--color-secondary-blue);
   padding: var(--space-S) var(--space-S) var(--space-S) var(--space-M);
   display: flex;
   align-items: center;
