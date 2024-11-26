@@ -233,8 +233,8 @@ function MapDraw() {
         icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
         tooltip={
           mapDrawingMode === 'points'
-            ? t('layer.drawAddPoint', 'Add another point')
-            : t('layer.drawAddPolygon', 'Add another geometry')
+            ? t('layer.drawAddPoint', 'Add a point')
+            : t('layer.drawAddPolygon', 'Add a geometry')
         }
         onClick={onAddPolygonClick}
       />
