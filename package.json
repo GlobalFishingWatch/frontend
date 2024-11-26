@@ -191,6 +191,7 @@
     "@nx/vite": "20.1.2",
     "@nx/web": "20.1.2",
     "@nx/workspace": "20.1.2",
+    "@rollup/plugin-dynamic-import-vars": "^2.1.5",
     "@rollup/plugin-wasm": "6.2.2",
     "@svgr/rollup": "8.1.0",
     "@swc-node/register": "1.10.9",
