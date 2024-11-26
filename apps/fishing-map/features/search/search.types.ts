@@ -2,6 +2,7 @@ import { GearType, VesselIdentitySourceEnum, VesselType } from '@globalfishingwa
 import { SearchType } from './search.config'
 
 export type VesselSearchState = {
+  id?: string
   query?: string
   shipname?: string
   sources?: string[]

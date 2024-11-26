@@ -133,6 +133,9 @@ export const getAdvancedSearchQuery = (
 
     const getFieldValue = (value: string) => {
       const operator = field?.operator || params?.operator || '='
+      if (field.key === 'id') {
+        return `selfReportedInfo.id ${operator} '${value}'`
+      }
       if (field.key === 'owner') {
         return `registryOwners.name ${operator} ${value}`
       }

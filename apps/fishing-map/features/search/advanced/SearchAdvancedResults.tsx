@@ -25,7 +25,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
-import { Locale } from 'types'
+import { Locale, QueryParam } from 'types'
 import { VesselSearchState } from 'features/search/search.types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -197,7 +197,11 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'shipname') : EMPTY_FIELD_PLACEHOLDER
           const label = `${name} ${otherNamesLabel || ''}`
-          const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
+          const vesselQuery = {
+            start: transmissionDateFrom,
+            end: transmissionDateTo,
+            includeRelatedIdentities: searchFilters.id ? false : true,
+          } as Record<QueryParam, any>
 
           return (
             <VesselLink
@@ -329,7 +333,15 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t('vessel.transmission_other', 'Transmissions'),
       },
     ]
-  }, [fetchResults, i18n.language, isSearchLocation, onVesselClick, searchFilters?.infoSource, t])
+  }, [
+    fetchResults,
+    i18n.language,
+    isSearchLocation,
+    onVesselClick,
+    searchFilters.id,
+    searchFilters?.infoSource,
+    t,
+  ])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {

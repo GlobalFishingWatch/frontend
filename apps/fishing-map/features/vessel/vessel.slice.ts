@@ -92,11 +92,19 @@ const initialState: VesselState = {
 
 type VesselSliceState = { vessel: VesselState }
 
-type FetchVesselThunkParams = { vesselId: string; datasetId: string }
+type FetchVesselThunkParams = {
+  vesselId: string
+  datasetId: string
+  includeRelatedIdentities: boolean
+}
 export const fetchVesselInfoThunk = createAsyncThunk(
   'vessel/fetchInfo',
   async (
-    { vesselId, datasetId }: FetchVesselThunkParams = {} as FetchVesselThunkParams,
+    {
+      vesselId,
+      datasetId,
+      includeRelatedIdentities,
+    }: FetchVesselThunkParams = {} as FetchVesselThunkParams,
     { dispatch, rejectWithValue, getState }
   ) => {
     try {
@@ -119,9 +127,13 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         })
         dispatch(fetchDatasetsByIdsThunk({ ids: datasetsToFetch }))
 
-        const datasetConfig = getVesselInfoDataviewInstanceDatasetConfig(vesselId, {
-          info: dataset.id,
-        })
+        const datasetConfig = getVesselInfoDataviewInstanceDatasetConfig(
+          vesselId,
+          {
+            info: dataset.id,
+          },
+          includeRelatedIdentities
+        )
         if (guestUser) {
           // This changes the order of the query params to avoid the cache
           datasetConfig.query?.push(CACHE_FALSE_PARAM)

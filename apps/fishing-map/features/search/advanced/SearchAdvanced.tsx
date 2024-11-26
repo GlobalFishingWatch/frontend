@@ -28,6 +28,7 @@ import SearchPlaceholder, {
   SearchEmptyState,
 } from 'features/search/SearchPlaceholders'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import SearchError from '../basic/SearchError'
 
 const SearchAdvancedResults = dynamic(
@@ -43,12 +44,14 @@ function SearchAdvanced({
   const dispatch = useAppDispatch()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
+  const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const searchStatus = useSelector(selectSearchStatus)
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const { dispatchQueryParams } = useLocationConnect()
   const { hasFilters } = useSearchFiltersConnect()
   const searchFilterErrors = useSearchFiltersErrors()
+  const isGFWUser = useSelector(selectIsGFWUser)
   const ref = useEventKeyListener(['Enter'], fetchResults)
 
   const resetSearchState = useCallback(() => {
@@ -72,12 +75,27 @@ function SearchAdvanced({
     dispatchQueryParams({ query: e.target.value })
   }
 
+  const handleSearchIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchFilters({ id: e.target.value })
+  }
+
   const hasSearchFilterErrors = Object.keys(searchFilterErrors).length > 0
 
   return (
     <div className={styles.advancedLayout}>
       <div className={styles.form}>
         <div className={styles.formFields} ref={ref}>
+          {isGFWUser && (
+            <div>
+              <label>Vessel ID (ONLY FOR GFW USERS)</label>
+              <InputText
+                onChange={handleSearchIdChange}
+                id="id"
+                value={searchFilters.id || ''}
+                className={styles.input}
+              />
+            </div>
+          )}
           <InputText
             onChange={handleSearchQueryChange}
             id="name"
