@@ -177,7 +177,12 @@ const Vessel = () => {
   )
 
   const handleFullProfileClick = useCallback(() => {
-    dispatchQueryParams({ includeRelatedIdentities: true })
+    dispatchQueryParams({
+      includeRelatedIdentities: true,
+      start: undefined,
+      end: undefined,
+      vesselSelfReportedId: undefined,
+    })
     window.location.reload()
   }, [dispatchQueryParams])
 
