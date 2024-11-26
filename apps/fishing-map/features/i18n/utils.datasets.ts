@@ -10,5 +10,12 @@ export const getDatasetDescriptionTranslated = (dataset: {
   id: string
   description?: string
 }): string => {
-  return t(`datasets:${removeDatasetVersion(dataset?.id)}.description`, dataset?.description || '')
+  return (
+    t(`datasets:${removeDatasetVersion(dataset?.id)}.description`, {
+      defaultValue: dataset?.description || '',
+    })
+      // can't understand why i18next introduces an space in the url
+      // TODO remove  this ugly fix to remove it
+      .replace('https://globalfishingwatch. org/', 'https://globalfishingwatch.org/')
+  )
 }
