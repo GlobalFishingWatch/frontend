@@ -9,11 +9,11 @@ import {
   getDatasetConfigsByDatasetType,
   _getLegacyResources,
 } from '@globalfishingwatch/dataviews-client'
-import { getGeneratorConfig } from '@globalfishingwatch/dataviews-client/resolve-dataviews-generators'
 import {
   BasemapGeneratorConfig,
   BasemapType,
   GeneratorType,
+  getGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
