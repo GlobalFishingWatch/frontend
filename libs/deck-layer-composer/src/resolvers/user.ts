@@ -162,7 +162,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
   }
 
   const layer: ContextLayerConfig<string> = {
-    id: dataset.id,
+    id: `${dataview.id}-${dataset.id}`,
     datasetId: dataset.id,
     tilesUrl,
   }
