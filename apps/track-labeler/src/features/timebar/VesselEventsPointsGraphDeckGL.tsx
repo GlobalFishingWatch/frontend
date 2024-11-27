@@ -13,7 +13,6 @@ import {
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { Field } from '../../data/models'
 import { useAppDispatch } from '../../store.hooks'
-import { setTooltip } from './timebar.slice'
 import {
   selectVesselDirectionPoints,
   selectVesselDirectionsMinMaxValues,
@@ -30,7 +29,6 @@ export const VesselEventsPointsGraphDeckGL = () => {
   const positionScale = useSelector(selectVesselDirectionsPositionScale)
 
   const segments = useSelector(selectedtracks)
-  const dispatch = useAppDispatch()
   const { onEventPointClick } = useSegmentsLabeledConnect()
 
   const handleEventClick = useCallback(

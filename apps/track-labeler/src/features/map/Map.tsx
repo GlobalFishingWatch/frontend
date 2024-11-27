@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import MapComponent from 'react-map-gl/maplibre'
+import MapComponent, { AttributionControl } from 'react-map-gl/maplibre'
 import type { MapRef } from 'react-map-gl/maplibre'
 import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import * as Generators from '@globalfishingwatch/layer-composer'
@@ -26,14 +26,19 @@ import {
   selectDirectionPointsLayers,
   selectLegendLabels,
 } from './map.selectors'
-import { useGeneratorsConnect, useMapBounds, useMapMove, useViewport, useMapClick } from './map.hooks'
+import {
+  useGeneratorsConnect,
+  useMapBounds,
+  useMapMove,
+  useViewport,
+  useMapClick,
+} from './map.hooks'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import styles from './Map.module.css'
 import MapControls from './map-controls/MapControls'
 import MapData from './map-data/map-data'
 import { useMapboxRef, useMapboxRefCallback } from './map.context'
 import { contextSourceStyle, getVisibleContextLayers } from './map-static-layers-style'
-
 
 const GROUP_ORDER = [
   Group.Background,
@@ -69,8 +74,7 @@ const sort: StyleTransformation = (style) => {
 const defaultTransformations: StyleTransformation[] = [sort, getInteractiveLayerIds as any]
 
 const Map = (): React.ReactElement => {
-
-  const mapRef = useMapboxRef() as React.RefObject<MapRef>
+  const mapRef: React.RefObject<MapRef> = useMapboxRef()
   const onRefReady = useMapboxRefCallback()
   const { viewport, onViewportChange } = useViewport()
   const { globalConfig } = useGeneratorsConnect()
@@ -108,7 +112,6 @@ const Map = (): React.ReactElement => {
     defaultTransformations
   )
 
-
   const styleWithArrows = useMemo(() => {
     const newStyle: any = {
       ...style,
@@ -141,6 +144,7 @@ const Map = (): React.ReactElement => {
               projectColors[ActionType.untracked],
             ],
             'line-opacity': 0.9,
+            'line-width': 0,
           },
         }))
       // Used to debug tracks
@@ -187,7 +191,12 @@ const Map = (): React.ReactElement => {
         },
         paint: {
           // Arrow Fill
-          'icon-color': '#FF6B6B',
+          'icon-color': outlineVisible
+            ? // When fill visible, use the label color
+              ['case', ...ruleColors, 'black']
+            : // if not use the fill color
+              fillColor,
+          // ['case', ['boolean', ['feature-state', 'highlight'], false], 'white', fillColor],
           // Arrow outline
           'icon-halo-color': outlineVisible
             ? // When fill visible, use the label color
@@ -230,7 +239,6 @@ const Map = (): React.ReactElement => {
           mapStyle={styleWithArrows}
           onClick={onMapClick}
           onMouseMove={onMapMove}
-          customAttribution="© Copyright Global Fishing Watch 2020"
         >
           <MapData coordinates={hoverCenter} floating={true} />
         </MapComponent>

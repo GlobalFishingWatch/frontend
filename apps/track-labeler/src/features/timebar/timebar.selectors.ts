@@ -7,8 +7,10 @@ import { selectEvents } from '../../features/vessels/vessels.slice'
 import {
   getDateRangeTS,
   selectFilterMode,
+  selectMaxDistanceFromPort,
   selectMaxElevation,
   selectMaxSpeed,
+  selectMinDistanceFromPort,
   selectMinElevation,
   selectMinSpeed,
   selectTimebarMode,
@@ -145,13 +147,21 @@ export const selectTracksGraphs = createSelector(
 )
 
 export const selectFilterModeValues = createSelector(
-  [selectFilterMode, selectMaxSpeed, selectMinSpeed, selectMaxElevation, selectMinElevation],
-  (filterMode, maxSpeed, minSpeed, maxElevation, minElevation) => {
-    const values = {
+  [
+    selectFilterMode,
+    selectMaxSpeed,
+    selectMinSpeed,
+    selectMaxElevation,
+    selectMinElevation,
+    selectMinDistanceFromPort,
+    selectMaxDistanceFromPort,
+  ],
+  (maxSpeed, minSpeed, maxElevation, minElevation, minDistanceFromPort, maxDistanceFromPort) => {
+    return {
       speed: { max: maxSpeed, min: minSpeed },
       elevation: { max: maxElevation, min: minElevation },
+      distanceFromPort: { max: maxDistanceFromPort, min: minDistanceFromPort },
     }
-    return values[filterMode as keyof typeof values]
   }
 )
 
@@ -159,9 +169,10 @@ export const selectFilterModeValues = createSelector(
  * select the same points we are using for the map
  */
 export const selectVesselDirectionPoints = createSelector(
-  [getVesselParsedTrack, getDateRangeTS, selectTimebarMode, selectFilterModeValues],
-  (vesselTrack, dates, timebarMode, values): VesselPoint[] =>
-    getTimebarPoints(vesselTrack, dates, timebarMode, values)
+  [getVesselParsedTrack, getDateRangeTS, selectFilterMode, selectFilterModeValues],
+  (vesselTrack, dates, filterMode, values): VesselPoint[] => {
+    return getTimebarPoints(vesselTrack, dates, filterMode, values)
+  }
 )
 
 export const selectVesselDirectionsMinMaxValues = createSelector(
