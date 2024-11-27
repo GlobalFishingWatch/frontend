@@ -3,13 +3,7 @@ import { useSelector } from 'react-redux'
 import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
 import './range.css'
 import { NumberValue } from 'd3-scale'
-import {
-  TimebarTracks,
-  Timebar,
-  TimebarTracksEvents,
-  TimelineContext,
-  TimebarHighlighter,
-} from '@globalfishingwatch/timebar'
+import { Timebar, TimelineContext, TimebarHighlighter } from '@globalfishingwatch/timebar'
 import { useTimebarModeConnect, useTimerangeConnect } from '../../features/timebar/timebar.hooks'
 import {
   selectFilteredDistanceFromPort,
@@ -27,12 +21,7 @@ import {
   selectHighlightedEvent,
 } from './timebar.slice'
 import styles from './Timebar.module.css'
-import {
-  getTracksData,
-  getEventsForTracks,
-  selectNightLayer,
-  selectRangeFilterLimits,
-} from './timebar.selectors'
+import { selectNightLayer, selectRangeFilterLimits } from './timebar.selectors'
 import TimebarSelector from './selector/Selector'
 import { VesselEventsPointsGraphDeckGL } from './VesselEventsPointsGraphDeckGL'
 
@@ -85,7 +74,7 @@ const TimebarWrapper = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const { filterMode } = useTimebarModeConnect()
-  const tracks = useSelector(getTracksData)
+  // const tracks = useSelector(getTracksData)
 
   const dispatch = useAppDispatch()
 
@@ -94,7 +83,7 @@ const TimebarWrapper = () => {
   const { minElevation, maxElevation } = useSelector(selectFilteredElevation)
   const { minDistanceFromPort, maxDistanceFromPort } = useSelector(selectFilteredDistanceFromPort)
   const { fromHour, toHour } = useSelector(selectFilteredHours)
-  const tracksEvents = useSelector(getEventsForTracks)
+  // const tracksEvents = useSelector(getEventsForTracks)
   const rangeLimits = useSelector(selectRangeFilterLimits)
   //Those three handlers update the filters when we modify the Range
   const handleSpeedChange = (values: number[]) => {
@@ -156,14 +145,14 @@ const TimebarWrapper = () => {
           <Fragment>
             <DayNightTimebarLayer></DayNightTimebarLayer>
             <VesselEventsPointsGraphDeckGL />
-            {
+            {/* {
               <Fragment>
                 {tracks.length && <TimebarTracks key="tracks" data={tracks as any} />}
                 {tracksEvents.length && (
                   <Fragment>{<TimebarTracksEvents key="events" data={tracksEvents} />}</Fragment>
                 )}
               </Fragment>
-            }
+            } */}
             {/* {tracks.length && false && (
                 <TimebarActivity
                   key="trackActivity"
