@@ -4,15 +4,23 @@ import * as Generators from '@globalfishingwatch/layer-composer'
 import { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
 import { selectDataviews } from '../../features/dataviews/dataviews.slice'
 import { selectEvents } from '../../features/vessels/vessels.slice'
-import { getDateRangeTS, selectTimebarMode } from '../../routes/routes.selectors'
+import {
+  getDateRangeTS,
+  selectFilterMode,
+  selectMaxElevation,
+  selectMaxSpeed,
+  selectMinElevation,
+  selectMinSpeed,
+  selectTimebarMode,
+} from '../../routes/routes.selectors'
 import {
   getVesselFilteredTrackGeojsonByDateRange,
-  getVesselParsedFilteredTrack,
+  getVesselParsedTrack,
   getVesselTrackData,
 } from '../../features/tracks/tracks.selectors'
 import { DayNightLayer, VesselPoint } from '../../types'
 import { TimebarMode } from '../../data/config'
-import { extractVesselDirectionPoints } from '../../features/map/map.selectors'
+import { getTimebarPoints } from './timebar.utils'
 
 type TimebarTrackSegment = {
   start: number
@@ -136,12 +144,24 @@ export const selectTracksGraphs = createSelector(
   }
 )
 
+export const selectFilterModeValues = createSelector(
+  [selectFilterMode, selectMaxSpeed, selectMinSpeed, selectMaxElevation, selectMinElevation],
+  (filterMode, maxSpeed, minSpeed, maxElevation, minElevation) => {
+    const values = {
+      speed: { max: maxSpeed, min: minSpeed },
+      elevation: { max: maxElevation, min: minElevation },
+    }
+    return values[filterMode as keyof typeof values]
+  }
+)
+
 /**
  * select the same points we are using for the map
  */
 export const selectVesselDirectionPoints = createSelector(
-  [getVesselParsedFilteredTrack, getDateRangeTS],
-  (vesselTrack, dates): VesselPoint[] => extractVesselDirectionPoints(vesselTrack, dates, [])
+  [getVesselParsedTrack, getDateRangeTS, selectTimebarMode, selectFilterModeValues],
+  (vesselTrack, dates, timebarMode, values): VesselPoint[] =>
+    getTimebarPoints(vesselTrack, dates, timebarMode, values)
 )
 
 export const selectVesselDirectionsMinMaxValues = createSelector(
@@ -171,38 +191,38 @@ export const selectRangeFilterLimits = createSelector(
       speed: { min: 0, max: 15 },
       elevation: { min: -4000, max: 500 },
       distanceFromPort: { min: 0, max: 10000 },
-      hours: { min: 0, max: 24 }
+      hours: { min: 0, max: 24 },
     }
 
-    // TODO: Bring back this logic when we do not remove 
+    // TODO: Bring back this logic when we do not remove
     // the points from the vessel track
     // we would need to add an outOfRange boolean property to handle rendering in map and in timebar differently
     // to mute styles on timeline
-    // if (vesselPoints.length > 0) {
-    //   limits.speed = vesselPoints.reduce(
-    //     (acc, point) => ({
-    //       min: Math.min(acc.min, point.speed || 0),
-    //       max: Math.max(acc.max, point.speed || 0)
-    //     }),
-    //     { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
-    //   )
+    if (vesselPoints.length > 0) {
+      limits.speed = vesselPoints.reduce(
+        (acc, point) => ({
+          min: Math.min(acc.min, point.speed || 0),
+          max: Math.max(acc.max, point.speed || 0),
+        }),
+        { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
+      )
 
-    //   limits.elevation = vesselPoints.reduce(
-    //     (acc, point) => ({
-    //       min: Math.min(acc.min, point.elevation || 0),
-    //       max: Math.max(acc.max, point.elevation || 0)
-    //     }),
-    //     { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
-    //   )
+      limits.elevation = vesselPoints.reduce(
+        (acc, point) => ({
+          min: Math.min(acc.min, point.elevation || 0),
+          max: Math.max(acc.max, point.elevation || 0),
+        }),
+        { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
+      )
 
-    //   limits.distanceFromPort = vesselPoints.reduce(
-    //     (acc, point) => ({
-    //       min: Math.min(acc.min, point.distanceFromPort || 0),
-    //       max: Math.max(acc.max, point.distanceFromPort || 0)
-    //     }),
-    //     { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
-    //   )
-    // }
+      limits.distanceFromPort = vesselPoints.reduce(
+        (acc, point) => ({
+          min: Math.min(acc.min, point.distanceFromPort || 0),
+          max: Math.max(acc.max, point.distanceFromPort || 0),
+        }),
+        { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
+      )
+    }
 
     return limits
   }
