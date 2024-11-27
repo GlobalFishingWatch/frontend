@@ -1,32 +1,30 @@
-import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import nxPlugin from '@nx/eslint-plugin'
-import nextPlugin from '@next/eslint-plugin-next'
-import importPlugin from 'eslint-plugin-import'
-import jsxA11y from 'eslint-plugin-jsx-a11y'
-import reactPlugin from 'eslint-plugin-react'
-import reactHooksPlugin from 'eslint-plugin-react-hooks'
-import prettierConfig from 'eslint-config-prettier'
-
-export default tseslint.config({
-  files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
-  plugins: {
-    '@nx': nxPlugin,
-    import: importPlugin,
-    react: reactPlugin,
-    next: nextPlugin,
-    'react-hooks': reactHooksPlugin,
-  },
+module.exports = {
+  parser: '@typescript-eslint/parser',
   extends: [
-    eslint.configs.recommended,
-    tseslint.configs.recommended,
-    jsxA11y.flatConfigs.recommended,
-    prettierConfig,
+    // TODO fix
+    // 'plugin:@typescript-eslint/recommended',
+    'react-app',
+    // TODO fix ESLint couldn't determine the plugin "import" uniquely.
+    // 'plugin:import/errors',
+    // 'plugin:import/warnings',
+    'plugin:import/typescript',
+    'prettier',
   ],
-  ignores: ['node_modules', 'dist', 'public'],
+  // plugins: ['@typescript-eslint', 'react', 'import'],
+  // TODO fix ESLint couldn't determine the plugin "import" uniquely.
+  plugins: ['react', '@nx' /*'import'*/],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+    'import/resolver': {
+      typescript: {},
+    },
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
+  },
   rules: {
-    '@typescript-eslint/array-type': 'error',
-    '@typescript-eslint/consistent-type-imports': 'error',
     'import/default': 0,
     'import/no-unresolved': 0,
     'import/no-named-as-default': 0,
@@ -79,4 +77,4 @@ export default tseslint.config({
       },
     ],
   },
-})
+}
