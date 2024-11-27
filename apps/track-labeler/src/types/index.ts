@@ -65,6 +65,7 @@ export declare type VesselPoint = {
   course: number
   elevation: number
   hour: number
+  outOfRange: boolean
 }
 
 export enum ActionType {
