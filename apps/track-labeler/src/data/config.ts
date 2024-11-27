@@ -138,7 +138,7 @@ export enum TimebarMode {
 export const DEFAULT_WORKSPACE: AppState = {
   workspaceDataviews: DEFAULT_DATAVIEWS,
   zoom: 3,
-  colorMode: 'all',
+  colorMode: 'labels',
   minSpeed: 0,
   maxSpeed: 15,
   minElevation: -4000,
