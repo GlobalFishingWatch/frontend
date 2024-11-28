@@ -1,8 +1,9 @@
 import cx from 'classnames'
 import { Fragment } from 'react'
-import { InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components';
+import { InputText, Select } from '@globalfishingwatch/ui-components'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import {
+import type {
   APIDatasetUpdate,
   BaseDataset,
   ContextAPIDataset,
@@ -11,7 +12,7 @@ import {
   FourwingsApiDatasetResolution,
   FourwingsAPIDatasetUpdate,
 } from 'features/datasets/datasets.types'
-import { FileFields } from 'features/datasets/NewFourwingsDatasetModal'
+import type { FileFields } from 'features/datasets/NewFourwingsDatasetModal'
 import styles from './NewDatasetModal.module.css'
 
 export const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {

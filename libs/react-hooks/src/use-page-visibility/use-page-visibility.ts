@@ -19,7 +19,7 @@ export function usePageVisibility() {
     return () => {
       document.removeEventListener('visibilitychange', onVisibilityChange)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   return { isVisible, firstTimeVisible }

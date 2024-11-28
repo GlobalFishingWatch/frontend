@@ -1,5 +1,5 @@
 import { PATH_BASENAME } from 'data/config'
-import { LibraryLayerConfig } from 'data/layer-library/layers.types'
+import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,

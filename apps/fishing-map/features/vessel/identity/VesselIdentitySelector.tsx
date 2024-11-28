@@ -9,7 +9,7 @@ import {
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselDataIdentity } from 'features/vessel/vessel.slice'
+import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   getVesselIdentities,

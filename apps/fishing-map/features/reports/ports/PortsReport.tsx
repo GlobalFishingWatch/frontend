@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Fragment } from 'react'
-import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
 import { Button } from '@globalfishingwatch/ui-components'
+import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
 import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import { selectReportPortId } from 'routes/routes.selectors'
 import EventsReportVesselPropertySelector from 'features/reports/shared/events/EventsReportVesselPropertySelector'
@@ -106,7 +106,6 @@ function PortsReport() {
   if (statsStatus === 'fulfilled' && data?.numEvents === 0) {
     return (
       <div className={styles.emptyState}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={EventsEmptyState.src}
           alt=""

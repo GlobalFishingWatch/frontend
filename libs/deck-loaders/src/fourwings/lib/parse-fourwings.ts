@@ -1,7 +1,8 @@
 import Pbf from 'pbf'
-import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
-import { BBox, generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
+import type { BBox } from '../helpers/cells'
+import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
 import type {
   FourwingsFeature,
   FourwingsLoaderOptions,
@@ -36,9 +37,10 @@ export const getCellTimeseries = (
   } = options?.fourwings || ({} as ParseFourwingsOptions)
   const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
   const timeRangeStartFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start!) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start as number) -
+    tileStartFrame
   const timeRangeEndFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.end!) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.end as number) - tileStartFrame
 
   const timeRangeKey = getTimeRangeKey(timeRangeStartFrame, timeRangeEndFrame)
 
@@ -77,7 +79,7 @@ export const getCellTimeseries = (
           break
 
         // this number defines the cell end frame
-        case CELL_END_INDEX:
+        case CELL_END_INDEX: {
           endFrame = value - tileStartFrame
           let feature = features.get(cellNum)
           if (!feature) {
@@ -150,6 +152,7 @@ export const getCellTimeseries = (
           // resseting indexInCell to start with the new cell
           indexInCell = -1
           break
+        }
       }
 
       indexInCell++

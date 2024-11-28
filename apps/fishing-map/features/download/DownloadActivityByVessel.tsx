@@ -10,12 +10,13 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import {
+import type {
   DownloadActivityParams,
+  DateRange} from 'features/download/downloadActivity.slice';
+import {
   downloadActivityThunk,
   selectIsDownloadActivityLoading,
   selectIsDownloadActivityFinished,
-  DateRange,
   selectDownloadActivityAreaKey,
   selectHadDownloadActivityTimeoutError,
 } from 'features/download/downloadActivity.slice'
@@ -39,14 +40,15 @@ import DownloadActivityProductsBanner from 'features/download/DownloadActivityPr
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { AreaKeyId } from 'features/areas/areas.slice'
+import type { AreaKeyId } from 'features/areas/areas.slice'
 import { selectIsDownloadActivityAreaLoading } from 'features/download/download.selectors'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './DownloadModal.module.css'
-import {
+import type {
   HeatmapDownloadFormat,
   GroupBy,
-  TemporalResolution,
+  TemporalResolution} from './downloadActivity.config';
+import {
   VESSEL_FORMAT_OPTIONS,
   getVesselGroupOptions,
 } from './downloadActivity.config'

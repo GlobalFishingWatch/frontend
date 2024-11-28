@@ -1,7 +1,7 @@
-import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
-import { PickingInfo } from '@deck.gl/core'
-import { DeckLayerProps, DeckPickingObject } from '../../types'
-import { LayerGroup } from '../../utils'
+import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
+import type { PickingInfo } from '@deck.gl/core'
+import type { DeckLayerProps, DeckPickingObject } from '../../types'
+import type { LayerGroup } from '../../utils'
 
 export type PolygonFeature = Feature<
   Polygon | MultiPolygon,

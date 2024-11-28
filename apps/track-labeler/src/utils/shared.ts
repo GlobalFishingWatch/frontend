@@ -1,4 +1,4 @@
-import { BBox } from 'geojson'
+import type { BBox } from 'geojson'
 
 export function typedKeys<T>(o: T): (keyof T)[] {
   // type cast should be safe because that's what really Object.keys() does

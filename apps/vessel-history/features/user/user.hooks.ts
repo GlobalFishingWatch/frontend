@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { GFWApiClient } from 'http-client/http-client'
 import { getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import {
   PORT_INSPECTOR_PERMISSION,
@@ -16,7 +16,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import { useWorkspace } from 'features/workspace/workspace.hook'
-import { WorkspaceProfileViewParam } from 'types'
+import type { WorkspaceProfileViewParam } from 'types'
 import {
   fetchUserThunk,
   logoutUserThunk,

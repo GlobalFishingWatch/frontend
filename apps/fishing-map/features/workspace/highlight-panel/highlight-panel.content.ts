@@ -1,4 +1,4 @@
-import { Locale } from '../../../types'
+import type { Locale } from '../../../types'
 import {
   IS_PRODUCTION_BUILD,
   IS_PRODUCTION_WORKSPACE_ENV,

@@ -1,25 +1,28 @@
-import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
-import { RootState } from 'reducers'
-import { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
+import type { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
 import {
   getIsConcurrentError,
   getIsTimeoutError,
   GFWAPI,
   parseAPIError,
 } from '@globalfishingwatch/api-client'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { RootState } from 'reducers'
+import type { AsyncError} from 'utils/async-slice';
+import { AsyncReducerStatus } from 'utils/async-slice'
+import type { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { BufferOperation, BufferUnit } from 'types'
-import {
-  HeatmapDownloadTab,
-  HeatmapDownloadFormat,
+import type { BufferOperation, BufferUnit } from 'types'
+import type {
   GroupBy,
   SpatialResolution,
-  TemporalResolution,
+  TemporalResolution} from './downloadActivity.config';
+import {
+  HeatmapDownloadTab,
+  HeatmapDownloadFormat
 } from './downloadActivity.config'
 
 export type DateRange = {

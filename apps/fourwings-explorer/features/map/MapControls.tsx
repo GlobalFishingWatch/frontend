@@ -2,8 +2,9 @@ import { Fragment, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { MiniGlobe, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
+import type {
+  BasemapGeneratorConfig} from '@globalfishingwatch/layer-composer';
 import {
-  BasemapGeneratorConfig,
   BasemapType,
   GeneratorType,
 } from '@globalfishingwatch/layer-composer'

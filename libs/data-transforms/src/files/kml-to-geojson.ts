@@ -1,8 +1,9 @@
 import { kml } from '@tmcw/togeojson'
 import { featureCollection } from '@turf/helpers'
-import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
-import { DatasetGeometryType } from '@globalfishingwatch/api-types'
-import { zipToFiles, JSZipObject } from './zip-to-files'
+import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
+import type { DatasetGeometryType } from '@globalfishingwatch/api-types'
+import type { JSZipObject } from './zip-to-files';
+import { zipToFiles } from './zip-to-files'
 
 export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
   const isKMZ = file.name.endsWith('.kmz')

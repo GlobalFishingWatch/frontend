@@ -1,6 +1,6 @@
-import { EventTypes } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import {
+import type { EventTypes } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type {
   AnyDeckLayer,
   DeckLayerPickingObject,
   FourwingsLayer,
@@ -8,7 +8,7 @@ import {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers'
-import { TimeRange } from './dataviews'
+import type { TimeRange } from './dataviews'
 
 export type ResolverGlobalConfig = {
   start: string

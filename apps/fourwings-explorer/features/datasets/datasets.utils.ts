@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection } from 'geojson'
+import type { Feature, FeatureCollection } from 'geojson'
 
 export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): Promise<string>
 export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): any {

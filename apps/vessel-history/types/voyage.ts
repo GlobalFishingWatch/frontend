@@ -1,4 +1,4 @@
-import { ActivityEvent } from 'types/activity'
+import type { ActivityEvent } from 'types/activity'
 
 export enum EventTypeVoyage {
   Voyage = 'voyage',

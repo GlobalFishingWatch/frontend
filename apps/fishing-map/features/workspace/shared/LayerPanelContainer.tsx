@@ -1,4 +1,4 @@
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import HighlightPanel from '../highlight-panel/HighlightPanel'
 import styles from './LayerPanel.module.css'
 

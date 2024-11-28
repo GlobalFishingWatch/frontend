@@ -1,7 +1,8 @@
-import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'reducers'
-import { RulerData } from '@globalfishingwatch/deck-layers'
-import { MapAnnotation } from '../overlays/annotations/annotations.types'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit'
+import type { RulerData } from '@globalfishingwatch/deck-layers'
+import type { RootState } from 'reducers'
+import type { MapAnnotation } from '../overlays/annotations/annotations.types'
 
 export type MapControl = 'annotations' | 'rulers' | 'errorNotification'
 export type MapControlValue = Partial<MapAnnotation> | RulerData | null

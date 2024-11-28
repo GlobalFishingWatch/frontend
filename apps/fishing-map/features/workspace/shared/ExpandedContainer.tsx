@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import cx from 'classnames'
 import Tippy from '@tippyjs/react'
-import { Options } from '@popperjs/core'
+import type { Options } from '@popperjs/core'
 import styles from './ExpandedContainer.module.css'
 
 interface ExpandedContainerProps {
@@ -87,6 +87,7 @@ function ExpandedContainer({
           )
         }}
       >
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
         <span tabIndex={0}>{children}</span>
       </Tippy>
     </div>

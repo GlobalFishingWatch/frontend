@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   extends: ['stylelint-config-standard', 'stylelint-config-css-modules'],
   rules: {
     'alpha-value-notation': 'number',

@@ -1,11 +1,12 @@
-import {
-  configureStore,
+import type {
   ThunkAction,
   Action,
-  combineReducers,
   Middleware,
   ThunkDispatch,
-  AnyAction,
+  AnyAction} from '@reduxjs/toolkit';
+import {
+  configureStore,
+  combineReducers
 } from '@reduxjs/toolkit'
 import vessels from '././features/vessels/vessels.slice'
 import selectedtracks from '././features/vessels/selectedTracks.slice'

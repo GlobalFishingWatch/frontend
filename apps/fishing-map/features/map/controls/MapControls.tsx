@@ -261,7 +261,6 @@ const MapControls = ({
           {previewImageLoading || !previewImage ? (
             <Spinner />
           ) : (
-            // eslint-disable-next-line @next/next/no-img-element
             <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
           )}
         </div>

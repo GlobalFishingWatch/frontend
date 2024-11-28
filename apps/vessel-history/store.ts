@@ -1,4 +1,5 @@
-import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
+import type { ThunkAction, Action} from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import connectedRoutes from 'routes/routes'
 import { routerQueryMiddleware } from 'routes/routes.middlewares'
 import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'

@@ -1,6 +1,8 @@
-import { DataviewType, DataviewInstance, DataviewCategory } from '@globalfishingwatch/api-types'
+import type { DataviewInstance} from '@globalfishingwatch/api-types';
+import { DataviewType, DataviewCategory } from '@globalfishingwatch/api-types'
+import type {
+  AnyDeckLayer} from '@globalfishingwatch/deck-layers';
 import {
-  AnyDeckLayer,
   BaseMapLabelsLayer,
   BaseMapLayer,
   ClusterLayer,
@@ -16,7 +18,7 @@ import {
   WorkspacesLayer,
 } from '@globalfishingwatch/deck-layers'
 import { resolveDeckWorkspacesLayerProps } from './workspaces'
-import { ResolverGlobalConfig } from './types'
+import type { ResolverGlobalConfig } from './types'
 import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckContextLayerProps } from './context'

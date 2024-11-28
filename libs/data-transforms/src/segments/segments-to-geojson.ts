@@ -1,6 +1,6 @@
 import type { FeatureCollection, LineString, Feature, Position, MultiLineString } from 'geojson'
 import { lineString } from '@turf/helpers'
-import { TrackSegment, TrackPoint } from '@globalfishingwatch/api-types'
+import type { TrackSegment, TrackPoint } from '@globalfishingwatch/api-types'
 
 export const COORDINATE_PROPERTY_TIMESTAMP = 'times'
 

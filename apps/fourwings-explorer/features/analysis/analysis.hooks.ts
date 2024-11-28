@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { Polygon, MultiPolygon, Point } from 'geojson'
+import type { Polygon, MultiPolygon, Point } from 'geojson'
 import simplify from '@turf/simplify'
 import { atom, useRecoilState } from 'recoil'
 import { useRouter } from 'next/router'
 import bbox from '@turf/bbox'
-import { LayerFeature } from '@globalfishingwatch/features-aggregate'
-import { TileContextAreaFeature } from '@globalfishingwatch/api-types'
+import type { LayerFeature } from '@globalfishingwatch/features-aggregate'
+import type { TileContextAreaFeature } from '@globalfishingwatch/api-types'
 import { useGeoTemporalLayers } from 'features/layers/layers.hooks'
 import { useTimerange } from 'features/timebar/timebar.hooks'
 import {
@@ -18,7 +18,7 @@ import {
   useMapLayerFeatures,
 } from 'features/map/map-sources.hooks'
 import { filterByPolygon } from './analysis-geo.utils'
-import { AnalysisGraphProps } from './AnalysisEvolutionGraph'
+import type { AnalysisGraphProps } from './AnalysisEvolutionGraph'
 
 export const mapTimeseriesAtom = atom<AnalysisGraphProps[] | undefined>({
   key: 'mapTimeseriesState',
@@ -68,7 +68,7 @@ export const useFilteredTimeSeries = (areaFeature: TileContextAreaFeature) => {
 
   useEffect(() => {
     setTimeseries(undefined)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [areaId])
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export const useFilteredTimeSeries = (areaFeature: TileContextAreaFeature) => {
     if (activityFeaturesLoaded) {
       computeTimeseries(activityFeatures, simplifiedFeature)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [activityFeatures, simplifiedFeature])
 
   const layersTimeseriesFiltered = useMemo(() => {

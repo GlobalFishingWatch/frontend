@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { useGetStatsByDataviewQuery } from 'queries/stats-api'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { Dataset, Dataview } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
+import type { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
+import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
@@ -27,15 +27,17 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/areas/area-reports.selectors'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import { Bbox } from 'types'
+import type { Bbox } from 'types'
 import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import { FitBoundsParams, getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
+import type { FitBoundsParams} from 'features/map/map-bounds.hooks';
+import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
+import type {
+  LastReportStorage} from 'features/reports/areas/area-reports.config';
 import {
   ENTIRE_WORLD_REPORT_AREA_BOUNDS,
-  LAST_REPORTS_STORAGE_KEY,
-  LastReportStorage,
+  LAST_REPORTS_STORAGE_KEY
 } from 'features/reports/areas/area-reports.config'
 import { selectIsVesselGroupReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -135,7 +137,7 @@ export function useReportAreaBounds() {
   const { loaded, bbox } = useVesselGroupActivityBounds()
   const area = useSelector(selectReportArea)
   const areaStatus = useSelector(selectReportAreaStatus)
-  const areaBbox = isVesselGroupReportLocation ? bbox : area?.geometry?.bbox || area!?.bounds
+  const areaBbox = isVesselGroupReportLocation ? bbox : area?.geometry?.bbox || area?.bounds
   return {
     loaded: isVesselGroupReportLocation ? loaded : areaStatus === AsyncReducerStatus.Finished,
     bbox: areaBbox,

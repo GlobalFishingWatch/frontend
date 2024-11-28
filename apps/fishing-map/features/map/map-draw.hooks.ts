@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import { selectIsMapDrawing, selectMapDrawingMode } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 

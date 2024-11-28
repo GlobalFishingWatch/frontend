@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection, LineString, MultiLineString } from 'geojson'
+import type { Feature, FeatureCollection, LineString, MultiLineString } from 'geojson'
 
 export type UserTrackBinaryData = {
   // Number of geometries

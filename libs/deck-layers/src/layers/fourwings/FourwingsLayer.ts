@@ -1,23 +1,24 @@
-import { Color, CompositeLayer, Layer, LayersList } from '@deck.gl/core'
-import { TileLayerProps } from '@deck.gl/geo-layers'
-import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { Color, Layer, LayersList } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
 import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLayer'
 import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
 import { FourwingsFootprintTileLayer } from './footprint/FourwingsFootprintTileLayer'
 import { FOOTPRINT_ID, HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
-import {
+import type {
   FourwingsPickingObject,
   FourwingsVisualizationMode,
   GetViewportDataParams,
 } from './fourwings.types'
-import { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
-import {
+import type { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
+import type {
   FourwingsChunk,
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapTileLayerProps,
 } from './heatmap/fourwings-heatmap.types'
-import { FourwingsFootprintTileLayerProps } from './footprint/fourwings-footprint.types'
+import type { FourwingsFootprintTileLayerProps } from './footprint/fourwings-footprint.types'
 import {
   getResolutionByVisualizationMode,
   getZoomOffsetByResolution,
@@ -52,7 +53,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     )
   }
 
-  renderLayers(): Layer<{}> | LayersList {
+  renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const visualizationMode = this.getMode()
     if (visualizationMode === POSITIONS_ID) {
       const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
@@ -74,7 +75,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
         })
       )
     }
-    let resolution = getResolutionByVisualizationMode(visualizationMode)
+    const resolution = getResolutionByVisualizationMode(visualizationMode)
     const HeatmapLayerClass = this.props.static
       ? this.getSubLayerClass(HEATMAP_STATIC_ID, FourwingsHeatmapStaticLayer)
       : this.getSubLayerClass(resolution, FourwingsHeatmapTileLayer)

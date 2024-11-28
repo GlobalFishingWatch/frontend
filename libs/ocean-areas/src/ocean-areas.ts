@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection, Geometry } from 'geojson'
+import type { Feature, FeatureCollection, Geometry } from 'geojson'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import explode from '@turf/explode'
 import nearest from '@turf/nearest-point'
