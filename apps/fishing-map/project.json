@@ -112,10 +112,6 @@
       "options": {
         "jestConfig": "apps/fishing-map/jest.config.ts"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

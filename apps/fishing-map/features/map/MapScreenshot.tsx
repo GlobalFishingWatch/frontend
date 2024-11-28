@@ -1,7 +1,7 @@
 import { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 // import { getParser } from 'bowser'
-import { Deck } from '@deck.gl/core'
+import type { Deck } from '@deck.gl/core'
 import { getCSSVarValue } from 'utils/dom'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import styles from './Map.module.css'

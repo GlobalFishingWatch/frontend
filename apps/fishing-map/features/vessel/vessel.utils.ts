@@ -1,22 +1,23 @@
 import { uniq, uniqBy } from 'es-toolkit'
 import get from 'lodash/get'
-import {
-  API_LOGIN_REQUIRED,
+import type {
   GearType,
   IdentityVessel,
   SelfReportedInfo,
   VesselInfo,
   VesselRegistryInfo,
   VesselRegistryProperty,
-  VesselType,
+  VesselType} from '@globalfishingwatch/api-types';
+import {
+  API_LOGIN_REQUIRED
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
-import { VesselLastIdentity } from 'features/search/search.slice'
-import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
-import { TimeRange } from 'features/timebar/timebar.slice'
-import { ExtendedFeatureVessel } from 'features/map/map.slice'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import type { VesselLastIdentity } from 'features/search/search.slice'
+import type { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
+import type { TimeRange } from 'features/timebar/timebar.slice'
+import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 
 type VesselsParamsSupported = IdentityVessel | IdentityVesselData | ExtendedFeatureVessel
 type GetVesselIdentityParams = { identityId?: string; identitySource?: VesselIdentitySourceEnum }

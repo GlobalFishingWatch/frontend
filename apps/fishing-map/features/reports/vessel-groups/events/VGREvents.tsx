@@ -3,10 +3,11 @@ import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
-import {
+import type {
   ReportEventsStatsResponseGroups,
   ReportEventsVesselsParams,
-  ReportEventsStatsParams,
+  ReportEventsStatsParams} from 'queries/report-events-stats-api';
+import {
   useGetReportEventsStatsQuery,
   useGetReportEventsVesselsQuery,
 } from 'queries/report-events-stats-api'

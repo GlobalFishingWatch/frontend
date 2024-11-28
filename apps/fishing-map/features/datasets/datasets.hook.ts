@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect } from 'react'
-import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
+import type { Dataset} from '@globalfishingwatch/api-types';
+import { DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
-import { AsyncError } from 'utils/async-slice'
+import type { AsyncError } from 'utils/async-slice'
 import {
   getContextDataviewInstance,
   getUserPolygonsDataviewInstance,
@@ -15,15 +16,17 @@ import {
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import type {
+  DatasetUploadConfig} from 'features/modals/modals.slice';
 import {
-  DatasetUploadConfig,
   selectDatasetUploadModalConfig,
   selectDatasetUploadModalOpen,
   setDatasetUploadConfig,
   setModalOpen,
 } from 'features/modals/modals.slice'
+import type {
+  UpsertDataset} from './datasets.slice';
 import {
-  UpsertDataset,
   upsertDatasetThunk,
   deleteDatasetThunk,
   fetchDatasetByIdThunk,

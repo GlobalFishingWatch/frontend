@@ -1,7 +1,8 @@
 import Pbf from 'pbf'
-import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
-import { BBox, generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
+import type { BBox } from '../helpers/cells'
+import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
 import type {
   FourwingsFeature,
   FourwingsLoaderOptions,
@@ -36,9 +37,10 @@ export const getCellTimeseries = (
   } = options?.fourwings || ({} as ParseFourwingsOptions)
   const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
   const timeRangeStartFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start!) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start as number) -
+    tileStartFrame
   const timeRangeEndFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.end!) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.end as number) - tileStartFrame
 
   const timeRangeKey = getTimeRangeKey(timeRangeStartFrame, timeRangeEndFrame)
 

@@ -2,7 +2,7 @@ import React, { memo, Fragment, useEffect, createRef, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
 import './range.css'
-import { NumberValue } from 'd3-scale'
+import type { NumberValue } from 'd3-scale'
 import {
   TimebarTracks,
   Timebar,

@@ -1,14 +1,16 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
-import { RootState } from 'reducers'
-import { DownloadRateLimit, ThinningConfig } from '@globalfishingwatch/api-types'
+import type { RootState } from 'reducers'
+import type { DownloadRateLimit, ThinningConfig } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
-import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { DateRange } from 'features/download/downloadActivity.slice'
+import type { AsyncError} from 'utils/async-slice';
+import { AsyncReducerStatus } from 'utils/async-slice'
+import type { DateRange } from 'features/download/downloadActivity.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { logoutUserThunk } from 'features/user/user.slice'
-import { Format } from './downloadTrack.config'
+import type { Format } from './downloadTrack.config'
 
 type VesselParams = {
   name: string

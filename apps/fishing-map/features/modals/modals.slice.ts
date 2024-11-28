@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'reducers'
-import { DatasetGeometryType, DataviewCategory } from '@globalfishingwatch/api-types'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import type { RootState } from 'reducers'
+import type { DatasetGeometryType, DataviewCategory } from '@globalfishingwatch/api-types'
 
 type ModalId =
   | 'feedback'

@@ -4,12 +4,13 @@ import cx from 'classnames'
 import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
-import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
-import { ContextFeature } from '@globalfishingwatch/deck-layers'
+import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { Area } from 'features/areas/areas.slice'
+import type { Area } from 'features/areas/areas.slice'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_BUFFER_VALUE,
@@ -34,7 +35,7 @@ import {
   selectReportBufferValue,
 } from 'features/app/selectors/app.reports.selector'
 import { useLocationConnect } from 'routes/routes.hook'
-import { BufferOperation, BufferUnit } from 'types'
+import type { BufferOperation, BufferUnit } from 'types'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'

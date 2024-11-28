@@ -1,15 +1,16 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { t } from 'i18next'
-import { Choice, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components';
+import { Choice, Select } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import {
+import type {
   DatasetConfiguration,
   DatasetConfigurationUI,
   TimeFilterType,
 } from '@globalfishingwatch/api-types'
 import { useDatasetMetadataOptions } from './datasets-upload.hooks'
-import { DatasetMetadata } from './NewDataset'
+import type { DatasetMetadata } from './NewDataset'
 import styles from './NewDataset.module.css'
 
 type TimeFilterTypeOption = TimeFilterType | 'none'

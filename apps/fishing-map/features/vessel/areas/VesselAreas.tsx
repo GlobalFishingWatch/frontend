@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import parse from 'html-react-parser'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Bar, BarChart, Tooltip as RechartsTooltip, XAxis, YAxis, LabelList } from 'recharts'
-import { Choice, ChoiceOption, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
-import { RegionType } from '@globalfishingwatch/api-types'
+import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import { Choice, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import type { RegionType } from '@globalfishingwatch/api-types'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectVesselEventTypes,
@@ -27,7 +28,7 @@ import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
 import { useFetchRegionsData } from 'features/vessel/activity/event/event.hook'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
-import { VesselAreaSubsection } from '../vessel.types'
+import type { VesselAreaSubsection } from '../vessel.types'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {

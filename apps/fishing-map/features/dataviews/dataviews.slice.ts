@@ -1,15 +1,17 @@
-import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
-import { Dataview, APIPagination } from '@globalfishingwatch/api-types'
+import type { Dataview, APIPagination } from '@globalfishingwatch/api-types'
 import {
   GFWAPI,
   parseAPIError,
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
-import { AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import type { AsyncError, AsyncReducer} from 'utils/async-slice';
+import { createAsyncSlice } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 
 const fetchDataviewByIdThunk = createAsyncThunk(
@@ -30,7 +32,7 @@ const fetchDataviewByIdThunk = createAsyncThunk(
 
 const USE_MOCKED_DATAVIEWS =
   IS_DEVELOPMENT_ENV || process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
-let mockedDataviewsImported = false
+const mockedDataviewsImported = false
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: (Dataview['id'] | Dataview['slug'])[], { signal, rejectWithValue, getState }) => {

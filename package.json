@@ -20,8 +20,7 @@
     "lint": "eslint libs/api-types"
   },
   "workspaces": [
-    "linting",
-    "apps/fishing-map"
+    "linting"
   ],
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.0.3",

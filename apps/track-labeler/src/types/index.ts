@@ -1,4 +1,4 @@
-import { TrackPoint } from '@globalfishingwatch/api-types'
+import type { TrackPoint } from '@globalfishingwatch/api-types'
 
 export type WorkspaceParam =
   | 'zoom'
@@ -160,16 +160,16 @@ export type ExportFeature = {
   type: 'Feature'
   geometry: {
     type: 'LineString'
-    coordinates: Array<Array<number | undefined | null>>
+    coordinates: (number | undefined | null)[][]
   }
   properties: {
     type: 'track'
     coordinateProperties: {
-      times: Array<number | undefined | null>
-      speed: Array<number | undefined | null>
-      course: Array<number | undefined | null>
-      labels_id: Array<ActionType | string | undefined | null>
-      elevation?: Array<number | undefined | null>
+      times: (number | undefined | null)[]
+      speed: (number | undefined | null)[]
+      course: (number | undefined | null)[]
+      labels_id: (ActionType | string | undefined | null)[]
+      elevation?: (number | undefined | null)[]
     }
   }
 }

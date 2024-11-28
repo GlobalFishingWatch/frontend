@@ -20,7 +20,7 @@ export function useMapRulersDrag() {
     id: RulerPointProperties['id']
   } | null>(null)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const debouncedUpdate = useCallback(
     throttle((mapRulers) => {
       dispatchQueryParams({ mapRulers })

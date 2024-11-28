@@ -2,17 +2,18 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useState } from 'react'
 // import { ViewportProps } from 'react-map-gl'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 import { selectViewport } from '../../routes/routes.selectors'
 import { updateQueryParams } from '../../routes/routes.actions'
-import { MapCoordinates } from '../../types'
+import type { MapCoordinates } from '../../types'
 import { selectEditing } from '../../features/rulers/rulers.selectors'
 import { moveCurrentRuler } from '../../features/rulers/rulers.slice'
 import { useAppDispatch } from '../../store.hooks'
+import type {
+  UpdateGeneratorPayload} from './map.slice';
 import {
   selectGeneratorsConfig,
   updateGenerator,
-  UpdateGeneratorPayload,
   selectGlobalGeneratorsConfig,
 } from './map.slice'
 
@@ -96,7 +97,7 @@ export function useDebouncedViewport(
     ) {
       setViewport({ ...urlViewport })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [urlViewport])
 
   // Sync the url with the local state debounced
@@ -104,7 +105,7 @@ export function useDebouncedViewport(
     if (debouncedViewport && callback) {
       callback(debouncedViewport)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [debouncedViewport])
 
   return { viewport, onViewportChange, setMapCoordinates }

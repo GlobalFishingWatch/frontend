@@ -1,5 +1,5 @@
 import memoizeOne from 'memoize-one'
-import { FeatureCollection } from 'geojson'
+import type { FeatureCollection } from 'geojson'
 import type {
   CircleLayerSpecification,
   ColorSpecification,
@@ -8,11 +8,12 @@ import type {
   SymbolLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
-import {
-  GeneratorType,
+import type {
   VesselEventsGeneratorConfig,
   MergedGeneratorConfig,
-  VesselsEventsSource,
+  VesselsEventsSource} from '../types';
+import {
+  GeneratorType
 } from '../types'
 import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import { memoizeByLayerId, memoizeCache } from '../../utils'

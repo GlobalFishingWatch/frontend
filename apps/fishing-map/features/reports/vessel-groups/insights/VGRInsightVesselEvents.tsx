@@ -1,7 +1,7 @@
 import { useGetVesselEventsQuery } from 'queries/vessel-events-api'
 import { useTranslation } from 'react-i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { RegionType } from '@globalfishingwatch/api-types'
+import type { RegionType } from '@globalfishingwatch/api-types'
 import VesselEvent from 'features/vessel/activity/event/Event'
 import styles from './VGRInsights.module.css'
 

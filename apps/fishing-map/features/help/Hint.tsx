@@ -2,11 +2,13 @@ import { useState, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, Icon, Popover, PopoverProps } from '@globalfishingwatch/ui-components'
+import type { PopoverProps } from '@globalfishingwatch/ui-components';
+import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import hintsConfig, { HintId } from './hints.content'
+import type { HintId } from './hints.content';
+import hintsConfig from './hints.content'
 import styles from './Hint.module.css'
 import { selectHintsDismissed, setHintDismissed } from './hints.slice'
 

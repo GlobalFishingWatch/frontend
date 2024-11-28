@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { t } from 'features/i18n/i18n'
 import { HOME, SEARCH, WORKSPACE, WORKSPACES_LIST, WORKSPACE_SEARCH } from './routes'
 

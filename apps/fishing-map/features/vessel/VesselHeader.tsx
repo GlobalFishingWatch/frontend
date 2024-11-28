@@ -90,7 +90,7 @@ const VesselHeader = () => {
       window.removeEventListener('beforeprint', enableVesselPrintMode)
       window.removeEventListener('afterprint', disableVesselPrintMode)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   useCallbackAfterPaint({

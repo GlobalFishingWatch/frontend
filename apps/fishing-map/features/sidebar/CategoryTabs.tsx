@@ -4,11 +4,13 @@ import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { Icon, IconButton, IconType, Tooltip } from '@globalfishingwatch/ui-components'
+import type { IconType} from '@globalfishingwatch/ui-components';
+import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import type {
+  WorkspaceCategory} from 'data/workspaces';
 import {
   DEFAULT_WORKSPACE_CATEGORY,
-  DEFAULT_WORKSPACE_ID,
-  WorkspaceCategory,
+  DEFAULT_WORKSPACE_ID
 } from 'data/workspaces'
 import { HOME, SEARCH, USER, WORKSPACES_LIST, WORKSPACE_SEARCH } from 'routes/routes'
 import {

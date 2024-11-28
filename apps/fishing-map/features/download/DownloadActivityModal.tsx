@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Modal, Tabs, Tab } from '@globalfishingwatch/ui-components'
+import type { Tab } from '@globalfishingwatch/ui-components';
+import { Modal, Tabs } from '@globalfishingwatch/ui-components'
 import {
   resetDownloadActivityState,
   selectDownloadActiveTabId,

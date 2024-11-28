@@ -2,23 +2,26 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
-import { APIPagination, WORKSPACE_PUBLIC_ACCESS, Workspace } from '@globalfishingwatch/api-types'
+import type { APIPagination, Workspace } from '@globalfishingwatch/api-types';
+import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import {
   GFWAPI,
   parseAPIError,
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
+import type {
+  AsyncReducer,
+  AsyncError} from 'utils/async-slice';
 import {
   AsyncReducerStatus,
   asyncInitialState,
-  AsyncReducer,
-  createAsyncSlice,
-  AsyncError,
+  createAsyncSlice
 } from 'utils/async-slice'
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { WorkspaceState } from 'types'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import type { WorkspaceState } from 'types'
+import type { WorkspaceCategory } from 'data/workspaces';
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 
 export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategory>

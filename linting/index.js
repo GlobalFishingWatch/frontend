@@ -1,10 +1,10 @@
 import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import nxPlugin from '@nx/eslint-plugin'
-import nextPlugin from '@next/eslint-plugin-next'
+import next from '@next/eslint-plugin-next'
 import importPlugin from 'eslint-plugin-import'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
-import reactPlugin from 'eslint-plugin-react'
+import react from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import prettierConfig from 'eslint-config-prettier'
 
@@ -13,8 +13,8 @@ export default tseslint.config({
   plugins: {
     '@nx': nxPlugin,
     import: importPlugin,
-    react: reactPlugin,
-    next: nextPlugin,
+    react,
+    '@next': next,
     'react-hooks': reactHooksPlugin,
   },
   extends: [
@@ -23,7 +23,14 @@ export default tseslint.config({
     jsxA11y.flatConfigs.recommended,
     prettierConfig,
   ],
-  ignores: ['node_modules', 'dist', 'public'],
+  ignores: ['node_modules', 'dist', '**/dist/**', 'public', '**/public/**', '.next', '**/.next/**'],
+  languageOptions: {
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+      },
+    },
+  },
   rules: {
     '@typescript-eslint/array-type': 'error',
     '@typescript-eslint/consistent-type-imports': 'error',
@@ -57,20 +64,23 @@ export default tseslint.config({
         pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
-    'react/jsx-fragments': ['error', 'element'],
+    // 'react/jsx-fragments': ['error', 'element'],
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/no-redeclare': 0,
     // note you must disable the base rule as it can report incorrect errors
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/FAQ.md#i-am-using-a-rule-from-eslint-core-and-it-doesnt-work-correctly-with-typescript-code
-    'no-unused-vars': 'warn',
-    'no-use-before-define': 'warn',
+    'prefer-const': 1,
+    'no-unused-vars': 0,
+    'no-use-before-define': 0,
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-use-before-define': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 0,
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
     '@typescript-eslint/no-empty-function': 0,
+    'jsx-a11y/click-events-have-key-events': 0,
+    'jsx-a11y/label-has-associated-control': 0,
     '@nx/dependency-checks': [
       'error',
       {

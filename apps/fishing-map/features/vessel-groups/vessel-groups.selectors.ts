@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
-import { VesselGroup } from '@globalfishingwatch/api-types'
+import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
 import {
@@ -12,7 +12,7 @@ import {
   selectWorkspace,
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
-import { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { getVesselGroupsInDataviews } from 'features/datasets/datasets.utils'

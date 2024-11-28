@@ -1,8 +1,9 @@
-import React, { useRef, forwardRef, useImperativeHandle, Ref } from 'react'
+import type { Ref } from 'react';
+import React, { useRef, forwardRef, useImperativeHandle } from 'react'
 import cx from 'classnames'
 import { IconButton } from '../icon-button'
 import baseStyles from '../input-text/InputText.module.css'
-import { InputSize } from '../input-text/InputText'
+import type { InputSize } from '../input-text/InputText'
 import styles from './InputDate.module.css'
 
 export type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {

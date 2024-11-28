@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { ExtendedStyle, LayerMetadataLegend } from '@globalfishingwatch/layer-composer'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ExtendedStyle, LayerMetadataLegend } from '@globalfishingwatch/layer-composer'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { InteractionEvent } from '../use-map-interaction'
+import type { InteractionEvent } from '../use-map-interaction'
 import type { LegendLayer, LegendLayerBivariate } from './index'
 
 export const getLegendId = (id = '') => {

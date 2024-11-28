@@ -12,7 +12,7 @@ import {
 import { selectVesselGroupsStatusId } from 'features/vessel-groups/vessel-groups.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import styles from './VesselGroupListTooltip.module.css'
-import { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
+import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 
 type VesselGroupListTooltipProps = {
   children?: React.ReactNode

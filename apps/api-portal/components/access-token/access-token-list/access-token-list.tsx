@@ -2,7 +2,8 @@ import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { formatI18nDate } from 'lib/dates'
 import { useClipboardNotification } from 'app/clipboard.hooks'
-import { UserApplication, UserData } from '@globalfishingwatch/api-types'
+import type { UserApplication} from '@globalfishingwatch/api-types';
+import { UserData } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import useUserApplications, {
   useDeleteUserApplication,
@@ -45,7 +46,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
   const onDeleteClick = useCallback(
     async ({ id }: UserApplication) => {
       if (
-        // eslint-disable-next-line no-restricted-globals
+         
         !confirm(
           'Deleting an application token will cause any application or service using it ' +
             'to lose the connection with our API. \n' +

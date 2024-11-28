@@ -2,16 +2,19 @@ import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
-import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
-import {
+import type { DataviewInstance } from '@globalfishingwatch/api-types';
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import type {
   ResolverGlobalConfig,
-  TimeRange,
+  TimeRange} from '@globalfishingwatch/deck-layer-composer';
+import {
   useDeckLayerComposer,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { FourwingsLayer, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { FourwingsLayer} from '@globalfishingwatch/deck-layers';
+import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectWorkspaceStatus,

@@ -1,11 +1,12 @@
-import { Middleware, Dispatch } from 'redux'
-import { RootState } from 'reducers'
+import type { Middleware, Dispatch } from 'redux'
+import type { RootState } from 'reducers'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
-import { QueryParam, QueryParams } from 'types'
-import { routesMap, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
-import { UpdateQueryParamsAction } from './routes.actions'
+import type { QueryParam, QueryParams } from 'types'
+import type { ROUTE_TYPES} from './routes';
+import { routesMap, WORKSPACE_ROUTES } from './routes'
+import type { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
   ({ getState }: { getState: () => RootState }) =>

@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'reducers'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import type { RootState } from 'reducers'
 
 export enum DebugOption {
   DatasetRelationship = 'datasetRelationship',

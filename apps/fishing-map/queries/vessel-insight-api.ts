@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
-import { RootState } from 'reducers'
-import {
+import type { RootState } from 'reducers'
+import type {
   InsightResponse,
   InsightType,
   VesselGroupInsightResponse,

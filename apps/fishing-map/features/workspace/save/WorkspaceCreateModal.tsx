@@ -1,31 +1,36 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import type { ChangeEvent} from 'react';
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { InputText, Button, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
-import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import type { SelectOption } from '@globalfishingwatch/ui-components';
+import { InputText, Button, Modal, Select } from '@globalfishingwatch/ui-components'
+import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas';
+import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
+import type {
+  WorkspaceEditAccessType,
+  WorkspaceViewAccessType} from '@globalfishingwatch/api-types';
 import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS,
-  WorkspaceEditAccessType,
-  WorkspaceViewAccessType,
+  WORKSPACE_PUBLIC_ACCESS
 } from '@globalfishingwatch/api-types'
 import { saveWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
 import { useSaveWorkspaceModalConnect, useSaveWorkspaceTimerange } from './workspace-save.hooks'
+import type {
+  WorkspaceTimeRangeMode} from './workspace-save.utils';
 import {
   DAYS_FROM_LATEST_MAX,
   DAYS_FROM_LATEST_MIN,
-  WorkspaceTimeRangeMode,
   getEditAccessOptionsByViewAccess,
   getViewAccessOptions,
   getWorkspaceTimerangeName,
@@ -102,7 +107,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
     if (workspaceModalOpen) {
       setDefaultWorkspaceName()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [workspaceModalOpen])
 
   const getWorkspaceError = () => {

@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { t } from 'i18next'
 import { Fragment } from 'react'
-import {
+import type {
   VesselRegistryOperator,
   VesselRegistryOwner,
   VesselRegistryProperty,
@@ -10,9 +10,9 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import I18nDate from 'features/i18n/i18nDate'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
-import { VesselLastIdentity } from 'features/search/search.slice'
+import type { VesselLastIdentity } from 'features/search/search.slice'
 import { filterRegistryInfoByDateAndSSVID } from '../vessel.utils'
-import { VesselRenderField } from '../vessel.config'
+import type { VesselRenderField } from '../vessel.config'
 import styles from './VesselIdentity.module.css'
 import DataTerminology from './DataTerminology'
 import VesselIdentityField from './VesselIdentityField'

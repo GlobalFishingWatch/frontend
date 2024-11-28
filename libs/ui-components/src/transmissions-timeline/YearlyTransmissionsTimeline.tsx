@@ -39,6 +39,8 @@ export function YearlyTransmissionsTimeline({
           <div
             className={cx(styles.year, styles.highlighted)}
             key={index}
+            onFocus={() => onYearHover && onYearHover(year)}
+            onBlur={() => onYearHover && onYearHover(undefined)}
             onMouseOver={() => onYearHover && onYearHover(year)}
             onMouseOut={() => onYearHover && onYearHover(undefined)}
           >

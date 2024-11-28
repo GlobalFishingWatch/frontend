@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useCallback, useEffect, useState } from 'react'
-import { FeatureCollection, Point } from 'geojson'
+import type { FeatureCollection, Point } from 'geojson'
+import type {
+  MultiSelectOption} from '@globalfishingwatch/ui-components';
 import {
   Button,
   Collapsable,
   InputText,
   MultiSelect,
-  MultiSelectOption,
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
@@ -16,8 +17,9 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import { POINT_SIZES_DEFAULT_RANGE } from '@globalfishingwatch/deck-layers'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
-import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
+import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
+import type { FileType} from 'utils/files';
+import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
@@ -29,9 +31,10 @@ import {
 } from 'features/datasets/upload/datasets-upload.utils'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import styles from './NewDataset.module.css'
-import {
+import type {
   DataList,
-  DataParsed,
+  DataParsed} from './datasets-parse.utils';
+import {
   getDatasetParsed,
   getGeojsonFromPointsList,
   getNormalizedGeojsonFromPointsGeojson,
@@ -142,7 +145,7 @@ function NewPointDataset({
     } else if (dataset) {
       setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [dataset, file])
 
   useEffect(() => {
@@ -172,7 +175,7 @@ function NewPointDataset({
         setGeojson(geojson)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     latitudeProperty,
     longitudeProperty,

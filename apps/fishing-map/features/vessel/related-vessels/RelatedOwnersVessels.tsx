@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useSearchByOwnerQuery } from 'queries/search-api'
 import { uniqBy } from 'es-toolkit'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
+import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import {
   getVesselProperty,

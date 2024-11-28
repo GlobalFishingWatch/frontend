@@ -1,23 +1,25 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { featureCollection } from '@turf/helpers'
-import { Feature, LineString, Position, GeoJsonProperties } from 'geojson'
+import type { Feature, LineString, Position, GeoJsonProperties } from 'geojson'
 import * as Generators from '@globalfishingwatch/layer-composer'
-import { TrackPoint } from '@globalfishingwatch/api-types'
+import type { TrackPoint } from '@globalfishingwatch/api-types'
 import {
   getVesselParsedTrack,
   getVesselTrackGeojsonByDateRange,
 } from '../../features/tracks/tracks.selectors'
 import { BACKGROUND_LAYER, DEFAULT_DATAVIEWS } from '../../data/config'
 import { selectHighlightedEvent, selectHighlightedTime } from '../../features/timebar/timebar.slice'
-import {
+import type {
   ArrowFeature,
   LayersData,
   VesselDirectionsGeneratorConfig,
   VesselPoint,
-  ActionType,
-  TrackColor,
+  TrackColor} from '../../types';
+import {
+  ActionType
 } from '../../types'
-import { selectedtracks, SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
+import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { getFixedColorForUnknownLabel } from '../../utils/colors'
 import {
   getDateRangeTS,
@@ -28,7 +30,7 @@ import {
   selectSatellite,
   selectVessel,
 } from '../../routes/routes.selectors'
-import { Project } from '../../data/projects'
+import type { Project } from '../../data/projects'
 
 /**
  * For each vessel segment filtered by the user, we return the layer config based on the actions

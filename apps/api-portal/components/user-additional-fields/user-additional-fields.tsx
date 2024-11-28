@@ -1,17 +1,20 @@
-import { useCallback, useMemo, Fragment, useState, useEffect, MouseEventHandler } from 'react'
+import type { MouseEventHandler } from 'react';
+import { useCallback, useMemo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
-import { FieldValidationError } from 'lib/types'
+import type { FieldValidationError } from 'lib/types'
 import Link from 'next/link'
+import type {
+  SelectOption} from '@globalfishingwatch/ui-components';
 import {
   Button,
   Checkbox,
   InputText,
   Select,
-  SelectOption,
   Spinner,
 } from '@globalfishingwatch/ui-components'
+import type {
+  UserApiAdditionalInformation} from '@globalfishingwatch/api-types';
 import {
-  UserApiAdditionalInformation,
   USER_APPLICATION_INTENDED_USES,
 } from '@globalfishingwatch/api-types'
 import useUser, { useUpdateUserAdditionalInformation } from 'features/user/user'
@@ -25,11 +28,11 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
   const { mutate, isLoading: isUpdating, isSuccess, isError } = useUpdateUserAdditionalInformation()
 
   const defaultUserAdditionalInformation: UserApiAdditionalInformation = {
-    apiTerms: user!?.apiTerms,
-    intendedUse: user!?.intendedUse,
-    problemToResolve: user!?.problemToResolve,
-    pullingDataOtherAPIS: user!?.pullingDataOtherAPIS,
-    whoEndUsers: user!?.whoEndUsers,
+    apiTerms: user?.apiTerms,
+    intendedUse: user?.intendedUse,
+    problemToResolve: user?.problemToResolve,
+    pullingDataOtherAPIS: user?.pullingDataOtherAPIS,
+    whoEndUsers: user?.whoEndUsers,
   }
 
   const [userAdditionalInformation, setUserAdditionalInformation] =

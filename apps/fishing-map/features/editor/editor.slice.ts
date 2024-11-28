@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
-import { RootState } from 'reducers'
+import type { RootState } from 'reducers'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
-import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
-import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
+import type { APIPagination, Dataview } from '@globalfishingwatch/api-types'
+import type { AsyncError} from 'utils/async-slice';
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { BASEMAP_DATAVIEW_SLUG, TEMPLATE_DATAVIEW_SLUGS } from 'data/workspaces'
 

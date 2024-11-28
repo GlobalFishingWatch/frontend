@@ -4,17 +4,19 @@ import { throttle } from 'lodash'
 import InteractiveMap from 'react-map-gl/maplibre'
 import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import * as Generators from '@globalfishingwatch/layer-composer'
-import {
+import type {
   ExtendedLayer,
+  StyleTransformation} from '@globalfishingwatch/layer-composer';
+import {
   getInteractiveLayerIds,
-  Group,
-  StyleTransformation,
+  Group
 } from '@globalfishingwatch/layer-composer'
 import { MAP_BACKGROUND_COLOR } from '../../data/config'
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { selectEditing, selectRulers } from '../../features/rulers/rulers.selectors'
 import { editRuler } from '../../features/rulers/rulers.slice'
-import { ActionType, CoordinatePosition } from '../../types'
+import type { CoordinatePosition } from '../../types';
+import { ActionType } from '../../types'
 import { useSegmentsLabeledConnect } from '../../features/timebar/timebar.hooks'
 import {
   selectColorMode,

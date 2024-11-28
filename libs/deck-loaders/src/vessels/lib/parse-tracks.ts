@@ -1,4 +1,4 @@
-import { VesselTrackData } from './types'
+import type { VesselTrackData } from './types'
 import { DeckTrack } from './vessel-track-proto'
 
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)

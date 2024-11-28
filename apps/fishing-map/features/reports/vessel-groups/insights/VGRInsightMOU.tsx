@@ -4,7 +4,7 @@ import { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
-import { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
@@ -18,11 +18,12 @@ import { selectVGRData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportMOUParams } from '../vessel-group-report.selectors'
 import styles from './VGRInsights.module.css'
 import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
-import {
+import type {
   MOUInsightCountry,
   MOUInsightList,
   MouVesselByCategoryInsight,
-  MOUVesselByList,
+  MOUVesselByList} from './vessel-group-report-insights.selectors';
+import {
   selectVGRMOUVesselsGrouped,
 } from './vessel-group-report-insights.selectors'
 
