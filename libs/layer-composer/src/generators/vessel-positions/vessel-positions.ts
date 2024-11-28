@@ -1,12 +1,19 @@
 import { FeatureCollection } from 'geojson'
+import memoizeOne from 'memoize-one'
+import { filterTrackByCoordinateProperties } from '@globalfishingwatch/data-transforms'
 import { Group } from '../../types'
 import { GeneratorType, MergedGeneratorConfig } from '../types'
+import { memoizeByLayerId, memoizeCache } from '../../utils'
+console.log('🚀 ~ filterTrackByCoordinateProperties:', filterTrackByCoordinateProperties)
 
 export interface VesselPositionsGeneratorConfig {
   id: string
   data: FeatureCollection
   colorMode?: 'all' | 'content' | 'labels'
-  highlightedTime?: number
+  highlightedTime?: {
+    start: string
+    end: string
+  }
   ruleColors?: any[]
   projectColors?: Record<string, string>
 }
@@ -24,13 +31,36 @@ class VesselPositionsGenerator {
       return []
     }
 
-    return [
+    memoizeByLayerId(id, {
+      filterPositions: memoizeOne(filterTrackByCoordinateProperties),
+    })
+
+    const sources = [
       {
         id: `${id}`,
         type: 'geojson',
         data,
       },
     ]
+
+    if (config.highlightedTime) {
+      const highlightedData = memoizeCache[id].filterPositions(data, {
+        filters: [
+          {
+            id: 'timestamp',
+            min: new Date(config.highlightedTime.start).getTime(),
+            max: new Date(config.highlightedTime.end).getTime(),
+          },
+        ],
+      })
+      sources.push({
+        id: `${id}_highlighted`,
+        type: 'geojson',
+        data: highlightedData,
+      })
+    }
+
+    return sources
   }
 
   _getStyleLayers = (config: GlobalVesselPositionsGeneratorConfig) => {
@@ -55,7 +85,23 @@ class VesselPositionsGenerator {
       '#185AD0',
     ]
 
-    return [
+    const isHighlighted = config.highlightedTime
+      ? [
+          'all',
+          [
+            '>=',
+            ['get', 'timestamp'],
+            ['to-number', new Date(config.highlightedTime.start).getTime()],
+          ],
+          [
+            '<=',
+            ['get', 'timestamp'],
+            ['to-number', new Date(config.highlightedTime.end).getTime()],
+          ],
+        ]
+      : ['==', 1, 0] // Always false when no highlight time
+
+    const layers = [
       {
         id: `${id}`,
         type: 'symbol',
@@ -68,9 +114,20 @@ class VesselPositionsGenerator {
           visibility: 'visible',
         },
         paint: {
-          'icon-color': outlineVisible ? ['case', ...ruleColors, 'black'] : fillColor,
-          'icon-halo-color': outlineVisible ? ['case', ...ruleColors, 'black'] : fillColor,
+          'icon-color': [
+            'case',
+            isHighlighted,
+            'white',
+            outlineVisible ? ['case', ...ruleColors, 'black'] : fillColor,
+          ],
+          'icon-halo-color': [
+            'case',
+            isHighlighted,
+            'white',
+            outlineVisible ? ['case', ...ruleColors, 'black'] : fillColor,
+          ],
           'icon-halo-width': 2,
+          //   'icon-opacity': ['case', isHighlighted, 1, 0.3],
         },
         metadata: {
           group: Group.Track,
@@ -78,6 +135,8 @@ class VesselPositionsGenerator {
         },
       } as any,
     ]
+
+    return layers
   }
 
   getStyle = (config: GlobalVesselPositionsGeneratorConfig) => {

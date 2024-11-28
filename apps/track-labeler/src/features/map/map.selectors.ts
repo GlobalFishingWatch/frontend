@@ -266,8 +266,8 @@ export const selectVesselDirectionPointsLayer = createSelector(
  * Using the custom Mapbox GL features, it return the layer needed to render arrows based on track points
  */
 export const selectDirectionPointsLayers = createSelector(
-  [selectVesselDirectionPointsLayer],
-  (vesselEvents): Generators.VesselPositionsGeneratorConfig => {
+  [selectVesselDirectionPointsLayer, selectHighlightedTime],
+  (vesselEvents, highlightedTime): Generators.VesselPositionsGeneratorConfig => {
     return {
       id: 'vessel-positions',
       type: 'geojson',
@@ -275,6 +275,7 @@ export const selectDirectionPointsLayers = createSelector(
         features: vesselEvents,
         type: 'FeatureCollection',
       },
+      highlightedTime,
     }
   }
 )

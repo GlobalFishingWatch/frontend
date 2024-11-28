@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import MapComponent, { AttributionControl } from 'react-map-gl/maplibre'
+import MapComponent from 'react-map-gl/maplibre'
 import type { MapRef } from 'react-map-gl/maplibre'
 import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import * as Generators from '@globalfishingwatch/layer-composer'
@@ -10,15 +10,9 @@ import {
   Group,
   StyleTransformation,
 } from '@globalfishingwatch/layer-composer'
-import { MAP_BACKGROUND_COLOR } from '../../data/config'
 import { selectRulers } from '../../features/rulers/rulers.selectors'
 import { ActionType } from '../../types'
-import {
-  selectColorMode,
-  selectHiddenLayers,
-  selectProjectColors,
-} from '../../routes/routes.selectors'
-import { typedKeys } from '../../utils/shared'
+import { selectColorMode, selectProjectColors } from '../../routes/routes.selectors'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
   getLayerComposerLayers,
@@ -38,7 +32,6 @@ import styles from './Map.module.css'
 import MapControls from './map-controls/MapControls'
 import MapData from './map-data/map-data'
 import { useMapboxRef, useMapboxRefCallback } from './map.context'
-import { contextSourceStyle, getVisibleContextLayers } from './map-static-layers-style'
 
 const GROUP_ORDER = [
   Group.Background,
@@ -80,7 +73,6 @@ const Map = (): React.ReactElement => {
   const { globalConfig } = useGeneratorsConnect()
   const generatorConfigs = useSelector(getLayerComposerLayers)
   const projectColors = useSelector(selectProjectColors)
-  const hiddenLayers = useSelector(selectHiddenLayers)
   const actionShortcuts = useSelector(getActionShortcuts)
   const rulers = useSelector(selectRulers)
   const ruleColors = useSelector(getMapboxPaintIcon)
@@ -111,6 +103,7 @@ const Map = (): React.ReactElement => {
       colorMode,
       ruleColors,
       projectColors,
+      highlightedTime: trackArrowsLayer.highlightedTime,
     }
 
     return [...generatorConfigs, rulersConfig, vesselPositionsConfig]
@@ -140,49 +133,7 @@ const Map = (): React.ReactElement => {
     ) {
       newStyle.sprite =
         'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-labeler'
-
-      // const customizedLayers = ['trackDirections', 'vesselTrack']
-      // const vesselTrackLayers = newStyle.layers
-      //   .filter((layer: { source: string }) => layer.source === 'vesselTrack')
-      //   .map((layer: any) => ({
-      //     ...layer,
-      //     paint: {
-      //       'line-color': [
-      //         'match',
-      //         ['get', 'action'],
-      //         ...typedKeys(projectColors)
-      //           .map((key) => [key.toString(), projectColors[key]])
-      //           .flat(),
-      //         projectColors[ActionType.untracked],
-      //       ],
-      //       'line-opacity': 0.9,
-      //       'line-width': 0,
-      //     },
-      //   }))
-      // // Used to debug tracks
-      // const vesselTrackLabels = vesselTrackLayers.map((layer: any) => ({
-      //   id: `track-labels-${layer.id}`,
-      //   type: 'symbol',
-      //   source: 'vesselTrack',
-      //   layout: {
-      //     'text-field': ['get', 'action'],
-      //     'text-font': ['Roboto Mono Light'],
-      //     'text-size': 8,
-      //     'text-allow-overlap': true,
-      //     visibility: 'none',
-      //   },
-      //   paint: {
-      //     'text-halo-color': 'hsl(320, 0%, 100%)',
-      //     'text-halo-width': 2,
-      //   },
-      // }))
-      // newStyle.layers = newStyle.layers
-      //   .filter((layer: any) => !customizedLayers.includes(layer.source))
-      //   .concat([...vesselTrackLayers, ...vesselTrackLabels])
     }
-
-    // newStyle.sources = { ...newStyle.sources, ...contextSourceStyle }
-    // newStyle.layers = [...newStyle.layers, ...getVisibleContextLayers(hiddenLayers)]
 
     return newStyle
   }, [style])

@@ -584,6 +584,10 @@ export interface VesselPositionsGeneratorConfig extends GeneratorConfig {
    * Colors to apply based on project settings
    */
   projectColors?: Record<string, string>
+  highlightedTime?: {
+    start: string
+    end: string
+  }
 }
 
 export type AnyGeneratorConfig =
