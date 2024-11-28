@@ -161,14 +161,15 @@ export const getCellTimeseries = (
 function readData(_: unknown, data: unknown[], pbf: Pbf) {
   data.push(pbf.readPackedVarint())
 }
-
+let count = 0
 export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
   const { buffersLength } = options?.fourwings || ({} as ParseFourwingsOptions)
   if (!buffersLength?.length) {
     return []
   }
   let start = 0
-  return getCellTimeseries(
+  const a = performance.now()
+  const result = getCellTimeseries(
     buffersLength.map((length, index) => {
       if (length === 0) {
         return []
@@ -182,4 +183,8 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
     }) as FourwingsRawData[],
     options
   )
+  const b = performance.now()
+  count += b - a
+  console.log('readFields', count)
+  return result
 }
