@@ -3,6 +3,8 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fishing-map-e2e/src",
   "projectType": "application",
+  "tags": [],
+  "implicitDependencies": ["fishing-map"],
   "targets": {
     "test": {
       "executor": "nx:run-commands",
@@ -90,7 +92,5 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["fishing-map"]
+  }
 }

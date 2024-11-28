@@ -22,7 +22,7 @@
   ],
   "eslintConfig": {
     "extends": [
-      "@globalfishingwatch/linting/next"
+      "@globalfishingwatch/linting"
     ],
     "ignorePatterns": "public/"
   },
