@@ -59,18 +59,13 @@ export const getCellTimeseries = (
   const getIntervalTimestamp = CONFIG_BY_INTERVAL[interval].getIntervalTimestamp
 
   const sublayersLength = buffersLength.length
-  // while (pbf.pos < end) {
-  //   console.log(pbf.readVarint())
-
-  //   // data.features.push(pbf.readVarint())
-  // }
-  // for (let subLayerIndex = 0; subLayerIndex < sublayersLength; subLayerIndex++) {
   let cellNum = 0
   let startFrame = 0
   let endFrame = 0
   // let startIndex = 0
   let indexInCell = 0
-  const subLayerIndex = 0
+  let subLayerIndex = 0
+  let subLayerBreak = buffersLength[subLayerIndex]
   // const subLayerIntArray = data.intArrays[subLayerIndex]
   // const arrayLength = subLayerIntArray.length
   while (pbf.pos < end) {
@@ -81,6 +76,7 @@ export const getCellTimeseries = (
       case CELL_NUM_INDEX:
         // startIndex = i + CELL_VALUES_START_INDEX
         cellNum = value
+
         break
 
       // this number defines the cell start frame
@@ -129,6 +125,7 @@ export const getCellTimeseries = (
         // Rest of the processing using 'feature' directly instead of features.get(cellNum)
         for (let j = 0; j < numCellValues; j++) {
           const cellValue = pbf.readVarint()
+
           if (cellValue !== noDataValue) {
             if (!feature.properties.values[subLayerIndex]) {
               // create properties for this sublayer if the feature dind't have it already
@@ -157,13 +154,16 @@ export const getCellTimeseries = (
             feature.properties.initialValues[timeRangeKey][subLayerIndex] /
             numValuesBySubLayer[subLayerIndex]
         }
-        // set the i to jump to the next step where we know a cell index will be
-        // pbf.pos = startIndex + numCellValues - 1
 
         // resseting indexInCell to start with the new cell
         indexInCell = -1
         break
     }
+    if (pbf.pos >= subLayerBreak) {
+      subLayerIndex++
+      subLayerBreak += buffersLength[subLayerIndex]
+    }
+    // console.log(pbf.pos, buffersLength, subLayerIndex)
 
     indexInCell++
   }
