@@ -41,6 +41,7 @@
     "noDataByArea": "crwdns59609:0crwdne59609:0",
     "noTimeComparisonAllowed": "crwdns59611:0crwdne59611:0",
     "noVesselDataFiltered": "crwdns59613:0crwdne59613:0",
+    "onlyEvolutionSupported": "crwdns84008:0crwdne84008:0",
     "others": "crwdns59617:0crwdne59617:0",
     "periodComparison": "crwdns59619:0crwdne59619:0",
     "periodComparison1st": "crwdns59621:0crwdne59621:0",
@@ -319,6 +320,9 @@
     "date": "crwdns82702:0crwdne82702:0",
     "dateRange": "crwdns82704:0crwdne82704:0",
     "errors": {
+      "csv": {
+        "invalidData": "crwdns84010:0crwdne84010:0"
+      },
       "default": "crwdns82718:0crwdne82718:0",
       "geoJSON": {
         "noValidFeatures": "crwdns82720:0crwdne82720:0"
@@ -617,6 +621,9 @@
     },
     "areasOnScreen": "crwdns60265:0crwdne60265:0",
     "color_change": "crwdns60267:0crwdne60267:0",
+    "drawAddPoint": "crwdns84014:0crwdne84014:0",
+    "drawAddPolygon": "crwdns84016:0crwdne84016:0",
+    "drawDelete": "crwdns84018:0crwdne84018:0",
     "drawPoints": "crwdns83614:0crwdne83614:0",
     "drawPolygon": "crwdns60269:0crwdne60269:0",
     "drawPolygonLogin": "crwdns60271:0crwdne60271:0",
@@ -811,6 +818,7 @@
     "capacity": "crwdns60489:0crwdne60489:0",
     "carrier": "crwdns60491:0crwdne60491:0",
     "casco": "crwdns60493:0crwdne60493:0",
+    "confirmationClose": "crwdns84012:0crwdne84012:0",
     "clickToFitMapToEvents": "crwdns69462:0crwdne69462:0",
     "clickToSeeMore": "crwdns70204:0crwdne70204:0",
     "close": "crwdns69464:0crwdne69464:0",

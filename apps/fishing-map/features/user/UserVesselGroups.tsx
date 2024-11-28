@@ -25,7 +25,7 @@ import {
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useEditVesselGroupModal } from 'features/reports/vessel-groups/vessel-group-report.hooks'
 import { getHighlightedText } from 'utils/text'
-import { selectUserVesselGroups } from './selectors/user.permissions.selectors'
+import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
 import styles from './User.module.css'
 
 function UserVesselGroups() {

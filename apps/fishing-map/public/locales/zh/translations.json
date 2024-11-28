@@ -41,6 +41,7 @@
     "noDataByArea": "No data available for the selected area",
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Others",
     "periodComparison": "period comparison",
     "periodComparison1st": "baseline start",
@@ -319,6 +320,9 @@
     "date": "Date",
     "dateRange": "Time Range",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "There was an error uploading your dataset",
       "geoJSON": {
         "noValidFeatures": "No valid feature types found in the geoJSON file"
@@ -617,6 +621,9 @@
     },
     "areasOnScreen": "Areas on screen",
     "color_change": "Change color",
+    "drawAddPoint": "Add a point",
+    "drawAddPolygon": "Add a geometry",
+    "drawDelete": "Delete selection",
     "drawPoints": "Draw points",
     "drawPolygon": "Draw a layer",
     "drawPolygonLogin": "Register and login to draw a layer (free, 2 minutes)",
@@ -811,6 +818,7 @@
     "capacity": "Capacity",
     "carrier": "Carrier",
     "casco": "Casco",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Center map on the events inside",
     "clickToSeeMore": "Click to see more information",
     "close": "Close",

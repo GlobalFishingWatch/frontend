@@ -5,9 +5,9 @@ import {
   DEFAULT_CONTEXT_SOURCE_LAYER,
   ExtendedStyle,
   HeatmapLayerMeta,
+  isMergedAnimatedGenerator,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '@globalfishingwatch/layer-composer'
-import { isMergedAnimatedGenerator } from '@globalfishingwatch/dataviews-client/resolve-dataviews-generators'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
 import {

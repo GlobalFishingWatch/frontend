@@ -30,6 +30,7 @@ import {
   getSearchDataview,
   schemaFilterIds,
 } from 'features/search/advanced/advanced-search.utils'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import styles from './SearchAdvancedFilters.module.css'
 
 const FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY = ['geartypes', 'shiptypes', 'flag']
@@ -113,6 +114,7 @@ function AdvancedFilterInputField({
 
 function SearchAdvancedFilters() {
   const { t } = useTranslation()
+  const isGuestUser = useSelector(selectIsGuestUser)
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const searchFilterErrors = useSearchFiltersErrors()
@@ -159,6 +161,7 @@ function SearchAdvancedFilters() {
       ...(isSharedSelectionSchema && {
         schemaOrigin: infoSource || 'all',
         compatibilityOperation: 'some',
+        isGuestUser,
       }),
     })
   })
@@ -173,7 +176,9 @@ function SearchAdvancedFilters() {
     // Recalculates schemaFilters to validate a new source has valid selection
     // when not valid we need to remove the filter from the search
     const newDataview = getSearchDataview(datasets, searchFilters, sources)
-    const newSchemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(newDataview, id as any))
+    const newSchemaFilters = schemaFilterIds.map((id) =>
+      getFiltersBySchema(newDataview, id as any, { isGuestUser })
+    )
     const notCompatibleSchemaFilters = newSchemaFilters.flatMap(({ id, disabled }) => {
       return disabled && (searchFilters as any)[id] !== undefined ? id : []
     })

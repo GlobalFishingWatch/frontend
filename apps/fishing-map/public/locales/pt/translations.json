@@ -41,6 +41,7 @@
     "noDataByArea": "Não há dados disponíveis para a área selecionada",
     "noTimeComparisonAllowed": "Os modos de comparação de tempo não ficam disponíveis quando as camadas têm filtros diferentes",
     "noVesselDataFiltered": "Não há nenhuma embarcação correspondente ao seu filtro",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Outros",
     "periodComparison": "comparação por período",
     "periodComparison1st": "início da base de referência",
@@ -319,6 +320,9 @@
     "date": "Data",
     "dateRange": "Date Range",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "Houve um erro ao carregar seus dados",
       "geoJSON": {
         "noValidFeatures": "Nenhum tipo de recurso válido encontrado no arquivo geoJSON"
@@ -617,6 +621,9 @@
     },
     "areasOnScreen": "Áreas na tela",
     "color_change": "Alterar cor",
+    "drawAddPoint": "Add a point",
+    "drawAddPolygon": "Add a geometry",
+    "drawDelete": "Delete selection",
     "drawPoints": "Draw points",
     "drawPolygon": "Desenhe uma camada",
     "drawPolygonLogin": "Registre-se e faça login para desenhar uma camada (grátis, 2 minutos)",
@@ -811,6 +818,7 @@
     "capacity": "Capacidade",
     "carrier": "Navio cargueiro",
     "casco": "Casco",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Centralizar mapa nos eventos",
     "clickToSeeMore": "Clique para ver mais informações",
     "close": "Fechar",

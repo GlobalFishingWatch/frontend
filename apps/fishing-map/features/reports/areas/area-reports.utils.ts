@@ -75,10 +75,18 @@ const getSerializedFilterFields = (dataview: UrlDataviewInstance, filterKey: str
   return Array.isArray(values) ? values?.slice().sort(sortStrings).join(', ') : values
 }
 
-export const FIELDS = [
+export const FIELDS: [SupportedDatasetSchema, string, string][] = [
   ['geartype', 'layer.gearType_other', 'Gear types'],
   ['vessel-groups', 'vesselGroup.vesselGroup', 'Vessel Group'],
   ['origin', 'vessel.origin', 'Origin'],
+  ['target_species', 'vessel.targetSpecies', 'Target species'],
+  ['codMarinha', 'vessel.codMarinha', 'Cod Marinha'],
+  ['fleet', 'vessel.fleet', 'Fleet'],
+  ['license_category', 'vessel.license_category', 'License category'],
+  ['casco', 'vessel.casco', 'Casco'],
+  ['matched', 'vessel.matched', 'Match'],
+  ['radiance', 'layer.radiance', 'Radiance'],
+  ['neural_vessel_type', 'vessel.neural_vessel_type', 'SAR vessel type'],
   ['vessel_type', 'vessel.vesselType_other', 'Vessel types'],
   ['speed', 'layer.speed', 'Speed'],
 ]

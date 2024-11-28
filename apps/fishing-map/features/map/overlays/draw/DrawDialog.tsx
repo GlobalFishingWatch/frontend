@@ -231,6 +231,11 @@ function MapDraw() {
       />
       <IconButton
         icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
+        tooltip={
+          mapDrawingMode === 'points'
+            ? t('layer.drawAddPoint', 'Add a point')
+            : t('layer.drawAddPolygon', 'Add a geometry')
+        }
         onClick={onAddPolygonClick}
       />
       <IconButton
@@ -240,7 +245,7 @@ function MapDraw() {
         tooltip={
           !drawFeaturesIndexes.length
             ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
-            : ''
+            : t('layer.drawDelete', 'Delete selection')
         }
         onClick={drawLayer?.deleteSelectedFeature}
       />
