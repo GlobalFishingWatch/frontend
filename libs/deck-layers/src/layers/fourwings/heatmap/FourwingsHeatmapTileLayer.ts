@@ -315,8 +315,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     )
   }
 
+  count = performance.now()
+
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
     this.updateColorDomain()
+    console.log('onViewportLoad took', (performance.now() - this.count) / 1000, 'seconds')
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
     }
