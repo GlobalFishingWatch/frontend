@@ -558,7 +558,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     })
 
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: false,
+      worker: true,
       fourwings: {
         sublayers: 1,
         cols,
