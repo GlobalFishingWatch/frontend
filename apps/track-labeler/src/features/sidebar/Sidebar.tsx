@@ -309,7 +309,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
                       key={`segment-${index}`}
                       data-testid={`segment-${index}`}
                       style={style}
-                      className={styles.segment}
+                      className={cx(styles.segment, !selectedAction && styles.segmentActivityEmpty)}
                       onMouseEnter={() => onSegmentOver(segment)}
                       onMouseLeave={() => {
                         dispatch(disableHighlightedEvent())
