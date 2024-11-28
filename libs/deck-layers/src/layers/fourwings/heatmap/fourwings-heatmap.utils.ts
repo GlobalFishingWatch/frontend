@@ -309,6 +309,14 @@ export function getFourwingsChunk(
   return getChunkByInterval(minDate, maxDate, interval)
 }
 
+type FourwingsIntervalFrames = {
+  interval: FourwingsInterval
+  tileStartFrame: number
+  startFrame: number
+  endFrame: number
+}
+const intervalFramesCache = new Map<string, FourwingsIntervalFrames>()
+
 export function getIntervalFrames({
   startTime,
   endTime,
@@ -319,7 +327,13 @@ export function getIntervalFrames({
   endTime: number
   availableIntervals?: FourwingsInterval[]
   bufferedStart: number
-}) {
+}): FourwingsIntervalFrames {
+  const cacheKey = `${startTime}-${endTime}-${availableIntervals?.join(',')}`
+
+  if (intervalFramesCache.has(cacheKey)) {
+    return intervalFramesCache.get(cacheKey)!
+  }
+
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
   const tileStartFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStart))
   const startFrame = Math.ceil(
@@ -328,7 +342,10 @@ export function getIntervalFrames({
   const endFrame = Math.ceil(
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(endTime) - tileStartFrame
   )
-  return { interval, tileStartFrame, startFrame, endFrame }
+
+  const result = { interval, tileStartFrame, startFrame, endFrame } as FourwingsIntervalFrames
+  intervalFramesCache.set(cacheKey, result)
+  return result
 }
 
 export function filterCells(value: any, index: number, minValue?: number, maxValue?: number) {

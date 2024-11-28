@@ -80,10 +80,10 @@ export type FourwingsStaticFeatureProperties = {
   values: number[][]
 }
 
-export type FourwingsFeature<Properties = FourwingsFeatureProperties> = Feature<
-  Polygon,
-  Properties
-> & {
+export type FourwingsFeature<Properties = FourwingsFeatureProperties> = {
+  coordinates: number[]
+  properties: Properties
+} & {
   aggregatedValues?: number[]
 }
 

@@ -2,12 +2,7 @@ import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import Pbf from 'pbf'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
 import { BBox, generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
-import type {
-  FourwingsFeature,
-  FourwingsLoaderOptions,
-  ParseFourwingsOptions,
-  FourwingsRawData,
-} from './types'
+import type { FourwingsFeature, FourwingsLoaderOptions, ParseFourwingsOptions } from './types'
 
 export const NO_DATA_VALUE = 4294967295
 export const SCALE_VALUE = 1
@@ -25,8 +20,6 @@ export const getCellTimeseries = (
   },
   pbf: Pbf
 ) => {
-  const end = pbf.readPackedEnd()
-
   const {
     bufferedStartDate,
     interval,
@@ -62,21 +55,18 @@ export const getCellTimeseries = (
   let cellNum = 0
   let startFrame = 0
   let endFrame = 0
-  // let startIndex = 0
   let indexInCell = 0
   let subLayerIndex = 0
   let subLayerBreak = buffersLength[subLayerIndex]
-  // const subLayerIntArray = data.intArrays[subLayerIndex]
-  // const arrayLength = subLayerIntArray.length
+  const end = pbf.readPackedEnd()
+
   while (pbf.pos < end) {
     const value = pbf.readVarint()
 
     switch (indexInCell) {
       // this number defines the cell index
       case CELL_NUM_INDEX:
-        // startIndex = i + CELL_VALUES_START_INDEX
         cellNum = value
-
         break
 
       // this number defines the cell start frame
@@ -92,18 +82,12 @@ export const getCellTimeseries = (
           // add the feature if previous sublayers didn't contain data for it
           const { col, row } = getCellProperties(tileBBox, cellNum, cols)
           feature = {
-            type: 'Feature',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                getCellCoordinates({
-                  cellIndex: cellNum,
-                  cols,
-                  rows,
-                  tileBBox,
-                }),
-              ],
-            },
+            coordinates: getCellCoordinates({
+              cellIndex: cellNum,
+              cols,
+              rows,
+              tileBBox,
+            }),
             properties: {
               col,
               row,
@@ -163,27 +147,33 @@ export const getCellTimeseries = (
       subLayerIndex++
       subLayerBreak += buffersLength[subLayerIndex]
     }
-    // console.log(pbf.pos, buffersLength, subLayerIndex)
-
     indexInCell++
   }
 }
 
 let count = 0
+let tilesCount = 0
 
 export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
-  const { buffersLength } = options?.fourwings || ({} as ParseFourwingsOptions)
-  if (!buffersLength?.length) {
+  if (!options?.fourwings?.buffersLength?.length) {
     return []
   }
-  const features = new Map<number, FourwingsFeature>()
   const a = performance.now()
-  const cells = new Pbf(datasetsBuffer).readFields(getCellTimeseries, {
-    features,
-    options,
-  })
+  tilesCount++
+  const cells = Array.from(
+    new Pbf(datasetsBuffer)
+      .readFields(getCellTimeseries, {
+        features: new Map<number, FourwingsFeature>(),
+        options,
+      })
+      .features.values()
+  )
   const b = performance.now()
   count += b - a
-  console.log('readFields', count)
-  return Array.from(cells.features.values())
+  console.log(
+    `parseFourwings took ${Math.round(count)} ms for ${tilesCount} tiles. ${Math.round(
+      count / tilesCount
+    )} ms on average`
+  )
+  return cells
 }
