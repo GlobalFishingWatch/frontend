@@ -123,7 +123,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
           pickable: true,
           getPickingInfo: this.getPickingInfo,
           getFillColor: this._getFillColor,
-          getPolygon: (d: FourwingsFeature) => d.geometry.coordinates[0],
+          getPolygon: (d: FourwingsFeature) => d.coordinates[0],
           getPolygonOffset: (params: any) =>
             getLayerGroupOffset(LayerGroup.HeatmapFootprint, params),
           updateTriggers: {
@@ -144,7 +144,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
               id: `fourwings-cell-highlight-${index}`,
               widthUnits: 'pixels',
               widthMinPixels: 4,
-              getPath: (d: FourwingsFeature) => d.geometry.coordinates[0],
+              getPath: (d: FourwingsFeature) => d.coordinates[0],
               getColor: COLOR_HIGHLIGHT_LINE,
               getOffset: 0.5,
               getPolygonOffset: (params: any) =>
