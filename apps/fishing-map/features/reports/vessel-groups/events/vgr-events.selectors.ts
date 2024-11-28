@@ -1,14 +1,14 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type {
-  ReportEventsVesselsParams,
-  ReportEventsVesselsResponseItem} from 'queries/report-events-stats-api';
+import { groupBy } from 'es-toolkit'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import {
   selectReportEventsStatsApiSlice,
   selectReportEventsVessels
 } from 'queries/report-events-stats-api'
-import { groupBy } from 'es-toolkit'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
+import type {
+  ReportEventsVesselsParams,
+  ReportEventsVesselsResponseItem} from 'queries/report-events-stats-api';
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'

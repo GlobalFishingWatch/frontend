@@ -79,7 +79,7 @@ export const getCellTimeseries = (
           break
 
         // this number defines the cell end frame
-        case CELL_END_INDEX:
+        case CELL_END_INDEX: {
           endFrame = value - tileStartFrame
           let feature = features.get(cellNum)
           if (!feature) {
@@ -152,6 +152,7 @@ export const getCellTimeseries = (
           // resseting indexInCell to start with the new cell
           indexInCell = -1
           break
+        }
       }
 
       indexInCell++

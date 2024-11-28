@@ -4,7 +4,7 @@ import cx from 'classnames'
 import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
-import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
@@ -273,7 +273,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
           {reportTitle}
 
           {reportAreaSpace && (
-            <span className={styles.secondary}> {formatI18nNumber(reportAreaSpace)} km²</span>
+            <span className={styles.secondary}> {formatI18nNumber(reportAreaSpace)} km²</span>
           )}
         </h1>
         <a className={styles.reportLink} href={window.location.href}>

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { RenderedVoyage } from 'types/voyage'
+import type { RenderedVoyage } from 'types/voyage'
 import styles from './Activity.module.css'
 
 interface EventProps {

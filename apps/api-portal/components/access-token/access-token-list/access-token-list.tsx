@@ -1,10 +1,10 @@
 import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
-import { formatI18nDate } from 'lib/dates'
-import { useClipboardNotification } from 'app/clipboard.hooks'
 import type { UserApplication} from '@globalfishingwatch/api-types';
 import { UserData } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { useClipboardNotification } from 'app/clipboard.hooks'
+import { formatI18nDate } from 'lib/dates'
 import useUserApplications, {
   useDeleteUserApplication,
 } from 'features/user-applications/user-applications'

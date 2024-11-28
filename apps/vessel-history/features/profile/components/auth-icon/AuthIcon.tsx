@@ -1,5 +1,5 @@
 import { Icon } from '@globalfishingwatch/ui-components'
-import { AuthorizationType } from '@globalfishingwatch/api-types'
+import type { AuthorizationType } from '@globalfishingwatch/api-types'
 import styles from './AuthIcon.module.css'
 
 interface AuthIconProps {

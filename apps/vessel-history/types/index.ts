@@ -1,11 +1,11 @@
-import {
+import type {
   Vessel,
   Authorization,
   VesselSearch,
   EventType,
   Workspace as BaseWorkspace,
 } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
@@ -259,7 +259,7 @@ export type Range = {
 export type Bbox = [number, number, number, number]
 
 export interface SearchResults {
-  vessels: Array<VesselSearch>
+  vessels: VesselSearch[]
   query: string
   offset: number
   total: number

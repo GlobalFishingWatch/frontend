@@ -44,6 +44,8 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement => {
         onMouseEnter={() => onMapHover && onMapHover(event)}
         onMouseLeave={() => onMapHover && onMapHover(undefined)}
         onClick={() => onInfoClick && onInfoClick(event)}
+        role="button"
+        tabIndex={0}
       >
         <EventIcon type={event.type} />
         <div className={styles.eventData}>

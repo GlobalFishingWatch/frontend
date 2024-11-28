@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
+import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {

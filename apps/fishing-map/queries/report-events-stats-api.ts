@@ -1,9 +1,9 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
-import type { RootState } from 'reducers'
 import { DateTime } from 'luxon'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { StatsIncludes } from '@globalfishingwatch/api-types'
+import type { RootState } from 'reducers'
+import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 
 export type ReportEventsVesselsParams = {
   start: string

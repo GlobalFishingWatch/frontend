@@ -81,7 +81,6 @@ function MapScreenshot() {
     : 'landscape'
   return createPortal(
     <Fragment>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         id="screenshot-img"
         className={styles.screenshot}

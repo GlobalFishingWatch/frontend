@@ -1,7 +1,8 @@
 import React, { Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
-import { RiskLevel, RiskOutput, VesselWithHistory } from 'types'
+import type { RiskOutput, VesselWithHistory } from 'types';
+import { RiskLevel } from 'types'
 import { VesselFieldLabel } from 'types/vessel'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import { FIRST_YEAR_OF_DATA, LAST_YEAR_FORCED_LABOR } from 'data/config'

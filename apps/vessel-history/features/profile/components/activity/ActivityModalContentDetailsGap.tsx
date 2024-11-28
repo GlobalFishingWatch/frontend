@@ -1,9 +1,10 @@
 import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import type {
+  RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
-  getEventRegionDescription,
-  RenderedEvent,
+  getEventRegionDescription
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import ActivityModalContentDetails from './ActivityModalContentDetails'

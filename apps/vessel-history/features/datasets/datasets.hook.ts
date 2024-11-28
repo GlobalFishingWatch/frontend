@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { Dataset } from '@globalfishingwatch/api-types'
-import { AsyncError } from 'utils/async-slice'
+import type { Dataset } from '@globalfishingwatch/api-types'
+import type { AsyncError } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetByIdThunk } from './datasets.slice'
 

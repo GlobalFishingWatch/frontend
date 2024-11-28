@@ -87,6 +87,7 @@ function ExpandedContainer({
           )
         }}
       >
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
         <span tabIndex={0}>{children}</span>
       </Tippy>
     </div>

@@ -1,6 +1,7 @@
 import cx from 'classnames'
-import { ReactNode } from 'react'
-import { Icon, IconType, Spinner } from '@globalfishingwatch/ui-components'
+import type { ReactNode } from 'react'
+import type { IconType} from '@globalfishingwatch/ui-components';
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import styles from './risk-section.module.css'
 

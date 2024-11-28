@@ -1,12 +1,12 @@
 import type { FetchBaseQueryArgs, SerializeQueryArgs } from '@reduxjs/toolkit/query/react';
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
-import { gfwBaseQuery } from 'queries/base'
 import { uniq } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import type { StatFields, StatType, StatsParams } from '@globalfishingwatch/api-types'
+import { gfwBaseQuery } from 'queries/base'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 
 type FetchDataviewStatsParams = {

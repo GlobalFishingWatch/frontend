@@ -1,10 +1,10 @@
-import { useGetVesselEventsQuery } from 'queries/vessel-events-api'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { InsightResponse} from '@globalfishingwatch/api-types';
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { useGetVesselEventsQuery } from 'queries/vessel-events-api'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'

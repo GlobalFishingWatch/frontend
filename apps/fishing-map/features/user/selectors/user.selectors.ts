@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   ADMIN_GROUP_ID,

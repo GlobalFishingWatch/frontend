@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types';
+import type { GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { getUTCDateTime } from 'utils/dates'
@@ -95,7 +95,7 @@ export function useActivityEventTranslations() {
               </span>
             )
           } else return ''
-        case EventTypes.Port:
+        case EventTypes.Port: {
           const { name, flag } = event.port_visit?.intermediateAnchorage ?? {}
           const portType = event.subType || event.type
           const portLabel = name
@@ -104,6 +104,7 @@ export function useActivityEventTranslations() {
           return t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
             port: formatInfoField(portLabel, 'port'),
           })
+        }
         case EventTypes.Loitering:
           return (
             mainRegionDescription && (

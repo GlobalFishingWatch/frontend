@@ -121,6 +121,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
                 </div>
                 <div
+                  role="button"
+                  tabIndex={0}
                   className={cx({
                     [styles.border]: !isLastRow,
                     [styles.pointer]: flagInteractionEnabled,
@@ -135,6 +137,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   <span>{flag}</span>
                 </div>
                 <div
+                  role="button"
+                  tabIndex={0}
                   className={cx({
                     [styles.border]: !isLastRow,
                     [styles.pointer]: typeInteractionEnabled,

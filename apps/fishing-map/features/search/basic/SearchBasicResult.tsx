@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import type { GetItemPropsOptions } from 'downshift'
 import type { FeatureCollection } from 'geojson'
 import { uniq } from 'es-toolkit'
-import type { Locale } from '@globalfishingwatch/api-types';
+import type { Locale } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
@@ -13,7 +13,7 @@ import {
   FIRST_YEAR_OF_DATA,
   IconButton,
 } from '@globalfishingwatch/ui-components'
-import type { Bbox} from '@globalfishingwatch/data-transforms';
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -193,6 +193,7 @@ function SearchBasicResult({
     <li
       {...itemProps}
       onMouseOut={() => setHighlightedIndex(-1)}
+      onBlur={() => setHighlightedIndex(-1)}
       className={cx(styles.searchResult, {
         [styles.highlighted]: highlightedIndex === index,
         [styles.inWorkspace]: isInWorkspace,

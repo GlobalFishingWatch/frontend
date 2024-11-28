@@ -2,12 +2,12 @@ import { useState, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { PopoverProps } from '@globalfishingwatch/ui-components';
+import type { PopoverProps } from '@globalfishingwatch/ui-components'
 import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import type { HintId } from './hints.content';
+import type { HintId } from './hints.content'
 import hintsConfig from './hints.content'
 import styles from './Hint.module.css'
 import { selectHintsDismissed, setHintDismissed } from './hints.slice'
@@ -73,7 +73,6 @@ function Hint({ id, className }: HintProps) {
       content={
         <div className={styles.container}>
           {imageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               className={styles.img}
               src={imageUrl}
@@ -98,6 +97,8 @@ function Hint({ id, className }: HintProps) {
       }
     >
       <div
+        role="button"
+        tabIndex={0}
         className={cx(styles.hintTarget, className, 'print-hidden')}
         onClick={visible ? onDismiss : showHint}
         key={`${id}-bubble`}

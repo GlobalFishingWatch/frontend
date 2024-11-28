@@ -1,17 +1,18 @@
 import { useState, useCallback, Fragment } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Modal, Button } from '@globalfishingwatch/ui-components'
-import { ColorRampId } from '@globalfishingwatch/layer-composer'
+import type { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useModal } from 'features/modals/modals.hooks'
 import { useCreateDataset } from 'features/datasets/new-datasets.hooks'
+import type {
+  FileField} from 'features/datasets/files.hooks';
 import {
   FETCH_FIELDS_QUERY,
-  FileField,
   useFetchFileFields,
   useUploadFile,
 } from 'features/datasets/files.hooks'
-import { FourwingsAPIDatasetUpdate } from 'features/datasets/datasets.types'
+import type { FourwingsAPIDatasetUpdate } from 'features/datasets/datasets.types'
 import NewDatasetConfig from 'features/datasets/NewDatasetConfig'
 import { useLayersConfig } from 'features/layers/layers.hooks'
 import LocalDatasetsLibrary from 'features/datasets/DatasetsLibraryLocal'

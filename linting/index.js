@@ -8,6 +8,13 @@ import react from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import prettierConfig from 'eslint-config-prettier'
 
+// import { includeIgnoreFile } from '@eslint/compat'
+// import path from 'node:path'
+// import { fileURLToPath } from 'node:url'
+// const __filename = fileURLToPath(import.meta.url)
+// const __dirname = path.dirname(__filename)
+// const gitignorePath = path.resolve(__dirname, '.gitignore')
+
 export default tseslint.config({
   files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
   plugins: {
@@ -33,8 +40,19 @@ export default tseslint.config({
     tseslint.configs.recommended,
     jsxA11y.flatConfigs.recommended,
     prettierConfig,
+    // includeIgnoreFile(gitignorePath),
   ],
-  ignores: ['node_modules', 'dist', '**/dist/**', 'public', '**/public/**', '.next', '**/.next/**'],
+  ignores: [
+    'node_modules',
+    'dist',
+    '**/dist/**',
+    'public',
+    '**/public/**',
+    '.next',
+    '**/.next/**',
+    'exported',
+    '**/exported/**',
+  ],
   languageOptions: {
     parserOptions: {
       ecmaFeatures: {
@@ -92,6 +110,9 @@ export default tseslint.config({
     '@typescript-eslint/no-empty-function': 0,
     'jsx-a11y/click-events-have-key-events': 0,
     'jsx-a11y/label-has-associated-control': 0,
+    'jsx-a11y/mouse-events-have-key-events': 'warn',
+    'jsx-a11y/no-static-element-interactions': 'warn',
+    'jsx-a11y/no-noninteractive-element-interactions': 'warn',
     '@nx/dependency-checks': [
       'error',
       {

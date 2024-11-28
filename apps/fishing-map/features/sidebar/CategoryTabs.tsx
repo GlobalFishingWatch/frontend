@@ -4,14 +4,10 @@ import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import type { IconType} from '@globalfishingwatch/ui-components';
+import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import type {
-  WorkspaceCategory} from 'data/workspaces';
-import {
-  DEFAULT_WORKSPACE_CATEGORY,
-  DEFAULT_WORKSPACE_ID
-} from 'data/workspaces'
+import type { WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { HOME, SEARCH, USER, WORKSPACES_LIST, WORKSPACE_SEARCH } from 'routes/routes'
 import {
   selectIsWorkspaceLocation,
@@ -85,7 +81,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   return (
     <Fragment>
       <ul className={cx('print-hidden', styles.CategoryTabs)}>
-        <li className={styles.tab} onClick={onMenuClick}>
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role */}
+        <li role="button" tabIndex={0} className={styles.tab} onClick={onMenuClick}>
           <span className={styles.tabContent}>
             <Icon icon="menu" />
           </span>
@@ -149,7 +146,12 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             </div>
             <ul className={styles.links}>
               <li>
-                <span className={cx(styles.link)} onClick={onFeedbackClick}>
+                <span
+                  role="button"
+                  tabIndex={0}
+                  className={cx(styles.link)}
+                  onClick={onFeedbackClick}
+                >
                   {t('feedback.logAnIssue', 'Log an issue')}
                 </span>
               </li>

@@ -1,5 +1,5 @@
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
-import type { DragEvent} from 'react';
+import type { DragEvent } from 'react'
 import { useCallback, useRef, useState } from 'react'
 import { atom, useSetAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
@@ -102,6 +102,9 @@ const MapAnnotations = (): React.ReactNode | null => {
             }
           >
             <p
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+              role="button"
+              tabIndex={0}
               onClick={(event) => {
                 setMapAnnotation(annotation)
               }}

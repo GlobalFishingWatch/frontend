@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
-import type { Workspace} from '@globalfishingwatch/api-types';
+import type { Workspace } from '@globalfishingwatch/api-types'
 import { EventTypes, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
+import type { RootState } from 'reducers'
 import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE, PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { selectIsWorkspaceLocation, selectLocationQuery } from 'routes/routes.selectors'
@@ -88,7 +88,7 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
   return workspace?.dataviewInstances || [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
 })
 
-const EMPTY_OBJECT: {} = {}
+const EMPTY_OBJECT: Record<string, any> = {}
 const selectWorkspaceState = createSelector([selectWorkspace], (workspace): WorkspaceState => {
   return workspace?.state || (EMPTY_OBJECT as WorkspaceState)
 })

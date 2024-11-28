@@ -67,6 +67,8 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
         <ul className={styles.groupOptions}>
           {!guestUser && (
             <li
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+              role="button"
               className={cx(styles.groupOption, styles.groupOptionNew)}
               onClick={() => handleVesselGroupClick(NEW_VESSEL_GROUP_ID)}
               key="new-group"

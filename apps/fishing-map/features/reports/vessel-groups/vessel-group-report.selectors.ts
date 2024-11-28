@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import type { InsightType } from '@globalfishingwatch/api-types'
 import type {
   VesselGroupInsightParams} from 'queries/vessel-insight-api';
 import {
@@ -6,7 +7,6 @@ import {
   selectVesselGroupInsightApiSlice
 } from 'queries/vessel-insight-api'
 import type { RootState } from 'reducers'
-import type { InsightType } from '@globalfishingwatch/api-types'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { dataviewHasVesselGroupId } from 'features/dataviews/dataviews.utils'

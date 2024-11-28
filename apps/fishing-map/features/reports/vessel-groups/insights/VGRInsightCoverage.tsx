@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
 import { useSelector } from 'react-redux'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { ReportBarGraphPlaceholder } from 'features/reports/shared/placeholders/ReportBarGraphPlaceholder'

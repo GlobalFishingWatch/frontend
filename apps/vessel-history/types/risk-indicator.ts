@@ -1,4 +1,4 @@
-import { VesselAPISource } from 'types'
+import type { VesselAPISource } from 'types'
 
 export type FlagColor = {
   black: string[]

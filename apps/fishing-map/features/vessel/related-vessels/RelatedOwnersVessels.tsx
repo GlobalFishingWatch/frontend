@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { useSearchByOwnerQuery } from 'queries/search-api'
 import { uniqBy } from 'es-toolkit'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
+import { useSearchByOwnerQuery } from 'queries/search-api'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import {
   getVesselProperty,

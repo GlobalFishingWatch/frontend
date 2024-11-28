@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
 import { uniq } from 'es-toolkit'
-import type { Tab, TabsProps} from '@globalfishingwatch/ui-components';
+import type { Tab, TabsProps } from '@globalfishingwatch/ui-components'
 import { IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -293,7 +293,6 @@ const VesselIdentity = () => {
               hasMoreInfo &&
               registrySourceData && (
                 <div className={styles.extraInfoContainer}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={registrySourceData?.logo}
                     alt={registrySourceData?.key}

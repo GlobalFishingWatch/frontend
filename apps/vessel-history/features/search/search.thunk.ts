@@ -1,14 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
+import type { AdvancedSearchQueryField} from '@globalfishingwatch/api-client';
+import { getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
+import type { VesselSearch } from '@globalfishingwatch/api-types'
 import { GFWApiClient } from 'http-client/http-client'
-import { AdvancedSearchQueryField, getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
-import { VesselSearch } from '@globalfishingwatch/api-types'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
-import { RootState } from 'store'
-import { SearchResults } from 'types'
+import type { RootState } from 'store'
+import type { SearchResults } from 'types'
 import { IS_STANDALONE_APP } from 'data/config'
-import { CachedVesselSearch } from './search.slice'
+import type { CachedVesselSearch } from './search.slice'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {
   const fields: AdvancedSearchQueryField[] = [
@@ -68,7 +69,7 @@ export const fetchData = async (
     signal,
   })
     .then((json: any) => {
-      const resultVessels: Array<VesselSearch> = json.entries
+      const resultVessels: VesselSearch[] = json.entries
       return {
         success: true,
         error: null,

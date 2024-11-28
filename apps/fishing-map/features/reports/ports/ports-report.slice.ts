@@ -1,5 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getQueryParamsResolved } from 'queries/base'
 import type {
   ReportEventsVesselsResponse,
@@ -7,8 +9,6 @@ import type {
 import {
   EVENTS_TIME_FILTER_MODE
 } from 'queries/report-events-stats-api'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { AsyncError} from 'utils/async-slice';
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {

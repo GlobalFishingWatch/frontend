@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux'
-import { useGetVesselInsightQuery } from 'queries/vessel-insight-api'
 import type { InsightType} from '@globalfishingwatch/api-types';
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { useGetVesselInsightQuery } from 'queries/vessel-insight-api'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import InsightMOUList from 'features/vessel/insights/InsightMOUList'

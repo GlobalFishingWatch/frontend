@@ -1,18 +1,19 @@
-import type { ChangeEvent} from 'react';
+import type { ChangeEvent } from 'react'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type { SelectOption } from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { InputText, Button, Modal, Select } from '@globalfishingwatch/ui-components'
-import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas';
+import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import type {
   WorkspaceEditAccessType,
-  WorkspaceViewAccessType} from '@globalfishingwatch/api-types';
+  WorkspaceViewAccessType,
+} from '@globalfishingwatch/api-types'
 import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS
+  WORKSPACE_PUBLIC_ACCESS,
 } from '@globalfishingwatch/api-types'
 import { saveWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -26,8 +27,7 @@ import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.work
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
 import { useSaveWorkspaceModalConnect, useSaveWorkspaceTimerange } from './workspace-save.hooks'
-import type {
-  WorkspaceTimeRangeMode} from './workspace-save.utils';
+import type { WorkspaceTimeRangeMode } from './workspace-save.utils'
 import {
   DAYS_FROM_LATEST_MAX,
   DAYS_FROM_LATEST_MIN,
@@ -107,7 +107,6 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
     if (workspaceModalOpen) {
       setDefaultWorkspaceName()
     }
-     
   }, [workspaceModalOpen])
 
   const getWorkspaceError = () => {
@@ -197,6 +196,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             testId="create-workspace-name"
             label={t('common.name', 'Name')}
             onChange={onNameChange}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
           />
         </div>

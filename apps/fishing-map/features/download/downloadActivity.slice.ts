@@ -2,7 +2,6 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
-import type { RootState } from 'reducers'
 import type { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
 import {
   getIsConcurrentError,
@@ -11,6 +10,7 @@ import {
   parseAPIError,
 } from '@globalfishingwatch/api-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { RootState } from 'reducers'
 import type { AsyncError} from 'utils/async-slice';
 import { AsyncReducerStatus } from 'utils/async-slice'
 import type { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'

@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
-import { AsyncError } from 'utils/async-slice'
+import type { AsyncError } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { OfflineVessel } from 'types/vessel'
+import type { OfflineVessel } from 'types/vessel'
+import type {
+  CreateOfflineVessel} from './offline-vessels.slice';
 import {
-  CreateOfflineVessel,
   createOfflineVesselThunk,
   deleteOfflineVesselThunk,
   fetchOfflineVesselByIdThunk,

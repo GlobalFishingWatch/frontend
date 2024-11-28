@@ -1,7 +1,6 @@
 import type { MouseEventHandler } from 'react';
 import { useCallback, useMemo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
-import type { FieldValidationError } from 'lib/types'
 import Link from 'next/link'
 import type {
   SelectOption} from '@globalfishingwatch/ui-components';
@@ -17,6 +16,7 @@ import type {
 import {
   USER_APPLICATION_INTENDED_USES,
 } from '@globalfishingwatch/api-types'
+import type { FieldValidationError } from 'lib/types'
 import useUser, { useUpdateUserAdditionalInformation } from 'features/user/user'
 import styles from './user-additional-fields.module.css'
 
