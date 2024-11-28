@@ -198,3 +198,7 @@ export type ExportData = {
   }
   features: ExportFeature[]
 }
+
+export type FilterModeValues = {
+  [key: string]: { min: number; max: number }
+}

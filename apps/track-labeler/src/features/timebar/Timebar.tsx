@@ -25,6 +25,8 @@ import { selectNightLayer, selectRangeFilterLimits } from './timebar.selectors'
 import TimebarSelector from './selector/Selector'
 import { VesselEventsPointsGraphDeckGL } from './VesselEventsPointsGraphDeckGL'
 
+const TIMEBAR_DEFAULT_HEIGHT = 300
+
 const DayNightTimebarLayer = () => {
   // TODO: Performance issue if we have lot of points
   const { outerScale } = useContext(TimelineContext)
@@ -125,6 +127,7 @@ const TimebarWrapper = () => {
           absoluteEnd={absoluteEnd.toISOString()}
           onChange={dispatchTimerange}
           isResizable={true}
+          defaultHeight={TIMEBAR_DEFAULT_HEIGHT}
           trackGraphOrientation={'up'}
           //bookmarkStart={bookmarkStart}
           //bookmarkEnd={bookmarkEnd}
