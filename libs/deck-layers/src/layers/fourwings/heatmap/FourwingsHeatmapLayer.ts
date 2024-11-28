@@ -24,6 +24,8 @@ import {
   FourwingsHeatmapPickingObject,
 } from './fourwings-heatmap.types'
 
+let count = 0
+
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
   layers: LayersList = []
@@ -137,8 +139,9 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       target = EMPTY_CELL_COLOR
       return target
     }
+    const a = performance.now()
     const aggregatedCellValues =
-      feature.properties.initialValues[this.timeRangeKey] ||
+      // feature.properties.initialValues[this.timeRangeKey] ||
       aggregateCell({
         cellValues: feature.properties.values,
         startFrame: this.startFrame,
@@ -149,6 +152,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     let chosenValueIndex = 0
     let chosenValue: number | undefined
     feature.aggregatedValues = aggregatedCellValues
+    feature.properties.initialValues[this.timeRangeKey] = aggregatedCellValues
     aggregatedCellValues.forEach((value, index) => {
       if (value && (!chosenValue || value > chosenValue)) {
         chosenValue = value
@@ -180,6 +184,9 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     } else {
       target = EMPTY_CELL_COLOR
     }
+    const b = performance.now()
+    count += b - a
+    // console.log('getCompareFillColor', count)
     return target
   }
 
