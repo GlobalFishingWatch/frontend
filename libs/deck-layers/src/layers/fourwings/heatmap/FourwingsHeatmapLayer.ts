@@ -147,7 +147,6 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     let chosenValueIndex = 0
     let chosenValue: number | undefined
     feature.aggregatedValues = aggregatedCellValues
-    feature.properties.initialValues[this.timeRangeKey] = aggregatedCellValues
     aggregatedCellValues.forEach((value, index) => {
       if (value && (!chosenValue || value > chosenValue)) {
         chosenValue = value
