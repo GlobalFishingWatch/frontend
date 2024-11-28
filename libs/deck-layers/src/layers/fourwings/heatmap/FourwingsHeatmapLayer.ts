@@ -252,12 +252,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           id: `fourwings-tile`,
           pickable: true,
           getPickingInfo: this.getPickingInfo,
-          getFillColor:
-            comparisonMode === FourwingsComparisonMode.TimeCompare
-              ? this.getTimeCompareFillColor
-              : comparisonMode === FourwingsComparisonMode.Bivariate
-              ? this.getBivariateFillColor
-              : this.getCompareFillColor,
+          getFillColor: [142, 178, 203, 255],
+          // getFillColor:
+          //   comparisonMode === FourwingsComparisonMode.TimeCompare
+          //     ? this.getTimeCompareFillColor
+          //     : comparisonMode === FourwingsComparisonMode.Bivariate
+          //     ? this.getBivariateFillColor
+          //     : this.getCompareFillColor,
           getPolygon: (d: FourwingsFeature) => d.geometry.coordinates[0],
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {

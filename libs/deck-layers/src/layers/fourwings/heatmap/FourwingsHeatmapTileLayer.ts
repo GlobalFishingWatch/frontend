@@ -77,6 +77,8 @@ const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   resolution: 'default',
 }
 
+const perfStart = performance.now()
+
 export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTileLayerProps> {
   static layerName = 'FourwingsHeatmapTileLayer'
   static defaultProps = defaultProps
@@ -317,6 +319,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
     this.updateColorDomain()
+    console.log('viewport loads:', (performance.now() - perfStart) / 1000)
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
     }
