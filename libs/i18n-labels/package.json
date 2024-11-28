@@ -4,6 +4,7 @@
   "main": "./index.js",
   "module": "./index.mjs",
   "typings": "./index.d.ts",
+  "type": "module",
   "scripts": {},
   "files": [
     "en",
