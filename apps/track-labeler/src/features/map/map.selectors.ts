@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { featureCollection } from '@turf/helpers'
-import { Feature, LineString, Position, GeoJsonProperties } from 'geojson'
+import { Feature, LineString, Position, GeoJsonProperties, Point } from 'geojson'
 import * as Generators from '@globalfishingwatch/layer-composer'
 import { TrackPoint } from '@globalfishingwatch/api-types'
 import {
@@ -9,14 +9,7 @@ import {
 } from '../../features/tracks/tracks.selectors'
 import { BACKGROUND_LAYER, DEFAULT_DATAVIEWS } from '../../data/config'
 import { selectHighlightedEvent, selectHighlightedTime } from '../../features/timebar/timebar.slice'
-import {
-  ArrowFeature,
-  LayersData,
-  VesselDirectionsGeneratorConfig,
-  VesselPoint,
-  ActionType,
-  TrackColor,
-} from '../../types'
+import { LayersData, VesselPoint, ActionType, TrackColor } from '../../types'
 import { selectedtracks, SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
 import { getFixedColorForUnknownLabel } from '../../utils/colors'
 import {
@@ -232,8 +225,8 @@ export const selectLegendLabels = createSelector(
  */
 export const selectVesselDirectionPointsLayer = createSelector(
   [selectVesselDirectionPoints, selectVesselDirectionPointsOfSelectedSegments],
-  (originalVesselTrack, vesselTrack): ArrowFeature[] => {
-    const originalArrows: ArrowFeature[] = originalVesselTrack.map((point: VesselPoint) => {
+  (originalVesselTrack, vesselTrack): Feature[] => {
+    const originalArrows: Feature[] = originalVesselTrack.map((point: VesselPoint) => {
       return {
         type: 'Feature',
         geometry: {
@@ -247,9 +240,9 @@ export const selectVesselDirectionPointsLayer = createSelector(
           elevation: point.elevation,
           action: point.action,
         },
-      } as ArrowFeature
+      } as Feature<Point, GeoJsonProperties>
     })
-    const arrows: ArrowFeature[] = vesselTrack.map((point: VesselPoint) => {
+    const arrows: Feature<Point, GeoJsonProperties>[] = vesselTrack.map((point: VesselPoint) => {
       return {
         type: 'Feature',
         geometry: {
@@ -263,7 +256,7 @@ export const selectVesselDirectionPointsLayer = createSelector(
           elevation: point.elevation,
           action: point.action,
         },
-      } as ArrowFeature
+      } as Feature<Point, GeoJsonProperties>
     })
     return [...originalArrows, ...arrows]
   }
@@ -274,8 +267,9 @@ export const selectVesselDirectionPointsLayer = createSelector(
  */
 export const selectDirectionPointsLayers = createSelector(
   [selectVesselDirectionPointsLayer],
-  (vesselEvents): VesselDirectionsGeneratorConfig => {
+  (vesselEvents): Generators.VesselPositionsGeneratorConfig => {
     return {
+      id: 'vessel-positions',
       type: 'geojson',
       data: {
         features: vesselEvents,

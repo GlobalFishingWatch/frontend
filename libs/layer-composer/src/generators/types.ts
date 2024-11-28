@@ -563,6 +563,29 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   maxVisibleValue?: number
 }
 
+/**
+ * Renders vessel position arrows that can be filtered by time and colored by speed or rules
+ */
+export interface VesselPositionsGeneratorConfig extends GeneratorConfig {
+  type: 'geojson'
+  /**
+   * A GeoJSON feature collection containing vessel positions with course property
+   */
+  data: FeatureCollection
+  /**
+   * Color mode to determine how arrows are colored
+   */
+  colorMode?: 'all' | 'content' | 'labels'
+  /**
+   * Colors to apply based on rules
+   */
+  ruleColors?: any[]
+  /**
+   * Colors to apply based on project settings
+   */
+  projectColors?: Record<string, string>
+}
+
 export type AnyGeneratorConfig =
   | AnnotationsGeneratorConfig
   | BackgroundGeneratorConfig
@@ -581,6 +604,7 @@ export type AnyGeneratorConfig =
   | UserContextGeneratorConfig
   | VesselEventsGeneratorConfig
   | VesselEventsShapesGeneratorConfig
+  | VesselPositionsGeneratorConfig
 
 // ---- Generator specific types
 export enum BasemapType {

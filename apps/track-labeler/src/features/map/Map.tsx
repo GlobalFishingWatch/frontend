@@ -103,8 +103,18 @@ const Map = (): React.ReactElement => {
       id: 'rulers',
       data: rulers,
     }
-    return [...generatorConfigs, rulersConfig]
-  }, [generatorConfigs, rulers])
+
+    const vesselPositionsConfig: Generators.VesselPositionsGeneratorConfig = {
+      type: Generators.GeneratorType.VesselPositions,
+      id: 'vessel-positions',
+      data: trackArrowsLayer.data,
+      colorMode,
+      ruleColors,
+      projectColors,
+    }
+
+    return [...generatorConfigs, rulersConfig, vesselPositionsConfig]
+  }, [generatorConfigs, rulers, trackArrowsLayer, colorMode, ruleColors, projectColors])
 
   const { style } = useLayerComposer(
     generatorConfigsWithRulers,
@@ -116,6 +126,8 @@ const Map = (): React.ReactElement => {
     const newStyle: any = {
       ...style,
       layers: style?.layers ?? [],
+      sprite:
+        'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-labeler',
       // .filter((layer) => layer.id !== 'bathymetry'),
     }
 
@@ -129,94 +141,51 @@ const Map = (): React.ReactElement => {
       newStyle.sprite =
         'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-labeler'
 
-      const customizedLayers = ['trackDirections', 'vesselTrack']
-      const vesselTrackLayers = newStyle.layers
-        .filter((layer: { source: string }) => layer.source === 'vesselTrack')
-        .map((layer: any) => ({
-          ...layer,
-          paint: {
-            'line-color': [
-              'match',
-              ['get', 'action'],
-              ...typedKeys(projectColors)
-                .map((key) => [key.toString(), projectColors[key]])
-                .flat(),
-              projectColors[ActionType.untracked],
-            ],
-            'line-opacity': 0.9,
-            'line-width': 0,
-          },
-        }))
-      // Used to debug tracks
-      const vesselTrackLabels = vesselTrackLayers.map((layer: any) => ({
-        id: `track-labels-${layer.id}`,
-        type: 'symbol',
-        source: 'vesselTrack',
-        layout: {
-          'text-field': ['get', 'action'],
-          'text-font': ['Roboto Mono Light'],
-          'text-size': 8,
-          'text-allow-overlap': true,
-          visibility: 'none',
-        },
-        paint: {
-          'text-halo-color': 'hsl(320, 0%, 100%)',
-          'text-halo-width': 2,
-        },
-      }))
-      newStyle.layers = newStyle.layers
-        .filter((layer: any) => !customizedLayers.includes(layer.source))
-        .concat([...vesselTrackLayers, ...vesselTrackLabels])
-
-      const onlyContent = colorMode === 'content'
-      const onlyLabels = colorMode === 'labels'
-      const fillVisible = colorMode === 'all' || onlyContent
-      const outlineVisible = colorMode === 'all' || onlyLabels
-      const fillColor = fillVisible
-        ? ['interpolate', ['linear'], ['get', 'speed'], 0, '#FF6B6B', 6, '#CC4AA9', 12, '#185AD0']
-        : MAP_BACKGROUND_COLOR
-
-      newStyle.layers.push({
-        id: 'arrow',
-        type: 'symbol',
-        source: 'trackDirections',
-        layout: {
-          'icon-allow-overlap': true,
-          'icon-image': 'arrow-inner',
-          // 'icon-size': ['interpolate', ['linear'], ['zoom'], 1, 0.002, 15, 2],
-          'icon-rotate': ['get', 'course'],
-          'icon-offset': [1.5, 0],
-          // visibility: fillVisible || outlineVisible ? 'visible' : 'none',
-          visibility: 'visible',
-        },
-        paint: {
-          // Arrow Fill
-          'icon-color': outlineVisible
-            ? // When fill visible, use the label color
-              ['case', ...ruleColors, 'black']
-            : // if not use the fill color
-              fillColor,
-          // ['case', ['boolean', ['feature-state', 'highlight'], false], 'white', fillColor],
-          // Arrow outline
-          'icon-halo-color': outlineVisible
-            ? // When fill visible, use the label color
-              ['case', ...ruleColors, 'black']
-            : // if not use the fill color
-              fillColor,
-          'icon-halo-width': 2,
-        },
-      })
+      // const customizedLayers = ['trackDirections', 'vesselTrack']
+      // const vesselTrackLayers = newStyle.layers
+      //   .filter((layer: { source: string }) => layer.source === 'vesselTrack')
+      //   .map((layer: any) => ({
+      //     ...layer,
+      //     paint: {
+      //       'line-color': [
+      //         'match',
+      //         ['get', 'action'],
+      //         ...typedKeys(projectColors)
+      //           .map((key) => [key.toString(), projectColors[key]])
+      //           .flat(),
+      //         projectColors[ActionType.untracked],
+      //       ],
+      //       'line-opacity': 0.9,
+      //       'line-width': 0,
+      //     },
+      //   }))
+      // // Used to debug tracks
+      // const vesselTrackLabels = vesselTrackLayers.map((layer: any) => ({
+      //   id: `track-labels-${layer.id}`,
+      //   type: 'symbol',
+      //   source: 'vesselTrack',
+      //   layout: {
+      //     'text-field': ['get', 'action'],
+      //     'text-font': ['Roboto Mono Light'],
+      //     'text-size': 8,
+      //     'text-allow-overlap': true,
+      //     visibility: 'none',
+      //   },
+      //   paint: {
+      //     'text-halo-color': 'hsl(320, 0%, 100%)',
+      //     'text-halo-width': 2,
+      //   },
+      // }))
+      // newStyle.layers = newStyle.layers
+      //   .filter((layer: any) => !customizedLayers.includes(layer.source))
+      //   .concat([...vesselTrackLayers, ...vesselTrackLabels])
     }
 
-    if (newStyle.sources) {
-      newStyle.sources.trackDirections = trackArrowsLayer
-    }
-
-    newStyle.sources = { ...newStyle.sources, ...contextSourceStyle }
-    newStyle.layers = [...newStyle.layers, ...getVisibleContextLayers(hiddenLayers)]
+    // newStyle.sources = { ...newStyle.sources, ...contextSourceStyle }
+    // newStyle.layers = [...newStyle.layers, ...getVisibleContextLayers(hiddenLayers)]
 
     return newStyle
-  }, [style, hiddenLayers, colorMode, ruleColors, projectColors, trackArrowsLayer])
+  }, [style])
 
   const [availableShortcuts, shortcuts] = useMemo(
     () => [
