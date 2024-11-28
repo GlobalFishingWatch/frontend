@@ -17,6 +17,17 @@ export default tseslint.config({
     '@next': next,
     'react-hooks': reactHooksPlugin,
   },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+    'import/resolver': {
+      typescript: {},
+    },
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
+  },
   extends: [
     eslint.configs.recommended,
     tseslint.configs.recommended,

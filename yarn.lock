@@ -3029,7 +3029,7 @@ __metadata:
     eslint-import-resolver-typescript: "npm:3.6.3"
     eslint-plugin-cypress: "npm:4.1.0"
     eslint-plugin-flowtype: "npm:8.0.3"
-    eslint-plugin-import: "npm:2.31.0"
+    eslint-plugin-import: "npm:^2.31.0"
     eslint-plugin-jsx-a11y: "npm:6.10.2"
     eslint-plugin-react: "npm:7.37.2"
     eslint-plugin-react-compiler: "npm:19.0.0-beta-6fc168f-20241025"
@@ -16730,7 +16730,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:2.31.0, eslint-plugin-import@npm:2.x, eslint-plugin-import@npm:^2.25.3, eslint-plugin-import@npm:^2.31.0":
+"eslint-plugin-import@npm:2.x, eslint-plugin-import@npm:^2.25.3, eslint-plugin-import@npm:^2.31.0":
   version: 2.31.0
   resolution: "eslint-plugin-import@npm:2.31.0"
   dependencies:
