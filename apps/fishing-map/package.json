@@ -20,12 +20,5 @@
     ">0.1%",
     "not dead",
     "not op_mini all"
-  ],
-  "eslintConfig": {
-    "extends": [
-      "@globalfishingwatch/linting"
-    ],
-    "ignorePatterns": "public/"
-  },
-  "prettier": "@globalfishingwatch/linting/prettier"
+  ]
 }
