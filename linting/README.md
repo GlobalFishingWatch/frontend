@@ -26,7 +26,6 @@ to your `eslint.config.mjs`:
 import gfwConfig from '@globalfishingwatch/linting'
 
 export default gfwConfig
-
 ```
 
 Legacy usage < v9
@@ -53,10 +52,10 @@ Legacy usage < v9
 
 ### Prettier
 
-to your `.prettierrc`:
+to your `.prettierrc.js`:
 
 ```js
-module.exports = require('@globalfishingwatch/linting/prettier')
+export default '@globalfishingwatch/linting/prettier'
 ```
 
 ## Recommendations

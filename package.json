@@ -125,7 +125,7 @@
     "next-redux-wrapper": "8.1.0",
     "papaparse": "5.4.1",
     "pbf": "4.0.1",
-    "prettier": "^2.0.5",
+    "prettier": "^3.4.1",
     "protobufjs": "7.4.0",
     "qs": "6.13.0",
     "rc-slider": "^9.5.1",
