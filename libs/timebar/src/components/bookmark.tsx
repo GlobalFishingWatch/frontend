@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { ScaleTime } from 'd3-scale'
+import type { ScaleTime } from 'd3-scale'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { getHumanizedDates } from '../utils'
 import styles from './bookmark.module.css'

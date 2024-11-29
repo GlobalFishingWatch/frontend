@@ -12,7 +12,7 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { PUBLIC_WORKSPACE_ENV } from 'data/config'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
-import { MapAnnotation } from '../annotations/annotations.types'
+import type { MapAnnotation } from '../annotations/annotations.types'
 import { useMapErrorNotification } from './error-notification.hooks'
 import styles from './ErrorNotification.module.css'
 

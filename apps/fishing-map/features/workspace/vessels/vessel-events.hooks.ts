@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { EventType } from '@globalfishingwatch/api-types'
+import type { EventType } from '@globalfishingwatch/api-types'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 

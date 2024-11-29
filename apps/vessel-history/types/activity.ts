@@ -1,12 +1,12 @@
-import {
+import type {
   ApiEvent,
   EventAuthorization,
   EventType,
   EventTypes,
   Regions,
 } from '@globalfishingwatch/api-types'
-import { GroupRegions } from 'features/regions/regions.slice'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import type { GroupRegions } from 'features/regions/regions.slice'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 
 export type ExpandableStatus = 'expanded' | 'collapsed'
 export interface EventVessel {

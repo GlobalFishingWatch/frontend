@@ -6,10 +6,12 @@ import { fitBounds } from 'viewport-mercator-project'
 import Hotkeys from 'react-hot-keys'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { Button, IconButton, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components';
+import { Button, IconButton, Select } from '@globalfishingwatch/ui-components'
 import { filterSegmentsByTimerange, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import brand from '../../assets/images/brand.png'
-import { selectedtracks, SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
+import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { selectProject } from '../../routes/routes.selectors'
 import {
   getVesselInfo,
@@ -17,7 +19,11 @@ import {
 } from '../../features/tracks/tracks.selectors'
 import { useViewport } from '../../features/map/map.hooks'
 import { useMapboxInstance } from '../../features/map/map.context'
-import { disableHighlightedEvent, setHighlightedEvent } from '../../features/timebar/timebar.slice'
+import {
+  disableHighlightedEvent,
+  setHighlightedEvent,
+  setHighlightedTime,
+} from '../../features/timebar/timebar.slice'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import { ActionType } from '../../types'
 import { findPreviousTimestamp, isFiniteBbox } from '../../utils/shared'
@@ -139,6 +145,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
         const start = new Date(findPreviousTimestamp(timestamps, selection.start))
         const end = new Date(selection.end)
         dispatch(setHighlightedEvent({ start: start.toISOString(), end: end.toISOString() }))
+        dispatch(setHighlightedTime({ start: start.toISOString(), end: end.toISOString() }))
       }
     },
     [dispatch, timestamps]
@@ -304,7 +311,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
                       key={`segment-${index}`}
                       data-testid={`segment-${index}`}
                       style={style}
-                      className={styles.segment}
+                      className={cx(styles.segment, !selectedAction && styles.segmentActivityEmpty)}
                       onMouseEnter={() => onSegmentOver(segment)}
                       onMouseLeave={() => {
                         dispatch(disableHighlightedEvent())

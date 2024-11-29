@@ -1,18 +1,21 @@
 import { useCallback, useEffect } from 'react'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { ChunkFeature, aggregateFeatures } from '@globalfishingwatch/features-aggregate'
+import type { ChunkFeature} from '@globalfishingwatch/features-aggregate';
+import { aggregateFeatures } from '@globalfishingwatch/features-aggregate'
+import type {
+  FourwingsLayerConfig} from 'features/layers/layers.hooks';
 import {
-  FourwingsLayerConfig,
   useGeoTemporalLayers,
   useLayersConfig,
 } from 'features/layers/layers.hooks'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
+import type {
+  LayerFeature} from 'features/map/map-sources.hooks';
 import {
   areLayersFeatureLoaded,
-  LayerFeature,
   useMapLayerFeatures,
 } from 'features/map/map-sources.hooks'
 
@@ -56,7 +59,7 @@ export const useDynamicBreaksUpdate = () => {
               parseFloat(clusterFirst.toFixed(3))
             )
 
-            let cleanBreaks = []
+            const cleanBreaks = []
             ck.forEach((k, i) => {
               if (i > 1) {
                 const cleanBreak =

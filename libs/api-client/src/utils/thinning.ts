@@ -1,4 +1,4 @@
-import { ThinningConfig } from '@globalfishingwatch/api-types'
+import type { ThinningConfig } from '@globalfishingwatch/api-types'
 
 export enum ThinningLevels {
   Footprint = 'Footprint',

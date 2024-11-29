@@ -1,4 +1,5 @@
 import type { JSZipObject } from 'jszip'
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let JSZip: typeof import('jszip')
 
 export function isZipFile(file?: File) {

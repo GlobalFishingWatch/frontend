@@ -1,6 +1,6 @@
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { formatInfoField } from 'utils/info'
-import { VesselLastIdentity } from 'features/search/search.slice'
+import type { VesselLastIdentity } from 'features/search/search.slice'
 import VesselIdentityCombinedSourceField from './VesselIdentityCombinedSourceField'
 import VesselIdentityField from './VesselIdentityField'
 

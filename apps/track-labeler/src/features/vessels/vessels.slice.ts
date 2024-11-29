@@ -1,8 +1,9 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { FeatureCollection } from 'geojson'
-import { TrackSegment } from '@globalfishingwatch/api-types'
-import { ExportData } from '../../types'
-import { RootState } from '../../store'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import type { FeatureCollection } from 'geojson'
+import type { TrackSegment } from '@globalfishingwatch/api-types'
+import type { ExportData } from '../../types'
+import type { RootState } from '../../store'
 
 interface Dictionary<T> {
   [Key: string]: T

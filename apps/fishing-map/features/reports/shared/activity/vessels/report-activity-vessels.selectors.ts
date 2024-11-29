@@ -14,8 +14,9 @@ import {
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
 } from 'features/reports/areas/area-reports.config'
+import type {
+  ReportVesselWithDatasets} from 'features/reports/areas/area-reports.selectors';
 import {
-  ReportVesselWithDatasets,
   selectReportActivityFlatten,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/areas/area-reports.selectors'
@@ -91,7 +92,7 @@ export const selectReportVesselsList = createSelector(
 )
 
 export const selectHasReportVessels = createSelector([selectReportVesselsList], (vessels) => {
-  return vessels!?.length > 0
+  return vessels?.length > 0
 })
 
 export const selectReportVesselsFiltered = createSelector(
@@ -126,9 +127,9 @@ export const selectReportVesselsPagination = createSelector(
       page,
       offset: resultsPerPage * page,
       resultsPerPage,
-      resultsNumber: vessels!?.length,
-      totalFiltered: allVesselsFiltered!?.length,
-      total: allVessels!?.length,
+      resultsNumber: vessels?.length,
+      totalFiltered: allVesselsFiltered?.length,
+      total: allVessels?.length,
     }
   }
 )

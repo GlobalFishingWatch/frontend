@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'es-toolkit'
-import {
+import type {
   Interval,
   ExtendedStyleMeta,
+  ExtendedLayer} from '@globalfishingwatch/layer-composer';
+import {
   CONFIG_BY_INTERVAL,
   pickActiveTimeChunk,
-  ExtendedLayer,
   Group,
 } from '@globalfishingwatch/layer-composer'
 import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
+import type { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 export type MaplibreGeoJSONFeature = GeoJSONFeature & {
   layer: ExtendedLayer

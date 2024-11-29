@@ -12,7 +12,7 @@ import {
 import { selectVesselGroupsStatusId } from 'features/vessel-groups/vessel-groups.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import styles from './VesselGroupListTooltip.module.css'
-import { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
+import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 
 type VesselGroupListTooltipProps = {
   children?: React.ReactNode
@@ -67,6 +67,8 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
         <ul className={styles.groupOptions}>
           {!guestUser && (
             <li
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+              role="button"
               className={cx(styles.groupOption, styles.groupOptionNew)}
               onClick={() => handleVesselGroupClick(NEW_VESSEL_GROUP_ID)}
               key="new-group"

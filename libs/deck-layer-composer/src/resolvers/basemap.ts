@@ -1,9 +1,10 @@
-import {
+import type {
   BaseMapLabelsLayerProps,
-  BaseMapLayerProps,
+  BaseMapLayerProps} from '@globalfishingwatch/deck-layers';
+import {
   BasemapType,
 } from '@globalfishingwatch/deck-layers'
-import { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from './types'
 
 export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLabelsLayerProps> = (
   dataview

@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import I18nDate from 'features/i18n/i18nDate'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContentField from './ActivityModalContentField'
 import styles from './ActivityModalDetails.module.css'
 

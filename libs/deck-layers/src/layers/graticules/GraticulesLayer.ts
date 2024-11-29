@@ -1,5 +1,4 @@
-import {
-  CompositeLayer,
+import type {
   DefaultProps,
   Accessor,
   LayerContext,
@@ -7,9 +6,10 @@ import {
   AccessorFunction,
   Position,
 } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
 import { PathLayer, TextLayer } from '@deck.gl/layers'
-import { GeoJsonProperties } from 'geojson'
-import { PathGeometry } from '@deck.gl/layers/dist/path-layer/path'
+import type { GeoJsonProperties } from 'geojson'
+import type { PathGeometry } from '@deck.gl/layers/dist/path-layer/path'
 import {
   hexToDeckColor,
   LayerGroup,
@@ -17,7 +17,11 @@ import {
   BLEND_BACKGROUND,
   getViewportHash,
 } from '../../utils'
-import { GraticulesFeature, GraticulesLayerProps, GraticulesLayerState } from './graticules.types'
+import type {
+  GraticulesFeature,
+  GraticulesLayerProps,
+  GraticulesLayerState,
+} from './graticules.types'
 import { generateGraticulesFeatures } from './graticules.data'
 import { checkScaleRankByViewport } from './graticules.utils'
 
@@ -25,7 +29,9 @@ const defaultProps: DefaultProps<GraticulesLayerProps> = {
   color: '#fff',
 }
 
-export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayerProps & PropsT> {
+export class GraticulesLayer<PropsT = Record<string, unknown>> extends CompositeLayer<
+  GraticulesLayerProps & PropsT
+> {
   static layerName = 'ContextLayer'
   static defaultProps = defaultProps
   state!: GraticulesLayerState

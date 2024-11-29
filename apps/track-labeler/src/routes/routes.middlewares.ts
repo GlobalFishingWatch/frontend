@@ -1,9 +1,9 @@
-import { Middleware } from 'redux'
-import { RootState } from '../store'
+import type { Middleware } from 'redux'
+import type { RootState } from '../store'
 import { selectUserTokenExpirationTimestamp } from '../features/user/user.slice'
 import { userLoginThunk } from '../features/user/user.thunks'
 import { routesMap } from './routes'
-import { UpdateQueryParamsAction } from './routes.actions'
+import type { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
   ({ getState }: { getState: () => RootState }) =>

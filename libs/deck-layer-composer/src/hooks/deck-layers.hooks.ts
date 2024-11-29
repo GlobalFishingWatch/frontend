@@ -1,5 +1,6 @@
-import { Atom, atom, useAtomValue } from 'jotai'
-import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
+import type { Atom} from 'jotai';
+import { atom, useAtomValue } from 'jotai'
+import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { DECK_LAYER_LIFECYCLE } from '../types'
 import { deckLayerInstancesAtom } from './deck-layers-composer.hooks'
 import { deckLayersStateAtom } from './deck-layers-state.hooks'

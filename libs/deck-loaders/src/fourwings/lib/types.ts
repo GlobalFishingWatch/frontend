@@ -1,6 +1,6 @@
 import type { LoaderOptions } from '@loaders.gl/loader-utils'
-import { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { Feature, Point, Polygon } from 'geojson'
+import type { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Feature, Point, Polygon } from 'geojson'
 
 export type FourwingsRawData = number[]
 

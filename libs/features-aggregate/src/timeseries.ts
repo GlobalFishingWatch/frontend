@@ -1,18 +1,20 @@
 import { DateTime } from 'luxon'
 import { uniqBy } from 'es-toolkit'
+import type {
+  TimeSeriesFrame,
+  TimeseriesFeatureProps} from '@globalfishingwatch/fourwings-aggregate';
 import {
   AggregationOperation,
   getTimeSeries,
-  TimeSeriesFrame,
-  getRealValue,
-  TimeseriesFeatureProps,
+  getRealValue
 } from '@globalfishingwatch/fourwings-aggregate'
-import {
+import type {
   HeatmapLayerMeta,
-  Interval,
+  Interval} from '@globalfishingwatch/layer-composer';
+import {
   quantizeOffsetToDate,
 } from '@globalfishingwatch/layer-composer'
-import { GeoJSONFeature } from './features'
+import type { GeoJSONFeature } from './features'
 
 export type TilesSourceState = {
   loaded: boolean

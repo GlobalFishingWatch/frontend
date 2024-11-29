@@ -1,15 +1,16 @@
-import { Dispatch } from 'redux'
-import {
-  NOT_FOUND,
+import type { Dispatch } from 'redux'
+import type {
   RoutesMap,
-  redirect,
-  connectRoutes,
   Options,
   StateGetter,
-  NavigationAction,
+  NavigationAction} from 'redux-first-router';
+import {
+  NOT_FOUND,
+  redirect,
+  connectRoutes
 } from 'redux-first-router'
 import { stringify, parse } from 'qs'
-import { AppActions, AppState } from 'types/redux.types'
+import type { AppActions, AppState } from 'types/redux.types'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { BASE_URL } from 'data/constants'

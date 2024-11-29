@@ -1,5 +1,5 @@
-import { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
-import { GetDatasetConfigCallback } from '@globalfishingwatch/dataviews-client'
+import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import type { GetDatasetConfigCallback } from '@globalfishingwatch/dataviews-client'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
 

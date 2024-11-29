@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportPortId, selectUrlTimeRange } from 'routes/routes.selectors'
-import { AppDispatch } from 'store'
+import type { AppDispatch } from 'store'
 import { fetchPortsReportThunk } from './ports-report.slice'
 import { selectPortsReportDatasetId } from './ports-report.config.selectors'
 

@@ -3,12 +3,13 @@ import { format } from 'd3-format'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import {
+import type {
   FourwingsHeatmapPickingObject,
-  FourwingsHeatmapStaticPickingObject,
+  FourwingsHeatmapStaticPickingObject} from '@globalfishingwatch/deck-layers';
+import {
   HEATMAP_STATIC_PROPERTY_ID,
 } from '@globalfishingwatch/deck-layers'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import styles from '../Popup.module.css'

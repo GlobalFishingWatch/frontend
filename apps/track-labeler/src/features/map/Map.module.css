@@ -8,6 +8,7 @@
   right: 7px;
   background: #163f89;
   padding: 8px;
+  z-index: 1000;
 }
 
 .legend {

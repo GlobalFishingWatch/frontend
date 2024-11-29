@@ -1,7 +1,6 @@
 import { parse } from '@loaders.gl/core'
-import {
+import type {
   Color,
-  CompositeLayer,
   Layer,
   LayerContext,
   LayersList,
@@ -9,15 +8,19 @@ import {
   UpdateParameters,
   PickingInfo,
 } from '@deck.gl/core'
-import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers'
+import { CompositeLayer } from '@deck.gl/core'
+import type { MVTLayerProps } from '@deck.gl/geo-layers'
+import { MVTLayer } from '@deck.gl/geo-layers'
 import { IconLayer, TextLayer } from '@deck.gl/layers'
 import { sample, mean, standardDeviation } from 'simple-statistics'
 import { groupBy, orderBy } from 'es-toolkit'
 import { stringify } from 'qs'
-import { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DateTime } from 'luxon'
-import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
-import { CONFIG_BY_INTERVAL, FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
 import {
   BLEND_BACKGROUND,
@@ -39,7 +42,7 @@ import {
   POSITIONS_VISUALIZATION_MAX_ZOOM,
   SUPPORTED_POSITION_PROPERTIES,
 } from '../fourwings.config'
-import { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
+import type { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { PATH_BASENAME } from '../../layers.config'
 import {
@@ -48,7 +51,7 @@ import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
 } from './fourwings-positions.utils'
-import {
+import type {
   FourwingsPositionsPickingInfo,
   FourwingsPositionsPickingObject,
   FourwingsPositionsTileLayerProps,
@@ -195,7 +198,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }): FourwingsPositionsPickingInfo => {
     const object: FourwingsPositionsPickingObject = {
       ...(info.object || ({} as FourwingsPositionFeature)),
-      id: info.object!?.id!?.toString(),
+      id: info.object?.id?.toString() || '',
       layerId: this.root.id,
       title: info.object?.properties?.shipname,
       category: this.props.category,
@@ -414,7 +417,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return `${baseUrl}?${stringify(params)}`
   }
 
-  renderLayers(): Layer<{}> | LayersList | null {
+  renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
     if (this.state.fontLoaded) {
       const { sublayers } = this.props
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state

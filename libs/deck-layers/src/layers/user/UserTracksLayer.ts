@@ -1,19 +1,19 @@
-import { CompositeLayer, DefaultProps, Layer, LayerProps } from '@deck.gl/core'
-import { PathLayer, PathLayerProps } from '@deck.gl/layers'
+import type { DefaultProps, Layer, LayerProps } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
+import type { PathLayerProps } from '@deck.gl/layers'
+import { PathLayer } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
-import {
-  UserTrackBinaryData,
-  UserTrackLoader,
-  UserTrackRawData,
-} from '@globalfishingwatch/deck-loaders'
+import type { UserTrackBinaryData, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
+import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { TrackSegment } from '@globalfishingwatch/api-types'
-import { Bbox, geoJSONToSegments } from '@globalfishingwatch/data-transforms'
+import type { TrackSegment } from '@globalfishingwatch/api-types'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { MAX_FILTER_VALUE } from '../layers.config'
-import { GetSegmentsFromDataParams } from '../vessel/vessel.utils'
-import { UserTrackLayerProps } from './user.types'
+import type { GetSegmentsFromDataParams } from '../vessel/vessel.utils'
+import type { UserTrackLayerProps } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
 const defaultProps: DefaultProps<_UserTrackLayerProps> = {
@@ -29,10 +29,10 @@ const defaultProps: DefaultProps<_UserTrackLayerProps> = {
   getTimestamp: { type: 'accessor', value: (d) => d },
 }
 
-export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer<
-  DataT,
-  _UserTrackLayerProps<DataT> & ExtraProps
-> {
+export class UserTracksPathLayer<
+  DataT = any,
+  ExtraProps = Record<string, unknown>
+> extends PathLayer<DataT, _UserTrackLayerProps<DataT> & ExtraProps> {
   static layerName = 'UserTracksPathLayer'
   static defaultProps = defaultProps
 
@@ -203,7 +203,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   _getColorByLineIndex = (_: any, { index }: { index: number }) => {
-    const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)?.index!
+    const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)
+      ?.index as number
     return hexToDeckColor(
       this.state.rawData?.features?.[featureIndex]?.properties?.color || this.props.color
     )

@@ -13,7 +13,6 @@ import {
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { Field } from '../../data/models'
 import { useAppDispatch } from '../../store.hooks'
-import { setTooltip } from './timebar.slice'
 import {
   selectVesselDirectionPoints,
   selectVesselDirectionsMinMaxValues,
@@ -30,7 +29,6 @@ export const VesselEventsPointsGraphDeckGL = () => {
   const positionScale = useSelector(selectVesselDirectionsPositionScale)
 
   const segments = useSelector(selectedtracks)
-  const dispatch = useAppDispatch()
   const { onEventPointClick } = useSegmentsLabeledConnect()
 
   const handleEventClick = useCallback(
@@ -70,11 +68,12 @@ export const VesselEventsPointsGraphDeckGL = () => {
       return {
         position: [startX, bottom],
         vesselPoint,
-        color:
-          colorMode === 'all' || colorMode === 'labels'
-            ? projectColors[vesselPoint.action]
-            : '#8091AB',
-        gradient: colorMode === 'all' || colorMode === 'content',
+        color: vesselPoint.outOfRange
+          ? '#000'
+          : colorMode === 'all' || colorMode === 'labels'
+          ? projectColors[vesselPoint.action]
+          : '#8091AB',
+        gradient: vesselPoint.outOfRange ? false : colorMode === 'all' || colorMode === 'content',
         yPosition:
           Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale),
       }
@@ -97,19 +96,6 @@ export const VesselEventsPointsGraphDeckGL = () => {
           d.gradient ? getGradientColor(d.yPosition / outerHeight) : hexToRgb(d.color),
         getLineColor: (d) => hexToRgb(d.color),
         onClick: handleEventClick,
-        onHover: (info) => {
-          if (info.object) {
-            const point = info.object.vesselPoint
-            dispatch(
-              setTooltip({
-                tooltip:
-                  Math.round(point.speed * 100) / 100 +
-                  'kt' +
-                  (point.elevation ? ', ' + Math.round(point.elevation) + 'm' : ''),
-              })
-            )
-          }
-        },
       }),
     ]
   }, [
@@ -123,7 +109,6 @@ export const VesselEventsPointsGraphDeckGL = () => {
     timebarMode,
     vesselPoints,
     handleEventClick,
-    dispatch,
   ])
 
   if (!positionScale || minValue === null || maxValue === null) {
@@ -137,6 +122,24 @@ export const VesselEventsPointsGraphDeckGL = () => {
         // Center the view on the data
         target: [outerScale.range()[1] / 2, outerHeight / 2, 0],
         zoom: 0,
+      }}
+      getTooltip={({ object }) => {
+        if (!object) return null
+        const point = object.vesselPoint
+        return {
+          html: `<div>
+            <p style="font-weight: bold; font-size: 1.2rem;">${point.action}</p>
+            <p>speed: ${Math.round(point.speed * 100) / 100}kt</p>
+            <p>elevation: ${point.elevation ? Math.round(point.elevation) + 'm' : ''}</p>
+          </div>`,
+          style: {
+            background: '#163f89',
+            color: 'white',
+            padding: '10px',
+            top: '-50px',
+            left: '10px',
+          },
+        }
       }}
       controller={false}
       layers={layers}

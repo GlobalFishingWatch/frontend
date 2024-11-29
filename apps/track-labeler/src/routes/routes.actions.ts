@@ -1,4 +1,4 @@
-import { QueryParams } from '../types'
+import type { QueryParams } from '../types'
 import { HOME } from './routes'
 
 export interface UpdateQueryParamsAction {

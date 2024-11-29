@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   semi: false,
   tabWidth: 2,
   useTabs: false,

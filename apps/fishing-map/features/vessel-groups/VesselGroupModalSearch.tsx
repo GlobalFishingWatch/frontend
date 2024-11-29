@@ -15,7 +15,7 @@ import {
   setVesselGroupSearchIdField,
 } from './vessel-groups-modal.slice'
 import styles from './VesselGroupModal.module.css'
-import { IdField } from './vessel-groups.slice'
+import type { IdField } from './vessel-groups.slice'
 import { selectVesselGroupsModalSearchIds } from './vessel-groups.selectors'
 
 function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
@@ -105,7 +105,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
     if (csvData && searchIdField) {
       updateSearchByIdField(csvData, searchIdField)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [searchIdField])
 
   return (

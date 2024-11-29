@@ -1,22 +1,23 @@
 import { parse } from '@loaders.gl/core'
-import {
-  CompositeLayer,
-  Layer,
-  LayerContext,
-  LayersList,
-  DefaultProps,
-  PickingInfo,
-} from '@deck.gl/core'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import type { Layer, LayerContext, LayersList, DefaultProps, PickingInfo } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 // import { CollisionFilterExtension } from '@deck.gl/extensions'
-import { GeoBoundingBox, Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type {
+  GeoBoundingBox,
+  Tile2DHeader,
+  TileLoadProps,
+} from '@deck.gl/geo-layers/dist/tileset-2d'
 import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import Supercluster from 'supercluster'
-import { ScalePower, scaleSqrt } from 'd3-scale'
+import type { ScalePower } from 'd3-scale'
+import { scaleSqrt } from 'd3-scale'
 import { max } from 'simple-statistics'
-import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
-import { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
+import type { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
 import { PATH_BASENAME } from '../../layers.config'
 import {
   DEFAULT_BACKGROUND_COLOR,
@@ -34,7 +35,7 @@ import {
 } from '../fourwings.config'
 import { getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
-import {
+import type {
   FourwingsClusterEventType,
   FourwingsClusterFeature,
   FourwingsClusterMode,
@@ -202,11 +203,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
     this.state.clusterIndex.load(data)
     const allClusters = this.state.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
-    let clusters: FourwingsClusterFeature[] = []
-    let points: FourwingsPointFeature[] = []
+    const clusters: FourwingsClusterFeature[] = []
+    const points: FourwingsPointFeature[] = []
 
     if (allClusters.length) {
       allClusters.forEach((f) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         f.properties.value > 1
           ? clusters.push(f as FourwingsClusterFeature)
           : points.push(f as FourwingsPointFeature)
@@ -345,7 +347,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return d.properties.value.toString()
   }
 
-  renderLayers(): Layer<{}> | LayersList | null {
+  renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
     const { color, tilesUrl, eventType = 'encounter' } = this.props
     const { clusters, points, radiusScale } = this.state
 

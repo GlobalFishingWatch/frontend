@@ -1,9 +1,10 @@
 import { GFWAPI, API_VERSION } from '@globalfishingwatch/api-client'
-import {
+import type {
   Dataset,
-  DatasetTypes,
   DataviewDatasetConfig,
-  EndpointParamType,
+  EndpointParamType} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes
 } from '@globalfishingwatch/api-types'
 
 const arrayQueryParams: EndpointParamType[] = ['4wings-datasets', 'sql']

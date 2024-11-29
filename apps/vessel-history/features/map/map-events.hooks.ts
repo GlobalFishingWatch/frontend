@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { GeneratorType, ExtendedFeature, InteractionEvent } from '@globalfishingwatch/layer-composer'
-import { ApiEvent } from '@globalfishingwatch/api-types'
+import type { ExtendedFeature, InteractionEvent } from '@globalfishingwatch/layer-composer';
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import type { ApiEvent } from '@globalfishingwatch/api-types'
+import type {
+  RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
-  RenderedEvent,
   selectFilteredEvents,
 } from 'features/vessels/activity/vessels-activity.selectors'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
-import { Range } from 'types'
-import { Voyage } from 'types/voyage'
+import type { Range } from 'types'
+import type { Voyage } from 'types/voyage'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import { useLocationConnect } from 'routes/routes.hook'

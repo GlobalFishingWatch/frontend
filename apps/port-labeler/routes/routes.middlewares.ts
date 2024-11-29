@@ -1,10 +1,10 @@
-import { Middleware } from 'redux'
+import type { Middleware } from 'redux'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { REPLACE_URL_PARAMS } from 'data/config'
-import { RootState } from 'store'
-import { QueryParams } from 'types'
+import type { RootState } from 'store'
+import type { QueryParams } from 'types'
 import { routesMap } from './routes'
-import { UpdateQueryParamsAction } from './routes.actions'
+import type { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
   ({ getState }: { getState: () => RootState }) =>

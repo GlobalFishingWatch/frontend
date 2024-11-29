@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Map, MapboxStyle } from 'react-map-gl'
+import type { MapboxStyle } from 'react-map-gl';
+import { Map } from 'react-map-gl'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/layer-composer'
-import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
+import type { ExtendedStyleMeta} from '@globalfishingwatch/layer-composer';
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DatasetCategory, DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import {
@@ -13,7 +15,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import Info from 'features/map/info/Info'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { DEFAULT_VESSEL_MAP_ZOOM, ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
 import { selectMergedVesselId } from 'routes/routes.selectors'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
@@ -149,7 +151,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
         }
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [map])
 
   const onEventChange = useCallback(

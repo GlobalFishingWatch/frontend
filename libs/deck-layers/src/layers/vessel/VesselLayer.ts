@@ -1,6 +1,5 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import {
-  CompositeLayer,
+import type {
   Layer,
   LayersList,
   LayerProps,
@@ -8,23 +7,17 @@ import {
   PickingInfo,
   UpdateParameters,
 } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
 import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
-import { BBox, Position } from 'geojson'
+import type { BBox, Position } from 'geojson'
 import { rhumbBearing } from '@turf/turf'
-import {
-  DataviewCategory,
-  DataviewType,
-  EventTypes,
-  TrackSegment,
-} from '@globalfishingwatch/api-types'
-import {
-  VesselDeckLayersEventData,
-  VesselEventsLoader,
-  VesselTrackLoader,
-} from '@globalfishingwatch/deck-loaders'
-import { Bbox } from '@globalfishingwatch/data-transforms'
+import type { TrackSegment } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
+import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
+import { VesselEventsLoader, VesselTrackLoader } from '@globalfishingwatch/deck-loaders'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { PATH_BASENAME } from '../layers.config'
 import { deckToHexColor, hexToDeckColor } from '../../utils/colors'
@@ -35,10 +28,13 @@ import {
   LayerGroup,
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../utils'
-import { DeckLayerProps } from '../../types'
-import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
-import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
-import { getEvents, GetSegmentsFromDataParams, getVesselResourceChunks } from './vessel.utils'
+import type { DeckLayerProps } from '../../types'
+import type { _VesselEventsLayerProps } from './VesselEventsLayer'
+import { VesselEventsLayer } from './VesselEventsLayer'
+import type { _VesselTrackLayerProps } from './VesselTrackLayer'
+import { VesselTrackLayer } from './VesselTrackLayer'
+import type { GetSegmentsFromDataParams } from './vessel.utils'
+import { getEvents, getVesselResourceChunks } from './vessel.utils'
 import {
   EVENTS_COLORS,
   EVENT_LAYER_TYPE,
@@ -47,7 +43,7 @@ import {
   TRACK_DEFAULT_THINNING_CONFIG,
   TRACK_DEFAULT_THINNING,
 } from './vessel.config'
-import {
+import type {
   VesselDataType,
   VesselDeckLayersEvent,
   VesselEventPickingInfo,
@@ -391,7 +387,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     ]
   }
 
-  renderLayers(): Layer<{}> | LayersList {
+  renderLayers(): Layer<Record<string, unknown>> | LayersList {
     return [
       ...this._getVesselTrackLayers(),
       ...this._getVesselEventLayers(),

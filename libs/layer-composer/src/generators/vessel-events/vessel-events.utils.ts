@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon'
-import { Feature, FeatureCollection } from 'geojson'
-import { EventType, TrackSegment } from '@globalfishingwatch/api-types'
+import type { Feature, FeatureCollection } from 'geojson'
+import type { EventType, TrackSegment } from '@globalfishingwatch/api-types'
 import {
   segmentsToGeoJSON,
   filterTrackByCoordinateProperties,
 } from '@globalfishingwatch/data-transforms'
-import { Dictionary } from '../../types'
-import { AuthorizationOptions, RawEvent } from '../types'
+import type { Dictionary } from '../../types'
+import type { AuthorizationOptions, RawEvent } from '../types'
 
 export const EVENTS_COLORS: Dictionary<string> = {
   encounter: '#FAE9A0',

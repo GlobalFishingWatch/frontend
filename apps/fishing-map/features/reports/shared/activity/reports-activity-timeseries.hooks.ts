@@ -5,24 +5,27 @@ import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { mean, min, max } from 'simple-statistics'
 import { DateTime } from 'luxon'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import { DeckLayerAtom, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import {
+import type { DeckLayerAtom} from '@globalfishingwatch/deck-layer-composer';
+import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import type {
   FourwingsLayer,
-  FourwingsLayerProps,
+  FourwingsLayerProps} from '@globalfishingwatch/deck-layers';
+import {
   getIntervalFrames,
   HEATMAP_STATIC_PROPERTY_ID,
   sliceCellValues,
 } from '@globalfishingwatch/deck-layers'
-import {
+import type {
   FourwingsFeature,
   FourwingsInterval,
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { FilteredPolygons } from 'features/reports/shared/activity/reports-activity-geo.utils'
+import type { FilteredPolygons } from 'features/reports/shared/activity/reports-activity-geo.utils'
+import type {
+  FeaturesToTimeseriesParams} from 'features/reports/shared/activity/reports-activity-timeseries.utils';
 import {
-  FeaturesToTimeseriesParams,
   featuresToTimeseries,
   filterTimeseriesByTimerange,
 } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
@@ -33,10 +36,11 @@ import {
   selectShowTimeComparison,
 } from 'features/reports/areas/area-reports.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { Area, AreaGeometry } from 'features/areas/areas.slice'
+import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { useFilterCellsByPolygonWorker } from 'features/reports/shared/activity/reports-activity-geo.utils.workers.hooks'
-import { TimeRange } from 'features/timebar/timebar.slice'
-import { ReportActivityGraph, ReportCategory } from 'features/reports/areas/area-reports.types'
+import type { TimeRange } from 'features/timebar/timebar.slice'
+import type { ReportActivityGraph} from 'features/reports/areas/area-reports.types';
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import {
   selectReportActivityGraph,
   selectReportTimeComparison,
@@ -153,7 +157,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     setTimeseries([])
     setFeaturesFiltered([])
     featuresFilteredDirtyRef.current = true
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     area?.id,
     reportCategory,
@@ -196,7 +200,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         featuresFilteredDirtyRef.current = false
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [area, reportCategory, areaInViewport, layersLoaded, reportBufferHash])
 
   const computeTimeseries = useCallback(
@@ -309,7 +313,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     if (layersLoaded && featuresFiltered?.length && areaInViewport) {
       computeTimeseries(instances, featuresFiltered, reportGraphMode)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     layersLoaded,
     featuresFiltered,
@@ -330,7 +334,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     ) {
       computeTimeseriesStats(instances, featuresFiltered, timerange)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     layersLoaded,
     featuresFiltered,

@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { getEncounterStatus } from 'features/vessels/activity/vessels-activity.utils'
 import ActivityDate from './ActivityDate'
 import styles from './Activity.module.css'

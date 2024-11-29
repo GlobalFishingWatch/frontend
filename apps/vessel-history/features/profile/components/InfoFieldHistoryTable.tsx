@@ -1,9 +1,10 @@
-import React, { Fragment, ReactNode } from 'react'
+import type { ReactNode } from 'react';
+import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { useVesselsConnect } from 'features/vessels/vessels.hook'
-import { ValueItem } from 'types'
-import { VesselFieldLabel } from 'types/vessel'
+import type { ValueItem } from 'types'
+import type { VesselFieldLabel } from 'types/vessel'
 import HistoryDate from './HistoryDate'
 import styles from './Info.module.css'
 

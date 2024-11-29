@@ -1,9 +1,11 @@
 import { useSelector } from 'react-redux'
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
+import type { Tab } from '@globalfishingwatch/ui-components'
+import { Button, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
-import { Dataview, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { Dataview } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   selectIsWorkspaceVesselLocation,
   selectVesselId,
@@ -48,7 +50,7 @@ import Insights from 'features/vessel/insights/Insights'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 import styles from './Vessel.module.css'
-import { VesselSection } from './vessel.types'
+import type { VesselSection } from './vessel.types'
 
 const Vessel = () => {
   const { t } = useTranslation()
@@ -155,13 +157,11 @@ const Vessel = () => {
     ) {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId, includeRelatedIdentities }))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datasetId, dispatch, vesselId, urlWorkspaceId])
 
   useEffect(() => {
     dispatchClickedEvent(null)
     cancelPendingInteractionRequests()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const changeTab = useCallback(

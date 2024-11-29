@@ -1,17 +1,18 @@
+import type { Authorization } from '@globalfishingwatch/api-types'
 import { GFWApiClient } from 'http-client/http-client'
-import { Authorization } from '@globalfishingwatch/api-types'
 import { IS_STANDALONE_APP } from 'data/config'
-import {
+import type {
   AnyValueList,
   Iuu,
   TMTDetail,
   ValueItem,
-  VesselAPISource,
   VesselFieldHistory,
-  VesselWithHistory,
+  VesselWithHistory} from 'types';
+import {
+  VesselAPISource
 } from 'types'
-import { VesselSourceId } from 'types/vessel'
-import { VesselAPIThunk } from '../vessels.slice'
+import type { VesselSourceId } from 'types/vessel'
+import type { VesselAPIThunk } from '../vessels.slice'
 
 interface TMTVesselSourceId extends VesselSourceId {
   id: string

@@ -94,6 +94,8 @@ export function Slider(props: SliderProps) {
           onFinalChange={handleFinalChange}
           renderTrack={({ props, children }) => (
             <div
+              role="button"
+              tabIndex={0}
               onMouseDown={props.onMouseDown}
               onTouchStart={props.onTouchStart}
               className={styles.slider}

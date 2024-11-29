@@ -3,9 +3,9 @@ import cx from 'classnames'
 import formatCoords from 'formatcoords'
 import { DateTime } from 'luxon'
 // import { ScaleControl } from '@globalfishingwatch/react-map-gl'
-import { CoordinatePosition } from '../../../types'
+import type { CoordinatePosition } from '../../../types'
 import { useTimerangeConnect } from '../../timebar/timebar.hooks'
-import { useViewport } from '../map.hooks'
+// import { useViewport } from '../map.hooks'
 import styles from './map-data.module.css'
 
 interface MousePositionProps {
@@ -17,8 +17,8 @@ const A_DAY = 1000 * 60 * 60 * 24
 
 const MapData: React.FC<MousePositionProps> = ({ coordinates = null, floating = false }) => {
   const { start, end } = useTimerangeConnect()
-  const { viewport } = useViewport()
-  const { zoom } = viewport
+  // const { viewport } = useViewport()
+  // const { zoom } = viewport
   const [format, setFormat] = useState<format>('latLng')
   const handleClick = useCallback(() => {
     setFormat((format) => (format === 'f' ? 'latLng' : 'f'))

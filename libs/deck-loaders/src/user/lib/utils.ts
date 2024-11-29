@@ -1,5 +1,5 @@
-import { FeatureCollection, LineString, Position, MultiLineString } from 'geojson'
-import { UserTrackFeature, UserTrackFeatureProperties, UserTrackRawData } from './types'
+import type { FeatureCollection, LineString, Position, MultiLineString } from 'geojson'
+import type { UserTrackFeature, UserTrackFeatureProperties, UserTrackRawData } from './types'
 
 // Originally duplicated from data-transforms libs to avoid circular dependencies
 // TODO define types for this filter so we can avoid the buggy isNumeric approach

@@ -1,7 +1,8 @@
 import { GFWApiClient } from 'http-client/http-client'
-import { GFWDetail, VesselAPISource, VesselWithHistory } from 'types'
-import { VesselSourceId } from 'types/vessel'
-import { VesselAPIThunk } from '../vessels.slice'
+import type { GFWDetail, VesselWithHistory } from 'types';
+import { VesselAPISource } from 'types'
+import type { VesselSourceId } from 'types/vessel'
+import type { VesselAPIThunk } from '../vessels.slice'
 
 interface GFWVesselSourceId extends VesselSourceId {
   id: string

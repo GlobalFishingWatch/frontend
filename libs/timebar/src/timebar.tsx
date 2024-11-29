@@ -1,14 +1,11 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
 import memoize from 'memoize-one'
-import { DateTime, DateTimeUnit } from 'luxon'
-import { NumberValue } from 'd3-scale'
-import {
-  CONFIG_BY_INTERVAL,
-  FourwingsInterval,
-  getFourwingsInterval,
-  LIMITS_BY_INTERVAL,
-} from '@globalfishingwatch/deck-loaders'
+import type { DateTimeUnit } from 'luxon'
+import { DateTime } from 'luxon'
+import type { NumberValue } from 'd3-scale'
+import type { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { getTime } from './utils/internal-utils'
 import styles from './timebar.module.css'
@@ -22,10 +19,11 @@ import {
   MINIMUM_TIMEBAR_HEIGHT,
   MAXIMUM_TIMEBAR_HEIGHT,
 } from './constants'
-import { TrackGraphOrientation } from './timelineContext'
+import type { TrackGraphOrientation } from './timelineContext'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
 const MINIMUM_RANGE = ONE_HOUR_MS
+const DEFAULT_HEIGHT = 70
 
 const getRangeMs = (range: number, unit: DateTimeUnit) => {
   const start = DateTime.now()
@@ -125,6 +123,7 @@ export type TimebarProps = {
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation: TrackGraphOrientation
   isResizable?: boolean
+  defaultHeight?: number
 }
 
 type TimebarState = {
@@ -209,7 +208,7 @@ export class Timebar extends Component<TimebarProps> {
     this.state = {
       showTimeRangeSelector: false,
       absoluteEnd: null,
-      updatedHeight: 70,
+      updatedHeight: props.defaultHeight || DEFAULT_HEIGHT,
       isDragging: false,
       startCursorY: null,
       startHeight: null,
@@ -253,7 +252,9 @@ export class Timebar extends Component<TimebarProps> {
 
   setBookmark = () => {
     const { start, end, onBookmarkChange } = this.props
-    onBookmarkChange && onBookmarkChange(start, end)
+    if (onBookmarkChange) {
+      onBookmarkChange(start, end)
+    }
   }
 
   // setLocale = memoize((locale) => //TODO set DateTime.locale)
@@ -324,7 +325,9 @@ export class Timebar extends Component<TimebarProps> {
 
   onTogglePlay = (isPlaying: boolean) => {
     const { onTogglePlay } = this.props
-    onTogglePlay && onTogglePlay(isPlaying)
+    if (onTogglePlay) {
+      onTogglePlay(isPlaying)
+    }
   }
 
   handleMouseDown = (e: React.MouseEvent) => {
@@ -415,7 +418,12 @@ export class Timebar extends Component<TimebarProps> {
         style={isResizable ? { height: `${this.state.updatedHeight}px` } : {}}
       >
         {isResizable && (
-          <div className={styles.timebarResizer} onMouseDown={this.handleMouseDown} />
+          <div
+            role="button"
+            tabIndex={0}
+            className={styles.timebarResizer}
+            onMouseDown={this.handleMouseDown}
+          />
         )}
         {enablePlayback && (
           <Playback

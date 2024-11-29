@@ -1,4 +1,4 @@
-import { InsightType } from '@globalfishingwatch/api-types'
+import type { InsightType } from '@globalfishingwatch/api-types'
 
 export const MIN_INSIGHTS_YEAR = 2020
 
