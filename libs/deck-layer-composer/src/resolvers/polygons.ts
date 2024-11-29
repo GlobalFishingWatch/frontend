@@ -1,13 +1,14 @@
-import { FeatureCollection } from 'geojson'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import {
+import type { FeatureCollection } from 'geojson'
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type {
   LayerGroup,
   PolygonPickingObject,
   PolygonsLayerProps,
 } from '@globalfishingwatch/deck-layers'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from './types'
 
 const resolvePolygonsData: DeckResolverFunction<PolygonsLayerProps['data']> = (
   dataview,
@@ -42,8 +43,8 @@ export const resolveDeckPolygonsLayerProps: DeckResolverFunction<PolygonsLayerPr
     data: resolvePolygonsData(dataview, globalConfig),
     pickable: dataview.config?.pickable ?? true,
     category: dataview.category!,
-    subcategory: dataview.config?.type!,
-    color: dataview.config?.color!,
+    subcategory: dataview.config?.type,
+    color: dataview.config?.color as string,
     group: dataview.config?.group as LayerGroup,
     highlightedFeatures: globalConfig.highlightedFeatures as PolygonPickingObject[],
   }

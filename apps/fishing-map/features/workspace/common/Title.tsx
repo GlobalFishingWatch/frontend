@@ -1,6 +1,7 @@
-import { forwardRef, ReactNode, Ref } from 'react'
+import type { ReactNode, Ref } from 'react';
+import { forwardRef } from 'react'
 import cx from 'classnames'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { getDatasetTypeIcon } from 'features/datasets/datasets.utils'
 import { CONTEXT_LAYERS_DATAVIEWS } from 'data/workspaces'

@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButtonType } from '@globalfishingwatch/ui-components'
+import type { IconButtonType } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselDatasetsDownloadTrackSupported } from 'features/datasets/datasets.utils'
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { VesselLayerPanelProps } from 'features/workspace/vessels/VesselLayerPanel'
+import type { VesselLayerPanelProps } from 'features/workspace/vessels/VesselLayerPanel'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 
 type VesselDownloadButtonProps = VesselLayerPanelProps & {

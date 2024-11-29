@@ -1,20 +1,18 @@
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect, useState } from 'react'
-// import { ViewportProps } from 'react-map-gl'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { MapMouseEvent } from 'maplibre-gl'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 import { selectViewport } from '../../routes/routes.selectors'
 import { updateQueryParams } from '../../routes/routes.actions'
-import { MapCoordinates } from '../../types'
+import type { CoordinatePosition, MapCoordinates } from '../../types'
 import { selectEditing } from '../../features/rulers/rulers.selectors'
-import { moveCurrentRuler } from '../../features/rulers/rulers.slice'
+import { editRuler, moveCurrentRuler } from '../../features/rulers/rulers.slice'
 import { useAppDispatch } from '../../store.hooks'
-import {
-  selectGeneratorsConfig,
-  updateGenerator,
-  UpdateGeneratorPayload,
-  selectGlobalGeneratorsConfig,
-} from './map.slice'
+import { useSegmentsLabeledConnect } from '../timebar/timebar.hooks'
+import { selectedtracks } from '../vessels/selectedTracks.slice'
+import type { UpdateGeneratorPayload } from './map.slice'
+import { selectGeneratorsConfig, updateGenerator, selectGlobalGeneratorsConfig } from './map.slice'
 
 export const useMapMove = () => {
   const dispatch = useAppDispatch()
@@ -23,8 +21,8 @@ export const useMapMove = () => {
   const onMapMove = useCallback(
     (event: any) => {
       const center = {
-        longitude: event.lngLat[0],
-        latitude: event.lngLat[1],
+        longitude: event.lngLat.lng,
+        latitude: event.lngLat.lat,
       }
       setHoverCenter(center)
       if (rulersEditing === true) {
@@ -34,6 +32,53 @@ export const useMapMove = () => {
     [dispatch, rulersEditing]
   )
   return { onMapMove, hoverCenter }
+}
+
+export const useMapClick = () => {
+  const dispatch = useAppDispatch()
+  const rulersEditing = useSelector(selectEditing)
+  const { onEventPointClick } = useSegmentsLabeledConnect()
+  const segments = useSelector(selectedtracks)
+  const onEventClick = useCallback(
+    (feature: any, position: CoordinatePosition) => {
+      const event = feature.properties
+      onEventPointClick(segments, event.timestamp, position)
+      return true
+    },
+    [onEventPointClick, segments]
+  )
+  const layerMapClickHandlers: any = useMemo(
+    () => ({
+      trackDirections: onEventClick,
+    }),
+    [onEventClick]
+  )
+  const onMapClick = useCallback(
+    (e: MapMouseEvent) => {
+      const features = e.target.queryRenderedFeatures(e.point)
+      if (!rulersEditing && features && features.length) {
+        const position = { latitude: e.lngLat.lat, longitude: e.lngLat.lng }
+        // .some() returns true as soon as any of the callbacks return true, short-circuiting the execution of the rest
+        features.some((feature: any) => {
+          const eventHandler = layerMapClickHandlers[feature.source]
+          // returns true when is a single event so won't run the following ones
+          return eventHandler ? eventHandler(feature, position) : false
+        })
+      } else {
+        if (rulersEditing === true) {
+          dispatch(
+            editRuler({
+              longitude: e.lngLat.lng,
+              latitude: e.lngLat.lat,
+            })
+          )
+          return
+        }
+      }
+    },
+    [rulersEditing, layerMapClickHandlers, dispatch]
+  )
+  return { onMapClick }
 }
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -45,6 +90,7 @@ export const useGeneratorsConnect = () => {
     updateGenerator: (payload: UpdateGeneratorPayload) => dispatch(updateGenerator(payload)),
   }
 }
+
 type SetMapCoordinatesArgs = Pick<any, 'latitude' | 'longitude' | 'zoom'>
 type UseViewport = {
   viewport: MapCoordinates
@@ -96,7 +142,6 @@ export function useDebouncedViewport(
     ) {
       setViewport({ ...urlViewport })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlViewport])
 
   // Sync the url with the local state debounced
@@ -104,7 +149,6 @@ export function useDebouncedViewport(
     if (debouncedViewport && callback) {
       callback(debouncedViewport)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedViewport])
 
   return { viewport, onViewportChange, setMapCoordinates }

@@ -11,7 +11,7 @@ import {
   useGetLabellingProjectTasksByIdQuery,
   useGetLabellingProjectTasksQuery,
 } from '../../api/project'
-import { LabellingTask } from '../../types'
+import type { LabellingTask } from '../../types'
 import Task from './Task'
 import styles from './Project.module.css'
 
@@ -27,7 +27,7 @@ export function Project() {
   const [imageStyleContrast, setImageStyleContrast] = useLocalStorage('contrast', 1)
   const [showEnhancedImage, setShowEnhancedImage] = useLocalStorage('showEnhancedImage', true)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const initialActiveTaskId = useMemo(() => activeTaskId as string | undefined, [])
 
   const { data: taskData, isLoading: areTasksLoading } = useGetLabellingProjectTasksQuery({

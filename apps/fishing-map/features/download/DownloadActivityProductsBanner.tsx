@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Button } from '@globalfishingwatch/ui-components'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { HeatmapDownloadFormat } from 'features/download/downloadActivity.config'
+import type { HeatmapDownloadFormat } from 'features/download/downloadActivity.config'
 import styles from './DownloadModal.module.css'
 import { getDownloadReportSupported } from './download.utils'
 

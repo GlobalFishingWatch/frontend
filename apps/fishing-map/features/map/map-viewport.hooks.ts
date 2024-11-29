@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from 'react'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { MapView, MapViewProps, WebMercatorViewport } from '@deck.gl/core'
+import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core';
+import { MapView } from '@deck.gl/core'
 import { useSelector } from 'react-redux'
-import { MapCoordinates } from 'types'
+import type { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { getUrlViewstateNumericParam } from 'utils/url'
@@ -50,7 +51,7 @@ export const useUpdateViewStateUrlParams = () => {
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
   const dispatch = useAppDispatch()
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const updateUrlViewportDebounced = useCallback(
     debounce(dispatch(updateUrlViewport), URL_VIEWPORT_DEBOUNCED_TIME),
     []

@@ -1,16 +1,17 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Choice } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVGRStatus } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { VGRVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
+import type { VGRVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGRVesselsSubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
-type VesselGroupReportVesselsGraphSelectorProps = {}
+type VesselGroupReportVesselsGraphSelectorProps = Record<string, any>
 
 function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGraphSelectorProps) {
   const { t } = useTranslation()
@@ -70,7 +71,7 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
     <Choice
       size="small"
       options={options}
-      activeOption={selectedOption!?.id}
+      activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}
     />
   )

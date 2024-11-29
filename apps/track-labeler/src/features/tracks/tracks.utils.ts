@@ -1,5 +1,5 @@
-import { ExportData, ExportFeature } from '../../types'
-import { SelectedTrackType } from '../vessels/selectedTracks.slice'
+import type { ExportData, ExportFeature } from '../../types'
+import type { SelectedTrackType } from '../vessels/selectedTracks.slice'
 
 export const extractLabeledTrack = (
   geojson: ExportData

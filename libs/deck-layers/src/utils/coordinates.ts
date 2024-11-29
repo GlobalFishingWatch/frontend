@@ -1,7 +1,7 @@
-import { Viewport } from '@deck.gl/core'
-import { GeoBoundingBox } from '@deck.gl/geo-layers'
+import type { Viewport } from '@deck.gl/core'
+import type { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { lerp } from '@math.gl/core'
-import { Feature } from 'geojson'
+import type { Feature } from 'geojson'
 
 const availableTransformations: Record<any, any> = {
   Point,

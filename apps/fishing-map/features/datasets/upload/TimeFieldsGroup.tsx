@@ -1,15 +1,16 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { t } from 'i18next'
-import { Choice, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Choice, Select } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import {
+import type {
   DatasetConfiguration,
   DatasetConfigurationUI,
   TimeFilterType,
 } from '@globalfishingwatch/api-types'
 import { useDatasetMetadataOptions } from './datasets-upload.hooks'
-import { DatasetMetadata } from './NewDataset'
+import type { DatasetMetadata } from './NewDataset'
 import styles from './NewDataset.module.css'
 
 type TimeFilterTypeOption = TimeFilterType | 'none'
@@ -56,21 +57,25 @@ export const TimeFieldsGroup = ({
 
   const onStartSelect = useCallback(
     (selected: SelectOption) => {
-      isDateFilter
-        ? setDatasetMetadataConfig({
-            startTime: selected.id,
-            endTime: selected.id,
-            timestamp: selected.id,
-          })
-        : setDatasetMetadataConfig({ startTime: selected.id })
+      if (isDateFilter) {
+        setDatasetMetadataConfig({
+          startTime: selected.id,
+          endTime: selected.id,
+          timestamp: selected.id,
+        })
+      } else {
+        setDatasetMetadataConfig({ startTime: selected.id })
+      }
     },
     [setDatasetMetadataConfig, isDateFilter]
   )
 
   const onStartClean = useCallback(() => {
-    isDateFilter
-      ? setDatasetMetadataConfig({ startTime: '', endTime: '' })
-      : setDatasetMetadataConfig({ startTime: '' })
+    if (isDateFilter) {
+      setDatasetMetadataConfig({ startTime: '', endTime: '' })
+    } else {
+      setDatasetMetadataConfig({ startTime: '' })
+    }
   }, [setDatasetMetadataConfig, isDateFilter])
 
   const onEndSelect = useCallback(

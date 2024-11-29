@@ -1,4 +1,4 @@
-import { EventTypes } from './events'
+import type { EventTypes } from './events'
 
 export const DRAW_DATASET_SOURCE = 'drawn_on_gfw_map'
 

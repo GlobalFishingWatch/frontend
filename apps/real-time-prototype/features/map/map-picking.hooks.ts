@@ -1,4 +1,4 @@
-import { PickingInfo } from '@deck.gl/core'
+import type { PickingInfo } from '@deck.gl/core'
 import { atom as jotaiAtom } from 'jotai'
 
 export const hoveredFeaturesAtom = jotaiAtom<PickingInfo[]>([])

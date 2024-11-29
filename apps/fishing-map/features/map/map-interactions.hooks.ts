@@ -1,23 +1,25 @@
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckProps, PickingInfo } from '@deck.gl/core'
+import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { ThunkDispatch } from '@reduxjs/toolkit'
+import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { debounce, throttle } from 'es-toolkit'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type {
+  InteractionEvent,
+  InteractionEventType} from '@globalfishingwatch/deck-layer-composer';
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
-  InteractionEvent,
-  InteractionEventType,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
-import {
+import type {
   FourwingsClusterPickingObject,
   DeckLayerInteractionPickingInfo,
   DeckLayerPickingObject,
-  FourwingsHeatmapPickingObject,
+  FourwingsHeatmapPickingObject} from '@globalfishingwatch/deck-layers';
+import {
   FOURWINGS_MAX_ZOOM,
 } from '@globalfishingwatch/deck-layers'
 import { trackEvent } from 'features/app/analytics.hooks'
@@ -38,9 +40,10 @@ import {
   isTilesClusterLayer,
   isTilesClusterLayerCluster,
 } from './map-interaction.utils'
-import {
+import type {
   SliceExtendedClusterPickingObject,
-  SliceInteractionEvent,
+  SliceInteractionEvent} from './map.slice';
+import {
   fetchBQEventThunk,
   fetchClusterEventThunk,
   fetchHeatmapInteractionThunk,
@@ -288,7 +291,7 @@ export const useMapMouseHover = () => {
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const onMouseMove: DeckProps['onHover'] = useCallback(
     throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
       setHoveredCoordinates(info.coordinate)
@@ -456,7 +459,7 @@ export const useMapDrag = () => {
 
 export const useDebouncedDispatchHighlightedEvent = () => {
   const dispatch = useAppDispatch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   return useCallback(
     debounce((eventIds?: string | string[]) => {
       let ids: string[] | undefined

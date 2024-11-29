@@ -1,5 +1,4 @@
-import {
-  CompositeLayer,
+import type {
   Layer,
   LayerContext,
   LayersList,
@@ -8,21 +7,23 @@ import {
   UpdateParameters,
   PickingInfo,
 } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
 import { scaleLinear } from 'd3-scale'
 import { MVTLayer } from '@deck.gl/geo-layers'
 import { debounce } from 'es-toolkit'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { PathLayer } from '@deck.gl/layers'
 import { stringify } from 'qs'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { Feature, Geometry } from 'geojson'
-import {
+import type { Feature, Geometry } from 'geojson'
+import type {
   FourwingsFeature,
   FourwingsStaticFeature,
   FourwingsStaticFeatureProperties,
 } from '@globalfishingwatch/deck-loaders'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { ColorRampId, getColorRamp } from '../../../utils/colorRamps'
+import type { ColorRampId } from '../../../utils/colorRamps'
+import { getColorRamp } from '../../../utils/colorRamps'
 import {
   COLOR_HIGHLIGHT_LINE,
   GFWMVTLoader,
@@ -36,16 +37,16 @@ import {
   HEATMAP_STATIC_PROPERTY_ID,
   MAX_RAMP_VALUES,
 } from '../fourwings.config'
-import { GetViewportDataParams } from '../fourwings.types'
+import type { GetViewportDataParams } from '../fourwings.types'
 import { EMPTY_CELL_COLOR, filterCells, getZoomOffsetByResolution } from './fourwings-heatmap.utils'
-import {
-  FourwingsAggregationOperation,
+import type {
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapStaticPickingInfo,
   FourwingsHeatmapStaticPickingObject,
   FourwingsHeatmapTileLayerProps,
   FourwingsTileLayerState,
 } from './fourwings-heatmap.types'
+import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   maxRequests: 100,
@@ -201,7 +202,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     }
   }
 
-  renderLayers(): Layer<{}> | LayersList {
+  renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { tilesUrl, sublayers, resolution, minVisibleValue, maxVisibleValue, maxZoom } =
       this.props
     const { colorDomain, colorRanges } = this.state

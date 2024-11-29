@@ -1,15 +1,15 @@
 import { useCallback, useMemo, useState } from 'react'
-import {
+import type {
   DatasetConfiguration,
   DatasetConfigurationUI,
   DatasetSchemaItem,
   DatasetSchemaType,
 } from '@globalfishingwatch/api-types'
-import { SelectOption } from '@globalfishingwatch/ui-components'
-import { MultiSelectOption } from '@globalfishingwatch/api-client'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import type { MultiSelectOption } from '@globalfishingwatch/api-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { sortFields } from 'utils/shared'
-import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import DatasetFieldLabel from 'features/datasets/upload/DatasetFieldLabel'
 
 export function useDatasetMetadata() {

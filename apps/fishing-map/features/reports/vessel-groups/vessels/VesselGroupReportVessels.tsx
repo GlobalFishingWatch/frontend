@@ -10,9 +10,10 @@ import {
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { selectVGRDataview } from '../vessel-group-report.selectors'
 import VesselGroupReportVesselsGraphSelector from './VesselGroupReportVesselsGraphSelector'
-import VesselGroupReportVesselsGraph, {
+import type {
   VesselGroupReportVesselsGraphProperty,
-} from './VesselGroupReportVesselsGraph'
+} from './VesselGroupReportVesselsGraph';
+import VesselGroupReportVesselsGraph from './VesselGroupReportVesselsGraph'
 import VesselGroupReportVesselsTable from './VesselGroupReportVesselsTable'
 import styles from './VesselGroupReportVessels.module.css'
 

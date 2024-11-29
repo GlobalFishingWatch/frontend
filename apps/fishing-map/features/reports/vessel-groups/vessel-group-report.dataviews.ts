@@ -1,11 +1,12 @@
-import {
+import type {
   ColorCyclingType,
-  DataviewCategory,
   DataviewInstance,
-  DataviewType,
+  DataviewType} from '@globalfishingwatch/api-types';
+import {
+  DataviewCategory
 } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorRampId } from '@globalfishingwatch/deck-layers'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
@@ -15,7 +16,7 @@ import {
   FISHING_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import {
+import type {
   VGRActivitySubsection,
   VGREventsSubsection,
   VGRSection,
@@ -195,7 +196,7 @@ export const getVesselGroupEventsDataviewInstances = (
   vesselGroupId: string,
   subsection: VGREventsSubsection
 ) => {
-  let dataviewInstances: (DataviewInstance | undefined)[] = []
+  const dataviewInstances: (DataviewInstance | undefined)[] = []
   if (subsection === 'encounter') {
     dataviewInstances.push(getVesselGroupEncountersDataviewInstance(vesselGroupId))
   }

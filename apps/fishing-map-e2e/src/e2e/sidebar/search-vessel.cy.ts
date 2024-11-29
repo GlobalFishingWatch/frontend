@@ -12,7 +12,7 @@ import {
 describe('Basic search for a vessel', () => {
   before(() => {
     // I need to search as a anonymous user, the last update of cypress needed to add the eslit coment
-    // eslint-disable-next-line
+     
     cy.clearAllLocalStorage().then(() => {
       disablePopups()
     })

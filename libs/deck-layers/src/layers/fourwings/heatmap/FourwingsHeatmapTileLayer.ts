@@ -1,32 +1,29 @@
-import {
-  CompositeLayer,
-  Layer,
-  LayerContext,
-  LayersList,
-  DefaultProps,
-  UpdateParameters,
-} from '@deck.gl/core'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import type { Layer, LayerContext, LayersList, DefaultProps, UpdateParameters } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
 import { debounce, sum } from 'es-toolkit'
 import isEqual from 'lodash/isEqual'
-import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
-import {
+import type {
   FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
+  ParseFourwingsOptions,
+} from '@globalfishingwatch/deck-loaders'
+import {
   FourwingsLoader,
   getFourwingsInterval,
-  ParseFourwingsOptions,
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import type { ColorRampId } from '../../../utils/colorRamps'
 import {
   COLOR_RAMP_BIVARIATE_NUM_STEPS,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
-  ColorRampId,
   TIME_COMPARE_COLOR_RAMP,
   getBivariateRamp,
   getColorRamp,
@@ -38,7 +35,7 @@ import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
 } from '../fourwings.config'
-import {
+import type {
   FourwingsColorObject,
   FourwingsDeckSublayer,
   FourwingsTileLayerColorDomain,
@@ -58,15 +55,14 @@ import {
   getZoomOffsetByResolution,
 } from './fourwings-heatmap.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
-import {
-  FourwingsAggregationOperation,
+import type {
   FourwingsChunk,
-  FourwingsComparisonMode,
   FourwingsHeatmapTileLayerProps,
   FourwingsHeatmapTilesCache,
   FourwingsTileLayerState,
   FourwinsTileLayerScale,
 } from './fourwings-heatmap.types'
+import { FourwingsAggregationOperation, FourwingsComparisonMode } from './fourwings-heatmap.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   maxRequests: 100,
@@ -164,7 +160,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         : currentZoomData
 
     if (comparisonMode === FourwingsComparisonMode.Bivariate) {
-      let allValues: [number[], number[]] = [[], []]
+      const allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
         feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
           const sublayerAggregation = aggregateCell({
@@ -678,7 +674,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
   }
 
-  renderLayers(): Layer<{}> | LayersList {
+  renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { zoom } = this.context.viewport
     if (!zoom) {
       return []

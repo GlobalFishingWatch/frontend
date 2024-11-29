@@ -1,8 +1,8 @@
-import { RootState } from 'reducers'
-import { TimeRange } from 'features/timebar/timebar.slice'
-import { AppDispatch } from 'store'
-import { QueryParams, WorkspaceViewport } from 'types'
-import { ROUTE_TYPES } from './routes'
+import type { RootState } from 'reducers'
+import type { TimeRange } from 'features/timebar/timebar.slice'
+import type { AppDispatch } from 'store'
+import type { QueryParams, WorkspaceViewport } from 'types'
+import type { ROUTE_TYPES } from './routes'
 import { selectLocationPayload, selectLocationQuery, selectLocationType } from './routes.selectors'
 
 export interface UpdateQueryParamsAction {

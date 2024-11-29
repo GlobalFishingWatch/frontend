@@ -3,7 +3,8 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { camelCase, lowerCase, startCase, upperFirst } from 'lodash'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
-import { EventType, EventTypes } from '@globalfishingwatch/api-types'
+import type { EventType} from '@globalfishingwatch/api-types';
+import { EventTypes } from '@globalfishingwatch/api-types'
 import styles from './Activity.module.css'
 
 interface ActivityGroupProps {

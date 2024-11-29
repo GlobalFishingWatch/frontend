@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
-import { DatasetGeometryType } from '@globalfishingwatch/api-types'
+import type { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ReactComponent as FilesCsvIcon } from 'assets/icons/file-csv.svg'
 import { ReactComponent as FilesJsonIcon } from 'assets/icons/file-json.svg'
 import { ReactComponent as FileZipIcon } from 'assets/icons/file-zip.svg'

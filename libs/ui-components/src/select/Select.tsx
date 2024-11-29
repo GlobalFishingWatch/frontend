@@ -1,11 +1,12 @@
-import React, { MouseEvent, useCallback } from 'react'
+import type { MouseEvent } from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
 import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { Tooltip } from '../tooltip'
 import styles from './Select.module.css'
-import { SelectOption, SelectOnChange } from './index'
+import type { SelectOption, SelectOnChange } from './index'
 
 interface SelectProps {
   id?: string
@@ -120,6 +121,8 @@ export function Select(props: SelectProps) {
       >
         <div
           {...toggleButtonProps}
+          role="button"
+          tabIndex={0}
           className={styles.placeholderContainer}
           onClick={onToggleButtonClick ? handleToggleButtonClick : toggleButtonProps.onClick}
         >

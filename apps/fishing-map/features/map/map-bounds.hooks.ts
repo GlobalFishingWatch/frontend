@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useAtom } from 'jotai'
-import { Deck } from '@deck.gl/core'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { Bbox } from 'types'
+import type { Deck } from '@deck.gl/core'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import type { Bbox } from 'types'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
@@ -88,7 +88,7 @@ export function useMapFitBounds() {
         })
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     [viewport]
   )
   return fitBounds

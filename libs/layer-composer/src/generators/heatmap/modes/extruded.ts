@@ -1,12 +1,13 @@
-import { ExtendedLayerMeta, Group } from '../../../types'
+import type { ExtendedLayerMeta} from '../../../types';
+import { Group } from '../../../types'
 import { HEATMAP_COLOR_RAMPS } from '../colors'
 import { TEMPORALGRID_SOURCE_LAYER } from '../config'
-import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { getLayerId, getSourceId } from '../util'
-import { Breaks } from '../util/fetch-breaks'
+import type { Breaks } from '../util/fetch-breaks'
 import getBaseLayer from '../util/get-base-layers'
 import getLegends from '../util/get-legends'
-import { TimeChunk, TimeChunks } from '../util/time-chunks'
+import type { TimeChunk, TimeChunks } from '../util/time-chunks'
 
 function extruded(
   config: GlobalHeatmapAnimatedGeneratorConfig,

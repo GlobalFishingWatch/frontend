@@ -1,9 +1,12 @@
 import { BitmapLayer } from '@deck.gl/layers'
-import { CompositeLayer, LayerContext } from '@deck.gl/core'
+import type { LayerContext } from '@deck.gl/core';
+import { CompositeLayer } from '@deck.gl/core'
 import { TileLayer } from '@deck.gl/geo-layers'
-import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers'
+import type { MVTLayerProps } from '@deck.gl/geo-layers';
+import { MVTLayer } from '@deck.gl/geo-layers'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
-import { _BasemapLayerProps, BasemapType } from './basemap.types'
+import type { _BasemapLayerProps} from './basemap.types';
+import { BasemapType } from './basemap.types'
 
 export type BaseMapLayerProps = Omit<MVTLayerProps, 'data'> & _BasemapLayerProps
 
