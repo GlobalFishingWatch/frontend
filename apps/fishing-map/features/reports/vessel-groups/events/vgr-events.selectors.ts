@@ -1,14 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import {
   selectReportEventsStatsApiSlice,
-  selectReportEventsVessels
+  selectReportEventsVessels,
 } from 'queries/report-events-stats-api'
 import type {
   ReportEventsVesselsParams,
-  ReportEventsVesselsResponseItem} from 'queries/report-events-stats-api';
+  ReportEventsVesselsResponseItem,
+} from 'queries/report-events-stats-api'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -206,8 +207,8 @@ export const selectVGREventsVesselsPagination = createSelector(
       resultsPerPage:
         typeof resultsPerPage === 'number' ? resultsPerPage : parseInt(resultsPerPage),
       resultsNumber: vessels?.length,
-      totalFiltered: allVesselsFiltered?.length,
-      total: allVessels?.length,
+      totalFiltered: allVesselsFiltered?.length || 0,
+      total: allVessels?.length || 0,
     }
   }
 )

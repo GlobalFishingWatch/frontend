@@ -343,7 +343,7 @@ export const getRelatedDatasetsByType = (
       (relatedDataset) =>
         relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
     )
-    if (fullDataset?.length > 0) {
+    if (fullDataset?.length && fullDataset?.length > 0) {
       return fullDataset
     }
   }
@@ -760,14 +760,14 @@ export const getCommonSchemaFieldsInDataview = (
       : schemaEnum
   })
   if (schemaType === 'number' || schemaType === 'range') {
-    const schemaConfig = getDatasetSchemaItem(activeDatasets?.[0], schema)
+    const schemaConfig = getDatasetSchemaItem(activeDatasets?.[0] as Dataset, schema)
     if (schemaConfig && schemaConfig.min && schemaConfig.max) {
       schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]
     }
   }
   const cleanSchemaFields =
     compatibilityOperation === 'every' ? intersection(...schemaFields) : uniq(schemaFields.flat())
-  const datasetId = removeDatasetVersion(activeDatasets?.[0]?.id)
+  const datasetId = removeDatasetVersion(activeDatasets?.[0]?.id as string)
   const commonSchemaFields = schemaFields
     ? cleanSchemaFields.map((field) => {
         let label =
@@ -908,11 +908,14 @@ export const getFiltersBySchema = (
   const activeDatasets = getActiveDatasetsInDataview(dataview)?.map((d) => d.id)
   const hasDatasetsWithSchema =
     compatibilityOperation === 'some'
-      ? activeDatasets?.some((d) => datasetsWithSchema.includes(d))
-      : activeDatasets?.every((d) => datasetsWithSchema.includes(d))
-  const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)?.length > 0
-  const disabled = !hasDatasetsWithSchema || incompatibleFilterSelection
-  const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id)
+      ? activeDatasets?.some((d) => (datasetsWithSchema as string[]).includes(d))
+      : activeDatasets?.every((d) => (datasetsWithSchema as string[]).includes(d))
+
+  const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)
+  const hasIncompatibleFilterSelection =
+    incompatibleFilterSelection !== undefined && incompatibleFilterSelection?.length > 0
+  const disabled = !hasDatasetsWithSchema || hasIncompatibleFilterSelection
+  const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id as string)
   let label: string = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
     : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect
