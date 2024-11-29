@@ -247,7 +247,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
             id: `fourwings-cell-highlight`,
             widthUnits: 'pixels',
             widthMinPixels: 4,
-            getPath: (d: FourwingsFeature) => d.coordinates[0],
+            getPath: (d: FourwingsFeature) => d.coordinates,
             getColor: COLOR_HIGHLIGHT_LINE,
             getOffset: 0.5,
             getPolygonOffset: (params: any) =>

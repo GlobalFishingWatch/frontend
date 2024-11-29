@@ -1,16 +1,12 @@
-import type { Color, LayersList, PickingInfo } from '@deck.gl/core';
+import type { Color, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import type { FourwingsFeature} from '@globalfishingwatch/deck-loaders';
+import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import { FOOTPRINT_ID } from '../fourwings.config'
-import type {
-  FourwingsHeatmapPickingInfo,
-  FourwingsHeatmapPickingObject} from '../fourwings.types';
-import {
-  FourwingsAggregationOperation
-} from '../fourwings.types'
+import type { FourwingsHeatmapPickingInfo, FourwingsHeatmapPickingObject } from '../fourwings.types'
+import { FourwingsAggregationOperation } from '../fourwings.types'
 import {
   COLOR_HIGHLIGHT_LINE,
   LayerGroup,
@@ -126,7 +122,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
           pickable: true,
           getPickingInfo: this.getPickingInfo,
           getFillColor: this._getFillColor,
-          getPolygon: (d: FourwingsFeature) => d.coordinates[0],
+          getPolygon: (d: FourwingsFeature) => d.coordinates,
           getPolygonOffset: (params: any) =>
             getLayerGroupOffset(LayerGroup.HeatmapFootprint, params),
           updateTriggers: {
@@ -147,7 +143,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
               id: `fourwings-cell-highlight-${index}`,
               widthUnits: 'pixels',
               widthMinPixels: 4,
-              getPath: (d: FourwingsFeature) => d.coordinates[0],
+              getPath: (d: FourwingsFeature) => d.coordinates,
               getColor: COLOR_HIGHLIGHT_LINE,
               getOffset: 0.5,
               getPolygonOffset: (params: any) =>
