@@ -5,7 +5,6 @@
   "description": "Utils to decode various data formats",
   "main": "./index.cjs",
   "module": "./index.js",
-  "type": "module",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
     "@tmcw/togeojson": "5.x",

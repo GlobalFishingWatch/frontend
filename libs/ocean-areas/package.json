@@ -3,7 +3,6 @@
   "version": "2.0.3",
   "main": "./index.cjs",
   "module": "./index.js",
-  "type": "module",
   "scripts": {
     "mpas": "ts-node -P tsconfig.json src/scripts/mpas.ts",
     "eezs": "ts-node -P tsconfig.json src/scripts/eezs.ts",
