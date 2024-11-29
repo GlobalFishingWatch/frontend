@@ -23,6 +23,9 @@ export const selectVesselRelatedSubsection = selectVesselProfileStateProperty('v
 export const selectViewOnlyVessel = selectVesselProfileStateProperty('viewOnlyVessel')
 export const selectVesselRegistryId = selectVesselProfileStateProperty('vesselRegistryId')
 export const selectVesselSelfReportedId = selectVesselProfileStateProperty('vesselSelfReportedId')
+export const selectIncludeRelatedIdentities = selectVesselProfileStateProperty(
+  'includeRelatedIdentities'
+)
 
 export const selectVesselIdentityId = createSelector(
   [selectVesselIdentitySource, selectVesselRegistryId, selectVesselSelfReportedId],

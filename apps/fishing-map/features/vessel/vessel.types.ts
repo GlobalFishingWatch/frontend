@@ -14,6 +14,7 @@ export type VesselProfileState = {
   vesselIdentitySource: VesselIdentitySourceEnum
   vesselActivityMode: VesselProfileActivityMode
   viewOnlyVessel: boolean
+  includeRelatedIdentities?: boolean
 }
 
 export type VesselProfileStateProperty = keyof VesselProfileState
