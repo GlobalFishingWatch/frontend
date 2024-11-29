@@ -57,10 +57,8 @@ export const filterFeaturesByBounds = ({
     : features
 
   return featuresToCheck.flatMap((f) => {
-    const lon =
-      (f.geometry as any)?.coordinates?.[0]?.[0]?.[0] || (f as GeoJSONFeature).properties?.lon
-    const lat =
-      (f.geometry as any)?.coordinates?.[0]?.[0]?.[1] || (f as GeoJSONFeature).properties?.lat
+    const lon = (f as any)?.coordinates?.[0] || (f as GeoJSONFeature).properties?.lon
+    const lat = (f as any)?.coordinates?.[1] || (f as GeoJSONFeature).properties?.lat
     if (lat < south || lat > north) {
       return []
     }
