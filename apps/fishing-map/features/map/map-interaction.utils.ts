@@ -37,7 +37,7 @@ export const getAnalyticsEvent = (feature: DeckLayerPickingObject) => {
       }
       break
     case DataviewCategory.Vessels:
-      eventLabel = `event_type: ${feature.type} | vessel_id: ${
+      eventLabel = `event_type: ${(feature as VesselEventPickingObject).type} | vessel_id: ${
         (feature as VesselEventPickingObject).vesselId
       }`
       break

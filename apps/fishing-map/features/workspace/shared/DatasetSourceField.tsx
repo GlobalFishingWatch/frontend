@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import type { TagItem } from '@globalfishingwatch/ui-components';
+import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -33,7 +33,10 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
     ]
   }
 
-  if (dataviewFourWingsSources?.length < 2 || !sourcesSelected?.length) {
+  if (
+    (dataviewFourWingsSources?.length && dataviewFourWingsSources.length < 2) ||
+    !sourcesSelected?.length
+  ) {
     return null
   }
 
