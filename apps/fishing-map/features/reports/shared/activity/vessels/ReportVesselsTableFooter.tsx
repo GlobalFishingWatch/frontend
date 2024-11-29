@@ -15,11 +15,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportVesselFilter } from 'features/reports/areas/area-reports.config.selectors'
-import type {
-  ReportVesselWithDatasets} from 'features/reports/areas/area-reports.selectors';
-import {
-  selectReportAreaName
-} from 'features/reports/areas/area-reports.selectors'
+import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+import { selectReportAreaName } from 'features/reports/areas/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import styles from './ReportVesselsTableFooter.module.css'
 import {
@@ -158,11 +155,15 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
           <span className={cx(styles.noWrap, styles.right)}>
             {reportVesselFilter && (
               <Fragment>
-                <I18nNumber number={allFilteredVessels?.length} /> {t('common.of', 'of')}{' '}
+                <I18nNumber number={allFilteredVessels?.length || 0} /> {t('common.of', 'of')}{' '}
               </Fragment>
             )}
-            <I18nNumber number={pagination.total} />{' '}
-            {t('common.vessel', { count: pagination?.total })}
+            {pagination?.total && (
+              <Fragment>
+                <I18nNumber number={pagination.total} />{' '}
+                {t('common.vessel', { count: pagination.total })}
+              </Fragment>
+            )}
           </span>
         </Fragment>
       </div>

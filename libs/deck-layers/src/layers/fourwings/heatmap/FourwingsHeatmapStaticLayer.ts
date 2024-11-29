@@ -247,7 +247,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
             id: `fourwings-cell-highlight`,
             widthUnits: 'pixels',
             widthMinPixels: 4,
-            getPath: (d: FourwingsFeature) => d.geometry.coordinates[0],
+            getPath: (d: FourwingsFeature) => d.coordinates,
             getColor: COLOR_HIGHLIGHT_LINE,
             getOffset: 0.5,
             getPolygonOffset: (params: any) =>
@@ -270,9 +270,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     // needed to get access to the geometry coordinates
     return layer.props.tile?.dataInWGS84?.map((f: FourwingsStaticFeature) => ({
       ...f,
-      geometry: {
-        ...f.geometry,
-        coordinates: f.geometry.coordinates,
+      coordinates: {
+        ...f.coordinates,
       },
     }))
   }

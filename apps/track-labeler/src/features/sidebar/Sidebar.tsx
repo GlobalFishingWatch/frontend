@@ -19,7 +19,11 @@ import {
 } from '../../features/tracks/tracks.selectors'
 import { useViewport } from '../../features/map/map.hooks'
 import { useMapboxInstance } from '../../features/map/map.context'
-import { disableHighlightedEvent, setHighlightedEvent } from '../../features/timebar/timebar.slice'
+import {
+  disableHighlightedEvent,
+  setHighlightedEvent,
+  setHighlightedTime,
+} from '../../features/timebar/timebar.slice'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import { ActionType } from '../../types'
 import { findPreviousTimestamp, isFiniteBbox } from '../../utils/shared'
@@ -141,6 +145,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
         const start = new Date(findPreviousTimestamp(timestamps, selection.start))
         const end = new Date(selection.end)
         dispatch(setHighlightedEvent({ start: start.toISOString(), end: end.toISOString() }))
+        dispatch(setHighlightedTime({ start: start.toISOString(), end: end.toISOString() }))
       }
     },
     [dispatch, timestamps]
@@ -306,7 +311,7 @@ const Sidebar: React.FC = (props): React.ReactElement => {
                       key={`segment-${index}`}
                       data-testid={`segment-${index}`}
                       style={style}
-                      className={styles.segment}
+                      className={cx(styles.segment, !selectedAction && styles.segmentActivityEmpty)}
                       onMouseEnter={() => onSegmentOver(segment)}
                       onMouseLeave={() => {
                         dispatch(disableHighlightedEvent())

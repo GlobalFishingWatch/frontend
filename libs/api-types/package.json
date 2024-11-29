@@ -6,7 +6,6 @@
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "main": "./index.cjs",
   "module": "./index.js",
-  "type": "module",
   "dependencies": {
     "react": "18.x",
     "geojson": "0.x"
