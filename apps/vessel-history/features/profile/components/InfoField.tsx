@@ -1,11 +1,13 @@
-import React, { ReactNode, useCallback, useMemo, useState } from 'react'
+import type { ReactNode} from 'react';
+import React, { useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { Iuu, ValueItem } from 'types'
-import { VesselFieldLabel } from 'types/vessel'
+import type { ValueItem } from 'types';
+import { Iuu } from 'types'
+import type { VesselFieldLabel } from 'types/vessel'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import InfoFieldHistory from './InfoFieldHistory'
 import styles from './Info.module.css'

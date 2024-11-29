@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector, useStore } from 'react-redux'
-import { RootState } from 'reducers'
+import type { RootState } from 'reducers'
 import {
   useDatasetModalConfigConnect,
   useDatasetModalOpenConnect,

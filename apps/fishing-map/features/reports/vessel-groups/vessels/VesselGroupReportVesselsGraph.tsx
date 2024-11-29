@@ -2,18 +2,18 @@ import React, { Fragment } from 'react'
 import cx from 'classnames'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { ReportEventsStatsResponseGroups } from 'queries/report-events-stats-api'
+import type { ReportEventsStatsResponseGroups } from 'queries/report-events-stats-api'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
 import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
+import type {
   VesselGroupReportState,
   VGRVesselsSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
-import { PortsReportState } from 'features/reports/ports/ports-report.types'
+import type { PortsReportState } from 'features/reports/ports/ports-report.types'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
@@ -105,9 +105,9 @@ const CustomTick = (props: any) => {
 
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
   const labelChunks = label.split(' ')
-  let labelChunksClean = [labelChunks[0]]
+  const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {
-    let currentChunk = labelChunksClean[labelChunksClean.length - 1]
+    const currentChunk = labelChunksClean[labelChunksClean.length - 1]
     if (currentChunk.length + chunk.length >= width / visibleTicksCount / 8) {
       labelChunksClean.push(chunk)
     } else {

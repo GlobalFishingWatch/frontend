@@ -1,9 +1,11 @@
-import { ChangeEvent, Fragment, useCallback, useEffect, useState } from 'react'
+import type { ChangeEvent} from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { saveAs } from 'file-saver'
-import { TrackPoint, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { WebMercatorViewport } from '@deck.gl/core'
 import { Button, IconButton, InputText, Spinner, Switch } from '@globalfishingwatch/ui-components'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { useTracksSublayers } from 'layers/tracks/tracks.hooks'
+import type { TrackPoint} from 'layers/tracks/tracks.hooks';
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { API_BASE } from 'data/config'
 import { convertToTrackCSV } from 'utils/coordinates'

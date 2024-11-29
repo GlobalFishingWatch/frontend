@@ -4,7 +4,7 @@ import { SolidLegend } from './Solid'
 import { ColorRampLegend } from './ColorRamp'
 import { BivariateLegend } from './Bivariate'
 import styles from './MapLegend.module.css'
-import { UILegend, UILegendBivariate, UILegendColorRamp, UILegendSolid } from './types'
+import type { UILegend, UILegendBivariate, UILegendColorRamp, UILegendSolid } from './types'
 
 interface MapLegendProps {
   className?: string

@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import type {
+  SelectOption} from '@globalfishingwatch/ui-components';
 import {
   Icon,
   IconButton,
   Logo,
   Select,
-  SelectOption,
   SubBrands,
 } from '@globalfishingwatch/ui-components'
 import { flags } from '@globalfishingwatch/i18n-labels'

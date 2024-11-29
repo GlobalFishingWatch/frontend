@@ -1,11 +1,11 @@
 import * as Generators from '@globalfishingwatch/layer-composer'
-import {
+import type {
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
   // CartoPolygonsGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
-import { ContextLayer } from '../types'
-import { AppState } from '../types/redux.types'
+import type { ContextLayer } from '../types'
+import type { AppState } from '../types/redux.types'
 import { Field } from './models'
 
 export const TRACK_FIELDS = [

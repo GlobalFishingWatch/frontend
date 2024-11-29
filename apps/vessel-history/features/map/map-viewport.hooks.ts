@@ -2,13 +2,14 @@ import { useCallback } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
-import { ViewStateChangeEvent } from 'react-map-gl'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { Bbox, MapCoordinates } from 'types'
+import type { ViewStateChangeEvent } from 'react-map-gl'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import type { Bbox, MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { selectViewport } from 'features/app/app.selectors'
-import store, { RootState } from '../../store'
+import type { RootState } from '../../store';
+import store from '../../store'
 import useMapInstance from './map-context.hooks'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom' | 'pitch' | 'bearing'
@@ -50,7 +51,7 @@ export default function useViewport(): UseViewport {
 
   const setMapCoordinates = useCallback((coordinates: ViewportProps) => {
     setViewport((viewport) => ({ ...viewport, ...coordinates }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   const onViewportChange = useCallback((ev: ViewStateChangeEvent) => {
@@ -58,7 +59,7 @@ export default function useViewport(): UseViewport {
     if (latitude && longitude && zoom) {
       setViewport({ latitude, longitude, zoom })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   return { viewport, onViewportChange, setMapCoordinates }

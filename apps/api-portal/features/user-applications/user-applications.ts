@@ -1,9 +1,9 @@
 import { stringify } from 'qs'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useMemo, useState } from 'react'
-import { FieldValidationError } from 'lib/types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { APIPagination, UserApplication } from '@globalfishingwatch/api-types'
+import type { APIPagination, UserApplication } from '@globalfishingwatch/api-types'
+import type { FieldValidationError } from 'lib/types'
 import useUser, { checkUserApplicationPermission } from 'features/user/user'
 
 export type UserApplicationCreateArguments = Omit<
@@ -65,7 +65,7 @@ export const useCreateUserApplication = () => {
   const { data: user } = useUser()
   const userId = user?.id ?? null
 
-  const isAllowed = checkUserApplicationPermission('create', user!?.permissions)
+  const isAllowed = checkUserApplicationPermission('create', user?.permissions)
 
   const [token, setToken] = useState<UserApplicationCreateArguments>(emptyToken)
 

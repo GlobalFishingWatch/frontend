@@ -1,5 +1,6 @@
-import { Filters } from 'features/event-filters/filters.slice'
-import { selectFilteredEvents, RenderedEvent } from './vessels-activity.selectors'
+import type { Filters } from 'features/event-filters/filters.slice'
+import type { RenderedEvent } from './vessels-activity.selectors';
+import { selectFilteredEvents } from './vessels-activity.selectors'
 import {
   loiteringAndEncounterEvents,
   portVisitEvents,

@@ -4,7 +4,8 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { useTranslation } from 'react-i18next'
 import { flags } from '@globalfishingwatch/i18n-labels'
-import { IconButton, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components';
+import { IconButton, Modal, Select } from '@globalfishingwatch/ui-components'
 import {
   changeAnchoragePort,
   selectCountries,
@@ -13,7 +14,7 @@ import {
   toogleExtraData,
 } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
-import { PortPosition } from 'types'
+import type { PortPosition } from 'types'
 import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
 import TableHeader from './TableHeader'

@@ -1,15 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import MapComponent, { AttributionControl } from 'react-map-gl/maplibre'
+import MapComponent from 'react-map-gl/maplibre'
 import type { MapRef } from 'react-map-gl/maplibre'
 import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import * as Generators from '@globalfishingwatch/layer-composer'
-import {
-  ExtendedLayer,
-  getInteractiveLayerIds,
-  Group,
-  StyleTransformation,
-} from '@globalfishingwatch/layer-composer'
+import type { ExtendedLayer, StyleTransformation } from '@globalfishingwatch/layer-composer'
+import { getInteractiveLayerIds, Group } from '@globalfishingwatch/layer-composer'
 import { MAP_BACKGROUND_COLOR } from '../../data/config'
 import { selectRulers } from '../../features/rulers/rulers.selectors'
 import { ActionType } from '../../types'

@@ -2,7 +2,8 @@ import { useCallback, useState } from 'react'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 import { useSelector } from 'react-redux'
-import { MiniglobeBounds, MiniGlobe } from '@globalfishingwatch/ui-components/miniglobe'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
+import { MiniGlobe } from '@globalfishingwatch/ui-components/miniglobe'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import * as Generators from '@globalfishingwatch/layer-composer'
@@ -10,7 +11,7 @@ import { CONTEXT_LAYERS } from '../../../data/config'
 import { useAppDispatch } from '../../../store.hooks'
 import Rulers from '../../../features/rulers/Rulers'
 import { updateQueryParams } from '../../../routes/routes.actions'
-import { ContextLayer } from '../../../types'
+import type { ContextLayer } from '../../../types'
 import { selectHiddenLayers, selectSatellite } from '../../../routes/routes.selectors'
 import { useViewportConnect } from '../map.hooks'
 import styles from './MapControls.module.css'
@@ -58,6 +59,8 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
   return (
     <div className={styles.mapControls}>
       <div
+        role="button"
+        tabIndex={0}
         className={styles.miniglobe}
         onMouseEnter={() => setShowCoords(true)}
         onMouseLeave={() => setShowCoords(false)}
@@ -142,6 +145,8 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
       )}
       {(pinned || showCoords) && (
         <div
+          role="button"
+          tabIndex={0}
           className={cx(styles.coords, { [styles._pinned]: pinned })}
           onClick={() => setShowDMS(!showDMS)}
         >

@@ -1,7 +1,7 @@
 import React from 'react'
 // import { appWithTranslation } from 'next-i18next'
 // import { ClickToComponent } from 'click-to-react-component'
-import { AppProps } from 'next/app'
+import type { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 // import dynamic from 'next/dynamic'
 // import { useEffect, useState } from 'react'

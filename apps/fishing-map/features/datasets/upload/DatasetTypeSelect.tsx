@@ -1,13 +1,16 @@
-import { ReactElement, useCallback, useState } from 'react'
+import type { ReactElement} from 'react';
+import { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { FileRejection, useDropzone } from 'react-dropzone'
+import type { FileRejection} from 'react-dropzone';
+import { useDropzone } from 'react-dropzone'
 import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons-lines.svg'
 import { ReactComponent as Tracks } from 'assets/icons/dataset-type-tracks.svg'
 import { ReactComponent as Points } from 'assets/icons/dataset-type-points.svg'
-import { DatasetGeometryTypesSupported, getFileTypes, getFilesAcceptedByMime } from 'utils/files'
+import type { DatasetGeometryTypesSupported} from 'utils/files';
+import { getFileTypes, getFilesAcceptedByMime } from 'utils/files'
 import { useDatasetModalConfigConnect } from 'features/datasets/datasets.hook'
-import { DatasetUploadStyle } from 'features/modals/modals.slice'
+import type { DatasetUploadStyle } from 'features/modals/modals.slice'
 import styles from './DatasetTypeSelect.module.css'
 
 const DatasetType = ({

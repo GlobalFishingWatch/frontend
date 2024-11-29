@@ -1,5 +1,6 @@
-import { Dispatch } from 'redux'
-import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-first-router'
+import type { Dispatch } from 'redux'
+import type { RoutesMap, Options } from 'redux-first-router';
+import { NOT_FOUND, redirect, connectRoutes } from 'redux-first-router'
 
 export const PATH_BASENAME =
   process.env.NEXT_PUBLIC_URL || process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production'

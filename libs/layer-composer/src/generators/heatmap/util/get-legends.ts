@@ -1,10 +1,13 @@
-import { LayerMetadataLegend, LegendType } from '../../../types'
-import { ColorRampId, ColorRampsIds, HeatmapAnimatedMode } from '../../types'
+import type { LayerMetadataLegend} from '../../../types';
+import { LegendType } from '../../../types'
+import type { ColorRampId, ColorRampsIds} from '../../types';
+import { HeatmapAnimatedMode } from '../../types'
 import { HEATMAP_DEFAULT_MAX_ZOOM, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
 import { HEATMAP_COLOR_RAMPS, HEATMAP_COLORS_BY_ID, TIME_COMPARE_COLOR_RAMP } from '../colors'
-import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToString } from './colors'
-import { Breaks, FetchBreaksParams, isDirectAPIBreaks } from './fetch-breaks'
+import type { Breaks, FetchBreaksParams} from './fetch-breaks';
+import { isDirectAPIBreaks } from './fetch-breaks'
 import { getCleanBreaks } from './get-breaks'
 import { toDT } from './time-chunks'
 
@@ -57,7 +60,7 @@ export const getSublayersBreaks = (config: FetchBreaksParams, breaks: Breaks | u
   // uses 'years' as breaks request a year with temporal-aggregation true
   const directApiBreaks = isDirectAPIBreaks(config)
   let deltaInterval = end.diff(start, 'days').days / 30
-  let baseMultiplier = config.mode === HeatmapAnimatedMode.TimeCompare ? 1 / 10 : 1 / 4
+  const baseMultiplier = config.mode === HeatmapAnimatedMode.TimeCompare ? 1 / 10 : 1 / 4
   if (directApiBreaks && (config.interval === 'DAY' || config.interval === 'HOUR')) {
     deltaInterval =
       config.interval === 'DAY' ? end.diff(start, 'day').days : end.diff(start, 'hour').hours

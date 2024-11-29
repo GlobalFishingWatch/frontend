@@ -1,4 +1,4 @@
-import { QueryParam } from 'types'
+import type { QueryParam } from 'types'
 
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS: QueryParam[] = [

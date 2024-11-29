@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver'
-import {
+import type {
   APIPagination,
   ResourceRequestType,
   ResourceResponseType,
@@ -441,6 +441,7 @@ export class GFW_API_CLASS {
   async login(params: LoginParams): Promise<UserData> {
     const { accessToken = null, refreshToken = this.getRefreshToken() } = params
     this.status = 'logging'
+    // eslint-disable-next-line no-async-promise-executor
     this.logging = new Promise(async (resolve, reject) => {
       if (accessToken) {
         if (this.debug) {

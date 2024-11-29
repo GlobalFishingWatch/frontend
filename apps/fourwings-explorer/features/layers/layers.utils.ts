@@ -1,6 +1,7 @@
-import { ColorCyclingType } from '@globalfishingwatch/api-types'
+import type { ColorCyclingType } from '@globalfishingwatch/api-types'
+import type {
+  ColorBarOption} from '@globalfishingwatch/ui-components';
 import {
-  ColorBarOption,
   FillColorBarOptions,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'

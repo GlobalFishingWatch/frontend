@@ -3,10 +3,11 @@ import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
-import { IconButton, InputText, Modal, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
+import type { SelectOption} from '@globalfishingwatch/ui-components';
+import { IconButton, InputText, Modal, Tooltip } from '@globalfishingwatch/ui-components'
 import { flags } from '@globalfishingwatch/i18n-labels'
 import useMapInstance from 'features/map/map-context.hooks'
-import { PortPosition } from 'types'
+import type { PortPosition } from 'types'
 import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 import {
@@ -19,7 +20,8 @@ import {
   selectSubareaValuesByCountry
 } from 'features/labeler/labeler.selectors'
 import styles from './TableAnchorage.module.css'
-import SubareaSelector, { SubareaSelectOption } from './components/SubareaSelector'
+import type { SubareaSelectOption } from './components/SubareaSelector';
+import SubareaSelector from './components/SubareaSelector'
 import { useValueManagerConnect } from './TableAnchorage.hooks'
 
 type TableRowProps = {

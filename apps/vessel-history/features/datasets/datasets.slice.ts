@@ -1,21 +1,23 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy, memoize, without, uniq } from 'lodash'
 import { stringify } from 'qs'
-import { GFWApiClient } from 'http-client/http-client'
-import { APIPagination, Dataset, DatasetTypes, RelatedDataset } from '@globalfishingwatch/api-types'
+import type { APIPagination, Dataset} from '@globalfishingwatch/api-types';
+import { DatasetTypes, RelatedDataset } from '@globalfishingwatch/api-types'
 import {
   parseAPIError,
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
+import type {
+  AsyncReducer,
+  AsyncError} from 'utils/async-slice';
 import {
   asyncInitialState,
-  AsyncReducer,
   createAsyncSlice,
-  AsyncError,
   AsyncReducerStatus,
 } from 'utils/async-slice'
-import { RootState } from 'store'
+import type { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS, IS_STANDALONE_APP } from 'data/config'
 
 export const fetchDatasetByIdThunk = createAsyncThunk<

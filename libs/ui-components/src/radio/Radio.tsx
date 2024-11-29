@@ -1,8 +1,10 @@
-import React, { ReactElement } from 'react'
+/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
+import type { ReactElement } from 'react'
+import React from 'react'
 import cx from 'classnames'
-import { Placement } from 'tippy.js'
+import type { Placement } from 'tippy.js'
 import { Tooltip } from '../tooltip'
-import { TooltipTypes } from '../types/types'
+import type { TooltipTypes } from '../types/types'
 import styles from './Radio.module.css'
 
 interface RadioProps {
@@ -45,6 +47,7 @@ export function Radio(props: RadioProps) {
         </button>
         {label && (
           <label
+            role="button"
             onClick={onClick}
             className={cx(styles.Label, { [styles.active]: active }, labelClassname)}
           >

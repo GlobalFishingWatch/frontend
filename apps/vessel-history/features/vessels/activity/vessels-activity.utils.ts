@@ -1,5 +1,5 @@
-import { ValueItem } from 'types'
-import { ActivityEvent } from 'types/activity'
+import type { ValueItem } from 'types'
+import type { ActivityEvent } from 'types/activity'
 
 export const groupEvents = (events: ActivityEvent[]) => {
   console.error('not implemented yet')

@@ -1,4 +1,4 @@
-import { TrackSegment } from '@globalfishingwatch/api-types'
+import type { TrackSegment } from '@globalfishingwatch/api-types'
 
 /**
  * Filter segments by timerange

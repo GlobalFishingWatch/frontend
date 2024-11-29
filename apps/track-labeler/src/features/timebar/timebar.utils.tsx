@@ -1,5 +1,6 @@
-import { TrackPoint } from '@globalfishingwatch/api-types'
-import { ActionType, LayersData, VesselPoint, FilterModeValues } from '../../types'
+import type { TrackPoint } from '@globalfishingwatch/api-types'
+import type { LayersData, VesselPoint, FilterModeValues } from '../../types'
+import { ActionType } from '../../types'
 
 const getIsOutOfFilterRange = ({
   value,
@@ -30,7 +31,8 @@ export const getTimebarPoints = (
   const eventsWithRenderingInfo: VesselPoint[] = vesselTrack.flatMap((data: LayersData) => {
     return data.trackPoints.map((vesselMovement: TrackPoint) => {
       const outOfTimeRange =
-        date.start >= vesselMovement?.timestamp! || vesselMovement?.timestamp! >= date.end
+        vesselMovement?.timestamp &&
+        (date.start >= vesselMovement?.timestamp || vesselMovement?.timestamp >= date.end)
       const value: number = vesselMovement[filterMode as keyof TrackPoint] as number
       const outOfFilterRange = getIsOutOfFilterRange({ value, filterModeValues, filterMode })
       const outOfRange = outOfTimeRange || outOfFilterRange

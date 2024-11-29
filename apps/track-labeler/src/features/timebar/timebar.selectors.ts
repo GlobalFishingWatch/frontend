@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
-import { Dataview } from '@globalfishingwatch/api-types'
+import type { Dataview } from '@globalfishingwatch/api-types'
 import * as Generators from '@globalfishingwatch/layer-composer'
-import { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
+import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
 import { selectDataviews } from '../../features/dataviews/dataviews.slice'
 import { selectEvents } from '../../features/vessels/vessels.slice'
 import {
@@ -20,7 +20,7 @@ import {
   getVesselParsedTrack,
   getVesselTrackData,
 } from '../../features/tracks/tracks.selectors'
-import { DayNightLayer, VesselPoint } from '../../types'
+import type { DayNightLayer, VesselPoint } from '../../types'
 import { TimebarMode } from '../../data/config'
 import { getTimebarPoints } from './timebar.utils'
 

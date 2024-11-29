@@ -1,18 +1,18 @@
-import { ColorRampsIds } from '../../utils'
-import { DeckLayerProps, DeckPickingObject } from '../../types'
-import {
+import type { ColorRampsIds } from '../../utils'
+import type { DeckLayerProps, DeckPickingObject } from '../../types'
+import type {
   FOOTPRINT_ID,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
   POSITIONS_ID,
 } from './fourwings.config'
-import {
+import type {
   FourwingsHeatmapPickingInfo,
   FourwingsHeatmapPickingObject,
   FourwingsHeatmapStaticPickingObject,
 } from './heatmap/fourwings-heatmap.types'
-import {
+import type {
   FourwingsPositionsPickingInfo,
   FourwingsPositionsPickingObject,
 } from './positions/fourwings-positions.types'

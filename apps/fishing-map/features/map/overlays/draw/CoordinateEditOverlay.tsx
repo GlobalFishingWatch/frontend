@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Feature, Polygon } from 'geojson'
+import type { Feature, Polygon } from 'geojson'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { selectMapDrawingMode } from 'routes/routes.selectors'
 import PopupWrapper from 'features/map/popups/PopupWrapper'

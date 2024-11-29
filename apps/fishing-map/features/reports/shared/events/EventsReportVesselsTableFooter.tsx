@@ -10,11 +10,11 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import { VesselsPagination } from 'features/reports/vessel-groups/events/vgr-events.selectors'
+import type { VesselsPagination } from 'features/reports/vessel-groups/events/vgr-events.selectors'
 import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTableFooter.module.css'
-import { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
-import { PortsReportState } from '../../ports/ports-report.types'
-import { EventsStatsVessel } from '../../ports/ports-report.slice'
+import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
+import type { PortsReportState } from '../../ports/ports-report.types'
+import type { EventsStatsVessel } from '../../ports/ports-report.slice'
 
 export default function EventsReportVesselsTableFooter({
   vessels,

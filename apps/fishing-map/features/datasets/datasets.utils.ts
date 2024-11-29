@@ -2,31 +2,32 @@ import lowerCase from 'lodash/lowerCase'
 import { uniq } from 'es-toolkit'
 import intersection from 'lodash/intersection'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import {
+import type {
   Dataset,
-  DatasetCategory,
   DatasetSchemaType,
-  DatasetTypes,
   Dataview,
-  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
-  EndpointId,
-  EventTypes,
   UserPermission,
   FilterOperator,
-  INCLUDE_FILTER_ID,
-  DatasetSubCategory,
-  DataviewCategory,
   VesselType,
   DatasetSchema,
   DatasetSchemaItem,
   IdentityVessel,
   DatasetSchemaItemEnum,
-  VesselIdentitySourceEnum,
+  VesselIdentitySourceEnum} from '@globalfishingwatch/api-types';
+import {
+  DatasetCategory,
+  DatasetTypes,
+  DataviewType,
+  EndpointId,
+  EventTypes,
+  INCLUDE_FILTER_ID,
+  DatasetSubCategory,
+  DataviewCategory
 } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
@@ -244,8 +245,8 @@ export const getDatasetTitleByDataview = (
     return datasetTitle
   }
   const sources =
-    dataview.datasets!?.length > 1
-      ? `(${dataview.datasets!?.length} ${t('common.sources', 'Sources')})`
+    dataview.datasets?.length > 1
+      ? `(${dataview.datasets?.length} ${t('common.sources', 'Sources')})`
       : `(${getDatasetNameTranslated(dataview.datasets?.[0] as Dataset)})`
 
   return datasetTitle + ' ' + sources
@@ -341,7 +342,7 @@ export const getRelatedDatasetsByType = (
       (relatedDataset) =>
         relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
     )
-    if (fullDataset!?.length > 0) {
+    if (fullDataset?.length > 0) {
       return fullDataset
     }
   }
@@ -451,7 +452,7 @@ export const getActiveActivityDatasetsInDataviews = (
 ) => {
   return dataviews.map((dataview) => {
     const activeDatasets = (dataview?.config?.datasets || []) as string[]
-    return dataview.datasets!?.filter((dataset) => {
+    return dataview.datasets?.filter((dataset) => {
       return activeDatasets.includes(dataset.id)
     })
   })
@@ -758,20 +759,20 @@ export const getCommonSchemaFieldsInDataview = (
       : schemaEnum
   })
   if (schemaType === 'number' || schemaType === 'range') {
-    const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)
+    const schemaConfig = getDatasetSchemaItem(activeDatasets?.[0], schema)
     if (schemaConfig && schemaConfig.min && schemaConfig.max) {
       schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]
     }
   }
   const cleanSchemaFields =
     compatibilityOperation === 'every' ? intersection(...schemaFields) : uniq(schemaFields.flat())
-  const datasetId = removeDatasetVersion(activeDatasets!?.[0]?.id)
+  const datasetId = removeDatasetVersion(activeDatasets?.[0]?.id)
   const commonSchemaFields = schemaFields
     ? cleanSchemaFields.map((field) => {
         let label =
           schemaType === 'range' || schemaType === 'number'
             ? field
-            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field!?.toString())
+            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field?.toString())
         if (label === field) {
           if (schema === 'geartypes' || schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
@@ -786,7 +787,7 @@ export const getCommonSchemaFieldsInDataview = (
             label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
           }
         }
-        return { id: field!?.toString(), label: label as string }
+        return { id: field?.toString(), label: label as string }
       })
     : []
   return commonSchemaFields.sort(sortFields)
@@ -902,15 +903,15 @@ export const getFiltersBySchema = (
   const filterOperator = getSchemaFilterOperationInDataview(dataview, schema) as FilterOperator
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
-  const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)!?.map((d) => d.id)
+  const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)?.map((d) => d.id)
   const activeDatasets = getActiveDatasetsInDataview(dataview)?.map((d) => d.id)
   const hasDatasetsWithSchema =
     compatibilityOperation === 'some'
       ? activeDatasets?.some((d) => datasetsWithSchema.includes(d))
       : activeDatasets?.every((d) => datasetsWithSchema.includes(d))
-  const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)!?.length > 0
+  const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)?.length > 0
   const disabled = !hasDatasetsWithSchema || incompatibleFilterSelection
-  const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)!?.[0]?.id)
+  const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id)
   let label: string = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
     : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect

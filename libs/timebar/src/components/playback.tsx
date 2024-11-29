@@ -3,11 +3,8 @@ import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
 import { DateTime } from 'luxon'
-import {
-  getFourwingsInterval,
-  FOURWINGS_INTERVALS_ORDER,
-  FourwingsInterval,
-} from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
 import uiStyles from '../timebar.module.css'
@@ -89,6 +86,9 @@ class Playback extends Component<PlaybackProps> {
 
   update = (deltaMultiplicator: number, { byIntervals = false } = {}) => {
     const { onTick, start, end, absoluteStart, intervals, getCurrentInterval } = this.props
+    if (!start || !end) {
+      return
+    }
     const { speedStep, loop } = this.state
     let newStartMs
     let newEndMs
@@ -96,11 +96,11 @@ class Playback extends Component<PlaybackProps> {
       const interval = getCurrentInterval(start, end, intervals)
       const intervalStartMs =
         interval === 'MONTH'
-          ? DateTime.fromISO(start, { zone: 'utc' })?.daysInMonth! * MS_IN_INTERVAL.DAY
+          ? DateTime.fromISO(start, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       const intervalEndMs =
         interval === 'MONTH'
-          ? DateTime.fromISO(end, { zone: 'utc' })?.daysInMonth! * MS_IN_INTERVAL.DAY
+          ? DateTime.fromISO(end, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator
       newEndMs = new Date(end).getTime() + intervalEndMs * deltaMultiplicator
@@ -177,7 +177,9 @@ class Playback extends Component<PlaybackProps> {
       playing: playingNext,
     })
 
-    onTogglePlay && onTogglePlay(playingNext)
+    if (onTogglePlay) {
+      onTogglePlay(playingNext)
+    }
   }
 
   componentWillUnmount() {

@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   displayName: 'real-time-prototype',
   preset: '../../jest.preset.js',

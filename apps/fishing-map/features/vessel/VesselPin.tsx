@@ -2,17 +2,20 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 import { stringify } from 'qs'
-import { IconButton, IconButtonSize } from '@globalfishingwatch/ui-components'
-import {
+import type { IconButtonSize } from '@globalfishingwatch/ui-components';
+import { IconButton } from '@globalfishingwatch/ui-components'
+import type {
   APIPagination,
   Dataset,
-  DatasetTypes,
   DataviewInstance,
   IdentityVessel,
-  Resource,
+  Resource} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes,
   ResourceStatus,
 } from '@globalfishingwatch/api-types'
-import { setResource, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client';
+import { setResource } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -29,7 +32,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { ExtendedFeatureVessel } from 'features/map/map.slice'
+import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 
 export type VesselToResolve = {
@@ -76,7 +79,7 @@ function VesselPin({
   const infoDataset = useSelector(selectDatasetById(infoDatasetId))
   const vesselInWorkspace = getVesselInWorkspace(
     vesselsInWorkspace,
-    vessel ? getVesselId(vessel) : vesselToResolve!?.id || vesselToSearch?.id || ''
+    vessel ? getVesselId(vessel) : vesselToResolve?.id || vesselToSearch?.id || ''
   )
 
   // This avoid requesting the vessel info again when we alredy requested it for the popup

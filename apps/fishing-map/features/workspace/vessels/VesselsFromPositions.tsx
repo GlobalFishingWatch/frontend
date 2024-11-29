@@ -5,8 +5,8 @@ import { t } from 'i18next'
 import { uniq } from 'es-toolkit'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import styles from 'features/workspace/shared/Sections.module.css'
@@ -108,7 +108,7 @@ function VesselsFromPositions() {
     } else {
       setVessels([])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [fourwingsLayers.length, fourwingsLayersLoaded, vesselsHash])
 
   if (!vessels.length) {

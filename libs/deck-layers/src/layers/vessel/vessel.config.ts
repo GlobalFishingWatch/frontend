@@ -1,5 +1,5 @@
-import { Color } from '@deck.gl/core'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import type { Color } from '@deck.gl/core'
+import type { EventTypes } from '@globalfishingwatch/api-types'
 import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { hexToDeckColor } from '../../utils'
 

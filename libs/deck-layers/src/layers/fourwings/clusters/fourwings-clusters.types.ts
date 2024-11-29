@@ -1,12 +1,12 @@
-import { ClusterFeature, PointFeature } from 'supercluster'
-import { PickingInfo } from '@deck.gl/core'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import {
+import type { ClusterFeature, PointFeature } from 'supercluster'
+import type { PickingInfo } from '@deck.gl/core'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type {
   ClusterMaxZoomLevelConfig,
   EventTypes,
   FourwingsGeolocation,
 } from '@globalfishingwatch/api-types'
-import { DeckLayerProps, DeckPickingObject } from '../../../types'
+import type { DeckLayerProps, DeckPickingObject } from '../../../types'
 
 export type FourwingsClusterEventType =
   | `${EventTypes.Encounter}`
@@ -37,7 +37,7 @@ export type FourwingsClusterProperties = {
 }
 export type FourwingsClusterFeature = ClusterFeature<FourwingsClusterProperties>
 
-export type FourwingsPointFeature = PointFeature<{}>
+export type FourwingsPointFeature = PointFeature<Record<string, unknown>>
 export type FourwingsClusterPickingObject = FourwingsClusterFeature &
   DeckPickingObject<{
     startTime: number

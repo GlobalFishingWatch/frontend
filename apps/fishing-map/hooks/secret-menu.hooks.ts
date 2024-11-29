@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { RootState } from 'reducers'
+import type { RootState } from 'reducers'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 

@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import type { Dataset} from '@globalfishingwatch/api-types';
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { FULL_SUFIX } from 'data/config'
 import { selectDatasets } from './datasets.slice'
 

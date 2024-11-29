@@ -1,6 +1,6 @@
 import { LayerGroup } from '@globalfishingwatch/deck-layers'
 import { PATH_BASENAME } from 'data/config'
-import { LibraryLayerConfig } from 'data/layer-library/layers.types'
+import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,

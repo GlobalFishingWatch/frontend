@@ -1,10 +1,11 @@
 import React, { Fragment, useContext, useEffect, useMemo } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
+import type { TimelineScale, TrackGraphOrientation } from '../timelineContext';
+import TimelineContext from '../timelineContext'
 import { getTrackY } from './common/utils'
 import styles from './tracks.module.css'
 import { useFilteredChartData, useOuterScale } from './common/hooks'
-import { TimebarChartData, TimebarChartItem, TrackChunkProps } from './common/types'
+import type { TimebarChartData, TimebarChartItem, TrackChunkProps } from './common/types'
 import { useUpdateChartsData } from './chartsData.atom'
 
 const getTracksWithCoords = (
