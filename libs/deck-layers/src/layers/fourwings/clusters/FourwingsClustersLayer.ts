@@ -1,22 +1,23 @@
 import { parse } from '@loaders.gl/core'
-import {
-  CompositeLayer,
-  Layer,
-  LayerContext,
-  LayersList,
-  DefaultProps,
-  PickingInfo,
-} from '@deck.gl/core'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import type { Layer, LayerContext, LayersList, DefaultProps, PickingInfo } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 // import { CollisionFilterExtension } from '@deck.gl/extensions'
-import { GeoBoundingBox, Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type {
+  GeoBoundingBox,
+  Tile2DHeader,
+  TileLoadProps,
+} from '@deck.gl/geo-layers/dist/tileset-2d'
 import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import Supercluster from 'supercluster'
-import { ScalePower, scaleSqrt } from 'd3-scale'
+import type { ScalePower } from 'd3-scale'
+import { scaleSqrt } from 'd3-scale'
 import { max } from 'simple-statistics'
-import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
-import { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
+import type { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
 import { PATH_BASENAME } from '../../layers.config'
 import {
   DEFAULT_BACKGROUND_COLOR,
@@ -27,13 +28,14 @@ import {
   LayerGroup,
 } from '../../../utils'
 import {
+  FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
   MAX_ZOOM_TO_CLUSTER_POINTS,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
 } from '../fourwings.config'
 import { getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
-import {
+import type {
   FourwingsClusterEventType,
   FourwingsClusterFeature,
   FourwingsClusterMode,
@@ -53,6 +55,7 @@ type FourwingsClustersTileLayerState = {
 
 const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
   tilesUrl: HEATMAP_API_TILES_URL,
+  maxZoom: FOURWINGS_MAX_ZOOM,
   clusterMaxZoomLevels: {
     default: MAX_ZOOM_TO_CLUSTER_POINTS,
   },
@@ -87,7 +90,7 @@ export function getFourwingsGeolocation(
   for (const geolocation of GEOLOCATION_PRIORITY) {
     if (
       clusterMaxZoomLevels?.[geolocation] !== undefined &&
-      Math.floor(zoom) <= clusterMaxZoomLevels[geolocation]
+      zoom <= clusterMaxZoomLevels[geolocation] + 0.5
     ) {
       clusterMode = geolocation
       break
@@ -112,8 +115,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
     if (!clusterMaxZoomLevels) {
       return 'default'
     }
-    const clusterMode =
-      getFourwingsGeolocation(clusterMaxZoomLevels, this.context.viewport.zoom) || 'positions'
+    const geolocation = getFourwingsGeolocation(clusterMaxZoomLevels, this.context.viewport.zoom)
+    const clusterMode = geolocation || 'positions'
     return clusterMode
   }
 
@@ -186,6 +189,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
           )
         : tile.content || []
     })
+
     if (this.clusterMode === 'positions' && data.length < MAX_INDIVIDUAL_POINTS) {
       requestAnimationFrame(() => {
         this.setState({
@@ -199,11 +203,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
     this.state.clusterIndex.load(data)
     const allClusters = this.state.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
-    let clusters: FourwingsClusterFeature[] = []
-    let points: FourwingsPointFeature[] = []
+    const clusters: FourwingsClusterFeature[] = []
+    const points: FourwingsPointFeature[] = []
 
     if (allClusters.length) {
       allClusters.forEach((f) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         f.properties.value > 1
           ? clusters.push(f as FourwingsClusterFeature)
           : points.push(f as FourwingsPointFeature)
@@ -342,9 +347,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return d.properties.value.toString()
   }
 
-  renderLayers(): Layer<{}> | LayersList | null {
+  renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
     const { color, tilesUrl, eventType = 'encounter' } = this.props
     const { clusters, points, radiusScale } = this.state
+
     return [
       new TileLayer<FourwingsPointFeature, any>(this.props, {
         id: `${this.props.id}-tiles`,

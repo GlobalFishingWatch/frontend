@@ -41,6 +41,7 @@
     "noDataByArea": "Data tidak tersedia untuk area yang dipilih",
     "noTimeComparisonAllowed": "Mode perbandingan waktu tidak tersedia saat lapisan memiliki filter yang berbeda",
     "noVesselDataFiltered": "Tidak ada kapal yang cocok dengan filter Anda",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Lain-lain",
     "periodComparison": "perbandingan periode",
     "periodComparison1st": "acuan dasar awal",
@@ -319,6 +320,9 @@
     "date": "Tanggal",
     "dateRange": "Date Range",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "Terjadi kesalahan saat mengunggah dataset Anda",
       "geoJSON": {
         "noValidFeatures": "Tidak ditemukan jenis fitur valid dalam file geoJSON ini"
@@ -617,6 +621,9 @@
     },
     "areasOnScreen": "Area pada layar",
     "color_change": "Ganti warna",
+    "drawAddPoint": "Add a point",
+    "drawAddPolygon": "Add a geometry",
+    "drawDelete": "Delete selection",
     "drawPoints": "Draw points",
     "drawPolygon": "Gambar sebuah lapisan",
     "drawPolygonLogin": "Daftar dan masuk untuk menggambar lapisan (gratis, 2 menit)",
@@ -697,6 +704,12 @@
     "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
+  },
+  "portsReport": {
+    "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "seePortReport": "See all entry events to this port",
+    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
   },
   "search": {
     "advanced": "Lanjutan",
@@ -805,6 +818,7 @@
     "capacity": "Kapasitas",
     "carrier": "Pembawa",
     "casco": "Casco",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Peta di tengah dengan peristiwa di dalam",
     "clickToSeeMore": "Klik untuk informasi lebih lanjut",
     "close": "Tutup",

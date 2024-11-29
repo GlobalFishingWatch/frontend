@@ -1,10 +1,11 @@
 import memoizeOne from 'memoize-one'
-import { FeatureCollection, Feature, Point } from 'geojson'
-import { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { FeatureCollection, Feature, Point } from 'geojson'
+import type { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { Group } from '../../types'
-import { GeneratorType, MapAnnotation, AnnotationsGeneratorConfig } from '../types'
+import type { MapAnnotation, AnnotationsGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 
 const getAnnotationsGeojson = (data: MapAnnotation[]): FeatureCollection => {
   const points: FeatureCollection = {

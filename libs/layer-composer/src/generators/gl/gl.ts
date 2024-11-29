@@ -1,4 +1,5 @@
-import { GeneratorType, GlGeneratorConfig } from '../types'
+import type { GlGeneratorConfig } from '../types'
+import { GeneratorType } from '../types'
 
 class GlStyleGenerator {
   type = GeneratorType.GL

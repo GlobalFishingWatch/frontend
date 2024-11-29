@@ -11,11 +11,10 @@ import SearchBasicResultList from 'features/search/basic/SearchBasicResultList'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
-import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectSearchStatus,
-  selectSearchStatusCode,
   setSuggestionClicked,
   selectSelectedVessels,
   setSelectedVessels,
@@ -59,7 +58,7 @@ function SearchBasic({
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
     searchPagination.since &&
-    searchResults!?.length < searchPagination.total
+    searchResults?.length < searchPagination.total
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ query: e.target.value }, isStandaloneSearchLocation)

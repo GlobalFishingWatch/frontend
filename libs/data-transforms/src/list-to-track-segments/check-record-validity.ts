@@ -1,5 +1,5 @@
 import { normalizePropertiesKeys } from '../schema'
-import { SegmentColumns } from '../types'
+import type { SegmentColumns } from '../types'
 
 type Args = SegmentColumns & {
   record: Record<string, any>

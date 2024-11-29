@@ -1,8 +1,8 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import { API_GATEWAY } from '../../../config'
 import { isUrlAbsolute } from '../../../utils'
-import { GlobalHeatmapGeneratorConfig } from '../heatmap'
-import { Stats, StatsByZoom } from '../types'
+import type { GlobalHeatmapGeneratorConfig } from '../heatmap'
+import type { Stats, StatsByZoom } from '../types'
 import { toURLArray } from '../../utils'
 
 let controllerCache: AbortController

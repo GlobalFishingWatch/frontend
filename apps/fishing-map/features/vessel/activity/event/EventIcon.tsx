@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import { EventType } from '@globalfishingwatch/api-types'
+import type { EventType } from '@globalfishingwatch/api-types'
 import { Icon } from '@globalfishingwatch/ui-components'
 import styles from './EventIcon.module.css'
 

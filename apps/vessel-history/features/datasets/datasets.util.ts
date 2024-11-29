@@ -1,4 +1,4 @@
-import { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 
 export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig) => {
   return (

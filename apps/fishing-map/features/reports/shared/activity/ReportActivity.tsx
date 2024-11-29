@@ -18,7 +18,10 @@ import {
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
+import {
+  selectReportDataviewsWithPermissions,
+  selectTimeComparisonValues,
+} from 'features/reports/areas/area-reports.selectors'
 import { selectHasReportVessels } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { getDownloadReportSupported } from 'features/download/download.utils'
@@ -38,9 +41,10 @@ import {
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import type {
+  LastReportStorage} from 'features/reports/areas/area-reports.config';
 import {
-  LAST_REPORTS_STORAGE_KEY,
-  LastReportStorage,
+  LAST_REPORTS_STORAGE_KEY
 } from 'features/reports/areas/area-reports.config'
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
@@ -79,6 +83,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
   // TODO get this from datasets config
   const activityUnit = isActivityReport(reportCategory) ? 'hour' : 'detection'
@@ -251,6 +256,23 @@ function ActivityReport({ reportName }: { reportName?: string }) {
 
     if (reportError || (!reportLoading && !reportDataviews?.length)) {
       return ReportVesselError
+    }
+
+    if (timeComparisonValues) {
+      return (
+        <ReportVesselsPlaceholder>
+          <div className={cx(styles.cover, styles.center, styles.top)}>
+            <p
+              dangerouslySetInnerHTML={{
+                __html: t(
+                  'analysis.onlyEvolutionSupported',
+                  'Click the evolution button above to see the vessels active in the area'
+                ),
+              }}
+            />
+          </div>
+        </ReportVesselsPlaceholder>
+      )
     }
 
     if (

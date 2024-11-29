@@ -3,7 +3,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import styles from './SearchPlaceholders.module.css'
-import { HttpError } from './search.slice'
+import type { HttpError } from './search.slice'
 
 type SearchPlaceholderProps = {
   className?: string

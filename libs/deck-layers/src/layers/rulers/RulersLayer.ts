@@ -1,10 +1,11 @@
 import { GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers'
-import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
+import type { Color, DefaultProps, PickingInfo } from '@deck.gl/core';
+import { CompositeLayer } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { Feature, LineString, MultiLineString, Point } from 'geojson'
+import type { Feature, LineString, MultiLineString, Point } from 'geojson'
 import { COLOR_TRANSPARENT, LayerGroup, getLayerGroupOffset } from '../../utils'
-import { DeckLayerCategory } from '../../types'
-import {
+import type { DeckLayerCategory } from '../../types'
+import type {
   RulersLayerProps,
   RulerData,
   RulerPointProperties,

@@ -1,7 +1,8 @@
-import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
+import type { Color, DefaultProps, PickingInfo } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
-import { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
+import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
+import type { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
 import { PREVIEW_BUFFER_GENERATOR_ID } from '../layers.config'
 import {
   hexToDeckColor,
@@ -13,13 +14,15 @@ import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
 } from '../../utils'
-import { PolygonFeature, PolygonPickingInfo, PolygonPickingObject } from './polygons.types'
+import type { PolygonFeature, PolygonPickingInfo, PolygonPickingObject } from './polygons.types'
 
 const defaultProps: DefaultProps<PolygonsLayerProps> = {
   pickable: true,
 }
 
-export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProps & PropsT> {
+export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLayer<
+  PolygonsLayerProps & PropsT
+> {
   static layerName = 'PolygonsLayer'
   static defaultProps = defaultProps
 

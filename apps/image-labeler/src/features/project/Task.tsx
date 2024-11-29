@@ -1,10 +1,11 @@
 import cx from 'classnames'
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { Button } from '@globalfishingwatch/ui-components/button'
-import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components/choice'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components/choice';
+import { Choice } from '@globalfishingwatch/ui-components/choice'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { useSetTaskMutation } from '../../api/task'
-import { LabellingTask } from '../../types'
+import type { LabellingTask } from '../../types'
 import styles from './Task.module.css'
 import TaskImage from './TaskImage'
 

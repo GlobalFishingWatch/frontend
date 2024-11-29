@@ -7,7 +7,7 @@ import {
   GFWAPI,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
-import { UserApiAdditionalInformation, UserPermission } from '@globalfishingwatch/api-types'
+import type { UserApiAdditionalInformation, UserPermission } from '@globalfishingwatch/api-types'
 
 const fetchUser = async (accessToken) => {
   if (accessToken) {

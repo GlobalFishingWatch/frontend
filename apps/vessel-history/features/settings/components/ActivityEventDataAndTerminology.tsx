@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { Trans } from 'react-i18next'
-import { SettingEventSectionName } from '../settings.slice'
+import type { SettingEventSectionName } from '../settings.slice'
 
 interface ModalProps {
   section: SettingEventSectionName

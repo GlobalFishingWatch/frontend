@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { InsightResponse, InsightValueInPeriod } from '@globalfishingwatch/api-types'
-import { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { InsightResponse, InsightValueInPeriod } from '@globalfishingwatch/api-types'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { formatInfoField, upperFirst } from 'utils/info'
@@ -23,7 +23,7 @@ const InsightMOUList = ({
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const { mouList } = insightData?.vesselIdentity || {}
-  let tokyoAppearences: Record<string, Record<string, InsightValueInPeriod>> = {
+  const tokyoAppearences: Record<string, Record<string, InsightValueInPeriod>> = {
     BLACK: {},
     GREY: {},
   }
@@ -42,7 +42,7 @@ const InsightMOUList = ({
       }
     }
   })
-  let parisAppearences: Record<string, Record<string, InsightValueInPeriod>> = {
+  const parisAppearences: Record<string, Record<string, InsightValueInPeriod>> = {
     BLACK: {},
     GREY: {},
   }

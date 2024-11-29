@@ -1,5 +1,5 @@
 import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
-import {
+import type {
   REPORT_ACTIVITY_GRAPH_EVOLUTION,
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
@@ -7,7 +7,7 @@ import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { Bbox, BufferOperation, BufferUnit } from 'types'
+import type { Bbox, BufferOperation, BufferUnit } from 'types'
 
 export type ReportActivityGraph =
   | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION
@@ -48,3 +48,10 @@ export type AreaReportState = {
 }
 
 export type AreaReportStateProperty = keyof AreaReportState
+
+export type ReportTimeComparisonValues = {
+  start: string
+  end: string
+  compareStart: string
+  compareEnd: string
+}

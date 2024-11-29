@@ -1,4 +1,4 @@
-import { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import i18n, { t } from './i18n'
 
 export const getPlaceholderBySelections = (selections?: MultiSelectOption[]): string => {

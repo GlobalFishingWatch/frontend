@@ -3,7 +3,8 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
+import type { ButtonType, ButtonSize } from '@globalfishingwatch/ui-components';
+import { Button } from '@globalfishingwatch/ui-components'
 import {
   MAX_VESSEL_GROUP_VESSELS,
   searchVesselGroupsVesselsThunk,
@@ -12,8 +13,9 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './VesselGroupListTooltip.module.css'
 import VesselGroupListTooltip from './VesselGroupListTooltip'
+import type {
+  AddVesselGroupVessel} from './vessel-groups.hooks';
 import {
-  AddVesselGroupVessel,
   useVesselGroupsModal,
   useVesselGroupsUpdate,
   NEW_VESSEL_GROUP_ID,

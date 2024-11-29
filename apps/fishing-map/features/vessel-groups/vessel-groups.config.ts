@@ -1,5 +1,5 @@
-import { SelectOption } from '@globalfishingwatch/ui-components'
-import { IdField } from 'features/vessel-groups/vessel-groups.slice'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
 
 // Look for these ID columns by order of preference
 export const ID_COLUMN_LOOKUP: IdField[] = ['vesselId', 'imo', 'mmsi']

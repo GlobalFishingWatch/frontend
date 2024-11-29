@@ -1,6 +1,6 @@
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import { HeatmapAnimatedMode } from '../types'
-import { Interval } from './types'
+import type { Interval } from './types'
 
 export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid'
 export const TEMPORALGRID_SOURCE_LAYER_INTERACTIVE = 'temporalgrid_interactive'

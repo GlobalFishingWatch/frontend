@@ -1,20 +1,22 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import type {
+  SelectOption} from '@globalfishingwatch/ui-components';
 import {
   MultiSelect,
   InputDate,
   InputText,
-  Select,
-  SelectOption,
+  Select
 } from '@globalfishingwatch/ui-components'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
-import {
-  getFiltersBySchema,
+import type {
   SchemaFilter,
-  SupportedDatasetSchema,
+  SupportedDatasetSchema} from 'features/datasets/datasets.utils';
+import {
+  getFiltersBySchema
 } from 'features/datasets/datasets.utils'
 import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
@@ -24,12 +26,13 @@ import {
   DEFAULT_VESSEL_IDENTITY_ID,
 } from 'features/vessel/vessel.config'
 import { useSearchFiltersConnect, useSearchFiltersErrors } from 'features/search/search.hook'
-import { VesselSearchState } from 'features/search/search.types'
+import type { VesselSearchState } from 'features/search/search.types'
 import {
   ADVANCED_SEARCH_FIELDS,
   getSearchDataview,
   schemaFilterIds,
 } from 'features/search/advanced/advanced-search.utils'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import styles from './SearchAdvancedFilters.module.css'
 
 const FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY = ['geartypes', 'shiptypes', 'flag']
@@ -113,6 +116,7 @@ function AdvancedFilterInputField({
 
 function SearchAdvancedFilters() {
   const { t } = useTranslation()
+  const isGuestUser = useSelector(selectIsGuestUser)
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const searchFilterErrors = useSearchFiltersErrors()
@@ -159,6 +163,7 @@ function SearchAdvancedFilters() {
       ...(isSharedSelectionSchema && {
         schemaOrigin: infoSource || 'all',
         compatibilityOperation: 'some',
+        isGuestUser,
       }),
     })
   })
@@ -173,7 +178,9 @@ function SearchAdvancedFilters() {
     // Recalculates schemaFilters to validate a new source has valid selection
     // when not valid we need to remove the filter from the search
     const newDataview = getSearchDataview(datasets, searchFilters, sources)
-    const newSchemaFilters = schemaFilterIds.map((id) => getFiltersBySchema(newDataview, id as any))
+    const newSchemaFilters = schemaFilterIds.map((id) =>
+      getFiltersBySchema(newDataview, id as any, { isGuestUser })
+    )
     const notCompatibleSchemaFilters = newSchemaFilters.flatMap(({ id, disabled }) => {
       return disabled && (searchFilters as any)[id] !== undefined ? id : []
     })

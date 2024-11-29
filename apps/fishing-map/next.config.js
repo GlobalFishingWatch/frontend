@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 // @ts-check
-/* eslint-disable @typescript-eslint/no-var-requires */
+
 const { join } = require('path')
 const path = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
@@ -142,10 +143,11 @@ const nextConfig = {
   distDir: '.next',
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// const configWithNx = withNx(withBundleAnalyzer(nextConfig))
 const configWithNx = withNx(nextConfig)
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 module.exports = async (...args) => {
   return {

@@ -20,7 +20,9 @@ const App = () => {
 
   // Set to track login only when the user has logged out
   useEffect(() => {
-    !logged && setTrackLogin(true)
+    if (!logged) {
+      setTrackLogin(true)
+    }
   }, [logged])
 
   useEffect(() => {

@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import cx from 'classnames'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Icon } from '../icon'
 import styles from './Header.module.css'
 

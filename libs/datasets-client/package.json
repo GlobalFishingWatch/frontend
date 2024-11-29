@@ -1,17 +1,18 @@
 {
   "name": "@globalfishingwatch/datasets-client",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "description": "",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
   "main": "./index.cjs",
   "module": "./index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "dependencies": {
-    "@globalfishingwatch/api-types": "^8.0.1",
+    "@globalfishingwatch/api-types": "^8.0.3",
     "d3-scale": "4.x"
   }
 }

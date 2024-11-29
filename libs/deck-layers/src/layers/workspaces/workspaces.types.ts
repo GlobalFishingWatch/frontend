@@ -1,8 +1,8 @@
-import { Feature, Point } from 'geojson'
-import { PickingInfo } from '@deck.gl/core'
-import { DeckLayerProps } from '../../types'
+import type { Feature, Point } from 'geojson'
+import type { PickingInfo } from '@deck.gl/core'
+import type { DeckLayerProps } from '../../types'
 
-export type WorkspacesLayerProps = DeckLayerProps<{}>
+export type WorkspacesLayerProps = DeckLayerProps<Record<string, unknown>>
 
 export type WorkspacesProperties = {
   id: string

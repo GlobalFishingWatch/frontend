@@ -3,7 +3,8 @@ import cx from 'classnames'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
+import type { Dataset} from '@globalfishingwatch/api-types';
+import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -35,7 +36,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   const datasets = useSelector(selectUserDatasets)
   const datasetStatus = useSelector(selectDatasetsStatus)
   const guestUser = useSelector(selectIsGuestUser)
-  const onAddNewClick = useAddDataset({})
+  const onAddNewClick = useAddDataset()
 
   const filteredDatasets = useMemo(
     () =>

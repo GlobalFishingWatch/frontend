@@ -1,12 +1,12 @@
 import { COORDINATE_SYSTEM } from '@deck.gl/core'
 import { ClipExtension } from '@deck.gl/extensions'
-import { TileLayerProps } from '@deck.gl/geo-layers'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { Matrix4 } from '@math.gl/core'
 import { isNumeric } from '@globalfishingwatch/deck-loaders'
-import { ContextPickingObject } from '../layers/context'
-import { UserLayerPickingObject } from '../layers/user'
-import { PolygonPickingObject } from '../layers/polygons'
+import type { ContextPickingObject } from '../layers/context'
+import type { UserLayerPickingObject } from '../layers/user'
+import type { PolygonPickingObject } from '../layers/polygons'
 
 const WORLD_SIZE = 512
 

@@ -1,14 +1,17 @@
+import type { ChangeEvent} from 'react';
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { InputText, Button, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
-import {
+import type { SelectOption } from '@globalfishingwatch/ui-components';
+import { InputText, Button, Modal, Select } from '@globalfishingwatch/ui-components'
+import type {
   Report,
+  Workspace,
+  WorkspaceViewAccessType} from '@globalfishingwatch/api-types';
+import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS,
-  Workspace,
-  WorkspaceViewAccessType,
+  WORKSPACE_PUBLIC_ACCESS
 } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -18,8 +21,16 @@ import { createReportThunk, updateReportThunk } from 'features/reports/areas/are
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
-import { AsyncError } from 'utils/async-slice'
-import { getViewAccessOptions } from 'features/workspace/save/workspace-save.utils'
+import type { AsyncError } from 'utils/async-slice'
+import type {
+  WorkspaceTimeRangeMode} from 'features/workspace/save/workspace-save.utils';
+import {
+  DAYS_FROM_LATEST_MAX,
+  DAYS_FROM_LATEST_MIN,
+  getViewAccessOptions
+} from 'features/workspace/save/workspace-save.utils'
+import type { WorkspaceState } from 'types'
+import { useSaveWorkspaceTimerange } from 'features/workspace/save/workspace-save.hooks'
 import styles from './NewAreaReportModal.module.css'
 
 type NewReportModalProps = {
@@ -30,10 +41,11 @@ type NewReportModalProps = {
   report?: Report
 }
 
-function getWorkspaceReport(workspace: Workspace) {
-  const { ownerId, createdAt, ownerType, viewAccess, editAccess, ...workspaceProperties } =
+function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
+  const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
     workspace
-  return workspaceProperties
+
+  return { ...workspaceProperties, state: { ...state, daysFromLatest } }
 }
 
 function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportModalProps) {
@@ -53,14 +65,25 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(
     containsPrivateDatasets ? WORKSPACE_PRIVATE_ACCESS : WORKSPACE_PUBLIC_ACCESS
   )
+  const {
+    timeRangeOptions,
+    timeRangeOption,
+    daysFromLatest,
+    handleDaysFromLatestChange,
+    handleTimeRangeChange,
+  } = useSaveWorkspaceTimerange(workspace)
   const [loading, setLoading] = useState(false)
 
   const isEditing = report?.id !== undefined
 
-  const updateReport = async () => {
+  const updateReport = async (event: any) => {
+    event.preventDefault()
     if (report) {
       setLoading(true)
-      const workspaceReport = getWorkspaceReport(workspace)
+      const workspaceReport = getWorkspaceReport(
+        workspace,
+        timeRangeOption === 'dynamic' ? daysFromLatest : undefined
+      )
       const dispatchedAction = await dispatch(
         updateReportThunk({ ...report, name, description, workspace: workspaceReport })
       )
@@ -81,10 +104,14 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
     }
   }
 
-  const createReport = async () => {
+  const createReport = async (event: any) => {
+    event.preventDefault()
     if (name) {
       setLoading(true)
-      const workspaceReport = getWorkspaceReport(workspace)
+      const workspaceReport = getWorkspaceReport(
+        workspace,
+        timeRangeOption === 'dynamic' ? daysFromLatest : undefined
+      )
       const dispatchedAction = await dispatch(
         createReportThunk({
           name,
@@ -118,6 +145,20 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
     }
   }
 
+  const onDaysFromLatestChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newName = handleDaysFromLatestChange(event, name)
+    if (newName !== name) {
+      setName(newName)
+    }
+  }
+
+  const onSelectTimeRangeChange = (option: SelectOption<WorkspaceTimeRangeMode>) => {
+    const newName = handleTimeRangeChange(option, name)
+    if (newName !== name) {
+      setName(newName)
+    }
+  }
+
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
@@ -131,48 +172,75 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
       contentClassName={styles.modal}
       onClose={onClose}
     >
-      <InputText
-        value={name}
-        label={t('common.name', 'Name')}
-        className={styles.input}
-        onChange={(e) => setName(e.target.value)}
-        autoFocus
-      />
-      <InputText
-        value={description}
-        label={t('common.description', 'Description')}
-        className={styles.input}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      {!report?.id && (
-        <Select
-          options={viewOptions}
-          direction="top"
-          label={t('workspace.viewAccess', 'View access')}
-          disabled={containsPrivateDatasets}
-          infoTooltip={
-            containsPrivateDatasets
-              ? `${t(
-                  'workspace.uploadPublicDisabled',
-                  "This workspace can't be shared publicly because it contains private datasets"
-                )}: ${privateDatasets.join(', ')}`
-              : ''
-          }
-          containerClassName={styles.input}
-          onSelect={(option: SelectOption<WorkspaceViewAccessType>) => setViewAccess(option.id)}
-          selectedOption={viewOptions.find((o) => o.id === viewAccess) || viewOptions[0]}
-        />
-      )}
-      <div className={styles.footer}>
-        {error && <p className={styles.error}>{error}</p>}
-        <Button
-          loading={loading}
-          disabled={!name}
-          onClick={isEditing ? updateReport : createReport}
-        >
-          {isEditing ? t('common.update', 'Update') : t('common.save', 'Save')}
-        </Button>
-      </div>
+      <form onSubmit={isEditing ? updateReport : createReport}>
+        <div className={styles.row}>
+          <InputText
+            value={name}
+            label={t('common.name', 'Name')}
+            className={styles.input}
+            onChange={(e) => setName(e.target.value)}
+            autoFocus
+          />
+        </div>
+        <div className={styles.row}>
+          <InputText
+            value={description}
+            label={t('common.description', 'Description')}
+            className={styles.input}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className={styles.row}>
+          <Select
+            options={timeRangeOptions}
+            label={t('common.timerange', 'Time range')}
+            direction="top"
+            containerClassName={styles.select}
+            onSelect={onSelectTimeRangeChange}
+            selectedOption={
+              timeRangeOptions.find((o) => o.id === timeRangeOption) || timeRangeOptions[0]
+            }
+          />
+          {timeRangeOption === 'dynamic' && (
+            <InputText
+              value={daysFromLatest}
+              type="number"
+              className={styles.select}
+              label={t('common.timerangeDaysFromLatest', 'Days from latest data update (1-100)')}
+              onChange={onDaysFromLatestChange}
+              min={DAYS_FROM_LATEST_MIN}
+              max={DAYS_FROM_LATEST_MAX}
+            />
+          )}
+        </div>
+        {!report?.id && (
+          <div className={styles.row}>
+            <Select
+              options={viewOptions}
+              direction="top"
+              label={t('workspace.viewAccess', 'View access')}
+              disabled={containsPrivateDatasets}
+              infoTooltip={
+                containsPrivateDatasets
+                  ? `${t(
+                      'workspace.uploadPublicDisabled',
+                      "This workspace can't be shared publicly because it contains private datasets"
+                    )}: ${privateDatasets.join(', ')}`
+                  : ''
+              }
+              containerClassName={styles.input}
+              onSelect={(option: SelectOption<WorkspaceViewAccessType>) => setViewAccess(option.id)}
+              selectedOption={viewOptions.find((o) => o.id === viewAccess) || viewOptions[0]}
+            />
+          </div>
+        )}
+        <div className={styles.footer}>
+          {error && <p className={styles.error}>{error}</p>}
+          <Button loading={loading} disabled={!name} htmlType="submit">
+            {isEditing ? t('common.update', 'Update') : t('common.save', 'Save')}
+          </Button>
+        </div>
+      </form>
     </Modal>
   )
 }

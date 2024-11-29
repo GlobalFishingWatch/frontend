@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "14.0.7",
+  "version": "14.0.9",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -14,8 +14,9 @@
   },
   "main": "./index.cjs",
   "module": "./index.js",
+  "type": "module",
   "dependencies": {
-    "@globalfishingwatch/api-types": "^8.0.1",
+    "@globalfishingwatch/api-types": "^8.0.3",
     "countryflag": "5.x",
     "d3-format": "3.x",
     "d3-geo": "3.x",

@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
 import { BarChart, Bar, ResponsiveContainer } from 'recharts'
 import { SliderRange } from '@globalfishingwatch/ui-components'
-import { FourwingsAPIDataset } from 'features/datasets/datasets.types'
-import { DatasetLayer, FourwingsLayerConfig, useLayersConfig } from 'features/layers/layers.hooks'
+import type { FourwingsAPIDataset } from 'features/datasets/datasets.types'
+import type { DatasetLayer, FourwingsLayerConfig} from 'features/layers/layers.hooks';
+import { useLayersConfig } from 'features/layers/layers.hooks'
 import { useLayerHistogram } from 'features/map/histogram.hooks'
 import styles from './HistogramRangeFilter.module.css'
 

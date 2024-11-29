@@ -2,22 +2,24 @@ import { Fragment } from 'react'
 import { groupBy, uniqBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetSubCategory, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type { DatasetSubCategory} from '@globalfishingwatch/api-types';
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
-import {
+import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
+import type {
   ContextPickingObject,
-  FOOTPRINT_ID,
-  FourwingsComparisonMode,
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
   PolygonPickingObject,
-  POSITIONS_ID,
   RulerPickingObject,
   UserLayerPickingObject,
-  VesselEventPickingObject,
+  VesselEventPickingObject} from '@globalfishingwatch/deck-layers';
+import {
+  FOOTPRINT_ID,
+  FourwingsComparisonMode,
+  POSITIONS_ID
 } from '@globalfishingwatch/deck-layers'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
@@ -35,9 +37,10 @@ import EnvironmentTooltipSection from 'features/map/popups/categories/Environmen
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
-import {
+import type {
   SliceExtendedClusterPickingObject,
-  SliceExtendedFourwingsPickingObject,
+  SliceExtendedFourwingsPickingObject} from '../map.slice';
+import {
   selectApiEventStatus,
   selectActivityInteractionStatus,
   selectApiEventError,
@@ -112,15 +115,18 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   />
                 )
               }
-              return feature.sublayers?.map((sublayer, j) => {
-                const dataview = dataviews.find((d) => d.id === sublayer.id)
-                return feature.comparisonMode === FourwingsComparisonMode.TimeCompare ? (
+              if (feature.comparisonMode === FourwingsComparisonMode.TimeCompare) {
+                return (
                   <ComparisonRow
                     key={featureCategory}
                     feature={features[0] as FourwingsHeatmapPickingObject}
                     showFeaturesDetails={type === 'click'}
                   />
-                ) : (
+                )
+              }
+              return feature.sublayers?.map((sublayer, j) => {
+                const dataview = dataviews.find((d) => d.id === sublayer.id)
+                return (
                   <TooltipComponent
                     key={`${i}-${j}`}
                     loading={activityInteractionStatus === AsyncReducerStatus.Loading}

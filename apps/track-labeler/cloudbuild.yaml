@@ -1,0 +1,104 @@
+steps:
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cache
+    waitFor: ['-']
+    script: |
+      #!/usr/bin/env bash
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=node_modules-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-install-state-$( checksum yarn.lock )
+
+  - id: 'install-yarn'
+    waitFor: ['restore_cache']
+    name: node:21
+    script: |
+      yarn set version 4.5.1
+      yarn -v
+      yarn install --immutable
+
+  - id: 'save_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/restore_cache'
+    script: |
+      #!/usr/bin/env bash
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=node_modules-$( checksum yarn.lock ) \
+        --path=./node_modules \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock ) \
+        --path=.yarn/cache \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-install-state-$( checksum yarn.lock ) \
+        --path=.yarn/install-state.gz \
+        --no-clobber
+
+  - id: 'build-app'
+    waitFor: ['install-yarn']
+    name: node:21
+    entrypoint: yarn
+    args: ['nx', 'build', 'track-labeler', '--parallel']
+    env:
+      - 'NX_BRANCH=$_NX_BRANCH'
+      - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
+      - 'API_GATEWAY=$_API_GATEWAY'
+
+  - name: 'gcr.io/kaniko-project/executor:latest'
+    id: 'build-image'
+    waitFor: ['build-app']
+    args:
+      [
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/track-labeler:$SHORT_SHA',
+        '--cache=true',
+        '--build-arg',
+        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
+        '--build-arg',
+        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--target',
+        'production',
+        '-f',
+        './apps/track-labeler/Dockerfile',
+        '-c',
+        './dist/apps/track-labeler',
+      ]
+
+  # Deploy to the appropriate environment
+  - name: 'gcr.io/cloud-builders/gcloud'
+    waitFor: ['build-image']
+    id: 'deploy-cloud-run'
+    entrypoint: 'bash'
+    env:
+      - '_RUN_SERVICE_NAME=$_RUN_SERVICE_NAME'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        branch_service_name=`echo track-labeler-$BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,62)}'`
+        service_name=${_RUN_SERVICE_NAME:-${branch_service_name}}
+        gcloud beta run deploy \
+        $service_name \
+        --project \
+        $_RUN_PROJECT \
+        --image \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/track-labeler:$SHORT_SHA \
+        --region \
+        $_RUN_REGION \
+        --platform managed \
+        --set-env-vars \
+        BASIC_AUTH=$_BASIC_AUTH \
+        --allow-unauthenticated
+
+timeout: 1800s
+options:
+  machineType: 'E2_HIGHCPU_8'

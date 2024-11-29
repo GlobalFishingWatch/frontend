@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
-import { VesselProfileStateProperty, VesselProfileState } from './vessel.types'
+import type { VesselProfileStateProperty, VesselProfileState } from './vessel.types'
 
 type VesselProfileProperty<P extends VesselProfileStateProperty> = Required<VesselProfileState>[P]
 export function selectVesselProfileStateProperty<P extends VesselProfileStateProperty>(

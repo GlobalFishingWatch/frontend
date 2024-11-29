@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
 type RemoveProps = {

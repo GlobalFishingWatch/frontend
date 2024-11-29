@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment, useCallback, useState } from 'react'
 import { Spinner, IconButton, Button, Icon, InputText } from '@globalfishingwatch/ui-components'
-import { VesselGroup } from '@globalfishingwatch/api-types'
+import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectVesselGroupsStatus,
@@ -25,7 +25,7 @@ import {
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useEditVesselGroupModal } from 'features/reports/vessel-groups/vessel-group-report.hooks'
 import { getHighlightedText } from 'utils/text'
-import { selectUserVesselGroups } from './selectors/user.permissions.selectors'
+import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
 import styles from './User.module.css'
 
 function UserVesselGroups() {

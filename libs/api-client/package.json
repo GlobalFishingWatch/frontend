@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/api-client",
-  "version": "6.0.3",
+  "version": "6.0.5",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -11,9 +11,10 @@
   },
   "main": "./index.cjs",
   "module": "./index.js",
+  "type": "module",
   "dependencies": {
-    "@globalfishingwatch/api-types": "^8.0.1",
-    "@globalfishingwatch/pbf-decoders": "^3.0.3",
+    "@globalfishingwatch/api-types": "^8.0.3",
+    "@globalfishingwatch/pbf-decoders": "^3.0.5",
     "file-saver": "2.x",
     "lodash": "4.x",
     "react": "18.x"

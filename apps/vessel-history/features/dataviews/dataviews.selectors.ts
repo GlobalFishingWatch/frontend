@@ -1,19 +1,22 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DatasetTypes, DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
+import type { DataviewInstance } from '@globalfishingwatch/api-types';
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import type {
+  UrlDataviewInstance,
+  GetDatasetConfigsCallbacks} from '@globalfishingwatch/dataviews-client';
 import {
   resolveDataviews,
-  UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
-  GetDatasetConfigsCallbacks,
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
   _getLegacyResources,
 } from '@globalfishingwatch/dataviews-client'
-import { getGeneratorConfig } from '@globalfishingwatch/dataviews-client/resolve-dataviews-generators'
+import type {
+  BasemapGeneratorConfig} from '@globalfishingwatch/layer-composer';
 import {
-  BasemapGeneratorConfig,
   BasemapType,
   GeneratorType,
+  getGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
@@ -31,7 +34,7 @@ import {
   selectTrackThinningConfig,
 } from 'features/resources/resources.slice'
 import { trackDatasetConfigsCallback } from 'features/resources/resources.utils'
-import { WorkspaceProfileViewParam } from 'types'
+import type { WorkspaceProfileViewParam } from 'types'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
 import { BACKGROUND_LAYER, OFFLINE_LAYERS, DEFAULT_VESSEL_DATAVIEWS } from './dataviews.config'
 import { getVesselDataviewInstanceFactory } from './dataviews.utils'

@@ -1,6 +1,7 @@
-import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
-import { GeneratorType, BackgroundGeneratorConfig } from '../types'
+import type { BackgroundGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 import { DEFAULT_BACKGROUND_COLOR } from './config'
 
 class BackgroundGenerator {

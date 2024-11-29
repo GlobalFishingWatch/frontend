@@ -1,0 +1,75 @@
+{
+  "type": "FeatureCollection",
+  "properties": {
+    "version": 1,
+    "labeling_project_name": "Sand Dredger Tracks",
+    "labeling_project_labels": [
+      { "id": "dredging", "name": "Dredging" },
+      { "id": "nondredging", "name": "Non Dredging" },
+      { "id": "transiting", "name": "Transit" },
+      { "id": "transporting", "name": "Transporting" },
+      { "id": "discharging", "name": "Discharging" },
+      { "id": "dumping", "name": "Dumping" }
+    ],
+    "vessel": {
+      "id": "c7d72a6fb-b588-6b89-40c8-202dc3c3d698",
+      "shipname": "WILLEM VAN ORANJE",
+      "callsign": "5BVU3",
+      "mmsi": "210621000",
+      "flag": "CYP",
+      "imo": "9449065"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [9.6832, 55.469683],
+          [9.6832, 55.469683],
+          [9.6845, 55.469933],
+          [9.6845, 55.469933],
+          [9.684866, 55.47005],
+          [9.6852, 55.470483],
+          [9.6852, 55.470483],
+          [9.682616, 55.4697],
+          [9.6838, 55.469933],
+          [9.684816, 55.470233]
+        ]
+      },
+      "properties": {
+        "type": "track",
+        "segId": "c7d72a6fb-b588-6b89-40c8-202dc3c3d698",
+        "coordinateProperties": {
+          "times": [
+            1594771215000,
+            1594771215000,
+            1594771507000,
+            1594771507000,
+            1594771607000,
+            1594771811000,
+            1594771811000,
+            1594772107000,
+            1594772415000,
+            1594772706000
+          ],
+          "speed": [0.3, 0.3, 0.5, 0.5, 0.4, 1, 1, 0.7, 0.4, 0.6],
+          "course": [92, 92, 58, 58, 70, 287, 287, 103, 62, 64],
+          "labels_id": [
+            "dredging",
+            "transiting",
+            "transiting",
+            "transiting",
+            "dredging",
+            "transiting",
+            "dredging",
+            "dumping",
+            "dumping",
+            "dumping"
+          ]
+        }
+      }
+    }
+  ]
+}

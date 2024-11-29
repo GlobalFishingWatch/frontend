@@ -1,5 +1,8 @@
 import { Fragment, useRef, useState } from 'react'
 import cx from 'classnames'
+import type {
+  Placement,
+  UseFloatingOptions} from '@floating-ui/react';
 import {
   useFloating,
   autoUpdate,
@@ -11,8 +14,6 @@ import {
   useClick,
   useInteractions,
   FloatingFocusManager,
-  Placement,
-  UseFloatingOptions,
   arrow,
   FloatingArrow,
 } from '@floating-ui/react'

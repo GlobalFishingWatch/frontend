@@ -1,0 +1,163 @@
+.mapControls {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 1.2rem;
+  right: 1.2rem;
+  z-index: 6;
+}
+
+.miniglobe {
+  margin-bottom: 0.8rem;
+  cursor: pointer;
+}
+
+.mapControl {
+  width: 3.6rem;
+  height: 3.6rem;
+  background-color: var(--color-brand);
+  border-radius: 1.8rem;
+  margin-bottom: 0.8rem;
+  filter: var(--drop-shadow);
+  color: var(--color-background);
+  fill: var(--color-background);
+}
+
+.mapControl:hover {
+  background-color: var(--color-brand-highlight);
+  fill: var(--color-brand);
+  color: var(--color-brand);
+}
+
+.mapControl._active {
+  background-color: var(--color-brand-highlight);
+  color: var(--color-brand);
+  fill: var(--color-brand);
+}
+
+.coords {
+  position: absolute;
+  right: 78px;
+  top: 26px;
+  color: var(--color-foreground);
+  font-size: var(--font-size-M);
+  text-transform: uppercase;
+}
+
+._pinned {
+  font-weight: bold;
+}
+
+.contextLayersContainer {
+  position: absolute;
+  width: 38rem;
+  top: 8.4rem;
+  right: -0.4rem;
+  background: var(--color-background);
+  filter: var(--drop-shadow);
+  padding: var(--space-S);
+  z-index: 1;
+}
+
+@media only screen and (width <= 720px) {
+  .contextLayersContainer {
+    width: 30rem;
+  }
+}
+
+.contextLayersButton {
+  composes: mapControl;
+  position: absolute;
+  background: var(--color-background);
+  color: var(--color-brand);
+  top: 0.4rem;
+  right: 0.4rem;
+}
+
+.contextLayer {
+  height: var(--block-height-M);
+  display: flex;
+  align-items: center;
+}
+
+.contextLayer input {
+  position: relative;
+  height: 1.8rem;
+  cursor: pointer;
+  appearance: none;
+  border: none;
+}
+
+.contextLayer > span {
+  cursor: pointer;
+  text-transform: none;
+  font-size: var(--font-size-L);
+  line-height: 1.9rem;
+  padding-left: 4rem;
+  color: var(--color-brand-secondary);
+  transition: color 150ms linear;
+}
+
+.contextLayer:hover span,
+.contextLayer input:checked + span {
+  color: var(--color-brand);
+}
+
+.contextLayer input::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: var(--block-height-S);
+  height: 1.8rem;
+  border-radius: 0.9rem;
+  background-color: var(--color-brand-highlight);
+  transition: background-color 150ms linear;
+}
+
+.contextLayer input::after {
+  content: '';
+  position: absolute;
+  width: 1.4rem;
+  height: 1.4rem;
+  left: 0.2rem;
+  top: 0.2rem;
+  border-radius: 0.7rem;
+  background: var(--color-background);
+  transition: left 150ms ease-in;
+  box-shadow: 0 0.2rem 0.4rem 0 var(--color-brand-secondary);
+}
+
+.contextLayer input:checked::before {
+  background: currentcolor;
+}
+
+.contextLayer input:checked::after {
+  left: 1.6rem;
+}
+
+.info {
+  fill: var(--color-brand);
+  cursor: help;
+  margin-left: 0.5rem;
+}
+
+.basemapSwitcher {
+  cursor: pointer;
+  border: var(--border-white);
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center center;
+  flex-shrink: 0;
+  width: var(--size-M);
+  height: var(--size-M);
+  margin-top: 0.8rem;
+}
+
+.basemapSwitcher.basemap_default {
+  background-image: url('../../../assets/images/basemap-satellite.jpg');
+}
+
+.basemapSwitcher.satellite {
+  background-image: url('../../../assets/images/basemap-default.jpg');
+}

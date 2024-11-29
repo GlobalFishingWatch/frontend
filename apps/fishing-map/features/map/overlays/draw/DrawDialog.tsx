@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import bbox from '@turf/bbox'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { Feature, Polygon } from 'geojson'
+import type { Feature, Polygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
-import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -15,15 +15,16 @@ import {
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import type {
+  DrawnDatasetGeometry} from 'features/areas/areas.slice';
 import {
   resetAreaList,
   fetchDatasetAreasThunk,
-  selectDatasetAreasById,
-  DrawnDatasetGeometry,
+  selectDatasetAreasById
 } from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
-import { Bbox } from 'types'
+import type { Bbox } from 'types'
 import { useMapDrawConnect } from '../../map-draw.hooks'
 import { getDrawDatasetDefinition, getFileWithFeatures } from './draw.utils'
 import styles from './DrawDialog.module.css'
@@ -231,6 +232,11 @@ function MapDraw() {
       />
       <IconButton
         icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
+        tooltip={
+          mapDrawingMode === 'points'
+            ? t('layer.drawAddPoint', 'Add a point')
+            : t('layer.drawAddPolygon', 'Add a geometry')
+        }
         onClick={onAddPolygonClick}
       />
       <IconButton
@@ -240,7 +246,7 @@ function MapDraw() {
         tooltip={
           !drawFeaturesIndexes.length
             ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
-            : ''
+            : t('layer.drawDelete', 'Delete selection')
         }
         onClick={drawLayer?.deleteSelectedFeature}
       />

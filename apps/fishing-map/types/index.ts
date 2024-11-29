@@ -1,21 +1,21 @@
-import { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { EventType } from '@globalfishingwatch/api-types'
-import {
+import type { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { EventType } from '@globalfishingwatch/api-types'
+import type {
   DrawFeatureType,
   FourwingsVisualizationMode,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
   RulerData,
 } from '@globalfishingwatch/deck-layers'
-import { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
-import { AreaReportState, AreaReportStateProperty } from 'features/reports/areas/area-reports.types'
-import { VesselProfileState, VesselProfileStateProperty } from 'features/vessel/vessel.types'
-import {
+import type { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
+import type { AreaReportState, AreaReportStateProperty } from 'features/reports/areas/area-reports.types'
+import type { VesselProfileState, VesselProfileStateProperty } from 'features/vessel/vessel.types'
+import type {
   VesselGroupReportState,
   VesselGroupReportStateProperty,
 } from 'features/vessel-groups/vessel-groups.types'
-import { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
-import {
+import type { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
+import type {
   PortsReportState,
   PortsReportStateProperty,
 } from 'features/reports/ports/ports-report.types'
@@ -98,6 +98,8 @@ export type QueryParams = Partial<WorkspaceViewport> &
   AppState &
   RedirectParam &
   VesselSearchState
+
+export type QueryParam = keyof QueryParams
 
 export enum TimebarVisualisations {
   HeatmapActivity = 'heatmap',

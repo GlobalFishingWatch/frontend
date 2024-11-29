@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  background-color: var(--main-background-color);
+  height: calc(var(--vh, 1vh) * 100);
+  background-image: url('../../assets/images/login-bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.logoImage {
+  margin-bottom: var(--space-S);
+}
+
+.textContainer {
+  max-width: 380px;
+  margin-left: 110px;
+}
+
+@media only screen and (width <= 72rem) {
+  .textContainer {
+    margin: 0 3rem;
+  }
+}
+
+.textTitle {
+  font-size: var(--extra-large-font-size);
+  letter-spacing: 1px;
+  line-height: 28px;
+  color: var(--color-background);
+}
+
+.textSubtitle {
+  font-size: var(--font-size);
+  font-weight: 400;
+  margin-top: 4px;
+  margin-bottom: 30px;
+  letter-spacing: 0;
+  color: var(--color-background);
+}
+
+.link,
+.link:visited {
+  padding: 1rem 3rem;
+  line-height: 2rem;
+  text-transform: uppercase;
+  border-radius: 0.3rem;
+  background: #e74327;
+  color: var(--color-background);
+  width: 100%;
+}
+
+.copyright {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  font-size: 1.4rem;
+  color: var(--color-background);
+  opacity: 0.5;
+}

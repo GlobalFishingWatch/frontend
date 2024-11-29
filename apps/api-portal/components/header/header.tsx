@@ -1,11 +1,12 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
+ 
 import React, { Fragment } from 'react'
-import { UserData } from '@globalfishingwatch/api-types'
+import type { UserData } from '@globalfishingwatch/api-types'
+import type {
+  MenuItem} from '@globalfishingwatch/ui-components';
 import {
   Header as UIHeader,
   HeaderMenuItem,
-  IconButton,
-  MenuItem,
+  IconButton
 } from '@globalfishingwatch/ui-components'
 import styles from './header.module.css'
 

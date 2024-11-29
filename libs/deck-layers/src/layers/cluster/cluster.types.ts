@@ -1,8 +1,8 @@
-import { PickingInfo } from '@deck.gl/core'
-import { Feature, Point } from 'geojson'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { EventTypes } from '@globalfishingwatch/api-types'
-import { DeckPickingObject, DeckLayerProps } from '../../types'
+import type { PickingInfo } from '@deck.gl/core'
+import type { Feature, Point } from 'geojson'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { EventTypes } from '@globalfishingwatch/api-types'
+import type { DeckPickingObject, DeckLayerProps } from '../../types'
 
 export type ClusterEventType =
   | `${EventTypes.Encounter}`

@@ -1,9 +1,10 @@
 import { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import {
+import type {
   IconButtonSize,
-  IconButtonType,
+  IconButtonType} from '@globalfishingwatch/ui-components';
+import {
   IconButton,
   Modal,
 } from '@globalfishingwatch/ui-components'

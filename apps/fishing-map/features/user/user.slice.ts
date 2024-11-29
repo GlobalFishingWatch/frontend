@@ -1,18 +1,20 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
   GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
-import { UserData } from '@globalfishingwatch/api-types'
+import type { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
-import { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
+import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
-import { PREFERRED_FOURWINGS_VISUALISATION_MODE, USER_SETTINGS } from 'data/config'
+import type { PREFERRED_FOURWINGS_VISUALISATION_MODE} from 'data/config';
+import { USER_SETTINGS } from 'data/config'
 
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
@@ -20,6 +22,7 @@ export interface UserSettings {
 
 interface UserState {
   logged: boolean
+  expired: boolean
   status: AsyncReducerStatus
   data: UserData | null
   settings: UserSettings
@@ -27,6 +30,7 @@ interface UserState {
 
 const initialState: UserState = {
   logged: false,
+  expired: false,
   status: AsyncReducerStatus.Idle,
   data: null,
   settings: {},
@@ -81,7 +85,7 @@ export const fetchUserThunk = createAsyncThunk(
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
   async (
-    { loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false },
+    { loginRedirect }: { loginRedirect: boolean } | undefined = { loginRedirect: false },
     { dispatch }
   ) => {
     try {
@@ -105,6 +109,9 @@ const userSlice = createSlice({
     return { ...initialState, settings }
   },
   reducers: {
+    setLoginExpired: (state, action: PayloadAction<boolean>) => {
+      state.expired = action.payload
+    },
     setUserSetting: (state, action: PayloadAction<Partial<UserSettings>>) => {
       state.settings = { ...state.settings, ...action.payload }
       localStorage.setItem(USER_SETTINGS, JSON.stringify(state.settings))
@@ -129,6 +136,6 @@ const userSlice = createSlice({
   },
 })
 
-export const { setUserSetting } = userSlice.actions
+export const { setUserSetting, setLoginExpired } = userSlice.actions
 
 export default userSlice.reducer

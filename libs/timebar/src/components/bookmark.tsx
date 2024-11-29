@@ -1,9 +1,7 @@
 import classNames from 'classnames'
-import { ScaleTime } from 'd3-scale'
+import type { ScaleTime } from 'd3-scale'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { getHumanizedDates } from '../utils'
-import { ReactComponent as IconBookmarkFilled } from '../icons/bookmarkFilled.svg'
-import { ReactComponent as IconDelete } from '../icons/delete.svg'
-import { ReactComponent as Arrow } from '../icons/arrow.svg'
 import styles from './bookmark.module.css'
 
 const MIN_WIDTH = 32
@@ -82,10 +80,10 @@ const Bookmark = ({
       style={{ left: renderedX, width: renderedWidth }}
     >
       <button type="button" title={labels.goToBookmark} className={styles.main} onClick={onSelect}>
-        {overflowingLeft && <Arrow className={styles.leftArrow} />}
-        <IconBookmarkFilled className={styles.icon} />
+        {overflowingLeft && <Icon icon="arrow-left" />}
+        <Icon icon="bookmark-filled" />
         {compact === false && <span className={styles.title}>{label}</span>}
-        {overflowingRight && <Arrow className={styles.rightArrow} />}
+        {overflowingRight && <Icon icon="arrow-right" />}
       </button>
       {compact === false && (
         <button
@@ -94,7 +92,7 @@ const Bookmark = ({
           className={styles.delete}
           onClick={onDelete}
         >
-          <IconDelete />
+          <Icon icon="delete" />
         </button>
       )}
     </div>
