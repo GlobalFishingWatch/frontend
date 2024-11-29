@@ -1,6 +1,4 @@
-/* eslint-disable react/prop-types */
 import React, { useCallback, useState, Fragment } from 'react'
-import PropTypes from 'prop-types'
 import { matchSorter } from 'match-sorter'
 import escapeRegExp from 'lodash/escapeRegExp'
 import { useTable, useSortBy, useRowSelect, useFlexLayout, useGlobalFilter } from 'react-table'
@@ -26,7 +24,9 @@ const IndeterminateCheckbox = React.forwardRef(({ indeterminate, title, ...rest 
   return (
     <div className={styles.checkbox}>
       <input id={inputID} type="checkbox" ref={resolvedRef} {...rest} />
-      <label htmlFor={inputID} title={title}></label>
+      <label htmlFor={inputID} title={title}>
+        {title}
+      </label>
     </div>
   )
 })
@@ -58,6 +58,21 @@ function HighlightedCell({ cell, state }) {
   )
 }
 
+// TODO: migrate to typescript and remove this deprected prop-types
+// Table.propTypes = {
+//   columns: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       Header: PropTypes.string.isRequired,
+//       accessor: PropTypes.func.isRequired,
+//     }).isRequired
+//   ).isRequired,
+//   data: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       name: PropTypes.string.isRequired,
+//       lastUpdate: PropTypes.string.isRequired,
+//     }).isRequired
+//   ).isRequired,
+// }
 function Table({ columns, data }) {
   const [searchInput, setSearchInput] = useState(false)
   const [downloadLoading, setDownloadLoading] = useState(false)
@@ -177,6 +192,7 @@ function Table({ columns, data }) {
           {searchInput ? (
             <Fragment>
               <input
+                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
                 className={styles.input}
                 value={state.globalFilter || ''}
@@ -267,21 +283,6 @@ function Table({ columns, data }) {
       </div>
     </div>
   )
-}
-
-Table.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      Header: PropTypes.string.isRequired,
-      accessor: PropTypes.func.isRequired,
-    }).isRequired
-  ).isRequired,
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      lastUpdate: PropTypes.string.isRequired,
-    }).isRequired
-  ).isRequired,
 }
 
 export default Table

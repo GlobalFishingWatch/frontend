@@ -1,11 +1,13 @@
-import { Fragment, useState, ComponentType } from 'react'
+import type { ComponentType } from 'react';
+import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
+import type { UserTracksLayer} from '@globalfishingwatch/deck-layers';
+import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
@@ -21,7 +23,6 @@ import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { formatInfoField } from 'utils/info'
 import {
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
@@ -84,7 +85,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { timebarSelectedVGId, dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
-  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews!?.length <= 2
+  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews?.length <= 2
 
   const openOptions = () => {
     trackEvent({
@@ -316,7 +317,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               )
               const title = t(
                 `datasets:${dataset?.id}.name` as any,
-                dataset!?.name || dataset!?.id || ''
+                dataset?.name || dataset?.id || ''
               )
               return (
                 <Radio

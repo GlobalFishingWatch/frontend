@@ -22,6 +22,6 @@ export const useUpdateVesselEventsVisibility = () => {
         setVesselEventVisibility({ event: 'fishing', visible: false })
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [vessel])
 }

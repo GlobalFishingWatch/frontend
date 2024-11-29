@@ -1,24 +1,26 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselsTable, {
   getVesselsInfoConfig,
   VesselDetectionTimestamps,
 } from 'features/map/popups/categories/VesselsTable'
-import { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
+import type { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
 import styles from '../Popup.module.css'
 
 type ViirsMatchTooltipRowProps = {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory; title?: string }
   loading?: boolean
+  error?: string
   showFeaturesDetails: boolean
 }
 function ViirsMatchTooltipRow({
   feature,
   showFeaturesDetails,
   loading,
+  error,
 }: ViirsMatchTooltipRowProps) {
   const { t } = useTranslation()
   // Avoid showing not matched detections
@@ -72,6 +74,7 @@ function ViirsMatchTooltipRow({
             <Spinner size="small" />
           </div>
         )}
+        {!loading && error && <p className={styles.error}>{error}</p>}
         {!loading && showFeaturesDetails && (
           <VesselsTable
             feature={{ ...featureVesselsFilter, category: feature.category }}

@@ -1,11 +1,14 @@
 import memoizeOne from 'memoize-one'
-import { FeatureCollection, Feature, LineString, Point } from 'geojson'
+import type { FeatureCollection, Feature, LineString, Point } from 'geojson'
 import length from '@turf/length'
 import greatCircle from '@turf/great-circle'
-import { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import { point } from '@turf/helpers'
+import type { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-import { Dictionary, Group } from '../../types'
-import { GeneratorType, RulersGeneratorConfig, Ruler } from '../types'
+import type { Dictionary } from '../../types'
+import { Group } from '../../types'
+import type { RulersGeneratorConfig, Ruler } from '../types'
+import { GeneratorType } from '../types'
 
 const COLOR = '#ffaa00'
 export const RULER_INTERACTIVE_LAYER = 'points'
@@ -45,8 +48,6 @@ const getRuleLengthLabel = (ruler: Ruler) => {
 }
 
 const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
-  const { start, end } = ruler
-
   const rawFeature: Feature<LineString> = {
     type: 'Feature',
     properties: {},
@@ -55,24 +56,21 @@ const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
       coordinates: [],
     },
   }
-
-  if (!start || !end) {
+  const { start, end } = ruler
+  if (!start.longitude || !start.latitude || !end.longitude || !end.latitude) {
     return rawFeature
-  } else {
-    rawFeature.geometry.coordinates = [
-      [start.longitude, start.latitude],
-      [end.longitude, end.latitude],
-    ]
   }
+  const startPoint = point([start.longitude, start.latitude])
+  const endPoint = point([end.longitude, end.latitude])
+
+  rawFeature.geometry.coordinates = [
+    [start.longitude, start.latitude],
+    [end.longitude, end.latitude],
+  ]
 
   const lengthKm = getRulerLength(ruler)
   const finalFeature =
-    lengthKm < 100
-      ? rawFeature
-      : (greatCircle(
-          [start.longitude, start.latitude],
-          [end.longitude, end.latitude]
-        ) as Feature<LineString>)
+    lengthKm < 100 ? rawFeature : (greatCircle(startPoint, endPoint) as Feature<LineString>)
 
   finalFeature.properties = {}
   finalFeature.properties.label = getRuleLengthLabel(ruler)

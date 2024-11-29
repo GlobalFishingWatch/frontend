@@ -1,11 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
-import {
-  Dataset,
-  DatasetTypes,
-  IdentityVessel,
-  VesselIdentitySourceEnum,
-} from '@globalfishingwatch/api-types'
+import type { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
@@ -20,24 +16,21 @@ import {
   getVesselShipTypeLabel,
 } from 'utils/info'
 import { t } from 'features/i18n/i18n'
-import {
-  FILTER_PROPERTIES,
-  FilterProperty,
-  getVesselsFiltered,
-} from 'features/reports/areas/area-reports.utils'
+import type { FilterProperty } from 'features/reports/areas/area-reports.utils'
+import { FILTER_PROPERTIES, getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,
   selectVGRVesselsSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { cleanFlagState } from 'features/reports/activity/vessels/report-activity-vessels.utils'
+import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
-import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
+import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectVGRVessels } from '../vessel-group-report.slice'
-import { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
+import type { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
 
 const getVesselSource = (vessel: IdentityVessel) => {
   let source = ''
@@ -117,7 +110,7 @@ export const selectVGRVesselsTimeRange = createSelector([selectVGRVesselsParsed]
 
 export const selectVGRVesselsFlags = createSelector([selectVGRVesselsParsed], (vessels) => {
   if (!vessels?.length) return null
-  let flags = new Set<string>()
+  const flags = new Set<string>()
   vessels.forEach((vessel) => {
     if (vessel.flagTranslated && vessel.flagTranslated !== 'null') {
       flags.add(vessel.flagTranslated)
@@ -188,9 +181,9 @@ export const selectVGRVesselsPagination = createSelector(
       offset: resultsPerPage * page,
       resultsPerPage:
         typeof resultsPerPage === 'number' ? resultsPerPage : parseInt(resultsPerPage),
-      resultsNumber: vessels!?.length,
-      totalFiltered: allVesselsFiltered!?.length,
-      total: allVessels!?.length,
+      resultsNumber: vessels?.length,
+      totalFiltered: allVesselsFiltered?.length || 0,
+      total: allVessels?.length || 0,
     }
   }
 )

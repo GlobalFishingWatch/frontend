@@ -8,7 +8,7 @@ import {
   selectVesselId,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
 } from 'routes/routes.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
@@ -22,13 +22,14 @@ import {
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import {
   selectAllDataviewInstancesResolved,
+  selectDataviewInstancesMerged,
   selectDataviewInstancesResolved,
 } from './dataviews.resolvers.selectors'
 
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [
     selectDataviewInstancesResolved,
-    selectIsAnyReportLocation,
+    selectIsAnyAreaReportLocation,
     selectReportCategory,
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
@@ -41,7 +42,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
   ],
   (
     dataviews = [],
-    isReportLocation,
+    isAreaReportLocation,
     reportCategory,
     isVesselLocation,
     viewOnlyVessel,
@@ -53,7 +54,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     viewOnlyVesselGroup
   ) => {
     const visibleDataviews = dataviews.filter((dataview) => dataview.config?.visible)
-    if (isReportLocation) {
+    if (isAreaReportLocation) {
       return visibleDataviews.filter((dataview) => {
         if (
           dataview.category === DataviewCategory.Activity ||
@@ -125,6 +126,13 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
 export const selectVesselProfileDataview = createDeepEqualSelector(
   [selectVesselsDataviews, selectVesselId],
   (dataviews, vesselId) => dataviews.find(({ id }) => vesselId && id.includes(vesselId))
+)
+
+export const selectVesselProfileDataviewIntance = createDeepEqualSelector(
+  [selectDataviewInstancesMerged, selectVesselId],
+  (dataviewsInstances, vesselId) => {
+    return dataviewsInstances?.find(({ id }) => vesselId && id.includes(vesselId))
+  }
 )
 
 export const selectVesselProfileColor = createSelector(

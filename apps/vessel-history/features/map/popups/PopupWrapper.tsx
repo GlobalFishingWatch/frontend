@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { Popup } from 'react-map-gl'
-import { ExtendedFeature } from '@globalfishingwatch/react-hooks/use-map-interaction'
 import { Icon } from '@globalfishingwatch/ui-components'
+import type { ExtendedFeature } from '@globalfishingwatch/layer-composer';
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { dataviewInstances } from 'features/dataviews/dataviews.config'
 import styles from './Popup.module.css'

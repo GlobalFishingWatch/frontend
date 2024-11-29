@@ -2,8 +2,9 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import { Tab, Tabs } from '@globalfishingwatch/ui-components'
-import { ContextFeature } from '@globalfishingwatch/deck-layers'
+import type { Tab} from '@globalfishingwatch/ui-components';
+import { Tabs } from '@globalfishingwatch/ui-components'
+import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -25,12 +26,12 @@ import { getReportCategoryFromDataview } from 'features/reports/areas/area-repor
 import {
   resetReportData,
   selectReportVesselsStatus,
-} from 'features/reports/activity/reports-activity.slice'
+} from 'features/reports/shared/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
-import { useSetTimeseries } from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { useSetTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import ActivityReport from 'features/reports/activity/ReportActivity'
+import ActivityReport from 'features/reports/shared/activity/ReportActivity'
 import ReportTitle from 'features/reports/areas/title/ReportTitle'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import ReportSummary from 'features/reports/areas/summary/ReportSummary'
@@ -114,7 +115,7 @@ export default function Report() {
       fitAreaInViewport()
     }
     // Reacting only to the area status and fitting bounds after load
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [status, reportArea])
 
   useEffect(() => {
@@ -141,7 +142,7 @@ export default function Report() {
 
   useEffect(() => {
     setTimebarVisualizationByCategory(reportCategory)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [reportCategory])
 
   const handleTabClick = (option: Tab<ReportCategory>) => {
@@ -189,7 +190,7 @@ export default function Report() {
       ) : (
         <div>
           <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
-          <ActivityReport reportName={reportArea!?.name} />
+          <ActivityReport reportName={reportArea?.name} />
         </div>
       )}
     </Fragment>

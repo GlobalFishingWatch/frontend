@@ -1347,7 +1347,10 @@
   },
   "public-global-vessel-identity": {
     "name": "AIS (all vessel types)",
-    "description": "Vessel Identity (all shiptypes)"
+    "description": "Vessel Identity (all shiptypes)",
+    "schema": {
+      "registryTmtExtraFields": "registryTmtExtraFields"
+    }
   },
   "public-global-vessel-insights": {
     "name": "AIS (Indicadores)",

@@ -52,7 +52,8 @@
     "**/*.js",
     "**/*.jsx",
     "next-env.d.ts",
-    "../../dist/apps/api-portal/.next/types/**/*.ts"
+    "../../dist/apps/api-portal/.next/types/**/*.ts",
+    "eslint.config.mjs"
   ],
-  "exclude": ["node_modules", "jest.config.ts"]
+  "exclude": ["node_modules", "jest.config.ts", ".next", "exported"]
 }

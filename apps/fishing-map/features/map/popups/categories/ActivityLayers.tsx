@@ -1,15 +1,16 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
-import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
+import type { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
+import type { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
 import popupStyles from '../Popup.module.css'
 import VesselsTable from './VesselsTable'
 
 type ActivityTooltipRowProps = {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory; title?: string }
   loading?: boolean
+  error?: string
   showFeaturesDetails: boolean
   activityType?: DatasetSubCategory
 }
@@ -18,6 +19,7 @@ function ActivityTooltipRow({
   feature,
   showFeaturesDetails,
   loading,
+  error,
   activityType,
 }: ActivityTooltipRowProps) {
   const { t } = useTranslation()
@@ -47,6 +49,7 @@ function ActivityTooltipRow({
               <Spinner size="small" />
             </div>
           )}
+          {!loading && error && <p className={popupStyles.error}>{error}</p>}
           {!loading && showFeaturesDetails && (
             <VesselsTable feature={feature} activityType={activityType} />
           )}

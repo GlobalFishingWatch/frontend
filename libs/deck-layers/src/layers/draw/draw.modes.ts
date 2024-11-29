@@ -1,15 +1,16 @@
-import {
+import type {
   ClickEvent,
-  DrawPointMode,
-  DrawPolygonMode,
   FeatureCollection,
   ModeProps,
+  Pick} from '@deck.gl-community/editable-layers';
+import {
+  DrawPointMode,
+  DrawPolygonMode,
   ModifyMode,
-  ViewMode,
-  Pick,
+  ViewMode
 } from '@deck.gl-community/editable-layers'
-import { EditHandleFeature } from '@deck.gl-community/editable-layers/src/edit-modes/types'
 import uniqBy from 'lodash/uniqBy'
+import type { EditHandleFeature } from './draw.types'
 
 export type DrawLayerMode =
   | CustomDrawPolygonMode

@@ -1,10 +1,12 @@
 import { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckGL, DeckGLRef } from '@deck.gl/react'
+import type { DeckGLRef } from '@deck.gl/react';
+import { DeckGL } from '@deck.gl/react'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
+import type {
+  InteractionEvent} from '@globalfishingwatch/deck-layer-composer';
 import {
-  InteractionEvent,
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
   useSetDeckLayerLoadedState,
@@ -14,6 +16,7 @@ import { useSetMapInstance } from 'features/map/map-context.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapControls from 'features/map/controls/MapControls'
 import {
+  selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsVesselGroupReportLocation,
@@ -28,9 +31,9 @@ import {
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
-import { MapCoordinates } from 'types'
+import type { MapCoordinates } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useHasReportTimeseries } from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { useHasReportTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { selectReportAreaStatus } from 'features/reports/areas/area-reports.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectVGRSection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
@@ -95,8 +98,9 @@ const MapWrapper = () => {
     }
   }, [setDeckLayers])
 
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isVGRReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const vesselGroupSection = useSelector(selectVGRSection)
   const hasReportTimeseries = useHasReportTimeseries()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -108,9 +112,10 @@ const MapWrapper = () => {
   }, [dispatch])
 
   const mapLoading = useIsDeckLayersLoading()
-  const isReportAreaLoading = isReportLocation && reportAreaStatus === AsyncReducerStatus.Loading
+  const isReportAreaLoading =
+    isAreaReportLocation && reportAreaStatus === AsyncReducerStatus.Loading
   const isLoadingReport =
-    (isReportLocation || (isVGRReportLocation && vesselGroupSection === 'activity')) &&
+    (isAreaReportLocation || (isVGRReportLocation && vesselGroupSection === 'activity')) &&
     !hasReportTimeseries
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
@@ -159,13 +164,13 @@ const MapWrapper = () => {
       <ErrorNotificationDialog />
       <MapAnnotationsDialog />
       <MapControls mapLoading={mapLoading || isReportAreaLoading} />
-      {isWorkspaceLocation && !isReportLocation && (
+      {isWorkspaceLocation && !isAnyReportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}
-      {isWorkspaceLocation && !isReportLocation && (
+      {isWorkspaceLocation && !isAnyReportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
-      {(isWorkspaceLocation || isReportLocation || isVesselLocation || isVGRReportLocation) && (
+      {(isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && (
         <MapInfo center={hoveredCoordinates} />
       )}
 

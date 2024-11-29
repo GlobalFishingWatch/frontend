@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import { UILegendBivariate } from './types'
+import type { UILegendBivariate } from './types'
 import styles from './Bivariate.module.css'
 import legendStyles from './MapLegend.module.css'
 import BivariateArrows from './Bivariate-arrows'

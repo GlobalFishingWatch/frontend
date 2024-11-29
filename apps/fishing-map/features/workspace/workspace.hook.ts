@@ -1,14 +1,15 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
+import type {
+  ColorBarOption} from '@globalfishingwatch/ui-components';
 import {
   FillColorBarOptions,
-  LineColorBarOptions,
-  ColorBarOption,
+  LineColorBarOptions
 } from '@globalfishingwatch/ui-components'
 import {
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectUrlDataviewInstances,
   selectUrlTimeRange,
   selectUrlViewport,
@@ -23,7 +24,7 @@ import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 export const useFitWorkspaceBounds = () => {
   const urlViewport = useSelector(selectUrlViewport)
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const urlTimeRange = useSelector(selectUrlTimeRange)
 
   const { setTimerange } = useTimerangeConnect()
@@ -32,7 +33,7 @@ export const useFitWorkspaceBounds = () => {
   const fitWorkspaceBounds = useCallback(
     async (workspace: Workspace) => {
       const viewport = urlViewport || workspace?.viewport
-      if (viewport && !isReportLocation) {
+      if (viewport && !isAreaReportLocation) {
         setMapCoordinates(viewport)
       }
       if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
@@ -42,7 +43,7 @@ export const useFitWorkspaceBounds = () => {
         })
       }
     },
-    [isReportLocation, setMapCoordinates, setTimerange, urlTimeRange, urlViewport]
+    [isAreaReportLocation, setMapCoordinates, setTimerange, urlTimeRange, urlViewport]
   )
 
   return fitWorkspaceBounds
@@ -69,7 +70,7 @@ const createDataviewsInstances = (
         },
       } as UrlDataviewInstance
       if (dataview.config.colorCyclingType === 'fill') {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+         
         dataviewWithColor.config!.colorRamp = nextColor.id
       }
       return dataviewWithColor

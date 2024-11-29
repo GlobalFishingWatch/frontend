@@ -7,7 +7,7 @@ import parse from 'html-react-parser'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import VGRTitlePlaceholder from 'features/reports/placeholders/VGRTitlePlaceholder'
+import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePlaceholder'
 import {
   setVesselGroupEditId,
   setVesselGroupModalVessels,
@@ -28,7 +28,7 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 // import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './VesselGroupReportTitle.module.css'
-import { VesselGroupReport } from './vessel-group-report.slice'
+import type { VesselGroupReport } from './vessel-group-report.slice'
 import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
 
 type ReportTitleProps = {

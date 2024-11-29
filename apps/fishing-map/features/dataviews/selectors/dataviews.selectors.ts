@@ -1,6 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { Dataset, DatasetTypes, Dataview, DataviewType } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+import type { Dataset, Dataview} from '@globalfishingwatch/api-types';
+import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
+import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInDataview,
@@ -13,11 +15,16 @@ import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
+  selectUrlDataviewInstances,
+  selectVesselId,
 } from 'routes/routes.selectors'
-import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
+import {
+  isBathymetryDataview,
+  VESSEL_DATAVIEW_INSTANCE_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import {
@@ -45,6 +52,7 @@ import {
   selectDataviewInstancesMergedOrdered,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { selectVGRActivityDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 
 export const selectHasOtherVesselGroupDataviews = createSelector(
   [
@@ -77,8 +85,11 @@ export const selectBasemapLabelsDataviewInstance = createSelector(
 )
 
 export const selectActivityMergedDataviewId = createSelector(
-  [selectActiveActivityDataviews],
-  (dataviews): string => {
+  [selectActiveActivityDataviews, selectVGRActivityDataview],
+  (dataviews, vGRActivityDataview): string => {
+    if (vGRActivityDataview) {
+      return vGRActivityDataview.id
+    }
     return dataviews?.length ? getMergedDataviewId(dataviews) : ''
   }
 )
@@ -88,20 +99,20 @@ export const selectActiveReportActivityDataviews = createSelector(
     selectActiveActivityDataviews,
     selectActiveVesselGroupDataviews,
     selectIsVesselGroupReportLocation,
-    selectIsAnyReportLocation,
+    selectIsAnyAreaReportLocation,
     selectReportCategory,
   ],
   (
     activityDataviews,
     vesselGroupDataviews,
     isVGRLocation,
-    isReportLocation,
+    isAreaReportLocation,
     reportCategory
   ): UrlDataviewInstance[] => {
     if (isVGRLocation) {
       return vesselGroupDataviews.filter((d) => isVesselGroupActivityDataview(d.id))
     }
-    if (isReportLocation) {
+    if (isAreaReportLocation) {
       return activityDataviews.filter((dataview) => {
         return getReportCategoryFromDataview(dataview) === reportCategory
       })
@@ -291,5 +302,15 @@ export const selectPrivateDatasetsInWorkspace = createSelector(
   (dataviews) => {
     const workspaceDatasets = getDatasetsInDataviews(dataviews || [])
     return workspaceDatasets.filter((dataset) => isPrivateDataset({ id: dataset }))
+  }
+)
+
+export const selectHasVesselProfileInstancePinned = createSelector(
+  [selectWorkspaceDataviewInstances, selectUrlDataviewInstances, selectVesselId],
+  (workspaceDataviewInstances = [], urlDataviewInstances = [], vesselId) => {
+    const dataviews = [...workspaceDataviewInstances, ...urlDataviewInstances]
+    return dataviews?.some(({ config, id }) => {
+      return id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` && config?.visible
+    })
   }
 )

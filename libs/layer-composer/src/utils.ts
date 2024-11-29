@@ -1,4 +1,4 @@
-import { Dictionary, ExtendedLayer } from './types'
+import type { Dictionary, ExtendedLayer } from './types'
 
 export function isUrlAbsolute(url: string) {
   if (!url) {

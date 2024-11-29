@@ -1,5 +1,5 @@
 import { PATH_BASENAME } from 'data/config'
-import { LibraryLayerConfig } from 'data/layer-library/layers.types'
+import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
@@ -27,6 +27,7 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     config: {
       color: '#CEA9F9',
     },
+    onlyGFWUser: true,
   },
   {
     id: PORT_VISITS_EVENTS_SOURCE_ID,
@@ -35,6 +36,7 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     config: {
       color: '#9AEEFF',
     },
+    onlyGFWUser: true,
   },
 ]
 

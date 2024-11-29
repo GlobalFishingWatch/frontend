@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { VesselGroup } from '@globalfishingwatch/api-types'
+import { uniqBy } from 'es-toolkit'
+import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
 import {
@@ -11,14 +12,16 @@ import {
   selectWorkspace,
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
-import { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { getVesselGroupsInDataviews } from 'features/datasets/datasets.utils'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 import { selectVesselGroupModalVessels } from './vessel-groups-modal.slice'
+import { selectAllVesselGroups } from './vessel-groups.slice'
 
 export const selectVesselGroupsModalSearchIds = createSelector(
   [selectVesselGroupsModalSearchText],
@@ -89,5 +92,26 @@ export const selectVesselGroupModalDatasetsWithoutEventsRelated = createSelector
   [selectVesselGroupModalVessels, selectVesselsDatasets],
   (vessels = [], vesselDatasets) => {
     return getVesselDatasetsWithoutEventsRelated(vessels, vesselDatasets)
+  }
+)
+
+export const selectUserVesselGroups = createSelector(
+  [selectAllVesselGroups, selectUserId],
+  (vesselGroups, userId) => {
+    return vesselGroups?.filter((d) => d.ownerId === userId)
+  }
+)
+
+export const selectWorkspaceVesselGroups = createSelector(
+  [selectAllVesselGroups, selectWorkspaceVessselGroupsIds],
+  (vesselGroups, workspaceVesselGroupsIds) => {
+    return vesselGroups?.filter((d) => workspaceVesselGroupsIds.includes(d.id))
+  }
+)
+
+export const selectAllVisibleVesselGroups = createSelector(
+  [selectAllVesselGroups, selectWorkspaceVesselGroups],
+  (userVesselGroups = [], workspaceVesselGroups = []) => {
+    return uniqBy([...userVesselGroups, ...workspaceVesselGroups], (v) => v.id)
   }
 )

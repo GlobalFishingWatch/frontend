@@ -1,10 +1,9 @@
 import React, { useContext, useMemo } from 'react'
 import cx from 'classnames'
 import { useSetAtom } from 'jotai'
-import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
-import EncounterIcon from '../icons/events-shapes/encounter.svg'
-import LoiteringIcon from '../icons/events-shapes/loitering.svg'
-import {
+import type { TimelineScale, TrackGraphOrientation } from '../timelineContext'
+import TimelineContext from '../timelineContext'
+import type {
   TimebarChartData,
   TimebarChartItem,
   TrackEventChunkProps,
@@ -97,6 +96,8 @@ const TracksEvents = ({
       >
         {trackEvents.chunks.map((event) => (
           <div
+            role="button"
+            tabIndex={0}
             key={event.id}
             className={cx(styles.event, styles[event.type || 'none'], {
               [styles.compact]: tracksEventsWithCoords.length >= 5,
@@ -134,19 +135,7 @@ const TracksEvents = ({
     useTrackColor,
   ])
 
-  return (
-    <div
-      className={styles.Events}
-      style={
-        {
-          '--encounterIcon': `url(${EncounterIcon})`,
-          '--loiteringIcon': `url(${LoiteringIcon})`,
-        } as React.CSSProperties
-      }
-    >
-      {trackEvents}
-    </div>
-  )
+  return <div className={styles.Events}>{trackEvents}</div>
 }
 
 export default TracksEvents

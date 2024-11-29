@@ -41,6 +41,7 @@
     "noDataByArea": "crwdns59609:0crwdne59609:0",
     "noTimeComparisonAllowed": "crwdns59611:0crwdne59611:0",
     "noVesselDataFiltered": "crwdns59613:0crwdne59613:0",
+    "onlyEvolutionSupported": "crwdns84008:0crwdne84008:0",
     "others": "crwdns59617:0crwdne59617:0",
     "periodComparison": "crwdns59619:0crwdne59619:0",
     "periodComparison1st": "crwdns59621:0crwdne59621:0",
@@ -319,6 +320,9 @@
     "date": "crwdns82702:0crwdne82702:0",
     "dateRange": "crwdns82704:0crwdne82704:0",
     "errors": {
+      "csv": {
+        "invalidData": "crwdns84010:0crwdne84010:0"
+      },
       "default": "crwdns82718:0crwdne82718:0",
       "geoJSON": {
         "noValidFeatures": "crwdns82720:0crwdne82720:0"
@@ -475,6 +479,7 @@
     "privateView": "crwdns60099:0crwdne60099:0",
     "profileEvents": "crwdns69362:0crwdne69362:0",
     "profileLogin": "crwdns69364:0crwdne69364:0",
+    "vesselGroupReportLogin": "crwdns83996:0crwdne83996:0",
     "reportLogin": "crwdns60101:0crwdne60101:0",
     "requestAccess": "crwdns60103:0crwdne60103:0",
     "searchLogin": "crwdns69366:0crwdne69366:0",
@@ -616,6 +621,9 @@
     },
     "areasOnScreen": "crwdns60265:0crwdne60265:0",
     "color_change": "crwdns60267:0crwdne60267:0",
+    "drawAddPoint": "crwdns84014:0crwdne84014:0",
+    "drawAddPolygon": "crwdns84016:0crwdne84016:0",
+    "drawDelete": "crwdns84018:0crwdne84018:0",
     "drawPoints": "crwdns83614:0crwdne83614:0",
     "drawPolygon": "crwdns60269:0crwdne60269:0",
     "drawPolygonLogin": "crwdns60271:0crwdne60271:0",
@@ -696,6 +704,12 @@
     "search": "crwdns60357:0crwdne60357:0",
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
+  },
+  "portsReport": {
+    "newTimeRange": "crwdns84000:0{{start}}crwdnd84000:0{{end}}crwdne84000:0",
+    "seePortReport": "crwdns84002:0crwdne84002:0",
+    "maxVessels": "crwdns84004:0{{vessels}}crwdne84004:0",
+    "summaryEvents": "crwdns84006:0{{vessels}}crwdnd84006:0{{flags}}crwdnd84006:0{{activityQuantity}}crwdnd84006:0{{start}}crwdnd84006:0{{end}}crwdne84006:0"
   },
   "search": {
     "advanced": "crwdns60363:0crwdne60363:0",
@@ -804,6 +818,7 @@
     "capacity": "crwdns60489:0crwdne60489:0",
     "carrier": "crwdns60491:0crwdne60491:0",
     "casco": "crwdns60493:0crwdne60493:0",
+    "confirmationClose": "crwdns84012:0crwdne84012:0",
     "clickToFitMapToEvents": "crwdns69462:0crwdne69462:0",
     "clickToSeeMore": "crwdns70204:0crwdne70204:0",
     "close": "crwdns69464:0crwdne69464:0",
@@ -1098,6 +1113,7 @@
     },
     "linkDisabled": "crwdns83982:0crwdne83982:0",
     "linkToReport": "crwdns83744:0crwdne83744:0",
+    "noData": "crwdns83998:0crwdne83998:0",
     "notFound": "crwdns83780:0crwdne83780:0",
     "sources": "crwdns83944:0crwdne83944:0",
     "user": "crwdns83782:0crwdne83782:0",

@@ -76,6 +76,19 @@
   padding: var(--space-S);
   font: var(--font-M);
   color: var(--color-primary-blue);
+  overflow: hidden;
+}
+
+.bufferValueControls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+  padding-left: 1.5rem;
+}
+
+.bufferValueInput {
+  min-width: 7rem;
+  width: 7rem;
 }
 
 .actionContainer {

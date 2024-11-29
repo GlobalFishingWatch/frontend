@@ -3,20 +3,21 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import type {
+  TimebarChartChunk,
+  TrackEventChunkProps,
+  TrackGraphOrientation,
+  HighlightedChunks,
+  TimebarProps} from '@globalfishingwatch/timebar';
 import {
   Timebar,
   TimebarTracks,
   TimebarHighlighter,
   TimebarTracksEvents,
-  TimebarTracksGraph,
-  TimebarChartChunk,
-  TrackEventChunkProps,
-  TrackGraphOrientation,
-  HighlightedChunks,
-  TimebarProps,
+  TimebarTracksGraph
 } from '@globalfishingwatch/timebar'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { Locale } from 'types'
+import type { Locale } from 'types'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -37,7 +38,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   useTimebarVesselEvents,
@@ -84,7 +85,7 @@ const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) =>
   // Return precise chunk frame extent
   const activityDateCallback = useCallback(
     (timestamp: number) => {
-      let dateLabel = formatI18nDate(timestamp, {
+      const dateLabel = formatI18nDate(timestamp, {
         format: DateTime.DATETIME_MED,
         showUTCLabel: true,
       })
@@ -163,7 +164,7 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
@@ -384,7 +385,7 @@ const TimebarWrapper = () => {
       onMouseLeave={onMouseLeave}
     >
       <Timebar
-        enablePlayback={!vesselGroupsFiltering && !isReportLocation}
+        enablePlayback={!vesselGroupsFiltering && !isAreaReportLocation}
         labels={labels}
         start={start}
         end={end}

@@ -1,6 +1,7 @@
-import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
+import type { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
-import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
+import type { ParsedAPIError} from '@globalfishingwatch/api-client';
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 
 export function getQueryParamsResolved(params: Record<string, any>) {
   return stringify(params, { arrayFormat: 'indices', addQueryPrefix: true })

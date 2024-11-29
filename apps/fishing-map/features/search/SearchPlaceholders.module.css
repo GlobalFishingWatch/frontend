@@ -37,10 +37,6 @@
   transition: opacity 100ms ease-out;
 }
 
-.inlineIcon {
-  height: 1em;
-}
-
 .description {
   text-align: center;
 }

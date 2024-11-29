@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { Fragment, useState } from 'react'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
-import { LabellingProject } from '../../types'
+import type { LabellingProject } from '../../types'
 import ProjectForm from './ProjectForm'
 import styles from './ProjectsList.module.css'
 
@@ -19,7 +19,7 @@ export function ProjectItem({ project }: { project: LabellingProject }) {
         <Link
           to="/project/$projectId"
           params={{
-            projectId: project.id?.toString()!,
+            projectId: project.id?.toString() as string,
           }}
         >
           <h2 className={styles.projectName}>{project.name}</h2>

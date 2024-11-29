@@ -1,0 +1,26 @@
+.container {
+  flex: 1;
+}
+
+.legendContainer {
+  position: absolute;
+  bottom: 100px;
+  right: 7px;
+  background: #163f89;
+  padding: 8px;
+  z-index: 1000;
+}
+
+.legend {
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  line-height: 14px;
+  text-transform: capitalize;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+
+.legendContainer svg {
+  transform: scale(1.2);
+  margin-right: 4px;
+}

@@ -1,25 +1,30 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
-import {
+import type {
   Workspace,
   Dataview,
   WorkspaceUpsert,
   DataviewInstance,
+  Dataset,
+  WorkspaceEditAccessType,
+  WorkspaceViewAccessType} from '@globalfishingwatch/api-types';
+import {
   DataviewCategory,
   EndpointId,
-  Dataset,
   DatasetTypes,
-  DatasetCategory,
-  WorkspaceEditAccessType,
-  WorkspaceViewAccessType,
+  DatasetCategory
 } from '@globalfishingwatch/api-types'
-import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
+import type { FetchOptions} from '@globalfishingwatch/api-client';
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import type {
+  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
 import {
-  parseLegacyDataviewInstanceConfig,
-  UrlDataviewInstance,
+  parseLegacyDataviewInstanceConfig
 } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, VALID_PASSWORD } from 'data/config'
-import { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
+import type { VALID_PASSWORD } from 'data/config';
+import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
+import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
@@ -28,7 +33,8 @@ import {
   selectReportId,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
-import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
+import type { ROUTE_TYPES} from 'routes/routes';
+import { HOME, REPORT, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import {
   DEFAULT_DATAVIEW_SLUGS,
@@ -37,25 +43,28 @@ import {
   WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
-import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
+import type { AsyncError } from 'utils/async-slice';
+import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   getDatasetsInDataviews,
   getLatestEndDateFromDatasets,
   getVesselGroupsInDataviews,
 } from 'features/datasets/datasets.utils'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/areas/area-reports.slice'
-import { AppDispatch } from 'store'
+import type { AppDispatch } from 'store'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { DEFAULT_AREA_REPORT_STATE } from 'features/reports/areas/area-reports.config'
 import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { DEFAULT_PORT_REPORT_STATE } from 'features/reports/ports/ports-report.config'
+import { cleanPortClusterDataviewFromReport } from 'features/reports/ports/ports-report.utils'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -72,6 +81,7 @@ export type LastWorkspaceVisited = {
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
+  suggestSave: boolean
   // used to identify when someone saves its own version of the workspace
   customStatus: AsyncReducerStatus
   error: AsyncError
@@ -82,6 +92,7 @@ interface WorkspaceSliceState {
 
 const initialState: WorkspaceSliceState = {
   status: AsyncReducerStatus.Idle,
+  suggestSave: false,
   customStatus: AsyncReducerStatus.Idle,
   error: {} as AsyncError,
   data: null,
@@ -422,21 +433,26 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk<
     }
     return workspaceUpdated
   } catch (e: any) {
-    return rejectWithValue({ error: parseAPIError(e) })
+    return rejectWithValue(parseAPIError(e))
   }
 })
 
+const ALL_REPORTS_STATE = {
+  ...DEFAULT_AREA_REPORT_STATE,
+  ...DEFAULT_VESSEL_GROUP_REPORT_STATE,
+  ...DEFAULT_PORT_REPORT_STATE,
+}
 export function cleanReportQuery(query: QueryParams) {
   return {
     ...query,
-    ...Object.keys(DEFAULT_AREA_REPORT_STATE).reduce((acc, key) => {
+    ...Object.keys(ALL_REPORTS_STATE).reduce((acc, key) => {
       acc[key] = undefined
       return acc
     }, {} as Record<string, undefined>),
-    ...Object.keys(DEFAULT_VESSEL_GROUP_REPORT_STATE).reduce((acc, key) => {
-      acc[key] = undefined
-      return acc
-    }, {} as Record<string, undefined>),
+
+    ...(query?.dataviewInstances?.length && {
+      dataviewInstances: query?.dataviewInstances?.map(cleanPortClusterDataviewFromReport),
+    }),
   }
 }
 
@@ -455,6 +471,9 @@ const workspaceSlice = createSlice({
     },
     setWorkspacePassword: (state, action: PayloadAction<string>) => {
       state.password = action.payload
+    },
+    setWorkspaceSuggestSave: (state, action: PayloadAction<boolean>) => {
+      state.suggestSave = action.payload
     },
     resetWorkspaceSlice: (state) => {
       state.status = initialState.status
@@ -545,6 +564,7 @@ const workspaceSlice = createSlice({
 export const {
   setWorkspaceProperty,
   setWorkspacePassword,
+  setWorkspaceSuggestSave,
   resetWorkspaceSlice,
   setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,

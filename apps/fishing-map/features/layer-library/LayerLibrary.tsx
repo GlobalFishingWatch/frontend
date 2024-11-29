@@ -1,16 +1,19 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { ChangeEvent, FC, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import type { ChangeEvent, FC} from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { uniq } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { LIBRARY_LAYERS, LibraryLayer } from 'data/layer-library'
+import type { LibraryLayer } from 'data/layer-library';
+import { LIBRARY_LAYERS } from 'data/layer-library'
 import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import { selectLayerLibraryModal } from 'features/modals/modals.slice'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import styles from './LayerLibrary.module.css'
 
 const LayerLibrary: FC = () => {
@@ -18,6 +21,7 @@ const LayerLibrary: FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const initialCategory = useSelector(selectLayerLibraryModal)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
     initialCategory || DataviewCategory.Activity
   )
@@ -85,7 +89,7 @@ const LayerLibrary: FC = () => {
       scrollToCategory({ categoryElements, category: currentCategory, smooth: false })
     }
     // Running only when categoryElements changes as listening to currentCategory blocks the scroll
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [uniqCategoriesPlusUser])
 
   const filteredLayers = useMemo(
@@ -199,9 +203,12 @@ const LayerLibrary: FC = () => {
             >
               {t(`common.${category as DataviewCategory}`, upperFirst(category))}
             </label>
-            {layersByCategory[category].map((layer) => (
-              <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
-            ))}
+            {layersByCategory[category].map((layer) => {
+              if (layer.onlyGFWUser && !isGFWUser) {
+                return null
+              }
+              return <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
+            })}
           </Fragment>
         ))}
         <LayerLibraryUserPanel searchQuery={searchQuery} />

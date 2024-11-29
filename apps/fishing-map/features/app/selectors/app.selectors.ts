@@ -1,13 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { HEATMAP_HIGH_RES_ID, RulerData } from '@globalfishingwatch/deck-layers'
+import type { RulerData } from '@globalfishingwatch/deck-layers'
+import { HEATMAP_HIGH_RES_ID } from '@globalfishingwatch/deck-layers'
 import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
 import {
   getActiveActivityDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 
 const EMPTY_ARRAY: [] = []
 
@@ -24,7 +26,7 @@ export const selectLatestAvailableDataDate = createSelector(
         return getActiveActivityDatasetsInDataviews([dataview]).flat()
       }
       return dataview.datasets || []
-    })
+    }) as Dataset[]
     return getLatestEndDateFromDatasets(activeDatasets)
   }
 )
@@ -40,7 +42,7 @@ export const selectMapAnnotations = selectWorkspaceStateProperty('mapAnnotations
 export const selectVisibleEvents = selectWorkspaceStateProperty('visibleEvents')
 
 export const selectActivityVisualizationMode = createSelector(
-  [selectIsAnyReportLocation, selectWorkspaceStateProperty('activityVisualizationMode')],
+  [selectIsAnyAreaReportLocation, selectWorkspaceStateProperty('activityVisualizationMode')],
   (isAnyReportLocation, activityVisualizationMode) => {
     if (isAnyReportLocation && activityVisualizationMode === 'positions') {
       return HEATMAP_HIGH_RES_ID
@@ -50,7 +52,7 @@ export const selectActivityVisualizationMode = createSelector(
 )
 
 export const selectDetectionsVisualizationMode = createSelector(
-  [selectIsAnyReportLocation, selectWorkspaceStateProperty('detectionsVisualizationMode')],
+  [selectIsAnyAreaReportLocation, selectWorkspaceStateProperty('detectionsVisualizationMode')],
   (isAnyReportLocation, detectionsVisualizationMode) => {
     if (isAnyReportLocation && detectionsVisualizationMode === 'positions') {
       return 'heatmap-high-res'

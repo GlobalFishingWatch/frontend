@@ -9,7 +9,7 @@ import {
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselDataIdentity } from 'features/vessel/vessel.slice'
+import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   getVesselIdentities,
@@ -77,7 +77,10 @@ const VesselIdentitySelector = () => {
           const end = formatI18nDate(identity.transmissionDateTo)
           const identityId = getVesselIdentityId(identity)
           return (
-            <Tooltip content={t('vessel.selectIdentity', 'See the identity for this dates')}>
+            <Tooltip
+              key={identity.id}
+              content={t('vessel.selectIdentity', 'See the identity for this dates')}
+            >
               <li
                 key={identityId}
                 className={cx(styles.icon, {

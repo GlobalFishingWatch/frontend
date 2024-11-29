@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { EventTypes, GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
+import type { GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { getUTCDateTime } from 'utils/dates'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import VesselLink from 'features/vessel/VesselLink'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -42,7 +43,7 @@ export function useActivityEventTranslations() {
         }
         return acc
       }, '')
-      let allRegionsDescriptionBlocks: string[] = []
+      const allRegionsDescriptionBlocks: string[] = []
       if (event.regions) {
         Object.entries(event.regions).forEach((entry) => {
           const regionType = entry[0] as keyof Regions
@@ -94,7 +95,7 @@ export function useActivityEventTranslations() {
               </span>
             )
           } else return ''
-        case EventTypes.Port:
+        case EventTypes.Port: {
           const { name, flag } = event.port_visit?.intermediateAnchorage ?? {}
           const portType = event.subType || event.type
           const portLabel = name
@@ -103,6 +104,7 @@ export function useActivityEventTranslations() {
           return t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
             port: formatInfoField(portLabel, 'port'),
           })
+        }
         case EventTypes.Loitering:
           return (
             mainRegionDescription && (

@@ -1,6 +1,6 @@
 
-    import { FeatureCollection } from 'geojson'
-    import { OceanAreaProperties } from '../ocean-areas'
+    import type { FeatureCollection } from 'geojson'
+    import type { OceanAreaProperties } from '../ocean-areas'
 
     const eezsAreas: FeatureCollection<any, OceanAreaProperties> = {
       type: 'FeatureCollection',

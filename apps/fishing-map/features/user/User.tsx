@@ -1,7 +1,8 @@
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
+import type { Tab} from '@globalfishingwatch/ui-components';
+import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import {
@@ -16,13 +17,12 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserTab } from 'routes/routes.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
-import styles from './User.module.css'
-import UserWorkspaces from './UserWorkspaces'
-import UserWorkspacesPrivate from './UserWorkspacesPrivate'
+import UserInfo from './UserInfo'
 import UserDatasets from './UserDatasets'
 import UserReports from './UserReports'
-import UserInfo from './UserInfo'
 import UserVesselGroups from './UserVesselGroups'
+import UserWorkspaces from './UserWorkspaces'
+import styles from './User.module.css'
 
 function User() {
   const { t } = useTranslation()
@@ -43,21 +43,12 @@ function User() {
         id: UserTab.Workspaces,
         title: t('workspace.title_other', 'Workspaces'),
         testId: 'user-workspace',
-        content: (
-          <Fragment>
-            <UserWorkspacesPrivate />
-            <UserWorkspaces />
-          </Fragment>
-        ),
+        content: <UserWorkspaces />,
       },
       {
         id: UserTab.Datasets,
         title: t('dataset.title_other', 'Datasets'),
-        content: (
-          <Fragment>
-            <UserDatasets />
-          </Fragment>
-        ),
+        content: <UserDatasets />,
       },
       {
         id: UserTab.Reports,

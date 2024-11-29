@@ -1,9 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import {
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectMapDrawingEditId,
@@ -73,9 +73,9 @@ export const selectWorkspacesListDataview = createSelector(
 )
 
 export const selectShowWorkspaceDetail = createSelector(
-  [selectIsWorkspaceLocation, selectIsAnyReportLocation, selectIsWorkspaceVesselLocation],
-  (isWorkspacelLocation, isReportLocation, isVesselLocation) => {
-    return isWorkspacelLocation || isReportLocation || isVesselLocation
+  [selectIsWorkspaceLocation, selectIsAnyAreaReportLocation, selectIsWorkspaceVesselLocation],
+  (isWorkspacelLocation, isAreaReportLocation, isVesselLocation) => {
+    return isWorkspacelLocation || isAreaReportLocation || isVesselLocation
   }
 )
 

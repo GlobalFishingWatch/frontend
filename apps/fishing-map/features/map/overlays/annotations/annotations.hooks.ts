@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { Position } from '@deck.gl/core'
+import type { Position } from '@deck.gl/core'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectAreMapAnnotationsVisible,

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Resource } from '@globalfishingwatch/api-types'
+import type { Resource } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'

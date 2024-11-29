@@ -2,13 +2,14 @@ import { Fragment } from 'react'
 import { groupBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { UserLayerPickingObject, ContextPickingObject } from '@globalfishingwatch/deck-layers'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import type { UserLayerPickingObject, ContextPickingObject } from '@globalfishingwatch/deck-layers'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import styles from '../Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
@@ -22,7 +23,16 @@ export function getContextLayerId(feature: ContextPickingObject | UserLayerPicki
   return id
 }
 
-export function getContextLayerLabel(feature: ContextPickingObject | UserLayerPickingObject) {
+export function getUserContextLayerLabel(
+  feature: ContextPickingObject | UserLayerPickingObject,
+  dataset?: Dataset
+) {
+  if (
+    (feature.subcategory === 'draw-polygons' || feature.subcategory === 'draw-points') &&
+    dataset
+  ) {
+    return getDatasetLabel(dataset)
+  }
   let label = (feature.value ?? feature.title) as string
   if (feature.layerId.includes(OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID)) {
     const startDate = Number(feature.properties.structure_start_date)
@@ -48,8 +58,11 @@ type UserContextLayersProps = {
   showFeaturesDetails: boolean
 }
 
-function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
-  const dataviews = useSelector(selectCustomUserDataviews) as UrlDataviewInstance[]
+function UserContextTooltipSection({
+  features,
+  showFeaturesDetails = false,
+}: UserContextLayersProps) {
+  const dataviews = useSelector(selectDataviewInstancesResolved) as UrlDataviewInstance[]
   const { onReportClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, (f) => f.layerId)
   return (
@@ -66,7 +79,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>}
               {featureByType.map((feature, index) => {
                 const id = getContextLayerId(feature)
-                const label = getContextLayerLabel(feature)
+                const label = getUserContextLayerLabel(feature, dataset)
                 return (
                   <ContextLayersRow
                     id={id}
@@ -87,4 +100,4 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
   )
 }
 
-export default ContextTooltipSection
+export default UserContextTooltipSection

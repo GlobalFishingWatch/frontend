@@ -33,12 +33,10 @@
   "targetDefaults": {
     "@nx/eslint:lint": {
       "cache": true,
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json",
-        "{workspaceRoot}/.eslintignore",
-        "{workspaceRoot}/eslint.config.js"
-      ]
+      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs", "{projectRoot}/eslint.config.mjs"],
+      "options": {
+        "eslintConfig": "eslint.config.mjs"
+      }
     },
     "@nx/rollup:rollup": {
       "cache": true,
@@ -84,7 +82,7 @@
     }
   },
   "release": {
-    "projects": ["!linting", "libs/*", "!libs/i18n-labels", "apps/fishing-map"],
+    "projects": ["!linting", "libs/*", "!libs/i18n-labels", "!apps/*"],
     "projectsRelationship": "independent",
     "releaseTagPattern": "@gfw/{projectName}@{version}",
     "changelog": {
@@ -95,7 +93,8 @@
     },
     "version": {
       "generatorOptions": {
-        "currentVersionResolver": "git-tag"
+        "currentVersionResolver": "git-tag",
+        "fallbackCurrentVersionResolver": "disk"
         // "specifierSource": "conventional-commits"
       }
     },

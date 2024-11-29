@@ -1,11 +1,12 @@
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
-import { DragEvent, useCallback, useRef, useState } from 'react'
+import type { DragEvent } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { atom, useSetAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
-import { MapAnnotation } from './annotations.types'
+import type { MapAnnotation } from './annotations.types'
 // This blank image is needed to hide the default drag preview icon
 // https://stackoverflow.com/questions/27989602/hide-drag-preview-html-drag-and-drop#comment136906877_27990218
 const blankImage = new Image()
@@ -86,7 +87,13 @@ const MapAnnotations = (): React.ReactNode | null => {
         {mapAnnotations.map((annotation) => (
           <HtmlOverlayItem
             key={annotation.id}
-            style={{ pointerEvents: 'all', transform: 'translate(-50%,-50%)' }}
+            style={{
+              pointerEvents: 'all',
+              transform: 'translate(-50%,-50%)',
+              maxWidth: '32rem',
+              textAlign: 'center',
+              fontWeight: 500,
+            }}
             coordinates={
               (selectedAnnotationRef?.current === annotation.id && (newCoords as number[])) || [
                 Number(annotation.lon),
@@ -95,6 +102,9 @@ const MapAnnotations = (): React.ReactNode | null => {
             }
           >
             <p
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+              role="button"
+              tabIndex={0}
               onClick={(event) => {
                 setMapAnnotation(annotation)
               }}

@@ -41,6 +41,7 @@
     "noDataByArea": "Não há dados disponíveis para a área selecionada",
     "noTimeComparisonAllowed": "Os modos de comparação de tempo não ficam disponíveis quando as camadas têm filtros diferentes",
     "noVesselDataFiltered": "Não há nenhuma embarcação correspondente ao seu filtro",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Outros",
     "periodComparison": "comparação por período",
     "periodComparison1st": "início da base de referência",
@@ -319,6 +320,9 @@
     "date": "Data",
     "dateRange": "Date Range",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "Houve um erro ao carregar seus dados",
       "geoJSON": {
         "noValidFeatures": "Nenhum tipo de recurso válido encontrado no arquivo geoJSON"
@@ -475,6 +479,7 @@
     "privateView": "Esta é uma visualização privada",
     "profileEvents": "Ocorreu um erro ao solicitar os eventos da embarcação.",
     "profileLogin": "Faça login para ver esta embarcação",
+    "vesselGroupReportLogin": "Login to see the vessels active",
     "reportLogin": "Faça login para ver as embarcações ativas na área",
     "requestAccess": "Solicitar acesso",
     "searchLogin": "Faça login para pesquisar embarcações",
@@ -616,6 +621,9 @@
     },
     "areasOnScreen": "Áreas na tela",
     "color_change": "Alterar cor",
+    "drawAddPoint": "Add a point",
+    "drawAddPolygon": "Add a geometry",
+    "drawDelete": "Delete selection",
     "drawPoints": "Draw points",
     "drawPolygon": "Desenhe uma camada",
     "drawPolygonLogin": "Registre-se e faça login para desenhar uma camada (grátis, 2 minutos)",
@@ -696,6 +704,12 @@
     "search": "Procure por oceanos e mares, AMPs ou ZEEs",
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
+  },
+  "portsReport": {
+    "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "seePortReport": "See all entry events to this port",
+    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
   },
   "search": {
     "advanced": "Avançado",
@@ -804,6 +818,7 @@
     "capacity": "Capacidade",
     "carrier": "Navio cargueiro",
     "casco": "Casco",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Centralizar mapa nos eventos",
     "clickToSeeMore": "Clique para ver mais informações",
     "close": "Fechar",
@@ -1098,6 +1113,7 @@
     },
     "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",
+    "noData": "Vessel group not found",
     "notFound": "Vessel group not found",
     "sources": "Vessel group report sources",
     "user": "User Vessel Group",

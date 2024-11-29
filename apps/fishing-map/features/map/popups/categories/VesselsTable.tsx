@@ -3,11 +3,8 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { Tooltip } from '@globalfishingwatch/ui-components'
-import {
-  DatasetSubCategory,
-  DataviewCategory,
-  VesselIdentitySourceEnum,
-} from '@globalfishingwatch/api-types'
+import type { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -18,12 +15,12 @@ import {
 } from 'utils/info'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
-import {
+import type {
   ActivityProperty,
   ExtendedFeatureVessel,
-  MAX_TOOLTIP_LIST,
   SliceExtendedFourwingsDeckSublayer,
 } from 'features/map/map.slice'
+import { MAX_TOOLTIP_LIST } from 'features/map/map.slice'
 import { t } from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -118,26 +115,7 @@ function VesselsTable({
   )
 
   // TODO: consider showing more than 5 vessels when oly one layer is active
-  const featureVessels = showValue
-    ? feature?.vessels
-    : feature?.vessels?.toSorted((a, b) => {
-        const getVesselPropertyParams = {
-          identitySource: VesselIdentitySourceEnum.SelfReported,
-        }
-        const aName = formatInfoField(
-          getVesselProperty(a, 'shipname', getVesselPropertyParams),
-          'shipname'
-        )
-        const bName = formatInfoField(
-          getVesselProperty(b, 'shipname', getVesselPropertyParams),
-          'shipname'
-        )
-        if (aName < bName) return -1
-        if (aName > bName) return 1
-        return 0
-      })
-
-  const vessels = featureVessels?.slice(0, MAX_TOOLTIP_LIST)
+  const vessels = feature?.vessels?.slice(0, MAX_TOOLTIP_LIST)
   const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
 
   const hasPinColumn =
@@ -151,7 +129,7 @@ function VesselsTable({
   const isPresenceActivity = activityType === DatasetSubCategory.Presence
   return (
     <Fragment>
-      {vessels!?.length > 0 && (
+      {vessels?.length && vessels.length > 0 && (
         <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>

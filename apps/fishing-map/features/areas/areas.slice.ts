@@ -1,20 +1,22 @@
-import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import kebabCase from 'lodash/kebabCase'
 import { uniqBy } from 'es-toolkit'
-import { Polygon, MultiPolygon, FeatureCollection, GeometryCollection } from 'geojson'
+import type { Polygon, MultiPolygon, FeatureCollection, GeometryCollection } from 'geojson'
 import union from '@turf/union'
 import { featureCollection } from '@turf/helpers'
 import { circle } from '@turf/circle'
 import { flatten } from '@turf/flatten'
-import { TileContextAreaFeature, Dataset, EndpointId } from '@globalfishingwatch/api-types'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { TileContextAreaFeature, Dataset} from '@globalfishingwatch/api-types';
+import { EndpointId } from '@globalfishingwatch/api-types'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { wrapGeometryBbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
-import { Bbox } from 'types'
+import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { RootState } from 'store'
+import type { RootState } from 'store'
 import { listAsSentence } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 
@@ -137,60 +139,64 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       areaName,
       simplify,
     }: FetchAreaDetailThunkParam = {} as FetchAreaDetailThunkParam,
-    { signal, getState }
+    { signal, getState, rejectWithValue }
   ) => {
-    const isMultipleDatasets = datasetId.includes(',')
-    if (isMultipleDatasets) {
-      const datasetIds = datasetId.split(',')
-      const datasets = datasetIds.flatMap(
-        (id) => selectDatasetById(id)(getState() as RootState) || []
-      )
+    try {
+      const isMultipleDatasets = datasetId.includes(',')
+      if (isMultipleDatasets) {
+        const datasetIds = datasetId.split(',')
+        const datasets = datasetIds.flatMap(
+          (id) => selectDatasetById(id)(getState() as RootState) || []
+        )
 
-      const simplifies = simplify?.split(',')
-      const areaIds = areaId.toString().split(',')
-      const areas = await Promise.all(
-        datasets.map((dataset, index) =>
-          fetchAreaDetail({
-            dataset,
-            areaName,
-            areaId: areaIds[index],
-            simplify: simplifies?.[index],
-            signal,
-          })
+        const simplifies = simplify?.split(',')
+        const areaIds = areaId.toString().split(',')
+        const areas = await Promise.all(
+          datasets.map((dataset, index) =>
+            fetchAreaDetail({
+              dataset,
+              areaName,
+              areaId: areaIds[index],
+              simplify: simplifies?.[index],
+              signal,
+            })
+          )
         )
-      )
-      try {
-        const areaFeatures = featureCollection(
-          areas.flatMap((area) => {
-            if (!area) return []
-            return (area?.geometry as any).type === 'Point' ? circle(area as any, 1) || [] : area
-          })
-        )
-        const mergedFeature = union(areaFeatures)
-        if (mergedFeature) {
-          const bounds = mergedFeature.bbox
-            ? wrapBBoxLongitudes(mergedFeature.bbox as Bbox)
-            : wrapGeometryBbox(mergedFeature.geometry)
-          const area = {
-            id: areaId.toString(),
-            name:
-              areaName ||
-              `${t('common.unionOf', 'Union of')} ${listAsSentence(
-                areas.flatMap((a) => a?.name || [])
-              )}`,
-            bounds: bounds,
-            geometry: mergedFeature.geometry as AreaGeometry,
-            properties: { areaIds, datasetIds },
+        try {
+          const areaFeatures = featureCollection(
+            areas.flatMap((area) => {
+              if (!area) return []
+              return (area?.geometry as any).type === 'Point' ? circle(area as any, 1) || [] : area
+            })
+          )
+          const mergedFeature = union(areaFeatures)
+          if (mergedFeature) {
+            const bounds = mergedFeature.bbox
+              ? wrapBBoxLongitudes(mergedFeature.bbox as Bbox)
+              : wrapGeometryBbox(mergedFeature.geometry)
+            const area = {
+              id: areaId.toString(),
+              name:
+                areaName ||
+                `${t('common.unionOf', 'Union of')} ${listAsSentence(
+                  areas.flatMap((a) => a?.name || [])
+                )}`,
+              bounds: bounds,
+              geometry: mergedFeature.geometry as AreaGeometry,
+              properties: { areaIds, datasetIds },
+            }
+            return area
           }
-          return area
+        } catch (e) {
+          console.error('Error merging areas', e)
         }
-      } catch (e) {
-        console.error('Error merging areas', e)
       }
+      const dataset = selectDatasetById(datasetId)(getState() as RootState)
+      const area = await fetchAreaDetail({ dataset, areaId, areaName, signal, simplify })
+      return area
+    } catch (e: any) {
+      return rejectWithValue(parseAPIError(e))
     }
-    const dataset = selectDatasetById(datasetId)(getState() as RootState)
-    const area = await fetchAreaDetail({ dataset, areaId, areaName, signal, simplify })
-    return area
   },
   {
     condition: ({ datasetId, areaId }: FetchAreaDetailThunkParam, { getState }) => {
@@ -215,22 +221,26 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
       datasetId,
       include = ['bbox'],
     }: FetchDatasetAreasThunkParam = {} as FetchDatasetAreasThunkParam,
-    { signal }
+    { signal, rejectWithValue }
   ) => {
-    const datasetAreas = await GFWAPI.fetch<DatasetArea[] | DrawnDatasetGeometry>(
-      `/datasets/${datasetId}/user-context-layers${
-        include?.length ? `?includes=${include.join(',')}&cache=false` : ''
-      }`,
-      { signal, cache: 'no-cache' }
-    )
-    if ((datasetAreas as DrawnDatasetGeometry).type === 'FeatureCollection') {
-      return datasetAreas
+    try {
+      const datasetAreas = await GFWAPI.fetch<DatasetArea[] | DrawnDatasetGeometry>(
+        `/datasets/${datasetId}/user-context-layers${
+          include?.length ? `?includes=${include.join(',')}&cache=false` : ''
+        }`,
+        { signal, cache: 'no-cache' }
+      )
+      if ((datasetAreas as DrawnDatasetGeometry).type === 'FeatureCollection') {
+        return datasetAreas
+      }
+      const areasWithSlug = (datasetAreas as DatasetArea[]).map((area) => ({
+        ...area,
+        slug: kebabCase(area.label),
+      }))
+      return uniqBy(areasWithSlug, (a) => a.slug)
+    } catch (e: any) {
+      return rejectWithValue(parseAPIError(e))
     }
-    const areasWithSlug = (datasetAreas as DatasetArea[]).map((area) => ({
-      ...area,
-      slug: kebabCase(area.label),
-    }))
-    return uniqBy(areasWithSlug, (a) => a.slug)
   },
   {
     condition: ({ datasetId }: FetchDatasetAreasThunkParam, { getState }) => {

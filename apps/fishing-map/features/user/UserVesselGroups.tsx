@@ -1,9 +1,9 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useCallback } from 'react'
-import { Spinner, IconButton, Button, Icon } from '@globalfishingwatch/ui-components'
-import { VesselGroup } from '@globalfishingwatch/api-types'
+import { Fragment, useCallback, useState } from 'react'
+import { Spinner, IconButton, Button, Icon, InputText } from '@globalfishingwatch/ui-components'
+import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectVesselGroupsStatus,
@@ -24,7 +24,8 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useEditVesselGroupModal } from 'features/reports/vessel-groups/vessel-group-report.hooks'
-import { selectUserVesselGroups } from './selectors/user.permissions.selectors'
+import { getHighlightedText } from 'utils/text'
+import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
 import styles from './User.module.css'
 
 function UserVesselGroups() {
@@ -39,6 +40,11 @@ function UserVesselGroups() {
     vesselGroupStatus === AsyncReducerStatus.Loading
   const editingGroupId = useSelector(selectVesselGroupEditId)
   const onEditClick = useEditVesselGroupModal()
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }
 
   const onNewGroupClick = useCallback(() => {
     dispatch(setVesselGroupsModalOpen(true))
@@ -60,98 +66,112 @@ function UserVesselGroups() {
   )
 
   return (
-    <div className={styles.views}>
-      <div className={styles.viewsHeader}>
-        <label>{t('vesselGroup.vesselGroups', 'Vessel Groups')}</label>
-        <Button disabled={loading} type="secondary" onClick={onNewGroupClick}>
-          {t('vesselGroup.new', 'New vessel group') as string}
-        </Button>
+    <Fragment>
+      <div className={styles.search}>
+        <InputText
+          type="search"
+          value={searchQuery}
+          onChange={onSearchQueryChange}
+          placeholder="Search"
+        />
       </div>
-      {loading ? (
-        <div className={styles.placeholder}>
-          <Spinner size="small" />
+      <div className={styles.views}>
+        <div className={styles.viewsHeader}>
+          <label>{t('vesselGroup.vesselGroups', 'Vessel Groups')}</label>
+          <Button disabled={loading} type="secondary" onClick={onNewGroupClick}>
+            {t('vesselGroup.new', 'New vessel group') as string}
+          </Button>
         </div>
-      ) : (
-        <ul>
-          {vesselGroups && vesselGroups.length > 0 ? (
-            sortByCreationDate<VesselGroup>(vesselGroups).map((vesselGroup) => {
-              const isOutdated = isOutdatedVesselGroup(vesselGroup)
-              return (
-                <li className={styles.dataset} key={vesselGroup.id}>
-                  {isOutdated ? (
-                    <span>
-                      {getVesselGroupLabel(vesselGroup)}{' '}
-                      <span className={styles.secondary}>
-                        ({getVesselGroupVesselsCount(vesselGroup)})
-                      </span>
-                    </span>
-                  ) : (
-                    <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
-                      <span className={styles.workspaceLink} data-test="workspace-name">
-                        {getVesselGroupLabel(vesselGroup)}{' '}
-                        <span className={cx(styles.secondary, styles.marginLeft)}>
+        {loading ? (
+          <div className={styles.placeholder}>
+            <Spinner size="small" />
+          </div>
+        ) : (
+          <ul>
+            {vesselGroups && vesselGroups.length > 0 ? (
+              sortByCreationDate<VesselGroup>(vesselGroups).map((vesselGroup) => {
+                const label = getVesselGroupLabel(vesselGroup)
+                if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
+                  return null
+                }
+                const isOutdated = isOutdatedVesselGroup(vesselGroup)
+                return (
+                  <li className={styles.dataset} key={vesselGroup.id}>
+                    {isOutdated ? (
+                      <span>
+                        {getHighlightedText(label as string, searchQuery, styles)}{' '}
+                        <span className={styles.secondary}>
                           ({getVesselGroupVesselsCount(vesselGroup)})
                         </span>
-                        <IconButton icon="analysis" className={styles.right} />
                       </span>
-                    </VesselGroupReportLink>
-                  )}
-                  <div>
-                    {isOutdated ? (
-                      <Button
-                        type="border-secondary"
-                        size="small"
-                        tooltip={
-                          isOutdated
-                            ? t(
-                                'vesselGroup.clickToUpdateLong',
-                                'Click to update your vessel group to view the latest data and features'
-                              )
-                            : t('vesselGroup.edit', 'Edit list of vessels')
-                        }
-                        loading={
-                          vesselGroup.id === editingGroupId &&
-                          vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
-                        }
-                        onClick={() => onEditClick(vesselGroup)}
-                        className={styles.warningButton}
-                      >
-                        <Icon icon="warning" />
-                        {t('vesselGroup.updateRequired', 'Update Required')}
-                      </Button>
                     ) : (
-                      <IconButton
-                        icon="edit"
-                        tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
-                        loading={
-                          vesselGroup.id === editingGroupId &&
-                          vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
-                        }
-                        onClick={() => onEditClick(vesselGroup)}
-                      />
+                      <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
+                        <span className={styles.workspaceLink} data-test="workspace-name">
+                          {getHighlightedText(label as string, searchQuery, styles)}{' '}
+                          <span className={cx(styles.secondary, styles.marginLeft)}>
+                            ({getVesselGroupVesselsCount(vesselGroup)})
+                          </span>
+                          <IconButton icon="analysis" className={styles.right} />
+                        </span>
+                      </VesselGroupReportLink>
                     )}
-                    <IconButton
-                      icon="delete"
-                      type="warning"
-                      loading={
-                        vesselGroup.id === vesselGroupStatusId &&
-                        vesselGroupStatus === AsyncReducerStatus.LoadingDelete
-                      }
-                      tooltip={t('vesselGroup.remove', 'Remove vessel group')}
-                      onClick={() => onDeleteClick(vesselGroup)}
-                    />
-                  </div>
-                </li>
-              )
-            })
-          ) : (
-            <div className={styles.placeholder}>
-              {t('vesselGroup.emptyState', 'Your vessel groups will appear here')}
-            </div>
-          )}
-        </ul>
-      )}
-    </div>
+                    <div>
+                      {isOutdated ? (
+                        <Button
+                          type="border-secondary"
+                          size="small"
+                          tooltip={
+                            isOutdated
+                              ? t(
+                                  'vesselGroup.clickToUpdateLong',
+                                  'Click to update your vessel group to view the latest data and features'
+                                )
+                              : t('vesselGroup.edit', 'Edit list of vessels')
+                          }
+                          loading={
+                            vesselGroup.id === editingGroupId &&
+                            vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
+                          }
+                          onClick={() => onEditClick(vesselGroup)}
+                          className={styles.warningButton}
+                        >
+                          <Icon icon="warning" />
+                          {t('vesselGroup.updateRequired', 'Update Required')}
+                        </Button>
+                      ) : (
+                        <IconButton
+                          icon="edit"
+                          tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
+                          loading={
+                            vesselGroup.id === editingGroupId &&
+                            vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
+                          }
+                          onClick={() => onEditClick(vesselGroup)}
+                        />
+                      )}
+                      <IconButton
+                        icon="delete"
+                        type="warning"
+                        loading={
+                          vesselGroup.id === vesselGroupStatusId &&
+                          vesselGroupStatus === AsyncReducerStatus.LoadingDelete
+                        }
+                        tooltip={t('vesselGroup.remove', 'Remove vessel group')}
+                        onClick={() => onDeleteClick(vesselGroup)}
+                      />
+                    </div>
+                  </li>
+                )
+              })
+            ) : (
+              <div className={styles.placeholder}>
+                {t('vesselGroup.emptyState', 'Your vessel groups will appear here')}
+              </div>
+            )}
+          </ul>
+        )}
+      </div>
+    </Fragment>
   )
 }
 

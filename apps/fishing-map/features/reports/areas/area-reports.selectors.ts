@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { t } from 'i18next'
-import { FeatureCollection, MultiPolygon } from 'geojson'
-import { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
+import type { FeatureCollection, MultiPolygon } from 'geojson'
+import type { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectReportAreaId,
@@ -20,7 +20,8 @@ import {
   getReportCategoryFromDataview,
 } from 'features/reports/areas/area-reports.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
+import type { Area, AreaGeometry} from 'features/areas/areas.slice';
+import { selectAreas } from 'features/areas/areas.slice'
 import {
   EMPTY_API_VALUES,
   ENTIRE_WORLD_REPORT_AREA,
@@ -31,12 +32,12 @@ import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import {
   selectReportVesselsData,
   selectReportPreviewBuffer,
-} from '../activity/reports-activity.slice'
+} from 'features/reports/shared/activity/reports-activity.slice'
 import {
   selectReportActivityGraph,
   selectReportTimeComparison,
 } from './area-reports.config.selectors'
-import { ReportCategory } from './area-reports.types'
+import type { ReportCategory, ReportTimeComparisonValues } from './area-reports.types'
 
 const EMPTY_ARRAY: [] = []
 
@@ -101,7 +102,7 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
           }),
         }
       })
-      .filter((dataview) => dataview.datasets!?.length > 0)
+      .filter((dataview) => dataview.datasets?.length > 0)
   }
 )
 
@@ -146,8 +147,8 @@ export const selectShowTimeComparison = createSelector(
 
 export const selectTimeComparisonValues = createSelector(
   [selectReportTimeComparison],
-  (timeComparison) => {
-    if (!timeComparison) return null
+  (timeComparison): ReportTimeComparisonValues | undefined => {
+    if (!timeComparison?.start || !timeComparison.compareStart) return
 
     const end = getUTCDateTime(timeComparison.start)
       .plus({ [timeComparison.durationType]: timeComparison.duration })
@@ -263,7 +264,7 @@ export const selectReportBufferFeature = createSelector(
 
 export const selectHasReportBuffer = createSelector(
   [selectReportBufferUnit, selectReportBufferValue],
-  (unit, value): Boolean => {
+  (unit, value): boolean => {
     return unit !== undefined && value !== undefined
   }
 )

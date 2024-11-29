@@ -180,24 +180,6 @@
   background: white;
 }
 
-.navItem .highlightBtn {
-  height: auto;
-  width: 100%;
-  text-align: center;
-  padding: var(--space-M, 20px);
-}
-
-.navItem .highlightBtn:hover {
-  border-color: transparent;
-}
-
-.navItem .highlightBtn a {
-  padding: var(--space-S, 10px) var(--space-M, 20px);
-  width: 100%;
-  display: block;
-  text-align: center;
-}
-
 .navItem > a {
   text-decoration: none;
   font-size: 14px;

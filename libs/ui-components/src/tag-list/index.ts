@@ -1,5 +1,5 @@
-import { Placement } from 'tippy.js'
-import { TooltipTypes } from '../types/types'
+import type { Placement } from 'tippy.js'
+import type { TooltipTypes } from '../types/types'
 
 export * from './TagList'
 

@@ -2,12 +2,14 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { isActivityDataview, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client';
+import { isActivityDataview } from '@globalfishingwatch/dataviews-client'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import layerPanelStyles from 'features/workspace/shared/LayerPanel.module.css'
-import { getDatasetLabel, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils';
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import styles from './ReportSummaryTags.module.css'
 
 type LayerPanelProps = {
@@ -23,19 +25,8 @@ export default function ReportSummaryTags({
   availableFields,
 }: LayerPanelProps) {
   const { t } = useTranslation()
-
-  const activityDataview = isActivityDataview(dataview)
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
   const hasFilters = dataview.config?.filters && Object.keys(dataview.config.filters).length > 0
 
-  let datasetName = dataset ? getDatasetLabel(dataset) : dataview.name || ''
-  if (activityDataview) {
-    datasetName =
-      dataset?.subcategory === 'presence'
-        ? t(`common.presence`, 'Vessel presence')
-        : t(`common.apparentFishing`, 'Apparent Fishing Effort')
-  }
-  const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
   const showDot =
     !hiddenProperties?.includes('dataset') ||
     !hiddenProperties?.includes('source') ||
@@ -57,16 +48,6 @@ export default function ReportSummaryTags({
     <div className={cx(styles.row)}>
       <div className={cx(styles.content, { [styles.contentDot]: showDot })}>
         {showDot && <span className={styles.dot} style={{ color: dataview.config?.color }} />}
-        {!hiddenProperties?.includes('dataset') && (
-          <div className={layerPanelStyles.filter}>
-            <label>{t('dataset.title', 'Dataset')}</label>
-            {datasetName.length > 24 ? (
-              <Tooltip content={datasetName}>{TitleComponent}</Tooltip>
-            ) : (
-              TitleComponent
-            )}
-          </div>
-        )}
         {!hiddenProperties?.includes('source') && <DatasetFilterSource dataview={dataview} />}
         {!hiddenProperties?.includes('flag') && (
           <DatasetFlagField dataview={dataview} showWhenEmpty />

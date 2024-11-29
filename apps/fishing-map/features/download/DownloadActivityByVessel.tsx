@@ -10,15 +10,15 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import {
+import type {
   DownloadActivityParams,
+  DateRange} from 'features/download/downloadActivity.slice';
+import {
   downloadActivityThunk,
   selectIsDownloadActivityLoading,
   selectIsDownloadActivityFinished,
-  selectIsDownloadActivityError,
-  DateRange,
   selectDownloadActivityAreaKey,
-  selectIsDownloadActivityTimeoutError,
+  selectHadDownloadActivityTimeoutError,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -40,14 +40,15 @@ import DownloadActivityProductsBanner from 'features/download/DownloadActivityPr
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { AreaKeyId } from 'features/areas/areas.slice'
+import type { AreaKeyId } from 'features/areas/areas.slice'
 import { selectIsDownloadActivityAreaLoading } from 'features/download/download.selectors'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './DownloadModal.module.css'
-import {
+import type {
   HeatmapDownloadFormat,
   GroupBy,
-  TemporalResolution,
+  TemporalResolution} from './downloadActivity.config';
+import {
   VESSEL_FORMAT_OPTIONS,
   getVesselGroupOptions,
 } from './downloadActivity.config'
@@ -70,9 +71,8 @@ function DownloadActivityByVessel() {
     userData?.permissions || []
   )
   const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
-  const isDownloadError = useSelector(selectIsDownloadActivityError)
   const isDownloadFinished = useSelector(selectIsDownloadActivityFinished)
-  const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
+  const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
@@ -162,7 +162,7 @@ function DownloadActivityByVessel() {
     return action
   }
 
-  useActivityDownloadTimeoutRefresh(onDownloadClick)
+  useActivityDownloadTimeoutRefresh()
 
   const parsedLabel =
     typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
@@ -232,13 +232,15 @@ function DownloadActivityByVessel() {
               ))}
             </p>
           ) : null}
-          {isDownloadError && <ActivityDownloadError />}
+          <ActivityDownloadError />
           <Button
             testId="download-activity-vessel-button"
             onClick={onDownloadClick}
             className={styles.downloadBtn}
-            loading={isDownloadAreaLoading || isDownloadLoading || isDownloadTimeoutError}
-            disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
+            loading={isDownloadAreaLoading || isDownloadLoading || hadDownloadTimeoutError}
+            disabled={
+              isDownloadAreaLoading || !isDownloadReportSupported || hadDownloadTimeoutError
+            }
           >
             {isDownloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>

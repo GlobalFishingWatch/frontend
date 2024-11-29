@@ -2,12 +2,13 @@ import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import type {
+  MultiSelectOption} from '@globalfishingwatch/ui-components';
 import {
   Button,
   InputText,
   InputDate,
   MultiSelect,
-  MultiSelectOption,
   IconButton,
 } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'

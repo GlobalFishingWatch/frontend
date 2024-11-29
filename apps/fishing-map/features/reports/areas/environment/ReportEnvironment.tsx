@@ -12,14 +12,14 @@ import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
   useTimeseriesStats,
-} from 'features/reports/activity/reports-activity-timeseries.hooks'
-import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
+} from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
+import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { upperFirst } from 'utils/info'
-import ReportActivityEvolution from '../../activity/ReportActivityEvolution'
+import ReportActivityEvolution from 'features/reports/shared/activity/ReportActivityEvolution'
 import styles from './ReportEnvironment.module.css'
 
 function ReportEnvironment() {
@@ -42,7 +42,7 @@ function ReportEnvironment() {
         const { min, mean, max } = timeseriesStats[dataview.id] || {}
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
-        const isLoading = loading || layersTimeseriesFiltered!?.[index]?.mode === 'loading'
+        const isLoading = loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'
         const unit = dataset?.unit
         return (
           <div key={dataview.id} className={styles.container}>
@@ -60,13 +60,13 @@ function ReportEnvironment() {
               )}
             </p>
             {isDynamic ? (
-              isLoading || !layersTimeseriesFiltered!?.[index] ? (
+              isLoading || !layersTimeseriesFiltered?.[index] ? (
                 <ReportActivityPlaceholder showHeader={false} />
               ) : (
                 <ReportActivityEvolution
                   start={timerange.start}
                   end={timerange.end}
-                  data={layersTimeseriesFiltered!?.[index]}
+                  data={layersTimeseriesFiltered?.[index]}
                 />
               )
             ) : null}

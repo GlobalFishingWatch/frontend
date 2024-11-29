@@ -1,8 +1,10 @@
-import { DateTime, DateTimeUnit, Duration } from 'luxon'
-import { FourwingsInterval, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
+import type { DateTimeUnit} from 'luxon';
+import { DateTime, Duration } from 'luxon'
+import type { FourwingsInterval} from '@globalfishingwatch/deck-loaders';
+import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { getUTCDateTime } from '../../utils/dates'
-import { FourwingsChunk } from './fourwings.types'
+import type { FourwingsChunk } from './fourwings.types'
 
 const BASE_API_TILES_URL =
   `${API_GATEWAY}/${API_VERSION}/4wings/tile/{FOURWINGS_VISUALIZATION_MODE}/{z}/{x}/{y}` as const

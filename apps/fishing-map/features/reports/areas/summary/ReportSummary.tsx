@@ -4,35 +4,37 @@ import { sum } from 'es-toolkit'
 import { Fragment, useMemo } from 'react'
 import parse from 'html-react-parser'
 import Sticky from 'react-sticky-el'
-import { Locale } from '@globalfishingwatch/api-types'
+import type { Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/areas/area-reports.utils'
-import { ReportActivityUnit } from 'features/reports/areas/AreaReport'
+import type { ReportActivityUnit } from 'features/reports/areas/AreaReport'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import type {
+  ReportGraphProps} from 'features/reports/shared/activity/reports-activity-timeseries.hooks';
 import {
   useReportFilteredTimeSeries,
-  useReportFeaturesLoading,
-} from 'features/reports/activity/reports-activity-timeseries.hooks'
-import { formatEvolutionData } from 'features/reports/activity/reports-activity-timeseries.utils'
+  useReportFeaturesLoading
+} from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
+import { formatEvolutionData } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import ReportSummaryPlaceholder from 'features/reports/placeholders/ReportSummaryPlaceholder'
-import ReportSummaryTagsPlaceholder from 'features/reports/placeholders/ReportSummaryTagsPlaceholder'
+import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
+import ReportSummaryTagsPlaceholder from 'features/reports/shared/placeholders/ReportSummaryTagsPlaceholder'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { listAsSentence } from 'utils/shared'
 import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
-} from 'features/reports/activity/reports-activity.slice'
+} from 'features/reports/shared/activity/reports-activity.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { useTimeCompareTimeDescription } from 'features/reports/activity/reports-activity-timecomparison.hooks'
+import { useTimeCompareTimeDescription } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectReportVesselsHours,
   selectReportVesselsNumber,
-} from 'features/reports/activity/vessels/report-activity-vessels.selectors'
+} from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { selectReportTimeComparison } from '../area-reports.config.selectors'
 import { ReportCategory } from '../area-reports.types'
 import styles from './ReportSummary.module.css'
@@ -61,7 +63,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const commonProperties = useMemo(() => {
     return getCommonProperties(dataviews).filter(
       (property) =>
-        !dataviews[0].config?.filters!?.[property] || !PROPERTIES_EXCLUDED.includes(property)
+        !dataviews[0].config?.filters?.[property] || !PROPERTIES_EXCLUDED.includes(property)
     )
   }, [dataviews])
 
@@ -115,7 +117,9 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours)
     ) {
-      const formattedTimeseries = formatEvolutionData(layersTimeseriesFiltered!?.[0])
+      const formattedTimeseries = formatEvolutionData(
+        (layersTimeseriesFiltered?.[0] || {}) as ReportGraphProps
+      )
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)) || [])
       const timeseriesMaxHours = sum(
         formattedTimeseries?.map((t) => sum(t.range.map((r) => r[1]))) || []
@@ -190,7 +194,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       </div>
       {summary ? (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-          {dataviews?.length > 1 && (
+          {dataviews?.length > 0 && (
             <div className={styles.tagsContainer}>
               {dataviews?.map((dataview, index) => (
                 <ReportSummaryTags

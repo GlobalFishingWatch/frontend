@@ -1,11 +1,12 @@
-import { Middleware, Dispatch } from 'redux'
-import { RootState } from 'reducers'
+import type { Middleware, Dispatch } from 'redux'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
-import { REPLACE_URL_PARAMS } from 'data/config'
+import type { RootState } from 'reducers'
+import { REPLACE_URL_PARAMS } from 'routes/routes.config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
-import { QueryParams } from 'types'
-import { routesMap, ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
-import { UpdateQueryParamsAction } from './routes.actions'
+import type { QueryParam, QueryParams } from 'types'
+import type { ROUTE_TYPES} from './routes';
+import { routesMap, WORKSPACE_ROUTES } from './routes'
+import type { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
   ({ getState }: { getState: () => RootState }) =>
@@ -26,7 +27,7 @@ export const routerQueryMiddleware: Middleware =
           ...prevQuery,
           ...newAction.query,
         }
-        if (newAction.query[ACCESS_TOKEN_STRING]) {
+        if (newAction?.query?.[ACCESS_TOKEN_STRING]) {
           delete newAction.query[ACCESS_TOKEN_STRING]
         }
       }
@@ -36,7 +37,7 @@ export const routerQueryMiddleware: Middleware =
           replaceUrl ||
           Object.keys(prevQuery)
             .filter((k) => query?.[k as keyof QueryParams])
-            .some((key) => REPLACE_URL_PARAMS.includes(key))
+            .some((key) => REPLACE_URL_PARAMS.includes(key as QueryParam))
         if (redirect === true) {
           newAction.meta = {
             location: {

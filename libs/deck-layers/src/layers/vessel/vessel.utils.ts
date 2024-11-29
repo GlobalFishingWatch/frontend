@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon'
 import memoize from 'lodash/memoize'
-import { UserTrackBinaryData, VesselTrackData } from '@globalfishingwatch/deck-loaders'
-import { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
+import type { UserTrackBinaryData, VesselTrackData } from '@globalfishingwatch/deck-loaders'
+import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '../../utils'
-import { VesselEventsLayer } from './VesselEventsLayer'
+import type { VesselEventsLayer } from './VesselEventsLayer'
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = DateTime.now().year
@@ -54,10 +54,10 @@ export const getSegmentsFromData = memoize(
       return []
     }
 
-    const pathSize = data.attributes.getPath!?.size
-    const timestampSize = data.attributes.getTimestamp!?.size
-    const speedSize = (data as VesselTrackData).attributes.getSpeed!?.size
-    const elevationSize = (data as VesselTrackData).attributes.getElevation!?.size
+    const pathSize = data.attributes.getPath?.size
+    const timestampSize = data.attributes.getTimestamp?.size
+    const speedSize = (data as VesselTrackData).attributes.getSpeed?.size
+    const elevationSize = (data as VesselTrackData).attributes.getElevation?.size
 
     const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
       const points = [] as TrackSegment
@@ -121,7 +121,7 @@ export const getSegmentsFromData = memoize(
     return segments
   },
   (data, params) => {
-    return `${data?.length}-${JSON.stringify(params || {})}`
+    return `${data?.startIndices?.join(',')}-${JSON.stringify(params || {})}`
   }
 )
 

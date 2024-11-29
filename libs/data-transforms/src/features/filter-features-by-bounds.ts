@@ -1,5 +1,4 @@
 import { sample } from 'simple-statistics'
-import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import type {
   FourwingsFeature,
   FourwingsFeatureProperties,
@@ -14,6 +13,26 @@ export interface Bounds {
 }
 
 const MAX_FEATURES_TO_CHECK = 5000
+
+// Copied from below to avoid importing the dependency
+// import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+export declare class GeoJSONFeature<P = Record<string, any>> {
+  type: 'Feature'
+  _geometry: GeoJSON.Geometry
+  properties: P
+  id: number | string | undefined
+  _vectorTileFeature: any
+  constructor(
+    vectorTileFeature: any,
+    z: number,
+    x: number,
+    y: number,
+    id: string | number | undefined
+  )
+  get geometry(): GeoJSON.Geometry
+  set geometry(g: GeoJSON.Geometry)
+  toJSON(): any
+}
 
 export const filterFeaturesByBounds = ({
   features,
@@ -38,10 +57,8 @@ export const filterFeaturesByBounds = ({
     : features
 
   return featuresToCheck.flatMap((f) => {
-    const lon =
-      (f.geometry as any)?.coordinates?.[0]?.[0]?.[0] || (f as GeoJSONFeature).properties?.lon
-    const lat =
-      (f.geometry as any)?.coordinates?.[0]?.[0]?.[1] || (f as GeoJSONFeature).properties?.lat
+    const lon = (f as any)?.coordinates?.[0] || (f as GeoJSONFeature).properties?.lon
+    const lat = (f as any)?.coordinates?.[1] || (f as GeoJSONFeature).properties?.lat
     if (lat < south || lat > north) {
       return []
     }

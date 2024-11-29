@@ -1,8 +1,9 @@
 import { useSetAtom, atom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import { DeckGLRef } from '@deck.gl/react'
-import { RefObject, useEffect } from 'react'
-import { Deck } from '@deck.gl/core'
+import type { DeckGLRef } from '@deck.gl/react'
+import type { RefObject} from 'react';
+import { useEffect } from 'react'
+import type { Deck } from '@deck.gl/core'
 
 const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)
 const mapInstanceAtomSelector = (map: Deck | undefined) => map
@@ -14,7 +15,7 @@ export function useSetMapInstance(mapRef: RefObject<DeckGLRef> | undefined) {
     if (mapRef?.current?.deck) {
       setMapInstance(mapRef?.current?.deck)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [mapRef?.current])
 }
 

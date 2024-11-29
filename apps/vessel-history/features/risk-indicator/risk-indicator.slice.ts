@@ -1,16 +1,17 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { v5 as uuidv5 } from 'uuid'
-import { GFWApiClient } from 'http-client/http-client'
 import { parseAPIError } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
+import type {
+  AsyncReducer} from 'utils/async-slice';
 import {
   asyncInitialState,
-  AsyncReducer,
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import { RootState } from 'store'
-import { Indicator, IndicatorType } from 'types/risk-indicator'
+import type { RootState } from 'store'
+import type { Indicator, IndicatorType } from 'types/risk-indicator'
 import { selectEventDatasetsConfigQueryParams } from 'features/dataviews/dataviews.selectors'
 import { NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 

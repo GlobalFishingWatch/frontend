@@ -1,19 +1,23 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
+import type {
+  DataviewDatasetConfig,
+  DataviewInstance} from '@globalfishingwatch/api-types';
 import {
   DatasetTypes,
-  DataviewDatasetConfig,
-  DataviewInstance,
+  DataviewCategory,
+  DataviewType,
 } from '@globalfishingwatch/api-types'
+import type {
+  GetDatasetConfigsCallbacks,
+  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
 import {
   extendDataviewDatasetConfig,
-  GetDatasetConfigsCallbacks,
   getResources,
   mergeWorkspaceUrlDataviewInstances,
-  resolveDataviews,
-  UrlDataviewInstance,
+  resolveDataviews
 } from '@globalfishingwatch/dataviews-client'
-import { ColorRampId } from '@globalfishingwatch/deck-layers'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
@@ -50,7 +54,7 @@ import {
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
 } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import type { ReportCategory } from 'features/reports/areas/area-reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
   selectVGRActivitySubsection,
@@ -264,8 +268,28 @@ export const selectDataviewInstancesResolved = createSelector(
   }
 )
 
-export const selectActiveDataviewsCategories = createSelector(
+const SUPPORTED_REPORT_CATEGORIES = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.Environment,
+]
+const SUPPORTED_REPORT_TYPES = [DataviewType.HeatmapAnimated, DataviewType.HeatmapStatic]
+export const selectActiveSupportedReportDataviews = createSelector(
   [selectDataviewInstancesResolved],
+  (dataviews) => {
+    return dataviews.filter(
+      (d) =>
+        d.config?.visible &&
+        d.category &&
+        d.config?.type &&
+        SUPPORTED_REPORT_CATEGORIES.includes(d.category) &&
+        SUPPORTED_REPORT_TYPES.includes(d.config?.type)
+    )
+  }
+)
+
+export const selectActiveReportCategories = createSelector(
+  [selectActiveSupportedReportDataviews],
   (dataviews): ReportCategory[] => {
     return uniq(dataviews.flatMap((d) => getReportCategoryFromDataview(d) || []))
   }

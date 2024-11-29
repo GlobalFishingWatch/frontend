@@ -4,12 +4,13 @@ import cx from 'classnames'
 import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
-import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
-import { ContextFeature } from '@globalfishingwatch/deck-layers'
+import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { Area } from 'features/areas/areas.slice'
+import type { Area } from 'features/areas/areas.slice'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_BUFFER_VALUE,
@@ -19,13 +20,13 @@ import {
   resetReportData,
   selectReportPreviewBuffer,
   setPreviewBuffer,
-} from 'features/reports/activity/reports-activity.slice'
+} from 'features/reports/shared/activity/reports-activity.slice'
 import {
   selectReportArea,
   selectReportAreaDataviews,
   selectReportAreaStatus,
 } from 'features/reports/areas/area-reports.selectors'
-import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
+import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectCurrentReport,
@@ -34,11 +35,12 @@ import {
   selectReportBufferValue,
 } from 'features/app/selectors/app.reports.selector'
 import { useLocationConnect } from 'routes/routes.hook'
-import { BufferOperation, BufferUnit } from 'types'
+import type { BufferOperation, BufferUnit } from 'types'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { useReportFeaturesLoading } from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { useReportFeaturesLoading } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { useHighlightReportArea } from '../area-reports.hooks'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
@@ -193,17 +195,17 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     if (!areaName) {
       if (
         areaDataview?.config?.type === DataviewType.Context ||
-        areaDataview?.config?.type === DataviewType.UserContext
+        areaDataview?.config?.type === DataviewType.UserContext ||
+        areaDataview?.config?.type === DataviewType.UserPoints
       ) {
         if (reportAreaStatus === AsyncReducerStatus.Finished) {
           if (dataset?.source === DRAW_DATASET_SOURCE) {
-            areaName = dataset.name
+            areaName = getDatasetLabel(dataset)
           } else {
             areaName =
               reportArea?.properties?.[propertyToInclude] ||
               reportArea?.properties?.[valueProperty] ||
-              reportArea?.name ||
-              dataset?.name
+              getDatasetLabel(dataset)
           }
         }
       } else {
@@ -242,7 +244,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     areaDataview?.config?.type,
     reportAreaStatus,
     reportArea?.properties,
-    reportArea?.name,
     area?.name,
     t,
     urlBufferUnit,
@@ -272,7 +273,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
           {reportTitle}
 
           {reportAreaSpace && (
-            <span className={styles.secondary}> {formatI18nNumber(reportAreaSpace)} km²</span>
+            <span className={styles.secondary}> {formatI18nNumber(reportAreaSpace)} km²</span>
           )}
         </h1>
         <a className={styles.reportLink} href={window.location.href}>

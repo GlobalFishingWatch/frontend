@@ -2,17 +2,19 @@ import cx from 'classnames'
 import { useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { GetItemPropsOptions } from 'downshift'
-import { FeatureCollection } from 'geojson'
+import type { GetItemPropsOptions } from 'downshift'
+import type { FeatureCollection } from 'geojson'
 import { uniq } from 'es-toolkit'
-import { API_LOGIN_REQUIRED, Locale } from '@globalfishingwatch/api-types'
+import type { Locale } from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   YearlyTransmissionsTimeline,
   FIRST_YEAR_OF_DATA,
   IconButton,
 } from '@globalfishingwatch/ui-components'
-import { Bbox, geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import I18nDate from 'features/i18n/i18nDate'
@@ -37,7 +39,7 @@ import {
   getVesselIdentities,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
-import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -191,6 +193,7 @@ function SearchBasicResult({
     <li
       {...itemProps}
       onMouseOut={() => setHighlightedIndex(-1)}
+      onBlur={() => setHighlightedIndex(-1)}
       className={cx(styles.searchResult, {
         [styles.highlighted]: highlightedIndex === index,
         [styles.inWorkspace]: isInWorkspace,
@@ -323,6 +326,7 @@ function SearchBasicResult({
                   firstYearOfData={FIRST_YEAR_OF_DATA}
                   locale={i18n.language as Locale}
                   onYearHover={onYearHover}
+                  showLastTimePoint
                 />
               </div>
             )}

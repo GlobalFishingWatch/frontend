@@ -2,7 +2,7 @@ import { useEffect, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { Dataset } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { isAuthError } from '@globalfishingwatch/api-client'
@@ -41,7 +41,7 @@ import {
   isBasicSearchAllowed,
   isAdvancedSearchAllowed,
 } from 'features/search/search.selectors'
-import { VesselSearchState } from 'features/search/search.types'
+import type { VesselSearchState } from 'features/search/search.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Search.module.css'
 
@@ -114,7 +114,7 @@ function Search() {
         filters: searchFilters,
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [searchDatasets])
 
   useEffect(() => {
@@ -122,7 +122,7 @@ function Search() {
       dispatch(cleanVesselSearchResults())
     }
     dispatchQueryParams({ query: debouncedQuery })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [debouncedQuery])
 
   useEffect(() => {

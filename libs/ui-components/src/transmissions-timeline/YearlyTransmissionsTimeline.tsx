@@ -10,6 +10,7 @@ type TransmissionsTimelineProps = {
   firstYearOfData?: number
   locale?: Locale
   onYearHover: (year?: number) => void
+  showLastTimePoint?: boolean
 }
 
 export function YearlyTransmissionsTimeline({
@@ -18,6 +19,7 @@ export function YearlyTransmissionsTimeline({
   firstYearOfData = FIRST_YEAR_OF_DATA,
   locale = Locale.en,
   onYearHover,
+  showLastTimePoint = false,
 }: TransmissionsTimelineProps) {
   const start = DateTime.fromISO(firstYearOfData.toString(), { zone: 'utc' })
   const startTransmission = DateTime.fromISO(firstTransmissionDate, { zone: 'utc' }).setLocale(
@@ -37,10 +39,13 @@ export function YearlyTransmissionsTimeline({
           <div
             className={cx(styles.year, styles.highlighted)}
             key={index}
+            onFocus={() => onYearHover && onYearHover(year)}
+            onBlur={() => onYearHover && onYearHover(undefined)}
             onMouseOver={() => onYearHover && onYearHover(year)}
             onMouseOut={() => onYearHover && onYearHover(undefined)}
           >
             {highlighted && year}
+            {showLastTimePoint && endTransmission.year === year && <div className={styles.last} />}
           </div>
         ) : (
           <div className={styles.year} key={index} />

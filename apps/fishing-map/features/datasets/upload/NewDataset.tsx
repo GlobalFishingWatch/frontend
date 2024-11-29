@@ -1,9 +1,10 @@
-import { useState, useCallback, Fragment, SetStateAction, Dispatch } from 'react'
+import type { SetStateAction, Dispatch } from 'react';
+import { useState, useCallback, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
+import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -11,13 +12,15 @@ import NewPolygonDataset from 'features/datasets/upload/NewPolygonDataset'
 import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
 import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { DatasetUploadStyle } from 'features/modals/modals.slice'
+import type { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
 import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -27,6 +30,8 @@ import {
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
 import styles from './NewDataset.module.css'
+
+export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 
 type OnConfirmParams = { isEditing: boolean; file?: File }
 export type NewDatasetProps = {
@@ -54,6 +59,7 @@ export type DatasetMetadata = Partial<
 
 function NewDataset() {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const [isGuestUserDismissVisible, setIsGuestUserDismissVisible] = useState(false)
   const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -64,13 +70,14 @@ function NewDataset() {
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const [rawFile, setRawFile] = useState<File | undefined>()
   const isGuestUser = useSelector(selectIsGuestUser)
+  const isUserExpired = useSelector(selectIsUserExpired)
   const [error, setError] = useState('')
   const locationType = useSelector(selectLocationType)
   const { dispatchUpsertDataset } = useDatasetsAPI()
 
   const isDatasetEdit = dataset !== undefined
 
-  const onFileLoaded = useCallback(async (file: File) => {
+  const onFileLoaded = useCallback((file: File) => {
     setRawFile(file)
   }, [])
 
@@ -104,6 +111,7 @@ function NewDataset() {
             const dataset = { ...payload }
             if (!isEditing) {
               addDataviewFromDatasetToWorkspace(dataset)
+              dispatch(setWorkspaceSuggestSave(true))
             } else if (dataviewId) {
               const dataviewInstance = dataviewInstances?.find((d) => d.id === dataviewId)
               if (dataviewInstance) {
@@ -136,6 +144,7 @@ function NewDataset() {
       addDataviewFromDatasetToWorkspace,
       dataviewId,
       dataviewInstances,
+      dispatch,
       dispatchUpsertDataset,
       locationType,
       onClose,
@@ -180,6 +189,7 @@ function NewDataset() {
           : t('dataset.uploadNew', 'Upload new dataset')
       }
       isOpen={datasetModalOpen}
+      contentId={NEW_DATASET_MODAL_ID}
       contentClassName={cx(styles.modalContainer, {
         [styles.fullheight]: isGuestUser,
       })}
@@ -190,7 +200,7 @@ function NewDataset() {
     >
       {error ? (
         <div className={cx(styles.errorMsgContainer, styles.errorMsg)}>{error}</div>
-      ) : isGuestUser ? (
+      ) : isGuestUser || isUserExpired ? (
         <div
           className={styles.placeholder}
           onDrop={(e) => {

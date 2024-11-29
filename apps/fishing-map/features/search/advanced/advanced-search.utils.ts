@@ -1,6 +1,7 @@
-import { Dataset } from '@globalfishingwatch/api-types'
-import { SchemaFieldDataview, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
-import { VesselSearchState } from 'features/search/search.types'
+import type { Dataset } from '@globalfishingwatch/api-types'
+import type { SchemaFieldDataview} from 'features/datasets/datasets.utils';
+import { isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
+import type { VesselSearchState } from 'features/search/search.types'
 
 export const ADVANCED_SEARCH_FIELDS = ['ssvid', 'imo', 'callsign', 'owner'] as const
 

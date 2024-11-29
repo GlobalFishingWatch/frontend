@@ -5,7 +5,8 @@ import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import WELCOME_POPUP_CONTENT, { WelcomeContentKey } from './welcome.content'
+import type { WelcomeContentKey } from './welcome.content';
+import WELCOME_POPUP_CONTENT from './welcome.content'
 import styles from './Welcome.module.css'
 
 const DISABLE_WELCOME_POPUP_DICT: Record<WelcomeContentKey, string> = {
@@ -34,7 +35,7 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
     if (!welcomePopup?.visible && welcomePopup?.showAgain) {
       setWelcomePopup((popup) => ({ ...popup, visible: true }))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   useEffect(() => {
@@ -45,7 +46,7 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
         version: welcomeModalContent.version,
       }))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   const onDisableToggled = useCallback(() => {

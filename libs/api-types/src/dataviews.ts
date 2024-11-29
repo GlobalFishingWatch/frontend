@@ -1,7 +1,7 @@
-import { Locale } from './i18n'
-import { ApiAppName } from './workspaces'
-import { Dataset } from './datasets'
-import { VesselGroup } from './vesselGroups'
+import type { Locale } from './i18n'
+import type { ApiAppName } from './workspaces'
+import type { Dataset } from './datasets'
+import type { VesselGroup } from './vesselGroups'
 
 export type ColorCyclingType = 'fill' | 'line'
 export const INCLUDE_FILTER_ID = 'include'
@@ -187,7 +187,8 @@ export interface DataviewEventsConfig {
 
 export interface IncomatibleFilterConfig {
   id: string // id of the filter
-  value: boolean | string // value to match
+  value?: boolean | string // value to match
+  valueNot?: boolean | string // value to match
   disabled: string[] // disabled filter on matches
 }
 

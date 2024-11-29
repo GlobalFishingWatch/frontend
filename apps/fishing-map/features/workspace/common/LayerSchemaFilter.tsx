@@ -1,20 +1,22 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
+import type {
+  ChoiceOption,
+  MultiSelectOption,
+  SliderRangeValues} from '@globalfishingwatch/ui-components';
 import {
   Choice,
-  ChoiceOption,
   MultiSelect,
-  MultiSelectOption,
   Select,
   Slider,
-  SliderRange,
-  SliderRangeValues,
+  SliderRange
 } from '@globalfishingwatch/ui-components'
-import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { FilterOperator} from '@globalfishingwatch/api-types';
+import { EXCLUDE_FILTER_ID, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { SchemaFilter } from 'features/datasets/datasets.utils'
+import type { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
-import { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
+import type { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './LayerFilters.module.css'
 
@@ -111,6 +113,13 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
   const supportsRounding = Math.abs(schemaMax - schemaMin) > 1
   const min = supportsRounding ? getSchemaValueRounded(schemaMin) : schemaMin
   const max = supportsRounding ? getSchemaValueRounded(schemaMax) : schemaMax
+  if (min > max) {
+    return {
+      steps: [max, min],
+      min: max,
+      max: min,
+    }
+  }
   return {
     steps: [min, max],
     min,
@@ -157,11 +166,19 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   const maxValue =
     rangeValues[rangeValues.length - 1] > max ? max : rangeValues[rangeValues.length - 1]
   const supportsRounding = Math.abs(maxValue - minValue) > 1
-  return [
+  const values = [
     supportsRounding ? getSchemaValueRounded(minValue) : minValue,
     supportsRounding ? getSchemaValueRounded(maxValue) : maxValue,
   ]
+
+  if (values[0] > values[1]) {
+    return [values[1], values[0]]
+  }
+
+  return values
 }
+
+const UNSORTED_FILTERS: SupportedDatasetSchema[] = ['speed', 'elevation', 'vessel-groups']
 
 function LayerSchemaFilter({
   schemaFilter,
@@ -182,7 +199,11 @@ function LayerSchemaFilter({
     unit,
     singleSelection,
   } = schemaFilter
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const sortedOptions = useMemo(() => {
+    if (UNSORTED_FILTERS.includes(id) || type === 'range') return options
+    return options.sort((a, b) => a.label.localeCompare(b.label))
+  }, [id, options, type])
+   
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues | number) => {
       if (Array.isArray(rangeSelected)) {
@@ -261,7 +282,7 @@ function LayerSchemaFilter({
           selection: optionsSelected.map(({ id }) => id),
           options,
         })}
-        options={options}
+        options={sortedOptions}
         selectedOption={optionsSelected?.[0]}
         containerClassName={cx(styles.multiSelect, {
           experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
@@ -294,7 +315,7 @@ function LayerSchemaFilter({
             options,
             filterOperator,
           })}
-          options={options}
+          options={sortedOptions}
           selectedOption={optionsSelected[0]}
           className={cx({
             experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),

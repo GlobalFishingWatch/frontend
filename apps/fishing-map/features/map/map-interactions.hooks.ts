@@ -1,23 +1,25 @@
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckProps, PickingInfo } from '@deck.gl/core'
+import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { ThunkDispatch } from '@reduxjs/toolkit'
+import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { debounce, throttle } from 'es-toolkit'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type {
+  InteractionEvent,
+  InteractionEventType} from '@globalfishingwatch/deck-layer-composer';
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
-  InteractionEvent,
-  InteractionEventType,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
-import {
+import type {
   FourwingsClusterPickingObject,
   DeckLayerInteractionPickingInfo,
   DeckLayerPickingObject,
-  FourwingsHeatmapPickingObject,
+  FourwingsHeatmapPickingObject} from '@globalfishingwatch/deck-layers';
+import {
   FOURWINGS_MAX_ZOOM,
 } from '@globalfishingwatch/deck-layers'
 import { trackEvent } from 'features/app/analytics.hooks'
@@ -38,16 +40,17 @@ import {
   isTilesClusterLayer,
   isTilesClusterLayerCluster,
 } from './map-interaction.utils'
-import {
+import type {
   SliceExtendedClusterPickingObject,
-  SliceInteractionEvent,
+  SliceInteractionEvent} from './map.slice';
+import {
   fetchBQEventThunk,
   fetchClusterEventThunk,
   fetchHeatmapInteractionThunk,
   fetchLegacyEncounterEventThunk,
   selectApiEventStatus,
   selectClickedEvent,
-  selectFishingInteractionStatus,
+  selectActivityInteractionStatus,
   setClickedEvent,
 } from './map.slice'
 import { useSetMapCoordinates } from './map-viewport.hooks'
@@ -99,7 +102,7 @@ export const useClickedEventConnect = () => {
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
   const clickedEvent = useSelector(selectClickedEvent)
-  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const fishingInteractionStatus = useSelector(selectActivityInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const setMapCoordinates = useSetMapCoordinates()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
@@ -138,6 +141,7 @@ export const useClickedEventConnect = () => {
       // }),
       latitude: deckEvent.latitude,
       longitude: deckEvent.longitude,
+      zoom: deckEvent.viewport?.zoom,
       point: { x: deckEvent.point.x, y: deckEvent.point.y },
     } as SliceInteractionEvent
 
@@ -149,18 +153,27 @@ export const useClickedEventConnect = () => {
       (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
     ) as FourwingsClusterPickingObject
 
-    if (isTilesClusterLayerCluster(clusterFeature)) {
-      const { expansionZoom } = clusterFeature
-      const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
-      const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
-      if (!areTilesClusterLoading && expansionZoomValue) {
+    if (clusterFeature) {
+      if (isTilesClusterLayerCluster(clusterFeature)) {
+        const { expansionZoom } = clusterFeature
+        const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
+        const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
+        if (!areTilesClusterLoading && expansionZoomValue) {
+          setMapCoordinates({
+            latitude: event.latitude,
+            longitude: event.longitude,
+            zoom: expansionZoomValue,
+          })
+        }
+        return
+      } else if (clusterFeature.clusterMode === 'country') {
         setMapCoordinates({
           latitude: event.latitude,
           longitude: event.longitude,
-          zoom: expansionZoomValue,
+          zoom: (event.zoom as number) + 1,
         })
+        return
       }
-      return
     }
 
     if (!event || !event.features) {
@@ -278,7 +291,7 @@ export const useMapMouseHover = () => {
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const onMouseMove: DeckProps['onHover'] = useCallback(
     throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
       setHoveredCoordinates(info.coordinate)
@@ -372,7 +385,10 @@ export const useMapCursor = () => {
         const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some((f) =>
           isTilesClusterLayerCluster(f)
         )
-        if (!isCluster) {
+        const isCountryClusterMode = (hoverFeatures as FourwingsClusterPickingObject[]).some(
+          (f) => f.clusterMode === 'country'
+        )
+        if (!isCluster && !isCountryClusterMode) {
           return 'pointer'
         }
         return areClusterTilesLoading ? 'wait' : 'zoom-in'
@@ -443,7 +459,7 @@ export const useMapDrag = () => {
 
 export const useDebouncedDispatchHighlightedEvent = () => {
   const dispatch = useAppDispatch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   return useCallback(
     debounce((eventIds?: string | string[]) => {
       let ids: string[] | undefined

@@ -160,33 +160,6 @@
   min-width: var(--space-L, 40px);
 }
 
-.gfwHeaderContainer .gfwHeader .navList > li.highlightBtn {
-  height: auto;
-  width: 100%;
-  text-align: center;
-  padding: var(--space-M, 20px);
-}
-
-.gfwHeaderContainer .gfwHeader .navList > li.highlightBtn:hover {
-  border-color: transparent;
-}
-
-.gfwHeaderContainer .gfwHeader .navList > li.highlightBtn a {
-  border: 1px solid var(--color-highlight, rgb(255, 107, 107, 1));
-  color: var(--color-highlight, #ff6b6b);
-  padding: var(--space-S, 10px) var(--space-M, 20px);
-  transition: all 0.3s linear;
-  width: 100%;
-  display: block;
-  text-align: center;
-}
-
-.gfwHeaderContainer .gfwHeader .navList > li.highlightBtn a:hover {
-  color: var(--color-brand-text, white);
-  background-color: var(--color-highlight, #ff6b6b);
-  padding: var(--space-S, 10px) var(--space-M, 20px);
-}
-
 .gfwHeaderContainer .gfwHeader .navList > li > a {
   text-decoration: none;
   font-size: 14px;
@@ -337,16 +310,6 @@
   .gfwHeaderContainer .gfwHeader .navList > li:focus-within .navListSubMenu {
     height: auto;
     border-color: var(--color-highlight, rgb(255, 107, 107, 1));
-  }
-
-  .gfwHeaderContainer .gfwHeader .navList > li.highlightBtn {
-    width: auto;
-    padding: 0;
-    padding-bottom: 5px;
-  }
-
-  .gfwHeaderContainer .gfwHeader .navList > li.highlightBtn a {
-    display: inline-block;
   }
 
   .gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu {

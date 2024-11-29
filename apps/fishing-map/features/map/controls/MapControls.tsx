@@ -18,10 +18,9 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import {
   selectIsAnyVesselLocation,
-  selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
   selectIsMapDrawing,
-  selectIsVesselGroupReportLocation,
+  selectIsAnyReportLocation,
 } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { setInlineStyles, cleantInlineStyles } from 'utils/dom'
@@ -69,15 +68,13 @@ const MapControls = ({
   const { dispatchQueryParams } = useLocationConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
-  const reportLocation = useSelector(selectIsAnyReportLocation)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const { isErrorNotificationEditing, toggleErrorNotification } = useMapErrorNotification()
   const showExtendedControls =
-    (isWorkspaceLocation || isVesselLocation || reportLocation || isVesselGroupReportLocation) &&
-    !isMapDrawing
-  const showScreenshot = !isVesselLocation && !reportLocation
+    (isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && !isMapDrawing
+  const showScreenshot = !isVesselLocation && !isAnyReportLocation
   const rootElement = useRootElement()
 
   const {
@@ -264,7 +261,6 @@ const MapControls = ({
           {previewImageLoading || !previewImage ? (
             <Spinner />
           ) : (
-            // eslint-disable-next-line @next/next/no-img-element
             <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
           )}
         </div>

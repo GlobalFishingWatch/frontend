@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 // @ts-check
-/* eslint-disable @typescript-eslint/no-var-requires */
+
 const { join } = require('path')
 const path = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
@@ -74,11 +75,6 @@ const nextConfig = {
         ]
       : []
   },
-  nx: {
-    // Set this to true if you would like to to use SVGR
-    // See: https://github.com/gregberge/svgr
-    svgr: true,
-  },
   webpack: function (config, options) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -93,8 +89,12 @@ const nextConfig = {
       //   jotai: path.resolve(__dirname, 'node_modules/jotai'),
       // }),
     }
-    config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
+    // config.externals = [...config.externals, 'mapbox-gl']
+    config.module.rules.push({
+      test: /\.svg$/i,
+      use: ['@svgr/webpack'],
+    })
     config.plugins.push(
       new CircularDependencyPlugin({
         // exclude detection of files based on a RegExp
@@ -117,9 +117,9 @@ const nextConfig = {
   productionBrowserSourceMaps: !IS_PRODUCTION,
   // to deploy on a node server
   output: 'standalone',
-  outputFileTracing: true,
+  outputFileTracingRoot: join(__dirname, '../../'),
   experimental: {
-    outputFileTracingRoot: join(__dirname, '../../'),
+    // reactCompiler: true,
     esmExternals: true,
     optimizePackageImports: [
       '@globalfishingwatch/api-client',
@@ -143,10 +143,11 @@ const nextConfig = {
   distDir: '.next',
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// const configWithNx = withNx(withBundleAnalyzer(nextConfig))
 const configWithNx = withNx(nextConfig)
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 module.exports = async (...args) => {
   return {

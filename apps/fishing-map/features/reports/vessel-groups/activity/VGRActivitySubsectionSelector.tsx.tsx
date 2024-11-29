@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components';
+import { Choice } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VGRActivitySubsection } from 'features/vessel-groups/vessel-groups.types'
+import type { VGRActivitySubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { useReportFeaturesLoading } from 'features/reports/activity/reports-activity-timeseries.hooks'
+import { useReportFeaturesLoading } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
-import { resetReportData } from 'features/reports/activity/reports-activity.slice'
+import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
@@ -48,7 +49,7 @@ function VGRActivitySubsectionSelector() {
     <Choice
       size="small"
       options={options}
-      activeOption={selectedOption!?.id}
+      activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}
     />
   )

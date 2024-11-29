@@ -1,6 +1,14 @@
 import { DateTime } from 'luxon'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import { AppState, TimebarGraphs, TimebarVisualisations, UserTab, WorkspaceState } from '../types'
+import type {
+  AppState,
+  WorkspaceState} from '../types';
+import {
+  QueryParam,
+  TimebarGraphs,
+  TimebarVisualisations,
+  UserTab
+} from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -53,6 +61,8 @@ export const PRIVATE_SUFIX = 'private'
 export const AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX = 'gfw-feedback-auto-saved'
 
 export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
+
+export const LAYER_LIBRARY_ID_SEPARATOR = '__'
 
 const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
@@ -123,9 +133,6 @@ export const EVENTS_COLORS: Record<string, string> = {
   // fishing: '#C6D5E2',
   fishingLabels: '#163f89',
 }
-
-// Params to use replace instead of push for router history to make navigation easier
-export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
 
 export const POPUP_CATEGORY_ORDER = [
   `${DataviewCategory.Activity}`,

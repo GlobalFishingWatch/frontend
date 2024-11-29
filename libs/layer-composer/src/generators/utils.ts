@@ -1,5 +1,5 @@
-import { ExpressionSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
-import {
+import type { ExpressionSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
+import type {
   AnyGeneratorConfig,
   GlobalUserContextGeneratorConfig,
   GlobalUserPointsGeneratorConfig,
@@ -72,7 +72,7 @@ export const getTimeFilterForUserContextLayer = (
   }
 
   if (config.timeFilterType === 'dateRange') {
-    const filters: Array<any> = ['all']
+    const filters: any[] = ['all']
     // Show for every time range after the start
     if (config?.startTimeFilterProperty) {
       filters.push(['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs])
@@ -92,7 +92,7 @@ export const getFilterForUserPointsLayer = (
 ): FilterSpecification => {
   const startMs = new Date(config.start).getTime()
   const endMs = new Date(config.end).getTime()
-  const filters: Array<any> = ['all']
+  const filters: any[] = ['all']
   if (config.timeFilterType === 'date') {
     filters.push(
       ['>=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), startMs],

@@ -1,25 +1,28 @@
-import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
-import { RootState } from 'reducers'
-import { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
+import type { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
 import {
   getIsConcurrentError,
   getIsTimeoutError,
   GFWAPI,
   parseAPIError,
 } from '@globalfishingwatch/api-client'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { RootState } from 'reducers'
+import type { AsyncError} from 'utils/async-slice';
+import { AsyncReducerStatus } from 'utils/async-slice'
+import type { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
 import { getUTCDateTime } from 'utils/dates'
-import { BufferOperation, BufferUnit } from 'types'
-import {
-  HeatmapDownloadTab,
-  HeatmapDownloadFormat,
+import type { BufferOperation, BufferUnit } from 'types'
+import type {
   GroupBy,
   SpatialResolution,
-  TemporalResolution,
+  TemporalResolution} from './downloadActivity.config';
+import {
+  HeatmapDownloadTab,
+  HeatmapDownloadFormat
 } from './downloadActivity.config'
 
 export type DateRange = {
@@ -32,6 +35,8 @@ interface DownloadActivityState {
   areaDataview: Dataview | UrlDataviewInstance | undefined
   error: AsyncError | undefined
   status: AsyncReducerStatus
+  hadTimeoutError: boolean
+  fileName: string
   activeTabId: HeatmapDownloadTab
 }
 
@@ -40,6 +45,8 @@ const initialState: DownloadActivityState = {
   areaDataview: undefined,
   error: undefined,
   status: AsyncReducerStatus.Idle,
+  hadTimeoutError: false,
+  fileName: '',
   activeTabId: HeatmapDownloadTab.ByVessel,
 }
 
@@ -63,6 +70,38 @@ export type DownloadActivityParams = {
   groupBy?: GroupBy
 }
 
+export const downloadActivityLastReportThunk = createAsyncThunk(
+  'downloadActivity/last-report',
+  async (_, { getState, rejectWithValue }) => {
+    const fileName = (getState() as RootState)?.downloadActivity?.fileName || 'activity-download'
+    try {
+      const response = await GFWAPI.fetch<Response>(`/4wings/last-report`, {
+        responseType: 'default',
+      })
+
+      if (response.ok) {
+        const contentType = response.headers.get('content-type')
+        if (contentType?.includes('application/json')) {
+          const data = (await response.json()) as { status: string }
+          return data.status
+        } else {
+          const data = await response.blob()
+          saveAs(data as any, fileName)
+          return 'finished'
+        }
+      }
+    } catch (error: any) {
+      return rejectWithValue(parseAPIError(error))
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { downloadActivity } = getState() as RootState
+      return downloadActivity?.hadTimeoutError
+    },
+  }
+)
+
 export const downloadActivityThunk = createAsyncThunk<
   DownloadActivity,
   DownloadActivityParams,
@@ -71,7 +110,7 @@ export const downloadActivityThunk = createAsyncThunk<
   }
 >(
   'downloadActivity/create',
-  async (params: DownloadActivityParams, { getState, rejectWithValue }) => {
+  async (params: DownloadActivityParams, { dispatch, rejectWithValue }) => {
     try {
       const {
         areaId,
@@ -107,10 +146,10 @@ export const downloadActivityThunk = createAsyncThunk<
         'buffer-value': bufferValue,
         'buffer-operation': bufferOperation?.toUpperCase(),
       }
-
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.${
         format === HeatmapDownloadFormat.Json ? 'json' : 'zip'
       }`
+      dispatch(setFileName(fileName))
       const downloadUrl = `/4wings/report?${stringify(downloadActivityParams, {
         arrayFormat: 'indices',
       })}`
@@ -139,6 +178,9 @@ const downloadActivitySlice = createSlice({
   name: 'downloadActivity',
   initialState,
   reducers: {
+    setFileName: (state, action: PayloadAction<string>) => {
+      state.fileName = action.payload
+    },
     setDownloadActiveTab: (state, action: PayloadAction<HeatmapDownloadTab>) => {
       state.activeTabId = action.payload
     },
@@ -148,31 +190,62 @@ const downloadActivitySlice = createSlice({
     resetDownloadActivityState: (state) => {
       state.areaKey = undefined
       state.status = AsyncReducerStatus.Idle
+      state.fileName = ''
+      state.hadTimeoutError = false
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(downloadActivityLastReportThunk.pending, (state) => {
+      state.status = AsyncReducerStatus.Loading
+      state.error = undefined
+    })
+    builder.addCase(downloadActivityLastReportThunk.fulfilled, (state, action) => {
+      if (action.payload === 'finished') {
+        state.status = AsyncReducerStatus.Finished
+        state.hadTimeoutError = false
+        state.fileName = ''
+      }
+    })
+    builder.addCase(downloadActivityLastReportThunk.rejected, (state, action) => {
+      state.status = AsyncReducerStatus.Finished
+      state.hadTimeoutError = false
+    })
     builder.addCase(downloadActivityThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
       state.error = undefined
     })
     builder.addCase(downloadActivityThunk.fulfilled, (state) => {
       state.status = AsyncReducerStatus.Finished
+      state.hadTimeoutError = false
     })
     builder.addCase(downloadActivityThunk.rejected, (state, action) => {
-      state.status =
-        action.error.message === 'Aborted' ? AsyncReducerStatus.Aborted : AsyncReducerStatus.Error
-      if (action.payload?.message) {
-        state.error = action.payload
+      if (action.error.message === 'Aborted') {
+        state.status = AsyncReducerStatus.Aborted
+      } else {
+        state.status = AsyncReducerStatus.Error
+        if (action.payload?.message) {
+          const isTimeoutError = getIsTimeoutError(action.payload)
+          if (isTimeoutError) {
+            state.hadTimeoutError = true
+          }
+          state.error = action.payload
+        }
       }
     })
   },
 })
 
-export const { setDownloadActiveTab, setDownloadActivityAreaKey, resetDownloadActivityState } =
-  downloadActivitySlice.actions
+export const {
+  setFileName,
+  setDownloadActiveTab,
+  setDownloadActivityAreaKey,
+  resetDownloadActivityState,
+} = downloadActivitySlice.actions
 
 const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
 export const selectDownloadActivityError = (state: RootState) => state.downloadActivity.error
+export const selectHadDownloadActivityTimeoutError = (state: RootState) =>
+  state.downloadActivity.hadTimeoutError
 export const selectDownloadActivityErrorMsg = (state: RootState) =>
   state.downloadActivity.error?.message
 export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey

@@ -93,3 +93,13 @@ div.modal {
   /* border: 1px solid var(--color-danger-secondary-red); */
   color: var(--color-danger-secondary-red);
 }
+
+.search {
+  padding: var(--space-M);
+  padding-bottom: 0;
+}
+
+.highlighted {
+  display: inline-block;
+  background: var(--color-highlight-blue);
+}

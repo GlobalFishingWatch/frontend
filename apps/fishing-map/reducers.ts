@@ -1,9 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import { dataviewStatsApi } from 'queries/stats-api'
-import { vesselEventsApi } from 'queries/vessel-events-api'
-import { vesselInsightApi } from 'queries/vessel-insight-api'
-import { vesselSearchApi } from 'queries/search-api'
-import { vesselGroupEventsStatsApi } from 'queries/vessel-group-events-stats-api'
+import { queriesApiReducers } from 'queries'
 import areasReducer from 'features/areas/areas.slice'
 import bigQueryReducer from 'features/bigquery/bigquery.slice'
 import connectedRoutes from 'routes/routes'
@@ -18,8 +14,9 @@ import hintsReducer from 'features/help/hints.slice'
 import mapControlsReducer from 'features/map/controls/map-controls.slice'
 import mapReducer from 'features/map/map.slice'
 import modalsReducer from 'features/modals/modals.slice'
+import portsReportReducer from 'features/reports/ports/ports-report.slice'
 import regionsReducer from 'features/regions/regions.slice'
-import reportReducer from 'features/reports/activity/reports-activity.slice'
+import reportReducer from 'features/reports/shared/activity/reports-activity.slice'
 import reportsReducer from 'features/reports/areas/area-reports.slice'
 import resourcesReducer from 'features/resources/resources.slice'
 import searchReducer from 'features/search/search.slice'
@@ -34,11 +31,7 @@ import workspaceReducer from 'features/workspace/workspace.slice'
 import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
 
 export const rootReducer = combineReducers({
-  [dataviewStatsApi.reducerPath]: dataviewStatsApi.reducer,
-  [vesselSearchApi.reducerPath]: vesselSearchApi.reducer,
-  [vesselEventsApi.reducerPath]: vesselEventsApi.reducer,
-  [vesselInsightApi.reducerPath]: vesselInsightApi.reducer,
-  [vesselGroupEventsStatsApi.reducerPath]: vesselGroupEventsStatsApi.reducer,
+  ...queriesApiReducers,
   areas: areasReducer,
   bigQuery: bigQueryReducer,
   datasets: datasetsReducer,
@@ -53,6 +46,7 @@ export const rootReducer = combineReducers({
   map: mapReducer,
   mapControls: mapControlsReducer,
   modals: modalsReducer,
+  portsReport: portsReportReducer,
   regions: regionsReducer,
   report: reportReducer,
   reports: reportsReducer,
@@ -62,8 +56,8 @@ export const rootReducer = combineReducers({
   title: titleReducer,
   user: userReducer,
   vessel: vesselReducer,
-  vesselGroupReport: vesselGroupReportReducer,
   vesselGroupModal: vesselGroupsModalReducer,
+  vesselGroupReport: vesselGroupReportReducer,
   vesselGroups: vesselGroupsReducer,
   workspace: workspaceReducer,
   workspaces: workspacesReducer,

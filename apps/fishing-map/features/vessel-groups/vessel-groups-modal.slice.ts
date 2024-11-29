@@ -1,23 +1,26 @@
-import { createAsyncThunk, PayloadAction, createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { difference, uniq } from 'es-toolkit'
-import { RootState } from 'reducers'
-import {
+import type {
   APIPagination,
   APIVesselSearchPagination,
   Dataset,
   DataviewDatasetConfig,
-  EndpointId,
   IdentityVessel,
   VesselGroup,
-  VesselGroupVessel,
+  VesselGroupVessel} from '@globalfishingwatch/api-types';
+import {
+  EndpointId
 } from '@globalfishingwatch/api-types'
-import { GFWAPI, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client';
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
+import type { RootState } from 'reducers'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
-import { IdField } from 'features/vessel-groups/vessel-groups.slice'
+import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
 import { getDatasetByIdsThunk } from '../datasets/datasets.slice'
 import {
   flatVesselGroupSearchVessels,
@@ -69,15 +72,15 @@ const fetchSearchVessels = async ({
   return searchResponse
 }
 
-const SEARCH_PAGINATION = 50
-const fetchAllSearchVessels = async (params: FetchSearchVessels) => {
+export const SEARCH_PAGINATION = 50
+export const fetchAllSearchVessels = async (params: FetchSearchVessels) => {
   let searchResults = [] as IdentityVessel[]
   let pendingResults = true
   let paginationToken = ''
   while (pendingResults) {
     const searchResponse = await fetchSearchVessels({ ...params, token: paginationToken })
     searchResults = searchResults.concat(searchResponse.entries)
-    if (searchResponse.since && searchResults!?.length < searchResponse.total) {
+    if (searchResponse.since && searchResults?.length < searchResponse.total) {
       paginationToken = searchResponse.since
     } else {
       pendingResults = false
@@ -228,10 +231,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
 
 export const getVesselInVesselGroupThunk = createAsyncThunk(
   'vessel-groups/getVessels',
-  async (
-    { vesselGroup }: { vesselGroup: VesselGroup },
-    { signal, rejectWithValue, getState, dispatch }
-  ) => {
+  async ({ vesselGroup }: { vesselGroup: VesselGroup }, { signal, rejectWithValue, dispatch }) => {
     const datasetIds = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
     const updatedDatasetsIds = datasetIds.map(runDatasetMigrations)
     const hasOutdatedDatasets = difference(datasetIds, updatedDatasetsIds)?.length > 0

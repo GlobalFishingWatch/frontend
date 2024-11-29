@@ -1,5 +1,5 @@
-import { RelatedVesselSearchMerged, VesselTypeV2 } from '@globalfishingwatch/api-types'
-import { ActivityEvent } from 'types/activity'
+import type { RelatedVesselSearchMerged, VesselTypeV2 } from '@globalfishingwatch/api-types'
+import type { ActivityEvent } from 'types/activity'
 
 export type VesselSourceId = {
   [key: string]: any
