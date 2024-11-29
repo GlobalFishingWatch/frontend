@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import { Locale } from 'types'
+import type { Locale } from 'types'
 import { LocaleLabels } from 'features/i18n/i18n'
 import styles from './LanguageToggle.module.css'
 

@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
 import cx from 'classnames'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './Header.module.css'
-import navigation, { MenuItem } from './Header.links'
+import type { MenuItem } from './Header.links';
+import navigation from './Header.links'
 
 interface HeaderProps {
   children?: React.ReactNode

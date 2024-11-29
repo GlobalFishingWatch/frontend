@@ -1,17 +1,18 @@
 import { uniq, uniqBy } from 'es-toolkit'
-import {
+import type {
   IdentityVessel,
-  SelfReportedSource,
   VesselGroup,
-  VesselGroupVessel,
+  VesselGroupVessel} from '@globalfishingwatch/api-types';
+import {
+  SelfReportedSource,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { PUBLIC_SUFIX } from 'data/config'
 import { getVesselId, getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
-import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VESSEL_GROUPS_REPORT_RELEASE_DATE } from './vessel-groups.config'
-import { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
-import { AddVesselGroupVessel } from './vessel-groups.hooks'
+import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
+import type { AddVesselGroupVessel } from './vessel-groups.hooks'
 
 export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
   const isPrivate = !vesselGroup.id.endsWith(`-${PUBLIC_SUFIX}`)

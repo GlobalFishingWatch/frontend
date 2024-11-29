@@ -1,21 +1,23 @@
-import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
-import { Feature, FeatureCollection, LineString } from 'geojson'
+import type { Feature, FeatureCollection, LineString } from 'geojson'
 import {
   mergeTrackChunks,
   trackValueArrayToSegments,
   wrapLineStringLongitudes,
 } from '@globalfishingwatch/data-transforms'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import {
+import type {
   Resource,
-  ResourceStatus,
-  DatasetTypes,
   ApiEvent,
   ApiEvents,
   DataviewDatasetConfig,
-  TrackField,
+  TrackField} from '@globalfishingwatch/api-types';
+import {
+  ResourceStatus,
+  DatasetTypes
 } from '@globalfishingwatch/api-types'
 
 export type ResourcesState = Record<any, Resource>

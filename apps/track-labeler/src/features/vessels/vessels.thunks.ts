@@ -1,10 +1,11 @@
-import { Dispatch } from 'redux'
-import { StateGetter } from 'redux-first-router'
+import type { Dispatch } from 'redux'
+import type { StateGetter } from 'redux-first-router'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { AppState } from '../../types/redux.types'
+import type { AppState } from '../../types/redux.types'
 import { selectIsImportView, selectVessel } from '../../routes/routes.selectors'
 import { getVesselInfo } from '../tracks/tracks.selectors'
-import { selectImportedData, setVesselInfo, VesselInfo } from './vessels.slice'
+import type { VesselInfo } from './vessels.slice';
+import { selectImportedData, setVesselInfo } from './vessels.slice'
 
 // TODO to be finished when the api is ready
 const fetchVesselInfo = async (id: string) => {

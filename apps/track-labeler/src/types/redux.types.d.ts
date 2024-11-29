@@ -1,4 +1,5 @@
-import { StateType, ActionType } from 'typesafe-actions'
+/* eslint-disable @typescript-eslint/consistent-type-imports */
+import type { StateType, ActionType } from 'typesafe-actions'
 
 export type AppActions = ActionType<typeof import('../redux-modules/actions').default>
 export type AppState = StateType<typeof import('../store').rootReducer>

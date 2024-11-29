@@ -1,7 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { EventType, EventTypes } from '@globalfishingwatch/api-types'
-import { Filters, initialState, selectFilters } from 'features/event-filters/filters.slice'
-import { VisibleEvents } from 'types'
+import type { EventType} from '@globalfishingwatch/api-types';
+import { EventTypes } from '@globalfishingwatch/api-types'
+import type { Filters} from 'features/event-filters/filters.slice';
+import { initialState, selectFilters } from 'features/event-filters/filters.slice'
+import type { VisibleEvents } from 'types'
 
 export const selectFiltersUpdated = createSelector(
   [selectFilters],

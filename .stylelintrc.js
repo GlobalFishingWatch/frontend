@@ -1,1 +1,3 @@
-module.exports = require('@globalfishingwatch/linting/stylelint')
+import config from '@globalfishingwatch/linting/stylelint'
+
+export default config

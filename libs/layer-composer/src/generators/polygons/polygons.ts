@@ -5,7 +5,8 @@ import type {
 import { Group } from '../../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
-import { GeneratorType, MergedGeneratorConfig, PolygonsGeneratorConfig } from '../types'
+import type { MergedGeneratorConfig, PolygonsGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 import { isConfigVisible } from '../utils'
 import { getFillPaintWithFeatureState } from '../context/context.utils'
 

@@ -6,9 +6,9 @@ import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectLocationType } from 'routes/routes.selectors'
-import { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
-import { PortsReportState } from 'features/reports/ports/ports-report.types'
-import { AreaReportState } from 'features/reports/areas/area-reports.types'
+import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
+import type { PortsReportState } from 'features/reports/ports/ports-report.types'
+import type { AreaReportState } from 'features/reports/areas/area-reports.types'
 import styles from './ReportVesselsFilter.module.css'
 
 type ReportVesselsFilterProps = {
@@ -41,14 +41,14 @@ export default function ReportVesselsFilter({
       action: `Type search into vessel list from ${locationType}`,
       label: debouncedQuery,
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [debouncedQuery])
 
   useEffect(() => {
     if (filter !== query) {
       setQuery(filter)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [filter])
 
   return (

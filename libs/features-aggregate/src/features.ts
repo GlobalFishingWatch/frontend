@@ -1,8 +1,9 @@
 import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
-import {
+import type {
   HeatmapLayerMeta,
-  pickActiveTimeChunk,
-  TimeChunks,
+  TimeChunks} from '@globalfishingwatch/layer-composer';
+import {
+  pickActiveTimeChunk
 } from '@globalfishingwatch/layer-composer'
 
 // Copied from below to avoid importing the dependency

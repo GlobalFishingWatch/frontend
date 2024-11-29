@@ -1,6 +1,6 @@
-import { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson'
-import { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
-import { PointColumns } from '../types'
+import type { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson'
+import type { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
+import type { PointColumns } from '../types'
 import { parseCoords } from '../coordinates'
 import { getUTCDate, normalizePropertiesKeys } from '../schema'
 

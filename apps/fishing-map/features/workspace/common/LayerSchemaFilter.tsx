@@ -1,20 +1,22 @@
 import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
+import type {
+  ChoiceOption,
+  MultiSelectOption,
+  SliderRangeValues} from '@globalfishingwatch/ui-components';
 import {
   Choice,
-  ChoiceOption,
   MultiSelect,
-  MultiSelectOption,
   Select,
   Slider,
-  SliderRange,
-  SliderRangeValues,
+  SliderRange
 } from '@globalfishingwatch/ui-components'
-import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { FilterOperator} from '@globalfishingwatch/api-types';
+import { EXCLUDE_FILTER_ID, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import type { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
-import { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
+import type { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './LayerFilters.module.css'
 
@@ -201,7 +203,7 @@ function LayerSchemaFilter({
     if (UNSORTED_FILTERS.includes(id) || type === 'range') return options
     return options.sort((a, b) => a.label.localeCompare(b.label))
   }, [id, options, type])
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues | number) => {
       if (Array.isArray(rangeSelected)) {

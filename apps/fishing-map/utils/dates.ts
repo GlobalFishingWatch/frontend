@@ -1,8 +1,8 @@
 import { DateTime, Duration } from 'luxon'
-import { TFunction } from 'i18next'
-import { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
-import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import type { TFunction } from 'i18next'
+import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 export type SupportedDateType = string | number
 export const getUTCDateTime = (d: SupportedDateType) => {

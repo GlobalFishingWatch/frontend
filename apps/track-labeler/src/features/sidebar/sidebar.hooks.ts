@@ -2,20 +2,22 @@ import { useState } from 'react'
 import { ActionCreators as UndoActionCreators } from 'redux-undo'
 import { useSelector } from 'react-redux'
 import { kebabCase } from 'lodash'
-import { TrackPoint } from '@globalfishingwatch/api-types'
+import type { TrackPoint } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { ActionType, ExportData, ExportFeature, Label } from '../../types'
+import type { ActionType, ExportData, ExportFeature, Label } from '../../types'
 import { updateQueryParams } from '../../routes/routes.actions'
-import { commonFilters, Project, PROJECTS } from '../../data/projects'
+import type { Project} from '../../data/projects';
+import { commonFilters, PROJECTS } from '../../data/projects'
 import { LABELER_VERSION } from '../../data/config'
 import { Field } from '../../data/models'
+import type {
+  SelectedTrackType} from '../../features/vessels/selectedTracks.slice';
 import {
   clearSelected,
   deleteSelectedTrack,
   futureSelectedtracks,
   pastSelectedtracks,
   selectedtracks,
-  SelectedTrackType,
   setSelectedTrack,
   updateActionSelectedTrack,
 } from '../../features/vessels/selectedTracks.slice'
@@ -25,7 +27,8 @@ import { extractLabeledTrack, fixCoordinates } from '../../features/tracks/track
 import { setProject } from '../../features/projects/projects.slice'
 import { useAppDispatch } from '../../store.hooks'
 import { selectProject, selectProjectId, selectVessel } from './../../routes/routes.selectors'
-import { setImportedData, setVesselInfo, TrackInterface } from './../vessels/vessels.slice'
+import type { TrackInterface } from './../vessels/vessels.slice';
+import { setImportedData, setVesselInfo } from './../vessels/vessels.slice'
 
 export const useSelectedTracksConnect = () => {
   const dispatch = useAppDispatch()

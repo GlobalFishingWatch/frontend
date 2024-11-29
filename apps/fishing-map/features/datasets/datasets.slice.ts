@@ -1,17 +1,19 @@
-import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import kebabCase from 'lodash/kebabCase'
 import { uniqBy, without, uniq } from 'es-toolkit'
 import { stringify } from 'qs'
-import {
+import type {
   AnyDatasetConfiguration,
   APIPagination,
   Dataset,
   DatasetsMigration,
-  DatasetTypes,
   EndpointId,
   EndpointParam,
-  UploadResponse,
+  UploadResponse} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes
 } from '@globalfishingwatch/api-types'
 import {
   GFWAPI,
@@ -19,11 +21,12 @@ import {
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
+import type {
+  AsyncReducer,
+  AsyncError} from 'utils/async-slice';
 import {
   asyncInitialState,
-  AsyncReducer,
   createAsyncSlice,
-  AsyncError,
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import {

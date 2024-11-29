@@ -1,7 +1,8 @@
 import Pbf from 'pbf'
-import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type {
+  BBox} from '../helpers/cells';
 import {
-  BBox,
   generateUniqueId,
   getCellPointCoordinates,
   getCellProperties,

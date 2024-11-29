@@ -1,11 +1,12 @@
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { serverT } from 'server/i18n'
 import { Logo } from '@globalfishingwatch/ui-components'
+import { serverT } from 'server/i18n'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
-import { VesselIdentityProperty, getVesselProperty } from 'features/vessel/vessel.utils'
+import type { VesselIdentityProperty} from 'features/vessel/vessel.utils';
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
 import {
   selectVesselInfoData,

@@ -1,7 +1,7 @@
 import { Children, isValidElement, cloneElement } from 'react'
-import { Placement } from 'tippy.js'
+import type { Placement } from 'tippy.js'
 import { useSelector } from 'react-redux'
-import { IconButtonProps, ButtonProps } from '@globalfishingwatch/ui-components'
+import type { IconButtonProps, ButtonProps } from '@globalfishingwatch/ui-components'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import LocalStorageLoginLink from './LoginLink'
 

@@ -2,13 +2,14 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { RegionType } from '@globalfishingwatch/api-types'
+import type {
+  AsyncReducer} from 'utils/async-slice';
 import {
   asyncInitialState,
-  AsyncReducer,
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import { RootState } from 'store'
+import type { RootState } from 'store'
 import { sortFields } from 'utils/shared'
 
 type RegionId = string | number

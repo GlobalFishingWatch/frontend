@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
-import { Dataset } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { getDatasetDescriptionTranslated } from 'features/i18n/utils.datasets'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import GFWOnly from 'features/user/GFWOnly'
@@ -36,7 +36,7 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
          **/}
         {description.length > 0 ? parse(description) : dataset.description}
       </p>
-      {gfwUser && queries!?.length > 0 && (
+      {gfwUser && queries?.length > 0 && (
         <div className={styles.content}>
           <div className={styles.queriesContainer}>
             <h2 className={styles.subtitle}>Queries used</h2>

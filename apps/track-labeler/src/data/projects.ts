@@ -1,4 +1,5 @@
-import { ActionType, Label } from '../types'
+import type { Label } from '../types';
+import { ActionType } from '../types'
 import { Field } from './models'
 
 export type Project = {

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import cx from 'classnames'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { Button } from '@globalfishingwatch/ui-components/button'
-import { LabellingProject } from '../../types'
+import type { LabellingProject } from '../../types'
 import { useCreateProjectMutation, useEditProjectMutation } from '../../api'
 import styles from './ProjectsList.module.css'
 

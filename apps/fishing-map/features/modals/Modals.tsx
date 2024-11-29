@@ -113,7 +113,7 @@ const AppModals = () => {
       dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
       setSaveWorkspaceBeforeLeave(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [saveWorkspaceBeforeLeave])
 
   return (

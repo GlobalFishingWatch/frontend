@@ -4,12 +4,13 @@ import {
   getAvailableIntervalsInDataviews,
   useGetDeckLayer,
 } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsLayer, getFourwingsChunk } from '@globalfishingwatch/deck-layers'
+import type { FourwingsLayer} from '@globalfishingwatch/deck-layers';
+import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
@@ -96,7 +97,7 @@ export const useHeatmapActivityGraph = () => {
         setFourwingsHeatmapData(viewportData as [number[], number[]][][])
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     loaded,
     id,

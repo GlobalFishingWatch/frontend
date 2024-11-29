@@ -1,9 +1,11 @@
 import { useCallback } from 'react'
 import { BarChart, Bar, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { SliderRange, SliderRangeValues } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import type { SliderRangeValues } from '@globalfishingwatch/ui-components';
+import { SliderRange } from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { Dataset} from '@globalfishingwatch/api-types';
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import { useDataviewHistogram } from 'features/workspace/environmental/histogram.hooks'
 import { getEventLabel } from 'utils/analytics'

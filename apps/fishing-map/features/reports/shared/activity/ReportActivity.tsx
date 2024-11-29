@@ -41,9 +41,10 @@ import {
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import type {
+  LastReportStorage} from 'features/reports/areas/area-reports.config';
 import {
-  LAST_REPORTS_STORAGE_KEY,
-  LastReportStorage,
+  LAST_REPORTS_STORAGE_KEY
 } from 'features/reports/areas/area-reports.config'
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'

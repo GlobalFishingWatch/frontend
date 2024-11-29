@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react'
 import memoize from 'memoize-one'
 import cx from 'classnames'
-import { NumberValue, ScaleTime, scaleTime } from 'd3-scale'
+import type { NumberValue, ScaleTime } from 'd3-scale'
+import { scaleTime } from 'd3-scale'
 import throttle from 'lodash/throttle'
 import ResizeObserver from 'resize-observer-polyfill'
-import { DateTime, DateTimeUnit } from 'luxon'
+import type { DateTimeUnit } from 'luxon'
+import { DateTime } from 'luxon'
 import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 import {
   getTime,
@@ -15,8 +17,9 @@ import {
 } from '../utils/internal-utils'
 import { EVENT_SOURCE } from '../constants'
 import { getLast30Days } from '../utils'
-import TimelineContext, { TrackGraphOrientation } from '../timelineContext'
-import { TimebarProps } from '../timebar'
+import type { TrackGraphOrientation } from '../timelineContext'
+import TimelineContext from '../timelineContext'
+import type { TimebarProps } from '../timebar'
 import Bookmark from './bookmark'
 import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
@@ -525,7 +528,9 @@ class Timeline extends PureComponent<TimelineProps> {
               maxX={outerWidth}
               locale={locale}
               onDelete={() => {
-                onBookmarkChange && onBookmarkChange('', '')
+                if (onBookmarkChange) {
+                  onBookmarkChange('', '')
+                }
               }}
               onSelect={() => {
                 onChange(bookmarkStart, bookmarkEnd, EVENT_SOURCE.BOOKMARK_SELECT)
@@ -540,6 +545,8 @@ class Timeline extends PureComponent<TimelineProps> {
           >
             {/* // TODO separated drag area? */}
             <div
+              role="button"
+              tabIndex={0}
               className={styles.graph}
               data-test="timeline-graph"
               onMouseDown={(event) => {

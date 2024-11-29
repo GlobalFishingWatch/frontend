@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
+import type {
+  SelectOnChange,
+  SelectOption} from '@globalfishingwatch/ui-components';
 import {
   Button,
   IconButton,
   InputText,
-  SelectOnChange,
-  SelectOption,
   Tooltip,
 } from '@globalfishingwatch/ui-components'
 import styles from './SubareaSelector.module.css'

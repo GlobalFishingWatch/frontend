@@ -1,4 +1,4 @@
-import {
+import type {
   DefaultProps,
   UpdateParameters,
   LayerContext,
@@ -6,10 +6,12 @@ import {
   Accessor,
   Position,
 } from '@deck.gl/core'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { ScatterplotLayer } from '@deck.gl/layers'
-import { GeoJsonProperties } from 'geojson'
-import { ScalePower, scaleSqrt } from 'd3-scale'
+import type { GeoJsonProperties } from 'geojson'
+import type { ScalePower } from 'd3-scale'
+import { scaleSqrt } from 'd3-scale'
 import {
   COLOR_HIGHLIGHT_LINE,
   hexToDeckColor,
@@ -21,8 +23,9 @@ import {
   getFetchLoadOptions,
   getFeatureInFilter,
 } from '../../utils'
-import { UserPointsLayerProps, UserLayerFeature } from './user.types'
-import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
+import type { UserPointsLayerProps, UserLayerFeature } from './user.types'
+import type { UserBaseLayerState } from './UserBaseLayer'
+import { UserBaseLayer } from './UserBaseLayer'
 import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
@@ -42,7 +45,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 type UserPointsLayerState = UserBaseLayerState & {
   scale?: ScalePower<number, number, never>
 }
-export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
+export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserBaseLayer<
   _UserPointsLayerProps & PropsT
 > {
   static layerName = 'UserPointsTileLayer'

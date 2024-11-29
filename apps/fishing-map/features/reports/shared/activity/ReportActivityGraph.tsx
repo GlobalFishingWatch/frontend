@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReportActivityGraphSelector from 'features/reports/shared/activity/ReportActivityGraphSelector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import type {
+  ReportGraphProps} from 'features/reports/shared/activity/reports-activity-timeseries.hooks';
 import {
   getReportGraphMode,
-  ReportGraphProps,
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
@@ -20,7 +21,7 @@ import {
   useReportAreaBounds,
 } from 'features/reports/areas/area-reports.hooks'
 import { selectReportActivityGraph } from 'features/reports/areas/area-reports.config.selectors'
-import { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
+import type { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
@@ -57,7 +58,7 @@ export default function ReportActivity() {
     if (loaded && bbox?.length) {
       fitAreaInViewport()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [loaded, bboxHash])
 
   const { t } = useTranslation()

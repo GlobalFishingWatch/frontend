@@ -1,4 +1,4 @@
-import { ExtendedStyle } from '../../types'
+import type { ExtendedStyle } from '../../types'
 
 export const getInteractiveLayerIds = (style: ExtendedStyle) => {
   if (!style || !style.layers) return style

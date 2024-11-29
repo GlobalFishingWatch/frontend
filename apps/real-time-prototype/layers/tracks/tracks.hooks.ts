@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
-import { TracksLayer } from 'layers/tracks/TracksLayer'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
+import { TracksLayer } from 'layers/tracks/TracksLayer'
 
 export type TrackPoint = {
   coordinates: [number, number]

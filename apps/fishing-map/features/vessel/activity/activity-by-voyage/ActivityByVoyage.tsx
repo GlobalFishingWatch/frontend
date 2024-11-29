@@ -10,8 +10,9 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
 import Event, { EVENT_HEIGHT } from 'features/vessel/activity/event/Event'
 import { getVoyageTimeRange } from 'features/vessel/vessel.utils'
+import type {
+  ActivityEvent} from 'features/vessel/activity/vessels-activity.selectors';
 import {
-  ActivityEvent,
   selectEventsGroupedByVoyages,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
@@ -29,7 +30,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
-import VesselEvent from 'features/vessel/activity/event/Event'
+import type VesselEvent from 'features/vessel/activity/event/Event'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {

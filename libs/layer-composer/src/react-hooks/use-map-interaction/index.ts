@@ -1,9 +1,9 @@
-import {
+import type {
   Interval,
   ContextLayerType,
   HeatmapAnimatedInteractionType,
 } from '@globalfishingwatch/layer-composer'
-import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
+import type { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 
 export * from './use-map-interaction'
 

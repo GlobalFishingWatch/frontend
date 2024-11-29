@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Dataview } from '@globalfishingwatch/api-types'
-import { RootState } from '../../store'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import type { Dataview } from '@globalfishingwatch/api-types'
+import type { RootState } from '../../store'
 
 const initialState: { dataviews: any[] } = { dataviews: [] }
 //TODO: Remove this file

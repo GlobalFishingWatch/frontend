@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { DEFAULT_SEARCH_STATE } from 'features/search/search.config'
-import { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
+import type { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
 
 type VesselSearchProperty<P extends VesselSearchStateProperty> = Required<VesselSearchState>[P]
 function selectVesselSearchStateProperty<P extends VesselSearchStateProperty>(property: P) {

@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router'
-import { Fragment, ReactNode, useEffect } from 'react'
+import type { ReactNode} from 'react';
+import { Fragment, useEffect } from 'react'
 import useUser from 'features/user/user'
 
-/* eslint-disable-next-line */
+ 
 export interface RequireAdditionalInfoProps {
   children: ReactNode
 }

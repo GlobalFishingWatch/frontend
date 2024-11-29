@@ -90,7 +90,6 @@ const VesselHeader = () => {
       window.removeEventListener('beforeprint', enableVesselPrintMode)
       window.removeEventListener('afterprint', disableVesselPrintMode)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useCallbackAfterPaint({
@@ -128,10 +127,7 @@ const VesselHeader = () => {
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={styles.summaryContainer}>
         <div className={styles.summaryWrapper}>
-          {vesselImage && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={vesselImage} alt={shipname} className={styles.vesselImage} />
-          )}
+          {vesselImage && <img src={vesselImage} alt={shipname} className={styles.vesselImage} />}
           <div className={styles.titleContainer}>
             <h1 data-test="vv-vessel-name" className={styles.title}>
               <svg className={styles.vesselIcon} width="16" height="16">

@@ -1,6 +1,6 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
-import { InteractionEvent } from './types'
+import type { InteractionEvent } from './types'
 
 export const deckHoverInteractionAtom = atom<InteractionEvent>({} as InteractionEvent)
 

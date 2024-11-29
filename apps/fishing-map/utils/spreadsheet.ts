@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 const FEEDBACK_CLIENT_EMAIL = process.env.NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL
 const FEEDBACK_PRIVATE_KEY = process.env.NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY
 

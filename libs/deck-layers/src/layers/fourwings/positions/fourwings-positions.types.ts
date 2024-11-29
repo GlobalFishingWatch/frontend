@@ -1,8 +1,8 @@
-import { PickingInfo } from '@deck.gl/core'
-import { TileLayerProps } from '@deck.gl/geo-layers'
-import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
-import { DeckPickingObject } from '../../../types'
-import {
+import type { PickingInfo } from '@deck.gl/core'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import type { DeckPickingObject } from '../../../types'
+import type {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
   FourwingsVisualizationMode,

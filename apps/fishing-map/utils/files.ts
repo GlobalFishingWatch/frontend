@@ -1,7 +1,7 @@
 import type { FeatureCollection } from 'geojson'
 import capitalize from 'lodash/capitalize'
 import lowerCase from 'lodash/lowerCase'
-import {
+import type {
   DatasetConfigurationSourceFormat,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'

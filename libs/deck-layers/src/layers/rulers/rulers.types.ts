@@ -1,8 +1,8 @@
-import { Color, PickingInfo } from '@deck.gl/core'
-import { GeoJsonLayerProps } from '@deck.gl/layers'
-import { Feature, Point } from 'geojson'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { DeckPickingObject } from '../../types'
+import type { Color, PickingInfo } from '@deck.gl/core'
+import type { GeoJsonLayerProps } from '@deck.gl/layers'
+import type { Feature, Point } from 'geojson'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { DeckPickingObject } from '../../types'
 
 export type RulerPointProperties = {
   id?: number

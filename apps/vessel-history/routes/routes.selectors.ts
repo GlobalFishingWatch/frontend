@@ -1,12 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { Query, RouteObject } from 'redux-first-router'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { Query, RouteObject } from 'redux-first-router'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { RootState } from 'store'
-import { WorkspaceParam } from 'types'
-import { ROUTE_TYPES } from './routes'
+import type { RootState } from 'store'
+import type { WorkspaceParam } from 'types'
+import type { ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {

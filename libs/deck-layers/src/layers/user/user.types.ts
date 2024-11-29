@@ -1,9 +1,9 @@
-import { Accessor, PickingInfo } from '@deck.gl/core'
-import { Feature, Geometry } from 'geojson'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { TimeFilterType } from '@globalfishingwatch/api-types'
-import { ContextLayerConfig } from '../context'
-import { DeckLayerProps, DeckPickingObject } from '../../types'
+import type { Accessor, PickingInfo } from '@deck.gl/core'
+import type { Feature, Geometry } from 'geojson'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { TimeFilterType } from '@globalfishingwatch/api-types'
+import type { ContextLayerConfig } from '../context'
+import type { DeckLayerProps, DeckPickingObject } from '../../types'
 
 export type BaseUserLayerProps = {
   id: string

@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import styles from '../Popup.module.css'
 

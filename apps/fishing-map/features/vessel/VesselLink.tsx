@@ -2,14 +2,16 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
-import { DataviewInstance, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { DataviewInstance} from '@globalfishingwatch/api-types';
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
+import type {
+  VesselDataIdentity} from 'features/vessel/vessel.slice';
 import {
-  VesselDataIdentity,
   resetVesselState,
   setVesselFitBoundsOnLoad,
 } from 'features/vessel/vessel.slice'
@@ -20,7 +22,7 @@ import {
   selectLocationQuery,
 } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
-import { QueryParams } from 'types'
+import type { QueryParams } from 'types'
 import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'

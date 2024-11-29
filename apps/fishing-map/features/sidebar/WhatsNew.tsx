@@ -24,7 +24,7 @@ function WhatsNew() {
   useEffect(() => {
     // We want to hide the icon automatically for following visits
     setLastVersionSeen(currentVersion)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   const dismissNewVersionHint = () => {

@@ -1,12 +1,14 @@
-import { Color, CompositeLayer, LayersList } from '@deck.gl/core'
-import { TripsLayer, TripsLayerProps } from '@deck.gl/geo-layers'
+import type { Color, LayersList } from '@deck.gl/core';
+import { CompositeLayer } from '@deck.gl/core'
+import type { TripsLayerProps } from '@deck.gl/geo-layers';
+import { TripsLayer } from '@deck.gl/geo-layers'
 import { ScatterplotLayer } from '@deck.gl/layers'
-import { ScatterplotLayerProps } from '@deck.gl/layers'
-import { TrackPoint } from 'layers/tracks/tracks.hooks'
+import type { ScatterplotLayerProps } from '@deck.gl/layers'
 import { hexToComponents } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { TrackPoint } from 'layers/tracks/tracks.hooks'
 import { API_BASE } from 'data/config'
-import { GFWLayerProps } from 'features/map/Map'
+import type { GFWLayerProps } from 'features/map/Map'
 import { trackLoader } from './track.loader'
 
 type TrackLayerProps = TripsLayerProps &

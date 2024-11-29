@@ -1,17 +1,18 @@
 import { stringify } from 'qs'
 import type { Feature } from 'geojson'
-import { Color } from '@deck.gl/core'
-import { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
+import type { Color } from '@deck.gl/core'
+import type { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
 import { DateTime } from 'luxon'
-import {
-  CONFIG_BY_INTERVAL,
+import type {
   FourwingsFeature,
   FourwingsInterval,
-  getFourwingsInterval,
-  TileCell,
+  TileCell} from '@globalfishingwatch/deck-loaders';
+import {
+  CONFIG_BY_INTERVAL,
+  getFourwingsInterval
 } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../../utils'
-import { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
+import type { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
 import {
   HEATMAP_API_TILES_URL,
   HEATMAP_HIGH_RES_ID,
@@ -19,12 +20,13 @@ import {
   HEATMAP_LOW_RES_ID,
   getChunkByInterval,
 } from '../fourwings.config'
-import {
+import type {
   AggregateCellParams,
   CompareCellParams,
-  FourwingsAggregationOperation,
   FourwingsChunk,
-  FourwingsHeatmapResolution,
+  FourwingsHeatmapResolution} from './fourwings-heatmap.types';
+import {
+  FourwingsAggregationOperation
 } from './fourwings-heatmap.types'
 
 export function aggregateSublayerValues(

@@ -1,9 +1,11 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { LegendType, MapLegend, Tooltip, UILegend } from '@globalfishingwatch/ui-components'
+import type { UILegend } from '@globalfishingwatch/ui-components';
+import { LegendType, MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DeckLegendAtom, useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { DeckLegendAtom} from '@globalfishingwatch/deck-layer-composer';
+import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { t } from 'features/i18n/i18n'
 import MapLegendPlaceholder from 'features/workspace/common/MapLegendPlaceholder'

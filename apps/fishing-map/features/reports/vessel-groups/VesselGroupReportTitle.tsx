@@ -28,7 +28,7 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 // import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './VesselGroupReportTitle.module.css'
-import { VesselGroupReport } from './vessel-group-report.slice'
+import type { VesselGroupReport } from './vessel-group-report.slice'
 import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
 
 type ReportTitleProps = {

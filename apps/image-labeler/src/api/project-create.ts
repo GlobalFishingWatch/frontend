@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { LabellingProject } from 'apps/image-labeler/src/types'
+import type { LabellingProject } from 'apps/image-labeler/src/types'
 import { gfwBaseQuery } from './base'
 
 // Define a service using a base URL and expected endpoints

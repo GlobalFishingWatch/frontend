@@ -12,14 +12,15 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { EMPTY_API_VALUES } from 'features/reports/areas/area-reports.config'
 import VesselLink from 'features/vessel/VesselLink'
-import VesselPin, { VesselPinClickProps } from 'features/vessel/VesselPin'
+import type { VesselPinClickProps } from 'features/vessel/VesselPin'
+import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import {
+import type {
   VGRVesselsOrderProperty,
   VGRVesselsOrderDirection,
 } from 'features/vessel-groups/vessel-groups.types'
@@ -148,6 +149,8 @@ export default function VesselGroupReportVesselsTable() {
                   <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
                 </div>
                 <div
+                  role="button"
+                  tabIndex={0}
                   className={cx({
                     [styles.border]: !isLastRow,
                     [styles.pointer]: flagInteractionEnabled,
@@ -166,6 +169,8 @@ export default function VesselGroupReportVesselsTable() {
                   <span>{flagTranslated}</span>
                 </div>
                 <div
+                  role="button"
+                  tabIndex={0}
                   className={cx({
                     [styles.border]: !isLastRow,
                     [styles.pointer]: gearTypeInteractionEnabled,

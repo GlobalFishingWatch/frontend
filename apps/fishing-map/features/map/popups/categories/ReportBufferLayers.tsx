@@ -1,5 +1,5 @@
 import { Icon } from '@globalfishingwatch/ui-components'
-import {
+import type {
   ContextPickingObject,
   PolygonPickingObject,
   UserLayerPickingObject,

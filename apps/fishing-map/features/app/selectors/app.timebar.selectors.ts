@@ -5,7 +5,7 @@ import {
   selectEnvironmentalDataviews,
   selectVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { TimeRange } from 'features/timebar/timebar.slice'
+import type { TimeRange } from 'features/timebar/timebar.slice'
 import {
   selectWorkspaceStateProperty,
   selectWorkspaceTimeRange,

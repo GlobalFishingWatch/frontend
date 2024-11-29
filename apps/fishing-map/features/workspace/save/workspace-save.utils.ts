@@ -1,11 +1,12 @@
+import type {
+  WorkspaceEditAccessType,
+  WorkspaceViewAccessType} from '@globalfishingwatch/api-types';
 import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS,
-  WorkspaceEditAccessType,
-  WorkspaceViewAccessType,
+  WORKSPACE_PUBLIC_ACCESS
 } from '@globalfishingwatch/api-types'
-import { SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'

@@ -1,12 +1,15 @@
-import { Color, CompositeLayer, LayersList, PickingInfo } from '@deck.gl/core'
+import type { Color, LayersList, PickingInfo } from '@deck.gl/core';
+import { CompositeLayer } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsFeature} from '@globalfishingwatch/deck-loaders';
+import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import { FOOTPRINT_ID } from '../fourwings.config'
-import {
-  FourwingsAggregationOperation,
+import type {
   FourwingsHeatmapPickingInfo,
-  FourwingsHeatmapPickingObject,
+  FourwingsHeatmapPickingObject} from '../fourwings.types';
+import {
+  FourwingsAggregationOperation
 } from '../fourwings.types'
 import {
   COLOR_HIGHLIGHT_LINE,
@@ -19,7 +22,7 @@ import {
   EMPTY_CELL_COLOR,
   getIntervalFrames,
 } from '../heatmap/fourwings-heatmap.utils'
-import { FourwingsFootprintLayerProps } from './fourwings-footprint.types'
+import type { FourwingsFootprintLayerProps } from './fourwings-footprint.types'
 
 export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLayerProps> {
   static layerName = 'FourwingsFootprintLayer'

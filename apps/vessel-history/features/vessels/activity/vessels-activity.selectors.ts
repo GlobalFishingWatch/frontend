@@ -8,15 +8,16 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
+import type {
+  GapEvent,
+  GapPosition,
+  Regions} from '@globalfishingwatch/api-types';
 import {
   DatasetTypes,
   EventTypes,
-  GapEvent,
-  GapPosition,
-  Regions,
   ResourceStatus,
 } from '@globalfishingwatch/api-types'
-import { GeoJSONSourceSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { GeoJSONSourceSpecification } from '@globalfishingwatch/maplibre-gl'
 import { APP_PROFILE_VIEWS, DEFAULT_WORKSPACE, EVENTS_COLORS } from 'data/config'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { t } from 'features/i18n/i18n'
@@ -24,13 +25,13 @@ import {
   selectActiveTrackDataviews,
   selectTrackDatasetConfigsCallback,
 } from 'features/dataviews/dataviews.selectors'
-import { ActivityEvent, PortVisitSubEvent } from 'types/activity'
+import type { ActivityEvent, PortVisitSubEvent } from 'types/activity'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { getEEZName } from 'utils/region-name-transform'
-import { Region } from 'features/regions/regions.slice'
+import type { Region } from 'features/regions/regions.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectSettings } from 'features/settings/settings.slice'
-import { TrackPosition } from 'types'
+import type { TrackPosition } from 'types'
 import { selectWorkspaceProfileView } from 'features/workspace/workspace.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'

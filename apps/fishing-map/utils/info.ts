@@ -1,17 +1,18 @@
 import { uniq } from 'es-toolkit'
-import { TFunction } from 'i18next'
-import {
-  API_LOGIN_REQUIRED,
+import type { TFunction } from 'i18next'
+import type {
   GearType,
   IdentityVessel,
   RegistryLoginMessage,
   SelfReportedInfo,
-  VesselType,
+  VesselType} from '@globalfishingwatch/api-types';
+import {
+  API_LOGIN_REQUIRED
 } from '@globalfishingwatch/api-types'
-import { ExtendedFeatureVessel } from 'features/map/map.slice'
+import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'
-import { VesselDataIdentity } from 'features/vessel/vessel.slice'
+import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'

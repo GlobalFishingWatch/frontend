@@ -1,7 +1,7 @@
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ClusterLayerProps } from '@globalfishingwatch/deck-layers'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ClusterLayerProps } from '@globalfishingwatch/deck-layers'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import { DeckResolverFunction, ResolverGlobalConfig } from './types'
+import type { DeckResolverFunction, ResolverGlobalConfig } from './types'
 
 // TODO: decide if include static here or create a new one
 export const resolveDeckTileClusterLayerProps: DeckResolverFunction<ClusterLayerProps> = (
@@ -9,12 +9,12 @@ export const resolveDeckTileClusterLayerProps: DeckResolverFunction<ClusterLayer
   { start, end }: ResolverGlobalConfig
 ): ClusterLayerProps => {
   const dataset = dataview.datasets?.[0]
-  const tilesUrl = dataset ? resolveEndpoint(dataset, dataview.datasetsConfig?.[0]!) : undefined
+  const tilesUrl = dataset ? resolveEndpoint(dataset, dataview.datasetsConfig?.[0]) : undefined
 
   return {
     id: dataview.id,
     category: dataview.category!,
-    subcategory: dataview.config?.type!,
+    subcategory: dataview.config?.type,
     datasetId: dataset?.id || '',
     color: dataview.config?.color || '',
     start: start,

@@ -1,11 +1,12 @@
-import { GeneratorType, BasemapType, BasemapLabelsGeneratorConfig } from '../types'
+import type { BasemapLabelsGeneratorConfig } from '../types';
+import { GeneratorType, BasemapType } from '../types'
 import { getLabelsTilesUrlByLocale, layers, sources } from './basemap-labels-layers'
 
 class BasemapLabelsGenerator {
   type = GeneratorType.BasemapLabels
 
   _getStyleSources = (config: BasemapLabelsGeneratorConfig) => {
-    let basemapLabelsSource = sources[BasemapType.Labels]
+    const basemapLabelsSource = sources[BasemapType.Labels]
     basemapLabelsSource.tiles = [getLabelsTilesUrlByLocale(config.locale)]
     return [{ id: BasemapType.Labels, ...basemapLabelsSource }]
   }

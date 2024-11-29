@@ -10,7 +10,7 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import { BufferOperation, BufferUnit } from 'types'
+import type { BufferOperation, BufferUnit } from 'types'
 import {
   selectReportBufferOperationSelector,
   selectReportBufferUnitSelector,
@@ -18,7 +18,8 @@ import {
   selectReportCategorySelector,
   selectReportVesselGraphSelector,
 } from 'features/reports/areas/area-reports.config.selectors'
-import { ReportCategory, ReportVesselGraph } from 'features/reports/areas/area-reports.types'
+import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types';
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import { WORLD_REGION_ID } from 'features/reports/shared/activity/reports-activity.slice'
 import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 

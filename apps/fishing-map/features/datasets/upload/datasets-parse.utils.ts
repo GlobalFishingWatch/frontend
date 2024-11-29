@@ -1,5 +1,5 @@
 import { parse } from 'papaparse'
-import { Feature, FeatureCollection } from 'geojson'
+import type { Feature, FeatureCollection } from 'geojson'
 import {
   pointsListToGeojson,
   pointsGeojsonToNormalizedGeojson,
@@ -10,14 +10,15 @@ import {
   shpToGeoJSON,
   isZipFile,
 } from '@globalfishingwatch/data-transforms'
-import {
+import type {
   DatasetGeometryToGeoJSONGeometry,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
-import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
-import { DatasetGeometryTypesSupported, getFileType, readBlobAs } from 'utils/files'
+import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import type { DatasetGeometryTypesSupported} from 'utils/files';
+import { getFileType, readBlobAs } from 'utils/files'
 
 // interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
 //   extensions?: string[]

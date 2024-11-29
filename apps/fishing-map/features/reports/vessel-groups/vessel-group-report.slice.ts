@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
-import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
+import type { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
+import type { AsyncError} from 'utils/async-slice';
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { mergeVesselGroupVesselIdentities } from 'features/vessel-groups/vessel-groups.utils'
-import { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
+import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 
 export type VesselGroupReport = Omit<VesselGroup, 'vessels'> & {

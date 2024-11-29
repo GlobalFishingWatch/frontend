@@ -1,13 +1,14 @@
 import { t } from 'i18next'
-import { ChoiceOption } from '@globalfishingwatch/ui-components'
-import {
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import type {
   Dataset,
-  DatasetConfigurationInterval,
+  DatasetConfigurationInterval} from '@globalfishingwatch/api-types';
+import {
   DataviewCategory,
 } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from 'utils/dates'
 import { REPORT_DAYS_LIMIT } from 'data/config'
 import { getActiveDatasetsInDataview, getDatasetSchemaItem } from 'features/datasets/datasets.utils'

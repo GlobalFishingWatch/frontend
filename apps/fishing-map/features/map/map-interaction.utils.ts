@@ -1,5 +1,5 @@
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import {
+import type {
   FourwingsClusterFeature,
   ContextPickingObject,
   DeckLayerPickingObject,
@@ -8,7 +8,7 @@ import {
   FourwingsClusterPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { TrackCategory } from 'features/app/analytics.hooks'
-import { SliceExtendedFourwingsPickingObject } from './map.slice'
+import type { SliceExtendedFourwingsPickingObject } from './map.slice'
 
 export const isTilesClusterLayer = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.subcategory === DataviewType.TileCluster ||

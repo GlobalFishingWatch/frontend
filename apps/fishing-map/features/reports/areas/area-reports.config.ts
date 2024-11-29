@@ -3,9 +3,9 @@ import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_PER_PAGE,
 } from 'data/config'
-import { BufferUnit, BufferOperation, Bbox } from 'types'
-import { Area, AreaGeometry } from 'features/areas/areas.slice'
-import { AreaReportState } from './area-reports.types'
+import type { BufferUnit, BufferOperation, Bbox } from 'types'
+import type { Area, AreaGeometry } from 'features/areas/areas.slice'
+import type { AreaReportState } from './area-reports.types'
 
 export const REPORT_BUFFER_FEATURE_ID: string = 'buffer'
 export const DEFAULT_BUFFER_VALUE: number = 50

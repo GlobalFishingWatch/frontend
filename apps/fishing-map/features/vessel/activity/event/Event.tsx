@@ -1,8 +1,8 @@
 import React from 'react'
 import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { ApiEvent, RegionType } from '@globalfishingwatch/api-types'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import type { ApiEvent, RegionType } from '@globalfishingwatch/api-types'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import EventIcon from 'features/vessel/activity/event/EventIcon'
 import ActivityDate from './ActivityDate'
 import { useActivityEventTranslations } from './event.hook'
@@ -44,6 +44,8 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement => {
         onMouseEnter={() => onMapHover && onMapHover(event)}
         onMouseLeave={() => onMapHover && onMapHover(undefined)}
         onClick={() => onInfoClick && onInfoClick(event)}
+        role="button"
+        tabIndex={0}
       >
         <EventIcon type={event.type} />
         <div className={styles.eventData}>

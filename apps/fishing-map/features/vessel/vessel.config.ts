@@ -1,8 +1,8 @@
 import { RegionType, SelfReportedSource } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { I18nNamespaces } from 'features/i18n/i18n.types'
-import { IdentityVesselData } from 'features/vessel/vessel.slice'
-import { VesselProfileState } from './vessel.types'
+import type { I18nNamespaces } from 'features/i18n/i18n.types'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
+import type { VesselProfileState } from './vessel.types'
 
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity'
 export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v3.0'

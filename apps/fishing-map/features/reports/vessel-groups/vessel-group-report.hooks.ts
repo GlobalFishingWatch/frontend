@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { VesselGroup } from '@globalfishingwatch/api-types'
+import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setVesselGroupEditId,

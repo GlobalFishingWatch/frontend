@@ -3,18 +3,20 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
-import { DatasetTypes, DatasetStatus, Dataset, DataviewType } from '@globalfishingwatch/api-types'
+import type { Dataset} from '@globalfishingwatch/api-types';
+import { DatasetTypes, DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
+import type {
+  ColorBarOption} from '@globalfishingwatch/ui-components';
 import {
   Tooltip,
-  ColorBarOption,
   Modal,
   IconButton,
   Collapsable,
   Spinner,
 } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
+import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
@@ -125,7 +127,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     ) {
       updateFeaturesOnScreen()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [dataset, layerActive, layerLoaded, viewport, areasOnScreenOpen])
 
   const listHeight = Math.min(featuresOnScreen?.total, CONTEXT_FEATURES_LIMIT) * LIST_ELEMENT_HEIGHT

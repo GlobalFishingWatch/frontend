@@ -1,5 +1,5 @@
 // import { appWithTranslation } from 'next-i18next'
-import { AppProps } from 'next/app'
+import type { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
 import { MapProvider } from 'react-map-gl'
 import { RecoilRoot } from 'recoil'

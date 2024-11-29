@@ -1,7 +1,7 @@
-import { Feature, Polygon, MultiPolygon, Point } from 'geojson'
-import { PickingInfo } from '@deck.gl/core'
-import { FeatureWithProps } from '@deck.gl-community/editable-layers'
-import { DeckPickingObject } from '../../types'
+import type { Feature, Polygon, MultiPolygon, Point } from 'geojson'
+import type { PickingInfo } from '@deck.gl/core'
+import type { FeatureWithProps } from '@deck.gl-community/editable-layers'
+import type { DeckPickingObject } from '../../types'
 
 export type DrawFeatureProperties = {
   index: number

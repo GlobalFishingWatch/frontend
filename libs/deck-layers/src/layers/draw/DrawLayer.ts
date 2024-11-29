@@ -1,24 +1,24 @@
+import type { FeatureCollection, EditAction } from '@deck.gl-community/editable-layers'
 import {
   EditableGeoJsonLayer,
-  FeatureCollection,
-  EditAction,
   CompositeMode,
   TranslateMode,
   ImmutableFeatureCollection,
 } from '@deck.gl-community/editable-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { CompositeLayer, LayerContext, PickingInfo } from '@deck.gl/core'
+import type { LayerContext, PickingInfo } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
 import kinks from '@turf/kinks'
-import { Feature, Point, Polygon, Position } from 'geojson'
+import type { Feature, Point, Polygon, Position } from 'geojson'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
-import { DeckLayerCategory } from '../../types'
-import { DrawPickingInfo, DrawPickingObject } from './draw.types'
+import type { DeckLayerCategory } from '../../types'
+import type { DrawPickingInfo, DrawPickingObject } from './draw.types'
+import type { DrawLayerMode } from './draw.modes'
 import {
   CustomDrawPointMode,
   CustomDrawPolygonMode,
   CustomModifyMode,
   CustomViewMode,
-  DrawLayerMode,
 } from './draw.modes'
 
 type Color = [number, number, number, number]
@@ -256,7 +256,9 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
             selectedPositionIndexes
           )
         }
-      } catch (ignore) {}
+      } catch (ignore) {
+        // ignore
+      }
     })
     if (updatedData && this.state) {
       this._setState({

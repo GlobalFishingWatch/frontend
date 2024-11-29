@@ -1,5 +1,5 @@
 import { PATH_BASENAME } from 'data/config'
-import { LibraryLayerConfig } from 'data/layer-library/layers.types'
+import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import { FISHING_DATAVIEW_SLUG, PRESENCE_DATAVIEW_SLUG } from 'data/workspaces'
 
 export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [

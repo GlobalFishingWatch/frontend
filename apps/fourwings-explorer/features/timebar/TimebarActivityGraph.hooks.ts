@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { debounce } from 'lodash'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { Timeseries } from '@globalfishingwatch/timebar'
+import type { Timeseries } from '@globalfishingwatch/timebar'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { getTimeseriesFromFeatures } from '@globalfishingwatch/features-aggregate'
 import { checkEqualBounds, useMapBounds } from 'features/map/map-bounds.hooks'
@@ -10,7 +10,7 @@ import {
   haslayersFeatureError,
   useMapLayerFeatures,
 } from 'features/map/map-sources.hooks'
-import { DatasetLayer } from 'features/layers/layers.hooks'
+import type { DatasetLayer } from 'features/layers/layers.hooks'
 
 export const useStackedActivity = (layers: DatasetLayer | DatasetLayer[]) => {
   const [generatingStackedActivity, setGeneratingStackedActivity] = useState(false)
@@ -24,7 +24,7 @@ export const useStackedActivity = (layers: DatasetLayer | DatasetLayer[]) => {
   const loading =
     boundsChanged || !areLayersFeatureLoaded(layerFeatures) || generatingStackedActivity
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const debouncedSetStackedActivity = useCallback(
     debounce((layerFeatures, bounds) => {
       const layerFeaturesFiltered = layerFeatures.map((dataview) => {
@@ -55,7 +55,7 @@ export const useStackedActivity = (layers: DatasetLayer | DatasetLayer[]) => {
       setGeneratingStackedActivity(true)
       debouncedSetStackedActivity(layerFeatures, debouncedBounds)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [layerFeatures, debouncedBounds, debouncedSetStackedActivity, isSmallScreen])
 
   return { loading, error, stackedActivity }

@@ -1,12 +1,13 @@
-import { Feature } from 'geojson'
+import type { Feature } from 'geojson'
+import type {
+  Dataset,
+  DatasetConfiguration} from '@globalfishingwatch/api-types';
 import {
   DRAW_DATASET_SOURCE,
-  Dataset,
   DatasetCategory,
-  DatasetConfiguration,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
-import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 
 export const getDrawDatasetDefinition = (
   name: string,

@@ -4,7 +4,8 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { debounce } from 'es-toolkit'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
-import { TimebarGraphs, TimebarVisualisations } from 'types'
+import type { TimebarGraphs} from 'types';
+import { TimebarVisualisations } from 'types'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
@@ -28,14 +29,15 @@ import {
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import type {
+  TimeRange} from './timebar.slice';
 import {
   changeSettings,
   setHighlightedEvents,
   selectHighlightedEvents,
   selectHasChangedSettingsOnce,
   selectHighlightedTime,
-  disableHighlightedTime,
-  TimeRange,
+  disableHighlightedTime
 } from './timebar.slice'
 
 const TIMERANGE_DEBOUNCED_TIME = 1000
@@ -81,7 +83,7 @@ export const useSetTimerange = () => {
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const updateUrlTimerangeDebounced = useCallback(
     debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
     []
@@ -183,7 +185,7 @@ export const useHighlightedEventsConnect = () => {
       highlightedEventIds,
       dispatchHighlightedEvents,
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [serializedHighlightedEventIds, dispatchHighlightedEvents])
 }
 
@@ -306,7 +308,7 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     activeActivityDataviews,
     activeDetectionsDataviews,

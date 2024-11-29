@@ -1,4 +1,5 @@
-import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
+import type { DataviewInstance } from '@globalfishingwatch/api-types';
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { PUBLIC_SUFIX } from './config'
 

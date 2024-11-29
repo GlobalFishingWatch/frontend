@@ -1,20 +1,22 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import type {
+  SelectOption} from '@globalfishingwatch/ui-components';
 import {
   MultiSelect,
   InputDate,
   InputText,
-  Select,
-  SelectOption,
+  Select
 } from '@globalfishingwatch/ui-components'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
-import {
-  getFiltersBySchema,
+import type {
   SchemaFilter,
-  SupportedDatasetSchema,
+  SupportedDatasetSchema} from 'features/datasets/datasets.utils';
+import {
+  getFiltersBySchema
 } from 'features/datasets/datasets.utils'
 import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
@@ -24,7 +26,7 @@ import {
   DEFAULT_VESSEL_IDENTITY_ID,
 } from 'features/vessel/vessel.config'
 import { useSearchFiltersConnect, useSearchFiltersErrors } from 'features/search/search.hook'
-import { VesselSearchState } from 'features/search/search.types'
+import type { VesselSearchState } from 'features/search/search.types'
 import {
   ADVANCED_SEARCH_FIELDS,
   getSearchDataview,

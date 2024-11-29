@@ -1,16 +1,16 @@
-import { PickingInfo } from '@deck.gl/core'
-import { TileLayerProps } from '@deck.gl/geo-layers'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { ScaleLinear } from 'd3-scale'
-import {
+import type { PickingInfo } from '@deck.gl/core'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { ScaleLinear } from 'd3-scale'
+import type {
   FourwingsFeature,
   FourwingsStaticFeature,
   FourwingsFeatureProperties,
   FourwingsInterval,
   Cell,
 } from '@globalfishingwatch/deck-loaders'
-import { DeckPickingObject } from '../../../types'
-import {
+import type { DeckPickingObject } from '../../../types'
+import type {
   BaseFourwingsLayerProps,
   FourwingsColorObject,
   FourwingsDeckSublayer,

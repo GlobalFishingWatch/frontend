@@ -1,7 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'reducers'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import type { RootState } from 'reducers'
 import { HINTS } from 'data/config'
-import { HintId } from './hints.content'
+import type { HintId } from './hints.content'
 
 type HintsDismissed = Record<HintId, boolean>
 

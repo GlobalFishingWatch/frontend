@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { HEATMAP_HIGH_RES_ID, RulerData } from '@globalfishingwatch/deck-layers'
+import type { RulerData } from '@globalfishingwatch/deck-layers';
+import { HEATMAP_HIGH_RES_ID } from '@globalfishingwatch/deck-layers'
 import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
 import {
   getActiveActivityDatasetsInDataviews,

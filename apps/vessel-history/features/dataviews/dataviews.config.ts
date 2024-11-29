@@ -1,11 +1,12 @@
-import { DataviewInstance } from '@globalfishingwatch/api-types'
-import {
-  GeneratorType,
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import type {
   GeneratorConfig,
   GlGeneratorConfig,
-  BackgroundGeneratorConfig,
+  BackgroundGeneratorConfig} from '@globalfishingwatch/layer-composer';
+import {
+  GeneratorType
 } from '@globalfishingwatch/layer-composer'
-import { FillLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { FillLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { IS_STANDALONE_APP } from 'data/config'
 import { LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
 

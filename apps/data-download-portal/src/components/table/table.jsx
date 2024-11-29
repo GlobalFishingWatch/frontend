@@ -24,7 +24,9 @@ const IndeterminateCheckbox = React.forwardRef(({ indeterminate, title, ...rest 
   return (
     <div className={styles.checkbox}>
       <input id={inputID} type="checkbox" ref={resolvedRef} {...rest} />
-      <label htmlFor={inputID} title={title}></label>
+      <label htmlFor={inputID} title={title}>
+        {title}
+      </label>
     </div>
   )
 })
@@ -190,6 +192,7 @@ function Table({ columns, data }) {
           {searchInput ? (
             <Fragment>
               <input
+                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
                 className={styles.input}
                 value={state.globalFilter || ''}

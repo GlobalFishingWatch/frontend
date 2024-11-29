@@ -6,6 +6,7 @@
   "license": "MIT",
   "main": "./index.cjs",
   "module": "./index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"

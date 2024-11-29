@@ -23,7 +23,7 @@ import { getEventDescriptionComponent } from 'utils/events'
 import PortsReportLink from 'features/reports/ports/PortsReportLink'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useMapViewState } from '../../map-viewport.hooks'
-import {
+import type {
   ExtendedEventVessel,
   ExtendedFeatureByVesselEvent,
   ExtendedFeatureSingleEvent,

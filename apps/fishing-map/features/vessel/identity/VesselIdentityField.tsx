@@ -1,5 +1,6 @@
+import type {
+  Ref} from 'react';
 import {
-  Ref,
   forwardRef,
   useEffect,
   useImperativeHandle,

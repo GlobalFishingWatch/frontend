@@ -1,6 +1,6 @@
 import { groupBy } from 'es-toolkit'
-import { TrackSegment } from '@globalfishingwatch/api-types'
-import { SegmentColumns } from '../types'
+import type { TrackSegment } from '@globalfishingwatch/api-types'
+import type { SegmentColumns } from '../types'
 import { parseCoords } from '../coordinates'
 import { getUTCDate, normalizePropertiesKeys } from '../schema'
 

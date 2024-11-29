@@ -1,5 +1,5 @@
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { PortsReportState } from './ports-report.types'
+import type { PortsReportState } from './ports-report.types'
 
 export const DEFAULT_PORT_REPORT_DATASET_ID = 'public-global-port-visits-events:v3.1'
 

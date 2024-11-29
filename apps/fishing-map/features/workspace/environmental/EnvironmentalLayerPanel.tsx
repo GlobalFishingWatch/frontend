@@ -3,11 +3,12 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import { Tooltip, IconButton } from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
@@ -15,8 +16,9 @@ import ActivityFilters, {
   isHistogramDataviewSupported,
 } from 'features/workspace/common/LayerFilters'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import type {
+  SupportedEnvDatasetSchema} from 'features/datasets/datasets.utils';
 import {
-  SupportedEnvDatasetSchema,
   getSchemaFiltersInDataview,
 } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'

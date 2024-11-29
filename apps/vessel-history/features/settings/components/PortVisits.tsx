@@ -9,7 +9,7 @@ import {
   PORTVISIT_EVENTS_MIN_DURATION,
 } from 'data/constants'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import { SettingEventSectionName, SettingsPortVisits } from '../settings.slice'
+import type { SettingEventSectionName, SettingsPortVisits } from '../settings.slice'
 import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
 

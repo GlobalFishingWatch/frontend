@@ -1,4 +1,5 @@
-import { TrackField, TrackSegment, TrackPoint } from '@globalfishingwatch/api-types'
+import type { TrackSegment, TrackPoint } from '@globalfishingwatch/api-types';
+import { TrackField } from '@globalfishingwatch/api-types'
 
 export const TRACK_FIELDS = [TrackField.lonlat, TrackField.timestamp, TrackField.speed]
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)

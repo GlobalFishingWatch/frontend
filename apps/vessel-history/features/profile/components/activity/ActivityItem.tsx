@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { EventTypeVoyage, RenderedVoyage, Voyage } from 'types/voyage'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import type { RenderedVoyage, Voyage } from 'types/voyage';
+import { EventTypeVoyage } from 'types/voyage'
 import ActivityEvent from './ActivityEvent'
 import ActivityVoyage from './ActivityVoyage'
 interface EventProps {

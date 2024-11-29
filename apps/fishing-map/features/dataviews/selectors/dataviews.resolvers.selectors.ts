@@ -1,21 +1,23 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
+import type {
+  DataviewDatasetConfig,
+  DataviewInstance} from '@globalfishingwatch/api-types';
 import {
   DatasetTypes,
   DataviewCategory,
-  DataviewDatasetConfig,
-  DataviewInstance,
   DataviewType,
 } from '@globalfishingwatch/api-types'
+import type {
+  GetDatasetConfigsCallbacks,
+  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
 import {
   extendDataviewDatasetConfig,
-  GetDatasetConfigsCallbacks,
   getResources,
   mergeWorkspaceUrlDataviewInstances,
-  resolveDataviews,
-  UrlDataviewInstance,
+  resolveDataviews
 } from '@globalfishingwatch/dataviews-client'
-import { ColorRampId } from '@globalfishingwatch/deck-layers'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
@@ -52,7 +54,7 @@ import {
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
 } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import type { ReportCategory } from 'features/reports/areas/area-reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
   selectVGRActivitySubsection,

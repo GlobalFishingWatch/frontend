@@ -1,28 +1,30 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import type { PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
-import { RootState } from 'reducers'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import type {
+  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
 import {
-  getDataviewSqlFiltersResolved,
-  UrlDataviewInstance,
+  getDataviewSqlFiltersResolved
 } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import {
+import type {
   DataviewDatasetConfig,
   Dataset,
   IdentityVessel,
-  DatasetTypes,
   ApiEvent,
-  EndpointId,
   EventVessel,
-  EventVesselTypeEnum,
   APIPagination,
-  EventTypes,
-  FourwingsEventsInteraction,
+  FourwingsEventsInteraction} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes,
+  EndpointId,
+  EventVesselTypeEnum,
+  EventTypes
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
-import {
+import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
+import type {
   ClusterPickingObject,
   ContextPickingObject,
   FourwingsClusterPickingObject,
@@ -34,8 +36,9 @@ import {
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { AppDispatch } from 'store'
+import type { AppDispatch } from 'store'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   fetchDatasetByIdThunk,
@@ -499,7 +502,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
         }
 
         const infoDatasets = getDatasetsAction.payload.flatMap((v) => v)
-        const vesselIds = (interactionResponse as FourwingsEventsInteraction[])!
+        const vesselIds = (interactionResponse as FourwingsEventsInteraction[])
           ?.sort((a, b) => b.events - a.events)
           .slice(0, MAX_TOOLTIP_LIST)
           .map((v) => v.id)

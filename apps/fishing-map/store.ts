@@ -1,9 +1,10 @@
-import {
+import type {
   Action,
   AnyAction,
   Middleware,
   ThunkAction,
-  ThunkDispatch,
+  ThunkDispatch} from '@reduxjs/toolkit';
+import {
   configureStore,
 } from '@reduxjs/toolkit'
 import { createWrapper } from 'next-redux-wrapper'

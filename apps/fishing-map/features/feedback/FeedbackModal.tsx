@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux'
 import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { DataviewType } from '@globalfishingwatch/api-types'
+import type {
+  Workspace} from '@globalfishingwatch/api-types';
 import {
   WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS,
-  Workspace,
+  WORKSPACE_PUBLIC_ACCESS
 } from '@globalfishingwatch/api-types'
 import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
@@ -109,7 +110,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   useEffect(() => {
     setInitialFeedbackStateWithUserData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [userData])
 
   useEffect(() => {

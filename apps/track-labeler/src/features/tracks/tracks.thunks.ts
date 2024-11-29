@@ -1,8 +1,8 @@
-import { StateGetter } from 'redux-first-router'
+import type { StateGetter } from 'redux-first-router'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
-import { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
-import { AppState } from '../../types/redux.types'
+import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
+import type { AppState } from '../../types/redux.types'
 import { TRACK_FIELDS } from '../../data/config'
 import {
   selectVessel,
@@ -10,17 +10,18 @@ import {
   selectProject,
   selectIsImportView,
 } from '../../routes/routes.selectors'
+import type {
+  TrackItem} from '../../features/vessels/vessels.slice';
 import {
   initVesselTrack,
   selectTracks,
-  TrackItem,
   setVesselTrack,
   selectImportedData,
   setSearchableTimstamps,
 } from '../../features/vessels/vessels.slice'
 import { updateQueryParams } from '../../routes/routes.actions'
-import { AppDispatch } from '../../store'
-import { ExportData, ExportFeature } from './../../types/index'
+import type { AppDispatch } from '../../store'
+import type { ExportData, ExportFeature } from './../../types/index'
 
 const fetchTrack = async (
   dataset: string,
@@ -80,7 +81,7 @@ const importedTrackNeedsFetch = (id: string, track: TrackItem | null): boolean =
 const geojsonToSegments = (geojson: ExportData): TrackSegment[] => {
   const segments: TrackSegment[] = geojson.features.map((feature: ExportFeature) => {
     const points: TrackPoint[] = feature.geometry.coordinates.map(
-      (coordinate: Array<number | undefined | null>, index: number) => {
+      (coordinate: (number | undefined | null)[], index: number) => {
         return {
           course: feature.properties.coordinateProperties.course
             ? feature.properties.coordinateProperties.course[index]

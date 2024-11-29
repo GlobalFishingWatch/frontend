@@ -9,7 +9,8 @@ import {
   Icon,
   InputText,
 } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetGeometryType, DatasetStatus } from '@globalfishingwatch/api-types'
+import type { Dataset, DatasetGeometryType} from '@globalfishingwatch/api-types';
+import { DatasetStatus } from '@globalfishingwatch/api-types'
 import {
   getDataviewInstanceByDataset,
   useDatasetModalConfigConnect,

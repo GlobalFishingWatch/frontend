@@ -1,14 +1,16 @@
 import { VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
-import { FilterSpecification } from '@globalfishingwatch/maplibre-gl'
-import {
-  GeneratorType,
+import type { FilterSpecification } from '@globalfishingwatch/maplibre-gl'
+import type {
   MergedGeneratorConfig,
   HeatmapStaticGeneratorConfig,
-  ColorRampsIds,
+  ColorRampsIds} from '../types';
+import {
+  GeneratorType
 } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
-import { ExtendedLayerMeta, Group } from '../../types'
+import type { ExtendedLayerMeta} from '../../types';
+import { Group } from '../../types'
 import { addURLSearchParams } from '../utils'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
 import { HEATMAP_COLOR_RAMPS } from './colors'

@@ -1,15 +1,16 @@
 import { DateTime } from 'luxon'
-import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
-import {
-  CONFIG_BY_INTERVAL,
+import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+import type {
   FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
-  FourwingsPositionFeature,
+  FourwingsPositionFeature} from '@globalfishingwatch/deck-loaders';
+import {
+  CONFIG_BY_INTERVAL
 } from '@globalfishingwatch/deck-loaders'
 import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from 'utils/dates'
-import { FeaturesToTimeseriesParams } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
+import type { FeaturesToTimeseriesParams } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
   FeaturesToTimeseriesParams,

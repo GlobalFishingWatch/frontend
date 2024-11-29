@@ -1,6 +1,6 @@
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 import { Button } from '@globalfishingwatch/ui-components/button'
-import { GFWLoginHook } from '@globalfishingwatch/react-hooks/use-login'
+import type { GFWLoginHook } from '@globalfishingwatch/react-hooks/use-login'
 import styles from './header.module.css'
 
 type HeaderProps = {

@@ -2,14 +2,15 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { TagList } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
+import type {
+  SupportedDatasetSchema} from 'features/datasets/datasets.utils';
 import {
   getSchemaFieldsSelectedInDataview,
   getSchemaFilterOperationInDataview,
-  getSchemaFilterUnitInDataview,
-  SupportedDatasetSchema,
+  getSchemaFilterUnitInDataview
 } from 'features/datasets/datasets.utils'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { getValueLabelByUnit } from 'features/workspace/common/LayerSchemaFilter'

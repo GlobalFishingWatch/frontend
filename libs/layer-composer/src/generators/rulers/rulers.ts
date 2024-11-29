@@ -1,12 +1,14 @@
 import memoizeOne from 'memoize-one'
-import { FeatureCollection, Feature, LineString, Point } from 'geojson'
+import type { FeatureCollection, Feature, LineString, Point } from 'geojson'
 import length from '@turf/length'
 import greatCircle from '@turf/great-circle'
 import { point } from '@turf/helpers'
-import { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-import { Dictionary, Group } from '../../types'
-import { GeneratorType, RulersGeneratorConfig, Ruler } from '../types'
+import type { Dictionary } from '../../types'
+import { Group } from '../../types'
+import type { RulersGeneratorConfig, Ruler } from '../types'
+import { GeneratorType } from '../types'
 
 const COLOR = '#ffaa00'
 export const RULER_INTERACTIVE_LAYER = 'points'
@@ -68,9 +70,7 @@ const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
 
   const lengthKm = getRulerLength(ruler)
   const finalFeature =
-    lengthKm < 100
-      ? rawFeature
-      : (greatCircle(startPoint, endPoint) as Feature<LineString>)
+    lengthKm < 100 ? rawFeature : (greatCircle(startPoint, endPoint) as Feature<LineString>)
 
   finalFeature.properties = {}
   finalFeature.properties.label = getRuleLengthLabel(ruler)

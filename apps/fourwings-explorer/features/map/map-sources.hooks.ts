@@ -1,22 +1,23 @@
 import { useEffect, useMemo } from 'react'
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
-import { FilterSpecification, GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
+import type { FilterSpecification, GeoJSONFeature, MapDataEvent } from '@globalfishingwatch/maplibre-gl'
+import type {
+  ExtendedStyle,
+  HeatmapLayerMeta} from '@globalfishingwatch/layer-composer';
 import {
   DEFAULT_CONTEXT_SOURCE_LAYER,
-  ExtendedStyle,
-  HeatmapLayerMeta,
   isMergedAnimatedGenerator,
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '@globalfishingwatch/layer-composer'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
-import { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
-import {
+import type { TimeseriesFeatureProps } from '@globalfishingwatch/fourwings-aggregate'
+import type {
   LayerFeature as BaseLayerFeature,
   ChunkFeature,
   TilesSourceState,
 } from '@globalfishingwatch/features-aggregate'
 import useMapInstance, { useMapInstanceStyle } from 'features/map/map-context.hooks'
-import { DatasetLayer } from 'features/layers/layers.hooks'
+import type { DatasetLayer } from 'features/layers/layers.hooks'
 
 export const mapTilesAtom = atom<Record<string, TilesSourceState>>({
   key: 'mapSourceTilesState',
@@ -271,7 +272,7 @@ export const useMapLayerFeatures = (
     })
     return layerFeature
     // Runs only when source tiles load change to avoid unu
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [map, sourceTilesLoaded, cacheKey])
 
   return layerFeatures

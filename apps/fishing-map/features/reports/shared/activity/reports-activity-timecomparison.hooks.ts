@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
-import { SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import {} from 'features/app/selectors/app.reports.selector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -18,7 +18,7 @@ import {
   selectReportActivityGraph,
   selectReportTimeComparison,
 } from 'features/reports/areas/area-reports.config.selectors'
-import { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
+import type { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
 
 // TODO get this from start and endDate from datasets
 const MIN_DATE = AVAILABLE_START.slice(0, 10)

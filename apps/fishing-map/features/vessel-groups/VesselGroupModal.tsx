@@ -1,11 +1,12 @@
 import { useState, useCallback, useEffect, Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
+import type { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
+import type {
+  SelectOption} from '@globalfishingwatch/ui-components';
 import {
   Modal,
   Button,
-  SelectOption,
   InputText,
   SwitchRow,
   Spinner,
@@ -32,7 +33,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getEventLabel } from 'utils/analytics'
 import { updateLocation } from 'routes/routes.actions'
-import { ROUTE_TYPES } from 'routes/routes'
+import type { ROUTE_TYPES } from 'routes/routes'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -49,14 +50,15 @@ import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import {
+import type {
   IdField,
+  VesselGroupConfirmationMode,
+  UpdateVesselGroupThunkParams} from './vessel-groups.slice';
+import {
   createVesselGroupThunk,
   selectVesselGroupById,
   selectVesselGroupsStatus,
-  VesselGroupConfirmationMode,
   updateVesselGroupVesselsThunk,
-  UpdateVesselGroupThunkParams,
   resetVesselGroupStatus,
   selectVesselGroupsError,
 } from './vessel-groups.slice'

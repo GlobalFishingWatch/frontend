@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventLabel } from 'utils/analytics'
-import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
+import type { AreaKeyId} from 'features/areas/areas.slice';
+import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'

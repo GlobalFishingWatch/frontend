@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectActivityCategory } from 'features/app/selectors/app.selectors'
 import {

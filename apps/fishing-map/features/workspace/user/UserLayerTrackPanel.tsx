@@ -8,14 +8,14 @@ import {
   getUTCDate,
   NO_RECORD_ID,
 } from '@globalfishingwatch/data-transforms'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getUserDataviewDataset,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { UserTracksLayer } from '@globalfishingwatch/deck-layers'
-import { UserTrackFeature } from '@globalfishingwatch/deck-loaders'
+import type { UserTracksLayer } from '@globalfishingwatch/deck-layers'
+import type { UserTrackFeature } from '@globalfishingwatch/deck-loaders'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectActiveUserTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'

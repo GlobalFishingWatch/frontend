@@ -1,17 +1,18 @@
 import { useRef } from 'react'
 import cx from 'classnames'
+import type {
+  Middleware} from '@floating-ui/react';
 import {
   offset,
   autoPlacement,
   autoUpdate,
   useFloating,
   detectOverflow,
-  Middleware,
   arrow,
   FloatingArrow,
 } from '@floating-ui/react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
+import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { MAP_WRAPPER_ID } from '../map.config'

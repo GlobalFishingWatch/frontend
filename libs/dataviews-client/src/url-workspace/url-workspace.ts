@@ -3,8 +3,8 @@ import isObject from 'lodash/isObject'
 import isString from 'lodash/isString'
 import transform from 'lodash/transform'
 import { stringify, parse } from 'qs'
-import { DataviewInstance } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '..'
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '..'
 import {
   removeLegacyEndpointPrefix,
   runDatasetMigrations,
@@ -169,12 +169,12 @@ const deepTokenizeValues = (obj: Dictionary<any>) => {
     if (!tokensCount[token]) {
       tokensCount[token] = 0
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     tokensCount[token]!++
   })
   const repeatedTokens = Object.entries(tokensCount)
     .filter(([key, count]) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+       
       return count! > 1 && key.length > 5
     })
     .map(([key]) => key)

@@ -3,16 +3,18 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import FileSaver from 'file-saver'
 import { useTranslation } from 'react-i18next'
-import { EventTypeVoyage, Voyage } from 'types/voyage'
+import type { Voyage } from 'types/voyage';
+import { EventTypeVoyage } from 'types/voyage'
 import { getUTCDateTime } from 'utils/dates'
 import {
   selectAllEventsByVoyages,
   selectFilteredEventsByVoyages,
 } from 'features/vessels/voyages/voyages.selectors'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectMergedVesselId } from 'routes/routes.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
-import { Filters, selectFilters } from 'features/event-filters/filters.slice'
+import type { Filters} from 'features/event-filters/filters.slice';
+import { selectFilters } from 'features/event-filters/filters.slice'
 import { selectFiltersUpdated } from 'features/event-filters/filters.selectors'
 import { BASE_URL } from 'data/constants'
 

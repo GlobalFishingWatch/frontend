@@ -1,12 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { Query } from 'redux-first-router'
-import { RootState } from 'reducers'
-import { WorkspaceParam, QueryParams } from 'types'
+import type { Query } from 'redux-first-router'
+import type { RootState } from 'reducers'
+import type { WorkspaceParam, QueryParams } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
+import type {
+  ROUTE_TYPES} from './routes';
 import {
   REPORT,
   WORKSPACE_REPORT,
-  ROUTE_TYPES,
   VESSEL,
   WORKSPACE_ROUTES,
   WORKSPACE_VESSEL,

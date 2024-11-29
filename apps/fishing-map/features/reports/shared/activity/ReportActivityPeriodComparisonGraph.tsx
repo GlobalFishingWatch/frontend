@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import { Interval as TimeInterval } from 'luxon'
 import { useSelector } from 'react-redux'
-import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import i18n, { t } from 'features/i18n/i18n'
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/app.config'

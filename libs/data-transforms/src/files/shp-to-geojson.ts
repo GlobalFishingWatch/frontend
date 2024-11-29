@@ -1,4 +1,4 @@
-import {
+import type {
   DatasetGeometryToGeoJSONGeometry,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'

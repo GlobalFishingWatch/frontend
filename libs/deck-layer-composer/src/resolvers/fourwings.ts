@@ -1,11 +1,13 @@
 import { uniq } from 'es-toolkit'
-import {
-  FourwingsAggregationOperation,
-  FourwingsComparisonMode,
+import type {
   FourwingsDeckSublayer,
   FourwingsLayerProps,
   FourwingsPickingObject,
   FourwingsVisualizationMode,
+} from '@globalfishingwatch/deck-layers'
+import {
+  FourwingsAggregationOperation,
+  FourwingsComparisonMode,
   TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
@@ -15,10 +17,10 @@ import {
   DataviewType,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import { ColorRampId } from '@globalfishingwatch/deck-layers'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { getDataviewAvailableIntervals } from './dataviews'
-import { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from './types'
 
 export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayerProps> = (
   dataview,
@@ -56,7 +58,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
       color: (sublayer?.color || dataview.config?.color) as string,
       positionProperties,
       colorRamp: sublayer?.colorRamp as ColorRampId,
-      label: sublayer?.datasets?.[0]?.name!,
+      label: sublayer?.datasets?.[0]?.name,
       unit: units[0]!,
       filter: sublayer?.filter,
       vesselGroups: sublayer?.vesselGroups,
@@ -143,7 +145,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     startTime,
     endTime,
     category: dataview.category!,
-    subcategory: dataview.config?.type!,
+    subcategory: dataview.config?.type,
     static: dataview.config?.type === DataviewType.HeatmapStatic,
     sublayers,
     comparisonMode,

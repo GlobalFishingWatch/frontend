@@ -6,10 +6,12 @@ import { fitBounds } from 'viewport-mercator-project'
 import Hotkeys from 'react-hot-keys'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { Button, IconButton, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components';
+import { Button, IconButton, Select } from '@globalfishingwatch/ui-components'
 import { filterSegmentsByTimerange, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import brand from '../../assets/images/brand.png'
-import { selectedtracks, SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
+import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { selectProject } from '../../routes/routes.selectors'
 import {
   getVesselInfo,

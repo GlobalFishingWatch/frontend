@@ -3,14 +3,16 @@ import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import { Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { VesselWithHistory } from 'types'
+import type { VesselWithHistory } from 'types'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import type {
+  RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
-  RenderedEvent,
   selectHighlightEventIds,
 } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityFilters from 'features/profile/filters/ActivityFilters'
-import { EventTypeVoyage, Voyage } from 'types/voyage'
+import type { Voyage } from 'types/voyage';
+import { EventTypeVoyage } from 'types/voyage'
 import { t } from 'features/i18n/i18n'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { selectVesselId } from 'routes/routes.selectors'

@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { Choice, ChoiceOption, Spinner } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import ActivityByType from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
@@ -13,7 +14,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../vessel-events.hooks'
 import { useVesselProfileLayer } from '../vessel-bounds.hooks'
-import { VesselProfileActivityMode } from '../vessel.types'
+import type { VesselProfileActivityMode } from '../vessel.types'
 import styles from './VesselActivity.module.css'
 
 const VesselActivity = () => {

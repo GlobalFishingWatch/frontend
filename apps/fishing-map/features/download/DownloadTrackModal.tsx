@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, Choice, Icon, Tag, Modal } from '@globalfishingwatch/ui-components'
 import { THINNING_LEVELS, ThinningLevels } from '@globalfishingwatch/api-client'
+import type {
+  DownloadTrackParams} from 'features/download/downloadTrack.slice';
 import {
-  DownloadTrackParams,
   selectDownloadTrackStatus,
   selectDownloadTrackIds,
   selectDownloadTrackName,
@@ -20,13 +21,14 @@ import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { DateRange } from 'features/download/downloadActivity.slice'
+import type { DateRange } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import styles from './DownloadModal.module.css'
-import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
+import type { Format} from './downloadTrack.config';
+import { FORMAT_OPTIONS } from './downloadTrack.config'
 
 function DownloadTrackModal() {
   const { t } = useTranslation()

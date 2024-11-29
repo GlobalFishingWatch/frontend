@@ -1,10 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Duration } from 'luxon'
 import { range } from 'lodash'
-import { EventTypes, Resource, ThinningConfig } from '@globalfishingwatch/api-types'
+import type { Resource, ThinningConfig } from '@globalfishingwatch/api-types';
+import { EventTypes } from '@globalfishingwatch/api-types'
+import type {
+  ResourcesState as CommonResourcesState} from '@globalfishingwatch/dataviews-client';
 import {
   resourcesReducer,
-  ResourcesState as CommonResourcesState,
   selectResources as originalSelectResource,
 } from '@globalfishingwatch/dataviews-client'
 import {

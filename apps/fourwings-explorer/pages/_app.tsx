@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, Component } from 'react'
-import { AppProps } from 'next/app'
+import type { AppProps } from 'next/app'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import { RecoilRoot } from 'recoil'
 import { MapProvider } from 'react-map-gl'

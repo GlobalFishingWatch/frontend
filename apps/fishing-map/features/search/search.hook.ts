@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useMemo, useRef } from 'react'
-import { Dataset } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectSearchFilters,
   selectSearchOption,
   selectSearchQuery,
 } from 'features/search/search.config.selectors'
-import { VesselSearchState } from 'features/search/search.types'
+import type { VesselSearchState } from 'features/search/search.types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
@@ -185,7 +185,7 @@ export const useFetchSearchResults = () => {
 
   const fetchMoreResults = useCallback(() => {
     const { since, total } = searchPagination
-    if (since && searchResults!?.length < total && total > RESULTS_PER_PAGE) {
+    if (since && searchResults?.length < total && total > RESULTS_PER_PAGE) {
       fetchResults({
         query,
         filters: activeSearchOption === 'advanced' ? searchFilters : {},

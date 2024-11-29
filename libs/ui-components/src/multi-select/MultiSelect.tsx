@@ -1,14 +1,16 @@
 import React, { useCallback, useState, useMemo, Fragment, useRef } from 'react'
 import { matchSorter } from 'match-sorter'
-import {
-  useMultipleSelection,
-  useCombobox,
+import type {
   UseComboboxState,
   UseComboboxStateChangeTypes,
-  UseComboboxStateChange,
+  UseComboboxStateChange} from 'downshift';
+import {
+  useMultipleSelection,
+  useCombobox
 } from 'downshift'
 import cx from 'classnames'
-import { Icon, IconType } from '../icon'
+import type { IconType } from '../icon';
+import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { Tooltip } from '../tooltip'
 import { InputText } from '../input-text'

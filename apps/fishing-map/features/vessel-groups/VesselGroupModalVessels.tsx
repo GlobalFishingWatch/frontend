@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { Locale } from '@globalfishingwatch/api-types'
+import type { Locale } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from 'utils/info'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import I18nDate from 'features/i18n/i18nDate'
@@ -13,8 +13,9 @@ import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './VesselGroupModal.module.css'
+import type {
+  VesselGroupVesselIdentity} from './vessel-groups-modal.slice';
 import {
-  VesselGroupVesselIdentity,
   selectVesselGroupModalVessels,
   setVesselGroupModalVessels,
 } from './vessel-groups-modal.slice'

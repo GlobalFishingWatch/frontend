@@ -2,17 +2,19 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { capitalize } from 'lodash'
-import { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
-import { Region, anyRegion } from 'features/regions/regions.slice'
+import type { Region} from 'features/regions/regions.slice';
+import { anyRegion } from 'features/regions/regions.slice'
 import flags from 'data/flags'
-import {
-  selectSettings,
+import type {
   SettingEventSectionName,
   Settings,
   SettingsEvents,
-  SettingsPortVisits,
+  SettingsPortVisits} from './settings.slice';
+import {
+  selectSettings,
   updateSettings,
 } from './settings.slice'
 

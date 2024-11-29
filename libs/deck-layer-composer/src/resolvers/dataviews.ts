@@ -1,24 +1,28 @@
 import { uniq } from 'es-toolkit'
-import {
-  DatasetTypes,
-  EndpointId,
-  DataviewCategory,
+import type {
   Dataset,
   ApiEvent,
   DataviewInstance,
   EventTypes,
-  DataviewSublayerConfig,
+  DataviewSublayerConfig} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes,
+  EndpointId,
+  DataviewCategory,
   DataviewType,
 } from '@globalfishingwatch/api-types'
-import {
-  FourwingsComparisonMode,
+import type {
   FourwingsVisualizationMode,
   HEATMAP_ID,
-  HEATMAP_LOW_RES_ID,
-} from '@globalfishingwatch/deck-layers'
-import { FOURWINGS_INTERVALS_ORDER, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+  HEATMAP_LOW_RES_ID} from '@globalfishingwatch/deck-layers';
 import {
-  UrlDataviewInstance,
+  FourwingsComparisonMode
+} from '@globalfishingwatch/deck-layers'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders';
+import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
+import type {
+  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
+import {
   getMergedDataviewId,
   isActivityDataview,
   isDetectionsDataview,

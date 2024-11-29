@@ -1,7 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components';
+import { Choice } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   REPORT_ACTIVITY_GRAPH_EVOLUTION,
@@ -13,7 +14,7 @@ import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import { useSetReportTimeComparison } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportActivityGraph } from 'features/reports/areas/area-reports.config.selectors'
-import { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
+import type { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
 
 type ReportActivityGraphSelectorProps = {
   loading: boolean
@@ -85,6 +86,6 @@ export default function ReportActivityGraphSelector({
     : options[0]
 
   return (
-    <Choice size="small" options={options} activeOption={selectedOption!?.id} onSelect={onSelect} />
+    <Choice size="small" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
   )
 }

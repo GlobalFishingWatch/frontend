@@ -7,7 +7,7 @@ import MemoryStatsComponent from 'next-react-memory-stats'
 import { ToastContainer } from 'react-toastify'
 import { FpsView } from 'react-fps'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
-import { Workspace } from '@globalfishingwatch/api-types'
+import type { Workspace } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectIsAnySearchLocation,
@@ -206,7 +206,7 @@ function App() {
         action.abort()
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
@@ -217,7 +217,7 @@ function App() {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   useEffect(() => {

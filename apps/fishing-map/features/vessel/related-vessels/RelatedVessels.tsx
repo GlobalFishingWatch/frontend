@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
-import { Choice, ChoiceOption, Spinner } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 import { selectVesselRelatedSubsection } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import RelatedEncounterVessels from 'features/vessel/related-vessels/RelatedEncounterVessels'
@@ -9,7 +10,7 @@ import RelatedOwnersVessels from 'features/vessel/related-vessels/RelatedOwnersV
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
-import { VesselRelatedSubsection } from '../vessel.types'
+import type { VesselRelatedSubsection } from '../vessel.types'
 import styles from './RelatedVessels.module.css'
 
 const RelatedVessels = () => {

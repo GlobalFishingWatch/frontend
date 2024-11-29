@@ -1,17 +1,19 @@
 import { scaleLinear, scalePow } from 'd3-scale'
-import { FeatureCollection, LineString } from 'geojson'
+import type { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
 import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type {
+  TrackCoordinatesPropertyFilter} from '@globalfishingwatch/data-transforms';
 import {
   segmentsToGeoJSON,
   filterTrackByCoordinateProperties,
-  filterByTimerangeMemoizeEqualityCheck,
-  TrackCoordinatesPropertyFilter,
+  filterByTimerangeMemoizeEqualityCheck
 } from '@globalfishingwatch/data-transforms'
 import { HIGHLIGHT_LINE_COLOR, LINE_COLOR_BAR_OPTIONS } from '../context/context.utils'
 import { Group } from '../../types'
-import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
+import type { TrackGeneratorConfig, MergedGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { isConfigVisible, isNumeric } from '../utils'
 import { simplifyTrack } from './simplify-track'
@@ -189,7 +191,7 @@ class TrackGenerator {
       'line-width': 1.5,
       'line-opacity': 1,
     }
-    let filters: Array<any> = []
+    let filters: any[] = []
     if (config?.filters && Object.keys(config?.filters).length > 0) {
       filters = ['all']
       Object.entries(config.filters).forEach(([key, values]) => {

@@ -1,7 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { orderBy } from 'es-toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
+import type { UserPermission } from '@globalfishingwatch/api-types';
+import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } from 'data/config'

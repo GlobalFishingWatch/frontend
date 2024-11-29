@@ -1,15 +1,16 @@
 import { uniq } from 'es-toolkit'
-import {
+import type {
   Resource,
+  EnviromentalDatasetConfiguration,
+  Dataset,
+  ApiEvent,
+  TrackResourceData} from '@globalfishingwatch/api-types';
+import {
   DatasetTypes,
   EndpointId,
   DatasetStatus,
   DatasetCategory,
-  EnviromentalDatasetConfiguration,
   DataviewCategory,
-  Dataset,
-  ApiEvent,
-  TrackResourceData,
   DRAW_DATASET_SOURCE,
   DataviewType,
 } from '@globalfishingwatch/api-types'
@@ -17,15 +18,15 @@ import {
   DEFAULT_HEATMAP_INTERVALS,
   DEFAULT_ENVIRONMENT_INTERVALS,
   Group,
-  HeatmapAnimatedMode,
-  HeatmapAnimatedGeneratorConfig,
-  Interval,
+  HeatmapAnimatedMode
 } from '@globalfishingwatch/layer-composer'
 import type {
   ColorRampsIds,
   HeatmapAnimatedGeneratorSublayer,
   HeatmapAnimatedInteractionType,
-} from '@globalfishingwatch/layer-composer'
+
+  HeatmapAnimatedGeneratorConfig,
+  Interval} from '@globalfishingwatch/layer-composer'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import {
   getDatasetConfiguration,
@@ -33,14 +34,15 @@ import {
   getDatasetRangeSteps,
   getDatasetsExtent,
 } from '@globalfishingwatch/datasets-client'
+import type {
+  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
 import {
   isActivityDataview,
   isDetectionsDataview,
   isTrackDataview,
   pickTrackResource,
   resolveDataviewDatasetResource,
-  resolveDataviewDatasetResources,
-  UrlDataviewInstance,
+  resolveDataviewDatasetResources
 } from '@globalfishingwatch/dataviews-client'
 
 const MULTILAYER_SEPARATOR = '__'

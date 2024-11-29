@@ -19,6 +19,7 @@
     "sourceMap": true,
     "target": "es2020",
     "paths": {
+      "@globalfishingwatch/linting": ["linting/index.js"],
       "@globalfishingwatch/api-client": ["libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["libs/api-types/src/index.ts"],
       "@globalfishingwatch/data-transforms": ["libs/data-transforms/src/index.ts"],

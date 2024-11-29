@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { ExportData } from 'types'
+import type { ExportData } from 'types'
 import { extractLabeledTrack } from './tracks.utils'
 import labeledTrackJson from './__mocks__/labeled_track.json'
 

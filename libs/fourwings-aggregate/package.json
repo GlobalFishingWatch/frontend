@@ -4,6 +4,7 @@
   "description": "Logic to turn fourwings tiles or cells into meaningful values for the frontend",
   "main": "./index.cjs",
   "module": "./index.js",
+  "type": "module",
   "license": "MIT",
   "author": "satellitestudio <contact@satellitestud.io>",
   "dependencies": {

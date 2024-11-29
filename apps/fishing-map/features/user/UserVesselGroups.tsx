@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment, useCallback, useState } from 'react'
 import { Spinner, IconButton, Button, Icon, InputText } from '@globalfishingwatch/ui-components'
-import { VesselGroup } from '@globalfishingwatch/api-types'
+import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectVesselGroupsStatus,

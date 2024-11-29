@@ -1,8 +1,8 @@
 import get from 'lodash/get'
-import { VesselRegistryAuthorization, VesselRegistryOwner } from '@globalfishingwatch/api-types'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import type { VesselRegistryAuthorization, VesselRegistryOwner } from '@globalfishingwatch/api-types'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { VesselLastIdentity } from 'features/search/search.slice'
+import type { VesselLastIdentity } from 'features/search/search.slice'
 
 type CsvConfig = {
   label: string

@@ -118,9 +118,9 @@ export const selectPortReportVesselsPagination = createSelector(
       offset: resultsPerPage * page,
       resultsPerPage:
         typeof resultsPerPage === 'number' ? resultsPerPage : parseInt(resultsPerPage),
-      resultsNumber: vessels!?.length,
-      totalFiltered: allVesselsFiltered!?.length,
-      total: allVessels!?.length,
+      resultsNumber: vessels?.length,
+      totalFiltered: allVesselsFiltered?.length,
+      total: allVessels?.length,
     }
   }
 )

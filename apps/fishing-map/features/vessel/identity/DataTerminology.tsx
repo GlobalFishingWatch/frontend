@@ -3,13 +3,14 @@ import htmlParse from 'html-react-parser'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import {
+import type {
   IconButtonSize,
-  IconButtonType,
+  IconButtonType} from '@globalfishingwatch/ui-components';
+import {
   IconButton,
   Modal,
 } from '@globalfishingwatch/ui-components'
-import { I18nNamespaces } from 'features/i18n/i18n.types'
+import type { I18nNamespaces } from 'features/i18n/i18n.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselSection } from '../vessel.config.selectors'
 import styles from './DataTerminology.module.css'

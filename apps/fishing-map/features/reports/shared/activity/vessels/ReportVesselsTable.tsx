@@ -15,7 +15,7 @@ import { EMPTY_API_VALUES } from 'features/reports/areas/area-reports.config'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
-import { ReportActivityUnit } from 'features/reports/areas/AreaReport'
+import type { ReportActivityUnit } from 'features/reports/areas/AreaReport'
 import { selectReportVesselsPaginated } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import ReportVesselsTableFooter from 'features/reports/shared/activity/vessels/ReportVesselsTableFooter'
@@ -121,6 +121,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
                 </div>
                 <div
+                  role="button"
+                  tabIndex={0}
                   className={cx({
                     [styles.border]: !isLastRow,
                     [styles.pointer]: flagInteractionEnabled,
@@ -135,6 +137,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   <span>{flag}</span>
                 </div>
                 <div
+                  role="button"
+                  tabIndex={0}
                   className={cx({
                     [styles.border]: !isLastRow,
                     [styles.pointer]: typeInteractionEnabled,

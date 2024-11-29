@@ -1,9 +1,10 @@
-import { ResourceResponseType } from '@globalfishingwatch/api-types'
+import type { ResourceResponseType } from '@globalfishingwatch/api-types'
 
 export const processStatus = (
   response: Response,
   requestStatus?: ResourceResponseType
 ): Promise<Response> => {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     const { status, statusText } = response
     try {

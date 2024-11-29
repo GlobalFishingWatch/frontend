@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 import { useTranslation } from 'react-i18next'
-import { MiniGlobe, MiniglobeBounds, IconButton } from '@globalfishingwatch/ui-components'
+import type { MiniglobeBounds} from '@globalfishingwatch/ui-components';
+import { MiniGlobe, IconButton } from '@globalfishingwatch/ui-components'
 import { useViewport } from '../map-viewport.hooks'
 import styles from './MapControls.module.css'
 

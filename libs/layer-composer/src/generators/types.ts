@@ -1,20 +1,21 @@
-import { FeatureCollection, LineString } from 'geojson'
-import {
+import type { FeatureCollection, LineString } from 'geojson'
+import type {
   SourceSpecification,
   LayerSpecification,
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import {
+import type { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import type {
   TrackSegment,
   Locale,
   Anchorage,
   EventTypes,
-  DataviewType,
-  TimeFilterType,
+  TimeFilterType} from '@globalfishingwatch/api-types';
+import {
+  DataviewType
 } from '@globalfishingwatch/api-types'
-import { Group } from '..'
-import { Interval } from './heatmap/types'
+import type { Group } from '..'
+import type { Interval } from './heatmap/types'
 
 export type LayerVisibility = 'visible' | 'none'
 
@@ -294,7 +295,7 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
   /**
    * Filter the polygons displayed https://docs.mapbox.com/help/glossary/filter/
    */
-  filters?: Record<string, Array<string>>
+  filters?: Record<string, string[]>
 }
 
 export type GlobalUserContextGeneratorConfig = Required<
@@ -414,11 +415,11 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
   /**
    * Filter the tracks displayed https://docs.mapbox.com/help/glossary/filter/
    */
-  filters?: Record<string, Array<string | number>>
+  filters?: Record<string, (string | number)[]>
   /**
    * Filter segment points by its coordinateProperties
    */
-  coordinateFilters?: Record<string, Array<string | number>>
+  coordinateFilters?: Record<string, (string | number)[]>
   /**
    * Property to use as id internally in mapbox
    */

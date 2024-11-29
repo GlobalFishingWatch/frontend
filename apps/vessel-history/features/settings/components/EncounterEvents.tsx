@@ -4,7 +4,7 @@ import {
   ENCOUNTERS_MIN_DISTANCE,
   ENCOUNTERS_MIN_DURATION,
 } from 'data/constants'
-import { SettingEventSectionName, SettingsEvents } from '../settings.slice'
+import type { SettingEventSectionName, SettingsEvents } from '../settings.slice'
 import ActivityEvents from './ActivityEvents'
 import styles from './SettingsComponents.module.css'
 

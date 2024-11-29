@@ -1,7 +1,8 @@
+import type {
+  Workspace} from '@globalfishingwatch/api-types';
 import {
   WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS,
-  Workspace,
+  WORKSPACE_PUBLIC_ACCESS
 } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
@@ -31,7 +32,7 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
-import { WorkspaceState } from 'types'
+import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,

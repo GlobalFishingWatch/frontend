@@ -1,5 +1,5 @@
 import { Dexie } from 'dexie'
-import { OfflineVessel } from 'types/vessel'
+import type { OfflineVessel } from 'types/vessel'
 
 export class VesselHistoryIdb extends Dexie {
   vessels: Dexie.Table<OfflineVessel, string>

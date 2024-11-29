@@ -2,7 +2,7 @@ import {
   trackEvent as trackEventBase,
   useAnalytics as useAnalyticsBase,
 } from '@globalfishingwatch/react-hooks'
-import { UserData } from '@globalfishingwatch/api-types'
+import type { UserData } from '@globalfishingwatch/api-types'
 import {
   GOOGLE_TAG_MANAGER_ID,
   GOOGLE_MEASUREMENT_ID,

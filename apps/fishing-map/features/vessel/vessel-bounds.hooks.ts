@@ -2,7 +2,7 @@ import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { VesselLayer } from '@globalfishingwatch/deck-layers'
+import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetTimerange, useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -29,7 +29,7 @@ export const useVesselProfileBbox = () => {
   const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
   return useMemo(() => {
     return vesselLayer?.instance?.getVesselTrackBounds()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [trackLoaded])
 }
 
@@ -65,7 +65,7 @@ export const useVesselProfileBounds = () => {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     isTrackLoaded,
     canFitDates,
@@ -127,7 +127,7 @@ const useVesselFitTranmissionsBounds = () => {
         seTimerangeBoundsUpdated(true)
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [needsTimerangeUpdate])
 
   // There has to wait for the timerange to be updated so the track loads with the entire track

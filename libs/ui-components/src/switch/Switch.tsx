@@ -1,7 +1,8 @@
-import React, { MouseEvent } from 'react'
+import type { MouseEvent } from 'react';
+import React from 'react'
 import cx from 'classnames'
-import { Placement } from 'tippy.js'
-import { TooltipTypes } from '../types/types'
+import type { Placement } from 'tippy.js'
+import type { TooltipTypes } from '../types/types'
 import { Tooltip } from '../tooltip'
 import styles from './Switch.module.css'
 

@@ -1,4 +1,4 @@
-import { Field } from '@globalfishingwatch/api-types'
+import type { Field } from '@globalfishingwatch/api-types'
 import { trackValueArrayToSegments } from './track-value-array-to-segments'
 
 describe('trackValueArrayToSegments', () => {

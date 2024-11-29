@@ -1,4 +1,4 @@
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 export type VesselSection = 'activity' | 'related_vessels' | 'areas' | 'insights'
 export type VesselAreaSubsection = 'fao' | 'eez' | 'mpa' | 'rfmo'

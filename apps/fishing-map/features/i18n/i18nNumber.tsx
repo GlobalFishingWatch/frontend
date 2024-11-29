@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Locale } from 'types'
+import type { Locale } from 'types'
 import i18n from './i18n'
 
 type I18Number = string | number

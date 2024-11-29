@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { geoEqualEarth, geoPath } from 'd3'
-import { Feature, FeatureCollection, GeoJsonProperties, Geometry, Point } from 'geojson'
+import type { Feature, FeatureCollection, GeoJsonProperties, Geometry, Point } from 'geojson'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 import area from '@turf/area'

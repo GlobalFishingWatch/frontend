@@ -3,9 +3,10 @@ import snakeCase from 'lodash/snakeCase'
 import toNumber from 'lodash/toNumber'
 import max from 'lodash/max'
 import min from 'lodash/min'
-import { FeatureCollection } from 'geojson'
-import { DateTime, DateTimeOptions } from 'luxon'
-import {
+import type { FeatureCollection } from 'geojson'
+import type { DateTimeOptions } from 'luxon';
+import { DateTime } from 'luxon'
+import type {
   Dataset,
   DatasetConfigurationUI,
   DatasetSchemaItem,
@@ -66,7 +67,7 @@ export const getFieldSchema = (
   const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType)
 
   if (values?.length) {
-    let schema: DatasetSchemaItem = {
+    const schema: DatasetSchemaItem = {
       type:
         GUESS_COLUMN_DICT.latitude.some((t) => t === field) ||
         GUESS_COLUMN_DICT.longitude.some((t) => t === field)

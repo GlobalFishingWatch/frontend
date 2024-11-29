@@ -1,13 +1,14 @@
-import {
-  NOT_FOUND,
+import type {
   RoutesMap,
-  redirect,
-  connectRoutes,
   Options,
   StateGetter,
-  Bag,
+  Bag} from 'redux-first-router';
+import {
+  NOT_FOUND,
+  redirect,
+  connectRoutes
 } from 'redux-first-router'
-import { Dispatch } from '@reduxjs/toolkit'
+import type { Dispatch } from '@reduxjs/toolkit'
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import { PATH_BASENAME } from 'data/config'
 import { t } from 'features/i18n/i18n'

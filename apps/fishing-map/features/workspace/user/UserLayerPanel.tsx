@@ -2,20 +2,22 @@ import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import type {
+  DatasetGeometryType,
+  Dataset} from '@globalfishingwatch/api-types';
 import {
   DatasetStatus,
-  DatasetGeometryType,
-  Dataset,
   DataviewType,
 } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import { Tooltip, IconButton } from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
-import { DrawFeatureType, UserTracksLayer } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType, UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'

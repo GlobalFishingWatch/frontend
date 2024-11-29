@@ -1,10 +1,11 @@
 import React, { Suspense, lazy } from 'react'
-import { Placement } from 'tippy.js'
+import type { Placement } from 'tippy.js'
 import cx from 'classnames'
 import { Tooltip } from '../tooltip'
-import { TooltipTypes } from '../types/types'
+import type { TooltipTypes } from '../types/types'
 import styles from './Icon.module.css'
-import icons, { IconType } from './icon.config'
+import type { IconType } from './icon.config';
+import icons from './icon.config'
 
 const IconComponents = icons.reduce((acc, icon) => {
   acc[icon] = lazy(() =>

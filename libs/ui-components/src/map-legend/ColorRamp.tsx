@@ -8,7 +8,7 @@ import {
   roundLegendNumber,
   SCIENTIFIC_NOTATION_E,
 } from './map-legend.utils'
-import { UILegendColorRamp } from './types'
+import type { UILegendColorRamp } from './types'
 
 type ColorRampLegendProps = {
   layer: UILegendColorRamp

@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'es-toolkit'
-import { PickingInfo, Position } from '@deck.gl/core'
-import { RulerData, RulersLayer } from '@globalfishingwatch/deck-layers'
+import type { PickingInfo, Position } from '@deck.gl/core'
+import type { RulerData} from '@globalfishingwatch/deck-layers';
+import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
@@ -35,7 +36,7 @@ const useRulers = () => {
     [setMapControlValue]
   )
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   const throttledSetRuleEnd = useCallback(throttle(setRulerEnd, 16), [setRulerEnd])
 
   const onRulerMapHover = useCallback(

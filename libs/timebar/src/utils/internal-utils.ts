@@ -1,4 +1,5 @@
-import { DateTime, DateTimeUnit } from 'luxon'
+import type { DateTimeUnit } from 'luxon';
+import { DateTime } from 'luxon'
 import { DEFAULT_DATE_FORMAT, DEFAULT_FULL_DATE_FORMAT } from '../constants'
 
 export const getTime = (dateISO: string) => new Date(dateISO).getTime()

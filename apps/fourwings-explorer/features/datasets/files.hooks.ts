@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { API_URL } from 'data/config'
-import { DatasetType, ImportStatus } from 'features/datasets/datasets.types'
+import type { DatasetType, ImportStatus } from 'features/datasets/datasets.types'
 
 export type UploadFileParams = { file: File; type: DatasetType }
 

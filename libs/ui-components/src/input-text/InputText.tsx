@@ -1,8 +1,9 @@
+import type {
+  Ref} from 'react';
 import React, {
   useRef,
   forwardRef,
   useImperativeHandle,
-  Ref,
   Fragment,
   useState,
   useCallback,
@@ -12,7 +13,7 @@ import { IconButton } from '../icon-button'
 import { Tooltip } from '../tooltip'
 import { Icon } from '../icon'
 import { Spinner } from '../spinner'
-import { TooltipTypes } from '../types/types'
+import type { TooltipTypes } from '../types/types'
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'

@@ -1,5 +1,6 @@
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import {
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type {
   ContextLayerConfig,
   ContextLayerId,
   ContextLayerProps,
@@ -11,7 +12,7 @@ import {
   getDatasetConfiguration,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
-import { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from './types'
 
 export const resolveDeckContextLayerProps: DeckResolverFunction<ContextLayerProps> = (
   dataview,
@@ -48,7 +49,7 @@ export const resolveDeckContextLayerProps: DeckResolverFunction<ContextLayerProp
     id: dataview.id,
     layers: layers,
     category: dataview.category!,
-    color: dataview.config?.color!,
+    color: dataview.config?.color as string,
     idProperty,
     valueProperties,
     highlightedFeatures: highlightedFeatures as ContextPickingObject[],
