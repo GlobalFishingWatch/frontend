@@ -50,7 +50,7 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "../../dist/apps/fishing-map/.next/types/**/*.ts",
-    "eslint.config.mjs"
+    "eslint.config.js"
   ],
   "exclude": ["node_modules", "jest.config.ts", ".next", "exported"]
 }

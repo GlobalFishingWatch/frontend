@@ -3,7 +3,6 @@
   "version": "3.0.5",
   "main": "./index.cjs",
   "module": "./index.js",
-  "type": "module",
   "scripts": {
     "decoders": "yarn build:prepare && yarn build:pb:vessels:js && yarn build:pb:vessels:ts && yarn build:pb:4wings-tile:js && yarn build:pb:4wings-tile:ts",
     "build:prepare": "mkdir -p decoders",

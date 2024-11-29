@@ -3,12 +3,8 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { Tooltip } from '@globalfishingwatch/ui-components'
-import type {
-  DataviewCategory} from '@globalfishingwatch/api-types';
-import {
-  DatasetSubCategory,
-  VesselIdentitySourceEnum,
-} from '@globalfishingwatch/api-types'
+import type { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -22,10 +18,9 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import type {
   ActivityProperty,
   ExtendedFeatureVessel,
-  SliceExtendedFourwingsDeckSublayer} from 'features/map/map.slice';
-import {
-  MAX_TOOLTIP_LIST
+  SliceExtendedFourwingsDeckSublayer,
 } from 'features/map/map.slice'
+import { MAX_TOOLTIP_LIST } from 'features/map/map.slice'
 import { t } from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -134,7 +129,7 @@ function VesselsTable({
   const isPresenceActivity = activityType === DatasetSubCategory.Presence
   return (
     <Fragment>
-      {vessels?.length > 0 && (
+      {vessels?.length && vessels.length > 0 && (
         <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>

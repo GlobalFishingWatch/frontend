@@ -1,3 +1,3 @@
-import gfwConfig from '@globalfishingwatch/linting'
+const gfwConfig = require('../../eslint.config')
 
-export default gfwConfig
+module.exports = gfwConfig

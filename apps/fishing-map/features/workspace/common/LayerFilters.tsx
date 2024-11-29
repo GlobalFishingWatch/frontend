@@ -3,25 +3,14 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'es-toolkit'
 import { useSelector } from 'react-redux'
-import type {
-  MultiSelectOnChange,
-  MultiSelectOption} from '@globalfishingwatch/ui-components';
-import {
-  Button,
-  MultiSelect
-} from '@globalfishingwatch/ui-components'
-import type {
-  FilterOperator} from '@globalfishingwatch/api-types';
-import {
-  DatasetTypes,
-  DataviewCategory,
-  EXCLUDE_FILTER_ID
-} from '@globalfishingwatch/api-types'
+import type { MultiSelectOnChange, MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
+import type { FilterOperator } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import type {
-  SupportedDatasetSchema} from 'features/datasets/datasets.utils';
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
   getCommonSchemaFieldsInDataview,
   getSchemaFiltersInDataview,
@@ -201,7 +190,6 @@ function LayerFilters({
       }
     }
     // Running on effect to ensure the dataview update is running when we close the filter from outside
-     
   }, [])
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
@@ -278,9 +266,13 @@ function LayerFilters({
     }
     const newDataview = { ...dataview, config: { ...dataview.config, ...newDataviewConfig } }
     const incompatibleFilters = Object.keys(newDataview.config?.filters || {}).flatMap((key) => {
-      const incompatibleFilterSelection =
-        getIncompatibleFilterSelection(newDataview, key as SupportedDatasetSchema)?.length > 0
-      return incompatibleFilterSelection ? key : []
+      const incompatibleFilterSelection = getIncompatibleFilterSelection(
+        newDataview,
+        key as SupportedDatasetSchema
+      )
+      const hasIncompatibleFilterSelection =
+        incompatibleFilterSelection?.length && incompatibleFilterSelection.length > 0
+      return hasIncompatibleFilterSelection ? key : []
     })
     if (incompatibleFilters.length) {
       incompatibleFilters.forEach((f) => {

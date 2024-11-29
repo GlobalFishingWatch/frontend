@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { DatasetAreaDetail} from 'features/areas/areas.slice';
+import type { DatasetAreaDetail } from 'features/areas/areas.slice'
 import { selectAreas } from 'features/areas/areas.slice'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectDownloadTrackIds } from 'features/download/downloadTrack.slice'
@@ -7,7 +7,10 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectDownloadActivityArea = createSelector(
   [selectDownloadActivityAreaKey, selectAreas],
-  (areaKey, areas): DatasetAreaDetail => {
+  (areaKey, areas): DatasetAreaDetail | undefined => {
+    if (!areaKey || !areas) {
+      return undefined
+    }
     return areas[areaKey?.datasetId]?.detail?.[areaKey?.areaId]
   }
 )

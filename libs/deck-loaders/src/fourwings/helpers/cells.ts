@@ -29,7 +29,7 @@ export const getCellCoordinates = ({
   cellIndex,
   cols,
   rows,
-}: GetCellCoordinatesParams): Position[] => {
+}: GetCellCoordinatesParams): number[] => {
   const { col, row, width, height } = getCellProperties(tileBBox, cellIndex, cols)
   const [minX, minY] = tileBBox
   const squareMinX = minX + (col / cols) * width
@@ -37,11 +37,16 @@ export const getCellCoordinates = ({
   const squareMaxX = minX + ((col + 1) / cols) * width
   const squareMaxY = minY + ((row + 1) / rows) * height
   return [
-    [squareMinX, squareMinY],
-    [squareMaxX, squareMinY],
-    [squareMaxX, squareMaxY],
-    [squareMinX, squareMaxY],
-    [squareMinX, squareMinY],
+    squareMinX,
+    squareMinY,
+    squareMaxX,
+    squareMinY,
+    squareMaxX,
+    squareMaxY,
+    squareMinX,
+    squareMaxY,
+    squareMinX,
+    squareMinY,
   ]
 }
 

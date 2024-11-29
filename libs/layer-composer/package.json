@@ -6,7 +6,6 @@
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "main": "./index.cjs",
   "module": "./index.js",
-  "type": "module",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/data-transforms": "^3.0.5",

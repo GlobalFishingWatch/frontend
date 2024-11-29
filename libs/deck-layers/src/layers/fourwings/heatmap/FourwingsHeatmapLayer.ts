@@ -1,9 +1,9 @@
-import type { Color, LayersList, PickingInfo } from '@deck.gl/core';
+import type { Color, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { screen } from 'color-blend'
-import type { FourwingsFeature} from '@globalfishingwatch/deck-loaders';
+import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_HIGHLIGHT_LINE,
@@ -11,7 +11,6 @@ import {
   LayerGroup,
   getLayerGroupOffset,
 } from '../../../utils'
-import type { FourwingsColorObject } from '../fourwings.types'
 import {
   EMPTY_CELL_COLOR,
   aggregateCell,
@@ -22,14 +21,12 @@ import {
 import type {
   FourwingsHeatmapLayerProps,
   FourwingsHeatmapPickingInfo,
-  FourwingsHeatmapPickingObject} from './fourwings-heatmap.types';
-import {
-  FourwingsComparisonMode
+  FourwingsHeatmapPickingObject,
 } from './fourwings-heatmap.types'
+import { FourwingsComparisonMode } from './fourwings-heatmap.types'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
-  layers: LayersList = []
   timeRangeKey!: string
   startFrame!: number
   endFrame!: number
@@ -166,24 +163,23 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       target = EMPTY_CELL_COLOR
       return target
     }
-    let color: FourwingsColorObject | undefined
     if (scales[chosenValueIndex]) {
       const colorChosen = scales[chosenValueIndex](chosenValue)
       if (colorChosen) {
-        color = colorChosen
+        target = [colorChosen.r, colorChosen.g, colorChosen.b, colorChosen.a * 255]
+        return target
       }
     } else {
       const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
         (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
       )
-      color = colorRanges[chosenValueIndex]?.[colorIndex]
+      const color = colorRanges[chosenValueIndex]?.[colorIndex]
+      if (color) {
+        target = [color.r, color.g, color.b, color.a * 255]
+        return target
+      }
     }
-    if (color) {
-      target = [color.r, color.g, color.b, color.a * 255]
-    } else {
-      target = EMPTY_CELL_COLOR
-    }
-    return target
+    return EMPTY_CELL_COLOR
   }
 
   getBivariateFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
@@ -216,7 +212,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     return target
   }
 
-  renderLayers() {
+  renderLayers(): LayersList {
     const {
       data,
       endTime,
@@ -248,12 +244,16 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     this.startFrame = startFrame
     this.endFrame = endFrame
 
-    this.layers = [
+    const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)
+    return [
       new SolidPolygonLayer(
         this.props,
         this.getSubLayerProps({
           id: `fourwings-tile`,
           pickable: true,
+          material: false,
+          _normalize: false,
+          positionFormat: 'XY',
           getPickingInfo: this.getPickingInfo,
           getFillColor:
             comparisonMode === FourwingsComparisonMode.TimeCompare
@@ -261,7 +261,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
               : comparisonMode === FourwingsComparisonMode.Bivariate
               ? this.getBivariateFillColor
               : this.getCompareFillColor,
-          getPolygon: (d: FourwingsFeature) => d.geometry.coordinates[0],
+          getPolygon: (d: FourwingsFeature) => d.coordinates,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {
             // This tells deck.gl to recalculate fillColor on changes
@@ -279,31 +279,30 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           },
         })
       ),
-    ] as LayersList
-
-    const layerHighlightedFeatures = highlightedFeatures?.filter((f) => f.layerId === this.root.id)
-    if (layerHighlightedFeatures) {
-      layerHighlightedFeatures.forEach((highlightedFeature, index) => {
-        this.layers.push(
-          new PathLayer(
-            this.props,
-            this.getSubLayerProps({
-              data: [highlightedFeature],
-              id: `fourwings-cell-highlight-${index}`,
-              widthUnits: 'pixels',
-              widthMinPixels: 4,
-              getPath: (d: FourwingsFeature) => d.geometry.coordinates[0],
-              getColor: COLOR_HIGHLIGHT_LINE,
-              getOffset: 0.5,
-              getPolygonOffset: (params: any) =>
-                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-              extensions: [new PathStyleExtension({ offset: true })],
-            })
-          )
-        )
-      })
-    }
-    return this.layers
+      ...([
+        layerHighlightedFeature
+          ? new PathLayer(
+              this.props,
+              this.getSubLayerProps({
+                pickable: false,
+                material: false,
+                _normalize: false,
+                positionFormat: 'XY',
+                data: [layerHighlightedFeature],
+                id: `fourwings-cell-highlight`,
+                widthUnits: 'pixels',
+                widthMinPixels: 4,
+                getPath: (d: FourwingsFeature) => d.coordinates,
+                getColor: COLOR_HIGHLIGHT_LINE,
+                getOffset: 0.5,
+                getPolygonOffset: (params: any) =>
+                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+                extensions: [new PathStyleExtension({ offset: true })],
+              })
+            )
+          : [],
+      ] as LayersList),
+    ]
   }
 
   getData() {
