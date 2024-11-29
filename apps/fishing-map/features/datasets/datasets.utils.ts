@@ -15,7 +15,8 @@ import type {
   DatasetSchemaItem,
   IdentityVessel,
   DatasetSchemaItemEnum,
-  VesselIdentitySourceEnum} from '@globalfishingwatch/api-types';
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
 import {
   DatasetCategory,
   DatasetTypes,
@@ -24,7 +25,7 @@ import {
   EventTypes,
   INCLUDE_FILTER_ID,
   DatasetSubCategory,
-  DataviewCategory
+  DataviewCategory,
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -245,7 +246,7 @@ export const getDatasetTitleByDataview = (
     return datasetTitle
   }
   const sources =
-    dataview.datasets?.length > 1
+    dataview?.datasets && dataview?.datasets?.length > 1
       ? `(${dataview.datasets?.length} ${t('common.sources', 'Sources')})`
       : `(${getDatasetNameTranslated(dataview.datasets?.[0] as Dataset)})`
 

@@ -5,7 +5,6 @@
   "license": "MIT",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
-  "type": "module",
   "scripts": {
     "release:fishing-map": "nx release --projects='fishing-map' --skip-publish",
     "affected": "nx show projects --affected --base=origin/develop~1 --exclude='linting,fourwings-explorer,port-labeler,real-time-prototype,*-e2e,libs/*' --plain > affected-apps.txt",
@@ -20,7 +19,8 @@
     "lint": "eslint libs/api-types"
   },
   "workspaces": [
-    "linting"
+    "linting",
+    "apps/fishing-map"
   ],
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.0.3",

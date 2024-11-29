@@ -14,7 +14,6 @@
   },
   "main": "./index.cjs",
   "module": "./index.js",
-  "type": "module",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
     "countryflag": "5.x",
