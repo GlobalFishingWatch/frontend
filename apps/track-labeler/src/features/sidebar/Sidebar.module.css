@@ -147,3 +147,22 @@
 .errorAction {
   margin: var(--space-M) 0;
 }
+
+@keyframes pulse {
+  0% {
+    background-color: var(--color-hint);
+  }
+
+  50% {
+    background-color: #fff;
+  }
+
+  100% {
+    background-color: var(--color-hint);
+  }
+}
+
+.segmentActivityEmpty {
+  background-color: var(--color-hint);
+  animation: pulse 2s ease-in-out 3;
+}

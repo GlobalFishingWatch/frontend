@@ -23,6 +23,7 @@ import type { TrackGraphOrientation } from './timelineContext'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
 const MINIMUM_RANGE = ONE_HOUR_MS
+const DEFAULT_HEIGHT = 70
 
 const getRangeMs = (range: number, unit: DateTimeUnit) => {
   const start = DateTime.now()
@@ -122,6 +123,7 @@ export type TimebarProps = {
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation: TrackGraphOrientation
   isResizable?: boolean
+  defaultHeight?: number
 }
 
 type TimebarState = {
@@ -206,7 +208,7 @@ export class Timebar extends Component<TimebarProps> {
     this.state = {
       showTimeRangeSelector: false,
       absoluteEnd: null,
-      updatedHeight: 70,
+      updatedHeight: props.defaultHeight || DEFAULT_HEIGHT,
       isDragging: false,
       startCursorY: null,
       startHeight: null,
