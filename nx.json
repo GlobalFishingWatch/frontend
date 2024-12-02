@@ -56,6 +56,11 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
     }
   },
   "generators": {
@@ -128,5 +133,6 @@
     ]
   },
   "nxCloudAccessToken": "",
-  "defaultBase": "develop"
+  "defaultBase": "develop",
+  "nxCloudId": "674e106fe1073f1a1fd80c36"
 }
