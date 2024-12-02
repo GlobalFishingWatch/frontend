@@ -243,6 +243,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         new PathLayer(
           this.props,
           this.getSubLayerProps({
+            material: false,
+            _normalize: false,
+            positionFormat: 'XY',
             data: [layerHighlightedFeature],
             id: `fourwings-cell-highlight`,
             widthUnits: 'pixels',
