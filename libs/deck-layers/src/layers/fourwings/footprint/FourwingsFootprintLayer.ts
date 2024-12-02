@@ -120,6 +120,9 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
         this.getSubLayerProps({
           id: `fourwings-tile`,
           pickable: true,
+          material: false,
+          _normalize: false,
+          positionFormat: 'XY',
           getPickingInfo: this.getPickingInfo,
           getFillColor: this._getFillColor,
           getPolygon: (d: FourwingsFeature) => d.coordinates,
@@ -139,6 +142,9 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
           new PathLayer(
             this.props,
             this.getSubLayerProps({
+              material: false,
+              _normalize: false,
+              positionFormat: 'XY',
               data: [highlightedFeature],
               id: `fourwings-cell-highlight-${index}`,
               widthUnits: 'pixels',

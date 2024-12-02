@@ -17,7 +17,6 @@ export function useFetchPortsReport() {
 
   useEffect(() => {
     if (reportAction?.abort !== undefined) {
-      console.log('aborts')
       reportAction?.abort?.()
       reportAction = undefined
     }

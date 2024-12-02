@@ -8,13 +8,14 @@ import type {
   TrackEventChunkProps,
   TrackGraphOrientation,
   HighlightedChunks,
-  TimebarProps} from '@globalfishingwatch/timebar';
+  TimebarProps,
+} from '@globalfishingwatch/timebar'
 import {
   Timebar,
   TimebarTracks,
   TimebarHighlighter,
   TimebarTracksEvents,
-  TimebarTracksGraph
+  TimebarTracksGraph,
 } from '@globalfishingwatch/timebar'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { Locale } from 'types'
