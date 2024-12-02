@@ -1,14 +1,7 @@
 import { DateTime } from 'luxon'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import type {
-  AppState,
-  WorkspaceState} from '../types';
-import {
-  QueryParam,
-  TimebarGraphs,
-  TimebarVisualisations,
-  UserTab
-} from '../types'
+import type { AppState, WorkspaceState } from '../types'
+import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -98,10 +91,18 @@ export const DEFAULT_PAGINATION_PARAMS = {
 export const BUFFER_PREVIEW_COLOR = '#F95E5E'
 
 export const FIRST_YEAR_OF_DATA = 2012
-const CURRENT_YEAR = new Date().getFullYear()
 
-export const AVAILABLE_START = new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString() as string
-export const AVAILABLE_END = new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString() as string
+export const AVAILABLE_START = DateTime.fromObject(
+  { year: FIRST_YEAR_OF_DATA },
+  { zone: 'utc' }
+).toISO() as string
+
+export const AVAILABLE_END = DateTime.fromObject(
+  { year: new Date().getFullYear() + 1 },
+  { zone: 'utc' }
+)
+  .minus({ millisecond: 1 })
+  .toISO() as string
 
 export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
