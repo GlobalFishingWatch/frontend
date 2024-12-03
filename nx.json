@@ -12,10 +12,10 @@
           "echo $NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE",
           "echo $NEXT_PUBLIC_CARRIER_PORTAL_URL",
           "echo $NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID",
-          "echo $NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID",
-          "echo $NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID",
-          "echo $NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL",
-          "echo $NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY"
+          "echo $NEXT_MAP_ERRORS_SPREADSHEET_ID",
+          "echo $NEXT_FEEDBACK_SPREADSHEET_ID",
+          "echo $NEXT_SPREADSHEET_CLIENT_EMAIL",
+          "echo $NEXT_SPREADSHEET_PRIVATE_KEY"
         ],
         "canTrackAnalytics": false,
         "showUsageWarnings": true
@@ -100,20 +100,12 @@
       "generatorOptions": {
         "currentVersionResolver": "git-tag",
         "fallbackCurrentVersionResolver": "disk"
-        // "specifierSource": "conventional-commits"
       }
     },
     "git": {
       "commit": false,
       "tag": false
     }
-    // "conventionalCommits": {
-    //   "types": {
-    //     "i18n": {
-    //       "semverBump": "patch"
-    //     }
-    //   }
-    // }
   },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
@@ -133,6 +125,6 @@
     ]
   },
   "defaultBase": "develop",
-  "nxCloudId": "60d8c5f3e11a8d0005b62728",
+  "nxCloudId": "674f1a779582537c18f697e5",
   "nxCloudAccessToken": ""
 }

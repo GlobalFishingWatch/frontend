@@ -2,11 +2,10 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { stringify } from 'qs'
-import { Button, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { URL_STRINGIFY_CONFIG } from '@globalfishingwatch/dataviews-client'
-import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { PUBLIC_WORKSPACE_ENV } from 'data/config'
@@ -16,8 +15,7 @@ import type { MapAnnotation } from '../annotations/annotations.types'
 import { useMapErrorNotification } from './error-notification.hooks'
 import styles from './ErrorNotification.module.css'
 
-const ERRORS_SPREADSHEET_ID = process.env.NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID || ''
-const ERRORS_SHEET_TITLE = 'errors'
+const ERRORS_SPREADSHEET_ID = process.env.NEXT_MAP_ERRORS_SPREADSHEET_ID || ''
 
 const ErrorNotification = (): React.ReactNode | null => {
   const { t } = useTranslation()
@@ -27,14 +25,19 @@ const ErrorNotification = (): React.ReactNode | null => {
   const [success, setSuccess] = useState(false)
   const locationQuery = useSelector(selectLocationQuery)
   const userData = useSelector(selectUserData)
+
+  const onClose = () => {
+    resetErrorNotification()
+    setNotifyingErrorEdit(false)
+    setSuccess(false)
+  }
+
   const onConfirmClick = async () => {
     if (!errorNotification || !ERRORS_SPREADSHEET_ID) {
       return
     }
     setLoading(true)
     try {
-      const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(ERRORS_SPREADSHEET_ID)
-      const sheet = feedbackSpreadsheetDoc.sheetsByTitle[ERRORS_SHEET_TITLE]
       const date = new Date()
       const mapAnnotations: MapAnnotation[] = [
         {
@@ -65,7 +68,18 @@ const ErrorNotification = (): React.ReactNode | null => {
           ? `${userData.firstName} ${userData.lastName}`
           : EMPTY_FIELD_PLACEHOLDER,
       }
-      await sheet.addRow(finalErrorData)
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ type: 'error', data: finalErrorData }),
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong')
+      }
       setLoading(false)
       setSuccess(true)
       setTimeout(onClose, 1000)
@@ -79,12 +93,6 @@ const ErrorNotification = (): React.ReactNode | null => {
 
   if (!errorNotification) {
     return null
-  }
-
-  const onClose = () => {
-    resetErrorNotification()
-    setNotifyingErrorEdit(false)
-    setSuccess(false)
   }
 
   if (!errorNotification) {
