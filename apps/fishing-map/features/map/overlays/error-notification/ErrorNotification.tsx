@@ -8,7 +8,7 @@ import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { URL_STRINGIFY_CONFIG } from '@globalfishingwatch/dataviews-client'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { PUBLIC_WORKSPACE_ENV } from 'data/config'
+import { PATH_BASENAME, PUBLIC_WORKSPACE_ENV } from 'data/config'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
 import type { MapAnnotation } from '../annotations/annotations.types'
@@ -68,7 +68,7 @@ const ErrorNotification = (): React.ReactNode | null => {
           ? `${userData.firstName} ${userData.lastName}`
           : EMPTY_FIELD_PLACEHOLDER,
       }
-      const response = await fetch('/api/feedback', {
+      const response = await fetch(`${PATH_BASENAME}/api/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -184,7 +184,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
         userId: feedbackData.userId || GUEST_USER_TYPE,
       }
 
-      const response = await fetch('/api/feedback', {
+      const response = await fetch(`${PATH_BASENAME}/api/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
