@@ -15,8 +15,6 @@ import type { MapAnnotation } from '../annotations/annotations.types'
 import { useMapErrorNotification } from './error-notification.hooks'
 import styles from './ErrorNotification.module.css'
 
-const ERRORS_SPREADSHEET_ID = process.env.NEXT_MAP_ERRORS_SPREADSHEET_ID || ''
-
 const ErrorNotification = (): React.ReactNode | null => {
   const { t } = useTranslation()
   const { errorNotification, resetErrorNotification, setErrorNotification, setNotifyingErrorEdit } =
@@ -33,7 +31,7 @@ const ErrorNotification = (): React.ReactNode | null => {
   }
 
   const onConfirmClick = async () => {
-    if (!errorNotification || !ERRORS_SPREADSHEET_ID) {
+    if (!errorNotification) {
       return
     }
     setLoading(true)
