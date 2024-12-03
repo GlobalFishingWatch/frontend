@@ -42,6 +42,19 @@ const SPEED_STEPS = [
   { value: Number.POSITIVE_INFINITY, color: [255, 215, 0, 255] },
 ]
 
+const DEPTH_STEPS = [
+  { value: -100, color: [255, 249, 146, 255] }, // #FFF992
+  { value: -200, color: [255, 246, 80, 255] }, // #FFF650
+  { value: -500, color: [255, 204, 79, 255] }, // #FFCC4F
+  { value: -1000, color: [255, 163, 105, 255] }, // #FFA369
+  { value: -2000, color: [252, 123, 121, 255] }, // #FC7B79
+  { value: -3000, color: [232, 88, 133, 255] }, // #E05885
+  { value: -4000, color: [186, 58, 143, 255] }, // #BA3A8F
+  { value: -5000, color: [140, 41, 146, 255] }, // #8C2992
+  { value: -6000, color: [61, 41, 149, 255] }, // #632995
+  { value: Number.NEGATIVE_INFINITY, color: [61, 41, 149, 255] }, // #632995
+]
+
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const GRAPH_STYLE = { zIndex: '-1' }
 
@@ -60,6 +73,7 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
   const maxValues = useMemo(() => {
     return getMaxValues(data)
   }, [data])
+
   const filteredGraphsData = useFilteredChartData(data)
 
   const layers = useMemo(() => {
@@ -70,14 +84,27 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
           const x1 = outerScale(timestamp)
           const x2 = outerScale(array[index + 1]?.timestamp || Number.POSITIVE_INFINITY)
           const height = (value / maxValues[trackIndex]) * trackY.height
-          const y1 = trackY.y - height / 2
-          const y2 = trackY.y + height / 2
+          let y1
+          let y2
+          if (trackGraphOrientation === 'mirrored') {
+            y1 = trackY.defaultY - height / 2
+            y2 = trackY.defaultY + height / 2
+          } else if (trackGraphOrientation === 'down') {
+            y1 = trackY.defaultY
+            y2 = trackY.defaultY - height
+          } else if (trackGraphOrientation === 'up') {
+            y1 = trackY.defaultY - height
+            y2 = trackY.defaultY
+          }
           if (!x1 || !x2 || !y1 || !y2) {
             return []
           }
           return {
             polygon: [x1, y1, x2, y1, x2, y2, x1, y2],
-            color: SPEED_STEPS.find((step) => value < step.value)?.color,
+            color:
+              trackGraphOrientation === 'down'
+                ? DEPTH_STEPS.find((step) => value >= step.value)?.color
+                : SPEED_STEPS.find((step) => value < step.value)?.color,
           }
         })
       })

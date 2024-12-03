@@ -74,7 +74,7 @@ function VesselsSection(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const sortOrder = useRef<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
   const vesselsColorBy = useSelector(selectVesselsColorBy)
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [sectionSettingsExpanded, setSectionSettingsExpanded] = useState(false)
 
   const onToggleAllVessels = useCallback(() => {
     upsertDataviewInstance(
@@ -176,10 +176,11 @@ function VesselsSection(): React.ReactElement {
       })
 
   const toggleExpandedContainer = useCallback(() => {
-    setIsExpanded((prev) => !prev)
+    setSectionSettingsExpanded((prev) => !prev)
   }, [])
+
   const closeExpandedContainer = useCallback(() => {
-    setIsExpanded(false)
+    setSectionSettingsExpanded(false)
   }, [])
 
   const onColorBySelectionChange = useCallback((e: SelectOption) => {
@@ -216,49 +217,9 @@ function VesselsSection(): React.ReactElement {
           {t('common.vessel_other', 'Vessels')}
           {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
         </h2>
+
         {!readOnly && (
           <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
-            <ExpandedContainer
-              onClickOutside={closeExpandedContainer}
-              visible={isExpanded}
-              component={
-                <div className={styles.expandedContainerContent}>
-                  <Select
-                    label={t('vessel.colorBy', 'Color by')}
-                    options={colorByOptions}
-                    onSelect={onColorBySelectionChange}
-                    selectedOption={colorByOptions.find((o) => o.id === vesselsColorBy)}
-                  />
-                  {dataviews.length > 1 && (
-                    <div>
-                      <label>{t('vessel.sortAsc', 'Sort vessels')}</label>
-                      <IconButton
-                        icon={'sort-desc'}
-                        size="medium"
-                        tooltip={t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')}
-                        tooltipPlacement="top"
-                        onClick={onSetSortOrderAsc}
-                      />
-                      <IconButton
-                        icon={'sort-asc'}
-                        size="medium"
-                        tooltip={t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')}
-                        tooltipPlacement="top"
-                        onClick={onSetSortOrderDesc}
-                      />
-                    </div>
-                  )}
-                </div>
-              }
-            >
-              <IconButton
-                icon="settings"
-                size="medium"
-                tooltip={t('common.expand', 'Open Expanded Container')}
-                tooltipPlacement="top"
-                onClick={toggleExpandedContainer}
-              />
-            </ExpandedContainer>
             {activeDataviews.length > 0 && (
               <VesselGroupAddButton
                 vessels={vesselsToVesselGroup}
@@ -289,6 +250,48 @@ function VesselsSection(): React.ReactElement {
             )}
           </div>
         )}
+        <ExpandedContainer
+          onClickOutside={closeExpandedContainer}
+          visible={sectionSettingsExpanded}
+          component={
+            <div className={styles.expandedContainerContent}>
+              <Select
+                label={t('vessel.colorBy', 'Color by')}
+                options={colorByOptions}
+                onSelect={onColorBySelectionChange}
+                selectedOption={colorByOptions.find((o) => o.id === vesselsColorBy)}
+              />
+              {dataviews.length > 1 && (
+                <div>
+                  <label>{t('vessel.sortAsc', 'Sort vessels')}</label>
+                  <IconButton
+                    icon={'sort-desc'}
+                    size="medium"
+                    tooltip={t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')}
+                    tooltipPlacement="top"
+                    onClick={onSetSortOrderAsc}
+                  />
+                  <IconButton
+                    icon={'sort-asc'}
+                    size="medium"
+                    tooltip={t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')}
+                    tooltipPlacement="top"
+                    onClick={onSetSortOrderDesc}
+                  />
+                </div>
+              )}
+            </div>
+          }
+        >
+          <IconButton
+            icon="settings"
+            size="medium"
+            tooltip={t('common.expand', 'Open Expanded Container')}
+            tooltipPlacement="top"
+            onClick={toggleExpandedContainer}
+            className={styles.sectionButtonsSecondary}
+          />
+        </ExpandedContainer>
         <IconButton
           icon="search"
           type="border"

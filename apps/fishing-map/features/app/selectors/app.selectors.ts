@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import type { RulerData } from '@globalfishingwatch/deck-layers'
+import type { RulerData, VesselsColorBy } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_HIGH_RES_ID } from '@globalfishingwatch/deck-layers'
 import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
 import {
@@ -65,7 +65,12 @@ export const selectEnvironmentVisualizationMode = selectWorkspaceStateProperty(
   'environmentVisualizationMode'
 )
 
-export const selectVesselsColorBy = selectWorkspaceStateProperty('vesselsColorBy')
+export const selectVesselsColorBy = createSelector(
+  [selectWorkspaceStateProperty('vesselsColorBy')],
+  (colorBy): VesselsColorBy => {
+    return typeof colorBy === 'string' ? parseInt(colorBy) : colorBy
+  }
+)
 
 export const selectMapRulersVisible = createSelector(
   [selectMapRulers, selectAreMapRulersVisible],

@@ -179,41 +179,44 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
           color.r = trackColor.r;
           color.g = trackColor.g;
           color.b = trackColor.b;
-        }
-
-        if(colorBy == ${COLOR_BY.speed}){
-          // Assign colors based on discrete speed ranges
-
-          // Initialize speedColor
-          vec3 speedColor;
-
+        } else if(colorBy == ${COLOR_BY.speed}){
           if (vSpeed <= 2.0) {
-            speedColor = vec3(0.0, 0.0, 1.0);       // #0000ff
+            color = vec4(0.0, 0.0, 1.0, 1.0);       // #0000ff
           } else if (vSpeed <= 4.0) {
-            speedColor = vec3(0.61, 0.01, 0.84);    // #9d02d7
+            color = vec4(0.61, 0.01, 0.84, 1.0);    // #9d02d7
           } else if (vSpeed <= 6.0) {
-            speedColor = vec3(0.80, 0.21, 0.71);    // #cd34b5
+            color = vec4(0.80, 0.21, 0.71, 1.0);    // #cd34b5
           } else if (vSpeed <= 10.0) {
-            speedColor = vec3(0.92, 0.37, 0.58);    // #ea5f94
+            color = vec4(0.92, 0.37, 0.58, 1.0);    // #ea5f94
           } else if (vSpeed <= 15.0) {
-            speedColor = vec3(0.98, 0.53, 0.45);    // #fa8775
+            color = vec4(0.98, 0.53, 0.45, 1.0);    // #fa8775
           } else if (vSpeed <= 25.0) {
-            speedColor = vec3(1.0, 0.69, 0.31);     // #ffb14e
+            color = vec4(1.0, 0.69, 0.31, 1.0);     // #ffb14e
           } else {
-            speedColor = vec3(1.0, 0.84, 0.0);       // #ffd700
+            color = vec4(1.0, 0.84, 0.0, 1.0);       // #ffd700
           }
-
-          // Assign the computed speedColor to the output variable
-          color = vec4(speedColor, 1.0); // Assuming outputColor is the final color variable
-        }
-
-        if(colorBy == ${COLOR_BY.depth}){
-          // Deep blue (at -5000m) -> Light blue -> White (at 0m)
-          float normalizedDepth = clamp(vElevation / 5000.0, 0.0, 1.0);
-
-          color.b = normalizedDepth; // 0 to 1 (dark to white)
-          color.g = normalizedDepth; // 0 to 1 (dark to white)
-          color.r = mix(0.5, 1.0, normalizedDepth); // 0.5 to 1 (deep blue to white)
+        } else if(colorBy == ${COLOR_BY.depth}){
+          if (vElevation >= -100.0) {
+            color = vec4(1.0, 0.976, 0.573, 1.0);      // #FFF992
+          } else if (vElevation >= -200.0) {
+            color = vec4(1.0, 0.96, 0.31, 1.0);    // #FFF650
+          } else if (vElevation >= -500.0) {
+            color = vec4(1.0, 0.8, 0.31, 1.0);     // #FFCC4F
+          } else if (vElevation >= -1000.0) {
+            color = vec4(1.0, 0.64, 0.41, 1.0);    // #FFA369
+          } else if (vElevation >= -2000.0) {
+            color = vec4(0.99, 0.48, 0.48, 1.0);   // #FC7B79
+          } else if (vElevation >= -3000.0) {
+            color = vec4(0.88, 0.35, 0.52, 1.0);   // #E05885
+          } else if (vElevation >= -4000.0) {
+            color = vec4(0.73, 0.23, 0.56, 1.0);   // #BA3A8F
+          } else if (vElevation >= -5000.0) {
+            color = vec4(0.55, 0.16, 0.57, 1.0);   // #8C2992
+          } else if (vElevation >= -6000.0) {
+            color = vec4(0.39, 0.16, 0.58, 1.0);   // #632995
+          } else {
+            color = vec4(0.29, 0.17, 0.64, 1.0);   // #4B2AA3
+          }
         }
 
         if (vSpeed < minSpeedFilter ||
