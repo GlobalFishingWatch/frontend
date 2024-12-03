@@ -53,11 +53,6 @@ steps:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       - 'NEXT_PUBLIC_API_VERSION=$_NEXT_PUBLIC_API_VERSION'
-      - 'NEXT_PUBLIC_CARRIER_PORTAL_URL=$_NEXT_PUBLIC_CARRIER_PORTAL_URL'
-      - 'NEXT_MAP_ERRORS_SPREADSHEET_ID=$_NEXT_MAP_ERRORS_SPREADSHEET_ID'
-      - 'NEXT_FEEDBACK_SPREADSHEET_ID=$_NEXT_FEEDBACK_SPREADSHEET_ID'
-      - 'NEXT_SPREADSHEET_CLIENT_EMAIL=$_NEXT_SPREADSHEET_CLIENT_EMAIL'
-      - 'NEXT_SPREADSHEET_PRIVATE_KEY=$_NEXT_SPREADSHEET_PRIVATE_KEY'
       - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
       - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID'
       - 'NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID=$_NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID'
@@ -73,6 +68,7 @@ steps:
     env:
       - 'REF_NAME=$REF_NAME'
       - 'SHORT_SHA=$SHORT_SHA'
+      - 'NEXT_PUBLIC_CARRIER_PORTAL_URL=$_NEXT_PUBLIC_CARRIER_PORTAL_URL'
     script: |
       image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "fishing-map@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
       /kaniko/executor \
@@ -82,6 +78,14 @@ steps:
         --cache=true \
         --build-arg \
           APP_NAME=fishing-map \
+        --build-arg \
+          NEXT_MAP_ERRORS_SPREADSHEET_ID=${_NEXT_MAP_ERRORS_SPREADSHEET_ID} \
+        --build-arg \
+          NEXT_FEEDBACK_SPREADSHEET_ID=${_NEXT_FEEDBACK_SPREADSHEET_ID} \
+        --build-arg \
+          NEXT_SPREADSHEET_CLIENT_EMAIL=${_NEXT_SPREADSHEET_CLIENT_EMAIL} \
+        --build-arg \
+          NEXT_SPREADSHEET_PRIVATE_KEY=${_NEXT_SPREADSHEET_PRIVATE_KEY} \
         --target \
           production \
         -f \
@@ -97,6 +101,7 @@ steps:
     env:
       - '_RUN_SERVICE_NAME=$_RUN_SERVICE_NAME'
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - 'NEXT_PUBLIC_CARRIER_PORTAL_URL=$_NEXT_PUBLIC_CARRIER_PORTAL_URL'
     args:
       - '-eEuo'
       - 'pipefail'
@@ -119,6 +124,14 @@ steps:
           BASIC_AUTH_USER=$_BASIC_AUTH_USER \
           --set-env-vars \
           BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
+          --set-env-vars \
+          NEXT_MAP_ERRORS_SPREADSHEET_ID=${_NEXT_MAP_ERRORS_SPREADSHEET_ID} \
+          --set-env-vars \
+          NEXT_FEEDBACK_SPREADSHEET_ID=${_NEXT_FEEDBACK_SPREADSHEET_ID} \
+          --set-env-vars \
+          NEXT_SPREADSHEET_CLIENT_EMAIL=${_NEXT_SPREADSHEET_CLIENT_EMAIL} \
+          --set-env-vars \
+          NEXT_SPREADSHEET_PRIVATE_KEY=${_NEXT_SPREADSHEET_PRIVATE_KEY} \
           --allow-unauthenticated
         workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
         echo "https://globalfishingwatch.org/map" > app_url
