@@ -676,7 +676,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { zoom } = this.context.viewport
-    if (!zoom) {
+    if (zoom === undefined) {
       return []
     }
     const { resolution, comparisonMode } = this.props
