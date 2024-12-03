@@ -100,20 +100,12 @@
       "generatorOptions": {
         "currentVersionResolver": "git-tag",
         "fallbackCurrentVersionResolver": "disk"
-        // "specifierSource": "conventional-commits"
       }
     },
     "git": {
       "commit": false,
       "tag": false
     }
-    // "conventionalCommits": {
-    //   "types": {
-    //     "i18n": {
-    //       "semverBump": "patch"
-    //     }
-    //   }
-    // }
   },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
@@ -133,6 +125,6 @@
     ]
   },
   "defaultBase": "develop",
-  "nxCloudId": "60d8c5f3e11a8d0005b62728",
+  "nxCloudId": "674f1a779582537c18f697e5",
   "nxCloudAccessToken": ""
 }
