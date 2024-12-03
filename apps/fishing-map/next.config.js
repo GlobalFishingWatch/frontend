@@ -48,6 +48,10 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        source: '/api/*',
+        destination: '/api*',
+      },
+      {
         source: '/vessel/:vesselId/:any*',
         destination: '/vessel/:vesselId/:any*',
       },
