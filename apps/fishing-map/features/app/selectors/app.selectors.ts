@@ -65,6 +65,8 @@ export const selectEnvironmentVisualizationMode = selectWorkspaceStateProperty(
   'environmentVisualizationMode'
 )
 
+export const selectVesselsColorBy = selectWorkspaceStateProperty('vesselsColorBy')
+
 export const selectMapRulersVisible = createSelector(
   [selectMapRulers, selectAreMapRulersVisible],
   (rulers, areMapRulersVisible): RulerData[] => {

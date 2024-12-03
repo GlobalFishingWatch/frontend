@@ -87,7 +87,7 @@ const PeriodComparisonGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval, offsetedLastDataUpdate } =
     props as PeriodComparisonGraphTooltipProps
 
-  if (label && active && payload.length > 0 && payload.length) {
+  if (label && active && payload && payload.length > 0) {
     const difference = payload.find(({ name }) => name === DIFFERENCE)
     if (!difference) return null
     const baselineDate = getUTCDateTime(difference?.payload.date).setLocale(i18n.language)

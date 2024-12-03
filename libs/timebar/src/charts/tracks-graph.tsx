@@ -1,11 +1,12 @@
-import React, { useContext, useMemo } from 'react'
-import { area, curveStepAfter } from 'd3-shape'
+import { useContext, useMemo } from 'react'
 import { quantile } from 'simple-statistics'
-import type { TimelineScale, TrackGraphOrientation } from '../timelineContext';
+import DeckGL from '@deck.gl/react'
+import { SolidPolygonLayer } from '@deck.gl/layers'
+import type { OrthographicViewState } from '@deck.gl/core'
+import { OrthographicView } from '@deck.gl/core'
 import TimelineContext from '../timelineContext'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
-import { useUpdateChartsData } from './chartsData.atom'
 import type { TimebarChartData, TimebarChartChunk, TimebarChartItem } from '.'
 
 const getMaxValues = (data: TimebarChartData) => {
@@ -31,121 +32,78 @@ const getMaxValues = (data: TimebarChartData) => {
   return maxValues
 }
 
-const getPaths = ({
-  trackGraphData,
-  numTracks,
-  trackIndex,
-  graphHeight,
-  overallScale,
-  maxValue,
-  orientation,
-}: {
-  trackGraphData: TimebarChartItem
-  numTracks: number
-  trackIndex: number
-  graphHeight: number
-  overallScale: TimelineScale
-  maxValue: number
-  orientation: TrackGraphOrientation
-}) => {
-  const trackY = getTrackY(numTracks, trackIndex, graphHeight, orientation)
-  const getPx = (d: any) => ((d as any).value / maxValue) * trackY.height
+const SPEED_STEPS = [
+  { value: 2, color: [0, 0, 255, 255] },
+  { value: 4, color: [157, 2, 215, 255] },
+  { value: 6, color: [205, 52, 181, 255] },
+  { value: 10, color: [234, 95, 148, 255] },
+  { value: 15, color: [250, 135, 117, 255] },
+  { value: 25, color: [255, 177, 78, 255] },
+  { value: Number.POSITIVE_INFINITY, color: [255, 215, 0, 255] },
+]
 
-  const areaGenerator = area()
-    .x((d) => overallScale((d as any).timestamp))
-    .y0((d) => {
-      if (orientation === 'down') return trackY.defaultY
-      if (orientation === 'mirrored') return trackY.y - getPx(d) / 2
-      return trackY.y0 + trackY.height - getPx(d)
-    })
-    .y1((d) => {
-      if (orientation === 'up') return trackY.defaultY
-      if (orientation === 'mirrored') return trackY.y + getPx(d) / 2
-      return trackY.y0 + Math.abs(getPx(d))
-    })
-    .curve(curveStepAfter)
-
-  const paths = trackGraphData.chunks.map((chunk) => {
-    return areaGenerator(chunk.values as any)
-  })
-
-  return paths
-}
-
-const getPathContainers = ({
-  tracksGraphData,
-  graphHeight,
-  overallScale,
-  maxValues,
-  orientation,
-}: {
-  tracksGraphData: TimebarChartData
-  graphHeight: number
-  overallScale: TimelineScale
-  maxValues: number[]
-  orientation: TrackGraphOrientation
-}) => {
-  if (!tracksGraphData) return []
-  return tracksGraphData.map((trackGraphData, i) => {
-    return {
-      paths: getPaths({
-        trackGraphData,
-        numTracks: tracksGraphData.length,
-        trackIndex: i,
-        graphHeight,
-        overallScale,
-        maxValue: maxValues[i],
-        orientation,
-      }),
-      color: trackGraphData.color,
-    }
-  })
-}
+const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
+const GRAPH_STYLE = { zIndex: '-1' }
 
 const TrackGraph = ({ data }: { data: TimebarChartData }) => {
-  const { overallScale, outerWidth, graphHeight, svgTransform, trackGraphOrientation } =
-    useContext(TimelineContext)
+  const { outerScale, outerWidth, graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+
+  const initialViewState = useMemo(
+    () =>
+      ({
+        target: [outerWidth / 2, graphHeight / 2, 0],
+        zoom: 0,
+      } as OrthographicViewState),
+    [outerWidth]
+  )
+
   const maxValues = useMemo(() => {
     return getMaxValues(data)
   }, [data])
   const filteredGraphsData = useFilteredChartData(data)
-  useUpdateChartsData('tracksGraphs', filteredGraphsData)
 
-  const graph = useMemo(() => {
-    const pathContainers = getPathContainers({
-      tracksGraphData: filteredGraphsData,
-      graphHeight,
-      overallScale,
-      maxValues,
-      orientation: trackGraphOrientation,
+  const layers = useMemo(() => {
+    const layerData = filteredGraphsData.flatMap((track, trackIndex) => {
+      const trackY = getTrackY(data.length, trackIndex, graphHeight, trackGraphOrientation)
+      return track.chunks.flatMap((segment) => {
+        return (segment.values || [])?.flatMap(({ value = 0, timestamp }, index, array) => {
+          const x1 = outerScale(timestamp)
+          const x2 = outerScale(array[index + 1]?.timestamp || Number.POSITIVE_INFINITY)
+          const height = (value / maxValues[trackIndex]) * trackY.height
+          const y1 = trackY.y - height / 2
+          const y2 = trackY.y + height / 2
+          if (!x1 || !x2 || !y1 || !y2) {
+            return []
+          }
+          return {
+            polygon: [x1, y1, x2, y1, x2, y2, x1, y2],
+            color: SPEED_STEPS.find((step) => value < step.value)?.color,
+          }
+        })
+      })
     })
-    return (
-      <svg width={outerWidth} height={graphHeight}>
-        <g transform={svgTransform}>
-          {pathContainers.map((pathContainer, trackIndex) => {
-            return pathContainer.paths.map((path, i) => (
-              <path
-                key={`${trackIndex}-${i}`}
-                d={path as string}
-                fill={pathContainer.color}
-                fillOpacity={0.5}
-              />
-            ))
-          })}
-        </g>
-      </svg>
-    )
-  }, [
-    filteredGraphsData,
-    graphHeight,
-    overallScale,
-    maxValues,
-    trackGraphOrientation,
-    outerWidth,
-    svgTransform,
-  ])
+    return [
+      new SolidPolygonLayer({
+        id: 'polygon-layer',
+        data: layerData,
+        _normalize: false,
+        positionFormat: 'XY',
+        getPolygon: (d) => d.polygon,
+        getFillColor: (d) => d.color,
+      }),
+    ]
+  }, [filteredGraphsData, outerScale])
 
-  return graph
+  return (
+    <DeckGL
+      views={VIEW}
+      initialViewState={initialViewState}
+      layers={layers}
+      width={outerWidth}
+      height={graphHeight}
+      style={GRAPH_STYLE}
+    />
+  )
 }
 
 export default TrackGraph

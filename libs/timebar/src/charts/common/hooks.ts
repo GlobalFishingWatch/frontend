@@ -3,7 +3,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import { scaleTime } from 'd3-scale'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { TimelineScale } from '../../timelineContext';
+import type { TimelineScale } from '../../timelineContext'
 import TimelineContext from '../../timelineContext'
 import type {
   TimebarChartData,
@@ -124,7 +124,6 @@ export const useClusteredChartData = (data: TimebarChartData<any>) => {
   const delta = useDelta()
   return useMemo(() => {
     return clusterData(data, outerScale)
-     
   }, [data, delta]) // only memoize when delta changes (ie start and end can change with delta staying the same)
 }
 

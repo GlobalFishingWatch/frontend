@@ -1,11 +1,13 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
-import { IconButton, Switch } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { IconButton, Select, Switch } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { COLOR_BY } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
@@ -22,10 +24,10 @@ import {
   useTimebarVesselTracksData,
 } from 'features/timebar/timebar-vessel.hooks'
 import { getVesselShipNameLabel } from 'utils/info'
-import type { ResourcesState } from 'features/resources/resources.slice';
+import type { ResourcesState } from 'features/resources/resources.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectReadOnly, selectVesselsColorBy } from 'features/app/selectors/app.selectors'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
@@ -38,6 +40,7 @@ import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/datav
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
@@ -70,6 +73,8 @@ function VesselsSection(): React.ReactElement {
   const resources = useSelector(selectResources)
   const { dispatchQueryParams } = useLocationConnect()
   const sortOrder = useRef<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
+  const vesselsColorBy = useSelector(selectVesselsColorBy)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const onToggleAllVessels = useCallback(() => {
     upsertDataviewInstance(
@@ -112,7 +117,6 @@ function VesselsSection(): React.ReactElement {
   )
 
   const onSetSortOrderClick = useCallback(() => {
-    sortOrder.current = sortOrder.current === 'ASC' ? 'DESC' : 'ASC'
     const dataviewsSortedIds = dataviews
       .sort((a, b) => {
         const aResource = getVesselResourceByDataviewId(resources, a.id)
@@ -129,6 +133,16 @@ function VesselsSection(): React.ReactElement {
       .map((d) => d.id)
     dispatchQueryParams({ dataviewInstancesOrder: dataviewsSortedIds })
   }, [dataviews, dispatchQueryParams, resources])
+
+  const onSetSortOrderAsc = useCallback(() => {
+    sortOrder.current = 'ASC'
+    onSetSortOrderClick()
+  }, [])
+
+  const onSetSortOrderDesc = useCallback(() => {
+    sortOrder.current = 'DESC'
+    onSetSortOrderClick()
+  }, [])
 
   const onSearchClick = useCallback(() => {
     trackEvent({
@@ -161,6 +175,32 @@ function VesselsSection(): React.ReactElement {
         } as IdentityVesselData
       })
 
+  const toggleExpandedContainer = useCallback(() => {
+    setIsExpanded((prev) => !prev)
+  }, [])
+  const closeExpandedContainer = useCallback(() => {
+    setIsExpanded(false)
+  }, [])
+
+  const onColorBySelectionChange = useCallback((e: SelectOption) => {
+    dispatchQueryParams({ vesselsColorBy: e.id })
+  }, [])
+
+  const colorByOptions: SelectOption[] = [
+    {
+      id: COLOR_BY.track,
+      label: 'Layer color',
+    },
+    {
+      id: COLOR_BY.speed,
+      label: 'Speed',
+    },
+    {
+      id: COLOR_BY.depth,
+      label: 'Elevation',
+    },
+  ]
+
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={cx('print-hidden', styles.header)}>
@@ -178,6 +218,47 @@ function VesselsSection(): React.ReactElement {
         </h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
+            <ExpandedContainer
+              onClickOutside={closeExpandedContainer}
+              visible={isExpanded}
+              component={
+                <div className={styles.expandedContainerContent}>
+                  <Select
+                    label={t('vessel.colorBy', 'Color by')}
+                    options={colorByOptions}
+                    onSelect={onColorBySelectionChange}
+                    selectedOption={colorByOptions.find((o) => o.id === vesselsColorBy)}
+                  />
+                  {dataviews.length > 1 && (
+                    <div>
+                      <label>{t('vessel.sortAsc', 'Sort vessels')}</label>
+                      <IconButton
+                        icon={'sort-desc'}
+                        size="medium"
+                        tooltip={t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')}
+                        tooltipPlacement="top"
+                        onClick={onSetSortOrderAsc}
+                      />
+                      <IconButton
+                        icon={'sort-asc'}
+                        size="medium"
+                        tooltip={t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')}
+                        tooltipPlacement="top"
+                        onClick={onSetSortOrderDesc}
+                      />
+                    </div>
+                  )}
+                </div>
+              }
+            >
+              <IconButton
+                icon="settings"
+                size="medium"
+                tooltip={t('common.expand', 'Open Expanded Container')}
+                tooltipPlacement="top"
+                onClick={toggleExpandedContainer}
+              />
+            </ExpandedContainer>
             {activeDataviews.length > 0 && (
               <VesselGroupAddButton
                 vessels={vesselsToVesselGroup}
@@ -196,19 +277,7 @@ function VesselsSection(): React.ReactElement {
                 />
               </VesselGroupAddButton>
             )}
-            {dataviews.length > 1 && (
-              <IconButton
-                icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}
-                size="medium"
-                tooltip={
-                  sortOrder.current === 'DESC'
-                    ? t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')
-                    : t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')
-                }
-                tooltipPlacement="top"
-                onClick={onSetSortOrderClick}
-              />
-            )}
+
             {dataviews.length > 0 && (
               <IconButton
                 icon="delete"
@@ -235,6 +304,7 @@ function VesselsSection(): React.ReactElement {
           onClick={onSearchClick}
         />
       </div>
+
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
           dataviews?.map((dataview) => (

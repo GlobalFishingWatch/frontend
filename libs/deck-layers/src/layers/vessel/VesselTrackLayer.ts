@@ -12,6 +12,14 @@ import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { getSegmentsFromData } from './vessel.utils'
 
+export const COLOR_BY = {
+  track: 1,
+  speed: 2,
+  depth: 3,
+}
+
+export type VesselsColorBy = typeof COLOR_BY.track | typeof COLOR_BY.speed | typeof COLOR_BY.depth
+
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
   id: string
@@ -74,6 +82,10 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * Track API url accessor.
    */
   trackUrl?: string
+  /**
+   * Track API url accessor.
+   */
+  colorBy?: VesselsColorBy
   /**
    * Tracks thinning config {[minZoomLevel]: params }
    * e.g. To apply Insane between 0 and 4 zoom levels, and Aggresive for higher
@@ -150,7 +162,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         uniform float maxSpeedFilter;
         uniform float minElevationFilter;
         uniform float maxElevationFilter;
-        uniform vec4 fadedColor;
+        uniform vec3 trackColor;
+        uniform int colorBy;
         in float vTime;
         in float vSpeed;
         in float vElevation;
@@ -162,12 +175,55 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         }
       `,
       'fs:DECKGL_FILTER_COLOR': `
+        if(colorBy == ${COLOR_BY.track}){
+          color.r = trackColor.r;
+          color.g = trackColor.g;
+          color.b = trackColor.b;
+        }
+
+        if(colorBy == ${COLOR_BY.speed}){
+          // Assign colors based on discrete speed ranges
+
+          // Initialize speedColor
+          vec3 speedColor;
+
+          if (vSpeed <= 2.0) {
+            speedColor = vec3(0.0, 0.0, 1.0);       // #0000ff
+          } else if (vSpeed <= 4.0) {
+            speedColor = vec3(0.61, 0.01, 0.84);    // #9d02d7
+          } else if (vSpeed <= 6.0) {
+            speedColor = vec3(0.80, 0.21, 0.71);    // #cd34b5
+          } else if (vSpeed <= 10.0) {
+            speedColor = vec3(0.92, 0.37, 0.58);    // #ea5f94
+          } else if (vSpeed <= 15.0) {
+            speedColor = vec3(0.98, 0.53, 0.45);    // #fa8775
+          } else if (vSpeed <= 25.0) {
+            speedColor = vec3(1.0, 0.69, 0.31);     // #ffb14e
+          } else {
+            speedColor = vec3(1.0, 0.84, 0.0);       // #ffd700
+          }
+
+          // Assign the computed speedColor to the output variable
+          color = vec4(speedColor, 1.0); // Assuming outputColor is the final color variable
+        }
+
+        if(colorBy == ${COLOR_BY.depth}){
+          // Deep blue (at -5000m) -> Light blue -> White (at 0m)
+          float normalizedDepth = clamp(vElevation / 5000.0, 0.0, 1.0);
+
+          color.b = normalizedDepth; // 0 to 1 (dark to white)
+          color.g = normalizedDepth; // 0 to 1 (dark to white)
+          color.r = mix(0.5, 1.0, normalizedDepth); // 0.5 to 1 (deep blue to white)
+        }
+
         if (vSpeed < minSpeedFilter ||
             vSpeed > maxSpeedFilter ||
             vElevation < minElevationFilter ||
-            vElevation > maxElevationFilter) {
-            color = fadedColor;
-          }
+            vElevation > maxElevationFilter)
+        {
+          color.a = 0.25;
+        }
+
         if (vTime > highlightStartTime && vTime < highlightEndTime) {
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
@@ -229,9 +285,10 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       maxSpeedFilter = MAX_FILTER_VALUE,
       minElevationFilter = -MAX_FILTER_VALUE,
       maxElevationFilter = MAX_FILTER_VALUE,
+      colorBy,
     } = this.props
 
-    const color = getColor as Color
+    const trackColor = getColor as Color
     params.uniforms = {
       ...params.uniforms,
       startTime,
@@ -242,7 +299,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       maxSpeedFilter,
       minElevationFilter,
       maxElevationFilter,
-      fadedColor: [color[0] / 255, color[1] / 255, color[2] / 255, 0.25],
+      trackColor: [trackColor[0] / 255, trackColor[1] / 255, trackColor[2] / 255],
+      colorBy: colorBy || COLOR_BY.track,
     }
     super.draw(params)
   }

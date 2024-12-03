@@ -2,17 +2,15 @@ import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
-import type { DataviewInstance } from '@globalfishingwatch/api-types';
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import type {
-  ResolverGlobalConfig,
-  TimeRange} from '@globalfishingwatch/deck-layer-composer';
+import type { ResolverGlobalConfig, TimeRange } from '@globalfishingwatch/deck-layer-composer'
 import {
   useDeckLayerComposer,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { FourwingsLayer} from '@globalfishingwatch/deck-layers';
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -36,6 +34,7 @@ import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
+  selectVesselsColorBy,
 } from 'features/app/selectors/app.selectors'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
@@ -84,6 +83,7 @@ export const useGlobalConfigConnect = () => {
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
+  const vesselsColorBy = useSelector(selectVesselsColorBy)
   const clickedFeatures = useSelector(selectClickedEvent)
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
@@ -143,6 +143,7 @@ export const useGlobalConfigConnect = () => {
       highlightEventIds,
       highlightedTime,
       visibleEvents,
+      vesselsColorBy,
       highlightedFeatures,
       onPositionsMaxPointsError,
     }
@@ -164,6 +165,7 @@ export const useGlobalConfigConnect = () => {
     environmentVisualizationMode,
     highlightedTime,
     visibleEvents,
+    vesselsColorBy,
     highlightedFeatures,
     highlightEventIds,
     onPositionsMaxPointsError,

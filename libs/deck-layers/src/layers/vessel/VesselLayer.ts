@@ -172,6 +172,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackThinningZoomConfig,
       minElevationFilter,
       maxElevationFilter,
+      colorBy,
     } = this.props
 
     if (!trackUrl || !visible) {
@@ -209,6 +210,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           jointRounded: true,
           capRounded: true,
           getColor: color,
+          colorBy,
           startTime,
           endTime,
           highlightStartTime,

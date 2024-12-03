@@ -7,6 +7,7 @@ import type {
   FourwingsVisualizationMode,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
+  VesselsColorBy,
 } from '@globalfishingwatch/deck-layers'
 import type { TimeRange } from './dataviews'
 
@@ -27,6 +28,7 @@ export type ResolverGlobalConfig = {
   highlightedTime?: Partial<TimeRange>
   highlightEventIds?: string[]
   visibleEvents: EventTypes[]
+  vesselsColorBy: VesselsColorBy
   highlightedFeatures?: DeckLayerPickingObject[]
 }
 
