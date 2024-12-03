@@ -144,7 +144,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         out float vSpeed;
         out float vElevation;
       `,
-      // Timestamp of the vertex
       'vs:#main-end': `
         vTime = instanceTimestamps;
         vSpeed = instanceSpeeds;
@@ -162,7 +161,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         uniform float maxSpeedFilter;
         uniform float minElevationFilter;
         uniform float maxElevationFilter;
-        uniform vec3 trackColor;
+        uniform vec4 trackColor;
         uniform int colorBy;
         in float vTime;
         in float vSpeed;
@@ -176,46 +175,50 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       `,
       'fs:DECKGL_FILTER_COLOR': `
         if(colorBy == ${COLOR_BY.track}){
-          color.r = trackColor.r;
-          color.g = trackColor.g;
-          color.b = trackColor.b;
+          color = trackColor;
         } else if(colorBy == ${COLOR_BY.speed}){
-          if (vSpeed <= 2.0) {
-            color = vec4(0.0, 0.0, 1.0, 1.0);       // #0000ff
+          if (vSpeed <= 1.0) {
+            color = vec4(0.29, 0.17, 0.64, 1.0);  // #4B2AA3
+          } else if (vSpeed <= 2.0) {
+            color = vec4(0.39, 0.16, 0.58, 1.0);  // #632995
           } else if (vSpeed <= 4.0) {
-            color = vec4(0.61, 0.01, 0.84, 1.0);    // #9d02d7
+            color = vec4(0.55, 0.16, 0.57, 1.0);  // #8C2992
           } else if (vSpeed <= 6.0) {
-            color = vec4(0.80, 0.21, 0.71, 1.0);    // #cd34b5
+            color = vec4(0.73, 0.23, 0.56, 1.0);  // #BA3A8F
+          } else if (vSpeed <= 8.0) {
+            color = vec4(0.88, 0.35, 0.52, 1.0);  // #E05885
           } else if (vSpeed <= 10.0) {
-            color = vec4(0.92, 0.37, 0.58, 1.0);    // #ea5f94
+            color = vec4(0.99, 0.48, 0.48, 1.0);  // #FC7B79
           } else if (vSpeed <= 15.0) {
-            color = vec4(0.98, 0.53, 0.45, 1.0);    // #fa8775
+            color = vec4(1.0, 0.64, 0.41, 1.0);   // #FFA369
+          } else if (vSpeed <= 20.0) {
+            color = vec4(1.0, 0.8, 0.31, 1.0);    // #FFCC4F
           } else if (vSpeed <= 25.0) {
-            color = vec4(1.0, 0.69, 0.31, 1.0);     // #ffb14e
+            color = vec4(1.0, 0.96, 0.31, 1.0);   // #FFF650
           } else {
-            color = vec4(1.0, 0.84, 0.0, 1.0);       // #ffd700
+            color = vec4(1.0, 0.976, 0.573, 1.0); // #FFF992
           }
         } else if(colorBy == ${COLOR_BY.depth}){
           if (vElevation >= -100.0) {
-            color = vec4(1.0, 0.976, 0.573, 1.0);      // #FFF992
+            color = vec4(1.0, 0.976, 0.573, 1.0); // #FFF992
           } else if (vElevation >= -200.0) {
-            color = vec4(1.0, 0.96, 0.31, 1.0);    // #FFF650
+            color = vec4(1.0, 0.96, 0.31, 1.0);   // #FFF650
           } else if (vElevation >= -500.0) {
-            color = vec4(1.0, 0.8, 0.31, 1.0);     // #FFCC4F
+            color = vec4(1.0, 0.8, 0.31, 1.0);    // #FFCC4F
           } else if (vElevation >= -1000.0) {
-            color = vec4(1.0, 0.64, 0.41, 1.0);    // #FFA369
+            color = vec4(1.0, 0.64, 0.41, 1.0);   // #FFA369
           } else if (vElevation >= -2000.0) {
-            color = vec4(0.99, 0.48, 0.48, 1.0);   // #FC7B79
+            color = vec4(0.99, 0.48, 0.48, 1.0);  // #FC7B79
           } else if (vElevation >= -3000.0) {
-            color = vec4(0.88, 0.35, 0.52, 1.0);   // #E05885
+            color = vec4(0.88, 0.35, 0.52, 1.0);  // #E05885
           } else if (vElevation >= -4000.0) {
-            color = vec4(0.73, 0.23, 0.56, 1.0);   // #BA3A8F
+            color = vec4(0.73, 0.23, 0.56, 1.0);  // #BA3A8F
           } else if (vElevation >= -5000.0) {
-            color = vec4(0.55, 0.16, 0.57, 1.0);   // #8C2992
+            color = vec4(0.55, 0.16, 0.57, 1.0);  // #8C2992
           } else if (vElevation >= -6000.0) {
-            color = vec4(0.39, 0.16, 0.58, 1.0);   // #632995
+            color = vec4(0.39, 0.16, 0.58, 1.0);  // #632995
           } else {
-            color = vec4(0.29, 0.17, 0.64, 1.0);   // #4B2AA3
+            color = vec4(0.29, 0.17, 0.64, 1.0);  // #4B2AA3
           }
         }
 
@@ -224,7 +227,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
             vElevation < minElevationFilter ||
             vElevation > maxElevationFilter)
         {
-          color.a = 0.25;
+          color.a = 0.1;
         }
 
         if (vTime > highlightStartTime && vTime < highlightEndTime) {
@@ -269,14 +272,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     }
   }
 
-  // updateState(params: UpdateParameters<any>) {
-  //   super.updateState(params)
-  //   const { dataChanged } = params.changeFlags
-  //   if (dataChanged !== false && this.props.onDataChange) {
-  //     this.props.onDataChange(dataChanged)
-  //   }
-  // }
-
   draw(params: any) {
     const {
       startTime,
@@ -302,7 +297,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       maxSpeedFilter,
       minElevationFilter,
       maxElevationFilter,
-      trackColor: [trackColor[0] / 255, trackColor[1] / 255, trackColor[2] / 255],
+      trackColor: [trackColor[0] / 255, trackColor[1] / 255, trackColor[2] / 255, 1],
       colorBy: colorBy || COLOR_BY.track,
     }
     super.draw(params)

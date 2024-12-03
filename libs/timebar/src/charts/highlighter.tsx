@@ -3,9 +3,9 @@ import { createPortal } from 'react-dom'
 import cx from 'classnames'
 import { useAtomValue } from 'jotai'
 import { DateTime } from 'luxon'
-import type { IconType } from '@globalfishingwatch/ui-components';
+import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon } from '@globalfishingwatch/ui-components'
-import type { TimelineScale } from '../timelineContext';
+import type { TimelineScale } from '../timelineContext'
 import TimelineContext from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
 import styles from './highlighter.module.css'
@@ -213,7 +213,6 @@ const Highlighter = ({
 
   const minHighlightChunkDuration = useMemo(() => {
     return +outerScale.invert(15) - +outerScale.invert(0)
-     
   }, [outerStart, outerEnd])
 
   const { highlighterData, highlightedChunks } = useMemo(() => {

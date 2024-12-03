@@ -5,6 +5,7 @@ import { SolidPolygonLayer } from '@deck.gl/layers'
 import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import TimelineContext from '../timelineContext'
+import { useUpdateChartsData } from './chartsData.atom'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
 import type { TimebarChartData, TimebarChartChunk, TimebarChartItem } from '.'
@@ -33,13 +34,16 @@ const getMaxValues = (data: TimebarChartData) => {
 }
 
 const SPEED_STEPS = [
-  { value: 2, color: [0, 0, 255, 255] },
-  { value: 4, color: [157, 2, 215, 255] },
-  { value: 6, color: [205, 52, 181, 255] },
-  { value: 10, color: [234, 95, 148, 255] },
-  { value: 15, color: [250, 135, 117, 255] },
-  { value: 25, color: [255, 177, 78, 255] },
-  { value: Number.POSITIVE_INFINITY, color: [255, 215, 0, 255] },
+  { value: 1, color: [61, 41, 149, 255] }, // #4B2AA3
+  { value: 2, color: [61, 41, 149, 255] }, // #632995
+  { value: 4, color: [140, 41, 146, 255] }, // #8C2992
+  { value: 6, color: [186, 58, 143, 255] }, // #BA3A8F
+  { value: 8, color: [232, 88, 133, 255] }, // #E05885
+  { value: 10, color: [252, 123, 121, 255] }, // #FC7B79
+  { value: 15, color: [255, 163, 105, 255] }, // #FFA369
+  { value: 20, color: [255, 204, 79, 255] }, // #FFCC4F
+  { value: 15, color: [255, 246, 80, 255] }, // #FFF650
+  { value: Number.POSITIVE_INFINITY, color: [255, 249, 146, 255] }, // #FFF992
 ]
 
 const DEPTH_STEPS = [
@@ -52,7 +56,7 @@ const DEPTH_STEPS = [
   { value: -4000, color: [186, 58, 143, 255] }, // #BA3A8F
   { value: -5000, color: [140, 41, 146, 255] }, // #8C2992
   { value: -6000, color: [61, 41, 149, 255] }, // #632995
-  { value: Number.NEGATIVE_INFINITY, color: [61, 41, 149, 255] }, // #632995
+  { value: Number.NEGATIVE_INFINITY, color: [61, 41, 149, 255] }, // #4B2AA3
 ]
 
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
@@ -75,6 +79,7 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
   }, [data])
 
   const filteredGraphsData = useFilteredChartData(data)
+  useUpdateChartsData('tracksGraphs', filteredGraphsData)
 
   const layers = useMemo(() => {
     const layerData = filteredGraphsData.flatMap((track, trackIndex) => {
@@ -104,7 +109,7 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
             color:
               trackGraphOrientation === 'down'
                 ? DEPTH_STEPS.find((step) => value >= step.value)?.color
-                : SPEED_STEPS.find((step) => value < step.value)?.color,
+                : SPEED_STEPS.find((step) => value <= step.value)?.color,
           }
         })
       })
