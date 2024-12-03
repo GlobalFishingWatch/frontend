@@ -4,7 +4,7 @@ import { JWT } from 'google-auth-library'
 import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
 const FEEDBACK_CLIENT_EMAIL = process.env.NEXT_SPREADSHEET_CLIENT_EMAIL
-const FEEDBACK_PRIVATE_KEY = process.env.NEXT_SPREADSHEET_PRIVATE_KEY || ''
+const FEEDBACK_PRIVATE_KEY = process.env.NEXT_SPREADSHEET_PRIVATE_KEY?.replace(/\\n/gm, '\n') || ''
 
 const FEEDBACK_SPREADSHEET_ID = process.env.NEXT_FEEDBACK_SPREADSHEET_ID || ''
 const ERRORS_SPREADSHEET_ID = process.env.NEXT_MAP_ERRORS_SPREADSHEET_ID || ''
@@ -83,8 +83,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       message: 'Feedback received successfully',
       data: data,
     })
-  } catch (error) {
-    console.error('Feedback submission error:', error)
+  } catch (error: any) {
+    console.error('Feedback submission error:', error.message)
     return res.status(500).json({
       success: false,
       message: 'Internal server error',
