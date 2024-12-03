@@ -13,7 +13,7 @@
     "knip": "knip",
     "knip:fix": "knip --fix",
     "clean": "yarn clean:deps && yarn clean:cache",
-    "clean:deps": "rm -rf ./node_modules && rm -rf ./yarn.lock && yarn cache clean --all && yarn install",
+    "clean:deps": "rm -rf ./yarn.lock && touch yarn.lock && rm -rf ./node_modules && yarn cache clean --all && yarn install",
     "clean:cache": "rm -rf .nx && rm -rf ./dist",
     "purge": "node scripts/purge-css.js",
     "lint": "eslint libs/api-types"
