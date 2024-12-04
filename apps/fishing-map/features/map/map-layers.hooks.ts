@@ -2,17 +2,15 @@ import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
-import type { DataviewInstance } from '@globalfishingwatch/api-types';
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import type {
-  ResolverGlobalConfig,
-  TimeRange} from '@globalfishingwatch/deck-layer-composer';
+import type { ResolverGlobalConfig, TimeRange } from '@globalfishingwatch/deck-layer-composer'
 import {
   useDeckLayerComposer,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { FourwingsLayer} from '@globalfishingwatch/deck-layers';
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -46,6 +44,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedTime, selectHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
 import {
   selectMapReportBufferDataviews,
@@ -84,6 +83,7 @@ export const useGlobalConfigConnect = () => {
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
+  const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const clickedFeatures = useSelector(selectClickedEvent)
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
@@ -143,6 +143,7 @@ export const useGlobalConfigConnect = () => {
       highlightEventIds,
       highlightedTime,
       visibleEvents,
+      vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
       highlightedFeatures,
       onPositionsMaxPointsError,
     }
@@ -164,6 +165,7 @@ export const useGlobalConfigConnect = () => {
     environmentVisualizationMode,
     highlightedTime,
     visibleEvents,
+    vesselsTimebarGraph,
     highlightedFeatures,
     highlightEventIds,
     onPositionsMaxPointsError,

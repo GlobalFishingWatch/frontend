@@ -8,9 +8,19 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import { MAX_FILTER_VALUE } from '../layers.config'
-import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
+import { deckToVecColor } from '../../utils/colors'
+import { VESSEL_DEPTH_STEPS } from './vessel.config'
+import { DEFAULT_HIGHLIGHT_COLOR_VEC, VESSEL_SPEED_STEPS } from './vessel.config'
 import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { getSegmentsFromData } from './vessel.utils'
+
+export type VesselsColorByProperty = 'track' | 'speed' | 'elevation'
+export type VesselsColorByValue = 1 | 2 | 3
+export const COLOR_BY: Record<VesselsColorByProperty, VesselsColorByValue> = {
+  track: 1,
+  speed: 2,
+  elevation: 3,
+}
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -75,11 +85,37 @@ export type _VesselTrackLayerProps<DataT = any> = {
    */
   trackUrl?: string
   /**
+   * Track API url accessor.
+   */
+  colorBy?: VesselsColorByProperty
+  /**
    * Tracks thinning config {[minZoomLevel]: params }
    * e.g. To apply Insane between 0 and 4 zoom levels, and Aggresive for higher
    * { 0: ThinningLevels.Insane, 4: ThinningLevels.Aggressive }
    */
   trackThinningZoomConfig?: Record<number, ThinningLevels>
+}
+
+function generateShaderColorSteps({
+  property,
+  operation,
+  steps,
+}: {
+  property: 'vSpeed' | 'vElevation'
+  operation: '>=' | '<='
+  steps: typeof VESSEL_SPEED_STEPS | typeof VESSEL_DEPTH_STEPS
+}) {
+  const length = steps.length
+  return steps
+    .map(({ value, color }, index) => {
+      if (index === length - 1) {
+        return `{ color = ${deckToVecColor(color)}; }`
+      }
+      return `if (${property} ${operation} ${value.toFixed(2)}) { color = ${deckToVecColor(
+        color
+      )}; }`
+    })
+    .join(' else ')
 }
 
 // Example of how to use pass an accesor to the shaders
@@ -132,7 +168,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         out float vSpeed;
         out float vElevation;
       `,
-      // Timestamp of the vertex
       'vs:#main-end': `
         vTime = instanceTimestamps;
         vSpeed = instanceSpeeds;
@@ -150,7 +185,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         uniform float maxSpeedFilter;
         uniform float minElevationFilter;
         uniform float maxElevationFilter;
-        uniform vec4 fadedColor;
+        uniform vec4 trackColor;
+        uniform int colorBy;
         in float vTime;
         in float vSpeed;
         in float vElevation;
@@ -162,12 +198,30 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         }
       `,
       'fs:DECKGL_FILTER_COLOR': `
+        if(colorBy == ${COLOR_BY.track}){
+          color = trackColor;
+        } else if(colorBy == ${COLOR_BY.speed}){
+          ${generateShaderColorSteps({
+            property: 'vSpeed',
+            operation: '<=',
+            steps: VESSEL_SPEED_STEPS,
+          })}
+        } else if(colorBy == ${COLOR_BY.elevation}){
+          ${generateShaderColorSteps({
+            property: 'vElevation',
+            operation: '>=',
+            steps: VESSEL_DEPTH_STEPS,
+          })}
+        }
+
         if (vSpeed < minSpeedFilter ||
             vSpeed > maxSpeedFilter ||
             vElevation < minElevationFilter ||
-            vElevation > maxElevationFilter) {
-            color = fadedColor;
-          }
+            vElevation > maxElevationFilter)
+        {
+          color.a = 0.1;
+        }
+
         if (vTime > highlightStartTime && vTime < highlightEndTime) {
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
@@ -210,14 +264,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     }
   }
 
-  // updateState(params: UpdateParameters<any>) {
-  //   super.updateState(params)
-  //   const { dataChanged } = params.changeFlags
-  //   if (dataChanged !== false && this.props.onDataChange) {
-  //     this.props.onDataChange(dataChanged)
-  //   }
-  // }
-
   draw(params: any) {
     const {
       startTime,
@@ -229,9 +275,10 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       maxSpeedFilter = MAX_FILTER_VALUE,
       minElevationFilter = -MAX_FILTER_VALUE,
       maxElevationFilter = MAX_FILTER_VALUE,
+      colorBy,
     } = this.props
 
-    const color = getColor as Color
+    const trackColor = getColor as Color
     params.uniforms = {
       ...params.uniforms,
       startTime,
@@ -242,7 +289,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       maxSpeedFilter,
       minElevationFilter,
       maxElevationFilter,
-      fadedColor: [color[0] / 255, color[1] / 255, color[2] / 255, 0.25],
+      trackColor: [trackColor[0] / 255, trackColor[1] / 255, trackColor[2] / 255, 1],
+      colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
     }
     super.draw(params)
   }

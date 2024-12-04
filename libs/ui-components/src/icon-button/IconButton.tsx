@@ -1,8 +1,8 @@
-import type { Ref, CSSProperties } from 'react';
+import type { Ref, CSSProperties } from 'react'
 import React, { forwardRef, Fragment } from 'react'
 import cx from 'classnames'
 import type { Placement } from 'tippy.js'
-import type { IconType } from '../icon';
+import type { IconType } from '../icon'
 import { Icon } from '../icon'
 import type { TooltipTypes } from '../types/types'
 import { Tooltip } from '../tooltip'

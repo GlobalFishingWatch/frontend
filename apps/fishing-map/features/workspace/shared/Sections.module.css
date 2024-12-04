@@ -122,3 +122,9 @@
   position: absolute;
   right: 0;
 }
+
+.expandedContainerContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
