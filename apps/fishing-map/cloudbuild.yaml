@@ -130,8 +130,8 @@ steps:
           NEXT_FEEDBACK_SPREADSHEET_ID=${_NEXT_FEEDBACK_SPREADSHEET_ID} \
           --set-env-vars \
           NEXT_SPREADSHEET_CLIENT_EMAIL=${_NEXT_SPREADSHEET_CLIENT_EMAIL} \
-          --set-env-vars \
-          NEXT_SPREADSHEET_PRIVATE_KEY=${_NEXT_SPREADSHEET_PRIVATE_KEY} \
+          --set-secrets \
+            NEXT_SPREADSHEET_PRIVATE_KEY=${_NEXT_SPREADSHEET_PRIVATE_KEY} \
           --allow-unauthenticated
         workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
         echo "https://globalfishingwatch.org/map" > app_url
