@@ -1,8 +1,8 @@
-import type { ComponentType } from 'react';
+import type { ComponentType } from 'react'
 import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
-import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
+import AreaIcon from 'assets/icons/timebar-area.svg'
 import { useVisibleGeoTemporalLayers } from 'features/layers/layers.hooks'
 import { useSelectedTimebarLayerId } from 'features/timebar/timebar.hooks'
 import styles from './TimebarSettings.module.css'

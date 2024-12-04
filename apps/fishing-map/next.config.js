@@ -119,7 +119,14 @@ const nextConfig = {
   output: 'standalone',
   outputFileTracingRoot: join(__dirname, '../../'),
   experimental: {
-    // reactCompiler: true,
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
     esmExternals: true,
     optimizePackageImports: [
       '@globalfishingwatch/api-client',
