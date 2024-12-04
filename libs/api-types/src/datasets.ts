@@ -12,8 +12,8 @@ export type EndpointParamType =
   | 'boolean'
   | 'number'
   | 'string'
-  | 'date-iso'
   | 'sql'
+  | 'date-iso' // legacy from v2 replaced by type: string, format: 'date-iso'
   | '4wings-datasets' // legacy from v2 replaced by type: string, array: true
 
 export interface EndpointParam {
@@ -196,11 +196,13 @@ export type DatasetSchemaType =
   | 'coordinate'
   | 'timestamp'
 
+export type DatasetSchemaFormat = 'date-time' | 'latitude' | 'longitude'
+
 export type DatasetSchemaItemEnum = (string | number | boolean)[]
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
   enum?: DatasetSchemaItemEnum
-  format?: string
+  format?: DatasetSchemaFormat
   maxLength?: number
   minLength?: number
   min?: number
