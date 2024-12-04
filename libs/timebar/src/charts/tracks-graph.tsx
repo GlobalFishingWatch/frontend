@@ -4,37 +4,12 @@ import { SolidPolygonLayer } from '@deck.gl/layers'
 import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import { scaleSqrt } from 'd3-scale'
+import { VESSEL_DEPTH_STEPS, VESSEL_SPEED_STEPS } from '@globalfishingwatch/deck-layers'
 import TimelineContext from '../timelineContext'
 import { useUpdateChartsData } from './chartsData.atom'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
 import type { TimebarChartData } from '.'
-
-const SPEED_STEPS = [
-  { value: 1, color: [61, 41, 149, 255] }, // #4B2AA3
-  { value: 2, color: [61, 41, 149, 255] }, // #632995
-  { value: 4, color: [140, 41, 146, 255] }, // #8C2992
-  { value: 6, color: [186, 58, 143, 255] }, // #BA3A8F
-  { value: 8, color: [232, 88, 133, 255] }, // #E05885
-  { value: 10, color: [252, 123, 121, 255] }, // #FC7B79
-  { value: 15, color: [255, 163, 105, 255] }, // #FFA369
-  { value: 20, color: [255, 204, 79, 255] }, // #FFCC4F
-  { value: 15, color: [255, 246, 80, 255] }, // #FFF650
-  { value: Number.POSITIVE_INFINITY, color: [255, 249, 146, 255] }, // #FFF992
-]
-
-const DEPTH_STEPS = [
-  { value: -100, color: [255, 249, 146, 255] }, // #FFF992
-  { value: -200, color: [255, 246, 80, 255] }, // #FFF650
-  { value: -500, color: [255, 204, 79, 255] }, // #FFCC4F
-  { value: -1000, color: [255, 163, 105, 255] }, // #FFA369
-  { value: -2000, color: [252, 123, 121, 255] }, // #FC7B79
-  { value: -3000, color: [232, 88, 133, 255] }, // #E05885
-  { value: -4000, color: [186, 58, 143, 255] }, // #BA3A8F
-  { value: -5000, color: [140, 41, 146, 255] }, // #8C2992
-  { value: -6000, color: [61, 41, 149, 255] }, // #632995
-  { value: Number.NEGATIVE_INFINITY, color: [61, 41, 149, 255] }, // #4B2AA3
-]
 
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const GRAPH_STYLE = { zIndex: '-1' }
@@ -80,7 +55,7 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
       })
     })
     const { height } = getTrackY(filteredGraphsData.length, 0, graphHeight)
-    return scaleSqrt([0, domainEnd], [0, height]).clamp(true)
+    return scaleSqrt([0, domainEnd], [2, height]).clamp(true)
   }, [filteredGraphsData])
 
   const layers = useMemo(() => {
@@ -109,8 +84,8 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
             polygon: [x1, y1, x2, y1, x2, y2, x1, y2],
             color:
               trackGraphOrientation === 'down'
-                ? DEPTH_STEPS.find((step) => value >= step.value)?.color
-                : SPEED_STEPS.find((step) => value <= step.value)?.color,
+                ? VESSEL_DEPTH_STEPS.find((step) => value >= step.value)?.color
+                : VESSEL_SPEED_STEPS.find((step) => value <= step.value)?.color,
           }
         })
       })

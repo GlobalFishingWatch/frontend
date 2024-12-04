@@ -8,7 +8,9 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import { MAX_FILTER_VALUE } from '../layers.config'
-import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
+import { deckToVecColor } from '../../utils/colors'
+import { VESSEL_DEPTH_STEPS } from './vessel.config'
+import { DEFAULT_HIGHLIGHT_COLOR_VEC, VESSEL_SPEED_STEPS } from './vessel.config'
 import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { getSegmentsFromData } from './vessel.utils'
 
@@ -94,6 +96,28 @@ export type _VesselTrackLayerProps<DataT = any> = {
   trackThinningZoomConfig?: Record<number, ThinningLevels>
 }
 
+function generateShaderColorSteps({
+  property,
+  operation,
+  steps,
+}: {
+  property: 'vSpeed' | 'vElevation'
+  operation: '>=' | '<='
+  steps: typeof VESSEL_SPEED_STEPS | typeof VESSEL_DEPTH_STEPS
+}) {
+  const length = steps.length
+  return steps
+    .map(({ value, color }, index) => {
+      if (index === length - 1) {
+        return `{ color = ${deckToVecColor(color)}; }`
+      }
+      return `if (${property} ${operation} ${value.toFixed(2)}) { color = ${deckToVecColor(
+        color
+      )}; }`
+    })
+    .join(' else ')
+}
+
 // Example of how to use pass an accesor to the shaders
 // not needed anymore as the highlighted color is fixed
 // const DEFAULT_HIGHLIGHT_COLOR_RGBA = [255, 255, 255, 255] as Color
@@ -177,49 +201,17 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         if(colorBy == ${COLOR_BY.track}){
           color = trackColor;
         } else if(colorBy == ${COLOR_BY.speed}){
-          if (vSpeed <= 1.0) {
-            color = vec4(0.29, 0.17, 0.64, 1.0);  // #4B2AA3
-          } else if (vSpeed <= 2.0) {
-            color = vec4(0.39, 0.16, 0.58, 1.0);  // #632995
-          } else if (vSpeed <= 4.0) {
-            color = vec4(0.55, 0.16, 0.57, 1.0);  // #8C2992
-          } else if (vSpeed <= 6.0) {
-            color = vec4(0.73, 0.23, 0.56, 1.0);  // #BA3A8F
-          } else if (vSpeed <= 8.0) {
-            color = vec4(0.88, 0.35, 0.52, 1.0);  // #E05885
-          } else if (vSpeed <= 10.0) {
-            color = vec4(0.99, 0.48, 0.48, 1.0);  // #FC7B79
-          } else if (vSpeed <= 15.0) {
-            color = vec4(1.0, 0.64, 0.41, 1.0);   // #FFA369
-          } else if (vSpeed <= 20.0) {
-            color = vec4(1.0, 0.8, 0.31, 1.0);    // #FFCC4F
-          } else if (vSpeed <= 25.0) {
-            color = vec4(1.0, 0.96, 0.31, 1.0);   // #FFF650
-          } else {
-            color = vec4(1.0, 0.976, 0.573, 1.0); // #FFF992
-          }
+          ${generateShaderColorSteps({
+            property: 'vSpeed',
+            operation: '<=',
+            steps: VESSEL_SPEED_STEPS,
+          })}
         } else if(colorBy == ${COLOR_BY.depth}){
-          if (vElevation >= -100.0) {
-            color = vec4(1.0, 0.976, 0.573, 1.0); // #FFF992
-          } else if (vElevation >= -200.0) {
-            color = vec4(1.0, 0.96, 0.31, 1.0);   // #FFF650
-          } else if (vElevation >= -500.0) {
-            color = vec4(1.0, 0.8, 0.31, 1.0);    // #FFCC4F
-          } else if (vElevation >= -1000.0) {
-            color = vec4(1.0, 0.64, 0.41, 1.0);   // #FFA369
-          } else if (vElevation >= -2000.0) {
-            color = vec4(0.99, 0.48, 0.48, 1.0);  // #FC7B79
-          } else if (vElevation >= -3000.0) {
-            color = vec4(0.88, 0.35, 0.52, 1.0);  // #E05885
-          } else if (vElevation >= -4000.0) {
-            color = vec4(0.73, 0.23, 0.56, 1.0);  // #BA3A8F
-          } else if (vElevation >= -5000.0) {
-            color = vec4(0.55, 0.16, 0.57, 1.0);  // #8C2992
-          } else if (vElevation >= -6000.0) {
-            color = vec4(0.39, 0.16, 0.58, 1.0);  // #632995
-          } else {
-            color = vec4(0.29, 0.17, 0.64, 1.0);  // #4B2AA3
-          }
+          ${generateShaderColorSteps({
+            property: 'vElevation',
+            operation: '>=',
+            steps: VESSEL_DEPTH_STEPS,
+          })}
         }
 
         if (vSpeed < minSpeedFilter ||

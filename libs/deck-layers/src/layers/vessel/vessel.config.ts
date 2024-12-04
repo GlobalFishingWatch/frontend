@@ -37,3 +37,40 @@ export const TRACK_DEFAULT_THINNING_CONFIG = {
   0: ThinningLevels.Insane,
   4: ThinningLevels.Aggressive,
 }
+
+export const VESSEL_GRAPH_COLORS = [
+  '#4B2AA3',
+  '#632995',
+  '#8C2992',
+  '#BA3A8F',
+  '#E05885',
+  '#FC7B79',
+  '#FFA369',
+  '#FFCC4F',
+  '#FFF650',
+  '#FFF992',
+]
+
+export const VESSEL_SPEED_VALUES = [1, 2, 4, 6, 8, 10, 15, 20, 25, Number.POSITIVE_INFINITY]
+export const VESSEL_DEPTH_VALUES = [
+  -100,
+  -200,
+  -500,
+  -1000,
+  -2000,
+  -3000,
+  -4000,
+  -5000,
+  -6000,
+  Number.NEGATIVE_INFINITY,
+]
+
+export const VESSEL_SPEED_STEPS = VESSEL_SPEED_VALUES.map((value, index) => ({
+  value,
+  color: hexToDeckColor(VESSEL_GRAPH_COLORS[index]),
+}))
+
+export const VESSEL_DEPTH_STEPS = VESSEL_DEPTH_VALUES.map((value, index) => ({
+  value,
+  color: hexToDeckColor(VESSEL_GRAPH_COLORS[VESSEL_DEPTH_VALUES.length - 1 - index]),
+}))
