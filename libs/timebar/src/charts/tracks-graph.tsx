@@ -1,37 +1,14 @@
-import { useContext, useMemo } from 'react'
-import { quantile } from 'simple-statistics'
+import { useContext, useMemo, useRef } from 'react'
 import DeckGL from '@deck.gl/react'
 import { SolidPolygonLayer } from '@deck.gl/layers'
 import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
+import { scaleSqrt } from 'd3-scale'
 import TimelineContext from '../timelineContext'
 import { useUpdateChartsData } from './chartsData.atom'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
-import type { TimebarChartData, TimebarChartChunk, TimebarChartItem } from '.'
-
-const getMaxValues = (data: TimebarChartData) => {
-  const maxValues = data.map((trackGraphData: TimebarChartItem) => {
-    if (!trackGraphData.chunks.length) return 0
-    const itemValues = trackGraphData.chunks.reduce(
-      (acc: number[], currentChunk: TimebarChartChunk) => {
-        const chunkValues = currentChunk.values!.map((v) => v.value as number)
-        return acc.concat(chunkValues)
-      },
-      []
-    )
-
-    // https://online.stat.psu.edu/stat200/lesson/3/3.2
-    const q1 = quantile(itemValues, 0.25)
-    const q3 = quantile(itemValues, 0.75)
-    const iqr = Math.abs(q3 - q1)
-    const upperFence = Math.abs(q3 + iqr * 1.5)
-    const lowerFence = Math.abs(q1 - iqr * 1.5)
-
-    return upperFence > lowerFence ? upperFence : lowerFence
-  })
-  return maxValues
-}
+import type { TimebarChartData } from '.'
 
 const SPEED_STEPS = [
   { value: 1, color: [61, 41, 149, 255] }, // #4B2AA3
@@ -63,7 +40,19 @@ const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const GRAPH_STYLE = { zIndex: '-1' }
 
 const TrackGraph = ({ data }: { data: TimebarChartData }) => {
-  const { outerScale, outerWidth, graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+  const { outerScale, innerWidth, outerWidth, graphHeight, trackGraphOrientation, start } =
+    useContext(TimelineContext)
+  const oldOuterScaleRef = useRef(outerScale)
+  const offsetHashRef = useRef(Date.now())
+
+  const oldStartX = oldOuterScaleRef.current(new Date(start))
+  const startX = outerScale(new Date(start))
+  const offsetStartX = startX - oldStartX
+  const veilWidth = (outerWidth - innerWidth) / 2
+  offsetHashRef.current = Math.abs(offsetStartX) > veilWidth ? Date.now() : offsetHashRef.current
+
+  const filteredGraphsData = useFilteredChartData(data)
+  useUpdateChartsData('tracksGraphs', filteredGraphsData)
 
   const initialViewState = useMemo(
     () =>
@@ -74,34 +63,46 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
     [outerWidth]
   )
 
-  const maxValues = useMemo(() => {
-    return getMaxValues(data)
-  }, [data])
-
-  const filteredGraphsData = useFilteredChartData(data)
-  useUpdateChartsData('tracksGraphs', filteredGraphsData)
+  const heightScale = useMemo(() => {
+    if (!filteredGraphsData.length) return undefined
+    let domainEnd = 0
+    filteredGraphsData.forEach(({ chunks }) => {
+      chunks.forEach((c) => {
+        c.values!.forEach((v) => {
+          if (v.value) {
+            if (trackGraphOrientation === 'down') {
+              if (v.value < domainEnd) {
+                domainEnd = v.value
+              }
+            } else if (v.value > domainEnd) domainEnd = v.value
+          }
+        })
+      })
+    })
+    const { height } = getTrackY(filteredGraphsData.length, 0, graphHeight)
+    return scaleSqrt([0, domainEnd], [0, height]).clamp(true)
+  }, [filteredGraphsData])
 
   const layers = useMemo(() => {
+    if (!heightScale) return []
+    oldOuterScaleRef.current = outerScale
     const layerData = filteredGraphsData.flatMap((track, trackIndex) => {
       const trackY = getTrackY(data.length, trackIndex, graphHeight, trackGraphOrientation)
       return track.chunks.flatMap((segment) => {
         return (segment.values || [])?.flatMap(({ value = 0, timestamp }, index, array) => {
           const x1 = outerScale(timestamp)
           const x2 = outerScale(array[index + 1]?.timestamp || Number.POSITIVE_INFINITY)
-          const height = (value / maxValues[trackIndex]) * trackY.height
+          const height = heightScale(value)
           let y1
           let y2
           if (trackGraphOrientation === 'mirrored') {
             y1 = trackY.defaultY - height / 2
             y2 = trackY.defaultY + height / 2
-          } else if (trackGraphOrientation === 'down') {
+          } else {
             y1 = trackY.defaultY
-            y2 = trackY.defaultY - height
-          } else if (trackGraphOrientation === 'up') {
-            y1 = trackY.defaultY - height
-            y2 = trackY.defaultY
+            y2 = trackY.defaultY + height
           }
-          if (!x1 || !x2 || !y1 || !y2) {
+          if (isNaN(x1) || isNaN(x2) || isNaN(y1) || isNaN(y2)) {
             return []
           }
           return {
@@ -124,17 +125,19 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
         getFillColor: (d) => d.color,
       }),
     ]
-  }, [filteredGraphsData, outerScale])
+  }, [filteredGraphsData, offsetHashRef.current, trackGraphOrientation])
 
   return (
-    <DeckGL
-      views={VIEW}
-      initialViewState={initialViewState}
-      layers={layers}
-      width={outerWidth}
-      height={graphHeight}
-      style={GRAPH_STYLE}
-    />
+    <div style={{ transform: `translateX(${offsetStartX - veilWidth}px)`, zIndex: -1 }}>
+      <DeckGL
+        views={VIEW}
+        initialViewState={initialViewState}
+        layers={layers}
+        width={outerWidth + veilWidth * 2}
+        height={graphHeight}
+        style={GRAPH_STYLE}
+      />
+    </div>
   )
 }
 
