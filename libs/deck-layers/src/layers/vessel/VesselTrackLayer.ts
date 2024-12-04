@@ -14,12 +14,12 @@ import { DEFAULT_HIGHLIGHT_COLOR_VEC, VESSEL_SPEED_STEPS } from './vessel.config
 import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { getSegmentsFromData } from './vessel.utils'
 
-export type VesselsColorByProperty = 'track' | 'speed' | 'depth'
+export type VesselsColorByProperty = 'track' | 'speed' | 'elevation'
 export type VesselsColorByValue = 1 | 2 | 3
 export const COLOR_BY: Record<VesselsColorByProperty, VesselsColorByValue> = {
   track: 1,
   speed: 2,
-  depth: 3,
+  elevation: 3,
 }
 
 /** Properties added by VesselTrackLayer. */
@@ -206,7 +206,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
             operation: '<=',
             steps: VESSEL_SPEED_STEPS,
           })}
-        } else if(colorBy == ${COLOR_BY.depth}){
+        } else if(colorBy == ${COLOR_BY.elevation}){
           ${generateShaderColorSteps({
             property: 'vElevation',
             operation: '>=',

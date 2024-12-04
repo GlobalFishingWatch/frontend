@@ -34,7 +34,6 @@ import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
-  selectVesselsColorBy,
 } from 'features/app/selectors/app.selectors'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
@@ -45,6 +44,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedTime, selectHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
 import {
   selectMapReportBufferDataviews,
@@ -83,7 +83,7 @@ export const useGlobalConfigConnect = () => {
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
-  const vesselsColorBy = useSelector(selectVesselsColorBy)
+  const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const clickedFeatures = useSelector(selectClickedEvent)
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
@@ -143,7 +143,7 @@ export const useGlobalConfigConnect = () => {
       highlightEventIds,
       highlightedTime,
       visibleEvents,
-      vesselsColorBy,
+      vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
       highlightedFeatures,
       onPositionsMaxPointsError,
     }
@@ -165,7 +165,7 @@ export const useGlobalConfigConnect = () => {
     environmentVisualizationMode,
     highlightedTime,
     visibleEvents,
-    vesselsColorBy,
+    vesselsTimebarGraph,
     highlightedFeatures,
     highlightEventIds,
     onPositionsMaxPointsError,

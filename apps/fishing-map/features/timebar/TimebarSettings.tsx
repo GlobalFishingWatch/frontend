@@ -248,7 +248,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               disabled={!hasTracksData || !activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
-                (timebarGraph === TimebarGraphs.None || !timebarGraphEnabled)
+                timebarGraph === TimebarGraphs.None
               }
               tooltip={
                 !activeTrackDataviews?.length
@@ -263,14 +263,13 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TrackSpeedIcon}
                   label={t('timebarSettings.graphSpeed', 'Vessel Speed')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
-                  disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
+                  disabled={!hasTracksData || !activeTrackDataviews?.length}
                 />
               }
-              disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
+              disabled={!hasTracksData || !activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
-                timebarGraph === TimebarGraphs.Speed &&
-                timebarGraphEnabled
+                timebarGraph === TimebarGraphs.Speed
               }
               tooltip={
                 !activeTrackDataviews?.length
@@ -278,7 +277,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   : !timebarGraphEnabled
                   ? t(
                       'timebarSettings.graphDisabled',
-                      'Not available with more than 2 vessels selected'
+                      'Graph is not available with more than 2 vessels selected'
                     )
                   : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
               }
@@ -290,14 +289,13 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TrackDepthIcon}
                   label={t('timebarSettings.graphDepth', 'Vessel Depth')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
-                  disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
+                  disabled={!hasTracksData || !activeTrackDataviews?.length}
                 />
               }
-              disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
+              disabled={!hasTracksData || !activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
-                timebarGraph === TimebarGraphs.Depth &&
-                timebarGraphEnabled
+                timebarGraph === TimebarGraphs.Depth
               }
               tooltip={
                 !activeTrackDataviews?.length
@@ -305,13 +303,13 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   : !timebarGraphEnabled
                   ? t(
                       'timebarSettings.graphDisabled',
-                      'Not available with more than 2 vessels selected'
+                      'Graph is not available with more than 2 vessels selected'
                     )
                   : t('timebarSettings.showGraphDepth', 'Show track depth graph')
               }
               onClick={setVesselGraphDepth}
             />
-            {activeEnvironmentalDataviews.map((envDataview, i) => {
+            {activeEnvironmentalDataviews.map((envDataview) => {
               const dataset = envDataview.datasets?.find(
                 (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
               )
