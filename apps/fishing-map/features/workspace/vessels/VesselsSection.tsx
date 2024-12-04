@@ -41,6 +41,7 @@ import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-gr
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import VesselTracksLegend from 'features/workspace/vessels/VesselTracksLegend'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
@@ -263,11 +264,7 @@ function VesselsSection(): React.ReactElement {
               />
               {dataviews.length > 1 && (
                 <div>
-                  <label>
-                    {sortOrder.current === 'DESC'
-                      ? t('vessel.sortDesc', 'Alphabetically (descending)')
-                      : t('vessel.sortAsc', 'Alphabetically (ascending)')}
-                  </label>
+                  <label>{t('vessel.sort', 'Sort vessels')}</label>
                   <IconButton
                     icon={'sort-desc'}
                     size="medium"
@@ -313,7 +310,7 @@ function VesselsSection(): React.ReactElement {
           onClick={onSearchClick}
         />
       </div>
-
+      {hasVisibleDataviews && <VesselTracksLegend />}
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
           dataviews?.map((dataview) => (
