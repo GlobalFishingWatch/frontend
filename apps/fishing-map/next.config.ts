@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-// @ts-check
+import { join } from 'path'
+import type { NextConfig } from 'next'
+import withNx from '@nx/next/plugins/with-nx'
+import CircularDependencyPlugin from 'circular-dependency-plugin'
 
-const { join } = require('path')
-const path = require('path')
-const withNx = require('@nx/next/plugins/with-nx')
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: true, //process.env.ANALYZE === 'true' || process.env.NODE_ENV === 'development',
 // })
-const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const basePath =
   process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : '')
@@ -17,11 +15,15 @@ const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'staging' ||
   process.env.NODE_ENV === 'production'
 
-/**
- * @param {{ experiments: any; optimization: { moduleIds: string; }; module: { rules: { test: RegExp; type: string; }[]; }; output: { webassemblyModuleFilename: string; }; }} config
- * @param {boolean} isServer
- */
-function patchWasmModuleImport(config, isServer) {
+function patchWasmModuleImport(
+  config: {
+    experiments: any
+    optimization: { moduleIds: string }
+    module: { rules: { test: RegExp; type: string }[] }
+    output: { webassemblyModuleFilename: string }
+  },
+  isServer: boolean
+) {
   config.experiments = Object.assign(config.experiments || {}, {
     asyncWebAssembly: true,
     // syncWebAssembly: true,
@@ -41,10 +43,8 @@ function patchWasmModuleImport(config, isServer) {
     config.output.webassemblyModuleFilename = 'static/wasm/[modulehash].wasm'
   }
 }
-/**
- * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
- **/
-const nextConfig = {
+
+const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
@@ -83,18 +83,31 @@ const nextConfig = {
       net: false,
       tls: false,
     }
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      // ...(!IS_PRODUCTION && {
-      //   jotai: path.resolve(__dirname, 'node_modules/jotai'),
-      // }),
-    }
     // config.optimization.minimize = false
     // config.externals = [...config.externals, 'mapbox-gl']
-    config.module.rules.push({
-      test: /\.svg$/i,
-      use: ['@svgr/webpack'],
-    })
+
+    // Grab the existing rule that handles SVG imports
+    const fileLoaderRule = config.module.rules.find((rule: any) => rule.test?.test?.('.svg'))
+
+    config.module.rules.push(
+      // Reapply the existing rule, but only for svg imports ending in ?url
+      {
+        ...fileLoaderRule,
+        test: /\.svg$/i,
+        resourceQuery: /url/, // *.svg?url
+      },
+      // Convert all other *.svg imports to React components
+      {
+        test: /\.svg$/i,
+        issuer: fileLoaderRule.issuer,
+        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
+        use: ['@svgr/webpack'],
+      }
+    )
+
+    // Modify the file loader rule to ignore *.svg, since we have it handled now.
+    fileLoaderRule.exclude = /\.svg$/i
+
     config.plugins.push(
       new CircularDependencyPlugin({
         // exclude detection of files based on a RegExp
@@ -145,18 +158,15 @@ const nextConfig = {
     ],
     // swcPlugins: [['@swc-jotai/react-refresh', {}]],
   },
-  // pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
   cleanDistDir: true,
   distDir: '.next',
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const configWithNx = withNx(nextConfig)
+// @ts-expect-error
+const configWithNx = withNx({ ...nextConfig, nx: { svgr: false } })
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-module.exports = async (...args) => {
+module.exports = async (...args: any) => {
   return {
     ...(await configWithNx(...args)),
     //...
