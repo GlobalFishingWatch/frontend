@@ -78,14 +78,6 @@ steps:
         --cache=true \
         --build-arg \
           APP_NAME=fishing-map \
-        --build-arg \
-          NEXT_MAP_ERRORS_SPREADSHEET_ID=${_NEXT_MAP_ERRORS_SPREADSHEET_ID} \
-        --build-arg \
-          NEXT_FEEDBACK_SPREADSHEET_ID=${_NEXT_FEEDBACK_SPREADSHEET_ID} \
-        --build-arg \
-          NEXT_SPREADSHEET_CLIENT_EMAIL=${_NEXT_SPREADSHEET_CLIENT_EMAIL} \
-        --build-arg \
-          NEXT_SPREADSHEET_PRIVATE_KEY=${_NEXT_SPREADSHEET_PRIVATE_KEY} \
         --target \
           production \
         -f \
