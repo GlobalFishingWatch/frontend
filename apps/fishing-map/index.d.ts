@@ -1,6 +1,6 @@
 declare module '*.svg' {
-  const content: any
-  export const ReactComponent: any
+  import type { FC, SVGProps } from 'react'
+  const content: FC<SVGProps<SVGElement>>
   export default content
 }
 
