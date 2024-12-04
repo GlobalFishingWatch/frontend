@@ -7,7 +7,7 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { IconButton, Select, Switch } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import { COLOR_BY } from '@globalfishingwatch/deck-layers'
+import type { VesselsColorByProperty } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
@@ -187,18 +187,18 @@ function VesselsSection(): React.ReactElement {
     dispatchQueryParams({ vesselsColorBy: e.id })
   }, [])
 
-  const colorByOptions: SelectOption[] = [
+  const colorByOptions: SelectOption<VesselsColorByProperty>[] = [
     {
-      id: COLOR_BY.track,
-      label: 'Layer color',
+      id: 'track',
+      label: t('vessel.colorByLayer', 'Layer color'),
     },
     {
-      id: COLOR_BY.speed,
-      label: 'Speed',
+      id: 'speed',
+      label: t('vessel.colorBySpeed', 'Speed'),
     },
     {
-      id: COLOR_BY.depth,
-      label: 'Elevation',
+      id: 'depth',
+      label: t('vessel.colorByDepth', 'Elevation'),
     },
   ]
 
@@ -263,10 +263,15 @@ function VesselsSection(): React.ReactElement {
               />
               {dataviews.length > 1 && (
                 <div>
-                  <label>{t('vessel.sortAsc', 'Sort vessels')}</label>
+                  <label>
+                    {sortOrder.current === 'DESC'
+                      ? t('vessel.sortDesc', 'Alphabetically (descending)')
+                      : t('vessel.sortAsc', 'Alphabetically (ascending)')}
+                  </label>
                   <IconButton
                     icon={'sort-desc'}
                     size="medium"
+                    type={sortOrder.current === 'ASC' ? 'border' : 'default'}
                     tooltip={t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')}
                     tooltipPlacement="top"
                     onClick={onSetSortOrderAsc}
@@ -274,6 +279,7 @@ function VesselsSection(): React.ReactElement {
                   <IconButton
                     icon={'sort-asc'}
                     size="medium"
+                    type={sortOrder.current === 'DESC' ? 'border' : 'default'}
                     tooltip={t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')}
                     tooltipPlacement="top"
                     onClick={onSetSortOrderDesc}

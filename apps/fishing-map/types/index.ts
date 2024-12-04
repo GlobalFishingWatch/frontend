@@ -6,7 +6,7 @@ import type {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
   RulerData,
-  VesselsColorBy,
+  VesselsColorByProperty,
 } from '@globalfishingwatch/deck-layers'
 import type { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
 import type {
@@ -68,7 +68,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisations
   visibleEvents?: VisibleEvents
-  vesselsColorBy?: VesselsColorBy
+  vesselsColorBy?: VesselsColorByProperty
 }
 
 export type AnyWorkspaceState = Partial<

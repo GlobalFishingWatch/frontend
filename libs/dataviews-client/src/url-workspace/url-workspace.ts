@@ -169,12 +169,11 @@ const deepTokenizeValues = (obj: Dictionary<any>) => {
     if (!tokensCount[token]) {
       tokensCount[token] = 0
     }
-     
+
     tokensCount[token]!++
   })
   const repeatedTokens = Object.entries(tokensCount)
     .filter(([key, count]) => {
-       
       return count! > 1 && key.length > 5
     })
     .map(([key]) => key)

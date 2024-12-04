@@ -12,13 +12,13 @@ import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { getSegmentsFromData } from './vessel.utils'
 
-export const COLOR_BY = {
+export type VesselsColorByProperty = 'track' | 'speed' | 'depth'
+export type VesselsColorByValue = 1 | 2 | 3
+export const COLOR_BY: Record<VesselsColorByProperty, VesselsColorByValue> = {
   track: 1,
   speed: 2,
   depth: 3,
 }
-
-export type VesselsColorBy = typeof COLOR_BY.track | typeof COLOR_BY.speed | typeof COLOR_BY.depth
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -85,7 +85,7 @@ export type _VesselTrackLayerProps<DataT = any> = {
   /**
    * Track API url accessor.
    */
-  colorBy?: VesselsColorBy
+  colorBy?: VesselsColorByProperty
   /**
    * Tracks thinning config {[minZoomLevel]: params }
    * e.g. To apply Insane between 0 and 4 zoom levels, and Aggresive for higher
@@ -298,7 +298,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       minElevationFilter,
       maxElevationFilter,
       trackColor: [trackColor[0] / 255, trackColor[1] / 255, trackColor[2] / 255, 1],
-      colorBy: colorBy || COLOR_BY.track,
+      colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
     }
     super.draw(params)
   }

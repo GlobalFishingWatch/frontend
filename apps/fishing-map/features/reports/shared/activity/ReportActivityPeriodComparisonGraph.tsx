@@ -192,7 +192,7 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
   }, [baselineTimeseries, comparisonTimeseries])
 
   const range = useMemo(() => {
-    return difference?.map(({ date, compareDate, difference }, index) => {
+    return difference?.map(({ date, compareDate, difference }) => {
       const data = {
         date,
         compareDate,
