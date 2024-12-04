@@ -33,9 +33,17 @@ export const filterData = (data: TimebarChartData<any>, start: string, end: stri
 export const useFilteredChartData = (data: TimebarChartData<any>) => {
   const { outerStart, outerEnd } = useContext(TimelineContext)
   const [filteredData, setFilteredData] = useState<TimebarChartData<any>>([])
+
+  const getDataExtent = (d: TimebarChartData<any>) => {
+    return d
+      .flatMap((vessel) => [vessel.chunks[0]?.start, vessel.chunks[vessel.chunks.length - 1]?.end])
+      .join()
+  }
+
   const debouncedSetFilteredData = useDebouncedCallback(
     (data, outerStart, outerEnd) => {
-      setFilteredData(filterData(data, outerStart, outerEnd))
+      const newData = filterData(data, outerStart, outerEnd)
+      if (getDataExtent(filteredData) !== getDataExtent(newData)) setFilteredData(newData)
     },
     100,
     { maxWait: 1000, leading: true }
