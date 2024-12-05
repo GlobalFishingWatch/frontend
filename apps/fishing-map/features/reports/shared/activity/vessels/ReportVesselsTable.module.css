@@ -1,5 +1,5 @@
 .tableContainer {
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
   min-height: 42rem;
 }
 
@@ -20,6 +20,8 @@
   color: var(--color-secondary-blue);
   text-transform: uppercase;
   margin-right: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .vesselsTable > div:not(.header) {
@@ -57,4 +59,28 @@
 
 .link {
   text-decoration: underline;
+}
+
+.pinAllLoading {
+  margin-right: 4px;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: var(--space-S);
+  padding: var(--space-L);
+  justify-content: center;
+  align-items: center;
+}
+
+.top {
+  justify-content: unset;
+  padding-top: 12rem;
 }

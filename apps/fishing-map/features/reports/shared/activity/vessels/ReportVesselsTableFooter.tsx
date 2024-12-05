@@ -25,6 +25,7 @@ import {
   selectReportVesselsFiltered,
   selectReportVesselsPagination,
 } from './report-activity-vessels.selectors'
+import ReportVesselsTablePinAll from './ReportVesselsTablePin'
 
 type ReportVesselsTableFooterProps = {
   reportName?: string
@@ -41,6 +42,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const reportAreaName = useSelector(selectReportAreaName)
   const pagination = useSelector(selectReportVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
+  const allVesselsFiltered = useSelector(selectReportVesselsFiltered)
 
   const vesselGroupVessels = useMemo(() => {
     const vessels = reportVesselFilter ? allFilteredVessels : allVessels
@@ -168,11 +170,14 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
         </Fragment>
       </div>
       <div className={cx(styles.flex, styles.expand)}>
-        <VesselGroupAddButton
-          vesselsToResolve={vesselGroupVessels?.ids}
-          datasetsToResolve={vesselGroupVessels?.datasets}
-          onAddToVesselGroup={onAddToVesselGroup}
-        />
+        <div className={cx(styles.flex)}>
+          <ReportVesselsTablePinAll vessels={allVesselsFiltered!} />
+          <VesselGroupAddButton
+            vesselsToResolve={vesselGroupVessels?.ids}
+            datasetsToResolve={vesselGroupVessels?.datasets}
+            onAddToVesselGroup={onAddToVesselGroup}
+          />
+        </div>
         <Button testId="download-vessel-table-report" onClick={onDownloadVesselsClick}>
           {t('analysis.downloadVesselsList', 'Download csv')}
         </Button>

@@ -20,6 +20,7 @@ import { selectReportVesselsPaginated } from 'features/reports/shared/activity/v
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import ReportVesselsTableFooter from 'features/reports/shared/activity/vessels/ReportVesselsTableFooter'
 import styles from 'features/reports/shared/activity/vessels/ReportVesselsTable.module.css'
+import ReportVesselsPlaceholder from '../../placeholders/ReportVesselsPlaceholder'
 
 type ReportVesselTableProps = {
   activityUnit: ReportActivityUnit
@@ -61,115 +62,134 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             ))}
           </p>
         )}
-        <div className={styles.vesselsTable}>
-          <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
-            {t('common.name', 'Name')}
-          </div>
-          <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
-          <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
-          <div className={styles.header}>
-            {isFishingReport
-              ? t('vessel.geartype', 'Gear Type')
-              : t('vessel.vessel_type', 'Vessel Type')}
-          </div>
-          <div className={cx(styles.header, styles.right)}>
-            {activityUnit === 'hour'
-              ? t('common.hour_other', 'hours')
-              : t('common.detection_other', 'detections')}
-          </div>
-          {vessels?.map((vessel, i) => {
-            const isLastRow = i === vessels.length - 1
-            const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
-            const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
-            const type = isFishingReport ? vessel.geartype : vessel.vesselType
-            const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
-            const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
-              ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
-              : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
-            const pinTrackDisabled = !hasDatasets
-            return (
-              <Fragment key={vessel.vesselId}>
-                <div
-                  className={cx({ [styles.border]: !isLastRow }, styles.icon)}
-                  data-test={`vessel-${vessel.vesselId}`}
-                >
-                  <VesselPin
-                    vesselToResolve={{
-                      id: vessel.id || vessel.vesselId,
-                      datasetId: vessel.infoDataset?.id || (vessel.dataset as string),
-                    }}
-                    disabled={pinTrackDisabled}
-                  />
-                </div>
-                <div className={cx({ [styles.border]: !isLastRow })}>
-                  {vessel.sourceColor && (
-                    <span
-                      className={styles.dot}
-                      style={{ backgroundColor: vessel.sourceColor }}
-                    ></span>
-                  )}
-                  <VesselLink
-                    className={styles.link}
-                    vesselId={vessel.vesselId}
-                    datasetId={vessel.infoDataset?.id}
-                    query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
+        {vessels && vessels?.length ? (
+          <div className={styles.vesselsTable}>
+            <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
+              {t('common.name', 'Name')}
+            </div>
+            <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
+            <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
+            <div className={styles.header}>
+              {isFishingReport
+                ? t('vessel.geartype', 'Gear Type')
+                : t('vessel.vessel_type', 'Vessel Type')}
+            </div>
+            <div className={cx(styles.header, styles.right)}>
+              {activityUnit === 'hour'
+                ? t('common.hour_other', 'hours')
+                : t('common.detection_other', 'detections')}
+            </div>
+            {vessels?.map((vessel, i) => {
+              const isLastRow = i === vessels.length - 1
+              const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
+              const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
+              const type = isFishingReport ? vessel.geartype : vessel.vesselType
+              const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
+              const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
+                ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+                : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+              const pinTrackDisabled = !hasDatasets
+              return (
+                <Fragment key={vessel.vesselId}>
+                  <div
+                    className={cx({ [styles.border]: !isLastRow }, styles.icon)}
+                    data-test={`vessel-${vessel.vesselId}`}
                   >
-                    {formatInfoField(vessel.shipName, 'shipname')}
-                  </VesselLink>
-                </div>
-                <div className={cx({ [styles.border]: !isLastRow })}>
-                  <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
-                </div>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  className={cx({
-                    [styles.border]: !isLastRow,
-                    [styles.pointer]: flagInteractionEnabled,
-                  })}
-                  title={
-                    flagInteractionEnabled
-                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
-                      : undefined
-                  }
-                  onClick={flagInteractionEnabled ? () => onFilterClick(`flag:${flag}`) : undefined}
-                >
-                  <span>{flag}</span>
-                </div>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  className={cx({
-                    [styles.border]: !isLastRow,
-                    [styles.pointer]: typeInteractionEnabled,
-                  })}
-                  title={
-                    typeInteractionEnabled
-                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`
-                      : undefined
-                  }
-                  onClick={
-                    typeInteractionEnabled
-                      ? () =>
-                          onFilterClick(
-                            `${reportCategory === ReportCategory.Fishing ? 'gear' : 'type'}:${type}`
-                          )
-                      : undefined
-                  }
-                >
-                  {type}
-                </div>
-                <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                  {vessel.value !== undefined ? (
-                    <I18nNumber number={vessel.value} />
-                  ) : (
-                    EMPTY_FIELD_PLACEHOLDER
-                  )}
-                </div>
-              </Fragment>
-            )
-          })}
-        </div>
+                    <VesselPin
+                      vesselToResolve={{
+                        id: vessel.id || vessel.vesselId,
+                        datasetId: vessel.infoDataset?.id || (vessel.dataset as string),
+                      }}
+                      disabled={pinTrackDisabled}
+                    />
+                  </div>
+                  <div className={cx({ [styles.border]: !isLastRow })}>
+                    {vessel.sourceColor && (
+                      <span
+                        className={styles.dot}
+                        style={{ backgroundColor: vessel.sourceColor }}
+                      ></span>
+                    )}
+                    <VesselLink
+                      className={styles.link}
+                      vesselId={vessel.vesselId}
+                      datasetId={vessel.infoDataset?.id}
+                      query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
+                    >
+                      {formatInfoField(vessel.shipName, 'shipname')}
+                    </VesselLink>
+                  </div>
+                  <div className={cx({ [styles.border]: !isLastRow })}>
+                    <span>{vessel.mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    className={cx({
+                      [styles.border]: !isLastRow,
+                      [styles.pointer]: flagInteractionEnabled,
+                    })}
+                    title={
+                      flagInteractionEnabled
+                        ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
+                        : undefined
+                    }
+                    onClick={
+                      flagInteractionEnabled ? () => onFilterClick(`flag:${flag}`) : undefined
+                    }
+                  >
+                    <span>{flag}</span>
+                  </div>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    className={cx({
+                      [styles.border]: !isLastRow,
+                      [styles.pointer]: typeInteractionEnabled,
+                    })}
+                    title={
+                      typeInteractionEnabled
+                        ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`
+                        : undefined
+                    }
+                    onClick={
+                      typeInteractionEnabled
+                        ? () =>
+                            onFilterClick(
+                              `${
+                                reportCategory === ReportCategory.Fishing ? 'gear' : 'type'
+                              }:${type}`
+                            )
+                        : undefined
+                    }
+                  >
+                    {type}
+                  </div>
+                  <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
+                    {vessel.value !== undefined ? (
+                      <I18nNumber number={vessel.value} />
+                    ) : (
+                      EMPTY_FIELD_PLACEHOLDER
+                    )}
+                  </div>
+                </Fragment>
+              )
+            })}
+          </div>
+        ) : (
+          <ReportVesselsPlaceholder
+            showGraph={false}
+            showGraphHeader={false}
+            showSearch={false}
+            animate={false}
+          >
+            <div className={cx(styles.cover, styles.center, styles.top)}>
+              <p>
+                {t('analysis.noVesselDataFiltered', 'There are no vessels matching your filter')}
+              </p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )}
       </div>
       <ReportVesselsTableFooter reportName={reportName} />
     </Fragment>
