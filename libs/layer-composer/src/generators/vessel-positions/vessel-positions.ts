@@ -118,7 +118,7 @@ class VesselPositionsGenerator {
             'case',
             isHighlighted,
             'white',
-            outlineVisible ? ['case', ...ruleColors, 'black'] : fillColor,
+            onlyLabels ? ['case', ...ruleColors, 'black'] : fillColor,
           ],
           'icon-halo-color': [
             'case',
@@ -127,12 +127,11 @@ class VesselPositionsGenerator {
             outlineVisible ? ['case', ...ruleColors, 'black'] : fillColor,
           ],
           'icon-halo-width': 2,
-          //   'icon-opacity': ['case', isHighlighted, 1, 0.3],
           'icon-opacity': [
             'case',
             ['in', ['get', 'action'], ['literal', hiddenLabels || []]],
-            0, // Set opacity to 0 if action is in hiddenLabels
-            1, // Otherwise, full opacity
+            0,
+            1,
           ],
         },
         metadata: {
