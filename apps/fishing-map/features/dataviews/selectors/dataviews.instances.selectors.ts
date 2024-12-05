@@ -100,10 +100,6 @@ export const selectAllActiveTrackDataviews = createSelector([selectTrackDataview
   dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectNotDeletedTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
-  dataviews?.filter((d) => !d.deleted)
-)
-
 export const selectUserTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
     (dataview) =>

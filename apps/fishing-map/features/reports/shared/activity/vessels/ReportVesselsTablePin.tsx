@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
 import { getVesselInWorkspace, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
-import { selectNotDeletedTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import usePinReportVessels, { MAX_VESSEL_REPORT_PIN } from './report-activity-vessels.hooks'
 import styles from './ReportVesselsTable.module.css'
 
@@ -15,16 +15,16 @@ type ReportVesselTablePinProps = {
 
 export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVesselTablePinProps) {
   const { t } = useTranslation()
-  const pinVessels = usePinReportVessels()
+  const { pinVessels, unPinVessels } = usePinReportVessels()
   const [loading, setLoading] = useState(false)
-  const allVesselsInWorkspace = useSelector(selectNotDeletedTrackDataviews)
+  const allVesselsInWorkspace = useSelector(selectTrackDataviews)
   const pinnedVesselsInstances = vessels.flatMap(
     (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.vesselId!) || []
   )
 
-  const vesselIds = vessels.map((v) => v.vesselId)
+  const vesselInstancesIds = pinnedVesselsInstances.map((dI) => dI.id.split(VESSEL_LAYER_PREFIX)[1])
   const hasAllVesselsInWorkspace = pinnedVesselsInstances?.length
-    ? pinnedVesselsInstances.every((dI) => vesselIds.includes(dI.id.split(VESSEL_LAYER_PREFIX)[1]))
+    ? vessels.every(({ vesselId }) => vesselInstancesIds.includes(vesselId))
     : false
 
   const hasMoreMaxVesselsAllowed = vessels.length > MAX_VESSEL_REPORT_PIN
@@ -33,10 +33,13 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
     const action = hasAllVesselsInWorkspace ? 'delete' : 'add'
     if (action === 'add') {
       setLoading(true)
-    }
-    await pinVessels(vessels, action)
-    if (action === 'add') {
+      const notPinnedVessels = vessels.filter(
+        ({ vesselId }) => !vesselInstancesIds.includes(vesselId)
+      )
+      await pinVessels(notPinnedVessels)
       setLoading(false)
+    } else {
+      unPinVessels(vessels)
     }
     if (onClick) {
       onClick(action)

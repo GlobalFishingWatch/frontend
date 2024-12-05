@@ -84,6 +84,7 @@ const createDataviewsInstances = (
         config: {
           ...config,
           color: nextColor.value,
+          colorCyclingType: undefined,
         },
       } as UrlDataviewInstance
       if (colorCyclingType === 'fill') {
