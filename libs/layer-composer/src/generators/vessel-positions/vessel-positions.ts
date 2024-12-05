@@ -13,6 +13,7 @@ export interface VesselPositionsGeneratorConfig {
     start: string
     end: string
   }
+  hiddenLabels?: string[]
   ruleColors?: any[]
   projectColors?: Record<string, string>
 }
@@ -67,7 +68,7 @@ class VesselPositionsGenerator {
       return []
     }
 
-    const { id, colorMode, ruleColors = [], projectColors } = config
+    const { id, colorMode, ruleColors = [], hiddenLabels } = config
     const onlyContent = colorMode === 'content'
     const onlyLabels = colorMode === 'labels'
     const outlineVisible = colorMode === 'all' || onlyLabels
@@ -127,6 +128,12 @@ class VesselPositionsGenerator {
           ],
           'icon-halo-width': 2,
           //   'icon-opacity': ['case', isHighlighted, 1, 0.3],
+          'icon-opacity': [
+            'case',
+            ['in', ['get', 'action'], ['literal', hiddenLabels || []]],
+            0, // Set opacity to 0 if action is in hiddenLabels
+            1, // Otherwise, full opacity
+          ],
         },
         metadata: {
           group: Group.Track,
