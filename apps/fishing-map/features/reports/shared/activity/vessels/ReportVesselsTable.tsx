@@ -21,6 +21,7 @@ import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import ReportVesselsTableFooter from 'features/reports/shared/activity/vessels/ReportVesselsTableFooter'
 import styles from 'features/reports/shared/activity/vessels/ReportVesselsTable.module.css'
 import ReportVesselsPlaceholder from '../../placeholders/ReportVesselsPlaceholder'
+import { selectReportIsPinningVessels } from '../reports-activity.slice'
 
 type ReportVesselTableProps = {
   activityUnit: ReportActivityUnit
@@ -32,6 +33,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
   const { dispatchQueryParams } = useLocationConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
   const reportCategory = useSelector(selectReportCategory)
+  const isPinningVessels = useSelector(selectReportIsPinningVessels)
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
@@ -88,7 +90,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
                 ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
                 : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
-              const pinTrackDisabled = !hasDatasets
+              const pinTrackDisabled = !hasDatasets || isPinningVessels
               return (
                 <Fragment key={vessel.vesselId}>
                   <div
