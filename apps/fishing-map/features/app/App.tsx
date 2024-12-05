@@ -85,8 +85,8 @@ const Main = () => {
   const locationType = useSelector(selectLocationType)
   const reportLocation = useSelector(selectIsAnyAreaReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isSmallScreen = useSmallScreen()
+  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
 
   const isRouteWithTimebar = locationType === VESSEL
   const isRouteWithMap = locationType !== SEARCH
@@ -206,7 +206,6 @@ function App() {
         action.abort()
       }
     }
-     
   }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
@@ -217,7 +216,6 @@ function App() {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
-     
   }, [])
 
   useEffect(() => {
