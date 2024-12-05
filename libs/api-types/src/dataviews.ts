@@ -34,6 +34,7 @@ export enum DataviewType {
   UserPoints = 'USER_POINTS',
   VesselEvents = 'VESSEL_EVENTS',
   VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
+  VesselPositions = 'VESSEL_POSITIONS',
   Workspaces = 'WORKSPACES',
 }
 

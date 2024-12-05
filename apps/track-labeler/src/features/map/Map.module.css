@@ -6,7 +6,7 @@
   position: absolute;
   bottom: 100px;
   right: 7px;
-  background: #163f89;
+  background: var(--color-brand-secondary);
   padding: 8px;
   z-index: 1000;
 }
@@ -18,6 +18,16 @@
   line-height: 14px;
   text-transform: capitalize;
   font-family: Roboto, Arial, Helvetica, sans-serif;
+  padding: 4px;
+}
+
+.hidden {
+  opacity: 0.2;
+}
+
+.legend:hover {
+  cursor: pointer;
+  background-color: var(--color-brand);
 }
 
 .legendContainer svg {

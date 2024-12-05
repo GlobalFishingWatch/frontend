@@ -25,12 +25,12 @@ export const LABELER_VERSION = 1
 
 export const BACKGROUND_LAYER = [
   {
-    id: 'background',
-    tileset: 'background',
-    description: 'background',
-    type: Generators.GeneratorType.Background,
-    color: MAP_BACKGROUND_COLOR,
-  } as BackgroundGeneratorConfig,
+    id: 'bathymetry',
+    tileset: 'bathymetry',
+    description: 'bathymetry',
+    type: Generators.GeneratorType.Basemap,
+    basemap: Generators.BasemapType.Bathymetry,
+  } as BasemapGeneratorConfig,
 ]
 export const DEFAULT_DATAVIEWS = [
   {
@@ -40,6 +40,7 @@ export const DEFAULT_DATAVIEWS = [
     type: Generators.GeneratorType.Basemap,
     basemap: Generators.BasemapType.Default,
   } as BasemapGeneratorConfig,
+  
   // {
   //   id: 'cp_rfmo',
   //   type: Generators.Type.CartoPolygons,
