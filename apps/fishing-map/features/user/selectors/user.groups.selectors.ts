@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SUPPORTED_GROUPS } from 'features/user/user.config'
-import { UserGroup } from '../user.slice'
+import type { UserGroup } from '../user.slice'
 
 const selectUserGroups = createSelector([selectUserData], (userData) => {
   return userData?.groups

@@ -2,8 +2,9 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Duration } from 'luxon'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { t } from 'features/i18n/i18n'
+import type {
+  RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
-  RenderedEvent,
   selectFilteredEvents,
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { PortVisitSubEvent } from 'types/activity'

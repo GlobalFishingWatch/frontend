@@ -1,4 +1,4 @@
-import { Dataset } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
 
 export type GuessColumn = 'latitude' | 'longitude' | 'timestamp'
 

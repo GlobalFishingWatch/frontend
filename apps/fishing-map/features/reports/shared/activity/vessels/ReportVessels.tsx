@@ -7,7 +7,7 @@ import { selectReportCategory } from 'features/app/selectors/app.reports.selecto
 import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/areas/area-reports.utils'
 import { PROPERTIES_EXCLUDED } from 'features/reports/areas/summary/ReportSummary'
-import { ReportActivityUnit } from 'features/reports/areas/AreaReport'
+import type { ReportActivityUnit } from 'features/reports/areas/AreaReport'
 import { selectReportVesselFilter } from 'features/reports/areas/area-reports.config.selectors'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import ReportVesselsGraph from './ReportVesselsGraph'

@@ -2,9 +2,11 @@ import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { back } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Switch, SwitchEvent, SwitchRow } from '@globalfishingwatch/ui-components'
+import type { SwitchEvent} from '@globalfishingwatch/ui-components';
+import { IconButton, Switch, SwitchRow } from '@globalfishingwatch/ui-components'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import { selectSettings, SettingEventSectionName } from './settings.slice'
+import type { SettingEventSectionName } from './settings.slice';
+import { selectSettings } from './settings.slice'
 import FishingEvents from './components/FishingEvents'
 import LoiteringEvents from './components/LoiteringEvents'
 import EncounterEvents from './components/EncounterEvents'

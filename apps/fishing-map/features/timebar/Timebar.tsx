@@ -3,20 +3,22 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import {
-  Timebar,
-  TimebarTracks,
-  TimebarHighlighter,
-  TimebarTracksEvents,
-  TimebarTracksGraph,
+import type {
   TimebarChartChunk,
   TrackEventChunkProps,
   TrackGraphOrientation,
   HighlightedChunks,
   TimebarProps,
 } from '@globalfishingwatch/timebar'
+import {
+  Timebar,
+  TimebarTracks,
+  TimebarHighlighter,
+  TimebarTracksEvents,
+  TimebarTracksGraph,
+} from '@globalfishingwatch/timebar'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { Locale } from 'types'
+import type { Locale } from 'types'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -84,7 +86,7 @@ const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) =>
   // Return precise chunk frame extent
   const activityDateCallback = useCallback(
     (timestamp: number) => {
-      let dateLabel = formatI18nDate(timestamp, {
+      const dateLabel = formatI18nDate(timestamp, {
         format: DateTime.DATETIME_MED,
         showUTCLabel: true,
       })

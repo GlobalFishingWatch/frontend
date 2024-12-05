@@ -1,11 +1,12 @@
 import { scaleLinear } from 'd3-scale'
-import {
-  DRAW_DATASET_SOURCE,
+import type {
   Dataset,
   DatasetConfiguration,
   DatasetConfigurationUI,
   DatasetGeometryType,
-  EnviromentalDatasetConfiguration,
+  EnviromentalDatasetConfiguration} from '@globalfishingwatch/api-types';
+import {
+  DRAW_DATASET_SOURCE
 } from '@globalfishingwatch/api-types'
 
 // Got from deck-layers colorRamps to avoid circular dependencies

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   selectActiveHeatmapDowloadDataviews,
   selectHasReportLayersVisible,

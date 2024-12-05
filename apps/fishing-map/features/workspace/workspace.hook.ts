@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
+import type {
+  ColorBarOption} from '@globalfishingwatch/ui-components';
 import {
   FillColorBarOptions,
-  LineColorBarOptions,
-  ColorBarOption,
+  LineColorBarOptions
 } from '@globalfishingwatch/ui-components'
 import {
   selectIsAnyAreaReportLocation,
@@ -69,7 +70,7 @@ const createDataviewsInstances = (
         },
       } as UrlDataviewInstance
       if (dataview.config.colorCyclingType === 'fill') {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+         
         dataviewWithColor.config!.colorRamp = nextColor.id
       }
       return dataviewWithColor

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { InsightResponse } from '@globalfishingwatch/api-types'
-import { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { InsightResponse } from '@globalfishingwatch/api-types'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './Insights.module.css'

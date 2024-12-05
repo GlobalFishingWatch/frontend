@@ -1,5 +1,6 @@
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { Group, Dictionary, ExtendedStyle, ExtendedLayer, StyleTransformation } from '../../types'
+import type { Dictionary, ExtendedStyle, ExtendedLayer, StyleTransformation } from '../../types';
+import { Group } from '../../types'
 
 export const GROUP_ORDER = [
   Group.Background,

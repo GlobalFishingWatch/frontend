@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { Dataset, UserData } from '@globalfishingwatch/api-types'
+import type { Dataset, UserData } from '@globalfishingwatch/api-types'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import {
   filterDatasetsByUserType,
@@ -9,7 +9,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { SearchType } from 'features/search/search.config'
+import type { SearchType } from 'features/search/search.config'
 import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'

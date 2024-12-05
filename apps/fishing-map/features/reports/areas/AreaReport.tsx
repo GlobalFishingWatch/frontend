@@ -2,8 +2,9 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import { Tab, Tabs } from '@globalfishingwatch/ui-components'
-import { ContextFeature } from '@globalfishingwatch/deck-layers'
+import type { Tab} from '@globalfishingwatch/ui-components';
+import { Tabs } from '@globalfishingwatch/ui-components'
+import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -114,7 +115,7 @@ export default function Report() {
       fitAreaInViewport()
     }
     // Reacting only to the area status and fitting bounds after load
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [status, reportArea])
 
   useEffect(() => {
@@ -141,7 +142,7 @@ export default function Report() {
 
   useEffect(() => {
     setTimebarVisualizationByCategory(reportCategory)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [reportCategory])
 
   const handleTabClick = (option: Tab<ReportCategory>) => {
@@ -189,7 +190,7 @@ export default function Report() {
       ) : (
         <div>
           <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
-          <ActivityReport reportName={reportArea!?.name} />
+          <ActivityReport reportName={reportArea?.name} />
         </div>
       )}
     </Fragment>

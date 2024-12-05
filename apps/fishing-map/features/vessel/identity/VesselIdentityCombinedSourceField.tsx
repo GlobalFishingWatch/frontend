@@ -1,5 +1,5 @@
-import { VesselInfo } from '@globalfishingwatch/api-types'
-import { VesselLastIdentity } from 'features/search/search.slice'
+import type { VesselInfo } from '@globalfishingwatch/api-types'
+import type { VesselLastIdentity } from 'features/search/search.slice'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import { formatInfoField } from 'utils/info'
 import styles from './VesselIdentity.module.css'

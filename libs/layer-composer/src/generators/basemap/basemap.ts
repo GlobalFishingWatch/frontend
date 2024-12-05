@@ -1,4 +1,5 @@
-import { GeneratorType, BasemapGeneratorConfig, BasemapType } from '../types'
+import type { BasemapGeneratorConfig} from '../types';
+import { GeneratorType, BasemapType } from '../types'
 import { layers, sources } from './basemap-layers'
 
 const DEFAULT_CONFIG: Partial<BasemapGeneratorConfig> = {
@@ -9,7 +10,7 @@ class BasemapGenerator {
   type = GeneratorType.Basemap
 
   _getStyleSources = (config: BasemapGeneratorConfig) => {
-    let sourcesForBasemap = {
+    const sourcesForBasemap = {
       ...sources[config.basemap],
     }
     const styleSources = Object.keys(sourcesForBasemap).map((sourceId) => {

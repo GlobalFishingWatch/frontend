@@ -1,5 +1,5 @@
 import { PATH_BASENAME } from 'data/config'
-import { LibraryLayerConfig } from 'data/layer-library/layers.types'
+import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,

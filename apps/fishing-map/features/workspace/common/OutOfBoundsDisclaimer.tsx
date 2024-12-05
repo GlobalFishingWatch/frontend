@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'

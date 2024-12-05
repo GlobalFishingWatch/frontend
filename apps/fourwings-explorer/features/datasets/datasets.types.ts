@@ -1,6 +1,6 @@
-import { StaticImageData } from 'next/image'
-import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import type { StaticImageData } from 'next/image'
+import type { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import type { Interval } from '@globalfishingwatch/layer-composer'
 
 export type DatasetSource = 'GEE' | 'GFW' | 'LOCAL'
 export type DatasetType = '4wings' | 'context'

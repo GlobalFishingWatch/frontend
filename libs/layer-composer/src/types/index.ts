@@ -3,20 +3,20 @@ import type {
   LayerSpecification,
   StyleSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import {
+import type {
   AggregationOperation,
   SublayerCombinationMode,
 } from '@globalfishingwatch/fourwings-aggregate'
-import { DataviewType } from '@globalfishingwatch/api-types'
-import {
+import type { DataviewType } from '@globalfishingwatch/api-types'
+import type {
   GeneratorLegend,
   HeatmapAnimatedGeneratorSublayer,
   GeneratorConfig,
   AnyGeneratorConfig,
   ContextLayerType,
 } from '../generators/types'
-import { TimeChunks } from '../generators/heatmap/util/time-chunks'
-import { GeneratorsRecord } from '../generators'
+import type { TimeChunks } from '../generators/heatmap/util/time-chunks'
+import type { GeneratorsRecord } from '../generators'
 
 export interface Dictionary<T> {
   [key: string]: T

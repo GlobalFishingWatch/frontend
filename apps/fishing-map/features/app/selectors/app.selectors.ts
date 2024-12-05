@@ -1,6 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { HEATMAP_HIGH_RES_ID, RulerData } from '@globalfishingwatch/deck-layers'
+import type { RulerData } from '@globalfishingwatch/deck-layers'
+import { HEATMAP_HIGH_RES_ID } from '@globalfishingwatch/deck-layers'
 import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
 import {
   getActiveActivityDatasetsInDataviews,
@@ -24,7 +26,7 @@ export const selectLatestAvailableDataDate = createSelector(
         return getActiveActivityDatasetsInDataviews([dataview]).flat()
       }
       return dataview.datasets || []
-    })
+    }) as Dataset[]
     return getLatestEndDateFromDatasets(activeDatasets)
   }
 )

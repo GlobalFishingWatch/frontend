@@ -15,7 +15,7 @@ import {
 } from 'data/config'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
 import { getVesselGearTypeLabel } from 'utils/info'
-import { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
+import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import {
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,
@@ -108,9 +108,11 @@ const CustomTick = (props: any) => {
     if (isCategoryInteractive) {
       const vesselFilter = isOtherCategory
         ? cleanFlagState(
-            othersData!
-              ?.flatMap((d) => (EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)))
-              .join('|')
+            (
+              othersData?.flatMap((d) =>
+                EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)
+              ) || []
+            ).join('|')
           )
         : getTickLabel(payload.value)
       dispatchQueryParams({
@@ -122,12 +124,12 @@ const CustomTick = (props: any) => {
 
   const tooltip = isOtherCategory ? (
     <ul>
-      {othersData!?.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
+      {othersData?.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
         <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
       ))}
-      {othersData!?.length > MAX_OTHER_TOOLTIP_ITEMS && (
+      {othersData?.length && othersData.length > MAX_OTHER_TOOLTIP_ITEMS && (
         <li>
-          + {othersData!?.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
+          + {othersData?.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
         </li>
       )}
     </ul>
@@ -136,9 +138,9 @@ const CustomTick = (props: any) => {
   )
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
   const labelChunks = label.split(' ')
-  let labelChunksClean = [labelChunks[0]]
+  const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {
-    let currentChunk = labelChunksClean[labelChunksClean.length - 1]
+    const currentChunk = labelChunksClean[labelChunksClean.length - 1]
     if (currentChunk.length + chunk.length >= width / visibleTicksCount / 8) {
       labelChunksClean.push(chunk)
     } else {

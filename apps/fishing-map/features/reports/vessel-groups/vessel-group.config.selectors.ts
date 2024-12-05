@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { selectLocationQuery } from 'routes/routes.selectors'
-import {
+import type {
   VesselGroupReportState,
   VesselGroupReportStateProperty,
   VGRSubsection,

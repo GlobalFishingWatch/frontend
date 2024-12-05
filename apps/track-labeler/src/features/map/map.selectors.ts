@@ -1,16 +1,18 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { featureCollection } from '@turf/helpers'
-import { Feature, LineString, Position, GeoJsonProperties, Point } from 'geojson'
+import type { Feature, LineString, Position, GeoJsonProperties, Point } from 'geojson'
 import * as Generators from '@globalfishingwatch/layer-composer'
-import { TrackPoint } from '@globalfishingwatch/api-types'
+import { DataviewType, type TrackPoint } from '@globalfishingwatch/api-types'
 import {
   getVesselParsedTrack,
   getVesselTrackGeojsonByDateRange,
 } from '../../features/tracks/tracks.selectors'
 import { BACKGROUND_LAYER, DEFAULT_DATAVIEWS } from '../../data/config'
 import { selectHighlightedEvent, selectHighlightedTime } from '../../features/timebar/timebar.slice'
-import { LayersData, VesselPoint, ActionType, TrackColor } from '../../types'
-import { selectedtracks, SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
+import type { LayersData, VesselPoint, TrackColor } from '../../types'
+import { ActionType } from '../../types'
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
+import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { getFixedColorForUnknownLabel } from '../../utils/colors'
 import {
   getDateRangeTS,
@@ -22,7 +24,7 @@ import {
   selectSatellite,
   selectVessel,
 } from '../../routes/routes.selectors'
-import { Project } from '../../data/projects'
+import type { Project } from '../../data/projects'
 
 /**
  * For each vessel segment filtered by the user, we return the layer config based on the actions
@@ -271,7 +273,7 @@ export const selectDirectionPointsLayers = createSelector(
   (vesselEvents, highlightedTime, hiddenLabels): Generators.VesselPositionsGeneratorConfig => {
     return {
       id: 'vessel-positions',
-      type: 'geojson',
+      type: DataviewType.VesselPositions,
       data: {
         features: vesselEvents,
         type: 'FeatureCollection',
@@ -288,7 +290,7 @@ export const selectDirectionPointsLayers = createSelector(
 export const selectMapLayers = createSelector(
   [selectHiddenLayers, selectSatellite],
   (hiddenLayers, satellite) => {
-    const dataviews: any = DEFAULT_DATAVIEWS.map((dataview) => {
+    const dataviews: any = BACKGROUND_LAYER.map((dataview) => {
       return {
         ...dataview,
         basemap:
@@ -296,10 +298,11 @@ export const selectMapLayers = createSelector(
             ? dataview.type
             : satellite
             ? Generators.BasemapType.Satellite
-            : Generators.BasemapType.Default,
+            : Generators.BasemapType.Bathymetry,
         visible: !hiddenLayers.includes(dataview.id),
       }
     })
+    console.log("🚀 ~ constdataviews:any=DEFAULT_DATAVIEWS.map ~ dataviews:", dataviews)
     return dataviews
   }
 )
@@ -310,6 +313,7 @@ export const selectMapLayers = createSelector(
 export const getLayerComposerLayers = createSelector(
   [selectMapLayers, getVesselParsedTrackLayer],
   (mapLayers, trackLayers) => {
-    return [...BACKGROUND_LAYER, ...mapLayers, ...trackLayers]
+    console.log("🚀 ~ mapLayers:", mapLayers)
+    return [...mapLayers, ...trackLayers]
   }
 )

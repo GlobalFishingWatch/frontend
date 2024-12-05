@@ -1,12 +1,15 @@
 import { useSelector } from 'react-redux'
-import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table'
+import type { MRT_ColumnDef } from 'material-react-table';
+import { MaterialReactTable } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniq } from 'es-toolkit'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import { Dataset, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { Dataset} from '@globalfishingwatch/api-types';
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type {
+  VesselLastIdentity} from 'features/search/search.slice';
 import {
-  VesselLastIdentity,
   cleanVesselSearchResults,
   selectSearchResults,
   selectSearchStatus,
@@ -22,20 +25,21 @@ import {
 } from 'utils/info'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { SearchComponentProps } from 'features/search/basic/SearchBasic'
+import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
-import { Locale } from 'types'
-import { VesselSearchState } from 'features/search/search.types'
+import type { Locale } from 'types'
+import type { VesselSearchState } from 'features/search/search.types'
 import I18nDate from 'features/i18n/i18nDate'
+import type {
+  VesselIdentityProperty} from 'features/vessel/vessel.utils';
 import {
-  VesselIdentityProperty,
   getBestMatchCriteriaIdentity,
   getOtherVesselNames,
   getSearchIdentityResolved,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
-import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'

@@ -1,5 +1,5 @@
 import { useState, useCallback, Component, useEffect } from 'react'
-import { AppProps } from 'next/app'
+import type { AppProps } from 'next/app'
 import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import dynamic from 'next/dynamic'
 import { RecoilRoot } from 'recoil'

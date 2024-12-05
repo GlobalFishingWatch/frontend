@@ -1,22 +1,16 @@
-import {
-  CompositeLayer,
-  Layer,
-  LayerContext,
-  LayersList,
-  DefaultProps,
-  UpdateParameters,
-} from '@deck.gl/core'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import type { Layer, LayerContext, LayersList, DefaultProps, UpdateParameters } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
-import { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import {
+import type { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type {
   FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
-  FourwingsLoader,
-  getFourwingsInterval,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
+import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import {
@@ -24,20 +18,20 @@ import {
   FOURWINGS_MAX_ZOOM,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
 } from '../fourwings.config'
-import {
-  FourwingsAggregationOperation,
+import type {
   FourwingsDeckSublayer,
   FourwingsHeatmapTilesCache,
   FourwingsTileLayerColorScale,
   GetViewportDataParams,
 } from '../fourwings.types'
+import { FourwingsAggregationOperation } from '../fourwings.types'
 import {
   aggregateCellTimeseries,
   getFourwingsChunk,
   getDataUrlBySublayer,
 } from '../heatmap/fourwings-heatmap.utils'
 import { FourwingsFootprintLayer } from './FourwingsFootprintLayer'
-import {
+import type {
   FourwingsFootprintTileLayerProps,
   FourwingsFootprintTileLayerState,
 } from './fourwings-footprint.types'
@@ -235,7 +229,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     }
   }
 
-  renderLayers(): Layer<{}> | LayersList {
+  renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { tilesCache } = this.state
     const cacheKey = this._getTileDataCacheKey()
 

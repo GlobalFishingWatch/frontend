@@ -1,9 +1,11 @@
-import { CompositeLayer, Color, DefaultProps, PickingInfo, LayerContext } from '@deck.gl/core'
-import { GeoBoundingBox, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import type { Color, DefaultProps, PickingInfo, LayerContext } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
+import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import { GeoJsonProperties } from 'geojson'
+import type { GeoJsonProperties } from 'geojson'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
@@ -20,13 +22,13 @@ import {
 } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { EEZ_SETTLED_BOUNDARIES } from './context.config'
-import {
+import type {
   ContextLayerProps,
   ContextPickingInfo,
   ContextFeature,
-  ContextLayerId,
   ContextPickingObject,
 } from './context.types'
+import { ContextLayerId } from './context.types'
 import { getContextId, getContextLink, getContextValue } from './context.utils'
 
 type _ContextLayerProps = TileLayerProps & ContextLayerProps
@@ -41,7 +43,9 @@ const defaultProps: DefaultProps<_ContextLayerProps> = {
   debounceTime: 500,
 }
 
-export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps & PropsT> {
+export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLayer<
+  _ContextLayerProps & PropsT
+> {
   static layerName = 'ContextLayer'
   static defaultProps = defaultProps
   state!: ContextLayerState

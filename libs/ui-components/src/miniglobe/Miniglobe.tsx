@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { geoOrthographic, geoPath } from 'd3-geo'
 import { feature } from 'topojson-client'
-import { Topology, GeometryCollection } from 'topojson-specification'
+import type { Topology, GeometryCollection } from 'topojson-specification'
 import jsonData from './ne_110m_land.json'
 import styles from './Miniglobe.module.css'
 

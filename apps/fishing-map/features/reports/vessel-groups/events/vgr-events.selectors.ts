@@ -1,11 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { groupBy } from 'es-toolkit'
 import {
   selectReportEventsStatsApiSlice,
   selectReportEventsVessels,
+} from 'queries/report-events-stats-api'
+import type {
   ReportEventsVesselsParams,
   ReportEventsVesselsResponseItem,
 } from 'queries/report-events-stats-api'
-import { groupBy } from 'es-toolkit'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
@@ -25,7 +27,7 @@ import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-grou
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { t } from 'features/i18n/i18n'
-import { EventsStatsVessel } from '../../ports/ports-report.slice'
+import type { EventsStatsVessel } from '../../ports/ports-report.slice'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],
@@ -64,7 +66,7 @@ export const selectVGREventsVessels = createSelector(
       return
     }
 
-    let eventsByVesel: Record<string, ReportEventsVesselsResponseItem> = {}
+    const eventsByVesel: Record<string, ReportEventsVesselsResponseItem> = {}
 
     data.forEach((eventsStat) => {
       const vessel = vesselGroup.vessels.find((v) => v.vesselId === eventsStat.vesselId)
@@ -173,7 +175,7 @@ export const selectVGREventsVesselsGrouped = createSelector(
 
 export const selectVGREventsVesselsFlags = createSelector([selectVGREventsVessels], (vessels) => {
   if (!vessels?.length) return null
-  let flags = new Set<string>()
+  const flags = new Set<string>()
   vessels.forEach((vessel) => {
     if (vessel.flagTranslated && vessel.flagTranslated !== 'null') {
       flags.add(vessel.flagTranslated as string)
@@ -204,9 +206,9 @@ export const selectVGREventsVesselsPagination = createSelector(
       offset: resultsPerPage * page,
       resultsPerPage:
         typeof resultsPerPage === 'number' ? resultsPerPage : parseInt(resultsPerPage),
-      resultsNumber: vessels!?.length,
-      totalFiltered: allVesselsFiltered!?.length,
-      total: allVessels!?.length,
+      resultsNumber: vessels?.length,
+      totalFiltered: allVesselsFiltered?.length || 0,
+      total: allVessels?.length || 0,
     }
   }
 )

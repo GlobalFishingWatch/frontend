@@ -1,4 +1,4 @@
-import { RootState } from '../../store'
+import type { RootState } from '../../store'
 
 export const selectEditing = (state: RootState) => state.rulers.editing
 export const selectNumRulers = (state: RootState) => state.rulers.rulers.length

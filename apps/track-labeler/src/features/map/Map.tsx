@@ -5,12 +5,8 @@ import MapComponent from 'react-map-gl/maplibre'
 import type { MapRef } from 'react-map-gl/maplibre'
 import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import * as Generators from '@globalfishingwatch/layer-composer'
-import {
-  ExtendedLayer,
-  getInteractiveLayerIds,
-  Group,
-  StyleTransformation,
-} from '@globalfishingwatch/layer-composer'
+import type { ExtendedLayer, StyleTransformation } from '@globalfishingwatch/layer-composer'
+import { getInteractiveLayerIds, Group } from '@globalfishingwatch/layer-composer'
 import { selectRulers } from '../../features/rulers/rulers.selectors'
 import { ActionType, Label } from '../../types'
 import { selectColorMode, selectProjectColors } from '../../routes/routes.selectors'
@@ -34,6 +30,7 @@ import styles from './Map.module.css'
 import MapControls from './map-controls/MapControls'
 import MapData from './map-data/map-data'
 import { useMapboxRef, useMapboxRefCallback } from './map.context'
+import { DataviewType } from '@globalfishingwatch/api-types'
 
 const GROUP_ORDER = [
   Group.Background,
@@ -74,6 +71,7 @@ const Map = (): React.ReactElement => {
   const { viewport, onViewportChange } = useViewport()
   const { globalConfig } = useGeneratorsConnect()
   const generatorConfigs = useSelector(getLayerComposerLayers)
+  console.log('🚀 ~ Map ~ generatorConfigs:', generatorConfigs)
   const projectColors = useSelector(selectProjectColors)
   const actionShortcuts = useSelector(getActionShortcuts)
   const rulers = useSelector(selectRulers)
@@ -103,7 +101,7 @@ const Map = (): React.ReactElement => {
     }
 
     const vesselPositionsConfig: Generators.VesselPositionsGeneratorConfig = {
-      type: Generators.GeneratorType.VesselPositions,
+      type: DataviewType.VesselPositions,
       id: 'vessel-positions',
       data: trackArrowsLayer.data,
       colorMode,

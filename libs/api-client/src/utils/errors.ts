@@ -57,14 +57,14 @@ export const parseAPIError = (error: ResponseError): ParsedAPIError => {
   }
 }
 
-export function isAuthError(error = {} as Partial<ParsedAPIError> | null) {
-  return isUnauthorized(error) || isForbidden(error)
-}
-
 export function isUnauthorized(error = {} as Partial<ParsedAPIError> | null) {
   return error?.status === 401
 }
 
 export function isForbidden(error = {} as Partial<ParsedAPIError> | null) {
   return error?.status === 403
+}
+
+export function isAuthError(error = {} as Partial<ParsedAPIError> | null) {
+  return isUnauthorized(error) || isForbidden(error)
 }

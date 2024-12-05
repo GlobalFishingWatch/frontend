@@ -3,13 +3,13 @@ import Point from '@mapbox/point-geometry'
 import { useDispatch, useSelector } from 'react-redux'
 import { fitBounds } from '@math.gl/web-mercator'
 import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import { LngLat, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
+import type { LngLat, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   selectSelectedPoints,
   setHoverPoint,
   setSelectedPoints,
 } from 'features/labeler/labeler.slice'
-import { PortPosition } from 'types'
+import type { PortPosition } from 'types'
 import useMapInstance from './map-context.hooks'
 import { useViewport } from './map-viewport.hooks'
 

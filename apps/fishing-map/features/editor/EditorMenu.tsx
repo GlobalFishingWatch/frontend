@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
-import { Dataview } from '@globalfishingwatch/api-types'
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectHasDataviewEditPermissions } from 'features/user/selectors/user.permissions.selectors'

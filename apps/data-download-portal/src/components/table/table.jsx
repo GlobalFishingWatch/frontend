@@ -6,10 +6,10 @@ import { useParams } from 'react-router-dom'
 import { FixedSizeList } from 'react-window'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config.js'
-import IconSearch from '../../assets/icons/search.svg?react'
-import IconClose from '../../assets/icons/close.svg?react'
-import IconArrowDown from '../../assets/icons/arrow-down.svg?react'
-import IconArrowUp from '../../assets/icons/arrow-up.svg?react'
+import IconSearch from '../../assets/icons/search.svg'
+import IconClose from '../../assets/icons/close.svg'
+import IconArrowDown from '../../assets/icons/arrow-down.svg'
+import IconArrowUp from '../../assets/icons/arrow-up.svg'
 import styles from './table.module.scss'
 
 const IndeterminateCheckbox = React.forwardRef(({ indeterminate, title, ...rest }, ref) => {
@@ -24,7 +24,9 @@ const IndeterminateCheckbox = React.forwardRef(({ indeterminate, title, ...rest 
   return (
     <div className={styles.checkbox}>
       <input id={inputID} type="checkbox" ref={resolvedRef} {...rest} />
-      <label htmlFor={inputID} title={title}></label>
+      <label htmlFor={inputID} title={title}>
+        {title}
+      </label>
     </div>
   )
 })
@@ -190,6 +192,7 @@ function Table({ columns, data }) {
           {searchInput ? (
             <Fragment>
               <input
+                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
                 className={styles.input}
                 value={state.globalFilter || ''}

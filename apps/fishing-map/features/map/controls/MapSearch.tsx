@@ -1,10 +1,12 @@
 import { memo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useCombobox, UseComboboxStateChange } from 'downshift'
+import type { UseComboboxStateChange } from 'downshift';
+import { useCombobox } from 'downshift'
 import { InputText, IconButton } from '@globalfishingwatch/ui-components'
-import { searchOceanAreas, OceanAreaLocale, OceanArea } from '@globalfishingwatch/ocean-areas'
-import { Bbox } from 'types'
+import type { OceanAreaLocale, OceanArea } from '@globalfishingwatch/ocean-areas';
+import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
+import type { Bbox } from 'types'
 import Hint from 'features/help/Hint'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'

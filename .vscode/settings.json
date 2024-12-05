@@ -50,5 +50,6 @@
   "search.exclude": {
     ".yarn": true,
     "**/dist": true
-  }
+  },
+  "eslint.experimental.useFlatConfig": true
 }

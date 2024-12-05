@@ -1,15 +1,16 @@
 import { uniq } from 'lodash'
-import {
+import type {
   Dataview,
   DataviewConfig,
   DataviewDatasetConfig,
   DataviewDatasetConfigParam,
-  DataviewInstance,
+  DataviewInstance} from '@globalfishingwatch/api-types';
+import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { AppDispatch } from 'store'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { AppDispatch } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from './dataviews.slice'
 import {

@@ -4,16 +4,18 @@ import { sum } from 'es-toolkit'
 import { Fragment, useMemo } from 'react'
 import parse from 'html-react-parser'
 import Sticky from 'react-sticky-el'
-import { Locale } from '@globalfishingwatch/api-types'
+import type { Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/areas/area-reports.utils'
-import { ReportActivityUnit } from 'features/reports/areas/AreaReport'
+import type { ReportActivityUnit } from 'features/reports/areas/AreaReport'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import type {
+  ReportGraphProps} from 'features/reports/shared/activity/reports-activity-timeseries.hooks';
 import {
   useReportFilteredTimeSeries,
-  useReportFeaturesLoading,
+  useReportFeaturesLoading
 } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -61,7 +63,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const commonProperties = useMemo(() => {
     return getCommonProperties(dataviews).filter(
       (property) =>
-        !dataviews[0].config?.filters!?.[property] || !PROPERTIES_EXCLUDED.includes(property)
+        !dataviews[0].config?.filters?.[property] || !PROPERTIES_EXCLUDED.includes(property)
     )
   }, [dataviews])
 
@@ -115,7 +117,9 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours)
     ) {
-      const formattedTimeseries = formatEvolutionData(layersTimeseriesFiltered!?.[0])
+      const formattedTimeseries = formatEvolutionData(
+        (layersTimeseriesFiltered?.[0] || {}) as ReportGraphProps
+      )
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)) || [])
       const timeseriesMaxHours = sum(
         formattedTimeseries?.map((t) => sum(t.range.map((r) => r[1]))) || []

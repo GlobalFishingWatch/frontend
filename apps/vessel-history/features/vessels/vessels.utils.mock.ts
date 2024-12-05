@@ -1,4 +1,4 @@
-import { GFWDetail, TMTDetail } from 'types'
+import type { GFWDetail, TMTDetail } from 'types'
 
 export const gfwVessel: GFWDetail = {
   callsign: 'IRNZ',

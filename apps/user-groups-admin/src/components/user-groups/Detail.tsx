@@ -5,7 +5,7 @@ import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { FutureUserData, UserData, UserGroup } from '@globalfishingwatch/api-types'
+import type { FutureUserData, UserData, UserGroup } from '@globalfishingwatch/api-types'
 import styles from './user-groups.module.css'
 
 export function UserGroupDetail({ groupId }: { groupId: number }) {

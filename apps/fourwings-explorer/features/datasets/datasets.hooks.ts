@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { APIDataset, DatasetSource, DatasetType } from 'features/datasets/datasets.types'
+import type { APIDataset, DatasetSource, DatasetType } from 'features/datasets/datasets.types'
 import SeaSurfaceTemperature from 'assets/images/datasets/sea-surface-temperature.jpg'
 import SeaSalinity from 'assets/images/datasets/sea-salinity.jpg'
 import SeaChlorophyll from 'assets/images/datasets/sea-chlorophyll.jpg'

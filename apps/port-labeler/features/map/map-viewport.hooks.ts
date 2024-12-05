@@ -2,11 +2,12 @@ import { useCallback } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import type { ViewStateChangeEvent } from 'react-map-gl'
-import { MapCoordinates } from 'types'
+import type { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { selectUrlViewport } from 'routes/routes.selectors'
-import store, { RootState } from '../../store'
+import type { RootState } from '../../store';
+import store from '../../store'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
 type ViewportProps = Record<ViewportKeys, number>
@@ -47,7 +48,7 @@ export function useViewport(): UseViewport {
 
   const setMapCoordinates = useCallback((coordinates: ViewportProps) => {
     setViewport((viewport) => ({ ...viewport, ...coordinates }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   const onViewportChange = useCallback((ev: ViewStateChangeEvent) => {
@@ -55,7 +56,7 @@ export function useViewport(): UseViewport {
     if (latitude && longitude && zoom) {
       setViewport({ latitude, longitude, zoom })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   return { viewport, onViewportChange, setMapCoordinates }

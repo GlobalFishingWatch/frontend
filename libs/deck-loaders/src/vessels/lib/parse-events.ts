@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { ApiEvent } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS, VesselDeckLayersEventData } from './types'
+import type { ApiEvent } from '@globalfishingwatch/api-types'
+import type { VesselDeckLayersEventData } from './types';
+import { EVENTS_COLORS } from './types'
 
 function decodeEventsBuffer(arrayBuffer: ArrayBuffer) {
   const data = JSON.parse(new TextDecoder().decode(arrayBuffer))

@@ -1,9 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from '../store'
-import { TrackColor, TRACK_COLORS, WorkspaceParam } from '../types'
+import type { RootState } from '../store'
+import type { TrackColor, WorkspaceParam } from '../types';
+import { TRACK_COLORS } from '../types'
 import { DEFAULT_WORKSPACE } from '../data/config'
 import { selectedProject } from '../features/projects/projects.slice'
-import { Project, PROJECTS } from '../data/projects'
+import type { Project} from '../data/projects';
+import { PROJECTS } from '../data/projects'
 
 const selectLocation = (state: RootState) => {
   return state.location

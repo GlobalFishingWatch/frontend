@@ -6,10 +6,11 @@ import {
   selectColorMode,
 } from '../../routes/routes.selectors'
 import { updateQueryParams } from '../../routes/routes.actions'
-import { CoordinatePosition } from '../../types'
+import type { CoordinatePosition } from '../../types'
+import type {
+  SelectedTrackType} from '../../features/vessels/selectedTracks.slice';
 import {
   addSelectedTrack,
-  SelectedTrackType,
   setSelectedTrack,
   updateSelectedTrack,
 } from '../../features/vessels/selectedTracks.slice'

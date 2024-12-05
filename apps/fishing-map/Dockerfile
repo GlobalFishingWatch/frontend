@@ -7,8 +7,8 @@ FROM node:21-alpine AS production
 WORKDIR /app
 
 ARG APP_NAME=fishing-map
-ENV APP_NAME $APP_NAME
 
+ENV APP_NAME $APP_NAME
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1

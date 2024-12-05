@@ -1,10 +1,12 @@
-import { CompositeLayer, DefaultProps, LayerProps, PickingInfo } from '@deck.gl/core'
-import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import type { DefaultProps, LayerProps, PickingInfo } from '@deck.gl/core';
+import { CompositeLayer } from '@deck.gl/core'
+import type { TileLayerProps } from '@deck.gl/geo-layers';
+import { MVTLayer } from '@deck.gl/geo-layers'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { LayerGroup, getFetchLoadOptions, getLayerGroupOffset, hexToDeckColor } from '../../utils'
 import { PATH_BASENAME } from '../../layers/layers.config'
-import {
+import type {
   ClusterEventType,
   ClusterFeature,
   ClusterLayerProps,

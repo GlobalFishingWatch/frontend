@@ -7,10 +7,14 @@ export type FilteredPolygons = {
   overlapping: (FourwingsFeature | FourwingsStaticFeature)[]
 }
 
-function isCellInPolygon(cellGeometry: Polygon, polygon: Polygon) {
-  return cellGeometry?.coordinates[0].every((cellCorner) =>
-    booleanPointInPolygon(cellCorner, polygon)
-  )
+function isCellInPolygon(cellGeometry: FourwingsFeature, polygon: Polygon) {
+  const corners = [
+    [cellGeometry.coordinates[0], cellGeometry.coordinates[1]],
+    [cellGeometry.coordinates[2], cellGeometry.coordinates[3]],
+    [cellGeometry.coordinates[4], cellGeometry.coordinates[5]],
+    [cellGeometry.coordinates[6], cellGeometry.coordinates[7]],
+  ]
+  return corners.every((corner) => booleanPointInPolygon(corner, polygon))
 }
 
 export type FilterByPolygomParams = {
@@ -26,11 +30,14 @@ export function filterByPolygon({
   const filtered = layersCells.map((layerCells) => {
     return layerCells.reduce(
       (acc, cell) => {
-        if (!cell?.geometry) {
+        if (!cell?.coordinates) {
           return acc
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [[minX, minY], _, [maxX, maxY]] = (cell.geometry as Polygon).coordinates[0]
+        const minX = cell.coordinates[0]
+        const minY = cell.coordinates[1]
+        const maxX = cell.coordinates[4]
+        const maxY = cell.coordinates[5]
         if (mode === 'point') {
           const center = {
             type: 'Point' as const,
@@ -45,9 +52,9 @@ export function filterByPolygon({
           const isContained =
             polygon.type === 'MultiPolygon'
               ? polygon.coordinates.some((coordinates) =>
-                  isCellInPolygon(cell.geometry as Polygon, { type: 'Polygon', coordinates })
+                  isCellInPolygon(cell, { type: 'Polygon', coordinates })
                 )
-              : isCellInPolygon(cell.geometry as Polygon, polygon as Polygon)
+              : isCellInPolygon(cell, polygon as Polygon)
 
           if (isContained) {
             acc.contained.push(cell as FourwingsFeature)

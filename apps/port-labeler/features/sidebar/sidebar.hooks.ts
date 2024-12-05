@@ -16,7 +16,7 @@ import {
   setSubareaValues,
   setCountriesMetadata
 } from 'features/labeler/labeler.slice'
-import { PortPosition } from 'types'
+import type { PortPosition } from 'types'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 import { useMapConnect } from 'features/map/map.hooks'
 
