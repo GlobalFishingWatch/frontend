@@ -148,7 +148,6 @@ export const selectTracksGraphs = createSelector(
 
 export const selectFilterModeValues = createSelector(
   [
-    selectFilterMode,
     selectMaxSpeed,
     selectMinSpeed,
     selectMaxElevation,
@@ -205,10 +204,6 @@ export const selectRangeFilterLimits = createSelector(
       hours: { min: 0, max: 24 },
     }
 
-    // TODO: Bring back this logic when we do not remove
-    // the points from the vessel track
-    // we would need to add an outOfRange boolean property to handle rendering in map and in timebar differently
-    // to mute styles on timeline
     if (vesselPoints.length > 0) {
       limits.speed = vesselPoints.reduce(
         (acc, point) => ({

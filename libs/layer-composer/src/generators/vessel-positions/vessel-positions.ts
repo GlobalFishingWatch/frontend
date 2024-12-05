@@ -4,7 +4,6 @@ import { filterTrackByCoordinateProperties } from '@globalfishingwatch/data-tran
 import { Group } from '../../types'
 import { GeneratorType, MergedGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-console.log('🚀 ~ filterTrackByCoordinateProperties:', filterTrackByCoordinateProperties)
 
 export interface VesselPositionsGeneratorConfig {
   id: string
