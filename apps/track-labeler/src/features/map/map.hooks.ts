@@ -3,9 +3,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { MapMouseEvent } from 'maplibre-gl'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
-import { selectViewport } from '../../routes/routes.selectors'
+import { selectHiddenLabels, selectViewport } from '../../routes/routes.selectors'
 import { updateQueryParams } from '../../routes/routes.actions'
-import { CoordinatePosition, MapCoordinates } from '../../types'
+import { CoordinatePosition, Label, MapCoordinates } from '../../types'
 import { selectEditing } from '../../features/rulers/rulers.selectors'
 import { editRuler, moveCurrentRuler } from '../../features/rulers/rulers.slice'
 import { useAppDispatch } from '../../store.hooks'
@@ -41,7 +41,7 @@ export const useMapMove = () => {
 export const useMapClick = () => {
   const dispatch = useAppDispatch()
   const rulersEditing = useSelector(selectEditing)
-  const { onEventPointClick } = useSegmentsLabeledConnect() 
+  const { onEventPointClick } = useSegmentsLabeledConnect()
   const segments = useSelector(selectedtracks)
   const onEventClick = useCallback(
     (feature: any, position: CoordinatePosition) => {
@@ -185,4 +185,23 @@ export const useMapBounds = (mapRef: any) => {
     }
   }, [zoom, latitude, longitude, mapRef])
   return bounds
+}
+
+export const useHiddenLabelsConnect = () => {
+  const dispatch = useAppDispatch()
+  const hiddenLabels = useSelector(selectHiddenLabels)
+
+  const dispatchHiddenLabels = (labelName: Label['name']) => {
+    const newLabels = hiddenLabels.includes(labelName)
+      ? hiddenLabels.filter((label: Label['name']) => label !== labelName)
+      : [...hiddenLabels, labelName]
+
+    dispatch(
+      updateQueryParams({
+        hiddenLabels: newLabels.length ? newLabels.join(',') : undefined,
+      })
+    )
+  }
+
+  return { dispatchHiddenLabels, hiddenLabels }
 }

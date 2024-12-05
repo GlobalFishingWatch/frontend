@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import MapComponent from 'react-map-gl/maplibre'
 import type { MapRef } from 'react-map-gl/maplibre'
@@ -11,7 +12,7 @@ import {
   StyleTransformation,
 } from '@globalfishingwatch/layer-composer'
 import { selectRulers } from '../../features/rulers/rulers.selectors'
-import { ActionType } from '../../types'
+import { ActionType, Label } from '../../types'
 import { selectColorMode, selectProjectColors } from '../../routes/routes.selectors'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
@@ -26,6 +27,7 @@ import {
   useMapMove,
   useViewport,
   useMapClick,
+  useHiddenLabelsConnect,
 } from './map.hooks'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import styles from './Map.module.css'
@@ -81,6 +83,10 @@ const Map = (): React.ReactElement => {
   const legengLabels = useSelector(selectLegendLabels)
   const { onMapMove, hoverCenter } = useMapMove()
   const { onMapClick } = useMapClick()
+  const { dispatchHiddenLabels, hiddenLabels } = useHiddenLabelsConnect()
+  const handleLegendClick = (legendLabelName: Label['name']) => {
+    dispatchHiddenLabels(legendLabelName)
+  }
   // added load state to improve the view of the globe
   const [loaded, setLoaded] = useState(false)
   const onLoadCallback = useCallback(() => {
@@ -166,8 +172,20 @@ const Map = (): React.ReactElement => {
       <div className={styles.legendContainer}>
         {legengLabels &&
           legengLabels.map((legend) => (
-            <div key={legend.id} className={styles.legend}>
-              <svg width="8" height="9" xmlns="http://www.w3.org/2000/svg" fill={legend.color}>
+            <div
+              key={legend.id}
+              className={cx(styles.legend, {
+                [styles.hidden]: hiddenLabels.includes(legend.name),
+              })}
+              onClick={() => handleLegendClick(legend.name)}
+            >
+              <svg
+                width="8"
+                height="9"
+                xmlns="http://www.w3.org/2000/svg"
+                fill={legend.color}
+                stroke={legend.color}
+              >
                 <path
                   d="M7.68 8.86L3.88.84.03 8.88l3.83-1.35 3.82 1.33zm-3.8-5.7l1.88 3.97-1.9-.66-1.89.66 1.9-3.97z"
                   fillRule="nonzero"

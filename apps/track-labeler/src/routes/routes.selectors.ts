@@ -94,30 +94,32 @@ export const selectProject = createSelector(
  * defined at project level (projects.ts).
  * When defined on both, colors defined at project level takes precedence.
  */
-export const selectProjectColors = createSelector(
-  [selectProject],
-  (project): TrackColor => {
-    if (!project || !project.labels) {
-      return TRACK_COLORS
-    }
-    const projectColors = project.labels.reduce(
-      (previous, current) => ({
-        ...previous,
-        [current.id]: current.color,
-      }),
-      {}
-    )
-
-    return { ...TRACK_COLORS, ...projectColors }
+export const selectProjectColors = createSelector([selectProject], (project): TrackColor => {
+  if (!project || !project.labels) {
+    return TRACK_COLORS
   }
-)
+  const projectColors = project.labels.reduce(
+    (previous, current) => ({
+      ...previous,
+      [current.id]: current.color,
+    }),
+    {}
+  )
+
+  return { ...TRACK_COLORS, ...projectColors }
+})
 
 /**
  * Get the hidden layers in the map
  */
 export const selectHiddenLayers = createSelector(
   [selectQueryParam('hiddenLayers')],
-  (hiddenLayers) => hiddenLayers.split(',')
+  (hiddenLayers) => hiddenLayers?.split(',') || []
+)
+
+export const selectHiddenLabels = createSelector(
+  [selectQueryParam('hiddenLabels')],
+  (hiddenLabels) => hiddenLabels?.split(',') || []
 )
 
 export const selectFilteredHours = createSelector(
