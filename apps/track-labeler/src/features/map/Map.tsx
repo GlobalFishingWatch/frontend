@@ -84,8 +84,8 @@ const Map = (): React.ReactElement => {
   const { onMapMove, hoverCenter } = useMapMove()
   const { onMapClick } = useMapClick()
   const { dispatchHiddenLabels, hiddenLabels } = useHiddenLabelsConnect()
-  const handleLegendClick = (legendLabelName: Label['name']) => {
-    dispatchHiddenLabels(legendLabelName)
+  const handleLegendClick = (legendLabelId: Label['id']) => {
+    dispatchHiddenLabels(legendLabelId)
   }
   // added load state to improve the view of the globe
   const [loaded, setLoaded] = useState(false)
@@ -110,10 +110,19 @@ const Map = (): React.ReactElement => {
       ruleColors,
       projectColors,
       highlightedTime: trackArrowsLayer.highlightedTime,
+      hiddenLabels,
     }
 
     return [...generatorConfigs, rulersConfig, vesselPositionsConfig]
-  }, [generatorConfigs, rulers, trackArrowsLayer, colorMode, ruleColors, projectColors])
+  }, [
+    generatorConfigs,
+    rulers,
+    trackArrowsLayer,
+    colorMode,
+    ruleColors,
+    projectColors,
+    hiddenLabels,
+  ])
 
   const { style } = useLayerComposer(
     generatorConfigsWithRulers,
@@ -175,9 +184,9 @@ const Map = (): React.ReactElement => {
             <div
               key={legend.id}
               className={cx(styles.legend, {
-                [styles.hidden]: hiddenLabels.includes(legend.name),
+                [styles.hidden]: hiddenLabels.includes(legend.id),
               })}
-              onClick={() => handleLegendClick(legend.name)}
+              onClick={() => handleLegendClick(legend.id)}
             >
               <svg
                 width="8"

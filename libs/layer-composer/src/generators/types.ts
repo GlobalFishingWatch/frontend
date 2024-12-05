@@ -588,6 +588,7 @@ export interface VesselPositionsGeneratorConfig extends GeneratorConfig {
     start: string
     end: string
   }
+  hiddenLabels?: string[]
 }
 
 export type AnyGeneratorConfig =

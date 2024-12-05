@@ -14,6 +14,7 @@ import { selectedtracks, SelectedTrackType } from '../../features/vessels/select
 import { getFixedColorForUnknownLabel } from '../../utils/colors'
 import {
   getDateRangeTS,
+  selectHiddenLabels,
   selectHiddenLayers,
   selectImportView,
   selectProject,
@@ -266,8 +267,8 @@ export const selectVesselDirectionPointsLayer = createSelector(
  * Using the custom Mapbox GL features, it return the layer needed to render arrows based on track points
  */
 export const selectDirectionPointsLayers = createSelector(
-  [selectVesselDirectionPointsLayer, selectHighlightedTime],
-  (vesselEvents, highlightedTime): Generators.VesselPositionsGeneratorConfig => {
+  [selectVesselDirectionPointsLayer, selectHighlightedTime, selectHiddenLabels],
+  (vesselEvents, highlightedTime, hiddenLabels): Generators.VesselPositionsGeneratorConfig => {
     return {
       id: 'vessel-positions',
       type: 'geojson',
@@ -276,6 +277,7 @@ export const selectDirectionPointsLayers = createSelector(
         type: 'FeatureCollection',
       },
       highlightedTime,
+      hiddenLabels,
     }
   }
 )
