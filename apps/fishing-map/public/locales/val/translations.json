@@ -48,7 +48,10 @@
     "periodComparison2nd": "crwdns59623:0crwdne59623:0",
     "periodComparisonDuration": "crwdns59625:0crwdne59625:0",
     "periodComparisonRange": "crwdns59627:0{{duration}}crwdnd59627:0{{compareStart}}crwdnd59627:0{{duration}}crwdnd59627:0{{start}}crwdne59627:0",
+    "pinVessels": "crwdns84022:0crwdne84022:0",
+    "pinVesselsNotAllowed": "crwdns84024:0{{vessels}}crwdne84024:0",
     "print ": "crwdns69298:0crwdne69298:0",
+    "removeVessels": "crwdns84026:0crwdne84026:0",
     "resultsPerPage": "crwdns59631:0{{results}}crwdne59631:0",
     "save": "crwdns59639:0crwdne59639:0",
     "savePublic": "crwdns59643:0crwdne59643:0",
@@ -702,6 +705,11 @@
     "rulersHover": "crwdns70412:0crwdne70412:0",
     "rulersStop": "crwdns70408:0crwdne70408:0",
     "search": "crwdns60357:0crwdne60357:0",
+    "screenshotArea": {
+      "map": "crwdns84028:0crwdne84028:0",
+      "withTimebar": "crwdns84030:0crwdne84030:0",
+      "withTimebarAndLegend": "crwdns84032:0crwdne84032:0"
+    },
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
   },
