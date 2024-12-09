@@ -71,6 +71,15 @@ const defaultLayers: DatasetLayerConfig[] = [
       basemap: BasemapType.Default,
     } as BasemapGeneratorConfig,
   },
+  {
+    id: 'bathymetry',
+    config: {
+      id: 'bathymetry',
+      type: GeneratorType.Basemap,
+      basemap: BasemapType.Bathymetry,
+      source: 'bathymetry',
+    } as BasemapGeneratorConfig,
+  },
 ]
 
 export const layersConfigAtom = atom<DatasetLayerConfig[]>({

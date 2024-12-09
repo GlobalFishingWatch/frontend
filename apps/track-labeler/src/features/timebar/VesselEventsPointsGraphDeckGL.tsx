@@ -12,7 +12,6 @@ import {
 } from '../../routes/routes.selectors'
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { Field } from '../../data/models'
-import { useAppDispatch } from '../../store.hooks'
 import {
   selectVesselDirectionPoints,
   selectVesselDirectionsMinMaxValues,
