@@ -5,6 +5,8 @@ import type { TimeFilterType } from '@globalfishingwatch/api-types'
 import type { ContextLayerConfig } from '../context'
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
 
+export type FilterOperators = Record<string, 'include' | 'exclude'>
+
 export type BaseUserLayerProps = {
   id: string
   layers: ContextLayerConfig<string>[]
@@ -25,6 +27,10 @@ export type BaseUserLayerProps = {
    * Filters object without parse
    */
   filters?: Record<string, any>
+  /**
+   * Filters operators object without parse
+   */
+  filterOperators?: FilterOperators
   /**
    * Global timerange config filter timestamps
    */

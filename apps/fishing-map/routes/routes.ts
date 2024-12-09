@@ -1,13 +1,5 @@
-import type {
-  RoutesMap,
-  Options,
-  StateGetter,
-  Bag} from 'redux-first-router';
-import {
-  NOT_FOUND,
-  redirect,
-  connectRoutes
-} from 'redux-first-router'
+import type { RoutesMap, Options, StateGetter, Bag } from 'redux-first-router'
+import { NOT_FOUND, redirect, connectRoutes } from 'redux-first-router'
 import type { Dispatch } from '@reduxjs/toolkit'
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import { PATH_BASENAME } from 'data/config'
@@ -45,9 +37,22 @@ export type ROUTE_TYPES =
 
 export const SAVE_WORKSPACE_BEFORE_LEAVE_KEY = 'SAVE_WORKSPACE_BEFORE_LEAVE'
 
+const WORKSPACES_ACTIONS = [
+  WORKSPACE,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACE_REPORT,
+  VESSEL_GROUP_REPORT,
+  PORT_REPORT,
+]
+
 const confirmLeave = (state: any, action: any) => {
   const suggestWorkspaceSave = state.workspace?.suggestSave === true
-  if (state.location?.type !== action.type && suggestWorkspaceSave) {
+  if (
+    !WORKSPACES_ACTIONS.includes(action.type) &&
+    state.location?.type !== action.type &&
+    suggestWorkspaceSave
+  ) {
     return t('common.confirmLeave', 'Are you sure you want to leave without saving your workspace?')
   }
 }

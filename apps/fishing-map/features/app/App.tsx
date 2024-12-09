@@ -115,7 +115,6 @@ const Main = () => {
         </div>
       )}
       {showTimebar && isWorkspaceMapReady && <Timebar />}
-
       <Footer />
     </Fragment>
   )
@@ -206,7 +205,6 @@ function App() {
         action.abort()
       }
     }
-     
   }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
@@ -217,7 +215,6 @@ function App() {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
-     
   }, [])
 
   useEffect(() => {

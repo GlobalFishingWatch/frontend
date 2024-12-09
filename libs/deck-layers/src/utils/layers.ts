@@ -5,7 +5,7 @@ import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { Matrix4 } from '@math.gl/core'
 import { isNumeric } from '@globalfishingwatch/deck-loaders'
 import type { ContextPickingObject } from '../layers/context'
-import type { UserLayerPickingObject } from '../layers/user'
+import type { FilterOperators, UserLayerPickingObject } from '../layers/user'
 import type { PolygonPickingObject } from '../layers/polygons'
 
 const WORLD_SIZE = 512
@@ -31,7 +31,11 @@ export function getPickedFeatureToHighlight(
   })
 }
 
-export function getFeatureInFilter(feature: any, filters?: Record<string, any>) {
+export function getFeatureInFilter(
+  feature: any,
+  filters?: Record<string, any>,
+  filterOperators?: FilterOperators
+) {
   if (!filters || !Object.keys(filters).length) return true
   return Object.entries(filters).every(([id, values]) => {
     if (!values) return true
@@ -41,6 +45,9 @@ export function getFeatureInFilter(feature: any, filters?: Record<string, any>) 
       const value = Number(feature?.properties?.[id])
       return value && value >= min && value < max
     } else {
+      if (filterOperators?.[id] === 'exclude') {
+        return !values.includes(feature?.properties?.[id])
+      }
       return values.includes(feature?.properties?.[id])
     }
   })
