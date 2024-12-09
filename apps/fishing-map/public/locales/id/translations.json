@@ -48,7 +48,10 @@
     "periodComparison2nd": "awal perbandingan",
     "periodComparisonDuration": "durasi",
     "periodComparisonRange": "dalam {{duration}} setelah {{compareStart}} dibandingkan dengan acuan dasar dalam {{duration}} setelah {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsNotAllowed": "You can only add up to {{vessels}} vessels",
     "print ": "cetak",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Tampilkan {{results}} per halaman",
     "save": "Simpan laporan ini",
     "savePublic": "Izinkan pengguna lain untuk melihat laporan ini",
@@ -702,6 +705,11 @@
     "rulersHover": "Seret untuk memindahkan atau klik untuk melihat lebih banyak",
     "rulersStop": "Berhenti mengukur",
     "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
+    "screenshotArea": {
+      "map": "Only map",
+      "withTimebar": "With timebar",
+      "withTimebarAndLegend": "With timebar and legend"
+    },
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
