@@ -31,7 +31,7 @@ export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {
   )
 }
 
-const useTimebarTracksLayers = () => {
+export const useTimebarTracksLayers = () => {
   const dataviews = useSelector(selectAllActiveTrackDataviews)
   const ids = useMemo(() => {
     return dataviews.map((d) => d.id)

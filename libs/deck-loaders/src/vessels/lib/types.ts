@@ -22,8 +22,8 @@ export type VesselTrackData = {
     positions?: { value: Float32Array; size: number }
     getPath: { value: Float32Array; size: number }
     getTimestamp: { value: Float32Array; size: number }
-    getSpeed: { value: Float32Array; size: number }
-    getElevation: { value: Float32Array; size: number }
+    getSpeed: { value: Float32Array; size: number; min: number; max: number }
+    getElevation: { value: Float32Array; size: number; min: number; max: number }
   }
 }
 

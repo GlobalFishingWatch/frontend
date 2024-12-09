@@ -25,6 +25,7 @@ export type ResolverGlobalConfig = {
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
+  trackGraphDomain?: { min: number; max: number }
   highlightedTime?: Partial<TimeRange>
   highlightEventIds?: string[]
   visibleEvents: EventTypes[]

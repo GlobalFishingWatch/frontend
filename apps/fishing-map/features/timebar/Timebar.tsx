@@ -51,6 +51,7 @@ import {
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
+import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import { setHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -152,6 +153,7 @@ const TimebarWrapper = () => {
 
   const [isMouseInside, setMouseInside] = useState(false)
   const { t, ready, i18n } = useTranslation()
+  const trackGraphSteps = useTimebarTracksGraphSteps()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
@@ -362,7 +364,7 @@ const TimebarWrapper = () => {
       <Fragment>
         <TimebarTracks key="tracks" data={tracks} />
         {showGraph && tracksGraphsData && (
-          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} />
+          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} steps={trackGraphSteps} />
         )}
         {events && (
           <Fragment>

@@ -2,22 +2,17 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import type { UILegendColorRamp } from '@globalfishingwatch/ui-components'
 import { LegendType, MapLegend } from '@globalfishingwatch/ui-components'
-import {
-  VESSEL_GRAPH_COLORS,
-  VESSEL_DEPTH_VALUES,
-  VESSEL_SPEED_VALUES,
-} from '@globalfishingwatch/deck-layers'
+import { VESSEL_GRAPH_COLORS } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
-
-const SPEEDS = [0, ...VESSEL_SPEED_VALUES.slice(0, -1)]
-const DEPTHS = [0, ...VESSEL_DEPTH_VALUES.slice(0, -1)]
+import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 
 function VesselTracksLegend(): React.ReactElement | null {
   const { t } = useTranslation()
+  const steps = useTimebarTracksGraphSteps()
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
 
-  if (!vesselsTimebarGraph || vesselsTimebarGraph === 'none') {
+  if (!steps || !steps.length) {
     return null
   }
 
@@ -30,7 +25,7 @@ function VesselTracksLegend(): React.ReactElement | null {
         : t('timebarSettings.graphDepth', 'Vessel depth'),
     unit:
       vesselsTimebarGraph === 'speed' ? t('common.knots', 'knots') : t('common.meters', 'meters'),
-    values: vesselsTimebarGraph === 'speed' ? SPEEDS : DEPTHS,
+    values: [0, ...steps.slice(0, -1).map((step) => step.value)],
     colors:
       vesselsTimebarGraph === 'speed' ? VESSEL_GRAPH_COLORS : VESSEL_GRAPH_COLORS.slice().reverse(),
   }
