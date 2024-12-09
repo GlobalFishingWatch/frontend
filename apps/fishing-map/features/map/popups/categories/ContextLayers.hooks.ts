@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventLabel } from 'utils/analytics'
-import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
+import type { AreaKeyId} from 'features/areas/areas.slice';
+import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -17,7 +18,6 @@ export const getAreaIdFromFeature = (
 ): AreaKeyId => {
   return (
     feature.properties?.gfw_id ||
-    // TODO:deck check if promoteId is covered for every case in the getPickingInfo function
     feature.properties?.[(feature as any).promoteId as string] ||
     (feature.id as string)
   )
@@ -63,20 +63,6 @@ export const useContextInteractions = () => {
   const setReportArea = useCallback(
     (feature: ContextPickingObject | UserLayerPickingObject) => {
       const { title, value } = feature
-      // TODO:deck review this
-      // const areaId = getAreaIdFromFeature(feature) as string
-      // Report already does it on page reload but to avoid waiting
-      // this moves the map to the same position
-      // const bounds = getFeatureBounds(feature)
-      // if (bounds) {
-      //   const boundsParams = {
-      //     padding: FIT_BOUNDS_REPORT_PADDING,
-      //     mapWidth: window.innerWidth / 2,
-      //     mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
-      //   }
-      //   fitMapBounds(bounds, boundsParams)
-      // }
-
       dispatchClickedEvent(null)
 
       trackEvent({

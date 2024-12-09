@@ -11,11 +11,10 @@ import SearchBasicResultList from 'features/search/basic/SearchBasicResultList'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
-import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectSearchStatus,
-  selectSearchStatusCode,
   setSuggestionClicked,
   selectSelectedVessels,
   setSelectedVessels,
@@ -30,6 +29,7 @@ import {
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import styles from './SearchBasic.module.css'
+import SearchError from './SearchError'
 
 export type SearchComponentProps = {
   onSuggestionClick?: () => void
@@ -52,14 +52,13 @@ function SearchBasic({
   const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
-  const searchStatusCode = useSelector(selectSearchStatusCode)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const { dispatchQueryParams } = useLocationConnect()
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
     searchPagination.since &&
-    searchResults!?.length < searchPagination.total
+    searchResults?.length < searchPagination.total
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ query: e.target.value }, isStandaloneSearchLocation)
@@ -158,16 +157,7 @@ function SearchBasic({
               {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
                 <SearchNoResultsState />
               )}
-              {searchStatus === AsyncReducerStatus.Error && (
-                <p className={styles.error}>
-                  {searchStatusCode === 404
-                    ? t(
-                        'search.noResults',
-                        "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
-                      )
-                    : t('errors.genericShort', 'Something went wrong')}
-                </p>
-              )}
+              {searchStatus === AsyncReducerStatus.Error && <SearchError />}
             </ul>
           ) : (
             <SearchNotAllowed />

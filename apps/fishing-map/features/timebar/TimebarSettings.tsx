@@ -1,34 +1,38 @@
-import { Fragment, useState, ComponentType } from 'react'
+import type { ComponentType } from 'react'
+import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import type { UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveReportActivityDataviews,
-  selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
-import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
-import { ReactComponent as TracksIcon } from 'assets/icons/timebar-tracks.svg'
-import { ReactComponent as TrackSpeedIcon } from 'assets/icons/timebar-track-speed.svg'
-import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-depth.svg'
+import AreaIcon from 'assets/icons/timebar-area.svg'
+import TracksIcon from 'assets/icons/timebar-tracks.svg'
+import TrackSpeedIcon from 'assets/icons/timebar-track-speed.svg'
+import TrackDepthIcon from 'assets/icons/timebar-track-depth.svg'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
+import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
-  selectActiveTrackDataviews,
+  selectActiveDetectionsDataviews,
+  selectActiveVesselGroupDataviews,
   selectActiveVesselsDataviews,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   useTimebarVisualisationConnect,
   useTimebarGraphConnect,
   useTimebarEnvironmentConnect,
+  useTimebarVesselGroupConnect,
 } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
@@ -67,16 +71,21 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
     selectActiveHeatmapEnvironmentalDataviewsWithoutStatic
   )
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const vesselIds = activeTrackDataviews.map((v) => v.id)
-  const vesselLayers = useGetDeckLayers<VesselLayer>(vesselIds)
-  // TODO:deck better validation of the layer contains data
-  const hasTracksData = vesselLayers?.length > 0
+  const trackLayers = useGetDeckLayers<VesselLayer | UserTracksLayer>(vesselIds)
+  const hasTracksData = trackLayers?.some((layer) =>
+    layer.instance instanceof VesselLayer
+      ? layer.instance?.getVesselTracksLayersLoaded()
+      : layer.instance?.isLoaded
+  )
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
+  const { timebarSelectedVGId, dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
-  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews!?.length <= 2
+  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews?.length <= 2
 
   const openOptions = () => {
     trackEvent({
@@ -91,25 +100,59 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   }
   const setHeatmapActivityActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.HeatmapActivity}`,
+    })
   }
   const setHeatmapDetectionsActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.HeatmapDetections}`,
+    })
   }
   const setEnvironmentActive = (environmentalDataviewId: string) => {
     dispatchTimebarVisualisation(TimebarVisualisations.Environment)
     dispatchTimebarSelectedEnvId(environmentalDataviewId)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Environment} - ${environmentalDataviewId}`,
+    })
+  }
+  const setVesselGroupActive = (vesselGroupDataviewId: string) => {
+    dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup)
+    dispatchTimebarSelectedVGId(vesselGroupDataviewId)
   }
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
     dispatchTimebarGraph(TimebarGraphs.None)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.None}`,
+    })
   }
   const setVesselGraphSpeed = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
     dispatchTimebarGraph(TimebarGraphs.Speed)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.Speed}`,
+    })
   }
   const setVesselGraphDepth = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
     dispatchTimebarGraph(TimebarGraphs.Depth)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.Depth}`,
+    })
   }
 
   const expandedContainerRef = useClickedOutside(closeOptions)
@@ -171,6 +214,26 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   tooltip={detectionsTooltipLabel}
                   onClick={setHeatmapDetectionsActive}
                 />
+                {activeVesselGroupDataviews.map((vgDataview) => {
+                  return (
+                    <Radio
+                      key={vgDataview.id}
+                      label={
+                        <Icon
+                          SvgIcon={AreaIcon}
+                          label={vgDataview.vesselGroup?.name as string}
+                          color={vgDataview?.config?.color || COLOR_PRIMARY_BLUE}
+                        />
+                      }
+                      active={
+                        timebarVisualisation === TimebarVisualisations.VesselGroup &&
+                        timebarSelectedVGId === vgDataview.id
+                      }
+                      tooltip={activityTooltipLabel}
+                      onClick={() => setVesselGroupActive(vgDataview.id)}
+                    />
+                  )
+                })}
               </Fragment>
             )}
             <Radio
@@ -254,7 +317,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               )
               const title = t(
                 `datasets:${dataset?.id}.name` as any,
-                dataset!?.name || dataset!?.id || ''
+                dataset?.name || dataset?.id || ''
               )
               return (
                 <Radio

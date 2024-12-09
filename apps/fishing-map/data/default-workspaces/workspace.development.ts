@@ -1,8 +1,5 @@
-import {
-  WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS,
-  Workspace,
-} from '@globalfishingwatch/api-types'
+import type { Workspace } from '@globalfishingwatch/api-types'
+import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
 import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
@@ -21,11 +18,17 @@ import {
   BASEMAP_DATAVIEW_INSTANCE_ID,
   FIXED_SAR_INFRASTRUCTURE,
   DEFAULT_WORKSPACE_CATEGORY,
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import {
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  LOITERING_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
+} from 'features/dataviews/dataviews.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
-import { WorkspaceState } from 'types'
+import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
@@ -47,7 +50,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'ais',
       config: {
         visible: true,
         datasets: ['public-global-fishing-effort:v3.0'],
@@ -127,6 +130,20 @@ const workspace: Workspace<WorkspaceState> = {
           ],
         },
       ],
+    },
+    {
+      id: LOITERING_EVENTS_SOURCE_ID,
+      dataviewId: CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
+    },
+    {
+      id: PORT_VISITS_EVENTS_SOURCE_ID,
+      dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
     },
     {
       id: 'context-layer-graticules',

@@ -1,4 +1,4 @@
-import { TrackSegment } from '@globalfishingwatch/api-types'
+import type { TrackSegment } from '@globalfishingwatch/api-types'
 
 export const mergeTrackChunks = (chunks: TrackSegment[][]) => {
   return chunks.filter((chunk) => chunk).flat()

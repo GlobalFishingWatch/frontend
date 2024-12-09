@@ -5,9 +5,9 @@ import {
   removeAccessTokenFromUrl,
   GUEST_USER_TYPE,
 } from '@globalfishingwatch/api-client'
-import { UserData } from '@globalfishingwatch/api-types'
+import type { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
-import { RootState } from 'store'
+import type { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 interface UserState {

@@ -1,17 +1,18 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorCyclingType } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorCyclingType } from '@globalfishingwatch/api-types'
+import type {
+  ColorBarOption} from '@globalfishingwatch/ui-components';
 import {
   FillColorBarOptions,
-  LineColorBarOptions,
-  ColorBarOption,
+  LineColorBarOptions
 } from '@globalfishingwatch/ui-components'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { WorkspaceProfileViewParam } from 'types'
+import type { WorkspaceProfileViewParam } from 'types'
 import { selectWorkspace, selectWorkspaceDataviewInstances } from './workspace.selectors'
 import { setProfileView } from './workspace.slice'
 
@@ -53,7 +54,7 @@ const createDataviewsInstances = (
         },
       } as UrlDataviewInstance
       if (dataview.config.colorCyclingType === 'fill') {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+         
         dataviewWithColor.config!.colorRamp = nextColor.id
       }
       return dataviewWithColor

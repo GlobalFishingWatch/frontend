@@ -13,10 +13,6 @@
   display: flex;
 }
 
-.actions.oneIcon {
-  min-width: 28px;
-}
-
 .event:hover {
   color: var(--color-primary-blue);
 }
@@ -28,10 +24,10 @@
 .header {
   display: flex;
   align-items: center;
-  cursor: pointer;
 }
 
-.header label {
+.pointer,
+.pointer label {
   cursor: pointer;
 }
 

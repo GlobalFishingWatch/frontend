@@ -2,14 +2,16 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
-import { DataviewInstance, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { DataviewInstance} from '@globalfishingwatch/api-types';
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
+import type {
+  VesselDataIdentity} from 'features/vessel/vessel.slice';
 import {
-  VesselDataIdentity,
   resetVesselState,
   setVesselFitBoundsOnLoad,
 } from 'features/vessel/vessel.slice'
@@ -20,7 +22,7 @@ import {
   selectLocationQuery,
 } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
-import { QueryParams } from 'types'
+import type { QueryParams } from 'types'
 import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
@@ -31,7 +33,7 @@ type VesselLinkProps = {
   vesselId?: string
   identity?: VesselDataIdentity
   children: any
-  onClick?: (e: MouseEvent) => void
+  onClick?: (e: MouseEvent, vesselId?: string) => void
   tooltip?: React.ReactNode
   fitBounds?: boolean
   className?: string
@@ -46,7 +48,7 @@ const VesselLink = ({
   children,
   onClick,
   tooltip,
-  fitBounds = true,
+  fitBounds = false,
   className = '',
   query,
   testId = 'link-vessel-profile',
@@ -69,13 +71,11 @@ const VesselLink = ({
         if (vesselId !== vesselInfoDataId) {
           dispatch(resetVesselState())
         }
-        if (fitBounds) {
-          // This needs to happen after dispatch resetVesselState so there is no override
-          dispatch(setVesselFitBoundsOnLoad(true))
-        }
+        // This needs to happen after dispatch resetVesselState so there is no override
+        dispatch(setVesselFitBoundsOnLoad(fitBounds))
       }
       if (onClick) {
-        onClick(e)
+        onClick(e, vesselId)
       }
     },
     [dispatch, fitBounds, onClick, vesselId, vesselInfoDataId]
@@ -114,13 +114,15 @@ const VesselLink = ({
           ...(locationQuery?.dataviewInstances?.length && {
             dataviewInstances: locationQuery?.dataviewInstances?.map(
               (instance: DataviewInstance) => {
-                if (instance.id === dataviewId) {
+                const matches = instance.id.includes(vesselId) || instance.id === dataviewId
+                if (matches) {
                   return {
                     ...instance,
                     config: {
                       ...instance.config,
                       visible: true,
                     },
+                    deleted: false,
                   }
                 }
                 return instance

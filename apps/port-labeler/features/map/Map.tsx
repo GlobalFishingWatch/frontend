@@ -1,8 +1,10 @@
 import React, { useMemo } from 'react'
-import { Map, MapboxStyle } from 'react-map-gl'
+import type { MapboxStyle } from 'react-map-gl';
+import { Map } from 'react-map-gl'
 import { useSelector } from 'react-redux'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import maplibregl, { RequestParameters } from '@globalfishingwatch/maplibre-gl'
+import type { RequestParameters } from '@globalfishingwatch/maplibre-gl';
+import maplibregl from '@globalfishingwatch/maplibre-gl'
 import mapStyle from 'features/map/map-style'
 import { selectCountry } from 'features/labeler/labeler.slice'
 import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
@@ -75,7 +77,7 @@ const MapWrapper = (): React.ReactElement => {
         latitude={viewport.latitude}
         longitude={viewport.longitude}
         zoom={viewport.zoom}
-        mapLib={maplibregl}
+        mapLib={maplibregl as any}
         mapStyle={style as unknown as MapboxStyle}
         onMouseDown={onMouseDown as any}
         onMouseMove={onMouseMove as any}

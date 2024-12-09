@@ -7,8 +7,11 @@ export function getSteps(values: number[], numSteps = COLOR_RAMP_DEFAULT_NUM_STE
   const buckets = ckmeans(values, steps).map((step) => step[0])
   const filteredBuckets = buckets.filter((bucket, index) => bucket !== buckets[index - 1])
   if (filteredBuckets.length < numSteps) {
+    // add one at the end to avoid using white when only one value is present
+    filteredBuckets.push(filteredBuckets[filteredBuckets.length - 1] + 0.5)
     for (let i = filteredBuckets.length; i < numSteps; i++) {
-      filteredBuckets.push(filteredBuckets[i - 1] + 0.5)
+      // add values at the beginning so more opaque colors are used for lower values
+      filteredBuckets.unshift(filteredBuckets[0] - 0.1)
     }
   }
   return filteredBuckets

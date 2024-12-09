@@ -1,7 +1,8 @@
 import { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { IconButton, Spinner, Tabs, Tab } from '@globalfishingwatch/ui-components'
+import type { Tab } from '@globalfishingwatch/ui-components';
+import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { VesselAPISource } from 'types'

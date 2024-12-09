@@ -1,9 +1,11 @@
 import { useSelector } from 'react-redux'
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
+import type { Tab} from '@globalfishingwatch/ui-components';
+import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
-import { Dataview, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { Dataview} from '@globalfishingwatch/api-types';
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   selectIsWorkspaceVesselLocation,
   selectVesselId,
@@ -13,8 +15,6 @@ import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { fetchRegionsThunk } from 'features/regions/regions.slice'
-import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import {
@@ -29,7 +29,6 @@ import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselSection } from 'types'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
@@ -50,6 +49,7 @@ import Insights from 'features/vessel/insights/Insights'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 import styles from './Vessel.module.css'
+import type { VesselSection } from './vessel.types'
 
 const Vessel = () => {
   const { t } = useTranslation()
@@ -65,7 +65,6 @@ const Vessel = () => {
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const infoError = useSelector(selectVesselInfoError)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
-  const regionsDatasets = useSelector(selectRegionsDatasets)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselData = useSelector(selectVesselInfoData)
   const hasSelfReportedData =
@@ -120,17 +119,12 @@ const Vessel = () => {
         id: 'insights' as VesselSection,
         title: t('vessel.sectionInsights', 'Insights'),
         content: <Insights />,
+        disabled: !hasEventsDataset,
         testId: 'vv-insights-tab',
       },
     ],
     [t, updateAreaLayersVisibility, hasEventsDataset]
   )
-
-  useEffect(() => {
-    if (Object.values(regionsDatasets).every((d) => d)) {
-      dispatch(fetchRegionsThunk(regionsDatasets))
-    }
-  }, [dispatch, regionsDatasets])
 
   useEffect(() => {
     const fetchVesselProfileAreaDatasets = async () => {
@@ -160,13 +154,13 @@ const Vessel = () => {
     ) {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [datasetId, dispatch, vesselId, urlWorkspaceId])
 
   useEffect(() => {
     dispatchClickedEvent(null)
     cancelPendingInteractionRequests()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   const changeTab = useCallback(

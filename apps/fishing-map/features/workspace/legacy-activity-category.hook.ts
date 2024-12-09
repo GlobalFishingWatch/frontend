@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectActivityCategory } from 'features/app/selectors/app.selectors'
 import {
@@ -9,7 +9,7 @@ import {
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 
 export const useHideLegacyActivityCategoryDataviews = () => {
   const actionDone = useRef(false)

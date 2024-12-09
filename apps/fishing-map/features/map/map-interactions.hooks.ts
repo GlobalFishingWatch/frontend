@@ -1,23 +1,26 @@
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckProps, PickingInfo } from '@deck.gl/core'
+import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
-import { atom, useAtom, useSetAtom } from 'jotai'
-import { ThunkDispatch } from '@reduxjs/toolkit'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { debounce, throttle } from 'es-toolkit'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type {
+  InteractionEvent,
+  InteractionEventType} from '@globalfishingwatch/deck-layer-composer';
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
-  InteractionEvent,
-  InteractionEventType,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
-import {
-  ClusterPickingObject,
+import type {
+  FourwingsClusterPickingObject,
   DeckLayerInteractionPickingInfo,
   DeckLayerPickingObject,
-  FourwingsHeatmapPickingObject,
+  FourwingsHeatmapPickingObject} from '@globalfishingwatch/deck-layers';
+import {
+  FOURWINGS_MAX_ZOOM,
 } from '@globalfishingwatch/deck-layers'
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -31,21 +34,34 @@ import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { getAnalyticsEvent, isRulerLayerPoint, isTilesClusterLayer } from './map-interaction.utils'
 import {
+  getAnalyticsEvent,
+  isRulerLayerPoint,
+  isTilesClusterLayer,
+  isTilesClusterLayerCluster,
+} from './map-interaction.utils'
+import type {
   SliceExtendedClusterPickingObject,
-  SliceInteractionEvent,
+  SliceInteractionEvent} from './map.slice';
+import {
   fetchBQEventThunk,
-  fetchEncounterEventThunk,
-  fetchFishingActivityInteractionThunk,
+  fetchClusterEventThunk,
+  fetchHeatmapInteractionThunk,
+  fetchLegacyEncounterEventThunk,
   selectApiEventStatus,
   selectClickedEvent,
-  selectFishingInteractionStatus,
+  selectActivityInteractionStatus,
   setClickedEvent,
 } from './map.slice'
 import { useSetMapCoordinates } from './map-viewport.hooks'
+import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 
-export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
+export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.VesselGroups,
+  DataviewCategory.Events,
+]
 
 const useMapClusterTilesLoading = () => {
   const eventsDataviews = useSelector(selectEventsDataviews)
@@ -86,7 +102,7 @@ export const useClickedEventConnect = () => {
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
   const clickedEvent = useSelector(selectClickedEvent)
-  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const fishingInteractionStatus = useSelector(selectActivityInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const setMapCoordinates = useSetMapCoordinates()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
@@ -125,6 +141,7 @@ export const useClickedEventConnect = () => {
       // }),
       latitude: deckEvent.latitude,
       longitude: deckEvent.longitude,
+      zoom: deckEvent.viewport?.zoom,
       point: { x: deckEvent.point.x, y: deckEvent.point.y },
     } as SliceInteractionEvent
 
@@ -133,19 +150,28 @@ export const useClickedEventConnect = () => {
       trackEvent(analyticsEvent)
     })
     const clusterFeature = event?.features?.find(
-      (f) => (f as ClusterPickingObject).category === DataviewCategory.Events
-    ) as ClusterPickingObject
+      (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
+    ) as FourwingsClusterPickingObject
 
-    if (clusterFeature?.properties?.expansionZoom) {
-      const { count, expansionZoom, lat, lon } = clusterFeature.properties
-      if (count > 1) {
-        if (!areTilesClusterLoading && lat && lon) {
+    if (clusterFeature) {
+      if (isTilesClusterLayerCluster(clusterFeature)) {
+        const { expansionZoom } = clusterFeature
+        const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
+        const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
+        if (!areTilesClusterLoading && expansionZoomValue) {
           setMapCoordinates({
-            latitude: lat,
-            longitude: lon,
-            zoom: expansionZoom,
+            latitude: event.latitude,
+            longitude: event.longitude,
+            zoom: expansionZoomValue,
           })
         }
+        return
+      } else if (clusterFeature.clusterMode === 'country') {
+        setMapCoordinates({
+          latitude: event.latitude,
+          longitude: event.longitude,
+          zoom: (event.zoom as number) + 1,
+        })
         return
       }
     }
@@ -160,7 +186,7 @@ export const useClickedEventConnect = () => {
     dispatch(setClickedEvent(event))
 
     // get temporal grid clicked features and order them by sublayerindex
-    const fishingActivityFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
+    const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
       (feature) => {
         if (
           feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
@@ -168,29 +194,37 @@ export const useClickedEventConnect = () => {
         ) {
           return false
         }
-        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)
+        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+          feature.category as DataviewCategory
+        )
       }
     )
 
-    if (fishingActivityFeatures?.length) {
+    if (heatmapFeatures?.length) {
       dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
-      const activityProperties = fishingActivityFeatures.map((feature) =>
+      const heatmapProperties = heatmapFeatures.map((feature) =>
         feature.category === 'detections' ? 'detections' : 'hours'
       )
-      const activityPromise = dispatch(
-        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
+      const heatmapPromise = dispatch(
+        fetchHeatmapInteractionThunk({ heatmapFeatures, heatmapProperties })
       )
-      setInteractionPromises((prev) => ({ ...prev, activity: activityPromise as any }))
+      setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise as any }))
     }
 
     const tileClusterFeature = event.features.find(
-      (f) => f.category === DataviewCategory.Events && f.subcategory === DataviewType.TileCluster
+      (f) => f.category === DataviewCategory.Events && isTilesClusterLayer(f)
     ) as SliceExtendedClusterPickingObject
+
     if (tileClusterFeature) {
       const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
-      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
-
-      const eventsPromise = dispatch(fetchFn(tileClusterFeature))
+      // TODO:deck migrate bqPocQuery to FourwingsClusters
+      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchClusterEventThunk
+      // TODO:deck remove fetchLegacyEncounterEventThunk once fourwings cluster goes to pro
+      const clusterFn =
+        tileClusterFeature?.subcategory === DataviewType.TileCluster
+          ? fetchLegacyEncounterEventThunk
+          : fetchClusterEventThunk
+      const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
       setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
     }
   }
@@ -257,6 +291,7 @@ export const useMapMouseHover = () => {
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
 
+   
   const onMouseMove: DeckProps['onHover'] = useCallback(
     throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
       setHoveredCoordinates(info.coordinate)
@@ -331,6 +366,7 @@ export const useMapMouseClick = () => {
 }
 
 export const useMapCursor = () => {
+  const annotationsCursor = useAtomValue(annotationsCursorAtom)
   const areClusterTilesLoading = useMapClusterTilesLoading()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
@@ -339,14 +375,20 @@ export const useMapCursor = () => {
 
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
+      if (annotationsCursor) {
+        return annotationsCursor
+      }
       if (hoverFeatures?.some(isRulerLayerPoint)) {
         return 'move'
       }
       if (hoverFeatures?.some(isTilesClusterLayer)) {
-        const isCluster = (hoverFeatures as ClusterPickingObject[]).some(
-          (f) => f.properties?.count > 1
+        const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some((f) =>
+          isTilesClusterLayerCluster(f)
         )
-        if (!isCluster) {
+        const isCountryClusterMode = (hoverFeatures as FourwingsClusterPickingObject[]).some(
+          (f) => f.clusterMode === 'country'
+        )
+        if (!isCluster && !isCountryClusterMode) {
           return 'pointer'
         }
         return areClusterTilesLoading ? 'wait' : 'zoom-in'
@@ -363,11 +405,12 @@ export const useMapCursor = () => {
       return 'grab'
     },
     [
+      annotationsCursor,
       hoverFeatures,
-      rulersEditing,
       isMapAnnotating,
-      areClusterTilesLoading,
       isErrorNotificationEditing,
+      rulersEditing,
+      areClusterTilesLoading,
     ]
   )
 
@@ -416,7 +459,7 @@ export const useMapDrag = () => {
 
 export const useDebouncedDispatchHighlightedEvent = () => {
   const dispatch = useAppDispatch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   return useCallback(
     debounce((eventIds?: string | string[]) => {
       let ids: string[] | undefined

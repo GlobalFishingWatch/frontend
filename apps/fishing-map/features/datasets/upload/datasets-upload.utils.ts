@@ -1,9 +1,19 @@
-import { Feature, FeatureCollection, GeoJsonProperties, Point, Polygon } from 'geojson'
-import {
+import type {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  GeometryCollection,
+  Point,
+  Polygon,
+} from 'geojson'
+import { flatten } from '@turf/flatten'
+import union from '@turf/union'
+import type {
   Dataset,
-  DatasetCategory,
   DatasetConfiguration,
-  DatasetGeometryType,
+  DatasetGeometryType} from '@globalfishingwatch/api-types';
+import {
+  DatasetCategory,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import {
@@ -12,16 +22,19 @@ import {
   getDatasetSchema,
   getDatasetSchemaClean,
   getSchemaIdClean,
+  getUTCDate,
   guessColumnsFromSchema,
 } from '@globalfishingwatch/data-transforms'
+import type {
+  DatasetConfigurationProperty} from '@globalfishingwatch/datasets-client';
 import {
-  DatasetConfigurationProperty,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
-import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getUTCDateTime } from 'utils/dates'
-import { FileType } from 'utils/files'
+import type { FileType } from 'utils/files'
+import type { AreaGeometry } from 'features/areas/areas.slice'
 
 type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
 
@@ -105,6 +118,12 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
   const guessedColumns = guessColumnsFromSchema(baseMetadata.schema)
   const baseConfig = baseMetadata?.configuration
   const baseConfigUI = baseMetadata?.configuration?.configurationUI
+  const timestampGuessedValid =
+    guessedColumns.timestamp &&
+    data?.features?.some((f: any) => {
+      const value = f.properties?.[guessedColumns.timestamp]
+      return getUTCDate(value)?.toString() !== 'Invalid Date'
+    })
   return {
     ...baseMetadata,
     configuration: {
@@ -113,9 +132,9 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
       configurationUI: {
         ...(baseConfigUI && baseConfigUI),
         sourceFormat,
-        timestamp: guessedColumns.timestamp,
-        timeFilterType: guessedColumns.timestamp ? 'date' : null,
-        startTime: guessedColumns.timestamp || null,
+        timeFilterType: timestampGuessedValid ? 'date' : null,
+        timestamp: (timestampGuessedValid && guessedColumns.timestamp) || null,
+        startTime: (timestampGuessedValid && guessedColumns.timestamp) || null,
         geometryType: 'polygons' as DatasetGeometryType,
       },
     } as DatasetConfiguration,
@@ -177,6 +196,10 @@ export const parseGeoJsonProperties = <T extends Polygon | Point>(
       return {
         ...feature,
         properties,
+        geometry:
+          (feature.geometry as unknown as GeometryCollection).type === 'GeometryCollection'
+            ? (union(flatten(feature.geometry))?.geometry as AreaGeometry)
+            : (feature.geometry as AreaGeometry),
       }
     }) as Feature<T, GeoJsonProperties>[],
   }

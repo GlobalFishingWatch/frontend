@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux'
 import parse from 'html-react-parser'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Bar, BarChart, Tooltip as RechartsTooltip, XAxis, YAxis, LabelList } from 'recharts'
-import { Choice, ChoiceOption, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
-import { RegionType } from '@globalfishingwatch/api-types'
+import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import { Choice, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import type { RegionType } from '@globalfishingwatch/api-types'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import {
   selectVesselEventTypes,
   selectEventsGroupedByArea,
   UNKNOWN_AREA,
 } from 'features/vessel/activity/vessels-activity.selectors'
-import { VesselAreaSubsection } from 'types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
@@ -26,7 +26,9 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileColor } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
+import { useFetchRegionsData } from 'features/vessel/activity/event/event.hook'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
+import type { VesselAreaSubsection } from '../vessel.types'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {
@@ -58,7 +60,7 @@ const AreaTick = ({ y, payload }: any) => {
   }, [dispatchSetHighlightedEvents])
 
   return (
-    <foreignObject x={0} y={y - 12} className={styles.areaContainer}>
+    <foreignObject x={0} y={y - 12} width="200" height="40" className={styles.areaContainer}>
       <Tooltip
         content={`${t(
           'vessel.clickToFitMapToEvents',
@@ -98,6 +100,7 @@ const AreaTooltip = ({ payload }: any) => {
 }
 
 const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
+  useFetchRegionsData()
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const events = useSelector(selectVesselEventsFilteredByTimerange)

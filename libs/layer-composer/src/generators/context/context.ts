@@ -1,11 +1,12 @@
-import {
+import type {
   LayerSpecification,
   CircleLayerSpecification,
   LineLayerSpecification,
   FillLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { GeneratorType, ContextGeneratorConfig } from '../types'
-import { ExtendedLayerMeta } from '../../types'
+import type { ContextGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
+import type { ExtendedLayerMeta } from '../../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import LAYERS, { HIGHLIGHT_SUFIX, INTERACTION_SUFIX } from './context-layers'
@@ -89,7 +90,7 @@ class ContextGenerator {
     if (!baseLayers?.length) {
       throw new Error(`Context layer should specify a valid layer parameter, ${config.layer}`)
     }
-    let filters: Array<any> = []
+    let filters: any[] = []
     if (config?.filters) {
       filters = ['all']
       Object.entries(config.filters).forEach(([key, values]) => {

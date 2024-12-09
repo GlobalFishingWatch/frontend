@@ -1,7 +1,8 @@
-import {
+import type {
   DataviewDatasetConfigParam,
-  EndpointId,
-  ThinningConfig,
+  ThinningConfig} from '@globalfishingwatch/api-types';
+import {
+  EndpointId
 } from '@globalfishingwatch/api-types'
 import { getTracksChunkSetId } from '@globalfishingwatch/dataviews-client'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.util'
@@ -66,7 +67,7 @@ export const trackDatasetConfigsCallback = (
               value: chunk.end,
             },
           ]
-          const trackMetadata = { ...trackWithThinning.metadata } || {}
+          const trackMetadata = { ...(trackWithThinning.metadata || {}) }
 
           trackChunk.metadata = {
             ...trackMetadata,

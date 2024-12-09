@@ -1,27 +1,26 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import {
-  FillColorBarOptions,
-  LineColorBarOptions,
-  ColorBarOption,
-} from '@globalfishingwatch/ui-components'
-import {
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectUrlDataviewInstances,
   selectUrlTimeRange,
   selectUrlViewport,
 } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { LAYERS_LIBRARY_ACTIVITY } from 'data/layer-library/layers-activity'
+import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 export const useFitWorkspaceBounds = () => {
   const urlViewport = useSelector(selectUrlViewport)
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const urlTimeRange = useSelector(selectUrlTimeRange)
 
   const { setTimerange } = useTimerangeConnect()
@@ -30,7 +29,7 @@ export const useFitWorkspaceBounds = () => {
   const fitWorkspaceBounds = useCallback(
     async (workspace: Workspace) => {
       const viewport = urlViewport || workspace?.viewport
-      if (viewport && !isReportLocation) {
+      if (viewport && !isAreaReportLocation) {
         setMapCoordinates(viewport)
       }
       if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
@@ -40,17 +39,41 @@ export const useFitWorkspaceBounds = () => {
         })
       }
     },
-    [isReportLocation, setMapCoordinates, setTimerange, urlTimeRange, urlViewport]
+    [isAreaReportLocation, setMapCoordinates, setTimerange, urlTimeRange, urlViewport]
   )
 
   return fitWorkspaceBounds
+}
+
+export const getNextColor = (
+  colorCyclingType: ColorCyclingType,
+  currentColors: string[] | undefined
+) => {
+  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
+  if (!currentColors) {
+    return palette[Math.floor(Math.random() * palette.length)]
+  }
+  let minRepeat = Number.POSITIVE_INFINITY
+  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
+    const num = currentColors.filter((c) => c === color.value).length
+    if (num < minRepeat) minRepeat = num
+    return {
+      ...color,
+      num,
+    }
+  })
+  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
+  return nextColor
 }
 
 const createDataviewsInstances = (
   newDataviewInstances: Partial<UrlDataviewInstance>[],
   currentDataviewInstances: UrlDataviewInstance[] = []
 ): UrlDataviewInstance[] => {
-  const currentColors = currentDataviewInstances.flatMap((dv) => dv.config?.color || [])
+  const defaultDataviewInstances = [...LAYERS_LIBRARY_ACTIVITY, ...LAYERS_LIBRARY_DETECTIONS]
+  const currentColors = (currentDataviewInstances || defaultDataviewInstances).flatMap(
+    (dv) => dv.config?.color || []
+  )
   return newDataviewInstances.map((dataview) => {
     if (dataview.config?.colorCyclingType) {
       const nextColor = getNextColor(dataview.config.colorCyclingType, currentColors)
@@ -61,10 +84,10 @@ const createDataviewsInstances = (
         config: {
           ...config,
           color: nextColor.value,
+          colorCyclingType: undefined,
         },
       } as UrlDataviewInstance
-      if (dataview.config.colorCyclingType === 'fill') {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (colorCyclingType === 'fill') {
         dataviewWithColor.config!.colorRamp = nextColor.id
       }
       return dataviewWithColor
@@ -106,24 +129,6 @@ export const mergeDataviewIntancesToUpsert = (
     }
   })
   return dataviewInstances
-}
-
-const getNextColor = (colorCyclingType: ColorCyclingType, currentColors: string[] | undefined) => {
-  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
-  if (!currentColors) {
-    return palette[0]
-  }
-  let minRepeat = Number.POSITIVE_INFINITY
-  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
-    const num = currentColors.filter((c) => c === color.value).length
-    if (num < minRepeat) minRepeat = num
-    return {
-      ...color,
-      num,
-    }
-  })
-  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
-  return nextColor
 }
 
 export const useDataviewInstancesConnect = () => {

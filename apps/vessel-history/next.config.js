@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+ 
 const { cwd } = require('process')
 const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
@@ -10,9 +10,14 @@ const getStaticPrecacheEntries = require('./utils/staticprecache')
 const basePath =
   process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/vessel-viewer' : '')
 
+const IS_PRODUCTION =
+  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' ||
+  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'staging' ||
+  process.env.NODE_ENV === 'production'
+
 /**
- * @type {import('next').NextConfig}
- */
+ * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
+ **/
 const nextConfig = {
   async rewrites() {
     return [
@@ -24,19 +29,17 @@ const nextConfig = {
     ]
   },
   async redirects() {
-    return [
-      // Redirect everything in / root to basePath if defined
-      ...(basePath !== ''
-        ? [
-            {
-              source: '/',
-              destination: basePath,
-              basePath: false,
-              permanent: false,
-            },
-          ]
-        : []),
-    ]
+    // Redirect everything in / root to basePath if defined
+    return basePath !== ''
+      ? [
+          {
+            source: '/',
+            destination: basePath,
+            basePath: false,
+            permanent: false,
+          },
+        ]
+      : []
   },
   async headers() {
     return [
@@ -51,8 +54,8 @@ const nextConfig = {
       },
     ]
   },
-  webpack: function (config, { isServer }) {
-    if (!isServer) {
+  webpack: function (config, options) {
+    if (!options.isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
         child_process: false,
@@ -61,29 +64,41 @@ const nextConfig = {
         tls: false,
       }
     }
+    // config.optimization.minimize = false
+    // config.externals = [...config.externals, 'mapbox-gl']
+    config.module.rules.push({
+      test: /\.svg$/i,
+      use: ['@svgr/webpack'],
+    })
     return config
   },
   transpilePackages: ['d3-geo', 'lodash-es'],
-  // i18n,
   basePath,
-  productionBrowserSourceMaps:
-    process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
-    process.env.NODE_ENV === 'development',
-
+  reactStrictMode: true,
+  productionBrowserSourceMaps: !IS_PRODUCTION,
   // to deploy on a node server
   output: 'standalone',
-  outputFileTracing: true,
+  outputFileTracingRoot: join(__dirname, '../../'),
   experimental: {
-    outputFileTracingRoot: join(__dirname, '../../'),
+    esmExternals: true,
+    optimizePackageImports: [
+      '@globalfishingwatch/api-client',
+      '@globalfishingwatch/api-types',
+      '@globalfishingwatch/data-transforms',
+      '@globalfishingwatch/datasets-client',
+      '@globalfishingwatch/dataviews-client',
+      '@globalfishingwatch/deck-layer-composer',
+      '@globalfishingwatch/deck-layers',
+      '@globalfishingwatch/deck-loaders',
+      '@globalfishingwatch/ocean-areas',
+      '@globalfishingwatch/pbf-decoders',
+      '@globalfishingwatch/react-hooks',
+      '@globalfishingwatch/timebar',
+      '@globalfishingwatch/ui-components',
+    ],
   },
   cleanDistDir: true,
   distDir: '.next',
-
-  nx: {
-    // Set this to true if you would like to to use SVGR
-    // See: https://github.com/gregberge/svgr
-    svgr: true,
-  },
 }
 
 const withPWA = withPWAConstructor({
@@ -110,11 +125,10 @@ const withPWA = withPWAConstructor({
     }),
   ],
 })
-
 const configWithNx = withNx(nextConfig)
+
 module.exports = async (...args) => {
   return {
     ...withPWA(await configWithNx(...args)),
-    //...
   }
 }

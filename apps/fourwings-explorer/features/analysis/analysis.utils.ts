@@ -1,6 +1,6 @@
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import type { Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'utils/i18n'
 
 export const toFixed = (value: number, decimals = 2) => {

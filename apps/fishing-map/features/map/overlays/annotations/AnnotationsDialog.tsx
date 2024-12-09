@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import {
   Button,
   ColorBar,
@@ -10,8 +9,9 @@ import {
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
 import styles from './Annotations.module.css'
 
@@ -19,33 +19,30 @@ const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBar
 
 const MapAnnotationsDialog = (): React.ReactNode | null => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
-  const gfwUser = useSelector(selectIsGFWUser)
-  const { mapAnnotation, resetMapAnnotation, setMapAnnotation, isMapAnnotating } =
-    useMapAnnotation()
+  const { mapAnnotation, resetMapAnnotation, setMapAnnotation } = useMapAnnotation()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
-  const isDialogVisible = gfwUser && isMapAnnotating && mapAnnotation
+
   const onConfirmClick = () => {
     if (!mapAnnotation) {
       return
     }
     upsertMapAnnotations({
       ...mapAnnotation,
-      id: mapAnnotation.id || Date.now(),
+      id: mapAnnotation?.id || Date.now(),
     })
     resetMapAnnotation()
     dispatchQueryParams({ mapAnnotationsVisible: true })
-  }
-  const ref = useEventKeyListener(['Enter'], onConfirmClick)
-
-  if (!isDialogVisible) {
-    return null
+    dispatch(setWorkspaceSuggestSave(true))
   }
 
   const onDeleteClick = () => {
-    deleteMapAnnotation(mapAnnotation.id)
+    deleteMapAnnotation(mapAnnotation?.id)
     resetMapAnnotation()
   }
+
+  const ref = useEventKeyListener(['Enter'], onConfirmClick)
 
   if (!mapAnnotation) {
     return null

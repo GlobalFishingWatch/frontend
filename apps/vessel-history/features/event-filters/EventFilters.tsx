@@ -5,7 +5,8 @@ import { InputDate, Modal, Switch } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { useApplyFiltersConnect } from './filters.hooks'
-import { availableEventFilters, selectEnd, selectFilter, selectStart } from './filters.slice'
+import type { availableEventFilters} from './filters.slice';
+import { selectEnd, selectFilter, selectStart } from './filters.slice'
 import styles from './EventFilters.module.css'
 
 interface ModalProps {

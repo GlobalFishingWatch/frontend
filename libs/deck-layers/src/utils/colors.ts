@@ -1,5 +1,5 @@
-import { Color } from '@deck.gl/core'
-import { RGBA } from 'color-blend/dist/types'
+import type { Color } from '@deck.gl/core'
+import type { RGBA } from 'color-blend/dist/types'
 
 export const COLOR_TRANSPARENT: Color = [0, 0, 0, 0]
 export const COLOR_HIGHLIGHT_LINE: Color = [255, 255, 255, 255]
@@ -33,7 +33,7 @@ export const rgbaToDeckColor = (rgbaString: string): Color => {
 }
 
 function componentToHex(c: number) {
-  var hex = c.toString(16)
+  const hex = c.toString(16)
   return hex.length === 1 ? '0' + hex : hex
 }
 

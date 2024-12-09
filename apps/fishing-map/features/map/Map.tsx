@@ -1,19 +1,24 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckGL, DeckGLRef } from '@deck.gl/react'
+import type { DeckGLRef } from '@deck.gl/react'
+import { DeckGL } from '@deck.gl/react'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
+import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
   useSetDeckLayerLoadedState,
+  useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import { useSetMapInstance } from 'features/map/map-context.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapControls from 'features/map/controls/MapControls'
 import {
+  selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
+  selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import {
@@ -25,16 +30,18 @@ import {
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
-import { MapCoordinates } from 'types'
+import type { MapCoordinates } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useHasReportTimeseries } from 'features/reports/reports-timeseries.hooks'
-import { selectReportAreaStatus } from 'features/reports/reports.selectors'
+import { useHasReportTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
+import { selectReportAreaStatus } from 'features/reports/areas/area-reports.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectVGRSection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import {
   MAP_VIEW,
   useMapSetViewState,
   useUpdateViewStateUrlParams,
   useMapViewState,
+  MAP_CONTAINER_ID,
 } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
@@ -79,6 +86,11 @@ const MapWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const layers = useMapLayers()
 
+  const setMapHoverFeatures = useSetMapHoverInteraction()
+  const onMouseLeave = useCallback(() => {
+    setMapHoverFeatures({} as InteractionEvent)
+  }, [setMapHoverFeatures])
+
   const setDeckLayers = useSetDeckLayerComposer()
   useEffect(() => {
     return () => {
@@ -86,7 +98,10 @@ const MapWrapper = () => {
     }
   }, [setDeckLayers])
 
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const isVGRReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
+  const vesselGroupSection = useSelector(selectVGRSection)
   const hasReportTimeseries = useHasReportTimeseries()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -97,12 +112,16 @@ const MapWrapper = () => {
   }, [dispatch])
 
   const mapLoading = useIsDeckLayersLoading()
-  const isReportAreaLoading = isReportLocation && reportAreaStatus === AsyncReducerStatus.Loading
+  const isReportAreaLoading =
+    isAreaReportLocation && reportAreaStatus === AsyncReducerStatus.Loading
+  const isLoadingReport =
+    (isAreaReportLocation || (isVGRReportLocation && vesselGroupSection === 'activity')) &&
+    !hasReportTimeseries
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
   return (
-    <div className={styles.container}>
+    <div id={MAP_CONTAINER_ID} className={styles.container} onMouseLeave={onMouseLeave}>
       <DeckGL
         id={MAP_CANVAS_ID}
         ref={deckRef}
@@ -125,7 +144,7 @@ const MapWrapper = () => {
         }}
         viewState={viewState}
         // Needs to lock the ui to avoid loading other tiles until report timeseries are loaded
-        onViewStateChange={isReportLocation && !hasReportTimeseries ? undefined : onViewStateChange}
+        onViewStateChange={isLoadingReport ? undefined : onViewStateChange}
         onClick={onMapClick}
         onHover={onMouseMove}
         onDragStart={onMapDragStart}
@@ -135,19 +154,23 @@ const MapWrapper = () => {
       >
         <MapAnnotations />
       </DeckGL>
-      {isMapDrawing && <DrawDialog />}
+      {isMapDrawing && (
+        <Fragment>
+          <CoordinateEditOverlay />
+          <DrawDialog />
+        </Fragment>
+      )}
       <MapPopups />
       <ErrorNotificationDialog />
       <MapAnnotationsDialog />
-      <CoordinateEditOverlay />
       <MapControls mapLoading={mapLoading || isReportAreaLoading} />
-      {isWorkspaceLocation && !isReportLocation && (
+      {isWorkspaceLocation && !isAnyReportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}
-      {isWorkspaceLocation && !isReportLocation && (
+      {isWorkspaceLocation && !isAnyReportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
-      {(isWorkspaceLocation || isReportLocation || isVesselLocation) && (
+      {(isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && (
         <MapInfo center={hoveredCoordinates} />
       )}
 

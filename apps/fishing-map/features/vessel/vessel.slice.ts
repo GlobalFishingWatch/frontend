@@ -1,21 +1,27 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
-import { RootState } from 'reducers'
-import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
-import {
+import type { ParsedAPIError} from '@globalfishingwatch/api-client';
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import type {
   ApiEvent,
   Dataset,
-  DatasetTypes,
+  GearType,
   IdentityVessel,
+  RegistryExtraFields,
   Resource,
-  ResourceStatus,
   SelfReportedInfo,
   VesselCombinedSourcesInfo,
   VesselRegistryInfo,
+  VesselType} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes,
+  ResourceStatus
 } from '@globalfishingwatch/api-types'
 import { setResource } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectResources } from 'features/resources/resources.slice'
 import {
@@ -23,8 +29,9 @@ import {
   fetchDatasetsByIdsThunk,
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
+import type {
+  VesselInstanceDatasets} from 'features/datasets/datasets.utils';
 import {
-  VesselInstanceDatasets,
   getRelatedDatasetByType,
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.utils'
@@ -42,16 +49,28 @@ export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
   combinedSourcesInfo?: VesselCombinedSourcesInfo
   positionsCounter?: number
+  dataset?: string
+  geartypes?: GearType[]
+  shiptypes?: VesselType[]
+  registrySource?: string
+  hasComplianceInfo?: boolean
+  iuuStatus?: string
+  extraFields?: RegistryExtraFields[]
 }
 // Merges and plain all the identities of a vessel
 export type IdentityVesselData = {
   id: string
   identities: VesselDataIdentity[]
   dataset: Dataset
+  datasetId: string
 } & VesselInstanceDatasets &
   Pick<
     IdentityVessel,
-    'registryOwners' | 'registryPublicAuthorizations' | 'matchCriteria' | 'combinedSourcesInfo'
+    | 'registryOwners'
+    | 'registryPublicAuthorizations'
+    | 'matchCriteria'
+    | 'combinedSourcesInfo'
+    | 'operator'
   >
 
 type VesselInfoEntry = {
@@ -70,7 +89,7 @@ type VesselState = {
 }
 
 const initialState: VesselState = {
-  fitBoundsOnLoad: false,
+  fitBoundsOnLoad: true,
   printMode: false,
   data: {},
 }
@@ -119,7 +138,9 @@ export const fetchVesselInfoThunk = createAsyncThunk(
 
         const vessel = resources[url]?.data
           ? (resources[url].data as IdentityVessel)
-          : await GFWAPI.fetch<IdentityVessel>(url)
+          : await GFWAPI.fetch<IdentityVessel>(url, {
+              cache: 'reload',
+            })
 
         const resource: Resource = {
           url: resolveEndpoint(dataset, datasetConfig) as string,
@@ -143,6 +164,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,
+          datasetId: dataset?.id,
           combinedSourcesInfo: vessel?.combinedSourcesInfo,
           registryOwners: vessel?.registryOwners,
           registryPublicAuthorizations: vessel?.registryPublicAuthorizations,

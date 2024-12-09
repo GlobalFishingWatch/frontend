@@ -1,28 +1,29 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
 import memoize from 'memoize-one'
-import { DateTime, DateTimeUnit } from 'luxon'
-import { NumberValue } from 'd3-scale'
-import {
-  CONFIG_BY_INTERVAL,
-  FourwingsInterval,
-  getFourwingsInterval,
-  LIMITS_BY_INTERVAL,
-} from '@globalfishingwatch/deck-loaders'
+import type { DateTimeUnit } from 'luxon'
+import { DateTime } from 'luxon'
+import type { NumberValue } from 'd3-scale'
+import type { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { getTime } from './utils/internal-utils'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'
 import IntervalSelector from './components/interval-selector'
 import Timeline from './components/timeline'
 import Playback from './components/playback'
-import { ReactComponent as IconTimeRange } from './icons/timeRange.svg'
-import { ReactComponent as IconBookmark } from './icons/bookmark.svg'
-import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg'
-import { EVENT_SOURCE, EVENT_INTERVAL_SOURCE } from './constants'
-import { TrackGraphOrientation } from './timelineContext'
+import {
+  EVENT_SOURCE,
+  EVENT_INTERVAL_SOURCE,
+  MINIMUM_TIMEBAR_HEIGHT,
+  MAXIMUM_TIMEBAR_HEIGHT,
+} from './constants'
+import type { TrackGraphOrientation } from './timelineContext'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
 const MINIMUM_RANGE = ONE_HOUR_MS
+const DEFAULT_HEIGHT = 70
 
 const getRangeMs = (range: number, unit: DateTimeUnit) => {
   const start = DateTime.now()
@@ -118,14 +119,20 @@ export type TimebarProps = {
   // val is used to live edit translations in crowdin
   locale: 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'
   intervals?: FourwingsInterval[]
-  getCurrentInterval: typeof getFourwingsInterval
+  getCurrentInterval?: typeof getFourwingsInterval
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation: TrackGraphOrientation
+  isResizable?: boolean
+  defaultHeight?: number
 }
 
 type TimebarState = {
+  updatedHeight: number
   showTimeRangeSelector: boolean
   absoluteEnd: string | null
+  isDragging: boolean
+  startCursorY: number | null
+  startHeight: number | null
 }
 
 export class Timebar extends Component<TimebarProps> {
@@ -192,6 +199,7 @@ export class Timebar extends Component<TimebarProps> {
     maximumRangeUnit: 'month',
     locale: 'en',
     displayWarningWhenInFuture: true,
+    isResizable: false,
   }
 
   constructor(props: TimebarProps) {
@@ -200,6 +208,10 @@ export class Timebar extends Component<TimebarProps> {
     this.state = {
       showTimeRangeSelector: false,
       absoluteEnd: null,
+      updatedHeight: props.defaultHeight || DEFAULT_HEIGHT,
+      isDragging: false,
+      startCursorY: null,
+      startHeight: null,
     }
   }
 
@@ -240,7 +252,9 @@ export class Timebar extends Component<TimebarProps> {
 
   setBookmark = () => {
     const { start, end, onBookmarkChange } = this.props
-    onBookmarkChange && onBookmarkChange(start, end)
+    if (onBookmarkChange) {
+      onBookmarkChange(start, end)
+    }
   }
 
   // setLocale = memoize((locale) => //TODO set DateTime.locale)
@@ -311,7 +325,51 @@ export class Timebar extends Component<TimebarProps> {
 
   onTogglePlay = (isPlaying: boolean) => {
     const { onTogglePlay } = this.props
-    onTogglePlay && onTogglePlay(isPlaying)
+    if (onTogglePlay) {
+      onTogglePlay(isPlaying)
+    }
+  }
+
+  handleMouseDown = (e: React.MouseEvent) => {
+    if (this.props.isResizable) {
+      e.preventDefault()
+      e.stopPropagation()
+
+      this.setState({
+        isDragging: true,
+        startCursorY: e.clientY,
+        startHeight: this.state.updatedHeight,
+      })
+
+      document.addEventListener('mousemove', this.handleMouseMove)
+      document.addEventListener('mouseup', this.handleMouseUp)
+    }
+  }
+
+  handleMouseMove = (e: MouseEvent) => {
+    if (
+      this.props.isResizable &&
+      this.state.isDragging &&
+      this.state.startCursorY !== null &&
+      this.state.startHeight !== null
+    ) {
+      const cursorYDelta = this.state.startCursorY - e.clientY
+      let newHeight = Math.min(this.state.startHeight + cursorYDelta, MAXIMUM_TIMEBAR_HEIGHT)
+      newHeight = Math.max(MINIMUM_TIMEBAR_HEIGHT, newHeight)
+      this.setState({ updatedHeight: newHeight })
+    }
+  }
+
+  handleMouseUp = () => {
+    if (this.props.isResizable) {
+      this.setState({
+        isDragging: false,
+        startCursorY: null,
+        startHeight: null,
+      })
+      document.removeEventListener('mousemove', this.handleMouseMove)
+      document.removeEventListener('mouseup', this.handleMouseUp)
+    }
   }
 
   render() {
@@ -333,6 +391,7 @@ export class Timebar extends Component<TimebarProps> {
       displayWarningWhenInFuture,
       intervals,
       getCurrentInterval,
+      isResizable,
     } = this.props as TimebarProps
 
     // this.setLocale(locale)
@@ -354,7 +413,18 @@ export class Timebar extends Component<TimebarProps> {
       getTime(bookmarkEnd) === getTime(end)
 
     return (
-      <div className={styles.Timebar}>
+      <div
+        className={styles.Timebar}
+        style={isResizable ? { height: `${this.state.updatedHeight}px` } : {}}
+      >
+        {isResizable && (
+          <div
+            role="button"
+            tabIndex={0}
+            className={styles.timebarResizer}
+            onMouseDown={this.handleMouseDown}
+          />
+        )}
         {enablePlayback && (
           <Playback
             labels={labels.playback}
@@ -388,7 +458,7 @@ export class Timebar extends Component<TimebarProps> {
             className={cx(styles.uiButton)}
             onClick={this.toggleTimeRangeSelector}
           >
-            <IconTimeRange />
+            <Icon icon="time-range" />
           </button>
           <button
             type="button"
@@ -397,7 +467,7 @@ export class Timebar extends Component<TimebarProps> {
             onClick={this.setBookmark}
             disabled={bookmarkDisabled === true}
           >
-            {hasBookmark ? <IconBookmarkFilled /> : <IconBookmark />}
+            {hasBookmark ? <Icon icon="bookmark-filled" /> : <Icon icon="bookmark" />}
           </button>
         </div>
         <div className={cx('print-hidden', styles.timeActions)}>

@@ -1,4 +1,4 @@
-import { UserApplicationIntendedUse } from './user-applications'
+import type { UserApplicationIntendedUse } from './user-applications'
 
 export type UserPermissionType = 'application' | 'dataset' | 'entity'
 export type UserPermissionValue =

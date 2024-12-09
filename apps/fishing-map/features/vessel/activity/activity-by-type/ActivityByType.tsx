@@ -2,7 +2,8 @@ import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import { useTranslation } from 'react-i18next'
-import { EventType, EventTypes } from '@globalfishingwatch/api-types'
+import type { EventType} from '@globalfishingwatch/api-types';
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
@@ -20,6 +21,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import Event, { EVENT_HEIGHT } from '../event/Event'
 import styles from '../ActivityGroupedList.module.css'
+import type VesselEvent from '../event/Event'
 import { useActivityByType } from './activity-by-type.hook'
 import ActivityGroup from './ActivityGroup'
 
@@ -41,9 +43,9 @@ function ActivityByType() {
   const [expandedType, toggleExpandedType] = useActivityByType()
   const viewport = useMapViewport()
   const setMapCoordinates = useSetMapCoordinates()
-  const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
+  const [selectedEvent, setSelectedEvent] = useState<VesselEvent>()
 
-  const onInfoClick = useCallback((event: ActivityEvent) => {
+  const onInfoClick = useCallback((event: VesselEvent) => {
     setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
   }, [])
 
@@ -61,7 +63,7 @@ function ActivityByType() {
   )
 
   const onMapHover = useCallback(
-    (event?: ActivityEvent) => {
+    (event?: VesselEvent) => {
       if (event?.id) {
         dispatch(setHighlightedEvents([event.id]))
       } else {
@@ -72,7 +74,7 @@ function ActivityByType() {
   )
 
   const selectEventOnMap = useCallback(
-    (event: ActivityEvent) => {
+    (event: VesselEvent) => {
       if (viewport?.zoom) {
         const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
         // TODO

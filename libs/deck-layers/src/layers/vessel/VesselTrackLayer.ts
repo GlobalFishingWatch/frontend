@@ -1,13 +1,16 @@
 import type { NumericArray } from '@math.gl/core'
-import { AccessorFunction, ChangeFlags, Color, DefaultProps } from '@deck.gl/core'
-import { PathLayer, PathLayerProps } from '@deck.gl/layers'
-import { TrackSegment } from '@globalfishingwatch/api-types'
-import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
-import { Bbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
-import { ThinningLevels } from '@globalfishingwatch/api-client'
+import type { AccessorFunction, ChangeFlags, Color, DefaultProps } from '@deck.gl/core'
+import type { PathLayerProps } from '@deck.gl/layers'
+import { PathLayer } from '@deck.gl/layers'
+import type { TrackSegment } from '@globalfishingwatch/api-types'
+import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
+import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import { MAX_FILTER_VALUE } from '../layers.config'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
-import { getSegmentsFromData, GetSegmentsFromDataParams } from './vessel.utils'
+import type { GetSegmentsFromDataParams } from './vessel.utils'
+import { getSegmentsFromData } from './vessel.utils'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -108,7 +111,7 @@ export type VesselTrackLayerProps<DataT = any> = _VesselTrackLayerProps<DataT> &
   PathLayerProps<DataT>
 
 /** Render paths that represent vessel trips. */
-export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
+export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>> extends PathLayer<
   DataT,
   VesselTrackLayerProps & ExtraProps
 > {

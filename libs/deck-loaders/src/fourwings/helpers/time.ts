@@ -1,6 +1,6 @@
 import { DateTime, Duration } from 'luxon'
 import intersection from 'lodash/intersection'
-import { FourwingsInterval } from '../lib/types'
+import type { FourwingsInterval } from '../lib/types'
 
 export const FOURWINGS_INTERVALS_ORDER: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
@@ -32,8 +32,15 @@ export const getFourwingsInterval = (
   end: number | string,
   availableIntervals = FOURWINGS_INTERVALS_ORDER
 ): FourwingsInterval => {
+  if (!start || !end) {
+    return availableIntervals[0]
+  }
   const startMillis = typeof start === 'string' ? DateTime.fromISO(start).toMillis() : start
   const endMillis = typeof end === 'string' ? DateTime.fromISO(end).toMillis() : end
+
+  if (!startMillis && !endMillis) {
+    return availableIntervals[0]
+  }
   const duration = Duration.fromMillis(endMillis - startMillis)
   const validIntervals = Object.entries(LIMITS_BY_INTERVAL).flatMap(([interval, limits]) => {
     if (!availableIntervals.includes(interval as FourwingsInterval)) return []

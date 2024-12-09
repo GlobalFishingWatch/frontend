@@ -1,14 +1,15 @@
-import { DRAW_DATASET_SOURCE, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import {
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { DRAW_DATASET_SOURCE, DatasetTypes } from '@globalfishingwatch/api-types'
+import type {
   BaseUserLayerProps,
   UserPolygonsLayerProps,
   UserLayerPickingObject,
   UserPointsLayerProps,
-  getUTCDateTime,
   ContextLayerConfig,
   DeckLayerSubcategory,
   UserTrackLayerProps,
 } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
 import {
   findDatasetByType,
   getDatasetConfiguration,
@@ -16,7 +17,7 @@ import {
   getDatasetRangeSteps,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
-import { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from './types'
 
 const getUserContexTimeFilterProps = ({
   dataset,
@@ -121,9 +122,9 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
   const baseLayerProps = {
     id: dataview.id,
     category: dataview.category!,
-    subcategory: dataview.config?.type! as DeckLayerSubcategory,
+    subcategory: dataview.config?.type as DeckLayerSubcategory,
     singleTrack: dataview.config?.singleTrack,
-    color: dataview.config?.color!,
+    color: dataview.config?.color as string,
     ...(highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
     }),
@@ -162,24 +163,25 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
   }
 
   const layer: ContextLayerConfig<string> = {
-    id: dataset.id,
+    id: `${dataview.id}-${dataset.id}`,
     datasetId: dataset.id,
     tilesUrl,
   }
   const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
   const timeFilters = getUserContexTimeFilterProps({ dataset, start, end })
-  const { filter, filters } = dataview.config || {}
+  const { filter, filters, filterOperators = {} } = dataview.config || {}
   const allFilters = {
     ...Object.fromEntries((dataset.fieldsAllowed || []).map((f) => [f, undefined])),
     ...filters,
   }
   return {
     ...baseLayerProps,
-    pickable: !dataset.configuration?.disableInteraction ?? true,
+    pickable: !dataset.configuration?.disableInteraction,
     layers: [layer],
     highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
     ...(filter && { filter }),
     ...(Object.keys(allFilters).length && { filters: allFilters }),
+    ...(Object.keys(filterOperators).length && { filterOperators }),
     ...(idProperty && { idProperty }),
     ...(valueProperties?.length && { valueProperties }),
     ...(dataview.config?.maxZoom && { maxZoom: dataview.config.maxZoom }),

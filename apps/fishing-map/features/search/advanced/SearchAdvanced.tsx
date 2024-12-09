@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-import { ChangeEvent, useCallback } from 'react'
+import type { ChangeEvent} from 'react';
+import { useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { SearchComponentProps } from 'features/search/basic/SearchBasic'
+import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { EMPTY_FILTERS } from 'features/search/search.config'
@@ -28,6 +29,7 @@ import SearchPlaceholder, {
   SearchEmptyState,
 } from 'features/search/SearchPlaceholders'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
+import SearchError from '../basic/SearchError'
 
 const SearchAdvancedResults = dynamic(
   () => import(/* webpackChunkName: "SearchAdvancedResults" */ './SearchAdvancedResults')
@@ -105,7 +107,9 @@ function SearchAdvanced({
           <Button
             className={styles.confirmButton}
             onClick={fetchResults}
-            disabled={(!hasFilters && !searchQuery) || hasSearchFilterErrors}
+            disabled={
+              (!hasFilters && !searchQuery) || hasSearchFilterErrors || searchStatusCode === 401
+            }
             tooltip={
               hasSearchFilterErrors
                 ? t(
@@ -136,16 +140,7 @@ function SearchAdvanced({
             {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
               <SearchNoResultsState />
             )}
-            {searchStatus === AsyncReducerStatus.Error && (
-              <p className={styles.error}>
-                {searchStatusCode === 404
-                  ? t(
-                      'search.noResults',
-                      "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
-                    )
-                  : t('errors.genericShort', 'Something went wrong')}
-              </p>
-            )}
+            {searchStatus === AsyncReducerStatus.Error && <SearchError />}
           </div>
         )}
       </div>

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, InputText } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
-import { Workspace } from '@globalfishingwatch/api-types'
+import type { Workspace } from '@globalfishingwatch/api-types'
 import {
   isWorkspacePasswordProtected,
   selectWorkspace,
@@ -122,7 +122,7 @@ function WorkspaceError(): React.ReactElement {
             )
           }}
         >
-          Load default view
+          {t('errors.loadDefaultWorkspace', 'Load default workspace')}
         </Button>
       </ErrorPlaceHolder>
     )

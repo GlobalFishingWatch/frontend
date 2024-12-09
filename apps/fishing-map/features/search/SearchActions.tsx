@@ -10,17 +10,16 @@ import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  setVesselGroupConfirmationMode,
-  setVesselGroupCurrentDataviewIds,
-} from 'features/vessel-groups/vessel-groups.slice'
+import VesselGroupAddButton, {
+  VesselGroupAddActionButton,
+} from 'features/vessel-groups/VesselGroupAddButton'
+import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { TimebarVisualisations } from 'types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import { cleanVesselSearchResults, selectSelectedVessels } from './search.slice'
 import styles from './Search.module.css'
 import { selectSearchOption } from './search.config.selectors'
@@ -31,7 +30,6 @@ function SearchActions() {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const { dispatchQueryParams, dispatchLocation } = useLocationConnect()
-  const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const activeSearchOption = useSelector(selectSearchOption)
 
@@ -71,16 +69,16 @@ function SearchActions() {
     }
   }
 
-  const onAddToVesselGroup = () => {
-    const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-    if (dataviewIds?.length) {
-      dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-    }
+  const onAddToVesselGroup = (vesselGroupId: string) => {
+    dispatch(setVesselGroupConfirmationMode('saveAndSeeInWorkspace'))
     trackEvent({
-      category: TrackCategory.SearchVessel,
-      action: 'Click add to vessel group',
+      category: TrackCategory.VesselGroups,
+      action:
+        vesselGroupId === NEW_VESSEL_GROUP_ID
+          ? 'create_new_vessel_group_from_search'
+          : 'add_vessels_to_vessel_group_from_search',
       label: `${activeSearchOption} search`,
+      value: `number of vessel added to group: ${vesselsSelected.length}`,
     })
   }
 
@@ -91,9 +89,10 @@ function SearchActions() {
       <VesselGroupAddButton
         vessels={vesselsSelected}
         onAddToVesselGroup={onAddToVesselGroup}
-        showCount={false}
-        buttonClassName={cx(styles.footerAction, styles.vesselGroupButton)}
-      />
+        keepOpenWhileAdding
+      >
+        <VesselGroupAddActionButton className={cx(styles.footerAction, styles.vesselGroupButton)} />
+      </VesselGroupAddButton>
       <Button
         className={styles.footerAction}
         onClick={onSeeVesselsInMapClick}

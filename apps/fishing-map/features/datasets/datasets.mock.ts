@@ -1,5 +1,6 @@
+import type {
+  Dataset} from '@globalfishingwatch/api-types';
 import {
-  Dataset,
   DatasetCategory,
   DatasetStatus,
   DatasetTypes,

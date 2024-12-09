@@ -1,11 +1,12 @@
+import type {
+  WorkspaceEditAccessType,
+  WorkspaceViewAccessType} from '@globalfishingwatch/api-types';
 import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS,
-  WorkspaceEditAccessType,
-  WorkspaceViewAccessType,
+  WORKSPACE_PUBLIC_ACCESS
 } from '@globalfishingwatch/api-types'
-import { SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
@@ -31,12 +32,20 @@ const formatTimerangeBoundary = (
   }).replace(/[.,]/g, '')
 }
 
-export function getViewAccessOptions(): SelectOption<WorkspaceViewAccessType>[] {
+export function getViewAccessOptions(
+  containsPrivateDatasets = false
+): SelectOption<WorkspaceViewAccessType>[] {
+  const permissionsLabel = containsPrivateDatasets
+    ? `(${t('common.permissions', 'permissions required')})`
+    : ''
   return [
-    { id: WORKSPACE_PUBLIC_ACCESS, label: t('common.anyoneWithTheLink', 'Anyone with the link') },
+    {
+      id: WORKSPACE_PUBLIC_ACCESS,
+      label: `${t('common.anyoneWithTheLink', 'Anyone with the link')} ${permissionsLabel}`,
+    },
     {
       id: WORKSPACE_PASSWORD_ACCESS,
-      label: t('common.anyoneWithThePassword', 'Anyone with the password'),
+      label: `${t('common.anyoneWithThePassword', 'Anyone with the password')} ${permissionsLabel}`,
     },
     { id: WORKSPACE_PRIVATE_ACCESS, label: t('common.onlyMe', 'Only me') },
   ]
@@ -83,11 +92,7 @@ export function getEditAccessOptionsByViewAccess(
   return getEditAccessOptions()
 }
 
-const getStaticWorkspaceName = ({
-  timerange,
-}: {
-  timerange: { start: string; end: string }
-}) => {
+const getStaticWorkspaceName = ({ timerange }: { timerange: { start: string; end: string } }) => {
   if (timerange?.start && timerange?.end) {
     const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
     return t('common.timerangeDescription', {

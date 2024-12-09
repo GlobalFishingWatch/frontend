@@ -1,9 +1,9 @@
 import React, { useRef } from 'react'
 import cx from 'classnames'
 import { Button } from '../button'
-import { ButtonSize } from '../button/Button'
+import type { ButtonSize } from '../button/Button'
 import styles from './Tabs.module.css'
-import { Tab } from '.'
+import type { Tab } from '.'
 
 export interface TabsProps<TabID = string> {
   tabs: Tab<TabID>[]

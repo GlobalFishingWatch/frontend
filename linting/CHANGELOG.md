@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 3.0.0
+
+### Breaking changes
+
+- Migrate to eslint 9 flat config
+
 ## 2.1.0
 
 ### Minor Changes

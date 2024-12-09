@@ -1,8 +1,9 @@
-import { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import Generators, { EVENTS_COLORS, GeneratorsRecord } from './generators'
+import type { GeneratorsRecord } from './generators';
+import Generators, { EVENTS_COLORS } from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
-import {
+import type {
   Dictionary,
   LayerComposerStyles,
   LayerComposerOptions,
@@ -12,7 +13,7 @@ import {
   GeneratorPromise,
   HeatmapLayerMeta,
 } from './types'
-import {
+import type {
   GlobalGeneratorConfig,
   AnyGeneratorConfig,
   GlobalGeneratorConfigExtended,

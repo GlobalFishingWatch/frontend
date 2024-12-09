@@ -1,0 +1,43 @@
+.Header {
+  height: var(--header-band-height);
+  background: #eff5f8;
+  font-family: var(--GFW-font-family);
+  font-weight: 400;
+}
+
+.headerLinks {
+  font-family: Roboto, sans-serif !important;
+}
+
+.titleCover {
+  background: url('./header-bg.jpg') center center no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 400px;
+}
+
+.titleCover .title {
+  font: var(--GFW-font-XXL);
+  color: var(--white);
+  width: 100%;
+  max-width: var(--desktop-max-width);
+  font-weight: 300;
+  padding: 17rem 5rem 0;
+  margin: 0 auto;
+}
+
+@media (width <= 767px) {
+  .Header {
+    height: auto;
+  }
+
+  .titleCover {
+    height: 250px;
+    background-position-x: left;
+  }
+
+  .titleCover .title {
+    font-size: 32px;
+    padding: 6rem 2rem 0;
+  }
+}

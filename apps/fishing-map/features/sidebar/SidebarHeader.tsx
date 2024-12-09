@@ -5,16 +5,17 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
+import type {
+  ChoiceOption} from '@globalfishingwatch/ui-components';
 import {
   Choice,
-  ChoiceOption,
   IconButton,
   Logo,
   Popover,
   SubBrands,
   Tooltip,
 } from '@globalfishingwatch/ui-components'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import {
   selectCurrentWorkspaceCategory,
@@ -32,7 +33,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectIsAnySearchLocation,
-  selectIsAnyReportLocation,
+  selectIsAnyAreaReportLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
   selectLocationPayload,
@@ -40,6 +41,7 @@ import {
   selectLocationType,
   selectIsWorkspaceVesselLocation,
   selectIsAnyVesselLocation,
+  selectIsAnyReportLocation,
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
@@ -47,15 +49,17 @@ import { selectSearchOption, selectSearchQuery } from 'features/search/search.co
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { resetReportData } from 'features/reports/report.slice'
+import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportsStatus } from 'features/reports/reports.slice'
+import { selectReportsStatus } from 'features/reports/areas/area-reports.slice'
 import { selectCurrentReport } from 'features/app/selectors/app.reports.selector'
 import { useLocationConnect } from 'routes/routes.hook'
-import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
-import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH, SearchType } from 'features/search/search.config'
+import type { ROUTE_TYPES} from 'routes/routes';
+import { HOME, REPORT, WORKSPACE } from 'routes/routes'
+import type { SearchType } from 'features/search/search.config';
+import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
 import { resetAreaDetail } from 'features/areas/areas.slice'
-import { selectReportAreaIds } from 'features/reports/reports.selectors'
+import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import { resetVesselState } from 'features/vessel/vessel.slice'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
@@ -64,12 +68,19 @@ import LanguageToggle from 'features/i18n/LanguageToggle'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { useHighlightReportArea } from 'features/reports/reports.hooks'
+import { useHighlightReportArea } from 'features/reports/areas/area-reports.hooks'
+import { resetVesselGroupReportData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { resetPortsReportData } from 'features/reports/ports/ports-report.slice'
+import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
+import { updateLocation } from 'routes/routes.actions'
+import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import type { QueryParams } from 'types'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
 const NewReportModal = dynamic(
-  () => import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/NewReportModal')
+  () =>
+    import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/areas/NewAreaReportModal')
 )
 
 function SaveReportButton() {
@@ -348,17 +359,20 @@ function CloseReportButton() {
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const highlightArea = useHighlightReportArea()
 
   const onCloseClick = () => {
     resetSidebarScroll()
     highlightArea(undefined)
     dispatch(resetReportData())
+    dispatch(resetVesselGroupReportData())
     dispatch(resetAreaDetail(reportAreaIds))
     dispatch(cleanCurrentWorkspaceReportState())
+    dispatch(resetPortsReportData())
   }
 
-  const isWorkspaceRoute = workspaceId !== DEFAULT_WORKSPACE_ID
+  const isWorkspaceRoute = workspaceId !== undefined && workspaceId !== DEFAULT_WORKSPACE_ID
   const linkTo = {
     type: isWorkspaceRoute ? WORKSPACE : HOME,
     payload: {
@@ -369,15 +383,18 @@ function CloseReportButton() {
   }
 
   return (
-    <Link className={styles.workspaceLink} to={linkTo}>
-      <IconButton
-        icon="close"
-        type="border"
-        className="print-hidden"
-        onClick={onCloseClick}
-        tooltip={t('analysis.close', 'Close report and go back to workspace')}
-      />
-    </Link>
+    <Fragment>
+      {!isAreaReportLocation && <ShareWorkspaceButton />}
+      <Link className={styles.workspaceLink} to={linkTo}>
+        <IconButton
+          icon="close"
+          type="border"
+          className="print-hidden"
+          onClick={onCloseClick}
+          tooltip={t('analysis.close', 'Close report and go back to workspace')}
+        />
+      </Link>
+    </Fragment>
   )
 }
 
@@ -386,10 +403,49 @@ function CloseVesselButton() {
   const dispatch = useAppDispatch()
   const locationQuery = useSelector(selectLocationQuery)
   const locationPayload = useSelector(selectLocationPayload)
+  const vesselDataviewInstance = useSelector(selectVesselProfileDataviewIntance)
+  const hasVesselProfileInstancePinned = useSelector(selectHasVesselProfileInstancePinned)
 
-  const onCloseClick = () => {
+  const linkTo = {
+    type: WORKSPACE as ROUTE_TYPES,
+    payload: locationPayload,
+    query: {
+      ...locationQuery,
+      ...DEFAULT_VESSEL_STATE,
+    } as QueryParams,
+  }
+
+  const resetState = () => {
     resetSidebarScroll()
     dispatch(resetVesselState())
+  }
+
+  const onCloseClick = () => {
+    if (hasVesselProfileInstancePinned) {
+      resetState()
+    } else {
+      // TODO: translate and review the content of this
+      const { type, payload, query } = linkTo
+      if (
+        vesselDataviewInstance &&
+        window.confirm(
+          t('vessel.confirmationClose', 'Do you want to keep this vessel in your workspace?')
+        ) === true
+      ) {
+        dispatch(
+          updateLocation(type, {
+            payload,
+            query: {
+              ...query,
+              dataviewInstances: [...(query.dataviewInstances || []), vesselDataviewInstance],
+            },
+          })
+        )
+      } else {
+        dispatch(updateLocation(type, { payload, query }))
+      }
+      resetState()
+    }
 
     trackEvent({
       category: TrackCategory.VesselProfile,
@@ -397,13 +453,16 @@ function CloseVesselButton() {
     })
   }
 
-  const linkTo = {
-    type: WORKSPACE,
-    payload: locationPayload,
-    query: {
-      ...locationQuery,
-      ...DEFAULT_VESSEL_STATE,
-    },
+  if (!hasVesselProfileInstancePinned) {
+    return (
+      <IconButton
+        icon="close"
+        type="border"
+        onClick={onCloseClick}
+        className={cx(styles.workspaceLink, 'print-hidden')}
+        tooltip={t('vessel.close', 'Close vessel and go back to workspace')}
+      />
+    )
   }
 
   return (
@@ -411,8 +470,8 @@ function CloseVesselButton() {
       <IconButton
         icon="close"
         type="border"
-        className="print-hidden"
         onClick={onCloseClick}
+        className="print-hidden"
         tooltip={t('vessel.close', 'Close vessel and go back to workspace')}
       />
     </Link>
@@ -423,7 +482,6 @@ function CloseSectionButton() {
   const dispatch = useAppDispatch()
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { dispatchQueryParams } = useLocationConnect()
-
   const onCloseClick = useCallback(() => {
     dispatchQueryParams({ ...EMPTY_FILTERS, userTab: undefined })
     dispatch(cleanVesselSearchResults())
@@ -447,10 +505,11 @@ function SidebarHeader() {
   const locationCategory = useSelector(selectLocationCategory)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
-  const isSmallScreen = useSmallScreen()
+  const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
   const { dispatchQueryParams } = useLocationConnect()
   const searchQuery = useSelector(selectSearchQuery)
@@ -504,6 +563,8 @@ function SidebarHeader() {
     dispatchQueryParams({ searchOption: option.id, ...EMPTY_FILTERS, ...additionalParams })
   }
 
+  const showCloseReportButton = isAnyReportLocation
+
   return (
     <Sticky
       scrollElement=".scrollContainer"
@@ -516,14 +577,14 @@ function SidebarHeader() {
         </a>
         {!readOnly && (
           <Fragment>
-            {isReportLocation && <SaveReportButton />}
+            {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && <SaveWorkspaceButton />}
-            {(isWorkspaceLocation || isReportLocation || isAnyVesselLocation) && (
+            {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) && (
               <ShareWorkspaceButton />
             )}
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}
-            {isReportLocation && <CloseReportButton />}
+            {showCloseReportButton && <CloseReportButton />}
             {isVesselLocation && <CloseVesselButton />}
             {isSearchLocation && !readOnly && !isSmallScreen && (
               <Choice
@@ -534,9 +595,10 @@ function SidebarHeader() {
                 className={styles.searchOption}
               />
             )}
-            {!isReportLocation && !isVesselLocation && showBackToWorkspaceButton && (
-              <CloseSectionButton />
-            )}
+            {!isAreaReportLocation &&
+              !isVesselLocation &&
+              !showCloseReportButton &&
+              showBackToWorkspaceButton && <CloseSectionButton />}
           </Fragment>
         )}
       </div>

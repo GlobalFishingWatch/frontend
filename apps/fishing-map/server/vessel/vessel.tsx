@@ -1,11 +1,12 @@
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { serverT } from 'server/i18n'
 import { Logo } from '@globalfishingwatch/ui-components'
+import { serverT } from 'server/i18n'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { IDENTITY_FIELD_GROUPS } from 'features/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
-import { VesselIdentityProperty, getVesselProperty } from 'features/vessel/vessel.utils'
+import type { VesselIdentityProperty} from 'features/vessel/vessel.utils';
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
 import {
   selectVesselInfoData,
@@ -31,7 +32,7 @@ const VesselServerComponent = () => {
       </div>
       <div className={styles.content}>
         <h1 className={styles.title}>
-          {formatInfoField(getVesselProperty(vessel, 'shipname'), 'name', serverT)}
+          {formatInfoField(getVesselProperty(vessel, 'shipname'), 'shipname', serverT)}
         </h1>
         {IDENTITY_FIELD_GROUPS[identitySource].map((fieldGroup) => (
           <div key={fieldGroup.join()} className={cx(styles.fieldGroup, styles.border)}>
@@ -43,7 +44,7 @@ const VesselServerComponent = () => {
                 <div key={field.key}>
                   <label>{serverT(`vessel.${label}` as any, label)}</label>
                   {vessel
-                    ? formatInfoField(getVesselProperty(vessel, key), field.key, serverT)
+                    ? formatInfoField(getVesselProperty(vessel, key), field.key as any, serverT)
                     : ''}
                 </div>
               )

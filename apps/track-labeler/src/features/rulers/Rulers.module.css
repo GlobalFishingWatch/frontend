@@ -1,0 +1,22 @@
+.container {
+  position: relative;
+}
+
+.num {
+  position: absolute;
+  font-size: var(--font-size-S);
+  top: 13px;
+  left: 20px;
+  text-shadow: -1px -1px 0 var(--color-brand), 1px -1px 0 var(--color-brand),
+    -1px 1px 0 var(--color-brand), 1px 1px 0 var(--color-brand);
+}
+
+/* .num._active {
+  text-shadow: -2px -2px 0 var(--color-foreground), 2px -2px 0 var(--color-foreground), -2px 2px 0 var(--color-foreground), 2px 2px 0 var(--color-foreground);
+} */
+
+.remove {
+  position: absolute;
+  top: 0;
+  right: 3.6rem;
+}

@@ -2,9 +2,9 @@ import { useCallback, useEffect } from 'react'
 import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { urlSyncEffect } from 'recoil-sync'
 import { object, number } from '@recoiljs/refine'
-import { ViewStateChangeEvent } from 'react-map-gl'
+import type { ViewStateChangeEvent } from 'react-map-gl'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { MapCoordinates } from 'types'
+import type { MapCoordinates } from 'types'
 import { DEFAULT_URL_DEBOUNCE, DEFAULT_VIEWPORT } from 'data/config'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
@@ -38,7 +38,7 @@ export function useViewport(): UseViewport {
 
   const setMapCoordinates = useCallback((coordinates: ViewportProps) => {
     setViewport((viewport) => ({ ...viewport, ...coordinates }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   const onViewportChange = useCallback((ev: ViewStateChangeEvent) => {
@@ -46,7 +46,7 @@ export function useViewport(): UseViewport {
     if (latitude && longitude && zoom) {
       setViewport({ latitude, longitude, zoom })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   return { viewport, onViewportChange, setMapCoordinates }

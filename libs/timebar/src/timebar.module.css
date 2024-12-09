@@ -46,7 +46,8 @@
 .timeActions {
   position: relative;
   display: flex;
-  flex-flow: column wrap;
+  flex-direction: column;
+  justify-content: flex-end;
   border-right: 0.1rem solid var(--timebar-main-background-color);
 }
 
@@ -58,18 +59,9 @@
   border-right: 0.1rem solid var(--timebar-main-background-color);
 }
 
-.timeScale {
-  display: flex;
-}
-
-.timeScale .uiButton {
-  height: 3.5rem;
-}
-
 @media only screen and (width <= 800px) {
   .playbackActions,
-  .bookmark,
-  .timeScale {
+  .bookmark {
     display: none;
   }
 
@@ -77,4 +69,19 @@
     width: var(--timebar-size);
     height: var(--timebar-size);
   }
+}
+
+.timebarResizer {
+  height: 5px;
+  width: 100%;
+  background-color: var(--timebar-ui-btn-color);
+  position: absolute;
+  top: -5px;
+  left: 0;
+  z-index: var(--timebar-z-index);
+  cursor: ns-resize;
+}
+
+.timebarResizer:hover {
+  background-color: var(--timebar-ui-btn-color-hover);
 }

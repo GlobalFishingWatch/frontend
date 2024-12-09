@@ -1,14 +1,16 @@
-import {
+import type {
   Color,
   DefaultProps,
   AccessorFunction,
   UpdateParameters,
   LayerContext,
 } from '@deck.gl/core'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import { Feature, GeoJsonProperties, Geometry } from 'geojson'
-import { ScaleLinear, scaleLinear } from 'd3-scale'
+import type { Feature, GeoJsonProperties, Geometry } from 'geojson'
+import type { ScaleLinear } from 'd3-scale'
+import { scaleLinear } from 'd3-scale'
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
@@ -25,8 +27,9 @@ import {
   DEFAULT_BACKGROUND_COLOR,
   getFeatureInFilter,
 } from '../../utils'
-import { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
-import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
+import type { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
+import type { UserBaseLayerState } from './UserBaseLayer'
+import { UserBaseLayer } from './UserBaseLayer'
 
 type _UserContextLayerProps = TileLayerProps & UserPolygonsLayerProps
 
@@ -41,7 +44,7 @@ type UserContextLayerState = UserBaseLayerState & {
   scale: ScaleLinear<string, string, never>
 }
 
-export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
+export class UserContextTileLayer<PropsT = Record<string, unknown>> extends UserBaseLayer<
   _UserContextLayerProps & PropsT
 > {
   static layerName = 'UserContextTileLayer'
@@ -86,16 +89,16 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   _getLineColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { color, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { color, filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return COLOR_TRANSPARENT
     }
     return hexToDeckColor(color)
   }
 
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty, layers, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { idProperty, layers, filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return COLOR_TRANSPARENT
     }
     const highlightedFeatures = this._getHighlightedFeatures()
@@ -108,8 +111,8 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   _getFillStepsColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty, layers, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { idProperty, layers, filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return COLOR_TRANSPARENT
     }
     const highlightedFeatures = this._getHighlightedFeatures()
@@ -132,7 +135,7 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   renderLayers() {
-    const { layers, steps, stepsPickValue, filters } = this.props
+    const { layers, steps, stepsPickValue, filters, color } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
@@ -160,7 +163,7 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
               getFillColor: hasColorSteps ? this._getFillStepsColor : this._getFillColor,
               updateTriggers: {
-                getFillColor: [highlightedFeatures, filters],
+                getFillColor: [highlightedFeatures, filters, color],
               },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
@@ -170,7 +173,7 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
               getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
               getLineColor: this._getLineColor,
               updateTriggers: {
-                getLineColor: [filters],
+                getLineColor: [filters, color],
               },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {

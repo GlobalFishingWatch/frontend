@@ -1,0 +1,19 @@
+.placeholder {
+  height: calc(100% - 5.2rem);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-M);
+  text-align: center;
+}
+
+.title {
+  font: var(--font-L);
+}
+
+.errorTitle {
+  font: var(--font-L);
+  line-height: 1;
+  margin-bottom: var(--space-S);
+}

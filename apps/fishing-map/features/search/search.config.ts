@@ -1,4 +1,4 @@
-import { VesselSearchState } from 'types'
+import type { VesselSearchState } from 'features/search/search.types'
 
 export const MIN_SEARCH_CHARACTERS = 3
 

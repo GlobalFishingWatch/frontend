@@ -2,7 +2,8 @@ import { useMemo, useCallback, useState, useEffect } from 'react'
 import cx from 'classnames'
 import { Range, getTrackBackground } from 'react-range'
 import { InputText } from '../input-text'
-import { SliderThumbsSize, formatSliderNumber } from '../slider'
+import type { SliderThumbsSize } from '../slider'
+import { formatSliderNumber } from '../slider'
 import styles from '../slider/slider.module.css'
 import { IconButton } from '../icon-button'
 
@@ -163,6 +164,8 @@ export function SliderRange(props: SliderRangeProps) {
           onFinalChange={handleFinalChange}
           renderTrack={({ props, children }) => (
             <div
+              role="button"
+              tabIndex={0}
               onMouseDown={props.onMouseDown}
               onTouchStart={props.onTouchStart}
               className={styles.slider}

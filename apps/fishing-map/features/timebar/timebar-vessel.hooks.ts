@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue } from 'jotai'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import {
+import type {
   HighlighterCallbackFnArgs,
   TimebarChartChunk,
   TimebarChartData,
@@ -87,7 +87,7 @@ export const useTimebarVesselTracks = () => {
         }
       })
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [tracksColor])
 
   useEffect(() => {
@@ -132,7 +132,7 @@ export const useTimebarVesselTracks = () => {
         setVesselTracks(undefined)
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [tracksLoaded, timebarGraph, tracksColor])
 
   return tracks
@@ -186,7 +186,7 @@ export const useTimebarVesselTracksGraph = () => {
         }
       })
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [tracksColor])
 
   useEffect(() => {
@@ -241,7 +241,7 @@ export const useTimebarVesselTracksGraph = () => {
         setVesselTracksGraph(undefined)
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [tracksLoaded, timebarGraph])
 
   return tracksGraph
@@ -288,7 +288,7 @@ export const useTimebarVesselEvents = () => {
         setTimebarVesselEvents(null)
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [vesselsWithEventsLoaded, timebarGraph, visibleEvents, eventsColor])
 
   return timebarVesselEvents

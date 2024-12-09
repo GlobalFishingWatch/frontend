@@ -1,13 +1,6 @@
-import {
-  NOT_FOUND,
-  RoutesMap,
-  redirect,
-  connectRoutes,
-  Options,
-  StateGetter,
-  Bag,
-} from 'redux-first-router'
-import { Dispatch } from '@reduxjs/toolkit'
+import type { RoutesMap, Options, StateGetter, Bag } from 'redux-first-router'
+import { NOT_FOUND, redirect, connectRoutes } from 'redux-first-router'
+import type { Dispatch } from '@reduxjs/toolkit'
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import { PATH_BASENAME } from 'data/config'
 import { t } from 'features/i18n/i18n'
@@ -21,6 +14,8 @@ export const WORKSPACE_SEARCH = 'WORKSPACE_SEARCH'
 export const VESSEL = 'VESSEL'
 export const WORKSPACE_VESSEL = 'WORKSPACE_VESSEL'
 export const REPORT = 'REPORT'
+export const VESSEL_GROUP_REPORT = 'VESSEL_GROUP_REPORT'
+export const PORT_REPORT = 'PORT_REPORT'
 export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
 export const REPORT_ROUTES = [REPORT, WORKSPACE_REPORT]
@@ -31,18 +26,32 @@ export type ROUTE_TYPES =
   | typeof WORKSPACES_LIST
   | typeof WORKSPACE
   | typeof VESSEL
+  | typeof VESSEL_GROUP_REPORT
   | typeof WORKSPACE_VESSEL
   | typeof REPORT
   | typeof WORKSPACE_REPORT
   | typeof SEARCH
   | typeof WORKSPACE_SEARCH
   | typeof REPORT
+  | typeof PORT_REPORT
 
-const MAX_URL_LENGTH_SUPPORTED = 11000
+export const SAVE_WORKSPACE_BEFORE_LEAVE_KEY = 'SAVE_WORKSPACE_BEFORE_LEAVE'
+
+const WORKSPACES_ACTIONS = [
+  WORKSPACE,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACE_REPORT,
+  VESSEL_GROUP_REPORT,
+  PORT_REPORT,
+]
+
 const confirmLeave = (state: any, action: any) => {
+  const suggestWorkspaceSave = state.workspace?.suggestSave === true
   if (
+    !WORKSPACES_ACTIONS.includes(action.type) &&
     state.location?.type !== action.type &&
-    state.location?.search?.length >= MAX_URL_LENGTH_SUPPORTED
+    suggestWorkspaceSave
   ) {
     return t('common.confirmLeave', 'Are you sure you want to leave without saving your workspace?')
   }
@@ -81,6 +90,12 @@ export const routesMap: RoutesMap = {
   [WORKSPACE_REPORT]: {
     path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
   },
+  [VESSEL_GROUP_REPORT]: {
+    path: '/:category/:workspaceId/vessel-group-report/:vesselGroupId',
+  },
+  [PORT_REPORT]: {
+    path: '/:category/:workspaceId/ports-report/:portId',
+  },
   [NOT_FOUND]: {
     path: '',
     thunk: async (dispatch: Dispatch) => {
@@ -118,6 +133,18 @@ const routesOptions: Options = {
         )(document as any)
         .querySelector('meta[name="twitter:description"]')
         .setAttribute('content', getState().description)
+    }
+  },
+  displayConfirmLeave: (message, callback) => {
+    if (message) {
+      const openSaveWorkspace = !window.confirm(message)
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(SAVE_WORKSPACE_BEFORE_LEAVE_KEY, openSaveWorkspace.toString())
+        window.dispatchEvent(
+          new StorageEvent('session-storage', { key: SAVE_WORKSPACE_BEFORE_LEAVE_KEY })
+        )
+      }
+      callback(!openSaveWorkspace)
     }
   },
 }

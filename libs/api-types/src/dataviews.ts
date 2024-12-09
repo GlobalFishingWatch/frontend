@@ -1,6 +1,7 @@
-import { Locale } from './i18n'
-import { ApiAppName } from './workspaces'
-import { Dataset } from './datasets'
+import type { Locale } from './i18n'
+import type { ApiAppName } from './workspaces'
+import type { Dataset } from './datasets'
+import type { VesselGroup } from './vesselGroups'
 
 export type ColorCyclingType = 'fill' | 'line'
 export const INCLUDE_FILTER_ID = 'include'
@@ -27,6 +28,7 @@ export enum DataviewType {
   Polygons = 'POLYGONS',
   Rulers = 'RULERS',
   TileCluster = 'TILE_CLUSTER',
+  FourwingsTileCluster = 'FOURWINGS_TILE_CLUSTER',
   Track = 'TRACK',
   UserContext = 'USER_CONTEXT',
   UserPoints = 'USER_POINTS',
@@ -38,14 +40,21 @@ export enum DataviewType {
 export type DataviewSublayerConfig = {
   id: string
   datasets: Dataset[]
+  visible?: boolean
   color?: string
   colorRamp?: string
-  visible?: boolean
   filter?: DataviewConfig['filter']
   filters?: DataviewConfig['filters']
   vesselGroups?: DataviewConfig['vessel-groups']
+  /** Needed to update the layer when the vessel group is edited */
+  vesselGroupsLength?: number
   maxZoom?: number
 }
+
+export type FourwingsGeolocation = 'country' | 'port' | 'default'
+
+/** Used to define the max zoom level for each geolocation (all levels must be below 12) */
+export type ClusterMaxZoomLevelConfig = Partial<Record<FourwingsGeolocation, number>>
 
 export interface DataviewConfig<Type = DataviewType> {
   /** Type to define what kind of layer to render, ex: fourwings, context, draw... */
@@ -78,7 +87,7 @@ export interface DataviewConfig<Type = DataviewType> {
   /** String encoded for url from filters Record */
   filter?: string
   /** Record with id filter as key and filters as values */
-  filters?: Record<string, any>
+  filters?: DataviewDatasetFilter
   'vessel-groups'?: string[]
   filterOperators?: Record<string, FilterOperator>
   /** Min value for filters in environmental layers to perform frontend data filtering */
@@ -92,6 +101,7 @@ export interface DataviewConfig<Type = DataviewType> {
   locale?: Locale
   dynamicBreaks?: boolean
   maxZoom?: number
+  clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
   maxZoomCluster?: number
   layers?: DataviewContexLayerConfig[]
   /** Legacy for duplicated events in the API */
@@ -139,12 +149,14 @@ export interface DataviewDatasetConfigParam {
   value: string | number | boolean | string[] | number[]
 }
 
+export type DataviewDatasetFilter = Record<string, any>
 export type DatasetsMigration = Record<string, string>
 export interface DataviewDatasetConfig {
   datasetId: string
   endpoint: string
   params: DataviewDatasetConfigParam[]
   query?: DataviewDatasetConfigParam[]
+  filters?: DataviewDatasetFilter
   metadata?: Record<string, any>
 }
 
@@ -175,7 +187,8 @@ export interface DataviewEventsConfig {
 
 export interface IncomatibleFilterConfig {
   id: string // id of the filter
-  value: boolean | string // value to match
+  value?: boolean | string // value to match
+  valueNot?: boolean | string // value to match
   disabled: string[] // disabled filter on matches
 }
 
@@ -194,6 +207,7 @@ export enum DataviewCategory {
   Events = 'events',
   User = 'user',
   Vessels = 'vessels',
+  VesselGroups = 'vesselGroups',
   Workspaces = 'workspaces',
   Buffer = 'buffer',
 }
@@ -209,6 +223,7 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
   updatedAt?: string
   config: DataviewConfig<Type>
   datasets?: Dataset[]
+  vesselGroup?: VesselGroup
   infoConfig?: DataviewInfoConfig
   eventsConfig?: DataviewEventsConfig
   filtersConfig?: DataviewFiltersConfig

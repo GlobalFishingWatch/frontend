@@ -1,0 +1,92 @@
+.graphSelector {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 18px;
+  height: 3.8rem;
+  width: 3.8rem;
+}
+
+.graphSelector::after {
+  content: ' ';
+  position: absolute;
+  right: 0.1rem;
+  top: 0.1rem;
+  width: 3.8rem;
+  height: 3.8rem;
+  border-radius: 1.9rem;
+  pointer-events: none;
+  background: #2d5295 url('../../../assets/icons/settings.svg') no-repeat center center;
+}
+
+.filtersPopup {
+  background: #fff;
+  width: 200px;
+  height: auto;
+  position: absolute;
+  bottom: 68px;
+  right: 0.5rem;
+  padding: 15px 10px 15px 30px;
+}
+
+.filtersPopup::after {
+  position: absolute;
+  bottom: -10px;
+  height: 0;
+  width: 0;
+  right: 0;
+  border: 22px solid transparent;
+  border-bottom-color: #fff;
+  content: '';
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.graphSelectorSelect {
+  appearance: none;
+  appearance: none;
+  appearance: none;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 2rem;
+  background: #2d5295;
+  font-size: 0;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.graphSelectorSelect:hover {
+  font-size: var(--font-size-M);
+  padding: 0 4rem 0 1rem;
+  width: initial;
+}
+
+.graphSelectorSelect:focus {
+  outline-width: 0;
+}
+
+.noEncounters {
+  position: absolute;
+  width: 300px;
+  margin-left: -150px;
+  left: 50%;
+  top: 35%;
+}
+
+.speedSelector {
+  writing-mode: bt-lr; /* IE */
+  appearance: slider-vertical; /* WebKit */
+  width: 8px;
+  height: calc(var(--track-labeler-timebar-size) - 13px);
+  padding: 0 5px;
+}
+
+.filterSelector {
+  position: absolute;
+  right: 4px;
+  top: 25px;
+}
+
+.vesselDetail svg {
+  fill: #163f89;
+  height: 30px;
+}

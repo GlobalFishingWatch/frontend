@@ -7,6 +7,7 @@ export enum LayerGroup {
   Bathymetry = 'bathymetry', // 4Wings Bathymetry layer
   HeatmapStatic = 'heatmapStatic', // Fill/gradient-based heatmaps
   Heatmap = 'heatmap', // Fill/gradient-based temporal heatmaps
+  HeatmapFootprint = 'heatmapFootprint', // Fill/gradient-based temporal heatmaps
   OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as RFMOs, MPAs, etc
   OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons
   BasemapFill = 'basemapFill', // Landmass
@@ -22,6 +23,7 @@ export enum LayerGroup {
   Cluster = 'cluster', // Cluster circles
   Tool = 'tool', // Tools such as rulers, etc
   Label = 'label', // All non-basemap layers labels
+  ClusterLabel = 'clusterLabel', // Cluster labels
   Overlay = 'overlay', // Popups, ruler tool, etc
 }
 
@@ -32,6 +34,7 @@ export const LAYER_GROUP_ORDER = [
   LayerGroup.Bathymetry,
   LayerGroup.HeatmapStatic,
   LayerGroup.Heatmap,
+  LayerGroup.HeatmapFootprint,
   LayerGroup.OutlinePolygonsFill,
   LayerGroup.OutlinePolygons,
   LayerGroup.BasemapFill,
@@ -43,9 +46,10 @@ export const LAYER_GROUP_ORDER = [
   LayerGroup.BasemapForeground,
   LayerGroup.CustomLayer,
   LayerGroup.OutlinePolygonsHighlighted,
-  LayerGroup.Cluster,
-  LayerGroup.Tool,
   LayerGroup.Label,
+  LayerGroup.Cluster,
+  LayerGroup.ClusterLabel,
+  LayerGroup.Tool,
   LayerGroup.Overlay,
 ]
 

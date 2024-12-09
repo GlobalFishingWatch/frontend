@@ -1,19 +1,18 @@
 import React, { Suspense, lazy } from 'react'
-import { Placement } from 'tippy.js'
+import type { Placement } from 'tippy.js'
 import cx from 'classnames'
 import { Tooltip } from '../tooltip'
-import { TooltipTypes } from '../types/types'
+import type { TooltipTypes } from '../types/types'
 import styles from './Icon.module.css'
-import icons, { IconType } from './icon.config'
+import type { IconType } from './icon.config'
+import icons from './icon.config'
 
 const IconComponents = icons.reduce((acc, icon) => {
   acc[icon] = lazy(() =>
     import(
       /* webpackChunkName: "icon-[request]" */
-      `../assets/icons/${icon}.svg`
-    ).then((m) => ({
-      default: m.ReactComponent,
-    }))
+      `./icons/${icon}.svg`
+    ).then((m) => ({ default: m.ReactComponent || m.default || m }))
   )
   return acc
 }, {} as Record<IconType, any>)
@@ -34,7 +33,7 @@ export function Icon(props: IconProps) {
   const { icon, tooltip, type = 'default', className = '', style = defaultStyle, testId } = props
   const Component = IconComponents[icon]
   if (!Component) {
-    console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
+    console.warn(`<Icon /> ui-component is missing "${icon}" icon. Rendering null`)
     return null
   }
   return (

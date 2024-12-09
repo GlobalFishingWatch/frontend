@@ -1,7 +1,8 @@
-import { WorkspaceViewport } from '@globalfishingwatch/api-types'
-import { AppDispatch, RootState } from 'store'
-import { QueryParams } from 'types'
-import { HOME, ROUTE_TYPES } from './routes'
+import type { WorkspaceViewport } from '@globalfishingwatch/api-types'
+import type { AppDispatch, RootState } from 'store'
+import type { QueryParams } from 'types'
+import type { ROUTE_TYPES } from './routes';
+import { HOME } from './routes'
 import {
   selectCurrentLocation,
   selectLocationPayload,

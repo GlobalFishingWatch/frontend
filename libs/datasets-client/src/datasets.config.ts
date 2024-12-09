@@ -1,11 +1,12 @@
 import { scaleLinear } from 'd3-scale'
-import {
-  DRAW_DATASET_SOURCE,
+import type {
   Dataset,
   DatasetConfiguration,
   DatasetConfigurationUI,
   DatasetGeometryType,
-  EnviromentalDatasetConfiguration,
+  EnviromentalDatasetConfiguration} from '@globalfishingwatch/api-types';
+import {
+  DRAW_DATASET_SOURCE
 } from '@globalfishingwatch/api-types'
 
 // Got from deck-layers colorRamps to avoid circular dependencies
@@ -34,8 +35,8 @@ export function getDatasetConfigurationProperty<P extends DatasetConfigurationPr
 export const getDatasetConfiguration = (
   dataset: Partial<Dataset> | undefined
 ): DatasetConfiguration & DatasetConfiguration['configurationUI'] => ({
-  ...dataset?.configuration,
-  ...dataset?.configuration?.configurationUI,
+  ...(dataset?.configuration || ({} as DatasetConfiguration)),
+  ...(dataset?.configuration?.configurationUI || ({} as DatasetConfiguration['configurationUI'])),
 })
 
 export function getDatasetGeometryType(dataset?: Dataset) {

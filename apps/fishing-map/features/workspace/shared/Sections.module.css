@@ -53,18 +53,16 @@
 .sectionButtons {
   display: flex;
   align-items: center;
+  gap: var(--space-XS);
 }
 
-.sectionButtons > *:not(:last-child) {
-  margin-right: 1rem;
+.sectionButtonsSecondary {
+  opacity: 0;
+  transition: var(--transition);
 }
 
-.sectionButtons > .lastBtn {
-  display: inline-block;
-}
-
-.sectionButtons > *:not(:last-child).lastBtn {
-  margin-right: 0;
+.container:hover .sectionButtonsSecondary {
+  opacity: 1;
 }
 
 .emptyState,
@@ -94,15 +92,6 @@
   color: var(--color-secondary-blue);
 }
 
-.visualizationsSwitch {
-  transition: var(--transition);
-}
-
-.visualizationsSwitch > ul {
-  min-width: unset;
-  gap: 0;
-}
-
 .vesselsOnScreen summary {
   justify-content: left;
 }
@@ -127,4 +116,9 @@
 
 .hidden {
   display: none;
+}
+
+.highlightSpan {
+  position: absolute;
+  right: 0;
 }

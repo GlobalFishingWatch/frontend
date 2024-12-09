@@ -1,4 +1,4 @@
-import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
+import type { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 
 export const EVENTS_COLORS = {
   encounter: '#FAE9A0',

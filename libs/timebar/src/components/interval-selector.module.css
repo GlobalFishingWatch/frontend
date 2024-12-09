@@ -1,8 +1,7 @@
 .intervalContainer {
   background-color: var(--timebar-ui-btn-color);
   width: 7rem;
-  height: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .intervalBtn {

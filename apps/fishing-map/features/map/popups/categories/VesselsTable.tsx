@@ -3,27 +3,24 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { Tooltip } from '@globalfishingwatch/ui-components'
-import {
-  DatasetSubCategory,
-  DataviewCategory,
-  VesselIdentitySourceEnum,
-} from '@globalfishingwatch/api-types'
+import type { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
   getDetectionsTimestamps,
-  getVesselGearType,
+  getVesselGearTypeLabel,
   getVesselOtherNamesLabel,
-  getVesselShipType,
+  getVesselShipTypeLabel,
 } from 'utils/info'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
-import {
+import type {
   ActivityProperty,
   ExtendedFeatureVessel,
-  MAX_TOOLTIP_LIST,
   SliceExtendedFourwingsDeckSublayer,
 } from 'features/map/map.slice'
+import { MAX_TOOLTIP_LIST } from 'features/map/map.slice'
 import { t } from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -103,11 +100,13 @@ function VesselsTable({
   vesselProperty = 'hours',
   activityType = DatasetSubCategory.Fishing,
   testId = 'vessels-table',
+  showValue = true,
 }: {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
   vesselProperty?: ActivityProperty
   activityType?: `${DatasetSubCategory}`
   testId?: string
+  showValue?: boolean
 }) {
   const { t } = useTranslation()
 
@@ -115,8 +114,9 @@ function VesselsTable({
     feature?.category || ''
   )
 
+  // TODO: consider showing more than 5 vessels when oly one layer is active
   const vessels = feature?.vessels?.slice(0, MAX_TOOLTIP_LIST)
-  const vesselsInfo = getVesselsInfoConfig(feature.vessels)
+  const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
 
   const hasPinColumn =
     interactionAllowed &&
@@ -125,11 +125,11 @@ function VesselsTable({
       return hasDatasets
     })
 
-  const isHoursProperty = vesselProperty !== 'detections'
+  const isHoursProperty = vesselProperty !== 'detections' && vesselProperty !== 'events'
   const isPresenceActivity = activityType === DatasetSubCategory.Presence
   return (
     <Fragment>
-      {vessels!?.length > 0 && (
+      {vessels?.length && vessels.length > 0 && (
         <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>
@@ -139,12 +139,14 @@ function VesselsTable({
                 {isPresenceActivity ? t('vessel.type', 'Type') : t('vessel.gearType_short', 'Gear')}
               </th>
               {/* Disabled for detections to allocate some space for timestamps interaction */}
-              {vesselProperty !== 'detections' && <th>{t('vessel.source_short', 'source')}</th>}
-              <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
-                {feature?.unit === 'hours' && t('common.hour_other', 'hours')}
-                {feature?.unit === 'days' && t('common.days_other', 'days')}
-                {feature?.unit === 'detections' && t('common.detection_other', 'detections')}
-              </th>
+              {isHoursProperty && <th>{t('vessel.source_short', 'source')}</th>}
+              {showValue && (
+                <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
+                  {feature?.unit === 'hours' && t('common.hour_other', 'hours')}
+                  {feature?.unit === 'days' && t('common.days_other', 'days')}
+                  {feature?.unit === 'detections' && t('common.detection_other', 'detections')}
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -154,7 +156,7 @@ function VesselsTable({
               }
               const vesselName = formatInfoField(
                 getVesselProperty(vessel, 'shipname', getVesselPropertyParams),
-                'name'
+                'shipname'
               )
 
               const otherVesselsLabel = vessel
@@ -163,10 +165,10 @@ function VesselsTable({
               const vesselFlag = getVesselProperty(vessel, 'flag', getVesselPropertyParams)
 
               const vesselType = isPresenceActivity
-                ? getVesselShipType({
+                ? getVesselShipTypeLabel({
                     shiptypes: getVesselProperty(vessel, 'shiptypes', getVesselPropertyParams),
                   })
-                : getVesselGearType({
+                : getVesselGearTypeLabel({
                     geartypes: getVesselProperty(vessel, 'geartypes', getVesselPropertyParams),
                   })
 
@@ -224,17 +226,19 @@ function VesselsTable({
                       </Tooltip>
                     </td>
                   )}
-                  <td
-                    className={cx(styles.columnSpace, {
-                      [styles.vesselsTableHour]: isHoursProperty,
-                      [styles.largeColumn]: detectionsTimestamps?.length > 1,
-                    })}
-                  >
-                    <I18nNumber number={vessel[vesselProperty]} />{' '}
-                    {detectionsTimestamps?.length > 0 && (
-                      <VesselDetectionTimestamps vessel={vessel} />
-                    )}
-                  </td>
+                  {showValue && vessel[vesselProperty] && (
+                    <td
+                      className={cx(styles.columnSpace, {
+                        [styles.vesselsTableHour]: isHoursProperty,
+                        [styles.largeColumn]: detectionsTimestamps?.length > 1,
+                      })}
+                    >
+                      <I18nNumber number={vessel[vesselProperty]} />{' '}
+                      {detectionsTimestamps?.length > 0 && (
+                        <VesselDetectionTimestamps vessel={vessel} />
+                      )}
+                    </td>
+                  )}
                 </tr>
               )
             })}

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { InsightCoverageResponse } from '@globalfishingwatch/api-types'
-import { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { InsightResponse } from '@globalfishingwatch/api-types'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -11,7 +11,7 @@ const InsightCoverage = ({
   isLoading,
   error,
 }: {
-  insightData: InsightCoverageResponse
+  insightData?: InsightResponse
   isLoading: boolean
   error: ParsedAPIError
 }) => {
@@ -19,7 +19,7 @@ const InsightCoverage = ({
   return (
     <div id="coverage" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.coverage', 'AIS Coverage')}</label>
+        <label className="experimental">{t('vessel.insights.coverage', 'AIS Coverage')}</label>
         <DataTerminology
           size="tiny"
           type="default"
@@ -31,7 +31,7 @@ const InsightCoverage = ({
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
       ) : error ? (
         <InsightError error={error} />
-      ) : insightData?.coverage.percentage ? (
+      ) : insightData?.coverage?.percentage ? (
         <div className={styles.coverageBar}>
           <div
             className={styles.coverageIndicator}

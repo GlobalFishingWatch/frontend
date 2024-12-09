@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { capitalize } from 'lodash'
 import { DateTime } from 'luxon'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { Filters } from 'features/event-filters/filters.slice'
+import type { Filters } from 'features/event-filters/filters.slice'
 import styles from './filters-label.module.css'
 
 export interface FiltersLabelProps {

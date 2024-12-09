@@ -15,8 +15,7 @@
 
 .remove {
   position: absolute;
-  top: -20%;
-  right: -20%;
+  inset: -20% -20% auto auto;
   width: 2.4rem;
   height: 2.4rem;
   opacity: 1;

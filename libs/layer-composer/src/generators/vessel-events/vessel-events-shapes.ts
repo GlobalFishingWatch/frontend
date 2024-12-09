@@ -1,16 +1,17 @@
 import memoizeOne from 'memoize-one'
-import { FeatureCollection } from 'geojson'
+import type { FeatureCollection } from 'geojson'
 import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
   CircleLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
-import {
-  GeneratorType,
+import type {
   VesselEventsShapesGeneratorConfig,
   MergedGeneratorConfig,
-  VesselsEventsSource,
+  VesselsEventsSource} from '../types';
+import {
+  GeneratorType
 } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import {

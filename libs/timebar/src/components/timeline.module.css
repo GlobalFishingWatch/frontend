@@ -17,7 +17,7 @@
 
 .graphContainer {
   width: 100%;
-  height: var(--timebar-size);
+  height: 100%;
   z-index: 0;
   overflow: hidden;
 }
@@ -74,12 +74,6 @@
 
 .lastUpdate {
   font-size: 1.4rem;
-}
-
-.lastUpdateLabel {
-  text-transform: uppercase;
-  opacity: 0.4;
-  font-size: 1.2rem;
 }
 
 .tooltipContainer {

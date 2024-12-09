@@ -1,3 +1,4 @@
+# pull_request_title: 'i18n: crowdin updates'
 files:
   - source: apps/fishing-map/public/locales/source
     translation: /apps/fishing-map/public/locales/%two_letters_code%/%original_file_name%

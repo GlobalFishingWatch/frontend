@@ -1,6 +1,6 @@
 import type { LoaderOptions } from '@loaders.gl/loader-utils'
-import { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { Feature, Point, Polygon } from 'geojson'
+import type { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Feature, Point, Polygon } from 'geojson'
 
 export type FourwingsRawData = number[]
 
@@ -38,8 +38,17 @@ export type ParseFourwingsOptions = {
   workerUrl?: string
 }
 
+export type ParseFourwingsClustersOptions = Omit<
+  ParseFourwingsOptions,
+  'interval' | 'aggregationOperation' | 'sublayers' | 'initialTimeRange' | 'bufferedStartDate'
+>
+
 export type FourwingsLoaderOptions = LoaderOptions & {
   fourwings?: ParseFourwingsOptions
+}
+
+export type FourwingsClustersLoaderOptions = LoaderOptions & {
+  fourwingsClusters?: ParseFourwingsClustersOptions
 }
 
 export type FourwingsFeatureProperties = {
@@ -60,17 +69,25 @@ export type FourwingsPositionFeatureProperties = {
   [key: string]: any
 }
 
+export type FourwingsPointFeatureProperties = {
+  id: number
+  value: number
+  [key: string]: any
+}
+
 export type FourwingsStaticFeatureProperties = {
   count: number
   values: number[][]
 }
 
-export type FourwingsFeature<Properties = FourwingsFeatureProperties> = Feature<
-  Polygon,
-  Properties
-> & {
+export type FourwingsFeature<Properties = FourwingsFeatureProperties> = {
+  coordinates: number[]
+  properties: Properties
+} & {
   aggregatedValues?: number[]
 }
+
 export type FourwingsValuesAndDatesFeature = [number[], number[]][] // values in first place, dates in second
 export type FourwingsStaticFeature = FourwingsFeature<FourwingsStaticFeatureProperties>
 export type FourwingsPositionFeature = Feature<Point, FourwingsPositionFeatureProperties>
+export type FourwingsPointFeature = Feature<Point, FourwingsPointFeatureProperties>

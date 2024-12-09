@@ -3,7 +3,8 @@ import cx from 'classnames'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
+import type { Dataset} from '@globalfishingwatch/api-types';
+import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -20,7 +21,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDataviewInstanceByDataset, useAddDataset } from 'features/datasets/datasets.hook'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
-import { getHighlightedText } from 'features/layer-library/layer-library.utils'
+import { getHighlightedText } from 'utils/text'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -35,7 +36,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   const datasets = useSelector(selectUserDatasets)
   const datasetStatus = useSelector(selectDatasetsStatus)
   const guestUser = useSelector(selectIsGuestUser)
-  const onAddNewClick = useAddDataset({})
+  const onAddNewClick = useAddDataset()
 
   const filteredDatasets = useMemo(
     () =>

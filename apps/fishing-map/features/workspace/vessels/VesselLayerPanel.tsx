@@ -1,24 +1,28 @@
-import { Fragment, ReactNode, useState } from 'react'
+import type { ReactNode} from 'react';
+import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { groupBy } from 'es-toolkit'
+import type {
+  DataviewDatasetConfigParam,
+  Resource,
+  IdentityVessel} from '@globalfishingwatch/api-types';
 import {
   DatasetTypes,
   ResourceStatus,
-  DataviewDatasetConfigParam,
-  Resource,
-  IdentityVessel,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import { IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components';
+import { IconButton } from '@globalfishingwatch/ui-components'
+import type {
+  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
 import {
-  resolveDataviewDatasetResource,
-  UrlDataviewInstance,
+  resolveDataviewDatasetResource
 } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { VesselLayer } from '@globalfishingwatch/deck-layers'
-import { formatInfoField, getVesselLabel, getVesselOtherNamesLabel } from 'utils/info'
+import type { VesselLayer } from '@globalfishingwatch/deck-layers'
+import { formatInfoField, getVesselShipNameLabel, getVesselOtherNamesLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -38,6 +42,7 @@ import { t } from 'features/i18n/i18n'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import Filters from '../common/LayerFilters'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -51,7 +56,7 @@ export type VesselLayerPanelProps = {
 }
 
 export const getVesselIdentityTooltipSummary = (
-  vessel: IdentityVessel,
+  vessel: IdentityVessel | ExtendedFeatureVessel,
   { showVesselId } = {} as { showVesselId: boolean }
 ) => {
   if (!vessel || !vessel.selfReportedInfo?.length) {
@@ -74,9 +79,9 @@ export const getVesselIdentityTooltipSummary = (
       }, '')
 
       const selfReported = selfReportedInfo[0]
-      const name = formatInfoField(selfReported.shipname, 'name')
+      const name = formatInfoField(selfReported.shipname, 'shipname')
       const flag = formatInfoField(selfReported.flag, 'flag')
-      let info = `${name} - (${flag}) (${formatI18nDate(
+      const info = `${name} - (${flag}) (${formatI18nDate(
         firstTransmissionDateFrom
       )} - ${formatI18nDate(lastTransmissionDateTo)})`
       return showVesselId ? (
@@ -151,15 +156,15 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
     setInfoOpen(false)
   }
 
-  const trackLoaded = vesselLayer?.instance.getVesselTracksLayersLoaded()
-  const trackLayerVisible = vesselLayer?.instance.props.visible
+  const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
+  const trackLayerVisible = vesselLayer?.instance?.props?.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = vesselLayer?.instance.getVesselLayersError('track')
   const trackLoading = trackLayerVisible && !trackLoaded && !trackError
 
   const vesselData = infoResource?.data
-  const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
+  const vesselLabel = vesselData ? getVesselShipNameLabel(vesselData) : ''
   const otherVesselsLabel = vesselData
     ? getVesselOtherNamesLabel(getOtherVesselNames(vesselData as IdentityVessel))
     : ''
@@ -275,7 +280,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
             {layerActive && !infoLoading && !trackError && (
               <FitBounds
                 hasError={trackError}
-                vesselLayer={vesselLayer?.instance}
+                layer={vesselLayer?.instance}
                 infoResource={infoResource}
                 disabled={trackLoading}
               />

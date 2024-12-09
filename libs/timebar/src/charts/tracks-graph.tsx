@@ -1,11 +1,12 @@
 import React, { useContext, useMemo } from 'react'
 import { area, curveStepAfter } from 'd3-shape'
 import { quantile } from 'simple-statistics'
-import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
+import type { TimelineScale, TrackGraphOrientation } from '../timelineContext';
+import TimelineContext from '../timelineContext'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
 import { useUpdateChartsData } from './chartsData.atom'
-import { TimebarChartData, TimebarChartChunk, TimebarChartItem } from '.'
+import type { TimebarChartData, TimebarChartChunk, TimebarChartItem } from '.'
 
 const getMaxValues = (data: TimebarChartData) => {
   const maxValues = data.map((trackGraphData: TimebarChartItem) => {

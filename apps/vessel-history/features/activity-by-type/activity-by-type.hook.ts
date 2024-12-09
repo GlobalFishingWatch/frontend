@@ -1,15 +1,16 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { EventType, EventTypes } from '@globalfishingwatch/api-types'
+import type { EventType} from '@globalfishingwatch/api-types';
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { selectEventResourcesLoading } from 'features/resources/resources.selectors'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { EventGroup } from 'types/activity'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import type { EventGroup } from 'types/activity'
 import { selectFilteredEventsWithMainPortVisit } from './activity-by-type.selectors'
 
 const calculateQuantity = {
   [EventTypes.Encounter]: (events: RenderedEvent[]) => events.length ?? 0,
   [EventTypes.Fishing]: (events: RenderedEvent[]) =>
-    events?.reduce((p, c) => p + c.duration ?? 0, 0) ?? 0,
+    events?.reduce((p, c) => (c.duration ? p + c.duration : p), 0),
   [EventTypes.Loitering]: (events: RenderedEvent[]) => events.length ?? 0,
   [EventTypes.Port]: (events: RenderedEvent[]) =>
     Math.ceil(events.filter((event) => !event?.subEvent).length ?? 0),

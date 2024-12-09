@@ -1,0 +1,162 @@
+.container {
+  padding: var(--space-M);
+  position: relative;
+}
+
+.relative {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+}
+
+.faint {
+  opacity: 0.5;
+  filter: blur(1px);
+}
+
+.flex {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.spaceBetween {
+  justify-content: space-between;
+}
+
+.spaceAround {
+  justify-content: space-around;
+}
+
+.end {
+  align-items: flex-end;
+}
+
+.paragraph {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.paragraphS {
+  gap: 0.2rem;
+}
+
+.sentence {
+  display: flex;
+  gap: 1rem;
+}
+
+.block {
+  height: 1.6rem;
+  border-radius: 0.8rem;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--primary-blue-rgb), 0.1) 0%,
+    rgba(var(--primary-blue-rgb), 0.2) 40%,
+    rgba(var(--primary-blue-rgb), 0.1) 70%
+  );
+  background-size: 1000px 100%;
+}
+
+.animate {
+  animation: placeHolderShimmer 2s linear forwards infinite;
+}
+
+.grow {
+  flex: 1;
+}
+
+.XS {
+  height: 1rem;
+  border-radius: 0.5rem;
+  margin-block: 0.3rem;
+}
+
+.S {
+  height: 1.2rem;
+  border-radius: 0.6rem;
+  margin-block: 0.3rem;
+}
+
+.L {
+  height: 1.8rem;
+  border-radius: 1rem;
+  margin-block: 0.1rem;
+}
+
+.XL {
+  height: 2.2rem;
+  border-radius: 1.2rem;
+}
+
+.short {
+  flex: 0.5;
+}
+
+.thick {
+  min-height: 4rem;
+  border-radius: 2rem;
+}
+
+.line {
+  height: 1px;
+  min-height: 1px;
+}
+
+.marginH {
+  margin-left: var(--space-S);
+  margin-right: var(--space-S);
+}
+
+.marginL {
+  margin-left: var(--space-S);
+}
+
+.marginV {
+  margin-top: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+.marginBottom {
+  margin-bottom: var(--space-S);
+}
+
+.tag {
+  margin-bottom: 0.7rem;
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+
+  100% {
+    background-position: 500px 0;
+  }
+}
+
+.children {
+  position: absolute;
+  inset: 0;
+  top: -3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

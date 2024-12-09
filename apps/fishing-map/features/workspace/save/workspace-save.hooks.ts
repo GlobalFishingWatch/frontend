@@ -1,16 +1,18 @@
-import { ChangeEvent, useCallback, useState } from 'react'
+import type { ChangeEvent} from 'react';
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectCreateWorkspaceModalOpen,
   selectEditWorkspaceModalOpen,
   setModalOpen,
 } from 'features/modals/modals.slice'
-import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import type {
+  WorkspaceTimeRangeMode} from './workspace-save.utils';
 import {
-  WorkspaceTimeRangeMode,
   getTimeRangeOptions,
   isValidDaysFromLatest,
   replaceTimerangeWorkspaceName,

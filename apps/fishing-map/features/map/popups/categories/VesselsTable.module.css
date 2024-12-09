@@ -61,12 +61,8 @@
   padding-bottom: 3rem;
 }
 
-.vesselsMore,
-.vesselsDisplayed {
-  opacity: var(--opacity-secondary);
-}
-
 .vesselsMore {
+  opacity: var(--opacity-secondary);
   cursor: unset;
 }
 

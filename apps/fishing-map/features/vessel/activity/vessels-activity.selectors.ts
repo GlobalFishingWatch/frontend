@@ -1,7 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, uniqBy } from 'lodash'
-import { EventType, EventTypes, RegionType, Regions, Vessel } from '@globalfishingwatch/api-types'
-import { ApiEvent } from '@globalfishingwatch/api-types'
+import { groupBy, uniqBy } from 'es-toolkit'
+import type { EventType, Regions, Vessel } from '@globalfishingwatch/api-types';
+import { EventTypes, RegionType } from '@globalfishingwatch/api-types'
+import type { ApiEvent } from '@globalfishingwatch/api-types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -23,7 +24,7 @@ export interface ActivityEvent extends ApiEvent {
 export const selectEventsGroupedByType = createSelector(
   [selectVesselEventsFilteredByTimerange],
   (eventsList) => {
-    return groupBy(eventsList, 'type')
+    return groupBy(eventsList, (e) => e.type)
   }
 )
 
@@ -83,7 +84,7 @@ export const selectVesselEventTypes = createSelector(
   [selectVesselProfileDataview],
   (vesselDataview) => {
     const eventDatasets =
-      vesselDataview && uniqBy(getEventsDatasetsInDataview(vesselDataview), 'subcategory')
+      vesselDataview && uniqBy(getEventsDatasetsInDataview(vesselDataview), (e) => e.subcategory)
     return eventDatasets?.map(({ subcategory }) => subcategory as EventType) || []
   }
 )
@@ -160,7 +161,7 @@ export const selectEventsGroupedByVoyages = createSelector(
       }
       return event
     })
-    return groupBy(eventsListWithEntryExitEvents, 'voyage')
+    return groupBy(eventsListWithEntryExitEvents, (e) => e.voyage)
   }
 )
 

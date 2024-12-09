@@ -1,6 +1,7 @@
 import type { LayerSpecification, CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_CONTEXT_MAX_ZOOM, DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
-import { GeneratorType, GlobalUserPointsGeneratorConfig } from '../types'
+import type { GlobalUserPointsGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'

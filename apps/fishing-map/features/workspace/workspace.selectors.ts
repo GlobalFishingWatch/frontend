@@ -1,21 +1,23 @@
 import { createSelector } from '@reduxjs/toolkit'
+import type { Workspace } from '@globalfishingwatch/api-types'
+import { EventTypes, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
 import type { RootState } from 'reducers'
-import { EventTypes, Workspace, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
-import { WorkspaceState, WorkspaceStateProperty } from 'types'
+import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE, PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
-import { selectIsWorkspaceLocation, selectQueryParam } from 'routes/routes.selectors'
+import { selectIsWorkspaceLocation, selectLocationQuery } from 'routes/routes.selectors'
 import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
-import { UserSettings } from 'features/user/user.slice'
+import type { UserSettings } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { VALID_PASSWORD } from 'data/config'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
 export const selectWorkspacePassword = (state: RootState) => state.workspace?.password
+export const selectSuggestWorkspaceSave = (state: RootState) => state.workspace?.suggestSave
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
 export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
 export const selectLastVisitedWorkspace = (state: RootState) => state.workspace?.lastVisited
@@ -86,7 +88,7 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
   return workspace?.dataviewInstances || [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
 })
 
-const EMPTY_OBJECT: {} = {}
+const EMPTY_OBJECT: Record<string, any> = {}
 const selectWorkspaceState = createSelector([selectWorkspace], (workspace): WorkspaceState => {
   return workspace?.state || (EMPTY_OBJECT as WorkspaceState)
 })
@@ -100,8 +102,9 @@ const USER_SETTINGS_FALLBACKS: Record<string, string> = {
 
 export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(property: P) {
   return createSelector(
-    [selectQueryParam(property), selectWorkspaceState, selectUserSettings],
-    (urlProperty, workspaceState, userSettings): WorkspaceProperty<P> => {
+    [selectLocationQuery, selectWorkspaceState, selectUserSettings],
+    (locationQuery, workspaceState, userSettings): WorkspaceProperty<P> => {
+      const urlProperty = locationQuery?.[property]
       if (urlProperty !== undefined) return urlProperty
       if (workspaceState[property]) return workspaceState[property] as WorkspaceProperty<P>
       const userSettingsProperty =
@@ -111,8 +114,9 @@ export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(p
   )
 }
 
+const visibleEventsSelector = selectWorkspaceStateProperty('visibleEvents')
 export const selectWorkspaceVisibleEventsArray = createSelector(
-  [selectWorkspaceStateProperty('visibleEvents')],
+  [visibleEventsSelector],
   (visibleEvents) => {
     return typeof visibleEvents === 'string'
       ? visibleEvents === 'all'

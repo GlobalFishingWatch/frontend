@@ -5,7 +5,7 @@ import concave from "@turf/concave"
 import { flags } from "@globalfishingwatch/i18n-labels"
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 import { selectCountry, selectCountryColors, selectMapData, selectSelectedPoints } from "features/labeler/labeler.slice"
-import { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGeneratorConfig } from "types"
+import type { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGeneratorConfig } from "types"
 import { groupBy } from "utils/group-by"
 import { selectPortPointsByCountry, selectPortValuesByCountry, selectSubareaColors, selectSubareaValuesByCountry } from "features/labeler/labeler.selectors"
 

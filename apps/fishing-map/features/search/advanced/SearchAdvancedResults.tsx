@@ -1,12 +1,15 @@
 import { useSelector } from 'react-redux'
-import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table'
+import type { MRT_ColumnDef } from 'material-react-table';
+import { MaterialReactTable } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniq } from 'es-toolkit'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import type { Dataset} from '@globalfishingwatch/api-types';
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type {
+  VesselLastIdentity} from 'features/search/search.slice';
 import {
-  VesselLastIdentity,
   cleanVesselSearchResults,
   selectSearchResults,
   selectSearchStatus,
@@ -16,25 +19,27 @@ import {
 import {
   formatInfoField,
   EMPTY_FIELD_PLACEHOLDER,
-  getVesselGearType,
-  getVesselShipType,
+  getVesselGearTypeLabel,
+  getVesselShipTypeLabel,
   getVesselOtherNamesLabel,
 } from 'utils/info'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { SearchComponentProps } from 'features/search/basic/SearchBasic'
+import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
-import { Locale, VesselSearchState } from 'types'
+import type { Locale } from 'types'
+import type { VesselSearchState } from 'features/search/search.types'
 import I18nDate from 'features/i18n/i18nDate'
+import type {
+  VesselIdentityProperty} from 'features/vessel/vessel.utils';
 import {
-  VesselIdentityProperty,
   getBestMatchCriteriaIdentity,
   getOtherVesselNames,
   getSearchIdentityResolved,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
-import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
@@ -125,7 +130,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const shiptypes = getVesselProperty(vessel, 'shiptypes', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           })
-          const label = getVesselShipType({ shiptypes })
+          const label = getVesselShipTypeLabel({ shiptypes })
           return (
             <CellWithFilter vessel={vessel} column="shiptypes" onClick={fetchResults}>
               {label || EMPTY_FIELD_PLACEHOLDER}
@@ -140,7 +145,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const geartypes = getVesselProperty(vessel, 'geartypes', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           })
-          const label = getVesselGearType({ geartypes })
+          const label = getVesselGearTypeLabel({ geartypes })
           return (
             <CellWithFilter vessel={vessel} column="geartypes" onClick={fetchResults}>
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
@@ -159,7 +164,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const geartypes = getVesselProperty(vessel, 'geartypes', {
             identitySource: VesselIdentitySourceEnum.Registry,
           })
-          const label = getVesselGearType({ geartypes })
+          const label = getVesselGearTypeLabel({ geartypes })
           return (
             <CellWithFilter
               vessel={vessel}
@@ -191,17 +196,17 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         accessorFn: (vessel: IdentityVesselData) => {
           const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const vesselData = getSearchIdentityResolved(vessel)
-          const { shipname, nShipname } = vesselData
+          const { dataset, shipname, nShipname } = vesselData
           const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
           const { transmissionDateFrom, transmissionDateTo } = vesselData
-          const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
+          const name = shipname ? formatInfoField(shipname, 'shipname') : EMPTY_FIELD_PLACEHOLDER
           const label = `${name} ${otherNamesLabel || ''}`
           const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
 
           return (
             <VesselLink
               vesselId={vesselData.id}
-              datasetId={vesselData.dataset?.id}
+              datasetId={(dataset as Dataset)?.id}
               identity={bestIdentityMatch}
               onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
@@ -227,7 +232,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
           if (!transmissionDateFrom || !transmissionDateTo) return
           return (
-            <div>
+            <div className={styles.transmissionDates}>
               <span style={{ font: 'var(--font-XS)' }}>
                 <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
               </span>
@@ -328,7 +333,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t('vessel.transmission_other', 'Transmissions'),
       },
     ]
-  }, [fetchResults, i18n.language, onVesselClick, searchFilters?.infoSource, t])
+  }, [fetchResults, i18n.language, isSearchLocation, onVesselClick, searchFilters?.infoSource, t])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {
@@ -396,6 +401,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         )
       }
       onRowSelectionChange={undefined}
+      enableColumnResizing
       selectAllMode="all"
       getRowId={(row, index) => `${index}-${row.id}`}
       initialState={{ columnPinning: { left: [PINNED_COLUMN] } }}

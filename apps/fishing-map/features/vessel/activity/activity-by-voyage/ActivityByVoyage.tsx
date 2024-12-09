@@ -10,8 +10,9 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
 import Event, { EVENT_HEIGHT } from 'features/vessel/activity/event/Event'
 import { getVoyageTimeRange } from 'features/vessel/vessel.utils'
+import type {
+  ActivityEvent} from 'features/vessel/activity/vessels-activity.selectors';
 import {
-  ActivityEvent,
   selectEventsGroupedByVoyages,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
@@ -29,6 +30,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
+import type VesselEvent from 'features/vessel/activity/event/Event'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
@@ -40,11 +42,11 @@ const ActivityByVoyage = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const visibleEvents = useSelector(selectVisibleEvents)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
-  const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
+  const [selectedEvent, setSelectedEvent] = useState<VesselEvent>()
   const [expandedVoyages, toggleExpandedVoyage] = useExpandedVoyages()
   const fitBounds = useMapFitBounds()
 
-  const onInfoClick = useCallback((event: ActivityEvent) => {
+  const onInfoClick = useCallback((event: VesselEvent) => {
     setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
   }, [])
 
@@ -85,7 +87,7 @@ const ActivityByVoyage = () => {
   )
 
   const onEventMapHover = useCallback(
-    (event?: ActivityEvent) => {
+    (event?: VesselEvent) => {
       if (event?.id) {
         dispatch(setHighlightedEvents([event.id]))
       } else {
@@ -96,7 +98,7 @@ const ActivityByVoyage = () => {
   )
 
   const selectEventOnMap = useCallback(
-    (event: ActivityEvent) => {
+    (event: VesselEvent) => {
       if (viewport?.zoom) {
         const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
         setMapCoordinates({
@@ -170,7 +172,7 @@ const ActivityByVoyage = () => {
         increaseViewportBy={EVENT_HEIGHT * 4}
         customScrollParent={getScrollElement()}
         groupContent={(index) => {
-          const events = voyages[groups[index]]
+          const events = voyages[groups[index] as any]
           if (!events) {
             return null
           }

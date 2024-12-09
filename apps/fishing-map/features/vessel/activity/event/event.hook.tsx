@@ -1,22 +1,38 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EventTypes, GapPosition, Regions } from '@globalfishingwatch/api-types'
+import { useSelector } from 'react-redux'
+import type { GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { getUTCDateTime } from 'utils/dates'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import VesselLink from 'features/vessel/VesselLink'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
+import { selectRegionsDatasets } from 'features/regions/regions.selectors'
+import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './Event.module.css'
 
+export function useFetchRegionsData() {
+  const dispatch = useAppDispatch()
+  const regionsDatasets = useSelector(selectRegionsDatasets)
+  useEffect(() => {
+    if (Object.values(regionsDatasets).every((d) => d)) {
+      dispatch(fetchRegionsThunk(regionsDatasets))
+    }
+  }, [dispatch, regionsDatasets])
+}
+
 export function useActivityEventTranslations() {
+  useFetchRegionsData()
   const { t } = useTranslation()
   const { getRegionNamesByType } = useRegionNamesByType()
 
   const getEventRegionDescription = useCallback(
-    (event: ActivityEvent | GapPosition) => {
-      const mainRegionDescription = REGIONS_PRIORITY.reduce((acc, regionType) => {
+    (event: ActivityEvent | GapPosition, regionsPriority = REGIONS_PRIORITY) => {
+      const mainRegionDescription = regionsPriority.reduce((acc, regionType) => {
         // We already have the most prioritized region, so we don't need to look for more
         if (!acc && event?.regions?.[regionType]?.length) {
           const values =
@@ -27,7 +43,7 @@ export function useActivityEventTranslations() {
         }
         return acc
       }, '')
-      let allRegionsDescriptionBlocks: string[] = []
+      const allRegionsDescriptionBlocks: string[] = []
       if (event.regions) {
         Object.entries(event.regions).forEach((entry) => {
           const regionType = entry[0] as keyof Regions
@@ -51,9 +67,12 @@ export function useActivityEventTranslations() {
   )
 
   const getEventDescription = useCallback(
-    (event?: ActivityEvent) => {
+    (event?: ActivityEvent, regionsPriority?: RegionType[]) => {
       if (!event) return EMPTY_FIELD_PLACEHOLDER
-      const { mainRegionDescription, allRegionsDescription } = getEventRegionDescription(event)
+      const { mainRegionDescription, allRegionsDescription } = getEventRegionDescription(
+        event,
+        regionsPriority
+      )
       switch (event.type) {
         case EventTypes.Encounter:
           if (event.encounter?.vessel) {
@@ -63,7 +82,7 @@ export function useActivityEventTranslations() {
               <span>
                 {t('event.encounterAction', 'had an encounter with')}{' '}
                 <VesselLink vesselId={id} datasetId={dataset}>
-                  {formatInfoField(name, 'name')} ({formatInfoField(flag, 'flag')})
+                  {formatInfoField(name, 'shipname')} ({formatInfoField(flag, 'flag')})
                 </VesselLink>{' '}
                 {mainRegionDescription && (
                   <Tooltip content={allRegionsDescription}>
@@ -76,7 +95,7 @@ export function useActivityEventTranslations() {
               </span>
             )
           } else return ''
-        case EventTypes.Port:
+        case EventTypes.Port: {
           const { name, flag } = event.port_visit?.intermediateAnchorage ?? {}
           const portType = event.subType || event.type
           const portLabel = name
@@ -85,6 +104,7 @@ export function useActivityEventTranslations() {
           return t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
             port: formatInfoField(portLabel, 'port'),
           })
+        }
         case EventTypes.Loitering:
           return (
             mainRegionDescription && (

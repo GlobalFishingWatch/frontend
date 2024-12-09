@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
-import { DatasetsMigration, DataviewType } from '@globalfishingwatch/api-types'
+import type { DatasetsMigration} from '@globalfishingwatch/api-types';
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
@@ -15,7 +16,7 @@ import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/data
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
-import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { useDataviewInstancesConnect } from './workspace.hook'
 import styles from './Workspace.module.css'
 import { selectIsWorkspaceOwner } from './workspace.selectors'
@@ -149,6 +150,7 @@ export const useMigrateWorkspaceToast = () => {
   const closeToast = () => {
     toast.dismiss(toastId.current)
   }
+
   const dissmissToast = () => {
     trackEvent({
       category: TrackCategory.WorkspaceManagement,
@@ -206,6 +208,6 @@ export const useMigrateWorkspaceToast = () => {
         autoClose: false,
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [hasDeprecatedDataviews])
 }

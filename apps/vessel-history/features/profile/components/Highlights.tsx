@@ -8,8 +8,9 @@ import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { SETTINGS } from 'routes/routes'
+import type {
+  RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
-  RenderedEvent,
   selectEventsLoading,
   selectFilteredActivityHighlightEvents,
 } from 'features/vessels/activity/vessels-activity.selectors'
@@ -18,7 +19,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
-import { EventTypeVoyage, Voyage } from 'types/voyage'
+import type { Voyage } from 'types/voyage';
+import { EventTypeVoyage } from 'types/voyage'
 import ActivityModalContent from './activity/ActivityModalContent'
 import ActivityItem from './activity/ActivityItem'
 import styles from './activity/Activity.module.css'

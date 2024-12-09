@@ -1,8 +1,9 @@
 import cx from 'classnames'
 import { useCallback, useMemo } from 'react'
-import {
+import type {
   HighlighterCallbackFn,
-  HighlighterCallbackFnArgs,
+  HighlighterCallbackFnArgs} from '@globalfishingwatch/timebar';
+import {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'

@@ -1,11 +1,13 @@
-import {
-  createSlice,
+import type {
   SliceCaseReducers,
   ValidateSliceCaseReducers,
   ActionReducerMapBuilder,
-  createEntityAdapter,
-  IdSelector,
+  IdSelector} from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createEntityAdapter
 } from '@reduxjs/toolkit'
+import type { ResponseError } from '@globalfishingwatch/api-client'
 
 export enum AsyncReducerStatus {
   Idle = 'idle',
@@ -19,9 +21,7 @@ export enum AsyncReducerStatus {
   Error = 'error',
 }
 
-export type AsyncError<Metadata = Record<string, any>> = {
-  status?: number // HHTP error codes
-  message?: string
+export type AsyncError<Metadata = Record<string, any>> = ResponseError & {
   metadata?: Metadata
 }
 
@@ -38,7 +38,7 @@ export type AsyncReducer<T = any> = {
 export const asyncInitialState: AsyncReducer = {
   status: AsyncReducerStatus.Idle,
   statusId: null,
-  error: {},
+  error: {} as AsyncError,
   ids: [],
   currentRequestIds: [],
   entities: {},
@@ -55,7 +55,7 @@ const getRequestIdsOnFinish = (currentRequestIds: string[], action: any) => {
 export const createAsyncSlice = <
   T,
   U extends { id: AsyncReducerId },
-  Reducers extends SliceCaseReducers<T> = SliceCaseReducers<T>,
+  Reducers extends SliceCaseReducers<T> = SliceCaseReducers<T>
 >({
   name = '',
   initialState = {} as T,

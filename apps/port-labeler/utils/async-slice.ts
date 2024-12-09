@@ -1,10 +1,11 @@
-import {
-  createSlice,
+import type {
   SliceCaseReducers,
   ValidateSliceCaseReducers,
   ActionReducerMapBuilder,
-  createEntityAdapter,
-  IdSelector,
+  IdSelector} from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createEntityAdapter
 } from '@reduxjs/toolkit'
 
 export enum AsyncReducerStatus {

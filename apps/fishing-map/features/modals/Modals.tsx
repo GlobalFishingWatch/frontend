@@ -1,9 +1,10 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { replace } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
+import { useSessionStorage } from '@globalfishingwatch/react-hooks'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
@@ -12,7 +13,7 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
-import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
+import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetUploadModalOpen, setModalOpen } from 'features/modals/modals.slice'
@@ -22,6 +23,8 @@ import { WorkspaceCategory } from 'data/workspaces'
 import { selectLayerLibraryModalOpen } from 'features/modals/modals.slice'
 import CreateWorkspaceModal from 'features/workspace/save/WorkspaceCreateModal'
 import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
+import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'routes/routes'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import styles from './Modals.module.css'
 
 const NewDataset = dynamic(
@@ -99,6 +102,20 @@ const AppModals = () => {
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
 
+  const [saveWorkspaceBeforeLeave, setSaveWorkspaceBeforeLeave] = useSessionStorage<
+    boolean | undefined
+  >(SAVE_WORKSPACE_BEFORE_LEAVE_KEY, undefined)
+
+  useEffect(() => {
+    if (saveWorkspaceBeforeLeave === false) {
+      dispatch(setWorkspaceSuggestSave(false))
+    } else if (saveWorkspaceBeforeLeave === true) {
+      dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
+      setSaveWorkspaceBeforeLeave(false)
+    }
+     
+  }, [saveWorkspaceBeforeLeave])
+
   return (
     <Fragment>
       {gfwUser && (
@@ -159,7 +176,7 @@ const AppModals = () => {
       >
         <LayerLibrary />
       </Modal>
-      {isDatasetUploadModalOpen && <NewDataset />}
+      {!isVesselGroupModalOpen && isDatasetUploadModalOpen && <NewDataset />}
       <EditWorkspaceModal />
       <CreateWorkspaceModal />
       {downloadActivityAreaKey && <DownloadActivityModal />}

@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
+import type { DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME } from 'data/config'
 import {
   selectActivityCategory,
@@ -12,14 +12,8 @@ import {
   selectVisibleEvents,
 } from 'features/app/selectors/app.selectors'
 import {
-  selectReportActivityGraph,
-  selectReportAreaBounds,
   selectReportCategory,
-  selectReportResultsPerPage,
-  selectReportTimeComparison,
-  selectReportVesselFilter,
   selectReportVesselGraph,
-  selectReportVesselPage,
   selectReportBufferValue,
   selectReportBufferUnit,
   selectReportBufferOperation,
@@ -30,12 +24,20 @@ import {
   selectTimebarSelectedEnvId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectDaysFromLatest, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import {
+  selectReportActivityGraph,
+  selectReportAreaBounds,
+  selectReportResultsPerPage,
+  selectReportTimeComparison,
+  selectReportVesselFilter,
+  selectReportVesselPage,
+} from 'features/reports/areas/area-reports.config.selectors'
 
 const selectWorkspaceReportState = createSelector(
   [

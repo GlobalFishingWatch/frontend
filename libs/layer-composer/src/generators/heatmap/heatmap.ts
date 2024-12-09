@@ -4,7 +4,8 @@ import type {
   LineLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { Group } from '../../types'
-import { GeneratorType, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
+import type { HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import { addURLSearchParams } from '../utils'
@@ -15,7 +16,7 @@ import {
   TEMPORALGRID_SOURCE_LAYER,
 } from './config'
 import { HEATMAP_COLOR_RAMPS } from './colors'
-import { StatsByZoom } from './types'
+import type { StatsByZoom } from './types'
 import getBreaks from './util/get-breaks'
 
 export type GlobalHeatmapGeneratorConfig = MergedGeneratorConfig<HeatmapGeneratorConfig>

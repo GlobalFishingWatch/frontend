@@ -1,0 +1,15 @@
+.twoColumns {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  grid-gap: 3rem;
+}
+
+@media screen and (max-width: 1000px) {
+  .twoColumns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.description a {
+  text-decoration: underline;
+}

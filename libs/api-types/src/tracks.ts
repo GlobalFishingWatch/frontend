@@ -1,4 +1,4 @@
-import { FeatureCollection, LineString } from 'geojson'
+import type { FeatureCollection, LineString } from 'geojson'
 
 export enum TrackField {
   lonlat = 'lonlat',

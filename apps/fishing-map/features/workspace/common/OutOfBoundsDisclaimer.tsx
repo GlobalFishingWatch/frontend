@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -34,7 +34,7 @@ const OutOfTimerangeDisclaimer = ({
       : getActiveDatasetsInActivityDataviews([dataview])
 
   const activeDatasets = dataview.datasets?.filter((d) => activeDatasetIds.includes(d.id))
-  const { extentStart, extentEnd = LAST_DATA_UPDATE } = getDatasetsExtent(activeDatasets, {
+  const { extentStart, extentEnd = LAST_DATA_UPDATE } = getDatasetsExtent<string>(activeDatasets, {
     format: 'isoString',
   })
 

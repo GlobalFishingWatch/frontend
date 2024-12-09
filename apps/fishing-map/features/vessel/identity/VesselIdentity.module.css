@@ -25,6 +25,7 @@
 
 .twoColumns {
   grid-template-columns: repeat(2, 1fr);
+  grid-auto-flow: column;
 }
 
 .twoCells {
@@ -64,4 +65,16 @@
 .labelContainer {
   display: flex;
   align-items: center;
+}
+
+.extraInfoContainer {
+  display: flex;
+  gap: var(--space-S);
+  margin-top: var(--space-M);
+  align-items: center;
+}
+
+.registrySourceLogo {
+  width: 98px;
+  height: 26px;
 }

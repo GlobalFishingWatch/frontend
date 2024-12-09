@@ -2,16 +2,18 @@ import React, { useMemo } from 'react'
 import get from 'lodash/get'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
-import { EventType, EventTypes } from '@globalfishingwatch/api-types'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import type { EventType} from '@globalfishingwatch/api-types';
+import { EventTypes } from '@globalfishingwatch/api-types'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
-import { VesselRenderField } from 'features/vessel/vessel.config'
+import type { VesselRenderField } from 'features/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
 import styles from './Event.module.css'
+import type VesselEvent from './Event'
 
 interface ActivityContentProps {
-  event: ActivityEvent
+  event: VesselEvent
 }
 
 const BASE_FIELDS = [
@@ -78,7 +80,7 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
     } else if (field.key.includes('vessel.type')) {
       return t(`vessel.vesselTypes.${value}` as string, value as string)
     } else if (field.key.includes('name')) {
-      return formatInfoField(value, 'name') as string
+      return formatInfoField(value, 'shipname') as string
     } else if (field.key.includes('flag')) {
       return formatInfoField(value, 'flag') as string
     }
@@ -88,7 +90,7 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
   return (
     <ul className={styles.detailContainer}>
       {fields.map((field) => {
-        const value = getEventFieldValue(event, field)
+        const value = getEventFieldValue(event as ActivityEvent, field)
         if (!value) return null
         return (
           <li key={field.key} className={styles.detail}>

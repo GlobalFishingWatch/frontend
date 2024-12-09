@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 
+export const SMALL_PHONE_BREAKPOINT = 360
 export const DEFAULT_BREAKPOINT = 800
 
 export function useSmallScreen(width = DEFAULT_BREAKPOINT) {

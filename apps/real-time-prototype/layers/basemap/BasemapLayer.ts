@@ -1,7 +1,10 @@
 import { BitmapLayer } from '@deck.gl/layers'
-import { CompositeLayer, LayersList } from '@deck.gl/core'
-import { GeoBoundingBox, TileLayer } from '@deck.gl/geo-layers'
-import { MVTLayer, TileLayerProps, MVTLayerProps } from '@deck.gl/geo-layers'
+import type { LayersList } from '@deck.gl/core';
+import { CompositeLayer } from '@deck.gl/core'
+import type { GeoBoundingBox} from '@deck.gl/geo-layers';
+import { TileLayer } from '@deck.gl/geo-layers'
+import type { TileLayerProps, MVTLayerProps } from '@deck.gl/geo-layers';
+import { MVTLayer } from '@deck.gl/geo-layers'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
 export type BaseMapLayerProps = TileLayerProps & MVTLayerProps & { onDataLoad: () => void }

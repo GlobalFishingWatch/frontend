@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { AppState, TimebarGraphs, TimebarVisualisations, UserTab, WorkspaceState } from '../types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type { AppState, WorkspaceState } from '../types'
+import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -54,6 +55,8 @@ export const AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX = 'gfw-feedback-auto-saved
 
 export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
 
+export const LAYER_LIBRARY_ID_SEPARATOR = '__'
+
 const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
 export const LAST_DATA_UPDATE = DateTime.fromObject(
@@ -88,10 +91,18 @@ export const DEFAULT_PAGINATION_PARAMS = {
 export const BUFFER_PREVIEW_COLOR = '#F95E5E'
 
 export const FIRST_YEAR_OF_DATA = 2012
-const CURRENT_YEAR = new Date().getFullYear()
 
-export const AVAILABLE_START = new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString() as string
-export const AVAILABLE_END = new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString() as string
+export const AVAILABLE_START = DateTime.fromObject(
+  { year: FIRST_YEAR_OF_DATA },
+  { zone: 'utc' }
+).toISO() as string
+
+export const AVAILABLE_END = DateTime.fromObject(
+  { year: new Date().getFullYear() + 1 },
+  { zone: 'utc' }
+)
+  .minus({ millisecond: 1 })
+  .toISO() as string
 
 export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
@@ -108,12 +119,6 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
-  reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
-  reportCategory: undefined,
-  reportVesselFilter: '',
-  reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
-  reportVesselPage: 0,
-  reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
   userTab: UserTab.Info,
 }
 
@@ -130,9 +135,6 @@ export const EVENTS_COLORS: Record<string, string> = {
   fishingLabels: '#163f89',
 }
 
-// Params to use replace instead of push for router history to make navigation easier
-export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
-
 export const POPUP_CATEGORY_ORDER = [
   `${DataviewCategory.Activity}`,
   `${DataviewCategory.Detections}`,
@@ -142,3 +144,10 @@ export const POPUP_CATEGORY_ORDER = [
 ]
 
 export const FIT_BOUNDS_REPORT_PADDING = 30
+
+export const REPORT_ONLY_VISIBLE_LAYERS = [
+  DataviewType.Basemap,
+  DataviewType.Context,
+  DataviewType.UserContext,
+  DataviewType.UserPoints,
+]

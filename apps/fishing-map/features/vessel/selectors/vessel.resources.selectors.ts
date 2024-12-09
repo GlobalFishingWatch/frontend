@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
@@ -21,8 +21,12 @@ export const selectVesselHasEventsDatasets = createSelector([selectVesselDataset
   return vesselEventsDatasets ? vesselEventsDatasets.length > 0 : false
 })
 
+const selectVesselEventsDataSorted = createSelector([selectVesselEventsData], (events) => {
+  return events?.toSorted((a, b) => (b.end as number) - (a.end as number))
+})
+
 const selectVesselVisibleEventsData = createSelector(
-  [selectVesselEventsData, selectVisibleEvents],
+  [selectVesselEventsDataSorted, selectVisibleEvents],
   (events, visibleEvents) => {
     if (visibleEvents === 'all') return events
     return events?.filter(({ type }) => visibleEvents.includes(type))

@@ -10,15 +10,15 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import {
+import type {
   DownloadActivityParams,
+  DateRange} from 'features/download/downloadActivity.slice';
+import {
   downloadActivityThunk,
   selectIsDownloadActivityLoading,
   selectIsDownloadActivityFinished,
-  selectIsDownloadActivityError,
-  DateRange,
   selectDownloadActivityAreaKey,
-  selectIsDownloadAreaTooBig,
+  selectHadDownloadActivityTimeoutError,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -40,14 +40,15 @@ import DownloadActivityProductsBanner from 'features/download/DownloadActivityPr
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { AreaKeyId } from 'features/areas/areas.slice'
+import type { AreaKeyId } from 'features/areas/areas.slice'
 import { selectIsDownloadActivityAreaLoading } from 'features/download/download.selectors'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './DownloadModal.module.css'
-import {
+import type {
   HeatmapDownloadFormat,
   GroupBy,
-  TemporalResolution,
+  TemporalResolution} from './downloadActivity.config';
+import {
   VESSEL_FORMAT_OPTIONS,
   getVesselGroupOptions,
 } from './downloadActivity.config'
@@ -56,6 +57,7 @@ import {
   getSupportedGroupByOptions,
   getSupportedTemporalResolutions,
 } from './download.utils'
+import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
 
 function DownloadActivityByVessel() {
   const { t } = useTranslation()
@@ -69,9 +71,8 @@ function DownloadActivityByVessel() {
     userData?.permissions || []
   )
   const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
-  const isDownloadError = useSelector(selectIsDownloadActivityError)
   const isDownloadFinished = useSelector(selectIsDownloadActivityFinished)
-  const isDownloadAreaTooBig = useSelector(selectIsDownloadAreaTooBig)
+  const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
@@ -146,7 +147,7 @@ function DownloadActivityByVessel() {
       bufferValue,
       bufferOperation,
     }
-    await dispatch(downloadActivityThunk(downloadParams))
+    const action = await dispatch(downloadActivityThunk(downloadParams))
 
     trackEvent({
       category: TrackCategory.DataDownloads,
@@ -158,9 +159,14 @@ function DownloadActivityByVessel() {
           .flat(),
       ]),
     })
+    return action
   }
+
+  useActivityDownloadTimeoutRefresh()
+
   const parsedLabel =
     typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
+
   return (
     <Fragment>
       <div className={styles.container} data-test="download-activity-byvessel">
@@ -226,22 +232,15 @@ function DownloadActivityByVessel() {
               ))}
             </p>
           ) : null}
-          {isDownloadError && (
-            <p className={cx(styles.footerLabel, styles.error)}>
-              {isDownloadAreaTooBig
-                ? `${t(
-                    'analysis.errorTooComplex',
-                    'The geometry of the area is too complex to perform a report, try to simplify and upload again.'
-                  )}`
-                : `${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
-            </p>
-          )}
+          <ActivityDownloadError />
           <Button
             testId="download-activity-vessel-button"
             onClick={onDownloadClick}
-            loading={isDownloadLoading}
             className={styles.downloadBtn}
-            disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
+            loading={isDownloadAreaLoading || isDownloadLoading || hadDownloadTimeoutError}
+            disabled={
+              isDownloadAreaLoading || !isDownloadReportSupported || hadDownloadTimeoutError
+            }
           >
             {isDownloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>

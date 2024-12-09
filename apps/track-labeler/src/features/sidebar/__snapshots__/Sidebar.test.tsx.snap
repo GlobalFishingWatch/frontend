@@ -1,0 +1,791 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Sidebar /> render 1`] = `
+<div>
+  <div
+    style="width: 100px; height: 200px;"
+  >
+    <div
+      class="aside"
+    >
+      <div
+        class="brand"
+      >
+        <img
+          alt="Logo"
+          class="logoImage"
+          src="brand.png"
+        />
+        <div
+          class="projectDetails"
+        >
+          <label>
+            PROJECT
+          </label>
+          Sand Dredger Tracks
+        </div>
+      </div>
+      <div
+        class="segments"
+        data-testid="segments"
+      />
+      <div
+        class="actionButtons"
+      >
+        <label
+          class="importButton"
+        >
+          <input
+            id="file-upload"
+            style="display: none;"
+            type="file"
+          />
+          Import
+        </label>
+        <button
+          class="Button-module_button__XL0aF Button-module_secondary__1czot Button-module_default__2ltQA actionButton"
+        >
+          Export
+        </button>
+        <button
+          class="Button-module_button__XL0aF Button-module_default__2ltQA Button-module_default__2ltQA actionButton"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Sidebar /> render tracks 1`] = `
+<div>
+  <div
+    style="width: 100px; height: 200px;"
+  >
+    <div
+      class="aside"
+    >
+      <div
+        class="brand"
+      >
+        <img
+          alt="Logo"
+          class="logoImage"
+          src="brand.png"
+        />
+        <div
+          class="projectDetails"
+        >
+          <label>
+            PROJECT
+          </label>
+          Sand Dredger Tracks
+        </div>
+      </div>
+      <div
+        class="segments"
+        data-testid="segments"
+      >
+        <div
+          style="overflow: visible; height: 0px;"
+        >
+          <div
+            style="position: relative; height: 200px; overflow: auto; will-change: transform; direction: ltr;"
+          >
+            <div
+              style="height: 666px; width: 100%;"
+            >
+              <div
+                class="segment"
+                data-testid="segment-0"
+                style="position: absolute; left: 0px; top: 0px; height: 61px; width: 100%;"
+              >
+                <div
+                  class="segmentField segmentTimestamp"
+                >
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 20, 2019, 7:39 AM UTC
+                  </button>
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 21, 2019, 4:57 AM UTC
+                  </button>
+                </div>
+                <div
+                  class="segmentField segmentActivity"
+                >
+                  <div>
+                    <label
+                      for="downshift-6-toggle-button"
+                      id="downshift-6-label"
+                    />
+                    <div
+                      class="Select-module_container__12vMO shortSelect"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-labelledby="downshift-6-label downshift-6-toggle-button"
+                        class="Select-module_placeholderContainer__1FUzn"
+                        id="downshift-6-toggle-button"
+                      >
+                        Dredging
+                      </div>
+                      <div
+                        class="Select-module_buttonsContainer__2Gk6Z"
+                      >
+                        <button
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-labelledby="downshift-6-label downshift-6-toggle-button"
+                          class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_smallSize__2rDsC"
+                          id="downshift-6-toggle-button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="Icon-module_icon__2F607 Icon-module_default__2Pvfr"
+                            height="20"
+                            width="20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M14.54 7.54a.65.65 0 01.988.84l-.068.08-5 5a.65.65 0 01-.84.068l-.08-.068-5-5a.65.65 0 01.84-.988l.08.068L10 12.081l4.54-4.54z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <ul
+                        aria-labelledby="downshift-6-label"
+                        class="Select-module_optionsContainer__20kYc Select-module_bottom__cX8ac"
+                        id="downshift-6-menu"
+                        role="listbox"
+                        tabindex="-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="segmentField segmentAction"
+                >
+                  <button
+                    class="IconButton-module_iconButton__cB0-J IconButton-module_warning__3BMpt IconButton-module_defaultSize__1OZDe"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="Icon-module_icon__2F607 Icon-module_warning__G8aIr"
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M14.739 5.97v9.642c0 .427-.156.804-.468 1.13-.311.327-.67.49-1.078.49H7.08c-.407 0-.767-.163-1.078-.49a1.588 1.588 0 01-.468-1.13V5.97h9.205zm-1.001.999H6.534v8.643c0 .133.035.243.119.355l.072.085c.102.107.188.158.282.174l.073.006h6.113c.125 0 .227-.046.355-.18a.615.615 0 00.184-.344l.007-.096-.001-8.643zm-1.696-4.201l.791.79h2.66v1.62H4.78v-1.62h2.66l.792-.79h3.811z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="segment"
+                data-testid="segment-1"
+                style="position: absolute; left: 0px; top: 61px; height: 61px; width: 100%;"
+              >
+                <div
+                  class="segmentField segmentTimestamp"
+                >
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 21, 2019, 5:11 AM UTC
+                  </button>
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 21, 2019, 2:49 PM UTC
+                  </button>
+                </div>
+                <div
+                  class="segmentField segmentActivity"
+                >
+                  <div>
+                    <label
+                      for="downshift-7-toggle-button"
+                      id="downshift-7-label"
+                    />
+                    <div
+                      class="Select-module_container__12vMO shortSelect"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-labelledby="downshift-7-label downshift-7-toggle-button"
+                        class="Select-module_placeholderContainer__1FUzn"
+                        id="downshift-7-toggle-button"
+                      >
+                        Transit
+                      </div>
+                      <div
+                        class="Select-module_buttonsContainer__2Gk6Z"
+                      >
+                        <button
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-labelledby="downshift-7-label downshift-7-toggle-button"
+                          class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_smallSize__2rDsC"
+                          id="downshift-7-toggle-button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="Icon-module_icon__2F607 Icon-module_default__2Pvfr"
+                            height="20"
+                            width="20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M14.54 7.54a.65.65 0 01.988.84l-.068.08-5 5a.65.65 0 01-.84.068l-.08-.068-5-5a.65.65 0 01.84-.988l.08.068L10 12.081l4.54-4.54z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <ul
+                        aria-labelledby="downshift-7-label"
+                        class="Select-module_optionsContainer__20kYc Select-module_bottom__cX8ac"
+                        id="downshift-7-menu"
+                        role="listbox"
+                        tabindex="-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="segmentField segmentAction"
+                >
+                  <button
+                    class="IconButton-module_iconButton__cB0-J IconButton-module_warning__3BMpt IconButton-module_defaultSize__1OZDe"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="Icon-module_icon__2F607 Icon-module_warning__G8aIr"
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M14.739 5.97v9.642c0 .427-.156.804-.468 1.13-.311.327-.67.49-1.078.49H7.08c-.407 0-.767-.163-1.078-.49a1.588 1.588 0 01-.468-1.13V5.97h9.205zm-1.001.999H6.534v8.643c0 .133.035.243.119.355l.072.085c.102.107.188.158.282.174l.073.006h6.113c.125 0 .227-.046.355-.18a.615.615 0 00.184-.344l.007-.096-.001-8.643zm-1.696-4.201l.791.79h2.66v1.62H4.78v-1.62h2.66l.792-.79h3.811z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="segment"
+                data-testid="segment-2"
+                style="position: absolute; left: 0px; top: 122px; height: 61px; width: 100%;"
+              >
+                <div
+                  class="segmentField segmentTimestamp"
+                >
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 21, 2019, 4:05 PM UTC
+                  </button>
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 23, 2019, 8:25 AM UTC
+                  </button>
+                </div>
+                <div
+                  class="segmentField segmentActivity"
+                >
+                  <div>
+                    <label
+                      for="downshift-8-toggle-button"
+                      id="downshift-8-label"
+                    />
+                    <div
+                      class="Select-module_container__12vMO shortSelect"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-labelledby="downshift-8-label downshift-8-toggle-button"
+                        class="Select-module_placeholderContainer__1FUzn"
+                        id="downshift-8-toggle-button"
+                      >
+                        Dredging
+                      </div>
+                      <div
+                        class="Select-module_buttonsContainer__2Gk6Z"
+                      >
+                        <button
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-labelledby="downshift-8-label downshift-8-toggle-button"
+                          class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_smallSize__2rDsC"
+                          id="downshift-8-toggle-button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="Icon-module_icon__2F607 Icon-module_default__2Pvfr"
+                            height="20"
+                            width="20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M14.54 7.54a.65.65 0 01.988.84l-.068.08-5 5a.65.65 0 01-.84.068l-.08-.068-5-5a.65.65 0 01.84-.988l.08.068L10 12.081l4.54-4.54z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <ul
+                        aria-labelledby="downshift-8-label"
+                        class="Select-module_optionsContainer__20kYc Select-module_bottom__cX8ac"
+                        id="downshift-8-menu"
+                        role="listbox"
+                        tabindex="-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="segmentField segmentAction"
+                >
+                  <button
+                    class="IconButton-module_iconButton__cB0-J IconButton-module_warning__3BMpt IconButton-module_defaultSize__1OZDe"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="Icon-module_icon__2F607 Icon-module_warning__G8aIr"
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M14.739 5.97v9.642c0 .427-.156.804-.468 1.13-.311.327-.67.49-1.078.49H7.08c-.407 0-.767-.163-1.078-.49a1.588 1.588 0 01-.468-1.13V5.97h9.205zm-1.001.999H6.534v8.643c0 .133.035.243.119.355l.072.085c.102.107.188.158.282.174l.073.006h6.113c.125 0 .227-.046.355-.18a.615.615 0 00.184-.344l.007-.096-.001-8.643zm-1.696-4.201l.791.79h2.66v1.62H4.78v-1.62h2.66l.792-.79h3.811z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="segment"
+                data-testid="segment-3"
+                style="position: absolute; left: 0px; top: 183px; height: 61px; width: 100%;"
+              >
+                <div
+                  class="segmentField segmentTimestamp"
+                >
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 23, 2019, 8:42 AM UTC
+                  </button>
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 23, 2019, 3:29 PM UTC
+                  </button>
+                </div>
+                <div
+                  class="segmentField segmentActivity"
+                >
+                  <div>
+                    <label
+                      for="downshift-9-toggle-button"
+                      id="downshift-9-label"
+                    />
+                    <div
+                      class="Select-module_container__12vMO shortSelect"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-labelledby="downshift-9-label downshift-9-toggle-button"
+                        class="Select-module_placeholderContainer__1FUzn"
+                        id="downshift-9-toggle-button"
+                      >
+                        Transit
+                      </div>
+                      <div
+                        class="Select-module_buttonsContainer__2Gk6Z"
+                      >
+                        <button
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-labelledby="downshift-9-label downshift-9-toggle-button"
+                          class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_smallSize__2rDsC"
+                          id="downshift-9-toggle-button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="Icon-module_icon__2F607 Icon-module_default__2Pvfr"
+                            height="20"
+                            width="20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M14.54 7.54a.65.65 0 01.988.84l-.068.08-5 5a.65.65 0 01-.84.068l-.08-.068-5-5a.65.65 0 01.84-.988l.08.068L10 12.081l4.54-4.54z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <ul
+                        aria-labelledby="downshift-9-label"
+                        class="Select-module_optionsContainer__20kYc Select-module_bottom__cX8ac"
+                        id="downshift-9-menu"
+                        role="listbox"
+                        tabindex="-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="segmentField segmentAction"
+                >
+                  <button
+                    class="IconButton-module_iconButton__cB0-J IconButton-module_warning__3BMpt IconButton-module_defaultSize__1OZDe"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="Icon-module_icon__2F607 Icon-module_warning__G8aIr"
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M14.739 5.97v9.642c0 .427-.156.804-.468 1.13-.311.327-.67.49-1.078.49H7.08c-.407 0-.767-.163-1.078-.49a1.588 1.588 0 01-.468-1.13V5.97h9.205zm-1.001.999H6.534v8.643c0 .133.035.243.119.355l.072.085c.102.107.188.158.282.174l.073.006h6.113c.125 0 .227-.046.355-.18a.615.615 0 00.184-.344l.007-.096-.001-8.643zm-1.696-4.201l.791.79h2.66v1.62H4.78v-1.62h2.66l.792-.79h3.811z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="segment"
+                data-testid="segment-4"
+                style="position: absolute; left: 0px; top: 244px; height: 61px; width: 100%;"
+              >
+                <div
+                  class="segmentField segmentTimestamp"
+                >
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 23, 2019, 3:40 PM UTC
+                  </button>
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 25, 2019, 8:10 AM UTC
+                  </button>
+                </div>
+                <div
+                  class="segmentField segmentActivity"
+                >
+                  <div>
+                    <label
+                      for="downshift-10-toggle-button"
+                      id="downshift-10-label"
+                    />
+                    <div
+                      class="Select-module_container__12vMO shortSelect"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-labelledby="downshift-10-label downshift-10-toggle-button"
+                        class="Select-module_placeholderContainer__1FUzn"
+                        id="downshift-10-toggle-button"
+                      >
+                        Dredging
+                      </div>
+                      <div
+                        class="Select-module_buttonsContainer__2Gk6Z"
+                      >
+                        <button
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-labelledby="downshift-10-label downshift-10-toggle-button"
+                          class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_smallSize__2rDsC"
+                          id="downshift-10-toggle-button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="Icon-module_icon__2F607 Icon-module_default__2Pvfr"
+                            height="20"
+                            width="20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M14.54 7.54a.65.65 0 01.988.84l-.068.08-5 5a.65.65 0 01-.84.068l-.08-.068-5-5a.65.65 0 01.84-.988l.08.068L10 12.081l4.54-4.54z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <ul
+                        aria-labelledby="downshift-10-label"
+                        class="Select-module_optionsContainer__20kYc Select-module_bottom__cX8ac"
+                        id="downshift-10-menu"
+                        role="listbox"
+                        tabindex="-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="segmentField segmentAction"
+                >
+                  <button
+                    class="IconButton-module_iconButton__cB0-J IconButton-module_warning__3BMpt IconButton-module_defaultSize__1OZDe"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="Icon-module_icon__2F607 Icon-module_warning__G8aIr"
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M14.739 5.97v9.642c0 .427-.156.804-.468 1.13-.311.327-.67.49-1.078.49H7.08c-.407 0-.767-.163-1.078-.49a1.588 1.588 0 01-.468-1.13V5.97h9.205zm-1.001.999H6.534v8.643c0 .133.035.243.119.355l.072.085c.102.107.188.158.282.174l.073.006h6.113c.125 0 .227-.046.355-.18a.615.615 0 00.184-.344l.007-.096-.001-8.643zm-1.696-4.201l.791.79h2.66v1.62H4.78v-1.62h2.66l.792-.79h3.811z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="segment"
+                data-testid="segment-5"
+                style="position: absolute; left: 0px; top: 305px; height: 61px; width: 100%;"
+              >
+                <div
+                  class="segmentField segmentTimestamp"
+                >
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 25, 2019, 8:16 AM UTC
+                  </button>
+                  <button
+                    class="segmentButton"
+                  >
+                    Jul 25, 2019, 11:16 AM UTC
+                  </button>
+                </div>
+                <div
+                  class="segmentField segmentActivity"
+                >
+                  <div>
+                    <label
+                      for="downshift-11-toggle-button"
+                      id="downshift-11-label"
+                    />
+                    <div
+                      class="Select-module_container__12vMO shortSelect"
+                    >
+                      <div
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-labelledby="downshift-11-label downshift-11-toggle-button"
+                        class="Select-module_placeholderContainer__1FUzn"
+                        id="downshift-11-toggle-button"
+                      >
+                        Transit
+                      </div>
+                      <div
+                        class="Select-module_buttonsContainer__2Gk6Z"
+                      >
+                        <button
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-labelledby="downshift-11-label downshift-11-toggle-button"
+                          class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_smallSize__2rDsC"
+                          id="downshift-11-toggle-button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="Icon-module_icon__2F607 Icon-module_default__2Pvfr"
+                            height="20"
+                            width="20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M14.54 7.54a.65.65 0 01.988.84l-.068.08-5 5a.65.65 0 01-.84.068l-.08-.068-5-5a.65.65 0 01.84-.988l.08.068L10 12.081l4.54-4.54z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <ul
+                        aria-labelledby="downshift-11-label"
+                        class="Select-module_optionsContainer__20kYc Select-module_bottom__cX8ac"
+                        id="downshift-11-menu"
+                        role="listbox"
+                        tabindex="-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="segmentField segmentAction"
+                >
+                  <button
+                    class="IconButton-module_iconButton__cB0-J IconButton-module_warning__3BMpt IconButton-module_defaultSize__1OZDe"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="Icon-module_icon__2F607 Icon-module_warning__G8aIr"
+                      height="20"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M14.739 5.97v9.642c0 .427-.156.804-.468 1.13-.311.327-.67.49-1.078.49H7.08c-.407 0-.767-.163-1.078-.49a1.588 1.588 0 01-.468-1.13V5.97h9.205zm-1.001.999H6.534v8.643c0 .133.035.243.119.355l.072.085c.102.107.188.158.282.174l.073.006h6.113c.125 0 .227-.046.355-.18a.615.615 0 00.184-.344l.007-.096-.001-8.643zm-1.696-4.201l.791.79h2.66v1.62H4.78v-1.62h2.66l.792-.79h3.811z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 101px; height: 201px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+      <div
+        class="actionButtons"
+      >
+        <label
+          class="importButton"
+        >
+          <input
+            id="file-upload"
+            style="display: none;"
+            type="file"
+          />
+          Import
+        </label>
+        <button
+          class="Button-module_button__XL0aF Button-module_secondary__1czot Button-module_default__2ltQA actionButton"
+        >
+          Export
+        </button>
+        <button
+          class="Button-module_button__XL0aF Button-module_default__2ltQA Button-module_default__2ltQA actionButton"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Sidebar /> unlabel segment 1`] = `
+<div
+  class="segment"
+  data-testid="segment-0"
+  style="position: absolute; left: 0px; top: 0px; height: 61px; width: 100%;"
+>
+  <div
+    class="segmentField segmentTimestamp"
+  >
+    <button
+      class="segmentButton"
+    >
+      Jul 20, 2019, 7:39 AM UTC
+    </button>
+    <button
+      class="segmentButton"
+    >
+      Jul 21, 2019, 4:57 AM UTC
+    </button>
+  </div>
+  <div
+    class="segmentField segmentActivity"
+  >
+    <div>
+      <label
+        for="downshift-20-toggle-button"
+        id="downshift-20-label"
+      />
+      <div
+        class="Select-module_container__12vMO Select-module_placeholderShown__2fdcS shortSelect"
+      >
+        <div
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-labelledby="downshift-20-label downshift-20-toggle-button"
+          class="Select-module_placeholderContainer__1FUzn"
+          id="downshift-20-toggle-button"
+        >
+          Select an option
+        </div>
+        <div
+          class="Select-module_buttonsContainer__2Gk6Z"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-labelledby="downshift-20-label downshift-20-toggle-button"
+            class="IconButton-module_iconButton__cB0-J IconButton-module_default__nAYJm IconButton-module_smallSize__2rDsC"
+            id="downshift-20-toggle-button"
+          >
+            <svg
+              aria-hidden="true"
+              class="Icon-module_icon__2F607 Icon-module_default__2Pvfr"
+              height="20"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.54 7.54a.65.65 0 01.988.84l-.068.08-5 5a.65.65 0 01-.84.068l-.08-.068-5-5a.65.65 0 01.84-.988l.08.068L10 12.081l4.54-4.54z"
+              />
+            </svg>
+          </button>
+        </div>
+        <ul
+          aria-labelledby="downshift-20-label"
+          class="Select-module_optionsContainer__20kYc Select-module_bottom__cX8ac"
+          id="downshift-20-menu"
+          role="listbox"
+          tabindex="-1"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    class="segmentField segmentAction"
+  >
+    <button
+      class="IconButton-module_iconButton__cB0-J IconButton-module_warning__3BMpt IconButton-module_defaultSize__1OZDe"
+    >
+      <svg
+        aria-hidden="true"
+        class="Icon-module_icon__2F607 Icon-module_warning__G8aIr"
+        height="20"
+        width="20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M14.739 5.97v9.642c0 .427-.156.804-.468 1.13-.311.327-.67.49-1.078.49H7.08c-.407 0-.767-.163-1.078-.49a1.588 1.588 0 01-.468-1.13V5.97h9.205zm-1.001.999H6.534v8.643c0 .133.035.243.119.355l.072.085c.102.107.188.158.282.174l.073.006h6.113c.125 0 .227-.046.355-.18a.615.615 0 00.184-.344l.007-.096-.001-8.643zm-1.696-4.201l.791.79h2.66v1.62H4.78v-1.62h2.66l.792-.79h3.811z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;

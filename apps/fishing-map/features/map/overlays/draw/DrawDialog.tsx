@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
+import bbox from '@turf/bbox'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { Feature, Polygon } from 'geojson'
+import type { Feature, Polygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
-import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   useAddDataviewFromDatasetToWorkspace,
@@ -13,13 +15,16 @@ import {
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import type {
+  DrawnDatasetGeometry} from 'features/areas/areas.slice';
 import {
   resetAreaList,
   fetchDatasetAreasThunk,
-  selectDatasetAreasById,
+  selectDatasetAreasById
 } from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
+import type { Bbox } from 'types'
 import { useMapDrawConnect } from '../../map-draw.hooks'
 import { getDrawDatasetDefinition, getFileWithFeatures } from './draw.utils'
 import styles from './DrawDialog.module.css'
@@ -31,6 +36,7 @@ const MIN_DATASET_NAME_LENGTH = 3
 function MapDraw() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const fitMapBounds = useMapFitBounds()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
@@ -48,12 +54,25 @@ function MapDraw() {
   const drawFeaturesIndexes = drawLayer?.getSelectedFeatureIndexes() || []
   const hasOverlappingFeatures = drawLayer?.getHasOverlappingFeatures()
 
+  const fetchDrawArea = useCallback(
+    async (datasetId: string) => {
+      const fetchDatasetAreasAction = await dispatch(fetchDatasetAreasThunk({ datasetId }))
+      if (fetchDatasetAreasThunk.fulfilled.match(fetchDatasetAreasAction)) {
+        const areaBbox = bbox(fetchDatasetAreasAction.payload as DrawnDatasetGeometry) as Bbox
+        if (areaBbox) {
+          fitMapBounds(areaBbox, { padding: 150, fitZoom: true })
+        }
+      }
+    },
+    [dispatch, fitMapBounds]
+  )
+
   useEffect(() => {
     if (mapDrawEditDataset) {
       setLayerName(mapDrawEditDataset.name)
-      dispatch(fetchDatasetAreasThunk({ datasetId: mapDrawEditDataset.id }))
+      fetchDrawArea(mapDrawEditDataset.id)
     }
-  }, [dispatch, mapDrawEditDataset])
+  }, [dispatch, fetchDrawArea, mapDrawEditDataset])
 
   useEffect(() => {
     if (
@@ -179,6 +198,15 @@ function MapDraw() {
     saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
   }
 
+  let placeholderMessage =
+    mapDrawingMode === 'points'
+      ? t('layer.editPointHint', 'Click on the point to adjust their coordinates')
+      : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')
+  if (error) {
+    placeholderMessage = error
+  } else if (hasOverlappingFeatures) {
+    placeholderMessage = t('layer.geometryError', 'Some polygons have self-intersections')
+  }
   return (
     <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
       {((drawFeatures?.features && drawFeatures?.features?.length > 0) ||
@@ -191,13 +219,7 @@ function MapDraw() {
             icon={error || hasOverlappingFeatures ? 'warning' : 'help'}
             onClick={error || hasOverlappingFeatures ? undefined : () => {}}
           />
-          {error ? (
-            <span>{error}</span>
-          ) : hasOverlappingFeatures ? (
-            t('layer.geometryError', 'Some polygons have self-intersections')
-          ) : (
-            t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')
-          )}
+          {placeholderMessage}
         </div>
       )}
       <InputText
@@ -210,6 +232,11 @@ function MapDraw() {
       />
       <IconButton
         icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
+        tooltip={
+          mapDrawingMode === 'points'
+            ? t('layer.drawAddPoint', 'Add a point')
+            : t('layer.drawAddPolygon', 'Add a geometry')
+        }
         onClick={onAddPolygonClick}
       />
       <IconButton
@@ -219,7 +246,7 @@ function MapDraw() {
         tooltip={
           !drawFeaturesIndexes.length
             ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
-            : ''
+            : t('layer.drawDelete', 'Delete selection')
         }
         onClick={drawLayer?.deleteSelectedFeature}
       />

@@ -3,42 +3,31 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'es-toolkit'
 import { useSelector } from 'react-redux'
-import {
-  Button,
-  MultiSelect,
-  MultiSelectOnChange,
-  MultiSelectOption,
-} from '@globalfishingwatch/ui-components'
-import {
-  DatasetTypes,
-  DataviewCategory,
-  EXCLUDE_FILTER_ID,
-  FilterOperator,
-} from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { MultiSelectOnChange, MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
+import type { FilterOperator } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
   getCommonSchemaFieldsInDataview,
   getSchemaFiltersInDataview,
   getIncompatibleFilterSelection,
-  SupportedDatasetSchema,
   VESSEL_GROUPS_MODAL_ID,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import LayerSchemaFilter, { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setVesselGroupCurrentDataviewIds,
-  setVesselGroupsModalOpen,
-} from 'features/vessel-groups/vessel-groups.slice'
+import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { listAsSentence } from 'utils/shared'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   areAllSourcesSelectedInDataview,
   getSourcesOptionsInDataview,
@@ -62,7 +51,8 @@ const trackEventCb = debounce((filterKey: string, label: string) => {
 
 const cleanDataviewFiltersNotAllowed = (
   dataview: UrlDataviewInstance,
-  vesselGroups: MultiSelectOption[]
+  vesselGroups: MultiSelectOption[],
+  isGuestUser?: boolean
 ) => {
   const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
   Object.keys(filters).forEach((k) => {
@@ -70,6 +60,7 @@ const cleanDataviewFiltersNotAllowed = (
     if (filters[key]) {
       const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, {
         vesselGroups,
+        isGuestUser,
       })
       const newFilterSelection = newFilterOptions?.filter((option) =>
         dataview.config?.filters?.[key]?.includes(option.id)
@@ -112,6 +103,7 @@ function LayerFilters({
   onConfirmCallback,
 }: LayerFiltersProps): React.ReactElement {
   const { t } = useTranslation()
+  const isGuestUser = useSelector(selectIsGuestUser)
   const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))
 
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
@@ -124,7 +116,6 @@ function LayerFilters({
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
-  const allowVesselGroup = useSelector(selectVessselGroupsAllowed)
   const vesselGroupsOptions = useVesselGroupsOptions()
 
   const dataview = useMemo(() => {
@@ -152,6 +143,7 @@ function LayerFilters({
 
   const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
+    isGuestUser,
   })
 
   const onDataviewFilterChange = useCallback(
@@ -198,7 +190,6 @@ function LayerFilters({
       }
     }
     // Running on effect to ensure the dataview update is running when we close the filter from outside
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
@@ -210,7 +201,7 @@ function LayerFilters({
     }
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
-    const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions)
+    const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions, isGuestUser)
     setNewDataviewInstanceConfig({
       id: dataview.id,
       config: {
@@ -252,7 +243,6 @@ function LayerFilters({
   }: OnSelectFilterArgs) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
-      dispatch(setVesselGroupCurrentDataviewIds([dataview.id]))
       return
     }
     let filterValues: number | string[]
@@ -276,9 +266,13 @@ function LayerFilters({
     }
     const newDataview = { ...dataview, config: { ...dataview.config, ...newDataviewConfig } }
     const incompatibleFilters = Object.keys(newDataview.config?.filters || {}).flatMap((key) => {
-      const incompatibleFilterSelection =
-        getIncompatibleFilterSelection(newDataview, key as SupportedDatasetSchema)!?.length > 0
-      return incompatibleFilterSelection ? key : []
+      const incompatibleFilterSelection = getIncompatibleFilterSelection(
+        newDataview,
+        key as SupportedDatasetSchema
+      )
+      const hasIncompatibleFilterSelection =
+        incompatibleFilterSelection?.length && incompatibleFilterSelection.length > 0
+      return hasIncompatibleFilterSelection ? key : []
     })
     if (incompatibleFilters.length) {
       incompatibleFilters.forEach((f) => {
@@ -371,6 +365,12 @@ function LayerFilters({
         : newDataviewInstanceConfig
       upsertDataviewInstance(newDataviewInstancesConfig)
       newDataviewInstanceConfigRef.current = undefined
+    } else if (applyToAll && baseDataview.config?.filters) {
+      const newDataviewInstancesConfig = categoryDataviews.map((d) => ({
+        config: { filters: baseDataview.config?.filters },
+        id: d.id,
+      }))
+      upsertDataviewInstance(newDataviewInstancesConfig)
     }
     if (onConfirmCallback) {
       onConfirmCallback()
@@ -407,13 +407,6 @@ function LayerFilters({
         <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />
       )}
       {filtersAllowed.map((schemaFilter) => {
-        if (
-          schemaFilter.id === 'vessel-groups' &&
-          !schemaFilter.optionsSelected.length &&
-          !allowVesselGroup
-        ) {
-          return null
-        }
         if (!showSchemaFilter(schemaFilter)) {
           return null
         }

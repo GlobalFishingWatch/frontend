@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
+import 'dotenv/config'
 
 export default defineConfig({
   root: __dirname,
@@ -21,7 +22,9 @@ export default defineConfig({
 
   plugins: [
     react(),
-    svgr(),
+    svgr({
+      include: ['**/*.svg', '**/*.svg?react'],
+    }),
     nxViteTsPaths(),
     viteStaticCopy({
       targets: [
@@ -51,7 +54,9 @@ export default defineConfig({
   },
 
   define: {
-    'process.env': {},
+    'process.env': {
+      API_GATEWAY: process.env.API_GATEWAY,
+    },
   },
 
   // test: {

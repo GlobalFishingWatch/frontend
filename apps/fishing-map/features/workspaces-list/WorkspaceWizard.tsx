@@ -2,11 +2,13 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import cx from 'classnames'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
-import { useCombobox, UseComboboxStateChange } from 'downshift'
+import type { UseComboboxStateChange } from 'downshift'
+import { useCombobox } from 'downshift'
 import { useSelector } from 'react-redux'
-import { searchOceanAreas, OceanAreaLocale, OceanArea } from '@globalfishingwatch/ocean-areas'
+import type { OceanAreaLocale, OceanArea } from '@globalfishingwatch/ocean-areas'
+import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
-import { Dataview } from '@globalfishingwatch/api-types'
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { t as trans } from 'features/i18n/i18n'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
 import {
@@ -77,7 +79,7 @@ function WorkspaceWizard() {
     trackEvent({
       category: TrackCategory.WorkspaceManagement,
       action: 'Uses marine manager workspace wizard',
-      label: getEventLabel([inputSearch, selectedItem?.properties!?.name]),
+      label: getEventLabel([inputSearch, selectedItem?.properties?.name || '']),
     })
     setSelectedItem(selectedItem as any)
     setAreasMatching([])

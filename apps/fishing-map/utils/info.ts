@@ -1,17 +1,18 @@
 import { uniq } from 'es-toolkit'
-import { TFunction } from 'i18next'
-import {
-  API_LOGIN_REQUIRED,
+import type { TFunction } from 'i18next'
+import type {
   GearType,
   IdentityVessel,
   RegistryLoginMessage,
   SelfReportedInfo,
-  VesselType,
+  VesselType} from '@globalfishingwatch/api-types';
+import {
+  API_LOGIN_REQUIRED
 } from '@globalfishingwatch/api-types'
-import { ExtendedFeatureVessel } from 'features/map/map.slice'
+import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'
-import { VesselDataIdentity } from 'features/vessel/vessel.slice'
+import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
@@ -22,10 +23,20 @@ export const upperFirst = (text: string) => {
 
 export const formatInfoField = (
   fieldValue: string | string[] | number | undefined,
-  type: string,
+  type:
+    | 'shipname'
+    | 'flag'
+    | 'ownerFlag'
+    | 'shiptypes'
+    | 'geartypes'
+    | 'owner'
+    | 'authorization'
+    | 'vesselType'
+    | 'port'
+    | 'fleet',
   translationFn = t
 ) => {
-  if (!fieldValue && (type === 'name' || type === 'shipname')) {
+  if (!fieldValue && type === 'shipname') {
     return translationFn('common.unknownVessel', 'Unknown Vessel')
   }
   if (typeof fieldValue === 'string') {
@@ -33,12 +44,12 @@ export const formatInfoField = (
       return translationFn(`flags:${fieldValue}` as any, fieldValue)
     }
     if (type === 'shiptypes' || type === 'vesselType') {
-      return getVesselShipType({ shiptypes: fieldValue }, { translationFn })
+      return getVesselShipTypeLabel({ shiptypes: fieldValue }, { translationFn })
     }
     if (type === 'geartypes') {
-      return getVesselGearType({ geartypes: fieldValue }, { translationFn })
+      return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn })
     }
-    if (type === 'name' || type === 'shipname' || type === 'owner' || type === 'port') {
+    if (type === 'shipname' || type === 'owner' || type === 'port') {
       return fieldValue
         .replace('_', ' ')
         .replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ,0-9]+)\b/g, upperFirst)
@@ -49,9 +60,9 @@ export const formatInfoField = (
     }
   } else if (Array.isArray(fieldValue)) {
     if (type === 'geartypes') {
-      return getVesselGearType({ geartypes: fieldValue as GearType[] }, { translationFn })
+      return getVesselGearTypeLabel({ geartypes: fieldValue as GearType[] }, { translationFn })
     } else if (type === 'shiptypes') {
-      return getVesselShipType({ shiptypes: fieldValue as VesselType[] }, { translationFn })
+      return getVesselShipTypeLabel({ shiptypes: fieldValue as VesselType[] }, { translationFn })
     }
   } else if (fieldValue) {
     return formatI18nNumber(fieldValue)
@@ -66,7 +77,7 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
   })
 }
 
-export const getVesselShipType = (
+export const getVesselShipTypeLabel = (
   { shiptypes: shiptype } = {} as Pick<SelfReportedInfo, 'shiptypes'> | { shiptypes: string },
   { joinCharacter = ', ', translationFn = t } = {} as {
     joinCharacter?: string
@@ -82,10 +93,11 @@ export const getVesselShipType = (
     ?.map((shiptype) =>
       translationFn(`vessel.vesselTypes.${shiptype?.toLowerCase()}`, upperFirst(shiptype))
     )
+    .toSorted((a, b) => a.localeCompare(b))
     .join(joinCharacter) as VesselType
 }
 
-export const getVesselGearType = (
+export const getVesselGearTypeLabel = (
   { geartypes: geartype } = {} as Pick<VesselDataIdentity, 'geartypes'> | { geartypes: string },
   { joinCharacter = ', ', translationFn = t } = {} as {
     joinCharacter?: string
@@ -102,26 +114,27 @@ export const getVesselGearType = (
   return gearTypes
     .filter(Boolean)
     ?.map((gear) => translationFn(`vessel.gearTypes.${gear?.toLowerCase()}`, upperFirst(gear)))
+    .toSorted((a, b) => a.localeCompare(b))
     .join(joinCharacter) as GearType
 }
 
-export const getVesselLabel = (
+export const getVesselShipNameLabel = (
   vessel: ExtendedFeatureVessel | IdentityVessel,
   withGearType = false
 ): string => {
   const vesselInfo = getLatestIdentityPrioritised(vessel)
   if (!vesselInfo) return t('common.unknownVessel', 'Unknown vessel')
   if (vesselInfo.shipname && vesselInfo.geartypes && vesselInfo.flag && withGearType) {
-    const gearTypes = getVesselGearType(vesselInfo)
-    return `${formatInfoField(vesselInfo.shipname, 'name')}
+    const gearTypes = getVesselGearTypeLabel(vesselInfo)
+    return `${formatInfoField(vesselInfo.shipname, 'shipname')}
     (${t(`flags:${vesselInfo.flag}`, vesselInfo.flag)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
   }
   if (vesselInfo.shipname) {
-    return formatInfoField(vesselInfo.shipname, 'name') as string
+    return formatInfoField(vesselInfo.shipname, 'shipname') as string
   }
   if (vesselInfo.geartypes) {
     return `${t('vessel.unkwownVesselByGeartype', {
-      gearType: getVesselGearType({ geartypes: vesselInfo.geartypes }),
+      gearType: getVesselGearTypeLabel({ geartypes: vesselInfo.geartypes }),
     })}`
   }
   return t('common.unknownVessel', 'Unknown vessel')
@@ -130,7 +143,7 @@ export const getVesselLabel = (
 export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
   return otherVesselsNames?.length
     ? `, ${t('common.aka', 'a.k.a.')} ${otherVesselsNames
-        .map((i) => formatInfoField(i, 'name'))
+        .map((i) => formatInfoField(i, 'shipname'))
         .join(', ')}`
     : ''
 }

@@ -1,4 +1,7 @@
 .Events {
+  --loiteringIcon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="12"><path fill="%23CFA9F9" fill-rule="nonzero" stroke="%23163F89" stroke-width=".5" d="m15.6 6-5.17 5.3H6L.7 6 6 .7h4.43L15.6 6Zm-2.2 0L9.58 2.17H6.61L2.81 6l3.8 3.82h2.97L13.4 6Z"/></svg>');
+  --encounterIcon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="17" height="12"><path fill="%23FAE9A0" fill-rule="evenodd" stroke="%23163F89" stroke-width=".5" d="M.7 6 6 .7h5.3L16.83 6l-5.53 5.3H6z"/></svg>');
+
   position: absolute;
 }
 

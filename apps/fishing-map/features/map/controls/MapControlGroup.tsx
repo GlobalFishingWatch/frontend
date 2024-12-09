@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { IconButton, IconType } from '@globalfishingwatch/ui-components'
+import type { IconType } from '@globalfishingwatch/ui-components';
+import { IconButton } from '@globalfishingwatch/ui-components'
 import styles from './MapControlGroup.module.css'
 
 type MapControlGroupProps = {

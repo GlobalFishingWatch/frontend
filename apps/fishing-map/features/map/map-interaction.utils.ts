@@ -1,16 +1,21 @@
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import {
-  ClusterFeature,
+import type {
+  FourwingsClusterFeature,
   ContextPickingObject,
   DeckLayerPickingObject,
   FourwingsPositionsPickingObject,
   VesselEventPickingObject,
+  FourwingsClusterPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { TrackCategory } from 'features/app/analytics.hooks'
-import { SliceExtendedFourwingsPickingObject } from './map.slice'
+import type { SliceExtendedFourwingsPickingObject } from './map.slice'
 
 export const isTilesClusterLayer = (pickingObject: DeckLayerPickingObject) =>
-  pickingObject.subcategory === DataviewType.TileCluster
+  pickingObject.subcategory === DataviewType.TileCluster ||
+  pickingObject.subcategory === DataviewType.FourwingsTileCluster
+
+export const isTilesClusterLayerCluster = (pickingObject: FourwingsClusterPickingObject) =>
+  pickingObject?.properties?.value > 1 && pickingObject?.properties?.cluster_id !== undefined
 
 export const isRulerLayerPoint = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.category === 'rulers'
@@ -32,12 +37,12 @@ export const getAnalyticsEvent = (feature: DeckLayerPickingObject) => {
       }
       break
     case DataviewCategory.Vessels:
-      eventLabel = `event_type: ${feature.type} | vessel_id: ${
+      eventLabel = `event_type: ${(feature as VesselEventPickingObject).type} | vessel_id: ${
         (feature as VesselEventPickingObject).vesselId
       }`
       break
     case DataviewCategory.Events:
-      eventLabel = `event_id: ${(feature as ClusterFeature).properties.event_id}`
+      eventLabel = `event_id: ${(feature as FourwingsClusterFeature).properties.id}`
       break
     case DataviewCategory.Context:
     case DataviewCategory.User:

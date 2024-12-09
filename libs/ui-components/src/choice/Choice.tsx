@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { IconButton } from '../icon-button'
-import { Button, ButtonSize } from '../button'
-import { SelectOption } from '../select'
+import type { ButtonSize } from '../button'
+import { Button } from '../button'
+import type { SelectOption } from '../select'
 import { Tooltip } from '../tooltip'
 import styles from './Choice.module.css'
 
@@ -50,7 +51,9 @@ export function Choice({
       width: activeRef?.current.clientWidth,
       left: activeRef?.current.offsetLeft,
     })
-    onSelect && onSelect(option, e)
+    if (onSelect) {
+      onSelect(option, e)
+    }
   }
 
   const updateActiveElementPoperties = useCallback(() => {
@@ -97,6 +100,7 @@ export function Choice({
               <li
                 key={option.id}
                 className={styles.option}
+                // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
                 role="radio"
                 aria-checked={optionSelected}
                 ref={optionSelected ? activeRef : null}

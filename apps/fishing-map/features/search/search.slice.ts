@@ -1,29 +1,38 @@
-import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
+import type { PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
+import type {
+  AdvancedSearchQueryFieldKey} from '@globalfishingwatch/api-client';
 import {
   GFWAPI,
   getAdvancedSearchQuery,
   ADVANCED_SEARCH_QUERY_FIELDS,
-  parseAPIError,
-  AdvancedSearchQueryFieldKey,
+  parseAPIError
 } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import {
+import type {
   Dataset,
-  DatasetTypes,
   APIVesselSearchPagination,
   IdentityVessel,
+  RegistryExtraFields} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes,
   EndpointId,
-  VesselIdentitySourceEnum,
+  VesselIdentitySourceEnum
 } from '@globalfishingwatch/api-types'
-import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
+import type { AsyncError} from 'utils/async-slice';
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
-import { VesselSearchState } from 'types'
-import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
+import type { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
+import type { VesselSearchState } from 'features/search/search.types'
+import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
 
-export type VesselLastIdentity = Omit<IdentityVesselData, 'identities'> & VesselDataIdentity
+export type VesselLastIdentity = Omit<IdentityVesselData, 'identities' | 'dataset'> & {
+  dataset: Dataset | string
+} & VesselDataIdentity &
+  RegistryExtraFields
 
 interface SearchState {
   selectedVessels: string[]
@@ -96,9 +105,13 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           const filter = (filters as any)[cleanField]
           if (filter && isInFieldsAllowed) {
             let value = filter
-            // Supports searching by multiple values separated by comma in owners
-            if (field === 'owner' && value?.includes(', ')) {
-              value = (value as string).split(', ')
+            // Supports searching by multiple values separated by comma and semicolon
+            const regex = /[,;]/
+            if (ADVANCED_SEARCH_FIELDS.includes(field as any) && regex.test(value)) {
+              value = (value as string)
+                .split(regex)
+                .map((v) => v.trim())
+                .filter(Boolean)
             }
             return { key: field as AdvancedSearchQueryFieldKey, value }
           }
@@ -139,6 +152,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       if (url) {
         const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(url, {
           signal,
+          cache: 'no-cache',
         })
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
         const uniqSearchResults = gfwUser

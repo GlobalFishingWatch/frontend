@@ -1,8 +1,11 @@
-import React, { ReactNode } from 'react'
+/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
+
+import type { ReactNode } from 'react'
+import React from 'react'
 import cx from 'classnames'
-import { Placement } from 'tippy.js'
+import type { Placement } from 'tippy.js'
 import { Tooltip } from '../tooltip'
-import { TooltipTypes } from '../types/types'
+import type { TooltipTypes } from '../types/types'
 import { Icon } from '../icon'
 import styles from './Checkbox.module.css'
 
@@ -52,6 +55,7 @@ export function Checkbox(props: CheckboxProps) {
         </button>
         {label && (
           <label
+            role="button"
             onClick={onClick}
             className={cx(styles.Label, { [styles.active]: active }, labelClassname)}
           >

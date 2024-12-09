@@ -1,31 +1,36 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import type { ChangeEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { InputText, Button, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
-import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { InputText, Button, Modal, Select } from '@globalfishingwatch/ui-components'
+import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
+import type {
+  WorkspaceEditAccessType,
+  WorkspaceViewAccessType,
+} from '@globalfishingwatch/api-types'
 import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
   WORKSPACE_PUBLIC_ACCESS,
-  WorkspaceEditAccessType,
-  WorkspaceViewAccessType,
 } from '@globalfishingwatch/api-types'
 import { saveWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
 import { useSaveWorkspaceModalConnect, useSaveWorkspaceTimerange } from './workspace-save.hooks'
+import type { WorkspaceTimeRangeMode } from './workspace-save.utils'
 import {
   DAYS_FROM_LATEST_MAX,
   DAYS_FROM_LATEST_MIN,
-  WorkspaceTimeRangeMode,
   getEditAccessOptionsByViewAccess,
   getViewAccessOptions,
   getWorkspaceTimerangeName,
@@ -49,13 +54,11 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const containsPrivateDatasets = privateDatasets.length > 0
 
   const [name, setName] = useState('')
-  const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(
-    containsPrivateDatasets ? WORKSPACE_PRIVATE_ACCESS : WORKSPACE_PUBLIC_ACCESS
-  )
+  const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(WORKSPACE_PUBLIC_ACCESS)
   const [editAccess, setEditAccess] = useState<WorkspaceEditAccessType>(WORKSPACE_PRIVATE_ACCESS)
   const [password, setPassword] = useState<string>('')
 
-  const viewOptions = getViewAccessOptions()
+  const viewOptions = getViewAccessOptions(containsPrivateDatasets)
   const {
     timeRangeOptions,
     timeRangeOption,
@@ -101,16 +104,9 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   }
 
   useEffect(() => {
-    if (containsPrivateDatasets) {
-      setViewAccess(WORKSPACE_PRIVATE_ACCESS)
-    }
-  }, [containsPrivateDatasets])
-
-  useEffect(() => {
     if (workspaceModalOpen) {
       setDefaultWorkspaceName()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceModalOpen])
 
   const getWorkspaceError = () => {
@@ -200,6 +196,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             testId="create-workspace-name"
             label={t('common.name', 'Name')}
             onChange={onNameChange}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
           />
         </div>
@@ -230,12 +227,11 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             options={viewOptions}
             direction="top"
             label={t('workspace.viewAccess', 'View access')}
-            disabled={containsPrivateDatasets}
             infoTooltip={
               containsPrivateDatasets
                 ? `${t(
-                    'workspace.uploadPublicDisabled',
-                    "This workspace can't be shared publicly because it contains private datasets"
+                    'workspace.sharePrivateDisclaimer',
+                    'This workspace contains datasets that require special permissions'
                   )}: ${privateDatasets.join(', ')}`
                 : ''
             }

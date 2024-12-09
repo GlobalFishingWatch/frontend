@@ -1,10 +1,7 @@
 .searchResult {
   position: relative;
   padding: var(--space-M);
-  transition:
-    background-color 150ms linear,
-    box-shadow 150ms linear,
-    border 150ms linear;
+  transition: background-color 150ms linear, box-shadow 150ms linear, border 150ms linear;
   border-bottom: var(--border);
 }
 
@@ -39,16 +36,9 @@
   color: var(--color-secondary-blue);
 }
 
-.alreadyAddedMsg {
-  display: flex;
-  align-items: center;
-  font: var(--font-S);
-}
-
 .properties {
   display: flex;
-  column-gap: var(--space-M);
-  row-gap: var(--space-S);
+  gap: var(--space-S) var(--space-M);
   flex-wrap: wrap;
   opacity: var(--opacity-secondary);
   transition: opacity 150ms linear;
@@ -116,4 +106,8 @@
 
 .cellFilter:hover .cellFilterBtn {
   display: block;
+}
+
+.transmissionDates {
+  width: 100%;
 }

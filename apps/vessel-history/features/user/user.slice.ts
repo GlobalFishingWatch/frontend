@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { GFWApiClient } from 'http-client/http-client'
-import { UserData } from '@globalfishingwatch/api-types'
+import type { UserData } from '@globalfishingwatch/api-types'
 import {
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
   GUEST_USER_TYPE,
 } from '@globalfishingwatch/api-client'
+import { GFWApiClient } from 'http-client/http-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { RootState } from 'store'
+import type { RootState } from 'store'
 import { IS_STANDALONE_APP } from 'data/config'
 
 interface UserState {

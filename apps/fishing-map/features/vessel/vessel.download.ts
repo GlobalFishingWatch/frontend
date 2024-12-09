@@ -1,8 +1,8 @@
 import get from 'lodash/get'
-import { VesselRegistryAuthorization, VesselRegistryOwner } from '@globalfishingwatch/api-types'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import type { VesselRegistryAuthorization, VesselRegistryOwner } from '@globalfishingwatch/api-types'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { VesselLastIdentity } from 'features/search/search.slice'
+import type { VesselLastIdentity } from 'features/search/search.slice'
 
 type CsvConfig = {
   label: string
@@ -54,7 +54,8 @@ const VESSEL_CSV_CONFIG: CsvConfig[] = [
   // TODO translate labels
   { label: 'id', accessor: 'id' },
   { label: 'flag', accessor: 'flag' },
-  { label: 'ssvid', accessor: 'imo' },
+  { label: 'mmsi', accessor: 'ssvid' },
+  { label: 'imo', accessor: 'imo' },
   { label: 'shipname', accessor: 'nShipname' },
   { label: 'shiptypes', accessor: 'shiptypes' },
   { label: 'geartypes', accessor: 'geartypes' },

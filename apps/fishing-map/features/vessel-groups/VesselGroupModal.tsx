@@ -1,80 +1,105 @@
 import { useState, useCallback, useEffect, Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { VesselGroupVessel } from '@globalfishingwatch/api-types'
+import type { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
+import type {
+  SelectOption} from '@globalfishingwatch/ui-components';
 import {
   Modal,
   Button,
-  Select,
-  SelectOption,
   InputText,
   SwitchRow,
   Spinner,
+  MultiSelect,
+  Select,
+  Icon,
 } from '@globalfishingwatch/ui-components'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import VesselGroupSearch from 'features/vessel-groups/VesselGroupModalSearch'
 import VesselGroupVessels from 'features/vessel-groups/VesselGroupModalVessels'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
-  selectAllVesselGroupSearchVessels,
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
+  selectVesselGroupModalDatasetsWithoutEventsRelated,
+  selectVesselGroupsModalSearchIds,
+  selectVesselGroupWorkspaceToNavigate,
+  selectWorkspaceVessselGroupsIds,
 } from 'features/vessel-groups/vessel-groups.selectors'
 import {
   mergeDataviewIntancesToUpsert,
   useDataviewInstancesConnect,
 } from 'features/workspace/workspace.hook'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getEventLabel } from 'utils/analytics'
-import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
 import { updateLocation } from 'routes/routes.actions'
-import { ROUTE_TYPES } from 'routes/routes'
+import type { ROUTE_TYPES } from 'routes/routes'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { getVesselId } from 'features/vessel/vessel.utils'
-import { ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import {
+  fetchVesselGroupReportThunk,
+  resetVesselGroupReportData,
+} from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { getPlaceholderBySelections } from 'features/i18n/utils'
+import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import type {
   IdField,
-  resetVesselGroup,
+  VesselGroupConfirmationMode,
+  UpdateVesselGroupThunkParams} from './vessel-groups.slice';
+import {
   createVesselGroupThunk,
   selectVesselGroupById,
-  selectVesselGroupEditId,
-  selectVesselGroupModalOpen,
-  selectVesselGroupSearchId,
-  selectVesselGroupSearchStatus,
   selectVesselGroupsStatus,
-  selectVesselGroupsVessels,
-  setVesselGroupSearchId,
+  updateVesselGroupVesselsThunk,
   resetVesselGroupStatus,
-  setVesselGroupSearchVessels,
-  updateVesselGroupThunk,
-  searchVesselGroupsVesselsThunk,
-  MAX_VESSEL_GROUP_SEARCH_VESSELS,
-  MAX_VESSEL_GROUP_VESSELS,
-  getVesselInVesselGroupThunk,
-  selectCurrentDataviewIds,
-  selectVesselGroupConfirmationMode,
-  VesselGroupConfirmationMode,
+  selectVesselGroupsError,
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
+import {
+  getVesselInVesselGroupThunk,
+  MAX_VESSEL_GROUP_VESSELS,
+  resetVesselGroupModal,
+  resetVesselGroupModalSearchStatus,
+  searchVesselGroupsVesselsThunk,
+  selectVesselGroupConfirmationMode,
+  selectVesselGroupEditId,
+  selectVesselGroupModalOpen,
+  selectVesselGroupModalSearchIdField,
+  selectVesselGroupModalVessels,
+  selectVesselGroupSearchStatus,
+  setVesselGroupModalVessels,
+  setVesselGroupSearchIdField,
+} from './vessel-groups-modal.slice'
+import {
+  calculateVMSVesselsPercentage,
+  getVesselGroupUniqVessels,
+  getVesselGroupVesselsCount,
+} from './vessel-groups.utils'
+import { ID_COLUMNS_OPTIONS } from './vessel-groups.config'
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
+  const vesselDataviews = useSelector(selectVesselsDataviews)
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
-  const currentDataviewIds = useSelector(selectCurrentDataviewIds)
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
-  const searchIdField = useSelector(selectVesselGroupSearchId)
+  const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
-  const vesselGroupVessels = useSelector(selectVesselGroupsVessels)
+  const vesselGroupVesselsToSearch = useSelector(selectVesselGroupsModalSearchIds)
   const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
-  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const vesselGroupsError = useSelector(selectVesselGroupsError)
+  const workspaceToNavigate = useSelector(selectVesselGroupWorkspaceToNavigate)
   const searchQuery = useSelector(selectSearchQuery)
   const loading =
     searchVesselStatus === AsyncReducerStatus.Loading ||
@@ -89,46 +114,85 @@ function VesselGroupModal(): React.ReactElement {
   const [groupName, setGroupName] = useState<string>(editingVesselGroup?.name || '')
   const [showBackButton, setShowBackButton] = useState(false)
   const [createAsPublic, setCreateAsPublic] = useState(true)
-  const vesselGroupSearchVessels = useSelector(selectAllVesselGroupSearchVessels)
+  const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
   const hasVesselsOverflow = useSelector(selectHasVesselGroupVesselsOverflow)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
-  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
+  const datasetsWithoutRelatedEvents = useSelector(
+    selectVesselGroupModalDatasetsWithoutEventsRelated
+  )
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const searchVesselGroupsVesselsRef = useRef<any>()
-  const searchVesselGroupsVesselsAllowed = vesselGroupVessels
-    ? vesselGroupVessels?.length < MAX_VESSEL_GROUP_SEARCH_VESSELS
+  const searchVesselGroupsVesselsAllowed = vesselGroupVesselsToSearch
+    ? vesselGroupVesselsToSearch?.length < MAX_VESSEL_GROUP_VESSELS
     : true
 
+  const vesselDatasets = useSelector(selectVesselGroupCompatibleDatasets)
+  const sourceOptions = vesselDatasets.map((d) => ({
+    id: d.id,
+    label: getDatasetLabel(d),
+  }))
+  const defaultSourceSelected = sourceOptions.find((s) =>
+    s.id.includes(DEFAULT_VESSEL_IDENTITY_DATASET)
+  )
+  const [sourcesSelected, setSourcesSelected] = useState<SelectOption[]>(
+    defaultSourceSelected ? [defaultSourceSelected] : []
+  )
+
+  const onSelectSourceClick = useCallback(
+    (source: SelectOption) => {
+      setSourcesSelected([...sourcesSelected, source])
+    },
+    [sourcesSelected]
+  )
+
+  const onRemoveSourceClick = useCallback(
+    (source: SelectOption) => {
+      setSourcesSelected(sourcesSelected.filter((s) => s.id !== source.id))
+    },
+    [sourcesSelected]
+  )
+
   const dispatchSearchVesselsGroupsThunk = useCallback(
-    async (vessels: VesselGroupVessel[], idField: IdField = 'vesselId') => {
+    async (ids: string[], idField: IdField = 'vesselId') => {
       searchVesselGroupsVesselsRef.current = dispatch(
-        searchVesselGroupsVesselsThunk({ vessels, idField })
+        searchVesselGroupsVesselsThunk({
+          ids,
+          idField,
+          datasets: sourcesSelected.map(({ id }) => id),
+        })
       )
       const action = await searchVesselGroupsVesselsRef.current
       if (searchVesselGroupsVesselsThunk.fulfilled.match(action)) {
-        setError('')
+        if (action.payload?.length) {
+          setError('')
+          setShowBackButton(true)
+        } else {
+          setError(t('vesselGroup.searchNotFound', 'No vessels found'))
+        }
       } else {
         setError((action.payload as any)?.message || '')
       }
     },
-    [dispatch]
+    [dispatch, sourcesSelected, t]
   )
+
   useEffect(() => {
     if (editingVesselGroup && editingVesselGroup.vessels?.length > 0) {
       dispatch(getVesselInVesselGroupThunk({ vesselGroup: editingVesselGroup }))
     }
   }, [dispatch, editingVesselGroup])
 
+  useEffect(() => {
+    if (!hasVesselGroupsVessels && showBackButton) {
+      setShowBackButton(false)
+    }
+  }, [showBackButton, hasVesselGroupsVessels])
+
   const onGroupNameChange = useCallback((e: any) => {
     setGroupName(e.target.value)
   }, [])
-
-  const onIdFieldChange = useCallback(
-    (option: SelectOption) => {
-      dispatch(setVesselGroupSearchId(option.id))
-    },
-    [dispatch]
-  )
 
   const abortSearch = useCallback(() => {
     if (searchVesselGroupsVesselsRef.current?.abort) {
@@ -139,7 +203,8 @@ function VesselGroupModal(): React.ReactElement {
   const close = useCallback(() => {
     setError('')
     setGroupName('')
-    dispatch(resetVesselGroup(''))
+    dispatch(resetVesselGroupModal())
+    dispatch(resetVesselGroupStatus(''))
     abortSearch()
   }, [abortSearch, dispatch])
 
@@ -156,9 +221,10 @@ function VesselGroupModal(): React.ReactElement {
       if (confirmed) {
         if (action === 'back') {
           setError('')
-          dispatch(setVesselGroupSearchVessels(undefined))
-          dispatch(resetVesselGroupStatus(''))
+          dispatch(setVesselGroupModalVessels(null))
+          dispatch(resetVesselGroupModalSearchStatus())
           abortSearch()
+          setShowBackButton(false)
         } else {
           close()
         }
@@ -168,61 +234,27 @@ function VesselGroupModal(): React.ReactElement {
   )
 
   const onSearchVesselsClick = useCallback(async () => {
-    setShowBackButton(true)
-    if (vesselGroupVessels) {
-      dispatchSearchVesselsGroupsThunk(vesselGroupVessels, searchIdField)
+    if (vesselGroupVesselsToSearch && searchIdField) {
+      dispatchSearchVesselsGroupsThunk(vesselGroupVesselsToSearch, searchIdField)
     }
-  }, [dispatchSearchVesselsGroupsThunk, vesselGroupVessels, searchIdField])
-
-  const getDataviewInstancesWithVesselGroups = useCallback(
-    (vesselGroupId: string) => {
-      if (currentDataviewIds?.length) {
-        const dataviewInstances = currentDataviewIds.map((currentDataviewId) => {
-          let config = {
-            filters: {
-              'vessel-groups': [vesselGroupId],
-            },
-          }
-          const currentDataviewInstance = urlDataviewInstances?.find(
-            (dvi) => dvi?.id === currentDataviewId
-          )
-
-          if (currentDataviewInstance) {
-            config = {
-              filters: {
-                ...(currentDataviewInstance.config?.filters || {}),
-                'vessel-groups': [vesselGroupId],
-              },
-            }
-          }
-          return { id: currentDataviewId, config }
-        })
-        return dataviewInstances
-      }
-    },
-    [currentDataviewIds, urlDataviewInstances]
-  )
+  }, [dispatchSearchVesselsGroupsThunk, vesselGroupVesselsToSearch, searchIdField])
 
   const onCreateGroupClick = useCallback(
     async (
       e: React.MouseEvent<Element, MouseEvent>,
-      { addToDataviews = false, navigateToWorkspace = false } = {}
+      { addToDataviews = true, removeVessels = false, navigateToWorkspace = false } = {}
     ) => {
-      setButtonLoading(navigateToWorkspace ? 'saveAndNavigate' : 'save')
-      const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
-        return {
-          vesselId: getVesselId(vessel),
-          dataset: vessel.dataset as string,
-        }
-      })
+      setButtonLoading(navigateToWorkspace ? 'saveAndSeeInWorkspace' : 'save')
+      const vessels: VesselGroupVessel[] = getVesselGroupUniqVessels(vesselGroupVessels)
       let dispatchedAction
       if (editingVesselGroupId) {
-        const vesselGroup = {
+        const vesselGroup: UpdateVesselGroupThunkParams = {
           id: editingVesselGroupId,
           name: groupName,
           vessels,
+          override: true,
         }
-        dispatchedAction = await dispatch(updateVesselGroupThunk(vesselGroup))
+        dispatchedAction = await dispatch(updateVesselGroupVesselsThunk(vesselGroup))
       } else {
         const vesselGroup = {
           name: groupName,
@@ -233,18 +265,25 @@ function VesselGroupModal(): React.ReactElement {
       }
 
       if (
-        updateVesselGroupThunk.fulfilled.match(dispatchedAction) ||
+        updateVesselGroupVesselsThunk.fulfilled.match(dispatchedAction) ||
         createVesselGroupThunk.fulfilled.match(dispatchedAction)
       ) {
-        const dataviewInstances = getDataviewInstancesWithVesselGroups(dispatchedAction.payload.id)
-        if (navigateToWorkspace && dataviewInstances) {
-          if (lastVisitedWorkspace) {
-            const { type, ...rest } = lastVisitedWorkspace
+        const vesselGroupId = updateVesselGroupVesselsThunk.fulfilled.match(dispatchedAction)
+          ? (dispatchedAction.payload?.payload as VesselGroup)?.id
+          : dispatchedAction.payload?.id
+        const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
+        const dataviewInstance = !isVesselGroupInWorkspace
+          ? getVesselGroupDataviewInstance(vesselGroupId)
+          : undefined
+        if (navigateToWorkspace && dataviewInstance) {
+          if (workspaceToNavigate) {
+            const { type, ...rest } = workspaceToNavigate
             const { query, payload, replaceQuery } = rest
-            const dataviewInstancesMerged = addToDataviews
-              ? mergeDataviewIntancesToUpsert(dataviewInstances, rest.query.dataviewInstances)
-              : rest.query.dataviewInstances
-            // TODO ensure we don't insert duplicates in the new dataview instance
+            const dataviewInstancesMerged = mergeDataviewIntancesToUpsert(
+              dataviewInstance,
+              rest.query.dataviewInstances
+            )
+
             dispatch(
               updateLocation(type as ROUTE_TYPES, {
                 query: { ...query, dataviewInstances: dataviewInstancesMerged },
@@ -252,61 +291,99 @@ function VesselGroupModal(): React.ReactElement {
                 replaceQuery,
               })
             )
+            dispatch(setWorkspaceSuggestSave(true))
           } else if (searchQuery) {
             // TODO check if is search location and navigate back to workspace
-            upsertDataviewInstance(dataviewInstances)
+            upsertDataviewInstance(dataviewInstance)
             // dispatchQueryParams({ query: undefined })
           }
           resetSidebarScroll()
-        } else if (addToDataviews && dataviewInstances) {
-          upsertDataviewInstance(dataviewInstances)
+        } else if (addToDataviews && dataviewInstance) {
+          if (removeVessels) {
+            const dataviewsToDelete = vesselDataviews.flatMap((d) =>
+              d.config?.visible ? { id: d.id, deleted: true } : []
+            )
+            upsertDataviewInstance([...dataviewsToDelete, dataviewInstance])
+          } else {
+            upsertDataviewInstance(dataviewInstance)
+          }
+        }
+        if (editingVesselGroupId && isVesselGroupReportLocation) {
+          dispatch(resetVesselGroupReportData())
+          dispatch(fetchVesselGroupReportThunk({ vesselGroupId: editingVesselGroupId }))
         }
         close()
         setButtonLoading('')
+        trackEvent({
+          category: TrackCategory.VesselGroups,
+          action: `${editingVesselGroupId ? 'Edit' : 'Create new'} vessel group`,
+          label: getEventLabel([
+            vesselGroupId,
+            calculateVMSVesselsPercentage(vesselGroupVessels).toString(),
+          ]),
+          value: `number of vessel identities: ${vessels.length}`,
+        })
       }
-      trackEvent({
-        category: TrackCategory.VesselGroups,
-        action: `Create new vessel group`,
-        label: getEventLabel([
-          vessels.length.toString(),
-          ...vessels.map((vessel) => vessel.vesselId),
-        ]),
-      })
     },
     [
-      vesselGroupSearchVessels,
+      vesselGroupVessels,
       editingVesselGroupId,
       groupName,
       dispatch,
       createAsPublic,
-      getDataviewInstancesWithVesselGroups,
+      vesselGroupsInWorkspace,
+      isVesselGroupReportLocation,
       close,
-      lastVisitedWorkspace,
+      workspaceToNavigate,
       searchQuery,
       upsertDataviewInstance,
+      vesselDataviews,
     ]
   )
 
+  const missesRequiredParams = hasVesselGroupsVessels
+    ? groupName === ''
+    : searchIdField === '' || !vesselGroupVesselsToSearch?.length || !sourcesSelected?.length
   const confirmButtonDisabled =
-    loading ||
-    hasVesselsOverflow ||
-    searchVesselStatus === AsyncReducerStatus.Error ||
-    !searchVesselGroupsVesselsAllowed ||
-    (hasVesselGroupsVessels && groupName === '')
-  const confirmButtonTooltip = hasVesselsOverflow
+    loading || hasVesselsOverflow || !searchVesselGroupsVesselsAllowed || missesRequiredParams
+  let confirmButtonTooltip = hasVesselsOverflow
     ? t('vesselGroup.tooManyVessels', {
         count: MAX_VESSEL_GROUP_VESSELS,
         defaultValue: 'Maximum number of vessels is {{count}}',
       })
-    : hasVesselGroupsVessels && groupName === ''
-    ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
     : ''
+  if (hasVesselGroupsVessels) {
+    if (groupName === '') {
+      confirmButtonTooltip = t('vesselGroup.missingParam', {
+        defaultValue: 'Vessel group {{param}} is mandatory',
+        param: t('common.name', 'name').toLowerCase(),
+      })
+    }
+  } else {
+    confirmButtonTooltip =
+      searchIdField === ''
+        ? t('vesselGroup.missingParam', {
+            defaultValue: 'Vessel group {{param}} is mandatory',
+            param: t('vesselGroup.idField', 'ID field').toLowerCase(),
+          })
+        : searchVesselStatus === AsyncReducerStatus.Loading
+        ? t('common.loading', 'Loading')
+        : t('vesselGroup.searchVesselsRequired', 'Search for vessels to create a vessel group')
+  }
+
+  const onIdFieldChange = useCallback(
+    (option: SelectOption) => {
+      dispatch(setVesselGroupSearchIdField(option.id))
+    },
+    [dispatch]
+  )
 
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
       title={t('vesselGroup.vesselGroup', 'Vessel group')}
       isOpen={isModalOpen}
+      className={styles.modal}
       contentClassName={styles.modalContainer}
       onClose={() => onBackClick('close')}
       fullScreen={true}
@@ -320,18 +397,28 @@ function VesselGroupModal(): React.ReactElement {
             value={groupName}
             onChange={onGroupNameChange}
           />
-          {!fullModalLoading &&
-            searchVesselStatus !== AsyncReducerStatus.Error &&
-            !hasVesselGroupsVessels && (
+          {!fullModalLoading && !hasVesselGroupsVessels && (
+            <Fragment>
+              <MultiSelect
+                label={t('layer.source_other', 'Sources')}
+                placeholder={getPlaceholderBySelections({
+                  selection: sourcesSelected.map(({ id }) => id),
+                  options: sourceOptions,
+                })}
+                options={sourceOptions}
+                selectedOptions={sourcesSelected}
+                onSelect={onSelectSourceClick}
+                onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
+              />
               <Select
-                key="IDfield"
                 label={t('vesselGroup.idField', 'ID field')}
                 options={ID_COLUMNS_OPTIONS}
                 selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
                 onSelect={onIdFieldChange}
                 disabled={hasVesselGroupsVessels}
               />
-            )}
+            </Fragment>
+          )}
         </div>
         {fullModalLoading ? (
           <Spinner />
@@ -342,20 +429,19 @@ function VesselGroupModal(): React.ReactElement {
                 <VesselGroupVessels />
               </div>
             ) : (
-              searchVesselStatus !== AsyncReducerStatus.Error && (
-                <VesselGroupSearch onError={setError} />
-              )
+              <VesselGroupSearch onError={setError} />
             )}
           </Fragment>
         )}
       </div>
-      {!editingVesselGroup && (
-        <div className={styles.modalFooter}>
-          {vesselGroupSearchVessels?.length > 0 && (
-            <label>
-              {t('common.vessel_other', 'Vessels')}: {vesselGroupSearchVessels.length}
-            </label>
-          )}
+      <div className={styles.modalFooter}>
+        {vesselGroupVessels && vesselGroupVessels?.length > 0 && (
+          <label>
+            {t('common.vessel_other', 'Vessels')}:{' '}
+            {getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup)}
+          </label>
+        )}
+        {!editingVesselGroup && (
           <SwitchRow
             className={styles.row}
             label={t(
@@ -365,48 +451,73 @@ function VesselGroupModal(): React.ReactElement {
             active={createAsPublic}
             onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
           />
-        </div>
-      )}
+        )}
+      </div>
       <div className={styles.modalFooter}>
         <UserGuideLink section="vesselGroups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
+          {datasetsWithoutRelatedEvents.length >= 1 && (
+            <div className={styles.disclaimerFooter}>
+              <Icon icon="warning" type="warning" />
+              {t('vesselGroup.disclaimerFeaturesNotAvailable', {
+                defaultValue:
+                  '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
+                features: t(
+                  'vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix',
+                  'Some features'
+                ),
+                datasets: Array.from(datasetsWithoutRelatedEvents)
+                  .map((d) => getDatasetLabel(d))
+                  .join(', '),
+              })}
+            </div>
+          )}
           {!searchVesselGroupsVesselsAllowed && (
             <span className={styles.errorMsg}>
               {t('vesselGroup.searchLimit', {
                 defaultValue: 'Search is limited up to {{limit}} vessels',
-                limit: MAX_VESSEL_GROUP_SEARCH_VESSELS,
+                limit: MAX_VESSEL_GROUP_VESSELS,
               })}
             </span>
           )}
           {vesselGroupAPIError && !error && (
             <span className={styles.errorMsg}>
-              {t('errors.genericShort', 'Something went wrong')}
+              {vesselGroupsError?.message || t('errors.genericShort', 'Something went wrong')}
             </span>
           )}
         </div>
-        {searchVesselStatus === AsyncReducerStatus.Finished
-          ? showBackButton && hasVesselGroupsVessels
-          : showBackButton && (
-              <Button
-                type="secondary"
-                disabled={loading}
-                className={styles.backButton}
-                onClick={() => onBackClick('back')}
-              >
-                {t('common.back', 'back')}
-              </Button>
-            )}
+        {showBackButton && (
+          <Button
+            type="secondary"
+            disabled={loading}
+            className={styles.backButton}
+            onClick={() => onBackClick('back')}
+          >
+            {t('common.back', 'back')}
+          </Button>
+        )}
         {!fullModalLoading &&
-          (confirmationMode === 'save' ? (
+          (confirmationMode === 'save' ||
+          confirmationMode === 'update' ||
+          confirmationMode === 'saveAndDeleteVessels' ? (
             <Button
               disabled={confirmButtonDisabled}
-              onClick={hasVesselGroupsVessels ? onCreateGroupClick : onSearchVesselsClick}
+              onClick={
+                hasVesselGroupsVessels
+                  ? (e) =>
+                      onCreateGroupClick(e, {
+                        removeVessels: confirmationMode === 'saveAndDeleteVessels',
+                      })
+                  : onSearchVesselsClick
+              }
               loading={loading}
               tooltip={confirmButtonTooltip}
             >
               {hasVesselGroupsVessels
-                ? t('common.confirm', 'Confirm')
+                ? confirmationMode === 'update'
+                  ? t('common.update', 'Update')
+                  : t('common.confirm', 'Confirm')
                 : t('common.continue', 'Continue')}
             </Button>
           ) : (
@@ -416,7 +527,7 @@ function VesselGroupModal(): React.ReactElement {
                 disabled={confirmButtonDisabled}
                 onClick={(e) => onCreateGroupClick(e, { addToDataviews: false })}
                 loading={loading && buttonLoading === 'save'}
-                type="secondary"
+                type={workspaceToNavigate ? 'secondary' : 'default'}
                 tooltip={
                   confirmButtonTooltip ||
                   t(
@@ -427,17 +538,17 @@ function VesselGroupModal(): React.ReactElement {
               >
                 {t('vesselGroup.saveForLater', 'Save for later')}
               </Button>
-              <Button
-                className={styles.footerButton}
-                disabled={confirmButtonDisabled}
-                onClick={(e) =>
-                  onCreateGroupClick(e, { addToDataviews: true, navigateToWorkspace: true })
-                }
-                loading={loading && buttonLoading === 'saveAndNavigate'}
-                tooltip={confirmButtonTooltip}
-              >
-                {t('vesselGroup.saveAndFilter', 'Save and filter workspace')}
-              </Button>
+              {workspaceToNavigate && (
+                <Button
+                  className={styles.footerButton}
+                  disabled={confirmButtonDisabled}
+                  onClick={(e) => onCreateGroupClick(e, { navigateToWorkspace: true })}
+                  loading={loading && buttonLoading === 'saveAndSeeInWorkspace'}
+                  tooltip={confirmButtonTooltip}
+                >
+                  {t('vesselGroup.saveAndSeeInWorkspace', 'Save and see in workspace')}
+                </Button>
+              )}
             </Fragment>
           ))}
       </div>

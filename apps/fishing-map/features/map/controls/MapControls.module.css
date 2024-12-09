@@ -78,6 +78,7 @@
 .previewContainer {
   display: flex;
   flex-direction: column;
+  height: 66rem;
 }
 
 .previewPlaceholder {
@@ -88,13 +89,21 @@
   flex: 1;
   width: 100%;
   height: 100%;
+  max-height: 52rem;
   object-fit: contain;
   filter: drop-shadow(0 0 4px var(--color-border));
+}
+
+.screenshotArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .previewFooter {
   margin-top: var(--space-S);
   display: flex;
+  gap: var(--space-S);
   align-items: center;
   justify-content: space-between;
 }

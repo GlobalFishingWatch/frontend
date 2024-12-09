@@ -1,5 +1,5 @@
 import { normal, screen } from 'color-blend'
-import { RGBA } from 'color-blend/dist/types'
+import type { RGBA } from 'color-blend/dist/types'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS, COLOR_RAMP_DEFAULT_NUM_STEPS_TO_WHITE } from '../config'
 
 export const hexToRgb = (hex: string) => {

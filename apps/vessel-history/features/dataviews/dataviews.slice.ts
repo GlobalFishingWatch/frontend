@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, uniqBy } from 'lodash'
 import { stringify } from 'qs'
-import { GFWApiClient } from 'http-client/http-client'
-import { APIPagination, Dataview } from '@globalfishingwatch/api-types'
+import type { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 import { parseAPIError } from '@globalfishingwatch/api-client'
-import { AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
-import { RootState } from 'store'
+import { GFWApiClient } from 'http-client/http-client'
+import type { AsyncReducer} from 'utils/async-slice';
+import { AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
+import type { RootState } from 'store'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(

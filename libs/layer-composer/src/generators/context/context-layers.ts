@@ -4,7 +4,8 @@ import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { ExtendedLayerMeta, Group } from '../../types'
+import type { ExtendedLayerMeta} from '../../types';
+import { Group } from '../../types'
 import { ContextLayerType } from '../types'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from './config'

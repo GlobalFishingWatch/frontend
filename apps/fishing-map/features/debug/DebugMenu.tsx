@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { InputText, Switch } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
-import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import styles from './DebugMenu.module.css'
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 
@@ -23,7 +23,7 @@ const DebugMenu: React.FC = () => {
       debugDatasetsInDataviews(dataviews, datasetId)
       debugRelatedDatasets(datasets, datasetId)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [datasetId])
 
   return (

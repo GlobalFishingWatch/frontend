@@ -1,4 +1,4 @@
-import { TimeChunk } from './time-chunks'
+import type { TimeChunk } from './time-chunks'
 
 export const getSourceId = (baseId: string, timeChunk: TimeChunk) => {
   return `${baseId}-${timeChunk.id}`

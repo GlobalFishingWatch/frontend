@@ -1,4 +1,4 @@
-import { ChoiceOption } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 
 export enum Format {
   Csv = 'CSV',

@@ -1,13 +1,14 @@
-import { CompositeLayer, GetPickingInfoParams } from '@deck.gl/core'
+import type { GetPickingInfoParams } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
-import { WorkspacesFeature, WorkspacesLayerProps } from './workspaces.types'
+import type { WorkspacesFeature, WorkspacesLayerProps } from './workspaces.types'
 
 export class WorkspacesLayer extends CompositeLayer<WorkspacesLayerProps> {
   static layerName = 'ContextLayer'
   static defaultProps = {}
 
-  getPickingInfo({ info }: GetPickingInfoParams<any, {}>) {
+  getPickingInfo({ info }: GetPickingInfoParams<any, object>) {
     return { ...info, object: { ...info.object, category: this.props.category } }
   }
 

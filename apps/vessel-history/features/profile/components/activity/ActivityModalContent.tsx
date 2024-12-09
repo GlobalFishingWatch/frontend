@@ -1,6 +1,6 @@
 import React, { Fragment, useMemo } from 'react'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import ActivityModalContentDetailsFishing from './ActivityModalContentDetailsFishing'
 import ActivityModalContentDetailsLoitering from './ActivityModalContentDetailsLoitering'
 import ActivityModalContentDetailsEncounter from './ActivityModalContentDetailsEncounter'

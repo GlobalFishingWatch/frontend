@@ -1,0 +1,47 @@
+.cardsContainer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+  grid-gap: 3rem;
+}
+
+.card {
+  background: var(--white);
+  box-shadow: 0 2px 4px 0 rgba(34, 68, 126, 0.2), 0 7px 15px 0 rgba(34, 68, 126, 0.1);
+  height: 36rem;
+  padding: 2rem 1.5rem 1.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font: var(--GFW-font-L);
+  margin-bottom: 1rem;
+}
+
+.description {
+  flex: 1;
+  color: var(--secondary-color);
+  max-height: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+}
+
+.seeMore {
+  font: var(--GFW-font-S);
+  font-weight: var(--GFW-font-medium);
+  color: var(--link-color);
+  padding: 0.3rem;
+}
+
+.seeMore:hover {
+  color: var(--link-hover-color);
+}

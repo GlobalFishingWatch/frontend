@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'reducers'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   ADMIN_GROUP_ID,
@@ -12,6 +12,7 @@ import {
 export const selectUserData = (state: RootState) => state.user.data
 const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
+export const selectIsUserExpired = (state: RootState) => state.user.expired
 export const selectUserSettings = (state: RootState) => state.user.settings
 
 export const selectIsGFWUser = createSelector([selectUserData], (userData) => {

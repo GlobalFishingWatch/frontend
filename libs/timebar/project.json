@@ -9,7 +9,13 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "entryFile": "libs/timebar/src/index.ts",
+        "extractCss": true,
         "assets": [
+          {
+            "glob": "libs/timebar/src/timebar-settings.css",
+            "input": ".",
+            "output": "."
+          },
           {
             "glob": "libs/timebar/types",
             "input": ".",
@@ -25,7 +31,7 @@
         "main": "libs/timebar/src/index.ts",
         "outputPath": "dist/libs/timebar",
         "project": "libs/timebar/package.json",
-        "rollupConfig": "libs/ui-components/rollup.config.js",
+        "rollupConfig": "libs/timebar/rollup.config.js",
         "tsConfig": "libs/timebar/tsconfig.lib.json"
       }
     },

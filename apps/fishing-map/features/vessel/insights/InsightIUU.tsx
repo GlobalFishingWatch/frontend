@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { InsightIUUResponse } from '@globalfishingwatch/api-types'
-import { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { InsightResponse } from '@globalfishingwatch/api-types'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './Insights.module.css'
@@ -10,7 +10,7 @@ const InsightIUU = ({
   isLoading,
   error,
 }: {
-  insightData: InsightIUUResponse
+  insightData?: InsightResponse
   isLoading: boolean
   error: ParsedAPIError
 }) => {

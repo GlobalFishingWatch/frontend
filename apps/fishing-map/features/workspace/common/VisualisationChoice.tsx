@@ -1,6 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
-import { ChoiceOption, Button } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import { Button } from '@globalfishingwatch/ui-components'
 import styles from './VisualisationChoice.module.css'
 
 interface VisualisationChoiceProps {

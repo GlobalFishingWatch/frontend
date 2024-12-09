@@ -4,10 +4,10 @@ import { parse } from 'qs'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CALLBACK_URL_PARAM, useLoginRedirect } from '@globalfishingwatch/react-hooks'
-import { QueryParams } from 'types'
+import type { QueryParams } from 'types'
 import { selectLocationPayload, selectLocationType } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { ROUTE_TYPES } from './routes'
+import type { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 
 export const useReplaceLoginUrl = () => {
@@ -40,7 +40,7 @@ export const useReplaceLoginUrl = () => {
       // ensures the localStorage is clean when the app is unmounted
       cleanRedirectUrl()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 }
 

@@ -1,0 +1,14 @@
+services:
+  track-labeler:
+    build:
+      context: ../../dist/apps/track-labeler
+      dockerfile: ../../../apps/track-labeler/Dockerfile
+      target: production
+    container_name: track-labeler
+    ports:
+      - 3000:80
+    env_file:
+      - .env
+    environment:
+      - PORT=80
+      - API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org

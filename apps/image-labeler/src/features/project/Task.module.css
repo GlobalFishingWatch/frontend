@@ -38,23 +38,19 @@
   justify-content: center;
   opacity: 0.5;
   width: 11rem;
-  height: 5rem;
   max-width: 120rem;
-  max-height: 50vh;
 }
 
 .open .images {
   transition: all 0.3s ease-out;
   width: calc(100vw - var(--space-L) * 4);
-  height: calc((100vw - var(--space-L) * 4) / 2);
   opacity: 1;
 }
 
 .labels {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--space-S);
+  gap: var(--space-L);
 }
 
 .assignedLabel {

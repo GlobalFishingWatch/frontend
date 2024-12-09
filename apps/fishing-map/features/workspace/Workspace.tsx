@@ -31,9 +31,11 @@ import WorkspaceError, { WorkspacePassword } from 'features/workspace/WorkspaceE
 import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import UserSection from 'features/workspace/user/UserSection'
-import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { useUserExpiredToast } from 'features/user/user-expired.hooks'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
+import VesselGroupSection from './vessel-groups/VesselGroupsSection'
 import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
@@ -43,6 +45,7 @@ import { useMigrateWorkspaceToast } from './workspace-migration.hooks'
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   useMigrateWorkspaceToast()
+  useUserExpiredToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
@@ -76,7 +79,7 @@ function Workspace() {
     if (workspaceVesselGroupsIds.length) {
       dispatch(fetchWorkspaceVesselGroupsThunk(workspaceVesselGroupsIds))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [workspaceVesselGroupsIdsHash, dispatch])
 
   const handleDragEnd = useCallback(
@@ -197,6 +200,7 @@ function Workspace() {
       <ActivitySection />
       <DetectionsSection />
       <EventsSection />
+      <VesselGroupSection />
       <VesselsSection />
       <EnvironmentalSection />
       <ContextAreaSection />

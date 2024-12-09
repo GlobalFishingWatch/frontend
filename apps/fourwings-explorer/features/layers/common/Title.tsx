@@ -1,6 +1,8 @@
-import { forwardRef, ReactNode, Ref } from 'react'
+import type { ReactNode, Ref } from 'react';
+import { forwardRef } from 'react'
 import cx from 'classnames'
-import { DatasetLayer, useLayersConfig } from 'features/layers/layers.hooks'
+import type { DatasetLayer} from 'features/layers/layers.hooks';
+import { useLayersConfig } from 'features/layers/layers.hooks'
 
 type TitleProps = {
   layer: DatasetLayer

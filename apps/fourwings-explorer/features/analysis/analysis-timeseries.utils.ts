@@ -1,19 +1,21 @@
 import { DateTime } from 'luxon'
+import type {
+  TimeSeriesFrame} from '@globalfishingwatch/fourwings-aggregate';
 import {
   getRealValues,
-  getTimeSeries,
-  TimeSeriesFrame,
+  getTimeSeries
 } from '@globalfishingwatch/fourwings-aggregate'
-import {
+import type {
   HeatmapLayerMeta,
-  Interval,
+  Interval} from '@globalfishingwatch/layer-composer';
+import {
   pickActiveTimeChunk,
   quantizeOffsetToDate,
 } from '@globalfishingwatch/layer-composer'
-import { LayerFeature } from '@globalfishingwatch/features-aggregate'
-import { AnalysisGraphProps } from 'features/analysis/AnalysisEvolutionGraph'
-import { DateTimeSeries } from 'features/analysis/analysis.hooks'
-import { FilteredPolygons } from 'features/analysis/analysis-geo.utils'
+import type { LayerFeature } from '@globalfishingwatch/features-aggregate'
+import type { AnalysisGraphProps } from 'features/analysis/AnalysisEvolutionGraph'
+import type { DateTimeSeries } from 'features/analysis/analysis.hooks'
+import type { FilteredPolygons } from 'features/analysis/analysis-geo.utils'
 
 export const filterTimeseriesByTimerange = (
   timeseries: AnalysisGraphProps[],

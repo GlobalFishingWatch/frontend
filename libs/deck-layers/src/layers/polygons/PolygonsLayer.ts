@@ -1,7 +1,9 @@
-import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
+import type { Color, DefaultProps, PickingInfo } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
-import { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
+import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
+import type { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
+import { PREVIEW_BUFFER_GENERATOR_ID } from '../layers.config'
 import {
   hexToDeckColor,
   LayerGroup,
@@ -12,13 +14,15 @@ import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
 } from '../../utils'
-import { PolygonFeature, PolygonPickingInfo, PolygonPickingObject } from './polygons.types'
+import type { PolygonFeature, PolygonPickingInfo, PolygonPickingObject } from './polygons.types'
 
 const defaultProps: DefaultProps<PolygonsLayerProps> = {
   pickable: true,
 }
 
-export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProps & PropsT> {
+export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLayer<
+  PolygonsLayerProps & PropsT
+> {
   static layerName = 'PolygonsLayer'
   static defaultProps = defaultProps
 
@@ -82,11 +86,11 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
         data,
         lineWidthUnits: 'pixels',
         lineWidthMinPixels: 0,
-        lineWidthMaxPixels: 1,
+        lineWidthMaxPixels: 2,
         filled: false,
         getPolygonOffset: (params) =>
           getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-        getLineWidth: 1,
+        getLineWidth: id === PREVIEW_BUFFER_GENERATOR_ID ? 2 : 1,
         getLineColor: hexToDeckColor(color),
       }),
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({

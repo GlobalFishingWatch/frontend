@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
-import { Dataview } from '@globalfishingwatch/api-types'
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { selectUserDataviewEditPermissions } from 'features/user/selectors/user.permissions.selectors'
+import { selectHasDataviewEditPermissions } from 'features/user/selectors/user.permissions.selectors'
 import WorkspaceEditor from './WorkspaceEditor'
 import DataviewEditor from './DataviewEditor'
 import styles from './EditorMenu.module.css'
@@ -14,7 +14,7 @@ const EditorMenu = () => {
   const [activeSection, setActiveSection] = useState<Section>('dataviews')
   const [editDataview, setEditDataview] = useState<Dataview | undefined>()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const userDataviewPermissions = useSelector(selectUserDataviewEditPermissions)
+  const userDataviewPermissions = useSelector(selectHasDataviewEditPermissions)
 
   const onEditClick = (dataview: Dataview) => {
     setEditDataview(dataview)

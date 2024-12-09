@@ -1,5 +1,5 @@
 import { normal, screen } from 'color-blend'
-import { RGBA } from 'color-blend/dist/types'
+import type { RGBA } from 'color-blend/dist/types'
 import {
   hexToRgb,
   hexToRgbString,
@@ -39,12 +39,15 @@ export type ColorRampWhiteId =
 
 export type ColorRampsIds = ColorRampId | ColorRampWhiteId
 
+const MIN_OPACITY = 0.1
+
 export const getColorRampByOpacitySteps = (
   finalColor: string,
   numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
 ) => {
   const color = finalColor?.includes('#') ? hexToRgbString(finalColor) : finalColor
-  const opacitySteps = [...Array(numSteps)].map((_, i) => (i + 1) / numSteps)
+  const opacityStep = (1 - MIN_OPACITY) / numSteps
+  const opacitySteps = [...Array(numSteps)].map((_, i) => MIN_OPACITY + (i + 1) * opacityStep)
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
 

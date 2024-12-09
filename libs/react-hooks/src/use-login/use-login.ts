@@ -4,7 +4,7 @@ import {
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
-import { UserData } from '@globalfishingwatch/api-types'
+import type { UserData } from '@globalfishingwatch/api-types'
 
 export interface GFWLoginHook {
   logged: boolean

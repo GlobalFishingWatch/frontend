@@ -1,7 +1,7 @@
 import path from 'path'
 import { useEffect, useState } from 'react'
-import VesselServerComponent from 'server/vessel/vessel'
 import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
+import VesselServerComponent from 'server/vessel/vessel'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import Index from 'pages'
 import { WorkspaceCategory } from 'data/workspaces'

@@ -1,5 +1,6 @@
+import type {
+  Ref} from 'react';
 import {
-  Ref,
   forwardRef,
   useEffect,
   useImperativeHandle,
@@ -8,8 +9,8 @@ import {
   useState,
 } from 'react'
 import cx from 'classnames'
-import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import { isFieldLoginRequired } from '../vessel.utils'
 import styles from './VesselIdentityField.module.css'
 
 type VesselIdentityFieldProps = {
@@ -47,7 +48,7 @@ const VesselIdentityField = (
     }
   }, [value])
 
-  if (typeof value === 'string' && value.toUpperCase() === API_LOGIN_REQUIRED) {
+  if (isFieldLoginRequired(value)) {
     return <VesselIdentityFieldLogin />
   }
 

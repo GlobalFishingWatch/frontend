@@ -1,13 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { selectActiveReportCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectReportById } from 'features/reports/areas/area-reports.slice'
 import {
-  selectActiveDetectionsDataviews,
-  selectActiveHeatmapEnvironmentalDataviews,
-  selectActiveReportActivityDataviews,
-  selectReportActiveCategories,
-} from 'features/dataviews/selectors/dataviews.selectors'
-import { selectReportById } from 'features/reports/reports.slice'
-import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
-import {
+  selectIsVesselGroupReportLocation,
   selectLocationAreaId,
   selectLocationDatasetId,
   selectReportId,
@@ -15,12 +10,18 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import { BufferOperation, BufferUnit, ReportCategory, ReportVesselGraph } from 'types'
-import { createDeepEqualSelector } from 'utils/selectors'
-
-export function isActivityReport(reportCategory: ReportCategory) {
-  return reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
-}
+import type { BufferOperation, BufferUnit } from 'types'
+import {
+  selectReportBufferOperationSelector,
+  selectReportBufferUnitSelector,
+  selectReportBufferValueSelector,
+  selectReportCategorySelector,
+  selectReportVesselGraphSelector,
+} from 'features/reports/areas/area-reports.config.selectors'
+import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types';
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import { WORLD_REGION_ID } from 'features/reports/shared/activity/reports-activity.slice'
+import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
@@ -38,49 +39,52 @@ export const selectReportDatasetId = createSelector(
 )
 
 export const selectReportAreaId = createSelector(
-  [selectLocationAreaId, selectCurrentReport],
-  (locationAreaId, report) => {
+  [selectLocationAreaId, selectCurrentReport, selectIsVesselGroupReportLocation],
+  (locationAreaId, report, isVesselGroupReportLocation) => {
+    if (isVesselGroupReportLocation) {
+      return WORLD_REGION_ID
+    }
     return locationAreaId || report?.areaId || ''
   }
 )
 
-const selectReportCategorySelector = selectWorkspaceStateProperty('reportCategory')
-export const selectReportCategory = createSelector(
-  [selectReportCategorySelector, selectReportActiveCategories],
-  (reportCategory, activeCategories): ReportCategory => {
-    return activeCategories.some((category) => category === reportCategory)
-      ? reportCategory
-      : activeCategories[0]
+export const selectReportActiveCategories = createSelector(
+  [selectActiveReportCategories],
+  (activeCategories): ReportCategory[] => {
+    const orderedCategories = [
+      ReportCategory.Fishing,
+      ReportCategory.Presence,
+      ReportCategory.Detections,
+      ReportCategory.Environment,
+    ]
+    return orderedCategories.flatMap((category) =>
+      activeCategories.some((a) => a === category) ? category : []
+    )
   }
 )
 
-export const selectReportAreaBounds = selectWorkspaceStateProperty('reportAreaBounds')
-
-export const selectActiveReportDataviews = createDeepEqualSelector(
+export const selectReportCategory = createSelector(
   [
-    selectReportCategory,
-    selectActiveReportActivityDataviews,
-    selectActiveDetectionsDataviews,
-    selectActiveHeatmapEnvironmentalDataviews,
+    selectReportCategorySelector,
+    selectReportActiveCategories,
+    selectIsVesselGroupReportLocation,
+    selectVGRActivitySubsection,
   ],
   (
     reportCategory,
-    activityDataviews = [],
-    detectionsDataviews = [],
-    environmentalDataviews = []
-  ) => {
-    if (isActivityReport(reportCategory)) {
-      return activityDataviews
+    activeCategories,
+    isVesselGroupReportLocation,
+    vGRActivitySubsection
+  ): ReportCategory => {
+    if (isVesselGroupReportLocation) {
+      return vGRActivitySubsection as ReportCategory
     }
-    if (reportCategory === ReportCategory.Detections) {
-      return detectionsDataviews
+    if (activeCategories.some((category) => category === reportCategory)) {
+      return reportCategory
     }
-    return environmentalDataviews
+    return activeCategories[0]
   }
 )
-
-export const selectReportActivityGraph = selectWorkspaceStateProperty('reportActivityGraph')
-const selectReportVesselGraphSelector = selectWorkspaceStateProperty('reportVesselGraph')
 
 export const selectReportVesselGraph = createSelector(
   [selectReportVesselGraphSelector, selectReportCategory],
@@ -92,12 +96,6 @@ export const selectReportVesselGraph = createSelector(
   }
 )
 
-export const selectReportVesselFilter = selectWorkspaceStateProperty('reportVesselFilter')
-export const selectReportVesselPage = selectWorkspaceStateProperty('reportVesselPage')
-export const selectReportResultsPerPage = selectWorkspaceStateProperty('reportResultsPerPage')
-export const selectReportTimeComparison = selectWorkspaceStateProperty('reportTimeComparison')
-
-const selectReportBufferValueSelector = selectWorkspaceStateProperty('reportBufferValue')
 export const selectReportBufferValue = createSelector(
   [selectReportBufferValueSelector, selectUrlBufferValueQuery],
   (workspaceBufferValue, urlBufferValue): number => {
@@ -105,7 +103,6 @@ export const selectReportBufferValue = createSelector(
   }
 )
 
-const selectReportBufferUnitSelector = selectWorkspaceStateProperty('reportBufferUnit')
 export const selectReportBufferUnit = createSelector(
   [selectReportBufferUnitSelector, selectUrlBufferUnitQuery],
   (workspaceBufferUnit, urlBufferUnit): BufferUnit => {
@@ -113,7 +110,6 @@ export const selectReportBufferUnit = createSelector(
   }
 )
 
-const selectReportBufferOperationSelector = selectWorkspaceStateProperty('reportBufferOperation')
 export const selectReportBufferOperation = createSelector(
   [selectReportBufferOperationSelector, selectUrlBufferOperationQuery],
   (workspaceBufferOperation, urlBufferOperation): BufferOperation => {

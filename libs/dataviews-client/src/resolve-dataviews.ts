@@ -1,19 +1,22 @@
 import { uniqBy } from 'es-toolkit'
-import {
+import type {
   Dataset,
   DatasetSchema,
   DatasetSchemaItem,
-  DatasetTypes,
   Dataview,
-  DataviewCategory,
-  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
+  FilterOperator,
+  Resource,
+  VesselGroup,
+} from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  DataviewType,
   EndpointId,
   EXCLUDE_FILTER_ID,
-  FilterOperator,
   INCLUDE_FILTER_ID,
-  Resource,
 } from '@globalfishingwatch/api-types'
 import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
@@ -32,18 +35,28 @@ export function isDetectionsDataview(dataview: UrlDataviewInstance) {
   )
 }
 
+export function isVesselGroupDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.VesselGroups &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
 export function isTrackDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track
   )
 }
 
-export function isUserTrackDataview(dataview: UrlDataviewInstance) {
-  return dataview.category === DataviewCategory.User && dataview.config?.type === DataviewType.Track
+export function isUserHeatmapDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.User &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
 }
 
-export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
-  return isActivityDataview(dataview) || isDetectionsDataview(dataview)
+export function isUserTrackDataview(dataview: UrlDataviewInstance) {
+  return dataview.category === DataviewCategory.User && dataview.config?.type === DataviewType.Track
 }
 
 export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
@@ -321,12 +334,22 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
-export function getDataviewSqlFiltersResolved(dataview: UrlDataviewInstance) {
-  if (!dataview.config?.filters) {
+export function getDataviewFilters(dataview: UrlDataviewInstance) {
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
+    return { ...acc, ...(datasetConfig.filters || {}) }
+  }, {} as Record<string, any>)
+  const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
+  return filters
+}
+
+export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDataviewInstance) {
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
+    return { ...acc, ...(datasetConfig.filters || {}) }
+  }, {} as Record<string, any>)
+  const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
+  if (!Object.keys(filters).length) {
     return ''
   }
-  const { filters, filterOperators } = dataview.config
-
   const sqlFilters = Object.keys(filters)
     .filter((key) => key !== 'vessel-groups')
     .flatMap((filterKey) => {
@@ -360,7 +383,7 @@ export function getDataviewSqlFiltersResolved(dataview: UrlDataviewInstance) {
           return `${queryFilterKey} <= ${maxValue}`
         }
       }
-      const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
+      const filterOperator = dataview.config?.filterOperators?.[filterKey] || INCLUDE_FILTER_ID
       const hasNumericFilterValues = filterValues.every((v: any) => isNumeric(v))
       const query = `${queryFilterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
         .map((f: string) => (hasNumericFilterValues ? `${f}` : `'${f}'`))
@@ -375,6 +398,20 @@ export function getDataviewSqlFiltersResolved(dataview: UrlDataviewInstance) {
   return sqlFilters.length ? sqlFilters.join(' AND ') : ''
 }
 
+export function getDataviewVesselGroupId(dataview: UrlDataviewInstance): string | undefined {
+  return dataview.config?.filters?.['vessel-groups']?.[0]
+}
+
+export function getDataviewVesselGroup(
+  dataview: UrlDataviewInstance,
+  vesselGroups: VesselGroup[]
+): VesselGroup | undefined {
+  if (!dataview || !vesselGroups?.length) return
+
+  const dataviewVesselGroupId = getDataviewVesselGroupId(dataview)
+  return vesselGroups?.find(({ id }) => id === dataviewVesselGroupId)
+}
+
 /**
  * Gets list of dataviews and those present in the workspace, and applies any config or datasetConfig
  * from it (merges dataview.config and workspace's dataviewConfig and datasetConfig).
@@ -384,7 +421,8 @@ export function getDataviewSqlFiltersResolved(dataview: UrlDataviewInstance) {
 export function resolveDataviews(
   dataviewInstances: UrlDataviewInstance[],
   dataviews: Dataview[],
-  datasets: Dataset[]
+  datasets: Dataset[],
+  vesselGroups: VesselGroup[]
 ) {
   let dataviewInstancesResolved: UrlDataviewInstance[] = dataviewInstances.flatMap(
     (dataviewInstance) => {
@@ -437,7 +475,7 @@ export function resolveDataviews(
 
               if (!instanceDatasetConfig) {
                 const deprecatedDatasetConfigMigrationId =
-                  dataviewInstance.datasetsConfigMigration?.[datasetConfig?.datasetId!]
+                  dataviewInstance.datasetsConfigMigration?.[datasetConfig?.datasetId]
                 return {
                   ...datasetConfig,
                   ...(deprecatedDatasetConfigMigrationId && {
@@ -463,7 +501,7 @@ export function resolveDataviews(
               // so the result will be overriding the default dataview config
 
               const deprecatedDatasetConfigMigrationId =
-                dataviewInstance.datasetsConfigMigration?.[instanceDatasetConfig?.datasetId!]
+                dataviewInstance.datasetsConfigMigration?.[instanceDatasetConfig?.datasetId]
               return {
                 ...datasetConfig,
                 ...instanceDatasetConfig,
@@ -487,6 +525,8 @@ export function resolveDataviews(
         return dataset || []
       })
 
+      const vesselGroup = getDataviewVesselGroup(dataviewInstance, vesselGroups)
+
       const resolvedDataview = {
         ...dataview,
         // Supports overriding the category so we can easily move user layers to context section
@@ -495,6 +535,7 @@ export function resolveDataviews(
         dataviewId: dataview.slug,
         config,
         datasets: dataviewDatasets,
+        vesselGroup,
         datasetsConfig,
       }
       return resolvedDataview

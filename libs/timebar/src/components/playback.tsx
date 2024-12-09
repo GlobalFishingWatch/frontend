@@ -3,17 +3,10 @@ import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
 import { DateTime } from 'luxon'
-import {
-  getFourwingsInterval,
-  FOURWINGS_INTERVALS_ORDER,
-  FourwingsInterval,
-} from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
+import { Icon } from '@globalfishingwatch/ui-components'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
-import { ReactComponent as IconLoop } from '../icons/loop.svg'
-import { ReactComponent as IconBack } from '../icons/back.svg'
-import { ReactComponent as IconPlay } from '../icons/play.svg'
-import { ReactComponent as IconPause } from '../icons/pause.svg'
-import { ReactComponent as IconForward } from '../icons/forward.svg'
 import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
 
@@ -93,6 +86,9 @@ class Playback extends Component<PlaybackProps> {
 
   update = (deltaMultiplicator: number, { byIntervals = false } = {}) => {
     const { onTick, start, end, absoluteStart, intervals, getCurrentInterval } = this.props
+    if (!start || !end) {
+      return
+    }
     const { speedStep, loop } = this.state
     let newStartMs
     let newEndMs
@@ -100,11 +96,11 @@ class Playback extends Component<PlaybackProps> {
       const interval = getCurrentInterval(start, end, intervals)
       const intervalStartMs =
         interval === 'MONTH'
-          ? DateTime.fromISO(start, { zone: 'utc' })?.daysInMonth! * MS_IN_INTERVAL.DAY
+          ? DateTime.fromISO(start, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       const intervalEndMs =
         interval === 'MONTH'
-          ? DateTime.fromISO(end, { zone: 'utc' })?.daysInMonth! * MS_IN_INTERVAL.DAY
+          ? DateTime.fromISO(end, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator
       newEndMs = new Date(end).getTime() + intervalEndMs * deltaMultiplicator
@@ -181,7 +177,9 @@ class Playback extends Component<PlaybackProps> {
       playing: playingNext,
     })
 
-    onTogglePlay && onTogglePlay(playingNext)
+    if (onTogglePlay) {
+      onTogglePlay(playingNext)
+    }
   }
 
   componentWillUnmount() {
@@ -234,7 +232,7 @@ class Playback extends Component<PlaybackProps> {
             [styles.secondaryActive]: loop,
           })}
         >
-          <IconLoop />
+          <Icon icon="loop" />
         </button>
         <button
           type="button"
@@ -242,7 +240,7 @@ class Playback extends Component<PlaybackProps> {
           onClick={this.onBackwardClick}
           className={cx(uiStyles.uiButton, styles.secondary, styles.back)}
         >
-          <IconBack />
+          <Icon icon="back" />
         </button>
         <button
           type="button"
@@ -251,7 +249,7 @@ class Playback extends Component<PlaybackProps> {
           disabled={stoppedAtEnd}
           className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play)}
         >
-          {playing === true ? <IconPause /> : <IconPlay />}
+          {playing === true ? <Icon icon="pause" /> : <Icon icon="play" />}
         </button>
         <button
           type="button"
@@ -259,7 +257,7 @@ class Playback extends Component<PlaybackProps> {
           onClick={this.onForwardClick}
           className={cx(uiStyles.uiButton, styles.secondary, styles.forward)}
         >
-          <IconForward />
+          <Icon icon="forward" />
         </button>
         <button
           type="button"

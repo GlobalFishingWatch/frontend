@@ -1,0 +1,14 @@
+.container {
+  min-height: calc(100vh - var(--header-band-height));
+  background-image: var(--background-gradient);
+  width: 100%;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.column {
+  max-width: var(--desktop-max-width);
+  margin: 0 auto;
+  padding-left: 5rem;
+  padding-right: 5rem;
+}

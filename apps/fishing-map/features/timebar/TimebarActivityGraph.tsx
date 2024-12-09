@@ -1,12 +1,13 @@
 import { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import {
-  TimebarStackedActivity,
+import type {
   HighlighterCallbackFn,
-  HighlighterCallbackFnArgs,
+  HighlighterCallbackFnArgs} from '@globalfishingwatch/timebar';
+import {
+  TimebarStackedActivity
 } from '@globalfishingwatch/timebar'
-import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveActivityDataviewsByVisualisation } from 'features/timebar/timebar.selectors'
 import { useHeatmapActivityGraph } from 'features/timebar/TimebarActivityGraph.hooks'
 import { formatNumber } from 'utils/info'
 import { TimebarVisualisations } from 'types'

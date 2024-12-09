@@ -1,0 +1,58 @@
+{
+  "name": "track-labeler",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/track-labeler/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/track-labeler"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "start": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "track-labeler:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "track-labeler:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "track-labeler:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "track-labeler:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "track-labeler:build:development"
+        },
+        "production": {
+          "buildTarget": "track-labeler:build:production"
+        }
+      },
+      "dependsOn": ["build"]
+    }
+  }
+}

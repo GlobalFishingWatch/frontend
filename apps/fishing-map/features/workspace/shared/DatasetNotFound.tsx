@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import Remove from '../common/Remove'
 

@@ -1,11 +1,14 @@
 import { useState, useMemo, useTransition } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import { Tooltip, IconButton } from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
-import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
+import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
@@ -13,8 +16,9 @@ import ActivityFilters, {
   isHistogramDataviewSupported,
 } from 'features/workspace/common/LayerFilters'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import type {
+  SupportedEnvDatasetSchema} from 'features/datasets/datasets.utils';
 import {
-  SupportedEnvDatasetSchema,
   getSchemaFiltersInDataview,
 } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -22,6 +26,9 @@ import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import MapLegend from 'features/workspace/common/MapLegend'
+import { useActivityDataviewId } from 'features/map/map-layers.hooks'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -41,6 +48,8 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
+  const isGFWUser = useSelector(selectIsGFWUser)
+  const readOnly = useSelector(selectReadOnly)
   const {
     items,
     attributes,
@@ -51,6 +60,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     isSorting,
     activeIndex,
   } = useLayerPanelDataviewSort(dataview.id)
+  const dataviewId = useActivityDataviewId(dataview)
+  const activityLayer = useGetDeckLayer<FourwingsLayer>(dataviewId)
+  const layerError = activityLayer?.instance?.getError?.()
 
   const datasetFields: { field: SupportedEnvDatasetSchema; label: string }[] = useMemo(
     () => [
@@ -139,7 +151,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       : false
   const hasFilters = dataview.config?.filters && Object.keys(dataview.config?.filters).length > 0
   const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter || hasFilters
-  const showSortHandler = items.length > 1
+  const showSortHandler = items.length > 1 && !readOnly
 
   return (
     <div
@@ -207,7 +219,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             />
           )}
           <InfoModal dataview={dataview} />
-          <Remove dataview={dataview} loading={!showSortHandler && layerActive && !layerLoaded} />
+          {!readOnly && (
+            <Remove dataview={dataview} loading={!showSortHandler && layerActive && !layerLoaded} />
+          )}
           {showSortHandler && (
             <IconButton
               size="small"
@@ -218,10 +232,25 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               className={styles.dragger}
             />
           )}
+          {!readOnly && layerError && (
+            <IconButton
+              icon={'warning'}
+              type={'warning'}
+              tooltip={
+                isGFWUser
+                  ? `${t(
+                      'errors.layerLoading',
+                      'There was an error loading the layer'
+                    )} (${layerError})`
+                  : t('errors.layerLoading', 'There was an error loading the layer')
+              }
+              size="small"
+            />
+          )}
         </div>
         <IconButton
-          icon={layerActive ? 'more' : undefined}
-          type="default"
+          icon={layerError ? 'warning' : layerActive ? 'more' : undefined}
+          type={layerError ? 'warning' : 'default'}
           loading={layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"

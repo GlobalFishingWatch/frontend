@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API_URL } from 'data/config'
 import { DATASET_QUERY_ID } from 'features/datasets/datasets.hooks'
-import { APIDataset, APIDatasetUpdate } from 'features/datasets/datasets.types'
+import type { APIDataset, APIDatasetUpdate } from 'features/datasets/datasets.types'
 
 export function useCreateDataset() {
   const queryClient = useQueryClient()

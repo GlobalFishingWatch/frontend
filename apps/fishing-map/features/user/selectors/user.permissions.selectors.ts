@@ -1,18 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { orderBy, uniqBy } from 'es-toolkit'
+import { orderBy } from 'es-toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
+import type { UserPermission } from '@globalfishingwatch/api-types';
+import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
-import {
-  selectAllVesselGroups,
-  selectWorkspaceVesselGroups,
-} from 'features/vessel-groups/vessel-groups.slice'
-import { selectAllReports } from 'features/reports/reports.slice'
-import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { DEFAULT_GROUP_ID, PRIVATE_SUPPORTED_GROUPS } from 'features/user/user.config'
-import { USER_GROUP_WORKSPACE, UserGroup } from '../user.slice'
+import { selectAllReports } from 'features/reports/areas/area-reports.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import { DEFAULT_GROUP_ID } from 'features/user/user.config'
+import { USER_GROUP_WORKSPACE } from '../user.slice'
+import { selectPrivateUserGroups } from './user.groups.selectors'
 
 const hasUserPermission = (permission: UserPermission) =>
   createSelector([selectUserData], (userData): boolean => {
@@ -20,16 +18,16 @@ const hasUserPermission = (permission: UserPermission) =>
     return checkExistPermissionInList(userData.permissions, permission)
   })
 
-export const selectUserDataviewEditPermissions = hasUserPermission({
+export const selectHasDataviewEditPermissions = hasUserPermission({
   type: 'entity',
   value: 'dataview',
   action: 'create-all',
 })
 
-export const selectUserGroupsPermissions = hasUserPermission({
-  type: 'entity',
-  value: 'vessel-group',
-  action: 'create',
+export const selectHasEditTranslationsPermissions = hasUserPermission({
+  type: 'application',
+  value: 'fishing-map',
+  action: 'edit-translations',
 })
 
 export const selectUserId = createSelector([selectUserData], (userData) => {
@@ -70,17 +68,6 @@ export const selectUserReports = createSelector(
   }
 )
 
-const selectPrivateUserGroups = createSelector(
-  [selectUserGroups, selectIsGFWUser],
-  (userGroups = [], gfwUser) => {
-    const groupsWithAccess = gfwUser
-      ? PRIVATE_SUPPORTED_GROUPS.map((g) => g.toLowerCase())
-      : userGroups.filter((g) => PRIVATE_SUPPORTED_GROUPS.includes(g)).map((g) => g.toLowerCase())
-
-    return groupsWithAccess as UserGroup[]
-  }
-)
-
 export const selectUserWorkspacesPrivate = createSelector(
   [selectPrivateUserGroups, selectWorkspaces],
   (groupsWithAccess = [], workspaces) => {
@@ -116,17 +103,4 @@ const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
 export const selectUserContextDatasets = selectUserDatasetsByCategory(DatasetCategory.Context)
 export const selectUserEnvironmentDatasets = selectUserDatasetsByCategory(
   DatasetCategory.Environment
-)
-export const selectUserVesselGroups = createSelector(
-  [selectAllVesselGroups, selectUserId],
-  (vesselGroups, userId) => {
-    return vesselGroups?.filter((d) => d.ownerId === userId)
-  }
-)
-
-export const selectAllVisibleVesselGroups = createSelector(
-  [selectUserVesselGroups, selectWorkspaceVesselGroups],
-  (vesselGroups = [], workspaceVesselGroups = []) => {
-    return uniqBy([...vesselGroups, ...(workspaceVesselGroups || [])], (v) => v.id)
-  }
 )

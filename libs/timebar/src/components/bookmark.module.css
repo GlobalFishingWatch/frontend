@@ -80,15 +80,6 @@ button.delete {
   text-transform: uppercase;
 }
 
-.Bookmark._overflowingLeft .leftArrow {
-  margin-right: 0.8rem;
-}
-
-.Bookmark._overflowingRight .rightArrow {
-  margin-right: 0.8rem;
-  transform: rotateZ(180deg);
-}
-
 .Bookmark._compact .icon {
   flex: 0 auto;
 }

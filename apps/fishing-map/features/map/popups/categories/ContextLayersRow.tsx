@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   selectActiveHeatmapDowloadDataviews,
   selectHasReportLayersVisible,
@@ -23,14 +23,14 @@ import {
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { getAreaIdFromFeature } from 'features/map/popups/categories/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { resetReportData } from 'features/reports/report.slice'
+import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
-} from 'features/reports/reports.config'
+} from 'features/reports/areas/area-reports.config'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import styles from '../Popup.module.css'
 
@@ -97,7 +97,9 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const reportAreaDataset = useSelector(selectLocationDatasetId)
   const reportAreaId = useSelector(selectLocationAreaId)
   const areaId = getAreaIdFromFeature(feature)
-  const isSameArea = reportAreaId?.toString() === areaId?.toString()
+  const isSameAreaId = reportAreaId?.toString() === areaId?.toString()
+  const isSameDataset = feature.datasetId === reportAreaDataset
+  const isSameArea = isSameAreaId && isSameDataset
   const addAreaToReport = reportAreaDataset && reportAreaId && !isSameArea
 
   if (!hasAnalysableLayer || isSameArea) {

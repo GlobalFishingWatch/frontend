@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { TimelineScale } from '../timelineContext'
+import type { TimelineScale } from '../timelineContext'
 import { getTime } from '../utils/internal-utils'
 
 const getUnitLabel = (

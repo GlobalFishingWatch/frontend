@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+ 
 const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
@@ -62,10 +62,8 @@ const nextConfig = {
 
   // to deploy on a node server
   output: 'standalone',
-  outputFileTracing: true,
-  experimental: {
-    outputFileTracingRoot: join(__dirname, '../../'),
-  },
+  outputFileTracingRoot: join(__dirname, '../../'),
+  experimental: {},
   cleanDistDir: true,
   distDir: '.next',
 }

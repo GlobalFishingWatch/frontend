@@ -2,16 +2,19 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 import { stringify } from 'qs'
-import { IconButton, IconButtonSize } from '@globalfishingwatch/ui-components'
-import {
+import type { IconButtonSize } from '@globalfishingwatch/ui-components';
+import { IconButton } from '@globalfishingwatch/ui-components'
+import type {
   APIPagination,
   Dataset,
-  DatasetTypes,
   DataviewInstance,
   IdentityVessel,
-  Resource,
+  Resource} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes,
   ResourceStatus,
 } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client';
 import { setResource } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -29,6 +32,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import type { ExtendedFeatureVessel } from 'features/map/map.slice'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 
 export type VesselToResolve = {
   id: string
@@ -37,7 +42,10 @@ export type VesselToResolve = {
   datasetId: string
 }
 export type VesselToSearch = { id: string; name?: string; flag?: string; datasets?: string[] }
-
+export type VesselPinClickProps = {
+  vesselInWorkspace?: UrlDataviewInstance | null | undefined
+  vesselId?: string
+}
 // Supports both options:
 // 1. When identity vessel already available: <VesselPin vessel={vessel} />
 // 2. When identity vessel is not available and we only have the vesselId, for example reports or encounters:
@@ -51,24 +59,27 @@ function VesselPin({
   size = 'small',
   onClick,
 }: {
-  vessel?: IdentityVessel
+  vessel?: IdentityVessel | ExtendedFeatureVessel
   vesselToResolve?: VesselToResolve
   vesselToSearch?: VesselToSearch
   className?: string
   disabled?: boolean
   size?: IconButtonSize
-  onClick?: () => void
+  onClick?: ({ vesselInWorkspace, vesselId }: VesselPinClickProps) => void
 }) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselsInWorkspace = useSelector(selectTrackDataviews)
-  const infoDatasetId = vessel?.dataset || vesselToResolve?.datasetId || ''
+  const infoDatasetId =
+    typeof vessel?.dataset === 'string'
+      ? vessel?.dataset
+      : vessel?.dataset?.id || vesselToResolve?.datasetId || ''
   const infoDataset = useSelector(selectDatasetById(infoDatasetId))
   const vesselInWorkspace = getVesselInWorkspace(
     vesselsInWorkspace,
-    vessel ? getVesselId(vessel) : vesselToResolve!?.id || vesselToSearch?.id || ''
+    vessel ? getVesselId(vessel) : vesselToResolve?.id || vesselToSearch?.id || ''
   )
 
   // This avoid requesting the vessel info again when we alredy requested it for the popup
@@ -181,7 +192,8 @@ function VesselPin({
       }
     }
     setLoading(false)
-    onClick?.()
+    dispatch(setWorkspaceSuggestSave(true))
+    onClick?.({ vesselInWorkspace, vesselId: getVesselId(vessel as IdentityVessel) })
   }
 
   return (

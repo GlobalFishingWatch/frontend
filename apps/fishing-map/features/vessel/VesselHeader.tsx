@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import { useCallback, useEffect } from 'react'
@@ -8,8 +7,14 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
-import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
+import VesselGroupAddButton, {
+  VesselGroupAddActionButton,
+} from 'features/vessel-groups/VesselGroupAddButton'
+import {
+  getCurrentIdentityVessel,
+  getOtherVesselNames,
+  getVesselProperty,
+} from 'features/vessel/vessel.utils'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -31,6 +36,7 @@ import {
   selectVesselInfoData,
   selectVesselPrintMode,
 } from 'features/vessel/selectors/vessel.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -42,31 +48,36 @@ const VesselHeader = () => {
   const identitySource = useSelector(selectVesselIdentitySource)
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
   const { boundsReady, setVesselBounds } = useVesselProfileBounds()
-
+  const vesselIdentity = getCurrentIdentityVessel(vessel, {
+    identityId,
+    identitySource,
+  })
   const vesselPrintCallback = useCallback(() => {
     window.print()
   }, [])
 
-  const trackAction = useCallback((label: 'center_map' | 'print' | 'add_to_group' | 'share') => {
-    if (label === 'add_to_group') {
-      trackEvent({
-        category: TrackCategory.VesselGroups,
-        action: 'add_to_vessel_group',
-        label: 'search',
-      })
-    } else {
-      trackEvent({
-        category: TrackCategory.VesselProfile,
-        action: 'click_vessel_header_actions',
-        label,
-      })
-    }
+  const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: 'click_vessel_header_actions',
+      label,
+    })
   }, [])
+
+  const onAddToVesselGroup = (vesselGroupId: string, vesselsCount?: number) => {
+    trackEvent({
+      category: TrackCategory.VesselGroups,
+      action: 'add_to_vessel_group_from_vessel_profile',
+      label: `${vesselGroupId}`,
+      value: `number of vessel identities in group: ${vesselsCount}`,
+    })
+  }
 
   useEffect(() => {
     const enableVesselPrintMode = () => {
@@ -81,7 +92,6 @@ const VesselHeader = () => {
       window.removeEventListener('beforeprint', enableVesselPrintMode)
       window.removeEventListener('afterprint', disableVesselPrintMode)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useCallbackAfterPaint({
@@ -95,6 +105,8 @@ const VesselHeader = () => {
 
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
+  // TODO remove false when we have a vessel image
+  const vesselImage = isGFWUser && vesselIdentity?.images?.[0].url
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
@@ -115,78 +127,81 @@ const VesselHeader = () => {
 
   return (
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-      <div className={cx(styles.summaryContainer, styles.titleContainer)}>
-        <h1 data-test="vv-vessel-name" className={styles.title}>
-          <svg className={styles.vesselIcon} width="16" height="16">
-            <path
-              fill={vesselColor || COLOR_PRIMARY_BLUE}
-              stroke={COLOR_PRIMARY_BLUE}
-              strokeOpacity=".5"
-              d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
-            />
-          </svg>
-          {formatInfoField(shipname, 'name')}
-          <span className={styles.secondary}>{otherNamesLabel}</span>
-          <div>
-            <a className={styles.reportLink} href={window.location.href}>
-              {t('vessel.linkToVessel', 'Check the vessel profile here')}
-            </a>
+      <div className={styles.summaryContainer}>
+        <div className={styles.summaryWrapper}>
+          {vesselImage && <img src={vesselImage} alt={shipname} className={styles.vesselImage} />}
+          <div className={styles.titleContainer}>
+            <h1 data-test="vv-vessel-name" className={styles.title}>
+              <svg className={styles.vesselIcon} width="16" height="16">
+                <path
+                  fill={vesselColor || COLOR_PRIMARY_BLUE}
+                  stroke={COLOR_PRIMARY_BLUE}
+                  strokeOpacity=".5"
+                  d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
+                />
+              </svg>
+              {formatInfoField(shipname, 'shipname')}
+              <span className={styles.secondary}>{otherNamesLabel}</span>
+              <div>
+                <a className={styles.reportLink} href={window.location.href}>
+                  {t('vessel.linkToVessel', 'Check the vessel profile here')}
+                </a>
+              </div>
+            </h1>
+            <div className={styles.actionsContainer}>
+              {vesselProfileDataview && (
+                <VesselDownload
+                  dataview={vesselProfileDataview}
+                  vesselIds={vessel.identities
+                    .filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
+                    .map((i) => i.id)}
+                  vesselTitle={shipname}
+                  datasetId={vessel.track as string}
+                  iconType="border"
+                />
+              )}
+              {isWorkspaceVesselLocation && (
+                <IconButton
+                  className="print-hidden"
+                  type="border"
+                  icon={viewOnlyVessel ? 'layers-on' : 'layers-off'}
+                  tooltip={
+                    viewOnlyVessel
+                      ? t('vessel.showOtherLayers', 'Show other layers')
+                      : t('vessel.hideOtherLayers', 'Hide other layers')
+                  }
+                  tooltipPlacement="bottom"
+                  size="small"
+                  onClick={setViewOnlyVessel}
+                />
+              )}
+              <IconButton
+                className="print-hidden"
+                type="border"
+                icon="target"
+                tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
+                tooltipPlacement="bottom"
+                size="small"
+                disabled={!boundsReady}
+                onClick={onVesselFitBoundsClick}
+              />
+              <Button
+                className="print-hidden"
+                type="border-secondary"
+                size="small"
+                onClick={onPrintClick}
+              >
+                <p>{t('analysis.print ', 'print')}</p>
+                <Icon icon="print" type="default" />
+              </Button>
+              <VesselGroupAddButton
+                vessels={vessel ? [vessel] : []}
+                onAddToVesselGroup={onAddToVesselGroup}
+              >
+                <VesselGroupAddActionButton buttonSize="small" buttonType="border-secondary" />
+              </VesselGroupAddButton>
+            </div>
           </div>
-        </h1>
-        <div className={styles.actionsContainer}>
-          {vesselProfileDataview && (
-            <VesselDownload
-              dataview={vesselProfileDataview}
-              vesselIds={vessel.identities
-                .filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
-                .map((i) => i.id)}
-              vesselTitle={shipname}
-              datasetId={vessel.track as string}
-              iconType="border"
-            />
-          )}
-          {isWorkspaceVesselLocation && (
-            <IconButton
-              className="print-hidden"
-              type="border"
-              icon={viewOnlyVessel ? 'layers-on' : 'layers-off'}
-              tooltip={
-                viewOnlyVessel
-                  ? t('vessel.showOtherLayers', 'Show other layers')
-                  : t('vessel.hideOtherLayers', 'Hide other layers')
-              }
-              tooltipPlacement="bottom"
-              size="small"
-              onClick={setViewOnlyVessel}
-            />
-          )}
-          <IconButton
-            className="print-hidden"
-            type="border"
-            icon="target"
-            tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
-            tooltipPlacement="bottom"
-            size="small"
-            disabled={!boundsReady}
-            onClick={onVesselFitBoundsClick}
-          />
-          <Button
-            className="print-hidden"
-            type="border-secondary"
-            size="small"
-            onClick={onPrintClick}
-          >
-            <p>{t('analysis.print ', 'print')}</p>
-            <Icon icon="print" type="default" />
-          </Button>
-          <VesselGroupAddButton
-            buttonSize="small"
-            buttonType="border-secondary"
-            vessels={vessel ? [vessel] : []}
-            showCount={false}
-            buttonClassName="print-hidden"
-            onAddToVesselGroup={() => trackAction('add_to_group')}
-          />
         </div>
       </div>
     </Sticky>

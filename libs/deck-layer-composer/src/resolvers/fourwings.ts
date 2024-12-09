@@ -1,11 +1,13 @@
 import { uniq } from 'es-toolkit'
-import {
-  FourwingsAggregationOperation,
-  FourwingsComparisonMode,
+import type {
   FourwingsDeckSublayer,
   FourwingsLayerProps,
   FourwingsPickingObject,
   FourwingsVisualizationMode,
+} from '@globalfishingwatch/deck-layers'
+import {
+  FourwingsAggregationOperation,
+  FourwingsComparisonMode,
   TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
@@ -15,12 +17,11 @@ import {
   DataviewType,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import { ColorRampId } from '@globalfishingwatch/deck-layers'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { getDataviewAvailableIntervals } from './dataviews'
-import { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from './types'
 
-// TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayerProps> = (
   dataview,
   {
@@ -42,7 +43,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     const positionProperties = uniq(
       sublayer?.datasets.flatMap((dataset) => Object.keys(dataset?.schema || {}))
     )
-    const { extentStart, extentEnd } = getDatasetsExtent(sublayer.datasets, {
+    const { extentStart, extentEnd } = getDatasetsExtent<number>(sublayer.datasets, {
       format: 'timestamp',
     })
 
@@ -57,12 +58,13 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
       color: (sublayer?.color || dataview.config?.color) as string,
       positionProperties,
       colorRamp: sublayer?.colorRamp as ColorRampId,
-      label: sublayer?.datasets?.[0]?.name!,
+      label: sublayer?.datasets?.[0]?.name,
       unit: units[0]!,
       filter: sublayer?.filter,
       vesselGroups: sublayer?.vesselGroups,
-      extentStart: extentStart as number,
-      extentEnd: extentEnd as number,
+      vesselGroupsLength: sublayer?.vesselGroupsLength,
+      extentStart,
+      extentEnd,
     }
   })
 
@@ -96,7 +98,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
       ? sublayer.datasets.filter((dataset) => dataset.type === DatasetTypes.Fourwings)
       : []
   )
-  const { extentStart, extentEnd } = getDatasetsExtent(allVisibleDatasets)
+  const { extentStart, extentEnd } = getDatasetsExtent<string>(allVisibleDatasets)
 
   const dataset = allVisibleDatasets?.[0]
 
@@ -143,7 +145,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     startTime,
     endTime,
     category: dataview.category!,
-    subcategory: dataview.config?.type!,
+    subcategory: dataview.config?.type,
     static: dataview.config?.type === DataviewType.HeatmapStatic,
     sublayers,
     comparisonMode,
@@ -160,6 +162,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
     visible: dataview.config?.visible ?? true,
+    color: dataview.config?.color,
     colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,
     ...(onPositionsMaxPointsError && { onPositionsMaxPointsError }),
     ...(tilesUrl && { tilesUrl }),

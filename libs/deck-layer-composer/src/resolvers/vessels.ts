@@ -1,11 +1,13 @@
-import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
-import { VesselLayerProps, getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import type { EventTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type { VesselLayerProps } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
-import { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from './types'
 
 export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
   dataview,
@@ -15,13 +17,13 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
   const { start, end, highlightedFeatures, visibleEvents, highlightedTime } = globalConfig
   const highlightEventIds = [
     ...(globalConfig.highlightEventIds || []),
-    ...(highlightedFeatures || [])?.map((feature) => feature.id),
+    ...(highlightedFeatures || []).map((feature) => feature.id),
   ]
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
     category: dataview.category!,
-    name: dataview.config?.name!,
+    name: dataview.config?.name,
     endTime: getUTCDateTime(end!).toMillis(),
     startTime: getUTCDateTime(start!).toMillis(),
     ...(trackUrl && {
@@ -29,7 +31,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     }),
     singleTrack: dataview.config?.singleTrack,
     trackThinningZoomConfig: dataview.config?.trackThinningZoomConfig,
-    color: hexToDeckColor(dataview.config?.color!),
+    color: hexToDeckColor(dataview.config?.color as string),
     events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
       const eventType = resource.dataset?.subcategory as EventTypes
       return {

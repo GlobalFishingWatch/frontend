@@ -2,15 +2,19 @@ import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
-import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
-import {
+import type { DataviewInstance } from '@globalfishingwatch/api-types';
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import type {
   ResolverGlobalConfig,
-  TimeRange,
+  TimeRange} from '@globalfishingwatch/deck-layer-composer';
+import {
   useDeckLayerComposer,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { FourwingsLayer, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import type { FourwingsLayer} from '@globalfishingwatch/deck-layers';
+import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectWorkspaceStatus,
@@ -22,7 +26,11 @@ import {
   selectIsUserLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
-import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  selectActivityMergedDataviewId,
+  selectDetectionsMergedDataviewId,
+} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectBivariateDataviews,
   selectActivityVisualizationMode,
@@ -34,7 +42,7 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
-} from 'features/reports/reports.selectors'
+} from 'features/reports/areas/area-reports.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedTime, selectHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -47,6 +55,18 @@ import {
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
 import { useMapViewState } from './map-viewport.hooks'
 import { selectClickedEvent } from './map.slice'
+
+export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
+  const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
+  const detectionsMergedDataviewId = useSelector(selectDetectionsMergedDataviewId)
+  const dataviewId =
+    dataview.category === DataviewCategory.Environment
+      ? dataview.id
+      : dataview.category === DataviewCategory.Detections
+      ? detectionsMergedDataviewId
+      : activityMergedDataviewId
+  return dataviewId
+}
 
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()

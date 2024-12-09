@@ -1,4 +1,4 @@
-import { Position } from 'geojson'
+import type { Position } from 'geojson'
 
 export type BBox = [number, number, number, number]
 
@@ -29,7 +29,7 @@ export const getCellCoordinates = ({
   cellIndex,
   cols,
   rows,
-}: GetCellCoordinatesParams): Position[] => {
+}: GetCellCoordinatesParams): number[] => {
   const { col, row, width, height } = getCellProperties(tileBBox, cellIndex, cols)
   const [minX, minY] = tileBBox
   const squareMinX = minX + (col / cols) * width
@@ -37,12 +37,30 @@ export const getCellCoordinates = ({
   const squareMaxX = minX + ((col + 1) / cols) * width
   const squareMaxY = minY + ((row + 1) / rows) * height
   return [
-    [squareMinX, squareMinY],
-    [squareMaxX, squareMinY],
-    [squareMaxX, squareMaxY],
-    [squareMinX, squareMaxY],
-    [squareMinX, squareMinY],
+    squareMinX,
+    squareMinY,
+    squareMaxX,
+    squareMinY,
+    squareMaxX,
+    squareMaxY,
+    squareMinX,
+    squareMaxY,
+    squareMinX,
+    squareMinY,
   ]
+}
+
+export const getCellPointCoordinates = ({
+  tileBBox,
+  cellIndex,
+  cols,
+  rows,
+}: GetCellCoordinatesParams): Position => {
+  const { col, row, width, height } = getCellProperties(tileBBox, cellIndex, cols)
+  const [minX, minY] = tileBBox
+  const squareMinX = minX + (col / cols) * width
+  const squareMinY = minY + (row / rows) * height
+  return [squareMinX, squareMinY]
 }
 
 const getLastDigit = (num: number) => parseInt(num.toString().slice(-1))

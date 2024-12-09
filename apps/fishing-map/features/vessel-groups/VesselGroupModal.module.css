@@ -1,7 +1,13 @@
-.modalContainer {
-  height: 58rem;
+.modal .modalContainer {
+  height: 62rem;
   display: flex;
   flex-direction: column;
+}
+
+@media only screen and (width >= 720px) {
+  .modal .modalContainer {
+    height: 62rem;
+  }
 }
 
 .modalContent {
@@ -18,9 +24,13 @@
   gap: var(--space-S);
 }
 
+.disclaimerFooter {
+  display: flex;
+  align-items: center;
+}
+
 .parameters {
   display: flex;
-  height: 80px;
   margin-bottom: 2rem;
 }
 
@@ -39,7 +49,6 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  max-width: 25rem;
   margin-right: 2rem;
 }
 
@@ -54,6 +63,7 @@
 .idsArea {
   display: flex;
   flex-direction: column;
+  margin-top: var(--space-S);
 }
 
 .idsArea textarea {
@@ -80,16 +90,23 @@
 }
 
 .vesselsTableContainer {
-  max-height: 340px;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  max-height: 400px;
+  max-width: 100%;
+  overflow: auto scroll;
+  border: var(--border);
 }
 
 .vesselsTable {
   width: 100%;
-  margin-right: var(--space-S);
-  margin-bottom: var(--space-XS);
   border-collapse: collapse;
+}
+
+.vesselsTable thead {
+  position: sticky;
+  top: 0;
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+  z-index: 1;
 }
 
 .vesselsTable tr {
@@ -108,10 +125,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0;
+  padding: 0 0 0 var(--space-S);
   line-height: 2rem;
-  height: 3rem;
-  max-width: 14rem;
+  height: 3.2rem;
+  max-width: 20rem;
   vertical-align: middle;
 }
 
@@ -124,16 +141,13 @@
 }
 
 .vesselsTable td.icon {
-  width: 3rem;
+  padding-right: var(--space-S);
+  width: 2rem;
   overflow: visible;
 }
 
 .backButton {
   margin-right: 1rem;
-}
-
-.new {
-  background-color: var(--color-help-yellow);
 }
 
 .openModalLink {

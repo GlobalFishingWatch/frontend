@@ -1,11 +1,12 @@
+import type {
+  ColorBarOption} from '@globalfishingwatch/ui-components';
 import {
   IconButton,
   ColorBar,
-  ColorBarOption,
   FillColorBarOptions,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
-import { DatasetLayer } from 'features/layers/layers.hooks'
+import type { DatasetLayer } from 'features/layers/layers.hooks'
 import ExpandedContainer from './ExpandedContainer'
 
 type ColorProps = {

@@ -1,43 +1,54 @@
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
-import { DragEvent, useCallback, useRef, useState } from 'react'
-import { useDeckMap } from 'features/map/map-context.hooks'
+import type { DragEvent } from 'react'
+import { useCallback, useRef, useState } from 'react'
+import { atom, useSetAtom } from 'jotai'
+import { useTranslation } from 'react-i18next'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
-import { MapAnnotation } from './annotations.types'
+import type { MapAnnotation } from './annotations.types'
 // This blank image is needed to hide the default drag preview icon
 // https://stackoverflow.com/questions/27989602/hide-drag-preview-html-drag-and-drop#comment136906877_27990218
 const blankImage = new Image()
 blankImage.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs='
 
+type AnnotationsCursor = 'pointer' | 'grab' | 'move' | ''
+export const annotationsCursorAtom = atom<AnnotationsCursor>('')
+
 const MapAnnotations = (): React.ReactNode | null => {
+  const { t } = useTranslation()
+  const setAnnotationsCursor = useSetAtom(annotationsCursorAtom)
   const xOffset = 390 // sidebar width
   const yOffset = 116 // timebar + map attribution + font height
   const { upsertMapAnnotations, mapAnnotations, areMapAnnotationsVisible } = useMapAnnotations()
   const { setMapAnnotation } = useMapAnnotation()
-  const deck = useDeckMap()
   const selectedAnnotationRef = useRef<number | null>(null)
   const [newCoords, setNewCoords] = useState<number[] | null>(null)
   const viewport = useMapViewport()
-  const handleHover = useCallback(() => {
-    deck?.setProps({ getCursor: () => 'move' })
-  }, [deck])
+
+  const handleMouseEnter = useCallback(() => {
+    setAnnotationsCursor('pointer')
+  }, [setAnnotationsCursor])
+
   const handleMouseLeave = useCallback(() => {
-    deck?.setProps({ getCursor: () => 'grab' })
-  }, [deck])
+    setAnnotationsCursor('')
+  }, [setAnnotationsCursor])
+
   const handleDragStart = useCallback(
     ({ event, annotation }: { event: DragEvent; annotation: MapAnnotation }) => {
       if (!viewport) return
-      deck?.setProps({ controller: { dragPan: false } })
+      setAnnotationsCursor('move')
       event.dataTransfer.setDragImage(blankImage, 0, 0)
       event.dataTransfer.effectAllowed = 'none'
       selectedAnnotationRef.current = annotation.id
     },
-    [deck, viewport]
+    [setAnnotationsCursor, viewport]
   )
+
   const handleDrag = useCallback(
     (event: DragEvent) => {
       if (!viewport) return
-      deck?.setProps({ getCursor: () => 'move' })
+      setAnnotationsCursor('move')
       if (event.clientX && event.clientY) {
         const x = event.clientX - xOffset > 0 ? event.clientX - xOffset : 0
         const y =
@@ -48,12 +59,13 @@ const MapAnnotations = (): React.ReactNode | null => {
         setNewCoords(coords)
       }
     },
-    [deck, viewport]
+    [setAnnotationsCursor, viewport]
   )
+
   const handleDragEnd = useCallback(
     (annotation: MapAnnotation) => {
       if (!viewport || !newCoords) return
-      deck?.setProps({ controller: { dragPan: true }, getCursor: () => 'grab' })
+      setAnnotationsCursor('')
       upsertMapAnnotations({
         ...annotation,
         id: annotation.id || Date.now(),
@@ -62,10 +74,10 @@ const MapAnnotations = (): React.ReactNode | null => {
       })
       setNewCoords(null)
     },
-    [deck, newCoords, upsertMapAnnotations, viewport]
+    [newCoords, setAnnotationsCursor, upsertMapAnnotations, viewport]
   )
 
-  if (!deck || !mapAnnotations || !areMapAnnotationsVisible) {
+  if (!mapAnnotations || !areMapAnnotationsVisible) {
     return null
   }
 
@@ -75,7 +87,13 @@ const MapAnnotations = (): React.ReactNode | null => {
         {mapAnnotations.map((annotation) => (
           <HtmlOverlayItem
             key={annotation.id}
-            style={{ pointerEvents: 'all', transform: 'translate(-50%,-50%)' }}
+            style={{
+              pointerEvents: 'all',
+              transform: 'translate(-50%,-50%)',
+              maxWidth: '32rem',
+              textAlign: 'center',
+              fontWeight: 500,
+            }}
             coordinates={
               (selectedAnnotationRef?.current === annotation.id && (newCoords as number[])) || [
                 Number(annotation.lon),
@@ -84,10 +102,13 @@ const MapAnnotations = (): React.ReactNode | null => {
             }
           >
             <p
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+              role="button"
+              tabIndex={0}
               onClick={(event) => {
                 setMapAnnotation(annotation)
               }}
-              onMouseEnter={handleHover}
+              onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               style={{ color: annotation.color }}
               draggable={true}
@@ -95,7 +116,11 @@ const MapAnnotations = (): React.ReactNode | null => {
               onDrag={handleDrag}
               onDragEnd={() => handleDragEnd(annotation)}
             >
-              {annotation.label}
+              <Tooltip
+                content={t('map.annotationsHover', 'Drag to move or click to edit annotation')}
+              >
+                <span>{annotation.label}</span>
+              </Tooltip>
             </p>
           </HtmlOverlayItem>
         ))}

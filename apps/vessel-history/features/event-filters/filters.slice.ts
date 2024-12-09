@@ -1,6 +1,7 @@
-import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
-import { RootState } from 'store'
+import type { RootState } from 'store'
 
 export type availableEventFilters =
   | 'portVisits'

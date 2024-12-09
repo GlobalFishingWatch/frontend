@@ -1,30 +1,36 @@
 import { uniq } from 'es-toolkit'
-import {
-  DatasetTypes,
-  EndpointId,
-  DataviewCategory,
+import type {
   Dataset,
   ApiEvent,
   DataviewInstance,
   EventTypes,
-  DataviewSublayerConfig,
+  DataviewSublayerConfig} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes,
+  EndpointId,
+  DataviewCategory,
   DataviewType,
 } from '@globalfishingwatch/api-types'
-import {
-  FourwingsComparisonMode,
+import type {
   FourwingsVisualizationMode,
   HEATMAP_ID,
-  HEATMAP_LOW_RES_ID,
-} from '@globalfishingwatch/deck-layers'
-import { FOURWINGS_INTERVALS_ORDER, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+  HEATMAP_LOW_RES_ID} from '@globalfishingwatch/deck-layers';
 import {
-  UrlDataviewInstance,
+  FourwingsComparisonMode
+} from '@globalfishingwatch/deck-layers'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders';
+import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
+import type {
+  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
+import {
   getMergedDataviewId,
   isActivityDataview,
   isDetectionsDataview,
+  isVesselGroupDataview,
   isEnvironmentalDataview,
   isHeatmapStaticDataview,
   isTrackDataview,
+  isUserHeatmapDataview,
   isUserTrackDataview,
 } from '@globalfishingwatch/dataviews-client'
 
@@ -72,6 +78,7 @@ type GetMergedHeatmapAnimatedDataviewParams = {
   comparisonMode?: FourwingsComparisonMode
   timeRange?: TimeRange
   colorRampWhiteEnd?: boolean
+  color?: string
 }
 
 export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
@@ -87,7 +94,8 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
   }
 
   const activeDatasets =
-    dataview.category === DataviewCategory.Environment
+    dataview.category === DataviewCategory.Environment ||
+    dataview.category === DataviewCategory.User
       ? dataview.datasets
       : dataview.datasets.filter((dataset) => dataview?.config?.datasets?.includes(dataset.id))
 
@@ -104,6 +112,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     visible: config.visible,
     filter: config.filter,
     vesselGroups: config['vessel-groups'],
+    vesselGroupsLength: dataview.vesselGroup?.vessels?.length,
     maxZoom,
   }
 
@@ -123,7 +132,11 @@ export function getFourwingsDataviewsResolved(
 
   const fourwingsDataviews = Array.isArray(fourwingsDataview)
     ? fourwingsDataview
-    : [fourwingsDataview]
+    : [fourwingsDataview].filter(Boolean)
+
+  if (!fourwingsDataviews.length) {
+    return []
+  }
 
   const mergedActivityDataview = {
     id: getMergedDataviewId(fourwingsDataviews),
@@ -135,6 +148,7 @@ export function getFourwingsDataviewsResolved(
       minVisibleValue: fourwingsDataviews[0].config?.minVisibleValue,
       maxVisibleValue: fourwingsDataviews[0].config?.maxVisibleValue,
       colorRampWhiteEnd,
+      color: fourwingsDataviews[0].config?.color,
       visualizationMode,
       comparisonMode,
     },
@@ -240,6 +254,7 @@ const HEATMAP_ANIMATED_CATEGORIES_ORDER: DataviewCategory[] = [
   DataviewCategory.Environment,
   DataviewCategory.Detections,
   DataviewCategory.Activity,
+  DataviewCategory.VesselGroups,
 ]
 
 export function getDataviewsSorted(
@@ -283,11 +298,14 @@ export function getDataviewsResolved(
     detectionDataviews,
     environmentalDataviews,
     staticDataviews,
+    vesselGroupDataview,
     vesselTrackDataviews,
     userTrackDataviews,
+    userHeatmapDataviews,
     otherDataviews,
   } = dataviews.reduce(
     (acc, dataview) => {
+      // TODO: refactor to avoid the else if chain
       if (isActivityDataview(dataview)) {
         acc.activityDataviews.push(dataview)
       } else if (isDetectionsDataview(dataview)) {
@@ -296,6 +314,10 @@ export function getDataviewsResolved(
         acc.environmentalDataviews.push(dataview)
       } else if (isHeatmapStaticDataview(dataview)) {
         acc.staticDataviews.push(dataview)
+      } else if (isVesselGroupDataview(dataview)) {
+        acc.vesselGroupDataview.push(dataview)
+      } else if (isUserHeatmapDataview(dataview)) {
+        acc.userHeatmapDataviews.push(dataview)
       } else if (isTrackDataview(dataview)) {
         acc.vesselTrackDataviews.push(dataview)
       } else if (isUserTrackDataview(dataview)) {
@@ -310,7 +332,9 @@ export function getDataviewsResolved(
       detectionDataviews: [] as UrlDataviewInstance[],
       environmentalDataviews: [] as UrlDataviewInstance[],
       staticDataviews: [] as UrlDataviewInstance[],
+      vesselGroupDataview: [] as UrlDataviewInstance[],
       vesselTrackDataviews: [] as UrlDataviewInstance[],
+      userHeatmapDataviews: [] as UrlDataviewInstance[],
       userTrackDataviews: [] as UrlDataviewInstance[],
       otherDataviews: [] as UrlDataviewInstance[],
     }
@@ -354,6 +378,20 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
+  const vesselGroupDataviewParsed = vesselGroupDataview.flatMap((d) => {
+    const comparisonMode = getComparisonMode([d], params)
+    return (
+      getFourwingsDataviewsResolved(d, {
+        visualizationMode:
+          comparisonMode === FourwingsComparisonMode.TimeCompare ? 'heatmap' : 'footprint',
+        colorRampWhiteEnd: false,
+        comparisonMode,
+      }) || []
+    )
+  })
+
+  const userHeatmapDataviewsParsed = getFourwingsDataviewsResolved(userHeatmapDataviews)
+
   const vesselTrackDataviewsParsed = vesselTrackDataviews.flatMap((d) => ({
     ...d,
     config: {
@@ -372,10 +410,12 @@ export function getDataviewsResolved(
     ...otherDataviews,
     ...staticDataviewsParsed,
     ...environmentalDataviewsParsed,
+    ...vesselGroupDataviewParsed,
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
     ...vesselTrackDataviewsParsed,
     ...userTrackDataviewsParsed,
+    ...userHeatmapDataviewsParsed,
   ]
   return dataviewsMerged
 }

@@ -94,6 +94,8 @@ export function Slider(props: SliderProps) {
           onFinalChange={handleFinalChange}
           renderTrack={({ props, children }) => (
             <div
+              role="button"
+              tabIndex={0}
               onMouseDown={props.onMouseDown}
               onTouchStart={props.onTouchStart}
               className={styles.slider}
@@ -105,12 +107,14 @@ export function Slider(props: SliderProps) {
             </div>
           )}
           renderThumb={({ index, props }) => {
+            const { key, ...rest } = props
             const value = values[index]
             const scaledValue = scale(value)
             const isDefaultSelection = index === 0 ? value === min : value === max
             return (
               <div
-                {...props}
+                key={key}
+                {...rest}
                 className={cx(styles.sliderThumb, styles[`${thumbsSize}Size`])}
                 style={{
                   ...props.style,

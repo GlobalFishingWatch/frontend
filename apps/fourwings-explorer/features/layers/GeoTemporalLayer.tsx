@@ -1,12 +1,14 @@
 import { Fragment, useState } from 'react'
 import cx from 'classnames'
-import { Tooltip, ColorBarOption, IconButton, Slider } from '@globalfishingwatch/ui-components'
-import { ColorRampId } from '@globalfishingwatch/layer-composer'
+import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import { Tooltip, IconButton, Slider } from '@globalfishingwatch/ui-components'
+import type { ColorRampId } from '@globalfishingwatch/layer-composer'
 import { useLayerPanelDataviewSort } from 'features/layers/layers-sort.hook'
-import { DatasetLayer, FourwingsLayerConfig, useLayersConfig } from 'features/layers/layers.hooks'
+import type { DatasetLayer, FourwingsLayerConfig} from 'features/layers/layers.hooks';
+import { useLayersConfig } from 'features/layers/layers.hooks'
 import Remove from 'features/layers/common/Remove'
 import Color from 'features/layers/common/Color'
-import { FourwingsAPIDataset } from 'features/datasets/datasets.types'
+import type { FourwingsAPIDataset } from 'features/datasets/datasets.types'
 import HistogramRangeFilter from 'features/layers/HistogramRangeFilter'
 import LayerSwitch from './common/LayerSwitch'
 import Title from './common/Title'

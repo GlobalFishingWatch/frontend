@@ -1,10 +1,13 @@
-import { DataviewType, DataviewInstance, DataviewCategory } from '@globalfishingwatch/api-types'
+import type { DataviewInstance} from '@globalfishingwatch/api-types';
+import { DataviewType, DataviewCategory } from '@globalfishingwatch/api-types'
+import type {
+  AnyDeckLayer} from '@globalfishingwatch/deck-layers';
 import {
-  AnyDeckLayer,
   BaseMapLabelsLayer,
   BaseMapLayer,
   ClusterLayer,
   ContextLayer,
+  FourwingsClustersLayer,
   FourwingsLayer,
   GraticulesLayer,
   PolygonsLayer,
@@ -15,11 +18,11 @@ import {
   WorkspacesLayer,
 } from '@globalfishingwatch/deck-layers'
 import { resolveDeckWorkspacesLayerProps } from './workspaces'
-import { ResolverGlobalConfig } from './types'
+import type { ResolverGlobalConfig } from './types'
 import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckContextLayerProps } from './context'
-import { resolveDeckClusterLayerProps } from './clusters'
+import { resolveDeckFourwingsClustersLayerProps } from './clusters'
 import { resolveDeckVesselLayerProps } from './vessels'
 import {
   resolveDeckUserContextLayerProps,
@@ -28,6 +31,7 @@ import {
 } from './user'
 import { resolveDeckGraticulesLayerProps } from './graticules'
 import { resolveDeckPolygonsLayerProps } from './polygons'
+import { resolveDeckTileClusterLayerProps } from './tile-cluster'
 
 export const getDataviewHighlightedFeatures = (
   dataview: DataviewInstance,
@@ -83,8 +87,13 @@ export const dataviewToDeckLayer = (
     return layer
   }
   if (dataview.config?.type === DataviewType.TileCluster) {
-    const deckLayerProps = resolveDeckClusterLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckTileClusterLayerProps(dataview, layerConfig)
     const layer = new ClusterLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.FourwingsTileCluster) {
+    const deckLayerProps = resolveDeckFourwingsClustersLayerProps(dataview, layerConfig)
+    const layer = new FourwingsClustersLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Track) {

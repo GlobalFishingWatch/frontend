@@ -1,32 +1,29 @@
-import {
-  CompositeLayer,
-  Layer,
-  LayerContext,
-  LayersList,
-  DefaultProps,
-  UpdateParameters,
-} from '@deck.gl/core'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import type { Layer, LayerContext, LayersList, DefaultProps, UpdateParameters } from '@deck.gl/core'
+import { CompositeLayer } from '@deck.gl/core'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
 import { debounce, sum } from 'es-toolkit'
 import isEqual from 'lodash/isEqual'
-import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
-import {
+import type {
   FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
+  ParseFourwingsOptions,
+} from '@globalfishingwatch/deck-loaders'
+import {
   FourwingsLoader,
   getFourwingsInterval,
-  ParseFourwingsOptions,
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import type { ColorRampId } from '../../../utils/colorRamps'
 import {
   COLOR_RAMP_BIVARIATE_NUM_STEPS,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
-  ColorRampId,
   TIME_COMPARE_COLOR_RAMP,
   getBivariateRamp,
   getColorRamp,
@@ -38,7 +35,7 @@ import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
 } from '../fourwings.config'
-import {
+import type {
   FourwingsColorObject,
   FourwingsDeckSublayer,
   FourwingsTileLayerColorDomain,
@@ -58,15 +55,14 @@ import {
   getZoomOffsetByResolution,
 } from './fourwings-heatmap.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
-import {
-  FourwingsAggregationOperation,
+import type {
   FourwingsChunk,
-  FourwingsComparisonMode,
   FourwingsHeatmapTileLayerProps,
   FourwingsHeatmapTilesCache,
   FourwingsTileLayerState,
   FourwinsTileLayerScale,
 } from './fourwings-heatmap.types'
+import { FourwingsAggregationOperation, FourwingsComparisonMode } from './fourwings-heatmap.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   maxRequests: 100,
@@ -86,6 +82,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
+      error: '',
       scales: [],
       tilesCache: this._getTileDataCache({
         startTime: this.props.startTime,
@@ -104,9 +101,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return super.isLoaded && !this.state.rampDirty
   }
 
+  getError(): string {
+    return this.state.error
+  }
+
+  _onLayerError = (error: Error) => {
+    console.warn(error.message)
+    this.setState({ error: error.message })
+    return true
+  }
+
   _getColorRanges = () => {
-    // TODO:deck research if we can use the context to get other layers so we can enable whiteEnd
-    // TODO:deck remove this and calculate values equal to Compare
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       return getBivariateRamp(this.props.sublayers.map((s) => s?.colorRamp) as ColorRampId[])
     }
@@ -155,7 +160,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         : currentZoomData
 
     if (comparisonMode === FourwingsComparisonMode.Bivariate) {
-      let allValues: [number[], number[]] = [[], []]
+      const allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
         feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
           const sublayerAggregation = aggregateCell({
@@ -305,8 +310,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       scaleLinear(colorDomain as number[], cr as FourwingsColorObject[]).clamp(true)
     )
   }
-
+  startTime = performance.now()
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    const endTime = performance.now()
+    console.log(`onViewportLoad took ${(endTime - this.startTime) / 1000} s`)
     this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
@@ -393,26 +400,43 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         signal: tile.signal,
         responseType: 'default',
       })
-      if (tile.signal?.aborted || response.status !== 200) {
-        throw new Error()
+      if (response.status >= 400 && response.status !== 404) {
+        throw new Error(response.statusText)
       }
-      cols = parseInt(response.headers.get('X-columns') as string)
-      rows = parseInt(response.headers.get('X-rows') as string)
-      scale = parseFloat(response.headers.get('X-scale') as string)
-      offset = parseInt(response.headers.get('X-offset') as string)
-      noDataValue = parseInt(response.headers.get('X-empty-value') as string)
-
+      if (response.headers.get('X-columns') && !cols) {
+        cols = parseInt(response.headers.get('X-columns') as string)
+      }
+      if (response.headers.get('X-rows') && !rows) {
+        rows = parseInt(response.headers.get('X-rows') as string)
+      }
+      if (response.headers.get('X-scale') && !scale) {
+        scale = parseFloat(response.headers.get('X-scale') as string)
+      }
+      if (response.headers.get('X-offset') && !offset) {
+        offset = parseInt(response.headers.get('X-offset') as string)
+      }
+      if (response.headers.get('X-empty-value') && !noDataValue) {
+        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      }
       return await response.arrayBuffer()
     }
 
     const promises = sublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
-    // TODO:deck decide what to do when a chunk load fails
     const settledPromises = await Promise.allSettled(promises)
+    const hasChunkError = settledPromises.some((p) => p.status === 'rejected')
+    if (hasChunkError) {
+      const error =
+        (settledPromises.find((p) => p.status === 'rejected' && p.reason.statusText) as any)?.reason
+          .statuxText || 'Error loading chunk'
+      throw new Error(error)
+    }
+
     const arrayBuffers = settledPromises.flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
+
     if (tile.signal?.aborted) {
-      throw new Error('tile aborted')
+      return
     }
 
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
@@ -473,15 +497,24 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         signal: tile.signal,
         responseType: 'default',
       })
-      if (tile.signal?.aborted || response.status !== 200) {
-        // TODO:deck handle this error better
-        throw new Error()
+      if (response.status >= 400 && response.status !== 404) {
+        throw new Error(response.statusText)
       }
-      cols = parseInt(response.headers.get('X-columns') as string)
-      rows = parseInt(response.headers.get('X-rows') as string)
-      scale = parseFloat(response.headers.get('X-scale') as string)
-      offset = parseInt(response.headers.get('X-offset') as string)
-      noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      if (response.headers.get('X-columns') && !cols) {
+        cols = parseInt(response.headers.get('X-columns') as string)
+      }
+      if (response.headers.get('X-rows') && !rows) {
+        rows = parseInt(response.headers.get('X-rows') as string)
+      }
+      if (response.headers.get('X-scale') && !scale) {
+        scale = parseFloat(response.headers.get('X-scale') as string)
+      }
+      if (response.headers.get('X-offset') && !offset) {
+        offset = parseInt(response.headers.get('X-offset') as string)
+      }
+      if (response.headers.get('X-empty-value') && !noDataValue) {
+        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      }
       const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
         return (parseInt(n) - offset) * scale
       })
@@ -499,14 +532,26 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
-    // TODO:deck decide what to do when a chunk load fails
     const settledPromises = await Promise.allSettled(promises)
+
+    const hasChunkError = settledPromises.some(
+      (p) => p.status === 'rejected' && p.reason.status !== 404
+    )
+    if (hasChunkError) {
+      const error =
+        (settledPromises.find((p) => p.status === 'rejected' && p.reason.statusText) as any)?.reason
+          .statuxText || 'Error loading chunk'
+      throw new Error(error)
+    }
+
+    if (tile.signal?.aborted) {
+      return
+    }
+
     const arrayBuffers = settledPromises.flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
-    if (tile.signal?.aborted) {
-      throw new Error('tile aborted')
-    }
+
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
       fourwings: {
@@ -629,8 +674,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
   }
 
-  renderLayers(): Layer<{}> | LayersList {
+  renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { zoom } = this.context.viewport
+    if (zoom === undefined) {
+      return []
+    }
     const { resolution, comparisonMode } = this.props
     const { colorDomain, colorRanges, tilesCache, scales } = this.state
     const cacheKey = this._getTileDataCacheKey()
@@ -646,6 +694,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         tilesCache,
         scales,
         minZoom: 0,
+        onTileError: this._onLayerError,
         maxZoom: FOURWINGS_MAX_ZOOM,
         zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
         opacity: 1,

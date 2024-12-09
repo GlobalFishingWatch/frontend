@@ -1,17 +1,18 @@
-import { ColorRampsIds } from '../../utils'
-import { DeckLayerProps } from '../../types'
-import {
+import type { ColorRampsIds } from '../../utils'
+import type { DeckLayerProps, DeckPickingObject } from '../../types'
+import type {
+  FOOTPRINT_ID,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
   POSITIONS_ID,
 } from './fourwings.config'
-import {
+import type {
   FourwingsHeatmapPickingInfo,
   FourwingsHeatmapPickingObject,
   FourwingsHeatmapStaticPickingObject,
 } from './heatmap/fourwings-heatmap.types'
-import {
+import type {
   FourwingsPositionsPickingInfo,
   FourwingsPositionsPickingObject,
 } from './positions/fourwings-positions.types'
@@ -26,6 +27,7 @@ export type FourwingsVisualizationMode =
   | typeof HEATMAP_HIGH_RES_ID
   | typeof HEATMAP_LOW_RES_ID
   | typeof POSITIONS_ID
+  | typeof FOOTPRINT_ID
 
 export type GetViewportDataParams = {
   onlyValuesAndDates?: boolean
@@ -51,6 +53,7 @@ export type FourwingsDeckSublayer = {
   filter?: string
   positionProperties?: string[]
   vesselGroups?: string | string[]
+  vesselGroupsLength?: number
   extentStart?: number
   extentEnd?: number
 }
@@ -65,7 +68,8 @@ export type BaseFourwingsLayerProps = DeckLayerProps<{
 }>
 
 export type FourwingsPickingInfo = FourwingsHeatmapPickingInfo | FourwingsPositionsPickingInfo
-export type FourwingsPickingObject =
+export type FourwingsPickingObject = DeckPickingObject<
   | FourwingsHeatmapPickingObject
   | FourwingsHeatmapStaticPickingObject
   | FourwingsPositionsPickingObject
+>

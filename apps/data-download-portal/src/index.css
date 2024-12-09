@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+
+:root {
+  /* COLORS */
+  --primary-color: #22447e;
+  --secondary-color: #90a1be;
+  --link-color: #e74327;
+  --link-hover-color: #e85f4e;
+  --border-color: #8a9fc4;
+  --border-color-light: #dde1eb;
+  --primary-background-color: #fff;
+  --secondary-background-color: #e5f0f2;
+  --white: #fff;
+  --background-gradient: linear-gradient(180deg, #e5f0f2 0, white 70rem);
+
+  /* TYPE */
+  --GFW-font-family: 'Roboto', sans-serif;
+  --GFW-font-light: 300;
+  --GFW-font-regular: 400;
+  --GFW-font-medium: 500;
+  --GFW-font-bold: 700;
+  --GFW-font-XXL: var(--GFW-font-regular) 5rem/6.2rem var(--GFW-font-family);
+  --GFW-font-XL: var(--GFW-font-regular) 2.4rem/4rem var(--GFW-font-family);
+  --GFW-font-L: var(--GFW-font-regular) 2rem/3rem var(--GFW-font-family);
+  --GFW-font-M: var(--GFW-font-regular) 1.6rem/2.8rem var(--GFW-font-family);
+  --GFW-font-S: var(--GFW-font-regular) 1.4rem/2.2rem var(--GFW-font-family);
+  --GFW-font-XS: var(--GFW-font-regular) 1.2rem/1.2rem var(--GFW-font-family);
+
+  /* OTHER */
+  --desktop-max-width: 115rem;
+  --header-band-height: 49rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font: var(--GFW-font-M);
+  color: var(--primary-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+}
+
+label {
+  color: var(--secondary-color);
+  font: var(--GFW-font-XS);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+a.btn,
+button {
+  font: var(--GFW-font-S);
+  fill: var(--color-brand);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 0.3rem;
+  padding: 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  outline: none;
+  transition: all 150ms ease-out;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+a.btn:hover,
+button:hover {
+  color: var(--white);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: unset;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+mark {
+  font-weight: 600;
+  background-color: transparent;
+  color: var(--primary-color);
+}
