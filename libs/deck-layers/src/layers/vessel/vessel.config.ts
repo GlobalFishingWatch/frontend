@@ -39,10 +39,10 @@ export const TRACK_DEFAULT_THINNING_CONFIG = {
 }
 
 export const VESSEL_GRAPH_COLORS = [
-  '#4B2AA3',
-  '#632995',
-  '#8C2992',
-  '#BA3A8F',
+  '#572EC2',
+  '#7932B7',
+  '#AD36B4',
+  '#CB409C',
   '#E05885',
   '#FC7B79',
   '#FFA369',
