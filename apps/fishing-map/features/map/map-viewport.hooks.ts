@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core';
+import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
 import { useSelector } from 'react-redux'
 import type { MapCoordinates } from 'types'
@@ -11,6 +11,8 @@ import { getUrlViewstateNumericParam } from 'utils/url'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
+
+const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
 const viewStateAtom = atom<MapCoordinates>({
   longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
@@ -51,7 +53,6 @@ export const useUpdateViewStateUrlParams = () => {
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
   const dispatch = useAppDispatch()
 
-   
   const updateUrlViewportDebounced = useCallback(
     debounce(dispatch(updateUrlViewport), URL_VIEWPORT_DEBOUNCED_TIME),
     []
@@ -68,7 +69,8 @@ export const useUpdateViewStateUrlParams = () => {
   }, [viewState, updateUrlViewportDebounced, isWorkspaceMapReady])
 }
 
-const MAP_VIEW_ID = 'mapViewport'
+export const MAP_CONTAINER_ID = 'map-container'
+export const MAP_VIEW_ID = 'mapViewport'
 export const MAP_VIEW = new MapView({
   id: MAP_VIEW_ID,
   repeat: true,
@@ -76,7 +78,6 @@ export const MAP_VIEW = new MapView({
   bearing: 0,
   pitch: 0,
 } as MapViewProps)
-const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
 export function useMapViewport() {
   const deckMap = useDeckMap()
@@ -84,7 +85,8 @@ export function useMapViewport() {
     return (deckMap as any)
       ?.getViewports?.()
       .find((v: any) => v.id === MAP_VIEW_ID) as WebMercatorViewport
-  } catch (e) {
+  } catch (e: any) {
+    console.warn(e)
     return undefined
   }
 }

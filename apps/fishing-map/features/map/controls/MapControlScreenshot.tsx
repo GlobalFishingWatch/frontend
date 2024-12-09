@@ -1,7 +1,16 @@
-import { Fragment, useCallback, useRef } from 'react'
+import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Modal, Spinner, Button } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import {
+  IconButton,
+  Modal,
+  Spinner,
+  Button,
+  MAIN_DOM_ID,
+  Choice,
+} from '@globalfishingwatch/ui-components'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { setInlineStyles, cleantInlineStyles } from 'utils/dom'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
@@ -11,13 +20,18 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'routes/routes.selectors'
 import MapScreenshot, { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
+import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 import styles from './MapControls.module.css'
 
-const ScrenshotAreaIds = {
-  app: ROOT_DOM_ELEMENT,
-  map: 'map',
-  'map&Timebar': 'map+timebar',
+type ScrenshotArea = 'map' | 'withTimebar' | 'withTimebarAndLegend'
+type ScrenshotDOMArea = typeof ROOT_DOM_ELEMENT | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID
+const ScrenshotAreaIds: Record<ScrenshotArea, ScrenshotDOMArea> = {
+  map: MAP_CONTAINER_ID,
+  withTimebar: MAIN_DOM_ID,
+  withTimebarAndLegend: ROOT_DOM_ELEMENT,
 }
+const SCREENSHOT_AREA_KEY_ID = 'screenShotAreaId'
+const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.withTimebarAndLegend
 
 const MapControlScreenshot = ({
   mapLoading = false,
@@ -33,7 +47,20 @@ const MapControlScreenshot = ({
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const showScreenshot = !isVesselLocation && !isAnyReportLocation
+  const [screenshotAreaId, setScreenshotAreaId] = useLocalStorage<ScrenshotDOMArea>(
+    SCREENSHOT_AREA_KEY_ID,
+    DEFAULT_SCREENSHOT_AREA
+  )
   const rootElement = useDOMElement()
+
+  const SCREENSHOT_AREA_OPTIONS: SelectOption<ScrenshotDOMArea>[] = useMemo(
+    () =>
+      Object.entries(ScrenshotAreaIds).map(([key, value]) => ({
+        id: value as ScrenshotDOMArea,
+        label: t(`map.screenshotArea.${key}`, key),
+      })),
+    []
+  )
 
   const {
     loading,
@@ -42,30 +69,39 @@ const MapControlScreenshot = ({
     resetPreviewImage,
     previewImageLoading,
     generatePreviewImage,
-  } = useDownloadDomElementAsImage(rootElement, false)
+  } = useDownloadDomElementAsImage()
+
+  const generateImage = useCallback(
+    (domId: string) => {
+      resetPreviewImage()
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      timeoutRef.current = setTimeout(() => {
+        if (rootElement && domId) {
+          rootElement.classList.add('printing')
+          setInlineStyles(rootElement)
+          // leave some time to
+          // 1. apply the styles + timebar to re - render
+          // 2. map static image generated with debounced finishes
+          timeoutRef.current = setTimeout(() => {
+            generatePreviewImage(domId)
+          }, MAP_IMAGE_DEBOUNCE + 400)
+        }
+      }, 100)
+    },
+    [generatePreviewImage, resetPreviewImage, rootElement]
+  )
 
   const onScreenshotClick = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: true })
     dispatch(setModalOpen({ id: 'screenshot', open: true }))
-    resetPreviewImage()
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
-    timeoutRef.current = setTimeout(() => {
-      if (rootElement) {
-        rootElement.classList.add('printing')
-        setInlineStyles(rootElement)
-        // leave some time to
-        // 1. apply the styles + timebar to re - render
-        // 2. map static image generated with debounced finishes
-        timeoutRef.current = setTimeout(() => {
-          generatePreviewImage()
-        }, MAP_IMAGE_DEBOUNCE + 400)
-      }
-    }, 100)
-  }, [dispatchQueryParams, dispatch, resetPreviewImage, rootElement, generatePreviewImage])
+    generateImage(screenshotAreaId)
+  }, [dispatch, dispatchQueryParams, generateImage, screenshotAreaId])
 
   const handleModalClose = useCallback(() => {
+    resetPreviewImage()
+    setScreenshotAreaId(DEFAULT_SCREENSHOT_AREA)
     if (rootElement) {
       rootElement.classList.remove('printing')
       cleantInlineStyles(rootElement)
@@ -79,9 +115,19 @@ const MapControlScreenshot = ({
   }, [handleModalClose])
 
   const onImageDownloadClick = useCallback(async () => {
-    await downloadImage()
+    if (screenshotAreaId) {
+      await downloadImage(screenshotAreaId)
+    }
     handleModalClose()
-  }, [downloadImage, handleModalClose])
+  }, [screenshotAreaId])
+
+  const onSelectScreenshotArea = useCallback(
+    (area: ScrenshotDOMArea) => {
+      setScreenshotAreaId(area)
+      generateImage(area)
+    },
+    [downloadImage, handleModalClose]
+  )
 
   return (
     <Fragment>
@@ -113,6 +159,15 @@ const MapControlScreenshot = ({
           ) : (
             <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
           )}
+        </div>
+        <div className={styles.screenshotArea}>
+          <Choice
+            options={SCREENSHOT_AREA_OPTIONS}
+            size="medium"
+            onSelect={(option) => onSelectScreenshotArea(option.id)}
+            className={styles.select}
+            activeOption={screenshotAreaId}
+          />
         </div>
         <div className={styles.previewFooter}>
           <Button id="dismiss-preview-download" onClick={handleModalClose} type="secondary">

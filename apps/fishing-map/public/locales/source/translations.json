@@ -705,6 +705,11 @@
     "rulersHover": "Drag to move or click to see more",
     "rulersStop": "Stop measures",
     "search": "Search ocean and sea areas, MPAs or EEZs",
+    "screenshotArea": {
+      "map": "Only map",
+      "withTimebar": "With timebar",
+      "withTimebarAndLegend": "With timebar and legend"
+    },
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
