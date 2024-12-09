@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux'
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Tab} from '@globalfishingwatch/ui-components';
-import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
+import type { Tab } from '@globalfishingwatch/ui-components'
+import { Button, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
-import type { Dataview} from '@globalfishingwatch/api-types';
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   selectIsWorkspaceVesselLocation,
@@ -18,6 +18,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import {
+  selectIncludeRelatedIdentities,
   selectVesselAreaSubsection,
   selectVesselDatasetId,
   selectVesselSection,
@@ -39,7 +40,7 @@ import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
 import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   selectVesselInfoStatus,
   selectVesselInfoError,
@@ -57,6 +58,8 @@ const Vessel = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const vesselId = useSelector(selectVesselId)
+  const isGFWUser = useSelector(selectIsGFWUser)
+  const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
   const vesselSection = useSelector(selectVesselSection)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const datasetId = useSelector(selectVesselDatasetId)
@@ -152,15 +155,13 @@ const Vessel = () => {
       infoStatus === AsyncReducerStatus.Idle ||
       (infoStatus === AsyncReducerStatus.Error && infoError?.status === 401)
     ) {
-      dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
+      dispatch(fetchVesselInfoThunk({ vesselId, datasetId, includeRelatedIdentities }))
     }
-     
   }, [datasetId, dispatch, vesselId, urlWorkspaceId])
 
   useEffect(() => {
     dispatchClickedEvent(null)
     cancelPendingInteractionRequests()
-     
   }, [])
 
   const changeTab = useCallback(
@@ -174,6 +175,16 @@ const Vessel = () => {
     },
     [dispatchQueryParams, updateAreaLayersVisibility, vesselArea]
   )
+
+  const handleFullProfileClick = useCallback(() => {
+    dispatchQueryParams({
+      includeRelatedIdentities: true,
+      start: undefined,
+      end: undefined,
+      vesselSelfReportedId: undefined,
+    })
+    window.location.reload()
+  }, [dispatchQueryParams])
 
   if (infoStatus === AsyncReducerStatus.Loading) {
     return <Spinner />
@@ -199,6 +210,18 @@ const Vessel = () => {
     <Fragment>
       {infoStatus === AsyncReducerStatus.Finished && (
         <Fragment>
+          {isGFWUser && !includeRelatedIdentities && (
+            <div className={styles.fullProfileMessage}>
+              <div>
+                Identity and activity of a single vessel id (only for GFW users):
+                <br />
+                {vesselId}
+              </div>
+              <Button type="secondary" size="small" className="" onClick={handleFullProfileClick}>
+                See full profile
+              </Button>
+            </div>
+          )}
           <div className={styles.headerContainer}>
             <VesselHeader />
           </div>
