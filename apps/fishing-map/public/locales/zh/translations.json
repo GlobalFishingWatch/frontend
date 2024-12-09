@@ -48,7 +48,10 @@
     "periodComparison2nd": "comparison start",
     "periodComparisonDuration": "duration",
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsNotAllowed": "You can only add up to {{vessels}} vessels",
     "print ": "print",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Show {{results}} per page",
     "save": "Save this report",
     "savePublic": "Allow other users to see this report",
@@ -702,6 +705,11 @@
     "rulersHover": "Drag to move or click to see more",
     "rulersStop": "Stop measures",
     "search": "Search ocean and sea areas, MPAs or EEZs",
+    "screenshotArea": {
+      "map": "Only map",
+      "withTimebar": "With timebar",
+      "withTimebarAndLegend": "With timebar and legend"
+    },
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
