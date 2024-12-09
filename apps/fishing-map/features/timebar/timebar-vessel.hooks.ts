@@ -87,7 +87,6 @@ export const useTimebarVesselTracks = () => {
         }
       })
     })
-     
   }, [tracksColor])
 
   useEffect(() => {
@@ -132,7 +131,6 @@ export const useTimebarVesselTracks = () => {
         setVesselTracks(undefined)
       }
     })
-     
   }, [tracksLoaded, timebarGraph, tracksColor])
 
   return tracks
@@ -186,7 +184,6 @@ export const useTimebarVesselTracksGraph = () => {
         }
       })
     })
-     
   }, [tracksColor])
 
   useEffect(() => {
@@ -241,7 +238,6 @@ export const useTimebarVesselTracksGraph = () => {
         setVesselTracksGraph(undefined)
       }
     })
-     
   }, [tracksLoaded, timebarGraph])
 
   return tracksGraph
@@ -288,7 +284,6 @@ export const useTimebarVesselEvents = () => {
         setTimebarVesselEvents(null)
       }
     })
-     
   }, [vesselsWithEventsLoaded, timebarGraph, visibleEvents, eventsColor])
 
   return timebarVesselEvents

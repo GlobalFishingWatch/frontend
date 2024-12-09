@@ -309,7 +309,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselPositionLayer() {
-    const { visible, highlightStartTime, highlightEndTime, color } = this.props
+    const { visible, highlightStartTime, highlightEndTime, color, name } = this.props
     const trackData = this.getVesselTrackData()
     if (!visible || !trackData?.length || !highlightEndTime || !highlightStartTime) {
       return []
@@ -397,27 +397,31 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
         })
       ),
-      new TextLayer({
-        id: `${this.props.id}-lastPositionsNames`,
-        data: [centerPoint],
-        //TODO get proper name
-        getText: () => 'PEPE',
-        getPosition: (d) => d.geometry.coordinates,
-        getPixelOffset: [centerPoint.properties.course < 180 ? 15 : -15, 0],
-        getColor: [255, 255, 255, 255],
-        getSize: 14,
-        outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.5),
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
-        fontFamily: 'Roboto Deck',
-        characterSet:
-          'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
-        outlineWidth: 200,
-        fontSettings: { sdf: true, smoothing: 0.2, buffer: 15 },
-        sizeUnits: 'pixels',
-        getTextAnchor: centerPoint.properties.course < 180 ? 'start' : 'end',
-        getAlignmentBaseline: 'center',
-        pickable: false,
-      }),
+      ...(name
+        ? [
+            new TextLayer({
+              id: `${this.props.id}-lastPositionsNames`,
+              data: [centerPoint],
+              //TODO get proper name
+              getText: () => name,
+              getPosition: (d) => d.geometry.coordinates,
+              getPixelOffset: [centerPoint.properties.course < 180 ? 15 : -15, 0],
+              getColor: [255, 255, 255, 255],
+              getSize: 14,
+              outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.5),
+              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
+              fontFamily: 'Roboto Deck',
+              characterSet:
+                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
+              outlineWidth: 200,
+              fontSettings: { sdf: true, smoothing: 0.2, buffer: 15 },
+              sizeUnits: 'pixels',
+              getTextAnchor: centerPoint.properties.course < 180 ? 'start' : 'end',
+              getAlignmentBaseline: 'center',
+              pickable: false,
+            }),
+          ]
+        : []),
     ]
   }
 

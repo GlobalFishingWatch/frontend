@@ -185,7 +185,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         uniform float maxSpeedFilter;
         uniform float minElevationFilter;
         uniform float maxElevationFilter;
-        uniform vec4 trackColor;
         uniform int colorBy;
         in float vTime;
         in float vSpeed;
@@ -198,9 +197,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         }
       `,
       'fs:DECKGL_FILTER_COLOR': `
-        if(colorBy == ${COLOR_BY.track}){
-          color = trackColor;
-        } else if(colorBy == ${COLOR_BY.speed}){
+        if(colorBy == ${COLOR_BY.speed}){
           ${generateShaderColorSteps({
             property: 'vSpeed',
             operation: '<=',
@@ -270,7 +267,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       endTime,
       highlightStartTime = 0,
       highlightEndTime = 0,
-      getColor,
       minSpeedFilter = -MAX_FILTER_VALUE,
       maxSpeedFilter = MAX_FILTER_VALUE,
       minElevationFilter = -MAX_FILTER_VALUE,
@@ -278,7 +274,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       colorBy,
     } = this.props
 
-    const trackColor = getColor as Color
     params.uniforms = {
       ...params.uniforms,
       startTime,
@@ -289,7 +284,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       maxSpeedFilter,
       minElevationFilter,
       maxElevationFilter,
-      trackColor: [trackColor[0] / 255, trackColor[1] / 255, trackColor[2] / 255, 1],
       colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
     }
     super.draw(params)
