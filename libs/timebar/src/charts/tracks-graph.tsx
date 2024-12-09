@@ -100,7 +100,7 @@ const TrackGraph = ({ data }: { data: TimebarChartData }) => {
         getFillColor: (d) => d.color,
       }),
     ]
-  }, [filteredGraphsData, offsetHashRef.current, trackGraphOrientation])
+  }, [filteredGraphsData, offsetHashRef.current, trackGraphOrientation, outerWidth])
 
   return (
     <div style={{ transform: `translateX(${offsetStartX - veilWidth}px)`, zIndex: -1 }}>
