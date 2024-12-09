@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import type { UILegendColorRamp } from '@globalfishingwatch/ui-components'
 import { LegendType, MapLegend } from '@globalfishingwatch/ui-components'
 import {
   VESSEL_GRAPH_COLORS,
@@ -20,9 +21,13 @@ function VesselTracksLegend(): React.ReactElement | null {
     return null
   }
 
-  const legend = {
+  const legend: UILegendColorRamp = {
     id: vesselsTimebarGraph,
     type: LegendType.ColorRampDiscrete,
+    label:
+      vesselsTimebarGraph === 'speed'
+        ? t('timebarSettings.graphSpeed', 'Vessel speed')
+        : t('timebarSettings.graphDepth', 'Vessel depth'),
     unit:
       vesselsTimebarGraph === 'speed' ? t('common.knots', 'knots') : t('common.meters', 'meters'),
     values: vesselsTimebarGraph === 'speed' ? SPEEDS : DEPTHS,
@@ -31,7 +36,7 @@ function VesselTracksLegend(): React.ReactElement | null {
   }
 
   return (
-    <div className={styles.content}>
+    <div className={styles.legend}>
       <MapLegend layer={legend} />
     </div>
   )

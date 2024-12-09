@@ -46,7 +46,7 @@ export const formatLegendValue = ({
     formattedValue = ['+', formattedValue].join('')
   }
   if (isFirst && !isNaN(number) && divergent) formattedValue = `≤${formattedValue}`
-  if (isLast && !isNaN(number)) formattedValue = `≥${formattedValue}`
+  if (isLast && !isNaN(number)) formattedValue = `${number > 0 ? '≥' : '≤'}${formattedValue}`
 
   return formattedValue
 }
