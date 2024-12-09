@@ -183,6 +183,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackThinningZoomConfig,
       minElevationFilter,
       maxElevationFilter,
+      trackGraphDomain,
       colorBy,
     } = this.props
 
@@ -211,6 +212,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           loadOptions: {
             ...getFetchLoadOptions(),
           },
+          trackGraphDomain,
           type: TRACK_LAYER_TYPE,
           loaders: [VesselTrackLoader],
           _pathType: 'open',
@@ -469,6 +471,16 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   getVesselTrackSegments(params = {} as GetSegmentsFromDataParams) {
     return this.getTrackLayers()?.flatMap((l) => l.getSegments(params))
+  }
+
+  getVesselTrackGraphStats(graph: 'speed' | 'elevation') {
+    const stats = this.getTrackLayers()?.flatMap((l) => {
+      return l.getGraphStats(graph)
+    })
+    return {
+      min: Math.min(...stats.map((s) => s.min)),
+      max: Math.max(...stats.map((s) => s.max)),
+    }
   }
 
   getVesselTrackBounds() {

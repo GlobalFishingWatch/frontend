@@ -10,6 +10,14 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
   }
   const defaultAttributesLength =
     track.attributes.getPath.value.length / track.attributes.getPath.size
+
+  const getSpeedValues = track.attributes.getSpeed.value?.length
+    ? new Float32Array(track.attributes.getSpeed.value)
+    : new Float32Array(defaultAttributesLength)
+  const getElevationValues = track.attributes.getElevation.value?.length
+    ? new Float32Array(track.attributes.getElevation.value)
+    : new Float32Array(defaultAttributesLength)
+
   return {
     ...track,
     attributes: {
@@ -24,19 +32,18 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
         size: track.attributes.getTimestamp.size,
       },
       getSpeed: {
-        value: track.attributes.getSpeed.value?.length
-          ? new Float32Array(track.attributes.getSpeed.value)
-          : new Float32Array(defaultAttributesLength),
+        value: getSpeedValues,
         size: track.attributes.getSpeed.size,
+        min: Math.ceil(Math.min(...getSpeedValues)),
+        max: Math.floor(Math.max(...getSpeedValues)),
       },
       getElevation: {
-        value: track.attributes.getElevation.value?.length
-          ? new Float32Array(track.attributes.getElevation.value)
-          : new Float32Array(defaultAttributesLength),
+        value: getElevationValues,
         size: track.attributes.getElevation.size,
+        min: Math.ceil(Math.min(...getElevationValues)),
+        max: Math.floor(Math.max(...getElevationValues)),
       },
-      // TODO
-      // getCourse
+      // TODO getCourse
     },
   } as VesselTrackData
 }

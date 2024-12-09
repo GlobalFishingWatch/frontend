@@ -45,8 +45,8 @@ export const deckToRgbaColor = ([r, g, b, a]: Color) => {
   return `rgba(${r},${g}, ${b}, ${a ? a : 1})`
 }
 
-function colorToVec(c: number) {
-  return (c / 255).toFixed(2)
+export function colorToVec(c: number) {
+  return parseFloat((c / 255).toFixed(2))
 }
 export const deckToVecColor = ([r, g, b, a]: Color) => {
   return `vec4(${colorToVec(r)}, ${colorToVec(g)}, ${colorToVec(b)}, ${a ? colorToVec(a) : 1})`
