@@ -17,6 +17,7 @@ import { groupBy, orderBy } from 'es-toolkit'
 import { stringify } from 'qs'
 import type { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DateTime } from 'luxon'
+import { loadDeckFont } from 'libs/deck-layers/src/utils/fonts'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
@@ -106,21 +107,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
-    let fontLoaded = true
-    if (typeof document !== 'undefined') {
-      fontLoaded = false
-      const font = new FontFace(
-        'Roboto Deck',
-        "url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2')"
-      )
-      font
-        .load()
-        .then(() => {
-          ;(document.fonts as any).add(font)
-        })
-        .finally(() => {
-          this.setState({ fontLoaded: true })
-        })
+    const isSSR = typeof document === 'undefined'
+    const fontLoaded = isSSR
+    if (!isSSR) {
+      loadDeckFont().then((loaded) => {
+        this.setState({ fontLoaded: loaded })
+      })
     }
     this.state = {
       error: '',

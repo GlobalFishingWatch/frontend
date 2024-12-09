@@ -27,7 +27,6 @@ export const useDownloadDomElementAsImage = () => {
       }
     }
     try {
-      console.log('🚀 ~ getCanvas ~ domElement:', domId)
       const domElement = document.getElementById(domId)
       if (domElement) {
         const canvas = html2canvasRef.current(domElement)

@@ -154,16 +154,12 @@ export const getCellTimeseries = (
   }
 }
 
-let count = 0
-let tilesCount = 0
-
 export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
   if (!options?.fourwings?.buffersLength?.length) {
     return []
   }
-  const a = performance.now()
-  tilesCount++
-  const cells = Array.from(
+
+  return Array.from(
     new Pbf(datasetsBuffer)
       .readFields(getCellTimeseries, {
         features: new Map<number, FourwingsFeature>(),
@@ -171,12 +167,4 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
       })
       .features.values()
   )
-  const b = performance.now()
-  count += b - a
-  console.log(
-    `parseFourwings took ${Math.round(count)} ms for ${tilesCount} tiles. ${Math.round(
-      count / tilesCount
-    )} ms on average`
-  )
-  return cells
 }
