@@ -13,6 +13,7 @@ import bboxPolygon from '@turf/bbox-polygon'
 import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
 import type { BBox, Position } from 'geojson'
 import { rhumbBearing } from '@turf/turf'
+import { TextLayer } from '@deck.gl/layers'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
@@ -29,6 +30,7 @@ import {
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../utils'
 import type { DeckLayerProps } from '../../types'
+import { loadDeckFont } from '../../utils/fonts'
 import type { _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselEventsLayer } from './VesselEventsLayer'
 import type { _VesselTrackLayerProps } from './VesselTrackLayer'
@@ -62,6 +64,7 @@ export type VesselLayerProps = DeckLayerProps<
 >
 
 type VesselLayerState = {
+  fontLoaded: boolean
   colorDirty: boolean
   errors: {
     [key in EventTypes | 'track']?: string
@@ -73,8 +76,16 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   state!: VesselLayerState
   initializeState() {
     super.initializeState(this.context)
+    const isSSR = typeof document === 'undefined'
+    const fontLoaded = isSSR
+    if (!isSSR) {
+      loadDeckFont().then((loaded) => {
+        this.setState({ fontLoaded: loaded })
+      })
+    }
     this.state = {
       colorDirty: false,
+      fontLoaded,
       errors: {},
     }
   }
@@ -386,6 +397,27 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
         })
       ),
+      new TextLayer({
+        id: `${this.props.id}-lastPositionsNames`,
+        data: [centerPoint],
+        //TODO get proper name
+        getText: () => 'PEPE',
+        getPosition: (d) => d.geometry.coordinates,
+        getPixelOffset: [centerPoint.properties.course < 180 ? 15 : -15, 0],
+        getColor: [255, 255, 255, 255],
+        getSize: 14,
+        outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.5),
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
+        fontFamily: 'Roboto Deck',
+        characterSet:
+          'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
+        outlineWidth: 200,
+        fontSettings: { sdf: true, smoothing: 0.2, buffer: 15 },
+        sizeUnits: 'pixels',
+        getTextAnchor: centerPoint.properties.course < 180 ? 'start' : 'end',
+        getAlignmentBaseline: 'center',
+        pickable: false,
+      }),
     ]
   }
 
