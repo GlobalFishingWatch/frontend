@@ -95,8 +95,9 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   _getPointRadius: Accessor<GeoJsonProperties, number> = (d) => {
-    const { staticPointRadius, circleRadiusProperty, circleRadiusRange, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { staticPointRadius, circleRadiusProperty, circleRadiusRange, filters, filterOperators } =
+      this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return 0
     }
     if (staticPointRadius) {
