@@ -48,7 +48,10 @@
     "periodComparison2nd": "début comparaison",
     "periodComparisonDuration": "durée",
     "periodComparisonRange": "durant {{duration}} suivant {{compareStart}} comparé à la référence durant {{duration}} suivant {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsNotAllowed": "You can only add up to {{vessels}} vessels",
     "print ": "imprimer",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Afficher {{results}} par page",
     "save": "Enregistrer ce rapport",
     "savePublic": "Autoriser d'autres utilisateurs à voir ce rapport",
@@ -702,6 +705,11 @@
     "rulersHover": "Faites glisser pour vous déplacer ou cliquez pour en voir plus",
     "rulersStop": "Arrêter les mesures",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
+    "screenshotArea": {
+      "map": "Only map",
+      "withTimebar": "With timebar",
+      "withTimebarAndLegend": "With timebar and legend"
+    },
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
