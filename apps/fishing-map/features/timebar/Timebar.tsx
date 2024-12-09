@@ -50,7 +50,7 @@ import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { useRootElement } from 'hooks/dom.hooks'
+import { useDOMElement } from 'hooks/dom.hooks'
 import { setHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -172,7 +172,7 @@ const TimebarWrapper = () => {
   const tracks = useTimebarVesselTracks()
   const tracksGraphsData = useTimebarVesselTracksGraph()
   const events = useTimebarVesselEvents()
-  const rootElement = useRootElement()
+  const rootElement = useDOMElement()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(

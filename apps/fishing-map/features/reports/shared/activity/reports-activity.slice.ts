@@ -1,10 +1,10 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { uniq } from 'es-toolkit'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-types'
-import type { AsyncError} from 'utils/async-slice';
+import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 import {
@@ -22,6 +22,7 @@ interface ReportState {
   status: AsyncReducerStatus
   error: ReportStateError | null
   data: ReportVesselsByDataset[] | null
+  isPinningVessels: boolean
   dateRangeHash: string
   previewBuffer: PreviewBuffer
 }
@@ -36,6 +37,7 @@ const initialState: ReportState = {
   status: AsyncReducerStatus.Idle,
   error: null,
   data: null,
+  isPinningVessels: false,
   dateRangeHash: '',
   previewBuffer: { value: null, unit: null, operation: null },
 }
@@ -139,7 +141,7 @@ export const fetchReportVesselsThunk = createAsyncThunk(
   },
   {
     condition: (params: FetchReportVesselsThunkParams, { getState }) => {
-      const { status } = (getState() as ReportSliceState)?.report
+      const { status } = (getState() as ReportSliceState).report
       if (status === AsyncReducerStatus.Loading) {
         return false
       }
@@ -169,6 +171,9 @@ const reportSlice = createSlice({
     setPreviewBuffer: (state, action: PayloadAction<PreviewBuffer>) => {
       state.previewBuffer = action.payload
     },
+    setPinningVessels: (state, action: PayloadAction<boolean>) => {
+      state.isPinningVessels = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchReportVesselsThunk.pending, (state) => {
@@ -186,12 +191,15 @@ const reportSlice = createSlice({
   },
 })
 
-export const { resetReportData, setDateRangeHash, setPreviewBuffer } = reportSlice.actions
+export const { resetReportData, setDateRangeHash, setPreviewBuffer, setPinningVessels } =
+  reportSlice.actions
 
 export const selectReportVesselsStatus = (state: ReportSliceState) => state.report.status
 export const selectReportVesselsError = (state: ReportSliceState) => state.report.error
 export const selectReportVesselsData = (state: ReportSliceState) => state.report.data
 export const selectReportPreviewBuffer = (state: ReportSliceState) => state.report.previewBuffer
+export const selectReportIsPinningVessels = (state: ReportSliceState) =>
+  state.report.isPinningVessels
 export const selectReportVesselsDateRangeHash = (state: ReportSliceState) =>
   state.report.dateRangeHash
 

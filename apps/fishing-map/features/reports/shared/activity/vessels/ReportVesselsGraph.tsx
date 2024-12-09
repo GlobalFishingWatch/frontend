@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
@@ -22,6 +21,7 @@ import {
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
 import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
+import { ReportBarGraphPlaceholder } from '../../placeholders/ReportBarGraphPlaceholder'
 import styles from './ReportVesselsGraph.module.css'
 
 const MAX_OTHER_TOOLTIP_ITEMS = 10
@@ -174,7 +174,6 @@ const CustomTick = (props: any) => {
 }
 
 export default function ReportVesselsGraph() {
-  const { t } = useTranslation()
   const dataviews = useSelector(selectReportDataviewsWithPermissions)
   const data = useSelector(selectReportVesselsGraphDataGrouped)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
@@ -225,9 +224,7 @@ export default function ReportVesselsGraph() {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <ReportVesselsPlaceholder animate={false}>
-            {t('analysis.noVesselDataFiltered', 'There are no vessels matching your filter')}
-          </ReportVesselsPlaceholder>
+          <ReportBarGraphPlaceholder animate={false} />
         )}
       </div>
     </Fragment>

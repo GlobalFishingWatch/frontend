@@ -24,7 +24,7 @@ export function Spinner(props: SpinnerProps) {
   const radius = size === 'default' ? 20 : 8
   const SvgComponent = (
     <svg
-      className={styles.spinner}
+      className={cx(styles.spinner, className)}
       width={radius * 2}
       height={radius * 2}
       viewBox={`0 0 ${radius * 2} ${radius * 2}`}
