@@ -48,7 +48,10 @@
     "periodComparison2nd": "inicio de comparación",
     "periodComparisonDuration": "duración",
     "periodComparisonRange": "{{duration}} siguiente {{compareStart}} comparado con la línea de referencia {{duration}} siguiente {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsNotAllowed": "You can only add up to {{vessels}} vessels",
     "print ": "imprimir",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Mostrar {{results}} por página",
     "save": "Guardar este informe",
     "savePublic": "Permitir que otros usuarios vean este informe",
@@ -702,6 +705,11 @@
     "rulersHover": "Arrastre para mover o haga clic para ver más",
     "rulersStop": "Detener medidas",
     "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
+    "screenshotArea": {
+      "map": "Only map",
+      "withTimebar": "With timebar",
+      "withTimebarAndLegend": "With timebar and legend"
+    },
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
