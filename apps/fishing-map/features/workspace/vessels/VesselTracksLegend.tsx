@@ -25,7 +25,7 @@ function VesselTracksLegend(): React.ReactElement | null {
         : t('timebarSettings.graphDepth', 'Vessel depth'),
     unit:
       vesselsTimebarGraph === 'speed' ? t('common.knots', 'knots') : t('common.meters', 'meters'),
-    values: [0, ...steps.slice(0, -1).map((step) => step.value)],
+    values: steps.map((step) => step.value),
     colors:
       vesselsTimebarGraph === 'speed' ? VESSEL_GRAPH_COLORS : VESSEL_GRAPH_COLORS.slice().reverse(),
   }

@@ -110,7 +110,7 @@ function generateShaderColorSteps({
 }) {
   return [...Array(stepsNum)]
     .map((_, index) => {
-      if (index === length - 1) {
+      if (index === stepsNum - 1) {
         return `{ color = color${index}; }`
       }
       return `if (${property} ${operation} value${index}) { color = color${index}; }`
@@ -333,7 +333,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
 
   getGraphExtent(graph: 'speed' | 'elevation'): VesselTrackGraphExtent {
     const selector = graph === 'speed' ? 'getSpeed' : 'getElevation'
-    const extent = (this.props.data as VesselTrackData).attributes[selector]?.extent
+    const extent = (this.props.data as VesselTrackData).attributes?.[selector]?.extent
     return extent
   }
 
