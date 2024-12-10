@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { MapMouseEvent } from 'maplibre-gl'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 import { selectHiddenLabels, selectViewport } from '../../routes/routes.selectors'
 import { updateQueryParams } from '../../routes/routes.actions'
-import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 import type { CoordinatePosition, MapCoordinates, Label } from '../../types'
 import { selectEditing } from '../../features/rulers/rulers.selectors'
 import { editRuler, moveCurrentRuler } from '../../features/rulers/rulers.slice'
@@ -49,7 +49,7 @@ export const useMapClick = () => {
   )
   const layerMapClickHandlers: any = useMemo(
     () => ({
-      trackDirections: onEventClick,
+      'vessel-positions': onEventClick,
     }),
     [onEventClick]
   )
