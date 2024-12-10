@@ -7,7 +7,7 @@ import {
   getVesselParsedTrack,
   getVesselTrackGeojsonByDateRange,
 } from '../../features/tracks/tracks.selectors'
-import { BACKGROUND_LAYER, DEFAULT_DATAVIEWS } from '../../data/config'
+import { BACKGROUND_LAYER } from '../../data/config'
 import { selectHighlightedEvent, selectHighlightedTime } from '../../features/timebar/timebar.slice'
 import type { LayersData, VesselPoint, TrackColor } from '../../types'
 import { ActionType } from '../../types'
@@ -298,11 +298,10 @@ export const selectMapLayers = createSelector(
             ? dataview.type
             : satellite
             ? Generators.BasemapType.Satellite
-            : Generators.BasemapType.Bathymetry,
+            : Generators.BasemapType.Default,
         visible: !hiddenLayers.includes(dataview.id),
       }
     })
-    console.log("🚀 ~ constdataviews:any=DEFAULT_DATAVIEWS.map ~ dataviews:", dataviews)
     return dataviews
   }
 )
@@ -313,7 +312,6 @@ export const selectMapLayers = createSelector(
 export const getLayerComposerLayers = createSelector(
   [selectMapLayers, getVesselParsedTrackLayer],
   (mapLayers, trackLayers) => {
-    console.log("🚀 ~ mapLayers:", mapLayers)
     return [...mapLayers, ...trackLayers]
   }
 )
