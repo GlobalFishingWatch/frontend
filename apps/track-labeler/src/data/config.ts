@@ -1,6 +1,5 @@
 import * as Generators from '@globalfishingwatch/layer-composer'
 import type {
-  BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
   // CartoPolygonsGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
@@ -40,7 +39,7 @@ export const DEFAULT_DATAVIEWS = [
     type: Generators.GeneratorType.Basemap,
     basemap: Generators.BasemapType.Default,
   } as BasemapGeneratorConfig,
-  
+
   // {
   //   id: 'cp_rfmo',
   //   type: Generators.Type.CartoPolygons,

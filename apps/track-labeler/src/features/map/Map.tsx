@@ -7,8 +7,9 @@ import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import * as Generators from '@globalfishingwatch/layer-composer'
 import type { ExtendedLayer, StyleTransformation } from '@globalfishingwatch/layer-composer'
 import { getInteractiveLayerIds, Group } from '@globalfishingwatch/layer-composer'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { selectRulers } from '../../features/rulers/rulers.selectors'
-import { ActionType, Label } from '../../types'
+import type { ActionType, Label } from '../../types'
 import { selectColorMode, selectProjectColors } from '../../routes/routes.selectors'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
@@ -30,7 +31,6 @@ import styles from './Map.module.css'
 import MapControls from './map-controls/MapControls'
 import MapData from './map-data/map-data'
 import { useMapboxRef, useMapboxRefCallback } from './map.context'
-import { DataviewType } from '@globalfishingwatch/api-types'
 
 const GROUP_ORDER = [
   Group.Background,
@@ -71,7 +71,6 @@ const Map = (): React.ReactElement => {
   const { viewport, onViewportChange } = useViewport()
   const { globalConfig } = useGeneratorsConnect()
   const generatorConfigs = useSelector(getLayerComposerLayers)
-  console.log('🚀 ~ Map ~ generatorConfigs:', generatorConfigs)
   const projectColors = useSelector(selectProjectColors)
   const actionShortcuts = useSelector(getActionShortcuts)
   const rulers = useSelector(selectRulers)
@@ -179,6 +178,7 @@ const Map = (): React.ReactElement => {
       <div className={styles.legendContainer}>
         {legengLabels &&
           legengLabels.map((legend) => (
+            // eslint-disable-next-line jsx-a11y/no-static-element-interactions
             <div
               key={legend.id}
               className={cx(styles.legend, {
