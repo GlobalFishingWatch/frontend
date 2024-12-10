@@ -11,6 +11,8 @@ export const EVENTS_COLORS = {
   gap: '#f7b500',
 }
 
+export type VesselTrackGraphExtent = [number, number]
+
 export type VesselTrackData = {
   // Number of geometries
   length: number
@@ -22,8 +24,8 @@ export type VesselTrackData = {
     positions?: { value: Float32Array; size: number }
     getPath: { value: Float32Array; size: number }
     getTimestamp: { value: Float32Array; size: number }
-    getSpeed: { value: Float32Array; size: number; min: number; max: number }
-    getElevation: { value: Float32Array; size: number; min: number; max: number }
+    getSpeed: { value: Float32Array; size: number; extent: VesselTrackGraphExtent }
+    getElevation: { value: Float32Array; size: number; extent: VesselTrackGraphExtent }
   }
 }
 

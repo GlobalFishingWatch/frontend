@@ -1,7 +1,11 @@
 import { DateTime } from 'luxon'
 import memoize from 'lodash/memoize'
-import { scaleSqrt } from 'd3-scale'
-import type { UserTrackBinaryData, VesselTrackData } from '@globalfishingwatch/deck-loaders'
+import { scaleLinear } from 'd3-scale'
+import type {
+  UserTrackBinaryData,
+  VesselTrackData,
+  VesselTrackGraphExtent,
+} from '@globalfishingwatch/deck-loaders'
 import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '../../utils'
 import type { VesselEventsLayer } from './VesselEventsLayer'
@@ -156,19 +160,18 @@ export const getEvents = memoize(
 )
 
 export const VESSEL_GRAPH_STEPS = VESSEL_GRAPH_COLORS.length
-function generateVesselGraphStepValues(domain: { min: number; max: number }) {
-  const scale = scaleSqrt([0, VESSEL_GRAPH_STEPS], [domain.min, domain.max]).clamp(true)
+
+function generateVesselGraphStepValues(extent: VesselTrackGraphExtent) {
+  const scale = scaleLinear([0, VESSEL_GRAPH_STEPS], extent).clamp(true)
   const steps = [...Array(VESSEL_GRAPH_STEPS)].map((_, i) => scale(i))
   return steps
 }
 
-export const MAX_SPEED_VALUE = 25
 export function generateVesselGraphSteps(
-  domain: { min: number; max: number },
+  extent: VesselTrackGraphExtent,
   colorBy: VesselsColorByProperty
 ) {
-  const max = colorBy === 'speed' && domain.max > MAX_SPEED_VALUE ? MAX_SPEED_VALUE : domain.max
-  return generateVesselGraphStepValues({ ...domain, max }).map((value, index) => {
+  return generateVesselGraphStepValues(extent).map((value, index) => {
     const colorIndex = colorBy === 'speed' ? index : VESSEL_GRAPH_COLORS.length - 1 - index
     return {
       value,

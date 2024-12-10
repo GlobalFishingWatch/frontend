@@ -3,7 +3,7 @@ import type { AccessorFunction, ChangeFlags, DefaultProps } from '@deck.gl/core'
 import type { PathLayerProps } from '@deck.gl/layers'
 import { PathLayer } from '@deck.gl/layers'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
-import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
+import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
@@ -96,7 +96,7 @@ export type _VesselTrackLayerProps<DataT = any> = {
   /**
    * Domain for the speed or elevation graph
    */
-  trackGraphDomain?: { min: number; max: number }
+  trackGraphExtent?: VesselTrackGraphExtent
 }
 
 function generateShaderColorSteps({
@@ -218,7 +218,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       `,
       'fs:DECKGL_FILTER_COLOR': `
         if(colorBy == ${COLOR_BY.speed}) {
-          // float valueToCompare = (colorBy == ${COLOR_BY.speed}) ? vSpeed : vElevation
           ${generateShaderColorSteps({
             property: 'vSpeed',
             operation: '<=',
@@ -284,7 +283,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     const {
       startTime,
       endTime,
-      trackGraphDomain,
+      trackGraphExtent,
       highlightStartTime = 0,
       highlightEndTime = 0,
       minSpeedFilter = -MAX_FILTER_VALUE,
@@ -295,7 +294,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     } = this.props
 
     const steps =
-      trackGraphDomain && colorBy ? generateVesselGraphSteps(trackGraphDomain, colorBy) : []
+      trackGraphExtent && colorBy ? generateVesselGraphSteps(trackGraphExtent, colorBy) : []
 
     const values = steps.reduce((acc, step, index) => {
       acc[`value${index}`] = step.value
@@ -332,10 +331,10 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     return getSegmentsFromData(this.props.data as VesselTrackData, param)
   }
 
-  getGraphStats(graph: 'speed' | 'elevation'): { min: number; max: number } {
+  getGraphExtent(graph: 'speed' | 'elevation'): VesselTrackGraphExtent {
     const selector = graph === 'speed' ? 'getSpeed' : 'getElevation'
-    const stats = (this.props.data as VesselTrackData).attributes[selector]
-    return { min: stats?.min, max: stats?.max }
+    const extent = (this.props.data as VesselTrackData).attributes[selector]?.extent
+    return extent
   }
 
   getBbox() {

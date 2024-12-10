@@ -14,10 +14,15 @@ import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
 import type { BBox, Position } from 'geojson'
 import { rhumbBearing } from '@turf/turf'
 import { TextLayer } from '@deck.gl/layers'
+import { extent } from 'simple-statistics'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
-import { VesselEventsLoader, VesselTrackLoader } from '@globalfishingwatch/deck-loaders'
+import {
+  getVesselGraphExtentClamped,
+  VesselEventsLoader,
+  VesselTrackLoader,
+} from '@globalfishingwatch/deck-loaders'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { PATH_BASENAME } from '../layers.config'
@@ -183,7 +188,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackThinningZoomConfig,
       minElevationFilter,
       maxElevationFilter,
-      trackGraphDomain,
+      trackGraphExtent,
       colorBy,
     } = this.props
 
@@ -212,7 +217,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           loadOptions: {
             ...getFetchLoadOptions(),
           },
-          trackGraphDomain,
+          trackGraphExtent,
           type: TRACK_LAYER_TYPE,
           loaders: [VesselTrackLoader],
           _pathType: 'open',
@@ -473,14 +478,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return this.getTrackLayers()?.flatMap((l) => l.getSegments(params))
   }
 
-  getVesselTrackGraphStats(graph: 'speed' | 'elevation') {
-    const stats = this.getTrackLayers()?.flatMap((l) => {
-      return l.getGraphStats(graph)
+  getVesselTrackGraphExtent(graph: 'speed' | 'elevation') {
+    const extents = this.getTrackLayers()?.flatMap((l) => {
+      return l.getGraphExtent(graph)
     })
-    return {
-      min: Math.min(...stats.map((s) => s.min)),
-      max: Math.max(...stats.map((s) => s.max)),
-    }
+    return getVesselGraphExtentClamped(extent(extents), graph)
   }
 
   getVesselTrackBounds() {

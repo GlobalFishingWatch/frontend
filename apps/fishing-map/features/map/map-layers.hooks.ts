@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
+import { extent } from 'simple-statistics'
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { ResolverGlobalConfig, TimeRange } from '@globalfishingwatch/deck-layer-composer'
@@ -13,6 +14,8 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { FourwingsLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 import { generateVesselGraphSteps, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
+import { getVesselGraphExtentClamped } from '@globalfishingwatch/deck-loaders'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectWorkspaceStatus,
@@ -69,8 +72,7 @@ export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
 }
 
 // Used to generate the dynamic ramp for speed and elevation
-// TODO move to an atom so we avoid calculating twice when using in other places
-export const useTimebarTracksGraphDomain = () => {
+export const useTimebarTracksGraphExtent = () => {
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const vessels = useTimebarTracksLayers()
 
@@ -81,28 +83,24 @@ export const useTimebarTracksGraphDomain = () => {
   if (!isLoaded) {
     return
   }
-  const domain = vessels.reduce(
-    (acc, vessel) => {
-      const { min, max } = (vessel.instance as VesselLayer).getVesselTrackGraphStats(
-        vesselsTimebarGraph
+  const extents = getVesselGraphExtentClamped(
+    extent(
+      vessels.flatMap((v) =>
+        (v.instance as VesselLayer).getVesselTrackGraphExtent(vesselsTimebarGraph)
       )
-      return {
-        min: min < acc.min ? min : acc.min,
-        max: max > acc.max ? max : acc.max,
-      }
-    },
-    { min: Infinity, max: -Infinity }
+    ),
+    vesselsTimebarGraph
   )
-  return domain
+  return extents as VesselTrackGraphExtent
 }
 
 export const useTimebarTracksGraphSteps = () => {
-  const domain = useTimebarTracksGraphDomain()
+  const extent = useTimebarTracksGraphExtent()
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
-  if (!domain || (vesselsTimebarGraph !== 'speed' && vesselsTimebarGraph !== 'elevation')) {
+  if (!extent?.length || (vesselsTimebarGraph !== 'speed' && vesselsTimebarGraph !== 'elevation')) {
     return []
   }
-  return generateVesselGraphSteps(domain, vesselsTimebarGraph)
+  return generateVesselGraphSteps(extent, vesselsTimebarGraph)
 }
 
 export const useGlobalConfigConnect = () => {
@@ -123,7 +121,7 @@ export const useGlobalConfigConnect = () => {
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const clickedFeatures = useSelector(selectClickedEvent)
-  const trackGraphDomain = useTimebarTracksGraphDomain()
+  const trackGraphExtent = useTimebarTracksGraphExtent()
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
 
@@ -184,7 +182,7 @@ export const useGlobalConfigConnect = () => {
       visibleEvents,
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
       highlightedFeatures,
-      trackGraphDomain,
+      trackGraphExtent,
       onPositionsMaxPointsError,
     }
     if (showTimeComparison && timeComparisonValues) {
@@ -210,7 +208,7 @@ export const useGlobalConfigConnect = () => {
     highlightEventIds,
     onPositionsMaxPointsError,
     showTimeComparison,
-    trackGraphDomain,
+    trackGraphExtent,
     timeComparisonValues,
   ])
 }

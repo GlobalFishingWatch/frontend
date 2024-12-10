@@ -41,7 +41,10 @@ const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarCha
 
   const heightScale = useMemo(() => {
     if (!steps.length) return undefined
-    const domainEnd = Math.max(...steps.map((step) => step.value || 0))
+    const domainEnd =
+      trackGraphOrientation === 'down'
+        ? Math.min(...steps.map((step) => step.value || 0))
+        : Math.max(...steps.map((step) => step.value || 0))
     const { height } = getTrackY(filteredGraphsData.length, 0, graphHeight)
     return scaleSqrt([0, domainEnd], [2, height]).clamp(true)
   }, [filteredGraphsData])
