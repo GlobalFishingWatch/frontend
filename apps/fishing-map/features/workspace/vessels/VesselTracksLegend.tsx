@@ -6,14 +6,23 @@ import { VESSEL_GRAPH_COLORS } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
+import MapLegendPlaceholder from '../common/MapLegendPlaceholder'
 
 function VesselTracksLegend(): React.ReactElement | null {
   const { t } = useTranslation()
   const steps = useTimebarTracksGraphSteps()
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
 
-  if (!steps || !steps.length) {
+  if (vesselsTimebarGraph === 'none') {
     return null
+  }
+
+  if (!steps || !steps.length) {
+    return (
+      <div className={styles.legend}>
+        <MapLegendPlaceholder />
+      </div>
+    )
   }
 
   const legend: UILegendColorRamp = {

@@ -47,6 +47,6 @@ export const VESSEL_GRAPH_COLORS = [
   '#FC7B79',
   '#FFA369',
   '#FFCC4F',
-  '#FFF650',
-  '#FFF992',
+  '#FFE350',
+  '#FDF9BD',
 ]

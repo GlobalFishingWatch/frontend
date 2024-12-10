@@ -100,6 +100,7 @@ const TracksEvents = ({
             tabIndex={0}
             key={event.id}
             className={cx(styles.event, styles[event.type || 'none'], {
+              [styles.thick]: tracksEventsWithCoords.length <= 2,
               [styles.compact]: tracksEventsWithCoords.length >= 5,
               [styles.highlighted]:
                 highlightedEventsIds && highlightedEventsIds.includes(event.id as string),

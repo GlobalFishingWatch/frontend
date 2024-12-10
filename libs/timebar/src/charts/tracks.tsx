@@ -1,12 +1,14 @@
-import React, { Fragment, useContext, useEffect, useMemo } from 'react'
+import React, { Fragment, useContext, useMemo } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import type { TimelineScale, TrackGraphOrientation } from '../timelineContext';
+import type { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import TimelineContext from '../timelineContext'
 import { getTrackY } from './common/utils'
 import styles from './tracks.module.css'
 import { useFilteredChartData, useOuterScale } from './common/hooks'
 import type { TimebarChartData, TimebarChartItem, TrackChunkProps } from './common/types'
 import { useUpdateChartsData } from './chartsData.atom'
+
+export const MAX_THICK_TRACKS_NUMBER = 2
 
 const getTracksWithCoords = (
   tracks: TimebarChartData<TrackChunkProps>,
@@ -16,6 +18,8 @@ const getTracksWithCoords = (
 ) => {
   if (!tracks || tracks.length === 0 || !outerScale) return null
   const trackWithCoords: TimebarChartData<TrackChunkProps> = []
+
+  const offset = tracks.length > MAX_THICK_TRACKS_NUMBER ? 0.5 : 1.5
   tracks.forEach((track, trackIndex) => {
     if (!track) {
       return
@@ -34,7 +38,7 @@ const getTracksWithCoords = (
               width: outerScale(chunk.end as number) - x,
             }
           }),
-      y: baseTrackY.defaultY,
+      y: baseTrackY.defaultY - offset,
       props: {
         segmentsOffsetY: track.props?.segmentsOffsetY,
       },
@@ -56,6 +60,8 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
   }, [filteredTracks, outerScale, graphHeight, trackGraphOrientation])
 
   if (!tracksWithCoords) return null
+
+  const height = filteredTracks.length > MAX_THICK_TRACKS_NUMBER ? 1 : 2
   return (
     <Fragment>
       {tracksWithCoords.map((track, i) => {
@@ -74,7 +80,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                       top: track.props?.segmentsOffsetY ? (track.y || 0) + (i % 3) : track.y,
                       left: chunk.x,
                       width: chunk.width,
-                      height: chunk.props?.height || 1,
+                      height: chunk.props?.height || height,
                     }}
                   />
                 ))}

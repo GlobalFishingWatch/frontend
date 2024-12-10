@@ -13,6 +13,11 @@ export function getVesselGraphExtentClamped(
   domain: VesselTrackGraphExtent,
   colorBy: 'speed' | 'elevation'
 ) {
+  if (isNaN(domain[0]) || isNaN(domain[1])) {
+    return colorBy === 'elevation'
+      ? [MIN_DEPTH_VALUE, MAX_DEPTH_VALUE]
+      : [MIN_SPEED_VALUE, MAX_SPEED_VALUE]
+  }
   if (colorBy === 'elevation') {
     // Elevation values are negative, so we need to invert min and max
     return [Math.min(domain[1], MIN_DEPTH_VALUE), Math.max(domain[0], MAX_DEPTH_VALUE)]

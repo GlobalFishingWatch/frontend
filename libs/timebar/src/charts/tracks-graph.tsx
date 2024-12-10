@@ -76,7 +76,7 @@ const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarCha
           )?.color
           return {
             polygon: [x1, y1, x2, y1, x2, y2, x1, y2],
-            color: color ? hexToDeckColor(color) : [],
+            color: color ? hexToDeckColor(color) : steps[steps.length - 1].color,
           }
         })
       })
