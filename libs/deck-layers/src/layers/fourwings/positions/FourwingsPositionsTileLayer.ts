@@ -17,7 +17,6 @@ import { groupBy, orderBy } from 'es-toolkit'
 import { stringify } from 'qs'
 import type { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DateTime } from 'luxon'
-import { loadDeckFont } from 'libs/deck-layers/src/utils/fonts'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
@@ -46,6 +45,7 @@ import {
 import type { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { PATH_BASENAME } from '../../layers.config'
+import { loadDeckFont } from '../../../utils/fonts'
 import {
   cleanVesselShipname,
   filteredPositionsByViewport,

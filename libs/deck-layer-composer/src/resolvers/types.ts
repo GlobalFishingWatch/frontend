@@ -9,6 +9,7 @@ import type {
   HEATMAP_LOW_RES_ID,
   VesselsColorByProperty,
 } from '@globalfishingwatch/deck-layers'
+import type { VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 import type { TimeRange } from './dataviews'
 
 export type ResolverGlobalConfig = {
@@ -25,6 +26,7 @@ export type ResolverGlobalConfig = {
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
+  trackGraphExtent?: VesselTrackGraphExtent
   highlightedTime?: Partial<TimeRange>
   highlightEventIds?: string[]
   visibleEvents: EventTypes[]
