@@ -1,6 +1,6 @@
 import type { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import type { GeneratorsRecord } from './generators';
+import type { GeneratorsRecord } from './generators'
 import Generators, { EVENTS_COLORS } from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
 import type {
@@ -76,7 +76,6 @@ export class LayerComposer {
   ): GeneratorStyles => {
     const newGeneratorStyles = { ...generatorStyles }
     newGeneratorStyles.layers = newGeneratorStyles.layers?.map((layer) => {
-      console.log("🚀 ~ LayerComposer ~ newGeneratorStyles.layers=newGeneratorStyles.layers?.map ~ layer:", layer)
       const newLayer = { ...layer }
       if (!newLayer.layout) {
         newLayer.layout = {} as LayerSpecification['layout']
@@ -109,7 +108,6 @@ export class LayerComposer {
       }
       return newLayer
     })
-    console.log("🚀 ~ LayerComposer ~ newGeneratorStyles:", newGeneratorStyles)
     return newGeneratorStyles
   }
 
