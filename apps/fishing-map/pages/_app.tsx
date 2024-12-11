@@ -8,6 +8,8 @@ import { Provider } from 'react-redux'
 import Head from 'next/head'
 import { wrapper } from '../store'
 
+import 'utils/polyfills'
+
 import 'features/i18n/i18n'
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
