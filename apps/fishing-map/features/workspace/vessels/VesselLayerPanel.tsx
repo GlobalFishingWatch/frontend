@@ -173,8 +173,6 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
     fieldsToInclude: ['speed', 'elevation'],
   })
-  console.log('🚀 ~ VesselLayerPanel ~ dataview:', dataview)
-  console.log('🚀 ~ VesselLayerPanel ~ filtersAllowed:', filtersAllowed)
 
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
