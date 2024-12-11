@@ -103,6 +103,7 @@ export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
   Partial<TileLayerProps>
 
 export type FourwingsHeatmapTilesCache = {
+  zoom: number
   start: number
   bufferedStart: number
   end: number

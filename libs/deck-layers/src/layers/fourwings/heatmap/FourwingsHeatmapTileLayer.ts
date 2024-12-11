@@ -484,6 +484,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     let noDataValue: number = 0
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
+    // const chunk = getFourwingsChunk(1725753600000, 1733616000000, availableIntervals)
+    // console.log('🚀 ~ _fetchTimeseriesTileData:any= ~ interval:', interval)
+    // console.log('🚀 ~ _fetchTimeseriesTileData:any= ~ endTime:', endTime)
+    // console.log('🚀 ~ _fetchTimeseriesTileData:any= ~ startTime:', startTime)
+    // console.log('🚀 ~ _fetchTimeseriesTileData:any= ~ chunk:', chunk)
     this.setState({ rampDirty: true })
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
       const url = getDataUrlBySublayer({
@@ -601,7 +606,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }): FourwingsHeatmapTilesCache => {
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
-    return { start, end, bufferedStart, interval, compareStart, compareEnd }
+    return {
+      zoom: Math.round(this.context.viewport.zoom),
+      start,
+      end,
+      bufferedStart,
+      interval,
+      compareStart,
+      compareEnd,
+    }
   }
 
   _getTileDataCacheKey = (): string => {
@@ -660,8 +673,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       isCompareStartOutRange ||
       isEndOutRange ||
       isCompareEndOutRange ||
-      getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval
+      getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
+      Math.round(this.context.viewport.zoom) !== tilesCache.zoom
     if (needsCacheKeyUpdate) {
+      console.log('🚀 ~ updateState ~ needsCacheKeyUpdate:', needsCacheKeyUpdate)
       this.setState({
         tilesCache: this._getTileDataCache({
           startTime,
