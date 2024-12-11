@@ -674,17 +674,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       zoom !== tilesCache.zoom
     if (needsCacheKeyUpdate) {
-      const tilesCacheN = this._getTileDataCache({
-        zoom,
-        startTime,
-        endTime,
-        availableIntervals,
-        compareStart,
-        compareEnd,
-      })
       requestAnimationFrame(() => {
         this.setState({
-          tilesCache: tilesCacheN,
+          tilesCache: this._getTileDataCache({
+            zoom,
+            startTime,
+            endTime,
+            availableIntervals,
+            compareStart,
+            compareEnd,
+          }),
         })
       })
     }
