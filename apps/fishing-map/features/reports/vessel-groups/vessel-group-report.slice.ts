@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
-import type { AsyncError} from 'utils/async-slice';
+import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { mergeVesselGroupVesselIdentities } from 'features/vessel-groups/vessel-groups.utils'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -56,7 +56,8 @@ export const fetchVesselGroupReportThunk = createAsyncThunk(
   },
   {
     condition: (params: FetchVesselGroupReportThunkParams, { getState }) => {
-      const { status, statusId } = (getState() as VesselGroupReportSliceState)?.vesselGroupReport
+      const { status, statusId } =
+        (getState() as VesselGroupReportSliceState)?.vesselGroupReport || {}
       if (
         status === AsyncReducerStatus.Error ||
         status === AsyncReducerStatus.Loading ||

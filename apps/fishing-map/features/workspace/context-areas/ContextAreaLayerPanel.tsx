@@ -1,19 +1,12 @@
-import { useState, useCallback, Fragment, useEffect, use } from 'react'
+import { useState, useCallback, Fragment, useEffect } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
-import type { Dataset} from '@globalfishingwatch/api-types';
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
-import type {
-  ColorBarOption} from '@globalfishingwatch/ui-components';
-import {
-  Tooltip,
-  Modal,
-  IconButton,
-  Collapsable,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { Tooltip, Modal, IconButton, Collapsable, Spinner } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
@@ -127,7 +120,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     ) {
       updateFeaturesOnScreen()
     }
-     
   }, [dataset, layerActive, layerLoaded, viewport, areasOnScreenOpen])
 
   const listHeight = Math.min(featuresOnScreen?.total, CONTEXT_FEATURES_LIMIT) * LIST_ELEMENT_HEIGHT

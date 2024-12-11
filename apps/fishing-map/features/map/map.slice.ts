@@ -1,12 +1,9 @@
-import type { PayloadAction} from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  getDataviewSqlFiltersResolved
-} from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDataviewSqlFiltersResolved } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
   DataviewDatasetConfig,
@@ -15,12 +12,13 @@ import type {
   ApiEvent,
   EventVessel,
   APIPagination,
-  FourwingsEventsInteraction} from '@globalfishingwatch/api-types';
+  FourwingsEventsInteraction,
+} from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
   EndpointId,
   EventVesselTypeEnum,
-  EventTypes
+  EventTypes,
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -538,9 +536,9 @@ export const fetchClusterEventThunk = createAsyncThunk(
           type: EventTypes.Port,
           vessels,
           port: {
-            id: interactionResponse?.find((r) => r?.portId)?.portId!,
-            name: interactionResponse?.find((r) => r?.portName)?.portName!,
-            country: interactionResponse?.find((r) => r?.portCountry)?.portCountry!,
+            id: interactionResponse?.find((r) => r?.portId)?.portId as string,
+            name: interactionResponse?.find((r) => r?.portName)?.portName as string,
+            country: interactionResponse?.find((r) => r?.portCountry)?.portCountry as string,
             datasetId: eventsDataset?.id,
           },
         } as ExtendedFeatureByVesselEvent

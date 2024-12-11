@@ -201,8 +201,8 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
       <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{title}</h3>}
-        {isGFWUser && (
-          <PortsReportLink port={event?.port!}>
+        {isGFWUser && event?.port && (
+          <PortsReportLink port={event.port}>
             <div className={styles.textContainer}>
               {event?.port?.name || event?.port?.id}
               {event?.port?.country && ` (${formatInfoField(event.port.country, 'flag')})`}
@@ -242,7 +242,7 @@ function ClusterEventTooltipRow({ feature, showFeaturesDetails }: EncountersLaye
             {event?.vessel ? (
               <div className={styles.rowText}>
                 <VesselPin
-                  vesselToResolve={{ ...event.vessel, datasetId: infoDataset?.id! }}
+                  vesselToResolve={{ ...event.vessel, datasetId: infoDataset?.id as string }}
                   size="small"
                   className={styles.inlineBtn}
                 />

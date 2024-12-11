@@ -51,11 +51,12 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
         if (bbox) {
           fitBounds(bbox as Bbox, { padding: 60, fitZoom: true })
         } else {
-          const transmissionDateFrom = getVesselProperty(
-            infoResource?.data!,
-            'transmissionDateFrom'
-          )
-          const transmissionDateTo = getVesselProperty(infoResource?.data!, 'transmissionDateTo')
+          const transmissionDateFrom = infoResource?.data
+            ? getVesselProperty(infoResource?.data, 'transmissionDateFrom')
+            : ''
+          const transmissionDateTo = infoResource?.data
+            ? getVesselProperty(infoResource?.data, 'transmissionDateTo')
+            : ''
           if (infoResource && (!transmissionDateFrom || !transmissionDateTo)) {
             console.warn("transmissionDates not available, can't fit time", infoResource)
             return

@@ -1,4 +1,4 @@
-import type { ReactNode} from 'react';
+import type { ReactNode } from 'react'
 import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -7,19 +7,17 @@ import { groupBy } from 'es-toolkit'
 import type {
   DataviewDatasetConfigParam,
   Resource,
-  IdentityVessel} from '@globalfishingwatch/api-types';
+  IdentityVessel,
+} from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
   ResourceStatus,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components';
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  resolveDataviewDatasetResource
-} from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { formatInfoField, getVesselShipNameLabel, getVesselOtherNamesLabel } from 'utils/info'
@@ -175,6 +173,8 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
     fieldsToInclude: ['speed', 'elevation'],
   })
+  console.log('🚀 ~ VesselLayerPanel ~ dataview:', dataview)
+  console.log('🚀 ~ VesselLayerPanel ~ filtersAllowed:', filtersAllowed)
 
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
