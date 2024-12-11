@@ -310,10 +310,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       scaleLinear(colorDomain as number[], cr as FourwingsColorObject[]).clamp(true)
     )
   }
-  startTime = performance.now()
+
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    const endTime = performance.now()
-    console.log(`onViewportLoad took ${(endTime - this.startTime) / 1000} s`)
     this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
@@ -484,11 +482,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     let noDataValue: number = 0
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
-    // const chunk = getFourwingsChunk(1725753600000, 1733616000000, availableIntervals)
-    // console.log('🚀 ~ _fetchTimeseriesTileData:any= ~ interval:', interval)
-    // console.log('🚀 ~ _fetchTimeseriesTileData:any= ~ endTime:', endTime)
-    // console.log('🚀 ~ _fetchTimeseriesTileData:any= ~ startTime:', startTime)
-    // console.log('🚀 ~ _fetchTimeseriesTileData:any= ~ chunk:', chunk)
     this.setState({ rampDirty: true })
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
       const url = getDataUrlBySublayer({
@@ -676,7 +669,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       Math.round(this.context.viewport.zoom) !== tilesCache.zoom
     if (needsCacheKeyUpdate) {
-      console.log('🚀 ~ updateState ~ needsCacheKeyUpdate:', needsCacheKeyUpdate)
       this.setState({
         tilesCache: this._getTileDataCache({
           startTime,
