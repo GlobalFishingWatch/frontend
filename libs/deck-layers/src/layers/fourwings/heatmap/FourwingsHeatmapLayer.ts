@@ -15,6 +15,7 @@ import {
   EMPTY_CELL_COLOR,
   aggregateCell,
   compareCell,
+  getFourwingsChunk,
   getIntervalFrames,
   getVisualizationModeByResolution,
 } from './fourwings-heatmap.utils'
@@ -30,9 +31,6 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   timeRangeKey!: string
   startFrame!: number
   endFrame!: number
-
-  lastStart = null
-  lastEnd = null
 
   getPickingInfo = ({
     info,
@@ -137,18 +135,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       scales,
     } = this.props
     if (!colorDomain?.length || !colorRanges?.length) {
-      target = [255, 255, 255, 255]
+      target = EMPTY_CELL_COLOR
       return target
-      // target = EMPTY_CELL_COLOR
-      // return target
-    }
-    if (this.lastStart !== this.startFrame) {
-      this.lastStart = this.startFrame
-      console.log('start', this.startFrame)
-    }
-    if (this.lastEnd !== this.endFrame) {
-      this.lastEnd = this.endFrame
-      console.log('end', this.endFrame)
     }
     const aggregatedCellValues =
       feature.properties.initialValues[this.timeRangeKey] ||
@@ -174,7 +162,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       (minVisibleValue !== undefined && chosenValue < minVisibleValue) ||
       (maxVisibleValue !== undefined && chosenValue > maxVisibleValue)
     ) {
-      target = [255, 0, 0, 255]
+      target = EMPTY_CELL_COLOR
       return target
     }
     if (scales[chosenValueIndex]) {
@@ -193,7 +181,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         return target
       }
     }
-    target = [0, 255, 0, 255]
+    target = EMPTY_CELL_COLOR
     return target
   }
 
@@ -247,12 +235,12 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
     }
-
+    const { bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
     const { startFrame, endFrame } = getIntervalFrames({
       startTime,
       endTime,
       availableIntervals,
-      bufferedStart: tilesCache.bufferedStart,
+      bufferedStart,
     })
 
     this.timeRangeKey = getTimeRangeKey(startFrame, endFrame)
