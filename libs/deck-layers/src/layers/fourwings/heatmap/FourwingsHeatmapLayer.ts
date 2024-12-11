@@ -133,7 +133,11 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       maxVisibleValue,
       scales,
     } = this.props
-    if (!colorDomain?.length || !colorRanges?.length) {
+    if (
+      !colorDomain?.length ||
+      !colorRanges?.length ||
+      Math.round(this.context.viewport.zoom) !== this.props.tile.index.z
+    ) {
       target = EMPTY_CELL_COLOR
       return target
     }
@@ -148,6 +152,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       })
     let chosenValueIndex = 0
     let chosenValue: number | undefined
+
     feature.aggregatedValues = aggregatedCellValues
     aggregatedCellValues.forEach((value, index) => {
       if (value && (!chosenValue || value > chosenValue)) {
@@ -179,7 +184,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         return target
       }
     }
-    return EMPTY_CELL_COLOR
+    target = EMPTY_CELL_COLOR
+    return target
   }
 
   getBivariateFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
@@ -232,7 +238,6 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
     }
-
     const { startFrame, endFrame } = getIntervalFrames({
       startTime,
       endTime,

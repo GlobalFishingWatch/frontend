@@ -85,6 +85,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       error: '',
       scales: [],
       tilesCache: this._getTileDataCache({
+        zoom: Math.round(this.context.viewport.zoom),
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         availableIntervals: this.props.availableIntervals,
@@ -146,6 +147,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       availableIntervals,
       bufferedStart:
         this._getTileDataCache({
+          zoom: Math.round(this.context.viewport.zoom),
           startTime: this.props.startTime,
           endTime: this.props.endTime,
           availableIntervals: this.props.availableIntervals,
@@ -310,10 +312,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       scaleLinear(colorDomain as number[], cr as FourwingsColorObject[]).clamp(true)
     )
   }
-  startTime = performance.now()
+
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    const endTime = performance.now()
-    console.log(`onViewportLoad took ${(endTime - this.startTime) / 1000} s`)
     this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
@@ -587,12 +587,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   _getTileDataCache = ({
+    zoom,
     startTime,
     endTime,
     availableIntervals,
     compareStart,
     compareEnd,
   }: {
+    zoom: number
     startTime: number
     endTime: number
     availableIntervals?: FourwingsInterval[]
@@ -601,7 +603,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }): FourwingsHeatmapTilesCache => {
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
-    return { start, end, bufferedStart, interval, compareStart, compareEnd }
+    return {
+      zoom,
+      start,
+      end,
+      bufferedStart,
+      interval,
+      compareStart,
+      compareEnd,
+    }
   }
 
   _getTileDataCacheKey = (): string => {
@@ -631,6 +641,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       maxVisibleValue,
     } = props
     const { tilesCache, colorRanges, colorDomain } = this.state
+    const zoom = Math.round(this.context.viewport.zoom)
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
@@ -651,25 +662,29 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       })
     }
 
-    const isStartOutRange = startTime <= tilesCache.start
+    const isStartOutRange = startTime < tilesCache.start
     const isCompareStartOutRange = compareStart ? compareStart <= tilesCache.compareStart! : false
     const isCompareEndOutRange = compareEnd ? compareEnd <= tilesCache.compareEnd! : false
-    const isEndOutRange = endTime >= tilesCache.end
+    const isEndOutRange = endTime > tilesCache.end
     const needsCacheKeyUpdate =
       isStartOutRange ||
       isCompareStartOutRange ||
       isEndOutRange ||
       isCompareEndOutRange ||
-      getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval
+      getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
+      zoom !== tilesCache.zoom
     if (needsCacheKeyUpdate) {
-      this.setState({
-        tilesCache: this._getTileDataCache({
-          startTime,
-          endTime,
-          availableIntervals,
-          compareStart,
-          compareEnd,
-        }),
+      requestAnimationFrame(() => {
+        this.setState({
+          tilesCache: this._getTileDataCache({
+            zoom,
+            startTime,
+            endTime,
+            availableIntervals,
+            compareStart,
+            compareEnd,
+          }),
+        })
       })
     }
   }
