@@ -15,7 +15,6 @@ import {
   EMPTY_CELL_COLOR,
   aggregateCell,
   compareCell,
-  getFourwingsChunk,
   getIntervalFrames,
   getVisualizationModeByResolution,
 } from './fourwings-heatmap.utils'
@@ -239,12 +238,11 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
     }
-    const { bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
     const { startFrame, endFrame } = getIntervalFrames({
       startTime,
       endTime,
       availableIntervals,
-      bufferedStart,
+      bufferedStart: tilesCache.bufferedStart,
     })
 
     this.timeRangeKey = getTimeRangeKey(startFrame, endFrame)

@@ -6,11 +6,9 @@ import { DateTime } from 'luxon'
 import type {
   FourwingsFeature,
   FourwingsInterval,
-  TileCell} from '@globalfishingwatch/deck-loaders';
-import {
-  CONFIG_BY_INTERVAL,
-  getFourwingsInterval
+  TileCell,
 } from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../../utils'
 import type { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
 import {
@@ -24,10 +22,9 @@ import type {
   AggregateCellParams,
   CompareCellParams,
   FourwingsChunk,
-  FourwingsHeatmapResolution} from './fourwings-heatmap.types';
-import {
-  FourwingsAggregationOperation
+  FourwingsHeatmapResolution,
 } from './fourwings-heatmap.types'
+import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
 
 export function aggregateSublayerValues(
   values: number[],
@@ -330,7 +327,7 @@ export function getIntervalFrames({
   availableIntervals?: FourwingsInterval[]
   bufferedStart: number
 }): FourwingsIntervalFrames {
-  const cacheKey = `${startTime}-${endTime}-${availableIntervals?.join(',')}`
+  const cacheKey = `${startTime}-${endTime}-${bufferedStart}-${availableIntervals?.join(',')}`
 
   if (intervalFramesCache.has(cacheKey)) {
     return intervalFramesCache.get(cacheKey)!

@@ -85,6 +85,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       error: '',
       scales: [],
       tilesCache: this._getTileDataCache({
+        zoom: Math.round(this.context.viewport.zoom),
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         availableIntervals: this.props.availableIntervals,
@@ -146,6 +147,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       availableIntervals,
       bufferedStart:
         this._getTileDataCache({
+          zoom: Math.round(this.context.viewport.zoom),
           startTime: this.props.startTime,
           endTime: this.props.endTime,
           availableIntervals: this.props.availableIntervals,
@@ -585,12 +587,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   _getTileDataCache = ({
+    zoom,
     startTime,
     endTime,
     availableIntervals,
     compareStart,
     compareEnd,
   }: {
+    zoom: number
     startTime: number
     endTime: number
     availableIntervals?: FourwingsInterval[]
@@ -600,7 +604,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
     return {
-      zoom: Math.round(this.context.viewport.zoom),
+      zoom,
       start,
       end,
       bufferedStart,
@@ -637,6 +641,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       maxVisibleValue,
     } = props
     const { tilesCache, colorRanges, colorDomain } = this.state
+    const zoom = Math.round(this.context.viewport.zoom)
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
@@ -657,26 +662,30 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       })
     }
 
-    const isStartOutRange = startTime <= tilesCache.start
+    const isStartOutRange = startTime < tilesCache.start
     const isCompareStartOutRange = compareStart ? compareStart <= tilesCache.compareStart! : false
     const isCompareEndOutRange = compareEnd ? compareEnd <= tilesCache.compareEnd! : false
-    const isEndOutRange = endTime >= tilesCache.end
+    const isEndOutRange = endTime > tilesCache.end
     const needsCacheKeyUpdate =
       isStartOutRange ||
       isCompareStartOutRange ||
       isEndOutRange ||
       isCompareEndOutRange ||
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
-      Math.round(this.context.viewport.zoom) !== tilesCache.zoom
+      zoom !== tilesCache.zoom
     if (needsCacheKeyUpdate) {
-      this.setState({
-        tilesCache: this._getTileDataCache({
-          startTime,
-          endTime,
-          availableIntervals,
-          compareStart,
-          compareEnd,
-        }),
+      const tilesCacheN = this._getTileDataCache({
+        zoom,
+        startTime,
+        endTime,
+        availableIntervals,
+        compareStart,
+        compareEnd,
+      })
+      requestAnimationFrame(() => {
+        this.setState({
+          tilesCache: tilesCacheN,
+        })
       })
     }
   }
