@@ -48,7 +48,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedTime, selectHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
-import { useTimebarTracksLayers } from 'features/timebar/timebar-vessel.hooks'
+import { useVesselTracksLayers } from 'features/timebar/timebar-vessel.hooks'
 import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
 import {
   selectMapReportBufferDataviews,
@@ -74,7 +74,7 @@ export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
 // Used to generate the dynamic ramp for speed and elevation
 export const useTimebarTracksGraphExtent = () => {
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
-  const vessels = useTimebarTracksLayers()
+  const vessels = useVesselTracksLayers()
 
   if (vesselsTimebarGraph === 'none' || !vessels?.length) {
     return

@@ -11,7 +11,10 @@ import type {
 } from '@globalfishingwatch/timebar'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
-import { selectAllActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectAllActiveTrackDataviews,
+  selectVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getEventDescription } from 'utils/events'
 import { t } from 'features/i18n/i18n'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
@@ -29,6 +32,15 @@ export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {
   return tracks.some(
     ({ chunks, status }) => status !== ResourceStatus.Loading && chunks.length === 0
   )
+}
+
+export const useVesselTracksLayers = () => {
+  const dataviews = useSelector(selectVesselsDataviews)
+  const ids = useMemo(() => {
+    return dataviews.map((d) => d.id)
+  }, [dataviews])
+  const vessels = useGetDeckLayers<VesselLayer>(ids)
+  return vessels
 }
 
 export const useTimebarTracksLayers = () => {
