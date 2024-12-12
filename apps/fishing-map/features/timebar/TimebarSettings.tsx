@@ -242,10 +242,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TracksIcon}
                   label={t('timebarSettings.tracks', 'Tracks')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
-                  disabled={!hasTracksData || !activeTrackDataviews?.length}
+                  disabled={!activeTrackDataviews?.length}
                 />
               }
-              disabled={!hasTracksData || !activeTrackDataviews?.length}
+              disabled={!activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
                 timebarGraph === TimebarGraphs.None
@@ -263,10 +263,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TrackSpeedIcon}
                   label={t('timebarSettings.graphSpeed', 'Vessel Speed')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
-                  disabled={!hasTracksData || !activeTrackDataviews?.length}
+                  disabled={!activeTrackDataviews?.length}
                 />
               }
-              disabled={!hasTracksData || !activeTrackDataviews?.length}
+              disabled={!activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
                 timebarGraph === TimebarGraphs.Speed
@@ -289,10 +289,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TrackDepthIcon}
                   label={t('timebarSettings.graphDepth', 'Vessel Depth')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
-                  disabled={!hasTracksData || !activeTrackDataviews?.length}
+                  disabled={!activeTrackDataviews?.length}
                 />
               }
-              disabled={!hasTracksData || !activeTrackDataviews?.length}
+              disabled={!activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
                 timebarGraph === TimebarGraphs.Depth
