@@ -4,7 +4,9 @@
 }
 
 .segment {
-  height: 1px;
+  height: 2px;
+  border: 0.5px solid var(--timebar-main-background-color-faded);
+  box-sizing: content-box;
 }
 
 .point {
@@ -21,10 +23,7 @@
 
 .loadingBar {
   position: absolute;
-  top: 0;
-  right: 100%;
-  bottom: 0;
-  left: 0;
+  inset: 0 100% 0 0;
   background: #fff;
   width: 0;
   animation: borealisBar 2s linear infinite;

@@ -45,6 +45,7 @@ import {
 import type { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { PATH_BASENAME } from '../../layers.config'
+import { DECK_FONT, loadDeckFont } from '../../../utils/fonts'
 import {
   cleanVesselShipname,
   filteredPositionsByViewport,
@@ -106,21 +107,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
-    let fontLoaded = true
-    if (typeof document !== 'undefined') {
-      fontLoaded = false
-      const font = new FontFace(
-        'Roboto Deck',
-        "url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2')"
-      )
-      font
-        .load()
-        .then(() => {
-          ;(document.fonts as any).add(font)
-        })
-        .finally(() => {
-          this.setState({ fontLoaded: true })
-        })
+    const isSSR = typeof document === 'undefined'
+    const fontLoaded = isSSR
+    if (!isSSR) {
+      loadDeckFont().then((loaded) => {
+        this.setState({ fontLoaded: loaded })
+      })
     }
     this.state = {
       error: '',
@@ -485,7 +477,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                 getSize: 14,
                 outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.5),
                 getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
-                fontFamily: 'Roboto Deck',
+                fontFamily: DECK_FONT,
                 characterSet:
                   'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
                 outlineWidth: 200,

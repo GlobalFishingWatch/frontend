@@ -2,19 +2,17 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 import { stringify } from 'qs'
-import type { IconButtonSize } from '@globalfishingwatch/ui-components';
+import type { IconButtonSize } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import type {
   APIPagination,
   Dataset,
   DataviewInstance,
   IdentityVessel,
-  Resource} from '@globalfishingwatch/api-types';
-import {
-  DatasetTypes,
-  ResourceStatus,
+  Resource,
 } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client';
+import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { setResource } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'

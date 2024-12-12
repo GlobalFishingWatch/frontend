@@ -91,7 +91,7 @@ export const selectReportVesselsList = createSelector(
 )
 
 export const selectHasReportVessels = createSelector([selectReportVesselsList], (vessels) => {
-  return vessels?.length && vessels?.length > 0
+  return vessels && vessels?.length > 0
 })
 
 export const selectReportVesselsFiltered = createSelector(

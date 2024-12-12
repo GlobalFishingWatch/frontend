@@ -53,13 +53,11 @@ const TracksEvents = ({
   useTrackColor,
   highlightedEventsIds,
   onEventClick,
-  onEventHover,
 }: {
   data: TimebarChartData<TrackEventChunkProps>
   useTrackColor?: boolean
   highlightedEventsIds?: string[]
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
-  onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
   const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
   const outerScale = useOuterScale()
@@ -94,37 +92,44 @@ const TracksEvents = ({
           top: `${trackEvents.y}px`,
         }}
       >
-        {trackEvents.chunks.map((event) => (
-          <div
-            role="button"
-            tabIndex={0}
-            key={event.id}
-            className={cx(styles.event, styles[event.type || 'none'], {
-              [styles.compact]: tracksEventsWithCoords.length >= 5,
-              [styles.highlighted]:
-                highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
-            })}
-            style={
-              {
-                left: `${event.x}px`,
-                width: `${event.width}px`,
-                '--background-color':
-                  useTrackColor || event.type === 'fishing'
-                    ? trackEvents.color
-                    : event.props?.color || 'white',
-              } as React.CSSProperties
-            }
-            onClick={() => {
-              if (onEventClick) onEventClick(event)
-            }}
-            onMouseEnter={() => {
-              updateHoveredEvent(event.id as string)
-            }}
-            onMouseLeave={() => {
-              updateHoveredEvent(undefined)
-            }}
-          />
-        ))}
+        {trackEvents.chunks.map((event) => {
+          let color = event.props?.color || 'white'
+          if (tracksEventsWithCoords.length === 1 && event.type === 'fishing') {
+            color = 'white'
+          } else if (useTrackColor || event.type === 'fishing') {
+            color = trackEvents.color as string
+          }
+
+          return (
+            <div
+              role="button"
+              tabIndex={0}
+              key={event.id}
+              className={cx(styles.event, styles[event.type || 'none'], {
+                [styles.thick]: tracksEventsWithCoords.length <= 2,
+                [styles.compact]: tracksEventsWithCoords.length >= 5,
+                [styles.highlighted]:
+                  highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
+              })}
+              style={
+                {
+                  left: `${event.x}px`,
+                  width: `${event.width}px`,
+                  '--background-color': color,
+                } as React.CSSProperties
+              }
+              onClick={() => {
+                if (onEventClick) onEventClick(event)
+              }}
+              onMouseEnter={() => {
+                updateHoveredEvent(event.id as string)
+              }}
+              onMouseLeave={() => {
+                updateHoveredEvent(undefined)
+              }}
+            />
+          )
+        })}
       </div>
     ))
   }, [

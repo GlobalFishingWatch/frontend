@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
-import { uniq } from 'es-toolkit'
+import { uniq, uniqBy } from 'es-toolkit'
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
@@ -15,7 +15,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-export const MAX_VESSEL_REPORT_PIN = 30
+export const MAX_VESSEL_REPORT_PIN = 50
 
 export default function usePinReportVessels() {
   const allVesselsInWorkspace = useSelector(selectTrackDataviews)
@@ -68,7 +68,7 @@ export default function usePinReportVessels() {
         } as DataviewInstance<any>
       })
       if (vesselDataviewInstances.length) {
-        upsertDataviewInstance(vesselDataviewInstances)
+        upsertDataviewInstance(uniqBy(vesselDataviewInstances, (d) => d.id))
       }
     }
   }, [])

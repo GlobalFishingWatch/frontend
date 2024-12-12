@@ -544,9 +544,8 @@ class Timeline extends PureComponent<TimelineProps> {
             }}
           >
             {/* // TODO separated drag area? */}
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
             <div
-              role="button"
-              tabIndex={0}
               className={styles.graph}
               data-test="timeline-graph"
               onMouseDown={(event) => {

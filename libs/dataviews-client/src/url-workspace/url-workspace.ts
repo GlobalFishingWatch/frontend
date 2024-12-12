@@ -35,6 +35,7 @@ const PARAMS_TO_ABBREVIATED = {
   endpoint: 'ept',
   datasetId: 'dsId',
   dataviewId: 'dvId',
+  deleted: 'dT',
   params: 'pms',
   config: 'cfg',
   visible: 'vis',
@@ -58,6 +59,7 @@ const PARAMS_TO_ABBREVIATED = {
   mapRulers: 'mR',
   mapRulersVisible: 'mRV',
   //Vessel Profile
+  relatedVesselIds: 'rVIs',
   vesselDatasetId: 'vDi',
   vesselRegistryId: 'vRi',
   vesselSelfReportedId: 'vSRi',
@@ -169,12 +171,11 @@ const deepTokenizeValues = (obj: Dictionary<any>) => {
     if (!tokensCount[token]) {
       tokensCount[token] = 0
     }
-     
+
     tokensCount[token]!++
   })
   const repeatedTokens = Object.entries(tokensCount)
     .filter(([key, count]) => {
-       
       return count! > 1 && key.length > 5
     })
     .map(([key]) => key)

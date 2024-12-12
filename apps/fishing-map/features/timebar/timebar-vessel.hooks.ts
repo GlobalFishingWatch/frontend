@@ -11,7 +11,10 @@ import type {
 } from '@globalfishingwatch/timebar'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
-import { selectAllActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectAllActiveTrackDataviews,
+  selectVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getEventDescription } from 'utils/events'
 import { t } from 'features/i18n/i18n'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
@@ -31,7 +34,16 @@ export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {
   )
 }
 
-const useTimebarTracksLayers = () => {
+export const useVesselTracksLayers = () => {
+  const dataviews = useSelector(selectVesselsDataviews)
+  const ids = useMemo(() => {
+    return dataviews.map((d) => d.id)
+  }, [dataviews])
+  const vessels = useGetDeckLayers<VesselLayer>(ids)
+  return vessels
+}
+
+export const useTimebarTracksLayers = () => {
   const dataviews = useSelector(selectAllActiveTrackDataviews)
   const ids = useMemo(() => {
     return dataviews.map((d) => d.id)
@@ -87,7 +99,6 @@ export const useTimebarVesselTracks = () => {
         }
       })
     })
-     
   }, [tracksColor])
 
   useEffect(() => {
@@ -132,7 +143,6 @@ export const useTimebarVesselTracks = () => {
         setVesselTracks(undefined)
       }
     })
-     
   }, [tracksLoaded, timebarGraph, tracksColor])
 
   return tracks
@@ -186,7 +196,6 @@ export const useTimebarVesselTracksGraph = () => {
         }
       })
     })
-     
   }, [tracksColor])
 
   useEffect(() => {
@@ -241,7 +250,6 @@ export const useTimebarVesselTracksGraph = () => {
         setVesselTracksGraph(undefined)
       }
     })
-     
   }, [tracksLoaded, timebarGraph])
 
   return tracksGraph
@@ -288,7 +296,6 @@ export const useTimebarVesselEvents = () => {
         setTimebarVesselEvents(null)
       }
     })
-     
   }, [vesselsWithEventsLoaded, timebarGraph, visibleEvents, eventsColor])
 
   return timebarVesselEvents

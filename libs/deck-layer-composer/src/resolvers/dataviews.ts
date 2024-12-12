@@ -1,10 +1,11 @@
-import { uniq } from 'es-toolkit'
+import { uniq, uniqBy } from 'es-toolkit'
 import type {
   Dataset,
   ApiEvent,
   DataviewInstance,
   EventTypes,
-  DataviewSublayerConfig} from '@globalfishingwatch/api-types';
+  DataviewSublayerConfig,
+} from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
   EndpointId,
@@ -14,14 +15,12 @@ import {
 import type {
   FourwingsVisualizationMode,
   HEATMAP_ID,
-  HEATMAP_LOW_RES_ID} from '@globalfishingwatch/deck-layers';
-import {
-  FourwingsComparisonMode
+  HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders';
+import { FourwingsComparisonMode } from '@globalfishingwatch/deck-layers'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getMergedDataviewId,
   isActivityDataview,
@@ -392,14 +391,17 @@ export function getDataviewsResolved(
 
   const userHeatmapDataviewsParsed = getFourwingsDataviewsResolved(userHeatmapDataviews)
 
-  const vesselTrackDataviewsParsed = vesselTrackDataviews.flatMap((d) => ({
-    ...d,
-    config: {
-      ...d.config,
-      singleTrack: vesselTrackDataviews.length === 1,
-    },
-  }))
-  const userTrackDataviewsParsed = userTrackDataviews.flatMap((d) => ({
+  const vesselTrackDataviewsParsed = uniqBy<UrlDataviewInstance, string>(
+    vesselTrackDataviews.flatMap((d) => ({
+      ...d,
+      config: {
+        ...d.config,
+        singleTrack: vesselTrackDataviews.length === 1,
+      },
+    })),
+    (d) => d.id
+  )
+  const userTrackDataviewsParsed = userTrackDataviews.flatMap<UrlDataviewInstance>((d) => ({
     ...d,
     config: {
       ...d.config,

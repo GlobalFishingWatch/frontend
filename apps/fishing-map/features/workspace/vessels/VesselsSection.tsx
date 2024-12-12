@@ -22,7 +22,7 @@ import {
   useTimebarVesselTracksData,
 } from 'features/timebar/timebar-vessel.hooks'
 import { getVesselShipNameLabel } from 'utils/info'
-import type { ResourcesState } from 'features/resources/resources.slice';
+import type { ResourcesState } from 'features/resources/resources.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
@@ -41,6 +41,7 @@ import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
+import VesselTracksLegend from './VesselTracksLegend'
 
 const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
   return resources[
@@ -153,7 +154,10 @@ function VesselsSection(): React.ReactElement {
   )
   const vesselsToVesselGroup = areVesselsLoading
     ? []
-    : vesselResources.map(({ data }) => {
+    : vesselResources.flatMap(({ data }) => {
+        if (!data) {
+          return []
+        }
         return {
           id: getVesselId(data),
           identities: getVesselIdentities(data),
@@ -176,6 +180,7 @@ function VesselsSection(): React.ReactElement {
           {t('common.vessel_other', 'Vessels')}
           {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
         </h2>
+
         {!readOnly && (
           <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
             {activeDataviews.length > 0 && (
@@ -235,6 +240,7 @@ function VesselsSection(): React.ReactElement {
           onClick={onSearchClick}
         />
       </div>
+      {hasVisibleDataviews && <VesselTracksLegend />}
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
           dataviews?.map((dataview) => (

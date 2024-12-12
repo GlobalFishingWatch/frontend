@@ -31,7 +31,9 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     }),
     singleTrack: dataview.config?.singleTrack,
     trackThinningZoomConfig: dataview.config?.trackThinningZoomConfig,
+    trackGraphExtent: globalConfig.trackGraphExtent,
     color: hexToDeckColor(dataview.config?.color as string),
+    colorBy: globalConfig.vesselsColorBy,
     events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
       const eventType = resource.dataset?.subcategory as EventTypes
       return {
