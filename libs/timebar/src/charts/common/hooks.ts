@@ -41,6 +41,10 @@ export const useFilteredChartData = (data: TimebarChartData<any>) => {
         vessel.chunks[0]?.values?.[0]?.value,
         vessel.chunks[vessel.chunks.length - 1]?.end,
         vessel.chunks[vessel.chunks.length - 1]?.values?.[vessel.chunks.length - 1]?.value,
+        vessel.minElevationFilter,
+        vessel.maxElevationFilter,
+        vessel.minSpeedFilter,
+        vessel.maxSpeedFilter,
       ])
       .join()
   }
