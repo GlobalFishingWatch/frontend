@@ -50,7 +50,7 @@ const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarCha
   }, [filteredGraphsData])
 
   const layers = useMemo(() => {
-    if (!heightScale) return []
+    if (!heightScale || !steps.length) return []
     oldOuterScaleRef.current = outerScale
     const layerData = filteredGraphsData.flatMap((track, trackIndex) => {
       const trackY = getTrackY(data.length, trackIndex, graphHeight, trackGraphOrientation)
