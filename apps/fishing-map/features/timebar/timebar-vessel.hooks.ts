@@ -61,7 +61,10 @@ const vesselTracksAtom = atom<VesselTrackAtom | undefined>(undefined)
 export const useTimebarVesselTracks = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
-  const trackLayers = useTimebarTracksLayers()
+  const trackLayers =
+    timebarGraph === 'speed' || timebarGraph === 'elevation'
+      ? useVesselTracksLayers()
+      : useTimebarTracksLayers()
 
   const tracksLoaded = useMemo(
     () =>
@@ -158,7 +161,10 @@ const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnA
 export const useTimebarVesselTracksGraph = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const [tracksGraph, setVesselTracksGraph] = useAtom(vesselTracksGraphAtom)
-  const trackLayers = useTimebarTracksLayers()
+  const trackLayers =
+    timebarGraph === 'speed' || timebarGraph === 'elevation'
+      ? useVesselTracksLayers()
+      : useTimebarTracksLayers()
 
   const tracksLoaded = useMemo(
     () =>
@@ -260,7 +266,10 @@ export const useTimebarVesselEvents = () => {
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const [timebarVesselEvents, setTimebarVesselEvents] =
     useState<TimebarChartData<TrackEventChunkProps> | null>(null)
-  const vessels = useTimebarTracksLayers()
+  const vessels =
+    timebarGraph === 'speed' || timebarGraph === 'elevation'
+      ? useVesselTracksLayers()
+      : useTimebarTracksLayers()
   const vesselsWithEventsLoaded = useMemo(
     () => vessels.flatMap((v) => (v.loaded ? v.id : [])).join(','),
     [vessels]
