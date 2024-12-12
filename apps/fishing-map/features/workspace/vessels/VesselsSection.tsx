@@ -154,7 +154,10 @@ function VesselsSection(): React.ReactElement {
   )
   const vesselsToVesselGroup = areVesselsLoading
     ? []
-    : vesselResources.map(({ data }) => {
+    : vesselResources.flatMap(({ data }) => {
+        if (!data) {
+          return []
+        }
         return {
           id: getVesselId(data),
           identities: getVesselIdentities(data),
