@@ -46,7 +46,7 @@ export default function usePinReportVessels() {
         const vesselDataviewInstance = getVesselDataviewInstance(
           { id: getVesselId(vessel) },
           {
-            info: infoDataset?.id,
+            info: vessel.dataset,
             track: trackDataset?.id,
             ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
             relatedVesselIds: getRelatedIdentityVesselIds(vessel),
