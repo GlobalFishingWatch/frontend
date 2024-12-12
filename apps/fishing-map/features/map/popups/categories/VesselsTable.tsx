@@ -129,7 +129,7 @@ function VesselsTable({
   const isPresenceActivity = activityType === DatasetSubCategory.Presence
   return (
     <Fragment>
-      {vessels?.length && vessels.length > 0 && (
+      {vessels && vessels.length > 0 && (
         <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>

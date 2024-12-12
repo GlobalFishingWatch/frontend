@@ -5,9 +5,6 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import type { UserTracksLayer } from '@globalfishingwatch/deck-layers'
-import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
@@ -73,14 +70,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
-  const vesselIds = activeTrackDataviews.map((v) => v.id)
-  const trackLayers = useGetDeckLayers<VesselLayer | UserTracksLayer>(vesselIds)
-  const hasTracksData = trackLayers?.some((layer) =>
-    layer.instance instanceof VesselLayer
-      ? layer.instance?.getVesselTracksLayersLoaded()
-      : layer.instance?.isLoaded
-  )
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
+  const hasSomeVesselLayer = activeVesselsDataviews?.length > 0
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { timebarSelectedVGId, dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
@@ -153,6 +144,30 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
       action: 'select_timebar_settings',
       label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.Depth}`,
     })
+  }
+
+  const getVesselGraphTooltip = (graph: 'speed' | 'depth') => {
+    let tooltipLabel =
+      graph === 'depth'
+        ? t('timebarSettings.showGraphSpeed', 'Show track speed graph')
+        : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
+    if (!activeTrackDataviews?.length) {
+      tooltipLabel = t('timebarSettings.tracksDisabled', 'Select at least one vessel')
+    } else if (!timebarGraphEnabled) {
+      tooltipLabel = t(
+        'timebarSettings.graphDisabled',
+        'Graph is not available with more than 2 vessels selected'
+      )
+    } else if (!hasSomeVesselLayer) {
+      tooltipLabel = t('timebarSettings.graphVesselOnly', {
+        defaultValue: '{{graph}} is only available for vessel tracks',
+        graph:
+          graph === 'depth'
+            ? t(`timebarSettings.graphDepth`, 'Vessel depth')
+            : t(`timebarSettings.graphSpeed`, 'Vessel speed'),
+      })
+    }
+    return tooltipLabel
   }
 
   const expandedContainerRef = useClickedOutside(closeOptions)
@@ -242,13 +257,13 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TracksIcon}
                   label={t('timebarSettings.tracks', 'Tracks')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
-                  disabled={!hasTracksData || !activeTrackDataviews?.length}
+                  disabled={!activeTrackDataviews?.length}
                 />
               }
-              disabled={!hasTracksData || !activeTrackDataviews?.length}
+              disabled={!activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
-                (timebarGraph === TimebarGraphs.None || !timebarGraphEnabled)
+                timebarGraph === TimebarGraphs.None
               }
               tooltip={
                 !activeTrackDataviews?.length
@@ -263,25 +278,15 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TrackSpeedIcon}
                   label={t('timebarSettings.graphSpeed', 'Vessel Speed')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
-                  disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
+                  disabled={!hasSomeVesselLayer || !activeTrackDataviews?.length}
                 />
               }
-              disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
+              disabled={!hasSomeVesselLayer || !activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
-                timebarGraph === TimebarGraphs.Speed &&
-                timebarGraphEnabled
+                timebarGraph === TimebarGraphs.Speed
               }
-              tooltip={
-                !activeTrackDataviews?.length
-                  ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
-                  : !timebarGraphEnabled
-                  ? t(
-                      'timebarSettings.graphDisabled',
-                      'Not available with more than 2 vessels selected'
-                    )
-                  : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
-              }
+              tooltip={getVesselGraphTooltip('speed')}
               onClick={setVesselGraphSpeed}
             />
             <Radio
@@ -290,28 +295,18 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   SvgIcon={TrackDepthIcon}
                   label={t('timebarSettings.graphDepth', 'Vessel Depth')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
-                  disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
+                  disabled={!hasSomeVesselLayer || !activeTrackDataviews?.length}
                 />
               }
-              disabled={!hasTracksData || !activeTrackDataviews?.length || !timebarGraphEnabled}
+              disabled={!hasSomeVesselLayer || !activeTrackDataviews?.length}
               active={
                 timebarVisualisation === TimebarVisualisations.Vessel &&
-                timebarGraph === TimebarGraphs.Depth &&
-                timebarGraphEnabled
+                timebarGraph === TimebarGraphs.Depth
               }
-              tooltip={
-                !activeTrackDataviews?.length
-                  ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
-                  : !timebarGraphEnabled
-                  ? t(
-                      'timebarSettings.graphDisabled',
-                      'Not available with more than 2 vessels selected'
-                    )
-                  : t('timebarSettings.showGraphDepth', 'Show track depth graph')
-              }
+              tooltip={getVesselGraphTooltip('depth')}
               onClick={setVesselGraphDepth}
             />
-            {activeEnvironmentalDataviews.map((envDataview, i) => {
+            {activeEnvironmentalDataviews.map((envDataview) => {
               const dataset = envDataview.datasets?.find(
                 (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
               )

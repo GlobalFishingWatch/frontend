@@ -1,7 +1,6 @@
-import type { DataviewInstance} from '@globalfishingwatch/api-types';
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType, DataviewCategory } from '@globalfishingwatch/api-types'
-import type {
-  AnyDeckLayer} from '@globalfishingwatch/deck-layers';
+import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
   BaseMapLabelsLayer,
   BaseMapLayer,

@@ -4,7 +4,7 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { debounce } from 'es-toolkit'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
-import type { TimebarGraphs} from 'types';
+import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
 import {
   selectTimebarGraph,
@@ -29,15 +29,14 @@ import {
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import type {
-  TimeRange} from './timebar.slice';
+import type { TimeRange } from './timebar.slice'
 import {
   changeSettings,
   setHighlightedEvents,
   selectHighlightedEvents,
   selectHasChangedSettingsOnce,
   selectHighlightedTime,
-  disableHighlightedTime
+  disableHighlightedTime,
 } from './timebar.slice'
 
 const TIMERANGE_DEBOUNCED_TIME = 1000
@@ -83,7 +82,6 @@ export const useSetTimerange = () => {
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
 
-   
   const updateUrlTimerangeDebounced = useCallback(
     debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
     []
@@ -185,7 +183,6 @@ export const useHighlightedEventsConnect = () => {
       highlightedEventIds,
       dispatchHighlightedEvents,
     }
-     
   }, [serializedHighlightedEventIds, dispatchHighlightedEvents])
 }
 
@@ -308,7 +305,6 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
     }
-     
   }, [
     activeActivityDataviews,
     activeDetectionsDataviews,

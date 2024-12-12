@@ -3,7 +3,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import { scaleTime } from 'd3-scale'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { TimelineScale } from '../../timelineContext';
+import type { TimelineScale } from '../../timelineContext'
 import TimelineContext from '../../timelineContext'
 import type {
   TimebarChartData,
@@ -33,9 +33,22 @@ export const filterData = (data: TimebarChartData<any>, start: string, end: stri
 export const useFilteredChartData = (data: TimebarChartData<any>) => {
   const { outerStart, outerEnd } = useContext(TimelineContext)
   const [filteredData, setFilteredData] = useState<TimebarChartData<any>>([])
+
+  const getDataHash = (d: TimebarChartData<any>) => {
+    return d
+      .flatMap((vessel) => [
+        vessel.chunks[0]?.start,
+        vessel.chunks[0]?.values?.[0]?.value,
+        vessel.chunks[vessel.chunks.length - 1]?.end,
+        vessel.chunks[vessel.chunks.length - 1]?.values?.[vessel.chunks.length - 1]?.value,
+      ])
+      .join()
+  }
+
   const debouncedSetFilteredData = useDebouncedCallback(
     (data, outerStart, outerEnd) => {
-      setFilteredData(filterData(data, outerStart, outerEnd))
+      const newData = filterData(data, outerStart, outerEnd)
+      if (getDataHash(filteredData) !== getDataHash(newData)) setFilteredData(newData)
     },
     100,
     { maxWait: 1000, leading: true }
@@ -124,7 +137,6 @@ export const useClusteredChartData = (data: TimebarChartData<any>) => {
   const delta = useDelta()
   return useMemo(() => {
     return clusterData(data, outerScale)
-     
   }, [data, delta]) // only memoize when delta changes (ie start and end can change with delta staying the same)
 }
 
