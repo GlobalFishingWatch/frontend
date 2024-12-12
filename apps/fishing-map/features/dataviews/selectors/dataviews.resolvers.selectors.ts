@@ -288,7 +288,7 @@ export const selectDataviewInstancesResolved = createSelector(
             'shipname'
           ),
         },
-      }
+      } as UrlDataviewInstance
     })
     return dataviews
   }
