@@ -187,7 +187,8 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   }): FourwingsHeatmapTilesCache => {
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
-    return { start, end, bufferedStart, interval, compareStart, compareEnd }
+    const zoom = Math.round(this.context.viewport.zoom)
+    return { zoom, start, end, bufferedStart, interval, compareStart, compareEnd }
   }
 
   _getTileDataCacheKey = (): string => {

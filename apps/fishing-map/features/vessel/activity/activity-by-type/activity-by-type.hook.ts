@@ -6,7 +6,11 @@ export const useActivityByType = (): [EventType | null, (eventType: EventType) =
 
   const toggleEventType = useCallback(
     (type: EventType) => {
-      expandedGroup === type ? setExpandedGroup(null) : setExpandedGroup(type)
+      if (expandedGroup === type) {
+        setExpandedGroup(null)
+      } else {
+        setExpandedGroup(type)
+      }
     },
     [expandedGroup]
   )

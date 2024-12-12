@@ -4,7 +4,7 @@ import {
   getAvailableIntervalsInDataviews,
   useGetDeckLayer,
 } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer} from '@globalfishingwatch/deck-layers';
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
@@ -97,7 +97,6 @@ export const useHeatmapActivityGraph = () => {
         setFourwingsHeatmapData(viewportData as [number[], number[]][][])
       }
     }
-     
   }, [
     loaded,
     id,

@@ -51,7 +51,8 @@ export function VesselGroupAddActionButton({
 }: VesselGroupAddButtonToggleProps) {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
-  const tooManyVessels = vessels && vessels?.length > MAX_VESSEL_GROUP_VESSELS
+  const vesselsLength = vessels?.length || 0 + (vesselsToResolve ? vesselsToResolve?.length : 0)
+  const tooManyVessels = vesselsLength > MAX_VESSEL_GROUP_VESSELS
   const disabled = guestUser || (!vessels?.length && !vesselsToResolve?.length) || tooManyVessels
 
   return (

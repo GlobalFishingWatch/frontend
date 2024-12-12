@@ -33,7 +33,7 @@ export function filterByPolygon({
         if (!cell?.coordinates) {
           return acc
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         
         const minX = cell.coordinates[0]
         const minY = cell.coordinates[1]
         const maxX = cell.coordinates[4]
