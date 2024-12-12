@@ -15,7 +15,7 @@ import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-export const MAX_VESSEL_REPORT_PIN = 30
+export const MAX_VESSEL_REPORT_PIN = 50
 
 export default function usePinReportVessels() {
   const allVesselsInWorkspace = useSelector(selectTrackDataviews)
