@@ -234,7 +234,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
             vElevation < minElevationFilter ||
             vElevation > maxElevationFilter)
         {
-          color.a = 0.1;
+          color.a = 0.25;
         }
 
         if (vTime > highlightStartTime && vTime < highlightEndTime) {
