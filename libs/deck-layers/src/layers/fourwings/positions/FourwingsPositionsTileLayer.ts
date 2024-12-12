@@ -45,7 +45,7 @@ import {
 import type { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { PATH_BASENAME } from '../../layers.config'
-import { loadDeckFont } from '../../../utils/fonts'
+import { DECK_FONT, loadDeckFont } from '../../../utils/fonts'
 import {
   cleanVesselShipname,
   filteredPositionsByViewport,
@@ -477,7 +477,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                 getSize: 14,
                 outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.5),
                 getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
-                fontFamily: 'Roboto Deck',
+                fontFamily: DECK_FONT,
                 characterSet:
                   'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
                 outlineWidth: 200,

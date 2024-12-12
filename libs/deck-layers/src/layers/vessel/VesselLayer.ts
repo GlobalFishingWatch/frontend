@@ -35,7 +35,7 @@ import {
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../utils'
 import type { DeckLayerProps } from '../../types'
-import { loadDeckFont } from '../../utils/fonts'
+import { DECK_FONT, loadDeckFont } from '../../utils/fonts'
 import type { _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselEventsLayer } from './VesselEventsLayer'
 import type { _VesselTrackLayerProps } from './VesselTrackLayer'
@@ -360,7 +360,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     })
 
     if (!centerPoint) return []
-
     return [
       new VesselPositionLayer(
         this.getSubLayerProps({
@@ -374,6 +373,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           getColor: hexToDeckColor(BLEND_BACKGROUND),
           getSize: 18,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+          transitions: {
+            getPosition: 50,
+          },
         })
       ),
       new VesselPositionLayer(
@@ -388,6 +390,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           getColor: color,
           getSize: 15,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+          transitions: {
+            getPosition: 50,
+          },
         })
       ),
       new VesselPositionLayer(
@@ -402,6 +407,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           getColor: [255, 255, 255, 255],
           getSize: 15,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+          transitions: {
+            getPosition: 50,
+          },
         })
       ),
       ...(name
@@ -409,23 +417,25 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             new TextLayer({
               id: `${this.props.id}-lastPositionsNames`,
               data: [centerPoint],
-              //TODO get proper name
               getText: () => name,
               getPosition: (d) => d.geometry.coordinates,
-              getPixelOffset: [centerPoint.properties.course < 180 ? 15 : -15, 0],
+              getPixelOffset: [0, -15],
               getColor: [255, 255, 255, 255],
               getSize: 14,
               outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.5),
-              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
-              fontFamily: 'Roboto Deck',
+              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+              fontFamily: DECK_FONT,
               characterSet:
                 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
-              outlineWidth: 200,
+              outlineWidth: 20,
               fontSettings: { sdf: true, smoothing: 0.2, buffer: 15 },
               sizeUnits: 'pixels',
-              getTextAnchor: centerPoint.properties.course < 180 ? 'start' : 'end',
+              getTextAnchor: 'middle',
               getAlignmentBaseline: 'center',
               pickable: false,
+              transitions: {
+                getPosition: 50,
+              },
             }),
           ]
         : []),

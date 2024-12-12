@@ -63,6 +63,7 @@ import {
   selectVGREventsSubsection,
   selectVGRSection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { formatInfoField } from 'utils/info'
 
 const EMPTY_ARRAY: [] = []
 
@@ -282,7 +283,10 @@ export const selectDataviewInstancesResolved = createSelector(
         ...dataview,
         config: {
           ...dataview.config,
-          name: getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),
+          name: formatInfoField(
+            getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),
+            'shipname'
+          ),
         },
       }
     })
