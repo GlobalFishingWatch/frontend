@@ -21,13 +21,12 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
   const { pinVessels, unPinVessels } = usePinReportVessels()
   const [loading, setLoading] = useState(false)
   const allVesselsInWorkspace = useSelector(selectTrackDataviews)
-  const pinnedVesselsInstances = vessels.flatMap(
+  const vesselPinnedIds = allVesselsInWorkspace.map((dI) => dI.id.split(VESSEL_LAYER_PREFIX)[1])
+  const vesselDataviewInstancesPinned = vessels.flatMap(
     (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.vesselId!) || []
   )
-
-  const vesselInstancesIds = pinnedVesselsInstances.map((dI) => dI.id.split(VESSEL_LAYER_PREFIX)[1])
-  const hasAllVesselsInWorkspace = pinnedVesselsInstances?.length
-    ? vessels.every(({ vesselId }) => vesselInstancesIds.includes(vesselId))
+  const hasAllVesselsInWorkspace = vesselDataviewInstancesPinned?.length
+    ? vessels.every(({ vesselId }) => vesselPinnedIds.includes(vesselId))
     : false
 
   const hasMoreMaxVesselsAllowed = vessels.length > MAX_VESSEL_REPORT_PIN
@@ -37,9 +36,7 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
     if (action === 'add') {
       dispatch(setPinningVessels(true))
       setLoading(true)
-      const notPinnedVessels = vessels.filter(
-        ({ vesselId }) => !vesselInstancesIds.includes(vesselId)
-      )
+      const notPinnedVessels = vessels.filter(({ vesselId }) => !vesselPinnedIds.includes(vesselId))
       try {
         await pinVessels(notPinnedVessels)
       } catch (e: any) {
