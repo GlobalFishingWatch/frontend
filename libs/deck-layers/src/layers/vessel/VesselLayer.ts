@@ -502,6 +502,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     const extents = this.getTrackLayers()?.flatMap((l) => {
       return l.getGraphExtent(graph)
     })
+    if (!extents?.length) return []
     return getVesselGraphExtentClamped(extent(extents), graph)
   }
 
