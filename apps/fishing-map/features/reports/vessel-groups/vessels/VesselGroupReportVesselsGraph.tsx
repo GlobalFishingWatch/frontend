@@ -10,6 +10,7 @@ import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import type {
   VesselGroupReportState,
+  VGREventsVesselsProperty,
   VGRVesselsSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
@@ -140,8 +141,6 @@ const CustomTick = (props: any) => {
   )
 }
 
-export type VesselGroupReportVesselsGraphProperty = 'flag' | 'geartype'
-
 export default function VesselGroupReportVesselsGraph({
   data,
   color = COLOR_PRIMARY_BLUE,
@@ -151,7 +150,7 @@ export default function VesselGroupReportVesselsGraph({
 }: {
   data: ReportEventsStatsResponseGroups
   color?: string
-  property: VesselGroupReportVesselsGraphProperty
+  property: VGREventsVesselsProperty
   filterQueryParam:
     | keyof Pick<VesselGroupReportState, 'vGRVesselFilter' | 'vGREventsVesselFilter'>
     | keyof Pick<PortsReportState, 'portsReportVesselsFilter'>
