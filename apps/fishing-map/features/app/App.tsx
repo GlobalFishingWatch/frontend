@@ -22,7 +22,7 @@ import {
   selectIsPortReportLocation,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
-import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
+import { useBeforeUnload, useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
 import Sidebar from 'features/sidebar/Sidebar'
 import Footer from 'features/footer/Footer'
 import {
@@ -129,6 +129,7 @@ function App() {
   useAnalytics()
   useDatasetDrag()
   useReplaceLoginUrl()
+  useBeforeUnload()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)

@@ -15,7 +15,7 @@ import {
   WORKSPACE_PRIVATE_ACCESS,
   WORKSPACE_PUBLIC_ACCESS,
 } from '@globalfishingwatch/api-types'
-import { saveWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { saveWorkspaceThunk, setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -126,6 +126,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
 
   const createWorkspace = async () => {
     const workspaceError = getWorkspaceError()
+    dispatch(setWorkspaceSuggestSave(false))
     if (workspaceError) {
       setError(workspaceError)
     } else {
