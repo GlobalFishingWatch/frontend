@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
 import { getVesselInWorkspace, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
-import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setPinningVessels } from '../reports-activity.slice'
 import usePinReportVessels, { MAX_VESSEL_REPORT_PIN } from './report-activity-vessels.hooks'
@@ -20,7 +20,7 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
   const dispatch = useAppDispatch()
   const { pinVessels, unPinVessels } = usePinReportVessels()
   const [loading, setLoading] = useState(false)
-  const allVesselsInWorkspace = useSelector(selectTrackDataviews)
+  const allVesselsInWorkspace = useSelector(selectVesselsDataviews)
   const vesselPinnedIds = allVesselsInWorkspace.map((dI) => dI.id.split(VESSEL_LAYER_PREFIX)[1])
   const vesselDataviewInstancesPinned = vessels.flatMap(
     (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.vesselId!) || []
@@ -29,7 +29,8 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
     ? vessels.every(({ vesselId }) => vesselPinnedIds.includes(vesselId))
     : false
 
-  const hasMoreMaxVesselsAllowed = vessels.length > MAX_VESSEL_REPORT_PIN
+  const totalVesselsLength = allVesselsInWorkspace?.length || 0 + vessels?.length || 0
+  const hasMoreMaxVesselsAllowed = totalVesselsLength > MAX_VESSEL_REPORT_PIN
 
   const handleOnClick = async () => {
     const action = hasAllVesselsInWorkspace ? 'delete' : 'add'
