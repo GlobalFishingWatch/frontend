@@ -1,13 +1,13 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getQueryParamsResolved } from 'queries/base'
 import type {
   ReportEventsVesselsResponse,
   ReportEventsVesselsResponseItem,
 } from 'queries/report-events-stats-api'
 import { EVENTS_TIME_FILTER_MODE } from 'queries/report-events-stats-api'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -67,12 +67,13 @@ type FetchPortsReportThunkParams = {
   datasetId: string
   start: string
   end: string
+  confidences?: number[]
 }
 
 export const fetchPortsReportThunk = createAsyncThunk(
   'ports-report/vessels',
   async (
-    { portId, datasetId, start, end }: FetchPortsReportThunkParams,
+    { portId, datasetId, start, end, confidences = [4] }: FetchPortsReportThunkParams,
     { rejectWithValue, signal }
   ) => {
     try {
@@ -82,6 +83,7 @@ export const fetchPortsReportThunk = createAsyncThunk(
         'port-ids': [portId],
         'time-filter-mode': EVENTS_TIME_FILTER_MODE,
         dataset: datasetId,
+        ...(confidences.length && { confidences }),
       }
       const portEventsVesselStats = await GFWAPI.fetch<ReportEventsVesselsResponse>(
         `/events/stats-by-vessel${getQueryParamsResolved(vesselEventsParams)}`,
