@@ -10,6 +10,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectSuggestWorkspaceSave } from 'features/workspace/workspace.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { IS_DEVELOPMENT_ENV } from 'data/config'
 import type { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 
@@ -19,7 +20,7 @@ export const useBeforeUnload = () => {
   const isGuestUser = useSelector(selectIsGuestUser)
   useEffect(() => {
     let fn
-    if (suggestWorkspaceSave && !isGuestUser) {
+    if (suggestWorkspaceSave && !isGuestUser && !IS_DEVELOPMENT_ENV) {
       fn = (e: BeforeUnloadEvent) => {
         e.preventDefault()
         const confirmationMessage = '\\o/'
