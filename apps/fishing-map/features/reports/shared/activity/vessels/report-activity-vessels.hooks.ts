@@ -26,6 +26,7 @@ import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setResource } from 'features/resources/resources.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 
 export const MAX_VESSEL_REPORT_PIN = 50
 
@@ -60,6 +61,7 @@ export function usePopulateVesselResource() {
 }
 
 export default function usePinReportVessels() {
+  const dispatch = useAppDispatch()
   const allVesselsInWorkspace = useSelector(selectTrackDataviews)
   const populateVesselInfoResource = usePopulateVesselResource()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -123,6 +125,7 @@ export default function usePinReportVessels() {
           populateVesselInfoResource(identity, instance, infoDataset)
         })
       }
+      dispatch(setWorkspaceSuggestSave(true))
     }
   }, [])
 
@@ -131,6 +134,7 @@ export default function usePinReportVessels() {
       (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.vesselId!) || []
     )
     deleteDataviewInstance(pinnedVesselsInstances.map((v) => v.id))
+    dispatch(setWorkspaceSuggestSave(true))
   }, [])
 
   return useMemo(() => ({ pinVessels, unPinVessels }), [pinVessels, unPinVessels])

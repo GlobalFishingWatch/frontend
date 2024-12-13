@@ -29,7 +29,7 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
     ? vessels.every(({ vesselId }) => vesselPinnedIds.includes(vesselId))
     : false
 
-  const totalVesselsLength = allVesselsInWorkspace?.length || 0 + vessels?.length || 0
+  const totalVesselsLength = (allVesselsInWorkspace?.length || 0) + (vessels?.length || 0)
   const hasMoreMaxVesselsAllowed = totalVesselsLength > MAX_VESSEL_REPORT_PIN
 
   const handleOnClick = async () => {
@@ -59,9 +59,10 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
       disabled={loading || !vessels?.length || hasMoreMaxVesselsAllowed}
       tooltip={
         hasMoreMaxVesselsAllowed
-          ? t('analysis.pinVesselsNotAllowed', {
-              defaultValue: 'You can only add up to {{vessels}} vessels',
-              vessels: MAX_VESSEL_REPORT_PIN,
+          ? t('analysis.pinVesselsMaxAllowed', {
+              defaultValue:
+                'Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels',
+              maxVessels: MAX_VESSEL_REPORT_PIN,
             })
           : ''
       }
