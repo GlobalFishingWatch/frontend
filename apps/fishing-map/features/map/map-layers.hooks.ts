@@ -79,7 +79,7 @@ export const useTimebarTracksGraphExtent = () => {
   if (vesselsTimebarGraph === 'none' || !vessels?.length) {
     return
   }
-  const isLoaded = vessels.every((vessel) => vessel.loaded)
+  const isLoaded = vessels.every((vessel) => vessel.instance.isLoaded)
   if (!isLoaded) {
     return
   }
@@ -96,10 +96,14 @@ export const useTimebarTracksGraphExtent = () => {
 
 export const useTimebarTracksGraphSteps = () => {
   const extent = useTimebarTracksGraphExtent()
+  console.log('extent:', extent)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   if (!extent?.length || (vesselsTimebarGraph !== 'speed' && vesselsTimebarGraph !== 'elevation')) {
+    console.log('entra aquí')
+
     return []
   }
+  console.log('sigue')
   return generateVesselGraphSteps(extent, vesselsTimebarGraph)
 }
 

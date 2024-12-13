@@ -44,26 +44,28 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * @default 0
    */
   highlightEndTime?: number
-  /**
-   * The low speed filter
-   * @default 0
-   */
-  minSpeedFilter?: number
-  /**
-   * The high speed filter
-   * @default 999999999999999
-   */
-  maxSpeedFilter?: number
-  /**
-   * The low speed filter
-   * @default -999999999999999
-   */
-  minElevationFilter?: number
-  /**
-   * The high speed filter
-   * @default 999999999999999
-   */
-  maxElevationFilter?: number
+  filters?: {
+    /**
+     * The low speed filter
+     * @default 0
+     */
+    minSpeedFilter?: number
+    /**
+     * The high speed filter
+     * @default 999999999999999
+     */
+    maxSpeedFilter?: number
+    /**
+     * The low speed filter
+     * @default -999999999999999
+     */
+    minElevationFilter?: number
+    /**
+     * The high speed filter
+     * @default 999999999999999
+     */
+    maxElevationFilter?: number
+  }
   // /**
   //  * Color to be used as a highlight path
   //  * @default [255, 255, 255, 255]
@@ -128,10 +130,15 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   startTime: { type: 'number', value: 0, min: 0 },
   highlightStartTime: { type: 'number', value: 0, min: 0 },
   highlightEndTime: { type: 'number', value: 0, min: 0 },
-  minSpeedFilter: { type: 'number', value: -MAX_FILTER_VALUE, min: 0 },
-  maxSpeedFilter: { type: 'number', value: MAX_FILTER_VALUE, min: 0 },
-  minElevationFilter: { type: 'number', value: -MAX_FILTER_VALUE, min: 0 },
-  maxElevationFilter: { type: 'number', value: MAX_FILTER_VALUE, min: 0 },
+  filters: {
+    type: 'object',
+    value: {
+      minSpeedFilter: -MAX_FILTER_VALUE,
+      maxSpeedFilter: MAX_FILTER_VALUE,
+      minElevationFilter: -MAX_FILTER_VALUE,
+      maxElevationFilter: MAX_FILTER_VALUE,
+    },
+  },
   getPath: { type: 'accessor', value: () => [0, 0] },
   getTimestamp: { type: 'accessor', value: (d) => d },
   getSpeed: { type: 'accessor', value: (d) => d },
@@ -286,12 +293,17 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       trackGraphExtent,
       highlightStartTime = 0,
       highlightEndTime = 0,
+      filters = {},
+      colorBy,
+    } = this.props
+
+    const {
       minSpeedFilter = -MAX_FILTER_VALUE,
       maxSpeedFilter = MAX_FILTER_VALUE,
       minElevationFilter = -MAX_FILTER_VALUE,
       maxElevationFilter = MAX_FILTER_VALUE,
-      colorBy,
-    } = this.props
+    } = filters
+    console.log('filters:', filters)
 
     const steps =
       trackGraphExtent && colorBy ? generateVesselGraphSteps(trackGraphExtent, colorBy) : []

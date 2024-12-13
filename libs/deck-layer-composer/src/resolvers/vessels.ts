@@ -2,6 +2,7 @@ import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { VesselLayerProps } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import {
   resolveDataviewDatasetResource,
@@ -23,14 +24,17 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
     category: dataview.category!,
-    name: dataview.config?.name,
+    name: dataview.config?.name ?? '',
     endTime: getUTCDateTime(end!).toMillis(),
     startTime: getUTCDateTime(start!).toMillis(),
     ...(trackUrl && {
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),
-    singleTrack: dataview.config?.singleTrack,
-    trackThinningZoomConfig: dataview.config?.trackThinningZoomConfig,
+    singleTrack: dataview.config?.singleTrack ?? false,
+    trackThinningZoomConfig: dataview.config?.trackThinningZoomConfig as Record<
+      number,
+      ThinningLevels
+    >,
     trackGraphExtent: globalConfig.trackGraphExtent,
     color: hexToDeckColor(dataview.config?.color as string),
     colorBy: globalConfig.vesselsColorBy,
@@ -43,14 +47,16 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     }),
     visibleEvents: visibleEvents,
     highlightEventIds,
-    ...(dataview.config?.filters?.['speed']?.length && {
-      minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
-      maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),
-    }),
-    ...(dataview.config?.filters?.['elevation']?.length && {
-      minElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][0]),
-      maxElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][1]),
-    }),
+    filters: {
+      ...(dataview.config?.filters?.['speed']?.length && {
+        minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
+        maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),
+      }),
+      ...(dataview.config?.filters?.['elevation']?.length && {
+        minElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][0]),
+        maxElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][1]),
+      }),
+    },
     ...(highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
     }),
