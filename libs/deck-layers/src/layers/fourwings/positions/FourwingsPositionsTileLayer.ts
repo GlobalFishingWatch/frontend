@@ -36,7 +36,6 @@ import {
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../../utils'
 import {
-  MATCHED_POSITIONS_FILTER,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_API_TILES_URL,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
@@ -84,7 +83,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   static defaultProps = defaultProps
   state!: FourwingsPositionsTileLayerState
   viewportDirtyTimeout!: NodeJS.Timeout
-  hideUnmatchedPositions = false
 
   get isLoaded(): boolean {
     return (
@@ -274,9 +272,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     if (this.getIsPositionMatched(d)) {
       return this._getIsHighlightedVessel(d) ? 22 : 15
     } else {
-      if (this.hideUnmatchedPositions) {
-        return 0
-      }
       return this._getIsHighlightedVessel(d) ? 13 : 10
     }
   }
@@ -414,9 +409,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const { sublayers } = this.props
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
-      this.hideUnmatchedPositions = sublayers.some((sublayer) =>
-        sublayer.filter?.includes(MATCHED_POSITIONS_FILTER)
-      )
 
       return [
         new MVTLayer(this.props, {
@@ -459,7 +451,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getSize: this._getIconSize,
           getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
-          getPickingInfo: this.getPickingInfo,
           updateTriggers: {
             getColor: [highlightedFeatureIds, highlightedVesselIds],
             getSize: [highlightedFeatureIds, highlightedVesselIds],

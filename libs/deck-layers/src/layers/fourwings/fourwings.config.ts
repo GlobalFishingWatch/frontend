@@ -36,8 +36,6 @@ export const MAX_RAMP_VALUES = 10000
 
 export const DYNAMIC_RAMP_CHANGE_THRESHOLD = 50
 
-export const MATCHED_POSITIONS_FILTER = "matched IN ('true')"
-
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
 
 export const CHUNKS_BY_INTERVAL: Record<
