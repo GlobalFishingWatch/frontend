@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import cx from 'classnames'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
+import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
 import type { ReportEventsStatsResponseGroups } from 'queries/report-events-stats-api'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
@@ -29,6 +30,14 @@ type ReportGraphTooltipProps = {
   }[]
   label: string
   type: VGRVesselsSubsection | 'geartype'
+}
+
+const FILTER_PROPERTIES: Record<VGRVesselsSubsection | 'geartype', string> = {
+  flag: 'flag',
+  shiptypes: 'type',
+  geartypes: 'gear',
+  geartype: 'gear',
+  source: 'source',
 }
 
 const ReportGraphTooltip = (props: any) => {
@@ -84,18 +93,11 @@ const CustomTick = (props: any) => {
         return label
     }
   }
-  const filterProperties: Record<VGRVesselsSubsection | 'geartype', string> = {
-    flag: 'flag',
-    shiptypes: 'type',
-    geartypes: 'gear',
-    geartype: 'gear',
-    source: 'source',
-  }
 
   const onLabelClick = () => {
     if (payload.value !== OTHER_CATEGORY_LABEL) {
       dispatchQueryParams({
-        [filterQueryParam]: `${filterProperties[property as VGRVesselsSubsection]}:${
+        [filterQueryParam]: `${FILTER_PROPERTIES[property as VGRVesselsSubsection]}:${
           payload.value
         }`,
         [pageQueryParam]: 0,
@@ -157,6 +159,18 @@ export default function VesselGroupReportVesselsGraph({
     | keyof Pick<VesselGroupReportState, 'vGRVesselPage' | 'vGREventsVesselPage'>
     | keyof Pick<PortsReportState, 'portsReportVesselsPage'>
 }) {
+  const { dispatchQueryParams } = useLocationConnect()
+  const onBarClick: CategoricalChartFunc = (e) => {
+    const { payload } = e.activePayload?.[0] || {}
+    if (payload && payload?.name !== OTHER_CATEGORY_LABEL) {
+      dispatchQueryParams({
+        [filterQueryParam]: `${FILTER_PROPERTIES[property as VGRVesselsSubsection]}:${
+          payload.name
+        }`,
+        [pageQueryParam]: 0,
+      })
+    }
+  }
   return (
     <Fragment>
       <div className={styles.graph} data-test="report-vessels-graph">
@@ -172,6 +186,7 @@ export default function VesselGroupReportVesselsGraph({
                 left: 0,
                 bottom: 0,
               }}
+              onClick={onBarClick}
             >
               {data && <Tooltip content={<ReportGraphTooltip type={property} />} />}
               <Bar className={styles.bar} dataKey="value" fill={color}>
