@@ -71,12 +71,23 @@ const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarCha
           if (isNaN(x1) || isNaN(x2) || isNaN(y1) || isNaN(y2)) {
             return []
           }
-          const color = steps?.find((step) =>
-            trackGraphOrientation === 'down' ? value >= step.value : value <= step.value
-          )?.color
+          const color =
+            steps?.find((step) =>
+              trackGraphOrientation === 'down' ? value >= step.value : value <= step.value
+            )?.color || steps[steps.length - 1].color
+          const colorResolved = hexToDeckColor(color)
+          if (
+            track.filters &&
+            ((track.filters.minElevationFilter && value < track.filters.minElevationFilter) ||
+              (track.filters.maxElevationFilter && value > track.filters.maxElevationFilter) ||
+              (track.filters.minSpeedFilter && value < track.filters.minSpeedFilter) ||
+              (track.filters.maxSpeedFilter && value > track.filters.maxSpeedFilter))
+          ) {
+            colorResolved[3] = 50
+          }
           return {
             polygon: [x1, y1, x2, y1, x2, y2, x1, y2],
-            color: color ? hexToDeckColor(color) : steps[steps.length - 1].color,
+            color: colorResolved,
           }
         })
       })

@@ -20,6 +20,7 @@ import { t } from 'features/i18n/i18n'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { TimebarGraphs } from 'types'
+import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
@@ -114,6 +115,7 @@ export const useTimebarVesselTracks = () => {
               : instance.isLoaded
           const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           const trackGraphData: TimebarChartItem<{ color: string }> = {
+            id: instance.id,
             color: instance.getColor(),
             chunks: [] as TimebarChartChunk<{ color: string }>[],
             status,
@@ -160,6 +162,7 @@ const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnA
 
 export const useTimebarVesselTracksGraph = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
+  const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
   const [tracksGraph, setVesselTracksGraph] = useAtom(vesselTracksGraphAtom)
   const trackLayers =
     timebarGraph === 'speed' || timebarGraph === 'elevation'
@@ -215,6 +218,7 @@ export const useTimebarVesselTracksGraph = () => {
               : instance.isLoaded
           const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           const trackGraphData: TimebarChartItem = {
+            id: instance.id,
             color: instance.getColor(),
             chunks: [] as TimebarChartChunk[],
             status,
@@ -223,6 +227,9 @@ export const useTimebarVesselTracksGraph = () => {
                 ? getTrackGraphSpeedHighlighterLabel
                 : getTrackGraphElevationighlighterLabel,
             getHighlighterIcon: 'vessel',
+            filters: {
+              ...(instance instanceof VesselLayer ? instance.getFilters() : {}),
+            },
           }
 
           const segments =
@@ -258,6 +265,67 @@ export const useTimebarVesselTracksGraph = () => {
     })
   }, [tracksLoaded, timebarGraph])
 
+  const tracksFiltersHash = useMemo(() => {
+    return activeVesselDataviews
+      .flatMap((dataview) => [
+        (dataview.config?.filters?.speed || []).join(),
+        (dataview.config?.filters?.elevation || []).join(),
+      ])
+      .join(',')
+  }, [activeVesselDataviews])
+
+  useEffect(() => {
+    setVesselTracksGraph((tracksGraph) =>
+      tracksGraph?.map((graph) => {
+        const dataview = activeVesselDataviews.find((dataview) => dataview.id === graph.id)
+        if (!dataview) {
+          return graph
+        }
+        const { speed, elevation } = dataview.config?.filters || {}
+        return {
+          ...graph,
+          filters: {
+            minSpeedFilter: speed?.[0],
+            maxSpeedFilter: speed?.[1],
+            minElevationFilter: elevation?.[0],
+            maxElevationFilter: elevation?.[1],
+          },
+        } as TimebarChartItem
+      })
+    )
+  }, [tracksFiltersHash])
+
+  // TODO: debug why the trackLayers is updated but the filters not
+  // 👀using the workaround above to take the filter from the dataview for now
+  // ⚠ but it should be taken from the layer itself as the source of truth
+
+  // const tracksFiltersHash = useMemo(() => {
+  //   return trackLayers
+  //     .flatMap(({ instance }) => [
+  //       instance instanceof VesselLayer ? Object.values(instance.getFilters()) : [],
+  //     ])
+  //     .join(',')
+  // }, [trackLayers])
+
+  // useEffect(() => {
+  //   setVesselTracksGraph((tracksGraph) => {
+  //     return tracksGraph?.map((graph) => {
+  //       const trackLayerInstance = trackLayers.find(
+  //         (layer) => layer.instance?.id === graph.id
+  //       )?.instance
+  //       if (!trackLayerInstance) {
+  //         return graph
+  //       }
+  //       const filters =
+  //         trackLayerInstance instanceof VesselLayer ? trackLayerInstance.getFilters() : {}
+  //       return {
+  //         ...graph,
+  //         filters,
+  //       } as TimebarChartItem
+  //     })
+  //   })
+  // }, [tracksFiltersHash])
+
   return tracksGraph
 }
 
@@ -287,6 +355,7 @@ export const useTimebarVesselEvents = () => {
           const loaded = isVesselLayer ? instance.getVesselTracksLayersLoaded() : instance.isLoaded
           const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           return {
+            id: instance.id,
             color: instance.getColor(),
             chunks:
               status === ResourceStatus.Finished

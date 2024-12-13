@@ -468,6 +468,16 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return deckToHexColor(this.props.color)
   }
 
+  getFilters() {
+    const { minSpeedFilter, maxSpeedFilter, minElevationFilter, maxElevationFilter } = this.props
+    return {
+      minSpeedFilter,
+      maxSpeedFilter,
+      minElevationFilter,
+      maxElevationFilter,
+    }
+  }
+
   getVesselsData() {
     return this.getSubLayers().map((l) => l.props.data)
   }
