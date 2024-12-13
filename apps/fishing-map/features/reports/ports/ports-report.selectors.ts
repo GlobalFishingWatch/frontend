@@ -40,7 +40,7 @@ export const selectPortReportVesselsGrouped = createSelector(
     if (!vessels?.length) return []
     const orderedGroups: { name: string; value: number }[] = Object.entries(
       groupBy(vessels, (vessel) => {
-        return property === 'flag' ? vessel.flagTranslated : (vessel.geartype as string)
+        return property === 'flag' ? vessel.flagTranslated : (vessel[property] as string)
       })
     )
       .map(([key, value]) => ({ name: key, property: key, value: value.length }))
