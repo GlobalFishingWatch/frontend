@@ -49,7 +49,7 @@
     "periodComparisonDuration": "crwdns59625:0crwdne59625:0",
     "periodComparisonRange": "crwdns59627:0{{duration}}crwdnd59627:0{{compareStart}}crwdnd59627:0{{duration}}crwdnd59627:0{{start}}crwdne59627:0",
     "pinVessels": "crwdns84022:0crwdne84022:0",
-    "pinVesselsNotAllowed": "crwdns84024:0{{vessels}}crwdne84024:0",
+    "pinVesselsMaxAllowed": "crwdns84044:0{{maxVessels}}crwdne84044:0",
     "print ": "crwdns69298:0crwdne69298:0",
     "removeVessels": "crwdns84026:0crwdne84026:0",
     "resultsPerPage": "crwdns59631:0{{results}}crwdne59631:0",
