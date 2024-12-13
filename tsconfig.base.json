@@ -43,5 +43,16 @@
     }
   },
   "files": ["./vendors.d.ts"],
-  "exclude": ["node_modules", "tmp", "tools/generators/*/files/*"]
+  "exclude": [
+    ".yarn",
+    ".nx",
+    "node_modules",
+    "tmp",
+    "dist",
+    ".next",
+    "exported",
+    "**/dist/**/*",
+    "**/.next/**/*",
+    "**/exported/**/*"
+  ]
 }
