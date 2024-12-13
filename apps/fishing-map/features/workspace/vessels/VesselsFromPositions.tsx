@@ -56,6 +56,13 @@ function VesselsFromPositions() {
         fourwingsActivityLayer.instance.setHighlightedVessel(undefined)
       }
     }
+    if (fourwingsDetectionsLayer?.instance) {
+      if (vessel) {
+        fourwingsDetectionsLayer.instance.setHighlightedVessel(vessel.id)
+      } else {
+        fourwingsDetectionsLayer.instance.setHighlightedVessel(undefined)
+      }
+    }
   }
 
   const fourwingsLayers = [fourwingsActivityLayer, fourwingsDetectionsLayer].filter(Boolean)
@@ -108,7 +115,6 @@ function VesselsFromPositions() {
     } else {
       setVessels([])
     }
-     
   }, [fourwingsLayers.length, fourwingsLayersLoaded, vesselsHash])
 
   if (!vessels.length) {
@@ -116,47 +122,49 @@ function VesselsFromPositions() {
   }
 
   return (
-    <Collapsable
-      label={t('vessel.onScreen', 'Vessels on screen')}
-      open
-      className={cx(styles.header, styles.vesselsOnScreen, 'print-hidden')}
-    >
-      <ul>
-        {(vessels.length > MAX_VESSLES_TO_DISPLAY
-          ? vessels.slice(0, MAX_VESSLES_TO_DISPLAY)
-          : vessels
-        ).map((vessel, index) => (
-          <li
-            className={styles.row}
-            key={vessel.id}
-            onMouseEnter={() => setHighlightVessel(vessel)}
-            onMouseLeave={() => setHighlightVessel(undefined)}
-          >
-            <VesselPin vesselToSearch={vessel} onClick={() => setHighlightVessel(undefined)} />
-            <div className={styles.vesselOnScreen}>
-              <span>{formatInfoField(vessel.shipname, 'shipname')} </span>
-              {fourwingsActivityLayer?.instance && !fourwingsDetectionsLayer?.instance && (
-                <span>
-                  <I18nNumber number={Math.round(vessel.value)} />{' '}
-                  {index === 0 && ` ${t('common.hour_other', 'hours')}`}
-                </span>
-              )}
-              {fourwingsDetectionsLayer?.instance && !fourwingsActivityLayer?.instance && (
-                <span>
-                  <I18nNumber number={Math.round(vessel.value)} />{' '}
-                  {index === 0 && ` ${t('common.detection_other', 'detections').toLowerCase()}`}
-                </span>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
-      {vessels.length > MAX_VESSLES_TO_DISPLAY && (
-        <span className={styles.moreVesselsOnScreen}>
-          + {vessels.length - MAX_VESSLES_TO_DISPLAY} {t('common.more', 'more')}
-        </span>
-      )}
-    </Collapsable>
+    <div className={styles.content}>
+      <Collapsable
+        label={t('vessel.onScreen', 'Vessels on screen')}
+        open
+        className={cx(styles.header, styles.vesselsOnScreen, 'print-hidden')}
+      >
+        <ul>
+          {(vessels.length > MAX_VESSLES_TO_DISPLAY
+            ? vessels.slice(0, MAX_VESSLES_TO_DISPLAY)
+            : vessels
+          ).map((vessel, index) => (
+            <li
+              className={styles.row}
+              key={vessel.id}
+              onMouseEnter={() => setHighlightVessel(vessel)}
+              onMouseLeave={() => setHighlightVessel(undefined)}
+            >
+              <VesselPin vesselToSearch={vessel} onClick={() => setHighlightVessel(undefined)} />
+              <div className={styles.vesselOnScreen}>
+                <span>{formatInfoField(vessel.shipname, 'shipname')} </span>
+                {fourwingsActivityLayer?.instance && !fourwingsDetectionsLayer?.instance && (
+                  <span>
+                    <I18nNumber number={Math.round(vessel.value)} />{' '}
+                    {index === 0 && ` ${t('common.hour_other', 'hours')}`}
+                  </span>
+                )}
+                {fourwingsDetectionsLayer?.instance && !fourwingsActivityLayer?.instance && (
+                  <span>
+                    <I18nNumber number={Math.round(vessel.value)} />{' '}
+                    {index === 0 && ` ${t('common.detection_other', 'detections').toLowerCase()}`}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+        {vessels.length > MAX_VESSLES_TO_DISPLAY && (
+          <span className={styles.moreVesselsOnScreen}>
+            + {vessels.length - MAX_VESSLES_TO_DISPLAY} {t('common.more', 'more')}
+          </span>
+        )}
+      </Collapsable>
+    </div>
   )
 }
 
