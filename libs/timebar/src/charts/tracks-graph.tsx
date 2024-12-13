@@ -77,10 +77,11 @@ const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarCha
             )?.color || steps[steps.length - 1].color
           const colorResolved = hexToDeckColor(color)
           if (
-            (track.minElevationFilter && value < track.minElevationFilter) ||
-            (track.maxElevationFilter && value > track.maxElevationFilter) ||
-            (track.minSpeedFilter && value < track.minSpeedFilter) ||
-            (track.maxSpeedFilter && value > track.maxSpeedFilter)
+            track.filters &&
+            ((track.filters.minElevationFilter && value < track.filters.minElevationFilter) ||
+              (track.filters.maxElevationFilter && value > track.filters.maxElevationFilter) ||
+              (track.filters.minSpeedFilter && value < track.filters.minSpeedFilter) ||
+              (track.filters.maxSpeedFilter && value > track.filters.maxSpeedFilter))
           ) {
             colorResolved[3] = 50
           }

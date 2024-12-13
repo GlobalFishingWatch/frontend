@@ -71,10 +71,12 @@ export type TimebarChartItem<T = void> = {
   getHighlighterLabel?: HighlighterCallback
   getHighlighterIcon?: HighlighterCallback
   props?: any
-  minSpeedFilter?: number
-  maxSpeedFilter?: number
-  minElevationFilter?: number
-  maxElevationFilter?: number
+  filters?: {
+    minSpeedFilter?: number
+    maxSpeedFilter?: number
+    minElevationFilter?: number
+    maxElevationFilter?: number
+  }
 }
 
 export type TimebarChartData<T = void> = TimebarChartItem<T>[]
