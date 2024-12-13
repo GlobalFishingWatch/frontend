@@ -70,7 +70,7 @@ export type VesselLayerProps = DeckLayerProps<
 
 type VesselLayerState = {
   fontLoaded: boolean
-  colorDirty: boolean
+  stateDirty: boolean
   errors: {
     [key in EventTypes | 'track']?: string
   }
@@ -89,23 +89,27 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       })
     }
     this.state = {
-      colorDirty: false,
+      stateDirty: false,
       fontLoaded,
       errors: {},
     }
   }
 
   get isLoaded(): boolean {
-    return this.getAllSublayersLoaded() && this.state ? !this.state.colorDirty : false
+    return this.getAllSublayersLoaded() && this.state ? !this.state.stateDirty : false
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
+    const hasFilterChange =
+      Object.values(oldProps.filters || {}).join('') !== Object.values(props.filters || {}).join('')
+    const hasColorChange = oldProps.color?.join('') !== props.color.join('')
+
     // TODO:deck try to remove this workaround because we cannot find
     // why useTimebarVesselTracks is not updating on color change
-    if (oldProps.color?.join('') !== props.color.join('')) {
-      this.setState({ colorDirty: true })
+    if (hasColorChange || hasFilterChange) {
+      this.setState({ stateDirty: true })
       requestAnimationFrame(() => {
-        this.setState({ colorDirty: false })
+        this.setState({ stateDirty: false })
       })
     }
   }
@@ -183,11 +187,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       color,
       highlightStartTime,
       highlightEndTime,
-      minSpeedFilter,
-      maxSpeedFilter,
+      filters,
       trackThinningZoomConfig,
-      minElevationFilter,
-      maxElevationFilter,
       trackGraphExtent,
       colorBy,
     } = this.props
@@ -233,10 +234,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           endTime,
           highlightStartTime,
           highlightEndTime,
-          minSpeedFilter,
-          maxSpeedFilter,
-          minElevationFilter,
-          maxElevationFilter,
+          filters,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           onError: (e: any) => this.onSublayerError('track', e),
         } as _VesselTrackLayerProps)
@@ -469,13 +467,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getFilters() {
-    const { minSpeedFilter, maxSpeedFilter, minElevationFilter, maxElevationFilter } = this.props
-    return {
-      minSpeedFilter,
-      maxSpeedFilter,
-      minElevationFilter,
-      maxElevationFilter,
-    }
+    return this.props.filters
   }
 
   getVesselsData() {

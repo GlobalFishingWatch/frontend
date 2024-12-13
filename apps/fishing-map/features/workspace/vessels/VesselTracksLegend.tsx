@@ -11,6 +11,7 @@ import MapLegendPlaceholder from '../common/MapLegendPlaceholder'
 function VesselTracksLegend(): React.ReactElement | null {
   const { t } = useTranslation()
   const steps = useTimebarTracksGraphSteps()
+  console.log('VesselTracksLegend steps:', steps)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
 
   if (vesselsTimebarGraph === 'none') {
