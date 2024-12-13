@@ -5,6 +5,7 @@ import type {
   DatasetSchemaItem,
   Dataview,
   DataviewDatasetConfig,
+  DataviewDatasetFilter,
   DataviewInstance,
   FilterOperator,
   Resource,
@@ -334,7 +335,8 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
-export function getDataviewFilters(dataview: UrlDataviewInstance) {
+export function getDataviewFilters(dataview: UrlDataviewInstance): DataviewDatasetFilter {
+  if (!dataview) return {}
   const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
     return { ...acc, ...(datasetConfig.filters || {}) }
   }, {} as Record<string, any>)

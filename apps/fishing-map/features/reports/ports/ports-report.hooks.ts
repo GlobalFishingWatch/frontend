@@ -5,6 +5,7 @@ import { selectReportPortId, selectUrlTimeRange } from 'routes/routes.selectors'
 import type { AppDispatch } from 'store'
 import { fetchPortsReportThunk } from './ports-report.slice'
 import { selectPortsReportDatasetId } from './ports-report.config.selectors'
+import { selectPortReportsConfidences } from './ports-report.selectors'
 
 let reportAction: (ReturnType<AppDispatch> & { abort?: () => void }) | undefined
 
@@ -13,6 +14,7 @@ export function useFetchPortsReport() {
 
   const portId = useSelector(selectReportPortId)
   const datasetId = useSelector(selectPortsReportDatasetId)
+  const confidences = useSelector(selectPortReportsConfidences)
   const { start, end } = useSelector(selectUrlTimeRange) || {}
 
   useEffect(() => {
@@ -33,11 +35,12 @@ export function useFetchPortsReport() {
           start,
           end,
           datasetId,
+          confidences,
         })
       )
       reportAction = action
     }
-  }, [portId, start, end, dispatch, datasetId])
+  }, [portId, start, end, dispatch, datasetId, confidences])
 
   return fetchPortReport
 }

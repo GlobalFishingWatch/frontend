@@ -68,12 +68,13 @@ type FetchPortsReportThunkParams = {
   datasetId: string
   start: string
   end: string
+  confidences?: number[]
 }
 
 export const fetchPortsReportThunk = createAsyncThunk(
   'ports-report/vessels',
   async (
-    { portId, datasetId, start, end }: FetchPortsReportThunkParams,
+    { portId, datasetId, start, end, confidences = [4] }: FetchPortsReportThunkParams,
     { rejectWithValue, signal }
   ) => {
     try {
@@ -83,6 +84,7 @@ export const fetchPortsReportThunk = createAsyncThunk(
         'port-ids': [portId],
         'time-filter-mode': EVENTS_TIME_FILTER_MODE,
         dataset: datasetId,
+        ...(confidences.length && { confidences }),
       }
       const portEventsVesselStats = await GFWAPI.fetch<ReportEventsVesselsResponse>(
         `/events/stats-by-vessel${getQueryParamsResolved(vesselEventsParams)}`,

@@ -4,9 +4,15 @@ import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DataviewType } from '@globalfishingwatch/api-types'
+import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { PORT_REPORT } from 'routes/routes'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import {
+  DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  DEFAULT_WORKSPACE_CATEGORY,
+  DEFAULT_WORKSPACE_ID,
+} from 'data/workspaces'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import type { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
 import styles from './PortsReport.module.css'
@@ -26,6 +32,27 @@ function PortsReportLink({ children, port }: PortsReportLinkProps) {
     return children
   }
 
+  const basemapDataviewInstance = (query.dataviewInstances as UrlDataviewInstance[])?.find(
+    (d: UrlDataviewInstance) => d.config?.type === DataviewType.Basemap
+  )
+  const dataviewInstances = basemapDataviewInstance
+    ? [
+        {
+          ...basemapDataviewInstance,
+          config: { ...(basemapDataviewInstance.config || {}), basemap: BasemapType.Satellite },
+        },
+      ]
+    : [{ id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, config: { basemap: BasemapType.Satellite } }]
+  if (query.dataviewInstances?.length) {
+    const parsedInstances = query.dataviewInstances.map((instance: UrlDataviewInstance) => {
+      return getPortClusterDataviewForReport(instance, {
+        portId: port.id,
+        clusterMaxZoomLevels: { default: 20 },
+      })
+    })
+    dataviewInstances.push(...parsedInstances)
+  }
+
   return (
     <Link
       className={styles.link}
@@ -41,14 +68,7 @@ function PortsReportLink({ children, port }: PortsReportLinkProps) {
           portsReportName: port.name,
           portsReportCountry: port.country,
           portsReportDatasetId: port.datasetId,
-          ...(query?.dataviewInstances?.length && {
-            dataviewInstances: query?.dataviewInstances?.map((instance: UrlDataviewInstance) =>
-              getPortClusterDataviewForReport(instance, {
-                portId: port.id,
-                clusterMaxZoomLevels: { default: 20 },
-              })
-            ),
-          }),
+          dataviewInstances,
         },
       }}
     >
