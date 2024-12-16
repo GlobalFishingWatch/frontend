@@ -11,8 +11,12 @@ import {
 } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectVesselGroupsStatusId } from 'features/vessel-groups/vessel-groups.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './VesselGroupListTooltip.module.css'
-import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
+import {
+  setVesselGroupsModalOpen,
+  type VesselGroupVesselIdentity,
+} from './vessel-groups-modal.slice'
 
 type VesselGroupListTooltipProps = {
   children?: React.ReactNode
@@ -24,6 +28,7 @@ type VesselGroupListTooltipProps = {
 function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
   const { onAddToVesselGroup, children, keepOpenWhileAdding = false } = props
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const vesselGroupOptions = useVesselGroupsOptions()
   const vesselGroupsStatusId = useSelector(selectVesselGroupsStatusId)
   const [addingToGroup, setAddingToGroup] = useState(false)
@@ -48,14 +53,18 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
     (vesselGroupId: string) => {
       if (onAddToVesselGroup) {
         onAddToVesselGroup(vesselGroupId)
-        if (vesselGroupId !== NEW_VESSEL_GROUP_ID && keepOpenWhileAdding) {
-          setAddingToGroup(true)
+        if (vesselGroupId === NEW_VESSEL_GROUP_ID) {
+          dispatch(setVesselGroupsModalOpen(true))
         } else {
-          setVesselGroupsOpen(false)
+          if (keepOpenWhileAdding) {
+            setAddingToGroup(true)
+          } else {
+            setVesselGroupsOpen(false)
+          }
         }
       }
     },
-    [keepOpenWhileAdding, onAddToVesselGroup]
+    [dispatch, keepOpenWhileAdding, onAddToVesselGroup]
   )
 
   return (

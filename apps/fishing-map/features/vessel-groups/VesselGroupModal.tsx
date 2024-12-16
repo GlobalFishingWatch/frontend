@@ -105,7 +105,7 @@ function VesselGroupModal(): React.ReactElement {
     searchVesselStatus === AsyncReducerStatus.Loading ||
     vesselGroupsStatus === AsyncReducerStatus.Loading ||
     vesselGroupsStatus === AsyncReducerStatus.LoadingUpdate
-  const fullModalLoading = editingVesselGroupId && searchVesselStatus === AsyncReducerStatus.Loading
+  const fullModalLoading = searchVesselStatus === AsyncReducerStatus.Loading
   const vesselGroupAPIError =
     vesselGroupsStatus === AsyncReducerStatus.Error ||
     searchVesselStatus === AsyncReducerStatus.Error

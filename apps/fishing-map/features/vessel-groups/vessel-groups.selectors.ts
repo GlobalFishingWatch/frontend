@@ -20,6 +20,8 @@ import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
+import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectVesselGroupModalVessels } from './vessel-groups-modal.slice'
 import { selectAllVesselGroups } from './vessel-groups.slice'
 
@@ -82,9 +84,14 @@ export const selectVesselGroupWorkspaceToNavigate = createSelector(
 )
 
 export const selectIsVessselGroupsFiltering = createSelector(
-  [selectWorkspaceVessselGroupsIds],
-  (workspaceVesselGroupIds = []) => {
-    return workspaceVesselGroupIds.length > 0
+  [selectActiveActivityAndDetectionsDataviews, selectActiveVesselGroupDataviews],
+  (activeActivityAndDetectionsDataviews, activeVesselGroupDataviews = []) => {
+    return (
+      [
+        ...getVesselGroupsInDataviews(activeActivityAndDetectionsDataviews),
+        ...activeVesselGroupDataviews,
+      ].length > 0
+    )
   }
 )
 
