@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { Dataset, Dataview} from '@globalfishingwatch/api-types';
+import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {

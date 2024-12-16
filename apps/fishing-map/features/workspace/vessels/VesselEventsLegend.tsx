@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { EventType } from '@globalfishingwatch/api-types'
-import type { SwitchEvent } from '@globalfishingwatch/ui-components';
+import type { SwitchEvent } from '@globalfishingwatch/ui-components'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { EVENTS_COLORS } from 'data/config'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'

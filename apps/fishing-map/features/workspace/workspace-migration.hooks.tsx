@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
-import type { DatasetsMigration} from '@globalfishingwatch/api-types';
+import type { DatasetsMigration } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -208,6 +208,5 @@ export const useMigrateWorkspaceToast = () => {
         autoClose: false,
       })
     }
-     
   }, [hasDeprecatedDataviews])
 }

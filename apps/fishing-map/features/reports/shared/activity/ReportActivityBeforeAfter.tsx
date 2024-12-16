@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { SelectOption } from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
 import { useReportTimeCompareConnect } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'

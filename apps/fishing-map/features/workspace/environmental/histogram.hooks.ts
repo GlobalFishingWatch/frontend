@@ -2,7 +2,7 @@ import { useEffect, useCallback, useState } from 'react'
 import { bin, scaleLinear } from 'd3'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { Dataset} from '@globalfishingwatch/api-types';
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
@@ -47,7 +47,6 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
       const features = environmentalLayer.instance?.getViewportData() as FourwingsFeature[]
       updateHistogram(features)
     }
-     
   }, [sourcesLoaded, deboncedBounds])
 
   return histogram

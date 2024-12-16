@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { groupBy, uniqBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type { DatasetSubCategory} from '@globalfishingwatch/api-types';
+import type { DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -13,11 +13,12 @@ import type {
   PolygonPickingObject,
   RulerPickingObject,
   UserLayerPickingObject,
-  VesselEventPickingObject} from '@globalfishingwatch/deck-layers';
+  VesselEventPickingObject,
+} from '@globalfishingwatch/deck-layers'
 import {
   FOOTPRINT_ID,
   FourwingsComparisonMode,
-  POSITIONS_ID
+  POSITIONS_ID,
 } from '@globalfishingwatch/deck-layers'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
@@ -39,7 +40,8 @@ import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
 import type {
   SliceExtendedClusterPickingObject,
-  SliceExtendedFourwingsPickingObject} from '../map.slice';
+  SliceExtendedFourwingsPickingObject,
+} from '../map.slice'
 import {
   selectApiEventStatus,
   selectActivityInteractionStatus,

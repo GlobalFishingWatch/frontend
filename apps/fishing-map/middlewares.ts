@@ -1,5 +1,5 @@
 import type { Middleware } from 'redux'
-import type { ThunkDispatch } from '@reduxjs/toolkit';
+import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { isRejectedWithValue } from '@reduxjs/toolkit'
 import { isUnauthorized } from '@globalfishingwatch/api-client'
 import type { RootState } from 'reducers'

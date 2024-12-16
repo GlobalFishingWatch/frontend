@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, Choice, Icon, Tag, Modal } from '@globalfishingwatch/ui-components'
 import { THINNING_LEVELS, ThinningLevels } from '@globalfishingwatch/api-client'
-import type {
-  DownloadTrackParams} from 'features/download/downloadTrack.slice';
+import type { DownloadTrackParams } from 'features/download/downloadTrack.slice'
 import {
   selectDownloadTrackStatus,
   selectDownloadTrackIds,
@@ -27,7 +26,7 @@ import { selectDownloadTrackModalOpen } from 'features/download/download.selecto
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import styles from './DownloadModal.module.css'
-import type { Format} from './downloadTrack.config';
+import type { Format } from './downloadTrack.config'
 import { FORMAT_OPTIONS } from './downloadTrack.config'
 
 function DownloadTrackModal() {

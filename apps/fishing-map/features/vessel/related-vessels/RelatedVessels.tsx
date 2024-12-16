@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
-import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 import { selectVesselRelatedSubsection } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'

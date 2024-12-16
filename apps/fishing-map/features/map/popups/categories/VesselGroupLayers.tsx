@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
-import type { DataviewCategory } from '@globalfishingwatch/api-types';
+import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory } from '@globalfishingwatch/api-types'
 import type { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
 import popupStyles from '../Popup.module.css'

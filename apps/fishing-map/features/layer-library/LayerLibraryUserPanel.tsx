@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
-import type { Dataset} from '@globalfishingwatch/api-types';
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'

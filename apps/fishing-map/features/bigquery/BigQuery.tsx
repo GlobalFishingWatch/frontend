@@ -13,8 +13,7 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
-import type {
-  BigQueryVisualisation} from './bigquery.slice';
+import type { BigQueryVisualisation } from './bigquery.slice'
 import {
   createBigQueryDatasetThunk,
   fetchBigQueryRunCostThunk,

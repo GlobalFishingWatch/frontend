@@ -6,7 +6,7 @@ import { selectVesselDataset } from 'features/vessel/selectors/vessel.resources.
 import { formatInfoField } from 'utils/info'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
-import type { VesselToResolve } from 'features/vessel/VesselPin';
+import type { VesselToResolve } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
 import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import styles from './RelatedVessels.module.css'

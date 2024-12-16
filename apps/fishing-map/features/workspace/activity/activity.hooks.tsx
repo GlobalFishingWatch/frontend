@@ -3,16 +3,14 @@ import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import type {
-  FourwingsLayer,
-  FourwingsVisualizationMode} from '@globalfishingwatch/deck-layers';
+import type { FourwingsLayer, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 import {
   HEATMAP_ID,
   HEATMAP_HIGH_RES_ID,
   POSITIONS_ID,
   HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers'
-import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Icon } from '@globalfishingwatch/ui-components'
 import {
   selectActivityMergedDataviewId,

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import type { InsightType} from '@globalfishingwatch/api-types';
+import type { InsightType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { useGetVesselInsightQuery } from 'queries/vessel-insight-api'

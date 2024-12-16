@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { orderBy } from 'es-toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import type { UserPermission } from '@globalfishingwatch/api-types';
+import type { UserPermission } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'

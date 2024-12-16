@@ -2,13 +2,10 @@ import { Fragment, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  getDatasetConfigByDatasetType
-} from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDatasetConfigByDatasetType } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
@@ -17,7 +14,7 @@ import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils';
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'

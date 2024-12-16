@@ -5,11 +5,9 @@ import type {
   Dataview,
   DataviewType,
   DataviewDatasetConfig,
-  DataviewInstance} from '@globalfishingwatch/api-types';
-import {
-  DataviewCategory,
-  EndpointId,
+  DataviewInstance,
 } from '@globalfishingwatch/api-types'
+import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
@@ -21,12 +19,8 @@ import {
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import type {
-  VesselInstanceDatasets} from 'features/datasets/datasets.utils';
-import {
-  getActiveDatasetsInDataview,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
+import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 
 // used in workspaces with encounter events layers

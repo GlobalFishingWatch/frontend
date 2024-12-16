@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'

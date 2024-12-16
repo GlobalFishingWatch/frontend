@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import formatcoords from 'formatcoords'
 import cx from 'classnames'
-import type { DateTimeFormatOptions } from 'luxon';
+import type { DateTimeFormatOptions } from 'luxon'
 import { DateTime } from 'luxon'
 import { toFixed } from 'utils/shared'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'

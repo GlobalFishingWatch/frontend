@@ -1,17 +1,9 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type {
-  ApiAppName,
-  Dataview,
-  DataviewConfig} from '@globalfishingwatch/api-types';
-import {
-  DataviewCategory,
-  DataviewType,
-  EndpointId,
-} from '@globalfishingwatch/api-types'
-import type {
-  ChoiceOption} from '@globalfishingwatch/ui-components';
+import type { ApiAppName, Dataview, DataviewConfig } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType, EndpointId } from '@globalfishingwatch/api-types'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
   Spinner,
@@ -20,7 +12,7 @@ import {
   Select,
   ColorBar,
   FillColorBarOptions,
-  MultiSelect
+  MultiSelect,
 } from '@globalfishingwatch/ui-components'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/deck-layers'
@@ -30,7 +22,7 @@ import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.ut
 import { selectFourwingsDatasets } from 'features/datasets/datasets.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
-import type { AsyncError} from 'utils/async-slice';
+import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { APP_NAME } from 'data/config'

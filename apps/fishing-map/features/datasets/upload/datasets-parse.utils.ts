@@ -17,7 +17,7 @@ import type {
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
-import type { DatasetGeometryTypesSupported} from 'utils/files';
+import type { DatasetGeometryTypesSupported } from 'utils/files'
 import { getFileType, readBlobAs } from 'utils/files'
 
 // interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {

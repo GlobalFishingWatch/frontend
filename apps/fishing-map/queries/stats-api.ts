@@ -1,4 +1,4 @@
-import type { FetchBaseQueryArgs, SerializeQueryArgs } from '@reduxjs/toolkit/query/react';
+import type { FetchBaseQueryArgs, SerializeQueryArgs } from '@reduxjs/toolkit/query/react'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
 import { uniq } from 'es-toolkit'

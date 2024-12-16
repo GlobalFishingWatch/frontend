@@ -20,7 +20,7 @@ import {
   getReportCategoryFromDataview,
 } from 'features/reports/areas/area-reports.utils'
 import { createDeepEqualSelector } from 'utils/selectors'
-import type { Area, AreaGeometry} from 'features/areas/areas.slice';
+import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { selectAreas } from 'features/areas/areas.slice'
 import {
   EMPTY_API_VALUES,

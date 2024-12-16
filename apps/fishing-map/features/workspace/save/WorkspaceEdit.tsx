@@ -1,30 +1,22 @@
-import type { ChangeEvent} from 'react';
+import type { ChangeEvent } from 'react'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type { SelectOption } from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { InputText, Button, Select } from '@globalfishingwatch/ui-components'
-import type {
-  WorkspaceEditAccessType} from '@globalfishingwatch/api-types';
-import {
-  WORKSPACE_PASSWORD_ACCESS,
-  WORKSPACE_PRIVATE_ACCESS
-} from '@globalfishingwatch/api-types'
+import type { WorkspaceEditAccessType } from '@globalfishingwatch/api-types'
+import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfishingwatch/api-types'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { updatedCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import type { AppWorkspace} from 'features/workspaces-list/workspaces-list.slice';
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
-import type {
-  WorkspaceTimeRangeMode} from './workspace-save.utils';
-import {
-  getEditAccessOptionsByViewAccess,
-  isValidDaysFromLatest,
-} from './workspace-save.utils'
+import type { WorkspaceTimeRangeMode } from './workspace-save.utils'
+import { getEditAccessOptionsByViewAccess, isValidDaysFromLatest } from './workspace-save.utils'
 import { useSaveWorkspaceTimerange } from './workspace-save.hooks'
 
 type EditWorkspaceProps = {

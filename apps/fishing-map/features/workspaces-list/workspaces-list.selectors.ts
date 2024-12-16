@@ -7,12 +7,8 @@ import {
   selectUserWorkspaces,
   selectUserWorkspacesPrivate,
 } from 'features/user/selectors/user.permissions.selectors'
-import type {
-  HighlightedWorkspace} from './workspaces-list.slice';
-import {
-  selectHighlightedWorkspaces,
-  selectWorkspaces,
-} from './workspaces-list.slice'
+import type { HighlightedWorkspace } from './workspaces-list.slice'
+import { selectHighlightedWorkspaces, selectWorkspaces } from './workspaces-list.slice'
 
 export const selectAvailableWorkspacesCategories = createSelector(
   [selectHighlightedWorkspaces],

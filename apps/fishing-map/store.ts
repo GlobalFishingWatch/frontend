@@ -1,12 +1,5 @@
-import type {
-  Action,
-  AnyAction,
-  Middleware,
-  ThunkAction,
-  ThunkDispatch} from '@reduxjs/toolkit';
-import {
-  configureStore,
-} from '@reduxjs/toolkit'
+import type { Action, AnyAction, Middleware, ThunkAction, ThunkDispatch } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 import { createWrapper } from 'next-redux-wrapper'
 import { queriesApiMiddlewares } from 'queries'
 import { logoutUserMiddleware } from 'middlewares'

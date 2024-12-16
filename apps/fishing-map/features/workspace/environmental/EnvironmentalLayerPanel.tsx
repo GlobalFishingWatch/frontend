@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
-import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { Tooltip, IconButton } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
@@ -16,11 +16,8 @@ import ActivityFilters, {
   isHistogramDataviewSupported,
 } from 'features/workspace/common/LayerFilters'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
-import type {
-  SupportedEnvDatasetSchema} from 'features/datasets/datasets.utils';
-import {
-  getSchemaFiltersInDataview,
-} from 'features/datasets/datasets.utils'
+import type { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
+import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'

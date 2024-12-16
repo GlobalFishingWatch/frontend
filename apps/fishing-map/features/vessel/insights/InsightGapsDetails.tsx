@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { InsightResponse} from '@globalfishingwatch/api-types';
+import type { InsightResponse } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useGetVesselEventsQuery } from 'queries/vessel-events-api'

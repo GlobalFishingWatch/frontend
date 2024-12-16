@@ -1,4 +1,4 @@
-import type { SetStateAction, Dispatch } from 'react';
+import type { SetStateAction, Dispatch } from 'react'
 import { useState, useCallback, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'

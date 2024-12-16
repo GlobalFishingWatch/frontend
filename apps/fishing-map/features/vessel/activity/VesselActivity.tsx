@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import ActivityByType from 'features/vessel/activity/activity-by-type/ActivityByType'

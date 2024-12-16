@@ -7,10 +7,9 @@ import type {
   VesselInfo,
   VesselRegistryInfo,
   VesselRegistryProperty,
-  VesselType} from '@globalfishingwatch/api-types';
-import {
-  API_LOGIN_REQUIRED
+  VesselType,
 } from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'

@@ -1,7 +1,7 @@
 import { useSetAtom, atom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import type { DeckGLRef } from '@deck.gl/react'
-import type { RefObject} from 'react';
+import type { RefObject } from 'react'
 import { useEffect } from 'react'
 import type { Deck } from '@deck.gl/core'
 
@@ -15,7 +15,6 @@ export function useSetMapInstance(mapRef: RefObject<DeckGLRef> | undefined) {
     if (mapRef?.current?.deck) {
       setMapInstance(mapRef?.current?.deck)
     }
-     
   }, [mapRef?.current])
 }
 

@@ -1,25 +1,15 @@
 import { Fragment, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'es-toolkit'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  getVesselIdFromDatasetConfig
-} from '@globalfishingwatch/dataviews-client'
-import type {
-  ChoiceOption,
-  SelectOption} from '@globalfishingwatch/ui-components';
-import {
-  Modal,
-  IconButton,
-  Choice,
-  Select
-} from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getVesselIdFromDatasetConfig } from '@globalfishingwatch/dataviews-client'
+import type { ChoiceOption, SelectOption } from '@globalfishingwatch/ui-components'
+import { Modal, IconButton, Choice, Select } from '@globalfishingwatch/ui-components'
 import { DatasetStatus, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import type { UserGuideSection } from 'features/help/UserGuideLink';
+import type { UserGuideSection } from 'features/help/UserGuideLink'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import styles from './InfoModal.module.css'
@@ -69,7 +59,6 @@ const InfoModal = ({
       })
       .sort((a, b) => a.labelString.localeCompare(b.labelString))
     // Updating options when t changes to ensure the content is updated on lang change
-     
   }, [dataview, t])
 
   const [activeTab, setActiveTab] = useState<SelectOption | undefined>(options?.[0])

@@ -31,13 +31,12 @@ import type { Bbox } from 'types'
 import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import type { FitBoundsParams} from 'features/map/map-bounds.hooks';
+import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
-import type {
-  LastReportStorage} from 'features/reports/areas/area-reports.config';
+import type { LastReportStorage } from 'features/reports/areas/area-reports.config'
 import {
   ENTIRE_WORLD_REPORT_AREA_BOUNDS,
-  LAST_REPORTS_STORAGE_KEY
+  LAST_REPORTS_STORAGE_KEY,
 } from 'features/reports/areas/area-reports.config'
 import { selectIsVesselGroupReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'

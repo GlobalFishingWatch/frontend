@@ -5,16 +5,14 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
-import type { ChoiceOption } from '@globalfishingwatch/ui-components';
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Icon, Button, Choice, Tag } from '@globalfishingwatch/ui-components'
 import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import type {
-  DownloadActivityParams,
-  DateRange} from 'features/download/downloadActivity.slice';
+import type { DownloadActivityParams, DateRange } from 'features/download/downloadActivity.slice'
 import {
   downloadActivityThunk,
   selectIsDownloadActivityLoading,
@@ -49,8 +47,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { AreaKeyId } from 'features/areas/areas.slice'
 import styles from './DownloadModal.module.css'
-import type {
-  TemporalResolution} from './downloadActivity.config';
+import type { TemporalResolution } from './downloadActivity.config'
 import {
   HeatmapDownloadFormat,
   SpatialResolution,

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-import type { ChangeEvent} from 'react';
+import type { ChangeEvent } from 'react'
 import { useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'

@@ -2,14 +2,8 @@ import { useMemo, useState } from 'react'
 import { Range, getTrackBackground } from 'react-range'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type {
-  ChoiceOption} from '@globalfishingwatch/ui-components';
-import {
-  Button,
-  Choice,
-  IconButton,
-  InputText,
-} from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button, Choice, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import {
   KILOMETERS,
   NAUTICAL_MILES,

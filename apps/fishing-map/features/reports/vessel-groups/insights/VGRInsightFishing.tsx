@@ -16,11 +16,10 @@ import { selectFetchVesselGroupReportFishingParams } from '../vessel-group-repor
 import styles from './VGRInsights.module.css'
 import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
 import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
-import type {
-  VesselGroupReportInsightVessel} from './vessel-group-report-insights.selectors';
+import type { VesselGroupReportInsightVessel } from './vessel-group-report-insights.selectors'
 import {
   selectVGRVesselsWithNoTakeMpas,
-  selectVGRVesselsInRfmoWithoutKnownAuthorization
+  selectVGRVesselsInRfmoWithoutKnownAuthorization,
 } from './vessel-group-report-insights.selectors'
 
 export const RFMO_REGIONS_PRIORITY: RegionType[] = [

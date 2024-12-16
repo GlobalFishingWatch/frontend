@@ -1,11 +1,7 @@
 import { t } from 'i18next'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import type {
-  Dataset,
-  DatasetConfigurationInterval} from '@globalfishingwatch/api-types';
-import {
-  DataviewCategory,
-} from '@globalfishingwatch/api-types'
+import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'

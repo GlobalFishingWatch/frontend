@@ -2,8 +2,7 @@ import { useState, useCallback, useEffect, Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
-import type {
-  SelectOption} from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import {
   Modal,
   Button,
@@ -53,7 +52,8 @@ import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import type {
   IdField,
   VesselGroupConfirmationMode,
-  UpdateVesselGroupThunkParams} from './vessel-groups.slice';
+  UpdateVesselGroupThunkParams,
+} from './vessel-groups.slice'
 import {
   createVesselGroupThunk,
   selectVesselGroupById,

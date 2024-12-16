@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
-import type {
-  ChoiceOption} from '@globalfishingwatch/ui-components';
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import {
   Choice,
   IconButton,
@@ -54,9 +53,9 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportsStatus } from 'features/reports/areas/area-reports.slice'
 import { selectCurrentReport } from 'features/app/selectors/app.reports.selector'
 import { useLocationConnect } from 'routes/routes.hook'
-import type { ROUTE_TYPES} from 'routes/routes';
+import type { ROUTE_TYPES } from 'routes/routes'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import type { SearchType } from 'features/search/search.config';
+import type { SearchType } from 'features/search/search.config'
 import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'

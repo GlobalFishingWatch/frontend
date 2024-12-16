@@ -11,11 +11,10 @@ import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/areas/area-reports.utils'
 import type { ReportActivityUnit } from 'features/reports/areas/AreaReport'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
-import type {
-  ReportGraphProps} from 'features/reports/shared/activity/reports-activity-timeseries.hooks';
+import type { ReportGraphProps } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import {
   useReportFilteredTimeSeries,
-  useReportFeaturesLoading
+  useReportFeaturesLoading,
 } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'

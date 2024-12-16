@@ -1,4 +1,4 @@
-import type { PayloadAction} from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import kebabCase from 'lodash/kebabCase'
@@ -8,7 +8,7 @@ import union from '@turf/union'
 import { featureCollection } from '@turf/helpers'
 import { circle } from '@turf/circle'
 import { flatten } from '@turf/flatten'
-import type { TileContextAreaFeature, Dataset} from '@globalfishingwatch/api-types';
+import type { TileContextAreaFeature, Dataset } from '@globalfishingwatch/api-types'
 import { EndpointId } from '@globalfishingwatch/api-types'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'

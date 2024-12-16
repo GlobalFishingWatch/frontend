@@ -1,10 +1,9 @@
 import type {
   ColorCyclingType,
   DataviewInstance,
-  DataviewType} from '@globalfishingwatch/api-types';
-import {
-  DataviewCategory
+  DataviewType,
 } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'

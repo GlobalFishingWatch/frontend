@@ -1,4 +1,4 @@
-import type { IconButtonSize } from '@globalfishingwatch/ui-components';
+import type { IconButtonSize } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 type InfoErrorProps = {

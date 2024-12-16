@@ -11,9 +11,7 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import type {
-  DownloadActivityParams,
-  DateRange} from 'features/download/downloadActivity.slice';
+import type { DownloadActivityParams, DateRange } from 'features/download/downloadActivity.slice'
 import {
   downloadActivityThunk,
   selectIsDownloadActivityLoading,
@@ -43,8 +41,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { AreaKeyId } from 'features/areas/areas.slice'
 import styles from './DownloadModal.module.css'
-import type {
-  TemporalResolution} from './downloadActivity.config';
+import type { TemporalResolution } from './downloadActivity.config'
 import {
   HeatmapDownloadFormat,
   SpatialResolution,

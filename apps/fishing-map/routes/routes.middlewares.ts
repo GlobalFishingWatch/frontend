@@ -4,7 +4,7 @@ import type { RootState } from 'reducers'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import type { QueryParam, QueryParams } from 'types'
-import type { ROUTE_TYPES} from './routes';
+import type { ROUTE_TYPES } from './routes'
 import { routesMap, WORKSPACE_ROUTES } from './routes'
 import type { UpdateQueryParamsAction } from './routes.actions'
 

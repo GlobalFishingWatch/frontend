@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import Link from 'redux-first-router-link'
 import { Spinner, IconButton, InputText } from '@globalfishingwatch/ui-components'
-import type { Report } from '@globalfishingwatch/api-types';
+import type { Report } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'

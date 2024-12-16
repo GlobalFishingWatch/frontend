@@ -22,10 +22,9 @@ import type {
   MOUInsightCountry,
   MOUInsightList,
   MouVesselByCategoryInsight,
-  MOUVesselByList} from './vessel-group-report-insights.selectors';
-import {
-  selectVGRMOUVesselsGrouped,
+  MOUVesselByList,
 } from './vessel-group-report-insights.selectors'
+import { selectVGRMOUVesselsGrouped } from './vessel-group-report-insights.selectors'
 
 type ExpandedMOUInsights = `${MOUInsightCountry}-${MOUInsightList}`
 

@@ -1,10 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  resolveDataviewDatasetResource
-} from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { Spinner, Switch, Tooltip } from '@globalfishingwatch/ui-components'
 import { AUXILIAR_DATAVIEW_SUFIX, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'

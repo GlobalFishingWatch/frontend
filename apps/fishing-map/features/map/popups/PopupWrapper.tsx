@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import cx from 'classnames'
-import type {
-  Middleware} from '@floating-ui/react';
+import type { Middleware } from '@floating-ui/react'
 import {
   offset,
   autoPlacement,

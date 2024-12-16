@@ -3,7 +3,7 @@ import { stringify } from 'qs'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 import type { RootState } from 'reducers'
-import type { AsyncError} from 'utils/async-slice';
+import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { BASEMAP_DATAVIEW_SLUG, TEMPLATE_DATAVIEW_SLUGS } from 'data/workspaces'

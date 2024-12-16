@@ -7,7 +7,7 @@ import { Button, Popover } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { selectIsMapLoaded } from 'features/map/map.slice'
 import { Locale } from 'types'
-import type { HighlightPanelConfig } from './highlight-panel.content';
+import type { HighlightPanelConfig } from './highlight-panel.content'
 import HIGHLIGHT_CONFIG from './highlight-panel.content'
 import styles from './HighlightPanel.module.css'
 
