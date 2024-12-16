@@ -123,7 +123,7 @@ export type TimebarProps = {
   intervals?: FourwingsInterval[]
   getCurrentInterval?: typeof getFourwingsInterval
   displayWarningWhenInFuture?: boolean
-  trackGraphOrientation: TrackGraphOrientation
+  trackGraphOrientation?: TrackGraphOrientation
   isResizable?: boolean
   defaultHeight?: number
 }

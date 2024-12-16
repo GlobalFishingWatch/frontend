@@ -122,7 +122,7 @@ const TimebarWrapper = () => {
         <Timebar
           start={start}
           end={end}
-          enablePlayback={false}
+          showPlayback={false}
           absoluteStart={absoluteStart.toISOString()}
           absoluteEnd={absoluteEnd.toISOString()}
           onChange={dispatchTimerange}

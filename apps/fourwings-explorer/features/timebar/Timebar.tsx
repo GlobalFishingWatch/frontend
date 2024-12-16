@@ -2,8 +2,7 @@ import { memo, useCallback } from 'react'
 import { DateTime } from 'luxon'
 import { Timebar, TimebarHighlighter } from '@globalfishingwatch/timebar'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import type {
-  TimebarRange} from 'features/timebar/timebar.hooks';
+import type { TimebarRange } from 'features/timebar/timebar.hooks'
 import {
   useHighlightTimerange,
   useTimerange,
@@ -15,8 +14,6 @@ import { useAllMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import TimebarSettings from './TimebarSettings'
 import styles from './Timebar.module.css'
-
-const TimebarComponent = Timebar as any
 
 const TimebarHighlighterWrapper = () => {
   const [highlightTimerange] = useHighlightTimerange()
@@ -92,8 +89,8 @@ const TimebarWrapper = () => {
   if (!timerange?.start || !timerange?.end) return null
   return (
     <div className={styles.timebarWrapper}>
-      <TimebarComponent
-        enablePlayback={true}
+      <Timebar
+        showPlayback={true}
         start={timerange?.start}
         end={timerange?.end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
@@ -104,7 +101,7 @@ const TimebarWrapper = () => {
       >
         <TimebarActivityGraph />
         <TimebarHighlighterWrapper />
-      </TimebarComponent>
+      </Timebar>
       <TimebarSettings />
     </div>
   )
