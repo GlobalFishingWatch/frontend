@@ -14,7 +14,10 @@ function filterOutliers(array: number[]) {
 
   let q1
   let q3
-  const values = array.slice().sort((a, b) => a - b)
+  const values = array
+    .slice()
+    .filter(Boolean)
+    .sort((a, b) => a - b)
 
   //find quartiles
   if ((values.length / 4) % 1 === 0) {
