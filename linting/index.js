@@ -1,4 +1,3 @@
- 
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import eslint from '@eslint/js'
@@ -41,18 +40,18 @@ export default tseslint.config({
     tseslint.configs.recommended,
     jsxA11yPlugin.flatConfigs.recommended,
     prettierConfig,
-    includeIgnoreFile(gitignorePath),
+    // includeIgnoreFile(gitignorePath),
   ],
   ignores: [
     'node_modules',
     'dist',
-    '**/dist/**',
     'public',
-    '**/public/**',
     '.next',
-    '**/.next/**',
     'exported',
-    '**/exported/**',
+    '**/dist/**/*',
+    '**/public/**/*',
+    '**/.next/**/*',
+    '**/exported/**/*',
   ],
   languageOptions: {
     parserOptions: {

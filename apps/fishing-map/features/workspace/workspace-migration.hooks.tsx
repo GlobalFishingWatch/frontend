@@ -114,7 +114,7 @@ export const useMigrateWorkspace = () => {
                 }),
               },
               datasetsConfig: dvi.datasetsConfig?.map((dc) => {
-                const datasetId = datasetsConfigMigration?.[dc?.datasetId!] || dc?.datasetId
+                const datasetId = datasetsConfigMigration?.[dc?.datasetId] || dc?.datasetId
                 return { ...dc, datasetId }
               }),
             }

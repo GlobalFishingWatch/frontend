@@ -142,7 +142,7 @@ function VesselGroupLayerPanel({
                   </span>
                 </Tooltip>
               ) : (
-                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
                   <Tooltip
                     content={t(
                       'vesselGroupReport.clickToSee',
@@ -192,7 +192,7 @@ function VesselGroupLayerPanel({
             {layerActive && (
               <Fragment>
                 {!isOutdated && (
-                  <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                  <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
                     <IconButton
                       tooltip={t(
                         'vesselGroupReport.clickToSee',
