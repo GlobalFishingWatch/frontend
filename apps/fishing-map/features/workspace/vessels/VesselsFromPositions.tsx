@@ -122,7 +122,7 @@ function VesselsFromPositions() {
   }
 
   return (
-    <div className={styles.content}>
+    <div className={cx(styles.content, 'print-hidden')}>
       <Collapsable
         label={t('vessel.onScreen', 'Vessels on screen')}
         open
