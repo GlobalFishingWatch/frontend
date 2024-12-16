@@ -52,6 +52,7 @@ import {
 } from 'features/app/selectors/app.timebar.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { setHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -169,6 +170,7 @@ const TimebarWrapper = () => {
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
+  const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
@@ -364,7 +366,12 @@ const TimebarWrapper = () => {
       <Fragment>
         <TimebarTracks key="tracks" data={tracks} />
         {showGraph && tracksGraphsData && (
-          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} steps={trackGraphSteps} />
+          <TimebarTracksGraph
+            key="trackGraph"
+            data={tracksGraphsData}
+            steps={trackGraphSteps}
+            printing={screenshotModalOpen}
+          />
         )}
         {events && (
           <Fragment>

@@ -10,7 +10,7 @@ import {
   MAIN_DOM_ID,
   Choice,
 } from '@globalfishingwatch/ui-components'
-import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { isPrintSupported, useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { setInlineStyles, cleantInlineStyles } from 'utils/dom'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
@@ -19,7 +19,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'routes/routes.selectors'
-import MapScreenshot, { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
+import MapScreenshot, { MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 import styles from './MapControls.module.css'
 
@@ -59,7 +59,7 @@ const MapControlScreenshot = ({
         id: value as ScrenshotDOMArea,
         label: t(`map.screenshotArea.${key}`, key),
       })),
-    []
+    [t]
   )
 
   const {
@@ -107,7 +107,7 @@ const MapControlScreenshot = ({
       cleantInlineStyles(rootElement)
     }
     dispatch(setModalOpen({ id: 'screenshot', open: false }))
-  }, [dispatch, rootElement])
+  }, [dispatch, resetPreviewImage, rootElement, setScreenshotAreaId])
 
   const onPDFDownloadClick = useCallback(() => {
     handleModalClose()
@@ -119,14 +119,14 @@ const MapControlScreenshot = ({
       await downloadImage(screenshotAreaId)
     }
     handleModalClose()
-  }, [screenshotAreaId])
+  }, [downloadImage, handleModalClose, screenshotAreaId])
 
   const onSelectScreenshotArea = useCallback(
     (area: ScrenshotDOMArea) => {
       setScreenshotAreaId(area)
       generateImage(area)
     },
-    [downloadImage, handleModalClose]
+    [generateImage, setScreenshotAreaId]
   )
 
   return (
