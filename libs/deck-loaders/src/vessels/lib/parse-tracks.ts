@@ -1,4 +1,3 @@
-import { extent } from 'simple-statistics'
 import type { VesselTrackData, VesselTrackGraphExtent } from './types'
 import { DeckTrack } from './vessel-track-proto'
 
@@ -9,7 +8,7 @@ export const MAX_SPEED_VALUE = 25
 export const MIN_DEPTH_VALUE = 0
 export const MAX_DEPTH_VALUE = -6000
 
-function filterOutliers(array: number[]) {
+function getExtent(array: number[], colorBy: 'speed' | 'elevation') {
   if (array.length < 4) return array
 
   let q1
@@ -19,7 +18,15 @@ function filterOutliers(array: number[]) {
     .filter(Boolean)
     .sort((a, b) => a - b)
 
-  //find quartiles
+  if (colorBy === 'elevation') {
+    // Elevation values are negative, so we need to invert min and max
+    return [
+      Math.min(values[values.length - 1], MIN_DEPTH_VALUE),
+      Math.max(values[0], MAX_DEPTH_VALUE),
+    ]
+  }
+  // Remove speed outliers
+  // find quartiles
   if ((values.length / 4) % 1 === 0) {
     q1 = (1 / 2) * (values[values.length / 4] + values[values.length / 4 + 1])
     q3 = (1 / 2) * (values[values.length * (3 / 4)] + values[values.length * (3 / 4) + 1])
@@ -29,10 +36,14 @@ function filterOutliers(array: number[]) {
   }
 
   const iqr = q3 - q1
-  const minValue = q1 - iqr * 1.5
-  const maxValue = q3 + iqr * 1.5
+  const minValue = q1 - iqr * 1.25
+  const maxValue = q3 + iqr * 1.25
+  const filteredValues = values.filter((x) => x >= minValue && x <= maxValue)
 
-  return values.filter((x) => x >= minValue && x <= maxValue)
+  return [
+    Math.max(filteredValues[0], MIN_SPEED_VALUE),
+    Math.min(filteredValues[filteredValues.length - 1], MAX_SPEED_VALUE),
+  ]
 }
 
 export function getVesselGraphExtentClamped(
@@ -66,15 +77,8 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
     ? new Float32Array(track.attributes.getElevation.value)
     : new Float32Array(defaultAttributesLength)
 
-  const speedValuesWithoutOutliers = filterOutliers(getSpeedValues as any)
-  const elevationValuesWithoutOutliers = filterOutliers(getElevationValues as any)
-
-  const speedExtent = speedValuesWithoutOutliers.length
-    ? getVesselGraphExtentClamped(extent(speedValuesWithoutOutliers), 'speed')
-    : [MIN_SPEED_VALUE, MAX_SPEED_VALUE]
-  const elevationExtent = elevationValuesWithoutOutliers.length
-    ? getVesselGraphExtentClamped(extent(elevationValuesWithoutOutliers), 'elevation')
-    : [MIN_DEPTH_VALUE, MAX_DEPTH_VALUE]
+  const speedExtent = getExtent(getSpeedValues as any, 'speed')
+  const elevationExtent = getExtent(getElevationValues as any, 'elevation')
 
   return {
     ...track,
