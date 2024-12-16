@@ -47,13 +47,13 @@ module.exports = tseslint.config({
   ignores: [
     'node_modules',
     'dist',
-    '**/dist/**',
     'public',
-    '**/public/**',
     '.next',
-    '**/.next/**',
     'exported',
-    '**/exported/**',
+    '**/dist/**/*',
+    '**/public/**/*',
+    '**/.next/**/*',
+    '**/exported/**/*',
   ],
   languageOptions: {
     parserOptions: {
