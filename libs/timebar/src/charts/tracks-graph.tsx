@@ -36,18 +36,18 @@ const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarCha
         target: [outerWidth / 2, graphHeight / 2, 0],
         zoom: 0,
       } as OrthographicViewState),
-    [outerWidth]
+    [graphHeight, outerWidth]
   )
 
   const heightScale = useMemo(() => {
-    if (!steps.length) return undefined
+    if (!steps?.length) return undefined
     const domainEnd =
       trackGraphOrientation === 'down'
         ? Math.min(...steps.map((step) => step.value || 0))
         : Math.max(...steps.map((step) => step.value || 0))
     const { height } = getTrackY(filteredGraphsData.length, 0, graphHeight)
     return scaleSqrt([0, domainEnd], [2, height]).clamp(true)
-  }, [filteredGraphsData])
+  }, [filteredGraphsData.length, graphHeight, steps, trackGraphOrientation])
 
   const layers = useMemo(() => {
     if (!heightScale || !steps.length) return []
@@ -102,7 +102,15 @@ const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarCha
         getFillColor: (d) => d.color,
       }),
     ]
-  }, [filteredGraphsData, offsetHashRef.current, trackGraphOrientation, outerWidth])
+  }, [
+    heightScale,
+    steps,
+    outerScale,
+    filteredGraphsData,
+    data.length,
+    graphHeight,
+    trackGraphOrientation,
+  ])
 
   return (
     <div style={{ transform: `translateX(${offsetStartX - veilWidth}px)`, zIndex: -1 }}>
