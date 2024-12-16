@@ -768,6 +768,7 @@
     "selected": "selected"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Fit time range to these dates",
     "focusOnThisDay": "Focus time range on this day",
     "maxTracksNumber": "Track detail not available for more than 10 vessels"

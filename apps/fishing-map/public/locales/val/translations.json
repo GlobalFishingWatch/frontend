@@ -768,6 +768,7 @@
     "selected": "crwdns60409:0crwdne60409:0"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "crwdns84050:0crwdne84050:0",
     "fitOnThisDates": "crwdns60411:0crwdne60411:0",
     "focusOnThisDay": "crwdns60413:0crwdne60413:0",
     "maxTracksNumber": "crwdns60415:0crwdne60415:0"
