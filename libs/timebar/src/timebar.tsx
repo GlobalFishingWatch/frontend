@@ -109,7 +109,9 @@ export type TimebarProps = {
   absoluteStart: string
   absoluteEnd: string
   latestAvailableDataDate?: string
-  enablePlayback?: boolean
+  showPlayback?: boolean
+  disablePlayback?: boolean
+  disabledPlaybackTooltip?: string
   onTogglePlay?: (isPlaying: boolean) => void
   minimumRange?: number
   minimumRangeUnit?: string
@@ -178,7 +180,9 @@ export class Timebar extends Component<TimebarProps> {
     },
     bookmarkStart: null,
     bookmarkEnd: null,
-    enablePlayback: false,
+    disablePlayback: false,
+    disabledPlaybackTooltip: '',
+    showPlayback: false,
     onTogglePlay: () => {
       // do nothing
     },
@@ -381,7 +385,9 @@ export class Timebar extends Component<TimebarProps> {
       bookmarkStart,
       bookmarkEnd,
       bookmarkPlacement,
-      enablePlayback,
+      disablePlayback,
+      disabledPlaybackTooltip,
+      showPlayback,
       locale,
       minimumRange,
       minimumRangeUnit,
@@ -425,7 +431,7 @@ export class Timebar extends Component<TimebarProps> {
             onMouseDown={this.handleMouseDown}
           />
         )}
-        {enablePlayback && (
+        {showPlayback && (
           <Playback
             labels={labels.playback}
             start={start}
@@ -436,6 +442,8 @@ export class Timebar extends Component<TimebarProps> {
             onTogglePlay={this.onTogglePlay}
             intervals={intervals}
             getCurrentInterval={getCurrentInterval}
+            disabled={disablePlayback}
+            disabledPlaybackTooltip={disabledPlaybackTooltip}
           />
         )}
 

@@ -36,6 +36,8 @@ type PlaybackProps = {
   intervals?: FourwingsInterval[]
   onTogglePlay?: (isPlaying: boolean) => void
   getCurrentInterval: typeof getFourwingsInterval
+  disabled?: boolean
+  disabledPlaybackTooltip?: string
 }
 
 type PlaybackState = {
@@ -63,6 +65,8 @@ class Playback extends Component<PlaybackProps> {
     },
     intervals: FOURWINGS_INTERVALS_ORDER,
     getCurrentInterval: getFourwingsInterval,
+    disabled: false,
+    disabledPlaybackTooltip: '',
   }
 
   constructor(props: PlaybackProps) {
@@ -215,8 +219,10 @@ class Playback extends Component<PlaybackProps> {
 
   render() {
     const { playing, loop, speedStep } = this.state
-    const { labels, end, absoluteEnd } = this.props
+    const { labels, end, absoluteEnd, disabled, disabledPlaybackTooltip } = this.props
     const stoppedAtEnd = end === absoluteEnd && loop !== true
+
+    const playbackDisabled = disabled || stoppedAtEnd
 
     return (
       <div
@@ -244,10 +250,17 @@ class Playback extends Component<PlaybackProps> {
         </button>
         <button
           type="button"
-          title={playing === true ? labels.pauseAnimation : labels.playAnimation}
-          onClick={this.onPlayToggleClick}
-          disabled={stoppedAtEnd}
-          className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play)}
+          title={
+            disabled && disabledPlaybackTooltip
+              ? disabledPlaybackTooltip
+              : playing === true
+              ? labels.pauseAnimation
+              : labels.playAnimation
+          }
+          onClick={playbackDisabled ? undefined : this.onPlayToggleClick}
+          className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play, {
+            [styles.disabled]: playbackDisabled,
+          })}
         >
           {playing === true ? <Icon icon="pause" /> : <Icon icon="play" />}
         </button>

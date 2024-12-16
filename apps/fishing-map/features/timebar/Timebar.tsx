@@ -39,7 +39,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   useTimebarVesselEvents,
@@ -167,7 +167,7 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
-  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
@@ -388,7 +388,12 @@ const TimebarWrapper = () => {
       onMouseLeave={onMouseLeave}
     >
       <Timebar
-        enablePlayback={!vesselGroupsFiltering && !isAreaReportLocation}
+        disablePlayback={vesselGroupsFiltering}
+        disabledPlaybackTooltip={t(
+          'timebar.disablePlaybackVesselGroups',
+          'Playback of vessel group layers is not supported'
+        )}
+        showPlayback={!isReportLocation}
         labels={labels}
         start={start}
         end={end}
