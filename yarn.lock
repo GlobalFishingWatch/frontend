@@ -2577,7 +2577,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/compat@npm:^1.2.4":
+"@eslint/compat@npm:1.x, @eslint/compat@npm:^1.2.4":
   version: 1.2.4
   resolution: "@eslint/compat@npm:1.2.4"
   peerDependencies:
@@ -2736,6 +2736,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/linting@workspace:linting"
   dependencies:
+    "@eslint/compat": "npm:1.x"
     "@next/eslint-plugin-next": "npm:14.x"
     "@nx/eslint-plugin": "npm:20.x"
     eslint: "npm:9.x"
