@@ -9,6 +9,29 @@ export const MAX_SPEED_VALUE = 25
 export const MIN_DEPTH_VALUE = 0
 export const MAX_DEPTH_VALUE = -6000
 
+function filterOutliers(array: number[]) {
+  if (array.length < 4) return array
+
+  let q1
+  let q3
+  const values = array.slice().sort((a, b) => a - b)
+
+  //find quartiles
+  if ((values.length / 4) % 1 === 0) {
+    q1 = (1 / 2) * (values[values.length / 4] + values[values.length / 4 + 1])
+    q3 = (1 / 2) * (values[values.length * (3 / 4)] + values[values.length * (3 / 4) + 1])
+  } else {
+    q1 = values[Math.floor(values.length / 4 + 1)]
+    q3 = values[Math.ceil(values.length * (3 / 4) + 1)]
+  }
+
+  const iqr = q3 - q1
+  const minValue = q1 - iqr * 1.5
+  const maxValue = q3 + iqr * 1.5
+
+  return values.filter((x) => x >= minValue && x <= maxValue)
+}
+
 export function getVesselGraphExtentClamped(
   domain: VesselTrackGraphExtent,
   colorBy: 'speed' | 'elevation'
@@ -39,9 +62,13 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
   const getElevationValues = track.attributes.getElevation.value?.length
     ? new Float32Array(track.attributes.getElevation.value)
     : new Float32Array(defaultAttributesLength)
-  const speedExtent = getVesselGraphExtentClamped(extent(getSpeedValues as any), 'speed')
+
+  const speedExtent = getVesselGraphExtentClamped(
+    extent(filterOutliers(getSpeedValues as any)),
+    'speed'
+  )
   const elevationExtent = getVesselGraphExtentClamped(
-    extent(getElevationValues as any),
+    extent(filterOutliers(getElevationValues as any)),
     'elevation'
   )
   return {
