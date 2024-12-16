@@ -66,14 +66,16 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
     ? new Float32Array(track.attributes.getElevation.value)
     : new Float32Array(defaultAttributesLength)
 
-  const speedExtent = getVesselGraphExtentClamped(
-    extent(filterOutliers(getSpeedValues as any)),
-    'speed'
-  )
-  const elevationExtent = getVesselGraphExtentClamped(
-    extent(filterOutliers(getElevationValues as any)),
-    'elevation'
-  )
+  const speedValuesWithoutOutliers = filterOutliers(getSpeedValues as any)
+  const elevationValuesWithoutOutliers = filterOutliers(getElevationValues as any)
+
+  const speedExtent = speedValuesWithoutOutliers.length
+    ? getVesselGraphExtentClamped(extent(speedValuesWithoutOutliers), 'speed')
+    : [MIN_SPEED_VALUE, MAX_SPEED_VALUE]
+  const elevationExtent = elevationValuesWithoutOutliers.length
+    ? getVesselGraphExtentClamped(extent(elevationValuesWithoutOutliers), 'elevation')
+    : [MIN_DEPTH_VALUE, MAX_DEPTH_VALUE]
+
   return {
     ...track,
     attributes: {

@@ -82,12 +82,15 @@ export const useTimebarTracksGraphExtent = () => {
     if (vesselsTimebarGraph === 'none' || !vessels?.length || !areAllVesselsLoaded) {
       return
     }
+    const vesselExtents = vessels.flatMap((v) =>
+      (v.instance as VesselLayer).getVesselTrackGraphExtent(vesselsTimebarGraph)
+    )
+    if (!vesselExtents.length) {
+      return
+    }
+
     return getVesselGraphExtentClamped(
-      extent(
-        vessels.flatMap((v) =>
-          (v.instance as VesselLayer).getVesselTrackGraphExtent(vesselsTimebarGraph)
-        )
-      ),
+      extent(vesselExtents),
       vesselsTimebarGraph
     ) as VesselTrackGraphExtent
     // eslint-disable-next-line react-hooks/exhaustive-deps
