@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -333,14 +334,14 @@ const VesselIdentity = () => {
             <Icon icon="external-link" type="default" />
           </a>
           {/* TODO this Skylight link is broken */}
-          <a
+          {/* <a
             href={`https://sc-production.skylight.earth/vesseldetails/B:${vesselIdentity?.ssvid}`}
             target="_blank"
             rel="noreferrer"
           >
             Skylight
             <Icon icon="external-link" type="default" />
-          </a>
+          </a> */}
         </div>
       </div>
     </Fragment>
