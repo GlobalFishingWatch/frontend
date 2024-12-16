@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -5,7 +6,7 @@ import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
 import { uniq } from 'es-toolkit'
 import type { Tab, TabsProps } from '@globalfishingwatch/ui-components'
-import { IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -45,7 +46,7 @@ import VesselRegistryField from './VesselRegistryField'
 import VesselTypesField from './VesselTypesField'
 
 const VesselIdentity = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
@@ -312,6 +313,36 @@ const VesselIdentity = () => {
           </div>
         )}
         <VesselIdentitySelector />
+      </div>
+      <div className={styles.container}>
+        <label>View in</label>
+        <div className={styles.externalToolLinks}>
+          <a
+            href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Marine Traffic
+            <Icon icon="external-link" type="default" />
+          </a>
+          <a
+            href={`https://app.triton.fish/search?name=${vesselIdentity?.ssvid}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Triton
+            <Icon icon="external-link" type="default" />
+          </a>
+          {/* TODO this Skylight link is broken */}
+          {/* <a
+            href={`https://sc-production.skylight.earth/vesseldetails/B:${vesselIdentity?.ssvid}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Skylight
+            <Icon icon="external-link" type="default" />
+          </a> */}
+        </div>
       </div>
     </Fragment>
   )
