@@ -768,6 +768,7 @@
     "selected": "seleccionado"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajustar rango de tiempo a estas fechas",
     "focusOnThisDay": "Ajustar rango de tiempo a este día",
     "maxTracksNumber": "Detalles de trayectorias no disponibles para más de 10 embarcaciones"
