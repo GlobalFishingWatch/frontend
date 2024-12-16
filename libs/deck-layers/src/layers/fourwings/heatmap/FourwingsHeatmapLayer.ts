@@ -132,12 +132,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       minVisibleValue,
       maxVisibleValue,
       scales,
-      zoomOffset = 0,
+      // zoomOffset = 0,
     } = this.props
     if (
       !colorDomain?.length ||
-      !colorRanges?.length ||
-      Math.round(this.context.viewport.zoom) + zoomOffset !== this.props.tile.index.z
+      !colorRanges?.length
+      // TODO research if we can restore this to avoid rendering two zoom levels at the same time
+      // || Math.round(this.context.viewport.zoom) + zoomOffset !== this.props.tile.index.z
     ) {
       target = EMPTY_CELL_COLOR
       return target
