@@ -7,16 +7,13 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { EventType } from '@globalfishingwatch/api-types'
 import type { SwitchEvent } from '@globalfishingwatch/ui-components'
 import { Switch } from '@globalfishingwatch/ui-components'
-import { EVENTS_COLORS } from 'data/config'
+import { EVENTS_COLORS, PATH_BASENAME } from 'data/config'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { upperFirst } from 'utils/info'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import EncounterIcon from '../../../assets/icons/event-encounter.svg'
-import LoiteringIcon from '../../../assets/icons/event-loitering.svg'
-import PortIcon from '../../../assets/icons/event-port.svg'
 import layerStyles from './VesselEventsLegend.module.css'
 
 type VesselEventsLegendProps = {
@@ -75,7 +72,11 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
           return (
             <li
               key={datasetId}
-              className={cx(layerStyles.eventsLegend, { [layerStyles.disabled]: !active })}
+              className={cx(
+                layerStyles.eventsLegend,
+                { [layerStyles.disabled]: !active },
+                { 'print-hidden': !active }
+              )}
             >
               <Switch
                 active={active}
@@ -95,9 +96,9 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
                   style={
                     {
                       '--color': color,
-                      '--encounterIcon': `url(${EncounterIcon})`,
-                      '--loiteringIcon': `url(${LoiteringIcon})`,
-                      '--portIcon': `url(${PortIcon})`,
+                      '--encounterIcon': `url(${PATH_BASENAME}/images/event-encounter.svg)`,
+                      '--loiteringIcon': `url(${PATH_BASENAME}/images/event-loitering.svg)`,
+                      '--portIcon': `url(${PATH_BASENAME}/images/event-port.svg)`,
                     } as React.CSSProperties
                   }
                 />

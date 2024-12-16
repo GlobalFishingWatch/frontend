@@ -106,7 +106,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
         </LayerPanelContainer>
       )}
       {locationCategory === WorkspaceCategory.MarineManager && (
-        <div className={styles.surveyLink}>
+        <div className={cx(styles.surveyLink, 'print-hidden')}>
           <a
             href={
               t(

@@ -260,7 +260,7 @@ function VesselsSection(): React.ReactElement {
         )}
       </SortableContext>
       {activeDataviews.length > 0 && guestUser && (
-        <p className={styles.disclaimer}>
+        <p className={cx(styles.disclaimer, 'print-hidden')}>
           {hasVesselsWithNoTrack ? (
             <Trans i18nKey="vessel.trackLogin">
               One of your selected sources requires you to
