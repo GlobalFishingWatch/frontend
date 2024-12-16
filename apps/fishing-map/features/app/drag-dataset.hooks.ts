@@ -93,6 +93,7 @@ export function useDatasetDrag() {
     }
     return () => {
       if (listenersAttached) {
+        setListenersAttached(false)
         eventsConfig.forEach(({ event, callback }) => {
           if (callback) {
             window.removeEventListener(event, callback)
