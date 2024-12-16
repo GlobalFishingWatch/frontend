@@ -49,7 +49,7 @@
     "periodComparisonDuration": "duração",
     "periodComparisonRange": "no {{duration}} que se seguem {{compareStart}} comparado ao baseline nos {{duration}} seguintes {{start}}",
     "pinVessels": "Add to workspace",
-    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels",
+    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "print ": "print",
     "removeVessels": "Remove from workspace",
     "resultsPerPage": "Mostrar {{results}} por página",
