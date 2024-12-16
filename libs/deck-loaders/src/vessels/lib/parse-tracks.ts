@@ -9,14 +9,9 @@ export const MIN_DEPTH_VALUE = 0
 export const MAX_DEPTH_VALUE = -6000
 
 function getExtent(array: number[], colorBy: 'speed' | 'elevation') {
-  if (array.length < 4) return array
-
   let q1
   let q3
-  const values = array
-    .slice()
-    .filter(Boolean)
-    .sort((a, b) => a - b)
+  const values = array.filter(Boolean).sort((a, b) => a - b)
 
   if (colorBy === 'elevation') {
     // Elevation values are negative, so we need to invert min and max
@@ -25,20 +20,23 @@ function getExtent(array: number[], colorBy: 'speed' | 'elevation') {
       Math.max(values[0], MAX_DEPTH_VALUE),
     ]
   }
+  let filteredValues = array
   // Remove speed outliers
-  // find quartiles
-  if ((values.length / 4) % 1 === 0) {
-    q1 = (1 / 2) * (values[values.length / 4] + values[values.length / 4 + 1])
-    q3 = (1 / 2) * (values[values.length * (3 / 4)] + values[values.length * (3 / 4) + 1])
-  } else {
-    q1 = values[Math.floor(values.length / 4 + 1)]
-    q3 = values[Math.ceil(values.length * (3 / 4) + 1)]
-  }
+  if (values.length > 4) {
+    // find quartiles
+    if ((values.length / 4) % 1 === 0) {
+      q1 = (1 / 2) * (values[values.length / 4] + values[values.length / 4 + 1])
+      q3 = (1 / 2) * (values[values.length * (3 / 4)] + values[values.length * (3 / 4) + 1])
+    } else {
+      q1 = values[Math.floor(values.length / 4 + 1)]
+      q3 = values[Math.ceil(values.length * (3 / 4) + 1)]
+    }
 
-  const iqr = q3 - q1
-  const minValue = q1 - iqr * 1.25
-  const maxValue = q3 + iqr * 1.25
-  const filteredValues = values.filter((x) => x >= minValue && x <= maxValue)
+    const iqr = q3 - q1
+    const minValue = q1 - iqr * 1.25
+    const maxValue = q3 + iqr * 1.25
+    filteredValues = values.filter((x) => x >= minValue && x <= maxValue)
+  }
 
   return [
     Math.max(filteredValues[0], MIN_SPEED_VALUE),
