@@ -39,6 +39,7 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "14.x",
     "@nx/eslint-plugin": "20.x",
+    "@eslint/compat": "1.x",
     "eslint": "9.x",
     "eslint-config-next": "15.x",
     "eslint-config-prettier": "9.x",

@@ -1,27 +1,28 @@
+ 
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import nxPlugin from '@nx/eslint-plugin'
-import next from '@next/eslint-plugin-next'
+import nextPlugin from '@next/eslint-plugin-next'
 import importPlugin from 'eslint-plugin-import'
-import jsxA11y from 'eslint-plugin-jsx-a11y'
-import react from 'eslint-plugin-react'
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
+import reactPlugin from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import prettierConfig from 'eslint-config-prettier'
+import { includeIgnoreFile } from '@eslint/compat'
 
-// import { includeIgnoreFile } from '@eslint/compat'
-// import path from 'node:path'
-// import { fileURLToPath } from 'node:url'
-// const __filename = fileURLToPath(import.meta.url)
-// const __dirname = path.dirname(__filename)
-// const gitignorePath = path.resolve(__dirname, '.gitignore')
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const gitignorePath = path.resolve(__dirname, '.gitignore')
 
 export default tseslint.config({
   files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
   plugins: {
     '@nx': nxPlugin,
+    '@next/next': nextPlugin,
     import: importPlugin,
-    react,
-    '@next': next,
+    react: reactPlugin,
     'react-hooks': reactHooksPlugin,
   },
   settings: {
@@ -38,9 +39,9 @@ export default tseslint.config({
   extends: [
     eslint.configs.recommended,
     tseslint.configs.recommended,
-    jsxA11y.flatConfigs.recommended,
+    jsxA11yPlugin.flatConfigs.recommended,
     prettierConfig,
-    // includeIgnoreFile(gitignorePath),
+    includeIgnoreFile(gitignorePath),
   ],
   ignores: [
     'node_modules',
@@ -61,8 +62,10 @@ export default tseslint.config({
     },
   },
   rules: {
-    '@typescript-eslint/array-type': 'error',
-    '@typescript-eslint/consistent-type-imports': 'error',
+    ...reactPlugin.configs['jsx-runtime'].rules,
+    ...reactHooksPlugin.configs.recommended.rules,
+    ...nextPlugin.configs.recommended.rules,
+    ...nextPlugin.configs['core-web-vitals'].rules,
     'import/default': 0,
     'import/no-unresolved': 0,
     'import/no-named-as-default': 0,
@@ -102,6 +105,9 @@ export default tseslint.config({
     'prefer-const': 1,
     'no-unused-vars': 0,
     'no-use-before-define': 0,
+    '@typescript-eslint/array-type': 'error',
+    '@typescript-eslint/consistent-type-imports': 'error',
+    '@typescript-eslint/no-require-imports': 'warn',
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-use-before-define': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 0,

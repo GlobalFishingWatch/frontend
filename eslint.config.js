@@ -2,16 +2,17 @@
 const eslint = require('@eslint/js')
 const tseslint = require('typescript-eslint')
 const nxPlugin = require('@nx/eslint-plugin')
-const next = require('@next/eslint-plugin-next')
+const nextPlugin = require('@next/eslint-plugin-next')
 const importPlugin = require('eslint-plugin-import')
-const jsxA11y = require('eslint-plugin-jsx-a11y')
-const react = require('eslint-plugin-react')
+const jsxA11yPlugin = require('eslint-plugin-jsx-a11y')
+const reactPlugin = require('eslint-plugin-react')
 const reactHooksPlugin = require('eslint-plugin-react-hooks')
 const prettierConfig = require('eslint-config-prettier')
 
-// import { includeIgnoreFile } from '@eslint/compat'
-// import path from 'node:path'
-// import { fileURLToPath } from 'node:url'
+// const { includeIgnoreFile } = require('@eslint/compat')
+// const path = require('node:path')
+// const { fileURLToPath } = require('node:url')
+
 // const __filename = fileURLToPath(import.meta.url)
 // const __dirname = path.dirname(__filename)
 // const gitignorePath = path.resolve(__dirname, '.gitignore')
@@ -20,9 +21,9 @@ module.exports = tseslint.config({
   files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
   plugins: {
     '@nx': nxPlugin,
+    '@next/next': nextPlugin,
     import: importPlugin,
-    react,
-    '@next': next,
+    react: reactPlugin,
     'react-hooks': reactHooksPlugin,
   },
   settings: {
@@ -39,7 +40,7 @@ module.exports = tseslint.config({
   extends: [
     eslint.configs.recommended,
     tseslint.configs.recommended,
-    jsxA11y.flatConfigs.recommended,
+    jsxA11yPlugin.flatConfigs.recommended,
     prettierConfig,
     // includeIgnoreFile(gitignorePath),
   ],
@@ -62,6 +63,10 @@ module.exports = tseslint.config({
     },
   },
   rules: {
+    ...reactPlugin.configs['jsx-runtime'].rules,
+    ...reactHooksPlugin.configs.recommended.rules,
+    ...nextPlugin.configs.recommended.rules,
+    ...nextPlugin.configs['core-web-vitals'].rules,
     'import/default': 0,
     'import/no-unresolved': 0,
     'import/no-named-as-default': 0,
