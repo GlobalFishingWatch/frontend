@@ -190,6 +190,7 @@ function NewDataset() {
       }
       isOpen={datasetModalOpen}
       contentId={NEW_DATASET_MODAL_ID}
+      shouldCloseOnEsc={style === 'transparent'}
       contentClassName={cx(styles.modalContainer, {
         [styles.fullheight]: isGuestUser,
       })}
