@@ -796,10 +796,24 @@
   },
   "user": {
     "gfwBadges": "GFW Badges",
-    "badgePresenter": "Shows people our products",
-    "badgeTeacher": "Trains people in our products/Trainer",
-    "badgeFixer": "Improves our products/guide",
-    "badgeAmbassador": "Demonstrates value of our products OR connects our products to real-world situations",
+    "badges": {
+      "ambassador": {
+        "title": "Ambassador",
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+      },
+      "fixer": {
+        "title": "Fixer",
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+      },
+      "presenter": {
+        "title": "Presenter",
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+      },
+      "teacher": {
+        "title": "Teacher",
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+      }
+    },
     "datasets": "Conjuntos de dados do usuário",
     "groupMissing": "Você pertence a um grupo de usuários que não aparece aqui? <2>Solicitar acesso</2>",
     "groups": "Grupos de usuários",
