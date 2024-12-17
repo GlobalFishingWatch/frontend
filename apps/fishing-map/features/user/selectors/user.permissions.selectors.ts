@@ -31,23 +31,22 @@ export const selectHasEditTranslationsPermissions = hasUserPermission({
 })
 
 export const selectHasAmbassadorBadge = hasUserPermission({
-  // TODO fix from API
-  type: 'user-propery',
+  type: 'user-property',
   value: 'gfw-presenter-badge',
   action: 'read',
 })
 export const selectHasFeedbackProviderBadge = hasUserPermission({
-  type: 'user-propery',
+  type: 'user-property',
   value: 'gfw-teacher-badge',
   action: 'read',
 })
 export const selectHasPresenterBadge = hasUserPermission({
-  type: 'user-propery',
+  type: 'user-property',
   value: 'gfw-feedback-provider-badge',
   action: 'read',
 })
 export const selectHasTeacherBadge = hasUserPermission({
-  type: 'user-propery',
+  type: 'user-property',
   value: 'gfw-ambassador-badge',
   action: 'read',
 })
