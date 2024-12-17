@@ -795,6 +795,11 @@
     "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor."
   },
   "user": {
+    "gfwBadges": "GFW Badges",
+    "badgePresenter": "Shows people our products",
+    "badgeTeacher": "Trains people in our products/Trainer",
+    "badgeFixer": "Improves our products/guide",
+    "badgeAmbassador": "Demonstrates value of our products OR connects our products to real-world situations",
     "datasets": "Conjuntos de datos del usuario",
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",
