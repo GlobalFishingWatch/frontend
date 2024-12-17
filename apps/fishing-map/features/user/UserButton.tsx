@@ -10,22 +10,15 @@ import {
   selectIsUserExpired,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 
 const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const guestUser = useSelector(selectIsGuestUser)
   const isUserExpired = useSelector(selectIsUserExpired)
   const userData = useSelector(selectUserData)
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
-
-  const onLinkClick = () => {
-    dispatch(setWorkspaceSuggestSave(false))
-  }
 
   return (
     <div className={className}>
@@ -43,7 +36,6 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
             query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
             replaceQuery: true,
           }}
-          onClick={onLinkClick}
           data-test={testId}
         >
           {userData ? initials : <Icon icon="user" className="print-hidden" />}

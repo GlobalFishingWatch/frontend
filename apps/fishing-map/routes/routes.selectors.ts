@@ -16,6 +16,7 @@ import {
   WORKSPACE_SEARCH,
   VESSEL_GROUP_REPORT,
   PORT_REPORT,
+  ROUTES_WITH_WORKSPACES,
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -27,6 +28,10 @@ export const selectLocationType = createSelector(
 
 export const selectIsWorkspaceLocation = createSelector([selectLocationType], (locationType) =>
   WORKSPACE_ROUTES.includes(locationType)
+)
+
+export const selectIsRouteWithWorkspace = createSelector([selectLocationType], (locationType) =>
+  ROUTES_WITH_WORKSPACES.includes(locationType)
 )
 
 export const selectIsVesselLocation = createSelector(

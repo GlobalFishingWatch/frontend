@@ -32,22 +32,22 @@ export const selectHasEditTranslationsPermissions = hasUserPermission({
 
 export const selectHasAmbassadorBadge = hasUserPermission({
   type: 'user-property',
-  value: 'gfw-presenter-badge',
+  value: 'gfw-ambassador-badge',
   action: 'read',
 })
 export const selectHasFeedbackProviderBadge = hasUserPermission({
   type: 'user-property',
-  value: 'gfw-teacher-badge',
+  value: 'gfw-feedback-provider-badge',
   action: 'read',
 })
 export const selectHasPresenterBadge = hasUserPermission({
   type: 'user-property',
-  value: 'gfw-feedback-provider-badge',
+  value: 'gfw-presenter-badge',
   action: 'read',
 })
 export const selectHasTeacherBadge = hasUserPermission({
   type: 'user-property',
-  value: 'gfw-ambassador-badge',
+  value: 'gfw-teacher-badge',
   action: 'read',
 })
 
