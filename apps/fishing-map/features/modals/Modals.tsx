@@ -113,8 +113,7 @@ const AppModals = () => {
       dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
       setSaveWorkspaceBeforeLeave(false)
     }
-     
-  }, [saveWorkspaceBeforeLeave])
+  }, [dispatch])
 
   return (
     <Fragment>

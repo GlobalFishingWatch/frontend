@@ -28,7 +28,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import UserButton from 'features/user/UserButton'
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
-import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import styles from './CategoryTabs.module.css'
 
 const FeedbackModal = dynamic(
@@ -69,9 +68,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
 
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
-    dispatch(setWorkspaceSuggestSave(false))
     dispatchClickedEvent(null)
-  }, [setMapCoordinates, dispatch, dispatchClickedEvent])
+  }, [setMapCoordinates, dispatchClickedEvent])
 
   const onSearchClick = useCallback(() => {
     trackEvent({

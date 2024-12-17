@@ -38,7 +38,7 @@ export type ROUTE_TYPES =
 
 export const SAVE_WORKSPACE_BEFORE_LEAVE_KEY = 'SAVE_WORKSPACE_BEFORE_LEAVE'
 
-const WORKSPACES_ACTIONS = [
+export const ROUTES_WITH_WORKSPACES = [
   HOME,
   WORKSPACE,
   WORKSPACE_SEARCH,
@@ -53,7 +53,7 @@ const confirmLeave = (state: any, action: any) => {
   const isGuestUser = selectIsGuestUser(state)
   if (
     !isGuestUser &&
-    !WORKSPACES_ACTIONS.includes(action.type) &&
+    !ROUTES_WITH_WORKSPACES.includes(action.type) &&
     state.location?.type !== action.type &&
     suggestWorkspaceSave
   ) {
