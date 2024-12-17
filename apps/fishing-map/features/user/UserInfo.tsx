@@ -31,6 +31,10 @@ import {
   selectHasAmbassadorBadge,
 } from './selectors/user.permissions.selectors'
 
+// t('user.badgeAmbassador', 'Ambassador')
+// t('user.badgeFixer', 'Fixer')
+// t('user.badgePresenter', 'Presenter')
+// t('user.badgeTeacher', 'Teacher')
 type Badge = 'Ambassador' | 'Fixer' | 'Presenter' | 'Teacher'
 type BadgeInfo = { image: string; placeholder: string; userHasIt: boolean }
 
@@ -165,7 +169,7 @@ function UserInfo() {
             >
               <Fragment>
                 {badgeSelected && <img src={BADGES[badgeSelected].image} alt="" />}
-                <span>{t(`user.badge${badgeSelected}`)}</span>
+                {badgeSelected && <span>{t(`user.badge${badgeSelected}`, badgeSelected)}</span>}
               </Fragment>
             </Modal>
           </Fragment>
