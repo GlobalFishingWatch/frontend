@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { debounce } from 'es-toolkit'
+import { debounce, throttle } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
@@ -24,9 +24,9 @@ export const useMapViewState = () => useAtomValue(viewStateAtom)
 export const useMapSetViewState = () => {
   const setViewState = useSetAtom(viewStateAtom)
   return useCallback(
-    (coordinates: Partial<MapCoordinates>) => {
+    throttle((coordinates: Partial<MapCoordinates>) => {
       setViewState((prev) => ({ ...prev, ...coordinates }))
-    },
+    }, 1),
     [setViewState]
   )
 }
