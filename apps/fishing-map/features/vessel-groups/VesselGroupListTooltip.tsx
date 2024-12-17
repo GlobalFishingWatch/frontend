@@ -107,7 +107,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
                 ...props,
                 onToggleClick: toggleVesselGroupsOpen,
               } as any,
-              child.props.children
+              (child.props as any).children
             )
           }
         })}
