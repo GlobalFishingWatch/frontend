@@ -31,11 +31,15 @@ import {
   selectHasAmbassadorBadge,
 } from './selectors/user.permissions.selectors'
 
-// t('user.badgeAmbassador', 'Ambassador')
-// t('user.badgeFixer', 'Fixer')
-// t('user.badgePresenter', 'Presenter')
-// t('user.badgeTeacher', 'Teacher')
-type Badge = 'Ambassador' | 'Fixer' | 'Presenter' | 'Teacher'
+// t('user.badges.ambassador.title', 'Ambassador')
+// t('user.badges.ambassador.description')
+// t('user.badges.fixer.title', 'Fixer')
+// t('user.badges.fixer.description')
+// t('user.badges.presenter.title', 'Presenter')
+// t('user.badges.presenter.description')
+// t('user.badges.teacher.title', 'Teacher')
+// t('user.badges.teacher.description')
+type Badge = 'ambassador' | 'fixer' | 'presenter' | 'teacher'
 type BadgeInfo = { image: string; placeholder: string; userHasIt: boolean }
 
 function UserInfo() {
@@ -71,25 +75,25 @@ function UserInfo() {
 
   const BADGES: Record<Badge, BadgeInfo> = useMemo(
     () => ({
-      Ambassador: {
-        image: ambassadorImg.src,
-        placeholder: ambassadorPlaceholderImg.src,
-        userHasIt: hasAmbassadorBadge,
-      },
-      Fixer: {
-        image: fixerImg.src,
-        placeholder: fixerPlaceholderImg.src,
-        userHasIt: hasFeedbackProviderBadge,
-      },
-      Presenter: {
+      presenter: {
         image: presenterImg.src,
         placeholder: presenterPlaceholderImg.src,
         userHasIt: hasPresenterBadge,
       },
-      Teacher: {
+      teacher: {
         image: teacherImg.src,
         placeholder: teacherPlaceholderImg.src,
         userHasIt: hasTeacherBadge,
+      },
+      fixer: {
+        image: fixerImg.src,
+        placeholder: fixerPlaceholderImg.src,
+        userHasIt: hasFeedbackProviderBadge,
+      },
+      ambassador: {
+        image: ambassadorImg.src,
+        placeholder: ambassadorPlaceholderImg.src,
+        userHasIt: hasAmbassadorBadge,
       },
     }),
     [hasAmbassadorBadge, hasFeedbackProviderBadge, hasPresenterBadge, hasTeacherBadge]
@@ -144,17 +148,17 @@ function UserInfo() {
                   const [badgeKey, badgeInfo] = entry as [Badge, BadgeInfo]
                   return (
                     <li className={styles.badge}>
-                      <Tooltip content={t('common.seeMore', 'See more')}>
-                        {badgeInfo.userHasIt ? (
+                      {badgeInfo.userHasIt ? (
+                        <Tooltip content={t('common.seeMore', 'See more')}>
                           <button
                             onClick={badgeInfo.userHasIt ? () => onBadgeClick(badgeKey) : undefined}
                           >
                             <img src={BADGES[badgeKey].image} alt="" />
                           </button>
-                        ) : (
-                          <img src={BADGES[badgeKey].placeholder} alt="" />
-                        )}
-                      </Tooltip>
+                        </Tooltip>
+                      ) : (
+                        <img src={BADGES[badgeKey].placeholder} alt="" />
+                      )}
                     </li>
                   )
                 })}
@@ -163,13 +167,14 @@ function UserInfo() {
             <Modal
               appSelector={ROOT_DOM_ELEMENT}
               isOpen={badgesModalOpen}
+              title={t(`user.badges.${badgeSelected}.title`, '')}
               onClose={onBadgeModalClose}
               contentClassName={styles.badgeModalContent}
               shouldCloseOnEsc
             >
               <Fragment>
                 {badgeSelected && <img src={BADGES[badgeSelected].image} alt="" />}
-                {badgeSelected && <span>{t(`user.badge${badgeSelected}`, badgeSelected)}</span>}
+                <span>{t(`user.badges.${badgeSelected}.description`, '')}</span>
               </Fragment>
             </Modal>
           </Fragment>
