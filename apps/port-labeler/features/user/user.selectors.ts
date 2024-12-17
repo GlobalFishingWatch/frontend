@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { UserPermission } from '@globalfishingwatch/api-types'
+import type { UserPermission } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserStatus, selectUserLogged, selectUserData } from './user.slice'
 

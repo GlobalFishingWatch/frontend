@@ -1,5 +1,5 @@
-import { Color } from '@deck.gl/core'
-import { RGBA } from 'color-blend/dist/types'
+import type { Color } from '@deck.gl/core'
+import type { RGBA } from 'color-blend/dist/types'
 
 export const COLOR_TRANSPARENT: Color = [0, 0, 0, 0]
 export const COLOR_HIGHLIGHT_LINE: Color = [255, 255, 255, 255]
@@ -33,7 +33,7 @@ export const rgbaToDeckColor = (rgbaString: string): Color => {
 }
 
 function componentToHex(c: number) {
-  var hex = c.toString(16)
+  const hex = c.toString(16)
   return hex.length === 1 ? '0' + hex : hex
 }
 
@@ -43,6 +43,13 @@ export const deckToHexColor = ([r, g, b]: Color) => {
 
 export const deckToRgbaColor = ([r, g, b, a]: Color) => {
   return `rgba(${r},${g}, ${b}, ${a ? a : 1})`
+}
+
+export function colorToVec(c: number) {
+  return parseFloat((c / 255).toFixed(2))
+}
+export const deckToVecColor = ([r, g, b, a]: Color) => {
+  return `vec4(${colorToVec(r)}, ${colorToVec(g)}, ${colorToVec(b)}, ${a ? colorToVec(a) : 1})`
 }
 
 export const EMPTY_RGBA_COLOR = { r: 0, g: 0, b: 0, a: 0 }

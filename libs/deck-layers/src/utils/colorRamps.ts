@@ -1,5 +1,5 @@
 import { normal, screen } from 'color-blend'
-import { RGBA } from 'color-blend/dist/types'
+import type { RGBA } from 'color-blend/dist/types'
 import {
   hexToRgb,
   hexToRgbString,

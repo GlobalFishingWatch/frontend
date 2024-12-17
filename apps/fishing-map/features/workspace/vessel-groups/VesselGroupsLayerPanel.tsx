@@ -2,10 +2,11 @@ import { Fragment, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { IconButton, ColorBarOption, Tooltip } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -141,7 +142,7 @@ function VesselGroupLayerPanel({
                   </span>
                 </Tooltip>
               ) : (
-                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
                   <Tooltip
                     content={t(
                       'vesselGroupReport.clickToSee',
@@ -191,7 +192,7 @@ function VesselGroupLayerPanel({
             {layerActive && (
               <Fragment>
                 {!isOutdated && (
-                  <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                  <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
                     <IconButton
                       tooltip={t(
                         'vesselGroupReport.clickToSee',

@@ -41,13 +41,17 @@
     "noDataByArea": "Não há dados disponíveis para a área selecionada",
     "noTimeComparisonAllowed": "Os modos de comparação de tempo não ficam disponíveis quando as camadas têm filtros diferentes",
     "noVesselDataFiltered": "Não há nenhuma embarcação correspondente ao seu filtro",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Outros",
     "periodComparison": "comparação por período",
     "periodComparison1st": "início da base de referência",
     "periodComparison2nd": "iniciar comparação",
     "periodComparisonDuration": "duração",
     "periodComparisonRange": "no {{duration}} que se seguem {{compareStart}} comparado ao baseline nos {{duration}} seguintes {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "print ": "print",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Mostrar {{results}} por página",
     "save": "Salvar este relatório",
     "savePublic": "Permitir que outros usuários visualizem este relatório",
@@ -163,6 +167,7 @@
     "in": "em",
     "include": "Incluir",
     "insights": "Insights",
+    "knots": "nós",
     "latestDays_one": "Latest {{count}} day",
     "latestDays_other": "Latest {{count}} days",
     "latitude": "Latitude",
@@ -177,6 +182,7 @@
     "map": "Mapa",
     "matchedVessels": "Embarcações correspondentes",
     "max": "Máx",
+    "meters": "metros",
     "min": "Min",
     "minus": "minus",
     "minute": "minuto",
@@ -319,6 +325,9 @@
     "date": "Data",
     "dateRange": "Date Range",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "Houve um erro ao carregar seus dados",
       "geoJSON": {
         "noValidFeatures": "Nenhum tipo de recurso válido encontrado no arquivo geoJSON"
@@ -547,6 +556,7 @@
     "distanceFromPortKm": "distanceFromPortKm",
     "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "duração",
+    "depth": "depth",
     "encounteredVesselName": "embarcação encontrada",
     "end": "fim",
     "flag": "flag",
@@ -617,6 +627,9 @@
     },
     "areasOnScreen": "Áreas na tela",
     "color_change": "Alterar cor",
+    "drawAddPoint": "Add a point",
+    "drawAddPolygon": "Add a geometry",
+    "drawDelete": "Delete selection",
     "drawPoints": "Draw points",
     "drawPolygon": "Desenhe uma camada",
     "drawPolygonLogin": "Registre-se e faça login para desenhar uma camada (grátis, 2 minutos)",
@@ -695,6 +708,11 @@
     "rulersHover": "Arraste para mover ou clique para ver mais",
     "rulersStop": "Parar medições",
     "search": "Procure por oceanos e mares, AMPs ou ZEEs",
+    "screenshotArea": {
+      "map": "Only map",
+      "withTimebar": "With timebar",
+      "withTimebarAndLegend": "With timebar and legend"
+    },
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },
@@ -750,6 +768,7 @@
     "selected": "selecionado"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajuste o intervalo de tempo a estas datas",
     "focusOnThisDay": "Focar o intervalo de tempo neste dia",
     "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de 10 navios"
@@ -758,8 +777,9 @@
     "activityDisabled": "Selecione pelo menos uma camada de atividade",
     "detectionsDisabled": "Selecione pelo menos uma camada de detecção.",
     "graphDepth": "Profundidade da embarcação",
-    "graphDisabled": "Não disponível com mais de 2 embarcações selecionadas",
+    "graphDisabled": "Graph is not available with more than 2 vessels selected",
     "graphSpeed": "Velocidade da embarcação",
+    "graphVesselOnly": "{{graph}} is only available for vessel tracks",
     "settings_close": "Fechar configurações da barra de tempo",
     "settings_open": "Abrir configurações da barra de tempo",
     "showActivity": "Mostrar gráfico de atividade",
@@ -775,6 +795,25 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
   },
   "user": {
+    "gfwBadges": "GFW Badges",
+    "badges": {
+      "ambassador": {
+        "title": "Ambassador",
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+      },
+      "fixer": {
+        "title": "Fixer",
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+      },
+      "presenter": {
+        "title": "Presenter",
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+      },
+      "teacher": {
+        "title": "Teacher",
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+      }
+    },
     "datasets": "Conjuntos de dados do usuário",
     "groupMissing": "Você pertence a um grupo de usuários que não aparece aqui? <2>Solicitar acesso</2>",
     "groups": "Grupos de usuários",
@@ -811,6 +850,7 @@
     "capacity": "Capacidade",
     "carrier": "Navio cargueiro",
     "casco": "Casco",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Centralizar mapa nos eventos",
     "clickToSeeMore": "Clique para ver mais informações",
     "close": "Fechar",

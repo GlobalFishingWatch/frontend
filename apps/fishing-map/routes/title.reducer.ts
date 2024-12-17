@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
 import lowerCase from 'lodash/lowerCase'
 import { capitalize } from 'utils/shared'
 import { t } from 'features/i18n/i18n'

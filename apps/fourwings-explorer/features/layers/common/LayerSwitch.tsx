@@ -1,5 +1,6 @@
 import { Switch } from '@globalfishingwatch/ui-components'
-import { DatasetLayer, useLayersConfig } from 'features/layers/layers.hooks'
+import type { DatasetLayer} from 'features/layers/layers.hooks';
+import { useLayersConfig } from 'features/layers/layers.hooks'
 
 type LayerSwitchProps = {
   active: boolean

@@ -1,4 +1,5 @@
-import { DateTime, DurationUnits } from 'luxon'
+import type { DurationUnits } from 'luxon';
+import { DateTime } from 'luxon'
 
 export const getUTCDateTime = (d: string | number) =>
   typeof d === 'string'

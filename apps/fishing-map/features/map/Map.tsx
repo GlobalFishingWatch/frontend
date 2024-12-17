@@ -1,10 +1,11 @@
 import { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckGL, DeckGLRef } from '@deck.gl/react'
+import type { DeckGLRef } from '@deck.gl/react'
+import { DeckGL } from '@deck.gl/react'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
+import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
-  InteractionEvent,
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
   useSetDeckLayerLoadedState,
@@ -29,7 +30,7 @@ import {
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
-import { MapCoordinates } from 'types'
+import type { MapCoordinates } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useHasReportTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import { selectReportAreaStatus } from 'features/reports/areas/area-reports.selectors'
@@ -40,6 +41,7 @@ import {
   useMapSetViewState,
   useUpdateViewStateUrlParams,
   useMapViewState,
+  MAP_CONTAINER_ID,
 } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
@@ -119,7 +121,7 @@ const MapWrapper = () => {
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
   return (
-    <div className={styles.container} onMouseLeave={onMouseLeave}>
+    <div id={MAP_CONTAINER_ID} className={styles.container} onMouseLeave={onMouseLeave}>
       <DeckGL
         id={MAP_CANVAS_ID}
         ref={deckRef}

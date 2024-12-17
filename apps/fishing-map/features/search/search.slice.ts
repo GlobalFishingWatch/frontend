@@ -1,28 +1,28 @@
-import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
+import type { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client'
 import {
   GFWAPI,
   getAdvancedSearchQuery,
   ADVANCED_SEARCH_QUERY_FIELDS,
   parseAPIError,
-  AdvancedSearchQueryFieldKey,
 } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import {
+import type {
   Dataset,
-  DatasetTypes,
   APIVesselSearchPagination,
   IdentityVessel,
-  EndpointId,
-  VesselIdentitySourceEnum,
   RegistryExtraFields,
 } from '@globalfishingwatch/api-types'
-import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
+import { DatasetTypes, EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { AsyncError } from 'utils/async-slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
-import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
+import type { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
-import { VesselSearchState } from 'features/search/search.types'
+import type { VesselSearchState } from 'features/search/search.types'
 import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
 
 export type VesselLastIdentity = Omit<IdentityVesselData, 'identities' | 'dataset'> & {

@@ -1,4 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')

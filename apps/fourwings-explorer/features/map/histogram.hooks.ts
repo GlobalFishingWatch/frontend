@@ -1,17 +1,19 @@
 import { useEffect, useCallback, useState } from 'react'
 import { bin, scaleLinear } from 'd3'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { ChunkFeature, aggregateFeatures } from '@globalfishingwatch/features-aggregate'
+import type { ChunkFeature} from '@globalfishingwatch/features-aggregate';
+import { aggregateFeatures } from '@globalfishingwatch/features-aggregate'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { DatasetLayer, FourwingsLayerConfig } from 'features/layers/layers.hooks'
+import type { DatasetLayer, FourwingsLayerConfig } from 'features/layers/layers.hooks'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
+import type {
+  LayerFeature} from 'features/map/map-sources.hooks';
 import {
   areLayersFeatureLoaded,
-  LayerFeature,
   useMapLayerFeatures,
 } from 'features/map/map-sources.hooks'
-import { FourwingsAPIDataset } from 'features/datasets/datasets.types'
+import type { FourwingsAPIDataset } from 'features/datasets/datasets.types'
 import { getLayerDatasetRange } from 'features/layers/HistogramRangeFilter'
 
 export const useLayerHistogram = (
@@ -49,7 +51,7 @@ export const useLayerHistogram = (
     if (sourcesLoaded) {
       updateHistogram(layerFeature, bounds)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [sourcesLoaded, deboncedBounds])
 
   return histogram

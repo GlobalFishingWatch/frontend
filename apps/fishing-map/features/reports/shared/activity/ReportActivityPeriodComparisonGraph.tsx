@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import { Interval as TimeInterval } from 'luxon'
 import { useSelector } from 'react-redux'
-import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import i18n, { t } from 'features/i18n/i18n'
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/app.config'
@@ -87,7 +87,7 @@ const PeriodComparisonGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval, offsetedLastDataUpdate } =
     props as PeriodComparisonGraphTooltipProps
 
-  if (label && active && payload.length > 0 && payload.length) {
+  if (label && active && payload && payload.length > 0) {
     const difference = payload.find(({ name }) => name === DIFFERENCE)
     if (!difference) return null
     const baselineDate = getUTCDateTime(difference?.payload.date).setLocale(i18n.language)
@@ -192,7 +192,7 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
   }, [baselineTimeseries, comparisonTimeseries])
 
   const range = useMemo(() => {
-    return difference?.map(({ date, compareDate, difference }, index) => {
+    return difference?.map(({ date, compareDate, difference }) => {
       const data = {
         date,
         compareDate,

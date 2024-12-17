@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 

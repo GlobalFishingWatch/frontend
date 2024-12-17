@@ -15,10 +15,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportVesselFilter } from 'features/reports/areas/area-reports.config.selectors'
-import {
-  selectReportAreaName,
-  ReportVesselWithDatasets,
-} from 'features/reports/areas/area-reports.selectors'
+import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+import { selectReportAreaName } from 'features/reports/areas/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import styles from './ReportVesselsTableFooter.module.css'
 import {
@@ -27,6 +25,7 @@ import {
   selectReportVesselsFiltered,
   selectReportVesselsPagination,
 } from './report-activity-vessels.selectors'
+import ReportVesselsTablePinAll from './ReportVesselsTablePin'
 
 type ReportVesselsTableFooterProps = {
   reportName?: string
@@ -43,6 +42,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const reportAreaName = useSelector(selectReportAreaName)
   const pagination = useSelector(selectReportVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
+  const allVesselsFiltered = useSelector(selectReportVesselsFiltered)
 
   const vesselGroupVessels = useMemo(() => {
     const vessels = reportVesselFilter ? allFilteredVessels : allVessels
@@ -157,20 +157,27 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
           <span className={cx(styles.noWrap, styles.right)}>
             {reportVesselFilter && (
               <Fragment>
-                <I18nNumber number={allFilteredVessels!?.length} /> {t('common.of', 'of')}{' '}
+                <I18nNumber number={allFilteredVessels?.length || 0} /> {t('common.of', 'of')}{' '}
               </Fragment>
             )}
-            <I18nNumber number={pagination.total} />{' '}
-            {t('common.vessel', { count: pagination?.total })}
+            {pagination?.total && (
+              <Fragment>
+                <I18nNumber number={pagination.total} />{' '}
+                {t('common.vessel', { count: pagination.total })}
+              </Fragment>
+            )}
           </span>
         </Fragment>
       </div>
       <div className={cx(styles.flex, styles.expand)}>
-        <VesselGroupAddButton
-          vesselsToResolve={vesselGroupVessels?.ids}
-          datasetsToResolve={vesselGroupVessels?.datasets}
-          onAddToVesselGroup={onAddToVesselGroup}
-        />
+        <div className={cx(styles.flex)}>
+          <ReportVesselsTablePinAll vessels={allVesselsFiltered!} />
+          <VesselGroupAddButton
+            vesselsToResolve={vesselGroupVessels?.ids}
+            datasetsToResolve={vesselGroupVessels?.datasets}
+            onAddToVesselGroup={onAddToVesselGroup}
+          />
+        </div>
         <Button testId="download-vessel-table-report" onClick={onDownloadVesselsClick}>
           {t('analysis.downloadVesselsList', 'Download csv')}
         </Button>

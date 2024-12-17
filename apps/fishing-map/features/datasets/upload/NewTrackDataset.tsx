@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useCallback, useEffect, useState } from 'react'
-import { FeatureCollection } from 'geojson'
+import type { FeatureCollection } from 'geojson'
+import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
   Collapsable,
   InputText,
   MultiSelect,
-  MultiSelectOption,
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
@@ -17,14 +17,12 @@ import {
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { FileType, getFileFromGeojson, getFileType, getFileName } from 'utils/files'
-import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
+import type { FileType } from 'utils/files'
+import { getFileFromGeojson, getFileType, getFileName } from 'utils/files'
+import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
-import {
-  DataList,
-  getDatasetParsed,
-  getTrackFromList,
-} from 'features/datasets/upload/datasets-parse.utils'
+import type { DataList } from 'features/datasets/upload/datasets-parse.utils'
+import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
 import {
   getMetadataFromDataset,
   getTracksDatasetMetadata,
@@ -55,7 +53,7 @@ function NewTrackDataset({
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
-  const fileType = getFileType(file)
+  const fileType = getFileType(file, 'tracks')
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const isCSVFile = fileType === 'CSV' || sourceFormat === 'CSV'
   const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
@@ -99,7 +97,7 @@ function NewTrackDataset({
       setProcessingData(true)
       try {
         const data = await getDatasetParsed(file, 'tracks')
-        const fileType = getFileType(file)
+        const fileType = getFileType(file, 'tracks')
         const datasetMetadata = getTracksDatasetMetadata({
           data,
           name: getFileName(file),
@@ -139,7 +137,6 @@ function NewTrackDataset({
     } else if (dataset) {
       setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset, file])
 
   useEffect(() => {
@@ -174,7 +171,6 @@ function NewTrackDataset({
         setError('')
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     timeFilterType,
     lineIdProperty,

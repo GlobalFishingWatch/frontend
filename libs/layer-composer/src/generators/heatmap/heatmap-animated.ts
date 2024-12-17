@@ -1,33 +1,37 @@
 import memoizeOne from 'memoize-one'
 import { DateTime } from 'luxon'
-import {
-  GeomType,
+import type {
   TileAggregationSourceParams,
   TileAggregationSourceParamsSerialized,
   TileAggregationDateRange,
-  AggregationOperation,
-  VALUE_MULTIPLIER,
-  TileAggregationComparisonDateRange,
-} from '@globalfishingwatch/fourwings-aggregate'
+  TileAggregationComparisonDateRange} from '@globalfishingwatch/fourwings-aggregate';
 import {
-  GeneratorType,
+  GeomType,
+  AggregationOperation,
+  VALUE_MULTIPLIER
+} from '@globalfishingwatch/fourwings-aggregate'
+import type {
   HeatmapAnimatedGeneratorConfig,
   MergedGeneratorConfig,
-  HeatmapAnimatedMode,
-  HeatmapAnimatedGeneratorSublayer,
+  HeatmapAnimatedGeneratorSublayer} from '../types';
+import {
+  GeneratorType,
+  HeatmapAnimatedMode
 } from '../types'
 import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
 import { Group } from '../../types'
 import { toURLArray } from '../utils'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
-import { TimeChunk, TimeChunks, getActiveTimeChunks, pickActiveTimeChunk } from './util/time-chunks'
+import type { TimeChunk, TimeChunks} from './util/time-chunks';
+import { getActiveTimeChunks, pickActiveTimeChunk } from './util/time-chunks'
 import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
 import { getSourceId } from './util'
-import fetchBreaks, { getBreaksCacheKey, Breaks, FetchBreaksParams } from './util/fetch-breaks'
+import type { Breaks, FetchBreaksParams } from './util/fetch-breaks';
+import fetchBreaks, { getBreaksCacheKey } from './util/fetch-breaks'
 import griddedTimeCompare from './modes/gridded-time-compare'
 import { getTimeChunksInterval } from './util/get-time-chunks-interval'
 

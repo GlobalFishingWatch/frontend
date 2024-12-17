@@ -3,8 +3,8 @@ import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import ActivityEvent from 'features/profile/components/activity/ActivityEvent'
-import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { Voyage } from 'types/voyage'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import type { Voyage } from 'types/voyage'
 import styles from './risk-indicator.module.css'
 
 export interface RiskIndicatorProps {

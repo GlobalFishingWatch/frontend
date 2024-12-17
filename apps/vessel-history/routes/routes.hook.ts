@@ -9,13 +9,13 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
-import { QueryParams } from 'types'
+import type { QueryParams } from 'types'
 import {
   selectCurrentLocation,
   selectLocationPayload,
   selectLocationType,
 } from 'routes/routes.selectors'
-import { ROUTE_TYPES } from './routes'
+import type { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 
 export const CALLBACK_URL_KEY = 'CallbackUrl'
@@ -57,7 +57,7 @@ export const useReplaceLoginUrl = () => {
       // ensures the localStorage is clean when the app is unmounted
       cleanRedirectUrl()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 }
 

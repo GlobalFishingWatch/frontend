@@ -1,13 +1,16 @@
-import { ChangeEvent, Component, MouseEventHandler } from 'react'
+import type { ChangeEvent, MouseEventHandler } from 'react'
+import { Component } from 'react'
 import classNames from 'classnames'
-import { DateTime, DateTimeUnit } from 'luxon'
+import type { DateTimeUnit } from 'luxon'
+import { DateTime } from 'luxon'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
   LIMITS_BY_INTERVAL,
   getFourwingsInterval,
   FOURWINGS_INTERVALS_ORDER,
-  FourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
-import { Select, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Select, Tooltip } from '@globalfishingwatch/ui-components'
 import { getLastX } from '../utils'
 import styles from './timerange-selector.module.css'
 
@@ -335,7 +338,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
 
     return (
       <div className={styles.TimeRangeSelector}>
-        <div className={styles.veil} onClick={this.props.onDiscard} />
+        <div role="button" tabIndex={0} className={styles.veil} onClick={this.props.onDiscard} />
         <div className={styles.inner}>
           <form
             onSubmit={(e) => {
@@ -353,6 +356,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                   <div className={classNames(styles.selectorGroup, styles.long)}>
                     <label className={styles.selectorLabel}>{labels.year}</label>
                     <input
+                      // eslint-disable-next-line jsx-a11y/no-autofocus
                       autoFocus
                       name="start year"
                       type="number"

@@ -1,6 +1,7 @@
-import { UserTrack } from '@globalfishingwatch/api-types'
-import { TrackCoordinatesPropertyFilter, filterTrackByCoordinateProperties } from './utils'
-import { UserTrackBinaryData, UserTrackData } from './types'
+import type { UserTrack } from '@globalfishingwatch/api-types'
+import type { TrackCoordinatesPropertyFilter} from './utils';
+import { filterTrackByCoordinateProperties } from './utils'
+import type { UserTrackBinaryData, UserTrackData } from './types'
 
 export function isNumeric(str: string | number) {
   if (!str) return false

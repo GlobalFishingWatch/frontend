@@ -1,11 +1,12 @@
-import { AccessorFunction, ChangeFlags, DefaultProps, Position } from '@deck.gl/core'
-import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import type { AccessorFunction, ChangeFlags, DefaultProps, Position } from '@deck.gl/core'
+import type { ScatterplotLayerProps } from '@deck.gl/layers'
+import { ScatterplotLayer } from '@deck.gl/layers'
+import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC, EVENT_SHAPES, SHAPES_ORDINALS } from './vessel.config'
 
 export type _VesselEventsLayerProps<DataT = any> = {
   type: EventTypes
-  filterRange?: Array<number>
+  filterRange?: number[]
   visibleEvents?: EventTypes[]
   highlightEventIds?: string[]
   highlightStartTime?: number
@@ -45,10 +46,10 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   visibleEvents: { type: 'accessor', value: [] },
 }
 
-export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends ScatterplotLayer<
-  DataT,
-  VesselEventsLayerProps & ExtraProps
-> {
+export class VesselEventsLayer<
+  DataT = any,
+  ExtraProps = Record<string, unknown>
+> extends ScatterplotLayer<DataT, VesselEventsLayerProps & ExtraProps> {
   static layerName = 'VesselEventsLayer'
   static defaultProps = defaultProps
 

@@ -1,5 +1,5 @@
-import { FeatureCollection, Geometry } from 'geojson'
-import { OceanAreaProperties } from '../ocean-areas'
+import type { FeatureCollection, Geometry } from 'geojson'
+import type { OceanAreaProperties } from '../ocean-areas'
 import oceans from './oceans'
 import eezs from './eezs'
 import mpas from './mpas'

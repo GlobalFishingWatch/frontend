@@ -59,18 +59,9 @@
   border-right: 0.1rem solid var(--timebar-main-background-color);
 }
 
-.timeScale {
-  display: flex;
-}
-
-.timeScale .uiButton {
-  height: 3.5rem;
-}
-
 @media only screen and (width <= 800px) {
   .playbackActions,
-  .bookmark,
-  .timeScale {
+  .bookmark {
     display: none;
   }
 

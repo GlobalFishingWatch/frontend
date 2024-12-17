@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import styles from './MapLegend.module.css'
-import { UILegendSolid } from './types'
+import type { UILegendSolid } from './types'
 
 type SolidLegendProps = {
   layer: UILegendSolid

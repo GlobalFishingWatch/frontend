@@ -4,7 +4,7 @@ import { parse } from 'qs'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CALLBACK_URL_PARAM, useLoginRedirect } from '@globalfishingwatch/react-hooks'
-import { QueryParams } from 'types'
+import type { QueryParams } from 'types'
 import {
   selectCurrentLocation,
   selectLocationPayload,
@@ -43,7 +43,7 @@ export const useReplaceLoginUrl = () => {
       // ensures the localStorage is clean when the app is unmounted
       cleanRedirectUrl()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 }
 

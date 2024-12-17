@@ -13,10 +13,6 @@
   display: flex;
 }
 
-.actions.oneIcon {
-  min-width: 28px;
-}
-
 .event:hover {
   color: var(--color-primary-blue);
 }

@@ -1,4 +1,5 @@
-import { DateTime, DateTimeUnit } from 'luxon'
+import type { DateTimeUnit } from 'luxon';
+import { DateTime } from 'luxon'
 import { getDefaultFormat } from './internal-utils'
 
 export const getHumanizedDates = (start: string, end: string, locale: string) => {

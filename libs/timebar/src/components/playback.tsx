@@ -3,11 +3,8 @@ import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
 import { DateTime } from 'luxon'
-import {
-  getFourwingsInterval,
-  FOURWINGS_INTERVALS_ORDER,
-  FourwingsInterval,
-} from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
 import uiStyles from '../timebar.module.css'
@@ -39,6 +36,8 @@ type PlaybackProps = {
   intervals?: FourwingsInterval[]
   onTogglePlay?: (isPlaying: boolean) => void
   getCurrentInterval: typeof getFourwingsInterval
+  disabled?: boolean
+  disabledPlaybackTooltip?: string
 }
 
 type PlaybackState = {
@@ -66,6 +65,8 @@ class Playback extends Component<PlaybackProps> {
     },
     intervals: FOURWINGS_INTERVALS_ORDER,
     getCurrentInterval: getFourwingsInterval,
+    disabled: false,
+    disabledPlaybackTooltip: '',
   }
 
   constructor(props: PlaybackProps) {
@@ -89,6 +90,9 @@ class Playback extends Component<PlaybackProps> {
 
   update = (deltaMultiplicator: number, { byIntervals = false } = {}) => {
     const { onTick, start, end, absoluteStart, intervals, getCurrentInterval } = this.props
+    if (!start || !end) {
+      return
+    }
     const { speedStep, loop } = this.state
     let newStartMs
     let newEndMs
@@ -96,11 +100,11 @@ class Playback extends Component<PlaybackProps> {
       const interval = getCurrentInterval(start, end, intervals)
       const intervalStartMs =
         interval === 'MONTH'
-          ? DateTime.fromISO(start, { zone: 'utc' })?.daysInMonth! * MS_IN_INTERVAL.DAY
+          ? DateTime.fromISO(start, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       const intervalEndMs =
         interval === 'MONTH'
-          ? DateTime.fromISO(end, { zone: 'utc' })?.daysInMonth! * MS_IN_INTERVAL.DAY
+          ? DateTime.fromISO(end, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator
       newEndMs = new Date(end).getTime() + intervalEndMs * deltaMultiplicator
@@ -177,7 +181,9 @@ class Playback extends Component<PlaybackProps> {
       playing: playingNext,
     })
 
-    onTogglePlay && onTogglePlay(playingNext)
+    if (onTogglePlay) {
+      onTogglePlay(playingNext)
+    }
   }
 
   componentWillUnmount() {
@@ -213,8 +219,10 @@ class Playback extends Component<PlaybackProps> {
 
   render() {
     const { playing, loop, speedStep } = this.state
-    const { labels, end, absoluteEnd } = this.props
+    const { labels, end, absoluteEnd, disabled, disabledPlaybackTooltip } = this.props
     const stoppedAtEnd = end === absoluteEnd && loop !== true
+
+    const playbackDisabled = disabled || stoppedAtEnd
 
     return (
       <div
@@ -242,10 +250,17 @@ class Playback extends Component<PlaybackProps> {
         </button>
         <button
           type="button"
-          title={playing === true ? labels.pauseAnimation : labels.playAnimation}
-          onClick={this.onPlayToggleClick}
-          disabled={stoppedAtEnd}
-          className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play)}
+          title={
+            disabled && disabledPlaybackTooltip
+              ? disabledPlaybackTooltip
+              : playing === true
+              ? labels.pauseAnimation
+              : labels.playAnimation
+          }
+          onClick={playbackDisabled ? undefined : this.onPlayToggleClick}
+          className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play, {
+            [styles.disabled]: playbackDisabled,
+          })}
         >
           {playing === true ? <Icon icon="pause" /> : <Icon icon="play" />}
         </button>

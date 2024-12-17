@@ -1,11 +1,10 @@
 import * as Generators from '@globalfishingwatch/layer-composer'
-import {
-  BackgroundGeneratorConfig,
+import type {
   BasemapGeneratorConfig,
   // CartoPolygonsGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
-import { ContextLayer } from '../types'
-import { AppState } from '../types/redux.types'
+import type { ContextLayer } from '../types'
+import type { AppState } from '../types/redux.types'
 import { Field } from './models'
 
 export const TRACK_FIELDS = [
@@ -25,12 +24,12 @@ export const LABELER_VERSION = 1
 
 export const BACKGROUND_LAYER = [
   {
-    id: 'background',
-    tileset: 'background',
-    description: 'background',
-    type: Generators.GeneratorType.Background,
-    color: MAP_BACKGROUND_COLOR,
-  } as BackgroundGeneratorConfig,
+    id: 'bathymetry',
+    tileset: 'bathymetry',
+    description: 'bathymetry',
+    type: Generators.GeneratorType.Basemap,
+    basemap: Generators.BasemapType.Bathymetry,
+  } as BasemapGeneratorConfig,
 ]
 export const DEFAULT_DATAVIEWS = [
   {
@@ -40,6 +39,7 @@ export const DEFAULT_DATAVIEWS = [
     type: Generators.GeneratorType.Basemap,
     basemap: Generators.BasemapType.Default,
   } as BasemapGeneratorConfig,
+
   // {
   //   id: 'cp_rfmo',
   //   type: Generators.Type.CartoPolygons,
@@ -88,6 +88,7 @@ export const CONTEXT_LAYERS: ContextLayer[] = [
     label: 'Landmass',
     color: '#6b67e5',
     description: 'Landmass',
+    visible: true,
   },
   {
     id: CONTEXT_LAYERS_IDS.rfmo,
@@ -95,6 +96,7 @@ export const CONTEXT_LAYERS: ContextLayer[] = [
     color: '#6b67e5',
     description:
       'RFMO stands for Regional Fishery Management Organization. These organizations are international organizations formed by countries with a shared interest in managing or conserving an area’s fish stock. Source: GFW',
+    visible: true,
   },
   // {
   //   id: CONTEXT_LAYERS_IDS.otherRfmos,
@@ -109,12 +111,14 @@ export const CONTEXT_LAYERS: ContextLayer[] = [
     color: '#93c96c',
     description:
       'Exclusive Economic Zones (EEZ) are states’ sovereign waters, which extend 200 nautical miles from the coast. Source: marineregions.org',
+    visible: true,
   },
   {
     id: CONTEXT_LAYERS_IDS.mpant,
     label: 'Marine Protected Areas',
     color: '#e5777c',
     description: 'Source: Protected Planet WDPA',
+    visible: true,
   },
   // {
   //   id: CONTEXT_LAYERS_IDS.bluefinRfmo,
@@ -134,7 +138,7 @@ export enum TimebarMode {
 export const DEFAULT_WORKSPACE: AppState = {
   workspaceDataviews: DEFAULT_DATAVIEWS,
   zoom: 3,
-  colorMode: 'all',
+  colorMode: 'labels',
   minSpeed: 0,
   maxSpeed: 15,
   minElevation: -4000,

@@ -22,7 +22,9 @@ export default defineConfig({
 
   plugins: [
     react(),
-    svgr(),
+    svgr({
+      include: ['**/*.svg', '**/*.svg?react'],
+    }),
     nxViteTsPaths(),
     viteStaticCopy({
       targets: [

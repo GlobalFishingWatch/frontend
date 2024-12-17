@@ -1,4 +1,4 @@
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export const getActivitySources = (dataview: UrlDataviewInstance) =>
   (dataview.datasets || [])

@@ -21,6 +21,7 @@ import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/v
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from '../highlight-panel/highlight-panel.content'
+import { setWorkspaceSuggestSave } from '../workspace.slice'
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
 const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {
@@ -52,6 +53,7 @@ function VesselGroupSection(): React.ReactElement {
           upsertDataviewInstance(dataviewInstance)
         }
       }
+      dispatch(setWorkspaceSuggestSave(true))
     },
     [dispatch, upsertDataviewInstance]
   )

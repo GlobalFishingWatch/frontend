@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   displayName: 'fourwings-explorer',
   preset: '../../jest.preset.js',

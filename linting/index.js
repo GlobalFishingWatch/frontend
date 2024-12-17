@@ -1,18 +1,29 @@
-module.exports = {
-  parser: '@typescript-eslint/parser',
-  extends: [
-    // TODO fix
-    // 'plugin:@typescript-eslint/recommended',
-    'react-app',
-    // TODO fix ESLint couldn't determine the plugin "import" uniquely.
-    // 'plugin:import/errors',
-    // 'plugin:import/warnings',
-    'plugin:import/typescript',
-    'prettier',
-  ],
-  // plugins: ['@typescript-eslint', 'react', 'import'],
-  // TODO fix ESLint couldn't determine the plugin "import" uniquely.
-  plugins: ['react', '@nx' /*'import'*/],
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import nxPlugin from '@nx/eslint-plugin'
+import nextPlugin from '@next/eslint-plugin-next'
+import importPlugin from 'eslint-plugin-import'
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
+import reactPlugin from 'eslint-plugin-react'
+import reactHooksPlugin from 'eslint-plugin-react-hooks'
+import prettierConfig from 'eslint-config-prettier'
+import { includeIgnoreFile } from '@eslint/compat'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const gitignorePath = path.resolve(__dirname, '.gitignore')
+
+export default tseslint.config({
+  files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
+  plugins: {
+    '@nx': nxPlugin,
+    '@next/next': nextPlugin,
+    import: importPlugin,
+    react: reactPlugin,
+    'react-hooks': reactHooksPlugin,
+  },
   settings: {
     react: {
       version: 'detect',
@@ -24,7 +35,36 @@ module.exports = {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
     },
   },
+  extends: [
+    eslint.configs.recommended,
+    tseslint.configs.recommended,
+    jsxA11yPlugin.flatConfigs.recommended,
+    prettierConfig,
+    // includeIgnoreFile(gitignorePath),
+  ],
+  ignores: [
+    'node_modules',
+    'dist',
+    'public',
+    '.next',
+    'exported',
+    '**/dist/**/*',
+    '**/public/**/*',
+    '**/.next/**/*',
+    '**/exported/**/*',
+  ],
+  languageOptions: {
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+      },
+    },
+  },
   rules: {
+    ...reactPlugin.configs['jsx-runtime'].rules,
+    ...reactHooksPlugin.configs.recommended.rules,
+    ...nextPlugin.configs.recommended.rules,
+    ...nextPlugin.configs['core-web-vitals'].rules,
     'import/default': 0,
     'import/no-unresolved': 0,
     'import/no-named-as-default': 0,
@@ -55,18 +95,29 @@ module.exports = {
         pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
-    'react/jsx-fragments': ['error', 'element'],
+    // 'react/jsx-fragments': ['error', 'element'],
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/no-redeclare': 0,
     // note you must disable the base rule as it can report incorrect errors
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/FAQ.md#i-am-using-a-rule-from-eslint-core-and-it-doesnt-work-correctly-with-typescript-code
-    'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': ['error'],
+    'prefer-const': 1,
+    'no-unused-vars': 0,
+    'no-use-before-define': 0,
+    '@typescript-eslint/array-type': 'error',
+    '@typescript-eslint/consistent-type-imports': 'error',
+    '@typescript-eslint/no-require-imports': 'warn',
+    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-use-before-define': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 0,
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
     '@typescript-eslint/no-empty-function': 0,
+    'jsx-a11y/click-events-have-key-events': 0,
+    'jsx-a11y/label-has-associated-control': 0,
+    'jsx-a11y/mouse-events-have-key-events': 'warn',
+    'jsx-a11y/no-static-element-interactions': 'warn',
+    'jsx-a11y/no-noninteractive-element-interactions': 'warn',
     '@nx/dependency-checks': [
       'error',
       {
@@ -77,4 +128,4 @@ module.exports = {
       },
     ],
   },
-}
+})

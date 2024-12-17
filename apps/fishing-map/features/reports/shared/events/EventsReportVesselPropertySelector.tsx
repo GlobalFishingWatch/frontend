@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next'
-import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Choice } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
+import type {
   VesselGroupReportState,
   VGREventsVesselsProperty,
 } from 'features/vessel-groups/vessel-groups.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { PortsReportState } from '../../ports/ports-report.types'
+import type { PortsReportState } from '../../ports/ports-report.types'
 
 function EventsReportVesselPropertySelector({
   property,
@@ -22,11 +23,15 @@ function EventsReportVesselPropertySelector({
   const options: ChoiceOption<VGREventsVesselsProperty>[] = [
     {
       id: 'flag',
-      label: t('common.flag', 'Flag'),
+      label: t('analysis.groupByFlag', 'by flag'),
+    },
+    {
+      id: 'shiptype',
+      label: t('analysis.groupByVesseltype', 'by vessel type'),
     },
     {
       id: 'geartype',
-      label: t('common.geartype', 'Gear type'),
+      label: t('analysis.groupByGeartype', 'by gear type'),
     },
   ]
 
@@ -46,7 +51,7 @@ function EventsReportVesselPropertySelector({
     <Choice
       size="small"
       options={options}
-      activeOption={selectedOption!?.id}
+      activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}
     />
   )

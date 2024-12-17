@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Position } from '@deck.gl/core'
+import type { Position } from '@deck.gl/core'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 import type { MapAnnotation } from '../annotations/annotations.types'
 

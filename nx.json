@@ -7,15 +7,12 @@
           "echo $NEXT_PUBLIC_URL",
           "echo $NEXT_PUBLIC_API_GATEWAY",
           "echo $NEXT_PUBLIC_WORKSPACE_ENV",
+          "echo $NEXT_PUBLIC_REPORT_DAYS_LIMIT",
           "echo $NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID",
           "echo $NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY",
           "echo $NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE",
           "echo $NEXT_PUBLIC_CARRIER_PORTAL_URL",
-          "echo $NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID",
-          "echo $NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID",
-          "echo $NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID",
-          "echo $NEXT_PUBLIC_SPREADSHEET_CLIENT_EMAIL",
-          "echo $NEXT_PUBLIC_SPREADSHEET_PRIVATE_KEY"
+          "echo $NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID"
         ],
         "canTrackAnalytics": false,
         "showUsageWarnings": true
@@ -33,12 +30,10 @@
   "targetDefaults": {
     "@nx/eslint:lint": {
       "cache": true,
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json",
-        "{workspaceRoot}/.eslintignore",
-        "{workspaceRoot}/eslint.config.js"
-      ]
+      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs", "{projectRoot}/eslint.config.mjs"],
+      "options": {
+        "eslintConfig": "eslint.config.mjs"
+      }
     },
     "@nx/rollup:rollup": {
       "cache": true,
@@ -58,6 +53,16 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
+    },
+    "dist": {
+      "dependsOn": ["^dist"],
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
     }
   },
   "generators": {
@@ -97,20 +102,12 @@
       "generatorOptions": {
         "currentVersionResolver": "git-tag",
         "fallbackCurrentVersionResolver": "disk"
-        // "specifierSource": "conventional-commits"
       }
     },
     "git": {
       "commit": false,
       "tag": false
     }
-    // "conventionalCommits": {
-    //   "types": {
-    //     "i18n": {
-    //       "semverBump": "patch"
-    //     }
-    //   }
-    // }
   },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
@@ -129,7 +126,7 @@
       "!{projectRoot}/test-setup.[jt]s"
     ]
   },
-  "nxCloudAccessToken": "",
-  "defaultBase": "develop"
-  // "useLegacyCache": true
+  "defaultBase": "develop",
+  "nxCloudId": "674f1a779582537c18f697e5",
+  "nxCloudAccessToken": ""
 }

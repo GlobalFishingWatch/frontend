@@ -1,4 +1,4 @@
-import { Settings } from 'features/settings/settings.slice'
+import type { Settings } from 'features/settings/settings.slice'
 
 export const emptySettings: Settings = {
   enabled: true,

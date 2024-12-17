@@ -1,8 +1,10 @@
-import { DateTime, DateTimeUnit, Duration } from 'luxon'
-import { FourwingsInterval, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
+import type { DateTimeUnit } from 'luxon'
+import { DateTime, Duration } from 'luxon'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { getUTCDateTime } from '../../utils/dates'
-import { FourwingsChunk } from './fourwings.types'
+import type { FourwingsChunk } from './fourwings.types'
 
 const BASE_API_TILES_URL =
   `${API_GATEWAY}/${API_VERSION}/4wings/tile/{FOURWINGS_VISUALIZATION_MODE}/{z}/{x}/{y}` as const
@@ -33,8 +35,6 @@ export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12
 export const MAX_RAMP_VALUES = 10000
 
 export const DYNAMIC_RAMP_CHANGE_THRESHOLD = 50
-
-export const MATCHED_POSITIONS_FILTER = "matched IN ('true')"
 
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
 
@@ -72,14 +72,13 @@ export const getChunkByInterval = (
   if (!intervalUnit) {
     return { id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }
   }
-  const startDate = getUTCDateTime(start)
-    .startOf(intervalUnit as any)
-    .minus({ [intervalUnit]: CHUNKS_BUFFER })
+  const startDate = getUTCDateTime(start).startOf(intervalUnit as any)
   const bufferedStartDate = startDate.minus({ [intervalUnit]: CHUNKS_BUFFER })
   const now = DateTime.now().toUTC().startOf('day')
   const endDate = getUTCDateTime(end)
-    .endOf(intervalUnit as any)
-    .plus({ [intervalUnit]: CHUNKS_BUFFER, millisecond: 1 })
+  if (endDate[interval.toLowerCase() as 'month' | 'day' | 'hour'] > 1) {
+    endDate.endOf(intervalUnit as any).plus({ millisecond: 1 })
+  }
   const bufferedEndDate = endDate.plus({ [intervalUnit]: CHUNKS_BUFFER })
   return {
     id: `${intervalUnit}-chunk`,

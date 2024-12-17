@@ -1,5 +1,6 @@
-import { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
+import type { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import { Group } from '../../types'

@@ -8,15 +8,15 @@
   height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height));
 }
 
-.withTimebar {
+:global(#__next:not(.printing)) .withTimebar {
   height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--timebar-height));
 }
 
-.withSmallScreenSwitch {
+:global(#__next:not(.printing)) .withSmallScreenSwitch {
   height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--switch-height));
 }
 
-.withTimebarAndSmallScreenSwitch {
+:global(#__next:not(.printing)) .withTimebarAndSmallScreenSwitch {
   height: calc(
     calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--timebar-height-small-screen) -
       var(--switch-height)

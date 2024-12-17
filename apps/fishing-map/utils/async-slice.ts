@@ -1,12 +1,11 @@
-import {
-  createSlice,
+import type {
   SliceCaseReducers,
   ValidateSliceCaseReducers,
   ActionReducerMapBuilder,
-  createEntityAdapter,
   IdSelector,
 } from '@reduxjs/toolkit'
-import { ResponseError } from '@globalfishingwatch/api-client'
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit'
+import type { ResponseError } from '@globalfishingwatch/api-client'
 
 export enum AsyncReducerStatus {
   Idle = 'idle',

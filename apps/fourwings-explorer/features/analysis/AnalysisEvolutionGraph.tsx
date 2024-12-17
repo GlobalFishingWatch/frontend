@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { min, max } from 'lodash'
 import { DateTime } from 'luxon'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import type { Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'utils/i18n'
 import { LOCALE } from 'data/config'
 import styles from './AnalysisEvolutionGraph.module.css'

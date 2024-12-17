@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useCallback, useMemo } from 'react'
-import { Regions } from '@globalfishingwatch/api-types'
+import type { Regions } from '@globalfishingwatch/api-types'
 import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 
@@ -13,7 +13,7 @@ export function useRegionTranslationsById() {
     (id: Regions) => {
       if (!id) return ''
       let translation = ''
-      for (let key of Object.values(regionsDatasets)) {
+      for (const key of Object.values(regionsDatasets)) {
         const schemaTranslation: string = t(`datasets:${key}.schema.ID.enum.${id}` as any, '')
         if (schemaTranslation) {
           translation = schemaTranslation

@@ -3,20 +3,22 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import {
-  Timebar,
-  TimebarTracks,
-  TimebarHighlighter,
-  TimebarTracksEvents,
-  TimebarTracksGraph,
+import type {
   TimebarChartChunk,
   TrackEventChunkProps,
   TrackGraphOrientation,
   HighlightedChunks,
   TimebarProps,
 } from '@globalfishingwatch/timebar'
+import {
+  Timebar,
+  TimebarTracks,
+  TimebarHighlighter,
+  TimebarTracksEvents,
+  TimebarTracksGraph,
+} from '@globalfishingwatch/timebar'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { Locale } from 'types'
+import type { Locale } from 'types'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -37,7 +39,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   useTimebarVesselEvents,
@@ -48,7 +50,9 @@ import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { useRootElement } from 'hooks/dom.hooks'
+import { useDOMElement } from 'hooks/dom.hooks'
+import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { setHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -84,7 +88,7 @@ const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) =>
   // Return precise chunk frame extent
   const activityDateCallback = useCallback(
     (timestamp: number) => {
-      let dateLabel = formatI18nDate(timestamp, {
+      const dateLabel = formatI18nDate(timestamp, {
         format: DateTime.DATETIME_MED,
         showUTCLabel: true,
       })
@@ -150,6 +154,7 @@ const TimebarWrapper = () => {
 
   const [isMouseInside, setMouseInside] = useState(false)
   const { t, ready, i18n } = useTranslation()
+  const trackGraphSteps = useTimebarTracksGraphSteps()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
@@ -163,14 +168,15 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
-  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
+  const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
   const tracksGraphsData = useTimebarVesselTracksGraph()
   const events = useTimebarVesselEvents()
-  const rootElement = useRootElement()
+  const rootElement = useDOMElement()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
@@ -360,7 +366,12 @@ const TimebarWrapper = () => {
       <Fragment>
         <TimebarTracks key="tracks" data={tracks} />
         {showGraph && tracksGraphsData && (
-          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} />
+          <TimebarTracksGraph
+            key="trackGraph"
+            data={tracksGraphsData}
+            steps={trackGraphSteps}
+            printing={screenshotModalOpen}
+          />
         )}
         {events && (
           <Fragment>
@@ -384,7 +395,12 @@ const TimebarWrapper = () => {
       onMouseLeave={onMouseLeave}
     >
       <Timebar
-        enablePlayback={!vesselGroupsFiltering && !isAreaReportLocation}
+        disablePlayback={vesselGroupsFiltering}
+        disabledPlaybackTooltip={t(
+          'timebar.disablePlaybackVesselGroups',
+          'Playback of vessel group layers is not supported'
+        )}
+        showPlayback={!isReportLocation}
         labels={labels}
         start={start}
         end={end}

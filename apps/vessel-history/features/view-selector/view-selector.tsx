@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { Select, SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components';
+import { Select } from '@globalfishingwatch/ui-components'
 import { useUser } from 'features/user/user.hooks'
 import { useWorkspace } from 'features/workspace/workspace.hook'
 import styles from './view-selector.module.css'

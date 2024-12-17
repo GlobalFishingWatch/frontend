@@ -1,4 +1,5 @@
 export * from './config'
+export * from './dataviews/resolve-dataviews-generators'
 export * from './generators'
 export * from './generators/heatmap/util/time-chunks'
 export * from './generators/types'

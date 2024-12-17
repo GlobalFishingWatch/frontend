@@ -7,7 +7,7 @@ import MemoryStatsComponent from 'next-react-memory-stats'
 import { ToastContainer } from 'react-toastify'
 import { FpsView } from 'react-fps'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
-import { Workspace } from '@globalfishingwatch/api-types'
+import type { Workspace } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectIsAnySearchLocation,
@@ -22,7 +22,7 @@ import {
   selectIsPortReportLocation,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
-import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
+import { useBeforeUnload, useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
 import Sidebar from 'features/sidebar/Sidebar'
 import Footer from 'features/footer/Footer'
 import {
@@ -115,7 +115,6 @@ const Main = () => {
         </div>
       )}
       {showTimebar && isWorkspaceMapReady && <Timebar />}
-
       <Footer />
     </Fragment>
   )
@@ -130,6 +129,7 @@ function App() {
   useAnalytics()
   useDatasetDrag()
   useReplaceLoginUrl()
+  useBeforeUnload()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
@@ -206,7 +206,6 @@ function App() {
         action.abort()
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
@@ -217,7 +216,6 @@ function App() {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

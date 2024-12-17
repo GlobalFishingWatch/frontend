@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectFilters, updateFilters, availableEventFilters, resetFilters } from './filters.slice'
+import type { availableEventFilters} from './filters.slice';
+import { selectFilters, updateFilters, resetFilters } from './filters.slice'
 
 export const useApplyFiltersConnect = () => {
   const dispatch = useAppDispatch()

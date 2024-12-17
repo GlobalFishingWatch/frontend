@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { Dataset, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from './types'
+import type { Dataset, Dataview } from '@globalfishingwatch/api-types';
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from './types'
 
 export const removeDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[0] : ''

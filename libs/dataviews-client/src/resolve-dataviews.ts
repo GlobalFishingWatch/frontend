@@ -1,20 +1,23 @@
 import { uniqBy } from 'es-toolkit'
-import {
+import type {
   Dataset,
   DatasetSchema,
   DatasetSchemaItem,
-  DatasetTypes,
   Dataview,
-  DataviewCategory,
-  DataviewType,
   DataviewDatasetConfig,
+  DataviewDatasetFilter,
   DataviewInstance,
-  EndpointId,
-  EXCLUDE_FILTER_ID,
   FilterOperator,
-  INCLUDE_FILTER_ID,
   Resource,
   VesselGroup,
+} from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  DataviewType,
+  EndpointId,
+  EXCLUDE_FILTER_ID,
+  INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
 import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
@@ -332,7 +335,8 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
-export function getDataviewFilters(dataview: UrlDataviewInstance) {
+export function getDataviewFilters(dataview: UrlDataviewInstance): DataviewDatasetFilter {
+  if (!dataview) return {}
   const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
     return { ...acc, ...(datasetConfig.filters || {}) }
   }, {} as Record<string, any>)
@@ -473,7 +477,7 @@ export function resolveDataviews(
 
               if (!instanceDatasetConfig) {
                 const deprecatedDatasetConfigMigrationId =
-                  dataviewInstance.datasetsConfigMigration?.[datasetConfig?.datasetId!]
+                  dataviewInstance.datasetsConfigMigration?.[datasetConfig?.datasetId]
                 return {
                   ...datasetConfig,
                   ...(deprecatedDatasetConfigMigrationId && {
@@ -499,7 +503,7 @@ export function resolveDataviews(
               // so the result will be overriding the default dataview config
 
               const deprecatedDatasetConfigMigrationId =
-                dataviewInstance.datasetsConfigMigration?.[instanceDatasetConfig?.datasetId!]
+                dataviewInstance.datasetsConfigMigration?.[instanceDatasetConfig?.datasetId]
               return {
                 ...datasetConfig,
                 ...instanceDatasetConfig,

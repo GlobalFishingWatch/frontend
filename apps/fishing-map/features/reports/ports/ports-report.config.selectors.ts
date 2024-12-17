@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { DEFAULT_PORT_REPORT_STATE } from './ports-report.config'
-import { PortsReportState, PortsReportStateProperty } from './ports-report.types'
+import type { PortsReportState, PortsReportStateProperty } from './ports-report.types'
 
 type PortsReportProperty<P extends PortsReportStateProperty> = Required<PortsReportState>[P]
 function selectVGRStateProperty<P extends PortsReportStateProperty>(property: P) {

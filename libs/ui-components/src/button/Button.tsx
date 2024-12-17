@@ -1,10 +1,10 @@
 import React from 'react'
 import cx from 'classnames'
 import type { Placement } from 'tippy.js'
-import { TippyProps } from '@tippyjs/react'
+import type { TippyProps } from '@tippyjs/react'
 import { Tooltip } from '../tooltip'
 import { Spinner } from '../spinner'
-import { TooltipTypes } from '../types/types'
+import type { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
 
 export type ButtonType = 'default' | 'secondary' | 'border-secondary'

@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import cx from 'classnames'
 import Tippy from '@tippyjs/react'
-import { Options } from '@popperjs/core'
+import type { Options } from '@popperjs/core'
 import styles from './ExpandedContainer.module.css'
 
 interface ExpandedContainerProps {

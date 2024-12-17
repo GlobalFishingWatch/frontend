@@ -1,6 +1,6 @@
-import { ExtendedFeature } from '@globalfishingwatch/layer-composer'
+import type { ExtendedFeature } from '@globalfishingwatch/layer-composer'
 import { useDatasetLayers } from 'features/layers/layers.hooks'
-import { ContextApiDatasetConfig } from 'features/datasets/datasets.types'
+import type { ContextApiDatasetConfig } from 'features/datasets/datasets.types'
 import styles from './Popup.module.css'
 
 type ContextPopupProps = {

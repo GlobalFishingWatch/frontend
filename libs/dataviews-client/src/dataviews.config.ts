@@ -1,4 +1,4 @@
-import { Dataset } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfigurationProperty,
   getDatasetRangeSteps,

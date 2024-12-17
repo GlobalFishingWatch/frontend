@@ -1,23 +1,23 @@
 import type { Layer } from '@deck.gl/core'
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import { PolygonPickingObject } from '@globalfishingwatch/deck-layers'
+import type { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type { PolygonPickingObject } from '@globalfishingwatch/deck-layers'
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
 import type { ContextLayer } from './layers/context/ContextLayer'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
-import { ContextPickingObject, ContextPickingInfo } from './layers/context'
-import {
+import type { ContextPickingObject, ContextPickingInfo } from './layers/context'
+import type {
   FourwingsPickingObject,
   FourwingsPickingInfo,
   FourwingsClusterPickingObject,
   FourwingsClustersLayer,
   FourwingsClusterPickingInfo,
 } from './layers/fourwings'
-import { RulerPickingObject, RulerPickingInfo } from './layers/rulers'
-import { VesselEventPickingObject, VesselEventPickingInfo } from './layers/vessel'
-import { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
-import { UserLayerPickingObject } from './layers/user'
+import type { RulerPickingObject, RulerPickingInfo } from './layers/rulers'
+import type { VesselEventPickingObject, VesselEventPickingInfo } from './layers/vessel'
+import type { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
+import type { UserLayerPickingObject } from './layers/user'
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
 export type DeckLayerSubcategory = `${DataviewType}` | 'draw-polygons' | 'draw-points'
@@ -38,7 +38,7 @@ export type DeckPickingObject<G> = {
   uniqueFeatureInteraction?: boolean
 } & G
 
-export type AnyDeckLayer<D extends {} = {}> =
+export type AnyDeckLayer<D extends object = object> =
   | Layer<D>
   | BaseMapLayer
   | ContextLayer

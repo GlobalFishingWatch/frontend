@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
-import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import styles from './interval-selector.module.css'
 
 type IntervalSelectorProps = {

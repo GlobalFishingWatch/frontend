@@ -1,7 +1,8 @@
-import { Ref, forwardRef, useCallback } from 'react'
+import type { Ref} from 'react';
+import { forwardRef, useCallback } from 'react'
 import cx from 'classnames'
 import { Switch } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import styles from './LayerSwitch.module.css'

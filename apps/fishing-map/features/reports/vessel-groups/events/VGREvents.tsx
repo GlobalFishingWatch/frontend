@@ -1,17 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
+import { useTranslation } from 'react-i18next'
+import { lowerCase } from 'es-toolkit'
 import {
-  ReportEventsStatsResponseGroups,
-  ReportEventsVesselsParams,
-  ReportEventsStatsParams,
   useGetReportEventsStatsQuery,
   useGetReportEventsVesselsQuery,
 } from 'queries/report-events-stats-api'
-import { useTranslation } from 'react-i18next'
-import { lowerCase } from 'es-toolkit'
+import type {
+  ReportEventsStatsResponseGroups,
+  ReportEventsVesselsParams,
+  ReportEventsStatsParams,
+} from 'queries/report-events-stats-api'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import VGREventsSubsectionSelector from 'features/reports/vessel-groups/events/VGREventsSubsectionSelector'

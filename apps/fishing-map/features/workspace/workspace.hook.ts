@@ -1,12 +1,9 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
-import {
-  FillColorBarOptions,
-  LineColorBarOptions,
-  ColorBarOption,
-} from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import {
   selectIsAnyAreaReportLocation,
   selectUrlDataviewInstances,
@@ -48,6 +45,27 @@ export const useFitWorkspaceBounds = () => {
   return fitWorkspaceBounds
 }
 
+export const getNextColor = (
+  colorCyclingType: ColorCyclingType,
+  currentColors: string[] | undefined
+) => {
+  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
+  if (!currentColors) {
+    return palette[Math.floor(Math.random() * palette.length)]
+  }
+  let minRepeat = Number.POSITIVE_INFINITY
+  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
+    const num = currentColors.filter((c) => c === color.value).length
+    if (num < minRepeat) minRepeat = num
+    return {
+      ...color,
+      num,
+    }
+  })
+  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
+  return nextColor
+}
+
 const createDataviewsInstances = (
   newDataviewInstances: Partial<UrlDataviewInstance>[],
   currentDataviewInstances: UrlDataviewInstance[] = []
@@ -66,10 +84,10 @@ const createDataviewsInstances = (
         config: {
           ...config,
           color: nextColor.value,
+          colorCyclingType: undefined,
         },
       } as UrlDataviewInstance
-      if (dataview.config.colorCyclingType === 'fill') {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (colorCyclingType === 'fill') {
         dataviewWithColor.config!.colorRamp = nextColor.id
       }
       return dataviewWithColor
@@ -111,24 +129,6 @@ export const mergeDataviewIntancesToUpsert = (
     }
   })
   return dataviewInstances
-}
-
-const getNextColor = (colorCyclingType: ColorCyclingType, currentColors: string[] | undefined) => {
-  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
-  if (!currentColors) {
-    return palette[0]
-  }
-  let minRepeat = Number.POSITIVE_INFINITY
-  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
-    const num = currentColors.filter((c) => c === color.value).length
-    if (num < minRepeat) minRepeat = num
-    return {
-      ...color,
-      num,
-    }
-  })
-  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
-  return nextColor
 }
 
 export const useDataviewInstancesConnect = () => {

@@ -4,6 +4,7 @@
 
   /* COLORS */
   --timebar-main-background-color: #021236;
+  --timebar-main-background-color-faded: rgba(2, 18, 54, 0.5);
   --timebar-main-border-color: #1e365a;
   --timebar-secondary-background-color: #0b285f;
   --timebar-ui-btn-color: #163f89;

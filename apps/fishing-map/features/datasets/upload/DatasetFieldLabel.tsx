@@ -1,4 +1,4 @@
-import { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
+import type { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
 
 const DatasetFieldLabel = ({
   field,

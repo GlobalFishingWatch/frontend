@@ -1,17 +1,21 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
   getSchemaFieldsSelectedInDataview,
   getSchemaFilterOperationInDataview,
   getSchemaFilterUnitInDataview,
-  SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { getValueLabelByUnit } from 'features/workspace/common/LayerSchemaFilter'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { useDataviewInstancesConnect } from '../workspace.hook'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -22,13 +26,14 @@ type LayerPanelProps = {
 function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
+  const isGuestUser = useSelector(selectIsGuestUser)
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const filterOperation = getSchemaFilterOperationInDataview(dataview, field)
   const filterUnit = getSchemaFilterUnitInDataview(dataview, field)
-  const schemaFieldSelected = getSchemaFieldsSelectedInDataview(
-    dataview,
-    field,
-    vesselGroupsOptions
-  )
+  const schemaFieldSelected = getSchemaFieldsSelectedInDataview(dataview, field, {
+    vesselGroups: vesselGroupsOptions,
+    isGuestUser,
+  })
 
   let valuesSelected = Array.isArray(schemaFieldSelected)
     ? schemaFieldSelected.sort((a, b) => a.label - b.label)
@@ -69,6 +74,19 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
     ]
   }
 
+  const onRemoveClick = (tag: TagItem, tags: TagItem[]) => {
+    console.log(tags)
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        filters: {
+          ...(dataview.config?.filters || {}),
+          [field]: tags.length ? tags.map((t) => t.id) : undefined,
+        },
+      },
+    })
+  }
+
   return (
     <Fragment>
       {valuesSelected.length > 0 && (
@@ -81,6 +99,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
             tags={valuesSelected}
             color={dataview.config?.color}
             className={styles.tagList}
+            onRemove={onRemoveClick}
           />
         </div>
       )}

@@ -1,10 +1,14 @@
 import { createSelector } from '@reduxjs/toolkit'
+import type { ApiEvent } from '@globalfishingwatch/api-types'
+import type { SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type {
+  GlGeneratorConfig} from '@globalfishingwatch/layer-composer';
+import {
+  GeneratorType,
+  getDataviewsGeneratorConfigs
+} from '@globalfishingwatch/layer-composer'
 import { GFWApiClient } from 'http-client/http-client'
-import { ApiEvent } from '@globalfishingwatch/api-types'
-import { SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client/resolve-dataviews-generators'
-import { GeneratorType, GlGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import {
   selectDataviewsForResourceQuerying,
   selectDefaultBasemapGenerator,
@@ -12,9 +16,9 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { selectVesselsStatus } from 'features/vessels/vessels.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { ResourcesState } from 'features/resources/resources.slice'
+import type { ResourcesState } from 'features/resources/resources.slice'
 import { DEBUG_MODE, DEFAULT_WORKSPACE, LAST_POSITION_LAYERS_PREFIX } from 'data/config'
-import { Range } from 'types'
+import type { Range } from 'types'
 import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
 import { selectFilters } from 'features/event-filters/filters.slice'
 import { selectVisibleResources } from 'features/resources/resources.selectors'

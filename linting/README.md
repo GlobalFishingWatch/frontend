@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/%40satellitestudio%2Feslint-config.svg)](https://badge.fury.io/js/%40satellitestudio%2Feslint-config)
 [![GitHub license](https://img.shields.io/github/license/satellitestudio/eslint-config.svg)](https://github.com/satellitestudio/eslint-config/blob/master/LICENCE)
 
-Eslint config based on [eslint-config-react-app](https://www.npmjs.com/package/eslint-config-react-app) with some custom rules and prettier integration
+Monorepo eslint config with some custom rules and prettier integration
 
 ## Installation
 
@@ -18,7 +18,27 @@ yarn add @globalfishingwatch/linting -D --peer
 
 ### Eslint
 
-Now add the config to either your `package.json`:
+Flat config >= v9
+
+to your `eslint.config.mjs`:
+
+```js
+import gfwConfig from '@globalfishingwatch/linting'
+
+export default gfwConfig
+```
+
+Legacy usage < v9
+
+1. Add to your `.eslintrc`:
+
+```json
+{
+  "extends": "@globalfishingwatch/linting/legacy"
+}
+```
+
+2. Add the config to either your `package.json`:
 
 #### JS
 
@@ -30,56 +50,12 @@ Now add the config to either your `package.json`:
 }
 ```
 
-to your `.eslintrc`:
-
-```json
-{
-  "extends": "@globalfishingwatch/linting"
-}
-```
-
-#### Javascript
-
-```json
-{
-  "eslintConfig": {
-    "extends": "@globalfishingwatch/linting/javascript"
-  }
-}
-```
-
-to your `.eslintrc`:
-
-```json
-{
-  "extends": "@globalfishingwatch/linting/javascript"
-}
-```
-
-#### Next
-
-```json
-{
-  "eslintConfig": {
-    "extends": "@globalfishingwatch/linting/next"
-  }
-}
-```
-
-to your `.eslintrc`:
-
-```json
-{
-  "extends": "@globalfishingwatch/linting/next"
-}
-```
-
 ### Prettier
 
-to your `.prettierrc`:
+to your `.prettierrc.js`:
 
 ```js
-module.exports = require('@globalfishingwatch/linting/prettier')
+export default '@globalfishingwatch/linting/prettier'
 ```
 
 ## Recommendations

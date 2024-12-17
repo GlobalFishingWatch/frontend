@@ -1,4 +1,4 @@
-import { LoaderWithParser } from '@loaders.gl/loader-utils'
+import type { LoaderWithParser } from '@loaders.gl/loader-utils'
 
 export const trackLoader: LoaderWithParser = {
   name: 'Events',

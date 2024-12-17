@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Ruler } from '@globalfishingwatch/layer-composer'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import type { Ruler } from '@globalfishingwatch/layer-composer'
 
 type RulersSlice = {
   visible: boolean

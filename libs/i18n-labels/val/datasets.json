@@ -1347,7 +1347,10 @@
   },
   "public-global-vessel-identity": {
     "name": "crwdns70132:0crwdne70132:0",
-    "description": "crwdns70134:0crwdne70134:0"
+    "description": "crwdns70134:0crwdne70134:0",
+    "schema": {
+      "registryTmtExtraFields": "crwdns84020:0crwdne84020:0"
+    }
   },
   "public-global-vessel-insights": {
     "name": "crwdns66547:0crwdne66547:0",

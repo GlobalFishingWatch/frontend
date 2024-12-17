@@ -2,11 +2,11 @@ import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
+import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
 import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { Bbox } from 'types'
+import type { Bbox } from 'types'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -51,11 +51,12 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
         if (bbox) {
           fitBounds(bbox as Bbox, { padding: 60, fitZoom: true })
         } else {
-          const transmissionDateFrom = getVesselProperty(
-            infoResource?.data!,
-            'transmissionDateFrom'
-          )
-          const transmissionDateTo = getVesselProperty(infoResource?.data!, 'transmissionDateTo')
+          const transmissionDateFrom = infoResource?.data
+            ? getVesselProperty(infoResource?.data, 'transmissionDateFrom')
+            : ''
+          const transmissionDateTo = infoResource?.data
+            ? getVesselProperty(infoResource?.data, 'transmissionDateTo')
+            : ''
           if (infoResource && (!transmissionDateFrom || !transmissionDateTo)) {
             console.warn("transmissionDates not available, can't fit time", infoResource)
             return

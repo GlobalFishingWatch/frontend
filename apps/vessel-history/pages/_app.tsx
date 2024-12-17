@@ -1,4 +1,4 @@
-import { AppProps } from 'next/app'
+import type { AppProps } from 'next/app'
 import { MapProvider } from 'react-map-gl'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'

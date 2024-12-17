@@ -6,7 +6,11 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import 'dotenv/config'
 
+const basePath =
+  process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/data-download' : '')
+
 export default defineConfig({
+  base: basePath,
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/data-download-portal',
 
@@ -22,7 +26,9 @@ export default defineConfig({
 
   plugins: [
     react(),
-    svgr(),
+    svgr({
+      include: ['**/*.svg', '**/*.svg?react'],
+    }),
     nxViteTsPaths(),
     viteStaticCopy({
       targets: [

@@ -41,13 +41,17 @@
     "noDataByArea": "crwdns59609:0crwdne59609:0",
     "noTimeComparisonAllowed": "crwdns59611:0crwdne59611:0",
     "noVesselDataFiltered": "crwdns59613:0crwdne59613:0",
+    "onlyEvolutionSupported": "crwdns84008:0crwdne84008:0",
     "others": "crwdns59617:0crwdne59617:0",
     "periodComparison": "crwdns59619:0crwdne59619:0",
     "periodComparison1st": "crwdns59621:0crwdne59621:0",
     "periodComparison2nd": "crwdns59623:0crwdne59623:0",
     "periodComparisonDuration": "crwdns59625:0crwdne59625:0",
     "periodComparisonRange": "crwdns59627:0{{duration}}crwdnd59627:0{{compareStart}}crwdnd59627:0{{duration}}crwdnd59627:0{{start}}crwdne59627:0",
+    "pinVessels": "crwdns84022:0crwdne84022:0",
+    "pinVesselsMaxAllowed": "crwdns84046:0{{maxVessels}}crwdne84046:0",
     "print ": "crwdns69298:0crwdne69298:0",
+    "removeVessels": "crwdns84026:0crwdne84026:0",
     "resultsPerPage": "crwdns59631:0{{results}}crwdne59631:0",
     "save": "crwdns59639:0crwdne59639:0",
     "savePublic": "crwdns59643:0crwdne59643:0",
@@ -163,6 +167,7 @@
     "in": "crwdns59785:0crwdne59785:0",
     "include": "crwdns59787:0crwdne59787:0",
     "insights": "crwdns83818:0crwdne83818:0",
+    "knots": "crwdns84034:0crwdne84034:0",
     "latestDays_one": "crwdns83264:0{{count}}crwdne83264:0",
     "latestDays_other": "crwdns83266:0{{count}}crwdne83266:0",
     "latitude": "crwdns59789:0crwdne59789:0",
@@ -177,6 +182,7 @@
     "map": "crwdns59805:0crwdne59805:0",
     "matchedVessels": "crwdns59807:0crwdne59807:0",
     "max": "crwdns59809:0crwdne59809:0",
+    "meters": "crwdns84036:0crwdne84036:0",
     "min": "crwdns59811:0crwdne59811:0",
     "minus": "crwdns69306:0crwdne69306:0",
     "minute": "crwdns59813:0crwdne59813:0",
@@ -319,6 +325,9 @@
     "date": "crwdns82702:0crwdne82702:0",
     "dateRange": "crwdns82704:0crwdne82704:0",
     "errors": {
+      "csv": {
+        "invalidData": "crwdns84010:0crwdne84010:0"
+      },
       "default": "crwdns82718:0crwdne82718:0",
       "geoJSON": {
         "noValidFeatures": "crwdns82720:0crwdne82720:0"
@@ -547,6 +556,7 @@
     "distanceFromPortKm": "crwdns69388:0crwdne69388:0",
     "distanceFromShoreKm": "crwdns69390:0crwdne69390:0",
     "duration": "crwdns69392:0crwdne69392:0",
+    "depth": "crwdns84038:0crwdne84038:0",
     "encounteredVesselName": "crwdns69394:0crwdne69394:0",
     "end": "crwdns69396:0crwdne69396:0",
     "flag": "crwdns69398:0crwdne69398:0",
@@ -617,6 +627,9 @@
     },
     "areasOnScreen": "crwdns60265:0crwdne60265:0",
     "color_change": "crwdns60267:0crwdne60267:0",
+    "drawAddPoint": "crwdns84014:0crwdne84014:0",
+    "drawAddPolygon": "crwdns84016:0crwdne84016:0",
+    "drawDelete": "crwdns84018:0crwdne84018:0",
     "drawPoints": "crwdns83614:0crwdne83614:0",
     "drawPolygon": "crwdns60269:0crwdne60269:0",
     "drawPolygonLogin": "crwdns60271:0crwdne60271:0",
@@ -695,6 +708,11 @@
     "rulersHover": "crwdns70412:0crwdne70412:0",
     "rulersStop": "crwdns70408:0crwdne70408:0",
     "search": "crwdns60357:0crwdne60357:0",
+    "screenshotArea": {
+      "map": "crwdns84028:0crwdne84028:0",
+      "withTimebar": "crwdns84030:0crwdne84030:0",
+      "withTimebarAndLegend": "crwdns84032:0crwdne84032:0"
+    },
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
   },
@@ -750,6 +768,7 @@
     "selected": "crwdns60409:0crwdne60409:0"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "crwdns84050:0crwdne84050:0",
     "fitOnThisDates": "crwdns60411:0crwdne60411:0",
     "focusOnThisDay": "crwdns60413:0crwdne60413:0",
     "maxTracksNumber": "crwdns60415:0crwdne60415:0"
@@ -758,8 +777,9 @@
     "activityDisabled": "crwdns60417:0crwdne60417:0",
     "detectionsDisabled": "crwdns60419:0crwdne60419:0",
     "graphDepth": "crwdns60421:0crwdne60421:0",
-    "graphDisabled": "crwdns60423:0crwdne60423:0",
+    "graphDisabled": "crwdns84040:0crwdne84040:0",
     "graphSpeed": "crwdns60425:0crwdne60425:0",
+    "graphVesselOnly": "crwdns84042:0{{graph}}crwdne84042:0",
     "settings_close": "crwdns60427:0crwdne60427:0",
     "settings_open": "crwdns60429:0crwdne60429:0",
     "showActivity": "crwdns60431:0crwdne60431:0",
@@ -775,6 +795,25 @@
     "maxPointsVisualizationExceeded": "crwdns83408:0crwdne83408:0"
   },
   "user": {
+    "gfwBadges": "crwdns84052:0crwdne84052:0",
+    "badges": {
+      "ambassador": {
+        "title": "crwdns84062:0crwdne84062:0",
+        "description": "crwdns84064:0crwdne84064:0"
+      },
+      "fixer": {
+        "title": "crwdns84066:0crwdne84066:0",
+        "description": "crwdns84068:0crwdne84068:0"
+      },
+      "presenter": {
+        "title": "crwdns84070:0crwdne84070:0",
+        "description": "crwdns84072:0crwdne84072:0"
+      },
+      "teacher": {
+        "title": "crwdns84074:0crwdne84074:0",
+        "description": "crwdns84076:0crwdne84076:0"
+      }
+    },
     "datasets": "crwdns82800:0crwdne82800:0",
     "groupMissing": "crwdns60447:0crwdne60447:0",
     "groups": "crwdns60449:0crwdne60449:0",
@@ -811,6 +850,7 @@
     "capacity": "crwdns60489:0crwdne60489:0",
     "carrier": "crwdns60491:0crwdne60491:0",
     "casco": "crwdns60493:0crwdne60493:0",
+    "confirmationClose": "crwdns84012:0crwdne84012:0",
     "clickToFitMapToEvents": "crwdns69462:0crwdne69462:0",
     "clickToSeeMore": "crwdns70204:0crwdne70204:0",
     "close": "crwdns69464:0crwdne69464:0",

@@ -1,6 +1,8 @@
-import { Map, MapboxStyle } from 'react-map-gl'
+import type { MapboxStyle } from 'react-map-gl';
+import { Map } from 'react-map-gl'
 import { useCallback, useState } from 'react'
-import maplibregl, { RequestParameters } from '@globalfishingwatch/maplibre-gl'
+import type { RequestParameters } from '@globalfishingwatch/maplibre-gl';
+import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useDebounce, useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { useMapHover, useMapLegend } from '@globalfishingwatch/layer-composer'

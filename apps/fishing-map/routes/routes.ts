@@ -1,16 +1,10 @@
-import {
-  NOT_FOUND,
-  RoutesMap,
-  redirect,
-  connectRoutes,
-  Options,
-  StateGetter,
-  Bag,
-} from 'redux-first-router'
-import { Dispatch } from '@reduxjs/toolkit'
+import type { RoutesMap, Options, StateGetter, Bag } from 'redux-first-router'
+import { NOT_FOUND, redirect, connectRoutes } from 'redux-first-router'
+import type { Dispatch } from '@reduxjs/toolkit'
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import { PATH_BASENAME } from 'data/config'
 import { t } from 'features/i18n/i18n'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
@@ -42,11 +36,26 @@ export type ROUTE_TYPES =
   | typeof REPORT
   | typeof PORT_REPORT
 
-const MAX_URL_LENGTH_SUPPORTED = 11000
+export const SAVE_WORKSPACE_BEFORE_LEAVE_KEY = 'SAVE_WORKSPACE_BEFORE_LEAVE'
+
+const WORKSPACES_ACTIONS = [
+  HOME,
+  WORKSPACE,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACE_REPORT,
+  VESSEL_GROUP_REPORT,
+  PORT_REPORT,
+]
+
 const confirmLeave = (state: any, action: any) => {
+  const suggestWorkspaceSave = state.workspace?.suggestSave === true
+  const isGuestUser = selectIsGuestUser(state)
   if (
+    !isGuestUser &&
+    !WORKSPACES_ACTIONS.includes(action.type) &&
     state.location?.type !== action.type &&
-    state.location?.search?.length >= MAX_URL_LENGTH_SUPPORTED
+    suggestWorkspaceSave
   ) {
     return t('common.confirmLeave', 'Are you sure you want to leave without saving your workspace?')
   }
@@ -81,15 +90,19 @@ export const routesMap: RoutesMap = {
   },
   [WORKSPACE_VESSEL]: {
     path: '/:category/:workspaceId/vessel/:vesselId',
+    confirmLeave,
   },
   [WORKSPACE_REPORT]: {
     path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
+    confirmLeave,
   },
   [VESSEL_GROUP_REPORT]: {
     path: '/:category/:workspaceId/vessel-group-report/:vesselGroupId',
+    confirmLeave,
   },
   [PORT_REPORT]: {
     path: '/:category/:workspaceId/ports-report/:portId',
+    confirmLeave,
   },
   [NOT_FOUND]: {
     path: '',
@@ -128,6 +141,18 @@ const routesOptions: Options = {
         )(document as any)
         .querySelector('meta[name="twitter:description"]')
         .setAttribute('content', getState().description)
+    }
+  },
+  displayConfirmLeave: (message, callback) => {
+    if (message) {
+      const openSaveWorkspace = !window.confirm(message)
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(SAVE_WORKSPACE_BEFORE_LEAVE_KEY, openSaveWorkspace.toString())
+        window.dispatchEvent(
+          new StorageEvent('session-storage', { key: SAVE_WORKSPACE_BEFORE_LEAVE_KEY })
+        )
+      }
+      callback(!openSaveWorkspace)
     }
   },
 }

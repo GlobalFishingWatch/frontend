@@ -18,12 +18,13 @@ import {
   VALUE_MULTIPLIER,
 } from './constants'
 import { generateUniqueId } from './util'
+import type {
+  FeatureParams,
+  TileAggregationParams} from './types';
 import {
   AggregationOperation,
-  FeatureParams,
   GeomType,
-  SublayerCombinationMode,
-  TileAggregationParams,
+  SublayerCombinationMode
 } from './types'
 
 const getCellCoords = (tileBBox: any, cell: number, numCols: number) => {

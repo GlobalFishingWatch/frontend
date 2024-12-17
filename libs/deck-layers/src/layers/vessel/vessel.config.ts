@@ -1,5 +1,5 @@
-import { Color } from '@deck.gl/core'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import type { Color } from '@deck.gl/core'
+import type { EventTypes } from '@globalfishingwatch/api-types'
 import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { hexToDeckColor } from '../../utils'
 
@@ -37,3 +37,16 @@ export const TRACK_DEFAULT_THINNING_CONFIG = {
   0: ThinningLevels.Insane,
   4: ThinningLevels.Aggressive,
 }
+
+export const VESSEL_GRAPH_COLORS = [
+  '#572EC2',
+  '#7932B7',
+  '#AD36B4',
+  '#CB409C',
+  '#E05885',
+  '#FC7B79',
+  '#FFA369',
+  '#FFCC4F',
+  '#FFE350',
+  '#FDF9BD',
+]

@@ -45,11 +45,14 @@
 }
 
 .label {
-  padding-left: var(--space-M);
+  padding-left: var(--space-S);
   padding-right: var(--space-S);
   color: var(--color-secondary-blue);
   font: var(--font-S);
   text-transform: uppercase;
   background-color: white;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
 }

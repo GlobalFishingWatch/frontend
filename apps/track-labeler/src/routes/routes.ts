@@ -1,16 +1,17 @@
-import { Dispatch } from 'redux'
-import {
-  NOT_FOUND,
+import type { Dispatch } from 'redux'
+import type {
   RoutesMap,
-  redirect,
-  connectRoutes,
   Options,
   StateGetter,
-  NavigationAction,
+  NavigationAction} from 'redux-first-router';
+import {
+  NOT_FOUND,
+  redirect,
+  connectRoutes
 } from 'redux-first-router'
 import { stringify, parse } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { AppState, AppActions } from '../types/redux.types'
+import type { AppState, AppActions } from '../types/redux.types'
 import { vesselInfoThunk } from '../features/vessels/vessels.thunks'
 import { checkUserLoggedThunk } from '.././features/user/user.thunks'
 import { trackThunk } from './.././features/tracks/tracks.thunks'

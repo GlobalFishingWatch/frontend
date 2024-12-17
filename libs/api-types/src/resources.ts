@@ -1,5 +1,5 @@
-import { Dataset } from './datasets'
-import { DataviewDatasetConfig } from './dataviews'
+import type { Dataset } from './datasets'
+import type { DataviewDatasetConfig } from './dataviews'
 
 export type ResourceResponseType = 'default' | 'text' | 'json' | 'blob' | 'arrayBuffer' | 'vessel'
 

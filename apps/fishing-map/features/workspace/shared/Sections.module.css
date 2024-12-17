@@ -56,14 +56,6 @@
   gap: var(--space-XS);
 }
 
-.sectionButtons > .lastBtn {
-  display: inline-block;
-}
-
-.sectionButtons > *:not(:last-child).lastBtn {
-  margin-right: 0;
-}
-
 .sectionButtonsSecondary {
   opacity: 0;
   transition: var(--transition);
@@ -100,15 +92,6 @@
   color: var(--color-secondary-blue);
 }
 
-.visualizationsSwitch {
-  transition: var(--transition);
-}
-
-.visualizationsSwitch > ul {
-  min-width: unset;
-  gap: 0;
-}
-
 .vesselsOnScreen summary {
   justify-content: left;
 }
@@ -138,4 +121,16 @@
 .highlightSpan {
   position: absolute;
   right: 0;
+}
+
+.expandedContainerContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.legend {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  padding-inline: var(--space-S);
 }

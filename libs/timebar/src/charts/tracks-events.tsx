@@ -63,13 +63,11 @@ const TracksEvents = ({
   useTrackColor,
   highlightedEventsIds,
   onEventClick,
-  onEventHover,
 }: {
   data: TimebarChartData<TrackEventChunkProps>
   useTrackColor?: boolean
   highlightedEventsIds?: string[]
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
-  onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
   const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
   const outerScale = useOuterScale()

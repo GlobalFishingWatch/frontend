@@ -1,6 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
-import { ChoiceOption, Button } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components'
 import styles from './VisualisationChoice.module.css'
 
 interface VisualisationChoiceProps {
@@ -19,7 +20,9 @@ export function VisualisationChoice({
   testId,
 }: VisualisationChoiceProps) {
   const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
-    onSelect && onSelect(option, e)
+    if (onSelect) {
+      onSelect(option, e)
+    }
   }
 
   if (!options?.length) {

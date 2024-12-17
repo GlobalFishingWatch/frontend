@@ -22,6 +22,7 @@ import {
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import {
   selectAllDataviewInstancesResolved,
+  selectDataviewInstancesMerged,
   selectDataviewInstancesResolved,
 } from './dataviews.resolvers.selectors'
 
@@ -125,6 +126,13 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
 export const selectVesselProfileDataview = createDeepEqualSelector(
   [selectVesselsDataviews, selectVesselId],
   (dataviews, vesselId) => dataviews.find(({ id }) => vesselId && id.includes(vesselId))
+)
+
+export const selectVesselProfileDataviewIntance = createDeepEqualSelector(
+  [selectDataviewInstancesMerged, selectVesselId],
+  (dataviewsInstances, vesselId) => {
+    return dataviewsInstances?.find(({ id }) => vesselId && id.includes(vesselId))
+  }
 )
 
 export const selectVesselProfileColor = createSelector(

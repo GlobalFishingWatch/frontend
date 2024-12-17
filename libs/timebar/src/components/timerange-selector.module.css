@@ -56,12 +56,6 @@
   color: var(--color-primary-blue);
 }
 
-.resolutionMaxRange {
-  margin-top: 0.5rem;
-  color: var(--timebar-white-faded);
-  text-transform: unset;
-}
-
 .faded {
   opacity: 0.3;
 }

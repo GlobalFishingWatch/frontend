@@ -22,7 +22,8 @@ import {
   useTimebarVesselTracksData,
 } from 'features/timebar/timebar-vessel.hooks'
 import { getVesselShipNameLabel } from 'utils/info'
-import { selectResources, ResourcesState } from 'features/resources/resources.slice'
+import type { ResourcesState } from 'features/resources/resources.slice'
+import { selectResources } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
@@ -35,11 +36,12 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
+import VesselTracksLegend from './VesselTracksLegend'
 
 const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
   return resources[
@@ -152,7 +154,10 @@ function VesselsSection(): React.ReactElement {
   )
   const vesselsToVesselGroup = areVesselsLoading
     ? []
-    : vesselResources.map(({ data }) => {
+    : vesselResources.flatMap(({ data }) => {
+        if (!data) {
+          return []
+        }
         return {
           id: getVesselId(data),
           identities: getVesselIdentities(data),
@@ -162,9 +167,10 @@ function VesselsSection(): React.ReactElement {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx('print-hidden', styles.header)}>
+      <div className={cx(styles.header)}>
         {dataviews.length > 1 && (
           <Switch
+            className="print-hidden"
             active={someVesselsVisible}
             onClick={onToggleAllVessels}
             tooltip={t('vessel.toggleAllVessels', 'Toggle all vessels visibility')}
@@ -173,10 +179,15 @@ function VesselsSection(): React.ReactElement {
         )}
         <h2 className={styles.sectionTitle}>
           {t('common.vessel_other', 'Vessels')}
-          {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
+          <span className="print-hidden">
+            {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
+          </span>
         </h2>
+
         {!readOnly && (
-          <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
+          <div
+            className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
+          >
             {activeDataviews.length > 0 && (
               <VesselGroupAddButton
                 vessels={vesselsToVesselGroup}
@@ -225,6 +236,7 @@ function VesselsSection(): React.ReactElement {
           size="medium"
           testId="search-vessels-open"
           disabled={!searchAllowed}
+          className="print-hidden"
           tooltip={
             searchAllowed
               ? t('search.vessels', 'Search vessels')
@@ -234,6 +246,7 @@ function VesselsSection(): React.ReactElement {
           onClick={onSearchClick}
         />
       </div>
+      {hasVisibleDataviews && <VesselTracksLegend />}
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
           dataviews?.map((dataview) => (
@@ -253,7 +266,7 @@ function VesselsSection(): React.ReactElement {
         )}
       </SortableContext>
       {activeDataviews.length > 0 && guestUser && (
-        <p className={styles.disclaimer}>
+        <p className={cx(styles.disclaimer, 'print-hidden')}>
           {hasVesselsWithNoTrack ? (
             <Trans i18nKey="vessel.trackLogin">
               One of your selected sources requires you to

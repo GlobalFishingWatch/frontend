@@ -1,14 +1,15 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
-import db from 'offline/offline-store'
 import {
   parseAPIError,
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
-import { RootState } from 'store'
-import { OfflineVessel } from 'types/vessel'
-import { AsyncError, asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import db from 'offline/offline-store'
+import type { RootState } from 'store'
+import type { OfflineVessel } from 'types/vessel'
+import type { AsyncError, AsyncReducer} from 'utils/async-slice';
+import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 export interface OfflineVesselState extends AsyncReducer<OfflineVessel> {
   profileIds: (string | undefined)[]
 }

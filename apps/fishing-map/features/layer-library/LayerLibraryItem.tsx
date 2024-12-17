@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { uniq } from 'es-toolkit'
 import {
   Button,
   FillColorBarOptions,
@@ -13,11 +14,12 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { LibraryLayer } from 'data/layer-library'
+import type { LibraryLayer } from 'data/layer-library'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { LAYER_LIBRARY_EVENTS_IDS } from 'data/layer-library/layers-events'
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import { getHighlightedText } from 'utils/text'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import styles from './LayerLibraryItem.module.css'
 
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
@@ -50,9 +52,13 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
     const palette = FILL_DATAVIEWS.includes(dataview.config?.type)
       ? FillColorBarOptions
       : LineColorBarOptions
-    const usedColors = dataviews.flatMap((dataview) => dataview.config?.color || [])
+
+    const usedColors = uniq(dataviews.flatMap((dataview) => dataview.config?.color || []))
     const isDefaultColorUnused = !usedColors.includes(config?.color as string)
-    const firstUnusedcolor = palette.find((c) => !usedColors.includes(c.value))
+    const firstUnusedcolor =
+      palette.length <= usedColors.length
+        ? palette.find((c) => !usedColors.includes(c.value))
+        : palette[Math.floor(Math.random() * palette.length + 1)]
     const supportsColorChange = !LAYER_LIBRARY_EVENTS_IDS.includes(id)
     upsertDataviewInstance({
       id: `${id}${LAYER_LIBRARY_ID_SEPARATOR}${Date.now()}`,
@@ -67,6 +73,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       },
     })
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+    dispatch(setWorkspaceSuggestSave(true))
   }
 
   return (

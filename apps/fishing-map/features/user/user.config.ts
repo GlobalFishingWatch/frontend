@@ -1,4 +1,4 @@
-import { UserGroup } from './user.slice'
+import type { UserGroup } from './user.slice'
 
 export const GFW_GROUP_ID = 'GFW Staff'
 export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'

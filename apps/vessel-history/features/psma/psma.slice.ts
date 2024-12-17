@@ -1,17 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import { stringify } from 'qs'
-import { GFWApiClient } from 'http-client/http-client'
 import { parseAPIError } from '@globalfishingwatch/api-client'
-import { APIPagination } from '@globalfishingwatch/api-types'
+import type { APIPagination } from '@globalfishingwatch/api-types'
+import { GFWApiClient } from 'http-client/http-client'
+import type {
+  AsyncReducer} from 'utils/async-slice';
 import {
   asyncInitialState,
-  AsyncReducer,
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import { RootState } from 'store'
-import { Psma } from 'types/psma'
+import type { RootState } from 'store'
+import type { Psma } from 'types/psma'
 import { DEFAULT_PAGINATION_PARAMS, IS_STANDALONE_APP } from 'data/config'
 
 export type PsmaState = AsyncReducer<Psma>

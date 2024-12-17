@@ -1,21 +1,25 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
-import {
-  DatasetTypes,
-  DataviewCategory,
+import type {
   DataviewDatasetConfig,
   DataviewInstance,
-  DataviewType,
+  IdentityVessel,
+  Resource,
 } from '@globalfishingwatch/api-types'
-import {
-  extendDataviewDatasetConfig,
+import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type {
   GetDatasetConfigsCallbacks,
-  getResources,
-  mergeWorkspaceUrlDataviewInstances,
-  resolveDataviews,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { ColorRampId } from '@globalfishingwatch/deck-layers'
+import {
+  extendDataviewDatasetConfig,
+  getResources,
+  mergeWorkspaceUrlDataviewInstances,
+  resolveDataviewDatasetResource,
+  resolveDataviews,
+  selectResources,
+} from '@globalfishingwatch/dataviews-client'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
@@ -30,7 +34,7 @@ import { selectTrackThinningConfig } from 'features/resources/resources.selector
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
-import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
+import { getRelatedIdentityVesselIds, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
@@ -52,13 +56,14 @@ import {
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
 } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import type { ReportCategory } from 'features/reports/areas/area-reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,
   selectVGRSection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { formatInfoField } from 'utils/info'
 
 const EMPTY_ARRAY: [] = []
 
@@ -260,9 +265,32 @@ export const selectDataviewsResources = createSelector(
 
 const defaultDataviewResolved: UrlDataviewInstance[] = []
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsResources],
-  (dataviewsResources) => {
-    return dataviewsResources.dataviews || defaultDataviewResolved
+  [selectDataviewsResources, selectResources],
+  (dataviewsResources, resources) => {
+    if (!dataviewsResources?.dataviews) {
+      return defaultDataviewResolved
+    }
+    const dataviews = dataviewsResources.dataviews.map((dataview) => {
+      if (dataview.category !== DataviewCategory.Vessels) {
+        return dataview
+      }
+      const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+      const infoResource: Resource<IdentityVessel> = resources[url]
+      if (!infoResource || !infoResource.data) {
+        return dataview
+      }
+      return {
+        ...dataview,
+        config: {
+          ...dataview.config,
+          name: formatInfoField(
+            getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),
+            'shipname'
+          ),
+        },
+      } as UrlDataviewInstance
+    })
+    return dataviews
   }
 )
 

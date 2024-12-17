@@ -1,12 +1,16 @@
 import { useCallback, useMemo, useState } from 'react'
-import { EventType } from '@globalfishingwatch/api-types'
+import type { EventType } from '@globalfishingwatch/api-types'
 
 export const useActivityByType = (): [EventType | null, (eventType: EventType) => void] => {
   const [expandedGroup, setExpandedGroup] = useState<EventType | null>(null)
 
   const toggleEventType = useCallback(
     (type: EventType) => {
-      expandedGroup === type ? setExpandedGroup(null) : setExpandedGroup(type)
+      if (expandedGroup === type) {
+        setExpandedGroup(null)
+      } else {
+        setExpandedGroup(type)
+      }
     },
     [expandedGroup]
   )

@@ -23,7 +23,9 @@ export default defineConfig({
 
   plugins: [
     react(),
-    svgr(),
+    svgr({
+      include: ['**/*.svg', '**/*.svg?react'],
+    }),
     nxViteTsPaths(),
     TanStackRouterVite({
       routesDirectory: './apps/image-labeler/src/routes',

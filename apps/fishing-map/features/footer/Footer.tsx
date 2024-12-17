@@ -54,6 +54,7 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
 }
 
 function Footer(): React.ReactElement {
+  // TODO remove the bottom bar in screenshot
   const isSmallScreen = useSmallScreen(900)
   const copyright = isSmallScreen ? '© GFW ' : '© Global Fishing Watch '
   return (

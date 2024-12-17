@@ -1,5 +1,5 @@
 import { useMap } from 'react-map-gl'
-import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
+import type { ExtendedStyle } from '@globalfishingwatch/layer-composer'
 import { useMapLoaded } from 'features/map/map-state.hooks'
 
 export default function useMapInstance() {

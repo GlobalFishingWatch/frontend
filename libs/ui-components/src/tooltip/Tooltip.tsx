@@ -1,10 +1,11 @@
 import * as React from 'react'
-import Tippy, { TippyProps } from '@tippyjs/react'
+import type { TippyProps } from '@tippyjs/react';
+import Tippy from '@tippyjs/react'
 import cx from 'classnames'
 import styles from './Tooltip.module.css'
 
 export function Tooltip(props: TippyProps) {
-  // eslint-disable-next-line react/jsx-no-useless-fragment
+   
   if (!props.content) return <React.Fragment>{props.children}</React.Fragment>
   return (
     <Tippy

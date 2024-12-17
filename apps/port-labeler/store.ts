@@ -1,4 +1,5 @@
-import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
+import type { ThunkAction, Action} from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import labelerReducer from 'features/labeler/labeler.slice'
 import connectedRoutes from './routes/routes'
 import { routerQueryMiddleware } from './routes/routes.middlewares'

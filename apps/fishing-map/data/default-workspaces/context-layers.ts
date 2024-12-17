@@ -1,4 +1,4 @@
-import { DataviewInstance } from '@globalfishingwatch/api-types'
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_SLUG,

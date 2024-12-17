@@ -1,7 +1,7 @@
-import { TileLayerProps } from '@deck.gl/geo-layers'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import {
+import type { TileLayerProps } from '@deck.gl/geo-layers'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type {
   BaseFourwingsLayerProps,
   FourwingsHeatmapPickingObject,
   FourwingsHeatmapTilesCache,

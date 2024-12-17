@@ -2,15 +2,16 @@ import { atom, useRecoilState } from 'recoil'
 import { useCallback, useMemo } from 'react'
 import { urlSyncEffect } from 'recoil-sync'
 import { mixed } from '@recoiljs/refine'
-import {
+import type {
   BasemapGeneratorConfig,
+  ColorRampId} from '@globalfishingwatch/layer-composer';
+import {
   BasemapType,
-  ColorRampId,
   GeneratorType,
 } from '@globalfishingwatch/layer-composer'
 import { useAPIDatasets } from 'features/datasets/datasets.hooks'
 import { toArray } from 'features/map/map-sources.hooks'
-import {
+import type {
   APIDataset,
   ContextAPIDataset,
   FourwingsAPIDataset,
@@ -68,6 +69,15 @@ const defaultLayers: DatasetLayerConfig[] = [
       visible: true,
       type: GeneratorType.Basemap,
       basemap: BasemapType.Default,
+    } as BasemapGeneratorConfig,
+  },
+  {
+    id: 'bathymetry',
+    config: {
+      id: 'bathymetry',
+      type: GeneratorType.Basemap,
+      basemap: BasemapType.Bathymetry,
+      source: 'bathymetry',
     } as BasemapGeneratorConfig,
   },
 ]

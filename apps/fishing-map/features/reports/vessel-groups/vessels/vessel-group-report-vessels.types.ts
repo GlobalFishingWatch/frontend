@@ -1,4 +1,4 @@
-import { VesselLastIdentity } from 'features/search/search.slice'
+import type { VesselLastIdentity } from 'features/search/search.slice'
 
 export type VesselGroupReportVesselParsed = Omit<VesselLastIdentity, 'dataset'> & {
   index: number

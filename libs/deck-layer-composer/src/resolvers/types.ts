@@ -1,14 +1,16 @@
-import { EventTypes } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import {
+import type { EventTypes } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type {
   AnyDeckLayer,
   DeckLayerPickingObject,
   FourwingsLayer,
   FourwingsVisualizationMode,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
+  VesselsColorByProperty,
 } from '@globalfishingwatch/deck-layers'
-import { TimeRange } from './dataviews'
+import type { VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
+import type { TimeRange } from './dataviews'
 
 export type ResolverGlobalConfig = {
   start: string
@@ -24,9 +26,11 @@ export type ResolverGlobalConfig = {
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
+  trackGraphExtent?: VesselTrackGraphExtent
   highlightedTime?: Partial<TimeRange>
   highlightEventIds?: string[]
   visibleEvents: EventTypes[]
+  vesselsColorBy: VesselsColorByProperty
   highlightedFeatures?: DeckLayerPickingObject[]
 }
 

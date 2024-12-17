@@ -36,6 +36,7 @@ import {
   selectVesselInfoData,
   selectVesselPrintMode,
 } from 'features/vessel/selectors/vessel.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -47,6 +48,7 @@ const VesselHeader = () => {
   const identitySource = useSelector(selectVesselIdentitySource)
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
@@ -90,7 +92,6 @@ const VesselHeader = () => {
       window.removeEventListener('beforeprint', enableVesselPrintMode)
       window.removeEventListener('afterprint', disableVesselPrintMode)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useCallbackAfterPaint({
@@ -105,7 +106,7 @@ const VesselHeader = () => {
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
   // TODO remove false when we have a vessel image
-  const vesselImage = false && vesselIdentity?.images?.[0].url
+  const vesselImage = isGFWUser && vesselIdentity?.images?.[0].url
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
@@ -128,10 +129,7 @@ const VesselHeader = () => {
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={styles.summaryContainer}>
         <div className={styles.summaryWrapper}>
-          {vesselImage && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={vesselImage} alt={shipname} className={styles.vesselImage} />
-          )}
+          {vesselImage && <img src={vesselImage} alt={shipname} className={styles.vesselImage} />}
           <div className={styles.titleContainer}>
             <h1 data-test="vv-vessel-name" className={styles.title}>
               <svg className={styles.vesselIcon} width="16" height="16">

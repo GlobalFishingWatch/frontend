@@ -1,10 +1,10 @@
-import {
+import type {
   DatasetConfiguration,
   Dataview,
   DataviewCategory,
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
-import libraryTranslations from '../../public/locales/source/layer-library.json'
+import type libraryTranslations from '../../public/locales/source/layer-library.json'
 
 // Browser config for equal screenshots
 // map at latitude=30&longitude=4&zoom=2

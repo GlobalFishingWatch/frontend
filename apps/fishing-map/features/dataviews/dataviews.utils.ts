@@ -1,15 +1,14 @@
 import kebabCase from 'lodash/kebabCase'
-import {
+import type {
   ColorCyclingType,
   Dataset,
   Dataview,
-  DataviewCategory,
   DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
-  EndpointId,
 } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
 import {
@@ -20,11 +19,8 @@ import {
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import {
-  VesselInstanceDatasets,
-  getActiveDatasetsInDataview,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
+import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 
 // used in workspaces with encounter events layers

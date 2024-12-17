@@ -1,6 +1,8 @@
 import cx from 'classnames'
-import { Popup, PopupProps } from 'react-map-gl'
-import { GeneratorType, InteractionEvent } from '@globalfishingwatch/layer-composer'
+import type { PopupProps } from 'react-map-gl';
+import { Popup } from 'react-map-gl'
+import type { InteractionEvent } from '@globalfishingwatch/layer-composer';
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import ContextPopup from 'features/map/popups/ContextPopup'
 import styles from './Popup.module.css'
 

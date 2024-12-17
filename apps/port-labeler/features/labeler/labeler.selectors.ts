@@ -9,7 +9,7 @@ import {
   selectSubareas,
   selectSubareaValues
 } from "features/labeler/labeler.slice"
-import { PortPosition } from "types"
+import type { PortPosition } from "types"
 
 /**
  * filter the poins by country

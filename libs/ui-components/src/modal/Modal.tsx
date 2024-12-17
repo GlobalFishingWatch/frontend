@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useId, useMemo } from 'react'
 import ReactModal from 'react-modal'
 import cx from 'classnames'
 import { IconButton } from '../icon-button'
@@ -12,6 +12,7 @@ interface ModalProps {
   closeButtonClassName?: string
   shouldCloseOnEsc?: boolean
   headerClassName?: string
+  contentId?: string
   contentClassName?: string
   overlayClassName?: string
   portalClassName?: string
@@ -35,12 +36,15 @@ export function Modal(props: ModalProps) {
     className,
     headerClassName,
     contentClassName,
+    contentId,
     overlayClassName,
     closeButtonClassName,
     shouldCloseOnEsc = false,
     fullScreen = false,
     children,
   } = props
+  const modalContentId = useId()
+
   const appElement = useMemo(
     () => (typeof window !== 'undefined' ? document.getElementById(appSelector) : null),
     [appSelector]
@@ -49,6 +53,7 @@ export function Modal(props: ModalProps) {
     console.warn(`Invalid appSelector (${appSelector}) provided`)
     return null
   }
+
   return (
     <ReactModal
       portalClassName={portalClassName}
@@ -74,6 +79,7 @@ export function Modal(props: ModalProps) {
         />
       )}
       <div
+        id={contentId || modalContentId}
         className={cx(styles.content, contentClassName, {
           [styles.contentNoHeader]: !header,
         })}

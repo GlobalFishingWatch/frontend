@@ -22,7 +22,7 @@
 .tooltipArrow,
 .tooltipArrow::before {
   position: absolute;
-  top: -3px !important;
+  inset: -3px auto auto !important;
   width: 8px;
   height: 8px;
   z-index: 1;

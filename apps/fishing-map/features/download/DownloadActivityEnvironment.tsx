@@ -11,13 +11,12 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
+import type { DownloadActivityParams, DateRange } from 'features/download/downloadActivity.slice'
 import {
-  DownloadActivityParams,
   downloadActivityThunk,
   selectIsDownloadActivityLoading,
   selectIsDownloadActivityFinished,
   selectIsDownloadActivityError,
-  DateRange,
   selectDownloadActivityAreaKey,
   selectIsDownloadActivityTimeoutError,
 } from 'features/download/downloadActivity.slice'
@@ -40,15 +39,15 @@ import {
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { AreaKeyId } from 'features/areas/areas.slice'
+import type { AreaKeyId } from 'features/areas/areas.slice'
 import styles from './DownloadModal.module.css'
+import type { TemporalResolution } from './downloadActivity.config'
 import {
   HeatmapDownloadFormat,
   SpatialResolution,
   MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
   SPATIAL_RESOLUTION_OPTIONS,
   GRIDDED_FORMAT_OPTIONS,
-  TemporalResolution,
   ENVIRONMENT_FORMAT_OPTIONS,
 } from './downloadActivity.config'
 import { getDownloadReportSupported, getSupportedTemporalResolutions } from './download.utils'

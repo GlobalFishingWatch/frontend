@@ -24,7 +24,7 @@ const MapboxRefProvider: React.FC<MapboxRefContextProviderProps> = ({ children }
     seMapboxInstance((mapboxRef.current as any).getMap())
   }, [])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   useEffect(() => {
     if (mapboxRef.current !== undefined && !mapboxRefReady) {
       onReady()

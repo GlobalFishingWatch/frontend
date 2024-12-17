@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { RulerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { RulerPickingObject } from '@globalfishingwatch/deck-layers'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import styles from '../Popup.module.css'

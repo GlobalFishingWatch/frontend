@@ -1,7 +1,7 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import { Feature, Polygon, MultiPolygon, Point } from 'geojson'
-import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
-import { Bbox } from '@globalfishingwatch/data-transforms'
+import type { Feature, Polygon, MultiPolygon, Point } from 'geojson'
+import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 
 export type FilteredPolygons = {
   contained: Feature[]

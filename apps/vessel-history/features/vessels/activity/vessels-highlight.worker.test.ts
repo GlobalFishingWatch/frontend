@@ -1,6 +1,6 @@
 import { anyRegion } from 'features/regions/regions.slice'
-import { Settings } from 'features/settings/settings.slice'
-import { RenderedEvent } from './vessels-activity.selectors'
+import type { Settings } from 'features/settings/settings.slice'
+import type { RenderedEvent } from './vessels-activity.selectors'
 import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 import { fishingEvents, emptySettings } from './__mocks__/highlight.mock'
 import {

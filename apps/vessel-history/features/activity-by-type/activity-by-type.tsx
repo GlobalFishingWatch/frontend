@@ -7,11 +7,13 @@ import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { DEFAULT_VESSEL_MAP_ZOOM, IS_STANDALONE_APP } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import type {
+  RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
-  RenderedEvent,
   selectHighlightEventIds,
 } from 'features/vessels/activity/vessels-activity.selectors'
-import { EventTypeVoyage, Voyage } from 'types/voyage'
+import type { Voyage } from 'types/voyage';
+import { EventTypeVoyage } from 'types/voyage'
 import useMapEvents from 'features/map/map-events.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import ActivityGroup from 'features/profile/components/activity/ActivityGroup'

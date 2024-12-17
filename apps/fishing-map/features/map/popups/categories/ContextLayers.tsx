@@ -2,8 +2,8 @@ import { Fragment, useCallback } from 'react'
 import { groupBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
@@ -54,12 +54,12 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                 </h3>
               )}
               {featureByType.map((feature, index) => {
-                let label =
+                const label =
                   (feature.value as string) ||
                   getDatasetTitleByDataview(dataview as UrlDataviewInstance) ||
                   feature.title
                 if (!label) return null
-                let linkHref = (feature as ContextPickingObject).link
+                const linkHref = (feature as ContextPickingObject).link
                 return (
                   <ContextLayersRow
                     id={feature.id as string}

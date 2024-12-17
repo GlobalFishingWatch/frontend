@@ -41,13 +41,17 @@
     "noDataByArea": "Data tidak tersedia untuk area yang dipilih",
     "noTimeComparisonAllowed": "Mode perbandingan waktu tidak tersedia saat lapisan memiliki filter yang berbeda",
     "noVesselDataFiltered": "Tidak ada kapal yang cocok dengan filter Anda",
+    "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Lain-lain",
     "periodComparison": "perbandingan periode",
     "periodComparison1st": "acuan dasar awal",
     "periodComparison2nd": "awal perbandingan",
     "periodComparisonDuration": "durasi",
     "periodComparisonRange": "dalam {{duration}} setelah {{compareStart}} dibandingkan dengan acuan dasar dalam {{duration}} setelah {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "print ": "cetak",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Tampilkan {{results}} per halaman",
     "save": "Simpan laporan ini",
     "savePublic": "Izinkan pengguna lain untuk melihat laporan ini",
@@ -163,6 +167,7 @@
     "in": "di",
     "include": "Memasukkan",
     "insights": "Insights",
+    "knots": "knots",
     "latestDays_one": "Latest {{count}} day",
     "latestDays_other": "Latest {{count}} days",
     "latitude": "Lintang",
@@ -177,6 +182,7 @@
     "map": "Peta",
     "matchedVessels": "Kapal yang cocok",
     "max": "Maks",
+    "meters": "meters",
     "min": "Min",
     "minus": "minus",
     "minute": "menit",
@@ -319,6 +325,9 @@
     "date": "Tanggal",
     "dateRange": "Date Range",
     "errors": {
+      "csv": {
+        "invalidData": "CSV data does not have a valid structure"
+      },
       "default": "Terjadi kesalahan saat mengunggah dataset Anda",
       "geoJSON": {
         "noValidFeatures": "Tidak ditemukan jenis fitur valid dalam file geoJSON ini"
@@ -547,6 +556,7 @@
     "distanceFromPortKm": "distanceFromPortKm",
     "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "durasi",
+    "depth": "depth",
     "encounteredVesselName": "kapal yang ditemui",
     "end": "akhir",
     "flag": "bendera",
@@ -617,6 +627,9 @@
     },
     "areasOnScreen": "Area pada layar",
     "color_change": "Ganti warna",
+    "drawAddPoint": "Add a point",
+    "drawAddPolygon": "Add a geometry",
+    "drawDelete": "Delete selection",
     "drawPoints": "Draw points",
     "drawPolygon": "Gambar sebuah lapisan",
     "drawPolygonLogin": "Daftar dan masuk untuk menggambar lapisan (gratis, 2 menit)",
@@ -695,6 +708,11 @@
     "rulersHover": "Seret untuk memindahkan atau klik untuk melihat lebih banyak",
     "rulersStop": "Berhenti mengukur",
     "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
+    "screenshotArea": {
+      "map": "Only map",
+      "withTimebar": "With timebar",
+      "withTimebarAndLegend": "With timebar and legend"
+    },
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
@@ -750,6 +768,7 @@
     "selected": "terpilih"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Sesuaikan rentang waktu dengan tanggal ini",
     "focusOnThisDay": "Rentang waktu fokus pada hari ini",
     "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari 10 kapal"
@@ -758,8 +777,9 @@
     "activityDisabled": "Pilih setidaknya satu lapisan aktivitas",
     "detectionsDisabled": "Pilih setidaknya satu lapisan pendeteksian.",
     "graphDepth": "Kedalaman kapal",
-    "graphDisabled": "Tidak tersedia untuk lebih dari 2 kapal yang dipilih",
+    "graphDisabled": "Graph is not available with more than 2 vessels selected",
     "graphSpeed": "Kecepatan kapal",
+    "graphVesselOnly": "{{graph}} is only available for vessel tracks",
     "settings_close": "Tutup pengaturan timebar",
     "settings_open": "Buka pengaturan timebar",
     "showActivity": "Tampilkan grafik aktivitas",
@@ -775,6 +795,25 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
   },
   "user": {
+    "gfwBadges": "GFW Badges",
+    "badges": {
+      "ambassador": {
+        "title": "Ambassador",
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+      },
+      "fixer": {
+        "title": "Fixer",
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+      },
+      "presenter": {
+        "title": "Presenter",
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+      },
+      "teacher": {
+        "title": "Teacher",
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+      }
+    },
     "datasets": "Dataset pengguna",
     "groupMissing": "Apakah Anda termasuk dalam grup pengguna yang tidak muncul di sini? <2>Meminta akses</2>",
     "groups": "Grup Pengguna",
@@ -811,6 +850,7 @@
     "capacity": "Kapasitas",
     "carrier": "Pembawa",
     "casco": "Casco",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Peta di tengah dengan peristiwa di dalam",
     "clickToSeeMore": "Klik untuk informasi lebih lanjut",
     "close": "Tutup",

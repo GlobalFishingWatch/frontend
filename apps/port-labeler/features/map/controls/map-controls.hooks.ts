@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { useViewport } from '../map-viewport.hooks'
 import useMapInstance from '../map-context.hooks'
 

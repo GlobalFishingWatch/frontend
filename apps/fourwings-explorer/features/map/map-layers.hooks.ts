@@ -1,22 +1,24 @@
 import { useMemo } from 'react'
-import {
+import type {
   AnyGeneratorConfig,
   ExtendedLayer,
+  HeatmapAnimatedGeneratorConfig,
+  HeatmapAnimatedGeneratorSublayer,
+  PolygonsGeneratorConfig,
+  StyleTransformation} from '@globalfishingwatch/layer-composer';
+import {
   GeneratorType,
   getInteractiveLayerIds,
   Group,
-  HeatmapAnimatedGeneratorConfig,
-  HeatmapAnimatedGeneratorSublayer,
-  HeatmapAnimatedMode,
-  PolygonsGeneratorConfig,
-  StyleTransformation,
+  HeatmapAnimatedMode
 } from '@globalfishingwatch/layer-composer'
 import { useLayerComposer } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { DatasetLayer, FourwingsLayerConfig, useDatasetLayers } from 'features/layers/layers.hooks'
+import type { DatasetLayer, FourwingsLayerConfig} from 'features/layers/layers.hooks';
+import { useDatasetLayers } from 'features/layers/layers.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'
 import { useTimerange } from 'features/timebar/timebar.hooks'
-import { ContextAPIDataset, FourwingsAPIDataset } from 'features/datasets/datasets.types'
+import type { ContextAPIDataset, FourwingsAPIDataset } from 'features/datasets/datasets.types'
 import { API_URL } from 'data/config'
 
 /**

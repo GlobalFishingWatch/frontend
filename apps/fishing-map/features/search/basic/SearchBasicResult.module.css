@@ -36,12 +36,6 @@
   color: var(--color-secondary-blue);
 }
 
-.alreadyAddedMsg {
-  display: flex;
-  align-items: center;
-  font: var(--font-S);
-}
-
 .properties {
   display: flex;
   gap: var(--space-S) var(--space-M);
