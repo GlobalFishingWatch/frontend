@@ -795,6 +795,25 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
   },
   "user": {
+    "gfwBadges": "GFW Badges",
+    "badges": {
+      "ambassador": {
+        "title": "Ambassador",
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+      },
+      "fixer": {
+        "title": "Fixer",
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+      },
+      "presenter": {
+        "title": "Presenter",
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+      },
+      "teacher": {
+        "title": "Teacher",
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+      }
+    },
     "datasets": "User datasets",
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",

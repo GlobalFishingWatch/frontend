@@ -795,6 +795,25 @@
     "maxPointsVisualizationExceeded": "crwdns83408:0crwdne83408:0"
   },
   "user": {
+    "gfwBadges": "crwdns84052:0crwdne84052:0",
+    "badges": {
+      "ambassador": {
+        "title": "crwdns84062:0crwdne84062:0",
+        "description": "crwdns84064:0crwdne84064:0"
+      },
+      "fixer": {
+        "title": "crwdns84066:0crwdne84066:0",
+        "description": "crwdns84068:0crwdne84068:0"
+      },
+      "presenter": {
+        "title": "crwdns84070:0crwdne84070:0",
+        "description": "crwdns84072:0crwdne84072:0"
+      },
+      "teacher": {
+        "title": "crwdns84074:0crwdne84074:0",
+        "description": "crwdns84076:0crwdne84076:0"
+      }
+    },
     "datasets": "crwdns82800:0crwdne82800:0",
     "groupMissing": "crwdns60447:0crwdne60447:0",
     "groups": "crwdns60449:0crwdne60449:0",
