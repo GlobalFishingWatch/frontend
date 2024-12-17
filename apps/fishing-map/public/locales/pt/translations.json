@@ -709,10 +709,12 @@
     "rulersStop": "Parar medições",
     "search": "Procure por oceanos e mares, AMPs ou ZEEs",
     "screenshotArea": {
-      "map": "Only map",
-      "withTimebar": "With timebar",
-      "withTimebarAndLegend": "With timebar and legend"
+      "map": "Somente mapa",
+      "withTimebar": "com barra de tempo",
+      "withTimebarAndLegend": "Com barra de tempo e legenda"
     },
+    "screenshotDownload": "Descarregar imagem",
+    "screenshotPreview": "Pré-visualizar imagem",
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },

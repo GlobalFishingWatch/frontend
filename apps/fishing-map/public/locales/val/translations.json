@@ -713,6 +713,8 @@
       "withTimebar": "crwdns84030:0crwdne84030:0",
       "withTimebarAndLegend": "crwdns84032:0crwdne84032:0"
     },
+    "screenshotDownload": "crwdns84078:0crwdne84078:0",
+    "screenshotPreview": "crwdns84080:0crwdne84080:0",
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
   },

@@ -709,10 +709,12 @@
     "rulersStop": "Arrêter les mesures",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
     "screenshotArea": {
-      "map": "Only map",
-      "withTimebar": "With timebar",
-      "withTimebarAndLegend": "With timebar and legend"
+      "map": "Carte uniquement",
+      "withTimebar": "Avec barre de temps",
+      "withTimebarAndLegend": "Avec barre de temps et légende"
     },
+    "screenshotDownload": "Télécharger l'image",
+    "screenshotPreview": "Aperçu de la capture d'écran",
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
