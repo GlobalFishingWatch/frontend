@@ -20,7 +20,6 @@
     "sourceMap": true,
     "target": "es2020",
     "paths": {
-      "@globalfishingwatch/linting": ["linting/index.js"],
       "@globalfishingwatch/api-client": ["libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["libs/api-types/src/index.ts"],
       "@globalfishingwatch/data-transforms": ["libs/data-transforms/src/index.ts"],
@@ -34,6 +33,7 @@
       "@globalfishingwatch/i18n-labels": ["libs/i18n-labels/index.ts"],
       "@globalfishingwatch/i18n-labels/*": ["libs/i18n-labels/*"],
       "@globalfishingwatch/layer-composer": ["libs/layer-composer/src/index.ts"],
+      "@globalfishingwatch/linting": ["linting/index.js"],
       "@globalfishingwatch/ocean-areas": ["libs/ocean-areas/src/index.ts"],
       "@globalfishingwatch/pbf-decoders": ["libs/pbf-decoders/index.ts"],
       "@globalfishingwatch/react-hooks": ["libs/react-hooks/src/index.ts"],
