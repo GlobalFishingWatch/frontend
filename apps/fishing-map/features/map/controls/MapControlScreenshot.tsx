@@ -148,7 +148,7 @@ const MapControlScreenshot = ({
       )}
       <Modal
         appSelector={ROOT_DOM_ELEMENT}
-        title="Screenshot preview"
+        title={t('map.screenshotPreview', 'Screenshot preview')}
         isOpen={modalOpen}
         onClose={handleModalClose}
         contentClassName={styles.previewContainer}
@@ -171,7 +171,7 @@ const MapControlScreenshot = ({
         </div>
         <div className={styles.previewFooter}>
           <Button id="dismiss-preview-download" onClick={handleModalClose} type="secondary">
-            Dismiss
+            {t('common.dismiss', 'Dismiss')}
           </Button>
           <div>
             {isPrintSupported && (
@@ -184,7 +184,7 @@ const MapControlScreenshot = ({
               </Button>
             )}
             <Button id="image-preview-download" loading={loading} onClick={onImageDownloadClick}>
-              Download image
+              {t('map.screenshotDownload', 'Download image')}
             </Button>
           </div>
         </div>
