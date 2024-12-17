@@ -1,21 +1,26 @@
-import { useCallback, useState } from 'react'
+/* eslint-disable @next/next/no-img-element */
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-import { Button, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { Button, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
-import { SUPPORT_EMAIL } from 'data/config'
+import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectIsGFWUser,
   selectIsUserLogged,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
-import ambassorImg from 'assets/images/badges/ambassor.jpg'
-import feedbackImg from 'assets/images/badges/feedback.jpg'
-import presenterImg from 'assets/images/badges/presenter.jpg'
-import teacherImg from 'assets/images/badges/teacher.jpg'
+import ambassadorImg from 'assets/images/badges/ambassador.webp'
+import ambassadorPlaceholderImg from 'assets/images/badges/ambassador-placeholder.webp'
+import fixerImg from 'assets/images/badges/fixer.webp'
+import fixerPlaceholderImg from 'assets/images/badges/fixer-placeholder.webp'
+import presenterImg from 'assets/images/badges/presenter.webp'
+import presenterPlaceholderImg from 'assets/images/badges/presenter-placeholder.webp'
+import teacherImg from 'assets/images/badges/teacher.webp'
+import teacherPlaceholderImg from 'assets/images/badges/teacher-placeholder.webp'
 import { fetchUserThunk, logoutUserThunk } from './user.slice'
 import styles from './User.module.css'
 import {
@@ -25,6 +30,9 @@ import {
   selectUserGroupsClean,
   selectHasAmbassadorBadge,
 } from './selectors/user.permissions.selectors'
+
+type Badge = 'Ambassador' | 'Fixer' | 'Presenter' | 'Teacher'
+type BadgeInfo = { image: string; placeholder: string; userHasIt: boolean }
 
 function UserInfo() {
   const { t } = useTranslation()
@@ -38,6 +46,9 @@ function UserInfo() {
   const hasPresenterBadge = useSelector(selectHasPresenterBadge)
   const hasTeacherBadge = useSelector(selectHasTeacherBadge)
   const [logoutLoading, setLogoutLoading] = useState(false)
+  const [badgeSelected, setBadgeSelected] = useState<Badge>()
+
+  const badgesModalOpen = badgeSelected !== undefined
 
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
@@ -46,6 +57,39 @@ function UserInfo() {
     await dispatch(fetchUserThunk({ guest: true }))
     setLogoutLoading(false)
   }, [dispatch])
+
+  const onBadgeClick = (badge: Badge) => {
+    setBadgeSelected(badge)
+  }
+  const onBadgeModalClose = () => {
+    setBadgeSelected(undefined)
+  }
+
+  const BADGES: Record<Badge, BadgeInfo> = useMemo(
+    () => ({
+      Ambassador: {
+        image: ambassadorImg.src,
+        placeholder: ambassadorPlaceholderImg.src,
+        userHasIt: hasAmbassadorBadge,
+      },
+      Fixer: {
+        image: fixerImg.src,
+        placeholder: fixerPlaceholderImg.src,
+        userHasIt: hasFeedbackProviderBadge,
+      },
+      Presenter: {
+        image: presenterImg.src,
+        placeholder: presenterPlaceholderImg.src,
+        userHasIt: hasPresenterBadge,
+      },
+      Teacher: {
+        image: teacherImg.src,
+        placeholder: teacherPlaceholderImg.src,
+        userHasIt: hasTeacherBadge,
+      },
+    }),
+    [hasAmbassadorBadge, hasFeedbackProviderBadge, hasPresenterBadge, hasTeacherBadge]
+  )
 
   if (!userLogged || !userData) return null
 
@@ -88,70 +132,43 @@ function UserInfo() {
           </Trans>
         </p>
         {isGFWUser && (
-          <div className={styles.row}>
-            <label>{t('user.badges', 'Badges')}</label>
-            <ul className={styles.badges}>
-              <Tooltip
-                content={
-                  hasPresenterBadge ? t('user.badgePresenter', 'Shows people our products') : 'TODO'
-                }
-              >
-                <li className={styles.badge}>
-                  {hasPresenterBadge ? (
-                    <img src={presenterImg.src} alt="Presenter badge" />
-                  ) : (
-                    'presenter placeholder'
-                  )}
-                </li>
-              </Tooltip>
-              <Tooltip
-                content={
-                  hasTeacherBadge ? t('user.badgeTeacher', 'Shows people our products') : 'TODO'
-                }
-              >
-                <li className={styles.badge}>
-                  {hasTeacherBadge ? (
-                    <img src={teacherImg.src} alt="Teacher badge" />
-                  ) : (
-                    'teacher placeholder'
-                  )}
-                </li>
-              </Tooltip>
-              <Tooltip
-                content={
-                  hasFeedbackProviderBadge
-                    ? t('user.badgePresenter', 'Improves our products/guide')
-                    : 'TODO'
-                }
-              >
-                <li className={styles.badge}>
-                  {hasFeedbackProviderBadge ? (
-                    <img src={feedbackImg.src} alt="Feedback badge" />
-                  ) : (
-                    'teacher placeholder'
-                  )}
-                </li>
-              </Tooltip>
-              <Tooltip
-                content={
-                  hasAmbassadorBadge
-                    ? t(
-                        'user.badgePresenter',
-                        'Demonstrates value of our products OR connects our products to real-world situations'
-                      )
-                    : 'TODO'
-                }
-              >
-                <li className={styles.badge}>
-                  {hasAmbassadorBadge ? (
-                    <img src={ambassorImg.src} alt="Ambassador badge" />
-                  ) : (
-                    'teacher placeholder'
-                  )}
-                </li>
-              </Tooltip>
-            </ul>
-          </div>
+          <Fragment>
+            <div className={styles.row}>
+              <label>{t('user.gfwBadges', 'GFW Badges')}</label>
+              <ul className={styles.badges}>
+                {Object.entries(BADGES).map((entry) => {
+                  const [badgeKey, badgeInfo] = entry as [Badge, BadgeInfo]
+                  return (
+                    <li className={styles.badge}>
+                      <Tooltip content={t('common.seeMore', 'See more')}>
+                        {badgeInfo.userHasIt ? (
+                          <button
+                            onClick={badgeInfo.userHasIt ? () => onBadgeClick(badgeKey) : undefined}
+                          >
+                            <img src={BADGES[badgeKey].image} alt="" />
+                          </button>
+                        ) : (
+                          <img src={BADGES[badgeKey].placeholder} alt="" />
+                        )}
+                      </Tooltip>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+            <Modal
+              appSelector={ROOT_DOM_ELEMENT}
+              isOpen={badgesModalOpen}
+              onClose={onBadgeModalClose}
+              contentClassName={styles.badgeModalContent}
+              shouldCloseOnEsc
+            >
+              <Fragment>
+                {badgeSelected && <img src={BADGES[badgeSelected].image} alt="" />}
+                <span>{t(`user.badge${badgeSelected}`)}</span>
+              </Fragment>
+            </Modal>
+          </Fragment>
         )}
       </div>
     </div>

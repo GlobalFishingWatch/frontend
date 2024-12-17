@@ -795,11 +795,11 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
   },
   "user": {
-    "badges": "Badges",
+    "gfwBadges": "GFW Badges",
     "badgePresenter": "Shows people our products",
     "badgeTeacher": "Trains people in our products/Trainer",
-    "badgeFeedback": "Improves our products/guide",
-    "badgeAmbassor": "Demonstrates value of our products OR connects our products to real-world situations",
+    "badgeFixer": "Improves our products/guide",
+    "badgeAmbassador": "Demonstrates value of our products OR connects our products to real-world situations",
     "datasets": "User datasets",
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "User Groups",
