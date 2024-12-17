@@ -795,6 +795,11 @@
     "maxPointsVisualizationExceeded": "Le nombre maximal de points pouvant être visualisés est dépassé, passage en mode « carte thermique »."
   },
   "user": {
+    "gfwBadges": "GFW Badges",
+    "badgePresenter": "Shows people our products",
+    "badgeTeacher": "Trains people in our products/Trainer",
+    "badgeFixer": "Improves our products/guide",
+    "badgeAmbassador": "Demonstrates value of our products OR connects our products to real-world situations",
     "datasets": "Jeux de données utilisateur",
     "groupMissing": "Appartenez-vous à un groupe d’utilisateurs qui n’apparaît pas ici ? <2>Demander l'accès</2>",
     "groups": "Groupes",
