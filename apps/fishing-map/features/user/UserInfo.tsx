@@ -147,7 +147,7 @@ function UserInfo() {
                 {Object.entries(BADGES).map((entry) => {
                   const [badgeKey, badgeInfo] = entry as [Badge, BadgeInfo]
                   return (
-                    <li className={styles.badge}>
+                    <li key={badgeKey} className={styles.badge}>
                       {badgeInfo.userHasIt ? (
                         <Tooltip content={t('common.seeMore', 'See more')}>
                           <button
