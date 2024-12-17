@@ -6,7 +6,7 @@ import styles from './Info.module.css'
 interface FaqProps {
   source?: string
 }
-const Faq: React.FC<FaqProps> = ({ source = '' }): React.ReactElement => {
+const Faq: React.FC<FaqProps> = ({ source = '' }): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const trackClick = useCallback(() => {

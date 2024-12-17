@@ -14,7 +14,7 @@ const HistoryDate: React.FC<HistoryDateProps> = ({
   date,
   originalDate,
   label,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   return (
     <Fragment>
       {(date || originalDate) && (

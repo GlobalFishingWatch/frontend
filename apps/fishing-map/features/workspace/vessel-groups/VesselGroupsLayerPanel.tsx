@@ -46,7 +46,7 @@ export type VesselGroupLayerPanelProps = {
 function VesselGroupLayerPanel({
   dataview,
   vesselGroupLoading,
-}: VesselGroupLayerPanelProps): React.ReactElement {
+}: VesselGroupLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isGFWUser = useSelector(selectIsGFWUser)

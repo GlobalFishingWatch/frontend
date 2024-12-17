@@ -11,7 +11,7 @@ import ActivityDataAndTerminology from '../components/activity/ActivityDataAndTe
 import { selectCurrentUserHasDownloadPermission } from '../profile.selectors'
 import styles from './ActivityFilters.module.css'
 
-const ActivityFilters: React.FC = (): React.ReactElement => {
+const ActivityFilters: React.FC = (): React.ReactElement<any> => {
   const { t } = useTranslation()
   const [isModalOpen, setIsOpen] = useState(false)
   const setModalOpen = useCallback((isOpen) => {

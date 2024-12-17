@@ -25,7 +25,7 @@ type EventsLayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactElement {
+function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded

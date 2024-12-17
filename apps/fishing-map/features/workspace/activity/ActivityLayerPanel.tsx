@@ -52,7 +52,7 @@ function ActivityLayerPanel({
   showBorder,
   isOpen,
   onToggle,
-}: LayerPanelProps): React.ReactElement {
+}: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)

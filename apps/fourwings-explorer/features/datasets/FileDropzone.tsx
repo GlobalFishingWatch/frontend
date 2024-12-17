@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, type JSX } from 'react';
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
 import type { DatasetGeometryType } from '@globalfishingwatch/api-types'

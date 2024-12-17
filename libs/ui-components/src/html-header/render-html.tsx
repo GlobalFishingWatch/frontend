@@ -10,7 +10,7 @@ const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
 type ComponentItem = {
-  component: React.ReactElement
+  component: React.ReactElement<any>
   path: string
 }
 const componentsList: ComponentItem[] = [

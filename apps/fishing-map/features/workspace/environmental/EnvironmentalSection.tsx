@@ -22,7 +22,7 @@ import { VisualisationChoice } from 'features/workspace/common/VisualisationChoi
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 
-function EnvironmentalLayerSection(): React.ReactElement | null {
+function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)

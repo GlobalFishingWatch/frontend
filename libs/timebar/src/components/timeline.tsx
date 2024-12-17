@@ -516,7 +516,12 @@ class Timeline extends PureComponent<TimelineProps> {
           trackGraphOrientation,
         }}
       >
-        <div ref={(node: any) => (this.node = node)} className={cx(styles.Timeline)}>
+        <div
+          ref={(node: any) => {
+            this.node = node
+          }}
+          className={cx(styles.Timeline)}
+        >
           {bookmarkStart && bookmarkEnd && (
             <Bookmark
               labels={labels.bookmark}

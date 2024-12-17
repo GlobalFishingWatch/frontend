@@ -105,7 +105,7 @@ export const getVesselIdentityTooltipSummary = (
   return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
 }
 
-function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): React.ReactElement {
+function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()

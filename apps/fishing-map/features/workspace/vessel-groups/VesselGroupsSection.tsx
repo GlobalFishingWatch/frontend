@@ -28,7 +28,7 @@ const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {
   id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
 }
 
-function VesselGroupSection(): React.ReactElement {
+function VesselGroupSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const dataviews = useSelector(selectVesselGroupDataviews)

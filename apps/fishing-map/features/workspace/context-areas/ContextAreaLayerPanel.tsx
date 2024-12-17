@@ -71,7 +71,7 @@ const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
 type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
-function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()

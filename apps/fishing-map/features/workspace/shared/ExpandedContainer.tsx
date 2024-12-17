@@ -6,8 +6,8 @@ import styles from './ExpandedContainer.module.css'
 
 interface ExpandedContainerProps {
   visible: boolean
-  children: React.ReactElement
-  component: React.ReactElement
+  children: React.ReactElement<any>
+  component: React.ReactElement<any>
   className?: string
   arrowClassName?: string
   onClickOutside: () => void

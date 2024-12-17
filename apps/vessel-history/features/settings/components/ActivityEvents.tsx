@@ -29,7 +29,7 @@ const truncateLabels = (option: MultiSelectOption) => ({
   ...option,
   label: option.label.toString().slice(0, 55),
 })
-const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
+const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement<any> => {
   const { settings, section } = props
   const { t } = useTranslation()
   const { setSettingOptions, setSetting } = useSettingsConnect()

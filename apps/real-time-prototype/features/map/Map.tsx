@@ -33,7 +33,7 @@ export type GFWLayerProps = {
   showLatestPositions: boolean
 }
 
-const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement => {
+const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any> => {
   useURLViewport()
   const { viewState, onViewportStateChange } = useViewport()
   const deckRef = useRef<DeckGLRef>(null)

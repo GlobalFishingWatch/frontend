@@ -39,7 +39,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const [isPending, startTransition] = useTransition()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()

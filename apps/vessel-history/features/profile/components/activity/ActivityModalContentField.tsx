@@ -18,7 +18,7 @@ const ActivityModalContentField: React.FC<ActivityModalContentFieldProps> = ({
   value,
   onHelpClick,
   onValueClick,
-}: ActivityModalContentFieldProps): React.ReactElement => {
+}: ActivityModalContentFieldProps): React.ReactElement<any> => {
   return (
     <Fragment>
       <div className={cx(className, styles.field)}>

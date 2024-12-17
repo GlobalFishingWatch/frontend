@@ -1,7 +1,9 @@
 export type TooltipTypes =
   | React.ReactNode
-  | React.ReactChild
-  | React.ReactChild[]
+  | React.ReactElement<any>
+  | number
+  | string
+  | (React.ReactElement<any> | number | string)[]
   | string
   | object
   | (string | object)[]

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
@@ -26,7 +26,7 @@ const InfoFieldHistoryTable: React.FC<ListItemProps> = ({
   datesTemplate,
   columnHeaders,
   hideTMTDate,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
   const { formatSource } = useVesselsConnect(label)
 

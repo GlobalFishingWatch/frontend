@@ -19,7 +19,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
   onToggleClick = () => {},
   quantity,
   expanded,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const onToggle = useCallback(() => onToggleClick(eventType), [eventType, onToggleClick])

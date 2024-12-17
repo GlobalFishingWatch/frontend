@@ -26,7 +26,7 @@ const DataTerminology: React.FC<ModalProps> = ({
   title,
   size = 'default',
   type = 'border',
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation(['translations', 'data-terminology'])
   const [showModal, setShowModal] = useState(false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])

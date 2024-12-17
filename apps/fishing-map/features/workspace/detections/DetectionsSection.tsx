@@ -24,7 +24,7 @@ import LayerPanel from '../activity/ActivityLayerPanel'
 import activityStyles from '../activity/ActivitySection.module.css'
 import { useVisualizationsOptions } from '../activity/activity.hooks'
 
-function DetectionsSection(): React.ReactElement {
+function DetectionsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectDetectionsDataviews)

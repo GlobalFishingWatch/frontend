@@ -19,7 +19,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
     valid,
   } = useCreateUserApplication()
 
-  const nameRef = useRef<HTMLInputElement>()
+  const nameRef = useRef<HTMLInputElement>(undefined)
   const create = useCallback(async () => {
     await mutate({
       ...token,

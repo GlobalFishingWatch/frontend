@@ -127,7 +127,7 @@ type FetchSearchResultsParams = {
 }
 
 export const useFetchSearchResults = () => {
-  const promiseRef = useRef<any>()
+  const promiseRef = useRef<any>(undefined)
   const query = useSelector(selectSearchQuery)
   const activeSearchOption = useSelector(selectSearchOption)
   const { searchPagination } = useSearchConnect()

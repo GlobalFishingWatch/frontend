@@ -1,4 +1,5 @@
 import type { Placement } from 'tippy.js'
+import type { JSX } from 'react'
 export * from './Select'
 
 export type SelectOption<Id = any, Label = string | JSX.Element> = {

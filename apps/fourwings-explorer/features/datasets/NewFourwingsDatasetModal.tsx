@@ -26,7 +26,7 @@ export type FileFields = FileField[]
 const DATASET_TYPE = '4wings'
 export type CSV = Record<string, any>[]
 
-function NewFourwingsDatasetModal(): React.ReactElement {
+function NewFourwingsDatasetModal(): React.ReactElement<any> {
   const queryClient = useQueryClient()
   const [newFourwingsDataset, setNewFourwingsDataset] = useModal('newFourwingsDataset')
   const apiLocalDatasets = useAPIDatasets({ source: 'LOCAL', type: DATASET_TYPE })

@@ -12,7 +12,7 @@ interface SettingsProps {
   section: SettingEventSectionName
 }
 
-const FishingEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
+const FishingEvents: React.FC<SettingsProps> = (props): React.ReactElement<any> => {
   const { settings, section } = props
 
   return (

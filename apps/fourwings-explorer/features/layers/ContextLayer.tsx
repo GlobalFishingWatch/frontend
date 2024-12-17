@@ -43,7 +43,7 @@ const filterFeaturesByCenterDistance = (
   return uniqBy(closerAreas, 'properties.id').slice(0, limit)
 }
 
-function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement {
+function ContextLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const router = useRouter()
   const { updateLayer } = useLayersConfig()
   const [colorOpen, setColorOpen] = useState(false)

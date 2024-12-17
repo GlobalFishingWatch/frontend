@@ -30,7 +30,7 @@ export const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection)
 }
 const DATASET_TYPE = 'context'
 
-function NewDatasetModal(): React.ReactElement {
+function NewDatasetModal(): React.ReactElement<any> {
   const [newContextDataset, setNewContextDataset] = useModal('newContextDataset')
   const apiLocalDatasets = useAPIDatasets({ source: 'LOCAL', type: DATASET_TYPE })
   const { addLayer } = useLayersConfig()
@@ -60,10 +60,10 @@ function NewDatasetModal(): React.ReactElement {
     (datasetConfiguration: ContextAPIDatasetUpdate['configuration']) => {
       setNewDataset(
         (dataset) =>
-          ({
+          (({
             ...dataset,
-            configuration: { ...dataset.configuration, ...datasetConfiguration },
-          }) as any
+            configuration: { ...dataset.configuration, ...datasetConfiguration }
+          }) as any)
       )
     },
     []

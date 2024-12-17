@@ -1,4 +1,4 @@
-import { Children, isValidElement, cloneElement } from 'react'
+import { Children, isValidElement, cloneElement, type JSX } from 'react';
 import type { Placement } from 'tippy.js'
 import { useSelector } from 'react-redux'
 import type { IconButtonProps, ButtonProps } from '@globalfishingwatch/ui-components'

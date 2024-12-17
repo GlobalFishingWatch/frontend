@@ -9,7 +9,7 @@ import styles from './Radio.module.css'
 
 interface RadioProps {
   active: boolean
-  label?: string | ReactElement
+  label?: string | ReactElement<any>
   disabled?: boolean
   onClick: (event: React.MouseEvent) => void
   tooltip?: TooltipTypes

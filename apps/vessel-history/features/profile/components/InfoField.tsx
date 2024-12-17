@@ -1,4 +1,4 @@
-import type { ReactNode} from 'react';
+import type { ReactNode, JSX } from 'react';
 import React, { useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -43,7 +43,7 @@ const InfoField: React.FC<ListItemProps> = ({
   hideTMTDate = false,
   includeFaq = false,
   helpText,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)

@@ -24,7 +24,7 @@ interface SettingsOptions {
   [key: string]: SettingsOption
 }
 
-const Settings: React.FC = (): React.ReactElement => {
+const Settings: React.FC = (): React.ReactElement<any> => {
   const settings = useSelector(selectSettings)
   const { t } = useTranslation()
   const { setFiltersStatus } = useSettingsConnect()

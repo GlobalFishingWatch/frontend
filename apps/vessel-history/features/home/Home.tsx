@@ -54,7 +54,7 @@ interface LoaderProps {
   carrier?: boolean
 }
 
-const Home: React.FC<LoaderProps> = (): React.ReactElement => {
+const Home: React.FC<LoaderProps> = (): React.ReactElement<any> => {
   const { t } = useTranslation()
   const { openFeedback } = useApp()
 

@@ -50,7 +50,7 @@ const style = {
   height: '100%',
 }
 
-const MapWrapper = (): React.ReactElement => {
+const MapWrapper = (): React.ReactElement<any> => {
   useURLViewport()
   useMapSourceTilesLoadedAtom()
   useDynamicBreaksUpdate()

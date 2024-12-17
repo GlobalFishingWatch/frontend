@@ -1,15 +1,13 @@
-import React, { useCallback, useState, useMemo, Fragment, useRef } from 'react'
+import React, { useCallback, useState, useMemo, Fragment, useRef, type JSX } from 'react'
 import { matchSorter } from 'match-sorter'
 import type {
   UseComboboxState,
   UseComboboxStateChangeTypes,
-  UseComboboxStateChange} from 'downshift';
-import {
-  useMultipleSelection,
-  useCombobox
+  UseComboboxStateChange,
 } from 'downshift'
+import { useMultipleSelection, useCombobox } from 'downshift'
 import cx from 'classnames'
-import type { IconType } from '../icon';
+import type { IconType } from '../icon'
 import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { Tooltip } from '../tooltip'
@@ -85,8 +83,8 @@ const getPlaceholderBySelections = (
         })
         .join(', ')
     : selections.length > 1
-      ? `${selections.length} selected`
-      : selections[0]?.label.toString()
+    ? `${selections.length} selected`
+    : selections[0]?.label.toString()
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
@@ -317,8 +315,8 @@ export function MultiSelect(props: MultiSelectProps) {
                 highlight && isSelected
                   ? 'close'
                   : (highlight || isSelected) && !item.disableSelection
-                    ? 'tick'
-                    : ('' as IconType)
+                  ? 'tick'
+                  : ('' as IconType)
               return (
                 <Tooltip key={item.id} content={item.tooltip} placement="top-start">
                   <li

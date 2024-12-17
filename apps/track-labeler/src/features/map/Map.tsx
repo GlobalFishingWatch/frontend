@@ -65,8 +65,8 @@ const sort: StyleTransformation = (style) => {
 
 const defaultTransformations: StyleTransformation[] = [sort, getInteractiveLayerIds as any]
 
-const Map = (): React.ReactElement => {
-  const mapRef: React.RefObject<MapRef> = useMapboxRef()
+const Map = (): React.ReactElement<any> => {
+  const mapRef: React.RefObject<MapRef | null> = useMapboxRef()
   const onRefReady = useMapboxRefCallback()
   const { viewport, onViewportChange } = useViewport()
   const { globalConfig } = useGeneratorsConnect()
@@ -159,7 +159,7 @@ const Map = (): React.ReactElement => {
   )
 
   return (
-    <div className={styles.container}>
+    (<div className={styles.container}>
       {style && (
         <MapComponent
           ref={mapRef}
@@ -179,7 +179,7 @@ const Map = (): React.ReactElement => {
         {legengLabels &&
           legengLabels.map((legend) => (
             // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-            <div
+            (<div
               key={legend.id}
               className={cx(styles.legend, {
                 [styles.hidden]: hiddenLabels.includes(legend.id),
@@ -202,12 +202,12 @@ const Map = (): React.ReactElement => {
               {availableShortcuts.includes(legend.id as ActionType) && (
                 <span>({shortcuts[legend.id]})</span>
               )}
-            </div>
+            </div>)
           ))}
       </div>
       <MapControls bounds={mapBounds} />
-    </div>
-  )
+    </div>)
+  );
 }
 
 export default Map

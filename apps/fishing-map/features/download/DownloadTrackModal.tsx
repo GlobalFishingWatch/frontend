@@ -32,7 +32,7 @@ import { FORMAT_OPTIONS } from './downloadTrack.config'
 function DownloadTrackModal() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout>(undefined)
   const downloadStatus = useSelector(selectDownloadTrackStatus)
   const rateLimit = useSelector(selectDownloadTrackRateLimit)
   const [format, setFormat] = useState(FORMAT_OPTIONS[0].id as Format)

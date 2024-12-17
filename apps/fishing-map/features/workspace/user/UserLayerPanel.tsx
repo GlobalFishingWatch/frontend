@@ -54,7 +54,7 @@ type UserPanelProps = {
   onToggle?: () => void
 }
 
-function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
+function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()

@@ -51,7 +51,7 @@ const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: st
   ]
 }
 
-function VesselsSection(): React.ReactElement {
+function VesselsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchLocation } = useLocationConnect()

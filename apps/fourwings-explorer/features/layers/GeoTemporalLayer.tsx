@@ -19,7 +19,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement {
+function GeoTemporalLayer({ layer, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const [colorOpen, setColorOpen] = useState(false)
   const { updateLayer } = useLayersConfig()
 

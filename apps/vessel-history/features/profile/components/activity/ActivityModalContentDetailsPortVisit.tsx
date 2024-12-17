@@ -19,7 +19,7 @@ interface ActivityModalContentProps {
 
 const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> = (
   props
-): React.ReactElement => {
+): React.ReactElement<any> => {
   const event = props.event
   const { t } = useTranslation()
   const psmaDate = useSelector(

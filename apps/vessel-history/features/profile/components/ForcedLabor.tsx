@@ -12,7 +12,7 @@ interface ForcedLaborProps {
   vessel: VesselWithHistory | null
 }
 
-const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
+const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement<any> => {
   const vessel = props.vessel
   const { t } = useTranslation()
 

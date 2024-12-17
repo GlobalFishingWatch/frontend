@@ -6,7 +6,7 @@ import { BASE_URL } from '../../data/constants'
 import styles from './Login.module.css'
 // import { useSelector } from 'react-redux'
 
-const Login: React.FC = (): React.ReactElement => {
+const Login: React.FC = (): React.ReactElement<any> => {
   const location = window.location.origin + BASE_URL
   // const search = useSelector(getLocationSearch)
   const url = GFWAPI.getLoginUrl(location)

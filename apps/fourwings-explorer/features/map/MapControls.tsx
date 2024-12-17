@@ -13,7 +13,7 @@ import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { useLayersConfig } from 'features/layers/layers.hooks'
 import styles from './MapControls.module.css'
 
-const MapControls = ({ mapLoading = false }: { mapLoading?: boolean }): React.ReactElement => {
+const MapControls = ({ mapLoading = false }: { mapLoading?: boolean }): React.ReactElement<any> => {
   const { layersConfig, updateLayer } = useLayersConfig()
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport

@@ -10,7 +10,7 @@ interface ActivityDateProps {
   event: ActivityEvent
 }
 
-const ActivityDate: React.FC<ActivityDateProps> = ({ event }): React.ReactElement => {
+const ActivityDate: React.FC<ActivityDateProps> = ({ event }): React.ReactElement<any> => {
   const { getEventDurationDescription } = useActivityEventTranslations()
 
   const durationDescription = event.subType ? '' : getEventDurationDescription(event)

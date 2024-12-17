@@ -28,7 +28,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   onMapClick = () => {},
   onMapHover = () => {},
   onToggleClick = () => {},
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
   const vesselId = useSelector(selectVesselInfoDataId)
   const { start, end } = useTimerangeConnect()

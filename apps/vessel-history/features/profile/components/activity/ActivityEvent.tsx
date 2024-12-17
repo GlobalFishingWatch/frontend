@@ -25,7 +25,7 @@ const ActivityEvent: React.FC<EventProps> = ({
   onInfoClick = () => {},
   onMapClick = () => {},
   options = { displayPortVisitsAsOneEvent: false },
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   return (
     <Fragment>
       <ActivityEventPortVisit

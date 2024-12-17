@@ -6,7 +6,7 @@ interface ModalProps {
   section: SettingEventSectionName
 }
 
-const ActivityEventDataAndTerminology: React.FC<ModalProps> = ({ section }): React.ReactElement => {
+const ActivityEventDataAndTerminology: React.FC<ModalProps> = ({ section }): React.ReactElement<any> => {
   return (
     <Fragment>
       {section === 'fishingEvents' && (

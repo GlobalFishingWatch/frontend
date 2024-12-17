@@ -85,7 +85,7 @@ import {
 } from './vessel-groups.utils'
 import { ID_COLUMNS_OPTIONS } from './vessel-groups.config'
 
-function VesselGroupModal(): React.ReactElement {
+function VesselGroupModal(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
@@ -123,7 +123,7 @@ function VesselGroupModal(): React.ReactElement {
     selectVesselGroupModalDatasetsWithoutEventsRelated
   )
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const searchVesselGroupsVesselsRef = useRef<any>()
+  const searchVesselGroupsVesselsRef = useRef<any>(undefined)
   const searchVesselGroupsVesselsAllowed = vesselGroupVesselsToSearch
     ? vesselGroupVesselsToSearch?.length < MAX_VESSEL_GROUP_VESSELS
     : true
