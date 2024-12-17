@@ -314,27 +314,28 @@ const VesselIdentity = () => {
         )}
         <VesselIdentitySelector />
       </div>
-      <div className={styles.container}>
-        <label>View in</label>
-        <div className={styles.externalToolLinks}>
-          <a
-            href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Marine Traffic
-            <Icon icon="external-link" type="default" />
-          </a>
-          <a
-            href={`https://app.triton.fish/search?name=${vesselIdentity?.ssvid}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Triton
-            <Icon icon="external-link" type="default" />
-          </a>
-          {/* TODO this Skylight link is broken */}
-          {/* <a
+      {vesselIdentity?.ssvid && (
+        <div className={styles.container}>
+          <label>View in</label>
+          <div className={styles.externalToolLinks}>
+            <a
+              href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Marine Traffic
+              <Icon icon="external-link" type="default" />
+            </a>
+            <a
+              href={`https://app.triton.fish/search?name=${vesselIdentity?.ssvid}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Triton
+              <Icon icon="external-link" type="default" />
+            </a>
+            {/* TODO this Skylight link is broken */}
+            {/* <a
             href={`https://sc-production.skylight.earth/vesseldetails/B:${vesselIdentity?.ssvid}`}
             target="_blank"
             rel="noreferrer"
@@ -342,8 +343,9 @@ const VesselIdentity = () => {
             Skylight
             <Icon icon="external-link" type="default" />
           </a> */}
+          </div>
         </div>
-      </div>
+      )}
     </Fragment>
   )
 }
