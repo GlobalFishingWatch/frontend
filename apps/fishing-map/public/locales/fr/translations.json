@@ -713,8 +713,8 @@
       "withTimebar": "Avec barre de temps",
       "withTimebarAndLegend": "Avec barre de temps et légende"
     },
-    "screenshotDownload": "Download image",
-    "screenshotPreview": "Screenshot preview",
+    "screenshotDownload": "Télécharger l'image",
+    "screenshotPreview": "Aperçu de la capture d'écran",
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
