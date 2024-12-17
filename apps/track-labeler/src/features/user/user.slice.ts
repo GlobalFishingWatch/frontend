@@ -1,7 +1,7 @@
-import type { PayloadAction} from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createSelector } from '@reduxjs/toolkit'
 import { redirect } from 'redux-first-router'
-import jwt_decode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 import type { AppThunk, RootState } from '../../store'
@@ -52,7 +52,7 @@ export const counterSlice = createSlice({
       state.resolved = true
       state.logged = true
       const defaultExpiration = (new Date().getTime() + 1000 * 60 * DEFAULT_TOKEN_EXPIRATION) / 1000
-      const { exp = defaultExpiration } = jwt_decode<UserToken>(GFWAPI.getToken())
+      const { exp = defaultExpiration } = jwtDecode<UserToken>(GFWAPI.getToken())
       state.tokenExpirationTimestamp = exp * 1000
       state.data = action.payload
     },
