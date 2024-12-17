@@ -713,6 +713,8 @@
       "withTimebar": "With timebar",
       "withTimebarAndLegend": "With timebar and legend"
     },
+    "screenshotDownload": "Download image",
+    "screenshotPreview": "Screenshot preview",
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
