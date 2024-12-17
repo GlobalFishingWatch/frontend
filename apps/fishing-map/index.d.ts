@@ -17,3 +17,10 @@ declare module '*.png' {
 
   export default content
 }
+
+declare module '*.webp' {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const content: import('../dist/shared/lib/image-external').StaticImageData
+
+  export default content
+}
