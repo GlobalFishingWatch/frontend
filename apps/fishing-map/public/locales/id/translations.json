@@ -795,6 +795,11 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
   },
   "user": {
+    "gfwBadges": "GFW Badges",
+    "badgePresenter": "Shows people our products",
+    "badgeTeacher": "Trains people in our products/Trainer",
+    "badgeFixer": "Improves our products/guide",
+    "badgeAmbassador": "Demonstrates value of our products OR connects our products to real-world situations",
     "datasets": "Dataset pengguna",
     "groupMissing": "Apakah Anda termasuk dalam grup pengguna yang tidak muncul di sini? <2>Meminta akses</2>",
     "groups": "Grup Pengguna",
