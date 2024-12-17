@@ -795,6 +795,11 @@
     "maxPointsVisualizationExceeded": "crwdns83408:0crwdne83408:0"
   },
   "user": {
+    "gfwBadges": "crwdns84052:0crwdne84052:0",
+    "badgePresenter": "crwdns84054:0crwdne84054:0",
+    "badgeTeacher": "crwdns84056:0crwdne84056:0",
+    "badgeFixer": "crwdns84058:0crwdne84058:0",
+    "badgeAmbassador": "crwdns84060:0crwdne84060:0",
     "datasets": "crwdns82800:0crwdne82800:0",
     "groupMissing": "crwdns60447:0crwdne60447:0",
     "groups": "crwdns60449:0crwdne60449:0",
