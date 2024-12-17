@@ -18,7 +18,7 @@ const prettierConfig = require('eslint-config-prettier')
 // const gitignorePath = path.resolve(__dirname, '.gitignore')
 
 module.exports = tseslint.config({
-  files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
+  files: ['**/*.{js,ts,jsx,tsx}', '**/*.mjs'],
   plugins: {
     '@nx': nxPlugin,
     '@next/next': nextPlugin,
