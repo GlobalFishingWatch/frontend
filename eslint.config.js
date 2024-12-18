@@ -115,6 +115,7 @@ module.exports = tseslint.config({
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
     '@typescript-eslint/no-empty-function': 0,
+    '@typescript-eslint/ban-ts-comment': 'warn',
     'jsx-a11y/click-events-have-key-events': 0,
     'jsx-a11y/label-has-associated-control': 0,
     'jsx-a11y/mouse-events-have-key-events': 'warn',
