@@ -1,7 +1,17 @@
-import { useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
-import Tippy from '@tippyjs/react'
-import type { Options } from '@popperjs/core'
+import type { Middleware } from '@floating-ui/react'
+import {
+  useFloating,
+  useInteractions,
+  useClick,
+  detectOverflow,
+  offset,
+  arrow,
+  FloatingArrow,
+  useDismiss,
+} from '@floating-ui/react'
+import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/Sidebar'
 import styles from './ExpandedContainer.module.css'
 
 interface ExpandedContainerProps {
@@ -13,21 +23,25 @@ interface ExpandedContainerProps {
   onClickOutside: () => void
 }
 
-const popperOptions: Partial<Options> = {
-  modifiers: [
-    {
-      // To avoid the default 5px margin popper leaves between popper and reference
-      // https://popper.js.org/docs/v2/modifiers/prevent-overflow/#padding
-      name: 'preventOverflow',
-      options: {
-        padding: 0,
-      },
-    },
-    {
-      name: 'flip',
-      enabled: false,
-    },
-  ],
+const overflowMiddlware: Middleware = {
+  name: 'overflow',
+  async fn(state) {
+    if (!state) {
+      return {}
+    }
+
+    const overflow = await detectOverflow(state, {
+      boundary: document.getElementById(SCROLL_CONTAINER_DOM_ID)!,
+    })
+    Object.entries(overflow).forEach(([key, value]) => {
+      if (value > 0) {
+        const property = key === 'top' || key === 'bottom' ? 'y' : 'x'
+        state[property] =
+          key === 'bottom' || key === 'right' ? state[property] - value : state[property] + value
+      }
+    })
+    return state
+  },
 }
 
 function ExpandedContainer({
@@ -36,60 +50,59 @@ function ExpandedContainer({
   component,
   onClickOutside,
   className = '',
-  arrowClassName = '',
 }: ExpandedContainerProps) {
-  const onMount = useCallback(({ popper }: any) => {
-    const { y, height } = popper.getBoundingClientRect()
-    if (y + height >= window.innerHeight) {
-      popper.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+  const [isOpen, setIsOpen] = useState(visible)
+  const arrowRef = useRef(null)
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: (nextOpen, event, reason) => {
+      setIsOpen(nextOpen)
+      if (reason === 'escape-key' || reason === 'outside-press') {
+        onClickOutside()
+      }
+    },
+    middleware: [
+      offset(5),
+      overflowMiddlware,
+      arrow({
+        element: arrowRef,
+      }),
+    ],
+  })
+
+  useEffect(() => {
+    if (visible !== isOpen) {
+      setIsOpen(visible)
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible])
+
+  const click = useClick(context)
+  const dismiss = useDismiss(context)
+  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss])
 
   return (
     <div>
-      <Tippy
-        interactive
-        visible={visible}
-        animation={true}
-        onMount={onMount}
-        placement="bottom-end"
-        popperOptions={popperOptions}
-        onClickOutside={onClickOutside}
-        render={(attrs) => {
-          const topPlacement = attrs['data-placement'] === 'top'
-          return (
-            <div
-              className={cx(
-                styles.expandedContainer,
-                {
-                  [styles.expandedContainerOpen]: visible,
-                  [styles.expandedContainerTop]: topPlacement,
-                },
-                className
-              )}
-              tabIndex={-1}
-              {...attrs}
-            >
-              {visible && component}
-              {visible && (
-                <div
-                  className={cx(
-                    styles.tooltipArrow,
-                    {
-                      [styles.tooltipArrowTop]: topPlacement,
-                    },
-                    arrowClassName
-                  )}
-                  data-popper-arrow
-                ></div>
-              )}
-            </div>
-          )
-        }}
-      >
-        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
-        <span tabIndex={0}>{children}</span>
-      </Tippy>
+      <span ref={refs.setReference} {...getReferenceProps()}>
+        {children}
+      </span>
+      {isOpen && (
+        <div
+          ref={refs.setFloating}
+          style={floatingStyles}
+          {...getFloatingProps()}
+          className={cx(styles.expandedContainer, styles.expandedContainerOpen, className)}
+        >
+          {component}
+          <FloatingArrow
+            stroke="rgba(22, 63, 137, .15)" //--var-border
+            strokeWidth={1}
+            className={styles.tooltipArrow}
+            ref={arrowRef}
+            context={context}
+          />
+        </div>
+      )}
     </div>
   )
 }

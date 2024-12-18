@@ -1,3 +1,4 @@
+import type { Placement } from '@floating-ui/react'
 import {
   useFloating,
   autoUpdate,
@@ -13,21 +14,29 @@ import cx from 'classnames'
 import { cloneElement, Children, isValidElement, Fragment, useState } from 'react'
 import styles from './Tooltip.module.css'
 
+export type TooltipPlacement = Placement
+
 type TooltipProps = {
   content: React.ReactNode
   children: React.ReactNode
   className?: string
+  initialPlacement?: TooltipPlacement
 }
 
 const DELAY = 500
 const DURATION = 100
 
-function TooltipComponent({ content, children, className }: TooltipProps) {
+function TooltipComponent({
+  content,
+  children,
+  className,
+  initialPlacement = 'top',
+}: TooltipProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
-    placement: 'top',
+    placement: initialPlacement,
     onOpenChange: setIsOpen,
     middleware: [offset(1), flip(), shift()],
     whileElementsMounted: autoUpdate,

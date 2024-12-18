@@ -19,28 +19,6 @@
   z-index: 1;
 }
 
-.tooltipArrow,
-.tooltipArrow::before {
-  position: absolute;
-  inset: -3px auto auto !important;
-  width: 8px;
-  height: 8px;
-  z-index: 1;
-}
-
-.tooltipArrow::before {
-  content: '';
-  transform: rotate(45deg);
-  border-top: var(--border);
-  border-left: var(--border);
-  background-color: var(--color-off-white);
-}
-
-.tooltipArrowTop {
-  top: auto !important;
-  bottom: -7px !important;
-}
-
-.tooltipArrowTop::before {
-  transform: rotate(225deg);
+.tooltipArrow {
+  fill: var(--color-off-white);
 }
