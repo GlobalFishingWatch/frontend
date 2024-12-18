@@ -151,17 +151,6 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
     ? getDatasetLabel(dataset)
     : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
 
-  const TitleComponent = (
-    <Title
-      title={title}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onToggle}
-      showIcon
-    />
-  )
-
   const hasLayerProperties = hasSchemaFilterSelection || datasetGeometryType === 'tracks'
 
   return (
@@ -187,11 +176,14 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
         {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
           <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
         )}
-        {title && title.length > 30 ? (
-          <Tooltip content={title}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={title}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onToggle}
+          showIcon
+        />
         <div
           className={cx(
             'print-hidden',
