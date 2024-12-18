@@ -20,23 +20,18 @@ type TooltipProps = {
   content: React.ReactNode
   children: React.ReactNode
   className?: string
-  initialPlacement?: TooltipPlacement
+  placement?: TooltipPlacement
 }
 
 const DELAY = 500
 const DURATION = 100
 
-function TooltipComponent({
-  content,
-  children,
-  className,
-  initialPlacement = 'top',
-}: TooltipProps) {
+function TooltipComponent({ content, children, className, placement = 'top' }: TooltipProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
-    placement: initialPlacement,
+    placement,
     onOpenChange: setIsOpen,
     middleware: [offset(1), flip(), shift()],
     whileElementsMounted: autoUpdate,
@@ -96,7 +91,14 @@ function TooltipComponent({
   )
 }
 
-export function Tooltip({ content, children, className }: TooltipProps) {
+export function Tooltip({ content, children, className, placement }: TooltipProps) {
   if (!content) return <Fragment>{children}</Fragment>
-  return <TooltipComponent content={content} children={children} className={className} />
+  return (
+    <TooltipComponent
+      content={content}
+      children={children}
+      className={className}
+      placement={placement}
+    />
+  )
 }

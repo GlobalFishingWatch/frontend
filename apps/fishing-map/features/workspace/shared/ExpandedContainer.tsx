@@ -21,27 +21,7 @@ interface ExpandedContainerProps {
   className?: string
   arrowClassName?: string
   onClickOutside: () => void
-}
-
-const overflowMiddlware: Middleware = {
-  name: 'overflow',
-  async fn(state) {
-    if (!state) {
-      return {}
-    }
-
-    const overflow = await detectOverflow(state, {
-      boundary: document.getElementById(SCROLL_CONTAINER_DOM_ID)!,
-    })
-    Object.entries(overflow).forEach(([key, value]) => {
-      if (value > 0) {
-        const property = key === 'top' || key === 'bottom' ? 'y' : 'x'
-        state[property] =
-          key === 'bottom' || key === 'right' ? state[property] - value : state[property] + value
-      }
-    })
-    return state
-  },
+  overflowDOMId?: string | null
 }
 
 function ExpandedContainer({
@@ -50,20 +30,41 @@ function ExpandedContainer({
   component,
   onClickOutside,
   className = '',
+  overflowDOMId = SCROLL_CONTAINER_DOM_ID,
 }: ExpandedContainerProps) {
   const [isOpen, setIsOpen] = useState(visible)
   const arrowRef = useRef(null)
+
+  const overflowMiddlware: Middleware = {
+    name: 'overflow',
+    async fn(state) {
+      if (!state || !overflowDOMId) {
+        return {}
+      }
+      const overflow = await detectOverflow(state, {
+        boundary: document.getElementById(overflowDOMId)!,
+      })
+      Object.entries(overflow).forEach(([key, value]) => {
+        if (value > 0) {
+          const property = key === 'top' || key === 'bottom' ? 'y' : 'x'
+          state[property] =
+            key === 'bottom' || key === 'right' ? state[property] - value : state[property] + value
+        }
+      })
+      return state
+    },
+  }
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
     onOpenChange: (nextOpen, event, reason) => {
       setIsOpen(nextOpen)
       if (reason === 'escape-key' || reason === 'outside-press') {
-        onClickOutside()
+        onClickOutside?.()
       }
     },
     middleware: [
       offset(5),
-      overflowMiddlware,
+      ...(overflowDOMId ? [overflowMiddlware] : []),
       arrow({
         element: arrowRef,
       }),

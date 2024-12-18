@@ -169,7 +169,6 @@ export const BufferButtonTooltip = ({
           options={bufferOperationOptions}
         />
       </div>
-      <div data-tippy-arrow className={styles.tooltipArrow}></div>
       <div className={styles.confirmationContainer}>
         <IconButton
           type="border"
