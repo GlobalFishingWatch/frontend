@@ -8,6 +8,7 @@ import { OrthographicView } from '@deck.gl/core'
 import { scaleSqrt } from 'd3-scale'
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import { usePrintSize } from '@globalfishingwatch/react-hooks'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import TimelineContext from '../timelineContext'
 import { useUpdateChartsData } from './chartsData.atom'
 import { useFilteredChartData } from './common/hooks'
@@ -30,8 +31,8 @@ const TrackGraph = ({ data, steps, printing = false }: TimebarChartProps) => {
   const oldOuterScaleRef = useRef(outerScale)
   const offsetHashRef = useRef(Date.now())
 
-  const oldStartX = oldOuterScaleRef.current(new Date(start))
-  const startX = outerScale(new Date(start))
+  const oldStartX = oldOuterScaleRef.current(getUTCDate(start))
+  const startX = outerScale(getUTCDate(start))
   const offsetStartX = startX - oldStartX
   const veilWidth = (outerWidth - innerWidth) / 2
   offsetHashRef.current = Math.abs(offsetStartX) > veilWidth ? Date.now() : offsetHashRef.current
@@ -57,7 +58,7 @@ const TrackGraph = ({ data, steps, printing = false }: TimebarChartProps) => {
       ({
         target: [outerWidth / 2, graphHeight / 2, 0],
         zoom: 0,
-      } as OrthographicViewState),
+      }) as OrthographicViewState,
     [graphHeight, outerWidth]
   )
 

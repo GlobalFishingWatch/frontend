@@ -54,7 +54,6 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
 }
 
 function Footer(): React.ReactElement<any> {
-  // TODO remove the bottom bar in screenshot
   const isSmallScreen = useSmallScreen(900)
   const copyright = isSmallScreen ? '© GFW ' : '© Global Fishing Watch '
   return (
@@ -62,7 +61,7 @@ function Footer(): React.ReactElement<any> {
       <FooterPartners smallScreen={isSmallScreen} />
       <span className={styles.text}>
         {copyright}
-        {new Date().getFullYear()}
+        {new Date().getUTCFullYear()}
       </span>
     </footer>
   )
