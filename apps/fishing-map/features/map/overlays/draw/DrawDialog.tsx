@@ -197,7 +197,7 @@ function MapDraw() {
     saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
   }
 
-  let placeholderMessage =
+  let placeholderMessage: string =
     mapDrawingMode === 'points'
       ? t('layer.editPointHint', 'Click on the point to adjust their coordinates')
       : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')

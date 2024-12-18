@@ -146,7 +146,10 @@ function UserDatasets() {
                 const datasetError = dataset.status === DatasetStatus.Error
                 const datasetImporting = dataset.status === DatasetStatus.Importing
                 const datasetDescription = dataset.description !== dataset.name
-                let infoTooltip = t(`layer.seeDescription`, 'Click to see layer description')
+                let infoTooltip: string = t(
+                  `layer.seeDescription`,
+                  'Click to see layer description'
+                )
                 if (datasetImporting) {
                   infoTooltip = t('dataset.importing', 'Dataset is being imported')
                 }

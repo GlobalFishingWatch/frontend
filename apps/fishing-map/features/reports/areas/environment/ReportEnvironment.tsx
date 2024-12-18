@@ -76,7 +76,9 @@ function ReportEnvironment() {
                   ? t('analysis.statsDisclaimerDynamic', {
                       defaultValue:
                         'During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.',
-                      interval: t(`common.${interval.toLowerCase()}s`, { count: 1 }).toLowerCase(),
+                      interval: t(`common.${interval.toLowerCase()}s` as any, {
+                        count: 1,
+                      }).toLowerCase(),
                       min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
                       max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
                       unit,
