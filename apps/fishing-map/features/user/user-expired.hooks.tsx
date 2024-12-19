@@ -8,7 +8,7 @@ import { selectIsUserExpired } from './selectors/user.selectors'
 
 export const useUserExpiredToast = () => {
   const isUserExpired = useSelector(selectIsUserExpired)
-  const toastId = useRef<any>()
+  const toastId = useRef<any>(undefined)
 
   const ToastContent = () => (
     <div className={styles.disclaimer}>

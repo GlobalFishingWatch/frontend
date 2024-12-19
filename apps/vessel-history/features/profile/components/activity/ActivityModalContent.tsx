@@ -12,7 +12,7 @@ interface ActivityModalContentProps {
   event: RenderedEvent
 }
 
-const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React.ReactElement => {
+const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React.ReactElement<any> => {
   const event = props.event
   const detailsPerType = useMemo(() => {
     switch (event.type) {

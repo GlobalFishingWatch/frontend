@@ -22,9 +22,9 @@ const MapControls = ({
   mapLoading?: boolean
   onMouseEnter?: () => void
   onViewInGFWMap?: () => void
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
-  const domElement = useRef<HTMLElement>()
+  const domElement = useRef<HTMLElement>(undefined)
   useEffect(() => {
     if (!domElement.current) {
       domElement.current = document.getElementById('root') as HTMLElement

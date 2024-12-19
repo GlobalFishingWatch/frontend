@@ -12,7 +12,7 @@ interface SettingsProps {
   settings: SettingsEvents
   section: SettingEventSectionName
 }
-const GapEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
+const GapEvents: React.FC<SettingsProps> = (props): React.ReactElement<any> => {
   const { settings, section } = props
 
   return (

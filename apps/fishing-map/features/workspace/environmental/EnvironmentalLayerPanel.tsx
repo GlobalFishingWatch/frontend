@@ -39,7 +39,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const [isPending, startTransition] = useTransition()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()
@@ -127,16 +127,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     isHistogramDataviewSupported(dataview) ||
     getSchemaFiltersInDataview(dataview)?.filtersAllowed?.some(showSchemaFilter)
 
-  const TitleComponent = (
-    <Title
-      title={title}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onToggle}
-    />
-  )
-
   const layerRange = getEnvironmentalDatasetRange(dataset)
   const showMinVisibleFilter =
     dataview.config?.minVisibleValue !== undefined
@@ -168,11 +158,13 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           dataview={dataview}
           onToggle={onToggle}
         />
-        {title && title.length > 30 ? (
-          <Tooltip content={title}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={title}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onToggle}
+        />
         <div
           className={cx(
             'print-hidden',

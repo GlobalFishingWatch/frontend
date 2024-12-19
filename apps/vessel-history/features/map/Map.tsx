@@ -38,7 +38,7 @@ const mapStyles = {
   height: '100%',
 }
 
-const MapWrapper: React.FC = (): React.ReactElement => {
+const MapWrapper: React.FC = (): React.ReactElement<any> => {
   const map = useMapInstance()
   const dispatch = useAppDispatch()
   const flying = useRef(false)

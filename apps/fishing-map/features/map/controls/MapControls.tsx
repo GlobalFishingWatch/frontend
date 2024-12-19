@@ -42,7 +42,7 @@ const MapControls = ({
 }: {
   mapLoading?: boolean
   onMouseEnter?: () => void
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)

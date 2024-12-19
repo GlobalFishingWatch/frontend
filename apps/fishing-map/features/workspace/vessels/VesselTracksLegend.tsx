@@ -8,7 +8,7 @@ import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import MapLegendPlaceholder from '../common/MapLegendPlaceholder'
 
-function VesselTracksLegend(): React.ReactElement | null {
+function VesselTracksLegend(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const steps = useTimebarTracksGraphSteps()
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)

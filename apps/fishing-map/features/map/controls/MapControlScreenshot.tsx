@@ -38,11 +38,11 @@ const MapControlScreenshot = ({
 }: {
   mapLoading?: boolean
   onMouseEnter?: () => void
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const modalOpen = useSelector(selectScreenshotModalOpen)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout>(undefined)
   const { dispatchQueryParams } = useLocationConnect()
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)

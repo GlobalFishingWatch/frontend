@@ -36,7 +36,7 @@ import { useAppDispatch } from '../../store.hooks'
 import styles from './Sidebar.module.css'
 import { useSelectedTracksConnect } from './sidebar.hooks'
 
-const Sidebar: React.FC = (props): React.ReactElement => {
+const Sidebar: React.FC = (props): React.ReactElement<any> => {
   const {
     uploadingTrack,
     dispatchUpdateActionSelectedTrack,

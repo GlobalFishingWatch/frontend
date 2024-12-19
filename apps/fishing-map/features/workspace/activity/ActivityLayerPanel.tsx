@@ -52,7 +52,7 @@ function ActivityLayerPanel({
   showBorder,
   isOpen,
   onToggle,
-}: LayerPanelProps): React.ReactElement {
+}: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
@@ -156,15 +156,6 @@ function ActivityLayerPanel({
     getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
-  const TitleComponent = (
-    <Title
-      title={datasetTitle}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onLayerSwitchToggle}
-    />
-  )
 
   const datasetFields = useMemo(() => {
     const fields: { field: SupportedDatasetSchema; label: string }[] = [
@@ -203,11 +194,13 @@ function ActivityLayerPanel({
               className={styles.switch}
               dataview={dataview}
             />
-            {datasetTitle.length > 20 ? (
-              <Tooltip content={datasetTitle}>{TitleComponent}</Tooltip>
-            ) : (
-              TitleComponent
-            )}
+            <Title
+              title={datasetTitle}
+              className={styles.name}
+              classNameActive={styles.active}
+              dataview={dataview}
+              onToggle={onLayerSwitchToggle}
+            />
             <div
               className={cx(
                 'print-hidden',

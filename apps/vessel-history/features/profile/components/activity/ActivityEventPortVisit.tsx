@@ -29,7 +29,7 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
   onInfoClick = () => {},
   onMapClick = () => {},
   options: { displayPortVisitsAsOneEvent } = { displayPortVisitsAsOneEvent: false },
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
   if (event.type !== EventTypes.Port) return
 

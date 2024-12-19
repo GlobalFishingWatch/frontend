@@ -17,7 +17,7 @@ const ActivityVoyage: React.FC<EventProps> = ({
   event,
   onMapClick = () => {},
   onToggleClick = () => {},
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const voyageLabel = useMemo(() => {

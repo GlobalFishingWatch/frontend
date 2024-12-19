@@ -20,7 +20,7 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
   label,
   authorizations = [],
   vesselName,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)

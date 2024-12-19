@@ -18,7 +18,7 @@ interface InfoProps {
   onEventChange: (event: RenderedEvent, pitch: number, bearing: number, padding: number) => void
 }
 
-const Info: React.FC<InfoProps> = (props): React.ReactElement => {
+const Info: React.FC<InfoProps> = (props): React.ReactElement<any> => {
   const [expanded, setExpanded] = useState(false)
   const [height, setHeight] = useState(0)
   const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages) as (RenderedEvent | Voyage)[]

@@ -77,7 +77,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   )
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
   const { status: reportStatus, error: statusError, dispatchFetchReport } = useFetchReportVessel()
-  const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
+  const dispatchTimeoutRef = useRef<NodeJS.Timeout>(undefined)
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)

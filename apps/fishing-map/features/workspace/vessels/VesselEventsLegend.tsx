@@ -20,7 +20,7 @@ type VesselEventsLegendProps = {
   dataviews: UrlDataviewInstance[]
 }
 
-function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.ReactElement | null {
+function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
   const { setVesselEventVisibility } = useVisibleVesselEvents()

@@ -3,6 +3,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import { scaleTime } from 'd3-scale'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { TimelineScale } from '../../timelineContext'
 import TimelineContext from '../../timelineContext'
 import type {
@@ -15,12 +16,14 @@ import type {
 } from './types'
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
+  const startMillis = getUTCDate(start).getTime()
+  const endMillis = getUTCDate(end).getTime()
   return data?.map((item) => {
     const filteredChunks = item?.chunks?.length
       ? item.chunks.filter((chunk) => {
           const chunkStart = chunk.start
           const chunkEnd = chunk.end || chunk.start
-          return chunkEnd > +new Date(start) && chunkStart < +new Date(end)
+          return chunkEnd > startMillis && chunkStart < endMillis
         })
       : []
     return {
@@ -128,7 +131,7 @@ export const useOuterScale = () => {
   const { outerStart, outerEnd, outerWidth } = useContext(TimelineContext)
   return useMemo(() => {
     return scaleTime()
-      .domain([new Date(outerStart), new Date(outerEnd)])
+      .domain([getUTCDate(outerStart), getUTCDate(outerEnd)])
       .range([0, outerWidth])
   }, [outerStart, outerEnd, outerWidth])
 }

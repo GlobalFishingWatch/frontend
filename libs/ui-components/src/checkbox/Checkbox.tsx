@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react'
 import React from 'react'
 import cx from 'classnames'
-import type { Placement } from 'tippy.js'
+import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
 import { Icon } from '../icon'
@@ -15,7 +15,7 @@ interface CheckboxProps {
   disabled?: boolean
   onClick: (event: React.MouseEvent) => void
   tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
+  tooltipPlacement?: TooltipPlacement
   className?: string
   containerClassName?: string
   labelClassname?: string

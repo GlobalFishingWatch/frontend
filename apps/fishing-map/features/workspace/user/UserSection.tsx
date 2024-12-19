@@ -44,7 +44,7 @@ export function RegisterOrLoginToUpload() {
   )
 }
 
-function UserSection(): React.ReactElement {
+function UserSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
   const guestUser = useSelector(selectIsGuestUser)

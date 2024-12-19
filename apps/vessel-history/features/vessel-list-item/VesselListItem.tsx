@@ -25,7 +25,7 @@ interface ListItemProps {
   onVesselClick?: (vessel: Vessel) => void
 }
 
-const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
+const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement<any> => {
   const { t, i18n } = useTranslation()
   const { vessel, onDeleteClick, onVesselClick = () => {}, selected = false } = props
   const { formatSource } = useVesselsConnect()

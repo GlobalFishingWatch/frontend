@@ -20,7 +20,7 @@ interface ActivityModalContentProps {
 
 const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> = (
   props
-): React.ReactElement => {
+): React.ReactElement<any> => {
   const event = props.event
   const relatedVessel = event.encounter?.vessel as EventVessel
   const { t } = useTranslation()

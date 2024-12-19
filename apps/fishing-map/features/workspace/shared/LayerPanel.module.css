@@ -3,7 +3,7 @@
 }
 
 .LayerPanel {
-  width: calc(100% - 1px);
+  width: 100%;
   position: relative;
   min-height: var(--size-M);
 }
@@ -34,6 +34,7 @@
   padding: var(--space-XS) var(--space-S);
   display: flex;
   align-items: center;
+  min-height: 4.1rem;
 }
 
 .dragger {

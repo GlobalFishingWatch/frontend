@@ -17,7 +17,7 @@ import styles from './DownloadModal.module.css'
 export function useActivityDownloadTimeoutRefresh() {
   const dispatch = useAppDispatch()
   const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
-  const intervalRef = useRef<NodeJS.Timeout | undefined>()
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     if (!hadDownloadTimeoutError && intervalRef.current) {

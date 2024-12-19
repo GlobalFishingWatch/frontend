@@ -145,7 +145,7 @@ export const useMigrateWorkspaceToast = () => {
   const hasDeprecatedDataviews = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const migrateWorkspace = useMigrateWorkspace()
-  const toastId = useRef<any>()
+  const toastId = useRef<any>(undefined)
 
   const closeToast = () => {
     toast.dismiss(toastId.current)

@@ -6,6 +6,7 @@ import { DateTime } from 'luxon'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
 import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
@@ -80,8 +81,8 @@ class Playback extends Component<PlaybackProps> {
 
   getStep = memoize((start, end, speedStep) => {
     const baseStepWithSpeed = BASE_STEP * SPEED_STEPS[speedStep]
-    const startMs = new Date(start).getTime()
-    const endMs = new Date(end).getTime()
+    const startMs = getUTCDate(start).getTime()
+    const endMs = getUTCDate(end).getTime()
 
     const scale = scaleLinear().range([0, 1]).domain([startMs, endMs])
     const step = scale.invert(baseStepWithSpeed) - startMs
@@ -106,18 +107,18 @@ class Playback extends Component<PlaybackProps> {
         interval === 'MONTH'
           ? DateTime.fromISO(end, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
-      newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator
-      newEndMs = new Date(end).getTime() + intervalEndMs * deltaMultiplicator
+      newStartMs = getUTCDate(start).getTime() + intervalStartMs * deltaMultiplicator
+      newEndMs = getUTCDate(end).getTime() + intervalEndMs * deltaMultiplicator
     } else {
       const deltaMs = this.getStep(start, end, speedStep) * deltaMultiplicator
-      newStartMs = new Date(start).getTime() + deltaMs
-      newEndMs = new Date(end).getTime() + deltaMs
+      newStartMs = getUTCDate(start).getTime() + deltaMs
+      newEndMs = getUTCDate(end).getTime() + deltaMs
     }
     const currentStartEndDeltaMs = newEndMs - newStartMs
-    const playbackAbsoluteEnd = new Date(Date.now()).toISOString()
+    const playbackAbsoluteEnd = getUTCDate(Date.now()).toISOString()
     const { newStartClamped, newEndClamped, clamped } = clampToAbsoluteBoundaries(
-      new Date(newStartMs).toISOString(),
-      new Date(newEndMs).toISOString(),
+      getUTCDate(newStartMs).toISOString(),
+      getUTCDate(newEndMs).toISOString(),
       currentStartEndDeltaMs,
       absoluteStart,
       playbackAbsoluteEnd
@@ -128,8 +129,8 @@ class Playback extends Component<PlaybackProps> {
     if (clamped === 'end') {
       if (loop === true) {
         // start again from absoluteStart
-        const newEnd = new Date(
-          new Date(absoluteStart).getTime() + currentStartEndDeltaMs
+        const newEnd = getUTCDate(
+          getUTCDate(absoluteStart).getTime() + currentStartEndDeltaMs
         ).toISOString()
         onTick(absoluteStart, newEnd)
       } else {
@@ -254,8 +255,8 @@ class Playback extends Component<PlaybackProps> {
             disabled && disabledPlaybackTooltip
               ? disabledPlaybackTooltip
               : playing === true
-              ? labels.pauseAnimation
-              : labels.playAnimation
+                ? labels.pauseAnimation
+                : labels.playAnimation
           }
           onClick={playbackDisabled ? undefined : this.onPlayToggleClick}
           className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play, {

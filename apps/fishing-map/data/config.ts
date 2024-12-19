@@ -103,7 +103,7 @@ export const AVAILABLE_START = DateTime.fromObject(
 ).toISO() as string
 
 export const AVAILABLE_END = DateTime.fromObject(
-  { year: new Date().getFullYear() + 1 },
+  { year: new Date().getUTCFullYear() + 1 },
   { zone: 'utc' }
 )
   .minus({ millisecond: 1 })

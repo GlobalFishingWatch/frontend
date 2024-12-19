@@ -23,7 +23,7 @@ type LayerPanelProps = {
   label: string
 }
 
-function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement {
+function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isGuestUser = useSelector(selectIsGuestUser)

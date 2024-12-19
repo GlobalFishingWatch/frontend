@@ -71,7 +71,7 @@ const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
 type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
-function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
@@ -185,16 +185,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     ? getDatasetLabel(dataset)
     : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
 
-  const TitleComponent = (
-    <Title
-      title={title}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onToggle}
-    />
-  )
-
   const isBasemapLabelsDataview = dataview.config?.type === DataviewType.BasemapLabels
   const isContextAreaDataview =
     dataview.config?.type === DataviewType.Context ||
@@ -231,11 +221,13 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
           <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
         )}
-        {title && title.length > 30 ? (
-          <Tooltip content={title}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={title}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onToggle}
+        />
         <div
           className={cx(
             'print-hidden',

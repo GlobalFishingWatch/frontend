@@ -51,7 +51,7 @@ import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
 import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
 
-const Profile: React.FC = (props): React.ReactElement => {
+const Profile: React.FC = (props): React.ReactElement<any> => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { openFeedback } = useApp()

@@ -43,7 +43,10 @@
       "inputs": ["production", "^production"]
     },
     "build": { "dependsOn": ["^build"], "outputs": ["{projectRoot}/dist"], "cache": true },
-    "dist": { "dependsOn": ["^dist"], "outputs": ["{projectRoot}/dist"], "cache": true }
+    "build:workers": { "dependsOn": ["^build"], "outputs": ["{projectRoot}/dist"], "cache": true },
+    "dist": { "dependsOn": ["^dist"], "outputs": ["{projectRoot}/dist"], "cache": true },
+    "dist:workers": { "dependsOn": ["^dist"], "outputs": ["{projectRoot}/dist"], "cache": true },
+    "prepare-loaders": { "cache": true }
   },
   "generators": {
     "@nx/next": { "application": { "style": "css", "linter": "eslint" } },

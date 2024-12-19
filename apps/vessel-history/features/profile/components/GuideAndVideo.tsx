@@ -6,7 +6,7 @@ import styles from './Info.module.css'
 interface GuideAndVideoProps {
   source?: string
 }
-const GuideAndVideo: React.FC<GuideAndVideoProps> = ({ source = '' }): React.ReactElement => {
+const GuideAndVideo: React.FC<GuideAndVideoProps> = ({ source = '' }): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const trackClick = useCallback(

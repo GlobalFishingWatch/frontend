@@ -5,7 +5,7 @@ import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
@@ -53,6 +53,7 @@ type ReportTitleProps = {
 
 export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
+  const [showBufferTooltip, setShowBufferTooltip] = useState(false)
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
@@ -65,8 +66,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const urlBufferValue = useSelector(selectReportBufferValue)
   const urlBufferUnit = useSelector(selectReportBufferUnit)
   const urlBufferOperation = useSelector(selectReportBufferOperation)
-
-  const [tooltipInstance, setTooltipInstance] = useState<any>(null)
 
   const handleBufferUnitChange = useCallback(
     (option: ChoiceOption<BufferUnit>) => {
@@ -117,6 +116,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   }
 
   const handleTooltipHide = useCallback(() => {
+    setShowBufferTooltip(false)
     dispatch(
       setPreviewBuffer({
         unit: null,
@@ -126,23 +126,20 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     )
   }, [dispatch])
 
-  const handleTooltipShow = useCallback(
-    (instance: any) => {
-      setTooltipInstance(instance)
-      // This is to create the preview buffer on tooltip show
-      dispatch(
-        setPreviewBuffer({
-          value: urlBufferValue || DEFAULT_BUFFER_VALUE,
-          unit: urlBufferUnit || NAUTICAL_MILES,
-          operation: urlBufferOperation || DEFAULT_BUFFER_OPERATION,
-        })
-      )
-    },
-    [dispatch, setTooltipInstance, urlBufferValue, urlBufferUnit, urlBufferOperation]
-  )
+  const handleTooltipShow = useCallback(() => {
+    setShowBufferTooltip(true)
+    // This is to create the preview buffer on tooltip show
+    dispatch(
+      setPreviewBuffer({
+        value: urlBufferValue || DEFAULT_BUFFER_VALUE,
+        unit: urlBufferUnit || NAUTICAL_MILES,
+        operation: urlBufferOperation || DEFAULT_BUFFER_OPERATION,
+      })
+    )
+  }, [dispatch, urlBufferValue, urlBufferUnit, urlBufferOperation])
 
   const handleConfirmBuffer = useCallback(() => {
-    tooltipInstance!.hide()
+    setShowBufferTooltip(false)
     highlightArea(undefined)
     dispatchQueryParams({
       reportBufferValue: previewBuffer.value!,
@@ -156,7 +153,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
     })
   }, [
-    tooltipInstance,
     highlightArea,
     dispatchQueryParams,
     previewBuffer.value,
@@ -166,7 +162,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   ])
 
   const handleRemoveBuffer = useCallback(() => {
-    tooltipInstance!.hide()
+    setShowBufferTooltip(false)
     if (reportArea) {
       highlightArea(reportArea as ContextFeature)
     }
@@ -177,7 +173,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     })
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceStateBufferParams())
-  }, [dispatch, dispatchQueryParams, highlightArea, reportArea, tooltipInstance])
+  }, [dispatch, dispatchQueryParams, highlightArea, reportArea])
 
   const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {
@@ -281,14 +277,13 @@ export default function ReportTitle({ area }: ReportTitleProps) {
         </a>
 
         <div className={styles.actions}>
-          {/* https://atomiks.github.io/tippyjs/v6/accessibility/#interactivity */}
-          {/* 👇 extra div needed to allow element to be keyboard accessible */}
-          <div>
-            <Button
-              type="border-secondary"
-              size="small"
-              className={styles.actionButton}
-              tooltip={
+          <Popover
+            open={showBufferTooltip}
+            onClickOutside={handleTooltipHide}
+            className={cx(styles.highlightPanel, 'print-hidden')}
+            placement="bottom"
+            content={
+              <div className={styles.filterButtonWrapper}>
                 <BufferButtonTooltip
                   areaType={area?.properties?.originalGeometryType}
                   activeUnit={previewBuffer.unit || NAUTICAL_MILES}
@@ -300,21 +295,22 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                   handleBufferValueChange={handleBufferValueChange}
                   handleBufferOperationChange={handleBufferOperationChange}
                 />
-              }
-              tooltipPlacement="bottom"
-              tooltipProps={{
-                interactive: true,
-                trigger: 'click',
-                delay: 0,
-                className: styles.bufferContainer,
-                onHide: handleTooltipHide,
-                onShow: handleTooltipShow,
-              }}
-            >
-              {t('analysis.buffer', 'Buffer Area')}
-              <Icon icon="expand" type="default" />
-            </Button>
-          </div>
+              </div>
+            }
+          >
+            <div>
+              <Button
+                onClick={handleTooltipShow}
+                // onHide: handleTooltipHide,
+                type="border-secondary"
+                size="small"
+                className={styles.actionButton}
+              >
+                {t('analysis.buffer', 'Buffer Area')}
+                <Icon icon="expand" type="default" />
+              </Button>
+            </div>
+          </Popover>
           <Button
             type="border-secondary"
             size="small"

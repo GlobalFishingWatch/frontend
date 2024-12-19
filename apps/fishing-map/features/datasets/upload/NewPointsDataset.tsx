@@ -49,7 +49,7 @@ function NewPointDataset({
   dataset,
   onFileUpdate,
   onDatasetParseError,
-}: NewDatasetProps): React.ReactElement {
+}: NewDatasetProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')

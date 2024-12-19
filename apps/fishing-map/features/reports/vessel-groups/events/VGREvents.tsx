@@ -156,7 +156,7 @@ function VGREvents() {
                           lowerCase(subCategoryDataset)
                         )
                       : ''
-                  } ${t('common.event', 'events').toLowerCase()}`,
+                  } ${(t('common.events', 'events') as string).toLowerCase()}`,
                   start: formatI18nDate(start, {
                     format: DateTime.DATE_MED,
                   }),

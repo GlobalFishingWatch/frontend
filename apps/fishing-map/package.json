@@ -10,7 +10,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
-    "eslint": "^9.15.0",
+    "eslint": "^9.17.0",
     "i18next-parser": "9.0.2",
     "source-map-explorer": "2.5.3"
   },

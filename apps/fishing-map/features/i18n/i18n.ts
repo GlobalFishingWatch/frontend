@@ -23,7 +23,6 @@ const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
 
 const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
- 
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -70,7 +69,6 @@ i18n.on('languageChanged', (lng) => {
   }
 })
 
- 
 const t = i18n.t.bind(i18n)
 
 export { t }

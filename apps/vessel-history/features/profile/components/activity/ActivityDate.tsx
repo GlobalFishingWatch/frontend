@@ -9,7 +9,7 @@ interface ActivityDateProps {
   className?: any
 }
 
-const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement => {
+const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement<any> => {
   const event = props.event
 
   const showduration: boolean = useMemo(() => {

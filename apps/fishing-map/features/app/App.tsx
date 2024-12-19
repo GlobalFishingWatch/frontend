@@ -67,7 +67,6 @@ import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
 import styles from './App.module.css'
-import 'react-toastify/dist/ReactToastify.min.css'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
 const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))

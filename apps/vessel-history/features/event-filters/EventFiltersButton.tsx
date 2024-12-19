@@ -17,7 +17,7 @@ interface ButtonProps {
   onClick?: () => void
 }
 
-const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): React.ReactElement => {
+const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): React.ReactElement<any> => {
   const { t } = useTranslation()
   const filtersApplied = useSelector(selectIsFilterUpdated)
   const filters = useSelector(selectFilters)

@@ -4,10 +4,10 @@ import styles from './LayerPanel.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
-  children: React.ReactElement
+  children: React.ReactElement<any>
 }
 
-function LayerPanelContainer({ dataview, children }: LayerPanelProps): React.ReactElement {
+function LayerPanelContainer({ dataview, children }: LayerPanelProps): React.ReactElement<any> {
   return (
     <div className={styles.LayerPanelContainer}>
       {children}

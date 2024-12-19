@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState, type JSX } from 'react';
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import type { ApiAppName, Dataview, DataviewConfig } from '@globalfishingwatch/api-types'

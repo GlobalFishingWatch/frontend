@@ -18,7 +18,7 @@ const prettierConfig = require('eslint-config-prettier')
 // const gitignorePath = path.resolve(__dirname, '.gitignore')
 
 module.exports = tseslint.config({
-  files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
+  files: ['**/*.{js,ts,jsx,tsx}', '**/*.mjs'],
   plugins: {
     '@nx': nxPlugin,
     '@next/next': nextPlugin,
@@ -48,7 +48,6 @@ module.exports = tseslint.config({
     'node_modules',
     'dist',
     'public',
-    '.next',
     'exported',
     '**/dist/**/*',
     '**/public/**/*',
@@ -115,6 +114,8 @@ module.exports = tseslint.config({
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
     '@typescript-eslint/no-empty-function': 0,
+    '@typescript-eslint/ban-ts-comment': 'warn',
+    'jsx-a11y/no-autofocus': 1,
     'jsx-a11y/click-events-have-key-events': 0,
     'jsx-a11y/label-has-associated-control': 0,
     'jsx-a11y/mouse-events-have-key-events': 'warn',

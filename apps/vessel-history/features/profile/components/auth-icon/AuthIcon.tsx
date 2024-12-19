@@ -8,7 +8,7 @@ interface AuthIconProps {
 
 const AuthIcon: React.FC<AuthIconProps> = ({
   authorizationStatus = 'pending',
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   if (authorizationStatus === 'true') {
     return <Icon icon="tick" type="default" className={styles.authorized} />
   }

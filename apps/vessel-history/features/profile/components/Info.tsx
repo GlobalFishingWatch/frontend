@@ -42,7 +42,7 @@ interface InfoProps {
   onMoveToMap: () => void
 }
 
-const Info: React.FC<InfoProps> = (props): React.ReactElement => {
+const Info: React.FC<InfoProps> = (props): React.ReactElement<any> => {
   const vessel = props.vessel
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)

@@ -15,7 +15,7 @@ interface RelatedVesselListItem {
   onVesselClick?: (vessel: Vessel) => void
 }
 
-const RelatedVesselListItem: React.FC<RelatedVesselListItem> = (props): React.ReactElement => {
+const RelatedVesselListItem: React.FC<RelatedVesselListItem> = (props): React.ReactElement<any> => {
   const { t, i18n } = useTranslation()
   const { vessel, onDeleteClick, onVesselClick = () => {}, selected = false } = props
   const onClick = useCallback(() => onVesselClick(vessel), [onVesselClick, vessel])

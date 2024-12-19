@@ -109,7 +109,7 @@ const TimebarWrapper = () => {
     }
   }, [myRef])
 
-  const Range = createSliderWithTooltip(SliderRange)
+  const Range = createSliderWithTooltip(SliderRange) as any
 
   const tooltip = useSelector(selectTooltip)
   const absoluteStart = new Date('2012-01-01')
@@ -192,7 +192,7 @@ const TimebarWrapper = () => {
             vertical
             onAfterChange={handleSpeedChange}
             allowCross={false}
-            tipFormatter={(value) => `${value} kt`}
+            tipFormatter={(value: any) => `${value} kt`}
             tipProps={{ placement: 'right' }}
             defaultValue={[minSpeed, maxSpeed]}
           />
@@ -205,7 +205,7 @@ const TimebarWrapper = () => {
             vertical
             onAfterChange={handleTimeChange}
             allowCross={false}
-            tipFormatter={(value) => `${value} hs`}
+            tipFormatter={(value: any) => `${value} hs`}
             tipProps={{ placement: 'right' }}
             defaultValue={[fromHour, toHour]}
           />
@@ -218,7 +218,7 @@ const TimebarWrapper = () => {
             vertical
             onAfterChange={handleElevationChange}
             allowCross={false}
-            tipFormatter={(value) => `${value} mt`}
+            tipFormatter={(value: any) => `${value} mt`}
             tipProps={{ placement: 'right' }}
             defaultValue={[minElevation, maxElevation]}
           />
@@ -231,7 +231,7 @@ const TimebarWrapper = () => {
             vertical
             onAfterChange={handleDistanceFromPortChange}
             allowCross={false}
-            tipFormatter={(value) => `${value} mt`}
+            tipFormatter={(value: any) => `${value} mt`}
             tipProps={{ placement: 'right' }}
             defaultValue={[minDistanceFromPort, maxDistanceFromPort]}
           />

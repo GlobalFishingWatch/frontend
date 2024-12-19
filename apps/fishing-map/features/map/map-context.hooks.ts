@@ -9,7 +9,7 @@ const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)
 const mapInstanceAtomSelector = (map: Deck | undefined) => map
 const selectMapInstance = selectAtom(mapInstanceAtom, mapInstanceAtomSelector as any)
 
-export function useSetMapInstance(mapRef: RefObject<DeckGLRef> | undefined) {
+export function useSetMapInstance(mapRef: RefObject<DeckGLRef | null> | undefined) {
   const setMapInstance = useSetAtom(mapInstanceAtom)
   useEffect(() => {
     if (mapRef?.current?.deck) {

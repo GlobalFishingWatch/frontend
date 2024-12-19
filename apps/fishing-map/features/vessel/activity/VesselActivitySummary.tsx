@@ -123,7 +123,7 @@ export const VesselActivitySummary = () => {
                     <Tooltip key={regionType} content={tooltipContent}>
                       <span className={styles.help}>
                         {activityRegions[regionType].length}{' '}
-                        {t(`layer.areas.${regionType}`, {
+                        {t(`layer.areas.${regionType}` as any, {
                           defaultvalue: regionType,
                           count: activityRegions[regionType].length,
                         })}
@@ -156,8 +156,8 @@ export const VesselActivitySummary = () => {
               visibleEvents === 'all'
                 ? true
                 : visibleEvents === 'none'
-                ? false
-                : visibleEvents.includes(eventType)
+                  ? false
+                  : visibleEvents.includes(eventType)
             return (
               <li key={eventType} className={styles.eventTypeRowContainer}>
                 <Switch
