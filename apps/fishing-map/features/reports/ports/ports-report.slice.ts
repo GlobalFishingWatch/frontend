@@ -6,8 +6,8 @@ import type {
   ReportEventsVesselsResponseItem,
 } from 'queries/report-events-stats-api'
 import { EVENTS_TIME_FILTER_MODE } from 'queries/report-events-stats-api'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
