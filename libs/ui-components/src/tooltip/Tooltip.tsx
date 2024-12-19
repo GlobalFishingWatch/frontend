@@ -1,3 +1,4 @@
+import type { PropsWithChildren, PropsWithoutRef } from 'react'
 import type { Placement } from '@floating-ui/react'
 import {
   useFloating,
@@ -65,12 +66,12 @@ function TooltipComponent({ content, children, className, placement = 'top' }: T
               {
                 onClick: (e: MouseEvent) => {
                   setIsOpen(false)
-                  ;(child.props as any).onClick?.(e)
+                  ;(child.props as PropsWithoutRef<any>).onClick?.(e)
                 },
                 ref: refs.setReference,
                 ...getReferenceProps(),
-              } as any,
-              (child.props as any).children
+              } as PropsWithChildren,
+              (child.props as PropsWithChildren).children
             )
           }
         })
