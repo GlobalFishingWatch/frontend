@@ -3,7 +3,7 @@
 }
 
 .LayerPanel {
-  width: calc(100% - 1px);
+  width: 100%;
   position: relative;
   min-height: var(--size-M);
 }

@@ -1,5 +1,5 @@
 .expandedContainer {
-  min-width: 33.8rem;
+  width: 100%;
   transition: none;
   padding: var(--space-S);
   padding-bottom: var(--space-M);
