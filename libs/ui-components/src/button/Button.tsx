@@ -1,7 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import type { Placement } from 'tippy.js'
-import type { TippyProps } from '@tippyjs/react'
+import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
 import { Spinner } from '../spinner'
 import type { TooltipTypes } from '../types/types'
@@ -20,14 +19,13 @@ export interface ButtonProps {
   className?: string
   children: React.ReactNode
   tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
+  tooltipPlacement?: TooltipPlacement
   onClick?: (e: React.MouseEvent) => void
   onMouseEnter?: (e: React.MouseEvent) => void
   onMouseLeave?: (e: React.MouseEvent) => void
   href?: string
   target?: string
   htmlType?: HTMLButtonType
-  tooltipProps?: TippyProps
   testId?: string
 }
 
@@ -41,18 +39,17 @@ export function Button(props: ButtonProps) {
     className,
     children,
     tooltip,
-    tooltipPlacement = 'auto',
+    tooltipPlacement = 'top',
     onClick,
     onMouseEnter,
     onMouseLeave,
     href,
     target,
     htmlType,
-    tooltipProps,
     testId,
   } = props
   return (
-    <Tooltip {...tooltipProps} content={tooltip as React.ReactNode} placement={tooltipPlacement}>
+    <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       {href !== undefined && !disabled ? (
         <a
           href={href}

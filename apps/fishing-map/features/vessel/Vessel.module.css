@@ -11,3 +11,7 @@
   position: relative;
   z-index: 1;
 }
+
+.linkTooltip {
+  max-width: none;
+}

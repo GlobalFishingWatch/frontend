@@ -4,7 +4,7 @@ import toNumber from 'lodash/toNumber'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import type { FeatureCollection } from 'geojson'
-import type { DateTimeOptions } from 'luxon';
+import type { DateTimeOptions } from 'luxon'
 import { DateTime } from 'luxon'
 import type {
   Dataset,
@@ -23,7 +23,7 @@ const MAX_SCHEMA_ENUM_VALUES = 100
 
 type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
 
-export const getUTCDate = (timestamp: string | number) => {
+export const getUTCDate = (timestamp: string | number = Date.now()) => {
   // it could receive a timestamp as a string
   const millis = toNumber(timestamp)
   if (typeof timestamp === 'number' || !isNaN(millis))
@@ -50,10 +50,13 @@ export const getUTCDate = (timestamp: string | number) => {
 }
 
 export const normalizePropertiesKeys = (object: Record<string, any> | null) => {
-  return Object.entries(object || {}).reduce((acc, [key, value]) => {
-    acc[snakeCase(key)] = value
-    return acc
-  }, {} as Record<string, any>)
+  return Object.entries(object || {}).reduce(
+    (acc, [key, value]) => {
+      acc[snakeCase(key)] = value
+      return acc
+    },
+    {} as Record<string, any>
+  )
 }
 
 export const getFieldSchema = (
@@ -73,8 +76,8 @@ export const getFieldSchema = (
         GUESS_COLUMN_DICT.longitude.some((t) => t === field)
           ? 'coordinate'
           : type === 'number'
-          ? 'range'
-          : type,
+            ? 'range'
+            : type,
     }
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {

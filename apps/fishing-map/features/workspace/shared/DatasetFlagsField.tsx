@@ -20,7 +20,6 @@ function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldP
   let fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
 
   const onRemoveClick = (tag: TagItem, tags: TagItem[]) => {
-    console.log(tags)
     upsertDataviewInstance({
       id: dataview.id,
       config: {

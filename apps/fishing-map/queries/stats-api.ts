@@ -3,10 +3,11 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
 import { uniq } from 'es-toolkit'
 import { DateTime } from 'luxon'
+import { gfwBaseQuery } from 'queries/base'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import type { StatFields, StatType, StatsParams } from '@globalfishingwatch/api-types'
-import { gfwBaseQuery } from 'queries/base'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 
 type FetchDataviewStatsParams = {
@@ -40,7 +41,7 @@ export const dataviewStatsApi = createApi({
         const datasets = dataview.datasets?.filter((dataset) =>
           dataview.config?.datasets?.includes(dataset.id)
         )
-        const { extentStart, extentEnd = new Date().toISOString() } =
+        const { extentStart, extentEnd = getUTCDate(Date.now()).toISOString() } =
           getDatasetsExtent<string>(datasets)
         const laterStartDate = DateTime.max(
           DateTime.fromISO(timerange.start),

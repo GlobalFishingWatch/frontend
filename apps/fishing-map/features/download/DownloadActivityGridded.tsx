@@ -4,8 +4,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import area from '@turf/area'
-import type { Placement } from 'tippy.js'
-import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Icon, Button, Choice, Tag } from '@globalfishingwatch/ui-components'
 import {
   selectUrlBufferOperationQuery,
@@ -111,7 +110,7 @@ function DownloadActivityGridded() {
         ...option,
         disabled: true,
         tooltip: t('download.highResNotAvailable', 'Your area is too big'),
-        tooltipPlacement: 'top' as Placement,
+        tooltipPlacement: 'top' as TooltipPlacement,
       }
     }
     return option

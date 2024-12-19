@@ -9,18 +9,8 @@
   z-index: 100;
   transition: var(--transition);
   border: var(--border-white);
-}
-
-.tooltip[data-state='hidden'] {
-  opacity: 0;
-}
-
-.tooltip[data-state='visible'] {
-  opacity: 1;
-}
-
-.tooltip :global(.tippy-arrow) {
-  display: none;
+  width: max-content;
+  max-width: 30rem;
 }
 
 @media print {
