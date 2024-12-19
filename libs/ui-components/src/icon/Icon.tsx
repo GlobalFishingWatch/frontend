@@ -40,7 +40,7 @@ export function Icon(props: IconProps) {
     return null
   }
   return (
-    <Tooltip content={tooltip as React.ReactNode} placement="auto">
+    <Tooltip content={tooltip as React.ReactNode} placement="top">
       <Suspense fallback={null}>
         <Component
           className={cx(styles.icon, styles[type], className)}
