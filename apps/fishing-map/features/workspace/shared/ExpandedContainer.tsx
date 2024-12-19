@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import type { Middleware } from '@floating-ui/react'
 import {
@@ -83,28 +83,28 @@ function ExpandedContainer({
   const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss])
 
   return (
-    <div>
-      <span ref={refs.setReference} {...getReferenceProps()}>
+    <Fragment>
+      <div className={styles.trigger} ref={refs.setReference} {...getReferenceProps()}>
         {children}
-      </span>
+      </div>
       {isOpen && (
         <div
           ref={refs.setFloating}
           style={floatingStyles}
           {...getFloatingProps()}
-          className={cx(styles.expandedContainer, styles.expandedContainerOpen, className)}
+          className={cx(styles.expandedContainer, className)}
         >
           {component}
           <FloatingArrow
             stroke="rgba(22, 63, 137, .15)" //--var-border
-            strokeWidth={1}
+            strokeWidth={0.75}
             className={styles.tooltipArrow}
             ref={arrowRef}
             context={context}
           />
         </div>
       )}
-    </div>
+    </Fragment>
   )
 }
 

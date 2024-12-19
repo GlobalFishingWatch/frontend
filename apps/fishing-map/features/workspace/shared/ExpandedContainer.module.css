@@ -1,19 +1,9 @@
 .expandedContainer {
   min-width: 33.8rem;
-  transform: translate(0, -5px);
-  transform-origin: top;
-  opacity: 0;
-}
-
-.expandedContainerTop {
-  transform: translate(-5px, 5px);
-}
-
-.expandedContainerOpen {
+  transition: none;
   padding: var(--space-S);
   padding-bottom: var(--space-M);
   background-color: var(--color-off-white);
-  opacity: 1;
   border-top: var(--border);
   border-bottom: var(--border);
   z-index: 1;
@@ -21,4 +11,9 @@
 
 .tooltipArrow {
   fill: var(--color-off-white);
+}
+
+.trigger {
+  width: 100%;
+  height: 100%;
 }
