@@ -63,9 +63,9 @@ function TooltipComponent({ content, children, className, placement = 'top' }: T
             return cloneElement(
               child,
               {
-                onClick: () => {
+                onClick: (e: MouseEvent) => {
                   setIsOpen(false)
-                  ;(child.props as any).onClick?.()
+                  ;(child.props as any).onClick?.(e)
                 },
                 ref: refs.setReference,
                 ...getReferenceProps(),
