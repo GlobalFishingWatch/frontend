@@ -1111,7 +1111,7 @@
     "searchNotFound": "Nenhuma embarcação encontrada",
     "searchVesselsRequired": "Pesquise embarcações para criar um grupo de embarcações",
     "summary": "Este grupo contém <strong>{{vessels}} embarcações</strong> com as <strong>bandeiras {{flags}}</strong> ativas de <strong>{{start}}</strong> a <strong>{{end}}</strong>",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> com as <strong>bandeiras {{flags}}</strong> tiveram <strong>{{activityQuantity}} {{activityUnit}}</strong> globalmente entre <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEvents": "<strong>{{vessels}} embarcações</strong> com as <strong>bandeiras {{flags}}</strong> tiveram <strong>{{activityQuantity}} {{activityUnit}}</strong> globalmente entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "tooManyVessels_one": "O número máximo de embarcações é {{count}}",
     "tooManyVessels_other": "O número máximo de embarcações é {{count}}",
     "updateRequired": "Atualização necessária",
