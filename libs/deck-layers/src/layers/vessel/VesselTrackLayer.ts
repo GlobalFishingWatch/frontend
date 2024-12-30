@@ -296,15 +296,21 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     const steps =
       trackGraphExtent && colorBy ? generateVesselGraphSteps(trackGraphExtent, colorBy) : []
 
-    const values = steps.reduce((acc, step, index) => {
-      acc[`value${index}`] = step.value
-      return acc
-    }, {} as Record<string, number>)
+    const values = steps.reduce(
+      (acc, step, index) => {
+        acc[`value${index}`] = step.value
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
-    const colors = steps.reduce((acc, step, index) => {
-      acc[`color${index}`] = (hexToDeckColor(step.color) as number[]).map((c) => colorToVec(c))
-      return acc
-    }, {} as Record<string, number[]>)
+    const colors = steps.reduce(
+      (acc, step, index) => {
+        acc[`color${index}`] = (hexToDeckColor(step.color) as number[]).map((c) => colorToVec(c))
+        return acc
+      },
+      {} as Record<string, number[]>
+    )
 
     params.uniforms = {
       ...params.uniforms,

@@ -129,7 +129,14 @@ export const getSegmentsFromData = memoize(
     return segments
   },
   (data, params) => {
-    return `${data?.startIndices?.join(',')}-${JSON.stringify(params || {})}`
+    const lengths = [
+      data?.attributes?.getPath?.value.length,
+      (data as VesselTrackData)?.attributes?.getSpeed?.value.length,
+      (data as VesselTrackData)?.attributes?.getElevation?.value.length,
+      data?.attributes?.getTimestamp?.value.length,
+    ]
+
+    return `${data?.startIndices?.join(',')}-${lengths.join(',')}-${JSON.stringify(params || {})}`
   }
 )
 
