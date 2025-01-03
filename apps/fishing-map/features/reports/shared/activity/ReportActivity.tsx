@@ -291,6 +291,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
               }}
             />
             <Button
+              testId="see-vessel-table-report"
               onClick={() => {
                 dispatch(setDateRangeHash(''))
                 dispatchFetchReport()
@@ -344,6 +345,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     reportError,
     reportLoading,
     reportDataviews?.length,
+    timeComparisonValues,
     reportOutdated,
     reportStatus,
     hasAuthError,

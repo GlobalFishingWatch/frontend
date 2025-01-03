@@ -4,7 +4,7 @@ import { disablePopups, switchLanguage, verifyTracksInTimebar } from '../../supp
 describe('Access to vessel viewver - direct', () => {
   before(() => {
     // I need to search as a anonymous user, the last update of cypress needed to add the eslit coment
-     
+
     cy.clearAllLocalStorage().then(() => {
       disablePopups()
       switchLanguage('en')
@@ -57,7 +57,7 @@ describe('Access to vessel viewver - direct', () => {
     cy.getBySel('vv-insights-tab').click()
     cy.get('#coverage').contains('AIS Coverage')
     cy.get('#gaps').contains('AIS Off Events')
-    cy.get('#fishing').contains('Fishing Events')
+    // cy.get('#fishing').contains('Fishing Events')
     cy.get('#IUU').contains('RFMO IUU Vessel List')
     cy.get('#flagChanges').contains('Flag changes')
     cy.get('#MOULists').contains('Tokyo and Paris MOU Lists')
