@@ -65,6 +65,10 @@ export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
   return dataview?.config?.type === DataviewType.HeatmapStatic
 }
 
+export function isHeatmapCurrentsDataview(dataview: UrlDataviewInstance) {
+  return dataview?.config?.type === DataviewType.Currents
+}
+
 export function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Environment &&
