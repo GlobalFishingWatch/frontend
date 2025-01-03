@@ -103,7 +103,10 @@ function ActivitySection(): React.ReactElement<any> {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}>
+    <div
+      data-test="activity-section"
+      className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}
+    >
       <div className={cx(styles.header, 'print-hidden')}>
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
         {!readOnly && (

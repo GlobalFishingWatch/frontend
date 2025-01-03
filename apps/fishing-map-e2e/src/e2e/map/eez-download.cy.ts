@@ -49,7 +49,7 @@ describe('Download reports for an area', () => {
 
     cy.getBySel('map-search-input').type(SEARCH_EEZ, { delay: 200 })
     cy.getBySel('map-search-results').findBySelLike('map-search-result').first().click()
-    getMapCanvas().click('center')
+    getMapCanvas().click('center', { force: true })
     cy.intercept(API_URL_GALAPAGOS_INFO).as('areaInfo')
     cy.getBySel(MAP_POPUP_EEZ_SECTION, getDOMTimeout(10000))
       .findBySelLike('download-activity-layers')

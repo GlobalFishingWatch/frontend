@@ -202,6 +202,7 @@ function SaveWorkspaceButton() {
           size="medium"
           className="print-hidden"
           onClick={onSaveAsClick}
+          testId="save-workspace-button"
           tooltip={t('analysis.save', 'Save this report')}
           tooltipPlacement="bottom"
         />
@@ -225,16 +226,19 @@ function SaveWorkspaceButton() {
                   : t('workspace.saveOwnerOnly', 'This workspace can only be edited by its creator')
               }
             >
-              <li
-                className={cx(styles.groupOption, { [styles.disabled]: !canEditWorkspace })}
-                onClick={onSaveClick}
-                key="workspace-save"
-              >
-                {t('workspace.save', 'Save this report')}
+              <li key="workspace-save">
+                <button
+                  className={cx(styles.groupOption, { [styles.disabled]: !canEditWorkspace })}
+                  onClick={onSaveClick}
+                >
+                  {t('workspace.save', 'Save this report')}
+                </button>
               </li>
             </Tooltip>
-            <li className={styles.groupOption} onClick={onSaveAsClick} key="workspace-save-as">
-              {t('workspace.saveAs', 'Save this as a new workspace')}
+            <li key="workspace-save-as">
+              <button className={styles.groupOption} onClick={onSaveAsClick}>
+                {t('workspace.saveAs', 'Save this as a new workspace')}
+              </button>
             </li>
           </ul>
         }
