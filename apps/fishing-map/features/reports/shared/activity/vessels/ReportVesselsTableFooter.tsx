@@ -6,7 +6,7 @@ import { unparse as unparseCSV } from 'papaparse'
 import { saveAs } from 'file-saver'
 import { uniq } from 'es-toolkit'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
-import I18nNumber from 'features/i18n/i18nNumber'
+import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -61,8 +61,10 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
         allVesselsWithAllInfo,
         reportVesselFilter
       )?.map((vessel) => {
-        const { dataviewId, category, sourceColor, flagTranslatedClean, ...rest } = vessel
-        return rest
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { dataviewId, category, sourceColor, flagTranslatedClean, hours, value, ...rest } =
+          vessel
+        return { ...rest, value: formatI18nNumber(hours || value) }
       })
       trackEvent({
         category: TrackCategory.Analysis,
