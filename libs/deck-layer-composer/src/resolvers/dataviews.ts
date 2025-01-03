@@ -31,6 +31,7 @@ import {
   isTrackDataview,
   isUserHeatmapDataview,
   isUserTrackDataview,
+  isHeatmapCurrentsDataview,
 } from '@globalfishingwatch/dataviews-client'
 
 export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
@@ -297,6 +298,7 @@ export function getDataviewsResolved(
     detectionDataviews,
     environmentalDataviews,
     staticDataviews,
+    currentsDataviews,
     vesselGroupDataview,
     vesselTrackDataviews,
     userTrackDataviews,
@@ -313,6 +315,8 @@ export function getDataviewsResolved(
         acc.environmentalDataviews.push(dataview)
       } else if (isHeatmapStaticDataview(dataview)) {
         acc.staticDataviews.push(dataview)
+      } else if (isHeatmapCurrentsDataview(dataview)) {
+        acc.currentsDataviews.push(dataview)
       } else if (isVesselGroupDataview(dataview)) {
         acc.vesselGroupDataview.push(dataview)
       } else if (isUserHeatmapDataview(dataview)) {
@@ -331,6 +335,7 @@ export function getDataviewsResolved(
       detectionDataviews: [] as UrlDataviewInstance[],
       environmentalDataviews: [] as UrlDataviewInstance[],
       staticDataviews: [] as UrlDataviewInstance[],
+      currentsDataviews: [] as UrlDataviewInstance[],
       vesselGroupDataview: [] as UrlDataviewInstance[],
       vesselTrackDataviews: [] as UrlDataviewInstance[],
       userHeatmapDataviews: [] as UrlDataviewInstance[],
@@ -377,6 +382,12 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
+  const currentsDataviewsParsed = currentsDataviews.flatMap(
+    (d) =>
+      getFourwingsDataviewsResolved(d, {
+        visualizationMode: params.environmentVisualizationMode,
+      }) || []
+  )
   const vesselGroupDataviewParsed = vesselGroupDataview.flatMap((d) => {
     const comparisonMode = getComparisonMode([d], params)
     return (
@@ -411,6 +422,7 @@ export function getDataviewsResolved(
   const dataviewsMerged = [
     ...otherDataviews,
     ...staticDataviewsParsed,
+    ...currentsDataviewsParsed,
     ...environmentalDataviewsParsed,
     ...vesselGroupDataviewParsed,
     ...mergedDetectionsDataview,

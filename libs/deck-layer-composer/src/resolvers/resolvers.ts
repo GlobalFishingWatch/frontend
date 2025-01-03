@@ -7,6 +7,7 @@ import {
   ClusterLayer,
   ContextLayer,
   FourwingsClustersLayer,
+  FourwingsCurrentsTileLayer,
   FourwingsLayer,
   GraticulesLayer,
   PolygonsLayer,
@@ -31,6 +32,7 @@ import {
 import { resolveDeckGraticulesLayerProps } from './graticules'
 import { resolveDeckPolygonsLayerProps } from './polygons'
 import { resolveDeckTileClusterLayerProps } from './tile-cluster'
+import { resolveDeckCurrentsLayerProps } from './currents'
 
 export const getDataviewHighlightedFeatures = (
   dataview: DataviewInstance,
@@ -63,6 +65,11 @@ export const dataviewToDeckLayer = (
   ) {
     const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, layerConfig)
     const layer = new FourwingsLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.Currents) {
+    const deckLayerProps = resolveDeckCurrentsLayerProps(dataview, layerConfig)
+    const layer = new FourwingsCurrentsTileLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Context) {
