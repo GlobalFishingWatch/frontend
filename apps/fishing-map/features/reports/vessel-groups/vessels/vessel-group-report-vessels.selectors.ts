@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
 import type { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
@@ -193,7 +194,7 @@ type GraphDataGroup = {
   value: number
 }
 
-export const selectVGRVesselsGraphDataGrouped = createSelector(
+export const selectVGRVesselsGraphAggregatedData = createSelector(
   [selectVGRVesselsFiltered, selectVGRVesselsSubsection],
   (vessels, subsection) => {
     if (!vessels) return []
@@ -254,7 +255,72 @@ export const selectVGRVesselsGraphDataGrouped = createSelector(
         name: OTHER_CATEGORY_LABEL,
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
-    ] as GraphDataGroup[]
+    ] as ResponsiveVisualizationData<'aggregated'>
+  }
+)
+
+export const selectVGRVesselsGraphIndividualData = createSelector(
+  [selectVGRVesselsFiltered, selectVGRVesselsSubsection],
+  (vessels, subsection) => {
+    if (!vessels) return []
+    let vesselsGrouped = {}
+    switch (subsection) {
+      case 'flag':
+        vesselsGrouped = groupBy(vessels, (vessel) => vessel.flagTranslatedClean)
+        break
+      case 'shiptypes':
+        vesselsGrouped = groupBy(vessels, (vessel) => vessel.vesselType.split(', ')[0])
+        break
+      case 'geartypes':
+        vesselsGrouped = groupBy(vessels, (vessel) => vessel.geartype.split(', ')[0])
+        break
+      case 'source':
+        vesselsGrouped = groupBy(vessels, (vessel) => vessel.source)
+    }
+    const orderedGroups: ResponsiveVisualizationData<'individual'> = Object.entries(vesselsGrouped)
+      .map(([key, value]) => ({
+        name: key,
+        values: value as any[],
+      }))
+      .sort((a, b) => {
+        return b.values.length - a.values.length
+      })
+    const groupsWithoutOther: ResponsiveVisualizationData<'individual'> = []
+    const otherGroups: ResponsiveVisualizationData<'individual'> = []
+    orderedGroups.forEach((group) => {
+      if (
+        group.name === 'null' ||
+        group.name.toLowerCase() === OTHER_CATEGORY_LABEL.toLowerCase() ||
+        group.name === EMPTY_FIELD_PLACEHOLDER
+      ) {
+        otherGroups.push(group)
+      } else {
+        groupsWithoutOther.push(group)
+      }
+    })
+    const allGroups =
+      otherGroups.length > 0
+        ? [
+            ...groupsWithoutOther,
+            {
+              name: OTHER_CATEGORY_LABEL,
+              values: otherGroups,
+            },
+          ]
+        : groupsWithoutOther
+    if (allGroups.length <= MAX_CATEGORIES) {
+      return allGroups as ResponsiveVisualizationData<'individual'>
+    }
+    const firstGroups = allGroups.slice(0, MAX_CATEGORIES)
+    const restOfGroups = allGroups.slice(MAX_CATEGORIES)
+
+    return [
+      ...firstGroups,
+      {
+        name: OTHER_CATEGORY_LABEL,
+        values: restOfGroups,
+      },
+    ] as ResponsiveVisualizationData<'individual'>
   }
 )
 
