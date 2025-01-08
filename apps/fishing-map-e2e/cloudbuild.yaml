@@ -65,7 +65,7 @@ steps:
         --no-clobber
 
   - id: 'smoke-test-e2e-live'
-    name: cypress/included:13.7.3
+    name: cypress/included:13.7.0
     waitFor: ['install-yarn']
     allowFailure: true
     entrypoint: 'bash'
