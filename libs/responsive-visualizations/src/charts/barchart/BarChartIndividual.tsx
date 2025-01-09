@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { useState } from 'react'
 import React from 'react'
 import type { ResponsiveVisualizationItem } from '../../types'
-import type { BarChartByTypeProps } from './BarChart'
+import type { BarChartByTypeProps } from '../types'
 import styles from './BarChartIndividual.module.css'
 
 type IndividualBarChartProps = BarChartByTypeProps<'individual'>

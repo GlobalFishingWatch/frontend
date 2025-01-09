@@ -1,6 +1,6 @@
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import type { ResponsiveVisualizationData } from '../../types'
-import type { BarChartByTypeProps } from './BarChart'
+import type { BarChartByTypeProps } from '../types'
 
 type AggregatedBarChartProps = BarChartByTypeProps<'aggregated'>
 

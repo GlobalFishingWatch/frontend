@@ -25,17 +25,21 @@ type IsIndividualSupportedParams = {
   data: ResponsiveVisualizationData
   width: number
   height: number
+  aggregatedValueKey: string
+  individualValueKey: string
 }
 export function getIsIndividualBarChartSupported({
   data,
   width,
   height,
+  aggregatedValueKey,
+  individualValueKey,
 }: IsIndividualSupportedParams): boolean {
   const { pointsByRow } = getBarProps(data, width)
   const biggestColumnValue = data.reduce((acc, column) => {
-    const value = (column as ResponsiveVisualizationIndividualItem).values
-      ? (column as ResponsiveVisualizationIndividualItem).values.length
-      : (column as ResponsiveVisualizationAggregatedItem).value
+    const value = (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey]
+      ? (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey].length
+      : (column as ResponsiveVisualizationAggregatedItem)[individualValueKey].value
     if (value > acc) {
       return value
     }
