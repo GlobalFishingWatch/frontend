@@ -2,8 +2,8 @@ import React, { Fragment, useCallback, useRef } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import type {
-  ResponsiveBarChartInteractionCallback,
   ResponsiveVisualizationData,
+  ResponsiveVisualizationInteractionCallback,
 } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -193,7 +193,7 @@ export default function VesselGroupReportVesselsGraph({
   const ref = useRef<HTMLDivElement>(null)
   const { dispatchQueryParams } = useLocationConnect()
 
-  const onBarClick: ResponsiveBarChartInteractionCallback = (e) => {
+  const onBarClick: ResponsiveVisualizationInteractionCallback = (e) => {
     const { payload } = e.activePayload?.[0] || {}
     if (payload && payload?.name !== OTHER_CATEGORY_LABEL) {
       dispatchQueryParams({
@@ -204,7 +204,7 @@ export default function VesselGroupReportVesselsGraph({
       })
     }
   }
-  const onPointClick: ResponsiveBarChartInteractionCallback = (e) => {
+  const onPointClick: ResponsiveVisualizationInteractionCallback = (e) => {
     console.log('TODO', e)
   }
 

@@ -49,3 +49,20 @@ export function getIsIndividualBarChartSupported({
   const heightNeeded = rowsInBiggestColumn * POINT_WIDTH
   return heightNeeded < height - AXIX_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
 }
+
+type getIsIndividualTimeseriesSupportedParams = {
+  data: ResponsiveVisualizationData
+  width: number
+  height: number
+  aggregatedValueKey: string
+  individualValueKey: string
+}
+export function getIsIndividualTimeseriesSupported({
+  data,
+  width,
+  height,
+  aggregatedValueKey,
+  individualValueKey,
+}: getIsIndividualTimeseriesSupportedParams): boolean {
+  return false
+}

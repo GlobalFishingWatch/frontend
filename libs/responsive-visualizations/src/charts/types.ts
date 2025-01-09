@@ -29,7 +29,7 @@ export type BaseResponsiveChartProps = {
 export type BaseResponsiveBarChartProps = {
   color: string
   barLabel?: ReactElement<SVGElement>
-  barValueFormatter?: (value: any) => string
+  barValueFormatter?: (value: number) => string
 }
 
 export type BarChartByTypeProps<M extends ResponsiveVisualizationMode> =
@@ -46,7 +46,7 @@ export type BaseResponsiveTimeseriesProps = {
   start: string
   end: string
   color: string
-  tickLabel?: ReactElement<SVGElement>
+  tickLabelFormatter?: (item: string) => string
 }
 
 export type TimeseriesByTypeProps<M extends ResponsiveVisualizationMode> =
