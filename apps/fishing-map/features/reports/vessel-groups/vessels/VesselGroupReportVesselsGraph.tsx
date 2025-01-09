@@ -1,8 +1,10 @@
 import React, { Fragment, useCallback, useRef } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
-import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
+import type {
+  ResponsiveBarChartInteractionCallback,
+  ResponsiveVisualizationData,
+} from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -17,9 +19,9 @@ import type {
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import type { PortsReportState } from 'features/reports/ports/ports-report.types'
-import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import styles from './VesselGroupReportVesselsGraph.module.css'
+import type { VesselGroupVesselTableParsed } from './vessel-group-report-vessels.selectors'
 
 type ReportGraphTooltipProps = {
   active: boolean
@@ -77,19 +79,22 @@ const ReportBarTooltip = (props: any) => {
   return null
 }
 
-const ReportPointTooltip = ({ type, data }: { type: string; data?: ReportVesselWithDatasets }) => {
+const ReportPointTooltip = ({ data }: { type: string; data?: VesselGroupVesselTableParsed }) => {
+  if (!data?.identity) {
+    return null
+  }
   const getVesselPropertyParams = {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   }
   const vesselName = formatInfoField(
-    getVesselProperty(data?.identity, 'shipname', getVesselPropertyParams),
+    getVesselProperty(data.identity, 'shipname', getVesselPropertyParams),
     'shipname'
   )
 
-  const vesselFlag = getVesselProperty(data?.identity, 'flag', getVesselPropertyParams)
+  const vesselFlag = getVesselProperty(data.identity, 'flag', getVesselPropertyParams)
 
   const vesselType = getVesselShipTypeLabel({
-    shiptypes: getVesselProperty(data?.identity, 'shiptypes', getVesselPropertyParams),
+    shiptypes: getVesselProperty(data.identity, 'shiptypes', getVesselPropertyParams),
   })
 
   return (
@@ -164,16 +169,9 @@ const ReportGraphTick = (props: any) => {
   )
 }
 
-export default function VesselGroupReportVesselsGraph({
-  data,
-  individualData,
-  color = COLOR_PRIMARY_BLUE,
-  property,
-  filterQueryParam,
-  pageQueryParam,
-}: {
+type VesselGroupReportVesselsGraphProps = {
   data: ResponsiveVisualizationData<'aggregated'>
-  individualData: ResponsiveVisualizationData<'individual'>
+  individualData?: ResponsiveVisualizationData<'individual'>
   color?: string
   property: VGREventsVesselsProperty
   filterQueryParam:
@@ -182,10 +180,20 @@ export default function VesselGroupReportVesselsGraph({
   pageQueryParam:
     | keyof Pick<VesselGroupReportState, 'vGRVesselPage' | 'vGREventsVesselPage'>
     | keyof Pick<PortsReportState, 'portsReportVesselsPage'>
-}) {
+}
+
+export default function VesselGroupReportVesselsGraph({
+  data,
+  individualData,
+  color = COLOR_PRIMARY_BLUE,
+  property,
+  filterQueryParam,
+  pageQueryParam,
+}: VesselGroupReportVesselsGraphProps) {
   const ref = useRef<HTMLDivElement>(null)
   const { dispatchQueryParams } = useLocationConnect()
-  const onBarClick: CategoricalChartFunc = (e) => {
+
+  const onBarClick: ResponsiveBarChartInteractionCallback = (e) => {
     const { payload } = e.activePayload?.[0] || {}
     if (payload && payload?.name !== OTHER_CATEGORY_LABEL) {
       dispatchQueryParams({
@@ -196,13 +204,14 @@ export default function VesselGroupReportVesselsGraph({
       })
     }
   }
-  const onPointClick: CategoricalChartFunc = (e) => {
+  const onPointClick: ResponsiveBarChartInteractionCallback = (e) => {
     console.log('TODO', e)
   }
 
   const getAggregatedData = useCallback(async () => {
     return data
   }, [data])
+
   const getIndividualData = useCallback(async () => {
     return individualData
   }, [individualData])
@@ -219,7 +228,6 @@ export default function VesselGroupReportVesselsGraph({
             onAggregatedItemClick={onBarClick}
             onIndividualItemClick={onPointClick}
             barValueFormatter={(value: any) => {
-              console.log('🚀 ~ value:', value)
               return formatI18nNumber(value).toString()
             }}
             barLabel={

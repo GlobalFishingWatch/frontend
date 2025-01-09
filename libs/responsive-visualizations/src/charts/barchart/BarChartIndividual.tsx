@@ -4,20 +4,15 @@ import type { ReactElement } from 'react'
 import cx from 'classnames'
 import { useState } from 'react'
 import React from 'react'
-import type { ResponsiveVisualizationData } from '../../types'
-import type { BaseResponsiveBarChartProps, ResponsiveBarChartInteractionCallback } from './BarChart'
+import type { ResponsiveVisualizationItem } from '../../types'
+import type { BarChartByTypeProps } from './BarChart'
 import styles from './BarChartIndividual.module.css'
 
-type IndividualBarChartProps = BaseResponsiveBarChartProps & {
-  width: number
-  data: ResponsiveVisualizationData<'individual'>
-  onClick?: ResponsiveBarChartInteractionCallback
-  customTooltip?: ReactElement
-}
+type IndividualBarChartProps = BarChartByTypeProps<'individual'>
 
 type IndividualBarChartPointProps = {
   color?: string
-  point: IndividualBarChartProps['data'][0]['values'][0]
+  point: ResponsiveVisualizationItem
   tooltip?: ReactElement
   className?: string
 }
@@ -63,6 +58,8 @@ export function IndividualBarChart({
   data,
   color,
   barLabel,
+  valueKey,
+  labelKey,
   barValueFormatter,
   customTooltip,
 }: IndividualBarChartProps) {
@@ -82,27 +79,30 @@ export function IndividualBarChart({
       >
         <foreignObject width="100%" height="100%">
           <div className={styles.container}>
-            {data.map((item, index) => (
-              <div className={styles.barContainer}>
-                <label className={styles.label}>
-                  {barValueFormatter?.(item.values.length) || item.values.length}
-                </label>
-                <ul key={index} className={styles.bar}>
-                  {item.values?.map((point, pointIndex) => (
-                    <IndividualBarChartPoint
-                      key={pointIndex}
-                      point={point}
-                      color={color}
-                      tooltip={customTooltip}
-                    />
-                  ))}
-                </ul>
-              </div>
-            ))}
+            {data.map((item, index) => {
+              const points = item?.[valueKey] as ResponsiveVisualizationItem[]
+              return (
+                <div className={styles.barContainer}>
+                  <label className={styles.label}>
+                    {barValueFormatter?.(points.length) || points.length}
+                  </label>
+                  <ul key={index} className={styles.bar}>
+                    {points?.map((point, pointIndex) => (
+                      <IndividualBarChartPoint
+                        key={pointIndex}
+                        point={point}
+                        color={color}
+                        tooltip={customTooltip}
+                      />
+                    ))}
+                  </ul>
+                </div>
+              )
+            })}
           </div>
         </foreignObject>
         <XAxis
-          dataKey="name"
+          dataKey={labelKey}
           interval="equidistantPreserveStart"
           tickLine={false}
           minTickGap={-1000}

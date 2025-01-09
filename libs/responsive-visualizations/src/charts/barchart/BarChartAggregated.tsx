@@ -1,17 +1,16 @@
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
-import type { ReactElement } from 'react'
 import type { ResponsiveVisualizationData } from '../../types'
-import type { BaseResponsiveBarChartProps, ResponsiveBarChartInteractionCallback } from './BarChart'
+import type { BarChartByTypeProps } from './BarChart'
 
-type AggregatedBarChartProps = BaseResponsiveBarChartProps & {
-  data: ResponsiveVisualizationData<'aggregated'>
-  onClick?: ResponsiveBarChartInteractionCallback
-  customTooltip?: ReactElement
-}
+type AggregatedBarChartProps = BarChartByTypeProps<'aggregated'>
+
 export function AggregatedBarChart({
   data,
   color,
   barLabel,
+  valueKey,
+  labelKey,
+  onClick,
   customTooltip,
   barValueFormatter,
 }: AggregatedBarChartProps) {
@@ -27,17 +26,19 @@ export function AggregatedBarChart({
           left: 0,
           bottom: 0,
         }}
-        // onClick={onBarClick}
+        onClick={onClick}
       >
         {data && <Tooltip content={customTooltip} />}
-        <Bar dataKey="value" fill={color}>
+        <Bar dataKey={valueKey} fill={color}>
           <LabelList
             position="top"
-            valueAccessor={(entry: any) => barValueFormatter?.(entry.value) || entry.value}
+            valueAccessor={(entry: ResponsiveVisualizationData<'aggregated'>[0]) =>
+              barValueFormatter?.(entry[valueKey]) || entry[valueKey]
+            }
           />
         </Bar>
         <XAxis
-          dataKey="name"
+          dataKey={labelKey}
           interval="equidistantPreserveStart"
           tickLine={false}
           minTickGap={-1000}
