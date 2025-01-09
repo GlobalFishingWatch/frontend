@@ -1,14 +1,13 @@
 import React, { Fragment, useCallback, useRef } from 'react'
 import cx from 'classnames'
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
-import type { ReportEventsStatsResponseGroups } from 'queries/report-events-stats-api'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
-import { formatInfoField, getVesselShipNameLabel } from 'utils/info'
+import { formatInfoField, getVesselShipTypeLabel } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import type {
   VesselGroupReportState,
@@ -18,6 +17,8 @@ import type {
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import type { PortsReportState } from 'features/reports/ports/ports-report.types'
+import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
@@ -43,7 +44,7 @@ const FILTER_PROPERTIES: Record<VGRVesselsSubsection | 'geartype', string> = {
   source: 'source',
 }
 
-const ReportGraphTooltip = (props: any) => {
+const ReportBarTooltip = (props: any) => {
   const { active, payload, label, type } = props as ReportGraphTooltipProps
   const { t } = useTranslation()
 
@@ -74,6 +75,26 @@ const ReportGraphTooltip = (props: any) => {
   }
 
   return null
+}
+
+const ReportPointTooltip = ({ type, data }: { type: string; data?: ReportVesselWithDatasets }) => {
+  const getVesselPropertyParams = {
+    identitySource: VesselIdentitySourceEnum.SelfReported,
+  }
+  const vesselName = formatInfoField(
+    getVesselProperty(data?.identity, 'shipname', getVesselPropertyParams),
+    'shipname'
+  )
+
+  const vesselFlag = getVesselProperty(data?.identity, 'flag', getVesselPropertyParams)
+
+  const vesselType = getVesselShipTypeLabel({
+    shiptypes: getVesselProperty(data?.identity, 'shiptypes', getVesselPropertyParams),
+  })
+
+  return (
+    <span>{`${vesselName} ${vesselFlag ? `(${vesselFlag})` : ''} ${vesselType ? `- ${vesselType}` : ''}`}</span>
+  )
 }
 
 const ReportGraphTick = (props: any) => {
@@ -191,23 +212,25 @@ export default function VesselGroupReportVesselsGraph({
       <div ref={ref} className={styles.graph} data-test="report-vessels-graph">
         {data && data.length > 0 && (
           <ResponsiveBarChart
+            color={color}
             containerRef={ref}
             getIndividualData={getIndividualData}
             getAggregatedData={getAggregatedData}
             onAggregatedItemClick={onBarClick}
             onIndividualItemClick={onPointClick}
-            valueFormatter={(value: any) => {
-              return getVesselShipNameLabel(value.identity)
+            barValueFormatter={(value: any) => {
+              console.log('🚀 ~ value:', value)
+              return formatI18nNumber(value).toString()
             }}
-            color={color}
-            customTick={
+            barLabel={
               <ReportGraphTick
                 property={property}
                 filterQueryParam={filterQueryParam}
                 pageQueryParam={pageQueryParam}
               />
             }
-            customTooltip={<ReportGraphTooltip type={property} />}
+            individualTooltip={<ReportPointTooltip type={property} />}
+            aggregatedTooltip={<ReportBarTooltip type={property} />}
           ></ResponsiveBarChart>
         )}
       </div>

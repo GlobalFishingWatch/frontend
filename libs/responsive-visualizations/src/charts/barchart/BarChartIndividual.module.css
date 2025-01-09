@@ -31,3 +31,14 @@
   border-radius: 6px;
   position: relative;
 }
+
+.point:hover {
+  border: 1px solid black;
+}
+
+.tooltip {
+  min-width: 200px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 4px;
+}

@@ -7,8 +7,8 @@ import { AggregatedBarChart } from './BarChartAggregated'
 
 export type BaseResponsiveBarChartProps = {
   color: string
-  customTick?: ReactElement<SVGElement>
-  customTooltip?: ReactElement
+  barLabel?: ReactElement<SVGElement>
+  barValueFormatter?: (value: any) => string
   valueFormatter?: (value: any) => string
 }
 
@@ -16,10 +16,14 @@ export type ResponsiveBarChartInteractionCallback = (item: any) => void
 
 export type ResponsiveBarChartProps = BaseResponsiveBarChartProps & {
   containerRef: React.RefObject<HTMLElement | null>
+  // Aggregated props
+  aggregatedTooltip?: ReactElement
   onAggregatedItemClick?: ResponsiveBarChartInteractionCallback
+  getAggregatedData?: () => Promise<ResponsiveVisualizationData<'aggregated'>>
+  // Individual props
+  individualTooltip?: ReactElement
   onIndividualItemClick?: ResponsiveBarChartInteractionCallback
   getIndividualData?: () => Promise<ResponsiveVisualizationData<'individual'>>
-  getAggregatedData?: () => Promise<ResponsiveVisualizationData<'aggregated'>>
 }
 
 export function ResponsiveBarChart({
@@ -27,9 +31,10 @@ export function ResponsiveBarChart({
   getIndividualData,
   getAggregatedData,
   color,
-  customTick,
-  customTooltip,
-  valueFormatter,
+  barLabel,
+  aggregatedTooltip,
+  individualTooltip,
+  barValueFormatter,
   onIndividualItemClick,
   onAggregatedItemClick,
 }: ResponsiveBarChartProps) {
@@ -118,18 +123,18 @@ export function ResponsiveBarChart({
       data={data as ResponsiveVisualizationData<'individual'>}
       color={color}
       onClick={onIndividualItemClick}
-      customTick={customTick}
-      customTooltip={customTooltip}
-      valueFormatter={valueFormatter}
+      barLabel={barLabel}
+      customTooltip={individualTooltip}
+      barValueFormatter={barValueFormatter}
     />
   ) : (
     <AggregatedBarChart
       data={data as ResponsiveVisualizationData<'aggregated'>}
       color={color}
       onClick={onAggregatedItemClick}
-      customTick={customTick}
-      customTooltip={customTooltip}
-      valueFormatter={valueFormatter}
+      barLabel={barLabel}
+      customTooltip={aggregatedTooltip}
+      barValueFormatter={barValueFormatter}
     />
   )
 }
