@@ -237,9 +237,10 @@ export default function VesselGroupReportVesselsGraph({
                 pageQueryParam={pageQueryParam}
               />
             }
+            labelKey='name'
             individualTooltip={<ReportPointTooltip type={property} />}
             aggregatedTooltip={<ReportBarTooltip type={property} />}
-          ></ResponsiveBarChart>
+          />
         )}
       </div>
     </Fragment>
