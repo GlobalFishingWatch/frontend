@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type {
   ResponsiveVisualizationData,
   ResponsiveVisualizationItem,
@@ -11,18 +12,18 @@ export type ResponsiveVisualizationInteractionCallback<Item = ResponsiveVisualiz
 ) => void
 
 export type ResponsiveVisualizationContainerRef = React.RefObject<HTMLElement | null>
-export type BaseResponsiveChartProps = {
+export type BaseResponsiveChartProps<Data = any> = {
   containerRef: ResponsiveVisualizationContainerRef
   // Aggregated props
   aggregatedTooltip?: ReactElement
   onAggregatedItemClick?: ResponsiveVisualizationInteractionCallback
   getAggregatedData?: () => Promise<ResponsiveVisualizationData<'aggregated'> | undefined>
-  aggregatedValueKey?: string
+  aggregatedValueKey?: keyof ResponsiveVisualizationData<'aggregated'>[0]
   // Individual props
   individualTooltip?: ReactElement
   onIndividualItemClick?: ResponsiveVisualizationInteractionCallback
   getIndividualData?: () => Promise<ResponsiveVisualizationData<'individual'> | undefined>
-  individualValueKey?: string
+  individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0]
 }
 
 // Shared types within the BarChart
@@ -34,8 +35,8 @@ export type BaseResponsiveBarChartProps = {
 
 export type BarChartByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveBarChartProps & {
-    labelKey: string
-    valueKey: string
+    labelKey: keyof ResponsiveVisualizationData<M>[0]
+    valueKey: keyof ResponsiveVisualizationData<M>[0]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback
     customTooltip?: ReactElement
@@ -46,13 +47,13 @@ export type BaseResponsiveTimeseriesProps = {
   start: string
   end: string
   color: string
-  tickLabelFormatter?: (item: string) => string
+  tickLabelFormatter?: (item: string, interval: FourwingsInterval) => string
 }
 
 export type TimeseriesByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveTimeseriesProps & {
-    dateKey: string
-    valueKey: string
+    dateKey: keyof ResponsiveVisualizationData<M>[0]
+    valueKey: keyof ResponsiveVisualizationData<M>[0]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback
     customTooltip?: ReactElement

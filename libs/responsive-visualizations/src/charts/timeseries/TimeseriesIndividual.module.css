@@ -1,0 +1,24 @@
+.container {
+  height: 100%;
+  padding-inline: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  padding-bottom: 40px;
+}
+
+.barContainer {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bar {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap-reverse;
+  justify-content: center;
+}

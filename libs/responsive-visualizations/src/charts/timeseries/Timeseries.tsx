@@ -1,8 +1,7 @@
-import { useEffect } from 'react'
 import type { ResponsiveVisualizationData } from '../../types'
 import { getIsIndividualTimeseriesSupported } from '../../lib/density'
 import type { BaseResponsiveChartProps, BaseResponsiveTimeseriesProps } from '../types'
-import { useResponsiveDimensions, useResponsiveVisualizationData } from '../hooks'
+import { useResponsiveVisualization } from '../hooks'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
@@ -12,9 +11,9 @@ import { IndividualTimeseries } from './TimeseriesIndividual'
 import { AggregatedTimeseries } from './TimeseriesAggregated'
 
 type ResponsiveTimeseriesProps = BaseResponsiveChartProps &
-  BaseResponsiveTimeseriesProps & { dateKey?: string }
+  BaseResponsiveTimeseriesProps & { dateKey?: keyof ResponsiveVisualizationData<'aggregated'>[0] }
 
-export function ResponsiveTimeseries({
+export function ResponsiveTimeseries<T>({
   start,
   end,
   dateKey = DEFAULT_DATE_KEY,
@@ -30,8 +29,8 @@ export function ResponsiveTimeseries({
   onIndividualItemClick,
   onAggregatedItemClick,
 }: ResponsiveTimeseriesProps) {
-  const { width, height } = useResponsiveDimensions(containerRef)
-  const { data, isIndividualSupported, loadData } = useResponsiveVisualizationData({
+  const { width, data, isIndividualSupported } = useResponsiveVisualization({
+    containerRef,
     labelKey: dateKey,
     individualValueKey,
     aggregatedValueKey,
@@ -39,13 +38,6 @@ export function ResponsiveTimeseries({
     getIndividualData,
     getIsIndividualSupported: getIsIndividualTimeseriesSupported,
   })
-
-  useEffect(() => {
-    if (width && height) {
-      console.log('loading data')
-      loadData({ width, height })
-    }
-  }, [height, width, loadData])
 
   if (!getAggregatedData && !getIndividualData) {
     console.warn('No data getters functions provided')

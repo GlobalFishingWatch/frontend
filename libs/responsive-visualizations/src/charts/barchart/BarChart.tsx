@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import type { ResponsiveVisualizationData } from '../../types'
 import { getIsIndividualBarChartSupported } from '../../lib/density'
 import type { BaseResponsiveBarChartProps, BaseResponsiveChartProps } from '../types'
@@ -7,7 +6,7 @@ import {
   DEFAULT_INDIVIDUAL_VALUE_KEY,
   DEFAULT_LABEL_KEY,
 } from '../config'
-import { useResponsiveDimensions, useResponsiveVisualizationData } from '../hooks'
+import { useResponsiveVisualization } from '../hooks'
 import { IndividualBarChart } from './BarChartIndividual'
 import { AggregatedBarChart } from './BarChartAggregated'
 
@@ -29,8 +28,8 @@ export function ResponsiveBarChart({
   onIndividualItemClick,
   onAggregatedItemClick,
 }: ResponsiveBarChartProps) {
-  const { width, height } = useResponsiveDimensions(containerRef)
-  const { data, isIndividualSupported, loadData } = useResponsiveVisualizationData({
+  const { data, isIndividualSupported } = useResponsiveVisualization({
+    containerRef,
     labelKey,
     aggregatedValueKey,
     individualValueKey,
@@ -38,12 +37,6 @@ export function ResponsiveBarChart({
     getIndividualData,
     getIsIndividualSupported: getIsIndividualBarChartSupported,
   })
-
-  useEffect(() => {
-    if (width && height) {
-      loadData({ width, height })
-    }
-  }, [height, width, loadData])
 
   if (!getAggregatedData && !getIndividualData) {
     console.warn('No data getters functions provided')

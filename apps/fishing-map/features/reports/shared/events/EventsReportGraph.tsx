@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { type FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
@@ -23,7 +24,7 @@ type EventsReportGraphTooltipProps = {
   timeChunkInterval: FourwingsInterval
 }
 
-const ReportGraphTooltip = (props: any) => {
+const AggregatedGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as EventsReportGraphTooltipProps
 
   if (active && payload && payload.length) {
@@ -42,8 +43,14 @@ const ReportGraphTooltip = (props: any) => {
   return null
 }
 
-// TODO: REVIEW HOW TO HANDLE INTERVALS IN THIS COMPONENT
-const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval = 'DAY') => {
+const IndividualGraphTooltip = ({ data }: { data?: any }) => {
+  return data.value
+}
+
+const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
+  tick,
+  timeChunkInterval
+) => {
   const date = getUTCDateTime(tick).setLocale(i18n.language)
   return formatDateForInterval(date, timeChunkInterval)
 }
@@ -63,19 +70,29 @@ export default function EventsReportGraph({
   const { t } = useTranslation()
 
   const getAggregatedData = useCallback(async () => timeseries, [timeseries])
+  const getIndividualData = useCallback(async () => {
+    return timeseries.map((t) => ({
+      date: t.date,
+      values: [...new Array(t.value)].map((v, i) => ({ label: i, value: i })),
+    }))
+  }, [timeseries])
 
   if (!timeseries.length) {
     return null
   }
 
   return (
+    // TODO: remove this ref and move it inside
     <div ref={containerRef} className={styles.graph}>
       <ResponsiveTimeseries
         start={start}
         end={end}
         containerRef={containerRef}
         getAggregatedData={getAggregatedData}
+        getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}
+        aggregatedTooltipTooltip={<AggregatedGraphTooltip />}
+        individualTooltip={<IndividualGraphTooltip />}
         color={color}
       />
     </div>

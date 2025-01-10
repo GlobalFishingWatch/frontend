@@ -36,7 +36,7 @@ export function useResponsiveDimensions(containerRef: ResponsiveVisualizationCon
   return dimensions
 }
 
-type UseResponsiveLoadDataProps = {
+type UseResponsiveVisualizationDataProps = {
   labelKey: string
   individualValueKey: BaseResponsiveChartProps['individualValueKey']
   aggregatedValueKey: BaseResponsiveChartProps['aggregatedValueKey']
@@ -53,7 +53,7 @@ export function useResponsiveVisualizationData({
   getAggregatedData,
   getIndividualData,
   getIsIndividualSupported,
-}: UseResponsiveLoadDataProps) {
+}: UseResponsiveVisualizationDataProps) {
   const [data, setData] = useState<ResponsiveVisualizationData | null>(null)
   const [isIndividualSupported, setIsIndividualSupported] = useState(false)
 
@@ -128,5 +128,39 @@ export function useResponsiveVisualizationData({
   return useMemo(
     () => ({ data, isIndividualSupported, loadData }),
     [data, isIndividualSupported, loadData]
+  )
+}
+
+type UseResponsiveVisualizationProps = {
+  containerRef: ResponsiveVisualizationContainerRef
+} & UseResponsiveVisualizationDataProps
+export function useResponsiveVisualization({
+  containerRef,
+  labelKey,
+  aggregatedValueKey,
+  individualValueKey,
+  getAggregatedData,
+  getIndividualData,
+  getIsIndividualSupported,
+}: UseResponsiveVisualizationProps) {
+  const dimensions = useResponsiveDimensions(containerRef)
+  const { data, isIndividualSupported, loadData } = useResponsiveVisualizationData({
+    labelKey,
+    aggregatedValueKey,
+    individualValueKey,
+    getAggregatedData,
+    getIndividualData,
+    getIsIndividualSupported,
+  })
+
+  useEffect(() => {
+    if (dimensions.width && dimensions.height) {
+      loadData(dimensions)
+    }
+  }, [dimensions, loadData])
+
+  return useMemo(
+    () => ({ ...dimensions, data, isIndividualSupported }),
+    [data, isIndividualSupported, dimensions]
   )
 }

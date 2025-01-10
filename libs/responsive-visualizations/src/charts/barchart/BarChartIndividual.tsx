@@ -1,59 +1,12 @@
 import { BarChart, XAxis, ResponsiveContainer } from 'recharts'
-import { useFloating, offset, flip, shift, useInteractions, useHover } from '@floating-ui/react'
-import type { ReactElement } from 'react'
-import cx from 'classnames'
-import { useState } from 'react'
 import React from 'react'
 import type { ResponsiveVisualizationItem } from '../../types'
 import type { BarChartByTypeProps } from '../types'
+import { IndividualPoint } from '../points/IndividualPoint'
 import styles from './BarChartIndividual.module.css'
 
 type IndividualBarChartProps = BarChartByTypeProps<'individual'>
 
-type IndividualBarChartPointProps = {
-  color?: string
-  point: ResponsiveVisualizationItem
-  tooltip?: ReactElement
-  className?: string
-}
-
-export function IndividualBarChartPoint({
-  point,
-  color,
-  tooltip,
-  className,
-}: IndividualBarChartPointProps) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
-    placement: 'top',
-    onOpenChange: setIsOpen,
-    middleware: [offset(2), flip(), shift()],
-  })
-
-  const hover = useHover(context)
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover])
-  return (
-    <li
-      ref={refs.setReference}
-      {...getReferenceProps()}
-      className={styles.point}
-      style={color ? { backgroundColor: color } : {}}
-    >
-      {isOpen && (
-        <div
-          ref={refs.setFloating}
-          className={cx(styles.tooltip, className)}
-          style={floatingStyles}
-          {...getFloatingProps()}
-        >
-          {tooltip ? React.cloneElement(tooltip, { data: point } as any) : point.name}
-        </div>
-      )}
-    </li>
-  )
-}
 export function IndividualBarChart({
   data,
   color,
@@ -88,7 +41,7 @@ export function IndividualBarChart({
                   </label>
                   <ul key={index} className={styles.bar}>
                     {points?.map((point, pointIndex) => (
-                      <IndividualBarChartPoint
+                      <IndividualPoint
                         key={pointIndex}
                         point={point}
                         color={color}

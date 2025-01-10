@@ -4,6 +4,7 @@ import max from 'lodash/max'
 import type { DurationUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
 import { useMemo } from 'react'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { TimeseriesByTypeProps } from '../types'
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
@@ -20,9 +21,7 @@ export function AggregatedTimeseries({
 }: AggregatedTimeseriesProps) {
   const startMillis = DateTime.fromISO(start).toMillis()
   const endMillis = DateTime.fromISO(end).toMillis()
-  // TODO: REVIEW HOW TO HANDLE INTERVALS IN THIS COMPONENT
-  // const interval = getFourwingsInterval(startMillis, endMillis)
-  const interval = 'DAY' as DurationUnit
+  const interval = getFourwingsInterval(startMillis, endMillis)
 
   const intervalDiff = Math.floor(
     Duration.fromMillis(endMillis - startMillis).as(interval.toLowerCase() as DurationUnit)
@@ -58,11 +57,11 @@ export function AggregatedTimeseries({
           .plus({ [interval]: i })
           .toISO()
         return {
-          date: d,
-          value: data.find((item) => item[dateKey] === d)?.value || 0,
+          [dateKey]: d,
+          [valueKey]: data.find((item) => item[dateKey] === d)?.[valueKey] || 0,
         }
       })
-  }, [data, domain, intervalDiff, startMillis, dateKey])
+  }, [data, domain, intervalDiff, startMillis, interval, valueKey, dateKey])
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -72,7 +71,7 @@ export function AggregatedTimeseries({
           domain={domain}
           dataKey={dateKey}
           interval="preserveStartEnd"
-          tickFormatter={(tick: string) => tickLabelFormatter?.(tick) || tick}
+          tickFormatter={(tick: string) => tickLabelFormatter?.(tick, interval) || tick}
           axisLine={paddedDomain[0] === 0}
         />
         <YAxis
