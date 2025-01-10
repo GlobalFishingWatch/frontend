@@ -1,8 +1,5 @@
-import { XAxis, ResponsiveContainer, YAxis, CartesianGrid, ComposedChart, Line } from 'recharts'
-import min from 'lodash/min'
-import max from 'lodash/max'
-import type { DurationUnit } from 'luxon'
-import { DateTime, Duration } from 'luxon'
+import { XAxis, ResponsiveContainer, ComposedChart } from 'recharts'
+import { DateTime } from 'luxon'
 import { useMemo } from 'react'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { TimeseriesByTypeProps } from '../types'
@@ -15,11 +12,9 @@ const graphMargin = { top: 0, right: POINT_SIZE, left: POINT_SIZE, bottom: 0 }
 
 type IndividualTimeseriesProps = TimeseriesByTypeProps<'individual'> & {
   width: number
-  height: number
 }
 
 export function IndividualTimeseries({
-  height,
   data,
   color,
   start,
@@ -33,9 +28,9 @@ export function IndividualTimeseries({
   const endMillis = DateTime.fromISO(end).toMillis()
   const interval = getFourwingsInterval(startMillis, endMillis)
 
-  const intervalDiff = Math.floor(
-    Duration.fromMillis(endMillis - startMillis).as(interval.toLowerCase() as DurationUnit)
-  )
+  // const intervalDiff = Math.floor(
+  //   Duration.fromMillis(endMillis - startMillis).as(interval.toLowerCase() as DurationUnit)
+  // )
 
   const domain = useMemo(() => {
     if (start && end && interval) {
@@ -46,28 +41,28 @@ export function IndividualTimeseries({
     }
   }, [start, end, interval])
 
-  const fullTimeseries = useMemo(() => {
-    if (!data || !domain) {
-      return []
-    }
-    return Array(intervalDiff)
-      .fill(0)
-      .map((_, i) => i)
-      .map((i) => {
-        const d = DateTime.fromMillis(startMillis, { zone: 'UTC' })
-          .plus({ [interval]: i })
-          .toISO()
-        return {
-          [dateKey]: d,
-          [valueKey]: data.find((item) => item[dateKey] === d)?.[valueKey] || 0,
-        }
-      })
-  }, [data, domain, intervalDiff, startMillis, interval, dateKey, valueKey])
+  // const fullTimeseries = useMemo(() => {
+  //   if (!data || !domain) {
+  //     return []
+  //   }
+  //   return Array(intervalDiff)
+  //     .fill(0)
+  //     .map((_, i) => i)
+  //     .map((i) => {
+  //       const d = DateTime.fromMillis(startMillis, { zone: 'UTC' })
+  //         .plus({ [interval]: i })
+  //         .toISO()
+  //       return {
+  //         [dateKey]: d,
+  //         [valueKey]: data.find((item) => item[dateKey] === d)?.[valueKey] || 0,
+  //       }
+  //     })
+  // }, [data, domain, intervalDiff, startMillis, interval, dateKey, valueKey])
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <ComposedChart data={data} margin={graphMargin}>
-        <CartesianGrid vertical={false} />
+        {/* <CartesianGrid vertical={false} /> */}
         <XAxis
           domain={domain}
           dataKey={dateKey}
@@ -94,7 +89,7 @@ export function IndividualTimeseries({
             {data.map((item, index) => {
               const points = item?.[valueKey] as ResponsiveVisualizationItem[]
               return (
-                <div className={styles.barContainer}>
+                <div className={styles.barContainer} style={{width: POINT_SIZE}}>
                   <ul key={index} className={styles.bar}>
                     {points?.map((point, pointIndex) => (
                       <IndividualPoint

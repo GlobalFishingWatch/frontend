@@ -1,7 +1,5 @@
 import type {
   ResponsiveVisualizationData,
-  ResponsiveVisualizationAggregatedItem,
-  ResponsiveVisualizationIndividualItem,
 } from '../../types'
 import { getIsIndividualTimeseriesSupported } from '../../lib/density'
 import type { BaseResponsiveChartProps, BaseResponsiveTimeseriesProps } from '../types'
@@ -37,7 +35,7 @@ export function ResponsiveTimeseries({
   onIndividualItemClick,
   onAggregatedItemClick,
 }: ResponsiveTimeseriesProps) {
-  const { width, height, data, isIndividualSupported } = useResponsiveVisualization({
+  const { width, data, isIndividualSupported } = useResponsiveVisualization({
     containerRef,
     labelKey: dateKey,
     individualValueKey,
@@ -61,7 +59,6 @@ export function ResponsiveTimeseries({
 
   return isIndividualSupported ? (
     <IndividualTimeseries
-      height={height}
       width={width}
       data={data as ResponsiveVisualizationData<'individual'>}
       start={start}
