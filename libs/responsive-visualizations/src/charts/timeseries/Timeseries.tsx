@@ -1,4 +1,8 @@
-import type { ResponsiveVisualizationData } from '../../types'
+import type {
+  ResponsiveVisualizationData,
+  ResponsiveVisualizationAggregatedItem,
+  ResponsiveVisualizationIndividualItem,
+} from '../../types'
 import { getIsIndividualTimeseriesSupported } from '../../lib/density'
 import type { BaseResponsiveChartProps, BaseResponsiveTimeseriesProps } from '../types'
 import { useResponsiveVisualization } from '../hooks'
@@ -11,9 +15,13 @@ import { IndividualTimeseries } from './TimeseriesIndividual'
 import { AggregatedTimeseries } from './TimeseriesAggregated'
 
 type ResponsiveTimeseriesProps = BaseResponsiveChartProps &
-  BaseResponsiveTimeseriesProps & { dateKey?: keyof ResponsiveVisualizationData<'aggregated'>[0] }
+  BaseResponsiveTimeseriesProps & {
+    dateKey?:
+      | keyof ResponsiveVisualizationData<'aggregated'>[0]
+      | keyof ResponsiveVisualizationData<'individual'>[0]
+  }
 
-export function ResponsiveTimeseries<T>({
+export function ResponsiveTimeseries({
   start,
   end,
   dateKey = DEFAULT_DATE_KEY,
@@ -29,7 +37,7 @@ export function ResponsiveTimeseries<T>({
   onIndividualItemClick,
   onAggregatedItemClick,
 }: ResponsiveTimeseriesProps) {
-  const { width, data, isIndividualSupported } = useResponsiveVisualization({
+  const { width, height, data, isIndividualSupported } = useResponsiveVisualization({
     containerRef,
     labelKey: dateKey,
     individualValueKey,
@@ -53,6 +61,7 @@ export function ResponsiveTimeseries<T>({
 
   return isIndividualSupported ? (
     <IndividualTimeseries
+      height={height}
       width={width}
       data={data as ResponsiveVisualizationData<'individual'>}
       start={start}

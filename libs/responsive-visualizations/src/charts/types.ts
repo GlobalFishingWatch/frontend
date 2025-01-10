@@ -12,7 +12,7 @@ export type ResponsiveVisualizationInteractionCallback<Item = ResponsiveVisualiz
 ) => void
 
 export type ResponsiveVisualizationContainerRef = React.RefObject<HTMLElement | null>
-export type BaseResponsiveChartProps<Data = any> = {
+export type BaseResponsiveChartProps = {
   containerRef: ResponsiveVisualizationContainerRef
   // Aggregated props
   aggregatedTooltip?: ReactElement
@@ -26,6 +26,11 @@ export type BaseResponsiveChartProps<Data = any> = {
   individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0]
 }
 
+// TODO: remove this
+export type ResponsiveVisualizationAnyItemKey =
+  | keyof ResponsiveVisualizationData<'aggregated'>[0]
+  | keyof ResponsiveVisualizationData<'individual'>[0]
+
 // Shared types within the BarChart
 export type BaseResponsiveBarChartProps = {
   color: string
@@ -35,7 +40,7 @@ export type BaseResponsiveBarChartProps = {
 
 export type BarChartByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveBarChartProps & {
-    labelKey: keyof ResponsiveVisualizationData<M>[0]
+    labelKey: ResponsiveVisualizationAnyItemKey
     valueKey: keyof ResponsiveVisualizationData<M>[0]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback
@@ -52,7 +57,7 @@ export type BaseResponsiveTimeseriesProps = {
 
 export type TimeseriesByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveTimeseriesProps & {
-    dateKey: keyof ResponsiveVisualizationData<M>[0]
+    dateKey: ResponsiveVisualizationAnyItemKey
     valueKey: keyof ResponsiveVisualizationData<M>[0]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback

@@ -1,14 +1,10 @@
+import type { ResponsiveVisualizationAnyItemKey } from '../charts'
+import { COLUMN_PADDING, POINT_SIZE, AXIS_LABEL_PADDING, COLUMN_LABEL_SIZE } from '../charts/config'
 import type {
   ResponsiveVisualizationAggregatedItem,
   ResponsiveVisualizationData,
   ResponsiveVisualizationIndividualItem,
 } from '../types'
-
-const COLUMN_LABEL_SIZE = 10
-const COLUMN_PADDING = 10
-// Comment this is the sum of .point size + .bar flex gap
-const POINT_SIZE = 15
-const AXIX_LABEL_PADDING = 40
 
 export const getBarProps = (
   data: ResponsiveVisualizationData,
@@ -25,8 +21,8 @@ type IsIndividualSupportedParams = {
   data: ResponsiveVisualizationData
   width: number
   height: number
-  aggregatedValueKey: string
-  individualValueKey: string
+  aggregatedValueKey: ResponsiveVisualizationAnyItemKey
+  individualValueKey: ResponsiveVisualizationAnyItemKey
 }
 export function getIsIndividualBarChartSupported({
   data,
@@ -47,7 +43,7 @@ export function getIsIndividualBarChartSupported({
   }, 0)
   const rowsInBiggestColumn = Math.ceil(biggestColumnValue / pointsByRow)
   const heightNeeded = rowsInBiggestColumn * POINT_SIZE
-  return heightNeeded < height - AXIX_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
+  return heightNeeded < height - AXIS_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
 }
 
 type getIsIndividualTimeseriesSupportedParams = {
@@ -74,7 +70,5 @@ export function getIsIndividualTimeseriesSupported({
     return acc
   }, 0)
   const heightNeeded = biggestColumnValue * POINT_SIZE
-  console.log('🚀 ~ biggestColumnValue:', biggestColumnValue)
-  console.log('🚀 ~ heightNeeded:', heightNeeded)
-  return heightNeeded < height - AXIX_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
+  return heightNeeded < height - AXIS_LABEL_PADDING
 }

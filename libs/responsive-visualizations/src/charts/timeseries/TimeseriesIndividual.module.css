@@ -1,10 +1,8 @@
 .container {
   height: 100%;
-  padding-inline: 10px;
   display: flex;
-  gap: 20px;
   align-items: flex-end;
-  padding-bottom: 40px;
+  padding-inline: 8px;
 }
 
 .barContainer {
@@ -13,7 +11,7 @@
   height: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .bar {

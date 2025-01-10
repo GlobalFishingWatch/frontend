@@ -8,12 +8,18 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { TimeseriesByTypeProps } from '../types'
 import type { ResponsiveVisualizationItem } from '../../types'
 import { IndividualPoint } from '../points/IndividualPoint'
+import { AXIS_LABEL_PADDING, POINT_SIZE } from '../config'
 import styles from './TimeseriesIndividual.module.css'
 
-const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
+const graphMargin = { top: 0, right: POINT_SIZE, left: POINT_SIZE, bottom: 0 }
 
-type IndividualTimeseriesProps = TimeseriesByTypeProps<'individual'>
+type IndividualTimeseriesProps = TimeseriesByTypeProps<'individual'> & {
+  width: number
+  height: number
+}
+
 export function IndividualTimeseries({
+  height,
   data,
   color,
   start,
@@ -30,19 +36,6 @@ export function IndividualTimeseries({
   const intervalDiff = Math.floor(
     Duration.fromMillis(endMillis - startMillis).as(interval.toLowerCase() as DurationUnit)
   )
-
-  const dataMin: number = data.length
-    ? (min(data.map((item) => item[valueKey].length)) as number)
-    : 0
-  const dataMax: number = data.length
-    ? (max(data.map((item) => item[valueKey].length)) as number)
-    : 0
-
-  const domainPadding = (dataMax - dataMin) / 8
-  const paddedDomain: [number, number] = [
-    Math.max(0, Math.floor(dataMin - domainPadding)),
-    Math.ceil(dataMax + domainPadding),
-  ]
 
   const domain = useMemo(() => {
     if (start && end && interval) {
@@ -69,7 +62,7 @@ export function IndividualTimeseries({
           [valueKey]: data.find((item) => item[dateKey] === d)?.[valueKey] || 0,
         }
       })
-  }, [data, domain, intervalDiff, startMillis, dateKey])
+  }, [data, domain, intervalDiff, startMillis, interval, dateKey, valueKey])
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -80,22 +73,24 @@ export function IndividualTimeseries({
           dataKey={dateKey}
           interval="preserveStartEnd"
           tickFormatter={(tick: string) => tickLabelFormatter?.(tick, interval) || tick}
-          axisLine={paddedDomain[0] === 0}
+          axisLine={true}
         />
-        <YAxis
+        {/* TODO: restore this and align with the points */}
+        {/* <YAxis
           scale="linear"
-          domain={paddedDomain}
+          // Height minus the padding from the bottom and top
+          domain={[0, 19]}
           interval="preserveEnd"
           // tickFormatter={tickFormatter}
           axisLine={false}
           tickLine={false}
           tickCount={4}
-        />
+        /> */}
         {/* {fullTimeseries?.length && (
           <Tooltip content={<ReportGraphTooltip timeChunkInterval={interval} />} />
         )} */}
         <foreignObject width="100%" height="100%">
-          <div className={styles.container}>
+          <div className={styles.container} style={{ paddingBottom: AXIS_LABEL_PADDING }}>
             {data.map((item, index) => {
               const points = item?.[valueKey] as ResponsiveVisualizationItem[]
               return (

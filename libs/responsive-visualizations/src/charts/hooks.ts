@@ -4,7 +4,11 @@ import type {
   getIsIndividualBarChartSupported,
   getIsIndividualTimeseriesSupported,
 } from '../lib/density'
-import type { BaseResponsiveChartProps, ResponsiveVisualizationContainerRef } from './types'
+import type {
+  BaseResponsiveChartProps,
+  ResponsiveVisualizationAnyItemKey,
+  ResponsiveVisualizationContainerRef,
+} from './types'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
@@ -37,11 +41,11 @@ export function useResponsiveDimensions(containerRef: ResponsiveVisualizationCon
 }
 
 type UseResponsiveVisualizationDataProps = {
-  labelKey: string
+  labelKey: ResponsiveVisualizationAnyItemKey
   individualValueKey: BaseResponsiveChartProps['individualValueKey']
   aggregatedValueKey: BaseResponsiveChartProps['aggregatedValueKey']
   getAggregatedData?: BaseResponsiveChartProps['getAggregatedData']
-  getIndividualData?: BaseResponsiveChartProps['getAggregatedData']
+  getIndividualData?: BaseResponsiveChartProps['getIndividualData']
   getIsIndividualSupported:
     | typeof getIsIndividualBarChartSupported
     | typeof getIsIndividualTimeseriesSupported

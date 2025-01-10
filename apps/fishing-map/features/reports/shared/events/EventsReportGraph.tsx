@@ -44,7 +44,7 @@ const AggregatedGraphTooltip = (props: any) => {
 }
 
 const IndividualGraphTooltip = ({ data }: { data?: any }) => {
-  return data.value
+  return data.label
 }
 
 const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
@@ -73,7 +73,7 @@ export default function EventsReportGraph({
   const getIndividualData = useCallback(async () => {
     return timeseries.map((t) => ({
       date: t.date,
-      values: [...new Array(t.value)].map((v, i) => ({ label: i, value: i })),
+      values: [...new Array(t.value)].map((v, i) => ({ label: t.date, value: i })),
     }))
   }, [timeseries])
 

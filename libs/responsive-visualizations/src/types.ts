@@ -9,19 +9,19 @@ export type ResponsiveVisualizationMode = 'individual' | 'aggregated'
 
 export type ResponsiveVisualizationChart = 'barchart' | 'timeseries'
 
-export type DefaultResponsiveVisualizationLabels = {
-  [DEFAULT_LABEL_KEY]: string
-  [DEFAULT_DATE_KEY]: string
-}
 export type ResponsiveVisualizationItem = Record<string, any>
 export type ResponsiveVisualizationAggregatedItem<
-  Item = DefaultResponsiveVisualizationLabels & {
+  Item = {
+    [DEFAULT_LABEL_KEY]?: string
+    [DEFAULT_DATE_KEY]?: string
     [DEFAULT_AGGREGATED_VALUE_KEY]: number
   },
 > = Item
 
 export type ResponsiveVisualizationIndividualItem<
-  Item = DefaultResponsiveVisualizationLabels & {
+  Item = {
+    [DEFAULT_LABEL_KEY]?: string
+    [DEFAULT_DATE_KEY]?: string
     [DEFAULT_INDIVIDUAL_VALUE_KEY]: ResponsiveVisualizationItem[]
   },
 > = Item

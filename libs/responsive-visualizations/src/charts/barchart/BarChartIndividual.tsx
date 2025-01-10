@@ -3,6 +3,7 @@ import React from 'react'
 import type { ResponsiveVisualizationItem } from '../../types'
 import type { BarChartByTypeProps } from '../types'
 import { IndividualPoint } from '../points/IndividualPoint'
+import { AXIS_LABEL_PADDING } from '../config'
 import styles from './BarChartIndividual.module.css'
 
 type IndividualBarChartProps = BarChartByTypeProps<'individual'>
@@ -31,7 +32,7 @@ export function IndividualBarChart({
         // onClick={onBarClick}
       >
         <foreignObject width="100%" height="100%">
-          <div className={styles.container}>
+          <div className={styles.container} style={{ paddingBottom: AXIS_LABEL_PADDING }}>
             {data.map((item, index) => {
               const points = item?.[valueKey] as ResponsiveVisualizationItem[]
               return (
