@@ -6,6 +6,10 @@
   padding-inline: 8px;
 }
 
+.containerSingleTime {
+  justify-content: space-around;
+}
+
 .barContainer {
   display: flex;
   height: 100%;

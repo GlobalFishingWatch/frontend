@@ -1,5 +1,6 @@
 import { XAxis, ResponsiveContainer, ComposedChart } from 'recharts'
 import { DateTime } from 'luxon'
+import cx from 'classnames'
 import { useMemo } from 'react'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { TimeseriesByTypeProps } from '../types'
@@ -85,7 +86,7 @@ export function IndividualTimeseries({
           <Tooltip content={<ReportGraphTooltip timeChunkInterval={interval} />} />
         )} */}
         <foreignObject width="100%" height="100%">
-          <div className={styles.container} style={{ paddingBottom: AXIS_LABEL_PADDING }}>
+          <div className={cx(styles.container, {[styles.containerSingleTime]: data.length === 1})} style={{ paddingBottom: AXIS_LABEL_PADDING }}>
             {data.map((item, index) => {
               const points = item?.[valueKey] as ResponsiveVisualizationItem[]
               return (
