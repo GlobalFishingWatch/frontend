@@ -1713,7 +1713,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@deck.gl/core@npm:^9.0.12, @deck.gl/core@npm:^9.0.35":
+"@deck.gl/core@npm:9.0.36, @deck.gl/core@npm:^9.0.12":
   version: 9.0.36
   resolution: "@deck.gl/core@npm:9.0.36"
   dependencies:
@@ -2859,7 +2859,7 @@ __metadata:
   dependencies:
     "@deck.gl-community/editable-layers": "npm:9.0.3"
     "@deck.gl-community/layers": "npm:9.0.3"
-    "@deck.gl/core": "npm:^9.0.35"
+    "@deck.gl/core": "npm:9.0.36"
     "@deck.gl/extensions": "npm:^9.0.35"
     "@deck.gl/geo-layers": "npm:^9.0.35"
     "@deck.gl/layers": "npm:^9.0.35"
