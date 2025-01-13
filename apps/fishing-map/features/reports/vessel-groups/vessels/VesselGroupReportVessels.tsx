@@ -1,7 +1,10 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import ReportVesselsFilter from 'features/reports/shared/activity/vessels/ReportVesselsFilter'
-import { selectVGRVesselsGraphDataGrouped } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import {
+  selectVGRVesselsGraphAggregatedData,
+  selectVGRVesselsGraphIndividualData,
+} from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import {} from 'features/reports/vessel-groups/vessel-group-report.selectors'
 import {
   selectVGRVesselFilter,
@@ -19,7 +22,8 @@ function VesselGroupReportVessels({ loading }: { loading: boolean }) {
   const subsection = useSelector(selectVGRVesselsSubsection)
   const reportDataview = useSelector(selectVGRDataview)
   const filter = useSelector(selectVGRVesselFilter)
-  const data = useSelector(selectVGRVesselsGraphDataGrouped)
+  const data = useSelector(selectVGRVesselsGraphAggregatedData)
+  const individualData = useSelector(selectVGRVesselsGraphIndividualData)
   return (
     <div className={styles.container}>
       <VesselGroupReportVesselsGraphSelector />
@@ -29,6 +33,7 @@ function VesselGroupReportVessels({ loading }: { loading: boolean }) {
         <Fragment>
           <VesselGroupReportVesselsGraph
             data={data}
+            individualData={individualData}
             color={reportDataview?.config?.color}
             property={subsection as VGREventsVesselsProperty}
             filterQueryParam="vGRVesselFilter"

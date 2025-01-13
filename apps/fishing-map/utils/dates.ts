@@ -24,6 +24,24 @@ export const getUTCDateTime = (d: SupportedDateType) => {
   return DateTime.fromMillis(d, { zone: 'utc' })
 }
 
+export const getISODateByInterval = (date: DateTime, timeChunkInterval: FourwingsInterval) => {
+  if (!date) {
+    return ''
+  }
+  switch (timeChunkInterval) {
+    case 'YEAR':
+      return date.toFormat('yyyy') as string
+    case 'MONTH':
+      return date.toFormat('yyyy-MM') as string
+    case 'HOUR':
+      return date.toFormat('yyyy-MM-ddTHH:00:00') as string
+    case 'DAY':
+      return date.toFormat('yyyy-MM-dd') as string
+    default:
+      return date.toISO() as string
+  }
+}
+
 export const formatDateForInterval = (date: DateTime, timeChunkInterval: FourwingsInterval) => {
   let formattedTick = ''
   switch (timeChunkInterval) {

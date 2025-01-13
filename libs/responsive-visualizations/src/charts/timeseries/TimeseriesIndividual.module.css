@@ -1,0 +1,21 @@
+.container {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-inline: 8px;
+}
+
+.barContainer {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: center;
+}

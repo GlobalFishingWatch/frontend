@@ -1,0 +1,20 @@
+.point {
+  display: block;
+  background-color: red;
+  border-radius: 50%;
+  position: relative;
+  border: 2px solid transparent;
+  transition: border-color 0.3s linear;
+}
+
+.point:hover {
+  border: var(--border-thick);
+}
+
+.tooltip {
+  min-width: 200px;
+  padding: 10px;
+  background-color: white;
+  border: var(--border);
+  z-index: 100;
+}
