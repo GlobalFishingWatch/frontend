@@ -1,7 +1,7 @@
 import { XAxis, ResponsiveContainer, ComposedChart, Tooltip } from 'recharts'
 import cx from 'classnames'
-import type { ResponsiveVisualizationAnyItemKey, TimeseriesByTypeProps } from '../types'
-import type { ResponsiveVisualizationItem } from '../../types'
+import type { TimeseriesByTypeProps } from '../types'
+import type { ResponsiveVisualizationData, ResponsiveVisualizationItem } from '../../types'
 import { IndividualPoint } from '../points/IndividualPoint'
 import { AXIS_LABEL_PADDING, POINT_GAP, POINT_SIZE, TIMESERIES_PADDING } from '../config'
 import styles from './TimeseriesIndividual.module.css'
@@ -31,7 +31,7 @@ export function IndividualTimeseries({
     data,
     timeseriesInterval,
     dateKey,
-    valueKey: valueKey as ResponsiveVisualizationAnyItemKey,
+    valueKey: valueKey as keyof ResponsiveVisualizationData[0],
     aggregated: false,
   })
 

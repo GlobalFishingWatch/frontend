@@ -18,7 +18,7 @@ import styles from './Timeseries.module.css'
 
 type ResponsiveTimeseriesProps = BaseResponsiveChartProps &
   BaseResponsiveTimeseriesProps & {
-    dateKey?: ResponsiveVisualizationAnyItemKey
+    dateKey?: ResponsiveVisualizationAnyItemKey | string
   }
 
 export function ResponsiveTimeseries({
@@ -42,7 +42,7 @@ export function ResponsiveTimeseries({
     start,
     end,
     timeseriesInterval,
-    labelKey: dateKey,
+    labelKey: dateKey as ResponsiveVisualizationAnyItemKey,
     individualValueKey,
     aggregatedValueKey,
     getAggregatedData,
@@ -66,7 +66,7 @@ export function ResponsiveTimeseries({
           start={start}
           end={end}
           color={color}
-          dateKey={dateKey}
+          dateKey={dateKey as ResponsiveVisualizationAnyItemKey}
           timeseriesInterval={timeseriesInterval}
           valueKey={individualValueKey}
           onClick={onIndividualItemClick}
@@ -79,7 +79,7 @@ export function ResponsiveTimeseries({
           start={start}
           end={end}
           color={color}
-          dateKey={dateKey}
+          dateKey={dateKey as ResponsiveVisualizationAnyItemKey}
           timeseriesInterval={timeseriesInterval}
           valueKey={aggregatedValueKey}
           onClick={onAggregatedItemClick}

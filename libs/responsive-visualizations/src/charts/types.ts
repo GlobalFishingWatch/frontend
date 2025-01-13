@@ -24,8 +24,9 @@ export type BaseResponsiveChartProps = {
   individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0]
 }
 
-export type ResponsiveVisualizationAnyItemKey = keyof ResponsiveVisualizationData<'aggregated'>[0] &
-  keyof ResponsiveVisualizationData<'individual'>[0]
+export type ResponsiveVisualizationAnyItemKey =
+  | keyof ResponsiveVisualizationData<'aggregated'>[0]
+  | keyof ResponsiveVisualizationData<'individual'>[0]
 
 // Shared types within the BarChart
 export type BaseResponsiveBarChartProps = {

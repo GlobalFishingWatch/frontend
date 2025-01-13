@@ -114,7 +114,6 @@ export default function EventsReportGraph({
   }
 
   return (
-    // TODO: remove this ref and move it inside
     <div ref={containerRef} className={styles.graph}>
       <ResponsiveTimeseries
         start={start}

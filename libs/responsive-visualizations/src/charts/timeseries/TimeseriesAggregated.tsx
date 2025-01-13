@@ -10,6 +10,7 @@ import {
 import min from 'lodash/min'
 import max from 'lodash/max'
 import type { ResponsiveVisualizationAnyItemKey, TimeseriesByTypeProps } from '../types'
+import type { ResponsiveVisualizationData } from '../../types'
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
@@ -42,7 +43,7 @@ export function AggregatedTimeseries({
     data,
     timeseriesInterval,
     dateKey,
-    valueKey: valueKey as ResponsiveVisualizationAnyItemKey,
+    valueKey: valueKey as keyof ResponsiveVisualizationData[0],
   })
 
   if (!fullTimeseries.length) {

@@ -24,14 +24,14 @@ export const getBarProps = (
 
 export const getBiggestColumnValue = (
   data: ResponsiveVisualizationData,
-  aggregatedValueKey: ResponsiveVisualizationAnyItemKey,
-  individualValueKey: ResponsiveVisualizationAnyItemKey
+  aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0],
+  individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
 ): number => {
   return data.reduce((acc, column) => {
     const value = (
-      column[aggregatedValueKey]
-        ? column[aggregatedValueKey]
-        : column[individualValueKey]?.length || 0
+      column[aggregatedValueKey as keyof typeof column]
+        ? column[aggregatedValueKey as keyof typeof column]
+        : column[individualValueKey as keyof typeof column]?.length || 0
     ) as number
     if (value > acc) {
       return value
@@ -44,8 +44,8 @@ type IsIndividualSupportedParams = {
   data: ResponsiveVisualizationData
   width: number
   height: number
-  aggregatedValueKey: ResponsiveVisualizationAnyItemKey
-  individualValueKey: ResponsiveVisualizationAnyItemKey
+  aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0]
+  individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
 }
 export function getIsIndividualBarChartSupported({
   data,
@@ -68,8 +68,8 @@ type getIsIndividualTimeseriesSupportedParams = {
   timeseriesInterval?: FourwingsInterval
   width: number
   height: number
-  aggregatedValueKey: ResponsiveVisualizationAnyItemKey
-  individualValueKey: ResponsiveVisualizationAnyItemKey
+  aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0]
+  individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
 }
 
 export function getIsIndividualTimeseriesSupported({

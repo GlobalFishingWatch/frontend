@@ -31,7 +31,7 @@ type UseFullTimeseriesProps = {
   data: ResponsiveVisualizationData
   timeseriesInterval: FourwingsInterval
   dateKey: ResponsiveVisualizationAnyItemKey
-  valueKey: ResponsiveVisualizationAnyItemKey
+  valueKey: keyof ResponsiveVisualizationData[0]
   aggregated?: boolean
 }
 export function useFullTimeseries({
@@ -63,7 +63,9 @@ export function useFullTimeseries({
         const d = DateTime.fromMillis(startMillis, { zone: 'UTC' })
           .plus({ [timeseriesInterval]: i })
           .toISO()
-        const dataValue = data.find((item) => d?.startsWith(item[dateKey] as string))?.[valueKey]
+        const dataValue = data.find((item) =>
+          d?.startsWith(item[dateKey as keyof typeof item] as any)
+        )?.[valueKey]
         return {
           [dateKey]: d,
           [valueKey]: dataValue ? dataValue : aggregated ? 0 : [],
