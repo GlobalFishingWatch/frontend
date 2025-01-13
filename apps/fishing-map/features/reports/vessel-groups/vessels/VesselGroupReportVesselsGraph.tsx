@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useRef } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import type {
@@ -6,10 +6,9 @@ import type {
   ResponsiveVisualizationInteractionCallback,
 } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
-import { formatInfoField, getVesselShipTypeLabel } from 'utils/info'
+import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import type {
   VesselGroupReportState,
@@ -19,9 +18,8 @@ import type {
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import type { PortsReportState } from 'features/reports/ports/ports-report.types'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
 import styles from './VesselGroupReportVesselsGraph.module.css'
-import type { VesselGroupVesselTableParsed } from './vessel-group-report-vessels.selectors'
 
 type ReportGraphTooltipProps = {
   active: boolean
@@ -77,29 +75,6 @@ const ReportBarTooltip = (props: any) => {
   }
 
   return null
-}
-
-const ReportPointTooltip = ({ data }: { type: string; data?: VesselGroupVesselTableParsed }) => {
-  if (!data?.identity) {
-    return null
-  }
-  const getVesselPropertyParams = {
-    identitySource: VesselIdentitySourceEnum.SelfReported,
-  }
-  const vesselName = formatInfoField(
-    getVesselProperty(data.identity, 'shipname', getVesselPropertyParams),
-    'shipname'
-  )
-
-  const vesselFlag = getVesselProperty(data.identity, 'flag', getVesselPropertyParams)
-
-  const vesselType = getVesselShipTypeLabel({
-    shiptypes: getVesselProperty(data.identity, 'shiptypes', getVesselPropertyParams),
-  })
-
-  return (
-    <span>{`${vesselName} ${vesselFlag ? `(${vesselFlag})` : ''} ${vesselType ? `- ${vesselType}` : ''}`}</span>
-  )
 }
 
 const ReportGraphTick = (props: any) => {
@@ -235,7 +210,7 @@ export default function VesselGroupReportVesselsGraph({
             />
           }
           labelKey="name"
-          individualTooltip={<ReportPointTooltip type={property} />}
+          individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
           aggregatedTooltip={<ReportBarTooltip type={property} />}
         />
       </div>
