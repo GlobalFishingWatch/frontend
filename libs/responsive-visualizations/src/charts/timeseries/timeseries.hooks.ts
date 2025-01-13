@@ -44,7 +44,7 @@ export function useFullTimeseries({
   aggregated = true,
 }: UseFullTimeseriesProps) {
   return useMemo(() => {
-    if (!data) {
+    if (!data || !dateKey || !valueKey) {
       return []
     }
 
@@ -63,7 +63,7 @@ export function useFullTimeseries({
         const d = DateTime.fromMillis(startMillis, { zone: 'UTC' })
           .plus({ [timeseriesInterval]: i })
           .toISO()
-        const dataValue = data.find((item) => d?.startsWith(item[dateKey]))?.[valueKey]
+        const dataValue = data.find((item) => d?.startsWith(item[dateKey] as string))?.[valueKey]
         return {
           [dateKey]: d,
           [valueKey]: dataValue ? dataValue : aggregated ? 0 : [],

@@ -81,8 +81,8 @@ export function useResponsiveVisualizationData({
             start,
             end,
             timeseriesInterval,
-            individualValueKey,
-            aggregatedValueKey,
+            individualValueKey: individualValueKey as ResponsiveVisualizationAnyItemKey,
+            aggregatedValueKey: aggregatedValueKey as ResponsiveVisualizationAnyItemKey,
           })
         ) {
           const individualData = await getIndividualData()
@@ -110,8 +110,8 @@ export function useResponsiveVisualizationData({
             start,
             end,
             timeseriesInterval,
-            individualValueKey,
-            aggregatedValueKey,
+            individualValueKey: individualValueKey as ResponsiveVisualizationAnyItemKey,
+            aggregatedValueKey: aggregatedValueKey as ResponsiveVisualizationAnyItemKey,
           })
         ) {
           setIsIndividualSupported(true)
@@ -123,7 +123,7 @@ export function useResponsiveVisualizationData({
               [labelKey]: item[labelKey],
               [individualValueKey]: value.length,
             }
-          })
+          }) as ResponsiveVisualizationData
           setIsIndividualSupported(false)
           setData(aggregatedData)
         }

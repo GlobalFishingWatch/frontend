@@ -9,7 +9,7 @@ import {
 } from 'recharts'
 import min from 'lodash/min'
 import max from 'lodash/max'
-import type { TimeseriesByTypeProps } from '../types'
+import type { ResponsiveVisualizationAnyItemKey, TimeseriesByTypeProps } from '../types'
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
@@ -42,7 +42,7 @@ export function AggregatedTimeseries({
     data,
     timeseriesInterval,
     dateKey,
-    valueKey,
+    valueKey: valueKey as ResponsiveVisualizationAnyItemKey,
   })
 
   if (!fullTimeseries.length) {

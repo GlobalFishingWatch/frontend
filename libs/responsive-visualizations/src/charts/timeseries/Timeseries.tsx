@@ -1,7 +1,11 @@
 import { useRef } from 'react'
 import type { ResponsiveVisualizationData } from '../../types'
 import { getIsIndividualTimeseriesSupported } from '../../lib/density'
-import type { BaseResponsiveChartProps, BaseResponsiveTimeseriesProps } from '../types'
+import type {
+  BaseResponsiveChartProps,
+  BaseResponsiveTimeseriesProps,
+  ResponsiveVisualizationAnyItemKey,
+} from '../types'
 import { useResponsiveVisualization } from '../hooks'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
@@ -14,9 +18,7 @@ import styles from './Timeseries.module.css'
 
 type ResponsiveTimeseriesProps = BaseResponsiveChartProps &
   BaseResponsiveTimeseriesProps & {
-    dateKey?:
-      | keyof ResponsiveVisualizationData<'aggregated'>[0]
-      | keyof ResponsiveVisualizationData<'individual'>[0]
+    dateKey?: ResponsiveVisualizationAnyItemKey
   }
 
 export function ResponsiveTimeseries({

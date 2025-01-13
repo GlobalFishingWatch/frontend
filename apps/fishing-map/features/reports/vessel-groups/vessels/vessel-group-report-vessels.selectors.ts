@@ -277,7 +277,10 @@ export const selectVGRVesselsGraphIndividualData = createSelector(
       case 'source':
         vesselsGrouped = groupBy(vessels, (vessel) => vessel.source)
     }
-    const orderedGroups: ResponsiveVisualizationData<'individual'> = Object.entries(vesselsGrouped)
+    const orderedGroups: ResponsiveVisualizationData<
+      'individual',
+      { name: string; values: any[] }
+    > = Object.entries(vesselsGrouped)
       .map(([key, value]) => ({
         name: key,
         values: value as any[],
@@ -285,8 +288,12 @@ export const selectVGRVesselsGraphIndividualData = createSelector(
       .sort((a, b) => {
         return b.values.length - a.values.length
       })
-    const groupsWithoutOther: ResponsiveVisualizationData<'individual'> = []
-    const otherGroups: ResponsiveVisualizationData<'individual'> = []
+    const groupsWithoutOther: ResponsiveVisualizationData<
+      'individual',
+      { name: string; values: any[] }
+    > = []
+    const otherGroups: ResponsiveVisualizationData<'individual', { name: string; values: any[] }> =
+      []
     orderedGroups.forEach((group) => {
       if (
         group.name === 'null' ||

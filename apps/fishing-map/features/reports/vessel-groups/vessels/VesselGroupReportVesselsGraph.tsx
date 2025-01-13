@@ -209,7 +209,7 @@ export default function VesselGroupReportVesselsGraph({
               pageQueryParam={pageQueryParam}
             />
           }
-          labelKey="name"
+          labelKey={'name'}
           individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
           aggregatedTooltip={<ReportBarTooltip type={property} />}
         />

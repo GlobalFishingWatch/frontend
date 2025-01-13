@@ -33,7 +33,7 @@ export function AggregatedBarChart({
           <LabelList
             position="top"
             valueAccessor={(entry: ResponsiveVisualizationData<'aggregated'>[0]) =>
-              barValueFormatter?.(entry[valueKey]) || entry[valueKey]
+              barValueFormatter?.(entry[valueKey] as number) || entry[valueKey]
             }
           />
         </Bar>

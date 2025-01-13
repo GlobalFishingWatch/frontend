@@ -9,11 +9,7 @@ import {
   COLUMN_LABEL_SIZE,
   TIMESERIES_PADDING,
 } from '../charts/config'
-import type {
-  ResponsiveVisualizationAggregatedItem,
-  ResponsiveVisualizationData,
-  ResponsiveVisualizationIndividualItem,
-} from '../types'
+import type { ResponsiveVisualizationData } from '../types'
 
 export const getBarProps = (
   data: ResponsiveVisualizationData,
@@ -32,9 +28,11 @@ export const getBiggestColumnValue = (
   individualValueKey: ResponsiveVisualizationAnyItemKey
 ): number => {
   return data.reduce((acc, column) => {
-    const value = (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey]
-      ? (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey]
-      : (column as ResponsiveVisualizationAggregatedItem)[individualValueKey]?.length || 0
+    const value = (
+      column[aggregatedValueKey]
+        ? column[aggregatedValueKey]
+        : column[individualValueKey]?.length || 0
+    ) as number
     if (value > acc) {
       return value
     }
@@ -70,8 +68,8 @@ type getIsIndividualTimeseriesSupportedParams = {
   timeseriesInterval?: FourwingsInterval
   width: number
   height: number
-  aggregatedValueKey: string
-  individualValueKey: string
+  aggregatedValueKey: ResponsiveVisualizationAnyItemKey
+  individualValueKey: ResponsiveVisualizationAnyItemKey
 }
 
 export function getIsIndividualTimeseriesSupported({

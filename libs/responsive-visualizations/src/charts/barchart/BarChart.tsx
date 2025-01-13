@@ -17,14 +17,14 @@ import { AggregatedBarChart } from './BarChartAggregated'
 import styles from './BarChart.module.css'
 
 type ResponsiveBarChartProps = BaseResponsiveChartProps &
-  BaseResponsiveBarChartProps & { labelKey?: ResponsiveVisualizationAnyItemKey }
+  BaseResponsiveBarChartProps & { labelKey?: ResponsiveVisualizationAnyItemKey | string }
 
 export function ResponsiveBarChart({
   getIndividualData,
   getAggregatedData,
   color,
-  aggregatedValueKey = DEFAULT_AGGREGATED_VALUE_KEY,
-  individualValueKey = DEFAULT_INDIVIDUAL_VALUE_KEY,
+  aggregatedValueKey = DEFAULT_AGGREGATED_VALUE_KEY as keyof ResponsiveVisualizationData<'aggregated'>[0],
+  individualValueKey = DEFAULT_INDIVIDUAL_VALUE_KEY as keyof ResponsiveVisualizationData<'individual'>[0],
   labelKey = DEFAULT_LABEL_KEY,
   barLabel,
   aggregatedTooltip,
@@ -35,7 +35,7 @@ export function ResponsiveBarChart({
 }: ResponsiveBarChartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { data, isIndividualSupported } = useResponsiveVisualization(containerRef, {
-    labelKey,
+    labelKey: labelKey as ResponsiveVisualizationAnyItemKey,
     aggregatedValueKey,
     individualValueKey,
     getAggregatedData,
@@ -57,7 +57,7 @@ export function ResponsiveBarChart({
           data={data as ResponsiveVisualizationData<'individual'>}
           color={color}
           valueKey={individualValueKey}
-          labelKey={labelKey}
+          labelKey={labelKey as ResponsiveVisualizationAnyItemKey}
           onClick={onIndividualItemClick}
           barLabel={barLabel}
           customTooltip={individualTooltip}
@@ -68,7 +68,7 @@ export function ResponsiveBarChart({
           data={data as ResponsiveVisualizationData<'aggregated'>}
           color={color}
           valueKey={aggregatedValueKey}
-          labelKey={labelKey}
+          labelKey={labelKey as ResponsiveVisualizationAnyItemKey}
           onClick={onAggregatedItemClick}
           barLabel={barLabel}
           customTooltip={aggregatedTooltip}
