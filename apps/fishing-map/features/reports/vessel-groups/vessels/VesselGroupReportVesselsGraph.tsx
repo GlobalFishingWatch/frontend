@@ -190,7 +190,6 @@ export default function VesselGroupReportVesselsGraph({
   filterQueryParam,
   pageQueryParam,
 }: VesselGroupReportVesselsGraphProps) {
-  const ref = useRef<HTMLDivElement>(null)
   const { dispatchQueryParams } = useLocationConnect()
 
   const onBarClick: ResponsiveVisualizationInteractionCallback = (e) => {
@@ -218,30 +217,27 @@ export default function VesselGroupReportVesselsGraph({
 
   return (
     <Fragment>
-      <div ref={ref} className={styles.graph} data-test="report-vessels-graph">
-        {data && data.length > 0 && (
-          <ResponsiveBarChart
-            color={color}
-            containerRef={ref}
-            getIndividualData={getIndividualData}
-            getAggregatedData={getAggregatedData}
-            onAggregatedItemClick={onBarClick}
-            onIndividualItemClick={onPointClick}
-            barValueFormatter={(value: any) => {
-              return formatI18nNumber(value).toString()
-            }}
-            barLabel={
-              <ReportGraphTick
-                property={property}
-                filterQueryParam={filterQueryParam}
-                pageQueryParam={pageQueryParam}
-              />
-            }
-            labelKey='name'
-            individualTooltip={<ReportPointTooltip type={property} />}
-            aggregatedTooltip={<ReportBarTooltip type={property} />}
-          />
-        )}
+      <div className={styles.graph} data-test="report-vessels-graph">
+        <ResponsiveBarChart
+          color={color}
+          getIndividualData={getIndividualData}
+          getAggregatedData={getAggregatedData}
+          onAggregatedItemClick={onBarClick}
+          onIndividualItemClick={onPointClick}
+          barValueFormatter={(value: any) => {
+            return formatI18nNumber(value).toString()
+          }}
+          barLabel={
+            <ReportGraphTick
+              property={property}
+              filterQueryParam={filterQueryParam}
+              pageQueryParam={pageQueryParam}
+            />
+          }
+          labelKey="name"
+          individualTooltip={<ReportPointTooltip type={property} />}
+          aggregatedTooltip={<ReportBarTooltip type={property} />}
+        />
       </div>
     </Fragment>
   )

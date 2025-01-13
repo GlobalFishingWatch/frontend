@@ -13,7 +13,6 @@ export type ResponsiveVisualizationInteractionCallback<Item = ResponsiveVisualiz
 
 export type ResponsiveVisualizationContainerRef = React.RefObject<HTMLElement | null>
 export type BaseResponsiveChartProps = {
-  containerRef: ResponsiveVisualizationContainerRef
   // Aggregated props
   aggregatedTooltip?: ReactElement
   onAggregatedItemClick?: ResponsiveVisualizationInteractionCallback
