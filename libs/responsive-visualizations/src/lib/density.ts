@@ -1,13 +1,13 @@
 import type { DurationUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import type { ResponsiveVisualizationAnyItemKey } from '../charts'
 import {
   COLUMN_PADDING,
   POINT_SIZE,
   AXIS_LABEL_PADDING,
   COLUMN_LABEL_SIZE,
   TIMESERIES_PADDING,
+  MAX_INDIVIDUAL_ITEMS,
 } from '../charts/config'
 import type { ResponsiveVisualizationData } from '../types'
 
@@ -22,22 +22,26 @@ export const getBarProps = (
   return { columnsNumber, columnsWidth, pointsByRow }
 }
 
-export const getBiggestColumnValue = (
+type ColumnsStats = {
+  total: number
+  max: number
+}
+export const getColumnsStats = (
   data: ResponsiveVisualizationData,
   aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0],
   individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
-): number => {
-  return data.reduce((acc, column) => {
-    const value = (
-      column[aggregatedValueKey as keyof typeof column]
-        ? column[aggregatedValueKey as keyof typeof column]
-        : column[individualValueKey as keyof typeof column]?.length || 0
-    ) as number
-    if (value > acc) {
-      return value
-    }
-    return acc
-  }, 0)
+): ColumnsStats => {
+  return data.reduce(
+    (acc, column) => {
+      const value = (
+        column[aggregatedValueKey as keyof typeof column]
+          ? column[aggregatedValueKey as keyof typeof column]
+          : column[individualValueKey as keyof typeof column]?.length || 0
+      ) as number
+      return { total: acc.total + value, max: Math.max(acc.max, value) }
+    },
+    { total: 0, max: 0 } as ColumnsStats
+  )
 }
 
 type IsIndividualSupportedParams = {
@@ -54,9 +58,12 @@ export function getIsIndividualBarChartSupported({
   aggregatedValueKey,
   individualValueKey,
 }: IsIndividualSupportedParams): boolean {
+  const { total, max } = getColumnsStats(data, aggregatedValueKey, individualValueKey)
+  if (total > MAX_INDIVIDUAL_ITEMS) {
+    return false
+  }
   const { pointsByRow } = getBarProps(data, width)
-  const biggestColumnValue = getBiggestColumnValue(data, aggregatedValueKey, individualValueKey)
-  const rowsInBiggestColumn = Math.ceil(biggestColumnValue / pointsByRow)
+  const rowsInBiggestColumn = Math.ceil(max / pointsByRow)
   const heightNeeded = rowsInBiggestColumn * POINT_SIZE
   return heightNeeded < height - AXIS_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
 }
@@ -82,8 +89,11 @@ export function getIsIndividualTimeseriesSupported({
   aggregatedValueKey,
   individualValueKey,
 }: getIsIndividualTimeseriesSupportedParams): boolean {
-  const biggestColumnValue = getBiggestColumnValue(data, aggregatedValueKey, individualValueKey)
-  const heightNeeded = biggestColumnValue * POINT_SIZE
+  const { total, max } = getColumnsStats(data, aggregatedValueKey, individualValueKey)
+  if (total > MAX_INDIVIDUAL_ITEMS) {
+    return false
+  }
+  const heightNeeded = max * POINT_SIZE
   const matchesHeight = heightNeeded < height - AXIS_LABEL_PADDING
   if (!matchesHeight) {
     return false
