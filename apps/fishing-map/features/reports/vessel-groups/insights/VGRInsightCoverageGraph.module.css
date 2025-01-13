@@ -39,21 +39,21 @@
 }
 
 .graph :global(.recharts-bar-rectangle):nth-child(1),
-.graph foreignObject > div > div:nth-child(1) {
+.graph foreignObject > div > div:nth-child(1) ul {
   opacity: 0.3;
 }
 
 .graph :global(.recharts-bar-rectangle):nth-child(2),
-.graph foreignObject > div > div:nth-child(2) {
+.graph foreignObject > div > div:nth-child(2) ul {
   opacity: 0.5;
 }
 
 .graph :global(.recharts-bar-rectangle):nth-child(3),
-.graph foreignObject > div > div:nth-child(3) {
+.graph foreignObject > div > div:nth-child(3) ul {
   opacity: 0.7;
 }
 
 .graph :global(.recharts-bar-rectangle):nth-child(4),
-.graph foreignObject > div > div:nth-child(4) {
+.graph foreignObject > div > div:nth-child(4) ul {
   opacity: 0.85;
 }
