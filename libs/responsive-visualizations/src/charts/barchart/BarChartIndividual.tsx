@@ -36,11 +36,11 @@ export function IndividualBarChart({
             {data.map((item, index) => {
               const points = item?.[valueKey] as ResponsiveVisualizationItem[]
               return (
-                <div className={styles.barContainer}>
+                <div key={index} className={styles.barContainer}>
                   <label className={styles.label}>
                     {barValueFormatter?.(points.length) || points.length}
                   </label>
-                  <ul key={index} className={styles.bar}>
+                  <ul className={styles.bar}>
                     {points?.map((point, pointIndex) => (
                       <IndividualPoint
                         key={pointIndex}

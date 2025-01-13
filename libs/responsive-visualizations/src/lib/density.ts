@@ -17,6 +17,22 @@ export const getBarProps = (
   return { columnsNumber, columnsWidth, pointsByRow }
 }
 
+export const getBiggestColumnValue = (
+  data: ResponsiveVisualizationData,
+  aggregatedValueKey: ResponsiveVisualizationAnyItemKey,
+  individualValueKey: ResponsiveVisualizationAnyItemKey
+): number => {
+  return data.reduce((acc, column) => {
+    const value = (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey]
+      ? (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey]
+      : (column as ResponsiveVisualizationAggregatedItem)[individualValueKey]?.length || 0
+    if (value > acc) {
+      return value
+    }
+    return acc
+  }, 0)
+}
+
 type IsIndividualSupportedParams = {
   data: ResponsiveVisualizationData
   width: number
@@ -32,15 +48,7 @@ export function getIsIndividualBarChartSupported({
   individualValueKey,
 }: IsIndividualSupportedParams): boolean {
   const { pointsByRow } = getBarProps(data, width)
-  const biggestColumnValue = data.reduce((acc, column) => {
-    const value = (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey]
-      ? (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey]
-      : (column as ResponsiveVisualizationAggregatedItem)[individualValueKey].length
-    if (value > acc) {
-      return value
-    }
-    return acc
-  }, 0)
+  const biggestColumnValue = getBiggestColumnValue(data, aggregatedValueKey, individualValueKey)
   const rowsInBiggestColumn = Math.ceil(biggestColumnValue / pointsByRow)
   const heightNeeded = rowsInBiggestColumn * POINT_SIZE
   return heightNeeded < height - AXIS_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
@@ -60,15 +68,7 @@ export function getIsIndividualTimeseriesSupported({
   aggregatedValueKey,
   individualValueKey,
 }: getIsIndividualTimeseriesSupportedParams): boolean {
-  const biggestColumnValue = data.reduce((acc, column) => {
-    const value = (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey]
-      ? (column as ResponsiveVisualizationIndividualItem)[aggregatedValueKey]
-      : (column as ResponsiveVisualizationAggregatedItem)[individualValueKey].length
-    if (value > acc) {
-      return value
-    }
-    return acc
-  }, 0)
+  const biggestColumnValue = getBiggestColumnValue(data, aggregatedValueKey, individualValueKey)
   const heightNeeded = biggestColumnValue * POINT_SIZE
   return heightNeeded < height - AXIS_LABEL_PADDING
 }
