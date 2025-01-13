@@ -40,44 +40,11 @@ function parseCoverageGraphValueBucket(value: number) {
   )
 }
 
-function parseCoverageGraphAggregatedData(
+function getDataByCoverage(
   data: VesselGroupInsightResponse['coverage'],
   vessels: VesselGroupVesselIdentity[]
-): ResponsiveVisualizationData<'aggregated'> {
-  if (!data) return []
-  const groupedData: Record<string, any> = {}
-  data.forEach((d) => {
-    const relationId = vessels.find((v) => v.vesselId === d.vesselId)?.relationId
-    if (!relationId) return
-    if (!groupedData[relationId]) {
-      groupedData[relationId] = {
-        name: relationId,
-        values: [d.percentage],
-        counts: [parseInt(d.blocks)],
-      }
-    } else {
-      groupedData[relationId].values.push(d.percentage)
-      groupedData[relationId].counts.push(parseInt(d.blocks))
-    }
-  })
-
-  const dataByCoverage = Object.values(groupedData).map((d) => ({
-    name: d.name,
-    value: parseCoverageGraphValueBucket(weightedMean(d.values, d.counts)),
-  }))
-
-  const groupedDataByCoverage = groupBy(dataByCoverage, (entry) => entry.value!)
-  return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
-    label: key,
-    value: groupedDataByCoverage[key]?.length || 0,
-  }))
-}
-
-function parseCoverageGraphIndividualData(
-  data: VesselGroupInsightResponse['coverage'],
-  vessels: VesselGroupVesselIdentity[]
-): ResponsiveVisualizationData<'individual'> {
-  if (!data) return []
+): Record<string, any[]> {
+  if (!data) return {}
   const groupedData: Record<string, any> = {}
   data.forEach((d) => {
     const vessel = vessels.find((v) => v.vesselId === d.vesselId)
@@ -86,7 +53,7 @@ function parseCoverageGraphIndividualData(
     if (!groupedData[relationId]) {
       groupedData[relationId] = {
         name: relationId,
-        vessel: vessel,
+        vessel,
         values: [d.percentage],
         counts: [parseInt(d.blocks)],
       }
@@ -102,7 +69,25 @@ function parseCoverageGraphIndividualData(
     value: parseCoverageGraphValueBucket(weightedMean(d.values, d.counts)),
   }))
 
-  const groupedDataByCoverage = groupBy(dataByCoverage, (entry) => entry.value!)
+  return groupBy(dataByCoverage, (entry) => entry.value!)
+}
+
+function parseCoverageGraphAggregatedData(
+  data: VesselGroupInsightResponse['coverage'],
+  vessels: VesselGroupVesselIdentity[]
+): ResponsiveVisualizationData<'aggregated'> {
+  const groupedDataByCoverage = getDataByCoverage(data, vessels)
+  return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
+    label: key,
+    value: groupedDataByCoverage[key]?.length || 0,
+  }))
+}
+
+function parseCoverageGraphIndividualData(
+  data: VesselGroupInsightResponse['coverage'],
+  vessels: VesselGroupVesselIdentity[]
+): ResponsiveVisualizationData<'individual'> {
+  const groupedDataByCoverage = getDataByCoverage(data, vessels)
   return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
     label: key,
     values: groupedDataByCoverage[key].map((d) => d.vessel) || [],
