@@ -1,20 +1,18 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ResponsiveVisualizationData, ResponsiveVisualizationItem } from '../types'
 import type {
   getIsIndividualBarChartSupported,
   getIsIndividualTimeseriesSupported,
 } from '../lib/density'
-import type {
-  BaseResponsiveChartProps,
-  ResponsiveVisualizationAnyItemKey,
-  ResponsiveVisualizationContainerRef,
-} from './types'
+import type { BaseResponsiveChartProps, ResponsiveVisualizationAnyItemKey } from './types'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
   DEFAULT_LABEL_KEY,
 } from './config'
 
+type ResponsiveVisualizationContainerRef = React.RefObject<HTMLElement | null>
 export function useResponsiveDimensions(containerRef: ResponsiveVisualizationContainerRef) {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
@@ -41,6 +39,9 @@ export function useResponsiveDimensions(containerRef: ResponsiveVisualizationCon
 }
 
 type UseResponsiveVisualizationDataProps = {
+  start?: string
+  end?: string
+  timeseriesInterval?: FourwingsInterval
   labelKey: ResponsiveVisualizationAnyItemKey
   individualValueKey: BaseResponsiveChartProps['individualValueKey']
   aggregatedValueKey: BaseResponsiveChartProps['aggregatedValueKey']
@@ -54,6 +55,9 @@ export function useResponsiveVisualizationData({
   labelKey = DEFAULT_LABEL_KEY,
   individualValueKey = DEFAULT_INDIVIDUAL_VALUE_KEY,
   aggregatedValueKey = DEFAULT_AGGREGATED_VALUE_KEY,
+  start,
+  end,
+  timeseriesInterval,
   getAggregatedData,
   getIndividualData,
   getIsIndividualSupported,
@@ -74,6 +78,9 @@ export function useResponsiveVisualizationData({
             data: aggregatedData,
             width,
             height,
+            start,
+            end,
+            timeseriesInterval,
             individualValueKey,
             aggregatedValueKey,
           })
@@ -100,6 +107,9 @@ export function useResponsiveVisualizationData({
             data: individualData,
             width,
             height,
+            start,
+            end,
+            timeseriesInterval,
             individualValueKey,
             aggregatedValueKey,
           })
@@ -123,6 +133,9 @@ export function useResponsiveVisualizationData({
       getAggregatedData,
       getIndividualData,
       getIsIndividualSupported,
+      start,
+      end,
+      timeseriesInterval,
       individualValueKey,
       aggregatedValueKey,
       labelKey,
@@ -135,27 +148,12 @@ export function useResponsiveVisualizationData({
   )
 }
 
-type UseResponsiveVisualizationProps = {
-  containerRef: ResponsiveVisualizationContainerRef
-} & UseResponsiveVisualizationDataProps
-export function useResponsiveVisualization({
-  containerRef,
-  labelKey,
-  aggregatedValueKey,
-  individualValueKey,
-  getAggregatedData,
-  getIndividualData,
-  getIsIndividualSupported,
-}: UseResponsiveVisualizationProps) {
+export function useResponsiveVisualization(
+  containerRef: ResponsiveVisualizationContainerRef,
+  params: UseResponsiveVisualizationDataProps
+) {
   const dimensions = useResponsiveDimensions(containerRef)
-  const { data, isIndividualSupported, loadData } = useResponsiveVisualizationData({
-    labelKey,
-    aggregatedValueKey,
-    individualValueKey,
-    getAggregatedData,
-    getIndividualData,
-    getIsIndividualSupported,
-  })
+  const { data, isIndividualSupported, loadData } = useResponsiveVisualizationData(params)
 
   useEffect(() => {
     if (dimensions.width && dimensions.height) {

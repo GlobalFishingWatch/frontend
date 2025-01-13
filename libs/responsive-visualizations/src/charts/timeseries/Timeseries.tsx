@@ -25,6 +25,7 @@ export function ResponsiveTimeseries({
   dateKey = DEFAULT_DATE_KEY,
   aggregatedValueKey = DEFAULT_AGGREGATED_VALUE_KEY,
   individualValueKey = DEFAULT_INDIVIDUAL_VALUE_KEY,
+  timeseriesInterval,
   getIndividualData,
   getAggregatedData,
   color,
@@ -35,8 +36,10 @@ export function ResponsiveTimeseries({
   onAggregatedItemClick,
 }: ResponsiveTimeseriesProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { width, data, isIndividualSupported } = useResponsiveVisualization({
-    containerRef,
+  const { width, data, isIndividualSupported } = useResponsiveVisualization(containerRef, {
+    start,
+    end,
+    timeseriesInterval,
     labelKey: dateKey,
     individualValueKey,
     aggregatedValueKey,
@@ -62,6 +65,7 @@ export function ResponsiveTimeseries({
           end={end}
           color={color}
           dateKey={dateKey}
+          timeseriesInterval={timeseriesInterval}
           valueKey={individualValueKey}
           onClick={onIndividualItemClick}
           tickLabelFormatter={tickLabelFormatter}
@@ -74,6 +78,7 @@ export function ResponsiveTimeseries({
           end={end}
           color={color}
           dateKey={dateKey}
+          timeseriesInterval={timeseriesInterval}
           valueKey={aggregatedValueKey}
           onClick={onAggregatedItemClick}
           tickLabelFormatter={tickLabelFormatter}

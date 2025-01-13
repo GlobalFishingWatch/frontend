@@ -3,7 +3,7 @@ import React from 'react'
 import type { ResponsiveVisualizationItem } from '../../types'
 import type { BarChartByTypeProps } from '../types'
 import { IndividualPoint } from '../points/IndividualPoint'
-import { AXIS_LABEL_PADDING } from '../config'
+import { AXIS_LABEL_PADDING, POINT_GAP } from '../config'
 import styles from './BarChartIndividual.module.css'
 
 type IndividualBarChartProps = BarChartByTypeProps<'individual'>
@@ -40,7 +40,7 @@ export function IndividualBarChart({
                   <label className={styles.label}>
                     {barValueFormatter?.(points.length) || points.length}
                   </label>
-                  <ul className={styles.bar}>
+                  <ul className={styles.bar} style={{ gap: POINT_GAP }}>
                     {points?.map((point, pointIndex) => (
                       <IndividualPoint
                         key={pointIndex}

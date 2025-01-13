@@ -1,7 +1,11 @@
 import { useRef } from 'react'
 import type { ResponsiveVisualizationData } from '../../types'
 import { getIsIndividualBarChartSupported } from '../../lib/density'
-import type { BaseResponsiveBarChartProps, BaseResponsiveChartProps } from '../types'
+import type {
+  BaseResponsiveBarChartProps,
+  BaseResponsiveChartProps,
+  ResponsiveVisualizationAnyItemKey,
+} from '../types'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
@@ -13,7 +17,7 @@ import { AggregatedBarChart } from './BarChartAggregated'
 import styles from './BarChart.module.css'
 
 type ResponsiveBarChartProps = BaseResponsiveChartProps &
-  BaseResponsiveBarChartProps & { labelKey?: string }
+  BaseResponsiveBarChartProps & { labelKey?: ResponsiveVisualizationAnyItemKey }
 
 export function ResponsiveBarChart({
   getIndividualData,
@@ -30,8 +34,7 @@ export function ResponsiveBarChart({
   onAggregatedItemClick,
 }: ResponsiveBarChartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { data, isIndividualSupported } = useResponsiveVisualization({
-    containerRef,
+  const { data, isIndividualSupported } = useResponsiveVisualization(containerRef, {
     labelKey,
     aggregatedValueKey,
     individualValueKey,

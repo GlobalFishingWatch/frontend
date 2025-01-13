@@ -1,14 +1,14 @@
 .point {
   display: block;
-  width: 12px;
-  height: 12px;
   background-color: red;
-  border-radius: 6px;
+  border-radius: 50%;
   position: relative;
+  border: 2px solid transparent;
+  transition: border-color 0.3s linear;
 }
 
 .point:hover {
-  border: 1px solid black;
+  border: var(--border-thick);
 }
 
 .tooltip {

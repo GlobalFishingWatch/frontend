@@ -1,12 +1,19 @@
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { type FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { DateTime } from 'luxon'
+import { groupBy } from 'es-toolkit'
+import { stringify } from 'qs'
+import { getFourwingsInterval, type FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { ApiEvent, APIPagination } from '@globalfishingwatch/api-types'
+import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import i18n from 'features/i18n/i18n'
-import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
+import { formatDateForInterval, getISODateByInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { formatInfoField } from 'utils/info'
 import styles from './EventsReportGraph.module.css'
 
 type EventsReportGraphTooltipProps = {
@@ -44,7 +51,10 @@ const AggregatedGraphTooltip = (props: any) => {
 }
 
 const IndividualGraphTooltip = ({ data }: { data?: any }) => {
-  return data.label
+  if (!data?.vessel?.name) {
+    return null
+  }
+  return formatInfoField(data.vessel.name, 'shipname')
 }
 
 const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
@@ -56,11 +66,15 @@ const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
 }
 
 export default function EventsReportGraph({
+  datasetId,
+  filters,
   color = COLOR_PRIMARY_BLUE,
   end,
   start,
   timeseries,
 }: {
+  datasetId: string
+  filters?: Record<string, string | string[]>
   color?: string
   end: string
   start: string
@@ -69,13 +83,31 @@ export default function EventsReportGraph({
   const containerRef = React.useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
 
+  const startMillis = DateTime.fromISO(start).toMillis()
+  const endMillis = DateTime.fromISO(end).toMillis()
+  const interval = getFourwingsInterval(startMillis, endMillis)
+  const filtersMemo = useMemoCompare(filters)
+
   const getAggregatedData = useCallback(async () => timeseries, [timeseries])
   const getIndividualData = useCallback(async () => {
-    return timeseries.map((t) => ({
-      date: t.date,
-      values: [...new Array(t.value)].map((v, i) => ({ label: t.date, value: i })),
-    }))
-  }, [timeseries])
+    // TODO add includes to fetch only the information needed
+    const params = {
+      'start-date': start,
+      'end-date': end,
+      'time-filter-mode': 'START-DATE',
+      ...(filtersMemo && { ...filtersMemo }),
+      datasets: [datasetId],
+      limit: 1000,
+      offset: 0,
+    }
+    const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
+    const groupedData = groupBy(data.entries, (item) =>
+      getISODateByInterval(DateTime.fromISO(item.start as string), interval)
+    )
+    return Object.entries(groupedData)
+      .map(([date, events]) => ({ date, values: events }))
+      .sort((a, b) => a.date.localeCompare(b.date))
+  }, [datasetId, end, interval, filtersMemo, start])
 
   if (!timeseries.length) {
     return null
@@ -87,11 +119,11 @@ export default function EventsReportGraph({
       <ResponsiveTimeseries
         start={start}
         end={end}
-        containerRef={containerRef}
+        timeseriesInterval={interval}
         getAggregatedData={getAggregatedData}
         getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}
-        aggregatedTooltipTooltip={<AggregatedGraphTooltip />}
+        aggregatedTooltip={<AggregatedGraphTooltip />}
         individualTooltip={<IndividualGraphTooltip />}
         color={color}
       />

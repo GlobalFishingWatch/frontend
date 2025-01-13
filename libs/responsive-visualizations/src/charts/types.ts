@@ -11,7 +11,6 @@ export type ResponsiveVisualizationInteractionCallback<Item = ResponsiveVisualiz
   item: Item
 ) => void
 
-export type ResponsiveVisualizationContainerRef = React.RefObject<HTMLElement | null>
 export type BaseResponsiveChartProps = {
   // Aggregated props
   aggregatedTooltip?: ReactElement
@@ -51,6 +50,7 @@ export type BaseResponsiveTimeseriesProps = {
   start: string
   end: string
   color: string
+  timeseriesInterval: FourwingsInterval
   tickLabelFormatter?: (item: string, interval: FourwingsInterval) => string
 }
 

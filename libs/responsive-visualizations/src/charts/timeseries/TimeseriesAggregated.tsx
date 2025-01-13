@@ -1,11 +1,16 @@
-import { XAxis, ResponsiveContainer, YAxis, CartesianGrid, ComposedChart, Line } from 'recharts'
+import {
+  XAxis,
+  ResponsiveContainer,
+  YAxis,
+  CartesianGrid,
+  ComposedChart,
+  Line,
+  Tooltip,
+} from 'recharts'
 import min from 'lodash/min'
 import max from 'lodash/max'
-import type { DurationUnit } from 'luxon'
-import { DateTime, Duration } from 'luxon'
-import { useMemo } from 'react'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { TimeseriesByTypeProps } from '../types'
+import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
@@ -17,16 +22,10 @@ export function AggregatedTimeseries({
   end,
   dateKey,
   valueKey,
+  customTooltip,
+  timeseriesInterval,
   tickLabelFormatter,
 }: AggregatedTimeseriesProps) {
-  const startMillis = DateTime.fromISO(start).toMillis()
-  const endMillis = DateTime.fromISO(end).toMillis()
-  const interval = getFourwingsInterval(startMillis, endMillis)
-
-  const intervalDiff = Math.floor(
-    Duration.fromMillis(endMillis - startMillis).as(interval.toLowerCase() as DurationUnit)
-  )
-
   const dataMin: number = data.length ? (min(data.map((item) => item[valueKey])) as number) : 0
   const dataMax: number = data.length ? (max(data.map((item) => item[valueKey])) as number) : 0
 
@@ -36,42 +35,29 @@ export function AggregatedTimeseries({
     Math.ceil(dataMax + domainPadding),
   ]
 
-  const domain = useMemo(() => {
-    if (start && end && interval) {
-      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
-        .minus({ [interval]: 1 })
-        .toISO() as string
-      return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
-    }
-  }, [start, end, interval])
+  const domain = useTimeseriesDomain({ start, end, timeseriesInterval })
+  const fullTimeseries = useFullTimeseries({
+    start,
+    end,
+    data,
+    timeseriesInterval,
+    dateKey,
+    valueKey,
+  })
 
-  const fullTimeseries = useMemo(() => {
-    if (!data || !domain) {
-      return []
-    }
-    return Array(intervalDiff)
-      .fill(0)
-      .map((_, i) => i)
-      .map((i) => {
-        const d = DateTime.fromMillis(startMillis, { zone: 'UTC' })
-          .plus({ [interval]: i })
-          .toISO()
-        return {
-          [dateKey]: d,
-          [valueKey]: data.find((item) => item[dateKey] === d)?.[valueKey] || 0,
-        }
-      })
-  }, [data, domain, intervalDiff, startMillis, interval, valueKey, dateKey])
+  if (!fullTimeseries.length) {
+    return null
+  }
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <ComposedChart data={data} margin={graphMargin}>
+      <ComposedChart data={fullTimeseries} margin={graphMargin}>
         <CartesianGrid vertical={false} />
         <XAxis
           domain={domain}
           dataKey={dateKey}
           interval="preserveStartEnd"
-          tickFormatter={(tick: string) => tickLabelFormatter?.(tick, interval) || tick}
+          tickFormatter={(tick: string) => tickLabelFormatter?.(tick, timeseriesInterval) || tick}
           axisLine={paddedDomain[0] === 0}
         />
         <YAxis
@@ -83,13 +69,12 @@ export function AggregatedTimeseries({
           tickLine={false}
           tickCount={4}
         />
-        {/* {fullTimeseries?.length && (
-          <Tooltip content={<ReportGraphTooltip timeChunkInterval={interval} />} />
-        )} */}
+        {data?.length && customTooltip ? <Tooltip content={customTooltip} /> : null}
         <Line
           name="line"
           type="monotone"
           dataKey={valueKey}
+          // TODO: add unit
           // unit={t('common.events', 'Events').toLowerCase()}
           dot={false}
           isAnimationActive={false}

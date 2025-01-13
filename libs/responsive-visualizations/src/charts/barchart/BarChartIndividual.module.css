@@ -17,7 +17,6 @@
 
 .bar {
   display: flex;
-  gap: 3px;
   flex-wrap: wrap-reverse;
   justify-content: center;
 }

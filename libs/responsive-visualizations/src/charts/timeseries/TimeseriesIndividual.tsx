@@ -1,13 +1,11 @@
-import { XAxis, ResponsiveContainer, ComposedChart } from 'recharts'
-import { DateTime } from 'luxon'
+import { XAxis, ResponsiveContainer, ComposedChart, Tooltip } from 'recharts'
 import cx from 'classnames'
-import { useMemo } from 'react'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { TimeseriesByTypeProps } from '../types'
 import type { ResponsiveVisualizationItem } from '../../types'
 import { IndividualPoint } from '../points/IndividualPoint'
-import { AXIS_LABEL_PADDING, POINT_SIZE } from '../config'
+import { AXIS_LABEL_PADDING, POINT_GAP, POINT_SIZE, TIMESERIES_PADDING } from '../config'
 import styles from './TimeseriesIndividual.module.css'
+import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 
 const graphMargin = { top: 0, right: POINT_SIZE, left: POINT_SIZE, bottom: 0 }
 
@@ -22,53 +20,30 @@ export function IndividualTimeseries({
   end,
   dateKey,
   valueKey,
+  timeseriesInterval,
   tickLabelFormatter,
   customTooltip,
 }: IndividualTimeseriesProps) {
-  const startMillis = DateTime.fromISO(start).toMillis()
-  const endMillis = DateTime.fromISO(end).toMillis()
-  const interval = getFourwingsInterval(startMillis, endMillis)
-
-  // const intervalDiff = Math.floor(
-  //   Duration.fromMillis(endMillis - startMillis).as(interval.toLowerCase() as DurationUnit)
-  // )
-
-  const domain = useMemo(() => {
-    if (start && end && interval) {
-      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
-        .minus({ [interval]: 1 })
-        .toISO() as string
-      return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
-    }
-  }, [start, end, interval])
-
-  // const fullTimeseries = useMemo(() => {
-  //   if (!data || !domain) {
-  //     return []
-  //   }
-  //   return Array(intervalDiff)
-  //     .fill(0)
-  //     .map((_, i) => i)
-  //     .map((i) => {
-  //       const d = DateTime.fromMillis(startMillis, { zone: 'UTC' })
-  //         .plus({ [interval]: i })
-  //         .toISO()
-  //       return {
-  //         [dateKey]: d,
-  //         [valueKey]: data.find((item) => item[dateKey] === d)?.[valueKey] || 0,
-  //       }
-  //     })
-  // }, [data, domain, intervalDiff, startMillis, interval, dateKey, valueKey])
+  const domain = useTimeseriesDomain({ start, end, timeseriesInterval })
+  const fullTimeseries = useFullTimeseries({
+    start,
+    end,
+    data,
+    timeseriesInterval,
+    dateKey,
+    valueKey,
+    aggregated: false,
+  })
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <ComposedChart data={data} margin={graphMargin}>
+      <ComposedChart data={fullTimeseries} margin={graphMargin}>
         {/* <CartesianGrid vertical={false} /> */}
         <XAxis
           domain={domain}
           dataKey={dateKey}
           interval="preserveStartEnd"
-          tickFormatter={(tick: string) => tickLabelFormatter?.(tick, interval) || tick}
+          tickFormatter={(tick: string) => tickLabelFormatter?.(tick, timeseriesInterval) || tick}
           axisLine={true}
         />
         {/* TODO: restore this and align with the points */}
@@ -82,16 +57,17 @@ export function IndividualTimeseries({
           tickLine={false}
           tickCount={4}
         /> */}
-        {/* {fullTimeseries?.length && (
-          <Tooltip content={<ReportGraphTooltip timeChunkInterval={interval} />} />
-        )} */}
+        {fullTimeseries?.length && <Tooltip content={customTooltip} />}
         <foreignObject width="100%" height="100%">
-          <div className={cx(styles.container, {[styles.containerSingleTime]: data.length === 1})} style={{ paddingBottom: AXIS_LABEL_PADDING }}>
-            {data.map((item, index) => {
+          <div
+            className={cx(styles.container)}
+            style={{ paddingBottom: AXIS_LABEL_PADDING, paddingInline: TIMESERIES_PADDING }}
+          >
+            {fullTimeseries.map((item, index) => {
               const points = item?.[valueKey] as ResponsiveVisualizationItem[]
               return (
-                <div className={styles.barContainer} style={{width: POINT_SIZE}}>
-                  <ul key={index} className={styles.bar}>
+                <div key={index} className={styles.barContainer} style={{ width: POINT_SIZE }}>
+                  <ul className={styles.bar} style={{ gap: POINT_GAP }}>
                     {points?.map((point, pointIndex) => (
                       <IndividualPoint
                         key={pointIndex}

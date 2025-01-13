@@ -16,7 +16,7 @@ import type {
 import { Icon } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import VGREventsSubsectionSelector from 'features/reports/vessel-groups/events/VGREventsSubsectionSelector'
-import VGREventsGraph from 'features/reports/shared/events/EventsReportGraph'
+import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import {
   selectVGREventsVesselFilter,
   selectVGREventsVesselsProperty,
@@ -129,9 +129,8 @@ function VGREvents() {
       </Fragment>
     )
   }
-  const subCategoryDataset = eventsDataview?.datasets?.find(
-    (d) => d.type === DatasetTypes.Events
-  )?.subcategory
+  const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const subCategoryDatasetCategory = eventDataset?.subcategory
   const totalEvents = data.timeseries.reduce((acc, group) => acc + group.value, 0)
   return (
     <Fragment>
@@ -150,10 +149,10 @@ function VGREvents() {
                   flags: vesselFlags?.size,
                   activityQuantity: totalEvents,
                   activityUnit: `${
-                    subCategoryDataset !== undefined
+                    subCategoryDatasetCategory !== undefined
                       ? t(
-                          `common.eventLabels.${subCategoryDataset.toLowerCase()}`,
-                          lowerCase(subCategoryDataset)
+                          `common.eventLabels.${subCategoryDatasetCategory.toLowerCase()}`,
+                          lowerCase(subCategoryDatasetCategory)
                         )
                       : ''
                   } ${(t('common.events', 'events') as string).toLowerCase()}`,
@@ -166,12 +165,16 @@ function VGREvents() {
                 })
               )}
             </h2>
-            <VGREventsGraph
-              color={color}
-              start={start}
-              end={end}
-              timeseries={data.timeseries || []}
-            />
+            {eventDataset?.id && (
+              <EventsReportGraph
+                datasetId={eventDataset?.id}
+                filters={{ 'vessel-groups': [vesselGroupId] }}
+                color={color}
+                start={start}
+                end={end}
+                timeseries={data.timeseries || []}
+              />
+            )}
           </div>
           <div className={styles.container}>
             <div className={styles.flex}>

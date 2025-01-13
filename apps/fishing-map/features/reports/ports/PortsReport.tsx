@@ -4,8 +4,8 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
-import { Button } from '@globalfishingwatch/ui-components'
 import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
+import { Button } from '@globalfishingwatch/ui-components'
 import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import { selectReportPortId } from 'routes/routes.selectors'
 import EventsReportVesselPropertySelector from 'features/reports/shared/events/EventsReportVesselPropertySelector'
@@ -155,6 +155,8 @@ function PortsReport() {
             color={color}
             start={start}
             end={end}
+            filters={{ 'port-ids': [portId] }}
+            datasetId={datasetId}
             timeseries={data.timeseries || []}
           />
         )}

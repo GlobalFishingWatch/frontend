@@ -6,10 +6,6 @@
   padding-inline: 8px;
 }
 
-.containerSingleTime {
-  justify-content: space-around;
-}
-
 .barContainer {
   display: flex;
   height: 100%;
@@ -20,7 +16,6 @@
 
 .bar {
   display: flex;
-  gap: 3px;
   flex-wrap: wrap-reverse;
   justify-content: center;
 }

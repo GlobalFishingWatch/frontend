@@ -5,6 +5,11 @@ export const DEFAULT_INDIVIDUAL_VALUE_KEY = 'values'
 
 export const COLUMN_LABEL_SIZE = 10
 export const COLUMN_PADDING = 10
-// This is the sum of .point size + .bar flex gap
-export const POINT_SIZE = 15
+// TODO: add support for multiple point sizes
+export const POINT_SIZE = 12
+export const POINT_GAP = 3
 export const AXIS_LABEL_PADDING = 34
+export const TIMESERIES_PADDING = 6
+
+// TODO use this also in the isIndividualSupported
+export const MAX_INDIVIDUAL_ITEMS = 1000
