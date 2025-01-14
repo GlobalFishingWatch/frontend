@@ -169,6 +169,7 @@ function VGREvents() {
               <EventsReportGraph
                 datasetId={eventDataset?.id}
                 filters={{ 'vessel-groups': [vesselGroupId] }}
+                includes={['id', 'start', 'end', 'vessel']}
                 color={color}
                 start={start}
                 end={end}

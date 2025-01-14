@@ -156,6 +156,7 @@ function PortsReport() {
             start={start}
             end={end}
             filters={{ 'port-ids': [portId] }}
+            includes={['id', 'start', 'end', 'vessel']}
             datasetId={datasetId}
             timeseries={data.timeseries || []}
           />

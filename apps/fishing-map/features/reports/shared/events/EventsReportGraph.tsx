@@ -68,6 +68,7 @@ const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
 export default function EventsReportGraph({
   datasetId,
   filters,
+  includes,
   color = COLOR_PRIMARY_BLUE,
   end,
   start,
@@ -75,6 +76,7 @@ export default function EventsReportGraph({
 }: {
   datasetId: string
   filters?: Record<string, string | string[]>
+  includes?: string[]
   color?: string
   end: string
   start: string
@@ -87,6 +89,7 @@ export default function EventsReportGraph({
   const endMillis = DateTime.fromISO(end).toMillis()
   const interval = getFourwingsInterval(startMillis, endMillis)
   const filtersMemo = useMemoCompare(filters)
+  const includesMemo = useMemoCompare(includes)
 
   const getAggregatedData = useCallback(async () => timeseries, [timeseries])
   const getIndividualData = useCallback(async () => {
@@ -96,6 +99,7 @@ export default function EventsReportGraph({
       'end-date': end,
       'time-filter-mode': 'START-DATE',
       ...(filtersMemo && { ...filtersMemo }),
+      ...(includesMemo && { includes: includesMemo }),
       datasets: [datasetId],
       limit: 1000,
       offset: 0,
@@ -107,7 +111,7 @@ export default function EventsReportGraph({
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
-  }, [datasetId, end, interval, filtersMemo, start])
+  }, [start, end, filtersMemo, includesMemo, datasetId, interval])
 
   if (!timeseries.length) {
     return null
