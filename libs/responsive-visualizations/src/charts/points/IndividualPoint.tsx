@@ -56,7 +56,9 @@ export function IndividualPoint({ point, color, tooltip, className, icon }: Indi
             style={floatingStyles}
             {...getFloatingProps()}
           >
-            {tooltip ? cloneElement(tooltip, { data: point } as any) : point.name}
+            {tooltip
+              ? cloneElement(tooltip, { ...(tooltip.props || {}), data: point } as any)
+              : point.name}
           </div>
         </FloatingPortal>
       )}

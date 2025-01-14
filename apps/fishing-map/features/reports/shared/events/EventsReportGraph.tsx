@@ -3,13 +3,14 @@ import React, { useCallback } from 'react'
 import { DateTime } from 'luxon'
 import { groupBy } from 'es-toolkit'
 import { stringify } from 'qs'
-import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
+import { useTranslation } from 'react-i18next'
 import { getEventsStatsQuery } from 'queries/report-events-stats-api'
+import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
 import { getFourwingsInterval, type FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { ApiEvent, APIPagination } from '@globalfishingwatch/api-types'
+import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
 import i18n from 'features/i18n/i18n'
@@ -17,6 +18,10 @@ import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { formatInfoField } from 'utils/info'
+import { getTimeLabels } from 'utils/events'
+import EncounterIcon from '../../shared/events/icons/event-encounter.svg'
+import LoiteringIcon from '../../shared/events/icons/event-loitering.svg'
+import PortVisitIcon from '../../shared/events/icons/event-port.svg'
 import styles from './EventsReportGraph.module.css'
 
 type EventsReportGraphTooltipProps = {
@@ -53,9 +58,38 @@ const AggregatedGraphTooltip = (props: any) => {
   return null
 }
 
-const IndividualGraphTooltip = ({ data }: { data?: any }) => {
+const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: EventType }) => {
+  const { t } = useTranslation()
   if (!data?.vessel?.name) {
     return null
+  }
+  console.log('data:', data)
+  if (eventType === 'encounter') {
+    const { start, duration } = getTimeLabels({ start: data.start, end: data.end })
+    return (
+      <div className={styles.event}>
+        <div className={styles.properties}>
+          <div className={styles.property}>
+            <label>{t('eventInfo.start', 'Start')}</label>
+            <span>{start}</span>
+          </div>
+          <div className={styles.property}>
+            <label>{t('eventInfo.duration', 'Duration')}</label>
+            <span>{duration}</span>
+          </div>
+        </div>
+        <div className={styles.properties}>
+          <div className={styles.property}>
+            <label>{formatInfoField(data.vessel?.type, 'shiptypes')}</label>
+            <span>{formatInfoField(data.vessel?.name, 'shipname')}</span>
+          </div>
+          <div className={styles.property}>
+            <label>{formatInfoField(data.encounter?.vessel?.type, 'shiptypes')}</label>
+            <span>{formatInfoField(data.encounter?.vessel?.name, 'shipname')}</span>
+          </div>
+        </div>
+      </div>
+    )
   }
   return formatInfoField(data.vessel.name, 'shipname')
 }
@@ -76,7 +110,7 @@ export default function EventsReportGraph({
   end,
   start,
   timeseries,
-  icon,
+  eventType,
 }: {
   datasetId: string
   filters?: BaseReportEventsVesselsParamsFilters
@@ -85,7 +119,7 @@ export default function EventsReportGraph({
   end: string
   start: string
   timeseries: { date: string; value: number }[]
-  icon?: ReactElement
+  eventType?: EventType
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
 
@@ -94,6 +128,15 @@ export default function EventsReportGraph({
   const interval = getFourwingsInterval(startMillis, endMillis)
   const filtersMemo = useMemoCompare(filters)
   const includesMemo = useMemoCompare(includes)
+
+  let icon: ReactElement | undefined
+  if (eventType === 'encounter') {
+    icon = <EncounterIcon />
+  } else if (eventType === 'loitering') {
+    icon = <LoiteringIcon />
+  } else if (eventType === 'port_visit') {
+    icon = <PortVisitIcon />
+  }
 
   const getAggregatedData = useCallback(async () => timeseries, [timeseries])
   const getIndividualData = useCallback(async () => {
@@ -110,6 +153,12 @@ export default function EventsReportGraph({
     }
     const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
     const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
+    console.log(
+      Object.entries(groupedData)
+        .map(([date, events]) => ({ date, values: events }))
+        .sort((a, b) => a.date.localeCompare(b.date))
+    )
+
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
@@ -129,7 +178,7 @@ export default function EventsReportGraph({
         getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}
         aggregatedTooltip={<AggregatedGraphTooltip />}
-        individualTooltip={<IndividualGraphTooltip />}
+        individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
         color={color}
         individualIcon={icon}
       />

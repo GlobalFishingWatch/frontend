@@ -4,13 +4,13 @@ import { DateTime } from 'luxon'
 import { Trans } from 'react-i18next'
 import type { ApiEvent } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { EVENTS_COLORS } from 'data/config'
 import { formatInfoField } from 'utils/info'
 import VesselPin from 'features/vessel/VesselPin'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
-import type { SupportedDateType } from './dates'
 import { getUTCDateTime } from './dates'
 
 const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
@@ -24,30 +24,6 @@ const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
   return {
     color,
     colorLabels,
-  }
-}
-
-type TimeLabels = {
-  start: string
-  duration: string
-}
-const getTimeLabels = ({
-  start,
-  end,
-}: {
-  start: SupportedDateType
-  end: SupportedDateType
-}): TimeLabels => {
-  const startDT = getUTCDateTime(start)
-  const endDT = getUTCDateTime(end)
-  const durationRaw = endDT.diff(startDT, ['days', 'hours', 'minutes'])
-
-  const startLabel = formatI18nDate(start, { format: DateTime.DATETIME_MED, showUTCLabel: true })
-
-  const durationLabel = getEventDurationLabel({ durationRaw })
-  return {
-    start: startLabel,
-    duration: durationLabel,
   }
 }
 
@@ -66,6 +42,30 @@ const getEventDurationLabel = ({ durationRaw }: { durationRaw: Duration }): stri
         })
       : '',
   ].join(' ')
+}
+
+type TimeLabels = {
+  start: string
+  duration: string
+}
+export const getTimeLabels = ({
+  start,
+  end,
+}: {
+  start: SupportedDateType
+  end: SupportedDateType
+}): TimeLabels => {
+  const startDT = getUTCDateTime(start)
+  const endDT = getUTCDateTime(end)
+  const durationRaw = endDT.diff(startDT, ['days', 'hours', 'minutes'])
+
+  const startLabel = formatI18nDate(start, { format: DateTime.DATETIME_MED, showUTCLabel: true })
+
+  const durationLabel = getEventDurationLabel({ durationRaw })
+  return {
+    start: startLabel,
+    duration: durationLabel,
+  }
 }
 
 export const getEventDescription = ({

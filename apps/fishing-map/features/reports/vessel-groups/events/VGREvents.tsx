@@ -1,20 +1,20 @@
 import { useSelector } from 'react-redux'
-import type { ReactElement } from 'react'
 import { Fragment } from 'react'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { lowerCase } from 'es-toolkit'
+import {
+  useGetReportEventsStatsQuery,
+  useGetReportEventsVesselsQuery,
+} from 'queries/report-events-stats-api'
 import type {
   ReportEventsStatsResponseGroups,
   ReportEventsVesselsParams,
   ReportEventsStatsParams,
 } from 'queries/report-events-stats-api'
-import {
-  useGetReportEventsStatsQuery,
-  useGetReportEventsVesselsQuery,
-} from 'queries/report-events-stats-api'
 import { Icon } from '@globalfishingwatch/ui-components'
+import type { EventType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import VGREventsSubsectionSelector from 'features/reports/vessel-groups/events/VGREventsSubsectionSelector'
@@ -51,9 +51,6 @@ import ReportEventsPlaceholder from 'features/reports/shared/placeholders/Report
 import { selectVGREventsVesselsPaginated } from 'features/reports/vessel-groups/events/vgr-events.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import VGREventsVesselsTableFooter from '../../shared/events/EventsReportVesselsTableFooter'
-import EncounterIcon from '../../shared/events/icons/event-encounter.svg'
-import LoiteringIcon from '../../shared/events/icons/event-loitering.svg'
-import PortVisitIcon from '../../shared/events/icons/event-port.svg'
 import styles from './VGREvents.module.css'
 
 function VGREvents() {
@@ -139,15 +136,7 @@ function VGREvents() {
     )
   }
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  const subCategoryDatasetCategory = eventDataset?.subcategory
-  let icon: ReactElement | undefined
-  if (subCategoryDatasetCategory === 'encounter') {
-    icon = <EncounterIcon />
-  } else if (subCategoryDatasetCategory === 'loitering') {
-    icon = <LoiteringIcon />
-  } else if (subCategoryDatasetCategory === 'port_visit') {
-    icon = <PortVisitIcon />
-  }
+  const eventType = eventDataset?.subcategory as EventType
   const totalEvents = data.timeseries.reduce((acc, group) => acc + group.value, 0)
   return (
     <Fragment>
@@ -166,11 +155,8 @@ function VGREvents() {
                   flags: vesselFlags?.size,
                   activityQuantity: totalEvents,
                   activityUnit: `${
-                    subCategoryDatasetCategory !== undefined
-                      ? t(
-                          `common.eventLabels.${subCategoryDatasetCategory.toLowerCase()}`,
-                          lowerCase(subCategoryDatasetCategory)
-                        )
+                    eventType !== undefined
+                      ? t(`common.eventLabels.${eventType.toLowerCase()}`, lowerCase(eventType))
                       : ''
                   } ${(t('common.events', 'events') as string).toLowerCase()}`,
                   start: formatI18nDate(start, {
@@ -189,12 +175,18 @@ function VGREvents() {
                   vesselGroupId,
                   ...(eventsDataview && { ...getDataviewFilters(eventsDataview) }),
                 }}
-                includes={['id', 'start', 'end', 'vessel']}
+                includes={[
+                  'id',
+                  'start',
+                  'end',
+                  'vessel',
+                  ...(eventType === 'encounter' ? ['encounter.vessel'] : []),
+                ]}
                 color={color}
                 start={start}
                 end={end}
                 timeseries={data.timeseries || []}
-                icon={icon}
+                eventType={eventType}
               />
             )}
           </div>
