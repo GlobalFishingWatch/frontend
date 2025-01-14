@@ -35,14 +35,17 @@ export function ResponsiveBarChart({
   onAggregatedItemClick,
 }: ResponsiveBarChartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { data, isIndividualSupported } = useResponsiveVisualization(containerRef, {
-    labelKey: labelKey as ResponsiveVisualizationAnyItemKey,
-    aggregatedValueKey,
-    individualValueKey,
-    getAggregatedData,
-    getIndividualData,
-    getIsIndividualSupported: getIsIndividualBarChartSupported,
-  })
+  const { data, isIndividualSupported, individualItemSize } = useResponsiveVisualization(
+    containerRef,
+    {
+      labelKey: labelKey as ResponsiveVisualizationAnyItemKey,
+      aggregatedValueKey,
+      individualValueKey,
+      getAggregatedData,
+      getIndividualData,
+      getIsIndividualSupported: getIsIndividualBarChartSupported,
+    }
+  )
 
   if (!getAggregatedData && !getIndividualData) {
     console.warn('No data getters functions provided')
@@ -57,6 +60,7 @@ export function ResponsiveBarChart({
         <IndividualBarChart
           data={data as ResponsiveVisualizationData<'individual'>}
           color={color}
+          pointSize={individualItemSize}
           valueKey={individualValueKey}
           labelKey={labelKey as ResponsiveVisualizationAnyItemKey}
           onClick={onIndividualItemClick}

@@ -3,22 +3,24 @@ import { DateTime, Duration } from 'luxon'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
   COLUMN_PADDING,
-  POINT_SIZE,
+  DEFAULT_POINT_SIZE,
   AXIS_LABEL_PADDING,
   COLUMN_LABEL_SIZE,
   TIMESERIES_PADDING,
   MAX_INDIVIDUAL_ITEMS,
   POINT_GAP,
+  POINT_SIZES,
 } from '../charts/config'
 import type { ResponsiveVisualizationData } from '../types'
 
 export const getBarProps = (
   data: ResponsiveVisualizationData,
-  width: number
+  width: number,
+  pointSize: number
 ): { columnsNumber: number; columnsWidth: number; pointsByRow: number } => {
   const columnsNumber = data.length
   const columnsWidth = width / columnsNumber - COLUMN_PADDING * 2
-  const pointsByRow = Math.floor(columnsWidth / (POINT_SIZE + POINT_GAP))
+  const pointsByRow = Math.floor(columnsWidth / (pointSize + POINT_GAP))
 
   return { columnsNumber, columnsWidth, pointsByRow }
 }
@@ -55,21 +57,28 @@ export type IsIndividualSupportedParams = {
   aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0]
   individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
 }
+type IsIndividualSupportedResult = {
+  isSupported: boolean
+  individualItemSize?: number
+}
 export function getIsIndividualBarChartSupported({
   data,
   width,
   height,
   aggregatedValueKey,
   individualValueKey,
-}: IsIndividualSupportedParams): boolean {
+}: IsIndividualSupportedParams): IsIndividualSupportedResult {
   const { total, max } = getColumnsStats(data, aggregatedValueKey, individualValueKey)
   if (total > MAX_INDIVIDUAL_ITEMS) {
-    return false
+    return { isSupported: false }
   }
-  const { pointsByRow } = getBarProps(data, width)
-  const rowsInBiggestColumn = Math.ceil(max / pointsByRow)
-  const heightNeeded = rowsInBiggestColumn * (POINT_SIZE + POINT_GAP)
-  return heightNeeded < height - AXIS_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
+  const individualItemSize = POINT_SIZES.find((pointSize) => {
+    const { pointsByRow } = getBarProps(data, width, pointSize)
+    const rowsInBiggestColumn = Math.ceil(max / pointsByRow)
+    const heightNeeded = rowsInBiggestColumn * (pointSize + POINT_GAP)
+    return heightNeeded < height - AXIS_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
+  })
+  return { isSupported: individualItemSize !== undefined, individualItemSize }
 }
 
 export function getIsIndividualTimeseriesSupported({
@@ -81,15 +90,15 @@ export function getIsIndividualTimeseriesSupported({
   timeseriesInterval,
   aggregatedValueKey,
   individualValueKey,
-}: IsIndividualSupportedParams): boolean {
+}: IsIndividualSupportedParams): IsIndividualSupportedResult {
   const { total, max } = getColumnsStats(data, aggregatedValueKey, individualValueKey)
   if (total > MAX_INDIVIDUAL_ITEMS) {
-    return false
+    return { isSupported: false }
   }
-  const heightNeeded = max * (POINT_SIZE + POINT_GAP)
+  const heightNeeded = max * (DEFAULT_POINT_SIZE + POINT_GAP)
   const matchesHeight = heightNeeded < height - AXIS_LABEL_PADDING
   if (!matchesHeight) {
-    return false
+    return { isSupported: false }
   }
   if (start && end && timeseriesInterval) {
     const startMillis = DateTime.fromISO(start).toMillis()
@@ -99,7 +108,7 @@ export function getIsIndividualTimeseriesSupported({
         timeseriesInterval.toLowerCase() as DurationUnit
       )
     )
-    return intervalDiff * POINT_SIZE <= width - TIMESERIES_PADDING * 2
+    return { isSupported: intervalDiff * DEFAULT_POINT_SIZE <= width - TIMESERIES_PADDING * 2 }
   }
-  return true
+  return { isSupported: true }
 }

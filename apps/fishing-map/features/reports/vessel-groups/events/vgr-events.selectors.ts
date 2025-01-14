@@ -1,7 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import {
   selectReportEventsStatsApiSlice,
   selectReportEventsVessels,
@@ -10,6 +8,8 @@ import type {
   ReportEventsVesselsParams,
   ReportEventsVesselsResponseItem,
 } from 'queries/report-events-stats-api'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -21,9 +21,11 @@ import {
   selectVGREventsVesselsProperty,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
-import { REPORT_FILTER_PROPERTIES } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
-import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
+import {
+  OTHER_CATEGORY_LABEL,
+  REPORT_FILTER_PROPERTIES,
+} from 'features/reports/vessel-groups/vessel-group-report.config'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { t } from 'features/i18n/i18n'

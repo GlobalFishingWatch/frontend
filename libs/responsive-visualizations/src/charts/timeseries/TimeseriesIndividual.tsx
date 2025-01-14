@@ -4,11 +4,11 @@ import type { ReactElement } from 'react'
 import type { TimeseriesByTypeProps } from '../types'
 import type { ResponsiveVisualizationData, ResponsiveVisualizationItem } from '../../types'
 import { IndividualPoint } from '../points/IndividualPoint'
-import { AXIS_LABEL_PADDING, POINT_GAP, POINT_SIZE, TIMESERIES_PADDING } from '../config'
+import { AXIS_LABEL_PADDING, POINT_GAP, DEFAULT_POINT_SIZE, TIMESERIES_PADDING } from '../config'
 import styles from './TimeseriesIndividual.module.css'
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 
-const graphMargin = { top: 0, right: POINT_SIZE, left: POINT_SIZE, bottom: 0 }
+const graphMargin = { top: 0, right: DEFAULT_POINT_SIZE, left: DEFAULT_POINT_SIZE, bottom: 0 }
 
 type IndividualTimeseriesProps = TimeseriesByTypeProps<'individual'> & {
   width: number
@@ -57,7 +57,11 @@ export function IndividualTimeseries({
             {fullTimeseries.map((item, index) => {
               const points = item?.[valueKey] as ResponsiveVisualizationItem[]
               return (
-                <div key={index} className={styles.barContainer} style={{ width: POINT_SIZE }}>
+                <div
+                  key={index}
+                  className={styles.barContainer}
+                  style={{ width: DEFAULT_POINT_SIZE }}
+                >
                   <ul className={styles.bar} style={{ gap: POINT_GAP }}>
                     {points?.map((point, pointIndex) => (
                       <IndividualPoint

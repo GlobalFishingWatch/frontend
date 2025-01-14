@@ -11,6 +11,7 @@ import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
   DEFAULT_LABEL_KEY,
+  DEFAULT_POINT_SIZE,
 } from './config'
 
 type ResponsiveVisualizationContainerRef = React.RefObject<HTMLElement | null>
@@ -65,6 +66,7 @@ export function useResponsiveVisualizationData({
 }: UseResponsiveVisualizationDataProps) {
   const [data, setData] = useState<ResponsiveVisualizationData | null>(null)
   const [isIndividualSupported, setIsIndividualSupported] = useState(false)
+  const [individualItemSize, setIndividualItemSize] = useState(DEFAULT_POINT_SIZE)
 
   const loadData = useCallback(
     async ({ width, height }: { width: number; height: number }) => {
@@ -82,29 +84,32 @@ export function useResponsiveVisualizationData({
         if (!aggregatedData) {
           return
         }
-        if (
-          getIndividualData &&
-          getIsIndividualSupported({
-            data: aggregatedData,
+        const { isSupported } = getIsIndividualSupported({
+          data: aggregatedData,
+          ...isIndividualParams,
+        })
+        if (getIndividualData && isSupported) {
+          const individualData = await getIndividualData()
+          if (!individualData) {
+            setIsIndividualSupported(false)
+            setIndividualItemSize(DEFAULT_POINT_SIZE)
+            setData(aggregatedData)
+            return
+          }
+          const { isSupported, individualItemSize } = getIsIndividualSupported({
+            data: individualData,
             ...isIndividualParams,
           })
-        ) {
-          const individualData = await getIndividualData()
-          if (
-            individualData &&
-            getIsIndividualSupported({
-              data: individualData,
-              ...isIndividualParams,
-            })
-          ) {
+          if (isSupported) {
             setIsIndividualSupported(true)
+            if (individualItemSize) {
+              setIndividualItemSize(individualItemSize)
+            }
             setData(individualData)
-          } else {
-            setIsIndividualSupported(false)
-            setData(aggregatedData)
           }
         } else {
           setIsIndividualSupported(false)
+          setIndividualItemSize(DEFAULT_POINT_SIZE)
           setData(aggregatedData)
         }
       } else if (getIndividualData) {
@@ -112,13 +117,15 @@ export function useResponsiveVisualizationData({
         if (!individualData) {
           return
         }
-        if (
-          getIsIndividualSupported({
-            data: individualData,
-            ...isIndividualParams,
-          })
-        ) {
+        const { isSupported, individualItemSize } = getIsIndividualSupported({
+          data: individualData,
+          ...isIndividualParams,
+        })
+        if (isSupported) {
           setIsIndividualSupported(true)
+          if (individualItemSize) {
+            setIndividualItemSize(individualItemSize)
+          }
           setData(individualData)
         } else {
           const aggregatedData = individualData.map((item) => {
@@ -129,6 +136,7 @@ export function useResponsiveVisualizationData({
             }
           }) as ResponsiveVisualizationData
           setIsIndividualSupported(false)
+          setIndividualItemSize(DEFAULT_POINT_SIZE)
           setData(aggregatedData)
         }
       }
@@ -147,8 +155,8 @@ export function useResponsiveVisualizationData({
   )
 
   return useMemo(
-    () => ({ data, isIndividualSupported, loadData }),
-    [data, isIndividualSupported, loadData]
+    () => ({ data, isIndividualSupported, loadData, individualItemSize }),
+    [data, isIndividualSupported, loadData, individualItemSize]
   )
 }
 
@@ -157,7 +165,8 @@ export function useResponsiveVisualization(
   params: UseResponsiveVisualizationDataProps
 ) {
   const dimensions = useResponsiveDimensions(containerRef)
-  const { data, isIndividualSupported, loadData } = useResponsiveVisualizationData(params)
+  const { data, isIndividualSupported, individualItemSize, loadData } =
+    useResponsiveVisualizationData(params)
 
   useEffect(() => {
     if (dimensions.width && dimensions.height) {
@@ -166,7 +175,7 @@ export function useResponsiveVisualization(
   }, [dimensions, loadData])
 
   return useMemo(
-    () => ({ ...dimensions, data, isIndividualSupported }),
-    [data, isIndividualSupported, dimensions]
+    () => ({ ...dimensions, data, isIndividualSupported, individualItemSize }),
+    [data, isIndividualSupported, dimensions, individualItemSize]
   )
 }

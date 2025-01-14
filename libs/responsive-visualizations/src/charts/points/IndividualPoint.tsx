@@ -10,7 +10,7 @@ import {
 import { cloneElement, useState, type ReactElement } from 'react'
 import cx from 'classnames'
 import type { ResponsiveVisualizationItem } from '../../types'
-import { POINT_SIZE } from '../config'
+import { DEFAULT_POINT_SIZE } from '../config'
 import styles from './IndividualPoint.module.css'
 
 type IndividualPointProps = {
@@ -19,9 +19,17 @@ type IndividualPointProps = {
   tooltip?: ReactElement
   className?: string
   icon?: ReactElement
+  pointSize?: number
 }
 
-export function IndividualPoint({ point, color, tooltip, className, icon }: IndividualPointProps) {
+export function IndividualPoint({
+  point,
+  color,
+  tooltip,
+  className,
+  icon,
+  pointSize = DEFAULT_POINT_SIZE,
+}: IndividualPointProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const { refs, floatingStyles, context } = useFloating({
@@ -40,8 +48,8 @@ export function IndividualPoint({ point, color, tooltip, className, icon }: Indi
       {...getReferenceProps()}
       className={cx(styles.point, { [styles.withIcon]: icon })}
       style={{
-        width: POINT_SIZE,
-        height: POINT_SIZE,
+        width: pointSize,
+        height: pointSize,
         ...(color &&
           !icon && {
             backgroundColor: color,

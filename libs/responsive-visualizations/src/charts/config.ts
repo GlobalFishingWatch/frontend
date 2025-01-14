@@ -5,8 +5,10 @@ export const DEFAULT_INDIVIDUAL_VALUE_KEY = 'values'
 
 export const COLUMN_LABEL_SIZE = 10
 export const COLUMN_PADDING = 10
-// TODO: add support for multiple point sizes
-export const POINT_SIZE = 12
+export const DEFAULT_POINT_SIZE = 12
+// Ensure this is ordered from largest to smallest (24, 18, 12)
+export const POINT_SIZES = [DEFAULT_POINT_SIZE * 2, DEFAULT_POINT_SIZE * 1.5, DEFAULT_POINT_SIZE]
+
 export const POINT_GAP = 3
 export const AXIS_LABEL_PADDING = 34
 export const TIMESERIES_PADDING = 6

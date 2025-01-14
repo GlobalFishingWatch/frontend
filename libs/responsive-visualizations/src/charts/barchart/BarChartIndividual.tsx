@@ -6,7 +6,7 @@ import { IndividualPoint } from '../points/IndividualPoint'
 import { AXIS_LABEL_PADDING, POINT_GAP } from '../config'
 import styles from './BarChartIndividual.module.css'
 
-type IndividualBarChartProps = BarChartByTypeProps<'individual'>
+type IndividualBarChartProps = BarChartByTypeProps<'individual'> & { pointSize?: number }
 
 export function IndividualBarChart({
   data,
@@ -16,6 +16,7 @@ export function IndividualBarChart({
   labelKey,
   barValueFormatter,
   customTooltip,
+  pointSize,
 }: IndividualBarChartProps) {
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -44,6 +45,7 @@ export function IndividualBarChart({
                     {points?.map((point, pointIndex) => (
                       <IndividualPoint
                         key={pointIndex}
+                        pointSize={pointSize}
                         point={point}
                         color={color}
                         tooltip={customTooltip}

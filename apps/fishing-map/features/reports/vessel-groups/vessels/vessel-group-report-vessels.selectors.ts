@@ -1,9 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
-import type { Dataset, IdentityVessel, Vessel } from '@globalfishingwatch/api-types'
+import type { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
-import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
+import {
+  OTHER_CATEGORY_LABEL,
+  REPORT_FILTER_PROPERTIES,
+} from 'features/reports/vessel-groups/vessel-group-report.config'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectVGRVesselsResultsPerPage,
@@ -18,8 +21,7 @@ import {
   getVesselShipTypeLabel,
 } from 'utils/info'
 import { t } from 'features/i18n/i18n'
-import type { FilterProperty } from 'features/reports/areas/area-reports.utils'
-import { FILTER_PROPERTIES, getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
+import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,
@@ -93,12 +95,6 @@ export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (ve
     } as VesselGroupVesselTableParsed
   })
 })
-
-type ReportFilterProperty = FilterProperty | 'source'
-export const REPORT_FILTER_PROPERTIES: Record<ReportFilterProperty, string[]> = {
-  ...FILTER_PROPERTIES,
-  source: ['source'],
-}
 
 export const selectVGRVesselsTimeRange = createSelector([selectVGRVesselsParsed], (vessels) => {
   if (!vessels?.length) return null
