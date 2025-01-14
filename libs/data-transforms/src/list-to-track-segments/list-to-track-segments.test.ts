@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { parse } from 'papaparse'
 import { guessColumn } from '../schema/guess-columns'
-import { getUTCDate } from '../schema'
+import { getUTCDate } from '../dates'
 import { listToTrackSegments } from './list-to-track-segments'
 import { checkRecordValidity } from './check-record-validity'
 

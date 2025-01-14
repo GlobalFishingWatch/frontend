@@ -23,6 +23,7 @@
       "@globalfishingwatch/api-client": ["libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["libs/api-types/src/index.ts"],
       "@globalfishingwatch/data-transforms": ["libs/data-transforms/src/index.ts"],
+      "@globalfishingwatch/data-transforms/*": ["libs/data-transforms/src/*"],
       "@globalfishingwatch/datasets-client": ["libs/datasets-client/src/index.ts"],
       "@globalfishingwatch/dataviews-client": ["libs/dataviews-client/src/index.ts"],
       "@globalfishingwatch/deck-layer-composer": ["libs/deck-layer-composer/src/index.ts"],

@@ -3,16 +3,17 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { groupBy } from 'es-toolkit'
 import { stringify } from 'qs'
-import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
 import { getEventsStatsQuery } from 'queries/report-events-stats-api'
+import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
 import { getFourwingsInterval, type FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { ApiEvent, APIPagination } from '@globalfishingwatch/api-types'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
 import i18n from 'features/i18n/i18n'
-import { formatDateForInterval, getISODateByInterval, getUTCDateTime } from 'utils/dates'
+import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { formatInfoField } from 'utils/info'
@@ -107,9 +108,7 @@ export default function EventsReportGraph({
       offset: 0,
     }
     const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
-    const groupedData = groupBy(data.entries, (item) =>
-      getISODateByInterval(DateTime.fromISO(item.start as string), interval)
-    )
+    const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
