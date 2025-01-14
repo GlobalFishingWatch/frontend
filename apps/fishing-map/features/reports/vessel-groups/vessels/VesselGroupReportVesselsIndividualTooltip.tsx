@@ -1,14 +1,17 @@
+import { useTranslation } from 'react-i18next'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { getVesselShipTypeLabel } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, getVesselShipTypeLabel } from 'utils/info'
 import { formatInfoField } from 'utils/info'
 import type { VesselGroupVesselTableParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import styles from './VesselGroupReportVesselsIndividualTooltip.module.css'
 
 const VesselGroupReportVesselsIndividualTooltip = ({
   data,
 }: {
   data?: VesselGroupVesselTableParsed
 }) => {
+  const { t } = useTranslation()
   if (!data) {
     return null
   }
@@ -24,6 +27,10 @@ const VesselGroupReportVesselsIndividualTooltip = ({
     'shipname'
   )
 
+  const mmsi = data.identity
+    ? getVesselProperty(data.identity, 'ssvid', getVesselPropertyParams)
+    : data.ssvid
+
   const vesselFlag = data.identity
     ? getVesselProperty(data.identity, 'flag', getVesselPropertyParams)
     : data.flag
@@ -32,10 +39,29 @@ const VesselGroupReportVesselsIndividualTooltip = ({
     ? getVesselShipTypeLabel({
         shiptypes: getVesselProperty(data.identity, 'shiptypes', getVesselPropertyParams),
       })
-    : data.vesselType
+    : data.vesselType || data.geartype
 
   return (
-    <span>{`${vesselName} ${vesselFlag ? `(${vesselFlag})` : ''} ${vesselType ? `- ${vesselType}` : ''}`}</span>
+    <div>
+      <span className={styles.name}>{vesselName}</span>
+      <div className={styles.properties}>
+        <div className={styles.property}>
+          <label>{t('vessel.mmsi', 'MMSI')}</label>
+          <span>{mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
+        </div>
+        <div className={styles.property}>
+          <label>{t('vessel.flag', 'Flag')}</label>
+          <span>{formatInfoField(vesselFlag, 'flag') || EMPTY_FIELD_PLACEHOLDER}</span>
+        </div>
+        <div className={styles.property}>
+          <label>{t('vessel.type', 'Ship Type')}</label>
+          <span>{formatInfoField(vesselType, 'shiptypes') || EMPTY_FIELD_PLACEHOLDER}</span>
+        </div>
+      </div>
+      <div className={styles.cta}>
+        {t('vessel.clickToSeeMore', 'Click to see more information')}
+      </div>
+    </div>
   )
 }
 
