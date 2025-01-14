@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { groupBy } from 'es-toolkit'
 import { stringify } from 'qs'
+import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
+import { getEventsStatsQuery } from 'queries/report-events-stats-api'
 import { getFourwingsInterval, type FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
@@ -75,7 +77,7 @@ export default function EventsReportGraph({
   timeseries,
 }: {
   datasetId: string
-  filters?: Record<string, string | string[]>
+  filters?: BaseReportEventsVesselsParamsFilters
   includes?: string[]
   color?: string
   end: string
@@ -93,14 +95,14 @@ export default function EventsReportGraph({
 
   const getAggregatedData = useCallback(async () => timeseries, [timeseries])
   const getIndividualData = useCallback(async () => {
-    // TODO add includes to fetch only the information needed
     const params = {
-      'start-date': start,
-      'end-date': end,
-      'time-filter-mode': 'START-DATE',
-      ...(filtersMemo && { ...filtersMemo }),
+      ...getEventsStatsQuery({
+        start,
+        end,
+        filters: filtersMemo,
+        dataset: datasetId,
+      }),
       ...(includesMemo && { includes: includesMemo }),
-      datasets: [datasetId],
       limit: 1000,
       offset: 0,
     }

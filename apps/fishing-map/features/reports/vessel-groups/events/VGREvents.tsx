@@ -15,6 +15,7 @@ import type {
 } from 'queries/report-events-stats-api'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import VGREventsSubsectionSelector from 'features/reports/vessel-groups/events/VGREventsSubsectionSelector'
 import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import {
@@ -53,6 +54,7 @@ function VGREvents() {
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const filter = useSelector(selectVGREventsVesselFilter)
   const eventsDataview = useSelector(selectVGREventsSubsectionDataview)
+  console.log('🚀 ~ VGREvents ~ eventsDataview:', eventsDataview)
   const vesselsGroupByProperty = useSelector(selectVGREventsVesselsProperty)
   const vesselsWithEvents = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
@@ -168,7 +170,10 @@ function VGREvents() {
             {eventDataset?.id && (
               <EventsReportGraph
                 datasetId={eventDataset?.id}
-                filters={{ 'vessel-groups': [vesselGroupId] }}
+                filters={{
+                  vesselGroupId,
+                  ...(eventsDataview && { ...getDataviewFilters(eventsDataview) }),
+                }}
                 includes={['id', 'start', 'end', 'vessel']}
                 color={color}
                 start={start}
