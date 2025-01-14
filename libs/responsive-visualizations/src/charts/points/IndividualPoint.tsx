@@ -1,4 +1,12 @@
-import { useFloating, offset, flip, shift, useInteractions, useHover, FloatingPortal } from '@floating-ui/react'
+import {
+  useFloating,
+  offset,
+  flip,
+  shift,
+  useInteractions,
+  useHover,
+  FloatingPortal,
+} from '@floating-ui/react'
 import { cloneElement, useState, type ReactElement } from 'react'
 import cx from 'classnames'
 import type { ResponsiveVisualizationItem } from '../../types'
@@ -10,9 +18,10 @@ type IndividualPointProps = {
   point: ResponsiveVisualizationItem
   tooltip?: ReactElement
   className?: string
+  icon?: ReactElement
 }
 
-export function IndividualPoint({ point, color, tooltip, className }: IndividualPointProps) {
+export function IndividualPoint({ point, color, tooltip, className, icon }: IndividualPointProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const { refs, floatingStyles, context } = useFloating({
@@ -29,13 +38,14 @@ export function IndividualPoint({ point, color, tooltip, className }: Individual
     <li
       ref={refs.setReference}
       {...getReferenceProps()}
-      className={styles.point}
+      className={cx(styles.point, { [styles.withIcon]: icon })}
       style={{
         width: POINT_SIZE,
         height: POINT_SIZE,
-        ...color && {
-          backgroundColor: color,
-        }
+        ...(color &&
+          !icon && {
+            backgroundColor: color,
+          }),
       }}
     >
       {isOpen && (
@@ -50,6 +60,7 @@ export function IndividualPoint({ point, color, tooltip, className }: Individual
           </div>
         </FloatingPortal>
       )}
+      {icon && <span className={styles.icon}>{icon}</span>}
     </li>
   )
 }

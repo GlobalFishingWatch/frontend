@@ -37,6 +37,7 @@ export function ResponsiveTimeseries({
   individualTooltip,
   onIndividualItemClick,
   onAggregatedItemClick,
+  individualIcon,
 }: ResponsiveTimeseriesProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { width, data, isIndividualSupported } = useResponsiveVisualization(containerRef, {
@@ -73,6 +74,7 @@ export function ResponsiveTimeseries({
           onClick={onIndividualItemClick}
           tickLabelFormatter={tickLabelFormatter}
           customTooltip={individualTooltip}
+          icon={individualIcon}
         />
       ) : (
         <AggregatedTimeseries

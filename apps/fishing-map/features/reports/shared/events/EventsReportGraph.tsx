@@ -1,10 +1,10 @@
+import type { ReactElement } from 'react'
 import React, { useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { groupBy } from 'es-toolkit'
 import { stringify } from 'qs'
-import { getEventsStatsQuery } from 'queries/report-events-stats-api'
 import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
+import { getEventsStatsQuery } from 'queries/report-events-stats-api'
 import { getFourwingsInterval, type FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
@@ -76,6 +76,7 @@ export default function EventsReportGraph({
   end,
   start,
   timeseries,
+  icon,
 }: {
   datasetId: string
   filters?: BaseReportEventsVesselsParamsFilters
@@ -84,9 +85,9 @@ export default function EventsReportGraph({
   end: string
   start: string
   timeseries: { date: string; value: number }[]
+  icon?: ReactElement
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
-  const { t } = useTranslation()
 
   const startMillis = DateTime.fromISO(start).toMillis()
   const endMillis = DateTime.fromISO(end).toMillis()
@@ -130,6 +131,7 @@ export default function EventsReportGraph({
         aggregatedTooltip={<AggregatedGraphTooltip />}
         individualTooltip={<IndividualGraphTooltip />}
         color={color}
+        individualIcon={icon}
       />
     </div>
   )

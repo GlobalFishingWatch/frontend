@@ -1,5 +1,6 @@
 import { XAxis, ResponsiveContainer, ComposedChart, Tooltip } from 'recharts'
 import cx from 'classnames'
+import type { ReactElement } from 'react'
 import type { TimeseriesByTypeProps } from '../types'
 import type { ResponsiveVisualizationData, ResponsiveVisualizationItem } from '../../types'
 import { IndividualPoint } from '../points/IndividualPoint'
@@ -11,6 +12,7 @@ const graphMargin = { top: 0, right: POINT_SIZE, left: POINT_SIZE, bottom: 0 }
 
 type IndividualTimeseriesProps = TimeseriesByTypeProps<'individual'> & {
   width: number
+  icon?: ReactElement
 }
 
 export function IndividualTimeseries({
@@ -23,6 +25,7 @@ export function IndividualTimeseries({
   timeseriesInterval,
   tickLabelFormatter,
   customTooltip,
+  icon,
 }: IndividualTimeseriesProps) {
   const domain = useTimeseriesDomain({ start, end, timeseriesInterval })
   const fullTimeseries = useFullTimeseries({
@@ -62,6 +65,7 @@ export function IndividualTimeseries({
                         point={point}
                         color={color}
                         tooltip={customTooltip}
+                        icon={icon}
                       />
                     ))}
                   </ul>

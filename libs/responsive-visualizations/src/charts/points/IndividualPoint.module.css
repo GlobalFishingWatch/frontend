@@ -1,13 +1,14 @@
 .point {
-  display: block;
-  background-color: red;
-  border-radius: 50%;
   position: relative;
   border: 2px solid transparent;
   transition: border-color 0.3s linear;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.point:hover {
+.point:not(.withIcon):hover {
   border: var(--border-thick);
 }
 

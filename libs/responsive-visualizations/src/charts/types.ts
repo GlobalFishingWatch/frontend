@@ -22,6 +22,7 @@ export type BaseResponsiveChartProps = {
   onIndividualItemClick?: ResponsiveVisualizationInteractionCallback
   getIndividualData?: () => Promise<ResponsiveVisualizationData<'individual'> | undefined>
   individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0]
+  individualIcon?: ReactElement
 }
 
 export type ResponsiveVisualizationAnyItemKey =
