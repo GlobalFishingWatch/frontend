@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
+import type { RootState } from 'reducers'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
@@ -19,7 +20,6 @@ import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { setResource } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectResources } from 'features/resources/resources.slice'
 import {
