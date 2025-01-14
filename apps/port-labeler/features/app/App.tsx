@@ -29,7 +29,7 @@ const Main = () => {
   )
 }
 
-function App(): React.ReactElement {
+function App(): React.ReactElement<any> {
   useAnalytics()
   useReplaceLoginUrl()
   const dispatch = useAppDispatch()

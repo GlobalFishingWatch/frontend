@@ -1,4 +1,4 @@
-import type { SetStateAction, Dispatch } from 'react';
+import type { SetStateAction, Dispatch } from 'react'
 import { useState, useCallback, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -190,6 +190,7 @@ function NewDataset() {
       }
       isOpen={datasetModalOpen}
       contentId={NEW_DATASET_MODAL_ID}
+      shouldCloseOnEsc={style === 'transparent'}
       contentClassName={cx(styles.modalContainer, {
         [styles.fullheight]: isGuestUser,
       })}

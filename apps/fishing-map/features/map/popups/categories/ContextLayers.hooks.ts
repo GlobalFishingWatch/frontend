@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventLabel } from 'utils/analytics'
-import type { AreaKeyId} from 'features/areas/areas.slice';
+import type { AreaKeyId } from 'features/areas/areas.slice'
 import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'

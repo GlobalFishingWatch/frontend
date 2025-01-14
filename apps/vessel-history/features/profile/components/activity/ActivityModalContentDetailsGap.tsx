@@ -17,7 +17,7 @@ interface ActivityModalContentProps {
 
 const ActivityModalContentDetailsGap: React.FC<ActivityModalContentProps> = (
   props
-): React.ReactElement => {
+): React.ReactElement<any> => {
   const event = props.event
   const { t } = useTranslation()
   const eezs = useSelector(selectEEZs)

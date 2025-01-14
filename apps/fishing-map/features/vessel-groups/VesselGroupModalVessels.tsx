@@ -13,8 +13,7 @@ import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './VesselGroupModal.module.css'
-import type {
-  VesselGroupVesselIdentity} from './vessel-groups-modal.slice';
+import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 import {
   selectVesselGroupModalVessels,
   setVesselGroupModalVessels,

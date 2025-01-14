@@ -21,7 +21,7 @@ interface SettingsProps {
   section: SettingEventSectionName
 }
 
-const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement => {
+const PortVisits: React.FC<SettingsProps> = (props): React.ReactElement<any> => {
   const { settings, section } = props
   const { t } = useTranslation()
   const { setSetting } = useSettingsConnect()

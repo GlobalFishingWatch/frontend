@@ -28,7 +28,7 @@ interface ActivityProps {
   onMoveToMap: () => void
 }
 
-const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
+const Activity: React.FC<ActivityProps> = (props): React.ReactElement<any> => {
   const { eventsLoading, events, toggleVoyage } = useVoyagesConnect()
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()

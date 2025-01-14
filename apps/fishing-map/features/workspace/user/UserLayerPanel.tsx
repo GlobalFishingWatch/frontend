@@ -2,14 +2,9 @@ import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type {
-  DatasetGeometryType,
-  Dataset} from '@globalfishingwatch/api-types';
-import {
-  DatasetStatus,
-  DataviewType,
-} from '@globalfishingwatch/api-types'
-import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import type { DatasetGeometryType, Dataset } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { Tooltip, IconButton } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
@@ -59,7 +54,7 @@ type UserPanelProps = {
   onToggle?: () => void
 }
 
-function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
+function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
@@ -156,17 +151,6 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
     ? getDatasetLabel(dataset)
     : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
 
-  const TitleComponent = (
-    <Title
-      title={title}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onToggle}
-      showIcon
-    />
-  )
-
   const hasLayerProperties = hasSchemaFilterSelection || datasetGeometryType === 'tracks'
 
   return (
@@ -192,11 +176,14 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
         {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
           <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
         )}
-        {title && title.length > 30 ? (
-          <Tooltip content={title}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={title}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onToggle}
+          showIcon
+        />
         <div
           className={cx(
             'print-hidden',

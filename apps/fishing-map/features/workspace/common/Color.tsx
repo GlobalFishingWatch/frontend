@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type {
-  ColorBarOption} from '@globalfishingwatch/ui-components';
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   IconButton,
   ColorBar,

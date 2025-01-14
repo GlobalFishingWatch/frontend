@@ -2,13 +2,10 @@ import { Fragment, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  getDatasetConfigByDatasetType
-} from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDatasetConfigByDatasetType } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
@@ -17,7 +14,7 @@ import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils';
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
@@ -55,7 +52,7 @@ function ActivityLayerPanel({
   showBorder,
   isOpen,
   onToggle,
-}: LayerPanelProps): React.ReactElement {
+}: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
@@ -159,15 +156,6 @@ function ActivityLayerPanel({
     getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
-  const TitleComponent = (
-    <Title
-      title={datasetTitle}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onLayerSwitchToggle}
-    />
-  )
 
   const datasetFields = useMemo(() => {
     const fields: { field: SupportedDatasetSchema; label: string }[] = [
@@ -206,11 +194,13 @@ function ActivityLayerPanel({
               className={styles.switch}
               dataview={dataview}
             />
-            {datasetTitle.length > 20 ? (
-              <Tooltip content={datasetTitle}>{TitleComponent}</Tooltip>
-            ) : (
-              TitleComponent
-            )}
+            <Title
+              title={datasetTitle}
+              className={styles.name}
+              classNameActive={styles.active}
+              dataview={dataview}
+              onToggle={onLayerSwitchToggle}
+            />
             <div
               className={cx(
                 'print-hidden',

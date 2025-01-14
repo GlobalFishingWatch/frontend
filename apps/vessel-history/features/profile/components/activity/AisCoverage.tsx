@@ -7,7 +7,7 @@ interface AisCoverageProps {
   className?: string
   value?: number
 }
-const AisCoverage: React.FC<AisCoverageProps> = ({ className, value }): React.ReactElement => {
+const AisCoverage: React.FC<AisCoverageProps> = ({ className, value }): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   return (

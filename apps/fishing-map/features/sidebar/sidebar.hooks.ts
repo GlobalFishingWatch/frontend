@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import copyToClipboard from 'utils/clipboard'
 
 export function useClipboardNotification(feedbackTime = 10000) {
-  const timeoutRef = useRef<any>()
+  const timeoutRef = useRef<any>(undefined)
   const [showClipboardNotification, setShowClipboardNotification] = useState(false)
 
   useEffect(() => {

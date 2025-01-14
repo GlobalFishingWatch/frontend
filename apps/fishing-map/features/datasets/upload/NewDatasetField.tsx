@@ -1,10 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import type {
-  DatasetConfigurationProperty} from '@globalfishingwatch/datasets-client';
-import {
-  getDatasetConfigurationProperty,
-} from '@globalfishingwatch/datasets-client'
-import type { SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components';
+import type { DatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import type { SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components'
 import { InputText, Select } from '@globalfishingwatch/ui-components'
 import type { DatasetSchemaType } from '@globalfishingwatch/api-types'
 import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'

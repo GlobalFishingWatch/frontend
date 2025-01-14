@@ -1,28 +1,38 @@
-import { useContext, useMemo, useRef } from 'react'
+/* eslint-disable @next/next/no-img-element */
+import { Fragment, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
 import { SolidPolygonLayer } from '@deck.gl/layers'
 import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import { scaleSqrt } from 'd3-scale'
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import { usePrintSize } from '@globalfishingwatch/react-hooks'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import TimelineContext from '../timelineContext'
 import { useUpdateChartsData } from './chartsData.atom'
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
+import styles from './tracks-graph.module.css'
 import type { TimebarChartData } from '.'
 
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const GRAPH_STYLE = { zIndex: '-1' }
 
 type TimebarChartSteps = { value: number; color: string }[]
-const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarChartSteps }) => {
+type TimebarChartProps = { data: TimebarChartData; steps: TimebarChartSteps; printing?: boolean }
+
+const TrackGraph = ({ data, steps, printing = false }: TimebarChartProps) => {
+  const printSize = usePrintSize()
+  const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
+  const deckRef = useRef<DeckGLRef>(null)
   const { outerScale, innerWidth, outerWidth, graphHeight, trackGraphOrientation, start } =
     useContext(TimelineContext)
   const oldOuterScaleRef = useRef(outerScale)
   const offsetHashRef = useRef(Date.now())
 
-  const oldStartX = oldOuterScaleRef.current(new Date(start))
-  const startX = outerScale(new Date(start))
+  const oldStartX = oldOuterScaleRef.current(getUTCDate(start))
+  const startX = outerScale(getUTCDate(start))
   const offsetStartX = startX - oldStartX
   const veilWidth = (outerWidth - innerWidth) / 2
   offsetHashRef.current = Math.abs(offsetStartX) > veilWidth ? Date.now() : offsetHashRef.current
@@ -30,24 +40,37 @@ const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarCha
   const filteredGraphsData = useFilteredChartData(data)
   useUpdateChartsData('tracksGraphs', filteredGraphsData)
 
+  useEffect(() => {
+    if (deckRef.current && printing) {
+      const canvas = deckRef.current?.deck?.getCanvas()
+      if (canvas) {
+        deckRef.current?.deck?.redraw('graph-screenshot')
+        setScreenshotImage(canvas.toDataURL())
+      }
+    }
+    return () => {
+      setScreenshotImage(null)
+    }
+  }, [printing])
+
   const initialViewState = useMemo(
     () =>
       ({
         target: [outerWidth / 2, graphHeight / 2, 0],
         zoom: 0,
-      } as OrthographicViewState),
-    [outerWidth]
+      }) as OrthographicViewState,
+    [graphHeight, outerWidth]
   )
 
   const heightScale = useMemo(() => {
-    if (!steps.length) return undefined
+    if (!steps?.length) return undefined
     const domainEnd =
       trackGraphOrientation === 'down'
         ? Math.min(...steps.map((step) => step.value || 0))
         : Math.max(...steps.map((step) => step.value || 0))
     const { height } = getTrackY(filteredGraphsData.length, 0, graphHeight)
     return scaleSqrt([0, domainEnd], [2, height]).clamp(true)
-  }, [filteredGraphsData])
+  }, [filteredGraphsData.length, graphHeight, steps, trackGraphOrientation])
 
   const layers = useMemo(() => {
     if (!heightScale || !steps.length) return []
@@ -102,19 +125,48 @@ const TrackGraph = ({ data, steps }: { data: TimebarChartData; steps: TimebarCha
         getFillColor: (d) => d.color,
       }),
     ]
-  }, [filteredGraphsData, offsetHashRef.current, trackGraphOrientation, outerWidth])
+  }, [
+    heightScale,
+    steps,
+    outerScale,
+    filteredGraphsData,
+    data.length,
+    graphHeight,
+    trackGraphOrientation,
+  ])
+
+  const leftOffset = offsetStartX - veilWidth
 
   return (
-    <div style={{ transform: `translateX(${offsetStartX - veilWidth}px)`, zIndex: -1 }}>
-      <DeckGL
-        views={VIEW}
-        initialViewState={initialViewState}
-        layers={layers}
-        width={outerWidth + veilWidth * 2}
-        height={graphHeight}
-        style={GRAPH_STYLE}
-      />
-    </div>
+    <Fragment>
+      <div style={{ transform: `translateX(${leftOffset}px)`, zIndex: -1 }}>
+        <DeckGL
+          ref={deckRef}
+          views={VIEW}
+          initialViewState={initialViewState}
+          layers={layers}
+          width={outerWidth + veilWidth * 2}
+          height={graphHeight}
+          style={GRAPH_STYLE}
+        />
+      </div>
+      {screenshotImage && (
+        <Fragment>
+          <img
+            id="graph-screenshot-img"
+            className={styles.screenshot}
+            src={screenshotImage}
+            alt="graph screenshot"
+          />
+          <style>
+            {`@page {
+          size: ${printSize};
+          margin: 0;
+        }`}
+          </style>
+        </Fragment>
+      )}
+    </Fragment>
   )
 }
 

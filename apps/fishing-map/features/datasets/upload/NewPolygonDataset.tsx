@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useState } from 'react'
 import type { FeatureCollection, Polygon } from 'geojson'
-import type {
-  MultiSelectOption} from '@globalfishingwatch/ui-components';
+import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
   Collapsable,
@@ -15,7 +14,7 @@ import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-cl
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
-import type { FileType} from 'utils/files';
+import type { FileType } from 'utils/files'
 import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 import {
   useDatasetMetadata,
@@ -40,7 +39,7 @@ function NewPolygonDataset({
   dataset,
   onFileUpdate,
   onDatasetParseError,
-}: NewDatasetProps): React.ReactElement {
+}: NewDatasetProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
@@ -98,7 +97,6 @@ function NewPolygonDataset({
     } else if (dataset) {
       setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-     
   }, [dataset, file])
 
   useEffect(() => {
@@ -125,7 +123,6 @@ function NewPolygonDataset({
     } else {
       setTimeFilterError('')
     }
-     
   }, [timeFilterType, startTimeProperty, endTimeProperty])
 
   const onConfirmClick = useCallback(async () => {

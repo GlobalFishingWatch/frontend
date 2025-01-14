@@ -10,7 +10,7 @@ interface LoaderProps {
   carrier?: boolean
 }
 
-const Loader: React.FC<LoaderProps> = (): React.ReactElement => {
+const Loader: React.FC<LoaderProps> = (): React.ReactElement<any> => {
   return (
     <div className={styles.loaderContainer}>
       <div>

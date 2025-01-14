@@ -256,13 +256,13 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
     format: DateTime.DATE_MED_WITH_WEEKDAY,
   })
 
-  const durationTypeLabel =
+  const durationTypeLabel: string =
     parseInt(timeComparison.duration as any) === 1
       ? t(`common.${timeComparison.durationType}_one`)
       : t(`common.${timeComparison.durationType}_other`)
   const durationLabel = [timeComparison.duration, durationTypeLabel].join(' ')
 
-  let label =
+  let label: string =
     reportGraph === 'periodComparison'
       ? t('analysis.periodComparisonRange', {
           compareStart: formatI18nDate(timeComparison.compareStart, {

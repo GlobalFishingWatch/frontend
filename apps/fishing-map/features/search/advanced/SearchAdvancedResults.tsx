@@ -1,14 +1,13 @@
 import { useSelector } from 'react-redux'
-import type { MRT_ColumnDef } from 'material-react-table';
+import type { MRT_ColumnDef } from 'material-react-table'
 import { MaterialReactTable } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniq } from 'es-toolkit'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
-import type { Dataset} from '@globalfishingwatch/api-types';
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import type {
-  VesselLastIdentity} from 'features/search/search.slice';
+import type { VesselLastIdentity } from 'features/search/search.slice'
 import {
   cleanVesselSearchResults,
   selectSearchResults,
@@ -31,8 +30,7 @@ import { FIRST_YEAR_OF_DATA } from 'data/config'
 import type { Locale } from 'types'
 import type { VesselSearchState } from 'features/search/search.types'
 import I18nDate from 'features/i18n/i18nDate'
-import type {
-  VesselIdentityProperty} from 'features/vessel/vessel.utils';
+import type { VesselIdentityProperty } from 'features/vessel/vessel.utils'
 import {
   getBestMatchCriteriaIdentity,
   getOtherVesselNames,

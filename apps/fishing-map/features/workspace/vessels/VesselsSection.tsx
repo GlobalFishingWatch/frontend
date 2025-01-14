@@ -51,7 +51,7 @@ const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: st
   ]
 }
 
-function VesselsSection(): React.ReactElement {
+function VesselsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchLocation } = useLocationConnect()
@@ -167,9 +167,10 @@ function VesselsSection(): React.ReactElement {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx('print-hidden', styles.header)}>
+      <div className={cx(styles.header)}>
         {dataviews.length > 1 && (
           <Switch
+            className="print-hidden"
             active={someVesselsVisible}
             onClick={onToggleAllVessels}
             tooltip={t('vessel.toggleAllVessels', 'Toggle all vessels visibility')}
@@ -178,11 +179,15 @@ function VesselsSection(): React.ReactElement {
         )}
         <h2 className={styles.sectionTitle}>
           {t('common.vessel_other', 'Vessels')}
-          {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
+          <span className="print-hidden">
+            {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
+          </span>
         </h2>
 
         {!readOnly && (
-          <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
+          <div
+            className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
+          >
             {activeDataviews.length > 0 && (
               <VesselGroupAddButton
                 vessels={vesselsToVesselGroup}
@@ -231,6 +236,7 @@ function VesselsSection(): React.ReactElement {
           size="medium"
           testId="search-vessels-open"
           disabled={!searchAllowed}
+          className="print-hidden"
           tooltip={
             searchAllowed
               ? t('search.vessels', 'Search vessels')
@@ -260,7 +266,7 @@ function VesselsSection(): React.ReactElement {
         )}
       </SortableContext>
       {activeDataviews.length > 0 && guestUser && (
-        <p className={styles.disclaimer}>
+        <p className={cx(styles.disclaimer, 'print-hidden')}>
           {hasVesselsWithNoTrack ? (
             <Trans i18nKey="vessel.trackLogin">
               One of your selected sources requires you to

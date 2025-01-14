@@ -26,7 +26,6 @@
       "@globalfishingwatch/dataviews-client/*": ["../../libs/dataviews-client/src/*"],
       "@globalfishingwatch/deck-layers": ["../../libs/deck-layers/src/index.ts"],
       "@globalfishingwatch/deck-loaders": ["../../libs/deck-loaders/src/index.ts"],
-      "@globalfishingwatch/features-aggregate": ["../../libs/features-aggregate/src/index.ts"],
       "@globalfishingwatch/fourwings-aggregate": ["../../libs/fourwings-aggregate/src/index.ts"],
       "@globalfishingwatch/i18n-labels": ["../../libs/i18n-labels/index.ts"],
       "@globalfishingwatch/i18n-labels/*": ["../../libs/i18n-labels/*"],

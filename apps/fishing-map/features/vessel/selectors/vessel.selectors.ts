@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { selectVesselId } from 'routes/routes.selectors'
 import type { RootState } from 'store'
-import type { IdentityVesselData} from 'features/vessel/vessel.slice';
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { selectVesselSlice } from 'features/vessel/vessel.slice'
 
 export const selectVessel = createSelector(

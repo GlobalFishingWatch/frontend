@@ -33,16 +33,19 @@ export default function EventsReportVesselsTable({ vessels }: { vessels: EventsS
       <div className={styles.tableContainer} data-test="report-vessels-table">
         <div
           className={styles.vesselsTable}
-          style={{ gridTemplateColumns: 'max-content 1fr 1fr 1fr max-content' }}
+          style={{
+            gridTemplateColumns: 'max-content 1fr max-content 1fr 1fr max-content',
+          }}
         >
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
             {t('common.name', 'Name')}
           </div>
           <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
           <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
-          <div className={styles.header}>{t('common.events', 'events')}</div>
+          <div className={styles.header}>{t('vessel.type', 'Type')}</div>
+          <div className={cx(styles.header, styles.right)}>{t('common.events', 'events')}</div>
           {vessels?.map((vessel, i) => {
-            const { vesselId, numEvents, shipname, flag, ssvid, dataset } = vessel
+            const { vesselId, numEvents, shipname, flag, ssvid, dataset, geartype } = vessel
             const isLastRow = i === vessels.length - 1
             const name = formatInfoField(shipname, 'shipname') as string
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
@@ -79,6 +82,9 @@ export default function EventsReportVesselsTable({ vessels }: { vessels: EventsS
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   <span>{formatInfoField(flag, 'flag') || EMPTY_FIELD_PLACEHOLDER}</span>
+                </div>
+                <div className={cx({ [styles.border]: !isLastRow })}>
+                  <span>{formatInfoField(geartype, 'geartypes') || EMPTY_FIELD_PLACEHOLDER}</span>
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
                   <span>{numEvents}</span>

@@ -8,7 +8,7 @@ interface EventProps {
   type: EventType
 }
 
-const ActivityEvent: React.FC<EventProps> = ({ type }): React.ReactElement => {
+const ActivityEvent: React.FC<EventProps> = ({ type }): React.ReactElement<any> => {
   return (
     <div className={cx(styles.icon, styles[type])}>
       <Icon icon={`event-${type}`} />

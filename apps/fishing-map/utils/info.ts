@@ -5,10 +5,9 @@ import type {
   IdentityVessel,
   RegistryLoginMessage,
   SelfReportedInfo,
-  VesselType} from '@globalfishingwatch/api-types';
-import {
-  API_LOGIN_REQUIRED
+  VesselType,
 } from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'

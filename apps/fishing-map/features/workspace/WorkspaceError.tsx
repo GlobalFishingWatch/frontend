@@ -89,7 +89,7 @@ export function WorkspaceLoginError({
   )
 }
 
-function WorkspaceError(): React.ReactElement {
+function WorkspaceError(): React.ReactElement<any> {
   const error = useSelector(selectWorkspaceError)
   const vesselGroupsError = useSelector(selectWorkspaceVesselGroupsError)
   const { t } = useTranslation()
@@ -137,7 +137,7 @@ function WorkspaceError(): React.ReactElement {
   )
 }
 
-export function WorkspacePassword(): React.ReactElement {
+export function WorkspacePassword(): React.ReactElement<any> {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import get from 'lodash/get'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
-import type { EventType} from '@globalfishingwatch/api-types';
+import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'

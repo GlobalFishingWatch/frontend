@@ -1,8 +1,7 @@
-import type { ReactNode, Ref } from 'react';
-import { forwardRef } from 'react'
+import type { ReactNode } from 'react'
 import cx from 'classnames'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 import { getDatasetTypeIcon } from 'features/datasets/datasets.utils'
 import { CONTEXT_LAYERS_DATAVIEWS } from 'data/workspaces'
 import { useDataviewInstancesConnect } from '../workspace.hook'
@@ -16,9 +15,10 @@ type TitleProps = {
   onToggle?: () => void
   toggleVisibility?: boolean
   showIcon?: boolean
+  showTooltip?: boolean
 }
 
-const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
+const Title = (props: TitleProps) => {
   const {
     dataview,
     className,
@@ -27,6 +27,7 @@ const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
     onToggle,
     toggleVisibility = true,
     showIcon = false,
+    showTooltip = true,
   } = props
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = dataview?.config?.visible ?? true
@@ -45,22 +46,22 @@ const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
       onToggle()
     }
   }
+
   return (
-    <h3
-      ref={ref}
-      className={cx(className, { [classNameActive]: layerActive })}
-      onClick={onToggleLayerActive}
-    >
-      <span className={styles.titleSpan}>
+    <Tooltip content={showTooltip && (title as string).length > 20 ? title : ''}>
+      <h3
+        className={cx(styles.titleSpan, className, { [classNameActive]: layerActive })}
+        onClick={onToggleLayerActive}
+      >
         {showIcon &&
           datasetIcon &&
           !CONTEXT_LAYERS_DATAVIEWS.includes(dataview.dataviewId as string) && (
             <Icon icon={datasetIcon} />
           )}
         {title}
-      </span>
-    </h3>
+      </h3>
+    </Tooltip>
   )
 }
 
-export default forwardRef(Title)
+export default Title

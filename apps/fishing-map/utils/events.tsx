@@ -1,8 +1,8 @@
 import { Fragment } from 'react'
-import type { Duration } from 'luxon';
+import type { Duration } from 'luxon'
 import { DateTime } from 'luxon'
 import { Trans } from 'react-i18next'
-import type { ApiEvent} from '@globalfishingwatch/api-types';
+import type { ApiEvent } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -10,7 +10,7 @@ import { EVENTS_COLORS } from 'data/config'
 import { formatInfoField } from 'utils/info'
 import VesselPin from 'features/vessel/VesselPin'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
-import type { SupportedDateType} from './dates';
+import type { SupportedDateType } from './dates'
 import { getUTCDateTime } from './dates'
 
 const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {

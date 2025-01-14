@@ -13,7 +13,7 @@ import '../../../libs/timebar/src/timebar-settings.css'
 const Main = lazy(() => import(`././features/main/main.container`))
 const Sidebar = lazy(() => import(`././features/sidebar/sidebar.container`))
 
-function App(): React.ReactElement {
+function App(): React.ReactElement<any> {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [animation, setAnimation] = useState(true)
   //const logged = true

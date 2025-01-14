@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import type { Tab} from '@globalfishingwatch/ui-components';
+import type { Tab } from '@globalfishingwatch/ui-components'
 import { Tabs } from '@globalfishingwatch/ui-components'
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { DataviewType } from '@globalfishingwatch/api-types'
@@ -115,7 +115,6 @@ export default function Report() {
       fitAreaInViewport()
     }
     // Reacting only to the area status and fitting bounds after load
-     
   }, [status, reportArea])
 
   useEffect(() => {
@@ -142,7 +141,6 @@ export default function Report() {
 
   useEffect(() => {
     setTimebarVisualizationByCategory(reportCategory)
-     
   }, [reportCategory])
 
   const handleTabClick = (option: Tab<ReportCategory>) => {

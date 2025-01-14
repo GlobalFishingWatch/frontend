@@ -8,14 +8,14 @@ import { useAtom } from 'jotai'
 import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import uniqBy from 'lodash/uniqBy'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { MiniglobeBounds} from '@globalfishingwatch/ui-components';
-import { MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
-import { BasemapType } from '@globalfishingwatch/layer-composer'
 import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import { useLatestPositionsLayer } from 'layers/latest-positions/latest-positions.hooks'
 import { useContextsLayer } from 'layers/context/context.hooks'
 import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { MiniglobeBounds} from '@globalfishingwatch/ui-components';
+import { MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
+import { BasemapType } from '@globalfishingwatch/layer-composer'
 import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
 import { getDateLabel } from 'utils/dates'
@@ -33,7 +33,7 @@ export type GFWLayerProps = {
   showLatestPositions: boolean
 }
 
-const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement => {
+const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any> => {
   useURLViewport()
   const { viewState, onViewportStateChange } = useViewport()
   const deckRef = useRef<DeckGLRef>(null)

@@ -8,11 +8,9 @@ import {
   selectVGRVesselsSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+import type { VGREventsVesselsProperty } from 'features/vessel-groups/vessel-groups.types'
 import { selectVGRDataview } from '../vessel-group-report.selectors'
 import VesselGroupReportVesselsGraphSelector from './VesselGroupReportVesselsGraphSelector'
-import type {
-  VesselGroupReportVesselsGraphProperty,
-} from './VesselGroupReportVesselsGraph';
 import VesselGroupReportVesselsGraph from './VesselGroupReportVesselsGraph'
 import VesselGroupReportVesselsTable from './VesselGroupReportVesselsTable'
 import styles from './VesselGroupReportVessels.module.css'
@@ -32,7 +30,7 @@ function VesselGroupReportVessels({ loading }: { loading: boolean }) {
           <VesselGroupReportVesselsGraph
             data={data}
             color={reportDataview?.config?.color}
-            property={subsection as VesselGroupReportVesselsGraphProperty}
+            property={subsection as VGREventsVesselsProperty}
             filterQueryParam="vGRVesselFilter"
             pageQueryParam="vGRVesselPage"
           />

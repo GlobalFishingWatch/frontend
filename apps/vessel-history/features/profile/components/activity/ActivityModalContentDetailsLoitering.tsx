@@ -12,7 +12,7 @@ interface ActivityModalContentProps {
 
 const ActivityModalContentDetailsLoitering: React.FC<ActivityModalContentProps> = (
   props
-): React.ReactElement => {
+): React.ReactElement<any> => {
   const event = props.event
   const { t } = useTranslation()
 

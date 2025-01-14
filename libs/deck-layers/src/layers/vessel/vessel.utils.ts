@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import memoize from 'lodash/memoize'
 import { scaleLinear } from 'd3-scale'
+import { uniqBy } from 'es-toolkit'
 import type {
   UserTrackBinaryData,
   VesselTrackData,
@@ -128,7 +129,14 @@ export const getSegmentsFromData = memoize(
     return segments
   },
   (data, params) => {
-    return `${data?.startIndices?.join(',')}-${JSON.stringify(params || {})}`
+    const lengths = [
+      data?.attributes?.getPath?.value.length,
+      (data as VesselTrackData)?.attributes?.getSpeed?.value.length,
+      (data as VesselTrackData)?.attributes?.getElevation?.value.length,
+      data?.attributes?.getTimestamp?.value.length,
+    ]
+
+    return `${data?.startIndices?.join(',')}-${lengths.join(',')}-${JSON.stringify(params || {})}`
   }
 )
 
@@ -137,8 +145,8 @@ export const getEvents = memoize(
     layers: VesselEventsLayer[],
     { types } = {} as { types?: EventTypes[]; startTime?: number; endTime?: number }
   ) => {
-    return layers
-      .flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
+    return uniqBy(
+      layers.flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
         const events =
           types && types.length
             ? types.includes(layer.props.type)
@@ -146,8 +154,9 @@ export const getEvents = memoize(
               : []
             : layer.props.data || []
         return events as ApiEvent[]
-      }, [])
-      .sort((a, b) => (a.start as number) - (b.start as number))
+      }, []),
+      (e) => e.id
+    ).sort((a, b) => (a.start as number) - (b.start as number))
   },
   (layers, { types, startTime, endTime }) => {
     const typesHash = types?.join(',')

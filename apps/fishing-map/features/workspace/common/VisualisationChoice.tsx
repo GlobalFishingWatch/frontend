@@ -42,6 +42,7 @@ export function VisualisationChoice({
             <li
               key={option.id}
               className={styles.option}
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
               role="radio"
               aria-checked={optionSelected}
             >

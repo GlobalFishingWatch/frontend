@@ -7,6 +7,7 @@ import type { NumberValue } from 'd3-scale'
 import type { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { getTime } from './utils/internal-utils'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'
@@ -38,20 +39,20 @@ const clampToMinAndMax = (
   maxMs: number,
   clampToEnd: boolean
 ) => {
-  const delta = new Date(end).getTime() - new Date(start).getTime()
+  const delta = getUTCDate(end).getTime() - getUTCDate(start).getTime()
   let clampedEnd = end
   let clampedStart = start
   if (delta > maxMs) {
     if (clampToEnd === true) {
-      clampedEnd = new Date(new Date(start).getTime() + maxMs).toISOString()
+      clampedEnd = getUTCDate(getUTCDate(start).getTime() + maxMs).toISOString()
     } else {
-      clampedStart = new Date(new Date(end).getTime() - maxMs).toISOString()
+      clampedStart = getUTCDate(getUTCDate(end).getTime() - maxMs).toISOString()
     }
   } else if (delta < minMs) {
     if (clampToEnd === true) {
-      clampedEnd = new Date(new Date(start).getTime() + minMs).toISOString()
+      clampedEnd = getUTCDate(getUTCDate(start).getTime() + minMs).toISOString()
     } else {
-      clampedStart = new Date(new Date(end).getTime() - minMs).toISOString()
+      clampedStart = getUTCDate(getUTCDate(end).getTime() - minMs).toISOString()
     }
   }
   return { clampedStart, clampedEnd }
@@ -109,7 +110,9 @@ export type TimebarProps = {
   absoluteStart: string
   absoluteEnd: string
   latestAvailableDataDate?: string
-  enablePlayback?: boolean
+  showPlayback?: boolean
+  disablePlayback?: boolean
+  disabledPlaybackTooltip?: string
   onTogglePlay?: (isPlaying: boolean) => void
   minimumRange?: number
   minimumRangeUnit?: string
@@ -121,7 +124,7 @@ export type TimebarProps = {
   intervals?: FourwingsInterval[]
   getCurrentInterval?: typeof getFourwingsInterval
   displayWarningWhenInFuture?: boolean
-  trackGraphOrientation: TrackGraphOrientation
+  trackGraphOrientation?: TrackGraphOrientation
   isResizable?: boolean
   defaultHeight?: number
 }
@@ -178,7 +181,9 @@ export class Timebar extends Component<TimebarProps> {
     },
     bookmarkStart: null,
     bookmarkEnd: null,
-    enablePlayback: false,
+    disablePlayback: false,
+    disabledPlaybackTooltip: '',
+    showPlayback: false,
     onTogglePlay: () => {
       // do nothing
     },
@@ -381,7 +386,9 @@ export class Timebar extends Component<TimebarProps> {
       bookmarkStart,
       bookmarkEnd,
       bookmarkPlacement,
-      enablePlayback,
+      disablePlayback,
+      disabledPlaybackTooltip,
+      showPlayback,
       locale,
       minimumRange,
       minimumRangeUnit,
@@ -425,7 +432,7 @@ export class Timebar extends Component<TimebarProps> {
             onMouseDown={this.handleMouseDown}
           />
         )}
-        {enablePlayback && (
+        {showPlayback && (
           <Playback
             labels={labels.playback}
             start={start}
@@ -436,6 +443,8 @@ export class Timebar extends Component<TimebarProps> {
             onTogglePlay={this.onTogglePlay}
             intervals={intervals}
             getCurrentInterval={getCurrentInterval}
+            disabled={disablePlayback}
+            disabledPlaybackTooltip={disabledPlaybackTooltip}
           />
         )}
 

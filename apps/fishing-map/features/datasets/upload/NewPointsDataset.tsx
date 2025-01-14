@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import type { FeatureCollection, Point } from 'geojson'
-import type {
-  MultiSelectOption} from '@globalfishingwatch/ui-components';
+import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
   Collapsable,
@@ -18,7 +17,7 @@ import {
 import { POINT_SIZES_DEFAULT_RANGE } from '@globalfishingwatch/deck-layers'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
-import type { FileType} from 'utils/files';
+import type { FileType } from 'utils/files'
 import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 import {
   useDatasetMetadata,
@@ -31,9 +30,7 @@ import {
 } from 'features/datasets/upload/datasets-upload.utils'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import styles from './NewDataset.module.css'
-import type {
-  DataList,
-  DataParsed} from './datasets-parse.utils';
+import type { DataList, DataParsed } from './datasets-parse.utils'
 import {
   getDatasetParsed,
   getGeojsonFromPointsList,
@@ -52,7 +49,7 @@ function NewPointDataset({
   dataset,
   onFileUpdate,
   onDatasetParseError,
-}: NewDatasetProps): React.ReactElement {
+}: NewDatasetProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
@@ -145,7 +142,6 @@ function NewPointDataset({
     } else if (dataset) {
       setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-     
   }, [dataset, file])
 
   useEffect(() => {
@@ -175,7 +171,6 @@ function NewPointDataset({
         setGeojson(geojson)
       }
     }
-     
   }, [
     latitudeProperty,
     longitudeProperty,

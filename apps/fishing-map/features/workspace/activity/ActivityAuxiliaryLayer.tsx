@@ -1,11 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  resolveDataviewDatasetResource
-} from '@globalfishingwatch/dataviews-client'
-import { Spinner, Switch, Tooltip } from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { Spinner, Switch } from '@globalfishingwatch/ui-components'
 import { AUXILIAR_DATAVIEW_SUFIX, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -39,15 +36,6 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
   }
 
   const datasetTitle = getDatasetNameTranslated(dataset)
-  const TitleComponent = (
-    <Title
-      title={datasetTitle}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onAuxiliarLayerSwitchToggle}
-    />
-  )
 
   return (
     <div>
@@ -61,11 +49,13 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
           className={styles.switch}
           color={dataview.config?.color}
         />
-        {datasetTitle.length > 24 ? (
-          <Tooltip content={datasetTitle}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={datasetTitle}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onAuxiliarLayerSwitchToggle}
+        />
         {auxiliarLayerActive && !isLayerLoaded && <Spinner size="tiny" />}
       </div>
     </div>

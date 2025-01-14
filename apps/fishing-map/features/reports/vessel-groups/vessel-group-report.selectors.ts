@@ -1,12 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { InsightType } from '@globalfishingwatch/api-types'
-import type {
-  VesselGroupInsightParams} from 'queries/vessel-insight-api';
+import type { VesselGroupInsightParams } from 'queries/vessel-insight-api'
 import {
   selectVesselGroupInsight,
-  selectVesselGroupInsightApiSlice
+  selectVesselGroupInsightApiSlice,
 } from 'queries/vessel-insight-api'
 import type { RootState } from 'reducers'
+import type { InsightType } from '@globalfishingwatch/api-types'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { dataviewHasVesselGroupId } from 'features/dataviews/dataviews.utils'
@@ -19,11 +18,10 @@ import {
   selectVGREventsSubsection,
   selectVGRSubsection,
 } from './vessel-group.config.selectors'
-import type {
-  VesselGroupEventsDataviewId} from './vessel-group-report.dataviews';
+import type { VesselGroupEventsDataviewId } from './vessel-group-report.dataviews'
 import {
   isVesselGroupActivityDataview,
-  VESSEL_GROUP_EVENTS_DATAVIEW_IDS
+  VESSEL_GROUP_EVENTS_DATAVIEW_IDS,
 } from './vessel-group-report.dataviews'
 
 export const COVERAGE_INSIGHT_ID = 'COVERAGE' as InsightType

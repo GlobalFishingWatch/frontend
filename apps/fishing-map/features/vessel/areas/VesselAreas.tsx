@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import parse from 'html-react-parser'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Bar, BarChart, Tooltip as RechartsTooltip, XAxis, YAxis, LabelList } from 'recharts'
-import type { ChoiceOption} from '@globalfishingwatch/ui-components';
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import type { RegionType } from '@globalfishingwatch/api-types'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'

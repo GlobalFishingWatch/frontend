@@ -15,7 +15,7 @@ interface ModalProps {
   onCloseModal: (close: boolean) => void
 }
 
-const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
+const EventFilters: React.FC<ModalProps> = (props): React.ReactElement<any> => {
   const { t } = useTranslation()
   const tab = props.tab
   const { setFilter, setDate } = useApplyFiltersConnect()

@@ -6,8 +6,8 @@ import type {
   ReportEventsVesselsResponseItem,
 } from 'queries/report-events-stats-api'
 import { EVENTS_TIME_FILTER_MODE } from 'queries/report-events-stats-api'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -29,6 +29,7 @@ export type EventsStatsVessel = ReportEventsVesselsResponseItem &
   VesselLastIdentity & {
     shipName: string
     geartype: string
+    shiptype: string
     flagTranslated: string
   }
 
@@ -136,6 +137,11 @@ export const fetchPortsReportThunk = createAsyncThunk(
             (identity.geartypes || [])
               .sort()
               .map((g) => formatInfoField(g, 'geartypes'))
+              .join(', ') || OTHER_CATEGORY_LABEL,
+          shiptype:
+            (identity.shiptypes || [])
+              .sort()
+              .map((g) => formatInfoField(g, 'shiptypes'))
               .join(', ') || OTHER_CATEGORY_LABEL,
           flagTranslated: t(`flags:${identity.flag as string}` as any),
         } as EventsStatsVessel

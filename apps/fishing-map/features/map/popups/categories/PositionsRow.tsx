@@ -5,8 +5,7 @@ import { DateTime } from 'luxon'
 import { uniq } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import type {
-  FourwingsPositionsPickingObject} from '@globalfishingwatch/deck-layers';
+import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,

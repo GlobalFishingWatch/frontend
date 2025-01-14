@@ -2,8 +2,7 @@ import { useState, useCallback, useEffect, Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
-import type {
-  SelectOption} from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import {
   Modal,
   Button,
@@ -53,7 +52,8 @@ import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import type {
   IdField,
   VesselGroupConfirmationMode,
-  UpdateVesselGroupThunkParams} from './vessel-groups.slice';
+  UpdateVesselGroupThunkParams,
+} from './vessel-groups.slice'
 import {
   createVesselGroupThunk,
   selectVesselGroupById,
@@ -85,7 +85,7 @@ import {
 } from './vessel-groups.utils'
 import { ID_COLUMNS_OPTIONS } from './vessel-groups.config'
 
-function VesselGroupModal(): React.ReactElement {
+function VesselGroupModal(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
@@ -105,7 +105,7 @@ function VesselGroupModal(): React.ReactElement {
     searchVesselStatus === AsyncReducerStatus.Loading ||
     vesselGroupsStatus === AsyncReducerStatus.Loading ||
     vesselGroupsStatus === AsyncReducerStatus.LoadingUpdate
-  const fullModalLoading = editingVesselGroupId && searchVesselStatus === AsyncReducerStatus.Loading
+  const fullModalLoading = searchVesselStatus === AsyncReducerStatus.Loading
   const vesselGroupAPIError =
     vesselGroupsStatus === AsyncReducerStatus.Error ||
     searchVesselStatus === AsyncReducerStatus.Error
@@ -123,7 +123,7 @@ function VesselGroupModal(): React.ReactElement {
     selectVesselGroupModalDatasetsWithoutEventsRelated
   )
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const searchVesselGroupsVesselsRef = useRef<any>()
+  const searchVesselGroupsVesselsRef = useRef<any>(undefined)
   const searchVesselGroupsVesselsAllowed = vesselGroupVesselsToSearch
     ? vesselGroupVesselsToSearch?.length < MAX_VESSEL_GROUP_VESSELS
     : true

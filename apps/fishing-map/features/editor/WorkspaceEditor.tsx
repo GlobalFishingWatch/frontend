@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
-import type { Dataview} from '@globalfishingwatch/api-types';
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
-import type { AsyncError} from 'utils/async-slice';
+import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { addDataviewEntity } from 'features/dataviews/dataviews.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'

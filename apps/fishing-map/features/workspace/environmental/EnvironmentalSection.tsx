@@ -22,7 +22,7 @@ import { VisualisationChoice } from 'features/workspace/common/VisualisationChoi
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 
-function EnvironmentalLayerSection(): React.ReactElement | null {
+function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
@@ -106,7 +106,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
         </LayerPanelContainer>
       )}
       {locationCategory === WorkspaceCategory.MarineManager && (
-        <div className={styles.surveyLink}>
+        <div className={cx(styles.surveyLink, 'print-hidden')}>
           <a
             href={
               t(

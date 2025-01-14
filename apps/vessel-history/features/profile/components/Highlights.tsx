@@ -29,7 +29,7 @@ interface HighlightsProps {
   onMoveToMap: () => void
 }
 
-const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
+const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement<any> => {
   const { t } = useTranslation()
   const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
   const events = useSelector(selectFilteredActivityHighlightEvents)

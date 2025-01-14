@@ -13,7 +13,7 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './EventsLayerPanel'
 
-function EventsLayerSection(): React.ReactElement | null {
+function EventsLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEventsDataviews)

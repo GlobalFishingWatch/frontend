@@ -114,7 +114,7 @@ function Search() {
         filters: searchFilters,
       })
     }
-     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchDatasets])
 
   useEffect(() => {
@@ -122,7 +122,7 @@ function Search() {
       dispatch(cleanVesselSearchResults())
     }
     dispatchQueryParams({ query: debouncedQuery })
-     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
   useEffect(() => {

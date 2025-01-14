@@ -6,7 +6,7 @@ import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { parse } from 'qs'
 import { matchSorter } from 'match-sorter'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { Dataview} from '@globalfishingwatch/api-types';
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { API_VERSION } from '@globalfishingwatch/api-client'
@@ -14,11 +14,10 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
-import type {
-  SupportedDatasetSchema} from 'features/datasets/datasets.utils';
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
   getSchemaFieldsSelectedInDataview,
-  getSchemaFilterOperationInDataview
+  getSchemaFilterOperationInDataview,
 } from 'features/datasets/datasets.utils'
 import type { Bbox, BufferOperation, BufferUnit } from 'types'
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'

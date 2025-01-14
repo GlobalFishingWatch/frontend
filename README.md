@@ -138,8 +138,6 @@ cp apps/vessel-history/.build.env.sample apps/vessel-history/.build.env
 # Edit apps/vessel-history/.build.env and save your changes
 cp apps/api-portal/.build.env.sample apps/api-portal/.build.env
 # Edit apps/api-portal/.build.env and save your changes
-cp apps/fourwings-explorer/.build.env.sample apps/fourwings-explorer/.build.env
-# Edit apps/fourwings-explorer/.build.env and save your changes
 ```
 
 3. Build the apps:

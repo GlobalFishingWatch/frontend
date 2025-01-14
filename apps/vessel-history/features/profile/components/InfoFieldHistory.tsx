@@ -1,4 +1,4 @@
-import type { ReactNode} from 'react';
+import type { ReactNode, JSX } from 'react';
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
@@ -32,7 +32,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
   hideTMTDate,
   vesselName,
   onClose = () => { },
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const defaultTitle = useMemo(() => {

@@ -22,7 +22,7 @@ const ActivityItem: React.FC<EventProps> = ({
   onMapClick = () => {},
   onToggleClick = () => {},
   options = { displayPortVisitsAsOneEvent: false },
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   return (
     <Fragment>
       {event.type === EventTypeVoyage.Voyage && (

@@ -12,7 +12,7 @@ interface SettingsProps {
   settings: SettingsEvents
   section: SettingEventSectionName
 }
-const LoiteringEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
+const LoiteringEvents: React.FC<SettingsProps> = (props): React.ReactElement<any> => {
   const { settings, section } = props
 
   return (

@@ -25,6 +25,8 @@ import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
+export const SCROLL_CONTAINER_DOM_ID = 'scroll-container'
+
 const AreaReport = dynamic(
   () => import(/* webpackChunkName: "Report" */ 'features/reports/areas/AreaReport')
 )
@@ -141,7 +143,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     <div className={styles.container}>
       {!readOnly && !isSmallScreen && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
-      <div className="scrollContainer" data-test="sidebar-container">
+      <div id={SCROLL_CONTAINER_DOM_ID} className="scrollContainer" data-test="sidebar-container">
         <SidebarHeader />
         {sidebarComponent}
       </div>

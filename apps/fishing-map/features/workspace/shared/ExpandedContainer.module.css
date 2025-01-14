@@ -1,46 +1,19 @@
 .expandedContainer {
-  min-width: 33.8rem;
-  transform: translate(0, -5px);
-  transform-origin: top;
-  opacity: 0;
-}
-
-.expandedContainerTop {
-  transform: translate(-5px, 5px);
-}
-
-.expandedContainerOpen {
+  width: 100%;
+  transition: none;
   padding: var(--space-S);
   padding-bottom: var(--space-M);
   background-color: var(--color-off-white);
-  opacity: 1;
   border-top: var(--border);
   border-bottom: var(--border);
   z-index: 1;
 }
 
-.tooltipArrow,
-.tooltipArrow::before {
-  position: absolute;
-  inset: -3px auto auto !important;
-  width: 8px;
-  height: 8px;
-  z-index: 1;
+.tooltipArrow {
+  fill: var(--color-off-white);
 }
 
-.tooltipArrow::before {
-  content: '';
-  transform: rotate(45deg);
-  border-top: var(--border);
-  border-left: var(--border);
-  background-color: var(--color-off-white);
-}
-
-.tooltipArrowTop {
-  top: auto !important;
-  bottom: -7px !important;
-}
-
-.tooltipArrowTop::before {
-  transform: rotate(225deg);
+.trigger {
+  width: 100%;
+  height: 100%;
 }

@@ -1,12 +1,12 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import type { ChangeEvent, FC} from 'react';
+import type { ChangeEvent, FC } from 'react'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { uniq } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import type { LibraryLayer } from 'data/layer-library';
+import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -89,7 +89,6 @@ const LayerLibrary: FC = () => {
       scrollToCategory({ categoryElements, category: currentCategory, smooth: false })
     }
     // Running only when categoryElements changes as listening to currentCategory blocks the scroll
-     
   }, [uniqCategoriesPlusUser])
 
   const filteredLayers = useMemo(

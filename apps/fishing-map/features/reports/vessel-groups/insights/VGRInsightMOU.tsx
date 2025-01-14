@@ -3,10 +3,10 @@ import { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
+import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
@@ -22,10 +22,9 @@ import type {
   MOUInsightCountry,
   MOUInsightList,
   MouVesselByCategoryInsight,
-  MOUVesselByList} from './vessel-group-report-insights.selectors';
-import {
-  selectVGRMOUVesselsGrouped,
+  MOUVesselByList,
 } from './vessel-group-report-insights.selectors'
+import { selectVGRMOUVesselsGrouped } from './vessel-group-report-insights.selectors'
 
 type ExpandedMOUInsights = `${MOUInsightCountry}-${MOUInsightList}`
 

@@ -1,7 +1,7 @@
-import type { MouseEvent } from 'react';
+import type { MouseEvent } from 'react'
 import React from 'react'
 import cx from 'classnames'
-import type { Placement } from 'tippy.js'
+import type { TooltipPlacement } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
 import { Tooltip } from '../tooltip'
 import styles from './Switch.module.css'
@@ -20,7 +20,7 @@ export interface SwitchProps {
   onClick: (event: SwitchEvent) => void
   color?: string
   tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
+  tooltipPlacement?: TooltipPlacement
   className?: string
   size?: SwitchSize
   testId?: string

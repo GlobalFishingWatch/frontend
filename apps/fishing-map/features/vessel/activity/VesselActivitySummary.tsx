@@ -2,9 +2,9 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useCallback, useMemo } from 'react'
-import type { IconType, SwitchEvent} from '@globalfishingwatch/ui-components';
+import type { IconType, SwitchEvent } from '@globalfishingwatch/ui-components'
 import { Icon, Switch, Tooltip } from '@globalfishingwatch/ui-components'
-import type { EventType} from '@globalfishingwatch/api-types';
+import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -123,7 +123,7 @@ export const VesselActivitySummary = () => {
                     <Tooltip key={regionType} content={tooltipContent}>
                       <span className={styles.help}>
                         {activityRegions[regionType].length}{' '}
-                        {t(`layer.areas.${regionType}`, {
+                        {t(`layer.areas.${regionType}` as any, {
                           defaultvalue: regionType,
                           count: activityRegions[regionType].length,
                         })}
@@ -156,8 +156,8 @@ export const VesselActivitySummary = () => {
               visibleEvents === 'all'
                 ? true
                 : visibleEvents === 'none'
-                ? false
-                : visibleEvents.includes(eventType)
+                  ? false
+                  : visibleEvents.includes(eventType)
             return (
               <li key={eventType} className={styles.eventTypeRowContainer}>
                 <Switch

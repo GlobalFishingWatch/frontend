@@ -10,10 +10,10 @@ import {
 } from 'recharts'
 import min from 'lodash/min'
 import max from 'lodash/max'
-import type { DurationUnit } from 'luxon';
+import type { DurationUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import type { FourwingsInterval} from '@globalfishingwatch/deck-loaders';
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'

@@ -75,32 +75,40 @@ export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
 export const useTimebarTracksGraphExtent = () => {
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const vessels = useVesselTracksLayers()
+  const areAllVesselsLoaded = vessels.every((vessel) => vessel.loaded)
+  const vesselsHash = vessels.map((v) => v.id).join()
 
-  if (vesselsTimebarGraph === 'none' || !vessels?.length) {
-    return
-  }
-  const isLoaded = vessels.every((vessel) => vessel.loaded)
-  if (!isLoaded) {
-    return
-  }
-  const extents = getVesselGraphExtentClamped(
-    extent(
-      vessels.flatMap((v) =>
-        (v.instance as VesselLayer).getVesselTrackGraphExtent(vesselsTimebarGraph)
-      )
-    ),
-    vesselsTimebarGraph
-  )
-  return extents as VesselTrackGraphExtent
+  return useMemo(() => {
+    if (vesselsTimebarGraph === 'none' || !vessels?.length || !areAllVesselsLoaded) {
+      return
+    }
+    const vesselExtents = vessels.flatMap((v) =>
+      (v.instance as VesselLayer).getVesselTrackGraphExtent(vesselsTimebarGraph)
+    )
+    if (!vesselExtents.length) {
+      return
+    }
+
+    return getVesselGraphExtentClamped(
+      extent(vesselExtents),
+      vesselsTimebarGraph
+    ) as VesselTrackGraphExtent
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areAllVesselsLoaded, vesselsHash, vesselsTimebarGraph])
 }
 
 export const useTimebarTracksGraphSteps = () => {
   const extent = useTimebarTracksGraphExtent()
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
-  if (!extent?.length || (vesselsTimebarGraph !== 'speed' && vesselsTimebarGraph !== 'elevation')) {
-    return []
-  }
-  return generateVesselGraphSteps(extent, vesselsTimebarGraph)
+  return useMemo(() => {
+    if (
+      !extent?.length ||
+      (vesselsTimebarGraph !== 'speed' && vesselsTimebarGraph !== 'elevation')
+    ) {
+      return []
+    }
+    return generateVesselGraphSteps(extent, vesselsTimebarGraph)
+  }, [extent, vesselsTimebarGraph])
 }
 
 export const useGlobalConfigConnect = () => {
@@ -145,7 +153,7 @@ export const useGlobalConfigConnect = () => {
   }, [clickedFeatures?.features, hoverFeatures])
 
   const onPositionsMaxPointsError = useCallback(
-    (layer: FourwingsLayer, max: number) => {
+    (layer: FourwingsLayer) => {
       if (
         layer.props.category === DataviewCategory.Activity ||
         layer.props.category === DataviewCategory.Detections

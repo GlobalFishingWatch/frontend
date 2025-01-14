@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { atom, useAtom } from 'jotai'
-import type { DrawFeatureType} from '@globalfishingwatch/deck-layers';
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import { DrawLayer } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 

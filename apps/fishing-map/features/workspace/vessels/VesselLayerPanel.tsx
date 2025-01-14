@@ -105,7 +105,10 @@ export const getVesselIdentityTooltipSummary = (
   return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
 }
 
-function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): React.ReactElement {
+function VesselLayerPanel({
+  dataview,
+  showApplyToAll,
+}: VesselLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -216,7 +219,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
           className={styles.link}
           vesselId={vesselId}
           datasetId={dataset?.id}
-          tooltip={identitiesSummary}
+          tooltip={<div>{identitiesSummary}</div>}
           query={{
             vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
             vesselSelfReportedId: vesselId,
@@ -247,6 +250,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         <Title
           title={<TitleComponentContent />}
+          showTooltip={false}
           className={styles.name}
           classNameActive={styles.active}
           dataview={dataview}

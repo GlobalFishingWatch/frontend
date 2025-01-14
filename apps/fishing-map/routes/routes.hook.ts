@@ -5,35 +5,39 @@ import { ACCESS_TOKEN_STRING, removeUrlParameterByName } from '@globalfishingwat
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CALLBACK_URL_PARAM, useLoginRedirect } from '@globalfishingwatch/react-hooks'
 import type { QueryParams } from 'types'
-import { selectLocationPayload, selectLocationType } from 'routes/routes.selectors'
+import {
+  selectIsRouteWithWorkspace,
+  selectLocationPayload,
+  selectLocationType,
+} from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectSuggestWorkspaceSave } from 'features/workspace/workspace.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { SHOW_LEAVE_CONFIRMATION } from 'data/config'
 import type { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 
 export const useBeforeUnload = () => {
   const dispatch = useAppDispatch()
+  const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
   const suggestWorkspaceSave = useSelector(selectSuggestWorkspaceSave)
   const isGuestUser = useSelector(selectIsGuestUser)
+
+  const beforeUnLoad = useCallback((e: BeforeUnloadEvent) => {
+    e.preventDefault()
+    dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => {
-    let fn
-    if (suggestWorkspaceSave && !isGuestUser) {
-      fn = (e: BeforeUnloadEvent) => {
-        e.preventDefault()
-        const confirmationMessage = '\\o/'
-        dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
-        e.returnValue = confirmationMessage // Gecko, Trident, Chrome 34+
-        return confirmationMessage // Gecko, WebKit, Chrome <34
-      }
-      window.addEventListener('beforeunload', fn)
-    } else {
-      if (fn) {
-        window.removeEventListener('beforeunload', fn)
-      }
+    if (isRouteWithWorkspace && suggestWorkspaceSave && !isGuestUser && SHOW_LEAVE_CONFIRMATION) {
+      window.addEventListener('beforeunload', beforeUnLoad)
     }
-  }, [suggestWorkspaceSave])
+    return () => {
+      window.removeEventListener('beforeunload', beforeUnLoad)
+    }
+  }, [beforeUnLoad, dispatch, isGuestUser, isRouteWithWorkspace, suggestWorkspaceSave])
 }
 
 export const useReplaceLoginUrl = () => {

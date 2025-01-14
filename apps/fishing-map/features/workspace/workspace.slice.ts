@@ -1,4 +1,4 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 import type {
@@ -8,21 +8,19 @@ import type {
   DataviewInstance,
   Dataset,
   WorkspaceEditAccessType,
-  WorkspaceViewAccessType} from '@globalfishingwatch/api-types';
+  WorkspaceViewAccessType,
+} from '@globalfishingwatch/api-types'
 import {
   DataviewCategory,
   EndpointId,
   DatasetTypes,
-  DatasetCategory
+  DatasetCategory,
 } from '@globalfishingwatch/api-types'
-import type { FetchOptions} from '@globalfishingwatch/api-client';
+import type { FetchOptions } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  parseLegacyDataviewInstanceConfig
-} from '@globalfishingwatch/dataviews-client'
-import type { VALID_PASSWORD } from 'data/config';
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
+import type { VALID_PASSWORD } from 'data/config'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
 import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -33,7 +31,7 @@ import {
   selectReportId,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
-import type { ROUTE_TYPES} from 'routes/routes';
+import type { ROUTE_TYPES } from 'routes/routes'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import {
@@ -43,7 +41,7 @@ import {
   WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
-import type { AsyncError } from 'utils/async-slice';
+import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   getDatasetsInDataviews,

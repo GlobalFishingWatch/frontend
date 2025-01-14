@@ -1,12 +1,6 @@
 import { uniq, uniqBy } from 'es-toolkit'
-import type {
-  IdentityVessel,
-  VesselGroup,
-  VesselGroupVessel} from '@globalfishingwatch/api-types';
-import {
-  SelfReportedSource,
-  VesselIdentitySourceEnum,
-} from '@globalfishingwatch/api-types'
+import type { IdentityVessel, VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
+import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { PUBLIC_SUFIX } from 'data/config'
 import { getVesselId, getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'

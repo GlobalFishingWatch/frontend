@@ -3,15 +3,10 @@ import cx from 'classnames'
 import type {
   ChoiceOption,
   MultiSelectOption,
-  SliderRangeValues} from '@globalfishingwatch/ui-components';
-import {
-  Choice,
-  MultiSelect,
-  Select,
-  Slider,
-  SliderRange
+  SliderRangeValues,
 } from '@globalfishingwatch/ui-components'
-import type { FilterOperator} from '@globalfishingwatch/api-types';
+import { Choice, MultiSelect, Select, Slider, SliderRange } from '@globalfishingwatch/ui-components'
+import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { EXCLUDE_FILTER_ID, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import type { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
@@ -203,7 +198,7 @@ function LayerSchemaFilter({
     if (UNSORTED_FILTERS.includes(id) || type === 'range') return options
     return options.sort((a, b) => a.label.localeCompare(b.label))
   }, [id, options, type])
-   
+
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues | number) => {
       if (Array.isArray(rangeSelected)) {

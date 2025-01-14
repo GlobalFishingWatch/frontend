@@ -1,4 +1,4 @@
-import type { Ref } from 'react';
+import type { Ref, JSX } from 'react'
 import React, { useRef, forwardRef, useImperativeHandle } from 'react'
 import cx from 'classnames'
 import { IconButton } from '../icon-button'

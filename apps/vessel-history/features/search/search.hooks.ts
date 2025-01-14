@@ -53,7 +53,7 @@ export const useSearchConnect = (params: useSearchConnectParams = defaultParams)
   const query = useSelector(selectUrlQuery)
   const advancedSearch = useSelector(selectAdvancedSearchFields)
 
-  const promiseRef = useRef<any>()
+  const promiseRef = useRef<any>(undefined)
 
   const fetchResults = useCallback(
     (offset = 0) => {

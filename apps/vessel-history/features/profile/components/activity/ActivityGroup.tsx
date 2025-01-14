@@ -36,7 +36,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
   onToggleClick = () => {},
   quantity,
   status,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const label = useMemo(

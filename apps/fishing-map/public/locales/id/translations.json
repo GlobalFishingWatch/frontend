@@ -49,7 +49,7 @@
     "periodComparisonDuration": "durasi",
     "periodComparisonRange": "dalam {{duration}} setelah {{compareStart}} dibandingkan dengan acuan dasar dalam {{duration}} setelah {{start}}",
     "pinVessels": "Add to workspace",
-    "pinVesselsNotAllowed": "You can only add up to {{vessels}} vessels",
+    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "print ": "cetak",
     "removeVessels": "Remove from workspace",
     "resultsPerPage": "Tampilkan {{results}} per halaman",
@@ -713,6 +713,8 @@
       "withTimebar": "With timebar",
       "withTimebarAndLegend": "With timebar and legend"
     },
+    "screenshotDownload": "Download image",
+    "screenshotPreview": "Screenshot preview",
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
@@ -768,6 +770,7 @@
     "selected": "terpilih"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Sesuaikan rentang waktu dengan tanggal ini",
     "focusOnThisDay": "Rentang waktu fokus pada hari ini",
     "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari 10 kapal"
@@ -794,6 +797,25 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
   },
   "user": {
+    "gfwBadges": "GFW Badges",
+    "badges": {
+      "ambassador": {
+        "title": "Ambassador",
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+      },
+      "fixer": {
+        "title": "Fixer",
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+      },
+      "presenter": {
+        "title": "Presenter",
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+      },
+      "teacher": {
+        "title": "Teacher",
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+      }
+    },
     "datasets": "Dataset pengguna",
     "groupMissing": "Apakah Anda termasuk dalam grup pengguna yang tidak muncul di sini? <2>Meminta akses</2>",
     "groups": "Grup Pengguna",

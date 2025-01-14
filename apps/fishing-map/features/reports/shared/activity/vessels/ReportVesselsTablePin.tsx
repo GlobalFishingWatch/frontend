@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
 import { getVesselInWorkspace, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -18,6 +19,7 @@ type ReportVesselTablePinProps = {
 export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVesselTablePinProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const isGFWUser = useSelector(selectIsGFWUser)
   const { pinVessels, unPinVessels } = usePinReportVessels()
   const [loading, setLoading] = useState(false)
   const allVesselsInWorkspace = useSelector(selectVesselsDataviews)
@@ -52,6 +54,11 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
       onClick(action)
     }
   }
+
+  if (!isGFWUser) {
+    return null
+  }
+
   return (
     <Button
       type="secondary"
@@ -61,7 +68,7 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
         hasMoreMaxVesselsAllowed
           ? t('analysis.pinVesselsMaxAllowed', {
               defaultValue:
-                'Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels',
+                'Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.',
               maxVessels: MAX_VESSEL_REPORT_PIN,
             })
           : ''
@@ -77,6 +84,12 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
           }}
         />
       )}
+      {/* TODO remove when GFWOnly is removed */}
+      <Icon
+        icon="gfw-logo"
+        type="original-colors"
+        tooltip={t('common.onlyVisibleForGFW', 'Only visible for GFW users')}
+      />
       {hasAllVesselsInWorkspace
         ? t('analysis.removeVessels', 'Remove from workspace')
         : t('analysis.pinVessels', 'Add to workspace')}

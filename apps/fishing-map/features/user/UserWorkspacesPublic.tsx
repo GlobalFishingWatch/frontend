@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux'
 import { Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
-import type {
-  AppWorkspace} from 'features/workspaces-list/workspaces-list.slice';
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
   deleteWorkspaceThunk,
   selectWorkspaceListStatus,

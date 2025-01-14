@@ -101,7 +101,7 @@ function LayerFilters({
   showApplyToAll,
   dataview: baseDataview,
   onConfirmCallback,
-}: LayerFiltersProps): React.ReactElement {
+}: LayerFiltersProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const isGuestUser = useSelector(selectIsGuestUser)
   const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))

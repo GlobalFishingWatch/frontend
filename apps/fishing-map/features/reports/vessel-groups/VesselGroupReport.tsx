@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
-import type { Tab} from '@globalfishingwatch/ui-components';
+import type { Tab } from '@globalfishingwatch/ui-components'
 import { Button, Tabs } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -74,7 +74,6 @@ function VesselGroupReport() {
     if (reportSection === 'vessels' && coordinates) {
       setMapCoordinates(coordinates)
     }
-     
   }, [bboxHash, setMapCoordinates])
 
   useEffect(() => {

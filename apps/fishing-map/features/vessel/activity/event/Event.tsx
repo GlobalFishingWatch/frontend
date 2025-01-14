@@ -23,7 +23,7 @@ interface EventProps {
 
 export const EVENT_HEIGHT = 56
 
-const VesselEvent: React.FC<EventProps> = (props): React.ReactElement => {
+const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
   const {
     event,
     children,

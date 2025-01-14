@@ -11,11 +11,9 @@ import union from '@turf/union'
 import type {
   Dataset,
   DatasetConfiguration,
-  DatasetGeometryType} from '@globalfishingwatch/api-types';
-import {
-  DatasetCategory,
-  DatasetTypes,
+  DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   cleanProperties,
   getDatasetConfigurationClean,
@@ -25,11 +23,8 @@ import {
   getUTCDate,
   guessColumnsFromSchema,
 } from '@globalfishingwatch/data-transforms'
-import type {
-  DatasetConfigurationProperty} from '@globalfishingwatch/datasets-client';
-import {
-  getDatasetConfigurationProperty,
-} from '@globalfishingwatch/datasets-client'
+import type { DatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getUTCDateTime } from 'utils/dates'

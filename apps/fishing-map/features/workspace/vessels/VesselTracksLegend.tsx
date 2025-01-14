@@ -8,7 +8,7 @@ import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import MapLegendPlaceholder from '../common/MapLegendPlaceholder'
 
-function VesselTracksLegend(): React.ReactElement | null {
+function VesselTracksLegend(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const steps = useTimebarTracksGraphSteps()
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
@@ -30,8 +30,8 @@ function VesselTracksLegend(): React.ReactElement | null {
     type: LegendType.ColorRampDiscrete,
     label:
       vesselsTimebarGraph === 'speed'
-        ? t('timebarSettings.graphSpeed', 'Vessel speed')
-        : t('timebarSettings.graphDepth', 'Vessel depth'),
+        ? t('eventInfo.speed', 'Speed')
+        : t('eventInfo.depth', 'Depth'),
     unit:
       vesselsTimebarGraph === 'speed' ? t('common.knots', 'knots') : t('common.meters', 'meters'),
     values: steps.map((step) => step.value),

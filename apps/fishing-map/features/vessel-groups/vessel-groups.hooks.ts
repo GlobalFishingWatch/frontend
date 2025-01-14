@@ -12,18 +12,13 @@ import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 // import { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { sortByCreationDate } from 'utils/dates'
-import type {
-  UpdateVesselGroupThunkParams} from './vessel-groups.slice';
-import {
-  selectVesselGroupsStatusId,
-  updateVesselGroupVesselsThunk,
-} from './vessel-groups.slice'
-import type {
-  VesselGroupVesselIdentity} from './vessel-groups-modal.slice';
+import type { UpdateVesselGroupThunkParams } from './vessel-groups.slice'
+import { selectVesselGroupsStatusId, updateVesselGroupVesselsThunk } from './vessel-groups.slice'
+import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 import {
   setVesselGroupEditId,
   setVesselGroupModalVessels,
-  setVesselGroupsModalOpen
+  setVesselGroupsModalOpen,
 } from './vessel-groups-modal.slice'
 import { selectAllVisibleVesselGroups } from './vessel-groups.selectors'
 

@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "devDependencies": {
+    "@eslint/compat": "1.x",
     "@next/eslint-plugin-next": "14.x",
     "@nx/eslint-plugin": "20.x",
     "eslint": "9.x",

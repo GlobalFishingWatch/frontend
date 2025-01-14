@@ -39,7 +39,7 @@ const handleError = ({ error }: any) => {
   }
 }
 
-const MapWrapper = (): React.ReactElement => {
+const MapWrapper = (): React.ReactElement<any> => {
   const { viewport, onViewportChange } = useViewport()
   const country = useSelector(selectCountry)
 

@@ -545,7 +545,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     if (tile.signal?.aborted) {
-      return
+      return null
     }
 
     const arrayBuffers = settledPromises.flatMap((d) => {
@@ -615,7 +615,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   _getTileDataCacheKey = (): string => {
-    const dataCache = Object.values(this.state.tilesCache || {}).join(',')
+    // Needs to remove zoom to avoid double loading tiles as deck.gl internally trigger the funcion on zoom changes
+    const { zoom, ...tilesCache } = this.state.tilesCache
+    const dataCache = Object.values(tilesCache || {}).join(',')
     const sublayersIds = this.props.sublayers?.map((s) => s.id).join(',')
     const sublayersDatasets = this.props.sublayers?.flatMap((s) => s.datasets || []).join(',')
     const sublayersFilters = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
@@ -717,7 +719,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         debounceTime: this.props.debounceTime,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey, resolution],
+          getTileData: [cacheKey],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {

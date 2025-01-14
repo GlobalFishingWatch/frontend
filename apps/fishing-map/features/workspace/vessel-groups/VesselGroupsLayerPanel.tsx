@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
@@ -46,7 +46,7 @@ export type VesselGroupLayerPanelProps = {
 function VesselGroupLayerPanel({
   dataview,
   vesselGroupLoading,
-}: VesselGroupLayerPanelProps): React.ReactElement {
+}: VesselGroupLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -142,7 +142,7 @@ function VesselGroupLayerPanel({
                   </span>
                 </Tooltip>
               ) : (
-                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
                   <Tooltip
                     content={t(
                       'vesselGroupReport.clickToSee',
@@ -192,7 +192,7 @@ function VesselGroupLayerPanel({
             {layerActive && (
               <Fragment>
                 {!isOutdated && (
-                  <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                  <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
                     <IconButton
                       tooltip={t(
                         'vesselGroupReport.clickToSee',

@@ -24,7 +24,7 @@ import LayerPanel from './ActivityLayerPanel'
 import activityStyles from './ActivitySection.module.css'
 import { useVisualizationsOptions } from './activity.hooks'
 
-function ActivitySection(): React.ReactElement {
+function ActivitySection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
@@ -103,7 +103,10 @@ function ActivitySection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}>
+    <div
+      data-test="activity-section"
+      className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}
+    >
       <div className={cx(styles.header, 'print-hidden')}>
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
         {!readOnly && (

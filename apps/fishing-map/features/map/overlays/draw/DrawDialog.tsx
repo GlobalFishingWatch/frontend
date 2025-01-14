@@ -15,12 +15,11 @@ import {
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import type {
-  DrawnDatasetGeometry} from 'features/areas/areas.slice';
+import type { DrawnDatasetGeometry } from 'features/areas/areas.slice'
 import {
   resetAreaList,
   fetchDatasetAreasThunk,
-  selectDatasetAreasById
+  selectDatasetAreasById,
 } from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
@@ -198,7 +197,7 @@ function MapDraw() {
     saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
   }
 
-  let placeholderMessage =
+  let placeholderMessage: string =
     mapDrawingMode === 'points'
       ? t('layer.editPointHint', 'Click on the point to adjust their coordinates')
       : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')

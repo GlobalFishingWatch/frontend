@@ -1,23 +1,13 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type {
-  SelectOption} from '@globalfishingwatch/ui-components';
-import {
-  MultiSelect,
-  InputDate,
-  InputText,
-  Select
-} from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { MultiSelect, InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
-import type {
-  SchemaFilter,
-  SupportedDatasetSchema} from 'features/datasets/datasets.utils';
-import {
-  getFiltersBySchema
-} from 'features/datasets/datasets.utils'
+import type { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import { getFiltersBySchema } from 'features/datasets/datasets.utils'
 import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'

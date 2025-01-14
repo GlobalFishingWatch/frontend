@@ -3,8 +3,7 @@ import type { Query } from 'redux-first-router'
 import type { RootState } from 'reducers'
 import type { WorkspaceParam, QueryParams } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
-import type {
-  ROUTE_TYPES} from './routes';
+import type { ROUTE_TYPES } from './routes'
 import {
   REPORT,
   WORKSPACE_REPORT,
@@ -17,6 +16,7 @@ import {
   WORKSPACE_SEARCH,
   VESSEL_GROUP_REPORT,
   PORT_REPORT,
+  ROUTES_WITH_WORKSPACES,
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -28,6 +28,10 @@ export const selectLocationType = createSelector(
 
 export const selectIsWorkspaceLocation = createSelector([selectLocationType], (locationType) =>
   WORKSPACE_ROUTES.includes(locationType)
+)
+
+export const selectIsRouteWithWorkspace = createSelector([selectLocationType], (locationType) =>
+  ROUTES_WITH_WORKSPACES.includes(locationType)
 )
 
 export const selectIsVesselLocation = createSelector(

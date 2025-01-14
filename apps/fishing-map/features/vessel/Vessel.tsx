@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux'
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Tab} from '@globalfishingwatch/ui-components';
+import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
-import type { Dataview} from '@globalfishingwatch/api-types';
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   selectIsWorkspaceVesselLocation,
@@ -154,13 +154,11 @@ const Vessel = () => {
     ) {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId }))
     }
-     
   }, [datasetId, dispatch, vesselId, urlWorkspaceId])
 
   useEffect(() => {
     dispatchClickedEvent(null)
     cancelPendingInteractionRequests()
-     
   }, [])
 
   const changeTab = useCallback(

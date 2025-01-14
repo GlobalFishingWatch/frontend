@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
-import type { ColorBarOption} from '@globalfishingwatch/ui-components';
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { Tooltip, IconButton } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
@@ -16,11 +16,8 @@ import ActivityFilters, {
   isHistogramDataviewSupported,
 } from 'features/workspace/common/LayerFilters'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
-import type {
-  SupportedEnvDatasetSchema} from 'features/datasets/datasets.utils';
-import {
-  getSchemaFiltersInDataview,
-} from 'features/datasets/datasets.utils'
+import type { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
+import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
@@ -42,7 +39,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const [isPending, startTransition] = useTransition()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()
@@ -130,16 +127,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     isHistogramDataviewSupported(dataview) ||
     getSchemaFiltersInDataview(dataview)?.filtersAllowed?.some(showSchemaFilter)
 
-  const TitleComponent = (
-    <Title
-      title={title}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onToggle}
-    />
-  )
-
   const layerRange = getEnvironmentalDatasetRange(dataset)
   const showMinVisibleFilter =
     dataview.config?.minVisibleValue !== undefined
@@ -171,11 +158,13 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           dataview={dataview}
           onToggle={onToggle}
         />
-        {title && title.length > 30 ? (
-          <Tooltip content={title}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={title}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onToggle}
+        />
         <div
           className={cx(
             'print-hidden',

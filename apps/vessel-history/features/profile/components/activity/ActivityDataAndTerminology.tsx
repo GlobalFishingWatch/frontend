@@ -8,7 +8,7 @@ import TerminologyAisDisabling from 'features/terminology/terminology-ais-disabl
 import GuideAndVideo from '../GuideAndVideo'
 import Faq from '../Faq'
 
-const ActivityDataAndTerminology = (): React.ReactElement => {
+const ActivityDataAndTerminology = (): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   return (

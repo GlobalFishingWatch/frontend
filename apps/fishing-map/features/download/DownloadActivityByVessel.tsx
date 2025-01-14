@@ -10,9 +10,7 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import type {
-  DownloadActivityParams,
-  DateRange} from 'features/download/downloadActivity.slice';
+import type { DownloadActivityParams, DateRange } from 'features/download/downloadActivity.slice'
 import {
   downloadActivityThunk,
   selectIsDownloadActivityLoading,
@@ -44,14 +42,8 @@ import type { AreaKeyId } from 'features/areas/areas.slice'
 import { selectIsDownloadActivityAreaLoading } from 'features/download/download.selectors'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './DownloadModal.module.css'
-import type {
-  HeatmapDownloadFormat,
-  GroupBy,
-  TemporalResolution} from './downloadActivity.config';
-import {
-  VESSEL_FORMAT_OPTIONS,
-  getVesselGroupOptions,
-} from './downloadActivity.config'
+import type { HeatmapDownloadFormat, GroupBy, TemporalResolution } from './downloadActivity.config'
+import { VESSEL_FORMAT_OPTIONS, getVesselGroupOptions } from './downloadActivity.config'
 import {
   getDownloadReportSupported,
   getSupportedGroupByOptions,

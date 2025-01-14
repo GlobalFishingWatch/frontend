@@ -1,7 +1,8 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
-import type { ParsedAPIError} from '@globalfishingwatch/api-client';
+import type { RootState } from 'reducers'
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
   ApiEvent,
@@ -13,15 +14,12 @@ import type {
   SelfReportedInfo,
   VesselCombinedSourcesInfo,
   VesselRegistryInfo,
-  VesselType} from '@globalfishingwatch/api-types';
-import {
-  DatasetTypes,
-  ResourceStatus
+  VesselType,
 } from '@globalfishingwatch/api-types'
+import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { setResource } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectResources } from 'features/resources/resources.slice'
 import {
@@ -29,12 +27,8 @@ import {
   fetchDatasetsByIdsThunk,
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
-import type {
-  VesselInstanceDatasets} from 'features/datasets/datasets.utils';
-import {
-  getRelatedDatasetByType,
-  getRelatedDatasetsByType,
-} from 'features/datasets/datasets.utils'
+import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
+import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
   getVesselDataviewInstance,
   getVesselInfoDataviewInstanceDatasetConfig,

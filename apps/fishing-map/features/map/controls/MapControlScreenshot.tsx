@@ -10,7 +10,7 @@ import {
   MAIN_DOM_ID,
   Choice,
 } from '@globalfishingwatch/ui-components'
-import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { isPrintSupported, useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { setInlineStyles, cleantInlineStyles } from 'utils/dom'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
@@ -19,7 +19,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'routes/routes.selectors'
-import MapScreenshot, { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
+import MapScreenshot, { MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 import styles from './MapControls.module.css'
 
@@ -38,11 +38,11 @@ const MapControlScreenshot = ({
 }: {
   mapLoading?: boolean
   onMouseEnter?: () => void
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const modalOpen = useSelector(selectScreenshotModalOpen)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout>(undefined)
   const { dispatchQueryParams } = useLocationConnect()
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -59,7 +59,7 @@ const MapControlScreenshot = ({
         id: value as ScrenshotDOMArea,
         label: t(`map.screenshotArea.${key}`, key),
       })),
-    []
+    [t]
   )
 
   const {
@@ -107,7 +107,7 @@ const MapControlScreenshot = ({
       cleantInlineStyles(rootElement)
     }
     dispatch(setModalOpen({ id: 'screenshot', open: false }))
-  }, [dispatch, rootElement])
+  }, [dispatch, resetPreviewImage, rootElement, setScreenshotAreaId])
 
   const onPDFDownloadClick = useCallback(() => {
     handleModalClose()
@@ -119,14 +119,14 @@ const MapControlScreenshot = ({
       await downloadImage(screenshotAreaId)
     }
     handleModalClose()
-  }, [screenshotAreaId])
+  }, [downloadImage, handleModalClose, screenshotAreaId])
 
   const onSelectScreenshotArea = useCallback(
     (area: ScrenshotDOMArea) => {
       setScreenshotAreaId(area)
       generateImage(area)
     },
-    [downloadImage, handleModalClose]
+    [generateImage, setScreenshotAreaId]
   )
 
   return (
@@ -148,7 +148,7 @@ const MapControlScreenshot = ({
       )}
       <Modal
         appSelector={ROOT_DOM_ELEMENT}
-        title="Screenshot preview"
+        title={t('map.screenshotPreview', 'Screenshot preview')}
         isOpen={modalOpen}
         onClose={handleModalClose}
         contentClassName={styles.previewContainer}
@@ -171,7 +171,7 @@ const MapControlScreenshot = ({
         </div>
         <div className={styles.previewFooter}>
           <Button id="dismiss-preview-download" onClick={handleModalClose} type="secondary">
-            Dismiss
+            {t('common.dismiss', 'Dismiss')}
           </Button>
           <div>
             {isPrintSupported && (
@@ -184,7 +184,7 @@ const MapControlScreenshot = ({
               </Button>
             )}
             <Button id="image-preview-download" loading={loading} onClick={onImageDownloadClick}>
-              Download image
+              {t('map.screenshotDownload', 'Download image')}
             </Button>
           </div>
         </div>

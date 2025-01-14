@@ -2,8 +2,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useCallback, useEffect, useState } from 'react'
 import type { FeatureCollection } from 'geojson'
-import type {
-  MultiSelectOption} from '@globalfishingwatch/ui-components';
+import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
   Collapsable,
@@ -18,16 +17,12 @@ import {
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
-import type { FileType} from 'utils/files';
+import type { FileType } from 'utils/files'
 import { getFileFromGeojson, getFileType, getFileName } from 'utils/files'
 import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
-import type {
-  DataList} from 'features/datasets/upload/datasets-parse.utils';
-import {
-  getDatasetParsed,
-  getTrackFromList,
-} from 'features/datasets/upload/datasets-parse.utils'
+import type { DataList } from 'features/datasets/upload/datasets-parse.utils'
+import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
 import {
   getMetadataFromDataset,
   getTracksDatasetMetadata,
@@ -46,7 +41,7 @@ function NewTrackDataset({
   dataset,
   onFileUpdate,
   onDatasetParseError,
-}: NewDatasetProps): React.ReactElement {
+}: NewDatasetProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
@@ -142,7 +137,6 @@ function NewTrackDataset({
     } else if (dataset) {
       setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-     
   }, [dataset, file])
 
   useEffect(() => {
@@ -177,7 +171,6 @@ function NewTrackDataset({
         setError('')
       }
     }
-     
   }, [
     timeFilterType,
     lineIdProperty,

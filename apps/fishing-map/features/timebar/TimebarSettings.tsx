@@ -149,7 +149,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const getVesselGraphTooltip = (graph: 'speed' | 'depth') => {
     let tooltipLabel =
       graph === 'depth'
-        ? t('timebarSettings.showGraphSpeed', 'Show track speed graph')
+        ? t('timebarSettings.showGraphDepth', 'Show track depth graph')
         : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
     if (!activeTrackDataviews?.length) {
       tooltipLabel = t('timebarSettings.tracksDisabled', 'Select at least one vessel')

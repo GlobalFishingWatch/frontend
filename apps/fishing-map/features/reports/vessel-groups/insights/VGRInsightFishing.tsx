@@ -2,10 +2,10 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 import { RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { formatInfoField } from 'utils/info'
@@ -16,11 +16,10 @@ import { selectFetchVesselGroupReportFishingParams } from '../vessel-group-repor
 import styles from './VGRInsights.module.css'
 import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
 import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
-import type {
-  VesselGroupReportInsightVessel} from './vessel-group-report-insights.selectors';
+import type { VesselGroupReportInsightVessel } from './vessel-group-report-insights.selectors'
 import {
   selectVGRVesselsWithNoTakeMpas,
-  selectVGRVesselsInRfmoWithoutKnownAuthorization
+  selectVGRVesselsInRfmoWithoutKnownAuthorization,
 } from './vessel-group-report-insights.selectors'
 
 export const RFMO_REGIONS_PRIORITY: RegionType[] = [

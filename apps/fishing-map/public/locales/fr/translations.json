@@ -49,7 +49,7 @@
     "periodComparisonDuration": "durée",
     "periodComparisonRange": "durant {{duration}} suivant {{compareStart}} comparé à la référence durant {{duration}} suivant {{start}}",
     "pinVessels": "Add to workspace",
-    "pinVesselsNotAllowed": "You can only add up to {{vessels}} vessels",
+    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "print ": "imprimer",
     "removeVessels": "Remove from workspace",
     "resultsPerPage": "Afficher {{results}} par page",
@@ -167,7 +167,7 @@
     "in": "dans",
     "include": "Inclure",
     "insights": "Indicateurs",
-    "knots": "knots",
+    "knots": "nœuds",
     "latestDays_one": "Dernier {{count}} jour",
     "latestDays_other": "Derniers {{count}} jours",
     "latitude": "Latitude",
@@ -182,7 +182,7 @@
     "map": "Carte",
     "matchedVessels": "Navires correspondants",
     "max": "Max.",
-    "meters": "meters",
+    "meters": "mètres",
     "min": "Min.",
     "minus": "moins",
     "minute": "minute",
@@ -709,10 +709,12 @@
     "rulersStop": "Arrêter les mesures",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
     "screenshotArea": {
-      "map": "Only map",
-      "withTimebar": "With timebar",
-      "withTimebarAndLegend": "With timebar and legend"
+      "map": "Carte uniquement",
+      "withTimebar": "Avec barre de temps",
+      "withTimebarAndLegend": "Avec barre de temps et légende"
     },
+    "screenshotDownload": "Télécharger l'image",
+    "screenshotPreview": "Aperçu de la capture d'écran",
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
@@ -768,6 +770,7 @@
     "selected": "sélectionné"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajuster la plage de temps à ces dates",
     "focusOnThisDay": "Focus sur la plage de ce jour",
     "maxTracksNumber": "Détail des trajectoires non disponible pour plus de 10 navires"
@@ -794,6 +797,25 @@
     "maxPointsVisualizationExceeded": "Le nombre maximal de points pouvant être visualisés est dépassé, passage en mode « carte thermique »."
   },
   "user": {
+    "gfwBadges": "GFW Badges",
+    "badges": {
+      "ambassador": {
+        "title": "Ambassador",
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+      },
+      "fixer": {
+        "title": "Fixer",
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+      },
+      "presenter": {
+        "title": "Presenter",
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+      },
+      "teacher": {
+        "title": "Teacher",
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+      }
+    },
     "datasets": "Jeux de données utilisateur",
     "groupMissing": "Appartenez-vous à un groupe d’utilisateurs qui n’apparaît pas ici ? <2>Demander l'accès</2>",
     "groups": "Groupes",

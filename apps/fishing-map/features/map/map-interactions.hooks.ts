@@ -8,7 +8,8 @@ import { debounce, throttle } from 'es-toolkit'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type {
   InteractionEvent,
-  InteractionEventType} from '@globalfishingwatch/deck-layer-composer';
+  InteractionEventType,
+} from '@globalfishingwatch/deck-layer-composer'
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
@@ -18,10 +19,9 @@ import type {
   FourwingsClusterPickingObject,
   DeckLayerInteractionPickingInfo,
   DeckLayerPickingObject,
-  FourwingsHeatmapPickingObject} from '@globalfishingwatch/deck-layers';
-import {
-  FOURWINGS_MAX_ZOOM,
+  FourwingsHeatmapPickingObject,
 } from '@globalfishingwatch/deck-layers'
+import { FOURWINGS_MAX_ZOOM } from '@globalfishingwatch/deck-layers'
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
@@ -40,9 +40,7 @@ import {
   isTilesClusterLayer,
   isTilesClusterLayerCluster,
 } from './map-interaction.utils'
-import type {
-  SliceExtendedClusterPickingObject,
-  SliceInteractionEvent} from './map.slice';
+import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from './map.slice'
 import {
   fetchBQEventThunk,
   fetchClusterEventThunk,
@@ -291,7 +289,6 @@ export const useMapMouseHover = () => {
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
 
-   
   const onMouseMove: DeckProps['onHover'] = useCallback(
     throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
       setHoveredCoordinates(info.coordinate)
@@ -459,7 +456,7 @@ export const useMapDrag = () => {
 
 export const useDebouncedDispatchHighlightedEvent = () => {
   const dispatch = useAppDispatch()
-   
+
   return useCallback(
     debounce((eventIds?: string | string[]) => {
       let ids: string[] | undefined

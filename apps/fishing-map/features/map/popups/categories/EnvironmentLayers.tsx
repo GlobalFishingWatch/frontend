@@ -5,10 +5,9 @@ import { Icon } from '@globalfishingwatch/ui-components'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type {
   FourwingsHeatmapPickingObject,
-  FourwingsHeatmapStaticPickingObject} from '@globalfishingwatch/deck-layers';
-import {
-  HEATMAP_STATIC_PROPERTY_ID,
+  FourwingsHeatmapStaticPickingObject,
 } from '@globalfishingwatch/deck-layers'
+import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/deck-layers'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'

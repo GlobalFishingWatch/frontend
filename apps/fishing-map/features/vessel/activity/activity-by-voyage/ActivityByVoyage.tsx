@@ -10,11 +10,8 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
 import Event, { EVENT_HEIGHT } from 'features/vessel/activity/event/Event'
 import { getVoyageTimeRange } from 'features/vessel/vessel.utils'
-import type {
-  ActivityEvent} from 'features/vessel/activity/vessels-activity.selectors';
-import {
-  selectEventsGroupedByVoyages,
-} from 'features/vessel/activity/vessels-activity.selectors'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { selectEventsGroupedByVoyages } from 'features/vessel/activity/vessels-activity.selectors'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
 import {
   disableHighlightedTime,

@@ -39,7 +39,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   useTimebarVesselEvents,
@@ -52,6 +52,7 @@ import {
 } from 'features/app/selectors/app.timebar.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { setHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -167,8 +168,9 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
-  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
+  const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
@@ -364,7 +366,12 @@ const TimebarWrapper = () => {
       <Fragment>
         <TimebarTracks key="tracks" data={tracks} />
         {showGraph && tracksGraphsData && (
-          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} steps={trackGraphSteps} />
+          <TimebarTracksGraph
+            key="trackGraph"
+            data={tracksGraphsData}
+            steps={trackGraphSteps}
+            printing={screenshotModalOpen}
+          />
         )}
         {events && (
           <Fragment>
@@ -388,7 +395,12 @@ const TimebarWrapper = () => {
       onMouseLeave={onMouseLeave}
     >
       <Timebar
-        enablePlayback={!vesselGroupsFiltering && !isAreaReportLocation}
+        disablePlayback={vesselGroupsFiltering}
+        disabledPlaybackTooltip={t(
+          'timebar.disablePlaybackVesselGroups',
+          'Playback of vessel group layers is not supported'
+        )}
+        showPlayback={!isReportLocation}
         labels={labels}
         start={start}
         end={end}

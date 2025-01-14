@@ -2,19 +2,15 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
-import type { DataviewInstance} from '@globalfishingwatch/api-types';
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
-import type {
-  VesselDataIdentity} from 'features/vessel/vessel.slice';
-import {
-  resetVesselState,
-  setVesselFitBoundsOnLoad,
-} from 'features/vessel/vessel.slice'
+import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
+import { resetVesselState, setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import {
   selectIsStandaloneSearchLocation,
@@ -26,6 +22,7 @@ import type { QueryParams } from 'types'
 import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import styles from './Vessel.module.css'
 
 type VesselLinkProps = {
   datasetId?: string
@@ -134,7 +131,7 @@ const VesselLink = ({
       onClick={onLinkClick}
     >
       <Tooltip
-        maxWidth="none"
+        className={styles.linkTooltip}
         content={tooltip || t('vessel.clickToSeeMore', 'Click to see more information')}
       >
         <span>{children}</span>

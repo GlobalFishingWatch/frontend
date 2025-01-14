@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import ReportActivityGraphSelector from 'features/reports/shared/activity/ReportActivityGraphSelector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import type {
-  ReportGraphProps} from 'features/reports/shared/activity/reports-activity-timeseries.hooks';
+import type { ReportGraphProps } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import {
   getReportGraphMode,
   useComputeReportTimeSeries,
@@ -58,7 +57,6 @@ export default function ReportActivity() {
     if (loaded && bbox?.length) {
       fitAreaInViewport()
     }
-     
   }, [loaded, bboxHash])
 
   const { t } = useTranslation()

@@ -1,7 +1,7 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type { Tab} from '@globalfishingwatch/ui-components';
+import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'

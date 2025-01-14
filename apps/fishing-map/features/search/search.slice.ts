@@ -1,26 +1,22 @@
-import type { PayloadAction} from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
-import type {
-  AdvancedSearchQueryFieldKey} from '@globalfishingwatch/api-client';
+import type { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client'
 import {
   GFWAPI,
   getAdvancedSearchQuery,
   ADVANCED_SEARCH_QUERY_FIELDS,
-  parseAPIError
+  parseAPIError,
 } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
   Dataset,
   APIVesselSearchPagination,
   IdentityVessel,
-  RegistryExtraFields} from '@globalfishingwatch/api-types';
-import {
-  DatasetTypes,
-  EndpointId,
-  VesselIdentitySourceEnum
+  RegistryExtraFields,
 } from '@globalfishingwatch/api-types'
-import type { AsyncError} from 'utils/async-slice';
+import { DatasetTypes, EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
