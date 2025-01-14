@@ -2,7 +2,7 @@ import { Fragment, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import { useSelector } from 'react-redux'
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
@@ -22,6 +22,7 @@ import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/vessel-groups
 import { getEventDescriptionComponent } from 'utils/events'
 import PortsReportLink from 'features/reports/ports/PortsReportLink'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectIsPortReportLocation } from 'routes/routes.selectors'
 import { useMapViewState } from '../../map-viewport.hooks'
 import type {
   ExtendedEventVessel,
@@ -193,6 +194,8 @@ type PortVisitLayerProps = {
   error?: string
 }
 function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortVisitLayerProps) {
+  const { t } = useTranslation()
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const { datasetId, event, color } = feature
   const title = getDatasetLabel({ id: datasetId! })
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -201,15 +204,6 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
       <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
       <div className={styles.popupSectionContent}>
         {<h3 className={styles.popupSectionTitle}>{title}</h3>}
-        {isGFWUser && event?.port && (
-          <PortsReportLink port={event.port}>
-            <div className={styles.textContainer}>
-              {event?.port?.name || event?.port?.id}
-              {event?.port?.country && ` (${formatInfoField(event.port.country, 'flag')})`}
-              <IconButton size="small" icon="analysis" />
-            </div>
-          </PortsReportLink>
-        )}
         {error && <p className={styles.error}>{error}</p>}
         {showFeaturesDetails && (
           <VesselsTable
@@ -221,6 +215,13 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
             }
             vesselProperty="events"
           />
+        )}
+        {isGFWUser && event?.port && !isPortReportLocation && (
+          <PortsReportLink port={event.port}>
+            <Button className={styles.portCTA}>
+              {t('portsReport.seePortReport', 'See all entry events to this port')}
+            </Button>
+          </PortsReportLink>
         )}
       </div>
     </div>
