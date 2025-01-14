@@ -31,6 +31,7 @@ import { useFetchPortsReport } from './ports-report.hooks'
 import {
   selectPortReportsDataview,
   selectPortReportVesselsGrouped,
+  selectPortReportVesselsIndividualData,
   selectPortReportVesselsPaginated,
   selectPortReportVesselsPagination,
 } from './ports-report.selectors'
@@ -66,6 +67,7 @@ function PortsReport() {
   const portsReportData = useSelector(selectPortsReportData)
   const portsReportDataStatus = useSelector(selectPortsReportStatus)
   const portsReportVesselsGrouped = useSelector(selectPortReportVesselsGrouped)
+  const portReportIndividualData = useSelector(selectPortReportVesselsIndividualData)
   const portsReportVesselsPaginated = useSelector(selectPortReportVesselsPaginated)
   const {
     data,
@@ -222,6 +224,7 @@ function PortsReport() {
           </div>
           <EventsReportVesselsGraph
             data={portsReportVesselsGrouped}
+            individualData={portReportIndividualData}
             color={color}
             property={portReportVesselsProperty}
             filterQueryParam="portsReportVesselsFilter"

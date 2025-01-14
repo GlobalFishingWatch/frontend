@@ -266,7 +266,7 @@ export const selectVGRVesselsGraphAggregatedData = createSelector(
   }
 )
 
-function getVesselIndividualGroupedData(
+export function getVesselIndividualGroupedData(
   vessels: (EventsStatsVessel | VesselGroupVesselTableParsed)[],
   groupByProperty: VGRSubsection | VGREventsVesselsProperty
 ) {

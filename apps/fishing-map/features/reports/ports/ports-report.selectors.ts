@@ -10,7 +10,10 @@ import {
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
-import { REPORT_FILTER_PROPERTIES } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import {
+  getVesselIndividualGroupedData,
+  REPORT_FILTER_PROPERTIES,
+} from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
 import { selectPortsReportVessels } from './ports-report.slice'
 import {
@@ -112,6 +115,14 @@ export const selectPortReportVesselsGrouped = createSelector(
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
     ] as GraphDataGroup[]
+  }
+)
+
+export const selectPortReportVesselsIndividualData = createSelector(
+  [selectPortReportVesselsFiltered, selectPortReportVesselsProperty],
+  (vessels, groupBy) => {
+    if (!vessels || !groupBy) return []
+    return getVesselIndividualGroupedData(vessels, groupBy)
   }
 )
 
