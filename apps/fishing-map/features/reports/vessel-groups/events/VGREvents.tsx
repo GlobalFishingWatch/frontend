@@ -39,7 +39,10 @@ import {
   selectVGREventsVesselsPagination,
 } from 'features/reports/vessel-groups/events/vgr-events.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import {
+  selectVGRVesselDatasetsWithoutEventsRelated,
+  selectVGREventsVesselsIndividualData,
+} from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
@@ -54,11 +57,11 @@ function VGREvents() {
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const filter = useSelector(selectVGREventsVesselFilter)
   const eventsDataview = useSelector(selectVGREventsSubsectionDataview)
-  console.log('🚀 ~ VGREvents ~ eventsDataview:', eventsDataview)
   const vesselsGroupByProperty = useSelector(selectVGREventsVesselsProperty)
   const vesselsWithEvents = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
   const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
+  const individualData = useSelector(selectVGREventsVesselsIndividualData)
   const vesselsPaginated = useSelector(selectVGREventsVesselsPaginated)
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
@@ -192,6 +195,7 @@ function VGREvents() {
             </div>
             <VesselGroupReportVesselsGraph
               data={vesselGroups as ReportEventsStatsResponseGroups}
+              individualData={individualData}
               color={eventsDataview?.config?.color}
               property={vesselsGroupByProperty}
               filterQueryParam="vGREventsVesselFilter"

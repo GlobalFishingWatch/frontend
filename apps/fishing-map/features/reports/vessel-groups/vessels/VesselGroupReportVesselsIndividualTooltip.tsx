@@ -9,22 +9,30 @@ const VesselGroupReportVesselsIndividualTooltip = ({
 }: {
   data?: VesselGroupVesselTableParsed
 }) => {
-  if (!data?.identity) {
+  if (!data) {
     return null
   }
+
   const getVesselPropertyParams = {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   }
+
   const vesselName = formatInfoField(
-    getVesselProperty(data.identity, 'shipname', getVesselPropertyParams),
+    data.identity
+      ? getVesselProperty(data.identity, 'shipname', getVesselPropertyParams)
+      : data.shipName,
     'shipname'
   )
 
-  const vesselFlag = getVesselProperty(data.identity, 'flag', getVesselPropertyParams)
+  const vesselFlag = data.identity
+    ? getVesselProperty(data.identity, 'flag', getVesselPropertyParams)
+    : data.flag
 
-  const vesselType = getVesselShipTypeLabel({
-    shiptypes: getVesselProperty(data.identity, 'shiptypes', getVesselPropertyParams),
-  })
+  const vesselType = data.identity
+    ? getVesselShipTypeLabel({
+        shiptypes: getVesselProperty(data.identity, 'shiptypes', getVesselPropertyParams),
+      })
+    : data.vesselType
 
   return (
     <span>{`${vesselName} ${vesselFlag ? `(${vesselFlag})` : ''} ${vesselType ? `- ${vesselType}` : ''}`}</span>
