@@ -44,8 +44,11 @@ export const getColumnsStats = (
   )
 }
 
-type IsIndividualSupportedParams = {
+export type IsIndividualSupportedParams = {
   data: ResponsiveVisualizationData
+  start?: string
+  end?: string
+  timeseriesInterval?: FourwingsInterval
   width: number
   height: number
   aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0]
@@ -68,17 +71,6 @@ export function getIsIndividualBarChartSupported({
   return heightNeeded < height - AXIS_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
 }
 
-type getIsIndividualTimeseriesSupportedParams = {
-  data: ResponsiveVisualizationData
-  start?: string
-  end?: string
-  timeseriesInterval?: FourwingsInterval
-  width: number
-  height: number
-  aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0]
-  individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
-}
-
 export function getIsIndividualTimeseriesSupported({
   data,
   width,
@@ -88,7 +80,7 @@ export function getIsIndividualTimeseriesSupported({
   timeseriesInterval,
   aggregatedValueKey,
   individualValueKey,
-}: getIsIndividualTimeseriesSupportedParams): boolean {
+}: IsIndividualSupportedParams): boolean {
   const { total, max } = getColumnsStats(data, aggregatedValueKey, individualValueKey)
   if (total > MAX_INDIVIDUAL_ITEMS) {
     return false

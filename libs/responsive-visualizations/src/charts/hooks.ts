@@ -4,6 +4,7 @@ import type { ResponsiveVisualizationData, ResponsiveVisualizationItem } from '.
 import type {
   getIsIndividualBarChartSupported,
   getIsIndividualTimeseriesSupported,
+  IsIndividualSupportedParams,
 } from '../lib/density'
 import type { BaseResponsiveChartProps, ResponsiveVisualizationAnyItemKey } from './types'
 import {
@@ -67,6 +68,15 @@ export function useResponsiveVisualizationData({
 
   const loadData = useCallback(
     async ({ width, height }: { width: number; height: number }) => {
+      const isIndividualParams: Omit<IsIndividualSupportedParams, 'data'> = {
+        width,
+        height,
+        start,
+        end,
+        timeseriesInterval,
+        individualValueKey,
+        aggregatedValueKey,
+      }
       if (getAggregatedData) {
         const aggregatedData = await getAggregatedData()
         if (!aggregatedData) {
@@ -76,17 +86,17 @@ export function useResponsiveVisualizationData({
           getIndividualData &&
           getIsIndividualSupported({
             data: aggregatedData,
-            width,
-            height,
-            start,
-            end,
-            timeseriesInterval,
-            individualValueKey,
-            aggregatedValueKey,
+            ...isIndividualParams,
           })
         ) {
           const individualData = await getIndividualData()
-          if (individualData) {
+          if (
+            individualData &&
+            getIsIndividualSupported({
+              data: individualData,
+              ...isIndividualParams,
+            })
+          ) {
             setIsIndividualSupported(true)
             setData(individualData)
           } else {
@@ -105,13 +115,7 @@ export function useResponsiveVisualizationData({
         if (
           getIsIndividualSupported({
             data: individualData,
-            width,
-            height,
-            start,
-            end,
-            timeseriesInterval,
-            individualValueKey,
-            aggregatedValueKey,
+            ...isIndividualParams,
           })
         ) {
           setIsIndividualSupported(true)
