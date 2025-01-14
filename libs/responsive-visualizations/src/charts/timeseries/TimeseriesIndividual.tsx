@@ -38,7 +38,6 @@ export function IndividualTimeseries({
   return (
     <ResponsiveContainer width="100%" height="100%">
       <ComposedChart data={fullTimeseries} margin={graphMargin}>
-        {/* <CartesianGrid vertical={false} /> */}
         <XAxis
           domain={domain}
           dataKey={dateKey}
@@ -46,17 +45,6 @@ export function IndividualTimeseries({
           tickFormatter={(tick: string) => tickLabelFormatter?.(tick, timeseriesInterval) || tick}
           axisLine={true}
         />
-        {/* TODO: restore this and align with the points */}
-        {/* <YAxis
-          scale="linear"
-          // Height minus the padding from the bottom and top
-          domain={[0, 19]}
-          interval="preserveEnd"
-          // tickFormatter={tickFormatter}
-          axisLine={false}
-          tickLine={false}
-          tickCount={4}
-        /> */}
         {fullTimeseries?.length && <Tooltip content={customTooltip} />}
         <foreignObject width="100%" height="100%">
           <div

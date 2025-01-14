@@ -2,6 +2,7 @@ import type { DurationUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
 import { useMemo } from 'react'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import type { ResponsiveVisualizationData } from '../../types'
 import type { ResponsiveVisualizationAnyItemKey } from '../types'
 
@@ -16,10 +17,10 @@ export function useTimeseriesDomain({
 }) {
   return useMemo(() => {
     if (start && end && timeseriesInterval) {
-      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
+      const cleanEnd = getUTCDateTime(end)
         .minus({ [timeseriesInterval]: 1 })
-        .toISO() as string
-      return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
+        .toMillis() as number
+      return [getUTCDateTime(end).toMillis(), cleanEnd]
     }
     return []
   }, [start, end, timeseriesInterval])
@@ -47,9 +48,8 @@ export function useFullTimeseries({
     if (!data || !dateKey || !valueKey) {
       return []
     }
-
-    const startMillis = DateTime.fromISO(start).toMillis()
-    const endMillis = DateTime.fromISO(end).toMillis()
+    const startMillis = getUTCDateTime(start).toMillis()
+    const endMillis = getUTCDateTime(end).toMillis()
 
     const intervalDiff = Math.floor(
       Duration.fromMillis(endMillis - startMillis).as(
@@ -60,7 +60,7 @@ export function useFullTimeseries({
     return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
-        const d = DateTime.fromMillis(startMillis, { zone: 'UTC' })
+        const d = getUTCDateTime(startMillis)
           .plus({ [timeseriesInterval]: i })
           .toISO()
         const dataValue = data.find((item) =>

@@ -91,7 +91,7 @@ export const getISODateByInterval = (
     case 'DAY':
       return dateTime.toFormat('yyyy-MM-dd') as string
     case 'HOUR':
-      return dateTime.toFormat('yyyy-MM-ddTHH:00:00') as string
+      return dateTime.toFormat("yyyy-MM-dd'T'HH:00:00") as string
     default:
       return dateTime.toISO() as string
   }

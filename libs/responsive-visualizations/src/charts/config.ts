@@ -11,5 +11,4 @@ export const POINT_GAP = 3
 export const AXIS_LABEL_PADDING = 34
 export const TIMESERIES_PADDING = 6
 
-// TODO use this also in the isIndividualSupported
 export const MAX_INDIVIDUAL_ITEMS = 1000
