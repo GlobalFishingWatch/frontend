@@ -12,6 +12,7 @@ import {
   DEFAULT_INDIVIDUAL_VALUE_KEY,
   DEFAULT_DATE_KEY,
 } from '../config'
+import TimeseriesPlaceholder from '../placeholders/TimeseriesPlaceholder'
 import { IndividualTimeseries } from './TimeseriesIndividual'
 import { AggregatedTimeseries } from './TimeseriesAggregated'
 import styles from './Timeseries.module.css'
@@ -58,7 +59,7 @@ export function ResponsiveTimeseries({
   return (
     <div ref={containerRef} className={styles.container}>
       {!data ? (
-        'Spinner'
+        <TimeseriesPlaceholder />
       ) : isIndividualSupported ? (
         <IndividualTimeseries
           width={width}

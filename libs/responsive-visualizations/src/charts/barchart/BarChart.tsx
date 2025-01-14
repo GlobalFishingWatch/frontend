@@ -12,6 +12,7 @@ import {
   DEFAULT_LABEL_KEY,
 } from '../config'
 import { useResponsiveVisualization } from '../hooks'
+import { BarChartPlaceholder } from '../placeholders/BarChartPlaceholder'
 import { IndividualBarChart } from './BarChartIndividual'
 import { AggregatedBarChart } from './BarChartAggregated'
 import styles from './BarChart.module.css'
@@ -51,7 +52,7 @@ export function ResponsiveBarChart({
   return (
     <div ref={containerRef} className={styles.container}>
       {!data ? (
-        'Spinner'
+        <BarChartPlaceholder />
       ) : isIndividualSupported ? (
         <IndividualBarChart
           data={data as ResponsiveVisualizationData<'individual'>}
