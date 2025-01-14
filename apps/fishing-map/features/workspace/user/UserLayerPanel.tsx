@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import type { DatasetGeometryType, Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { Tooltip, IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getDatasetConfigurationProperty,
