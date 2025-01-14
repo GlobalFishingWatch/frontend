@@ -155,4 +155,5 @@ export const REPORT_ONLY_VISIBLE_LAYERS = [
   DataviewType.Context,
   DataviewType.UserContext,
   DataviewType.UserPoints,
+  DataviewType.BasemapLabels,
 ]
