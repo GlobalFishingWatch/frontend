@@ -8,6 +8,7 @@ import {
   COLUMN_LABEL_SIZE,
   TIMESERIES_PADDING,
   MAX_INDIVIDUAL_ITEMS,
+  POINT_GAP,
 } from '../charts/config'
 import type { ResponsiveVisualizationData } from '../types'
 
@@ -17,7 +18,7 @@ export const getBarProps = (
 ): { columnsNumber: number; columnsWidth: number; pointsByRow: number } => {
   const columnsNumber = data.length
   const columnsWidth = width / columnsNumber - COLUMN_PADDING * 2
-  const pointsByRow = Math.floor(columnsWidth / POINT_SIZE)
+  const pointsByRow = Math.floor(columnsWidth / (POINT_SIZE + POINT_GAP))
 
   return { columnsNumber, columnsWidth, pointsByRow }
 }
@@ -67,7 +68,7 @@ export function getIsIndividualBarChartSupported({
   }
   const { pointsByRow } = getBarProps(data, width)
   const rowsInBiggestColumn = Math.ceil(max / pointsByRow)
-  const heightNeeded = rowsInBiggestColumn * POINT_SIZE
+  const heightNeeded = rowsInBiggestColumn * (POINT_SIZE + POINT_GAP)
   return heightNeeded < height - AXIS_LABEL_PADDING - COLUMN_PADDING - COLUMN_LABEL_SIZE
 }
 
@@ -85,7 +86,7 @@ export function getIsIndividualTimeseriesSupported({
   if (total > MAX_INDIVIDUAL_ITEMS) {
     return false
   }
-  const heightNeeded = max * POINT_SIZE
+  const heightNeeded = max * (POINT_SIZE + POINT_GAP)
   const matchesHeight = heightNeeded < height - AXIS_LABEL_PADDING
   if (!matchesHeight) {
     return false
