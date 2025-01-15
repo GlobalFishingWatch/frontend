@@ -33,11 +33,7 @@ import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-gr
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import type {
-  VGREventsVesselsProperty,
-  VGRSubsection,
-} from 'features/vessel-groups/vessel-groups.types'
-import type { EventsStatsVessel } from 'features/reports/ports/ports-report.slice'
+import { getVesselIndividualGroupedData } from 'features/reports/shared/reports.utils'
 import { selectVGRVessels } from '../vessel-group-report.slice'
 import { selectVGREventsVesselsFiltered } from '../events/vgr-events.selectors'
 import type { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
@@ -261,94 +257,6 @@ export const selectVGRVesselsGraphAggregatedData = createSelector(
     ] as ResponsiveVisualizationData<'aggregated'>
   }
 )
-
-export function getVesselIndividualGroupedData(
-  vessels: (EventsStatsVessel | VesselGroupVesselTableParsed)[],
-  groupByProperty: VGRSubsection | VGREventsVesselsProperty
-) {
-  if (!vessels?.length) {
-    return []
-  }
-  let vesselsGrouped = {}
-  switch (groupByProperty) {
-    case 'flag': {
-      vesselsGrouped = groupBy(
-        vessels,
-        (vessel) =>
-          (vessel as VesselGroupVesselTableParsed).flagTranslatedClean ||
-          vessel.flagTranslated ||
-          vessel.flag
-      )
-      break
-    }
-    case 'shiptype':
-    case 'shiptypes': {
-      vesselsGrouped = groupBy(vessels, (vessel) =>
-        (vessel as VesselGroupVesselTableParsed).vesselType
-          ? (vessel as VesselGroupVesselTableParsed).vesselType.split(', ')[0]
-          : (vessel as EventsStatsVessel).shiptypes[0]
-      )
-      break
-    }
-    case 'geartype':
-    case 'geartypes': {
-      vesselsGrouped = groupBy(vessels, (vessel) => vessel.geartype.split(', ')[0])
-      break
-    }
-    case 'source': {
-      vesselsGrouped = groupBy(vessels, (vessel) => (vessel as VesselGroupVesselTableParsed).source)
-      break
-    }
-  }
-  const orderedGroups: ResponsiveVisualizationData<'individual', { name: string; values: any[] }> =
-    Object.entries(vesselsGrouped)
-      .map(([key, value]) => ({
-        name: key,
-        values: value as any[],
-      }))
-      .sort((a, b) => {
-        return b.values.length - a.values.length
-      })
-  const groupsWithoutOther: ResponsiveVisualizationData<
-    'individual',
-    { name: string; values: any[] }
-  > = []
-  const otherGroups: ResponsiveVisualizationData<'individual', { name: string; values: any[] }> = []
-  orderedGroups.forEach((group) => {
-    if (
-      group.name === 'null' ||
-      group.name.toLowerCase() === OTHER_CATEGORY_LABEL.toLowerCase() ||
-      group.name === EMPTY_FIELD_PLACEHOLDER
-    ) {
-      otherGroups.push(group)
-    } else {
-      groupsWithoutOther.push(group)
-    }
-  })
-  const allGroups =
-    otherGroups.length > 0
-      ? [
-          ...groupsWithoutOther,
-          {
-            name: OTHER_CATEGORY_LABEL,
-            values: otherGroups.flatMap((group) => group.values),
-          },
-        ]
-      : groupsWithoutOther
-  if (allGroups.length <= MAX_CATEGORIES) {
-    return allGroups as ResponsiveVisualizationData<'individual'>
-  }
-  const firstGroups = allGroups.slice(0, MAX_CATEGORIES)
-  const restOfGroups = allGroups.slice(MAX_CATEGORIES)
-
-  return [
-    ...firstGroups,
-    {
-      name: OTHER_CATEGORY_LABEL,
-      values: restOfGroups.flatMap((group) => group.values),
-    },
-  ] as ResponsiveVisualizationData<'individual'>
-}
 
 export const selectVGRVesselsGraphIndividualData = createSelector(
   [selectVGRVesselsFiltered, selectVGRVesselsSubsection],

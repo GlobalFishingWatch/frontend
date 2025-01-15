@@ -30,6 +30,7 @@ import {
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
 import { getVesselGearTypeLabel } from 'utils/info'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { getVesselIndividualGroupedData } from '../../reports.utils'
 
 const EMPTY_ARRAY: [] = []
 
@@ -145,7 +146,7 @@ const selectReportVesselsGraphData = createSelector(
         ? Object.values(reportData[dataview.id]).flatMap((v) => v || [])
         : []
       const dataByKey = groupBy(dataviewData, (d) => d[reportGraph] || '')
-      return { id: dataview.id, data: dataByKey }
+      return { id: dataview.id, color: dataview.config?.color, data: dataByKey }
     })
 
     const allDistributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
@@ -185,6 +186,14 @@ export const selectReportVesselsGraphDataGrouped = createSelector(
       ),
     }
     return [...top, others]
+  }
+)
+
+export const selectReportVesselsGraphIndividualData = createSelector(
+  [selectReportVesselsFiltered, selectReportVesselGraph],
+  (vessels, groupBy) => {
+    if (!vessels || !groupBy) return []
+    return getVesselIndividualGroupedData(vessels, groupBy)
   }
 )
 

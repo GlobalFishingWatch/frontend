@@ -70,7 +70,7 @@ export function ResponsiveTimeseries({
           color={color}
           dateKey={dateKey as ResponsiveVisualizationAnyItemKey}
           timeseriesInterval={timeseriesInterval}
-          valueKey={individualValueKey}
+          valueKey={individualValueKey as keyof ResponsiveVisualizationData<'individual'>[0]}
           onClick={onIndividualItemClick}
           tickLabelFormatter={tickLabelFormatter}
           customTooltip={individualTooltip}
@@ -84,7 +84,7 @@ export function ResponsiveTimeseries({
           color={color}
           dateKey={dateKey as ResponsiveVisualizationAnyItemKey}
           timeseriesInterval={timeseriesInterval}
-          valueKey={aggregatedValueKey}
+          valueKey={aggregatedValueKey as keyof ResponsiveVisualizationData<'aggregated'>[0]}
           onClick={onAggregatedItemClick}
           tickLabelFormatter={tickLabelFormatter}
           customTooltip={aggregatedTooltip}

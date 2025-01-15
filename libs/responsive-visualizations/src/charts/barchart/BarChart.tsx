@@ -61,7 +61,7 @@ export function ResponsiveBarChart({
           data={data as ResponsiveVisualizationData<'individual'>}
           color={color}
           pointSize={individualItemSize}
-          valueKey={individualValueKey}
+          valueKey={individualValueKey as keyof ResponsiveVisualizationData<'individual'>[0]}
           labelKey={labelKey as ResponsiveVisualizationAnyItemKey}
           onClick={onIndividualItemClick}
           barLabel={barLabel}
@@ -72,7 +72,7 @@ export function ResponsiveBarChart({
         <AggregatedBarChart
           data={data as ResponsiveVisualizationData<'aggregated'>}
           color={color}
-          valueKey={aggregatedValueKey}
+          valueKey={aggregatedValueKey as keyof ResponsiveVisualizationData<'aggregated'>[0]}
           labelKey={labelKey as ResponsiveVisualizationAnyItemKey}
           onClick={onAggregatedItemClick}
           barLabel={barLabel}

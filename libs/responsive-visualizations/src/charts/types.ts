@@ -16,12 +16,12 @@ export type BaseResponsiveChartProps = {
   aggregatedTooltip?: ReactElement
   onAggregatedItemClick?: ResponsiveVisualizationInteractionCallback
   getAggregatedData?: () => Promise<ResponsiveVisualizationData<'aggregated'> | undefined>
-  aggregatedValueKey?: keyof ResponsiveVisualizationData<'aggregated'>[0]
+  aggregatedValueKey?: keyof ResponsiveVisualizationData<'aggregated'>[0] | string
   // Individual props
   individualTooltip?: ReactElement
   onIndividualItemClick?: ResponsiveVisualizationInteractionCallback
   getIndividualData?: () => Promise<ResponsiveVisualizationData<'individual'> | undefined>
-  individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0]
+  individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0] | string
   individualIcon?: ReactElement
 }
 
@@ -31,7 +31,7 @@ export type ResponsiveVisualizationAnyItemKey =
 
 // Shared types within the BarChart
 export type BaseResponsiveBarChartProps = {
-  color: string
+  color?: string
   barLabel?: ReactElement<SVGElement>
   barValueFormatter?: (value: number) => string
 }

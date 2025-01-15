@@ -114,7 +114,7 @@ export default function VesselGroupReportInsightCoverageGraph({
   const reportDataview = useSelector(selectVGRDataview)
   return (
     <Fragment>
-      <div className={styles.graph} data-test="report-vessels-graph">
+      <div className={styles.graph} data-test="insights-report-vessels-graph">
         <ResponsiveBarChart
           color={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
           getIndividualData={getIndividualData}

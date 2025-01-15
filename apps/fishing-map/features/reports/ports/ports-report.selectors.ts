@@ -10,11 +10,11 @@ import {
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
-import { getVesselIndividualGroupedData } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import {
   OTHER_CATEGORY_LABEL,
   REPORT_FILTER_PROPERTIES,
 } from '../vessel-groups/vessel-group-report.config'
+import { getVesselIndividualGroupedData } from '../shared/reports.utils'
 import { selectPortsReportVessels } from './ports-report.slice'
 import {
   selectPortReportVesselsFilter,

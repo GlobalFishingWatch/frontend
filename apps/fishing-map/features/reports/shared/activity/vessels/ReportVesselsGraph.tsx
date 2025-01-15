@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
+import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -19,6 +19,7 @@ import type { ReportVesselGraph } from 'features/reports/areas/area-reports.type
 import {
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,
+  selectReportVesselsGraphIndividualData,
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
 import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
@@ -111,9 +112,11 @@ const CustomTick = (props: any) => {
 
   const tooltip = isOtherCategory ? (
     <ul>
-      {othersData?.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
-        <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
-      ))}
+      {othersData
+        ?.slice(0, MAX_OTHER_TOOLTIP_ITEMS)
+        .map(({ name, value }) => (
+          <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
+        ))}
       {othersData && othersData.length > MAX_OTHER_TOOLTIP_ITEMS && (
         <li>
           + {othersData.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
@@ -163,6 +166,7 @@ const CustomTick = (props: any) => {
 export default function ReportVesselsGraph() {
   const dataviews = useSelector(selectReportDataviewsWithPermissions)
   const data = useSelector(selectReportVesselsGraphDataGrouped)
+  const individualData = useSelector(selectReportVesselsGraphIndividualData)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   const othersData = useSelector(selectReportVesselsGraphDataOthers)
   const { dispatchQueryParams } = useLocationConnect()
@@ -182,6 +186,7 @@ export default function ReportVesselsGraph() {
         return label
     }
   }
+  // TODO: add this interaction
   const onLabelClick: CategoricalChartFunc = (e) => {
     const { payload } = e.activePayload?.[0] || {}
     if (!payload) return
@@ -202,10 +207,42 @@ export default function ReportVesselsGraph() {
       })
     }
   }
+
+  const getIndividualData = useCallback(async () => {
+    return individualData
+  }, [individualData])
+
+  const getAggregatedData = useCallback(async () => {
+    return data as any[]
+  }, [data])
+
+  if (!data) {
+    return (
+      <div className={styles.graph} data-test="activity-report-vessels-graph">
+        <ReportBarGraphPlaceholder animate={false} />
+      </div>
+    )
+  }
+
   return (
     <Fragment>
-      <div className={styles.graph} data-test="report-vessels-graph">
-        {data ? (
+      <div className={styles.graph} data-test="activity-report-vessels-graph">
+        <ResponsiveBarChart
+          color={dataviews[0].config?.color}
+          getIndividualData={getIndividualData}
+          getAggregatedData={getAggregatedData}
+          // onAggregatedItemClick={onBarClick}
+          // onIndividualItemClick={onPointClick}
+          aggregatedValueKey={dataviews[0]?.id}
+          barValueFormatter={(value: any) => {
+            return formatI18nNumber(value).toString()
+          }}
+          barLabel={<CustomTick getTickLabel={getTickLabel} />}
+          labelKey={'name'}
+          // individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+          aggregatedTooltip={<ReportGraphTooltip type={selectedReportVesselGraph} />}
+        />
+        {/* {data ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               width={500}
@@ -251,7 +288,7 @@ export default function ReportVesselsGraph() {
           </ResponsiveContainer>
         ) : (
           <ReportBarGraphPlaceholder animate={false} />
-        )}
+        )} */}
       </div>
     </Fragment>
   )
