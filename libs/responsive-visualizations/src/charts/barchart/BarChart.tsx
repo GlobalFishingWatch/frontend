@@ -40,8 +40,8 @@ export function ResponsiveBarChart({
     containerRef,
     {
       labelKey: labelKey as ResponsiveVisualizationAnyItemKey,
-      aggregatedValueKey,
-      individualValueKey,
+      aggregatedValueKey: aggregatedValueKey as keyof ResponsiveVisualizationData<'aggregated'>[0],
+      individualValueKey: individualValueKey as keyof ResponsiveVisualizationData<'individual'>[0],
       getAggregatedData,
       getIndividualData,
       getIsIndividualSupported: getIsIndividualBarChartSupported,

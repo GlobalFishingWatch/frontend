@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
 import { type VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
@@ -114,21 +114,19 @@ export default function VesselGroupReportInsightCoverageGraph({
 
   const reportDataview = useSelector(selectVGRDataview)
   return (
-    <Fragment>
-      <div className={styles.graph} data-test="insights-report-vessels-graph">
-        <ResponsiveBarChart
-          color={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
-          getIndividualData={getIndividualData}
-          getAggregatedData={getAggregatedData}
-          barValueFormatter={(value: any) => {
-            return formatI18nNumber(value).toString()
-          }}
-          barLabel={<CustomTick />}
-          labelKey="label"
-          individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
-          individualItem={<VesselGraphLink />}
-        />
-      </div>
-    </Fragment>
+    <div className={styles.graph} data-test="insights-report-vessels-graph">
+      <ResponsiveBarChart
+        color={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
+        getIndividualData={getIndividualData}
+        getAggregatedData={getAggregatedData}
+        barValueFormatter={(value: any) => {
+          return formatI18nNumber(value).toString()
+        }}
+        barLabel={<CustomTick />}
+        labelKey="label"
+        individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+        individualItem={<VesselGraphLink />}
+      />
+    </div>
   )
 }

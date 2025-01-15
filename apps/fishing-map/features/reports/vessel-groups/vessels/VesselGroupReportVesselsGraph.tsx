@@ -192,30 +192,28 @@ export default function VesselGroupReportVesselsGraph({
   }, [individualData])
 
   return (
-    <Fragment>
-      <div className={styles.graph} data-test="report-vessels-graph">
-        <ResponsiveBarChart
-          color={color}
-          getIndividualData={getIndividualData}
-          getAggregatedData={getAggregatedData}
-          onAggregatedItemClick={onBarClick}
-          onIndividualItemClick={onPointClick}
-          barValueFormatter={(value: any) => {
-            return formatI18nNumber(value).toString()
-          }}
-          barLabel={
-            <ReportGraphTick
-              property={property}
-              filterQueryParam={filterQueryParam}
-              pageQueryParam={pageQueryParam}
-            />
-          }
-          labelKey={'name'}
-          individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
-          individualItem={<VesselGraphLink />}
-          aggregatedTooltip={<ReportBarTooltip type={property} />}
-        />
-      </div>
-    </Fragment>
+    <div className={styles.graph} data-test="report-vessels-graph">
+      <ResponsiveBarChart
+        color={color}
+        getIndividualData={getIndividualData}
+        getAggregatedData={getAggregatedData}
+        onAggregatedItemClick={onBarClick}
+        onIndividualItemClick={onPointClick}
+        barValueFormatter={(value: any) => {
+          return formatI18nNumber(value).toString()
+        }}
+        barLabel={
+          <ReportGraphTick
+            property={property}
+            filterQueryParam={filterQueryParam}
+            pageQueryParam={pageQueryParam}
+          />
+        }
+        labelKey={'name'}
+        individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+        individualItem={<VesselGraphLink />}
+        aggregatedTooltip={<ReportBarTooltip type={property} />}
+      />
+    </div>
   )
 }

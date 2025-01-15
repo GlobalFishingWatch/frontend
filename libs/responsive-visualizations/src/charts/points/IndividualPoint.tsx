@@ -9,7 +9,7 @@ import {
 } from '@floating-ui/react'
 import { cloneElement, useCallback, useState, type ReactElement } from 'react'
 import cx from 'classnames'
-import type { ResponsiveVisualizationInteractionCallback } from 'libs/responsive-visualizations/src/charts/types'
+import type { ResponsiveVisualizationInteractionCallback } from '@globalfishingwatch/responsive-visualizations'
 import type { ResponsiveVisualizationItem } from '../../types'
 import { DEFAULT_POINT_SIZE } from '../config'
 import styles from './IndividualPoint.module.css'

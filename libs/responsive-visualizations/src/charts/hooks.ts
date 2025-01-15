@@ -45,14 +45,15 @@ type UseResponsiveVisualizationDataProps = {
   end?: string
   timeseriesInterval?: FourwingsInterval
   labelKey: ResponsiveVisualizationAnyItemKey
-  individualValueKey: BaseResponsiveChartProps['individualValueKey']
-  aggregatedValueKey: BaseResponsiveChartProps['aggregatedValueKey']
+  individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
+  aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0]
   getAggregatedData?: BaseResponsiveChartProps['getAggregatedData']
   getIndividualData?: BaseResponsiveChartProps['getIndividualData']
   getIsIndividualSupported:
     | typeof getIsIndividualBarChartSupported
     | typeof getIsIndividualTimeseriesSupported
 }
+
 export function useResponsiveVisualizationData({
   labelKey = DEFAULT_LABEL_KEY,
   individualValueKey = DEFAULT_INDIVIDUAL_VALUE_KEY,
