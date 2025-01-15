@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
+import type { RootState } from 'reducers'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDataviewSqlFiltersResolved } from '@globalfishingwatch/dataviews-client'
@@ -34,7 +35,6 @@ import type {
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import type { AppDispatch } from 'store'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
@@ -293,9 +293,12 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         >(interactionUrl, { signal })
 
         const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
-          sublayer.map((vessel) => {
+          sublayer.flatMap((vessel) => {
             const { id, vessel_id, ...rest } = vessel as ExtendedFeatureVessel & {
               vessel_id: string
+            }
+            if (!id && !vessel_id) {
+              return []
             }
             // vessel_id needed for VIIRS layers
             return { ...rest, id: id || vessel_id }
