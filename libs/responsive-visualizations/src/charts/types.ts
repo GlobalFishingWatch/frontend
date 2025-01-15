@@ -19,6 +19,7 @@ export type BaseResponsiveChartProps = {
   aggregatedValueKey?: keyof ResponsiveVisualizationData<'aggregated'>[0] | string
   // Individual props
   individualTooltip?: ReactElement
+  individualItem?: ReactElement
   onIndividualItemClick?: ResponsiveVisualizationInteractionCallback
   getIndividualData?: () => Promise<ResponsiveVisualizationData<'individual'> | undefined>
   individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0] | string
@@ -43,6 +44,7 @@ export type BarChartByTypeProps<M extends ResponsiveVisualizationMode> =
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback
     customTooltip?: ReactElement
+    customItem?: ReactElement
   }
 
 // Shared types within the Timeseries

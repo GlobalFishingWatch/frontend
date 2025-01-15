@@ -1,6 +1,6 @@
 .point {
   position: relative;
-  border: 2px solid transparent;
+  outline: 1px solid transparent;
   transition: border-color 0.3s linear;
   border-radius: 50%;
   display: flex;
@@ -9,7 +9,7 @@
 }
 
 .point:not(.withIcon):hover {
-  border: var(--border-thick);
+  outline: 1px solid var(--color-secondary-blue);
 }
 
 .tooltip {

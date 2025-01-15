@@ -10,6 +10,7 @@ import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-gr
 import { weightedMean } from 'utils/statistics'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
+import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
 import { selectVGRDataview } from '../vessel-group-report.selectors'
 import styles from './VGRInsightCoverageGraph.module.css'
 
@@ -125,6 +126,7 @@ export default function VesselGroupReportInsightCoverageGraph({
           barLabel={<CustomTick />}
           labelKey="label"
           individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+          individualItem={<VesselGraphLink />}
         />
       </div>
     </Fragment>

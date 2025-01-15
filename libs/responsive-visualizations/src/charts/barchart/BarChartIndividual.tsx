@@ -16,7 +16,9 @@ export function IndividualBarChart({
   labelKey,
   barValueFormatter,
   customTooltip,
+  customItem,
   pointSize,
+  onClick,
 }: IndividualBarChartProps) {
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -30,7 +32,6 @@ export function IndividualBarChart({
           left: 0,
           bottom: 0,
         }}
-        // onClick={onBarClick}
       >
         <foreignObject width="100%" height="100%">
           <div className={styles.container} style={{ paddingBottom: AXIS_LABEL_PADDING }}>
@@ -49,6 +50,8 @@ export function IndividualBarChart({
                         point={point}
                         color={color}
                         tooltip={customTooltip}
+                        item={customItem}
+                        onClick={onClick}
                       />
                     ))}
                   </ul>

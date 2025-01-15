@@ -19,6 +19,7 @@ import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import type { PortsReportState } from 'features/reports/ports/ports-report.types'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
+import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
@@ -178,8 +179,8 @@ export default function VesselGroupReportVesselsGraph({
       })
     }
   }
-  const onPointClick: ResponsiveVisualizationInteractionCallback = (e) => {
-    console.log('TODO', e)
+  const onPointClick: ResponsiveVisualizationInteractionCallback = (item) => {
+    console.log('TODO', item)
   }
 
   const getAggregatedData = useCallback(async () => {
@@ -211,6 +212,7 @@ export default function VesselGroupReportVesselsGraph({
           }
           labelKey={'name'}
           individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+          individualItem={<VesselGraphLink />}
           aggregatedTooltip={<ReportBarTooltip type={property} />}
         />
       </div>

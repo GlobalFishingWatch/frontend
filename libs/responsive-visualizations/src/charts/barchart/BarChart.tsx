@@ -30,6 +30,7 @@ export function ResponsiveBarChart({
   barLabel,
   aggregatedTooltip,
   individualTooltip,
+  individualItem,
   barValueFormatter,
   onIndividualItemClick,
   onAggregatedItemClick,
@@ -66,6 +67,7 @@ export function ResponsiveBarChart({
           onClick={onIndividualItemClick}
           barLabel={barLabel}
           customTooltip={individualTooltip}
+          customItem={individualItem}
           barValueFormatter={barValueFormatter}
         />
       ) : (

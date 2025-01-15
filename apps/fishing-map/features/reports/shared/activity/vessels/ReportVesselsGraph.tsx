@@ -23,6 +23,8 @@ import {
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
 import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
+import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
+import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
 import { ReportBarGraphPlaceholder } from '../../placeholders/ReportBarGraphPlaceholder'
 import styles from './ReportVesselsGraph.module.css'
 
@@ -239,7 +241,8 @@ export default function ReportVesselsGraph() {
           }}
           barLabel={<CustomTick getTickLabel={getTickLabel} />}
           labelKey={'name'}
-          // individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+          individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+          individualItem={<VesselGraphLink />}
           aggregatedTooltip={<ReportGraphTooltip type={selectedReportVesselGraph} />}
         />
         {/* {data ? (
