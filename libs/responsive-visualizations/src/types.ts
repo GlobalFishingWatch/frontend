@@ -1,40 +1,44 @@
-import type {
-  DEFAULT_LABEL_KEY,
-  DEFAULT_DATE_KEY,
-  DEFAULT_AGGREGATED_VALUE_KEY,
-  DEFAULT_INDIVIDUAL_VALUE_KEY,
-} from './charts/config'
-
 export type ResponsiveVisualizationMode = 'individual' | 'aggregated'
 
 export type ResponsiveVisualizationChart = 'barchart' | 'timeseries'
 
-export type ResponsiveVisualizationItem = Record<string, any>
-export type ResponsiveVisualizationAggregatedItem<
-  Item = {
-    [DEFAULT_LABEL_KEY]?: string
-    [DEFAULT_DATE_KEY]?: string
-    [DEFAULT_AGGREGATED_VALUE_KEY]: number
-  },
-> = Item
+export type ResponsiveVisualizationKey = string
 
-export type ResponsiveVisualizationIndividualItem<
-  Item = {
-    [DEFAULT_LABEL_KEY]?: string
-    [DEFAULT_DATE_KEY]?: string
-    [DEFAULT_INDIVIDUAL_VALUE_KEY]: ResponsiveVisualizationItem[]
-  },
-> = Item
+export type ResponsiveVisualizationLabel = string
+export type ResponsiveVisualizationIndividualValue = Record<string, any>
+export type ResponsiveVisualizationAggregatedValue =
+  | number
+  | {
+      label?: string
+      color?: string
+      value: number
+    }
+
+export type ResponsiveVisualizationValue<
+  Mode extends ResponsiveVisualizationMode | undefined = undefined,
+> = Mode extends 'aggregated'
+  ? ResponsiveVisualizationAggregatedValue
+  : Mode extends 'individual'
+    ? ResponsiveVisualizationIndividualValue
+    : ResponsiveVisualizationAggregatedValue | ResponsiveVisualizationIndividualValue
+
+export type ResponsiveVisualizationAggregatedItem = Record<
+  ResponsiveVisualizationKey,
+  ResponsiveVisualizationLabel | ResponsiveVisualizationValue<'aggregated'>
+>
+export type ResponsiveVisualizationIndividualItem = Record<
+  ResponsiveVisualizationKey,
+  ResponsiveVisualizationLabel | ResponsiveVisualizationValue<'individual'>[]
+>
+
+export type ResponsiveVisualizationItem =
+  | ResponsiveVisualizationAggregatedItem
+  | ResponsiveVisualizationIndividualItem
 
 export type ResponsiveVisualizationData<
   Mode extends ResponsiveVisualizationMode | undefined = undefined,
-  Data extends
-    | ResponsiveVisualizationAggregatedItem
-    | ResponsiveVisualizationIndividualItem = Mode extends 'aggregated'
-    ? ResponsiveVisualizationAggregatedItem
-    : ResponsiveVisualizationIndividualItem,
 > = Mode extends 'aggregated'
-  ? ResponsiveVisualizationAggregatedItem<Data>[]
+  ? ResponsiveVisualizationAggregatedItem[]
   : Mode extends 'individual'
-    ? ResponsiveVisualizationIndividualItem<Data>[]
+    ? ResponsiveVisualizationIndividualItem[]
     : (ResponsiveVisualizationAggregatedItem | ResponsiveVisualizationIndividualItem)[]

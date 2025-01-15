@@ -1,11 +1,7 @@
 import { useRef } from 'react'
 import type { ResponsiveVisualizationData } from '../../types'
 import { getIsIndividualTimeseriesSupported } from '../../lib/density'
-import type {
-  BaseResponsiveChartProps,
-  BaseResponsiveTimeseriesProps,
-  ResponsiveVisualizationAnyItemKey,
-} from '../types'
+import type { BaseResponsiveChartProps, BaseResponsiveTimeseriesProps } from '../types'
 import { useResponsiveVisualization } from '../hooks'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
@@ -19,7 +15,7 @@ import styles from './Timeseries.module.css'
 
 type ResponsiveTimeseriesProps = BaseResponsiveChartProps &
   BaseResponsiveTimeseriesProps & {
-    dateKey?: ResponsiveVisualizationAnyItemKey | string
+    dateKey?: keyof ResponsiveVisualizationData[0]
   }
 
 export function ResponsiveTimeseries({
@@ -44,9 +40,9 @@ export function ResponsiveTimeseries({
     start,
     end,
     timeseriesInterval,
-    labelKey: dateKey as ResponsiveVisualizationAnyItemKey,
-    aggregatedValueKey: aggregatedValueKey as keyof ResponsiveVisualizationData<'aggregated'>[0],
-    individualValueKey: individualValueKey as keyof ResponsiveVisualizationData<'individual'>[0],
+    labelKey: dateKey,
+    aggregatedValueKey,
+    individualValueKey,
     getAggregatedData,
     getIndividualData,
     getIsIndividualSupported: getIsIndividualTimeseriesSupported,
@@ -68,9 +64,9 @@ export function ResponsiveTimeseries({
           start={start}
           end={end}
           color={color}
-          dateKey={dateKey as ResponsiveVisualizationAnyItemKey}
+          dateKey={dateKey}
           timeseriesInterval={timeseriesInterval}
-          valueKey={individualValueKey as keyof ResponsiveVisualizationData<'individual'>[0]}
+          valueKey={individualValueKey}
           onClick={onIndividualItemClick}
           tickLabelFormatter={tickLabelFormatter}
           customTooltip={individualTooltip}
@@ -82,9 +78,9 @@ export function ResponsiveTimeseries({
           start={start}
           end={end}
           color={color}
-          dateKey={dateKey as ResponsiveVisualizationAnyItemKey}
+          dateKey={dateKey}
           timeseriesInterval={timeseriesInterval}
-          valueKey={aggregatedValueKey as keyof ResponsiveVisualizationData<'aggregated'>[0]}
+          valueKey={aggregatedValueKey}
           onClick={onAggregatedItemClick}
           tickLabelFormatter={tickLabelFormatter}
           customTooltip={aggregatedTooltip}

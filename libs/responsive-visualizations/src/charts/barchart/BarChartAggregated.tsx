@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
-import type { ResponsiveVisualizationData } from '../../types'
+import type { ResponsiveVisualizationValue } from '../../types'
 import type { BarChartByTypeProps } from '../types'
 
 type AggregatedBarChartProps = BarChartByTypeProps<'aggregated'>
@@ -14,6 +14,7 @@ export function AggregatedBarChart({
   customTooltip,
   barValueFormatter,
 }: AggregatedBarChartProps) {
+  const dataKey = typeof data[0][valueKey] === 'number' ? valueKey : `${valueKey}.value`
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -26,17 +27,26 @@ export function AggregatedBarChart({
           left: 0,
           bottom: 0,
         }}
-        onClick={onClick}
+        // TODO: restore this
+        // onClick={(d) => onClick?.(d.activePayload)}
       >
         {data && <Tooltip content={customTooltip} />}
-        <Bar dataKey={valueKey} fill={color}>
+        {/* {valueKeys.map((valueKey) => ( */}
+        <Bar
+          key={valueKey}
+          dataKey={dataKey}
+          fill={color}
+          stackId="a"
+          onClick={(e) => onClick?.(e.activePayload as ResponsiveVisualizationValue)}
+        >
           <LabelList
             position="top"
-            valueAccessor={(entry: ResponsiveVisualizationData<'aggregated'>[0]) =>
-              barValueFormatter?.(entry[valueKey] as number) || entry[valueKey]
-            }
+            valueAccessor={({ value }: { value: [number, number] }) => {
+              return barValueFormatter?.(value[1]) || value[1]
+            }}
           />
         </Bar>
+        {/* ))} */}
         <XAxis
           dataKey={labelKey}
           interval="equidistantPreserveStart"

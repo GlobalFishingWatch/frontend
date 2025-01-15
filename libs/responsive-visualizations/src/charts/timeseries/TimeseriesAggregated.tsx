@@ -9,7 +9,7 @@ import {
 } from 'recharts'
 import min from 'lodash/min'
 import max from 'lodash/max'
-import type { ResponsiveVisualizationAnyItemKey, TimeseriesByTypeProps } from '../types'
+import type { TimeseriesByTypeProps } from '../types'
 import type { ResponsiveVisualizationData } from '../../types'
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 

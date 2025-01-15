@@ -11,7 +11,14 @@ import {
   POINT_GAP,
   POINT_SIZES,
 } from '../charts/config'
-import type { ResponsiveVisualizationData } from '../types'
+import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
+
+export const getItemValue = (value: ResponsiveVisualizationValue) => {
+  if (typeof value === 'number') {
+    return value
+  }
+  return value.value
+}
 
 export const getBarProps = (
   data: ResponsiveVisualizationData,
@@ -34,16 +41,14 @@ export const getColumnsStats = (
   aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0],
   individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
 ): ColumnsStats => {
-  return data.reduce(
+  return data.reduce<ColumnsStats>(
     (acc, column) => {
-      const value = (
-        column[aggregatedValueKey as keyof typeof column]
-          ? column[aggregatedValueKey as keyof typeof column]
-          : column[individualValueKey as keyof typeof column]?.length || 0
-      ) as number
+      const value: number = column[aggregatedValueKey]
+        ? getItemValue(column[aggregatedValueKey] as ResponsiveVisualizationValue)
+        : (column[individualValueKey] as ResponsiveVisualizationValue[])?.length || 0
       return { total: acc.total + value, max: Math.max(acc.max, value) }
     },
-    { total: 0, max: 0 } as ColumnsStats
+    { total: 0, max: 0 }
   )
 }
 

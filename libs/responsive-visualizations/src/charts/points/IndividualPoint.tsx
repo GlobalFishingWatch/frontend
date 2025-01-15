@@ -10,19 +10,19 @@ import {
 import { cloneElement, useCallback, useState, type ReactElement } from 'react'
 import cx from 'classnames'
 import type { ResponsiveVisualizationInteractionCallback } from '@globalfishingwatch/responsive-visualizations'
-import type { ResponsiveVisualizationItem } from '../../types'
+import type { ResponsiveVisualizationValue } from '../../types'
 import { DEFAULT_POINT_SIZE } from '../config'
 import styles from './IndividualPoint.module.css'
 
 type IndividualPointProps = {
   color?: string
-  point: ResponsiveVisualizationItem
+  point: ResponsiveVisualizationValue<'individual'>
   tooltip?: ReactElement
   item?: ReactElement
   className?: string
   icon?: ReactElement
   pointSize?: number
-  onClick?: ResponsiveVisualizationInteractionCallback
+  onClick?: ResponsiveVisualizationInteractionCallback<ResponsiveVisualizationValue>
 }
 
 export function IndividualPoint({
@@ -78,7 +78,7 @@ export function IndividualPoint({
           >
             {tooltip
               ? cloneElement(tooltip, { ...(tooltip.props || {}), data: point } as any)
-              : point.name}
+              : point.label}
           </div>
         </FloatingPortal>
       )}

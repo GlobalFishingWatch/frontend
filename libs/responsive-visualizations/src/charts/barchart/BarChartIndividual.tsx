@@ -1,6 +1,6 @@
 import { BarChart, XAxis, ResponsiveContainer } from 'recharts'
 import React from 'react'
-import type { ResponsiveVisualizationItem } from '../../types'
+import type { ResponsiveVisualizationValue } from '../../types'
 import type { BarChartByTypeProps } from '../types'
 import { IndividualPoint } from '../points/IndividualPoint'
 import { AXIS_LABEL_PADDING, POINT_GAP } from '../config'
@@ -36,7 +36,7 @@ export function IndividualBarChart({
         <foreignObject width="100%" height="100%">
           <div className={styles.container} style={{ paddingBottom: AXIS_LABEL_PADDING }}>
             {data.map((item, index) => {
-              const points = item?.[valueKey] as ResponsiveVisualizationItem[]
+              const points = item?.[valueKey] as ResponsiveVisualizationValue<'individual'>[]
               return (
                 <div key={index} className={styles.barContainer}>
                   <label className={styles.label}>

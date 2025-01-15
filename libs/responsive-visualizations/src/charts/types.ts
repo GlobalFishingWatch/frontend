@@ -2,12 +2,12 @@ import type { ReactElement } from 'react'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type {
   ResponsiveVisualizationData,
-  ResponsiveVisualizationItem,
   ResponsiveVisualizationMode,
+  ResponsiveVisualizationValue,
 } from '../types'
 
 // Shared types between all charts
-export type ResponsiveVisualizationInteractionCallback<Item = ResponsiveVisualizationItem> = (
+export type ResponsiveVisualizationInteractionCallback<Item = ResponsiveVisualizationValue> = (
   item: Item
 ) => void
 
@@ -16,19 +16,15 @@ export type BaseResponsiveChartProps = {
   aggregatedTooltip?: ReactElement
   onAggregatedItemClick?: ResponsiveVisualizationInteractionCallback
   getAggregatedData?: () => Promise<ResponsiveVisualizationData<'aggregated'> | undefined>
-  aggregatedValueKey?: keyof ResponsiveVisualizationData<'aggregated'>[0] | string
+  aggregatedValueKey?: keyof ResponsiveVisualizationData<'aggregated'>[0]
   // Individual props
   individualTooltip?: ReactElement
   individualItem?: ReactElement
   onIndividualItemClick?: ResponsiveVisualizationInteractionCallback
   getIndividualData?: () => Promise<ResponsiveVisualizationData<'individual'> | undefined>
-  individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0] | string
+  individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0]
   individualIcon?: ReactElement
 }
-
-export type ResponsiveVisualizationAnyItemKey =
-  | keyof ResponsiveVisualizationData<'aggregated'>[0]
-  | keyof ResponsiveVisualizationData<'individual'>[0]
 
 // Shared types within the BarChart
 export type BaseResponsiveBarChartProps = {
@@ -39,7 +35,7 @@ export type BaseResponsiveBarChartProps = {
 
 export type BarChartByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveBarChartProps & {
-    labelKey: ResponsiveVisualizationAnyItemKey
+    labelKey: keyof ResponsiveVisualizationData<M>[0]
     valueKey: keyof ResponsiveVisualizationData<M>[0]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback
@@ -58,7 +54,7 @@ export type BaseResponsiveTimeseriesProps = {
 
 export type TimeseriesByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveTimeseriesProps & {
-    dateKey: ResponsiveVisualizationAnyItemKey
+    dateKey: keyof ResponsiveVisualizationData<M>[0]
     valueKey: keyof ResponsiveVisualizationData<M>[0]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback

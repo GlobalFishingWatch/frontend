@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import type { ResponsiveVisualizationData, ResponsiveVisualizationItem } from '../types'
+import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
 import type {
   getIsIndividualBarChartSupported,
   getIsIndividualTimeseriesSupported,
   IsIndividualSupportedParams,
 } from '../lib/density'
-import type { BaseResponsiveChartProps, ResponsiveVisualizationAnyItemKey } from './types'
+import type { BaseResponsiveChartProps } from './types'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
@@ -44,7 +44,7 @@ type UseResponsiveVisualizationDataProps = {
   start?: string
   end?: string
   timeseriesInterval?: FourwingsInterval
-  labelKey: ResponsiveVisualizationAnyItemKey
+  labelKey: keyof ResponsiveVisualizationData[0]
   individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
   aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0]
   getAggregatedData?: BaseResponsiveChartProps['getAggregatedData']
@@ -130,12 +130,12 @@ export function useResponsiveVisualizationData({
           setData(individualData)
         } else {
           const aggregatedData = individualData.map((item) => {
-            const value = item[individualValueKey] as ResponsiveVisualizationItem[]
+            const value = item[individualValueKey] as ResponsiveVisualizationValue[]
             return {
               [labelKey]: item[labelKey as keyof typeof item],
               [individualValueKey]: value.length,
             }
-          }) as ResponsiveVisualizationData
+          }) as ResponsiveVisualizationData<'aggregated'>
           setIsIndividualSupported(false)
           setIndividualItemSize(DEFAULT_POINT_SIZE)
           setData(aggregatedData)

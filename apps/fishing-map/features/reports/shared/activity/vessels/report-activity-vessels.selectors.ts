@@ -146,7 +146,11 @@ const selectReportVesselsGraphData = createSelector(
         ? Object.values(reportData[dataview.id]).flatMap((v) => v || [])
         : []
       const dataByKey = groupBy(dataviewData, (d) => d[reportGraph] || '')
-      return { id: dataview.id, color: dataview.config?.color, data: dataByKey }
+      return {
+        id: dataview.id,
+        color: dataview.config?.color,
+        data: dataByKey,
+      }
     })
 
     const allDistributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))

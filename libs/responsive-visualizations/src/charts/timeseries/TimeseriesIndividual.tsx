@@ -2,7 +2,7 @@ import { XAxis, ResponsiveContainer, ComposedChart, Tooltip } from 'recharts'
 import cx from 'classnames'
 import type { ReactElement } from 'react'
 import type { TimeseriesByTypeProps } from '../types'
-import type { ResponsiveVisualizationData, ResponsiveVisualizationItem } from '../../types'
+import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../../types'
 import { IndividualPoint } from '../points/IndividualPoint'
 import { AXIS_LABEL_PADDING, POINT_GAP, DEFAULT_POINT_SIZE, TIMESERIES_PADDING } from '../config'
 import styles from './TimeseriesIndividual.module.css'
@@ -55,7 +55,7 @@ export function IndividualTimeseries({
             style={{ paddingBottom: AXIS_LABEL_PADDING, paddingInline: TIMESERIES_PADDING }}
           >
             {fullTimeseries.map((item, index) => {
-              const points = item?.[valueKey] as ResponsiveVisualizationItem[]
+              const points = item?.[valueKey] as ResponsiveVisualizationValue<'individual'>[]
               return (
                 <div
                   key={index}
