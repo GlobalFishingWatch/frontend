@@ -4,8 +4,8 @@ import { DateTime } from 'luxon'
 import { groupBy } from 'es-toolkit'
 import { stringify } from 'qs'
 import { useTranslation } from 'react-i18next'
-import { getEventsStatsQuery } from 'queries/report-events-stats-api'
 import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
+import { getEventsStatsQuery } from 'queries/report-events-stats-api'
 import { getFourwingsInterval, type FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
@@ -17,7 +17,7 @@ import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { formatInfoField } from 'utils/info'
+import { formatInfoField, upperFirst } from 'utils/info'
 import { getTimeLabels } from 'utils/events'
 import EncounterIcon from '../../shared/events/icons/event-encounter.svg'
 import LoiteringIcon from '../../shared/events/icons/event-loitering.svg'
@@ -63,35 +63,37 @@ const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: E
   if (!data?.vessel?.name) {
     return null
   }
-  console.log('data:', data)
-  if (eventType === 'encounter') {
-    const { start, duration } = getTimeLabels({ start: data.start, end: data.end })
-    return (
-      <div className={styles.event}>
-        <div className={styles.properties}>
-          <div className={styles.property}>
-            <label>{t('eventInfo.start', 'Start')}</label>
-            <span>{start}</span>
-          </div>
-          <div className={styles.property}>
-            <label>{t('eventInfo.duration', 'Duration')}</label>
-            <span>{duration}</span>
-          </div>
+  const { start, duration } = getTimeLabels({ start: data.start, end: data.end })
+
+  return (
+    <div className={styles.event}>
+      {eventType && upperFirst(t(`common.eventLabels.${eventType}`, eventType))}
+      <div className={styles.properties}>
+        <div className={styles.property}>
+          <label>
+            {`${formatInfoField(data.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}
+          </label>
+          <span>{`${formatInfoField(data.vessel?.name, 'shipname')} (${formatInfoField(data.vessel?.flag, 'flag')})`}</span>
         </div>
-        <div className={styles.properties}>
+        {eventType === 'encounter' && (
           <div className={styles.property}>
-            <label>{formatInfoField(data.vessel?.type, 'shiptypes')}</label>
-            <span>{formatInfoField(data.vessel?.name, 'shipname')}</span>
+            <label>{`${formatInfoField(data.encounter?.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}</label>
+            <span>{`${formatInfoField(data.encounter?.vessel?.name, 'shipname')} (${formatInfoField(data.encounter?.vessel?.flag, 'flag')})`}</span>
           </div>
-          <div className={styles.property}>
-            <label>{formatInfoField(data.encounter?.vessel?.type, 'shiptypes')}</label>
-            <span>{formatInfoField(data.encounter?.vessel?.name, 'shipname')}</span>
-          </div>
+        )}
+      </div>
+      <div className={styles.properties}>
+        <div className={styles.property}>
+          <label>{t('eventInfo.start', 'Start')}</label>
+          <span>{start}</span>
+        </div>
+        <div className={styles.property}>
+          <label>{t('eventInfo.duration', 'Duration')}</label>
+          <span>{duration}</span>
         </div>
       </div>
-    )
-  }
-  return formatInfoField(data.vessel.name, 'shipname')
+    </div>
+  )
 }
 
 const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
