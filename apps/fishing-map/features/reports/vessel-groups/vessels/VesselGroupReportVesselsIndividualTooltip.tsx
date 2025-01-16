@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
+
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER, getVesselShipTypeLabel } from 'utils/info'
-import { formatInfoField } from 'utils/info'
+
 import type { VesselGroupVesselTableParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField,getVesselShipTypeLabel  } from 'utils/info'
+
 import styles from './VesselGroupReportVesselsIndividualTooltip.module.css'
 
 const VesselGroupReportVesselsIndividualTooltip = ({

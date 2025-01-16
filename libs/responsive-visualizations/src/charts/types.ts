@@ -1,5 +1,7 @@
 import type { ReactElement } from 'react'
+
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import type {
   ResponsiveVisualizationData,
   ResponsiveVisualizationMode,

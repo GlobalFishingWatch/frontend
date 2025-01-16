@@ -1,12 +1,15 @@
-import { XAxis, ResponsiveContainer, ComposedChart, Tooltip } from 'recharts'
-import cx from 'classnames'
 import type { ReactElement } from 'react'
-import type { TimeseriesByTypeProps } from '../types'
+import cx from 'classnames'
+import { ComposedChart, ResponsiveContainer, Tooltip,XAxis } from 'recharts'
+
 import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../../types'
+import { AXIS_LABEL_PADDING, DEFAULT_POINT_SIZE, POINT_GAP, TIMESERIES_PADDING } from '../config'
 import { IndividualPoint } from '../points/IndividualPoint'
-import { AXIS_LABEL_PADDING, POINT_GAP, DEFAULT_POINT_SIZE, TIMESERIES_PADDING } from '../config'
-import styles from './TimeseriesIndividual.module.css'
+import type { TimeseriesByTypeProps } from '../types'
+
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
+
+import styles from './TimeseriesIndividual.module.css'
 
 const graphMargin = { top: 0, right: DEFAULT_POINT_SIZE, left: DEFAULT_POINT_SIZE, bottom: 0 }
 

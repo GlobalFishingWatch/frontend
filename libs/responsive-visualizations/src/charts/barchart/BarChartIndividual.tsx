@@ -1,9 +1,11 @@
-import { BarChart, XAxis, ResponsiveContainer } from 'recharts'
 import React from 'react'
+import { BarChart, ResponsiveContainer, XAxis } from 'recharts'
+
 import type { ResponsiveVisualizationValue } from '../../types'
-import type { BarChartByTypeProps } from '../types'
-import { IndividualPoint } from '../points/IndividualPoint'
 import { AXIS_LABEL_PADDING, POINT_GAP } from '../config'
+import { IndividualPoint } from '../points/IndividualPoint'
+import type { BarChartByTypeProps } from '../types'
+
 import styles from './BarChartIndividual.module.css'
 
 type IndividualBarChartProps = BarChartByTypeProps<'individual'> & { pointSize?: number }

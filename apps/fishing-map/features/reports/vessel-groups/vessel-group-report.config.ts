@@ -1,7 +1,8 @@
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
-import { FILTER_PROPERTIES } from '../areas/area-reports.utils'
+
 import type { FilterProperty } from '../areas/area-reports.utils'
+import { FILTER_PROPERTIES } from '../areas/area-reports.utils'
 
 export const OTHER_CATEGORY_LABEL = 'OTHER'
 

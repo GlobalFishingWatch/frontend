@@ -1,16 +1,19 @@
 import { useRef } from 'react'
-import type { ResponsiveVisualizationData } from '../../types'
+
 import { getIsIndividualTimeseriesSupported } from '../../lib/density'
-import type { BaseResponsiveChartProps, BaseResponsiveTimeseriesProps } from '../types'
-import { useResponsiveVisualization, useValueKeys } from '../hooks'
+import type { ResponsiveVisualizationData } from '../../types'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
-  DEFAULT_INDIVIDUAL_VALUE_KEY,
   DEFAULT_DATE_KEY,
+  DEFAULT_INDIVIDUAL_VALUE_KEY,
 } from '../config'
+import { useResponsiveVisualization, useValueKeys } from '../hooks'
 import TimeseriesPlaceholder from '../placeholders/TimeseriesPlaceholder'
-import { IndividualTimeseries } from './TimeseriesIndividual'
+import type { BaseResponsiveChartProps, BaseResponsiveTimeseriesProps } from '../types'
+
 import { AggregatedTimeseries } from './TimeseriesAggregated'
+import { IndividualTimeseries } from './TimeseriesIndividual'
+
 import styles from './Timeseries.module.css'
 
 type ResponsiveTimeseriesProps = BaseResponsiveChartProps &

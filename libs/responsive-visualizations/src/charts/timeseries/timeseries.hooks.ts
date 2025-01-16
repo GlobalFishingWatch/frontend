@@ -1,8 +1,10 @@
+import { useMemo } from 'react'
 import type { DurationUnit } from 'luxon'
 import { Duration } from 'luxon'
-import { useMemo } from 'react'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import type { ResponsiveVisualizationData } from '../../types'
 
 export function useTimeseriesDomain({

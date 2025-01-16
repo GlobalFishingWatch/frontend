@@ -1,21 +1,23 @@
 import type { DurationUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
+
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import {
-  COLUMN_PADDING,
-  DEFAULT_POINT_SIZE,
   AXIS_LABEL_PADDING,
   COLUMN_LABEL_SIZE,
-  TIMESERIES_PADDING,
+  COLUMN_PADDING,
+  DEFAULT_POINT_SIZE,
   MAX_INDIVIDUAL_ITEMS,
   POINT_GAP,
   POINT_SIZES,
+  TIMESERIES_PADDING,
 } from '../charts/config'
-import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
 import type {
   ResponsiveVisualizationAggregatedValueKey,
   ResponsiveVisualizationIndividualValueKey,
 } from '../charts/types'
+import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
 
 export const getItemValue = (value: ResponsiveVisualizationValue) => {
   if (typeof value === 'number') {

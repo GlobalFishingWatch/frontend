@@ -1,6 +1,7 @@
 import toNumber from 'lodash/toNumber'
 import type { DateTimeOptions } from 'luxon'
 import { DateTime } from 'luxon'
+
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }

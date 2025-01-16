@@ -1,5 +1,6 @@
-import VesselLink from 'features/vessel/VesselLink'
 import type { VesselGroupVesselTableParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import VesselLink from 'features/vessel/VesselLink'
+
 import styles from './VesselGraphLink.module.css'
 
 export default function VesselGraphLink({ data }: { data?: VesselGroupVesselTableParsed }) {

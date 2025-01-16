@@ -1,7 +1,7 @@
 import { useRef } from 'react'
-import type { ResponsiveVisualizationData } from '../../types'
+
 import { getIsIndividualBarChartSupported } from '../../lib/density'
-import type { BaseResponsiveBarChartProps, BaseResponsiveChartProps } from '../types'
+import type { ResponsiveVisualizationData } from '../../types'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
@@ -9,8 +9,11 @@ import {
 } from '../config'
 import { useResponsiveVisualization, useValueKeys } from '../hooks'
 import { BarChartPlaceholder } from '../placeholders/BarChartPlaceholder'
-import { IndividualBarChart } from './BarChartIndividual'
+import type { BaseResponsiveBarChartProps, BaseResponsiveChartProps } from '../types'
+
 import { AggregatedBarChart } from './BarChartAggregated'
+import { IndividualBarChart } from './BarChartIndividual'
+
 import styles from './BarChart.module.css'
 
 type ResponsiveBarChartProps = BaseResponsiveChartProps &

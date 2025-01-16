@@ -1,17 +1,20 @@
+import { cloneElement, type ReactElement,useCallback, useState } from 'react'
 import {
-  useFloating,
-  offset,
   flip,
-  shift,
-  useInteractions,
-  useHover,
   FloatingPortal,
+  offset,
+  shift,
+  useFloating,
+  useHover,
+  useInteractions,
 } from '@floating-ui/react'
-import { cloneElement, useCallback, useState, type ReactElement } from 'react'
 import cx from 'classnames'
+
 import type { ResponsiveVisualizationInteractionCallback } from '@globalfishingwatch/responsive-visualizations'
+
 import type { ResponsiveVisualizationValue } from '../../types'
 import { DEFAULT_POINT_SIZE } from '../config'
+
 import styles from './IndividualPoint.module.css'
 
 type IndividualPointProps = {

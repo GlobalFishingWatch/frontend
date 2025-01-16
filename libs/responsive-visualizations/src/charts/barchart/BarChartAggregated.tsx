@@ -1,4 +1,5 @@
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
+import { Bar, BarChart, LabelList,ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+
 import type {
   ResponsiveVisualizationAggregatedObjectValue,
   ResponsiveVisualizationValue,

@@ -1,16 +1,19 @@
 import { groupBy } from 'lodash'
+
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
+
 import type {
-  VGRSubsection,
   VGREventsVesselsProperty,
+  VGRSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
 import { MAX_CATEGORIES } from '../areas/area-reports.config'
 import type { ReportVesselWithDatasets } from '../areas/area-reports.selectors'
+import type { ReportVesselGraph } from '../areas/area-reports.types'
 import type { EventsStatsVessel } from '../ports/ports-report.slice'
 import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
 import type { VesselGroupVesselTableParsed } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
-import type { ReportVesselGraph } from '../areas/area-reports.types'
 
 type VesselVisualizationData = ResponsiveVisualizationData<
   'individual',

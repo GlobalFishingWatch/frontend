@@ -1,22 +1,25 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo,useState } from 'react'
+
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
+
 import type {
   getIsIndividualBarChartSupported,
   getIsIndividualTimeseriesSupported,
   IsIndividualSupportedParams,
 } from '../lib/density'
-import type {
-  BaseResponsiveChartProps,
-  ResponsiveVisualizationAggregatedValueKey,
-  ResponsiveVisualizationIndividualValueKey,
-} from './types'
+import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
+
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
   DEFAULT_LABEL_KEY,
   DEFAULT_POINT_SIZE,
 } from './config'
+import type {
+  BaseResponsiveChartProps,
+  ResponsiveVisualizationAggregatedValueKey,
+  ResponsiveVisualizationIndividualValueKey,
+} from './types'
 
 export function useValueKeys(
   individualValueKey:

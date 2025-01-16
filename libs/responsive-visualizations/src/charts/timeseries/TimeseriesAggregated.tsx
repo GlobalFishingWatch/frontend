@@ -1,16 +1,18 @@
+import max from 'lodash/max'
+import min from 'lodash/min'
 import {
-  XAxis,
-  ResponsiveContainer,
-  YAxis,
   CartesianGrid,
   ComposedChart,
   Line,
+  ResponsiveContainer,
   Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts'
-import min from 'lodash/min'
-import max from 'lodash/max'
-import type { TimeseriesByTypeProps } from '../types'
+
 import type { ResponsiveVisualizationData } from '../../types'
+import type { TimeseriesByTypeProps } from '../types'
+
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
