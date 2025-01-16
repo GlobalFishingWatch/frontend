@@ -15,7 +15,8 @@
     "clean": "yarn clean:cache && yarn clean:deps",
     "clean:deps": "rm -rf ./yarn.lock && touch yarn.lock && rm -rf ./node_modules && yarn cache clean --all && yarn install",
     "clean:cache": "rm -rf .nx && rm -rf ./dist",
-    "purge": "node scripts/purge-css.js"
+    "purge": "node scripts/purge-css.js",
+    "prepare": "husky install"
   },
   "workspaces": [
     "linting",
@@ -243,6 +244,7 @@
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.4",
     "eslint-plugin-react-hooks": "5.1.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "has": "1.0.4",
     "husky": "9.1.7",
     "jest": "29.7.0",

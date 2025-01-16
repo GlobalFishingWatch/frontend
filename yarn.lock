@@ -2960,6 +2960,7 @@ __metadata:
     eslint-plugin-jsx-a11y: "npm:6.10.2"
     eslint-plugin-react: "npm:7.37.4"
     eslint-plugin-react-hooks: "npm:5.1.0"
+    eslint-plugin-simple-import-sort: "npm:^12.1.1"
     file-loader: "npm:6.2.0"
     file-saver: "npm:2.0.5"
     formatcoords: "npm:1.1.3"
@@ -16603,6 +16604,15 @@ __metadata:
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
   checksum: 10/ee059971065ea7e73ab5d8728774235c7dbf7a5e9f937c3b47e97f8fa9a5a96ab511d2ae6d5ec76a7e705ca666673d454f1e75a94033720819d041827f50f9c8
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-simple-import-sort@npm:^12.1.1":
+  version: 12.1.1
+  resolution: "eslint-plugin-simple-import-sort@npm:12.1.1"
+  peerDependencies:
+    eslint: ">=5.0.0"
+  checksum: 10/2a690cea9243fbefa70345687bca8952f5e185fa459b7a8db687a908cc31082435cfee236c619d5245548fa5f89a2f2c4f8499f80512e048d2bedc60e3662d5a
   languageName: node
   linkType: hard
 
