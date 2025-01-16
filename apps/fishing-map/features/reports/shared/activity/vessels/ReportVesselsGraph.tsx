@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
 
-import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
+import {
+  getResponsiveVisualizationItemValue,
+  ResponsiveBarChart,
+} from '@globalfishingwatch/responsive-visualizations'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
 import {
@@ -121,7 +124,9 @@ const CustomTick = (props: any) => {
       {othersData
         ?.slice(0, MAX_OTHER_TOOLTIP_ITEMS)
         .map(({ name, value }) => (
-          <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
+          <li
+            key={`${name}-${value}`}
+          >{`${getTickLabel(name)}: ${getResponsiveVisualizationItemValue(value)}`}</li>
         ))}
       {othersData && othersData.length > MAX_OTHER_TOOLTIP_ITEMS && (
         <li>
