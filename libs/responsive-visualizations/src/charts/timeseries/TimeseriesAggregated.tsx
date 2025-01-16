@@ -77,17 +77,29 @@ export function AggregatedTimeseries({
           tickCount={4}
         />
         {data?.length && customTooltip ? <Tooltip content={customTooltip} /> : null}
-        {(valueKeys as string[]).map((valueKey) => (
+        {Array.isArray(valueKeys) ? (
+          valueKeys.map((valueKey) => (
+            <Line
+              name="line"
+              type="monotone"
+              dataKey={valueKey}
+              dot={false}
+              isAnimationActive={false}
+              stroke={color}
+              strokeWidth={2}
+            />
+          ))
+        ) : (
           <Line
             name="line"
             type="monotone"
-            dataKey={valueKey}
+            dataKey={valueKeys}
             dot={false}
             isAnimationActive={false}
             stroke={color}
             strokeWidth={2}
           />
-        ))}
+        )}
       </ComposedChart>
     </ResponsiveContainer>
   )
