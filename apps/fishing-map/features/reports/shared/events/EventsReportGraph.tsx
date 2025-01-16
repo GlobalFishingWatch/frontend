@@ -66,7 +66,7 @@ const AggregatedGraphTooltip = (props: any) => {
 
 const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: EventType }) => {
   const { t } = useTranslation()
-  if (!data?.vessel?.name) {
+  if (!data?.vessel) {
     return null
   }
   const { start, duration } = getTimeLabels({ start: data.start, end: data.end })
@@ -79,9 +79,12 @@ const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: E
           <label>
             {`${formatInfoField(data.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}
           </label>
-          <span>{`${formatInfoField(data.vessel?.name, 'shipname')} (${formatInfoField(data.vessel?.flag, 'flag')})`}</span>
+          <span>
+            {formatInfoField(data.vessel?.name, 'shipname')}{' '}
+            {data.vessel?.flag && <span>({formatInfoField(data.vessel?.flag, 'flag')})</span>}
+          </span>
         </div>
-        {eventType === 'encounter' && (
+        {eventType === 'encounter' && data.encounter?.vessel?.flag && (
           <div className={styles.property}>
             <label>{`${formatInfoField(data.encounter?.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}</label>
             <span>{`${formatInfoField(data.encounter?.vessel?.name, 'shipname')} (${formatInfoField(data.encounter?.vessel?.flag, 'flag')})`}</span>
@@ -161,11 +164,6 @@ export default function EventsReportGraph({
     }
     const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
     const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
-    console.log(
-      Object.entries(groupedData)
-        .map(([date, events]) => ({ date, values: events }))
-        .sort((a, b) => a.date.localeCompare(b.date))
-    )
 
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))

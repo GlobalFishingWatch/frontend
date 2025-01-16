@@ -80,6 +80,7 @@ export function AggregatedTimeseries({
         {Array.isArray(valueKeys) ? (
           valueKeys.map((valueKey) => (
             <Line
+              key={valueKey}
               name="line"
               type="monotone"
               dataKey={valueKey}
