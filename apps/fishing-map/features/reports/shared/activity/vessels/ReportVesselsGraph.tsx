@@ -18,7 +18,9 @@ import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/
 import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
 import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import {
+  REPORT_GRAPH_LABEL_KEY,
   selectReportVesselsGraphDataGrouped,
+  selectReportVesselsGraphDataKeys,
   selectReportVesselsGraphDataOthers,
   selectReportVesselsGraphIndividualData,
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
@@ -170,9 +172,8 @@ const CustomTick = (props: any) => {
 
 export default function ReportVesselsGraph() {
   const dataviews = useSelector(selectReportDataviewsWithPermissions)
-  const valueKeys = dataviews.map((dataview) => dataview.id)
-  const labelKey = 'name'
-  const data = useSelector(selectReportVesselsGraphDataGrouped({ labelKey, valueKeys }))
+  const valueKeys = useSelector(selectReportVesselsGraphDataKeys)
+  const data = useSelector(selectReportVesselsGraphDataGrouped)
   const individualData = useSelector(selectReportVesselsGraphIndividualData(valueKeys))
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   const othersData = useSelector(selectReportVesselsGraphDataOthers)
@@ -245,7 +246,7 @@ export default function ReportVesselsGraph() {
             return formatI18nNumber(value).toString()
           }}
           barLabel={<CustomTick getTickLabel={getTickLabel} />}
-          labelKey={labelKey}
+          labelKey={REPORT_GRAPH_LABEL_KEY}
           individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
           individualItem={<VesselGraphLink />}
           aggregatedTooltip={<ReportGraphTooltip type={selectedReportVesselGraph} />}
