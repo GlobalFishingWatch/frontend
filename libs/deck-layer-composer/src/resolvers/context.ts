@@ -1,17 +1,18 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  findDatasetByType,
+  getDatasetConfiguration,
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import type {
   ContextLayerConfig,
   ContextLayerId,
   ContextLayerProps,
   ContextPickingObject,
 } from '@globalfishingwatch/deck-layers'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import {
-  findDatasetByType,
-  getDatasetConfiguration,
-  resolveEndpoint,
-} from '@globalfishingwatch/datasets-client'
+
 import type { DeckResolverFunction } from './types'
 
 export const resolveDeckContextLayerProps: DeckResolverFunction<ContextLayerProps> = (

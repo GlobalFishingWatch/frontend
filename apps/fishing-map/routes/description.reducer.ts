@@ -1,6 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
+
 import { t } from 'features/i18n/i18n'
-import { HOME, SEARCH, WORKSPACE, WORKSPACES_LIST, WORKSPACE_SEARCH } from './routes'
+
+import { HOME, SEARCH, WORKSPACE, WORKSPACE_SEARCH,WORKSPACES_LIST } from './routes'
 
 const DEFAULT = `Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability.`
 

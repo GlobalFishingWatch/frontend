@@ -8,7 +8,7 @@ export const getTrackY = (
   numTracks: number,
   trackIndex: number,
   graphHeight: number,
-  orientation = 'middle'
+  orientation = 'mirrored'
 ) => {
   const finalHeight = graphHeight - TOTAL_MARGIN - SPACING * (numTracks - 1)
   const height = finalHeight / numTracks

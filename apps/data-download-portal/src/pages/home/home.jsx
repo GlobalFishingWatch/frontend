@@ -1,9 +1,11 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { Fragment,useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import formatDate from 'date-fns/format'
-import parseISO from 'date-fns/parseISO'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
+
 import Loader from '../../components/loader/loader.jsx'
+import { getUTCString } from '../../utils/dates.js'
+
 import styles from './home.module.css'
 
 function HomePage() {
@@ -38,9 +40,7 @@ function HomePage() {
                   <div className={styles.cardFooter}>
                     <div className={styles.lastUpdate}>
                       <label>Last Update</label>
-                      <span>
-                        {lastUpdated ? formatDate(parseISO(lastUpdated), 'MM/dd/yyyy') : '---'}
-                      </span>
+                      <span>{lastUpdated ? getUTCString(lastUpdated) : '---'}</span>
                     </div>
                     <span className={styles.seeMore}>SEE MORE</span>
                   </div>

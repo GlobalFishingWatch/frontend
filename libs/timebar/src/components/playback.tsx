@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
-import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
 import { DateTime } from 'luxon'
+import memoize from 'memoize-one'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_INTERVALS_ORDER,getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
+
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
+
 import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
 
@@ -36,6 +40,8 @@ type PlaybackProps = {
   intervals?: FourwingsInterval[]
   onTogglePlay?: (isPlaying: boolean) => void
   getCurrentInterval: typeof getFourwingsInterval
+  disabled?: boolean
+  disabledPlaybackTooltip?: string
 }
 
 type PlaybackState = {
@@ -63,6 +69,8 @@ class Playback extends Component<PlaybackProps> {
     },
     intervals: FOURWINGS_INTERVALS_ORDER,
     getCurrentInterval: getFourwingsInterval,
+    disabled: false,
+    disabledPlaybackTooltip: '',
   }
 
   constructor(props: PlaybackProps) {
@@ -76,8 +84,8 @@ class Playback extends Component<PlaybackProps> {
 
   getStep = memoize((start, end, speedStep) => {
     const baseStepWithSpeed = BASE_STEP * SPEED_STEPS[speedStep]
-    const startMs = new Date(start).getTime()
-    const endMs = new Date(end).getTime()
+    const startMs = getUTCDate(start).getTime()
+    const endMs = getUTCDate(end).getTime()
 
     const scale = scaleLinear().range([0, 1]).domain([startMs, endMs])
     const step = scale.invert(baseStepWithSpeed) - startMs
@@ -102,18 +110,18 @@ class Playback extends Component<PlaybackProps> {
         interval === 'MONTH'
           ? DateTime.fromISO(end, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
-      newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator
-      newEndMs = new Date(end).getTime() + intervalEndMs * deltaMultiplicator
+      newStartMs = getUTCDate(start).getTime() + intervalStartMs * deltaMultiplicator
+      newEndMs = getUTCDate(end).getTime() + intervalEndMs * deltaMultiplicator
     } else {
       const deltaMs = this.getStep(start, end, speedStep) * deltaMultiplicator
-      newStartMs = new Date(start).getTime() + deltaMs
-      newEndMs = new Date(end).getTime() + deltaMs
+      newStartMs = getUTCDate(start).getTime() + deltaMs
+      newEndMs = getUTCDate(end).getTime() + deltaMs
     }
     const currentStartEndDeltaMs = newEndMs - newStartMs
-    const playbackAbsoluteEnd = new Date(Date.now()).toISOString()
+    const playbackAbsoluteEnd = getUTCDate(Date.now()).toISOString()
     const { newStartClamped, newEndClamped, clamped } = clampToAbsoluteBoundaries(
-      new Date(newStartMs).toISOString(),
-      new Date(newEndMs).toISOString(),
+      getUTCDate(newStartMs).toISOString(),
+      getUTCDate(newEndMs).toISOString(),
       currentStartEndDeltaMs,
       absoluteStart,
       playbackAbsoluteEnd
@@ -124,8 +132,8 @@ class Playback extends Component<PlaybackProps> {
     if (clamped === 'end') {
       if (loop === true) {
         // start again from absoluteStart
-        const newEnd = new Date(
-          new Date(absoluteStart).getTime() + currentStartEndDeltaMs
+        const newEnd = getUTCDate(
+          getUTCDate(absoluteStart).getTime() + currentStartEndDeltaMs
         ).toISOString()
         onTick(absoluteStart, newEnd)
       } else {
@@ -215,8 +223,10 @@ class Playback extends Component<PlaybackProps> {
 
   render() {
     const { playing, loop, speedStep } = this.state
-    const { labels, end, absoluteEnd } = this.props
+    const { labels, end, absoluteEnd, disabled, disabledPlaybackTooltip } = this.props
     const stoppedAtEnd = end === absoluteEnd && loop !== true
+
+    const playbackDisabled = disabled || stoppedAtEnd
 
     return (
       <div
@@ -244,10 +254,17 @@ class Playback extends Component<PlaybackProps> {
         </button>
         <button
           type="button"
-          title={playing === true ? labels.pauseAnimation : labels.playAnimation}
-          onClick={this.onPlayToggleClick}
-          disabled={stoppedAtEnd}
-          className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play)}
+          title={
+            disabled && disabledPlaybackTooltip
+              ? disabledPlaybackTooltip
+              : playing === true
+                ? labels.pauseAnimation
+                : labels.playAnimation
+          }
+          onClick={playbackDisabled ? undefined : this.onPlayToggleClick}
+          className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play, {
+            [styles.disabled]: playbackDisabled,
+          })}
         >
           {playing === true ? <Icon icon="pause" /> : <Icon icon="play" />}
         </button>

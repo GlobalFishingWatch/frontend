@@ -13,7 +13,7 @@ export function useStateCallback<T = undefined>(
 ): [T | undefined, SetStateAction<T | undefined>]
 export function useStateCallback<T>(init: T): [T, SetStateAction<T>] {
   const [state, setState] = useState<T>(init)
-  const cbRef = useRef<OnUpdateCallback<T>>()
+  const cbRef = useRef<OnUpdateCallback<T>>(undefined)
 
   const setCustomState: SetStateAction<T> = (newState, callback?): void => {
     cbRef.current = callback

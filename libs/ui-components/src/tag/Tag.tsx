@@ -1,9 +1,11 @@
 import React from 'react'
 import cx from 'classnames'
-import type { Placement } from 'tippy.js'
+
 import { IconButton } from '../icon-button'
+import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
+
 import styles from './Tag.module.css'
 
 interface TagProps {
@@ -11,7 +13,7 @@ interface TagProps {
   children: string | React.ReactNode
   color?: string
   tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
+  tooltipPlacement?: TooltipPlacement
   testId?: string
   onRemove?: (event: React.MouseEvent) => void
 }
@@ -24,7 +26,7 @@ export function Tag(props: TagProps) {
     onRemove,
     testId,
     tooltip = '',
-    tooltipPlacement = 'auto',
+    tooltipPlacement = 'top',
   } = props
   return (
     <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>

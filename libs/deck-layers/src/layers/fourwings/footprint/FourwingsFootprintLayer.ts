@@ -1,23 +1,26 @@
 import type { Color, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
+import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
+
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
+
+import {
+  COLOR_HIGHLIGHT_LINE,
+  getLayerGroupOffset,
+  hexToDeckColor,
+  LayerGroup,
+} from '../../../utils'
 import { FOOTPRINT_ID } from '../fourwings.config'
 import type { FourwingsHeatmapPickingInfo, FourwingsHeatmapPickingObject } from '../fourwings.types'
 import { FourwingsAggregationOperation } from '../fourwings.types'
-import {
-  COLOR_HIGHLIGHT_LINE,
-  LayerGroup,
-  getLayerGroupOffset,
-  hexToDeckColor,
-} from '../../../utils'
 import {
   aggregateCell,
   EMPTY_CELL_COLOR,
   getIntervalFrames,
 } from '../heatmap/fourwings-heatmap.utils'
+
 import type { FourwingsFootprintLayerProps } from './fourwings-footprint.types'
 
 export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLayerProps> {
@@ -120,6 +123,9 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
         this.getSubLayerProps({
           id: `fourwings-tile`,
           pickable: true,
+          material: false,
+          _normalize: false,
+          positionFormat: 'XY',
           getPickingInfo: this.getPickingInfo,
           getFillColor: this._getFillColor,
           getPolygon: (d: FourwingsFeature) => d.coordinates,
@@ -139,6 +145,9 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
           new PathLayer(
             this.props,
             this.getSubLayerProps({
+              material: false,
+              _normalize: false,
+              positionFormat: 'XY',
               data: [highlightedFeature],
               id: `fourwings-cell-highlight-${index}`,
               widthUnits: 'pixels',

@@ -1,6 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { RootState } from 'store'
+
 import { selectAdvancedSearchFields, selectQueryParam } from 'routes/routes.selectors'
+
 import { getSerializedQuery } from './search.thunk'
 
 export const selectVesselsFound = (state: RootState) => state.search.queries

@@ -1,38 +1,42 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { debounce } from 'es-toolkit'
 import { useSelector } from 'react-redux'
-import type { MultiSelectOnChange, MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+import { debounce } from 'es-toolkit'
+
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getPlaceholderBySelections } from 'features/i18n/utils'
+import type { MultiSelectOnChange, MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
   getCommonSchemaFieldsInDataview,
-  getSchemaFiltersInDataview,
   getIncompatibleFilterSelection,
+  getSchemaFiltersInDataview,
   VESSEL_GROUPS_MODAL_ID,
 } from 'features/datasets/datasets.utils'
-import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import UserGuideLink from 'features/help/UserGuideLink'
+import { getPlaceholderBySelections } from 'features/i18n/utils'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import LayerSchemaFilter, { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
-import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { listAsSentence } from 'utils/shared'
-import UserGuideLink from 'features/help/UserGuideLink'
-import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+
 import {
   areAllSourcesSelectedInDataview,
   getSourcesOptionsInDataview,
   getSourcesSelectedInDataview,
 } from '../activity/activity.utils'
+
 import styles from './LayerFilters.module.css'
 
 type LayerFiltersProps = {
@@ -101,7 +105,7 @@ function LayerFilters({
   showApplyToAll,
   dataview: baseDataview,
   onConfirmCallback,
-}: LayerFiltersProps): React.ReactElement {
+}: LayerFiltersProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const isGuestUser = useSelector(selectIsGuestUser)
   const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))

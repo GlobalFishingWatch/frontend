@@ -1,17 +1,20 @@
 import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
+
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import DownloadActivity from 'features/download-activity/download-activity'
 import EventFilters from 'features/event-filters/EventFilters'
-import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import EventFiltersButton from 'features/event-filters/EventFiltersButton'
 import { selectIsFilterUpdated } from 'features/event-filters/filters.selectors'
+
 import ActivityDataAndTerminology from '../components/activity/ActivityDataAndTerminology'
 import { selectCurrentUserHasDownloadPermission } from '../profile.selectors'
+
 import styles from './ActivityFilters.module.css'
 
-const ActivityFilters: React.FC = (): React.ReactElement => {
+const ActivityFilters: React.FC = (): React.ReactElement<any> => {
   const { t } = useTranslation()
   const [isModalOpen, setIsOpen] = useState(false)
   const setModalOpen = useCallback((isOpen) => {

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react'
+
 import type { FilterByPolygomParams, FilteredPolygons } from './reports-activity-geo.utils'
 
 export function useFilterCellsByPolygonWorker() {
-  const workerRef = useRef<Worker>()
+  const workerRef = useRef<Worker>(undefined)
 
   useEffect(() => {
     workerRef.current = new Worker(

@@ -1,15 +1,18 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import formatcoords from 'formatcoords'
 import cx from 'classnames'
-import type { DateTimeFormatOptions } from 'luxon';
+import formatcoords from 'formatcoords'
+import type { DateTimeFormatOptions } from 'luxon'
 import { DateTime } from 'luxon'
-import { toFixed } from 'utils/shared'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+
 import I18nDate from 'features/i18n/i18nDate'
 import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
-import styles from './MapInfo.module.css'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { toFixed } from 'utils/shared'
+
 import MapScaleControl from './MapScaleControl'
+
+import styles from './MapInfo.module.css'
 
 export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
   const A_DAY = 1000 * 60 * 60 * 24

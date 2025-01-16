@@ -1,11 +1,13 @@
-import type { ClusterFeature, PointFeature } from 'supercluster'
 import type { PickingInfo } from '@deck.gl/core'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { ClusterFeature, PointFeature } from 'supercluster'
+
 import type {
   ClusterMaxZoomLevelConfig,
   EventTypes,
   FourwingsGeolocation,
 } from '@globalfishingwatch/api-types'
+
 import type { DeckLayerProps, DeckPickingObject } from '../../../types'
 
 export type FourwingsClusterEventType =

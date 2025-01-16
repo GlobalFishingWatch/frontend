@@ -1,8 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
+
 import type { Dataset} from '@globalfishingwatch/api-types';
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+
 import { FULL_SUFIX } from 'data/config'
+
 import { selectDatasets } from './datasets.slice'
 
 export const selectDatasetsByType = (type: DatasetTypes) => {

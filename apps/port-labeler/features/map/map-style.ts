@@ -1,5 +1,6 @@
 import { API_GATEWAY, API_GATEWAY_VERSION } from "@globalfishingwatch/layer-composer"
 import type { LayerSpecification } from "@globalfishingwatch/maplibre-gl"
+
 import { NSLABELS_ENDOPOINT } from "data/config"
 
 const style = {

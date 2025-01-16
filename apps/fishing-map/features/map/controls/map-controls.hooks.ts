@@ -1,15 +1,15 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
+
 import { useAppDispatch } from 'features/app/app.hooks'
-import type {
-  MapControl,
-  MapControlValue} from './map-controls.slice';
+
+import type { MapControl, MapControlValue } from './map-controls.slice'
 import {
-  setMapControlValue as setMapControlValueAction,
-  setMapControlEditing as setMapControlEditingAction,
   resetMapControlValue as resetMapControlValueAction,
   selectMapControlEditing,
-  selectMapControlValue
+  selectMapControlValue,
+  setMapControlEditing as setMapControlEditingAction,
+  setMapControlValue as setMapControlValueAction,
 } from './map-controls.slice'
 
 export const useMapControl = (control: MapControl) => {

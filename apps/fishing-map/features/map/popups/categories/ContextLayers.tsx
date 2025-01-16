@@ -1,15 +1,19 @@
 import { Fragment, useCallback } from 'react'
-import { groupBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
-import { Icon } from '@globalfishingwatch/ui-components'
-import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import { groupBy } from 'es-toolkit'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
-import styles from '../Popup.module.css'
-import ContextLayersRow from './ContextLayersRow'
+import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+
 import { useContextInteractions } from './ContextLayers.hooks'
+import ContextLayersRow from './ContextLayersRow'
+
+import styles from '../Popup.module.css'
 
 type ContextTooltipRowProps = {
   features: (ContextPickingObject | UserLayerPickingObject)[]

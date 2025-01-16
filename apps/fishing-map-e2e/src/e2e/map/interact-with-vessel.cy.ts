@@ -19,7 +19,7 @@ describe('Interact with vessels', () => {
     cy.log('should pin a vessel from a cell in the map')
     waitForMapLoadTiles(3000) // Give 3 seconds more to paint data on the map
     cy.intercept(API_URL_VESSELS).as('searchForVessels')
-    getMapCanvas().click('center')
+    getMapCanvas().click('center', { force: true })
     scrollSidebar('center', 2000)
 
     cy.wait('@searchForVessels', getRequestTimeout(10000))

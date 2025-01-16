@@ -1,51 +1,53 @@
-/* eslint-disable @next/next/no-img-element */
-import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { lowerCase } from 'es-toolkit'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
-import { useTranslation } from 'react-i18next'
-import { lowerCase } from 'es-toolkit'
-import { Icon } from '@globalfishingwatch/ui-components'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type {
+  ReportEventsStatsParams,
+  ReportEventsStatsResponseGroups,
+  ReportEventsVesselsParams,
+} from 'queries/report-events-stats-api'
 import {
   useGetReportEventsStatsQuery,
   useGetReportEventsVesselsQuery,
 } from 'queries/report-events-stats-api'
-import type {
-  ReportEventsStatsResponseGroups,
-  ReportEventsVesselsParams,
-  ReportEventsStatsParams} from 'queries/report-events-stats-api';
-import VGREventsSubsectionSelector from 'features/reports/vessel-groups/events/VGREventsSubsectionSelector'
-import VGREventsGraph from 'features/reports/shared/events/EventsReportGraph'
-import {
-  selectVGREventsVesselFilter,
-  selectVGREventsVesselsProperty,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
-import VesselGroupReportVesselsGraph from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsGraph'
-import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
+
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { Icon } from '@globalfishingwatch/ui-components'
+
+import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import ReportVesselsFilter from 'features/reports/shared/activity/vessels/ReportVesselsFilter'
+import VGREventsGraph from 'features/reports/shared/events/EventsReportGraph'
 import VGREventsVesselPropertySelector from 'features/reports/shared/events/EventsReportVesselPropertySelector'
 import VGREventsVesselsTable from 'features/reports/shared/events/EventsReportVesselsTable'
-import ReportVesselsFilter from 'features/reports/shared/activity/vessels/ReportVesselsFilter'
-import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
 import {
   selectFetchVGREventsVesselsParams,
   selectVGREventsVessels,
   selectVGREventsVesselsFlags,
   selectVGREventsVesselsGrouped,
-  selectVGREventsVesselsPagination,
-} from 'features/reports/vessel-groups/events/vgr-events.selectors'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+ selectVGREventsVesselsPaginated,  selectVGREventsVesselsPagination } from 'features/reports/vessel-groups/events/vgr-events.selectors'
+import VGREventsSubsectionSelector from 'features/reports/vessel-groups/events/VGREventsSubsectionSelector'
+import {
+  selectVGREventsVesselFilter,
+  selectVGREventsVesselsProperty,
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
-import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
-import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
-import { selectVGREventsVesselsPaginated } from 'features/reports/vessel-groups/events/vgr-events.selectors'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import VesselGroupReportVesselsGraph from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsGraph'
+import { selectReportVesselGroupId } from 'routes/routes.selectors'
+
 import VGREventsVesselsTableFooter from '../../shared/events/EventsReportVesselsTableFooter'
+
 import styles from './VGREvents.module.css'
 
 function VGREvents() {
@@ -156,7 +158,7 @@ function VGREvents() {
                           lowerCase(subCategoryDataset)
                         )
                       : ''
-                  } ${t('common.event', 'events').toLowerCase()}`,
+                  } ${(t('common.events', 'events') as string).toLowerCase()}`,
                   start: formatI18nDate(start, {
                     format: DateTime.DATE_MED,
                   }),

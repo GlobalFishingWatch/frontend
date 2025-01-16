@@ -1,4 +1,7 @@
-import type { Placement } from 'tippy.js'
+import type { JSX } from 'react'
+
+import type { TooltipPlacement } from '../tooltip'
+
 export * from './Select'
 
 export type SelectOption<Id = any, Label = string | JSX.Element> = {
@@ -6,7 +9,7 @@ export type SelectOption<Id = any, Label = string | JSX.Element> = {
   label: Label
   disabled?: boolean
   tooltip?: string
-  tooltipPlacement?: Placement
+  tooltipPlacement?: TooltipPlacement
 }
 /**
  * Callback on selecting or removing options

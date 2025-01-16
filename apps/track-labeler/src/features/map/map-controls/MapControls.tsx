@@ -1,19 +1,22 @@
 import { useCallback, useState } from 'react'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
-import { useSelector } from 'react-redux'
-import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
-import { MiniGlobe } from '@globalfishingwatch/ui-components/miniglobe'
+
+import * as Generators from '@globalfishingwatch/layer-composer'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
-import * as Generators from '@globalfishingwatch/layer-composer'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
+import { MiniGlobe } from '@globalfishingwatch/ui-components/miniglobe'
+
 import { CONTEXT_LAYERS } from '../../../data/config'
-import { useAppDispatch } from '../../../store.hooks'
 import Rulers from '../../../features/rulers/Rulers'
 import { updateQueryParams } from '../../../routes/routes.actions'
-import type { ContextLayer } from '../../../types'
 import { selectHiddenLayers, selectSatellite } from '../../../routes/routes.selectors'
+import { useAppDispatch } from '../../../store.hooks'
+import type { ContextLayer } from '../../../types'
 import { useViewportConnect } from '../map.hooks'
+
 import styles from './MapControls.module.css'
 
 const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {

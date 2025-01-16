@@ -1,36 +1,35 @@
-import type { ChangeEvent} from 'react';
+import type { ChangeEvent } from 'react'
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type { SelectOption } from '@globalfishingwatch/ui-components';
-import { InputText, Button, Modal, Select } from '@globalfishingwatch/ui-components'
-import type {
-  Report,
-  Workspace,
-  WorkspaceViewAccessType} from '@globalfishingwatch/api-types';
+import { useSelector } from 'react-redux'
+import type { WorkspaceState } from 'types'
+
+import type { Report, Workspace, WorkspaceViewAccessType } from '@globalfishingwatch/api-types'
 import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS
+  WORKSPACE_PUBLIC_ACCESS,
 } from '@globalfishingwatch/api-types'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
-import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
-import { createReportThunk, updateReportThunk } from 'features/reports/areas/area-reports.slice'
-import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
-import type { AsyncError } from 'utils/async-slice'
-import type {
-  WorkspaceTimeRangeMode} from 'features/workspace/save/workspace-save.utils';
+import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
+import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
+import { createReportThunk, updateReportThunk } from 'features/reports/areas/area-reports.slice'
+import { useSaveWorkspaceTimerange } from 'features/workspace/save/workspace-save.hooks'
+import type { WorkspaceTimeRangeMode } from 'features/workspace/save/workspace-save.utils'
 import {
   DAYS_FROM_LATEST_MAX,
   DAYS_FROM_LATEST_MIN,
-  getViewAccessOptions
+  getViewAccessOptions,
 } from 'features/workspace/save/workspace-save.utils'
-import type { WorkspaceState } from 'types'
-import { useSaveWorkspaceTimerange } from 'features/workspace/save/workspace-save.hooks'
+import type { AsyncError } from 'utils/async-slice'
+
 import styles from './NewAreaReportModal.module.css'
 
 type NewReportModalProps = {

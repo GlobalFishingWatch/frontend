@@ -1,10 +1,13 @@
 import { Fragment, useCallback, useMemo } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import { DateTime } from 'luxon'
+
 import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { RenderedVoyage } from 'types/voyage'
+
 import styles from './Activity.module.css'
 
 interface EventProps {
@@ -17,7 +20,7 @@ const ActivityVoyage: React.FC<EventProps> = ({
   event,
   onMapClick = () => {},
   onToggleClick = () => {},
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const voyageLabel = useMemo(() => {

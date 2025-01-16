@@ -1,25 +1,28 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+
+import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
-import {
-  selectIsAnyVesselLocation,
-  selectVesselId,
-  selectIsVesselGroupReportLocation,
-  selectReportVesselGroupId,
-  selectIsAnyAreaReportLocation,
-} from 'routes/routes.selectors'
-import { createDeepEqualSelector } from 'utils/selectors'
-import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
   selectVGRSection,
   selectVGRSubsection,
   selectViewOnlyVesselGroup,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
+import {
+  selectIsAnyAreaReportLocation,
+  selectIsAnyVesselLocation,
+  selectIsVesselGroupReportLocation,
+  selectReportVesselGroupId,
+  selectVesselId,
+} from 'routes/routes.selectors'
+import { createDeepEqualSelector } from 'utils/selectors'
+
 import {
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesMerged,

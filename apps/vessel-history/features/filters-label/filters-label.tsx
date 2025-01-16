@@ -2,8 +2,10 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { capitalize } from 'lodash'
 import { DateTime } from 'luxon'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+
 import type { Filters } from 'features/event-filters/filters.slice'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+
 import styles from './filters-label.module.css'
 
 export interface FiltersLabelProps {

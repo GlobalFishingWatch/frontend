@@ -1,1 +1,0 @@
-# @globalfishingwatchapp/fourwings-explorer

@@ -1,8 +1,10 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, type JSX } from 'react'
 import cx from 'classnames'
-import styles from './Header.module.css'
-import type { MenuItem } from './Header.links';
+
+import type { MenuItem } from './Header.links'
 import navigation from './Header.links'
+
+import styles from './Header.module.css'
 
 interface HeaderProps {
   children?: React.ReactNode

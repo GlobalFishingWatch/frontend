@@ -1,21 +1,24 @@
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { uniqBy } from 'es-toolkit'
-import { Spinner } from '@globalfishingwatch/ui-components'
-import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { useSearchByOwnerQuery } from 'queries/search-api'
+
+import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
+import { Spinner } from '@globalfishingwatch/ui-components'
+
+import I18nDate from 'features/i18n/i18nDate'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import {
-  getVesselProperty,
   filterRegistryInfoByDateAndSSVID,
   getVesselId,
+  getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import { formatInfoField } from 'utils/info'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
-import I18nDate from 'features/i18n/i18nDate'
-import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+
 import styles from './RelatedVessels.module.css'
 
 type OwnerVesselsProps = { owner: string; dataset: string; ignoreVessel?: string }

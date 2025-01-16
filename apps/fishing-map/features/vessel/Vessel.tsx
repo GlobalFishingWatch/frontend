@@ -1,56 +1,60 @@
-import { useSelector } from 'react-redux'
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Tab } from '@globalfishingwatch/ui-components'
-import { Button, Spinner, Tabs } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+
 import { isAuthError } from '@globalfishingwatch/api-client'
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import {
-  selectIsWorkspaceVesselLocation,
-  selectVesselId,
-  selectWorkspaceId,
-} from 'routes/routes.selectors'
-import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
+import type { Tab } from '@globalfishingwatch/ui-components'
+import { Button, Spinner, Tabs } from '@globalfishingwatch/ui-components'
+
+import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
+import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import VesselHeader from 'features/vessel/VesselHeader'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
+import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
+import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
-import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import VesselAreas from 'features/vessel/areas/VesselAreas'
+import Insights from 'features/vessel/insights/Insights'
+import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
+import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
+import {
+  selectVesselInfoData,
+  selectVesselInfoError,
+  selectVesselInfoStatus,
+} from 'features/vessel/selectors/vessel.selectors'
 import {
   selectIncludeRelatedIdentities,
   selectVesselAreaSubsection,
   selectVesselDatasetId,
   selectVesselSection,
 } from 'features/vessel/vessel.config.selectors'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
 import { useUpdateVesselEventsVisibility } from 'features/vessel/vessel.hooks'
-import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
-import VesselAreas from 'features/vessel/areas/VesselAreas'
-import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
-import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
-import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
-import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
+import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
+import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
+import VesselHeader from 'features/vessel/VesselHeader'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
-  selectVesselInfoStatus,
-  selectVesselInfoError,
-  selectVesselInfoData,
-} from 'features/vessel/selectors/vessel.selectors'
-import Insights from 'features/vessel/insights/Insights'
+  selectIsWorkspaceVesselLocation,
+  selectVesselId,
+  selectWorkspaceId,
+} from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
-import styles from './Vessel.module.css'
 import type { VesselSection } from './vessel.types'
+
+import styles from './Vessel.module.css'
 
 const Vessel = () => {
   const { t } = useTranslation()

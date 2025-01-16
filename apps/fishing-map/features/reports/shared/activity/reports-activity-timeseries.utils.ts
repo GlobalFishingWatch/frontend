@@ -1,18 +1,19 @@
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
 } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
+
+import type { DateTimeSeries } from 'features/reports/areas/area-reports.hooks'
+import type { ComparisonGraphData } from 'features/reports/shared/activity/ReportActivityPeriodComparisonGraph'
+import type { FilteredPolygons } from 'features/reports/shared/activity/reports-activity-geo.utils'
 import type {
   ReportGraphMode,
   ReportGraphProps,
 } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
-import type { FilteredPolygons } from 'features/reports/shared/activity/reports-activity-geo.utils'
-import type { DateTimeSeries } from 'features/reports/areas/area-reports.hooks'
-import { getUTCDateTime } from 'utils/dates'
-import type { ComparisonGraphData } from 'features/reports/shared/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
+import { getUTCDateTime } from 'utils/dates'
 
 export interface TimeSeriesFrame {
   frame: number

@@ -1,8 +1,10 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import Pbf from 'pbf'
-import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
+
 import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
+import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
+
 import type { FourwingsFeature, FourwingsLoaderOptions, ParseFourwingsOptions } from './types'
 
 export const NO_DATA_VALUE = 4294967295
@@ -154,16 +156,12 @@ export const getCellTimeseries = (
   }
 }
 
-let count = 0
-let tilesCount = 0
-
 export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
   if (!options?.fourwings?.buffersLength?.length) {
     return []
   }
-  const a = performance.now()
-  tilesCount++
-  const cells = Array.from(
+
+  return Array.from(
     new Pbf(datasetsBuffer)
       .readFields(getCellTimeseries, {
         features: new Map<number, FourwingsFeature>(),
@@ -171,12 +169,4 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
       })
       .features.values()
   )
-  const b = performance.now()
-  count += b - a
-  console.log(
-    `parseFourwings took ${Math.round(count)} ms for ${tilesCount} tiles. ${Math.round(
-      count / tilesCount
-    )} ms on average`
-  )
-  return cells
 }

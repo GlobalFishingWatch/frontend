@@ -1,12 +1,15 @@
 import React from 'react'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
+
 // import { getLocationSearch } from '../../routes/routes.selectors'
 import { BASE_URL } from '../../data/constants'
+
 import styles from './Login.module.css'
 // import { useSelector } from 'react-redux'
 
-const Login: React.FC = (): React.ReactElement => {
+const Login: React.FC = (): React.ReactElement<any> => {
   const location = window.location.origin + BASE_URL
   // const search = useSelector(getLocationSearch)
   const url = GFWAPI.getLoginUrl(location)

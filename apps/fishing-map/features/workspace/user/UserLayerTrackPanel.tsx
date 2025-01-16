@@ -1,26 +1,28 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { uniqBy } from 'es-toolkit'
+
 import {
   COORDINATE_PROPERTY_TIMESTAMP,
   getUTCDate,
   NO_RECORD_ID,
 } from '@globalfishingwatch/data-transforms'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
-  getUserDataviewDataset,
   getDatasetConfigurationProperty,
+  getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import type { UserTrackFeature } from '@globalfishingwatch/deck-loaders'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { selectActiveUserTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setHighlightedTime } from 'features/timebar/timebar.slice'
+import { selectActiveUserTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useDisableHighlightTimeConnect } from 'features/timebar/timebar.hooks'
+import { setHighlightedTime } from 'features/timebar/timebar.slice'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance

@@ -1,15 +1,17 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DateTime, Interval } from 'luxon'
 import { memoize } from 'lodash'
-import { selectUrlAkaVesselQuery, selectVesselProfileId } from 'routes/routes.selectors'
+import { DateTime, Interval } from 'luxon'
+import type { ValueItem} from 'types';
+
 import { RISK_SUMMARY_SETTINGS } from 'data/config'
+import { getEventsWithMainPortVisit } from 'features/activity-by-type/activity-by-type.selectors'
 import type { RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import { selectEvents } from 'features/vessels/activity/vessels-activity.selectors'
-import type { MOU, VesselIdentityIndicators } from 'types/risk-indicator'
-import type { ValueItem} from 'types';
+import { selectUrlAkaVesselQuery, selectVesselProfileId } from 'routes/routes.selectors'
 import { VesselAPISource } from 'types'
+import type { MOU, VesselIdentityIndicators } from 'types/risk-indicator'
 import { getUTCDateTime } from 'utils/dates'
-import { getEventsWithMainPortVisit } from 'features/activity-by-type/activity-by-type.selectors'
+
 import { getMergedVesselsUniqueId, selectIndicators } from './risk-indicator.slice'
 
 const selectEventsForRiskSummaryInPeriod = createSelector([selectEvents], (events) => {

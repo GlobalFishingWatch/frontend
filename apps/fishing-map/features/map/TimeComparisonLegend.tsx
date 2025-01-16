@@ -1,11 +1,14 @@
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { UILegend } from '@globalfishingwatch/ui-components';
-import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
-import { useTimeCompareTimeDescription } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
+import type { UILegend } from '@globalfishingwatch/ui-components'
+import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
+
 import { selectActivityMergedDataviewId } from 'features/dataviews/selectors/dataviews.selectors'
+import { useTimeCompareTimeDescription } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
+
 import styles from './MapLegends.module.css'
 
 const TimeComparisonLegend = () => {

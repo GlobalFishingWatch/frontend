@@ -8,16 +8,15 @@
 */
 
 import {
-  FEATURE_ROW_INDEX,
-  FEATURE_COL_INDEX,
-  FEATURE_CELLS_START_INDEX,
+  CELL_END_INDEX,
   CELL_NUM_INDEX,
   CELL_START_INDEX,
-  CELL_END_INDEX,
   CELL_VALUES_START_INDEX,
+  FEATURE_CELLS_START_INDEX,
+  FEATURE_COL_INDEX,
+  FEATURE_ROW_INDEX,
   VALUE_MULTIPLIER,
 } from './constants'
-import { generateUniqueId } from './util'
 import type {
   FeatureParams,
   TileAggregationParams} from './types';
@@ -26,6 +25,7 @@ import {
   GeomType,
   SublayerCombinationMode
 } from './types'
+import { generateUniqueId } from './util'
 
 const getCellCoords = (tileBBox: any, cell: number, numCols: number) => {
   const col = cell % numCols

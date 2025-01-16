@@ -1,28 +1,32 @@
 import { useCallback } from 'react'
-import cx from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
-import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
+
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectUserEnvironmentDatasets } from 'features/user/selectors/user.permissions.selectors'
-import styles from 'features/workspace/shared/Sections.module.css'
-import { getEventLabel } from 'utils/analytics'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectLocationCategory } from 'routes/routes.selectors'
+
 import { WorkspaceCategory } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setModalOpen } from 'features/modals/modals.slice'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
+import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { selectUserEnvironmentDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { useVisualizationsOptions } from 'features/workspace/activity/activity.hooks'
 import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
+import styles from 'features/workspace/shared/Sections.module.css'
+import { selectLocationCategory } from 'routes/routes.selectors'
+import { getEventLabel } from 'utils/analytics'
+
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 
-function EnvironmentalLayerSection(): React.ReactElement | null {
+function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
@@ -106,7 +110,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
         </LayerPanelContainer>
       )}
       {locationCategory === WorkspaceCategory.MarineManager && (
-        <div className={styles.surveyLink}>
+        <div className={cx(styles.surveyLink, 'print-hidden')}>
           <a
             href={
               t(

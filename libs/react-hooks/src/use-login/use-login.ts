@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useEffect,useState } from 'react'
+
 import {
-  GFWAPI,
   getAccessTokenFromUrl,
+  GFWAPI,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'

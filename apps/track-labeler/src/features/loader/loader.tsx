@@ -1,5 +1,7 @@
 import React from 'react'
+
 import brand from '../../assets/images/brand.png'
+
 import styles from './loader.module.scss'
 
 interface LoaderProps {
@@ -10,7 +12,7 @@ interface LoaderProps {
   carrier?: boolean
 }
 
-const Loader: React.FC<LoaderProps> = (): React.ReactElement => {
+const Loader: React.FC<LoaderProps> = (): React.ReactElement<any> => {
   return (
     <div className={styles.loaderContainer}>
       <div>

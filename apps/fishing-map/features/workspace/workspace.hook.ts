@@ -1,25 +1,24 @@
-import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useSelector } from 'react-redux'
+
 import type { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
-import type {
-  ColorBarOption} from '@globalfishingwatch/ui-components';
-import {
-  FillColorBarOptions,
-  LineColorBarOptions
-} from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui-components'
+
+import { LAYERS_LIBRARY_ACTIVITY } from 'data/layer-library/layers-activity'
+import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectUrlDataviewInstances,
   selectUrlTimeRange,
   selectUrlViewport,
 } from 'routes/routes.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { LAYERS_LIBRARY_ACTIVITY } from 'data/layer-library/layers-activity'
-import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
+
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 export const useFitWorkspaceBounds = () => {
@@ -49,6 +48,27 @@ export const useFitWorkspaceBounds = () => {
   return fitWorkspaceBounds
 }
 
+export const getNextColor = (
+  colorCyclingType: ColorCyclingType,
+  currentColors: string[] | undefined
+) => {
+  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
+  if (!currentColors) {
+    return palette[Math.floor(Math.random() * palette.length)]
+  }
+  let minRepeat = Number.POSITIVE_INFINITY
+  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
+    const num = currentColors.filter((c) => c === color.value).length
+    if (num < minRepeat) minRepeat = num
+    return {
+      ...color,
+      num,
+    }
+  })
+  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
+  return nextColor
+}
+
 const createDataviewsInstances = (
   newDataviewInstances: Partial<UrlDataviewInstance>[],
   currentDataviewInstances: UrlDataviewInstance[] = []
@@ -67,10 +87,10 @@ const createDataviewsInstances = (
         config: {
           ...config,
           color: nextColor.value,
+          colorCyclingType: undefined,
         },
       } as UrlDataviewInstance
-      if (dataview.config.colorCyclingType === 'fill') {
-         
+      if (colorCyclingType === 'fill') {
         dataviewWithColor.config!.colorRamp = nextColor.id
       }
       return dataviewWithColor
@@ -112,24 +132,6 @@ export const mergeDataviewIntancesToUpsert = (
     }
   })
   return dataviewInstances
-}
-
-const getNextColor = (colorCyclingType: ColorCyclingType, currentColors: string[] | undefined) => {
-  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
-  if (!currentColors) {
-    return palette[0]
-  }
-  let minRepeat = Number.POSITIVE_INFINITY
-  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
-    const num = currentColors.filter((c) => c === color.value).length
-    if (num < minRepeat) minRepeat = num
-    return {
-      ...color,
-      num,
-    }
-  })
-  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
-  return nextColor
 }
 
 export const useDataviewInstancesConnect = () => {

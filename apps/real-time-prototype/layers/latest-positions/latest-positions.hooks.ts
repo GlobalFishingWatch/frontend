@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
-import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { LatestPositions } from 'layers/latest-positions/LatestPositions'
+import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 
 type LatestPositionsAtom = {
   loaded: boolean

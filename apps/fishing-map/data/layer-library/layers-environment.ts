@@ -1,4 +1,5 @@
 import { LayerGroup } from '@globalfishingwatch/deck-layers'
+
 import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {

@@ -1,17 +1,21 @@
 import { useSelector } from 'react-redux'
-import type { InsightType} from '@globalfishingwatch/api-types';
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { useGetVesselInsightQuery } from 'queries/vessel-insight-api'
-import { getVesselIdentities } from 'features/vessel/vessel.utils'
+
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { InsightType } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import InsightMOUList from 'features/vessel/insights/InsightMOUList'
+import { getVesselIdentities } from 'features/vessel/vessel.utils'
+
 import { selectVesselInfoData } from '../selectors/vessel.selectors'
+
 import InsightCoverage from './InsightCoverage'
 import InsightFishing from './InsightFishing'
+import InsightFlagChanges from './InsightFlagChanges'
 import InsightGaps from './InsightGaps'
 import InsightIUU from './InsightIUU'
-import InsightFlagChanges from './InsightFlagChanges'
 
 const InsightWrapper = ({ insight }: { insight: InsightType }) => {
   const { start, end } = useSelector(selectTimeRange)

@@ -1,43 +1,45 @@
-import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { useSelector } from 'react-redux'
 import { debounce } from 'es-toolkit'
-import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
+import type { TimebarGraphs } from 'types'
+
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
-import type { TimebarGraphs} from 'types';
-import { TimebarVisualisations } from 'types'
+import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
+
+import { DEFAULT_TIME_RANGE } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
   selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import {
-  selectActiveReportActivityDataviews,
-  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
-} from 'features/dataviews/selectors/dataviews.selectors'
-import { updateUrlTimerange } from 'routes/routes.actions'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
-import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
-import { DEFAULT_TIME_RANGE } from 'data/config'
-import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
 import {
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import type {
-  TimeRange} from './timebar.slice';
+import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+  selectActiveReportActivityDataviews,
+} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
+import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
+import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
+import { updateUrlTimerange } from 'routes/routes.actions'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import { TimebarVisualisations } from 'types'
+
+import type { TimeRange } from './timebar.slice'
 import {
   changeSettings,
-  setHighlightedEvents,
-  selectHighlightedEvents,
+  disableHighlightedTime,
   selectHasChangedSettingsOnce,
+  selectHighlightedEvents,
   selectHighlightedTime,
-  disableHighlightedTime
+  setHighlightedEvents,
 } from './timebar.slice'
 
 const TIMERANGE_DEBOUNCED_TIME = 1000
@@ -83,7 +85,6 @@ export const useSetTimerange = () => {
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
 
-   
   const updateUrlTimerangeDebounced = useCallback(
     debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
     []
@@ -185,7 +186,6 @@ export const useHighlightedEventsConnect = () => {
       highlightedEventIds,
       dispatchHighlightedEvents,
     }
-     
   }, [serializedHighlightedEventIds, dispatchHighlightedEvents])
 }
 
@@ -308,7 +308,6 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
     }
-     
   }, [
     activeActivityDataviews,
     activeDetectionsDataviews,

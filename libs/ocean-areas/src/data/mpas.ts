@@ -1,5 +1,6 @@
 
     import type { FeatureCollection } from 'geojson'
+
     import type { OceanAreaProperties } from '../ocean-areas'
 
     const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {

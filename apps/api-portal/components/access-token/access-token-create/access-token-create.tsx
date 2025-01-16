@@ -1,7 +1,10 @@
-import { useCallback, Fragment, useMemo, useRef, useEffect } from 'react'
+import { Fragment, useCallback, useEffect,useMemo, useRef } from 'react'
 import cx from 'classnames'
+
 import { Button, InputText } from '@globalfishingwatch/ui-components'
+
 import { useCreateUserApplication } from 'features/user-applications/user-applications'
+
 import styles from './access-token-create.module.css'
 
 /* eslint-disable-next-line */
@@ -19,7 +22,7 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
     valid,
   } = useCreateUserApplication()
 
-  const nameRef = useRef<HTMLInputElement>()
+  const nameRef = useRef<HTMLInputElement>(undefined)
   const create = useCallback(async () => {
     await mutate({
       ...token,

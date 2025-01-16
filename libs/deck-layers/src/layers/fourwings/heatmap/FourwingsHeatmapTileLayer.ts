@@ -1,16 +1,19 @@
-import type { Layer, LayerContext, LayersList, DefaultProps, UpdateParameters } from '@deck.gl/core'
+import type { DefaultProps, Layer, LayerContext, LayersList, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
+import type { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { parse } from '@loaders.gl/core'
+import { scaleLinear } from 'd3-scale'
 import { debounce, sum } from 'es-toolkit'
 import isEqual from 'lodash/isEqual'
-import type { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { scaleLinear } from 'd3-scale'
+
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type {
-  FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
+  FourwingsValuesAndDatesFeature,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
 import {
@@ -18,22 +21,22 @@ import {
   getFourwingsInterval,
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+
+import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
 import type { ColorRampId } from '../../../utils/colorRamps'
 import {
   COLOR_RAMP_BIVARIATE_NUM_STEPS,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
-  TIME_COMPARE_COLOR_RAMP,
   getBivariateRamp,
   getColorRamp,
+  TIME_COMPARE_COLOR_RAMP,
 } from '../../../utils/colorRamps'
 import {
-  HEATMAP_API_TILES_URL,
-  FOURWINGS_MAX_ZOOM,
-  MAX_RAMP_VALUES,
-  MAX_POSITIONS_PER_TILE_SUPPORTED,
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
+  FOURWINGS_MAX_ZOOM,
+  HEATMAP_API_TILES_URL,
+  MAX_POSITIONS_PER_TILE_SUPPORTED,
+  MAX_RAMP_VALUES,
 } from '../fourwings.config'
 import type {
   FourwingsColorObject,
@@ -43,18 +46,7 @@ import type {
   FourwingsTileLayerColorScale,
   GetViewportDataParams,
 } from '../fourwings.types'
-import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
-import {
-  aggregateCellTimeseries,
-  getFourwingsChunk,
-  getDataUrlBySublayer,
-  filterCells,
-  compareCell,
-  aggregateCell,
-  getIntervalFrames,
-  getZoomOffsetByResolution,
-} from './fourwings-heatmap.utils'
-import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
+
 import type {
   FourwingsChunk,
   FourwingsHeatmapTileLayerProps,
@@ -63,6 +55,17 @@ import type {
   FourwinsTileLayerScale,
 } from './fourwings-heatmap.types'
 import { FourwingsAggregationOperation, FourwingsComparisonMode } from './fourwings-heatmap.types'
+import {
+  aggregateCell,
+  aggregateCellTimeseries,
+  compareCell,
+  filterCells,
+  getDataUrlBySublayer,
+  getFourwingsChunk,
+  getIntervalFrames,
+  getZoomOffsetByResolution,
+} from './fourwings-heatmap.utils'
+import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   maxRequests: 100,
@@ -85,6 +88,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       error: '',
       scales: [],
       tilesCache: this._getTileDataCache({
+        zoom: Math.round(this.context.viewport.zoom),
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         availableIntervals: this.props.availableIntervals,
@@ -146,6 +150,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       availableIntervals,
       bufferedStart:
         this._getTileDataCache({
+          zoom: Math.round(this.context.viewport.zoom),
           startTime: this.props.startTime,
           endTime: this.props.endTime,
           availableIntervals: this.props.availableIntervals,
@@ -310,10 +315,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       scaleLinear(colorDomain as number[], cr as FourwingsColorObject[]).clamp(true)
     )
   }
-  startTime = performance.now()
+
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    const endTime = performance.now()
-    console.log(`onViewportLoad took ${(endTime - this.startTime) / 1000} s`)
     this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
@@ -545,7 +548,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     if (tile.signal?.aborted) {
-      return
+      return null
     }
 
     const arrayBuffers = settledPromises.flatMap((d) => {
@@ -587,12 +590,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   _getTileDataCache = ({
+    zoom,
     startTime,
     endTime,
     availableIntervals,
     compareStart,
     compareEnd,
   }: {
+    zoom: number
     startTime: number
     endTime: number
     availableIntervals?: FourwingsInterval[]
@@ -601,11 +606,21 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }): FourwingsHeatmapTilesCache => {
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
-    return { start, end, bufferedStart, interval, compareStart, compareEnd }
+    return {
+      zoom,
+      start,
+      end,
+      bufferedStart,
+      interval,
+      compareStart,
+      compareEnd,
+    }
   }
 
   _getTileDataCacheKey = (): string => {
-    const dataCache = Object.values(this.state.tilesCache || {}).join(',')
+    // Needs to remove zoom to avoid double loading tiles as deck.gl internally trigger the funcion on zoom changes
+    const { zoom, ...tilesCache } = this.state.tilesCache
+    const dataCache = Object.values(tilesCache || {}).join(',')
     const sublayersIds = this.props.sublayers?.map((s) => s.id).join(',')
     const sublayersDatasets = this.props.sublayers?.flatMap((s) => s.datasets || []).join(',')
     const sublayersFilters = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
@@ -631,6 +646,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       maxVisibleValue,
     } = props
     const { tilesCache, colorRanges, colorDomain } = this.state
+    const zoom = Math.round(this.context.viewport.zoom)
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
@@ -651,32 +667,36 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       })
     }
 
-    const isStartOutRange = startTime <= tilesCache.start
+    const isStartOutRange = startTime < tilesCache.start
     const isCompareStartOutRange = compareStart ? compareStart <= tilesCache.compareStart! : false
     const isCompareEndOutRange = compareEnd ? compareEnd <= tilesCache.compareEnd! : false
-    const isEndOutRange = endTime >= tilesCache.end
+    const isEndOutRange = endTime > tilesCache.end
     const needsCacheKeyUpdate =
       isStartOutRange ||
       isCompareStartOutRange ||
       isEndOutRange ||
       isCompareEndOutRange ||
-      getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval
+      getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
+      zoom !== tilesCache.zoom
     if (needsCacheKeyUpdate) {
-      this.setState({
-        tilesCache: this._getTileDataCache({
-          startTime,
-          endTime,
-          availableIntervals,
-          compareStart,
-          compareEnd,
-        }),
+      requestAnimationFrame(() => {
+        this.setState({
+          tilesCache: this._getTileDataCache({
+            zoom,
+            startTime,
+            endTime,
+            availableIntervals,
+            compareStart,
+            compareEnd,
+          }),
+        })
       })
     }
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { zoom } = this.context.viewport
-    if (!zoom) {
+    if (zoom === undefined) {
       return []
     }
     const { resolution, comparisonMode } = this.props
@@ -702,7 +722,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         debounceTime: this.props.debounceTime,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey, resolution],
+          getTileData: [cacheKey],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {

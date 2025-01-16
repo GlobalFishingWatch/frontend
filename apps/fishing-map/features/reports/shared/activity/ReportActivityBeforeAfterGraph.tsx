@@ -1,26 +1,29 @@
 import { useMemo } from 'react'
+import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
 import {
-  ResponsiveContainer,
+  Area,
   CartesianGrid,
+  ComposedChart,
+  Line,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Line,
-  ComposedChart,
-  Area,
-  ReferenceLine,
 } from 'recharts'
-import { DateTime } from 'luxon'
-import { useSelector } from 'react-redux'
+
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import i18n from 'features/i18n/i18n'
+
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { getUTCDateTime } from 'utils/dates'
-import { formatDate, tickFormatter } from 'features/reports/areas/area-reports.utils'
+import i18n from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectReportTimeComparison } from 'features/reports/areas/area-reports.config.selectors'
 import type { ReportActivityTimeComparison } from 'features/reports/areas/area-reports.types'
+import { formatDate, tickFormatter } from 'features/reports/areas/area-reports.utils'
+import { getUTCDateTime } from 'utils/dates'
 import { toFixed } from 'utils/shared'
+
 import styles from './ReportActivityEvolution.module.css'
 
 interface ComparisonGraphData {

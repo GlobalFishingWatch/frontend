@@ -1,8 +1,8 @@
 import {
-  CELL_START_INDEX,
   CELL_END_INDEX,
-  VALUE_MULTIPLIER,
+  CELL_START_INDEX,
   CELL_VALUES_START_INDEX,
+  VALUE_MULTIPLIER,
 } from './constants'
 
 export const getCellValues = (rawValues: string | number[]) => {

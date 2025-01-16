@@ -1,7 +1,9 @@
 import type { LayerSpecification, StyleSpecification } from '@globalfishingwatch/maplibre-gl'
+
 import type { ExtendedLayer, ExtendedStyle} from '../../types';
 import { Group } from '../../types'
-import { sort, convertLegacyGroups } from './sort'
+
+import { convertLegacyGroups,sort } from './sort'
 
 type MockStyle = Omit<StyleSpecification, 'layers' | 'version' | 'sources'> & {
   layers: Partial<LayerSpecification>[]

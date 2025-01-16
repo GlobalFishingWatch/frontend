@@ -1,29 +1,32 @@
 import { Fragment, useMemo } from 'react'
+import { useSelector } from 'react-redux'
+import { Interval as TimeInterval } from 'luxon'
 import {
-  ResponsiveContainer,
+  Area,
   CartesianGrid,
+  ComposedChart,
+  Line,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Line,
-  ComposedChart,
-  Area,
-  ReferenceLine,
 } from 'recharts'
-import { Interval as TimeInterval } from 'luxon'
-import { useSelector } from 'react-redux'
+
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
+import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import i18n, { t } from 'features/i18n/i18n'
-import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { getUTCDateTime } from 'utils/dates'
+import { selectReportTimeComparison } from 'features/reports/areas/area-reports.config.selectors'
 import {
   formatDate,
   formatTooltipValue,
   tickFormatter,
 } from 'features/reports/areas/area-reports.utils'
+import { getUTCDateTime } from 'utils/dates'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { selectReportTimeComparison } from 'features/reports/areas/area-reports.config.selectors'
+
 import styles from './ReportActivityEvolution.module.css'
 
 const DIFFERENCE = 'difference'
@@ -87,7 +90,7 @@ const PeriodComparisonGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval, offsetedLastDataUpdate } =
     props as PeriodComparisonGraphTooltipProps
 
-  if (label && active && payload.length > 0 && payload.length) {
+  if (label && active && payload && payload.length > 0) {
     const difference = payload.find(({ name }) => name === DIFFERENCE)
     if (!difference) return null
     const baselineDate = getUTCDateTime(difference?.payload.date).setLocale(i18n.language)
@@ -192,7 +195,7 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
   }, [baselineTimeseries, comparisonTimeseries])
 
   const range = useMemo(() => {
-    return difference?.map(({ date, compareDate, difference }, index) => {
+    return difference?.map(({ date, compareDate, difference }) => {
       const data = {
         date,
         compareDate,

@@ -1,5 +1,6 @@
-import { DateTime, Duration } from 'luxon'
 import intersection from 'lodash/intersection'
+import { DateTime, Duration } from 'luxon'
+
 import type { FourwingsInterval } from '../lib/types'
 
 export const FOURWINGS_INTERVALS_ORDER: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
@@ -90,7 +91,7 @@ export const CONFIG_BY_INTERVAL: Record<
     },
     getIntervalFrame: (timestamp: number) => {
       const date = new Date(timestamp)
-      return date.getFullYear() * 12 + date.getMonth()
+      return date.getUTCFullYear() * 12 + date.getUTCMonth()
     },
   },
   YEAR: {
@@ -99,7 +100,7 @@ export const CONFIG_BY_INTERVAL: Record<
     },
     getIntervalFrame: (timestamp: number) => {
       const date = new Date(timestamp)
-      return date.getFullYear()
+      return date.getUTCFullYear()
     },
   },
 }

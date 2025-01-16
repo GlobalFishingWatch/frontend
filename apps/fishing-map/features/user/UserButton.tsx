@@ -1,15 +1,17 @@
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
-import { useTranslation } from 'react-i18next'
+
 import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { USER } from 'routes/routes'
+
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
 import {
   selectIsGuestUser,
   selectIsUserExpired,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
+import LocalStorageLoginLink from 'routes/LoginLink'
+import { USER } from 'routes/routes'
 
 const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
   const { t } = useTranslation()

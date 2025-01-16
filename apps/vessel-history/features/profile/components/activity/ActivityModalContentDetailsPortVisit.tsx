@@ -1,16 +1,20 @@
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
+
 import type { Anchorage } from '@globalfishingwatch/api-types'
+
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { selectPsmaEarliestDateById } from 'features/psma/psma.selectors'
-import { useI18nDate } from 'features/i18n/i18nDate'
 import { PORT_CONFIDENCE } from 'data/constants'
+import { useI18nDate } from 'features/i18n/i18nDate'
 import Faq from 'features/profile/components/Faq'
+import { selectPsmaEarliestDateById } from 'features/psma/psma.selectors'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import ActivityModalContentField from './ActivityModalContentField'
+
 import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
@@ -19,7 +23,7 @@ interface ActivityModalContentProps {
 
 const ActivityModalContentDetailsPortVisit: React.FC<ActivityModalContentProps> = (
   props
-): React.ReactElement => {
+): React.ReactElement<any> => {
   const event = props.event
   const { t } = useTranslation()
   const psmaDate = useSelector(

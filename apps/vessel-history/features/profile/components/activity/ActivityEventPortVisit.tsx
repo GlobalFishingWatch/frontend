@@ -1,14 +1,18 @@
 import { Fragment } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { DateTime } from 'luxon'
+import cx from 'classnames'
 import { capitalize } from 'lodash'
+import { DateTime } from 'luxon'
+
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
-import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { PortVisitSubEvent } from 'types/activity'
+
 import ActivityDate from './ActivityDate'
+
 import styles from './Activity.module.css'
 
 interface EventProps {
@@ -29,7 +33,7 @@ const ActivityEventPortVisit: React.FC<EventProps> = ({
   onInfoClick = () => {},
   onMapClick = () => {},
   options: { displayPortVisitsAsOneEvent } = { displayPortVisitsAsOneEvent: false },
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
   if (event.type !== EventTypes.Port) return
 

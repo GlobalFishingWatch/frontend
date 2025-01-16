@@ -1,13 +1,16 @@
-import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { InsightResponse } from '@globalfishingwatch/api-types'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { InsightResponse } from '@globalfishingwatch/api-types'
+
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
-import { formatInfoField } from 'utils/info'
-import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import { formatInfoField } from 'utils/info'
+
 import styles from './Insights.module.css'
 
 const InsightFlagChanges = ({

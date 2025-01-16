@@ -1,3 +1,5 @@
+import { flatten } from '@turf/flatten'
+import union from '@turf/union'
 import type {
   Feature,
   FeatureCollection,
@@ -6,16 +8,13 @@ import type {
   Point,
   Polygon,
 } from 'geojson'
-import { flatten } from '@turf/flatten'
-import union from '@turf/union'
+
 import type {
   Dataset,
   DatasetConfiguration,
-  DatasetGeometryType} from '@globalfishingwatch/api-types';
-import {
-  DatasetCategory,
-  DatasetTypes,
+  DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   cleanProperties,
   getDatasetConfigurationClean,
@@ -25,16 +24,14 @@ import {
   getUTCDate,
   guessColumnsFromSchema,
 } from '@globalfishingwatch/data-transforms'
-import type {
-  DatasetConfigurationProperty} from '@globalfishingwatch/datasets-client';
-import {
-  getDatasetConfigurationProperty,
-} from '@globalfishingwatch/datasets-client'
+import type { DatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+
+import type { AreaGeometry } from 'features/areas/areas.slice'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getUTCDateTime } from 'utils/dates'
 import type { FileType } from 'utils/files'
-import type { AreaGeometry } from 'features/areas/areas.slice'
 
 type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
 

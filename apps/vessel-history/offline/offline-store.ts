@@ -1,4 +1,5 @@
 import { Dexie } from 'dexie'
+
 import type { OfflineVessel } from 'types/vessel'
 
 export class VesselHistoryIdb extends Dexie {

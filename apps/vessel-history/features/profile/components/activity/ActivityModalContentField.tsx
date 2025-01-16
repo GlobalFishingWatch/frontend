@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import React, { Fragment } from 'react'
 import cx from 'classnames'
+
 import { IconButton } from '@globalfishingwatch/ui-components'
+
 import styles from './ActivityModalContentField.module.css'
 
 interface ActivityModalContentFieldProps {
@@ -18,7 +20,7 @@ const ActivityModalContentField: React.FC<ActivityModalContentFieldProps> = ({
   value,
   onHelpClick,
   onValueClick,
-}: ActivityModalContentFieldProps): React.ReactElement => {
+}: ActivityModalContentFieldProps): React.ReactElement<any> => {
   return (
     <Fragment>
       <div className={cx(className, styles.field)}>

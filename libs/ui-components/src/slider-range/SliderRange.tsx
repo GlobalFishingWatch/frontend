@@ -1,11 +1,13 @@
-import { useMemo, useCallback, useState, useEffect } from 'react'
+import { useCallback, useEffect,useMemo, useState } from 'react'
+import { getTrackBackground,Range } from 'react-range'
 import cx from 'classnames'
-import { Range, getTrackBackground } from 'react-range'
+
+import { IconButton } from '../icon-button'
 import { InputText } from '../input-text'
 import type { SliderThumbsSize } from '../slider'
 import { formatSliderNumber } from '../slider'
+
 import styles from '../slider/slider.module.css'
-import { IconButton } from '../icon-button'
 
 export type SliderRangeValues = number[]
 type SliderRangeConfig = {

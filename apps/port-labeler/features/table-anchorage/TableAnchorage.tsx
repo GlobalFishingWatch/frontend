@@ -1,11 +1,15 @@
 import React, { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { useTranslation } from 'react-i18next'
+import type { PortPosition } from 'types'
+
 import { flags } from '@globalfishingwatch/i18n-labels'
 import type { SelectOption } from '@globalfishingwatch/ui-components';
 import { IconButton, Modal, Select } from '@globalfishingwatch/ui-components'
+
+import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
 import {
   changeAnchoragePort,
   selectCountries,
@@ -14,11 +18,11 @@ import {
   toogleExtraData,
 } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
-import type { PortPosition } from 'types'
-import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
-import styles from './TableAnchorage.module.css'
+
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
+
+import styles from './TableAnchorage.module.css'
 
 function TableAnchorage() {
   const { t } = useTranslation()

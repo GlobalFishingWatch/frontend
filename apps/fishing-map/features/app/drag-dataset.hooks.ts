@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector, useStore } from 'react-redux'
 import type { RootState } from 'reducers'
+
 import {
   useDatasetModalConfigConnect,
   useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
-import { selectIsWorkspaceLocation } from 'routes/routes.selectors'
-import { selectDatasetUploadModalOpen } from 'features/modals/modals.slice'
-import { getFileType } from 'utils/files'
 import { NEW_DATASET_MODAL_ID } from 'features/datasets/upload/NewDataset'
+import { selectDatasetUploadModalOpen } from 'features/modals/modals.slice'
+import { selectIsWorkspaceLocation } from 'routes/routes.selectors'
+import { getFileType } from 'utils/files'
 
 export function useDatasetDrag() {
   const store = useStore()
@@ -36,8 +37,8 @@ export function useDatasetDrag() {
     (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      setIsDragging(false)
       if (!(e as any).fromElement) {
+        setIsDragging(false)
         dispatchDatasetModalOpen(false)
         dispatchDatasetModalConfig({ style: 'default' })
       }
@@ -76,9 +77,7 @@ export function useDatasetDrag() {
   useEffect(() => {
     const eventsConfig: { event: keyof WindowEventMap; callback: any }[] = [
       { event: 'dragenter', callback: onDragEnter },
-      { event: 'dragleave', callback: onDragLeave },
     ]
-
     if (typeof window !== 'undefined' && isWorkspaceLocation && !datasetModalOpen) {
       eventsConfig.forEach(({ event, callback }) => {
         window.addEventListener(event, callback)
@@ -91,14 +90,28 @@ export function useDatasetDrag() {
         }
       })
     }
-  }, [datasetModalOpen, isWorkspaceLocation, onDragEnter, onDragLeave])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datasetModalOpen, isWorkspaceLocation])
 
   useEffect(() => {
+    const eventsConfig: { event: keyof WindowEventMap; callback: any }[] = [
+      { event: 'drop', callback: onDrop },
+      { event: 'dragleave', callback: onDragLeave },
+    ]
     if (typeof window !== 'undefined' && isDragging) {
-      window.addEventListener('drop', onDrop)
+      eventsConfig.forEach(({ event, callback }) => {
+        window.addEventListener(event, callback)
+      })
     }
     return () => {
-      window.removeEventListener('drop', onDrop)
+      if (isDragging) {
+        eventsConfig.forEach(({ event, callback }) => {
+          if (callback) {
+            window.removeEventListener(event, callback)
+          }
+        })
+      }
     }
-  }, [isDragging, onDrop])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDragging])
 }

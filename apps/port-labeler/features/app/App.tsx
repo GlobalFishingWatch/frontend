@@ -1,15 +1,19 @@
-import React, { useState, useCallback, useEffect, Fragment } from 'react'
+import React, { Fragment,useCallback, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
+
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
+
 import menuBgImage from 'assets/images/menubg.jpg'
-import { useReplaceLoginUrl } from 'routes/routes.hook'
-import Sidebar from 'features/sidebar/Sidebar'
-import { t } from 'features/i18n/i18n'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { fetchUserThunk } from 'features/user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import styles from './App.module.css'
+import { t } from 'features/i18n/i18n'
+import Sidebar from 'features/sidebar/Sidebar'
+import { fetchUserThunk } from 'features/user/user.slice'
+import { useReplaceLoginUrl } from 'routes/routes.hook'
+
 import { useAnalytics } from './analytics.hooks'
+
+import styles from './App.module.css'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
 
@@ -29,7 +33,7 @@ const Main = () => {
   )
 }
 
-function App(): React.ReactElement {
+function App(): React.ReactElement<any> {
   useAnalytics()
   useReplaceLoginUrl()
   const dispatch = useAppDispatch()

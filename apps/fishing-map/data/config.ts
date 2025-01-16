@@ -1,14 +1,9 @@
 import { DateTime } from 'luxon'
+
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import type {
-  AppState,
-  WorkspaceState} from '../types';
-import {
-  QueryParam,
-  TimebarGraphs,
-  TimebarVisualisations,
-  UserTab
-} from '../types'
+
+import type { AppState, WorkspaceState } from '../types'
+import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -21,6 +16,11 @@ export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
 export const IS_PRODUCTION_WORKSPACE_ENV =
   PUBLIC_WORKSPACE_ENV === 'production' || PUBLIC_WORKSPACE_ENV === 'staging'
 const IS_PRODUCTION = IS_PRODUCTION_WORKSPACE_ENV || IS_PRODUCTION_BUILD
+
+export const SHOW_LEAVE_CONFIRMATION = process.env.NEXT_PUBLIC_SHOW_LEAVE_CONFIRMATION
+  ? process.env.NEXT_PUBLIC_SHOW_LEAVE_CONFIRMATION === 'true'
+  : process.env.NODE_ENV !== 'development'
+
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
 
 export const REPORT_DAYS_LIMIT =
@@ -98,10 +98,18 @@ export const DEFAULT_PAGINATION_PARAMS = {
 export const BUFFER_PREVIEW_COLOR = '#F95E5E'
 
 export const FIRST_YEAR_OF_DATA = 2012
-const CURRENT_YEAR = new Date().getFullYear()
 
-export const AVAILABLE_START = new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString() as string
-export const AVAILABLE_END = new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString() as string
+export const AVAILABLE_START = DateTime.fromObject(
+  { year: FIRST_YEAR_OF_DATA },
+  { zone: 'utc' }
+).toISO() as string
+
+export const AVAILABLE_END = DateTime.fromObject(
+  { year: new Date().getUTCFullYear() + 1 },
+  { zone: 'utc' }
+)
+  .minus({ millisecond: 1 })
+  .toISO() as string
 
 export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
@@ -149,4 +157,5 @@ export const REPORT_ONLY_VISIBLE_LAYERS = [
   DataviewType.Context,
   DataviewType.UserContext,
   DataviewType.UserPoints,
+  DataviewType.BasemapLabels,
 ]

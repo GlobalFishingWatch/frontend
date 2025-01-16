@@ -1,5 +1,6 @@
 import type { TrackPoint } from '@globalfishingwatch/api-types'
-import type { LayersData, VesselPoint, FilterModeValues } from '../../types'
+
+import type { FilterModeValues,LayersData, VesselPoint } from '../../types'
 import { ActionType } from '../../types'
 
 const getIsOutOfFilterRange = ({
@@ -12,14 +13,9 @@ const getIsOutOfFilterRange = ({
   filterMode: string
 }) => {
   if (!filterModeValues[filterMode]) return false
-  const isNegativRange = filterMode === 'elevation'
-  return isNegativRange
-    ? value < Number(filterModeValues[filterMode].max) &&
-        value > Number(filterModeValues[filterMode].min)
-    : !(
-        value < Number(filterModeValues[filterMode].min) ||
-        value > Number(filterModeValues[filterMode].max)
-      )
+  const max = Number(filterModeValues[filterMode].max)
+  const min = Number(filterModeValues[filterMode].min)
+  return value < min || value > max
 }
 
 export const getTimebarPoints = (

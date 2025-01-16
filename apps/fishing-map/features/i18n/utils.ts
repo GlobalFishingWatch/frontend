@@ -1,7 +1,9 @@
-import type { FilterOperator } from '@globalfishingwatch/api-types';
+import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
+
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+
 import i18n, { t } from './i18n'
 
 type PlaceholderBySelectionParams = {
@@ -33,25 +35,6 @@ export const getPlaceholderBySelections = ({
   }
   // Otherwise we are using the DatasetLabelComponent
   return getDatasetLabel(placeholder?.props.dataset)
-}
-
-const getDateFormatString = ({ locale = i18n.language, upper = false } = {}) => {
-  const formatObj = new Intl.DateTimeFormat(locale).formatToParts(new Date())
-
-  return formatObj
-    .map((obj) => {
-      switch (obj.type) {
-        case 'day':
-          return upper ? 'DD' : 'dd'
-        case 'month':
-          return upper ? 'MM' : 'mm'
-        case 'year':
-          return upper ? 'YYYY' : 'yyyy'
-        default:
-          return obj.value
-      }
-    })
-    .join('')
 }
 
 export const joinTranslatedList = (list: string[], condition: 'or' | 'and' = 'or') => {

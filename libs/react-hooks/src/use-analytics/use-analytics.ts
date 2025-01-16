@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import snakeCase from 'lodash/snakeCase'
 import ReactGA from 'react-ga4'
 import type { InitOptions } from 'react-ga4/types/ga4'
+import snakeCase from 'lodash/snakeCase'
+
 import type { UserData } from '@globalfishingwatch/api-types'
 
 export enum TrackCategory {

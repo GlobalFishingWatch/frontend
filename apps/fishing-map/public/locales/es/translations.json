@@ -48,7 +48,10 @@
     "periodComparison2nd": "inicio de comparación",
     "periodComparisonDuration": "duración",
     "periodComparisonRange": "{{duration}} siguiente {{compareStart}} comparado con la línea de referencia {{duration}} siguiente {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "print ": "imprimir",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Mostrar {{results}} por página",
     "save": "Guardar este informe",
     "savePublic": "Permitir que otros usuarios vean este informe",
@@ -164,6 +167,7 @@
     "in": "en",
     "include": "Incluir",
     "insights": "Insights",
+    "knots": "nudos",
     "latestDays_one": "Último {{count}} día",
     "latestDays_other": "Últimos {{count}} días",
     "latitude": "Latitud",
@@ -178,6 +182,7 @@
     "map": "Mapa",
     "matchedVessels": "Embarcaciones coincidentes",
     "max": "Máximo",
+    "meters": "metros",
     "min": "Mínimo",
     "minus": "menos",
     "minute": "minuto",
@@ -551,6 +556,7 @@
     "distanceFromPortKm": "distancia desde el puerto (km)",
     "distanceFromShoreKm": "distancia desde costa (km)",
     "duration": "duración",
+    "depth": "profundidad",
     "encounteredVesselName": "embarcación encontrada",
     "end": "Fin",
     "flag": "bandera",
@@ -702,6 +708,13 @@
     "rulersHover": "Arrastre para mover o haga clic para ver más",
     "rulersStop": "Detener medidas",
     "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
+    "screenshotArea": {
+      "map": "Solo mapa",
+      "withTimebar": "Con barra temporal",
+      "withTimebarAndLegend": "Con barra temporal y leyenda"
+    },
+    "screenshotDownload": "Descargar imagen",
+    "screenshotPreview": "Vista previa de captura de pantalla",
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
@@ -757,6 +770,7 @@
     "selected": "seleccionado"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajustar rango de tiempo a estas fechas",
     "focusOnThisDay": "Ajustar rango de tiempo a este día",
     "maxTracksNumber": "Detalles de trayectorias no disponibles para más de 10 embarcaciones"
@@ -764,9 +778,10 @@
   "timebarSettings": {
     "activityDisabled": "Selecciona al menos una capa de actividad",
     "detectionsDisabled": "Selecciona al menos una capa de detecciones.",
-    "graphDepth": "Profundidad de la embarcacion",
-    "graphDisabled": "No disponible con más de 2 embarcaciones seleccionadas",
+    "graphDepth": "Profundidad de la embarcación",
+    "graphDisabled": "Graph is not available with more than 2 vessels selected",
     "graphSpeed": "Velocidad embarcación",
+    "graphVesselOnly": "{{graph}} is only available for vessel tracks",
     "settings_close": "Cerrar ajustes de la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
     "showActivity": "Mostrar gráfico de actividad",
@@ -782,6 +797,25 @@
     "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor."
   },
   "user": {
+    "gfwBadges": "GFW Badges",
+    "badges": {
+      "ambassador": {
+        "title": "Ambassador",
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+      },
+      "fixer": {
+        "title": "Fixer",
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+      },
+      "presenter": {
+        "title": "Presenter",
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+      },
+      "teacher": {
+        "title": "Teacher",
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+      }
+    },
     "datasets": "Conjuntos de datos del usuario",
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",

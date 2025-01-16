@@ -1,8 +1,10 @@
+import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
-import { useEffect, useRef } from 'react'
+
 import { useAppDispatch } from 'features/app/app.hooks'
+
 import {
   downloadActivityLastReportThunk,
   selectDownloadActivityErrorMsg,
@@ -12,12 +14,13 @@ import {
   selectIsDownloadActivityTimeoutError,
   selectIsDownloadAreaTooBig,
 } from './downloadActivity.slice'
+
 import styles from './DownloadModal.module.css'
 
 export function useActivityDownloadTimeoutRefresh() {
   const dispatch = useAppDispatch()
   const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
-  const intervalRef = useRef<NodeJS.Timeout | undefined>()
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     if (!hadDownloadTimeoutError && intervalRef.current) {

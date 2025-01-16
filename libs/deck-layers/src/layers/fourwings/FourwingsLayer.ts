@@ -1,28 +1,30 @@
 import type { Color, Layer, LayersList } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
+
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
-import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLayer'
-import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
+
+import type { FourwingsFootprintTileLayerProps } from './footprint/fourwings-footprint.types'
 import { FourwingsFootprintTileLayer } from './footprint/FourwingsFootprintTileLayer'
+import type {
+  FourwingsChunk,
+  FourwingsHeatmapStaticLayerProps,
+  FourwingsHeatmapTileLayerProps,
+} from './heatmap/fourwings-heatmap.types'
+import {
+  getResolutionByVisualizationMode,
+  getZoomOffsetByResolution,
+} from './heatmap/fourwings-heatmap.utils'
+import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLayer'
+import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
+import type { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
+import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
 import { FOOTPRINT_ID, HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
 import type {
   FourwingsPickingObject,
   FourwingsVisualizationMode,
   GetViewportDataParams,
 } from './fourwings.types'
-import type { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
-import type {
-  FourwingsChunk,
-  FourwingsHeatmapStaticLayerProps,
-  FourwingsHeatmapTileLayerProps,
-} from './heatmap/fourwings-heatmap.types'
-import type { FourwingsFootprintTileLayerProps } from './footprint/fourwings-footprint.types'
-import {
-  getResolutionByVisualizationMode,
-  getZoomOffsetByResolution,
-} from './heatmap/fourwings-heatmap.utils'
 
 export type FourwingsColorRamp = {
   colorDomain: number[]

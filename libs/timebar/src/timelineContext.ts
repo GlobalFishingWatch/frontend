@@ -1,5 +1,6 @@
 import { createContext } from 'react'
 import type * as d3 from 'd3-scale'
+
 export type TimelineScale = d3.ScaleTime<number, number>
 
 export type TrackGraphOrientation = 'up' | 'down' | 'mirrored'

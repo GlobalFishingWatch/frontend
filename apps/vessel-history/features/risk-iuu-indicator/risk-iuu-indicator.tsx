@@ -1,12 +1,15 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import InfoFieldHistory from 'features/profile/components/InfoFieldHistory'
 import type { ValueItem } from 'types'
-import type { VesselFieldLabel } from 'types/vessel'
-import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
+
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
 import HistoryDate from 'features/profile/components/HistoryDate'
+import InfoFieldHistory from 'features/profile/components/InfoFieldHistory'
+import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
+import type { VesselFieldLabel } from 'types/vessel'
+
 import styles from '../risk-identity-indicator/risk-identity-indicator.module.css'
 
 export interface RiskIuuIndicatorProps {

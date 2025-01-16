@@ -1,33 +1,20 @@
 import { uniq } from 'es-toolkit'
+
 import type {
-  Resource,
-  EnviromentalDatasetConfiguration,
-  Dataset,
   ApiEvent,
+  Dataset,
+  EnviromentalDatasetConfiguration,
+  Resource,
   TrackResourceData} from '@globalfishingwatch/api-types';
 import {
-  DatasetTypes,
-  EndpointId,
-  DatasetStatus,
   DatasetCategory,
+  DatasetStatus,
+  DatasetTypes,
   DataviewCategory,
-  DRAW_DATASET_SOURCE,
   DataviewType,
+  DRAW_DATASET_SOURCE,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
-import {
-  DEFAULT_HEATMAP_INTERVALS,
-  DEFAULT_ENVIRONMENT_INTERVALS,
-  Group,
-  HeatmapAnimatedMode
-} from '@globalfishingwatch/layer-composer'
-import type {
-  ColorRampsIds,
-  HeatmapAnimatedGeneratorSublayer,
-  HeatmapAnimatedInteractionType,
-
-  HeatmapAnimatedGeneratorConfig,
-  Interval} from '@globalfishingwatch/layer-composer'
-import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
@@ -44,6 +31,19 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources
 } from '@globalfishingwatch/dataviews-client'
+import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
+import type {
+  ColorRampsIds,
+  HeatmapAnimatedGeneratorConfig,
+  HeatmapAnimatedGeneratorSublayer,
+  HeatmapAnimatedInteractionType,
+  Interval} from '@globalfishingwatch/layer-composer'
+import {
+  DEFAULT_ENVIRONMENT_INTERVALS,
+  DEFAULT_HEATMAP_INTERVALS,
+  Group,
+  HeatmapAnimatedMode
+} from '@globalfishingwatch/layer-composer'
 
 const MULTILAYER_SEPARATOR = '__'
 const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedActivityHeatmap'

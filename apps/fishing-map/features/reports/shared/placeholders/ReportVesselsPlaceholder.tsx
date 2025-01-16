@@ -1,15 +1,21 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
+
 import { ReportBarGraphPlaceholder } from 'features/reports/shared/placeholders/ReportBarGraphPlaceholder'
+
 import styles from './placeholders.module.css'
 
 export default function ReportVesselsPlaceholder({
   children,
+  showGraph = true,
   showGraphHeader = true,
+  showSearch = true,
   animate = true,
 }: {
   children?: React.ReactNode
+  showGraph?: boolean
   showGraphHeader?: boolean
+  showSearch?: boolean
   animate?: boolean
 }) {
   const tableRows = Array(11).fill('')
@@ -31,14 +37,16 @@ export default function ReportVesselsPlaceholder({
                 />
               </div>
             )}
-            <ReportBarGraphPlaceholder />
+            {showGraph && <ReportBarGraphPlaceholder />}
             {/* search */}
-            <div
-              style={{ width: '100%', borderRadius: 'var(--border-radius)' }}
-              className={cx(styles.block, styles.grow, styles.thick, styles.marginV, {
-                [styles.animate]: animate,
-              })}
-            />
+            {showSearch && (
+              <div
+                style={{ width: '100%', borderRadius: 'var(--border-radius)' }}
+                className={cx(styles.block, styles.grow, styles.thick, styles.marginV, {
+                  [styles.animate]: animate,
+                })}
+              />
+            )}
             {/* table */}
             {tableRows.map((_, index) => (
               <Fragment key={index}>

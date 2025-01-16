@@ -1,46 +1,34 @@
-import { Fragment, useCallback, useRef, useState, useMemo } from 'react'
-import dynamic from 'next/dynamic'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { Fragment, useCallback, useMemo,useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  MiniGlobe,
-  IconButton,
-  Tooltip,
-  Modal,
-  Spinner,
-  Button,
-} from '@globalfishingwatch/ui-components'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import dynamic from 'next/dynamic'
+
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
-import {
-  selectIsAnyVesselLocation,
-  selectIsWorkspaceLocation,
-  selectIsMapDrawing,
-  selectIsAnyReportLocation,
-} from 'routes/routes.selectors'
-import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
-import { setInlineStyles, cleantInlineStyles } from 'utils/dom'
-import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
-import { ROOT_DOM_ELEMENT } from 'data/config'
-import { useMapBounds } from 'features/map/map-bounds.hooks'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
+
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { useRootElement } from 'hooks/dom.hooks'
-import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
+import { useMapViewState,useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import {
+  selectIsAnyReportLocation,
+  selectIsAnyVesselLocation,
+  selectIsMapDrawing,
+  selectIsWorkspaceLocation,
+} from 'routes/routes.selectors'
+
 import styles from './MapControls.module.css'
 
 const MiniGlobeInfo = dynamic(
   () => import(/* webpackChunkName: "MiniGlobeInfo" */ './MiniGlobeInfo')
 )
-const MapScreenshot = dynamic(
-  () => import(/* webpackChunkName: "MapScreenshot" */ '../MapScreenshot')
+const MapControlScreenshot = dynamic(
+  () => import(/* webpackChunkName: "MapControlScreenshot" */ './MapControlScreenshot')
 )
 const MapSearch = dynamic(() => import(/* webpackChunkName: "MapSearch" */ './MapSearch'))
 const Rulers = dynamic(
@@ -57,15 +45,11 @@ const MapControls = ({
 }: {
   mapLoading?: boolean
   onMouseEnter?: () => void
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
-  const modalOpen = useSelector(selectScreenshotModalOpen)
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const gfwUser = useSelector(selectIsGFWUser)
-  const timeoutRef = useRef<NodeJS.Timeout>()
-  const { dispatchQueryParams } = useLocationConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
@@ -74,17 +58,6 @@ const MapControls = ({
   const { isErrorNotificationEditing, toggleErrorNotification } = useMapErrorNotification()
   const showExtendedControls =
     (isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && !isMapDrawing
-  const showScreenshot = !isVesselLocation && !isAnyReportLocation
-  const rootElement = useRootElement()
-
-  const {
-    loading,
-    previewImage,
-    downloadImage,
-    resetPreviewImage,
-    previewImageLoading,
-    generatePreviewImage,
-  } = useDownloadDomElementAsImage(rootElement, false)
 
   const setMapCoordinates = useSetMapCoordinates()
   const viewState = useMapViewState()
@@ -110,45 +83,6 @@ const MapControls = ({
     setMapCoordinates({ zoom: Math.max(zoom - 1, 0) })
   }, [setMapCoordinates, zoom])
 
-  const onScreenshotClick = useCallback(() => {
-    dispatchQueryParams({ sidebarOpen: true })
-    dispatch(setModalOpen({ id: 'screenshot', open: true }))
-    resetPreviewImage()
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
-    timeoutRef.current = setTimeout(() => {
-      if (rootElement) {
-        rootElement.classList.add('printing')
-        setInlineStyles(rootElement)
-        // leave some time to
-        // 1. apply the styles + timebar to re - render
-        // 2. map static image generated with debounced finishes
-        timeoutRef.current = setTimeout(() => {
-          generatePreviewImage()
-        }, MAP_IMAGE_DEBOUNCE + 400)
-      }
-    }, 100)
-  }, [dispatchQueryParams, dispatch, resetPreviewImage, rootElement, generatePreviewImage])
-
-  const handleModalClose = useCallback(() => {
-    if (rootElement) {
-      rootElement.classList.remove('printing')
-      cleantInlineStyles(rootElement)
-    }
-    dispatch(setModalOpen({ id: 'screenshot', open: false }))
-  }, [dispatch, rootElement])
-
-  const onPDFDownloadClick = useCallback(() => {
-    handleModalClose()
-    setTimeout(window.print, 200)
-  }, [handleModalClose])
-
-  const onImageDownloadClick = useCallback(async () => {
-    await downloadImage()
-    handleModalClose()
-  }, [downloadImage, handleModalClose])
-
   const basemapDataviewInstance = resolvedDataviewInstances?.find(
     (d) => d.config?.type === DataviewType.Basemap
   )
@@ -165,7 +99,6 @@ const MapControls = ({
 
   return (
     <Fragment>
-      {modalOpen && <MapScreenshot />}
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div
           onMouseEnter={() => setMiniGlobeHovered(true)}
@@ -202,26 +135,13 @@ const MapControls = ({
                 <IconButton
                   icon="feedback-error"
                   type="map-tool"
-                  disabled={mapLoading || loading}
+                  disabled={mapLoading}
                   tooltip={t('map.errorAction', 'Log an issue at a specific location')}
                   onClick={toggleErrorNotification}
                   className={cx({ [styles.active]: isErrorNotificationEditing })}
                 />
               )}
-              {showScreenshot && (
-                <IconButton
-                  icon="camera"
-                  type="map-tool"
-                  loading={loading}
-                  disabled={mapLoading || loading}
-                  tooltip={
-                    mapLoading || loading
-                      ? t('map.mapLoadingWait', 'Please wait until map loads')
-                      : t('map.captureMap', 'Capture map')
-                  }
-                  onClick={onScreenshotClick}
-                />
-              )}
+              <MapControlScreenshot />
               <Tooltip
                 content={
                   currentBasemap === BasemapType.Default
@@ -250,40 +170,6 @@ const MapControls = ({
           />
         </div>
       </div>
-      <Modal
-        appSelector={ROOT_DOM_ELEMENT}
-        title="Screenshot preview"
-        isOpen={modalOpen}
-        onClose={handleModalClose}
-        contentClassName={styles.previewContainer}
-      >
-        <div className={styles.previewPlaceholder}>
-          {previewImageLoading || !previewImage ? (
-            <Spinner />
-          ) : (
-            <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
-          )}
-        </div>
-        <div className={styles.previewFooter}>
-          <Button id="dismiss-preview-download" onClick={handleModalClose} type="secondary">
-            Dismiss
-          </Button>
-          <div>
-            {isPrintSupported && (
-              <Button
-                id="pdf-preview-download"
-                onClick={onPDFDownloadClick}
-                className={styles.printBtn}
-              >
-                Print PDF
-              </Button>
-            )}
-            <Button id="image-preview-download" loading={loading} onClick={onImageDownloadClick}>
-              Download image
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </Fragment>
   )
 }

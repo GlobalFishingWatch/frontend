@@ -1,14 +1,17 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { Fragment,useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDebounce } from 'use-debounce'
 import { useSelector } from 'react-redux'
+import { useDebounce } from 'use-debounce'
+
 import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
-import { useLocationConnect } from 'routes/routes.hook'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectLocationType } from 'routes/routes.selectors'
-import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
-import type { PortsReportState } from 'features/reports/ports/ports-report.types'
 import type { AreaReportState } from 'features/reports/areas/area-reports.types'
+import type { PortsReportState } from 'features/reports/ports/ports-report.types'
+import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectLocationType } from 'routes/routes.selectors'
+
 import styles from './ReportVesselsFilter.module.css'
 
 type ReportVesselsFilterProps = {

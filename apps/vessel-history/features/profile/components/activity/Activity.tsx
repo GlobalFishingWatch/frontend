@@ -2,25 +2,30 @@ import { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { Modal, Spinner } from '@globalfishingwatch/ui-components'
 import type { VesselWithHistory } from 'types'
+
+import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { t } from 'features/i18n/i18n'
+import useMapEvents from 'features/map/map-events.hooks'
+import useViewport from 'features/map/map-viewport.hooks'
+import ActivityFilters from 'features/profile/filters/ActivityFilters'
 import type {
   RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
   selectHighlightEventIds,
 } from 'features/vessels/activity/vessels-activity.selectors'
-import ActivityFilters from 'features/profile/filters/ActivityFilters'
-import type { Voyage } from 'types/voyage';
-import { EventTypeVoyage } from 'types/voyage'
-import { t } from 'features/i18n/i18n'
 import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { selectVesselId } from 'routes/routes.selectors'
-import useMapEvents from 'features/map/map-events.hooks'
-import useViewport from 'features/map/map-viewport.hooks'
+import type { Voyage } from 'types/voyage';
+import { EventTypeVoyage } from 'types/voyage'
+
 import ActivityItem from './ActivityItem'
 import ActivityModalContent from './ActivityModalContent'
+
 import styles from './Activity.module.css'
+
 interface ActivityProps {
   vessel: VesselWithHistory | null
   lastPosition: any
@@ -28,7 +33,7 @@ interface ActivityProps {
   onMoveToMap: () => void
 }
 
-const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
+const Activity: React.FC<ActivityProps> = (props): React.ReactElement<any> => {
   const { eventsLoading, events, toggleVoyage } = useVoyagesConnect()
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()

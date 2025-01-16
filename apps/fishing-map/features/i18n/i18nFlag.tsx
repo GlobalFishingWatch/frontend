@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 const useI18nFlag = (iso: string) => {

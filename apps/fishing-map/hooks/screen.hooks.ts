@@ -1,13 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef,useState } from 'react'
 import { saveAs } from 'file-saver'
-import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
-import { useDeckMap } from 'features/map/map-context.hooks'
 
-export const useDownloadDomElementAsImage = (
-  domElement: HTMLElement | undefined,
-  autoDownload = true,
-  fileName?: string
-) => {
+import { useDeckMap } from 'features/map/map-context.hooks'
+import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
+
+export const useDownloadDomElementAsImage = () => {
   const [error, setError] = useState<string | null>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [previewImage, setPreviewImage] = useState<string>('')
@@ -16,7 +13,11 @@ export const useDownloadDomElementAsImage = (
   const html2canvasRef = useRef<any>(null)
   const map = useDeckMap()
 
-  const getCanvas = useCallback(async () => {
+  const getCanvas = useCallback(async (domId: string) => {
+    if (!domId) {
+      setError('No DOM element id provided')
+      return null
+    }
     if (!html2canvasRef.current) {
       try {
         const node = await import('html2canvas')
@@ -27,6 +28,7 @@ export const useDownloadDomElementAsImage = (
       }
     }
     try {
+      const domElement = document.getElementById(domId)
       if (domElement) {
         const canvas = html2canvasRef.current(domElement)
         return canvas
@@ -37,31 +39,35 @@ export const useDownloadDomElementAsImage = (
       console.warn(e)
       throw e
     }
-  }, [domElement])
+  }, [])
 
   const resetPreviewImage = useCallback(() => {
     setPreviewImage('')
   }, [])
 
-  const generatePreviewImage = useCallback(async () => {
-    try {
-      setPreviewImageLoading(true)
-      map?.redraw('previewImage')
-      const canvas = await getCanvas()
-      setPreviewImage(canvas.toDataURL())
-      setPreviewImageLoading(false)
-    } catch (e: any) {
-      setPreviewImageLoading(false)
-    }
-  }, [getCanvas, map])
+  const generatePreviewImage = useCallback(
+    async (domId: string) => {
+      try {
+        setPreviewImageLoading(true)
+        map?.redraw('previewImage')
+        const canvas = await getCanvas(domId)
+        setPreviewImage(canvas.toDataURL())
+        setPreviewImageLoading(false)
+      } catch (e: any) {
+        setPreviewImageLoading(false)
+      }
+    },
+    [getCanvas, map]
+  )
 
   const downloadImage = useCallback(
-    async (fileName = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
+    async (domId: string, fileName = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
+      const domElement = document.getElementById(domId)
       if (domElement) {
         try {
           setLoading(true)
           setInlineStyles(domElement)
-          const canvas = await getCanvas()
+          const canvas = await getCanvas(domId)
           canvas.toBlob((blob: any) => {
             if (blob) {
               saveAs(blob, fileName)
@@ -85,22 +91,8 @@ export const useDownloadDomElementAsImage = (
         console.warn('Dom element needed for image download')
       }
     },
-    [domElement, getCanvas]
+    [getCanvas]
   )
-
-  useEffect(() => {
-    if (!domElement) {
-      setError(null)
-      setLoading(false)
-      setFinished(false)
-    }
-  }, [domElement])
-
-  useEffect(() => {
-    if (domElement && autoDownload) {
-      downloadImage(fileName)
-    }
-  }, [downloadImage, domElement, autoDownload, fileName])
 
   return {
     loading,

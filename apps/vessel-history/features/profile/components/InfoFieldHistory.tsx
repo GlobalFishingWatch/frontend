@@ -1,9 +1,12 @@
-import type { ReactNode} from 'react';
+import type { JSX,ReactNode } from 'react';
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Modal } from '@globalfishingwatch/ui-components'
 import type { ValueItem } from 'types'
+
+import { Modal } from '@globalfishingwatch/ui-components'
+
 import type { VesselFieldLabel } from 'types/vessel'
+
 import InfoFieldHistoryTable from './InfoFieldHistoryTable'
 
 interface ListItemProps {
@@ -32,7 +35,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
   hideTMTDate,
   vesselName,
   onClose = () => { },
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const defaultTitle = useMemo(() => {

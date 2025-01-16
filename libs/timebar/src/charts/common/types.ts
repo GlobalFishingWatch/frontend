@@ -62,6 +62,7 @@ export type HighlighterCallback = string | HighlighterCallbackFn
 export type HighlighterDateCallback = (timestamp: number) => string
 
 export type TimebarChartItem<T = void> = {
+  id?: string
   chunks: TimebarChartChunk<T>[]
   color?: string
   status?: ResourceStatus
@@ -70,6 +71,12 @@ export type TimebarChartItem<T = void> = {
   getHighlighterLabel?: HighlighterCallback
   getHighlighterIcon?: HighlighterCallback
   props?: any
+  filters?: {
+    minSpeedFilter?: number
+    maxSpeedFilter?: number
+    minElevationFilter?: number
+    maxElevationFilter?: number
+  }
 }
 
 export type TimebarChartData<T = void> = TimebarChartItem<T>[]

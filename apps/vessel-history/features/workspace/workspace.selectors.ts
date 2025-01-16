@@ -1,8 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import type { RootState } from 'store'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import type { WorkspaceState, WorkspaceStateProperty } from 'types'
+
 import { DEFAULT_WORKSPACE } from 'data/config'
+import { selectLocationQuery } from 'routes/routes.selectors'
 
 export const selectWorkspace = (state: RootState) => state.workspace
 

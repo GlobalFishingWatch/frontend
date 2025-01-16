@@ -1,9 +1,11 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit'
 import type { FeatureCollection } from 'geojson'
+
 import type { TrackSegment } from '@globalfishingwatch/api-types'
-import type { ExportData } from '../../types'
+
 import type { RootState } from '../../store'
+import type { ExportData } from '../../types'
 
 interface Dictionary<T> {
   [Key: string]: T

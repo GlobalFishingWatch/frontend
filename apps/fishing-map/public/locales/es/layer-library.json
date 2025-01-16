@@ -45,9 +45,9 @@
     "name": "Alta mar"
   },
   "loitering": {
-    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "description": "El merodeo ocurre cuando una embarcación individual exhibe un comportamiento que podría indicar un posible encuentro. Este se calcula utilizando datos del sistema de identificación automática (AIS), que incluyen la velocidad de la embarcación, el tiempo que permanece en una ubicación específica y la distancia desde la costa. El merodeo se identifica cuando una embarcación mantiene una velocidad promedio inferior a dos nudos mientras se encuentra, en promedio, a más de 20 millas náuticas de la costa. Para minimizar el ruido en el portal de buques de transporte, únicamente se muestran los eventos de merodeo que superan una hora de duración.",
     "moreInfoLink": "",
-    "name": "Loitering events (AIS)"
+    "name": "Eventos de merodeo (AIS)"
   },
   "mangroves": {
     "description": "Los manglares son árboles o arbustos que pueden sobrevivir en ambientes salinos y normalmente crecen dentro de la zona intermareal de las regiones tropicales y subtropicales. Considerados hábitats de carbono azul, los bosques de manglares mejoran la calidad del agua, estabilizan y protegen las costas y proporcionan protección para aves, animales y organismos marinos. Este conjunto de datos utiliza imágenes satelitales de observación de la tierra para mostrar la distribución global de manglares.  ",
@@ -90,9 +90,9 @@
     "name": "Concentración de fosfato (PO4)"
   },
   "port-visits": {
-    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",
+    "description": "La lista de puertos se define a partir del conjunto de datos obtenidos por Global Fishing Watch sobre fondeaderos. Se trata de una base de datos global que identifica lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",
     "moreInfoLink": "",
-    "name": "Port Visits (AIS)"
+    "name": "Visitas al Puerto (AIS)"
   },
   "presence": {
     "description": "La capa de presencia analiza los datos del sistema de identificación automática (AIS) recopilados de buques identificados por nuestra investigación. La presencia está determinada por la toma de posiciones transmitidas por el AIS del buque y se despliegan como un mapa del calor. ",

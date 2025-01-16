@@ -1,8 +1,9 @@
-import '../styles/globals.css'
-import '@globalfishingwatch/ui-components/base.css'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import type { AppProps } from 'next/app'
+
+import '../styles/globals.css'
+import '@globalfishingwatch/ui-components/base.css'
 
 const queryClient = new QueryClient()
 

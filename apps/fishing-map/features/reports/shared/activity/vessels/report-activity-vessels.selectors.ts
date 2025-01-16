@@ -1,35 +1,37 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'es-toolkit'
 import { t } from 'i18next'
+
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+
 import {
-  selectReportVesselGraph,
   selectReportCategory,
+  selectReportVesselGraph,
 } from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
 } from 'features/reports/areas/area-reports.config'
-import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
-import {
-  selectReportActivityFlatten,
-  selectReportDataviewsWithPermissions,
-} from 'features/reports/areas/area-reports.selectors'
 import {
   selectReportResultsPerPage,
   selectReportVesselFilter,
   selectReportVesselPage,
 } from 'features/reports/areas/area-reports.config.selectors'
+import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+import {
+  selectReportActivityFlatten,
+  selectReportDataviewsWithPermissions,
+} from 'features/reports/areas/area-reports.selectors'
+import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import {
   cleanFlagState,
   cleanVesselOrGearType,
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
-import { getVesselGearTypeLabel } from 'utils/info'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { getVesselGearTypeLabel } from 'utils/info'
 
 const EMPTY_ARRAY: [] = []
 
@@ -91,7 +93,7 @@ export const selectReportVesselsList = createSelector(
 )
 
 export const selectHasReportVessels = createSelector([selectReportVesselsList], (vessels) => {
-  return vessels?.length && vessels?.length > 0
+  return vessels && vessels?.length > 0
 })
 
 export const selectReportVesselsFiltered = createSelector(

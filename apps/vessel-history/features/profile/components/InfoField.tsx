@@ -1,17 +1,20 @@
-import type { ReactNode} from 'react';
+import type { JSX,ReactNode } from 'react';
 import React, { useCallback, useMemo, useState } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import I18nDate from 'features/i18n/i18nDate'
-import { DEFAULT_EMPTY_VALUE } from 'data/config'
+import cx from 'classnames'
 import type { ValueItem } from 'types';
+
+import { DEFAULT_EMPTY_VALUE } from 'data/config'
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import I18nDate from 'features/i18n/i18nDate'
 import { Iuu } from 'types'
 import type { VesselFieldLabel } from 'types/vessel'
-import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import InfoFieldHistory from './InfoFieldHistory'
-import styles from './Info.module.css'
+
 import Faq from './Faq'
+import InfoFieldHistory from './InfoFieldHistory'
+
+import styles from './Info.module.css'
 
 interface ListItemProps {
   label: VesselFieldLabel
@@ -43,7 +46,7 @@ const InfoField: React.FC<ListItemProps> = ({
   hideTMTDate = false,
   includeFaq = false,
   helpText,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)

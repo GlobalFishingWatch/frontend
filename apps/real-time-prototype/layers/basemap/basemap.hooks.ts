@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
-import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { BaseMap } from 'layers/basemap/BasemapLayer'
+import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 
 type BasemapAtom = {
   loaded: boolean

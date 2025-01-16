@@ -1,10 +1,13 @@
-import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
 import type { DragEvent } from 'react'
 import { useCallback, useRef, useState } from 'react'
-import { atom, useSetAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
+import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
+import { atom, useSetAtom } from 'jotai'
+
 import { Tooltip } from '@globalfishingwatch/ui-components'
+
 import { useMapViewport } from 'features/map/map-viewport.hooks'
+
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
 import type { MapAnnotation } from './annotations.types'
 // This blank image is needed to hide the default drag preview icon

@@ -1,13 +1,17 @@
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { ValueItem } from 'types'
+
 import type { Authorization } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import { I18nSpecialDate } from 'features/i18n/i18nDate'
+
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import { I18nSpecialDate } from 'features/i18n/i18nDate'
 import type { VesselFieldLabel } from 'types/vessel'
-import type { ValueItem } from 'types'
+
 import InfoFieldHistory from './InfoFieldHistory'
+
 import styles from './Info.module.css'
 
 interface ListItemProps {
@@ -20,7 +24,7 @@ const AuthorizationsField: React.FC<ListItemProps> = ({
   label,
   authorizations = [],
   vesselName,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const [modalOpen, setModalOpen] = useState(false)

@@ -1,23 +1,21 @@
 import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
+
+import type { FilterOperator } from '@globalfishingwatch/api-types'
+import { EXCLUDE_FILTER_ID, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type {
   ChoiceOption,
   MultiSelectOption,
-  SliderRangeValues} from '@globalfishingwatch/ui-components';
-import {
-  Choice,
-  MultiSelect,
-  Select,
-  Slider,
-  SliderRange
+  SliderRangeValues,
 } from '@globalfishingwatch/ui-components'
-import type { FilterOperator} from '@globalfishingwatch/api-types';
-import { EXCLUDE_FILTER_ID, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
-import { getPlaceholderBySelections } from 'features/i18n/utils'
+import { Choice, MultiSelect, Select, Slider, SliderRange } from '@globalfishingwatch/ui-components'
+
 import type { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
-import type { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { getPlaceholderBySelections } from 'features/i18n/utils'
+import type { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
+
 import styles from './LayerFilters.module.css'
 
 type LayerSchemaFilterProps = {
@@ -203,7 +201,7 @@ function LayerSchemaFilter({
     if (UNSORTED_FILTERS.includes(id) || type === 'range') return options
     return options.sort((a, b) => a.label.localeCompare(b.label))
   }, [id, options, type])
-   
+
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues | number) => {
       if (Array.isArray(rangeSelected)) {

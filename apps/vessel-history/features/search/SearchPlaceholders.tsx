@@ -1,9 +1,12 @@
+import { Trans,useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { useTranslation, Trans } from 'react-i18next'
+
 import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
-import styles from './SearchPlaceholders.module.css'
+
 import type { HttpError } from './search.slice'
+
+import styles from './SearchPlaceholders.module.css'
 
 type SearchPlaceholderProps = {
   className?: string

@@ -1,33 +1,35 @@
 import type {
+  AccessorFunction,
   Color,
   DefaultProps,
-  AccessorFunction,
-  UpdateParameters,
   LayerContext,
+  UpdateParameters,
 } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import type { Feature, GeoJsonProperties, Geometry } from 'geojson'
 import type { ScaleLinear } from 'd3-scale'
 import { scaleLinear } from 'd3-scale'
+import type { Feature, GeoJsonProperties, Geometry } from 'geojson'
+
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
-  hexToDeckColor,
-  LayerGroup,
+  DEFAULT_BACKGROUND_COLOR,
+  getColorRampByOpacitySteps,
+  getFeatureInFilter,
+  getFetchLoadOptions,
   getLayerGroupOffset,
+  getMVTSublayerProps,
   getPickedFeatureToHighlight,
   GFWMVTLoader,
-  getMVTSublayerProps,
+  hexToDeckColor,
+  LayerGroup,
   rgbaStringToComponents,
-  getColorRampByOpacitySteps,
-  getFetchLoadOptions,
-  DEFAULT_BACKGROUND_COLOR,
-  getFeatureInFilter,
 } from '../../utils'
-import type { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
+
+import type { UserLayerFeature,UserPolygonsLayerProps } from './user.types'
 import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
 
@@ -89,16 +91,16 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   _getLineColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { color, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { color, filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return COLOR_TRANSPARENT
     }
     return hexToDeckColor(color)
   }
 
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty, layers, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { idProperty, layers, filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return COLOR_TRANSPARENT
     }
     const highlightedFeatures = this._getHighlightedFeatures()
@@ -111,8 +113,8 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   _getFillStepsColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty, layers, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { idProperty, layers, filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return COLOR_TRANSPARENT
     }
     const highlightedFeatures = this._getHighlightedFeatures()

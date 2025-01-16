@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 
 const VesselIdentityFieldLogin = () => {

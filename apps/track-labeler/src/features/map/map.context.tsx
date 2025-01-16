@@ -1,11 +1,11 @@
 import React, {
   createContext,
-  useRef,
+  useCallback,
   useContext,
-  useState,
   useEffect,
   useMemo,
-  useCallback,
+  useRef,
+  useState,
 } from 'react'
 import type { Map } from 'maplibre-gl'
 
@@ -15,7 +15,7 @@ interface MapboxRefContextProviderProps {
 }
 
 const MapboxRefProvider: React.FC<MapboxRefContextProviderProps> = ({ children }) => {
-  const mapboxRef = useRef()
+  const mapboxRef = useRef(undefined)
   const [mapboxRefReady, seMapboxRefReady] = useState(false)
   const [mapboxInstance, seMapboxInstance] = useState<Map | undefined>()
 

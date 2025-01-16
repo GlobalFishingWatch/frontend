@@ -1,20 +1,22 @@
-import { Children, isValidElement, cloneElement } from 'react'
-import type { Placement } from 'tippy.js'
+import { Children, cloneElement, isValidElement, type JSX } from 'react'
 import { useSelector } from 'react-redux'
-import type { IconButtonProps, ButtonProps } from '@globalfishingwatch/ui-components'
+
+import type { ButtonProps,IconButtonProps,TooltipPlacement  } from '@globalfishingwatch/ui-components'
+
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+
 import LocalStorageLoginLink from './LoginLink'
 
 interface LoginButtonWrapperProps {
   tooltip?: string
-  tooltipPlacement?: Placement
+  tooltipPlacement?: TooltipPlacement
   children: JSX.Element
 }
 
 const LoginButtonWrapper = ({
   children,
   tooltip,
-  tooltipPlacement = 'auto',
+  tooltipPlacement = 'top',
 }: LoginButtonWrapperProps) => {
   const guestUser = useSelector(selectIsGuestUser)
 

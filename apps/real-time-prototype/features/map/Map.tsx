@@ -1,25 +1,28 @@
 import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
-import cx from 'classnames'
-import type { DeckGLRef } from '@deck.gl/react';
-import { DeckGL } from '@deck.gl/react'
 import type { PickingInfo} from '@deck.gl/core';
 import { MapView, WebMercatorViewport } from '@deck.gl/core'
-import { useAtom } from 'jotai'
-import { BitmapLayer } from '@deck.gl/layers'
 import { TileLayer } from '@deck.gl/geo-layers'
+import { BitmapLayer } from '@deck.gl/layers'
+import type { DeckGLRef } from '@deck.gl/react';
+import { DeckGL } from '@deck.gl/react'
+import cx from 'classnames'
+import { useAtom } from 'jotai'
+import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
+import { useContextsLayer } from 'layers/context/context.hooks'
+import { useLatestPositionsLayer } from 'layers/latest-positions/latest-positions.hooks'
+import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import uniqBy from 'lodash/uniqBy'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { BasemapType } from '@globalfishingwatch/layer-composer'
 import type { MiniglobeBounds} from '@globalfishingwatch/ui-components';
 import { MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
-import { BasemapType } from '@globalfishingwatch/layer-composer'
-import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
-import { useLatestPositionsLayer } from 'layers/latest-positions/latest-positions.hooks'
-import { useContextsLayer } from 'layers/context/context.hooks'
-import { useBasemapLayer } from 'layers/basemap/basemap.hooks'
-import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
+
 import { hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
-import { getDateLabel } from 'utils/dates'
+import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
 import { getCoordinatesLabel } from 'utils/coordinates'
+import { getDateLabel } from 'utils/dates'
+
 import styles from './map.module.css'
 
 const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
@@ -33,7 +36,7 @@ export type GFWLayerProps = {
   showLatestPositions: boolean
 }
 
-const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement => {
+const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any> => {
   useURLViewport()
   const { viewState, onViewportStateChange } = useViewport()
   const deckRef = useRef<DeckGLRef>(null)

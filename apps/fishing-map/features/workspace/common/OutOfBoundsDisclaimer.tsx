@@ -1,16 +1,18 @@
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
+import cx from 'classnames'
+
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
+import { LAST_DATA_UPDATE } from 'data/config'
 import {
   getActiveDatasetsInActivityDataviews,
   getDatasetsInDataviews,
 } from 'features/datasets/datasets.utils'
-import { LAST_DATA_UPDATE } from 'data/config'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type OutOfTimerangeDisclaimerValidate = 'start' | 'end' | 'both'
 type OutOfTimerangeDisclaimerProps = {

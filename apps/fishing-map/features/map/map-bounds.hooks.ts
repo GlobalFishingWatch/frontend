@@ -1,12 +1,14 @@
 import { useCallback, useEffect } from 'react'
+import type { Deck } from '@deck.gl/core'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useAtom } from 'jotai'
-import type { Deck } from '@deck.gl/core'
-import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import type { Bbox } from 'types'
+
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
-import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 
 const boundsAtom = atom<MiniglobeBounds>({
   north: 90,

@@ -1,4 +1,5 @@
 import { EndpointId } from '@globalfishingwatch/api-types'
+
 import {
   ALL_LEGACY_EVENTS_DATASETS_DICT,
   ALL_LEGACY_VESSELS_DATASETS_DICT,

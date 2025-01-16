@@ -1,14 +1,17 @@
-import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { InsightResponse, InsightValueInPeriod } from '@globalfishingwatch/api-types'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
-import { formatInfoField, upperFirst } from 'utils/info'
-import InsightError from 'features/vessel/insights/InsightErrorMessage'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import type { InsightResponse, InsightValueInPeriod } from '@globalfishingwatch/api-types'
+
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import { formatInfoField, upperFirst } from 'utils/info'
+
 import styles from './Insights.module.css'
 
 const InsightMOUList = ({

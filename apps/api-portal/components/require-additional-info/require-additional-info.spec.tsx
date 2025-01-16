@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react'
+
 import RequireAdditionalInfo from './require-additional-info'
 
 describe('RequireAdditionalInfo', () => {

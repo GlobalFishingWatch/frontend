@@ -1,20 +1,35 @@
 import { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import type { DeckGLRef } from '@deck.gl/react';
+import type { DeckGLRef } from '@deck.gl/react'
 import { DeckGL } from '@deck.gl/react'
 import dynamic from 'next/dynamic'
+import type { MapCoordinates } from 'types'
+
 // import { atom, useAtom } from 'jotai'
-import type {
-  InteractionEvent} from '@globalfishingwatch/deck-layer-composer';
+import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
   useSetDeckLayerLoadedState,
   useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
-import { useSetMapInstance } from 'features/map/map-context.hooks'
+
+import { useAppDispatch } from 'features/app/app.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapControls from 'features/map/controls/MapControls'
+import { useSetMapInstance } from 'features/map/map-context.hooks'
+import {
+  useMapCursor,
+  useMapDrag,
+  useMapMouseClick,
+  useMapMouseHover,
+} from 'features/map/map-interactions.hooks'
+import { useMapLayers } from 'features/map/map-layers.hooks'
+import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
+import MapPopups from 'features/map/popups/MapPopups'
+import { selectReportAreaStatus } from 'features/reports/areas/area-reports.selectors'
+import { useHasReportTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
+import { selectVGRSection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
@@ -22,36 +37,25 @@ import {
   selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
-import {
-  useMapCursor,
-  useMapDrag,
-  useMapMouseClick,
-  useMapMouseHover,
-} from 'features/map/map-interactions.hooks'
-import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
-import { useMapLayers } from 'features/map/map-layers.hooks'
-import MapPopups from 'features/map/popups/MapPopups'
-import type { MapCoordinates } from 'types'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { useHasReportTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
-import { selectReportAreaStatus } from 'features/reports/areas/area-reports.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectVGRSection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import {
-  MAP_VIEW,
-  useMapSetViewState,
-  useUpdateViewStateUrlParams,
-  useMapViewState,
-} from './map-viewport.hooks'
-import styles from './Map.module.css'
+
+import MapInfo from './controls/MapInfo'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
-import { useMapDrawConnect } from './map-draw.hooks'
-import MapInfo from './controls/MapInfo'
-import { MAP_CANVAS_ID } from './map.config'
-import TimeComparisonLegend from './TimeComparisonLegend'
 import { CoordinateEditOverlay } from './overlays/draw/CoordinateEditOverlay'
+import { MAP_CANVAS_ID } from './map.config'
 import { setMapLoaded } from './map.slice'
+import { useMapDrawConnect } from './map-draw.hooks'
+import {
+  MAP_CONTAINER_ID,
+  MAP_VIEW,
+  useMapSetViewState,
+  useMapViewState,
+  useUpdateViewStateUrlParams,
+} from './map-viewport.hooks'
+import TimeComparisonLegend from './TimeComparisonLegend'
+
+import styles from './Map.module.css'
 
 const DrawDialog = dynamic(
   () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
@@ -121,7 +125,7 @@ const MapWrapper = () => {
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
   return (
-    <div className={styles.container} onMouseLeave={onMouseLeave}>
+    <div id={MAP_CONTAINER_ID} className={styles.container} onMouseLeave={onMouseLeave}>
       <DeckGL
         id={MAP_CANVAS_ID}
         ref={deckRef}

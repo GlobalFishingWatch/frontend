@@ -1,36 +1,39 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
 import type { MapboxStyle } from 'react-map-gl';
 import { Map } from 'react-map-gl'
+import { useSelector } from 'react-redux'
+
+import { DatasetCategory, DatasetSubCategory } from '@globalfishingwatch/api-types'
+import type { ExtendedStyleMeta} from '@globalfishingwatch/layer-composer';
+import { GeneratorType,useLayerComposer, useMapClick  } from '@globalfishingwatch/layer-composer'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
-import { useLayerComposer, useMapClick } from '@globalfishingwatch/layer-composer'
-import type { ExtendedStyleMeta} from '@globalfishingwatch/layer-composer';
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { DatasetCategory, DatasetSubCategory } from '@globalfishingwatch/api-types'
-import { selectResourcesLoading } from 'features/resources/resources.slice'
+
+import { DEFAULT_VESSEL_MAP_ZOOM, ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesByType,
 } from 'features/dataviews/dataviews.selectors'
-import { selectVesselById } from 'features/vessels/vessels.slice'
-import Info from 'features/map/info/Info'
-import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { DEFAULT_VESSEL_MAP_ZOOM, ENABLE_FLYTO, FLY_EFFECTS } from 'data/config'
-import { selectMergedVesselId } from 'routes/routes.selectors'
-import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
-import { EventTypeVoyage } from 'types/voyage'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { selectFilters } from 'features/event-filters/filters.slice'
-import { getUTCDateTime } from 'utils/dates'
+import Info from 'features/map/info/Info'
+import { selectResourcesLoading } from 'features/resources/resources.slice'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import { selectVesselById } from 'features/vessels/vessels.slice'
 import { parseVesselProfileId } from 'features/vessels/vessels.utils'
-import { useGeneratorsConnect } from './map.hooks'
-import useMapInstance from './map-context.hooks'
-import useViewport from './map-viewport.hooks'
+import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
+import { selectMergedVesselId } from 'routes/routes.selectors'
+import { EventTypeVoyage } from 'types/voyage'
+import { getUTCDateTime } from 'utils/dates'
+
 import MapControls from './controls/MapControls'
-import useMapEvents from './map-events.hooks'
-import { selectHighlightedEvent, selectMapVoyageTime } from './map.slice'
 import PopupWrapper from './popups/PopupWrapper'
+import { useGeneratorsConnect } from './map.hooks'
+import { selectHighlightedEvent, selectMapVoyageTime } from './map.slice'
+import useMapInstance from './map-context.hooks'
+import useMapEvents from './map-events.hooks'
+import useViewport from './map-viewport.hooks'
+
 import styles from './Map.module.css'
 
 const mapStyles = {
@@ -38,7 +41,7 @@ const mapStyles = {
   height: '100%',
 }
 
-const MapWrapper: React.FC = (): React.ReactElement => {
+const MapWrapper: React.FC = (): React.ReactElement<any> => {
   const map = useMapInstance()
   const dispatch = useAppDispatch()
   const flying = useRef(false)

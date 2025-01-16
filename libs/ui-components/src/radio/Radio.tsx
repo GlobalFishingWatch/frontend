@@ -2,18 +2,20 @@
 import type { ReactElement } from 'react'
 import React from 'react'
 import cx from 'classnames'
-import type { Placement } from 'tippy.js'
+
+import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
+
 import styles from './Radio.module.css'
 
 interface RadioProps {
   active: boolean
-  label?: string | ReactElement
+  label?: string | ReactElement<any>
   disabled?: boolean
   onClick: (event: React.MouseEvent) => void
   tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
+  tooltipPlacement?: TooltipPlacement
   className?: string
   labelClassname?: string
 }

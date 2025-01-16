@@ -1,4 +1,5 @@
 import { scaleLinear } from 'd3-scale'
+
 import type {
   Dataset,
   DatasetConfiguration,

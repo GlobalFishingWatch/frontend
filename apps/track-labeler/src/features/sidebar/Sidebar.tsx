@@ -1,42 +1,46 @@
 import React, { useCallback, useMemo } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
-import { fitBounds } from 'viewport-mercator-project'
 import Hotkeys from 'react-hot-keys'
+import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
+import cx from 'classnames'
+import { DateTime } from 'luxon'
+import { fitBounds } from 'viewport-mercator-project'
+
+import { filterSegmentsByTimerange, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import type { SelectOption } from '@globalfishingwatch/ui-components';
 import { Button, IconButton, Select } from '@globalfishingwatch/ui-components'
-import { filterSegmentsByTimerange, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+
 import brand from '../../assets/images/brand.png'
-import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
-import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
-import { selectProject } from '../../routes/routes.selectors'
-import {
-  getVesselInfo,
-  getVesselTrackGeojsonByDateRange,
-} from '../../features/tracks/tracks.selectors'
-import { useViewport } from '../../features/map/map.hooks'
+import { LABEL_HOTKEYS, SUPPORT_EMAIL, UNDO_HOTKEYS } from '../../data/constants'
+import ErrorPlaceHolder from '../../features/error/ErrorPlaceholder'
 import { useMapboxInstance } from '../../features/map/map.context'
+import { useViewport } from '../../features/map/map.hooks'
+import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
   disableHighlightedEvent,
   setHighlightedEvent,
   setHighlightedTime,
 } from '../../features/timebar/timebar.slice'
-import { getActionShortcuts } from '../../features/projects/projects.selectors'
+import {
+  getVesselInfo,
+  getVesselTrackGeojsonByDateRange,
+} from '../../features/tracks/tracks.selectors'
+import { useUser } from '../../features/user/user.hooks'
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
+import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
+import { selectTimestamps } from '../../features/vessels/vessels.slice'
+import { updateQueryParams } from '../../routes/routes.actions'
+import { selectProject } from '../../routes/routes.selectors'
+import { useAppDispatch } from '../../store.hooks'
 import { ActionType } from '../../types'
 import { findPreviousTimestamp, isFiniteBbox } from '../../utils/shared'
-import { selectTimestamps } from '../../features/vessels/vessels.slice'
-import { LABEL_HOTKEYS, SUPPORT_EMAIL, UNDO_HOTKEYS } from '../../data/constants'
-import { useUser } from '../../features/user/user.hooks'
-import ErrorPlaceHolder from '../../features/error/ErrorPlaceholder'
-import { updateQueryParams } from '../../routes/routes.actions'
-import { useAppDispatch } from '../../store.hooks'
-import styles from './Sidebar.module.css'
+
 import { useSelectedTracksConnect } from './sidebar.hooks'
 
-const Sidebar: React.FC = (props): React.ReactElement => {
+import styles from './Sidebar.module.css'
+
+const Sidebar: React.FC = (props): React.ReactElement<any> => {
   const {
     uploadingTrack,
     dispatchUpdateActionSelectedTrack,

@@ -55,7 +55,9 @@
   top: 0;
   z-index: -1;
   transform: translateY(0);
-  transition: transform 150ms ease-out, opacity 150ms linear;
+  transition:
+    transform 150ms ease-out,
+    opacity 150ms linear;
   opacity: 0;
   border-top: var(--border);
   border-bottom: var(--border);

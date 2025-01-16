@@ -2,9 +2,10 @@ import type { LayerMetadataLegend} from '../../../types';
 import { LegendType } from '../../../types'
 import type { ColorRampId, ColorRampsIds} from '../../types';
 import { HeatmapAnimatedMode } from '../../types'
-import { HEATMAP_DEFAULT_MAX_ZOOM, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
 import { HEATMAP_COLOR_RAMPS, HEATMAP_COLORS_BY_ID, TIME_COMPARE_COLOR_RAMP } from '../colors'
+import { GRID_AREA_BY_ZOOM_LEVEL,HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+
 import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToString } from './colors'
 import type { Breaks, FetchBreaksParams} from './fetch-breaks';
 import { isDirectAPIBreaks } from './fetch-breaks'

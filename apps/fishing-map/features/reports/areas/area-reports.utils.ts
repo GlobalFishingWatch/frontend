@@ -1,29 +1,32 @@
-import { format } from 'd3-format'
-import { DateTime } from 'luxon'
 import { featureCollection, multiPolygon } from '@turf/helpers'
 import { difference, dissolve } from '@turf/turf'
+import { format } from 'd3-format'
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
-import { parse } from 'qs'
+import { DateTime } from 'luxon'
 import { matchSorter } from 'match-sorter'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { Dataview} from '@globalfishingwatch/api-types';
+import { parse } from 'qs'
+import type { Bbox, BufferOperation, BufferUnit } from 'types'
+
+import { API_VERSION } from '@globalfishingwatch/api-client'
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
-import { API_VERSION } from '@globalfishingwatch/api-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { sortStrings } from 'utils/shared'
-import { t } from 'features/i18n/i18n'
-import type {
-  SupportedDatasetSchema} from 'features/datasets/datasets.utils';
+
+import type { Area, AreaGeometry } from 'features/areas/areas.slice'
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
   getSchemaFieldsSelectedInDataview,
-  getSchemaFilterOperationInDataview
+  getSchemaFilterOperationInDataview,
 } from 'features/datasets/datasets.utils'
-import type { Bbox, BufferOperation, BufferUnit } from 'types'
-import type { Area, AreaGeometry } from 'features/areas/areas.slice'
+import { t } from 'features/i18n/i18n'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import type { VesselGroupReportVesselParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.types'
+import { sortStrings } from 'utils/shared'
+
 import type { VesselGroupVesselTableParsed } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
+
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,

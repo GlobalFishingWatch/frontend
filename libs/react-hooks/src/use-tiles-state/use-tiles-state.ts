@@ -1,5 +1,6 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useEffect,useState } from 'react'
 import tilebelt from '@mapbox/tilebelt'
+
 import type { Map } from '@globalfishingwatch/maplibre-gl'
 
 type TilesLoading = {

@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon'
+
 import type { Dataset, Dataview } from '@globalfishingwatch/api-types';
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+
 import type { UrlDataviewInstance } from './types'
 
 export const removeDatasetVersion = (datasetId: string) => {

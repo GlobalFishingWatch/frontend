@@ -1,10 +1,11 @@
-import i18n from 'i18next'
-import Backend from 'i18next-http-backend'
-import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
-import { Locale } from 'types'
-import { WORKSPACE_ENV } from 'data/workspaces'
+import i18n from 'i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
+import Backend from 'i18next-http-backend'
+
 import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
+import { WORKSPACE_ENV } from 'data/workspaces'
+import { Locale } from 'types'
 
 export const CROWDIN_IN_CONTEXT_LANG = 'val'
 
@@ -23,7 +24,6 @@ const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
 
 const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
- 
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -70,7 +70,6 @@ i18n.on('languageChanged', (lng) => {
   }
 })
 
- 
 const t = i18n.t.bind(i18n)
 
 export { t }

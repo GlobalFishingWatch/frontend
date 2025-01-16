@@ -1,4 +1,5 @@
 import type { Viewport } from '@deck.gl/core'
+
 import type { GraticulesFeature } from './graticules.types'
 
 const SCALERANK_BREAKS = [9, 25, 50, 150]
