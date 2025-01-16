@@ -1,13 +1,16 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+
 import { Button } from '@globalfishingwatch/ui-components'
-import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import {
   selectReportAreaIds,
   selectReportAreaName,
 } from 'features/reports/areas/area-reports.selectors'
+
 import styles from './ReportDownload.module.css'
 
 export default function ReportDownload() {

@@ -1,9 +1,12 @@
 import type { Dispatch } from 'redux'
 import type { StateGetter } from 'redux-first-router'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { AppState } from '../../types/redux.types'
+
 import { selectLocationQuery } from '../../routes/routes.selectors'
-import { fetchUserInit, fetchUserComplete, fetchUserError } from './user.actions'
+import type { AppState } from '../../types/redux.types'
+
+import { fetchUserComplete, fetchUserError,fetchUserInit } from './user.actions'
 import { isUserLogged, userLoaded } from './user.slice'
 
 export const userLoginThunk = async (

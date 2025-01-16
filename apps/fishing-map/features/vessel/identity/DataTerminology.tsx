@@ -1,18 +1,17 @@
 import { Fragment, useCallback, useState } from 'react'
-import htmlParse from 'html-react-parser'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type {
-  IconButtonSize,
-  IconButtonType} from '@globalfishingwatch/ui-components';
-import {
-  IconButton,
-  Modal,
-} from '@globalfishingwatch/ui-components'
-import type { I18nNamespaces } from 'features/i18n/i18n.types'
+import cx from 'classnames'
+import htmlParse from 'html-react-parser'
+
+import type { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components'
+import { IconButton, Modal } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import type { I18nNamespaces } from 'features/i18n/i18n.types'
+
 import { selectVesselSection } from '../vessel.config.selectors'
+
 import styles from './DataTerminology.module.css'
 
 interface ModalProps {
@@ -31,7 +30,7 @@ const DataTerminology: React.FC<ModalProps> = ({
   title,
   size = 'default',
   type = 'border',
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation(['translations', 'data-terminology'])
   const [showModal, setShowModal] = useState(false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])

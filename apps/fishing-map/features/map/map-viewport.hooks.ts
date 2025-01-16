@@ -1,16 +1,17 @@
 import { useCallback, useEffect } from 'react'
-import { debounce } from 'es-toolkit'
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { useSelector } from 'react-redux'
 import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
-import { useSelector } from 'react-redux'
+import { debounce, throttle } from 'es-toolkit'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import type { MapCoordinates } from 'types'
+
 import { DEFAULT_VIEWPORT } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
+import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { getUrlViewstateNumericParam } from 'utils/url'
-import { useDeckMap } from 'features/map/map-context.hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
 
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
@@ -24,9 +25,9 @@ export const useMapViewState = () => useAtomValue(viewStateAtom)
 export const useMapSetViewState = () => {
   const setViewState = useSetAtom(viewStateAtom)
   return useCallback(
-    (coordinates: Partial<MapCoordinates>) => {
+    throttle((coordinates: Partial<MapCoordinates>) => {
       setViewState((prev) => ({ ...prev, ...coordinates }))
-    },
+    }, 1),
     [setViewState]
   )
 }

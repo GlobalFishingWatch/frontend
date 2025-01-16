@@ -1,20 +1,23 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+
+import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
+
 import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
   getSchemaFieldsSelectedInDataview,
   getSchemaFilterOperationInDataview,
   getSchemaFilterUnitInDataview,
 } from 'features/datasets/datasets.utils'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { getValueLabelByUnit } from 'features/workspace/common/LayerSchemaFilter'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
+
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
 type LayerPanelProps = {
@@ -23,7 +26,7 @@ type LayerPanelProps = {
   label: string
 }
 
-function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement {
+function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isGuestUser = useSelector(selectIsGuestUser)

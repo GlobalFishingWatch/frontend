@@ -1,34 +1,38 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
 import { getQueryParamsResolved } from 'queries/base'
 import type {
   ReportEventsVesselsResponse,
   ReportEventsVesselsResponseItem,
 } from 'queries/report-events-stats-api'
 import { EVENTS_TIME_FILTER_MODE } from 'queries/report-events-stats-api'
-import type { AsyncError } from 'utils/async-slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
+
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+
+import { t } from 'features/i18n/i18n'
+import type { VesselLastIdentity } from 'features/search/search.slice'
 import {
   DEFAULT_VESSEL_IDENTITY_ID,
   INCLUDES_RELATED_SELF_REPORTED_INFO_ID,
 } from 'features/vessel/vessel.config'
+import { getSearchIdentityResolved, getVesselIdentities } from 'features/vessel/vessel.utils'
 import {
   fetchAllSearchVessels,
   SEARCH_PAGINATION,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { getSearchIdentityResolved, getVesselIdentities } from 'features/vessel/vessel.utils'
-import type { VesselLastIdentity } from 'features/search/search.slice'
-import { t } from 'features/i18n/i18n'
+import type { AsyncError } from 'utils/async-slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
-import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
+
 import { getDateRangeHash } from '../shared/activity/reports-activity.slice'
+import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
 
 export type EventsStatsVessel = ReportEventsVesselsResponseItem &
   VesselLastIdentity & {
     shipName: string
     geartype: string
+    shiptype: string
     flagTranslated: string
   }
 
@@ -67,12 +71,13 @@ type FetchPortsReportThunkParams = {
   datasetId: string
   start: string
   end: string
+  confidences?: number[]
 }
 
 export const fetchPortsReportThunk = createAsyncThunk(
   'ports-report/vessels',
   async (
-    { portId, datasetId, start, end }: FetchPortsReportThunkParams,
+    { portId, datasetId, start, end, confidences = [4] }: FetchPortsReportThunkParams,
     { rejectWithValue, signal }
   ) => {
     try {
@@ -82,6 +87,7 @@ export const fetchPortsReportThunk = createAsyncThunk(
         'port-ids': [portId],
         'time-filter-mode': EVENTS_TIME_FILTER_MODE,
         dataset: datasetId,
+        ...(confidences.length && { confidences }),
       }
       const portEventsVesselStats = await GFWAPI.fetch<ReportEventsVesselsResponse>(
         `/events/stats-by-vessel${getQueryParamsResolved(vesselEventsParams)}`,
@@ -134,6 +140,11 @@ export const fetchPortsReportThunk = createAsyncThunk(
             (identity.geartypes || [])
               .sort()
               .map((g) => formatInfoField(g, 'geartypes'))
+              .join(', ') || OTHER_CATEGORY_LABEL,
+          shiptype:
+            (identity.shiptypes || [])
+              .sort()
+              .map((g) => formatInfoField(g, 'shiptypes'))
               .join(', ') || OTHER_CATEGORY_LABEL,
           flagTranslated: t(`flags:${identity.flag as string}` as any),
         } as EventsStatsVessel

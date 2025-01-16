@@ -1,18 +1,21 @@
-import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import type { MapMouseEvent } from 'maplibre-gl'
+
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
-import { selectHiddenLabels, selectViewport } from '../../routes/routes.selectors'
-import { updateQueryParams } from '../../routes/routes.actions'
-import type { CoordinatePosition, MapCoordinates, Label } from '../../types'
+
 import { selectEditing } from '../../features/rulers/rulers.selectors'
 import { editRuler, moveCurrentRuler } from '../../features/rulers/rulers.slice'
+import { updateQueryParams } from '../../routes/routes.actions'
+import { selectHiddenLabels, selectViewport } from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
+import type { CoordinatePosition, Label,MapCoordinates } from '../../types'
 import { useSegmentsLabeledConnect } from '../timebar/timebar.hooks'
 import { selectedtracks } from '../vessels/selectedTracks.slice'
+
 import type { UpdateGeneratorPayload } from './map.slice'
-import { selectGeneratorsConfig, updateGenerator, selectGlobalGeneratorsConfig } from './map.slice'
+import { selectGeneratorsConfig, selectGlobalGeneratorsConfig,updateGenerator } from './map.slice'
 
 export const useMapMove = () => {
   const dispatch = useAppDispatch()

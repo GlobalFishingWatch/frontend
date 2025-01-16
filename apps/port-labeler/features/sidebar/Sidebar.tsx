@@ -1,6 +1,8 @@
 import Table from 'features/table-anchorage/TableAnchorage'
-import styles from './Sidebar.module.css'
+
 import SidebarHeader from './SidebarHeader'
+
+import styles from './Sidebar.module.css'
 
 type SidebarProps = {
   onMenuClick: () => void

@@ -1,30 +1,33 @@
-import { Trans, useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
-import type { Dataset} from '@globalfishingwatch/api-types';
-import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
+import cx from 'classnames'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { getDatasetLabel, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
-import { sortByCreationDate } from 'utils/dates'
-import InfoError from 'features/workspace/common/InfoError'
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
+import { Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import DatasetLabel from 'features/datasets/DatasetLabel'
-import InfoModalContent from 'features/workspace/common/InfoModalContent'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDataviewInstanceByDataset, useAddDataset } from 'features/datasets/datasets.hook'
-import { setModalOpen } from 'features/modals/modals.slice'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
-import { getHighlightedText } from 'utils/text'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { getDatasetLabel, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import InfoError from 'features/workspace/common/InfoError'
+import InfoModalContent from 'features/workspace/common/InfoModalContent'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { sortByCreationDate } from 'utils/dates'
+import { getHighlightedText } from 'utils/text'
+
 import styles from './LayerLibraryUserPanel.module.css'
 
 const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
@@ -126,7 +129,10 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
               const datasetError = dataset.status === DatasetStatus.Error
               const datasetImporting = dataset.status === DatasetStatus.Importing
               const datasetDescription = dataset.description !== dataset.name
-              let infoTooltip = t(`layer.seeDescription`, 'Click to see layer description')
+              let infoTooltip = t(
+                `layer.seeDescription`,
+                'Click to see layer description'
+              ) as string
               if (datasetImporting) {
                 infoTooltip = t('dataset.importing', 'Dataset is being imported')
               }

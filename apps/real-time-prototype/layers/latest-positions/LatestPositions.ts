@@ -1,18 +1,21 @@
-import { IconLayer } from '@deck.gl/layers'
-import type { MVTLayerProps } from '@deck.gl/geo-layers';
-import { MVTLayer } from '@deck.gl/geo-layers'
 import type { Color} from '@deck.gl/core';
 import { CompositeLayer } from '@deck.gl/core'
+import type { MVTLayerProps } from '@deck.gl/geo-layers';
+import { MVTLayer } from '@deck.gl/geo-layers'
+import { IconLayer } from '@deck.gl/layers'
+import type { TrackSublayer } from 'layers/tracks/tracks.hooks'
 import { ckmeans, mean, sample, standardDeviation } from 'simple-statistics'
+
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
   hexToComponents,
   rgbaStringToComponents,
 } from '@globalfishingwatch/layer-composer'
-import type { TrackSublayer } from 'layers/tracks/tracks.hooks'
+
 import { API_BASE, BASE_PATH } from 'data/config'
 import type { GFWLayerProps } from 'features/map/Map'
+
 import { GFWAPI } from '../../../../libs/api-client/src/api-client'
 
 const ICON_MAPPING = {

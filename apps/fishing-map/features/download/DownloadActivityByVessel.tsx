@@ -1,63 +1,59 @@
-import { useMemo, useState, Fragment } from 'react'
-import parse from 'html-react-parser'
-import cx from 'classnames'
+import { Fragment,useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Icon, Button, Choice, Tag } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+import parse from 'html-react-parser'
+
 import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
-import {
-  selectUrlBufferOperationQuery,
-  selectUrlBufferUnitQuery,
-  selectUrlBufferValueQuery,
-} from 'routes/routes.selectors'
-import type {
-  DownloadActivityParams,
-  DateRange} from 'features/download/downloadActivity.slice';
-import {
-  downloadActivityThunk,
-  selectIsDownloadActivityLoading,
-  selectIsDownloadActivityFinished,
-  selectDownloadActivityAreaKey,
-  selectHadDownloadActivityTimeoutError,
-} from 'features/download/downloadActivity.slice'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { TimelineDatesRange } from 'features/map/controls/MapInfo'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import {
-  selectActiveHeatmapDowloadDataviewsByTab,
-  selectActiveHeatmapVesselDatasets,
-} from 'features/dataviews/selectors/dataviews.selectors'
-import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { selectUserData } from 'features/user/selectors/user.selectors'
+import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import type { AreaKeyId } from 'features/areas/areas.slice'
+import DatasetLabel from 'features/datasets/DatasetLabel'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
 import {
   checkDatasetReportPermission,
   getActiveDatasetsInDataview,
   getDatasetsReportNotSupported,
 } from 'features/datasets/datasets.utils'
-import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { useAppDispatch } from 'features/app/app.hooks'
-import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
-import DatasetLabel from 'features/datasets/DatasetLabel'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import UserGuideLink from 'features/help/UserGuideLink'
-import type { AreaKeyId } from 'features/areas/areas.slice'
-import { selectIsDownloadActivityAreaLoading } from 'features/download/download.selectors'
-import { selectDatasetById } from 'features/datasets/datasets.slice'
-import styles from './DownloadModal.module.css'
-import type {
-  HeatmapDownloadFormat,
-  GroupBy,
-  TemporalResolution} from './downloadActivity.config';
 import {
-  VESSEL_FORMAT_OPTIONS,
-  getVesselGroupOptions,
-} from './downloadActivity.config'
+  selectActiveHeatmapDowloadDataviewsByTab,
+  selectActiveHeatmapVesselDatasets,
+} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectIsDownloadActivityAreaLoading } from 'features/download/download.selectors'
+import type { DateRange,DownloadActivityParams } from 'features/download/downloadActivity.slice'
+import {
+  downloadActivityThunk,
+  selectDownloadActivityAreaKey,
+  selectHadDownloadActivityTimeoutError,
+  selectIsDownloadActivityFinished,
+  selectIsDownloadActivityLoading,
+} from 'features/download/downloadActivity.slice'
+import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
+import UserGuideLink from 'features/help/UserGuideLink'
+import { TimelineDatesRange } from 'features/map/controls/MapInfo'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import {
+  selectUrlBufferOperationQuery,
+  selectUrlBufferUnitQuery,
+  selectUrlBufferValueQuery,
+} from 'routes/routes.selectors'
+import { getActivityFilters, getEventLabel } from 'utils/analytics'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
 import {
   getDownloadReportSupported,
   getSupportedGroupByOptions,
   getSupportedTemporalResolutions,
 } from './download.utils'
+import type { GroupBy, HeatmapDownloadFormat, TemporalResolution } from './downloadActivity.config'
+import { getVesselGroupOptions,VESSEL_FORMAT_OPTIONS } from './downloadActivity.config'
 import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
+
+import styles from './DownloadModal.module.css'
 
 function DownloadActivityByVessel() {
   const { t } = useTranslation()

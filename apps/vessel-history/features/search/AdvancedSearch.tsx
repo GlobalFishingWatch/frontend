@@ -1,16 +1,19 @@
 import React, { useCallback, useMemo } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import type {
   MultiSelectOption} from '@globalfishingwatch/ui-components';
 import {
   Button,
-  InputText,
-  InputDate,
-  MultiSelect,
   IconButton,
+  InputDate,
+  InputText,
+  MultiSelect,
 } from '@globalfishingwatch/ui-components'
+
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectAdvancedSearchCallsign,
@@ -21,8 +24,9 @@ import {
   selectLastTransmissionDate,
 } from 'routes/routes.selectors'
 import { getFlags } from 'utils/flags'
-import { DEFAULT_WORKSPACE } from 'data/config'
+
 import { useSearchConnect } from './search.hooks'
+
 import styles from './AdvancedSearch.module.css'
 
 interface AdvancedSearchProps {

@@ -1,30 +1,34 @@
 import { Fragment, useCallback } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import styles from 'features/workspace/shared/Sections.module.css'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
-import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setModalOpen } from 'features/modals/modals.slice'
-import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
+import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
+import { getIsPositionSupportedInDataview } from 'features/dataviews/dataviews.utils'
 import {
   selectActivityDataviews,
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { getIsPositionSupportedInDataview } from 'features/dataviews/dataviews.utils'
-import LayerPanelContainer from '../shared/LayerPanelContainer'
-import LayerPanel from '../activity/ActivityLayerPanel'
-import activityStyles from '../activity/ActivitySection.module.css'
-import { useVisualizationsOptions } from '../activity/activity.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
+import styles from 'features/workspace/shared/Sections.module.css'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useLocationConnect } from 'routes/routes.hook'
+import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
-function DetectionsSection(): React.ReactElement {
+import { useVisualizationsOptions } from '../activity/activity.hooks'
+import LayerPanel from '../activity/ActivityLayerPanel'
+import LayerPanelContainer from '../shared/LayerPanelContainer'
+
+import activityStyles from '../activity/ActivitySection.module.css'
+
+function DetectionsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectDetectionsDataviews)

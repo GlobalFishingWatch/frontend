@@ -1,12 +1,14 @@
 import { useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { throttle } from 'es-toolkit'
 import type { PickingInfo } from '@deck.gl/core'
+import { throttle } from 'es-toolkit'
+
 import type {
   RulerData,
   RulerPickingObject,
   RulerPointProperties,
 } from '@globalfishingwatch/deck-layers'
+
 import { selectMapRulersVisible } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 

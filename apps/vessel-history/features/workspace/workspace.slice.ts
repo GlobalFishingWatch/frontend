@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit'
 import type { Workspace, WorkspaceProfileViewParam, WorkspaceState } from 'types'
+
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { dataviewInstances } from 'features/dataviews/dataviews.config'
 

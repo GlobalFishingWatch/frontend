@@ -1,32 +1,35 @@
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { Fragment } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { useLocationConnect } from 'routes/routes.hook'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectUserData } from 'features/user/selectors/user.selectors'
-import DatasetLabel from 'features/datasets/DatasetLabel'
 import { EMPTY_API_VALUES } from 'features/reports/areas/area-reports.config'
-import VesselLink from 'features/vessel/VesselLink'
-import type { VesselPinClickProps } from 'features/vessel/VesselPin'
-import VesselPin from 'features/vessel/VesselPin'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import styles from 'features/reports/shared/events/EventsReportVesselsTable.module.css'
 import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import type {
-  VGRVesselsOrderProperty,
-  VGRVesselsOrderDirection,
-} from 'features/vessel-groups/vessel-groups.types'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import styles from 'features/reports/shared/events/EventsReportVesselsTable.module.css'
+import VesselLink from 'features/vessel/VesselLink'
+import type { VesselPinClickProps } from 'features/vessel/VesselPin'
+import VesselPin from 'features/vessel/VesselPin'
+import type {
+  VGRVesselsOrderDirection,
+  VGRVesselsOrderProperty,
+} from 'features/vessel-groups/vessel-groups.types'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
 import { selectVGRVesselsPaginated } from './vessel-group-report-vessels.selectors'
 import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTableFooter'
 

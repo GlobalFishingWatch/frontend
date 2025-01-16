@@ -1,10 +1,13 @@
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
+
 import type { SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components/select';
 import { Select } from '@globalfishingwatch/ui-components/select'
-import { selectProject } from '../../../routes/routes.selectors'
+
 import type { Field } from '../../../data/models'
+import { selectProject } from '../../../routes/routes.selectors'
 import { useTimebarModeConnect } from '../timebar.hooks'
+
 import styles from './Selector.module.css'
 
 const colorTypesOptions: SelectOption[] = [

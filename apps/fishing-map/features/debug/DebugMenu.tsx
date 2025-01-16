@@ -1,14 +1,18 @@
-import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { InputText, Switch } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { InputText, Switch } from '@globalfishingwatch/ui-components'
+
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import styles from './DebugMenu.module.css'
+import { selectLocationQuery } from 'routes/routes.selectors'
+
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
+
+import styles from './DebugMenu.module.css'
 
 const DebugMenu: React.FC = () => {
   const dispatch = useAppDispatch()

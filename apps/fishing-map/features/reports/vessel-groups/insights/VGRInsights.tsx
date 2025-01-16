@@ -1,21 +1,25 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
+
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
-import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
-import styles from './VGRInsights.module.css'
+
 import VesselGroupReportInsightCoverage from './VGRInsightCoverage'
-import VesselGroupReportInsightGap from './VGRInsightGaps'
-import VesselGroupReportInsightIUU from './VGRInsightIUU'
 import VesselGroupReportInsightFishing from './VGRInsightFishing'
 import VesselGroupReportInsightFlagChange from './VGRInsightFlagChange'
+import VesselGroupReportInsightGap from './VGRInsightGaps'
+import VesselGroupReportInsightIUU from './VGRInsightIUU'
 import VesselGroupReportInsightMOU from './VGRInsightMOU'
+
+import styles from './VGRInsights.module.css'
 
 const VesselGroupReportInsights = () => {
   const { t } = useTranslation()

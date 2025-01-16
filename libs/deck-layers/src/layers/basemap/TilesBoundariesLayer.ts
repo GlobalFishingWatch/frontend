@@ -1,8 +1,9 @@
-import { PathLayer, TextLayer } from '@deck.gl/layers'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers';
 import { TileLayer } from '@deck.gl/geo-layers'
-import { LayerGroup, getLayerGroupOffset } from '../../utils'
+import { PathLayer, TextLayer } from '@deck.gl/layers'
+
+import { getLayerGroupOffset,LayerGroup } from '../../utils'
 
 export class TilesBoundariesLayer extends CompositeLayer<TileLayerProps> {
   static layerName = 'TilesBoundariesLayer'

@@ -1,52 +1,55 @@
 import type { ReactNode } from 'react'
 import { Fragment, useState } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
+
 import type {
   DataviewDatasetConfigParam,
-  Resource,
   IdentityVessel,
+  Resource,
 } from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
   ResourceStatus,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { IconButton } from '@globalfishingwatch/ui-components'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
-import { formatInfoField, getVesselShipNameLabel, getVesselOtherNamesLabel } from 'utils/info'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectResourceByUrl } from 'features/resources/resources.slice'
-import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import {
   getSchemaFiltersInDataview,
   isGFWOnlyDataset,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import GFWOnly from 'features/user/GFWOnly'
-import VesselDownload from 'features/workspace/vessels/VesselDownload'
-import VesselLink from 'features/vessel/VesselLink'
-import { getOtherVesselNames } from 'features/vessel/vessel.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import { t } from 'features/i18n/i18n'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
-import Filters from '../common/LayerFilters'
+import { selectResourceByUrl } from 'features/resources/resources.slice'
+import GFWOnly from 'features/user/GFWOnly'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { getOtherVesselNames } from 'features/vessel/vessel.utils'
+import VesselLink from 'features/vessel/VesselLink'
+import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
+import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { formatInfoField, getVesselOtherNamesLabel,getVesselShipNameLabel } from 'utils/info'
+
 import Color from '../common/Color'
+import FitBounds from '../common/FitBounds'
+import Filters from '../common/LayerFilters'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
-import FitBounds from '../common/FitBounds'
 
 export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -105,7 +108,10 @@ export const getVesselIdentityTooltipSummary = (
   return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
 }
 
-function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): React.ReactElement {
+function VesselLayerPanel({
+  dataview,
+  showApplyToAll,
+}: VesselLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -216,7 +222,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
           className={styles.link}
           vesselId={vesselId}
           datasetId={dataset?.id}
-          tooltip={identitiesSummary}
+          tooltip={<div>{identitiesSummary}</div>}
           query={{
             vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
             vesselSelfReportedId: vesselId,
@@ -247,6 +253,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         <Title
           title={<TitleComponentContent />}
+          showTooltip={false}
           className={styles.name}
           classNameActive={styles.active}
           dataview={dataview}

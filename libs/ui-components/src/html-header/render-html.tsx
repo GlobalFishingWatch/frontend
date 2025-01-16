@@ -2,15 +2,17 @@
 
 import fs from 'fs'
 import util from 'util'
+
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+
 import { Header } from './html/Header'
 
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
 type ComponentItem = {
-  component: React.ReactElement
+  component: React.ReactElement<any>
   path: string
 }
 const componentsList: ComponentItem[] = [

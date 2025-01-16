@@ -1,21 +1,27 @@
-import React, { Suspense, lazy } from 'react'
-import type { Placement } from 'tippy.js'
+import React, { lazy,Suspense } from 'react'
 import cx from 'classnames'
+
+import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
-import styles from './Icon.module.css'
+
 import type { IconType } from './icon.config'
 import icons from './icon.config'
 
-const IconComponents = icons.reduce((acc, icon) => {
-  acc[icon] = lazy(() =>
-    import(
-      /* webpackChunkName: "icon-[request]" */
-      `./icons/${icon}.svg`
-    ).then((m) => ({ default: m.ReactComponent || m.default || m }))
-  )
-  return acc
-}, {} as Record<IconType, any>)
+import styles from './Icon.module.css'
+
+const IconComponents = icons.reduce(
+  (acc, icon) => {
+    acc[icon] = lazy(() =>
+      import(
+        /* webpackChunkName: "icon-[request]" */
+        `./icons/${icon}.svg`
+      ).then((m) => ({ default: m.ReactComponent || m.default || m }))
+    )
+    return acc
+  },
+  {} as Record<IconType, any>
+)
 
 export interface IconProps {
   className?: string
@@ -23,7 +29,7 @@ export interface IconProps {
   style?: React.CSSProperties
   type?: 'default' | 'warning' | 'original-colors'
   tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
+  tooltipPlacement?: TooltipPlacement
   testId?: string
 }
 
@@ -37,7 +43,7 @@ export function Icon(props: IconProps) {
     return null
   }
   return (
-    <Tooltip content={tooltip as React.ReactNode} placement="auto">
+    <Tooltip content={tooltip as React.ReactNode} placement="top">
       <Suspense fallback={null}>
         <Component
           className={cx(styles.icon, styles[type], className)}

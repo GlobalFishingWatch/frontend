@@ -1,6 +1,7 @@
 import { validate as mapboxStyleValidator } from '@globalfishingwatch/maplibre-gl/dist/style-spec'
-import generators from './generators'
+
 import { DEFAULT_STYLE } from './config'
+import generators from './generators'
 import { LayerComposer } from '.'
 
 test('instanciates with the default config', async () => {

@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue } from 'jotai'
+
 import { ResourceStatus } from '@globalfishingwatch/api-types'
+import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 import type {
   HighlighterCallbackFnArgs,
   TimebarChartChunk,
@@ -9,18 +12,17 @@ import type {
   TimebarChartItem,
   TrackEventChunkProps,
 } from '@globalfishingwatch/timebar'
-import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
+
+import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
+import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectAllActiveTrackDataviews,
   selectVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { getEventDescription } from 'utils/events'
 import { t } from 'features/i18n/i18n'
-import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { TimebarGraphs } from 'types'
-import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { getEventDescription } from 'utils/events'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
@@ -53,19 +55,26 @@ export const useTimebarTracksLayers = () => {
   return vessels
 }
 
+export const useTimebarLayers = () => {
+  const timebarGraph = useSelector(selectTimebarGraph)
+  const vesselTracksLayers = useVesselTracksLayers()
+  const timebarTracksLayers = useTimebarTracksLayers()
+
+  return timebarGraph === 'speed' || timebarGraph === 'elevation'
+    ? vesselTracksLayers
+    : timebarTracksLayers
+}
+
+const vesselTracksAtom = atom<VesselTrackAtom | undefined>(undefined)
 export const useTimebarVesselTracksData = () => {
   return useAtomValue(vesselTracksAtom)
 }
 
 type VesselTrackAtom = TimebarChartData<any>
-const vesselTracksAtom = atom<VesselTrackAtom | undefined>(undefined)
 export const useTimebarVesselTracks = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
-  const trackLayers =
-    timebarGraph === 'speed' || timebarGraph === 'elevation'
-      ? useVesselTracksLayers()
-      : useTimebarTracksLayers()
+  const trackLayers = useTimebarLayers()
 
   const tracksLoaded = useMemo(
     () =>
@@ -81,7 +90,7 @@ export const useTimebarVesselTracks = () => {
     [trackLayers]
   )
   const tracksColor = useMemo(
-    () => trackLayers.flatMap((v) => v.instance.getColor()).join(','),
+    () => trackLayers.flatMap((v) => v.instance.getColor() || []).join(','),
     [trackLayers]
   )
 
@@ -103,6 +112,7 @@ export const useTimebarVesselTracks = () => {
         }
       })
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tracksColor])
 
   useEffect(() => {
@@ -148,6 +158,7 @@ export const useTimebarVesselTracks = () => {
         setVesselTracks(undefined)
       }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tracksLoaded, timebarGraph, tracksColor])
 
   return tracks
@@ -164,10 +175,7 @@ export const useTimebarVesselTracksGraph = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
   const [tracksGraph, setVesselTracksGraph] = useAtom(vesselTracksGraphAtom)
-  const trackLayers =
-    timebarGraph === 'speed' || timebarGraph === 'elevation'
-      ? useVesselTracksLayers()
-      : useTimebarTracksLayers()
+  const trackLayers = useTimebarLayers()
 
   const tracksLoaded = useMemo(
     () =>
@@ -176,8 +184,8 @@ export const useTimebarVesselTracksGraph = () => {
           return v.instance instanceof VesselLayer
             ? v.instance.getVesselTracksLayersLoaded()
             : v.instance.isLoaded
-            ? v.id
-            : []
+              ? v.id
+              : []
         })
         .join(','),
     [trackLayers]
@@ -205,6 +213,7 @@ export const useTimebarVesselTracksGraph = () => {
         }
       })
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tracksColor])
 
   useEffect(() => {
@@ -261,7 +270,8 @@ export const useTimebarVesselTracksGraph = () => {
         setVesselTracksGraph(undefined)
       }
     })
-  }, [tracksLoaded, timebarGraph])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tracksLoaded, timebarGraph, tracksGraph])
 
   // const tracksFiltersHash = useMemo(() => {
   //   return activeVesselDataviews
@@ -291,6 +301,7 @@ export const useTimebarVesselTracksGraph = () => {
   //       } as TimebarChartItem
   //     })
   //   )
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [tracksFiltersHash])
 
   // TODO: debug why the trackLayers is updated but the filters not
@@ -328,15 +339,23 @@ export const useTimebarVesselTracksGraph = () => {
   return tracksGraph
 }
 
+const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs): string => {
+  const { description, descriptionGeneric } = getEventDescription(chunk as any)
+  if (chunk.cluster) {
+    return `${descriptionGeneric} (${chunk.cluster.numChunks} ${t('event.events', 'events')})`
+  }
+  if (expanded) {
+    return description as string
+  }
+  return descriptionGeneric as string
+}
+
 export const useTimebarVesselEvents = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const [timebarVesselEvents, setTimebarVesselEvents] =
     useState<TimebarChartData<TrackEventChunkProps> | null>(null)
-  const vessels =
-    timebarGraph === 'speed' || timebarGraph === 'elevation'
-      ? useVesselTracksLayers()
-      : useTimebarTracksLayers()
+  const vessels = useTimebarLayers()
   const vesselsWithEventsLoaded = useMemo(
     () => vessels.flatMap((v) => (v.loaded ? v.id : [])).join(','),
     [vessels]
@@ -373,18 +392,8 @@ export const useTimebarVesselEvents = () => {
         setTimebarVesselEvents(null)
       }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vesselsWithEventsLoaded, timebarGraph, visibleEvents, eventsColor])
 
   return timebarVesselEvents
-}
-
-const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs): string => {
-  const { description, descriptionGeneric } = getEventDescription(chunk as any)
-  if (chunk.cluster) {
-    return `${descriptionGeneric} (${chunk.cluster.numChunks} ${t('event.events', 'events')})`
-  }
-  if (expanded) {
-    return description as string
-  }
-  return descriptionGeneric as string
 }

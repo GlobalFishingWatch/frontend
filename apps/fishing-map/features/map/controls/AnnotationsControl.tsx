@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import MapControlGroup from 'features/map/controls/MapControlGroup'
 import {
   useMapAnnotation,
   useMapAnnotations,
 } from 'features/map/overlays/annotations/annotations.hooks'
-import MapControlGroup from 'features/map/controls/MapControlGroup'
 
 const MapAnnotationsControls = () => {
   const { t } = useTranslation()

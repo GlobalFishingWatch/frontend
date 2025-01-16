@@ -1,19 +1,21 @@
-import React, { lazy, useState, Fragment, Suspense } from 'react'
+import React, { Fragment, lazy, Suspense,useState } from 'react'
 import { useSelector } from 'react-redux'
+
 import { SplitView } from '@globalfishingwatch/ui-components/split-view'
+
 import Loader from '././features/loader/loader'
+import Login from '././features/login/Login'
 import { MapboxRefProvider } from '././features/map/map.context'
 import { LOGIN } from './routes/routes'
-import Login from '././features/login/Login'
 import { getLocationType } from './routes/routes.selectors'
+
 import '@globalfishingwatch/ui-components/base.css'
-import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
 
 const Main = lazy(() => import(`././features/main/main.container`))
 const Sidebar = lazy(() => import(`././features/sidebar/sidebar.container`))
 
-function App(): React.ReactElement {
+function App(): React.ReactElement<any> {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [animation, setAnimation] = useState(true)
   //const logged = true

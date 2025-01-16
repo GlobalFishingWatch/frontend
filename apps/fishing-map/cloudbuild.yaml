@@ -18,7 +18,7 @@ steps:
     waitFor: ['restore_cache']
     name: node:21
     script: |
-      yarn set version 4.5.3
+      yarn set version 4.6.0
       yarn -v
       yarn install --immutable
 
@@ -152,50 +152,50 @@ steps:
           gcloud -q beta builds triggers run --branch=develop ui-libs-i18n-labels-stable
         fi
 
-  # - id: 'smoke-test-e2e'
-  #   waitFor: ['deploy-cloud-run']
-  #   allowFailure: true
-  #   name: cypress/included:13.7.3
-  #   entrypoint: 'bash'
-  #   env:
-  #     - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
-  #     - 'CYPRESS_basicAuth=$_BASIC_AUTH'
-  #     - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
-  #     - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'
-  #     - 'CYPRESS_apiAuthUser=$_CYPRESS_API_AUTH_USER'
-  #     - 'CYPRESS_apiAuthPass=$_CYPRESS_API_AUTH_PASS'
-  #     - 'CYPRESS_apiUserInitials=$_CYPRESS_API_USER_INITIALS'
-  #     - 'CYPRESS_DEFAULT_COMMAND_TIMEOUT=$_CYPRESS_DEFAULT_COMMAND_TIMEOUT'
-  #     - 'CYPRESS_REQUEST_TIMEOUT=$_CYPRESS_REQUEST_TIMEOUT'
-  #     - 'CYPRESS_RESPONSE_TIMEOUT=$_CYPRESS_RESPONSE_TIMEOUT'
-  #   args:
-  #     - '-eEuo'
-  #     - 'pipefail'
-  #     - '-c'
-  #     - |-
-  #       CYPRESS_BASE_URL=`cat app_url` \
-  #       yarn nx run fishing-map-e2e:test-pr --parallel
+  - id: 'smoke-test-e2e'
+    waitFor: ['deploy-cloud-run']
+    allowFailure: true
+    name: cypress/included:13.7.3
+    entrypoint: 'bash'
+    env:
+      - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
+      - 'CYPRESS_basicAuth=$_BASIC_AUTH'
+      - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
+      - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'
+      - 'CYPRESS_apiAuthUser=$_CYPRESS_API_AUTH_USER'
+      - 'CYPRESS_apiAuthPass=$_CYPRESS_API_AUTH_PASS'
+      - 'CYPRESS_apiUserInitials=$_CYPRESS_API_USER_INITIALS'
+      - 'CYPRESS_DEFAULT_COMMAND_TIMEOUT=$_CYPRESS_DEFAULT_COMMAND_TIMEOUT'
+      - 'CYPRESS_REQUEST_TIMEOUT=$_CYPRESS_REQUEST_TIMEOUT'
+      - 'CYPRESS_RESPONSE_TIMEOUT=$_CYPRESS_RESPONSE_TIMEOUT'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        CYPRESS_BASE_URL=`cat app_url` \
+        yarn nx run fishing-map-e2e:test-pr --parallel
 
-  # - id: 'save-test-videos'
-  #   name: gcr.io/cloud-builders/gcloud
-  #   waitFor: ['smoke-test-e2e']
-  #   entrypoint: bash
-  #   env:
-  #     - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
-  #     - '_E2E_BUCKET=$_E2E_BUCKET'
-  #     - '_E2E_BASE_URL=$_E2E_BASE_URL'
-  #     - 'BUILD_ID=$BUILD_ID'
-  #   args:
-  #     - '-eEuo'
-  #     - 'pipefail'
-  #     - '-c'
-  #     - |-
-  #       if [ -d "dist/cypress/apps/fishing-map-e2e/screenshots" ] && [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
-  #         gsutil -m cp -r dist/cypress/apps/fishing-map-e2e gs://$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
-  #         echo "You can see the testing videos of this deploy in: "
-  #         echo "$_E2E_BASE_URL/${_E2E_BUCKET#*/}/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
-  #         exit 1
-  #       fi
+  - id: 'save-test-videos'
+    name: gcr.io/cloud-builders/gcloud
+    waitFor: ['smoke-test-e2e']
+    entrypoint: bash
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - '_E2E_BUCKET=$_E2E_BUCKET'
+      - '_E2E_BASE_URL=$_E2E_BASE_URL'
+      - 'BUILD_ID=$BUILD_ID'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        if [ -d "dist/cypress/apps/fishing-map-e2e/screenshots" ] && [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
+          gsutil -m cp -r dist/cypress/apps/fishing-map-e2e gs://$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
+          echo "You can see the testing videos of this deploy in: "
+          echo "$_E2E_BASE_URL/${_E2E_BUCKET#*/}/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
+          exit 1
+        fi
 
   # - id: scan
   #   name: gcr.io/google.com/cloudsdktool/cloud-sdk

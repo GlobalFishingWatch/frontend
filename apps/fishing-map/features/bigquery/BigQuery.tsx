@@ -1,20 +1,22 @@
-import { useState, Fragment } from 'react'
+import { Fragment,useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwatch/ui-components'
-import type { Dataset } from '@globalfishingwatch/api-types'
+import cx from 'classnames'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwatch/ui-components'
+
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   getBigQuery4WingsDataviewInstance,
   getBigQueryEventsDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAppDispatch } from 'features/app/app.hooks'
-import type {
-  BigQueryVisualisation} from './bigquery.slice';
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import type { BigQueryVisualisation } from './bigquery.slice'
 import {
   createBigQueryDatasetThunk,
   fetchBigQueryRunCostThunk,
@@ -23,6 +25,7 @@ import {
   selectRunCostStatus,
   toggleBigQueryMenu,
 } from './bigquery.slice'
+
 import styles from './BigQuery.module.css'
 
 const BigQueryMenu: React.FC = () => {

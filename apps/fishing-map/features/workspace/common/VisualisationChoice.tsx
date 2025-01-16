@@ -1,7 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
+
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button } from '@globalfishingwatch/ui-components'
+
 import styles from './VisualisationChoice.module.css'
 
 interface VisualisationChoiceProps {
@@ -42,6 +44,7 @@ export function VisualisationChoice({
             <li
               key={option.id}
               className={styles.option}
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
               role="radio"
               aria-checked={optionSelected}
             >

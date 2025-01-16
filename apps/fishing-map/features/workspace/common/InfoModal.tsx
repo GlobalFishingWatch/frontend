@@ -1,27 +1,20 @@
-import { Fragment, useState, useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useMemo,useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'es-toolkit'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  getVesselIdFromDatasetConfig
-} from '@globalfishingwatch/dataviews-client'
-import type {
-  ChoiceOption,
-  SelectOption} from '@globalfishingwatch/ui-components';
-import {
-  Modal,
-  IconButton,
-  Choice,
-  Select
-} from '@globalfishingwatch/ui-components'
+
 import { DatasetStatus, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import InfoModalContent from 'features/workspace/common/InfoModalContent'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getVesselIdFromDatasetConfig } from '@globalfishingwatch/dataviews-client'
+import type { ChoiceOption, SelectOption } from '@globalfishingwatch/ui-components'
+import { Choice, IconButton, Modal, Select } from '@globalfishingwatch/ui-components'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import type { UserGuideSection } from 'features/help/UserGuideLink';
-import UserGuideLink from 'features/help/UserGuideLink'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import type { UserGuideSection } from 'features/help/UserGuideLink'
+import UserGuideLink from 'features/help/UserGuideLink'
+import InfoModalContent from 'features/workspace/common/InfoModalContent'
+
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
@@ -69,7 +62,6 @@ const InfoModal = ({
       })
       .sort((a, b) => a.labelString.localeCompare(b.labelString))
     // Updating options when t changes to ensure the content is updated on lang change
-     
   }, [dataview, t])
 
   const [activeTab, setActiveTab] = useState<SelectOption | undefined>(options?.[0])
@@ -93,7 +85,7 @@ const InfoModal = ({
   const datasetImporting = dataset?.status === DatasetStatus.Importing
   const datasetError = dataset?.status === DatasetStatus.Error
 
-  let tooltip = t(`layer.seeDescription`, 'Click to see layer description')
+  let tooltip: string = t(`layer.seeDescription`, 'Click to see layer description')
   if (datasetImporting) {
     tooltip = t('dataset.importing', 'Dataset is being imported')
   }

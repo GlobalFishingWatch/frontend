@@ -1,18 +1,21 @@
+import { Trans, useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import parse from 'html-react-parser'
-import { useSelector } from 'react-redux'
-import { Trans, useTranslation } from 'react-i18next'
-import { Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import { Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+
 import VesselSearchImage from 'assets/images/vessel-search.svg'
 import VesselSearchNoSesultsImage from 'assets/images/vessel-search-no-results.svg'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
-import { selectQueryParam } from 'routes/routes.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
 import { selectSearchStatus } from 'features/search/search.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import LocalStorageLoginLink from 'routes/LoginLink'
+import { selectQueryParam } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
 import styles from './SearchPlaceholders.module.css'
 
 type SearchPlaceholderProps = {

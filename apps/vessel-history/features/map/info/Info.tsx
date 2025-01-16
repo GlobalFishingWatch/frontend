@@ -2,23 +2,27 @@ import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
+
 import { IconButton } from '@globalfishingwatch/ui-components'
-import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
+
 import ActivityDate from 'features/profile/components/activity/ActivityDate'
-import { cheapDistance } from 'utils/vessel'
+import ActivityModalContent from 'features/profile/components/activity/ActivityModalContent'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
 import type { Voyage } from 'types/voyage';
 import { EventTypeVoyage } from 'types/voyage'
-import { selectFilteredEventsByVoyages } from 'features/vessels/voyages/voyages.selectors'
+import { cheapDistance } from 'utils/vessel'
+
 import { selectHighlightedEvent } from '../map.slice'
 import useMapEvents from '../map-events.hooks'
+
 import styles from './Info.module.css'
 
 interface InfoProps {
   onEventChange: (event: RenderedEvent, pitch: number, bearing: number, padding: number) => void
 }
 
-const Info: React.FC<InfoProps> = (props): React.ReactElement => {
+const Info: React.FC<InfoProps> = (props): React.ReactElement<any> => {
   const [expanded, setExpanded] = useState(false)
   const [height, setHeight] = useState(0)
   const eventsWithVoyages = useSelector(selectFilteredEventsByVoyages) as (RenderedEvent | Voyage)[]

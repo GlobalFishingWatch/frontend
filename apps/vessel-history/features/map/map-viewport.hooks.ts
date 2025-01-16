@@ -1,15 +1,19 @@
 import { useCallback } from 'react'
-import { fitBounds } from '@math.gl/web-mercator'
-import { atom, useRecoilState } from 'recoil'
-import { debounce } from 'lodash'
 import type { ViewStateChangeEvent } from 'react-map-gl'
-import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import { fitBounds } from '@math.gl/web-mercator'
+import { debounce } from 'lodash'
+import { atom, useRecoilState } from 'recoil'
 import type { Bbox, MapCoordinates } from 'types'
+
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_VIEWPORT } from 'data/config'
-import { updateUrlViewport } from 'routes/routes.actions'
 import { selectViewport } from 'features/app/app.selectors'
+import { updateUrlViewport } from 'routes/routes.actions'
+
 import type { RootState } from '../../store';
 import store from '../../store'
+
 import useMapInstance from './map-context.hooks'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom' | 'pitch' | 'bearing'

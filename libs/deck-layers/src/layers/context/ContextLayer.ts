@@ -1,31 +1,33 @@
-import type { Color, DefaultProps, PickingInfo, LayerContext } from '@deck.gl/core'
+import type { Color, DefaultProps, LayerContext,PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
+import { PathStyleExtension } from '@deck.gl/extensions'
 import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
+import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { GeoJsonProperties } from 'geojson'
-import { PathStyleExtension } from '@deck.gl/extensions'
-import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
-  hexToDeckColor,
-  LayerGroup,
-  getLayerGroupOffset,
-  getPickedFeatureToHighlight,
-  GFWMVTLoader,
-  getMVTSublayerProps,
+  DEFAULT_BACKGROUND_COLOR,
   getFeatureInFilter,
   getFetchLoadOptions,
-  DEFAULT_BACKGROUND_COLOR,
+  getLayerGroupOffset,
+  getMVTSublayerProps,
+  getPickedFeatureToHighlight,
+  GFWMVTLoader,
+  hexToDeckColor,
+  LayerGroup,
 } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
+
 import { EEZ_SETTLED_BOUNDARIES } from './context.config'
 import type {
+  ContextFeature,
   ContextLayerProps,
   ContextPickingInfo,
-  ContextFeature,
   ContextPickingObject,
 } from './context.types'
 import { ContextLayerId } from './context.types'

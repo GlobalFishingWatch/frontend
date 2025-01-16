@@ -1,8 +1,10 @@
 import { DateTime } from 'luxon'
+
+import { THINNING_LEVELS,ThinningLevels } from '@globalfishingwatch/api-client'
 import type { DataviewDatasetConfigParam, ThinningConfig } from '@globalfishingwatch/api-types'
-import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import type { AppState } from 'types/redux.types'
+
 import { TimebarGraphs } from 'types'
+import type { AppState } from 'types/redux.types'
 
 export type WorkspaceEnv = 'development' | 'production'
 export const API_VERSION = 'v2'

@@ -1,4 +1,4 @@
-import { GFWAPI, API_VERSION } from '@globalfishingwatch/api-client'
+import { API_VERSION,GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   Dataset,
   DataviewDatasetConfig,

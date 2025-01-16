@@ -1,9 +1,11 @@
-import { stringify } from 'qs'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useMemo, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import type { FieldValidationError } from 'lib/types'
+import { stringify } from 'qs'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, UserApplication } from '@globalfishingwatch/api-types'
+
 import useUser, { checkUserApplicationPermission } from 'features/user/user'
 
 export type UserApplicationCreateArguments = Omit<

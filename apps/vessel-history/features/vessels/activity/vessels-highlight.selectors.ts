@@ -1,5 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { selectSettings } from 'features/settings/settings.slice'
+
 import { selectEventsWithRenderingInfo } from './vessels-activity.selectors'
 import {
   filterActivityHighlightEvents,

@@ -1,9 +1,12 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import ActivityModalContentField from './ActivityModalContentField'
+
 import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
@@ -12,7 +15,7 @@ interface ActivityModalContentProps {
 
 const ActivityModalContentDetailsLoitering: React.FC<ActivityModalContentProps> = (
   props
-): React.ReactElement => {
+): React.ReactElement<any> => {
   const event = props.event
   const { t } = useTranslation()
 

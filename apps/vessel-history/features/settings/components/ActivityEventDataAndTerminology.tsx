@@ -1,12 +1,13 @@
 import React, { Fragment } from 'react'
 import { Trans } from 'react-i18next'
+
 import type { SettingEventSectionName } from '../settings.slice'
 
 interface ModalProps {
   section: SettingEventSectionName
 }
 
-const ActivityEventDataAndTerminology: React.FC<ModalProps> = ({ section }): React.ReactElement => {
+const ActivityEventDataAndTerminology: React.FC<ModalProps> = ({ section }): React.ReactElement<any> => {
   return (
     <Fragment>
       {section === 'fishingEvents' && (

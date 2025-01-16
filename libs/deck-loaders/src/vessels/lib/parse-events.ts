@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
+
 import type { ApiEvent } from '@globalfishingwatch/api-types'
+
 import type { VesselDeckLayersEventData } from './types';
 import { EVENTS_COLORS } from './types'
 

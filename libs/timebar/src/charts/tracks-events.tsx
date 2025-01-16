@@ -1,23 +1,26 @@
 import React, { useContext, useMemo } from 'react'
 import cx from 'classnames'
 import { useSetAtom } from 'jotai'
+
 import type { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import TimelineContext from '../timelineContext'
-import type {
-  TimebarChartData,
-  TimebarChartItem,
-  TrackEventChunkProps,
-  TimebarChartChunk,
-} from './common/types'
-import styles from './tracks-events.module.css'
+
 import {
   useClusteredChartData,
   useFilteredChartData,
   useOuterScale,
   useSortedChartData,
 } from './common/hooks'
+import type {
+  TimebarChartChunk,
+  TimebarChartData,
+  TimebarChartItem,
+  TrackEventChunkProps,
+} from './common/types'
 import { getTrackY } from './common/utils'
 import { hoveredEventState, useUpdateChartsData } from './chartsData.atom'
+
+import styles from './tracks-events.module.css'
 
 const getTracksEventsWithCoords = (
   tracksEvents: TimebarChartData<any>,

@@ -1,13 +1,14 @@
-import type { EventTypes } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import type { VesselLayerProps } from '@globalfishingwatch/deck-layers'
-import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
+import type { EventTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
+import type { VesselLayerProps } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
+
 import type { DeckResolverFunction } from './types'
 
 export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (

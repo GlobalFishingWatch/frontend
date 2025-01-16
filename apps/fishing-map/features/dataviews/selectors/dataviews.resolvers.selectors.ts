@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
+
 import type {
   DataviewDatasetConfig,
   DataviewInstance,
@@ -20,6 +21,7 @@ import {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
+
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
@@ -30,32 +32,6 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
-import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
-import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
-import { getRelatedIdentityVesselIds, getVesselProperty } from 'features/vessel/vessel.utils'
-import {
-  selectWorkspaceDataviewInstances,
-  selectWorkspaceStatus,
-} from 'features/workspace/workspace.selectors'
-import {
-  selectIsWorkspaceLocation,
-  selectUrlDataviewInstances,
-  selectIsAnyVesselLocation,
-  selectIsVesselLocation,
-  selectVesselId,
-  selectUrlDataviewInstancesOrder,
-  selectIsVesselGroupReportLocation,
-  selectReportVesselGroupId,
-} from 'routes/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
-import {
-  getVesselGroupActivityDataviewInstance,
-  getVesselGroupDataviewInstance,
-  getVesselGroupEventsDataviewInstances,
-} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import type { ReportCategory } from 'features/reports/areas/area-reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
@@ -63,6 +39,32 @@ import {
   selectVGREventsSubsection,
   selectVGRSection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import {
+  getVesselGroupActivityDataviewInstance,
+  getVesselGroupDataviewInstance,
+  getVesselGroupEventsDataviewInstances,
+} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
+import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
+import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
+import { getRelatedIdentityVesselIds, getVesselProperty } from 'features/vessel/vessel.utils'
+import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  selectWorkspaceDataviewInstances,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
+import {
+  selectIsAnyVesselLocation,
+  selectIsVesselGroupReportLocation,
+  selectIsVesselLocation,
+  selectIsWorkspaceLocation,
+  selectReportVesselGroupId,
+  selectUrlDataviewInstances,
+  selectUrlDataviewInstancesOrder,
+  selectVesselId,
+} from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
 const EMPTY_ARRAY: [] = []

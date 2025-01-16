@@ -1,15 +1,13 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
+
 import type { SelectOption } from '@globalfishingwatch/ui-components'
-import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
+
+import { AVAILABLE_END,AVAILABLE_START } from 'data/config'
 import {} from 'features/app/selectors/app.reports.selector'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
-import { getUTCDateTime } from 'utils/dates'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import {
   MAX_DAYS_TO_COMPARE,
   MAX_MONTHS_TO_COMPARE,
@@ -18,7 +16,11 @@ import {
   selectReportActivityGraph,
   selectReportTimeComparison,
 } from 'features/reports/areas/area-reports.config.selectors'
+import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import type { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
+import { getUTCDateTime } from 'utils/dates'
 
 // TODO get this from start and endDate from datasets
 const MIN_DATE = AVAILABLE_START.slice(0, 10)
@@ -256,13 +258,13 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
     format: DateTime.DATE_MED_WITH_WEEKDAY,
   })
 
-  const durationTypeLabel =
+  const durationTypeLabel: string =
     parseInt(timeComparison.duration as any) === 1
       ? t(`common.${timeComparison.durationType}_one`)
       : t(`common.${timeComparison.durationType}_other`)
   const durationLabel = [timeComparison.duration, durationTypeLabel].join(' ')
 
-  let label =
+  let label: string =
     reportGraph === 'periodComparison'
       ? t('analysis.periodComparisonRange', {
           compareStart: formatI18nDate(timeComparison.compareStart, {

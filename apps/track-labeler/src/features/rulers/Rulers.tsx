@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import { Icon } from '@globalfishingwatch/ui-components/icon'
-import mapControlsStyles from '../map/map-controls/MapControls.module.css'
+
 import { useAppDispatch } from '../../store.hooks'
+
 import { selectEditing, selectNumRulers } from './rulers.selectors'
-import { toggleRulersEditing, resetRulers } from './rulers.slice'
+import { resetRulers,toggleRulersEditing } from './rulers.slice'
+
+import mapControlsStyles from '../map/map-controls/MapControls.module.css'
 import styles from './Rulers.module.css'
 
 const Rulers = () => {

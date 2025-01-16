@@ -1,14 +1,18 @@
 import { Fragment } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import type { ButtonType } from '@globalfishingwatch/ui-components';
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+
+import DateRangeLabel from 'features/date-range-label/date-range-label'
 import { selectIsFilterUpdated } from 'features/event-filters/filters.selectors'
 import FiltersLabel from 'features/filters-label/filters-label'
 import { selectCurrentUserProfileHasInsurerPermission } from 'features/profile/profile.selectors'
-import DateRangeLabel from 'features/date-range-label/date-range-label'
+
 import { selectFilters } from './filters.slice'
+
 import styles from './EventFiltersButton.module.css'
 
 interface ButtonProps {
@@ -17,7 +21,7 @@ interface ButtonProps {
   onClick?: () => void
 }
 
-const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): React.ReactElement => {
+const EventFiltersButton: React.FC<ButtonProps> = ({ className, ...props }): React.ReactElement<any> => {
   const { t } = useTranslation()
   const filtersApplied = useSelector(selectIsFilterUpdated)
   const filters = useSelector(selectFilters)

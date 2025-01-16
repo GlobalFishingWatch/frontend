@@ -1,5 +1,9 @@
 import type { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit'
+import type { RootState } from 'store'
+import type { Range } from 'types'
+
+import type { ApiEvent } from '@globalfishingwatch/api-types'
 import type {
   AnyGeneratorConfig,
   BackgroundGeneratorConfig,
@@ -7,9 +11,6 @@ import type {
 import {
   GeneratorType
 } from '@globalfishingwatch/layer-composer'
-import type { ApiEvent } from '@globalfishingwatch/api-types'
-import type { RootState } from 'store'
-import type { Range } from 'types'
 
 export interface MapState {
   generatorsConfig: AnyGeneratorConfig[]

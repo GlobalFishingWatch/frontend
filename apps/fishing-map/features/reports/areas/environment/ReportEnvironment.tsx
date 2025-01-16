@@ -1,12 +1,19 @@
 import React, { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import htmlParse from 'html-react-parser'
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
+
 import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
+import ReportActivityEvolution from 'features/reports/shared/activity/ReportActivityEvolution'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
@@ -14,12 +21,8 @@ import {
   useTimeseriesStats,
 } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { upperFirst } from 'utils/info'
-import ReportActivityEvolution from 'features/reports/shared/activity/ReportActivityEvolution'
+
 import styles from './ReportEnvironment.module.css'
 
 function ReportEnvironment() {
@@ -76,7 +79,9 @@ function ReportEnvironment() {
                   ? t('analysis.statsDisclaimerDynamic', {
                       defaultValue:
                         'During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.',
-                      interval: t(`common.${interval.toLowerCase()}s`, { count: 1 }).toLowerCase(),
+                      interval: t(`common.${interval.toLowerCase()}s` as any, {
+                        count: 1,
+                      }).toLowerCase(),
                       min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
                       max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
                       unit,

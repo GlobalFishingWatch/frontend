@@ -1,22 +1,25 @@
-import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import {
   getAvailableIntervalsInDataviews,
   useGetDeckLayer,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
-import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
+import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectTimebarSelectedDataviews,
   selectTimebarSelectedVisualizationMode,
 } from 'features/timebar/timebar.selectors'
+
 import {
   getGraphDataFromFourwingsHeatmap,
   getGraphDataFromFourwingsPositions,

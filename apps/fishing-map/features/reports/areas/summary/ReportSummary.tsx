@@ -1,42 +1,45 @@
+import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { sum } from 'es-toolkit'
-import { Fragment, useMemo } from 'react'
-import parse from 'html-react-parser'
 import Sticky from 'react-sticky-el'
+import { sum } from 'es-toolkit'
+import parse from 'html-react-parser'
+
 import type { Locale } from '@globalfishingwatch/api-types'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
-import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { FIELDS, getCommonProperties } from 'features/reports/areas/area-reports.utils'
 import type { ReportActivityUnit } from 'features/reports/areas/AreaReport'
-import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
-import type {
-  ReportGraphProps} from 'features/reports/shared/activity/reports-activity-timeseries.hooks';
-import {
-  useReportFilteredTimeSeries,
-  useReportFeaturesLoading
-} from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
-import { formatEvolutionData } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
-import ReportSummaryTagsPlaceholder from 'features/reports/shared/placeholders/ReportSummaryTagsPlaceholder'
-import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { listAsSentence } from 'utils/shared'
+import ReportSummaryTags from 'features/reports/areas/summary/ReportSummaryTags'
 import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
 } from 'features/reports/shared/activity/reports-activity.slice'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useTimeCompareTimeDescription } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
-import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import type { ReportGraphProps } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
+import {
+  useReportFeaturesLoading,
+  useReportFilteredTimeSeries,
+} from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
+import { formatEvolutionData } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
 import {
   selectReportVesselsHours,
   selectReportVesselsNumber,
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
+import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
+import ReportSummaryTagsPlaceholder from 'features/reports/shared/placeholders/ReportSummaryTagsPlaceholder'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { listAsSentence } from 'utils/shared'
+
 import { selectReportTimeComparison } from '../area-reports.config.selectors'
 import { ReportCategory } from '../area-reports.types'
+
 import styles from './ReportSummary.module.css'
 
 type ReportSummaryProps = {

@@ -41,7 +41,7 @@
   border: 0.5px solid var(--color-secondary-blue);
   position: absolute;
   width: 15px;
-  top: 3px;
+  top: 3.5px;
   left: -4px;
   z-index: 0;
 }
@@ -66,7 +66,7 @@
 
 .encounter::before,
 .loitering::before {
-  top: 5px;
+  top: 5.5px;
   left: -2px;
 }
 
@@ -79,7 +79,7 @@
 }
 
 .port_visit::before {
-  top: 4px;
+  top: 4.5px;
   left: -3px;
 }
 

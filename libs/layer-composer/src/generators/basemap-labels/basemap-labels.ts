@@ -1,5 +1,6 @@
 import type { BasemapLabelsGeneratorConfig } from '../types';
-import { GeneratorType, BasemapType } from '../types'
+import { BasemapType,GeneratorType } from '../types'
+
 import { getLabelsTilesUrlByLocale, layers, sources } from './basemap-labels-layers'
 
 class BasemapLabelsGenerator {

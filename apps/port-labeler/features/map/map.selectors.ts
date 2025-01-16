@@ -1,13 +1,15 @@
 import { createSelector } from "@reduxjs/toolkit"
-import { featureCollection, point } from "@turf/helpers"
 import buffer from "@turf/buffer"
 import concave from "@turf/concave"
-import { flags } from "@globalfishingwatch/i18n-labels"
-import { getFixedColorForUnknownLabel } from 'utils/colors'
-import { selectCountry, selectCountryColors, selectMapData, selectSelectedPoints } from "features/labeler/labeler.slice"
+import { featureCollection, point } from "@turf/helpers"
 import type { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGeneratorConfig } from "types"
-import { groupBy } from "utils/group-by"
+
+import { flags } from "@globalfishingwatch/i18n-labels"
+
 import { selectPortPointsByCountry, selectPortValuesByCountry, selectSubareaColors, selectSubareaValuesByCountry } from "features/labeler/labeler.selectors"
+import { selectCountry, selectCountryColors, selectMapData, selectSelectedPoints } from "features/labeler/labeler.slice"
+import { getFixedColorForUnknownLabel } from 'utils/colors'
+import { groupBy } from "utils/group-by"
 
 /**
  * Creates a custom features for the port points

@@ -1,17 +1,18 @@
-import type { LayerSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
 import { VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
-import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import type { TimeChunk, TimeChunks } from '../util/time-chunks'
+import type { FilterSpecification,LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+
 import { Group } from '../../../types'
-import { getColorRampBaseExpression } from '../util/get-legends'
+import { TEMPORALGRID_LAYER_INTERACTIVE_SUFIX, TEMPORALGRID_SOURCE_LAYER } from '../config'
+import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+import { getLayerId, getSourceId } from '../util'
+import type { Breaks } from '../util/fetch-breaks'
 import getBaseLayer, {
   getBaseDebugLabelsLayer,
   getBaseInteractionHoverLayer,
   getBaseInteractionLayer,
 } from '../util/get-base-layers'
-import { getLayerId, getSourceId } from '../util'
-import { TEMPORALGRID_LAYER_INTERACTIVE_SUFIX, TEMPORALGRID_SOURCE_LAYER } from '../config'
-import type { Breaks } from '../util/fetch-breaks'
+import { getColorRampBaseExpression } from '../util/get-legends'
+import type { TimeChunk, TimeChunks } from '../util/time-chunks'
 
 export default function gridded(
   config: GlobalHeatmapAnimatedGeneratorConfig,

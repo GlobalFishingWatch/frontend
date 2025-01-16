@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
-import { useTranslation } from 'react-i18next'
+
 import type { MiniglobeBounds} from '@globalfishingwatch/ui-components';
-import { MiniGlobe, IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton,MiniGlobe } from '@globalfishingwatch/ui-components'
+
 import { useViewport } from '../map-viewport.hooks'
+
 import styles from './MapControls.module.css'
 
 const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {

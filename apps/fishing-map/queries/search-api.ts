@@ -1,8 +1,9 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
-import type { APIVesselSearchPagination, IdentityVessel } from '@globalfishingwatch/api-types'
-import { getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 import { gfwBaseQuery } from 'queries/base'
+
+import { getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
+import type { APIVesselSearchPagination, IdentityVessel } from '@globalfishingwatch/api-types'
 
 type SearchIncludes = 'MATCH_CRITERIA' | 'OWNERSHIP'
 

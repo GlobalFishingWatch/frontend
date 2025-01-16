@@ -1,4 +1,5 @@
-import { GFWAPI, GFW_API_CLASS } from '@globalfishingwatch/api-client'
+import { GFW_API_CLASS,GFWAPI } from '@globalfishingwatch/api-client'
+
 import { CUSTOM_ACCESS_TOKEN, IS_STANDALONE_APP } from 'data/config'
 
 export class STANDALONE_GFW_API_CLASS extends GFW_API_CLASS {

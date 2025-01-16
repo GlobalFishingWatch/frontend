@@ -1,10 +1,13 @@
 import { Fragment, useCallback, useState } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
+
 import type { ButtonType} from '@globalfishingwatch/ui-components';
 import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
-import styles from './download-activity.module.css'
+
 import useDownloadActivity from './download-activity.hook'
+
+import styles from './download-activity.module.css'
 
 export interface DownloadActivityProps {
   filtersApplied: boolean

@@ -1,4 +1,5 @@
 import { ckmeans, mean, standardDeviation } from 'simple-statistics'
+
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from './colorRamps'
 
 export function getSteps(values: number[], numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS) {

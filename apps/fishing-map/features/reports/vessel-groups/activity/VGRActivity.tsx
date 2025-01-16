@@ -1,7 +1,8 @@
 import { Fragment } from 'react'
+
 import ReportActivity from 'features/reports/shared/activity/ReportActivity'
-import VGRActivitySubsectionSelector from 'features/reports/vessel-groups/activity/VGRActivitySubsectionSelector.tsx'
 import styles from 'features/reports/vessel-groups/activity/VGRActivity.module.css'
+import VGRActivitySubsectionSelector from 'features/reports/vessel-groups/activity/VGRActivitySubsectionSelector.tsx'
 
 function VGRActivity() {
   return (

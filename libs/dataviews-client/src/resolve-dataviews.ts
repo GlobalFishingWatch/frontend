@@ -1,10 +1,12 @@
 import { uniqBy } from 'es-toolkit'
+
 import type {
   Dataset,
   DatasetSchema,
   DatasetSchemaItem,
   Dataview,
   DataviewDatasetConfig,
+  DataviewDatasetFilter,
   DataviewInstance,
   FilterOperator,
   Resource,
@@ -18,8 +20,8 @@ import {
   EXCLUDE_FILTER_ID,
   INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
-import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
+import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 export function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
@@ -334,7 +336,8 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
-export function getDataviewFilters(dataview: UrlDataviewInstance) {
+export function getDataviewFilters(dataview: UrlDataviewInstance): DataviewDatasetFilter {
+  if (!dataview) return {}
   const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
     return { ...acc, ...(datasetConfig.filters || {}) }
   }, {} as Record<string, any>)

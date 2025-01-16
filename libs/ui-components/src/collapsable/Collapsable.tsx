@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import React from 'react'
 import cx from 'classnames'
+
 import { Icon } from '../icon'
+
 import styles from './Collapsable.module.css'
 
 interface CollapsableProps {

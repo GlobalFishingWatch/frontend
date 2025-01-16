@@ -1,27 +1,32 @@
 import React, { Fragment } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import { Bar, BarChart, LabelList,ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
+
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
-import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
-import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { useLocationConnect } from 'routes/routes.hook'
+
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
+import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
+import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
-import { getVesselGearTypeLabel } from 'utils/info'
+import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
 import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import {
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
-import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { getVesselGearTypeLabel } from 'utils/info'
+
 import { ReportBarGraphPlaceholder } from '../../placeholders/ReportBarGraphPlaceholder'
+
 import styles from './ReportVesselsGraph.module.css'
 
 const MAX_OTHER_TOOLTIP_ITEMS = 10
@@ -39,6 +44,12 @@ type ReportGraphTooltipProps = {
   }[]
   label: string
   type: ReportVesselGraph
+}
+
+const FILTER_PROPERTIES = {
+  [REPORT_VESSELS_GRAPH_FLAG]: 'flag',
+  [REPORT_VESSELS_GRAPH_GEARTYPE]: 'gear',
+  [REPORT_VESSELS_GRAPH_VESSELTYPE]: 'type',
 }
 
 const ReportGraphTooltip = (props: any) => {
@@ -76,33 +87,13 @@ const ReportGraphTooltip = (props: any) => {
 }
 
 const CustomTick = (props: any) => {
-  const { x, y, payload, width, visibleTicksCount } = props
+  const { x, y, payload, width, visibleTicksCount, getTickLabel } = props
   const { t } = useTranslation()
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   const othersData = useSelector(selectReportVesselsGraphDataOthers)
   const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
-
-  const getTickLabel = (label: string) => {
-    if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
-    switch (selectedReportVesselGraph) {
-      case 'geartype':
-        return getVesselGearTypeLabel({ geartypes: label })
-      case 'vesselType':
-        return `${t(`vessel.vesselTypes.${label?.toLowerCase()}` as any, label)}`
-      case 'flag':
-        return t(`flags:${label}` as any, label)
-      default:
-        return label
-    }
-  }
-
-  const filterProperties = {
-    [REPORT_VESSELS_GRAPH_FLAG]: 'flag',
-    [REPORT_VESSELS_GRAPH_GEARTYPE]: 'gear',
-    [REPORT_VESSELS_GRAPH_VESSELTYPE]: 'type',
-  }
 
   const onLabelClick = () => {
     if (isCategoryInteractive) {
@@ -116,7 +107,7 @@ const CustomTick = (props: any) => {
           )
         : getTickLabel(payload.value)
       dispatchQueryParams({
-        reportVesselFilter: `${filterProperties[selectedReportVesselGraph]}:${vesselFilter}`,
+        reportVesselFilter: `${FILTER_PROPERTIES[selectedReportVesselGraph]}:${vesselFilter}`,
         reportVesselPage: 0,
       })
     }
@@ -177,6 +168,44 @@ export default function ReportVesselsGraph() {
   const dataviews = useSelector(selectReportDataviewsWithPermissions)
   const data = useSelector(selectReportVesselsGraphDataGrouped)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
+  const othersData = useSelector(selectReportVesselsGraphDataOthers)
+  const { dispatchQueryParams } = useLocationConnect()
+
+  const { t } = useTranslation()
+
+  const getTickLabel = (label: string) => {
+    if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
+    switch (selectedReportVesselGraph) {
+      case 'geartype':
+        return getVesselGearTypeLabel({ geartypes: label })
+      case 'vesselType':
+        return `${t(`vessel.vesselTypes.${label?.toLowerCase()}` as any, label)}`
+      case 'flag':
+        return t(`flags:${label}` as any, label)
+      default:
+        return label
+    }
+  }
+  const onLabelClick: CategoricalChartFunc = (e) => {
+    const { payload } = e.activePayload?.[0] || {}
+    if (!payload) return
+    if (payload && !EMPTY_API_VALUES.includes(payload.name)) {
+      const vesselFilter =
+        payload.name === OTHERS_CATEGORY_LABEL
+          ? cleanFlagState(
+              (
+                othersData?.flatMap((d) =>
+                  EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)
+                ) || []
+              ).join('|')
+            )
+          : getTickLabel(payload.name)
+      dispatchQueryParams({
+        reportVesselFilter: `${FILTER_PROPERTIES[selectedReportVesselGraph]}:${vesselFilter}`,
+        reportVesselPage: 0,
+      })
+    }
+  }
   return (
     <Fragment>
       <div className={styles.graph} data-test="report-vessels-graph">
@@ -192,6 +221,7 @@ export default function ReportVesselsGraph() {
                 left: 0,
                 bottom: 0,
               }}
+              onClick={onLabelClick}
             >
               {data && (
                 <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
@@ -218,7 +248,7 @@ export default function ReportVesselsGraph() {
                 interval="preserveStart"
                 tickLine={false}
                 minTickGap={-1000}
-                tick={<CustomTick />}
+                tick={<CustomTick getTickLabel={getTickLabel} />}
                 tickMargin={0}
               />
             </BarChart>

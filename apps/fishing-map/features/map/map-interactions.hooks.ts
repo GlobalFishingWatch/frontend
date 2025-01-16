@@ -1,60 +1,61 @@
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import type { DeckProps, PickingInfo } from '@deck.gl/core'
-import type { MjolnirPointerEvent } from 'mjolnir.js'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { debounce, throttle } from 'es-toolkit'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import type { MjolnirPointerEvent } from 'mjolnir.js'
+
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type {
   InteractionEvent,
-  InteractionEventType} from '@globalfishingwatch/deck-layer-composer';
+  InteractionEventType,
+} from '@globalfishingwatch/deck-layer-composer'
 import {
+  useGetDeckLayers,
   useMapHoverInteraction,
   useSetMapHoverInteraction,
-  useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import type {
-  FourwingsClusterPickingObject,
   DeckLayerInteractionPickingInfo,
   DeckLayerPickingObject,
-  FourwingsHeatmapPickingObject} from '@globalfishingwatch/deck-layers';
-import {
-  FOURWINGS_MAX_ZOOM,
+  FourwingsClusterPickingObject,
+  FourwingsHeatmapPickingObject,
 } from '@globalfishingwatch/deck-layers'
+import { FOURWINGS_MAX_ZOOM } from '@globalfishingwatch/deck-layers'
+
 import { trackEvent } from 'features/app/analytics.hooks'
-import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
-import useRulers from 'features/map/overlays/rulers/rulers.hooks'
-import { useDeckMap } from 'features/map/map-context.hooks'
-import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setHintDismissed } from 'features/help/hints.slice'
 import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { setHintDismissed } from 'features/help/hints.slice'
+import { useDeckMap } from 'features/map/map-context.hooks'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
+import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
+import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
+
+import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
+import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from './map.slice'
+import {
+  fetchBQEventThunk,
+  fetchClusterEventThunk,
+  fetchHeatmapInteractionThunk,
+  fetchLegacyEncounterEventThunk,
+  selectActivityInteractionStatus,
+  selectApiEventStatus,
+  selectClickedEvent,
+  setClickedEvent,
+} from './map.slice'
 import {
   getAnalyticsEvent,
   isRulerLayerPoint,
   isTilesClusterLayer,
   isTilesClusterLayerCluster,
 } from './map-interaction.utils'
-import type {
-  SliceExtendedClusterPickingObject,
-  SliceInteractionEvent} from './map.slice';
-import {
-  fetchBQEventThunk,
-  fetchClusterEventThunk,
-  fetchHeatmapInteractionThunk,
-  fetchLegacyEncounterEventThunk,
-  selectApiEventStatus,
-  selectClickedEvent,
-  selectActivityInteractionStatus,
-  setClickedEvent,
-} from './map.slice'
 import { useSetMapCoordinates } from './map-viewport.hooks'
-import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   DataviewCategory.Activity,
@@ -291,7 +292,6 @@ export const useMapMouseHover = () => {
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
 
-   
   const onMouseMove: DeckProps['onHover'] = useCallback(
     throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
       setHoveredCoordinates(info.coordinate)
@@ -459,7 +459,7 @@ export const useMapDrag = () => {
 
 export const useDebouncedDispatchHighlightedEvent = () => {
   const dispatch = useAppDispatch()
-   
+
   return useCallback(
     debounce((eventIds?: string | string[]) => {
       let ids: string[] | undefined

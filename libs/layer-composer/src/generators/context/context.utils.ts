@@ -1,8 +1,9 @@
 import type {
-  LineLayerSpecification,
-  FillLayerSpecification,
   CircleLayerSpecification,
+  FillLayerSpecification,
+  LineLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+
 import type { ColorBarOption } from '../types'
 
 export const DEFAULT_LINE_COLOR = 'white'

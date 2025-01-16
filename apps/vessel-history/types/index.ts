@@ -1,8 +1,8 @@
 import type {
-  Vessel,
   Authorization,
-  VesselSearch,
   EventType,
+  Vessel,
+  VesselSearch,
   Workspace as BaseWorkspace,
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'

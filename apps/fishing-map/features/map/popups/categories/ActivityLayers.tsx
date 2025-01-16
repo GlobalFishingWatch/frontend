@@ -1,11 +1,16 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+
 import type { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+
 import I18nNumber from 'features/i18n/i18nNumber'
+
 import type { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
-import popupStyles from '../Popup.module.css'
+
 import VesselsTable from './VesselsTable'
+
+import popupStyles from '../Popup.module.css'
 
 type ActivityTooltipRowProps = {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory; title?: string }

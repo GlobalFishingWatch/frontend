@@ -1,5 +1,6 @@
-import memoizeOne from 'memoize-one'
 import type { FeatureCollection } from 'geojson'
+import memoizeOne from 'memoize-one'
+
 import type {
   CircleLayerSpecification,
   ColorSpecification,
@@ -7,21 +8,23 @@ import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+
 import { Group } from '../../types'
+import { memoizeByLayerId, memoizeCache } from '../../utils'
+import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import type {
-  VesselEventsGeneratorConfig,
   MergedGeneratorConfig,
+  VesselEventsGeneratorConfig,
   VesselsEventsSource} from '../types';
 import {
   GeneratorType
 } from '../types'
-import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
-import { memoizeByLayerId, memoizeCache } from '../../utils'
+
 import {
+  filterFeaturesByTimerange,
+  filterGeojsonByTimerange,
   getVesselEventsGeojson,
   getVesselEventsSegmentsGeojson,
-  filterGeojsonByTimerange,
-  filterFeaturesByTimerange,
   getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
 } from './vessel-events.utils'
 

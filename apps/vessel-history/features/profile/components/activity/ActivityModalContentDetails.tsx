@@ -1,10 +1,13 @@
 import React, { Fragment, useCallback, useMemo } from 'react'
-import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
+import { DateTime } from 'luxon'
+
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import I18nDate from 'features/i18n/i18nDate'
 import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+
 import ActivityModalContentField from './ActivityModalContentField'
+
 import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
@@ -15,7 +18,7 @@ interface ActivityModalContentProps {
 
 const ActivityModalContentDetails: React.FC<ActivityModalContentProps> = (
   props
-): React.ReactElement => {
+): React.ReactElement<any> => {
   const event = props.event
   const { t } = useTranslation()
 

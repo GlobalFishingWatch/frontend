@@ -1,5 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
+
 import styles from './Spinner.module.css'
 
 interface SpinnerProps {
@@ -24,7 +25,7 @@ export function Spinner(props: SpinnerProps) {
   const radius = size === 'default' ? 20 : 8
   const SvgComponent = (
     <svg
-      className={cx(styles.spinner, className)}
+      className={cx(styles.spinner, inline ? className : '')}
       width={radius * 2}
       height={radius * 2}
       viewBox={`0 0 ${radius * 2} ${radius * 2}`}

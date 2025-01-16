@@ -1,30 +1,32 @@
 import React, { Fragment, useEffect, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import UserGuideLink from 'features/help/UserGuideLink'
+import { selectReportActivityGraph } from 'features/reports/areas/area-reports.config.selectors'
+import {
+  useFitAreaInViewport,
+  useReportAreaBounds,
+} from 'features/reports/areas/area-reports.hooks'
+import { selectTimeComparisonValues } from 'features/reports/areas/area-reports.selectors'
+import type { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
 import ReportActivityGraphSelector from 'features/reports/shared/activity/ReportActivityGraphSelector'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import type {
-  ReportGraphProps} from 'features/reports/shared/activity/reports-activity-timeseries.hooks';
+import ReportActivityPeriodComparison from 'features/reports/shared/activity/ReportActivityPeriodComparison'
+import ReportActivityPeriodComparisonGraph from 'features/reports/shared/activity/ReportActivityPeriodComparisonGraph'
+import type { ReportGraphProps } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
 import {
   getReportGraphMode,
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
 } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
-import { selectTimeComparisonValues } from 'features/reports/areas/area-reports.selectors'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
-import ReportActivityPeriodComparison from 'features/reports/shared/activity/ReportActivityPeriodComparison'
-import ReportActivityPeriodComparisonGraph from 'features/reports/shared/activity/ReportActivityPeriodComparisonGraph'
-import UserGuideLink from 'features/help/UserGuideLink'
-import {
-  useFitAreaInViewport,
-  useReportAreaBounds,
-} from 'features/reports/areas/area-reports.hooks'
-import { selectReportActivityGraph } from 'features/reports/areas/area-reports.config.selectors'
-import type { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
-import ReportActivityEvolution from './ReportActivityEvolution'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
+import ReportActivityEvolution from './ReportActivityEvolution'
+
 import styles from './ReportActivity.module.css'
 
 export type ReportActivityProps = {
@@ -58,7 +60,6 @@ export default function ReportActivity() {
     if (loaded && bbox?.length) {
       fitAreaInViewport()
     }
-     
   }, [loaded, bboxHash])
 
   const { t } = useTranslation()

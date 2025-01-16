@@ -1,8 +1,11 @@
-import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { InputText } from '@globalfishingwatch/ui-components'
+
 import UserWorkspacesPrivate from 'features/user/UserWorkspacesPrivate'
 import UserWorkspacesPublic from 'features/user/UserWorkspacesPublic'
+
 import styles from './User.module.css'
 
 function UserWorkspaces() {

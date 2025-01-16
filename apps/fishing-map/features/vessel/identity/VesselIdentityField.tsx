@@ -1,5 +1,4 @@
-import type {
-  Ref} from 'react';
+import type { Ref } from 'react'
 import {
   forwardRef,
   useEffect,
@@ -9,8 +8,11 @@ import {
   useState,
 } from 'react'
 import cx from 'classnames'
+
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+
 import { isFieldLoginRequired } from '../vessel.utils'
+
 import styles from './VesselIdentityField.module.css'
 
 type VesselIdentityFieldProps = {

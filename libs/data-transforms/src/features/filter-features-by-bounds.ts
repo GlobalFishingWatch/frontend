@@ -1,4 +1,5 @@
 import { sample } from 'simple-statistics'
+
 import type {
   FourwingsFeature,
   FourwingsFeatureProperties,

@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { Switch } from '@globalfishingwatch/ui-components'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { Switch } from '@globalfishingwatch/ui-components'
+
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
 type LayerSwitchProps = {

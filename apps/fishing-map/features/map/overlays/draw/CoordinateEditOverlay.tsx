@@ -1,11 +1,15 @@
-import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { Feature, Polygon } from 'geojson'
+
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
-import { selectMapDrawingMode } from 'routes/routes.selectors'
+
 import PopupWrapper from 'features/map/popups/PopupWrapper'
+import { selectMapDrawingMode } from 'routes/routes.selectors'
+
 import { useDrawLayerInstance } from './draw.hooks'
+
 import styles from './DrawDialog.module.css'
 
 export const CoordinateEditOverlay = () => {

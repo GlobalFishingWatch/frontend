@@ -1,11 +1,14 @@
-import type { ReactNode } from 'react';
+import type { JSX,ReactNode } from 'react';
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { ValueItem } from 'types'
+
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { useVesselsConnect } from 'features/vessels/vessels.hook'
-import type { ValueItem } from 'types'
 import type { VesselFieldLabel } from 'types/vessel'
+
 import HistoryDate from './HistoryDate'
+
 import styles from './Info.module.css'
 
 interface ListItemProps {
@@ -26,7 +29,7 @@ const InfoFieldHistoryTable: React.FC<ListItemProps> = ({
   datesTemplate,
   columnHeaders,
   hideTMTDate,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
   const { formatSource } = useVesselsConnect(label)
 

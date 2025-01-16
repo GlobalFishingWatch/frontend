@@ -1,4 +1,5 @@
-import type { FeatureCollection, LineString, Position, MultiLineString } from 'geojson'
+import type { FeatureCollection, LineString, MultiLineString,Position } from 'geojson'
+
 import type { UserTrackFeature, UserTrackFeatureProperties, UserTrackRawData } from './types'
 
 // Originally duplicated from data-transforms libs to avoid circular dependencies

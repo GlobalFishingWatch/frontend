@@ -1,61 +1,60 @@
 import { Fragment, useEffect, useMemo, useRef } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import isEqual from 'lodash/isEqual'
-import { Button } from '@globalfishingwatch/ui-components'
+
 import {
   getIsConcurrentError,
   getIsTimeoutError,
   isAuthError,
 } from '@globalfishingwatch/api-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import {
-  isActivityReport,
-  selectActiveReportDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
-import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import {
-  selectReportDataviewsWithPermissions,
-  selectTimeComparisonValues,
-} from 'features/reports/areas/area-reports.selectors'
-import { selectHasReportVessels } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
-import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
-import { getDownloadReportSupported } from 'features/download/download.utils'
+import { Button } from '@globalfishingwatch/ui-components'
+
 import { SUPPORT_EMAIL } from 'data/config'
-import { parseReportUrl } from 'features/reports/areas/area-reports.utils'
-import {
-  getDateRangeHash,
-  selectReportVesselsDateRangeHash,
-  setDateRangeHash,
-} from 'features/reports/shared/activity/reports-activity.slice'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectReportAreaId,
   selectReportCategory,
   selectReportDatasetId,
 } from 'features/app/selectors/app.reports.selector'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import type {
-  LastReportStorage} from 'features/reports/areas/area-reports.config';
+import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import {
-  LAST_REPORTS_STORAGE_KEY
-} from 'features/reports/areas/area-reports.config'
+  isActivityReport,
+  selectActiveReportDataviews,
+} from 'features/dataviews/selectors/dataviews.selectors'
+import { getDownloadReportSupported } from 'features/download/download.utils'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import type { LastReportStorage } from 'features/reports/areas/area-reports.config'
+import { LAST_REPORTS_STORAGE_KEY } from 'features/reports/areas/area-reports.config'
+import { useFetchReportVessel } from 'features/reports/areas/area-reports.hooks'
+import {
+  selectReportDataviewsWithPermissions,
+  selectTimeComparisonValues,
+} from 'features/reports/areas/area-reports.selectors'
+import { parseReportUrl } from 'features/reports/areas/area-reports.utils'
+import styles from 'features/reports/areas/AreaReport.module.css'
+import ReportDownload from 'features/reports/shared/activity/download/ReportDownload'
+import ReportActivityGraph from 'features/reports/shared/activity/ReportActivityGraph'
+import {
+  getDateRangeHash,
+  selectReportVesselsDateRangeHash,
+  setDateRangeHash,
+} from 'features/reports/shared/activity/reports-activity.slice'
+import { selectHasReportVessels } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
+import ReportVessels from 'features/reports/shared/activity/vessels/ReportVessels'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { useFetchDataviewResources } from 'features/resources/resources.hooks'
-import ReportActivityGraph from 'features/reports/shared/activity/ReportActivityGraph'
-import { useFetchReportVessel } from 'features/reports/areas/area-reports.hooks'
-import ReportVessels from 'features/reports/shared/activity/vessels/ReportVessels'
-import ReportDownload from 'features/reports/shared/activity/download/ReportDownload'
-import styles from 'features/reports/areas/AreaReport.module.css'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 
@@ -80,7 +79,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   )
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
   const { status: reportStatus, error: statusError, dispatchFetchReport } = useFetchReportVessel()
-  const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
+  const dispatchTimeoutRef = useRef<NodeJS.Timeout>(undefined)
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
@@ -294,6 +293,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
               }}
             />
             <Button
+              testId="see-vessel-table-report"
               onClick={() => {
                 dispatch(setDateRangeHash(''))
                 dispatchFetchReport()
@@ -347,6 +347,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     reportError,
     reportLoading,
     reportDataviews?.length,
+    timeComparisonValues,
     reportOutdated,
     reportStatus,
     hasAuthError,

@@ -1,8 +1,10 @@
 import React, { useMemo } from 'react'
 import ReactModal from 'react-modal'
 import cx from 'classnames'
+
 import { IconButton } from '../icon-button'
 import { Logo } from '../logo'
+
 import styles from './Menu.module.css'
 
 type MenuLink = {

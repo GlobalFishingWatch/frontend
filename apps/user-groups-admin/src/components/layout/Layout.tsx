@@ -1,12 +1,14 @@
+import React, { Fragment, useState } from 'react'
 import Head from 'next/head'
-import { Fragment, useState } from 'react'
-import React from 'react'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useGFWLogin } from '@globalfishingwatch/react-hooks/use-login'
 import { getLoginUrl, redirectToLogin } from '@globalfishingwatch/react-hooks/use-login-redirect'
 import { Button } from '@globalfishingwatch/ui-components/button'
-import Header from '../header/header'
+
 import { APPLICATION_NAME } from '../../data/config'
+import Header from '../header/header'
+
 import styles from './layout.module.css'
 
 export function Layout({ children }: any) {

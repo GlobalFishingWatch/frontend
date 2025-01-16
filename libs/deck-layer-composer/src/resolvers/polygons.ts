@@ -1,13 +1,15 @@
 import type { FeatureCollection } from 'geojson'
+
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import type {
   LayerGroup,
   PolygonPickingObject,
   PolygonsLayerProps,
 } from '@globalfishingwatch/deck-layers'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
+
 import type { DeckResolverFunction } from './types'
 
 const resolvePolygonsData: DeckResolverFunction<PolygonsLayerProps['data']> = (

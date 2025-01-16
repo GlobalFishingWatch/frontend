@@ -1,5 +1,7 @@
 import type { CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+
 import type { GlobalUserPointsGeneratorConfig } from '../../generators/types'
+
 import { POINT_SIZES_DEFAULT_RANGE } from './config'
 
 export const getCircleRadiusWithPointSizeProperty = (

@@ -4,6 +4,7 @@ import type {
   DataviewCategory,
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
+
 import type libraryTranslations from '../../public/locales/source/layer-library.json'
 
 // Browser config for equal screenshots

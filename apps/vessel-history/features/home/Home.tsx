@@ -1,50 +1,54 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { redirect } from 'redux-first-router'
+import { useDispatch, useSelector } from 'react-redux'
 import { DateTime, Interval } from 'luxon'
+import { redirect } from 'redux-first-router'
+
 import type { RelatedVesselSearchMerged} from '@globalfishingwatch/api-types';
 import { VesselSearch } from '@globalfishingwatch/api-types'
-import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
+import { Button,IconButton, Spinner } from '@globalfishingwatch/ui-components'
+
+import { IS_STANDALONE_APP } from 'data/config'
 import { RESULTS_PER_PAGE, TMT_CONTACT_US_URL } from 'data/constants'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import VesselListItem from 'features/vessel-list-item/VesselListItem'
-import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
-import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import { useApp } from 'features/app/app.hooks'
+import Partners from 'features/partners/Partners'
+import AdvancedSearch from 'features/search/AdvancedSearch'
+import { useSearchConnect, useSearchResultsConnect } from 'features/search/search.hooks'
+import {
+  selectSearchError,
+  selectSearching,
+  selectSearchOffset,
+  selectSearchResults,
+  selectSearchSources,
+  selectSearchTotalResults,
+} from 'features/search/search.selectors'
 import SearchPlaceholder, {
   SearchErrorState,
   SearchNoResultsFromTmtState,
   SearchNoResultsState,
 } from 'features/search/SearchPlaceholders'
+import { useUser } from 'features/user/user.hooks'
+import { selectUserData } from 'features/user/user.slice'
+import VesselListItem from 'features/vessel-list-item/VesselListItem'
+import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
+import { selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
+import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
+import ViewSelector from 'features/view-selector/view-selector'
+import { HOME, PROFILE, SETTINGS } from 'routes/routes'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectAdvancedSearchFields,
   selectHasSearch,
   selectUrlQuery,
 } from 'routes/routes.selectors'
-import {
-  selectSearchOffset,
-  selectSearchResults,
-  selectSearchTotalResults,
-  selectSearching,
-  selectSearchError,
-  selectSearchSources,
-} from 'features/search/search.selectors'
-import AdvancedSearch from 'features/search/AdvancedSearch'
-import { useUser } from 'features/user/user.hooks'
-import { HOME, PROFILE, SETTINGS } from 'routes/routes'
-import { useSearchConnect, useSearchResultsConnect } from 'features/search/search.hooks'
-import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
-import { useLocationConnect } from 'routes/routes.hook'
-import { useApp } from 'features/app/app.hooks'
-import Partners from 'features/partners/Partners'
-import ViewSelector from 'features/view-selector/view-selector'
 import type { OfflineVessel } from 'types/vessel'
 import { getUTCDateTime } from 'utils/dates'
-import { IS_STANDALONE_APP } from 'data/config'
-import { selectUserData } from 'features/user/user.slice'
-import styles from './Home.module.css'
+
 import LanguageToggle from './LanguageToggle'
+
+import styles from './Home.module.css'
 
 interface LoaderProps {
   invert?: boolean
@@ -54,7 +58,7 @@ interface LoaderProps {
   carrier?: boolean
 }
 
-const Home: React.FC<LoaderProps> = (): React.ReactElement => {
+const Home: React.FC<LoaderProps> = (): React.ReactElement<any> => {
   const { t } = useTranslation()
   const { openFeedback } = useApp()
 

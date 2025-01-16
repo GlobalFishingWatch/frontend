@@ -5,5 +5,5 @@
   "filterActivityLayers": "Clique no ícone de filtro para filtrar a atividade usando diferentes critérios disponíveis, incluindo fonte de dados, bandeira e tipos de petrechos de pesca.",
   "fishingEffortHeatmap": "O mapa mostra um mapa de calor interativo da atividade. As células da grade mais claras são as áreas com mais atividade.",
   "periodComparisonBaseline": "Selecione uma linha de base para comparar alterações em atividade, por exemplo, até a mesma data no ano passado, ou para comparar a atividade em diferentes épocas do ano.",
-  "userContextLayers": "Upload and combine your area, track or point data in more formats with flexible color, size, labeling, time and filter options to best visualize and analyze your datasets alongside Global Fishing Watch layers."
+  "userContextLayers": "Carregue e combine seus dados de área, rota ou ponto em mais formatos com opções flexíveis de cor, tamanho, rotulagem, hora e filtro para visualizar e analisar melhor seus conjuntos de dados juntamente com as camadas da Global Fishing Watch."
 }

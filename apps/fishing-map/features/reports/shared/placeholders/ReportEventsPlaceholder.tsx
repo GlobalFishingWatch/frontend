@@ -1,7 +1,9 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
-import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+
 import styles from './placeholders.module.css'
 
 export default function ReportEventsPlaceholder() {

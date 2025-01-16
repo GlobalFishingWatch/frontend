@@ -1,9 +1,11 @@
-import React, { memo, Fragment, useEffect, createRef, useContext } from 'react'
+import React, { createRef, Fragment, memo, useContext,useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
-import './range.css'
 import type { NumberValue } from 'd3-scale'
-import { Timebar, TimelineContext, TimebarHighlighter } from '@globalfishingwatch/timebar'
+import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
+
+import { Timebar, TimebarHighlighter,TimelineContext } from '@globalfishingwatch/timebar'
+
+import { Field } from '../../data/models'
 import { useTimebarModeConnect, useTimerangeConnect } from '../../features/timebar/timebar.hooks'
 import {
   selectFilteredDistanceFromPort,
@@ -11,19 +13,21 @@ import {
   selectFilteredHours,
   selectFilteredSpeed,
 } from '../../routes/routes.selectors'
-import { Field } from '../../data/models'
 import { useAppDispatch } from '../../store.hooks'
+
+import TimebarSelector from './selector/Selector'
+import { selectNightLayer, selectRangeFilterLimits } from './timebar.selectors'
 import {
-  setHighlightedTime,
   disableHighlightedTime,
+  selectHighlightedEvent,
   selectHighlightedTime,
   selectTooltip,
-  selectHighlightedEvent,
+  setHighlightedTime,
 } from './timebar.slice'
-import styles from './Timebar.module.css'
-import { selectNightLayer, selectRangeFilterLimits } from './timebar.selectors'
-import TimebarSelector from './selector/Selector'
 import { VesselEventsPointsGraphDeckGL } from './VesselEventsPointsGraphDeckGL'
+
+import './range.css'
+import styles from './Timebar.module.css'
 
 const TIMEBAR_DEFAULT_HEIGHT = 300
 
@@ -109,7 +113,7 @@ const TimebarWrapper = () => {
     }
   }, [myRef])
 
-  const Range = createSliderWithTooltip(SliderRange)
+  const Range = createSliderWithTooltip(SliderRange) as any
 
   const tooltip = useSelector(selectTooltip)
   const absoluteStart = new Date('2012-01-01')
@@ -122,7 +126,7 @@ const TimebarWrapper = () => {
         <Timebar
           start={start}
           end={end}
-          enablePlayback={false}
+          showPlayback={false}
           absoluteStart={absoluteStart.toISOString()}
           absoluteEnd={absoluteEnd.toISOString()}
           onChange={dispatchTimerange}
@@ -192,7 +196,7 @@ const TimebarWrapper = () => {
             vertical
             onAfterChange={handleSpeedChange}
             allowCross={false}
-            tipFormatter={(value) => `${value} kt`}
+            tipFormatter={(value: any) => `${value} kt`}
             tipProps={{ placement: 'right' }}
             defaultValue={[minSpeed, maxSpeed]}
           />
@@ -205,7 +209,7 @@ const TimebarWrapper = () => {
             vertical
             onAfterChange={handleTimeChange}
             allowCross={false}
-            tipFormatter={(value) => `${value} hs`}
+            tipFormatter={(value: any) => `${value} hs`}
             tipProps={{ placement: 'right' }}
             defaultValue={[fromHour, toHour]}
           />
@@ -218,7 +222,7 @@ const TimebarWrapper = () => {
             vertical
             onAfterChange={handleElevationChange}
             allowCross={false}
-            tipFormatter={(value) => `${value} mt`}
+            tipFormatter={(value: any) => `${value} mt`}
             tipProps={{ placement: 'right' }}
             defaultValue={[minElevation, maxElevation]}
           />
@@ -231,7 +235,7 @@ const TimebarWrapper = () => {
             vertical
             onAfterChange={handleDistanceFromPortChange}
             allowCross={false}
-            tipFormatter={(value) => `${value} mt`}
+            tipFormatter={(value: any) => `${value} mt`}
             tipProps={{ placement: 'right' }}
             defaultValue={[minDistanceFromPort, maxDistanceFromPort]}
           />

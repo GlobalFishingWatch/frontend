@@ -1,18 +1,23 @@
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { stringify } from 'qs'
-import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
+
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { URL_STRINGIFY_CONFIG } from '@globalfishingwatch/dataviews-client'
-import { selectUserData } from 'features/user/selectors/user.selectors'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
+import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
+
 import { PATH_BASENAME, PUBLIC_WORKSPACE_ENV } from 'data/config'
-import { selectLocationQuery } from 'routes/routes.selectors'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import { selectLocationQuery } from 'routes/routes.selectors'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
 import type { MapAnnotation } from '../annotations/annotations.types'
+
 import { useMapErrorNotification } from './error-notification.hooks'
+
 import styles from './ErrorNotification.module.css'
 
 const ErrorNotification = (): React.ReactNode | null => {

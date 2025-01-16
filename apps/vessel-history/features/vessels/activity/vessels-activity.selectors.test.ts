@@ -1,10 +1,11 @@
 import type { Filters } from 'features/event-filters/filters.slice'
-import type { RenderedEvent } from './vessels-activity.selectors';
-import { selectFilteredEvents } from './vessels-activity.selectors'
+
 import {
   loiteringAndEncounterEvents,
   portVisitEvents,
 } from './__mocks__/selectEventsWithRenderingInfo.mock'
+import type { RenderedEvent } from './vessels-activity.selectors';
+import { selectFilteredEvents } from './vessels-activity.selectors'
 
 jest.mock('features/event-filters/filters.slice')
 

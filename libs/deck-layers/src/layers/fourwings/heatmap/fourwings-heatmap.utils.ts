@@ -1,23 +1,26 @@
-import { stringify } from 'qs'
-import type { Feature } from 'geojson'
 import type { Color } from '@deck.gl/core'
 import type { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
+import type { Feature } from 'geojson'
 import { DateTime } from 'luxon'
+import { stringify } from 'qs'
+
 import type {
   FourwingsFeature,
   FourwingsInterval,
   TileCell,
 } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import { getUTCDateTime } from '../../../utils'
-import type { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
 import {
+  getChunkByInterval,
   HEATMAP_API_TILES_URL,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
-  getChunkByInterval,
 } from '../fourwings.config'
+import type { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
+
 import type {
   AggregateCellParams,
   CompareCellParams,

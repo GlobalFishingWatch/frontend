@@ -1,10 +1,11 @@
-import i18n from 'i18next'
-import Backend from 'i18next-http-backend'
-import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
-import { Locale } from 'types'
-import { PATH_BASENAME } from 'routes/routes'
+import i18n from 'i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
+import Backend from 'i18next-http-backend'
+
 import { WORKSPACE_ENV } from 'data/config'
+import { PATH_BASENAME } from 'routes/routes'
+import { Locale } from 'types'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },

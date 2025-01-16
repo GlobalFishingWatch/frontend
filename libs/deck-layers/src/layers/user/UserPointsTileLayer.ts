@@ -1,32 +1,34 @@
 import type {
-  DefaultProps,
-  UpdateParameters,
-  LayerContext,
-  Layer,
   Accessor,
+  DefaultProps,
+  Layer,
+  LayerContext,
   Position,
+  UpdateParameters,
 } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { ScatterplotLayer } from '@deck.gl/layers'
-import type { GeoJsonProperties } from 'geojson'
 import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
+import type { GeoJsonProperties } from 'geojson'
+
 import {
   COLOR_HIGHLIGHT_LINE,
+  DEFAULT_LINE_COLOR,
+  getFeatureInFilter,
+  getFetchLoadOptions,
+  getLayerGroupOffset,
+  getMVTSublayerProps,
+  GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
-  getLayerGroupOffset,
-  GFWMVTLoader,
-  getMVTSublayerProps,
-  DEFAULT_LINE_COLOR,
-  getFetchLoadOptions,
-  getFeatureInFilter,
 } from '../../utils'
-import type { UserPointsLayerProps, UserLayerFeature } from './user.types'
+
+import type { UserLayerFeature,UserPointsLayerProps } from './user.types'
+import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
 import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
-import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
 

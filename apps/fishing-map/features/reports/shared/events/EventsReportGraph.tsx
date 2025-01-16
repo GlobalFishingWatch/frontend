@@ -1,25 +1,28 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import max from 'lodash/max'
+import min from 'lodash/min'
+import type { DurationUnit } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import {
-  ResponsiveContainer,
   CartesianGrid,
+  ComposedChart,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Line,
-  ComposedChart,
 } from 'recharts'
-import min from 'lodash/min'
-import max from 'lodash/max'
-import type { DurationUnit } from 'luxon';
-import { DateTime, Duration } from 'luxon'
-import { useTranslation } from 'react-i18next'
-import type { FourwingsInterval} from '@globalfishingwatch/deck-loaders';
+
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
-import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { tickFormatter } from 'features/reports/areas/area-reports.utils'
-import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
+
 import styles from './EventsReportGraph.module.css'
 
 type EventsReportGraphTooltipProps = {

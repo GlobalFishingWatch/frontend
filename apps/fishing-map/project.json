@@ -25,7 +25,11 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx prepare-loaders fishing-map", "nx build:app fishing-map"],
+        "commands": [
+          "nx prepare-loaders fishing-map",
+          "nx clean-next fishing-map",
+          "nx build:app fishing-map"
+        ],
         "parallel": false
       }
     },
@@ -57,6 +61,13 @@
       "outputs": [],
       "options": {
         "commands": ["rm -rf dist/apps/fishing-map/public/locales"]
+      }
+    },
+    "clean-next": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": ["rm -rf dist/apps/fishing-map", "rm -rf .next"]
       }
     },
     "serve": {

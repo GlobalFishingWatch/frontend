@@ -1,21 +1,26 @@
+import { Fragment } from 'react'
 import cx from 'classnames'
 import { t } from 'i18next'
-import { Fragment } from 'react'
+
 import type {
   VesselRegistryOperator,
   VesselRegistryOwner,
   VesselRegistryProperty,
 } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+
 import I18nDate from 'features/i18n/i18nDate'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
 import type { VesselLastIdentity } from 'features/search/search.slice'
-import { filterRegistryInfoByDateAndSSVID } from '../vessel.utils'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+
 import type { VesselRenderField } from '../vessel.config'
-import styles from './VesselIdentity.module.css'
+import { filterRegistryInfoByDateAndSSVID } from '../vessel.utils'
+
 import DataTerminology from './DataTerminology'
 import VesselIdentityField from './VesselIdentityField'
+
+import styles from './VesselIdentity.module.css'
 
 const RegistryOperatorField = ({
   registryField,

@@ -2,16 +2,20 @@ import React, { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { redirect } from 'redux-first-router'
+
 import type { EventVessel } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { PROFILE } from 'routes/routes'
-import { useSearchConnect } from 'features/search/search.hooks'
-import { NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 import AuthIcon from 'features/profile/components/auth-icon/AuthIcon'
-import ActivityModalContentField from './ActivityModalContentField'
+import { useSearchConnect } from 'features/search/search.hooks'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import { NOT_AVAILABLE } from 'features/vessels/vessels.utils'
+import { PROFILE } from 'routes/routes'
+
 import ActivityModalContentDetails from './ActivityModalContentDetails'
+import ActivityModalContentField from './ActivityModalContentField'
+
 import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
@@ -20,7 +24,7 @@ interface ActivityModalContentProps {
 
 const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> = (
   props
-): React.ReactElement => {
+): React.ReactElement<any> => {
   const event = props.event
   const relatedVessel = event.encounter?.vessel as EventVessel
   const { t } = useTranslation()

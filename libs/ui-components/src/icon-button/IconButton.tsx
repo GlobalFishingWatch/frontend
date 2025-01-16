@@ -1,13 +1,15 @@
-import type { Ref, CSSProperties } from 'react'
+import type { CSSProperties,Ref } from 'react'
 import React, { forwardRef, Fragment } from 'react'
 import cx from 'classnames'
-import type { Placement } from 'tippy.js'
+
+import type { HTMLButtonType } from '../button/Button'
 import type { IconType } from '../icon'
 import { Icon } from '../icon'
-import type { TooltipTypes } from '../types/types'
-import { Tooltip } from '../tooltip'
 import { Spinner } from '../spinner'
-import type { HTMLButtonType } from '../button/Button'
+import type { TooltipPlacement } from '../tooltip'
+import { Tooltip } from '../tooltip'
+import type { TooltipTypes } from '../types/types'
+
 import styles from './IconButton.module.css'
 
 export type IconButtonType =
@@ -32,7 +34,7 @@ export interface IconButtonProps {
   onMouseEnter?: (e: React.MouseEvent) => void
   onMouseLeave?: (e: React.MouseEvent) => void
   tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
+  tooltipPlacement?: TooltipPlacement
   children?: React.ReactNode
   style?: CSSProperties
   htmlType?: HTMLButtonType
@@ -57,7 +59,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
     onMouseEnter,
     onMouseLeave,
     tooltip,
-    tooltipPlacement = 'auto',
+    tooltipPlacement = 'top',
     children,
     style,
     htmlType,

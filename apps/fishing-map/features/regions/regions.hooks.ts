@@ -1,9 +1,11 @@
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
 import type { Regions } from '@globalfishingwatch/api-types'
-import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
+
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
+import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
 
 export function useRegionTranslationsById() {
   const { t } = useTranslation()

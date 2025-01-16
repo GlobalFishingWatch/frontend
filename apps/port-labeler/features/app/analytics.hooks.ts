@@ -1,10 +1,12 @@
 import { useSelector } from 'react-redux'
+
 import {
   trackEvent as trackEventBase,
   useAnalytics as useAnalyticsBase,
 } from '@globalfishingwatch/react-hooks'
-import { isUserLogged, selectUserData } from 'features/user/user.slice'
+
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
+import { isUserLogged, selectUserData } from 'features/user/user.slice'
 
 const GOOGLE_ANALYTICS_DEBUG_MODE =
   (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE || 'false').toLowerCase() === 'true'

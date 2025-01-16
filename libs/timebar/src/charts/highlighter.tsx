@@ -3,22 +3,27 @@ import { createPortal } from 'react-dom'
 import cx from 'classnames'
 import { useAtomValue } from 'jotai'
 import { DateTime } from 'luxon'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon } from '@globalfishingwatch/ui-components'
+
 import type { TimelineScale } from '../timelineContext'
 import TimelineContext from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
-import styles from './highlighter.module.css'
+
+import { useOuterScale } from './common/hooks'
 import type {
+  ChartType,
+  HighlightedChunks,
+  HighlighterDateCallback,
   TimebarChartChunk,
   TimebarChartItem,
   TimebarChartsData,
-  HighlightedChunks,
-  ChartType,
-  HighlighterDateCallback,
 } from './common/types'
 import chartsDataState, { hoveredEventState } from './chartsData.atom'
-import { useOuterScale } from './common/hooks'
+
+import styles from './highlighter.module.css'
 
 const getCoords = (
   hoverStart: string,
@@ -26,15 +31,14 @@ const getCoords = (
   outerScale: TimelineScale,
   dateCallback?: HighlighterDateCallback
 ) => {
-  // TODO !!!! GMT
-  const hoverStartDate = new Date(hoverStart)
-  const hoverEndDate = new Date(hoverEnd)
+  const hoverStartDate = getUTCDate(hoverStart)
+  const hoverEndDate = getUTCDate(hoverEnd)
   const left = outerScale(hoverStartDate)
   const width = outerScale(hoverEndDate) - left
   const centerMs = Math.round(
     hoverStartDate.getTime() + (hoverEndDate.getTime() - hoverStartDate.getTime()) / 2
   )
-  const centerDate = new Date(centerMs)
+  const centerDate = getUTCDate(centerMs)
   const center = outerScale(centerDate)
 
   let dateLabel

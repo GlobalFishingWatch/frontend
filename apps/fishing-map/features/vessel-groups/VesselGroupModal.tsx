@@ -1,23 +1,36 @@
-import { useState, useCallback, useEffect, Fragment, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useRef,useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+
 import type { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
-import type {
-  SelectOption} from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import {
-  Modal,
   Button,
+  Icon,
   InputText,
-  SwitchRow,
-  Spinner,
+  Modal,
   MultiSelect,
   Select,
-  Icon,
+  Spinner,
+  SwitchRow,
 } from '@globalfishingwatch/ui-components'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import VesselGroupSearch from 'features/vessel-groups/VesselGroupModalSearch'
-import VesselGroupVessels from 'features/vessel-groups/VesselGroupModalVessels'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import UserGuideLink from 'features/help/UserGuideLink'
+import { getPlaceholderBySelections } from 'features/i18n/utils'
+import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import {
+  fetchVesselGroupReportThunk,
+  resetVesselGroupReportData,
+} from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { selectSearchQuery } from 'features/search/search.config.selectors'
+import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
+import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
 import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
@@ -26,43 +39,38 @@ import {
   selectVesselGroupWorkspaceToNavigate,
   selectWorkspaceVessselGroupsIds,
 } from 'features/vessel-groups/vessel-groups.selectors'
+import VesselGroupSearch from 'features/vessel-groups/VesselGroupModalSearch'
+import VesselGroupVessels from 'features/vessel-groups/VesselGroupModalVessels'
 import {
   mergeDataviewIntancesToUpsert,
   useDataviewInstancesConnect,
 } from 'features/workspace/workspace.hook'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { getEventLabel } from 'utils/analytics'
-import { updateLocation } from 'routes/routes.actions'
-import type { ROUTE_TYPES } from 'routes/routes'
-import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { selectSearchQuery } from 'features/search/search.config.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import UserGuideLink from 'features/help/UserGuideLink'
-import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
-import {
-  fetchVesselGroupReportThunk,
-  resetVesselGroupReportData,
-} from 'features/reports/vessel-groups/vessel-group-report.slice'
-import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import type { ROUTE_TYPES } from 'routes/routes'
+import { updateLocation } from 'routes/routes.actions'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { getEventLabel } from 'utils/analytics'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import { ID_COLUMNS_OPTIONS } from './vessel-groups.config'
 import type {
   IdField,
+  UpdateVesselGroupThunkParams,
   VesselGroupConfirmationMode,
-  UpdateVesselGroupThunkParams} from './vessel-groups.slice';
+} from './vessel-groups.slice'
 import {
   createVesselGroupThunk,
+  resetVesselGroupStatus,
   selectVesselGroupById,
+  selectVesselGroupsError,
   selectVesselGroupsStatus,
   updateVesselGroupVesselsThunk,
-  resetVesselGroupStatus,
-  selectVesselGroupsError,
 } from './vessel-groups.slice'
-import styles from './VesselGroupModal.module.css'
+import {
+  calculateVMSVesselsPercentage,
+  getVesselGroupUniqVessels,
+  getVesselGroupVesselsCount,
+} from './vessel-groups.utils'
 import {
   getVesselInVesselGroupThunk,
   MAX_VESSEL_GROUP_VESSELS,
@@ -78,14 +86,10 @@ import {
   setVesselGroupModalVessels,
   setVesselGroupSearchIdField,
 } from './vessel-groups-modal.slice'
-import {
-  calculateVMSVesselsPercentage,
-  getVesselGroupUniqVessels,
-  getVesselGroupVesselsCount,
-} from './vessel-groups.utils'
-import { ID_COLUMNS_OPTIONS } from './vessel-groups.config'
 
-function VesselGroupModal(): React.ReactElement {
+import styles from './VesselGroupModal.module.css'
+
+function VesselGroupModal(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
@@ -105,7 +109,7 @@ function VesselGroupModal(): React.ReactElement {
     searchVesselStatus === AsyncReducerStatus.Loading ||
     vesselGroupsStatus === AsyncReducerStatus.Loading ||
     vesselGroupsStatus === AsyncReducerStatus.LoadingUpdate
-  const fullModalLoading = editingVesselGroupId && searchVesselStatus === AsyncReducerStatus.Loading
+  const fullModalLoading = searchVesselStatus === AsyncReducerStatus.Loading
   const vesselGroupAPIError =
     vesselGroupsStatus === AsyncReducerStatus.Error ||
     searchVesselStatus === AsyncReducerStatus.Error
@@ -123,7 +127,7 @@ function VesselGroupModal(): React.ReactElement {
     selectVesselGroupModalDatasetsWithoutEventsRelated
   )
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const searchVesselGroupsVesselsRef = useRef<any>()
+  const searchVesselGroupsVesselsRef = useRef<any>(undefined)
   const searchVesselGroupsVesselsAllowed = vesselGroupVesselsToSearch
     ? vesselGroupVesselsToSearch?.length < MAX_VESSEL_GROUP_VESSELS
     : true

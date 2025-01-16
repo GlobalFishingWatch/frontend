@@ -45,9 +45,9 @@
     "name": "Alto-mar"
   },
   "loitering": {
-    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "description": "Um episódio de deriva é quando uma única embarcação exibe um comportamento indicativo de um evento de encontro potencial. Um episódio de deriva é estimado usando dados do sistema de identificação automática (AIS), incluindo a velocidade da embarcação, a duração em um determinado local e a distância da costa. Deriva ocorre quando uma embarcação viaja a uma velocidade média inferior a dois nós, estando, em média, a pelo menos 20 milhas náuticas da costa. Para reduzir o ruído no portal da embarcação transportadora, apenas eventos de deriva maiores que uma hora são mostrados.",
     "moreInfoLink": "",
-    "name": "Loitering events (AIS)"
+    "name": "Eventos de deriva (AIS)"
   },
   "mangroves": {
     "description": "Os mangues são árvores ou arbustos que podem sobreviver em ambientes salinos e normalmente crescem na zona entremarés de regiões tropicais e subtropicais. Considerados habitats de carbono azul, os manguezais melhoram a qualidade da água, estabilizam e protegem as costas e fornecem abrigo para pássaros, animais e organismos marinhos. Este conjunto de dados utiliza imagens de satélite de observação da Terra para mostrar a distribuição global dos mangues.  ",
@@ -70,9 +70,9 @@
     "name": "Concentração de nitrato (NO3)"
   },
   "offshore-fixed-infrastructure": {
-    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
+    "description": "A infraestrutura fixa offshore é um conjunto de dados global que usa IA e aprendizado de máquina para detectar e classificar estruturas nos oceanos do mundo. Rótulos de classificação (petróleo, vento e desconhecido) são fornecidos, bem como níveis de confiança (alto, médio ou baixo) refletindo nossa certeza sobre o rótulo atribuído. As detecções podem ser filtradas e coloridas no mapa usando tanto o rótulo quanto o nível de confiança. Os dados são atualizados mensalmente, e novas detecções classificadas são adicionadas no início de cada mês. A visualização das alterações usando a barra de tempo é simples e permite que qualquer pessoa reconheça a rápida industrialização dos oceanos do mundo.",
     "moreInfoLink": "",
-    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
+    "name": "Infraestrutura fixa offshore (SAR, óptica)"
   },
   "oxygen": {
     "description": "Oxigênio dissolvido é a quantidade de oxigênio presente na água e é fundamental para o crescimento e a sobrevivência dos organismos marinhos. O aquecimento das temperaturas dos oceanos pode levar a uma expansão de zonas com baixo teor de oxigénio, o que pode impactar a distribuição e a abundância da vida marinha. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o oxigênio dissolvido, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
@@ -90,9 +90,9 @@
     "name": "Concentração de fosfato (PO4)"
   },
   "port-visits": {
-    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",
+    "description": "Os portos são baseados no conjunto de dados de ancoragens da Global Fishing Watch, um banco de dados global de locais de ancoragem onde as embarcações se reúnem. O conjunto de dados contém mais de 160.000 locais de ancoragem individuais, que são agrupados em cerca de 32.000 portos. ",
     "moreInfoLink": "",
-    "name": "Port Visits (AIS)"
+    "name": "Visitas portuárias (AIS)"
   },
   "presence": {
     "description": "A camada de presença analisa dados do sistema de identificação automática (AIS) coletados de embarcações identificadas pela nossa pesquisa. A presença é determinada pelas posições assumidas e transmitidas pelo AIS da embarcação e é exibida como um mapa de calor. ",
@@ -130,9 +130,9 @@
     "name": "Montes marinhos"
   },
   "species": {
-    "description": "TODO",
+    "description": "Tarefas pendentes",
     "moreInfoLink": "",
-    "name": "Species"
+    "name": "Espécie"
   },
   "sst": {
     "description": "A temperatura da superfície do mar é a temperatura da água na superfície ou perto dela. Ela pode impactar o clima e os climas regionais e, juntamente com a salinidade, pode impulsionar a circulação oceânica e o movimento em grande escala das correntes oceânicas globalmente. Este conjunto de dados fornece a temperatura da superfície do mar com uma resolução de grade horizontal de 1/20 de grau, usando dados in-situ e de satélite de radiômetros infravermelhos e de micro-ondas.",

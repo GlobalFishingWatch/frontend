@@ -1,7 +1,9 @@
 import type { AccessorFunction, ChangeFlags, DefaultProps, Position } from '@deck.gl/core'
 import type { ScatterplotLayerProps } from '@deck.gl/layers'
 import { ScatterplotLayer } from '@deck.gl/layers'
+
 import type { EventTypes } from '@globalfishingwatch/api-types'
+
 import { DEFAULT_HIGHLIGHT_COLOR_VEC, EVENT_SHAPES, SHAPES_ORDINALS } from './vessel.config'
 
 export type _VesselEventsLayerProps<DataT = any> = {

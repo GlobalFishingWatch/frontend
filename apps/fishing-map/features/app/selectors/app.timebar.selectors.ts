@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import {
   selectActiveVesselsDataviews,

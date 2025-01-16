@@ -1,10 +1,12 @@
-import { Icon } from '@globalfishingwatch/ui-components'
 import type {
   ContextPickingObject,
   PolygonPickingObject,
   UserLayerPickingObject,
 } from '@globalfishingwatch/deck-layers'
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
+
 import styles from '../Popup.module.css'
 
 type ReportBufferLayersProps = {

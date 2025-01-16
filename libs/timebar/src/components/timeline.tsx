@@ -1,28 +1,33 @@
 import React, { PureComponent } from 'react'
-import memoize from 'memoize-one'
 import cx from 'classnames'
 import type { NumberValue, ScaleTime } from 'd3-scale'
 import { scaleTime } from 'd3-scale'
 import throttle from 'lodash/throttle'
-import ResizeObserver from 'resize-observer-polyfill'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
-import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
+import memoize from 'memoize-one'
+import ResizeObserver from 'resize-observer-polyfill'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { FOURWINGS_INTERVALS_ORDER,getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
+import { EVENT_SOURCE } from '../constants'
+import type { TimebarProps } from '../timebar'
+import type { TrackGraphOrientation } from '../timelineContext'
+import TimelineContext from '../timelineContext'
+import { getLast30Days } from '../utils'
 import {
-  getTime,
   clampToAbsoluteBoundaries,
   getDeltaMs,
+  getTime,
   isMoreThanADay,
   stickToClosestUnit,
 } from '../utils/internal-utils'
-import { EVENT_SOURCE } from '../constants'
-import { getLast30Days } from '../utils'
-import type { TrackGraphOrientation } from '../timelineContext'
-import TimelineContext from '../timelineContext'
-import type { TimebarProps } from '../timebar'
+
 import Bookmark from './bookmark'
-import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
+import TimelineUnits from './timeline-units'
+
 import styles from './timeline.module.css'
 
 const DRAG_INNER = 'DRAG_INNER'
@@ -134,19 +139,19 @@ class Timeline extends PureComponent<TimelineProps> {
 
   getOuterScale = memoize((outerStart, outerEnd, outerWidth) =>
     scaleTime()
-      .domain([new Date(outerStart), new Date(outerEnd)])
+      .domain([getUTCDate(outerStart), getUTCDate(outerEnd)])
       .range([0, outerWidth])
   )
 
   getOverallScale = memoize((absoluteStart, absoluteEnd, innerWidth) =>
     scaleTime()
-      .domain([new Date(absoluteStart), new Date(absoluteEnd)])
+      .domain([getUTCDate(absoluteStart), getUTCDate(absoluteEnd)])
       .range([0, innerWidth])
   )
 
   getSvgTransform = memoize((overallScale, start, end, innerWidth, innerStartPx) => {
-    const startX = overallScale(new Date(start))
-    const endX = overallScale(new Date(end))
+    const startX = overallScale(getUTCDate(start))
+    const endX = overallScale(getUTCDate(end))
     const deltaX = endX - startX
     const scaleX = innerWidth / deltaX
 
@@ -273,9 +278,9 @@ class Timeline extends PureComponent<TimelineProps> {
       let newEnd = end
 
       if (dragging === DRAG_START) {
-        newStart = new Date(getTime(start) - offsetMs).toISOString()
+        newStart = getUTCDate(getTime(start) - offsetMs).toISOString()
       } else if (dragging === DRAG_END) {
-        newEnd = new Date(getTime(end) + offsetMs).toISOString()
+        newEnd = getUTCDate(getTime(end) + offsetMs).toISOString()
       }
 
       const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
@@ -360,7 +365,7 @@ class Timeline extends PureComponent<TimelineProps> {
       const movementX = clientX - this.lastX
       this.lastX = (event as MouseEvent).clientX || (event as TouchEvent).changedTouches[0].clientX
       const newStart = this.innerScale.invert(-movementX)
-      const newEnd = new Date(newStart.getTime() + currentDeltaMs)
+      const newEnd = getUTCDate(newStart.getTime() + currentDeltaMs)
       const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
         newStart.toISOString(),
         newEnd.toISOString(),
@@ -475,7 +480,7 @@ class Timeline extends PureComponent<TimelineProps> {
     } = this.state
 
     this.innerScale = scaleTime()
-      .domain([new Date(start), new Date(end)])
+      .domain([getUTCDate(start), getUTCDate(end)])
       .range([0, innerWidth])
     let outerStart
     try {
@@ -494,7 +499,7 @@ class Timeline extends PureComponent<TimelineProps> {
     const svgTransform = this.getSvgTransform(overallScale, start, end, innerWidth, innerStartPx)
 
     const isInTheFuture =
-      displayWarningWhenInFuture && new Date(start) > new Date(latestAvailableDataDate)
+      displayWarningWhenInFuture && getUTCDate(start) > getUTCDate(latestAvailableDataDate)
 
     return (
       <TimelineContext.Provider
@@ -516,7 +521,12 @@ class Timeline extends PureComponent<TimelineProps> {
           trackGraphOrientation,
         }}
       >
-        <div ref={(node: any) => (this.node = node)} className={cx(styles.Timeline)}>
+        <div
+          ref={(node: any) => {
+            this.node = node
+          }}
+          className={cx(styles.Timeline)}
+        >
           {bookmarkStart && bookmarkEnd && (
             <Bookmark
               labels={labels.bookmark}

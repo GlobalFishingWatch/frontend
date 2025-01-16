@@ -1,38 +1,41 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { t } from 'i18next'
 import type { FeatureCollection, MultiPolygon } from 'geojson'
+import { t } from 'i18next'
+
 import type { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+
 import {
   selectReportAreaId,
-  selectReportDatasetId,
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
+  selectReportDatasetId,
 } from 'features/app/selectors/app.reports.selector'
+import type { Area, AreaGeometry } from 'features/areas/areas.slice'
+import { selectAreas } from 'features/areas/areas.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetsReportSupported } from 'features/datasets/datasets.utils'
-import { selectUserData } from 'features/user/selectors/user.selectors'
-import { getUTCDateTime } from 'utils/dates'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  EMPTY_API_VALUES,
+  ENTIRE_WORLD_REPORT_AREA,
+} from 'features/reports/areas/area-reports.config'
 import {
   getBufferedArea,
   getBufferedFeature,
   getReportCategoryFromDataview,
 } from 'features/reports/areas/area-reports.utils'
-import { createDeepEqualSelector } from 'utils/selectors'
-import type { Area, AreaGeometry} from 'features/areas/areas.slice';
-import { selectAreas } from 'features/areas/areas.slice'
 import {
-  EMPTY_API_VALUES,
-  ENTIRE_WORLD_REPORT_AREA,
-} from 'features/reports/areas/area-reports.config'
-import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
-import {
-  selectReportVesselsData,
   selectReportPreviewBuffer,
+  selectReportVesselsData,
 } from 'features/reports/shared/activity/reports-activity.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { getUTCDateTime } from 'utils/dates'
+import { createDeepEqualSelector } from 'utils/selectors'
+
 import {
   selectReportActivityGraph,
   selectReportTimeComparison,

@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DateTime, Duration } from 'luxon'
 import { range } from 'lodash'
+import { DateTime, Duration } from 'luxon'
+
 import type { Resource, ThinningConfig } from '@globalfishingwatch/api-types';
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type {
@@ -9,13 +10,14 @@ import {
   resourcesReducer,
   selectResources as originalSelectResource,
 } from '@globalfishingwatch/dataviews-client'
+
+import { DEFAULT_WORKSPACE, THINNING_LEVEL_BY_ZOOM, THINNING_LEVEL_ZOOMS } from 'data/config'
+import { isGuestUser } from 'features/user/user.slice'
 import {
   selectUrlEndQuery,
   selectUrlMapZoomQuery,
   selectUrlStartQuery,
 } from 'routes/routes.selectors'
-import { DEFAULT_WORKSPACE, THINNING_LEVEL_BY_ZOOM, THINNING_LEVEL_ZOOMS } from 'data/config'
-import { isGuestUser } from 'features/user/user.slice'
 import { PortVisitSubEvent } from 'types/activity'
 import { getUTCDateTime } from 'utils/dates'
 

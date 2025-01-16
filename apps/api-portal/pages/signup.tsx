@@ -1,8 +1,10 @@
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
+
 import UserAdditionalFields from 'components/user-additional-fields/user-additional-fields'
 import useUser from 'features/user/user'
+
 import styles from '../styles/index.module.css'
 
 const Layout = dynamic(() => import('components/layout'), {

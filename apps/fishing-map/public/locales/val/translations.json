@@ -49,7 +49,7 @@
     "periodComparisonDuration": "crwdns59625:0crwdne59625:0",
     "periodComparisonRange": "crwdns59627:0{{duration}}crwdnd59627:0{{compareStart}}crwdnd59627:0{{duration}}crwdnd59627:0{{start}}crwdne59627:0",
     "pinVessels": "crwdns84022:0crwdne84022:0",
-    "pinVesselsNotAllowed": "crwdns84024:0{{vessels}}crwdne84024:0",
+    "pinVesselsMaxAllowed": "crwdns84046:0{{maxVessels}}crwdne84046:0",
     "print ": "crwdns69298:0crwdne69298:0",
     "removeVessels": "crwdns84026:0crwdne84026:0",
     "resultsPerPage": "crwdns59631:0{{results}}crwdne59631:0",
@@ -713,6 +713,8 @@
       "withTimebar": "crwdns84030:0crwdne84030:0",
       "withTimebarAndLegend": "crwdns84032:0crwdne84032:0"
     },
+    "screenshotDownload": "crwdns84078:0crwdne84078:0",
+    "screenshotPreview": "crwdns84080:0crwdne84080:0",
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
   },
@@ -768,6 +770,7 @@
     "selected": "crwdns60409:0crwdne60409:0"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "crwdns84050:0crwdne84050:0",
     "fitOnThisDates": "crwdns60411:0crwdne60411:0",
     "focusOnThisDay": "crwdns60413:0crwdne60413:0",
     "maxTracksNumber": "crwdns60415:0crwdne60415:0"
@@ -794,6 +797,25 @@
     "maxPointsVisualizationExceeded": "crwdns83408:0crwdne83408:0"
   },
   "user": {
+    "gfwBadges": "crwdns84052:0crwdne84052:0",
+    "badges": {
+      "ambassador": {
+        "title": "crwdns84062:0crwdne84062:0",
+        "description": "crwdns84064:0crwdne84064:0"
+      },
+      "fixer": {
+        "title": "crwdns84066:0crwdne84066:0",
+        "description": "crwdns84068:0crwdne84068:0"
+      },
+      "presenter": {
+        "title": "crwdns84070:0crwdne84070:0",
+        "description": "crwdns84072:0crwdne84072:0"
+      },
+      "teacher": {
+        "title": "crwdns84074:0crwdne84074:0",
+        "description": "crwdns84076:0crwdne84076:0"
+      }
+    },
     "datasets": "crwdns82800:0crwdne82800:0",
     "groupMissing": "crwdns60447:0crwdne60447:0",
     "groups": "crwdns60449:0crwdne60449:0",

@@ -1,10 +1,13 @@
 import { Fragment } from 'react'
-import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
+import parse from 'html-react-parser'
+
 import type { Dataset } from '@globalfishingwatch/api-types'
+
 import { getDatasetDescriptionTranslated } from 'features/i18n/utils.datasets'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import GFWOnly from 'features/user/GFWOnly'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+
 import styles from './InfoModal.module.css'
 
 const getDatasetQueriesArray = (dataset: Dataset) => {

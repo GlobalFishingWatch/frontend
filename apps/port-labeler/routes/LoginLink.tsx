@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react'
+
 import { getLoginUrl, useLoginRedirect } from '@globalfishingwatch/react-hooks'
 
 type LocalStorageLoginLinkProps = {

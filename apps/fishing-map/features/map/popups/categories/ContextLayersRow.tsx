@@ -1,37 +1,40 @@
+import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import parse from 'html-react-parser'
-import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
-import { Fragment } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
+
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
+import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import {
   selectActiveHeatmapDowloadDataviews,
   selectHasReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
-import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
-import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { WORKSPACE_REPORT } from 'routes/routes'
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import {
-  selectLocationAreaId,
-  selectLocationDatasetId,
-  selectLocationQuery,
-} from 'routes/routes.selectors'
-import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { getAreaIdFromFeature } from 'features/map/popups/categories/ContextLayers.hooks'
-import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
 } from 'features/reports/areas/area-reports.config'
+import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
+import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import { WORKSPACE_REPORT } from 'routes/routes'
+import {
+  selectLocationAreaId,
+  selectLocationDatasetId,
+  selectLocationQuery,
+} from 'routes/routes.selectors'
+
 import styles from '../Popup.module.css'
 
 interface DownloadPopupButtonProps {

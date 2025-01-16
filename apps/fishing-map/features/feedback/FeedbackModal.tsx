@@ -1,25 +1,27 @@
-import { useState, useEffect, Fragment } from 'react'
+import { Fragment,useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-components'
+
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { DataviewType } from '@globalfishingwatch/api-types'
 import type { Workspace } from '@globalfishingwatch/api-types'
-import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
-import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { DataviewType , WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
+
 import {
   AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX,
   PATH_BASENAME,
   ROOT_DOM_ELEMENT,
 } from 'data/config'
-import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
-import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
+import { selectIsGuestUser,selectUserData } from 'features/user/selectors/user.selectors'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
+import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
+
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {

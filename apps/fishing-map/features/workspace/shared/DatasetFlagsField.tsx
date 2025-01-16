@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next'
+
+import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
-import { getFlagsByIds } from 'utils/flags'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
+
 import { getSchemaFilterOperationInDataview } from 'features/datasets/datasets.utils'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { getFlagsByIds } from 'utils/flags'
+
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
 type DatasetFlagFieldProps = {
@@ -20,7 +23,6 @@ function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldP
   let fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
 
   const onRemoveClick = (tag: TagItem, tags: TagItem[]) => {
-    console.log(tags)
     upsertDataviewInstance({
       id: dataview.id,
       config: {
@@ -47,7 +49,9 @@ function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldP
     <div className={styles.filter}>
       <label>
         {t('layer.flagState_other', 'Flag States')}
-        {filterOperation === EXCLUDE_FILTER_ID && ` (${t('common.excluded', 'Excluded')})`}
+        {filterOperation === EXCLUDE_FILTER_ID &&
+          fishingFiltersOptions[0]?.id !== 'all' &&
+          ` (${t('common.excluded', 'Excluded')})`}
       </label>
       <TagList
         tags={fishingFiltersOptions}

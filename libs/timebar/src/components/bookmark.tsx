@@ -1,7 +1,11 @@
 import classNames from 'classnames'
 import type { ScaleTime } from 'd3-scale'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { Icon } from '@globalfishingwatch/ui-components'
+
 import { getHumanizedDates } from '../utils'
+
 import styles from './bookmark.module.css'
 
 const MIN_WIDTH = 32
@@ -39,8 +43,8 @@ const Bookmark = ({
   onDelete,
   locale = 'en',
 }: BookmarkProps) => {
-  const x = scale(new Date(bookmarkStart))
-  const width = scale(new Date(bookmarkEnd)) - x
+  const x = scale(getUTCDate(bookmarkStart))
+  const width = scale(getUTCDate(bookmarkEnd)) - x
   const { humanizedStart, humanizedEnd } = getHumanizedDates(bookmarkStart, bookmarkEnd, locale)
   const label = [humanizedStart, humanizedEnd].join(' - ')
 

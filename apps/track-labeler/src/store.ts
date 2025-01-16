@@ -1,24 +1,23 @@
 import type {
-  ThunkAction,
   Action,
-  Middleware,
-  ThunkDispatch,
-  AnyAction} from '@reduxjs/toolkit';
+  AnyAction,  Middleware,
+  ThunkAction,
+  ThunkDispatch} from '@reduxjs/toolkit';
 import {
-  configureStore,
-  combineReducers
-} from '@reduxjs/toolkit'
-import vessels from '././features/vessels/vessels.slice'
-import selectedtracks from '././features/vessels/selectedTracks.slice'
-import project from '././features/projects/projects.slice'
-import resources from '././features/dataviews/resources.slice'
+  combineReducers,
+  configureStore} from '@reduxjs/toolkit'
+
 import dataviews from '././features/dataviews/dataviews.slice'
-import { routerQueryMiddleware, routerRefreshTokenMiddleware } from './routes/routes.middlewares'
-import connectedRoutes from './routes/routes'
-import userReducer from '././features/user/user.slice'
+import resources from '././features/dataviews/resources.slice'
 import mapReducer from '././features/map/map.slice'
-import timebarReducer from '././features/timebar/timebar.slice'
+import project from '././features/projects/projects.slice'
 import rulers from '././features/rulers/rulers.slice'
+import timebarReducer from '././features/timebar/timebar.slice'
+import userReducer from '././features/user/user.slice'
+import selectedtracks from '././features/vessels/selectedTracks.slice'
+import vessels from '././features/vessels/vessels.slice'
+import connectedRoutes from './routes/routes'
+import { routerQueryMiddleware, routerRefreshTokenMiddleware } from './routes/routes.middlewares'
 
 const {
   reducer: location,

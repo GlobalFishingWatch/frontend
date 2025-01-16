@@ -1,5 +1,8 @@
-import type { DateTimeUnit } from 'luxon';
+import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
+
 import { getDefaultFormat } from './internal-utils'
 
 export const getHumanizedDates = (start: string, end: string, locale: string) => {
@@ -14,7 +17,7 @@ export const getHumanizedDates = (start: string, end: string, locale: string) =>
 
 export const getLastX = (num: number, unit: DateTimeUnit, latestAvailableDataDate?: string) => {
   const latestAvailableDataDateUTC = DateTime.fromISO(
-    latestAvailableDataDate ? latestAvailableDataDate : new Date().toISOString(),
+    latestAvailableDataDate ? latestAvailableDataDate : getUTCDate().toISOString(),
     { zone: 'utc' }
   )
   return {

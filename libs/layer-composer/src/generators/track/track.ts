@@ -1,21 +1,23 @@
 import { scaleLinear, scalePow } from 'd3-scale'
 import type { FeatureCollection, LineString } from 'geojson'
-import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
-import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import memoizeOne from 'memoize-one'
+
 import type {
   TrackCoordinatesPropertyFilter} from '@globalfishingwatch/data-transforms';
 import {
-  segmentsToGeoJSON,
+  filterByTimerangeMemoizeEqualityCheck,
   filterTrackByCoordinateProperties,
-  filterByTimerangeMemoizeEqualityCheck
-} from '@globalfishingwatch/data-transforms'
-import { HIGHLIGHT_LINE_COLOR, LINE_COLOR_BAR_OPTIONS } from '../context/context.utils'
+  segmentsToGeoJSON} from '@globalfishingwatch/data-transforms'
+import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+
 import { Group } from '../../types'
-import type { TrackGeneratorConfig, MergedGeneratorConfig } from '../types';
-import { GeneratorType } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
+import { HIGHLIGHT_LINE_COLOR, LINE_COLOR_BAR_OPTIONS } from '../context/context.utils'
+import type { MergedGeneratorConfig,TrackGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 import { isConfigVisible, isNumeric } from '../utils'
+
 import { simplifyTrack } from './simplify-track'
 
 export const TRACK_HIGHLIGHT_SUFFIX = '_highlighted'

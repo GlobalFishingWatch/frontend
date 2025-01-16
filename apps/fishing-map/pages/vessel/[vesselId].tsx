@@ -1,12 +1,16 @@
 import path from 'path'
+
 import { useEffect, useState } from 'react'
-import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
 import VesselServerComponent from 'server/vessel/vessel'
+
+import { TOKEN_REGEX } from '@globalfishingwatch/dataviews-client'
+
+import { WorkspaceCategory } from 'data/workspaces'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import Index from 'pages'
-import { WorkspaceCategory } from 'data/workspaces'
 import { VESSEL } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
+
 import { wrapper } from '../../store'
 
 // type VesselPageParams = { category: WorkspaceCategory; workspace: string; vesselId: string }

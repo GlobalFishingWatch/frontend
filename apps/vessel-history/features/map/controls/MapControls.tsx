@@ -1,17 +1,20 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Modal } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
-import LayerSwitch from 'features/workspace/common/LayerSwitch'
-import EventFilters from 'features/event-filters/EventFilters'
+import { IconButton, Modal } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
-import { getDatasetDescriptionTranslated, getDatasetNameTranslated } from 'features/i18n/utils'
+import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
+import EventFilters from 'features/event-filters/EventFilters'
 import EventFiltersButton from 'features/event-filters/EventFiltersButton'
+import { getDatasetDescriptionTranslated, getDatasetNameTranslated } from 'features/i18n/utils'
+import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
+import LayerSwitch from 'features/workspace/common/LayerSwitch'
+
 import styles from './MapControls.module.css'
 
 const MapControls = ({
@@ -22,9 +25,9 @@ const MapControls = ({
   mapLoading?: boolean
   onMouseEnter?: () => void
   onViewInGFWMap?: () => void
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
-  const domElement = useRef<HTMLElement>()
+  const domElement = useRef<HTMLElement>(undefined)
   useEffect(() => {
     if (!domElement.current) {
       domElement.current = document.getElementById('root') as HTMLElement

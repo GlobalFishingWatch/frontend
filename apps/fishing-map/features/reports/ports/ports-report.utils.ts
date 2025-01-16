@@ -1,5 +1,6 @@
 import type { ClusterMaxZoomLevelConfig } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
 import { PORT_VISITS_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 
 export function isPortClusterDataviewForReport(dataview: UrlDataviewInstance) {
@@ -8,21 +9,23 @@ export function isPortClusterDataviewForReport(dataview: UrlDataviewInstance) {
 
 export function getPortClusterDataviewForReport(
   dataview: UrlDataviewInstance,
-  { portId, clusterMaxZoomLevels } = {} as {
+  { portId, clusterMaxZoomLevels: newClusterMaxZoomLevels } = {} as {
     portId?: string
     clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
   }
 ) {
   if (isPortClusterDataviewForReport(dataview)) {
+    const { clusterMaxZoomLevels, ...restConfig } = dataview.config || {}
+    const { port_id, ...restFilters } = restConfig.filters || {}
     return {
       ...dataview,
       config: {
-        ...dataview.config,
+        ...restConfig,
         visible: true,
-        clusterMaxZoomLevels,
+        ...(newClusterMaxZoomLevels && { clusterMaxZoomLevels: newClusterMaxZoomLevels }),
         filters: {
-          ...(dataview.config?.filters || {}),
-          port_id: portId,
+          ...(restFilters || {}),
+          ...(portId && { port_id: portId }),
         },
       },
     }

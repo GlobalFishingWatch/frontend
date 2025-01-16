@@ -2,13 +2,16 @@ import { invert } from 'es-toolkit'
 import isObject from 'lodash/isObject'
 import isString from 'lodash/isString'
 import transform from 'lodash/transform'
-import { stringify, parse } from 'qs'
+import { parse,stringify } from 'qs'
+
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
+
 import type { UrlDataviewInstance } from '..'
+
 import {
+  migrateEventsLegacyDatasets,
   removeLegacyEndpointPrefix,
   runDatasetMigrations,
-  migrateEventsLegacyDatasets,
 } from './migrations'
 
 export type Dictionary<Value> = Record<string, Value>

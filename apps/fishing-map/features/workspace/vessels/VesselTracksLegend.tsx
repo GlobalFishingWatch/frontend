@@ -1,14 +1,17 @@
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import { VESSEL_GRAPH_COLORS } from '@globalfishingwatch/deck-layers'
 import type { UILegendColorRamp } from '@globalfishingwatch/ui-components'
 import { LegendType, MapLegend } from '@globalfishingwatch/ui-components'
-import { VESSEL_GRAPH_COLORS } from '@globalfishingwatch/deck-layers'
-import styles from 'features/workspace/shared/Sections.module.css'
+
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
+import styles from 'features/workspace/shared/Sections.module.css'
+
 import MapLegendPlaceholder from '../common/MapLegendPlaceholder'
 
-function VesselTracksLegend(): React.ReactElement | null {
+function VesselTracksLegend(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const steps = useTimebarTracksGraphSteps()
   console.log('VesselTracksLegend steps:', steps)
@@ -31,8 +34,8 @@ function VesselTracksLegend(): React.ReactElement | null {
     type: LegendType.ColorRampDiscrete,
     label:
       vesselsTimebarGraph === 'speed'
-        ? t('timebarSettings.graphSpeed', 'Vessel speed')
-        : t('timebarSettings.graphDepth', 'Vessel depth'),
+        ? t('eventInfo.speed', 'Speed')
+        : t('eventInfo.depth', 'Depth'),
     unit:
       vesselsTimebarGraph === 'speed' ? t('common.knots', 'knots') : t('common.meters', 'meters'),
     values: steps.map((step) => step.value),

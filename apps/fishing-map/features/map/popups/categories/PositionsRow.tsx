@@ -1,22 +1,24 @@
 import { Fragment } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { DateTime } from 'luxon'
-import { uniq } from 'es-toolkit'
 import { useSelector } from 'react-redux'
-import { Icon } from '@globalfishingwatch/ui-components'
-import type {
-  FourwingsPositionsPickingObject} from '@globalfishingwatch/deck-layers';
+import cx from 'classnames'
+import { uniq } from 'es-toolkit'
+import { DateTime } from 'luxon'
+
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
 } from '@globalfishingwatch/deck-layers'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { formatInfoField } from 'utils/info'
-import VesselPin from 'features/vessel/VesselPin'
-import I18nDate from 'features/i18n/i18nDate'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import I18nDate from 'features/i18n/i18nDate'
+import VesselPin from 'features/vessel/VesselPin'
+import { formatInfoField } from 'utils/info'
+
 import popupStyles from '../Popup.module.css'
 
 type PositionsRowProps = {

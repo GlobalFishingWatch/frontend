@@ -1,26 +1,30 @@
-import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useRef } from 'react'
-import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import parse from 'html-react-parser'
-import type { DatasetsMigration} from '@globalfishingwatch/api-types';
+
+import type { DatasetsMigration } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'
+
+import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
+import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import {
   selectDeprecatedDataviewInstances,
   selectHasDeprecatedDataviewInstances,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
-import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+
 import { useDataviewInstancesConnect } from './workspace.hook'
-import styles from './Workspace.module.css'
 import { selectIsWorkspaceOwner } from './workspace.selectors'
 import { updatedCurrentWorkspaceThunk } from './workspace.slice'
+
+import styles from './Workspace.module.css'
 
 export const useMigrateWorkspace = () => {
   const deprecatedDataviewInstances = useSelector(selectDeprecatedDataviewInstances)
@@ -114,7 +118,7 @@ export const useMigrateWorkspace = () => {
                 }),
               },
               datasetsConfig: dvi.datasetsConfig?.map((dc) => {
-                const datasetId = datasetsConfigMigration?.[dc?.datasetId!] || dc?.datasetId
+                const datasetId = datasetsConfigMigration?.[dc?.datasetId] || dc?.datasetId
                 return { ...dc, datasetId }
               }),
             }
@@ -145,7 +149,7 @@ export const useMigrateWorkspaceToast = () => {
   const hasDeprecatedDataviews = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const migrateWorkspace = useMigrateWorkspace()
-  const toastId = useRef<any>()
+  const toastId = useRef<any>(undefined)
 
   const closeToast = () => {
     toast.dismiss(toastId.current)
@@ -208,6 +212,5 @@ export const useMigrateWorkspaceToast = () => {
         autoClose: false,
       })
     }
-     
   }, [hasDeprecatedDataviews])
 }

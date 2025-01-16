@@ -1,16 +1,20 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
-import { Bar, BarChart, XAxis, YAxis, LabelList } from 'recharts'
+import { Bar, BarChart, LabelList,XAxis, YAxis } from 'recharts'
+
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { selectEventsGroupedByEncounteredVessel } from 'features/vessel/activity/vessels-activity.selectors'
+
 import { EVENTS_COLORS } from 'data/config'
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { selectEventsGroupedByEncounteredVessel } from 'features/vessel/activity/vessels-activity.selectors'
 import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
-import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
+
 import { DEFAULT_VESSEL_IDENTITY_ID } from '../vessel.config'
+import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
+
 import styles from './RelatedVessels.module.css'
 
 const VesselTick = ({ y, index }: any) => {

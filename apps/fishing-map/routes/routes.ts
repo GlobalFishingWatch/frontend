@@ -1,9 +1,12 @@
-import type { RoutesMap, Options, StateGetter, Bag } from 'redux-first-router'
-import { NOT_FOUND, redirect, connectRoutes } from 'redux-first-router'
 import type { Dispatch } from '@reduxjs/toolkit'
+import type { Bag,Options, RoutesMap, StateGetter } from 'redux-first-router'
+import { connectRoutes,NOT_FOUND, redirect } from 'redux-first-router'
+
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
+
 import { PATH_BASENAME } from 'data/config'
 import { t } from 'features/i18n/i18n'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
@@ -37,7 +40,7 @@ export type ROUTE_TYPES =
 
 export const SAVE_WORKSPACE_BEFORE_LEAVE_KEY = 'SAVE_WORKSPACE_BEFORE_LEAVE'
 
-const WORKSPACES_ACTIONS = [
+export const ROUTES_WITH_WORKSPACES = [
   HOME,
   WORKSPACE,
   WORKSPACE_SEARCH,
@@ -49,8 +52,10 @@ const WORKSPACES_ACTIONS = [
 
 const confirmLeave = (state: any, action: any) => {
   const suggestWorkspaceSave = state.workspace?.suggestSave === true
+  const isGuestUser = selectIsGuestUser(state)
   if (
-    !WORKSPACES_ACTIONS.includes(action.type) &&
+    !isGuestUser &&
+    !ROUTES_WITH_WORKSPACES.includes(action.type) &&
     state.location?.type !== action.type &&
     suggestWorkspaceSave
   ) {
@@ -87,15 +92,19 @@ export const routesMap: RoutesMap = {
   },
   [WORKSPACE_VESSEL]: {
     path: '/:category/:workspaceId/vessel/:vesselId',
+    confirmLeave,
   },
   [WORKSPACE_REPORT]: {
     path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
+    confirmLeave,
   },
   [VESSEL_GROUP_REPORT]: {
     path: '/:category/:workspaceId/vessel-group-report/:vesselGroupId',
+    confirmLeave,
   },
   [PORT_REPORT]: {
     path: '/:category/:workspaceId/ports-report/:portId',
+    confirmLeave,
   },
   [NOT_FOUND]: {
     path: '',

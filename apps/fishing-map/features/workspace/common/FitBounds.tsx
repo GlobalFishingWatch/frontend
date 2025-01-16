@@ -1,14 +1,15 @@
-import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
-import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
-import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useTranslation } from 'react-i18next'
 import type { Bbox } from 'types'
+
+import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
+import { getUTCDate, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { getUTCDateTime } from 'utils/dates'
 
 type FitBoundsProps = {
   hasError?: boolean
@@ -42,8 +43,8 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
           })
           if (maxTimestamp > minTimestamp)
             setTimerange({
-              start: new Date(minTimestamp).toISOString(),
-              end: new Date(maxTimestamp).toISOString(),
+              start: getUTCDate(minTimestamp).toISOString() as string,
+              end: getUTCDate(maxTimestamp).toISOString() as string,
             })
         }
       } else {
@@ -71,8 +72,8 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
           ) {
             if (infoResource) {
               setTimerange({
-                start: getUTCDateTime(transmissionDateFrom).toISO()!,
-                end: getUTCDateTime(transmissionDateTo).toISO()!,
+                start: getUTCDate(transmissionDateFrom).toISOString()!,
+                end: getUTCDate(transmissionDateTo).toISOString()!,
               })
             } else {
               const segments = layer.getVesselTrackSegments()
@@ -89,8 +90,8 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
               const fullBBox = segmentsToBbox(segments)
               if (fullBBox && maxTimestamp > minTimestamp) {
                 setTimerange({
-                  start: new Date(minTimestamp).toISOString(),
-                  end: new Date(maxTimestamp).toISOString(),
+                  start: getUTCDate(minTimestamp).toISOString() as string,
+                  end: getUTCDate(maxTimestamp).toISOString() as string,
                 })
                 fitBounds(fullBBox as Bbox)
               }

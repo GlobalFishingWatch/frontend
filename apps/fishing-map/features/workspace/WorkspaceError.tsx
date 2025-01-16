@@ -1,29 +1,32 @@
 import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, InputText } from '@globalfishingwatch/ui-components'
+
 import { isAuthError } from '@globalfishingwatch/api-client'
 import type { Workspace } from '@globalfishingwatch/api-types'
+import { Button, InputText } from '@globalfishingwatch/ui-components'
+
+import { SUPPORT_EMAIL , VALID_PASSWORD } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { logoutUserThunk } from 'features/user/user.slice'
+import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
 import {
   isWorkspacePasswordProtected,
   selectWorkspace,
   selectWorkspaceError,
   selectWorkspacePassword,
 } from 'features/workspace/workspace.selectors'
-import { logoutUserThunk } from 'features/user/user.slice'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { SUPPORT_EMAIL } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
-import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { VALID_PASSWORD } from 'data/config'
-import styles from './Workspace.module.css'
-import { fetchWorkspaceThunk, setWorkspacePassword } from './workspace.slice'
-import { MIN_WORKSPACE_PASSWORD_LENGTH, isPrivateWorkspaceNotAllowed } from './workspace.utils'
+import { selectWorkspaceId } from 'routes/routes.selectors'
+
 import { useFitWorkspaceBounds } from './workspace.hook'
+import { fetchWorkspaceThunk, setWorkspacePassword } from './workspace.slice'
+import { isPrivateWorkspaceNotAllowed,MIN_WORKSPACE_PASSWORD_LENGTH } from './workspace.utils'
+
+import styles from './Workspace.module.css'
 
 export function ErrorPlaceHolder({
   title,
@@ -89,7 +92,7 @@ export function WorkspaceLoginError({
   )
 }
 
-function WorkspaceError(): React.ReactElement {
+function WorkspaceError(): React.ReactElement<any> {
   const error = useSelector(selectWorkspaceError)
   const vesselGroupsError = useSelector(selectWorkspaceVesselGroupsError)
   const { t } = useTranslation()
@@ -137,7 +140,7 @@ function WorkspaceError(): React.ReactElement {
   )
 }
 
-export function WorkspacePassword(): React.ReactElement {
+export function WorkspacePassword(): React.ReactElement<any> {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
