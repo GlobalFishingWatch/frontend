@@ -1,6 +1,7 @@
 import { groupBy } from 'lodash'
 
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
+import { DEFAULT_INDIVIDUAL_VALUE_KEY } from '@globalfishingwatch/responsive-visualizations'
 
 import type {
   VGREventsVesselsProperty,
@@ -23,7 +24,7 @@ type VesselVisualizationData = ResponsiveVisualizationData<
 export function getVesselIndividualGroupedData(
   vessels: (EventsStatsVessel | VesselGroupVesselTableParsed | ReportVesselWithDatasets)[],
   groupByProperty: VGRSubsection | VGREventsVesselsProperty | ReportVesselGraph,
-  valueKeys: string[]
+  valueKeys: string[] = [DEFAULT_INDIVIDUAL_VALUE_KEY]
 ) {
   if (!vessels?.length) {
     return []
