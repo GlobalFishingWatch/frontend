@@ -173,7 +173,7 @@ export default function ReportVesselsGraph() {
   const valueKeys = dataviews.map((dataview) => dataview.id)
   const labelKey = 'name'
   const data = useSelector(selectReportVesselsGraphDataGrouped({ labelKey, valueKeys }))
-  const individualData = useSelector(selectReportVesselsGraphIndividualData)
+  const individualData = useSelector(selectReportVesselsGraphIndividualData(valueKeys))
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   const othersData = useSelector(selectReportVesselsGraphDataOthers)
   const { dispatchQueryParams } = useLocationConnect()

@@ -215,12 +215,11 @@ export const selectReportVesselsGraphDataGrouped = memoize(
     )
 )
 
-export const selectReportVesselsGraphIndividualData = createSelector(
-  [selectReportVesselsFiltered, selectReportVesselGraph],
-  (vessels, groupBy) => {
+export const selectReportVesselsGraphIndividualData = memoize((valueKeys: string[]) =>
+  createSelector([selectReportVesselsFiltered, selectReportVesselGraph], (vessels, groupBy) => {
     if (!vessels || !groupBy) return []
-    return getVesselIndividualGroupedData(vessels, groupBy)
-  }
+    return getVesselIndividualGroupedData(vessels, groupBy, valueKeys)
+  })
 )
 
 const defaultOthersLabel: ResponsiveVisualizationData<'aggregated'> = []
