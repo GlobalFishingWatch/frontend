@@ -31,7 +31,7 @@ const VesselGroupReportVesselsIndividualTooltip = ({
 
   const mmsi = data.identity
     ? getVesselProperty(data.identity, 'ssvid', getVesselPropertyParams)
-    : data.mmsi
+    : data.ssvid || data.mmsi
 
   const vesselFlag = data.identity
     ? getVesselProperty(data.identity, 'flag', getVesselPropertyParams)
