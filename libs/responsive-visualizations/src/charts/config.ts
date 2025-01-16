@@ -1,8 +1,7 @@
 export const DEFAULT_LABEL_KEY = 'label'
 export const DEFAULT_DATE_KEY = 'date'
-// TODO rename this to item
-export const DEFAULT_AGGREGATED_VALUE_KEY = 'value'
-export const DEFAULT_INDIVIDUAL_VALUE_KEY = 'values'
+export const DEFAULT_AGGREGATED_ITEM_KEY = 'value'
+export const DEFAULT_INDIVIDUAL_ITEM_KEY = 'values'
 
 export const COLUMN_LABEL_SIZE = 10
 export const COLUMN_PADDING = 10

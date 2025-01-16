@@ -54,7 +54,7 @@ type ColumnsStats = {
 export const getColumnsStats = (
   data: ResponsiveVisualizationData,
   aggregatedValueKeys: ResponsiveVisualizationAggregatedValueKey[],
-  individualValueKeys: ResponsiveVisualizationIndividualValueKey[]
+  individualValueKey: ResponsiveVisualizationIndividualValueKey
 ): ColumnsStats => {
   return data.reduce<ColumnsStats>(
     (acc, column) => {
@@ -66,10 +66,7 @@ export const getColumnsStats = (
           return acc + v
         }, 0)
       } else {
-        value = individualValueKeys.reduce((acc, key) => {
-          const v = (column[key] as ResponsiveVisualizationValue[])?.length || 0
-          return acc + v
-        }, 0)
+        value = (column[individualValueKey] as ResponsiveVisualizationValue[])?.length || 0
       }
       return { total: acc.total + value, max: Math.max(acc.max, value) }
     },
@@ -85,7 +82,7 @@ export type IsIndividualSupportedParams = {
   width: number
   height: number
   aggregatedValueKeys: ResponsiveVisualizationAggregatedValueKey[]
-  individualValueKeys: ResponsiveVisualizationIndividualValueKey[]
+  individualValueKey: ResponsiveVisualizationIndividualValueKey
 }
 type IsIndividualSupportedResult = {
   isSupported: boolean
@@ -96,9 +93,9 @@ export function getIsIndividualBarChartSupported({
   width,
   height,
   aggregatedValueKeys,
-  individualValueKeys,
+  individualValueKey,
 }: IsIndividualSupportedParams): IsIndividualSupportedResult {
-  const { total, max } = getColumnsStats(data, aggregatedValueKeys, individualValueKeys)
+  const { total, max } = getColumnsStats(data, aggregatedValueKeys, individualValueKey)
   if (total > MAX_INDIVIDUAL_ITEMS) {
     return { isSupported: false }
   }
@@ -119,9 +116,9 @@ export function getIsIndividualTimeseriesSupported({
   end,
   timeseriesInterval,
   aggregatedValueKeys,
-  individualValueKeys,
+  individualValueKey,
 }: IsIndividualSupportedParams): IsIndividualSupportedResult {
-  const { total, max } = getColumnsStats(data, aggregatedValueKeys, individualValueKeys)
+  const { total, max } = getColumnsStats(data, aggregatedValueKeys, individualValueKey)
   if (total > MAX_INDIVIDUAL_ITEMS) {
     return { isSupported: false }
   }

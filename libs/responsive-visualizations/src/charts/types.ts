@@ -32,9 +32,7 @@ export type BaseResponsiveChartProps = {
   individualItem?: ReactElement
   onIndividualItemClick?: ResponsiveVisualizationInteractionCallback
   getIndividualData?: () => Promise<ResponsiveVisualizationData<'individual'> | undefined>
-  individualValueKey?:
-    | ResponsiveVisualizationIndividualValueKey
-    | ResponsiveVisualizationIndividualValueKey[]
+  individualValueKey?: ResponsiveVisualizationIndividualValueKey
   individualIcon?: ReactElement
 }
 
@@ -48,7 +46,7 @@ export type BaseResponsiveBarChartProps = {
 export type BarChartByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveBarChartProps & {
     labelKey: keyof ResponsiveVisualizationData<M>[0]
-    valueKeys: (keyof ResponsiveVisualizationData<M>[0])[]
+    valueKeys: (keyof ResponsiveVisualizationData<M>[0])[] | keyof ResponsiveVisualizationData<M>[0]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback
     customTooltip?: ReactElement
@@ -67,7 +65,7 @@ export type BaseResponsiveTimeseriesProps = {
 export type TimeseriesByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveTimeseriesProps & {
     dateKey: keyof ResponsiveVisualizationData<M>[0]
-    valueKeys: (keyof ResponsiveVisualizationData<M>[0])[]
+    valueKeys: (keyof ResponsiveVisualizationData<M>[0])[] | keyof ResponsiveVisualizationData<M>[0]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback
     customTooltip?: ReactElement

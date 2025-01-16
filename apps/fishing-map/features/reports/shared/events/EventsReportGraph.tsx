@@ -45,6 +45,7 @@ type EventsReportGraphTooltipProps = {
 }
 
 const AggregatedGraphTooltip = (props: any) => {
+  const { t } = useTranslation()
   const { active, payload, label, timeChunkInterval } = props as EventsReportGraphTooltipProps
 
   if (active && payload && payload.length) {
@@ -54,7 +55,7 @@ const AggregatedGraphTooltip = (props: any) => {
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <p className={styles.tooltipValue}>
-          {formatI18nNumber(payload[0].payload.value)} {payload[0].unit}
+          {formatI18nNumber(payload[0].payload.value)} {t('common.events', 'Events').toLowerCase()}
         </p>
       </div>
     )

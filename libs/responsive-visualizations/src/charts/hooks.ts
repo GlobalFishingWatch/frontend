@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo,useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
@@ -10,8 +10,8 @@ import type {
 import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
 
 import {
-  DEFAULT_AGGREGATED_VALUE_KEY,
-  DEFAULT_INDIVIDUAL_VALUE_KEY,
+  DEFAULT_AGGREGATED_ITEM_KEY,
+  DEFAULT_INDIVIDUAL_ITEM_KEY,
   DEFAULT_LABEL_KEY,
   DEFAULT_POINT_SIZE,
 } from './config'
@@ -22,33 +22,18 @@ import type {
 } from './types'
 
 export function useValueKeys(
-  individualValueKey:
-    | ResponsiveVisualizationIndividualValueKey
-    | ResponsiveVisualizationIndividualValueKey[],
-  aggregatedValueKey:
+  valueKey:
+    | ResponsiveVisualizationAggregatedValueKey[]
     | ResponsiveVisualizationAggregatedValueKey
-    | ResponsiveVisualizationIndividualValueKey[]
+    | ResponsiveVisualizationIndividualValueKey
 ) {
-  const individualValueKeysHash = Array.isArray(individualValueKey)
-    ? individualValueKey.join(',')
-    : individualValueKey
-  const individualValueKeys = useMemo(
-    () => (Array.isArray(individualValueKey) ? individualValueKey : [individualValueKey]),
+  const valueKeysHash = Array.isArray(valueKey) ? valueKey.join(',') : valueKey
+  const valueKeys = useMemo(
+    () => (Array.isArray(valueKey) ? valueKey : [valueKey]),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [individualValueKeysHash]
+    [valueKeysHash]
   )
-  const aggregatedValueKeysHash = Array.isArray(aggregatedValueKey)
-    ? aggregatedValueKey.join(',')
-    : aggregatedValueKey
-  const aggregatedValueKeys = useMemo(
-    () => (Array.isArray(aggregatedValueKey) ? aggregatedValueKey : [aggregatedValueKey]),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [aggregatedValueKeysHash]
-  )
-  return useMemo(
-    () => ({ individualValueKeys, aggregatedValueKeys }),
-    [individualValueKeys, aggregatedValueKeys]
-  )
+  return valueKeys
 }
 
 type ResponsiveVisualizationContainerRef = React.RefObject<HTMLElement | null>
@@ -82,7 +67,7 @@ type UseResponsiveVisualizationDataProps = {
   end?: string
   timeseriesInterval?: FourwingsInterval
   labelKey: keyof ResponsiveVisualizationData[0]
-  individualValueKeys: ResponsiveVisualizationIndividualValueKey[]
+  individualValueKey: ResponsiveVisualizationIndividualValueKey
   aggregatedValueKeys: ResponsiveVisualizationAggregatedValueKey[]
   getAggregatedData?: BaseResponsiveChartProps['getAggregatedData']
   getIndividualData?: BaseResponsiveChartProps['getIndividualData']
@@ -93,8 +78,8 @@ type UseResponsiveVisualizationDataProps = {
 
 export function useResponsiveVisualizationData({
   labelKey = DEFAULT_LABEL_KEY,
-  individualValueKeys = [DEFAULT_INDIVIDUAL_VALUE_KEY],
-  aggregatedValueKeys = [DEFAULT_AGGREGATED_VALUE_KEY],
+  individualValueKey = DEFAULT_INDIVIDUAL_ITEM_KEY,
+  aggregatedValueKeys = [DEFAULT_AGGREGATED_ITEM_KEY],
   start,
   end,
   timeseriesInterval,
@@ -114,7 +99,7 @@ export function useResponsiveVisualizationData({
         start,
         end,
         timeseriesInterval,
-        individualValueKeys,
+        individualValueKey,
         aggregatedValueKeys,
       }
       if (getAggregatedData) {
@@ -167,11 +152,10 @@ export function useResponsiveVisualizationData({
           setData(individualData)
         } else {
           const aggregatedData = individualData.map((item) => {
-            // TODO: handle multiple individual value keys
-            const value = item[individualValueKeys[0]] as ResponsiveVisualizationValue[]
+            const value = item[individualValueKey] as ResponsiveVisualizationValue[]
             return {
               [labelKey]: item[labelKey as keyof typeof item],
-              [individualValueKeys[0]]: value.length,
+              [individualValueKey]: value.length,
             }
           }) as ResponsiveVisualizationData<'aggregated'>
           setIsIndividualSupported(false)
@@ -187,7 +171,7 @@ export function useResponsiveVisualizationData({
       start,
       end,
       timeseriesInterval,
-      individualValueKeys,
+      individualValueKey,
       aggregatedValueKeys,
       labelKey,
     ]

@@ -3,8 +3,8 @@ import { useRef } from 'react'
 import { getIsIndividualBarChartSupported } from '../../lib/density'
 import type { ResponsiveVisualizationData } from '../../types'
 import {
-  DEFAULT_AGGREGATED_VALUE_KEY,
-  DEFAULT_INDIVIDUAL_VALUE_KEY,
+  DEFAULT_AGGREGATED_ITEM_KEY,
+  DEFAULT_INDIVIDUAL_ITEM_KEY,
   DEFAULT_LABEL_KEY,
 } from '../config'
 import { useResponsiveVisualization, useValueKeys } from '../hooks'
@@ -23,8 +23,8 @@ export function ResponsiveBarChart({
   getIndividualData,
   getAggregatedData,
   color,
-  aggregatedValueKey = DEFAULT_AGGREGATED_VALUE_KEY,
-  individualValueKey = DEFAULT_INDIVIDUAL_VALUE_KEY,
+  aggregatedValueKey = DEFAULT_AGGREGATED_ITEM_KEY,
+  individualValueKey = DEFAULT_INDIVIDUAL_ITEM_KEY,
   labelKey = DEFAULT_LABEL_KEY,
   barLabel,
   aggregatedTooltip,
@@ -34,17 +34,14 @@ export function ResponsiveBarChart({
   onIndividualItemClick,
   onAggregatedItemClick,
 }: ResponsiveBarChartProps) {
-  const { individualValueKeys, aggregatedValueKeys } = useValueKeys(
-    individualValueKey,
-    aggregatedValueKey
-  )
+  const aggregatedValueKeys = useValueKeys(aggregatedValueKey)
   const containerRef = useRef<HTMLDivElement>(null)
   const { data, isIndividualSupported, individualItemSize } = useResponsiveVisualization(
     containerRef,
     {
       labelKey,
       aggregatedValueKeys,
-      individualValueKeys,
+      individualValueKey,
       getAggregatedData,
       getIndividualData,
       getIsIndividualSupported: getIsIndividualBarChartSupported,
@@ -65,7 +62,7 @@ export function ResponsiveBarChart({
           data={data as ResponsiveVisualizationData<'individual'>}
           color={color}
           pointSize={individualItemSize}
-          valueKeys={individualValueKeys}
+          valueKeys={individualValueKey}
           labelKey={labelKey}
           onClick={onIndividualItemClick}
           barLabel={barLabel}

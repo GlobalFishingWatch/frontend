@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react'
 import cx from 'classnames'
-import { ComposedChart, ResponsiveContainer, Tooltip,XAxis } from 'recharts'
+import { ComposedChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 
-import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../../types'
+import type { ResponsiveVisualizationValue } from '../../types'
 import { AXIS_LABEL_PADDING, DEFAULT_POINT_SIZE, POINT_GAP, TIMESERIES_PADDING } from '../config'
 import { IndividualPoint } from '../points/IndividualPoint'
 import type { TimeseriesByTypeProps } from '../types'
@@ -37,8 +37,7 @@ export function IndividualTimeseries({
     data,
     timeseriesInterval,
     dateKey,
-    // TODO: add support for multiple value keys
-    valueKey: valueKeys[0] as keyof ResponsiveVisualizationData[0],
+    valueKey: valueKeys as string,
     aggregated: false,
   })
 
@@ -59,7 +58,9 @@ export function IndividualTimeseries({
             style={{ paddingBottom: AXIS_LABEL_PADDING, paddingInline: TIMESERIES_PADDING }}
           >
             {fullTimeseries.map((item, index) => {
-              const points = item?.[valueKeys[0]] as ResponsiveVisualizationValue<'individual'>[]
+              const points = item?.[
+                valueKeys as string
+              ] as ResponsiveVisualizationValue<'individual'>[]
               return (
                 <div
                   key={index}

@@ -29,9 +29,12 @@ export function AggregatedTimeseries({
   timeseriesInterval,
   tickLabelFormatter,
 }: AggregatedTimeseriesProps) {
-  // TODO: add support for multiple value keys
-  const dataMin: number = data.length ? (min(data.map((item) => item[valueKeys[0]])) as number) : 0
-  const dataMax: number = data.length ? (max(data.map((item) => item[valueKeys[0]])) as number) : 0
+  const dataMin: number = data.length
+    ? (min(data.map((item) => item[valueKeys as string])) as number)
+    : 0
+  const dataMax: number = data.length
+    ? (max(data.map((item) => item[valueKeys as string])) as number)
+    : 0
 
   const domainPadding = (dataMax - dataMin) / 8
   const paddedDomain: [number, number] = [
@@ -46,7 +49,7 @@ export function AggregatedTimeseries({
     data,
     timeseriesInterval,
     dateKey,
-    valueKey: valueKeys[0] as keyof ResponsiveVisualizationData[0],
+    valueKey: valueKeys as keyof ResponsiveVisualizationData[0],
   })
 
   if (!fullTimeseries.length) {
@@ -74,17 +77,17 @@ export function AggregatedTimeseries({
           tickCount={4}
         />
         {data?.length && customTooltip ? <Tooltip content={customTooltip} /> : null}
-        <Line
-          name="line"
-          type="monotone"
-          dataKey={valueKeys[0]}
-          // TODO: add unit
-          // unit={t('common.events', 'Events').toLowerCase()}
-          dot={false}
-          isAnimationActive={false}
-          stroke={color}
-          strokeWidth={2}
-        />
+        {(valueKeys as string[]).map((valueKey) => (
+          <Line
+            name="line"
+            type="monotone"
+            dataKey={valueKey}
+            dot={false}
+            isAnimationActive={false}
+            stroke={color}
+            strokeWidth={2}
+          />
+        ))}
       </ComposedChart>
     </ResponsiveContainer>
   )

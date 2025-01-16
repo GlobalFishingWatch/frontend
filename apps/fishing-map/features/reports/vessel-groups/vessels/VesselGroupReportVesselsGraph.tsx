@@ -181,9 +181,6 @@ export default function VesselGroupReportVesselsGraph({
       })
     }
   }
-  const onPointClick: ResponsiveVisualizationInteractionCallback = (item) => {
-    console.log('TODO', item)
-  }
 
   const getAggregatedData = useCallback(async () => {
     return data
@@ -200,7 +197,6 @@ export default function VesselGroupReportVesselsGraph({
         getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         onAggregatedItemClick={onBarClick}
-        onIndividualItemClick={onPointClick}
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()
         }}

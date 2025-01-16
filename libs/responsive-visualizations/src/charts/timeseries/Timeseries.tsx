@@ -3,9 +3,9 @@ import { useRef } from 'react'
 import { getIsIndividualTimeseriesSupported } from '../../lib/density'
 import type { ResponsiveVisualizationData } from '../../types'
 import {
-  DEFAULT_AGGREGATED_VALUE_KEY,
+  DEFAULT_AGGREGATED_ITEM_KEY,
   DEFAULT_DATE_KEY,
-  DEFAULT_INDIVIDUAL_VALUE_KEY,
+  DEFAULT_INDIVIDUAL_ITEM_KEY,
 } from '../config'
 import { useResponsiveVisualization, useValueKeys } from '../hooks'
 import TimeseriesPlaceholder from '../placeholders/TimeseriesPlaceholder'
@@ -25,8 +25,8 @@ export function ResponsiveTimeseries({
   start,
   end,
   dateKey = DEFAULT_DATE_KEY,
-  aggregatedValueKey = DEFAULT_AGGREGATED_VALUE_KEY,
-  individualValueKey = DEFAULT_INDIVIDUAL_VALUE_KEY,
+  aggregatedValueKey = DEFAULT_AGGREGATED_ITEM_KEY,
+  individualValueKey = DEFAULT_INDIVIDUAL_ITEM_KEY,
   timeseriesInterval,
   getIndividualData,
   getAggregatedData,
@@ -38,11 +38,7 @@ export function ResponsiveTimeseries({
   onAggregatedItemClick,
   individualIcon,
 }: ResponsiveTimeseriesProps) {
-  // TODO: add support for multiple value keys
-  const { individualValueKeys, aggregatedValueKeys } = useValueKeys(
-    individualValueKey,
-    aggregatedValueKey
-  )
+  const aggregatedValueKeys = useValueKeys(aggregatedValueKey)
   const containerRef = useRef<HTMLDivElement>(null)
   const { width, data, isIndividualSupported } = useResponsiveVisualization(containerRef, {
     start,
@@ -50,7 +46,7 @@ export function ResponsiveTimeseries({
     timeseriesInterval,
     labelKey: dateKey,
     aggregatedValueKeys,
-    individualValueKeys,
+    individualValueKey,
     getAggregatedData,
     getIndividualData,
     getIsIndividualSupported: getIsIndividualTimeseriesSupported,
@@ -74,7 +70,7 @@ export function ResponsiveTimeseries({
           color={color}
           dateKey={dateKey}
           timeseriesInterval={timeseriesInterval}
-          valueKeys={individualValueKeys}
+          valueKeys={individualValueKey}
           onClick={onIndividualItemClick}
           tickLabelFormatter={tickLabelFormatter}
           customTooltip={individualTooltip}
