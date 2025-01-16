@@ -17,9 +17,18 @@ import type {
   ResponsiveVisualizationAggregatedValueKey,
   ResponsiveVisualizationIndividualValueKey,
 } from '../charts/types'
-import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
+import type {
+  ResponsiveVisualizationData,
+  ResponsiveVisualizationLabel,
+  ResponsiveVisualizationValue,
+} from '../types'
 
-export const getItemValue = (value: ResponsiveVisualizationValue) => {
+export const getResponsiveVisualizationItemValue = (
+  value: ResponsiveVisualizationValue | ResponsiveVisualizationLabel
+): number => {
+  if (typeof value === 'string') {
+    return parseFloat(value)
+  }
   if (typeof value === 'number') {
     return value
   }
@@ -53,7 +62,7 @@ export const getColumnsStats = (
       let value = 0
       if (useAggregatedValue) {
         value = aggregatedValueKeys.reduce((acc, key) => {
-          const v = getItemValue(column[key] as ResponsiveVisualizationValue)
+          const v = getResponsiveVisualizationItemValue(column[key])
           return acc + v
         }, 0)
       } else {

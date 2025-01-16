@@ -1,9 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, memoize, sum, sumBy, uniq, uniqBy } from 'es-toolkit'
+import { groupBy, sum, sumBy, uniq, uniqBy } from 'es-toolkit'
 import { t } from 'i18next'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
+import {
+  getResponsiveVisualizationItemValue,
+  type ResponsiveVisualizationData,
+} from '@globalfishingwatch/responsive-visualizations'
 
 import {
   selectReportCategory,
@@ -166,12 +169,15 @@ const selectReportVesselsGraphData = createSelector(
           distributionData[id] = { color, value: (data?.[key] || []).length }
         })
         if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return EMPTY_ARRAY
-        return distributionData
+        return distributionData as ResponsiveVisualizationData<'aggregated'>
       })
       .sort((a, b) => {
-        if (EMPTY_API_VALUES.includes(a.name)) return 1
-        if (EMPTY_API_VALUES.includes(b.name)) return -1
-        return sum(dataviewIds.map((d: any) => b[d])) - sum(dataviewIds.map((d: any) => a[d]))
+        if (EMPTY_API_VALUES.includes(a.name as string)) return 1
+        if (EMPTY_API_VALUES.includes(b.name as string)) return -1
+        return (
+          sum(dataviewIds.map((d) => getResponsiveVisualizationItemValue(b[d]))) -
+          sum(dataviewIds.map((d) => getResponsiveVisualizationItemValue(a[d])))
+        )
       })
 
     return { distributionKeys: data.map((d) => d.name), data }
@@ -189,22 +195,8 @@ export const selectReportVesselsGraphDataGrouped = createSelector(
   (reportGraph, valueKeys): ResponsiveVisualizationData<'aggregated'> | null => {
     if (!reportGraph?.data?.length || !valueKeys?.length) return null
     if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data
-    const sortedData = reportGraph.data.toSorted((a, b) => {
-      if (a[REPORT_GRAPH_LABEL_KEY] === 'OTHERS' || b[REPORT_GRAPH_LABEL_KEY] === 'OTHERS') {
-        return -1
-      }
-      const sumA = valueKeys.reduce(
-        (sum, key) => sum + (typeof a[key] === 'object' ? a[key].value : (a[key] as number)),
-        0
-      )
-      const sumB = valueKeys.reduce(
-        (sum, key) => sum + (typeof b[key] === 'object' ? b[key].value : (b[key] as number)),
-        0
-      )
-      return sumB - sumA
-    })
-    const top = sortedData.slice(0, MAX_CATEGORIES)
-    const rest = sortedData.slice(MAX_CATEGORIES)
+    const top = reportGraph.data.slice(0, MAX_CATEGORIES)
+    const rest = reportGraph.data.slice(MAX_CATEGORIES)
     const others = {
       name: OTHERS_CATEGORY_LABEL,
       ...Object.fromEntries(
@@ -218,11 +210,12 @@ export const selectReportVesselsGraphDataGrouped = createSelector(
   }
 )
 
-export const selectReportVesselsGraphIndividualData = memoize((valueKeys: string[]) =>
-  createSelector([selectReportVesselsFiltered, selectReportVesselGraph], (vessels, groupBy) => {
-    if (!vessels || !groupBy) return []
+export const selectReportVesselsGraphIndividualData = createSelector(
+  [selectReportVesselsFiltered, selectReportVesselGraph, selectReportVesselsGraphDataKeys],
+  (vessels, groupBy, valueKeys) => {
+    if (!vessels || !groupBy || !valueKeys) return []
     return getVesselIndividualGroupedData(vessels, groupBy, valueKeys)
-  })
+  }
 )
 
 const defaultOthersLabel: ResponsiveVisualizationData<'aggregated'> = []

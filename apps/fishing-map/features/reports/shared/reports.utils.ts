@@ -1,7 +1,6 @@
 import { groupBy } from 'lodash'
 
-import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
-import { DEFAULT_INDIVIDUAL_VALUE_KEY } from '@globalfishingwatch/responsive-visualizations'
+import { type ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
 import type {
   VGREventsVesselsProperty,
@@ -24,20 +23,23 @@ type VesselVisualizationData = ResponsiveVisualizationData<
 export function getVesselIndividualGroupedData(
   vessels: (EventsStatsVessel | VesselGroupVesselTableParsed | ReportVesselWithDatasets)[],
   groupByProperty: VGRSubsection | VGREventsVesselsProperty | ReportVesselGraph,
-  valueKeys: string[] = [DEFAULT_INDIVIDUAL_VALUE_KEY]
+  dataviewsIdsOrder?: string[]
 ) {
   if (!vessels?.length) {
     return []
   }
-  const vesselsSorted = vessels.toSorted((a, b) => {
-    const aValue = (a as ReportVesselWithDatasets).dataviewId
-      ? valueKeys.indexOf((a as ReportVesselWithDatasets).dataviewId as string)
-      : 0
-    const bValue = (b as ReportVesselWithDatasets).dataviewId
-      ? valueKeys.indexOf((b as ReportVesselWithDatasets).dataviewId as string)
-      : 0
-    return aValue - bValue
-  })
+  const vesselsSorted = dataviewsIdsOrder
+    ? vessels.toSorted((a, b) => {
+        const aValue = (a as ReportVesselWithDatasets).dataviewId
+          ? dataviewsIdsOrder.indexOf((a as ReportVesselWithDatasets).dataviewId as string)
+          : 0
+        const bValue = (b as ReportVesselWithDatasets).dataviewId
+          ? dataviewsIdsOrder.indexOf((b as ReportVesselWithDatasets).dataviewId as string)
+          : 0
+        return aValue - bValue
+      })
+    : vessels
+
   let vesselsGrouped = {}
   switch (groupByProperty) {
     case 'flag': {
