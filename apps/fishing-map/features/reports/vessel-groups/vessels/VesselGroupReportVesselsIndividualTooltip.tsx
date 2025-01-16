@@ -4,7 +4,7 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import type { VesselGroupVesselTableParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField,getVesselShipTypeLabel  } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselShipTypeLabel } from 'utils/info'
 
 import styles from './VesselGroupReportVesselsIndividualTooltip.module.css'
 
@@ -31,7 +31,7 @@ const VesselGroupReportVesselsIndividualTooltip = ({
 
   const mmsi = data.identity
     ? getVesselProperty(data.identity, 'ssvid', getVesselPropertyParams)
-    : data.ssvid
+    : data.mmsi
 
   const vesselFlag = data.identity
     ? getVesselProperty(data.identity, 'flag', getVesselPropertyParams)
