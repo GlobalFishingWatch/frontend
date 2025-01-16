@@ -48,6 +48,7 @@ export function AggregatedBarChart({
               fill={barColor}
               stackId="a"
               onClick={(e) => onClick?.(e.activePayload as ResponsiveVisualizationValue)}
+              isAnimationActive={false}
             >
               {index === valueKeys.length - 1 && (
                 <LabelList
