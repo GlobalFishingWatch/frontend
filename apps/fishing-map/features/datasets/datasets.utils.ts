@@ -1,47 +1,50 @@
-import lowerCase from 'lodash/lowerCase'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { uniq } from 'es-toolkit'
 import intersection from 'lodash/intersection'
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+import lowerCase from 'lodash/lowerCase'
+
 import type {
   Dataset,
+  DatasetSchema,
+  DatasetSchemaItem,
+  DatasetSchemaItemEnum,
   DatasetSchemaType,
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
-  UserPermission,
   FilterOperator,
-  VesselType,
-  DatasetSchema,
-  DatasetSchemaItem,
   IdentityVessel,
-  DatasetSchemaItemEnum,
+  UserPermission,
   VesselIdentitySourceEnum,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import {
   DatasetCategory,
+  DatasetSubCategory,
   DatasetTypes,
+  DataviewCategory,
   DataviewType,
   EndpointId,
   EventTypes,
   INCLUDE_FILTER_ID,
-  DatasetSubCategory,
-  DataviewCategory,
 } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getEnvironmentalDatasetRange,
   removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
-import { capitalize, sortFields } from 'utils/shared'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
+
+import { DEFAULT_TIME_RANGE,FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
 import { t } from 'features/i18n/i18n'
-import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { capitalize, sortFields } from 'utils/shared'
+
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 // Datasets ids for vessel instances

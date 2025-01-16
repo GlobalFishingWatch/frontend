@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import type { IconProps } from '@globalfishingwatch/ui-components'
 import { Icon } from '@globalfishingwatch/ui-components'
+
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
+
 import styles from './GFWOnly.module.css'
 
 type GFWOnlyProps = {

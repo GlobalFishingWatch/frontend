@@ -1,7 +1,9 @@
 import { CompositeLayer } from '@deck.gl/core'
 import type { LineLayerProps } from '@deck.gl/layers'
 import type { TrackSublayer } from 'layers/tracks/tracks.hooks'
+
 import type { GFWLayerProps } from 'features/map/Map'
+
 import { TrackLayer } from './TrackLayer'
 
 export type TracksLayerProps = LineLayerProps &

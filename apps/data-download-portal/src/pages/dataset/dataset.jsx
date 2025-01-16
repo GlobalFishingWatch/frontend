@@ -1,14 +1,17 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { Fragment,useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeRaw from 'rehype-raw'
 import { useParams } from 'react-router-dom'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { getUTCString } from '../../utils/dates.js'
-import Table from '../../components/table/table'
+
 import ApiBanner from '../../components/api-banner/api-banner'
 import Loader from '../../components/loader/loader'
+import Table from '../../components/table/table'
 import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config.js'
+import { getUTCString } from '../../utils/dates.js'
+
 import styles from './dataset.module.scss'
 
 function formatBytes(bytes, decimals = 2) {

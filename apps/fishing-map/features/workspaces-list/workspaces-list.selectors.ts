@@ -1,12 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import type { WorkspaceViewport } from '@globalfishingwatch/api-types'
+
 import type { WorkspaceCategory } from 'data/workspaces'
-import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
-import { USER } from 'routes/routes'
 import {
   selectUserWorkspaces,
   selectUserWorkspacesPrivate,
 } from 'features/user/selectors/user.permissions.selectors'
+import { USER } from 'routes/routes'
+import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
+
 import type { HighlightedWorkspace } from './workspaces-list.slice'
 import { selectHighlightedWorkspaces, selectWorkspaces } from './workspaces-list.slice'
 

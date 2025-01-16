@@ -1,27 +1,31 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
-import { redirectToLogin } from '@globalfishingwatch/react-hooks'
-import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+
+import { useAppDispatch } from 'features/app/app.hooks'
+import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
+import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
+import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
-import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
-import { UserTab } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserTab } from 'routes/routes.selectors'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
-import UserInfo from './UserInfo'
+import { UserTab } from 'types'
+
 import UserDatasets from './UserDatasets'
+import UserInfo from './UserInfo'
 import UserReports from './UserReports'
 import UserVesselGroups from './UserVesselGroups'
 import UserWorkspaces from './UserWorkspaces'
+
 import styles from './User.module.css'
 
 function User() {

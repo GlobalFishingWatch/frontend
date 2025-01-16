@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback,useEffect, useState } from 'react'
 
 export const SMALL_PHONE_BREAKPOINT = 360
 export const DEFAULT_BREAKPOINT = 800

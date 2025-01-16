@@ -1,28 +1,32 @@
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
+
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'
-import { useLocationConnect } from 'routes/routes.hook'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { EMPTY_FILTERS } from 'features/search/search.config'
+import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
+import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
+import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/vessel-groups/VesselGroupAddButton'
-import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
-import { EMPTY_FILTERS } from 'features/search/search.config'
-import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
+import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
-import { cleanVesselSearchResults, selectSelectedVessels } from './search.slice'
-import styles from './Search.module.css'
+
 import { selectSearchOption } from './search.config.selectors'
+import { cleanVesselSearchResults, selectSelectedVessels } from './search.slice'
+
+import styles from './Search.module.css'
 
 function SearchActions() {
   const { t } = useTranslation()

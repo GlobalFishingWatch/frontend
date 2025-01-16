@@ -1,10 +1,12 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { Fragment, useCallback } from 'react'
+import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks/use-login'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks/use-login'
 import { Button } from '@globalfishingwatch/ui-components/button'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+
 import styles from './__root.module.css'
 
 const labelerPermission = {

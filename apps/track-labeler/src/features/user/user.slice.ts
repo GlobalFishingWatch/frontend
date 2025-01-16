@@ -1,12 +1,14 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice, createSelector } from '@reduxjs/toolkit'
-import { redirect } from 'redux-first-router'
+import { createSelector,createSlice } from '@reduxjs/toolkit'
 import { jwtDecode } from 'jwt-decode'
-import { GFWAPI, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
+import { redirect } from 'redux-first-router'
+
+import { getAccessTokenFromUrl,GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
-import type { AppThunk, RootState } from '../../store'
-import { HOME } from '../../routes/routes'
+
 import { DEFAULT_TOKEN_EXPIRATION } from '../../data/config'
+import { HOME } from '../../routes/routes'
+import type { AppThunk, RootState } from '../../store'
 
 interface UserState {
   logged: boolean

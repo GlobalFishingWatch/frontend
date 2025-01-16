@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef,useState } from 'react'
 import { saveAs } from 'file-saver'
+
 import setInlineStyles from 'utils/dom'
 
 export const useDownloadDomElementAsImage = (

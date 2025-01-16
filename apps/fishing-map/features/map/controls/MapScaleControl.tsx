@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { distance as turfDistance } from '@turf/turf'
+
 import { useMapViewport } from '../map-viewport.hooks'
+
 import styles from './MapScaleControl.module.css'
 
 // code from maplibre-gl-js

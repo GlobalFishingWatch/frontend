@@ -4,43 +4,47 @@ import { useSelector } from 'react-redux'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
-import { Spinner, Button, Modal, InputText } from '@globalfishingwatch/ui-components'
-import { useLocationConnect } from 'routes/routes.hook'
-import { useFetchDataviewResources } from 'features/resources/resources.hooks'
-import {
-  selectWorkspaceStatus,
-  selectWorkspace,
-  selectIsWorkspacePasswordRequired,
-} from 'features/workspace/workspace.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectLocationCategory } from 'routes/routes.selectors'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
+
+import { Button, InputText,Modal, Spinner } from '@globalfishingwatch/ui-components'
+
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
+import { WIZARD_TEMPLATE_ID } from 'data/default-workspaces/marine-manager'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
-import DetectionsSection from 'features/workspace/detections/DetectionsSection'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { useFetchDataviewResources } from 'features/resources/resources.hooks'
+import { useUserExpiredToast } from 'features/user/user-expired.hooks'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
-import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
-import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { WIZARD_TEMPLATE_ID } from 'data/default-workspaces/marine-manager'
 import {
   fetchWorkspaceVesselGroupsThunk,
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
-import WorkspaceError, { WorkspacePassword } from 'features/workspace/WorkspaceError'
-import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
-import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
+import DetectionsSection from 'features/workspace/detections/DetectionsSection'
+import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
 import UserSection from 'features/workspace/user/UserSection'
-import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { useUserExpiredToast } from 'features/user/user-expired.hooks'
+import {
+  selectIsWorkspacePasswordRequired,
+  selectWorkspace,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
+import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
+import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
+import WorkspaceError, { WorkspacePassword } from 'features/workspace/WorkspaceError'
+import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectLocationCategory } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import ActivitySection from './activity/ActivitySection'
-import VesselsSection from './vessels/VesselsSection'
-import VesselGroupSection from './vessel-groups/VesselGroupsSection'
-import EventsSection from './events/EventsSection'
-import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
-import styles from './Workspace.module.css'
+import EnvironmentalSection from './environmental/EnvironmentalSection'
+import EventsSection from './events/EventsSection'
+import VesselGroupSection from './vessel-groups/VesselGroupsSection'
+import VesselsSection from './vessels/VesselsSection'
 import { useMigrateWorkspaceToast } from './workspace-migration.hooks'
+
+import styles from './Workspace.module.css'
 
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()

@@ -1,7 +1,9 @@
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
+
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+
 import i18n, { t } from './i18n'
 
 type PlaceholderBySelectionParams = {

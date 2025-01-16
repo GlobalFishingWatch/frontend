@@ -1,17 +1,19 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
-import { getEventLabel } from 'utils/analytics'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import type { AreaKeyId } from 'features/areas/areas.slice'
 import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectLocationAreaId } from 'routes/routes.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
+import { selectLocationAreaId } from 'routes/routes.selectors'
+import { getEventLabel } from 'utils/analytics'
 
 export const getAreaIdFromFeature = (
   feature: ContextPickingObject | UserLayerPickingObject

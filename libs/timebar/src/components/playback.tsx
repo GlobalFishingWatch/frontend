@@ -1,13 +1,16 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
-import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
 import { DateTime } from 'luxon'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
-import { Icon } from '@globalfishingwatch/ui-components'
+import memoize from 'memoize-one'
+
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_INTERVALS_ORDER,getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
+
 import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
 

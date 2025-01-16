@@ -1,5 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { GFWApiClient } from 'http-client/http-client'
+import type { RootState } from 'store'
+
 import type {
   AsyncReducer} from 'utils/async-slice';
 import {
@@ -7,7 +9,6 @@ import {
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import type { RootState } from 'store'
 
 export type RegionId = string | number
 export enum MarineRegionType {

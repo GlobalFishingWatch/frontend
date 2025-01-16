@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+
 import { Header } from '@globalfishingwatch/ui-components'
+
 import styles from './header.module.css'
 
 class HeaderComponent extends Component {

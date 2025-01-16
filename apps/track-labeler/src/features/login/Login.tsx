@@ -1,8 +1,11 @@
 import React from 'react'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
+
 // import { getLocationSearch } from '../../routes/routes.selectors'
 import { BASE_URL } from '../../data/constants'
+
 import styles from './Login.module.css'
 // import { useSelector } from 'react-redux'
 

@@ -1,4 +1,5 @@
 import type { Feature, LineString } from 'geojson'
+
 import type { GraticuleLineGroup, GraticulesProperties } from './graticules.types'
 
 function getLineScaleRank(lon: number): GraticuleLineGroup {

@@ -1,6 +1,8 @@
 import type { Color } from '@deck.gl/core'
-import type { EventTypes } from '@globalfishingwatch/api-types'
+
 import { ThinningLevels } from '@globalfishingwatch/api-client'
+import type { EventTypes } from '@globalfishingwatch/api-types'
+
 import { hexToDeckColor } from '../../utils'
 
 export const TRACK_LAYER_TYPE = 'track'

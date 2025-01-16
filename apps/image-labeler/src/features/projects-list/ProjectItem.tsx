@@ -1,9 +1,13 @@
-import { Link } from '@tanstack/react-router'
 import { Fragment, useState } from 'react'
-import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { Link } from '@tanstack/react-router'
+
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Modal } from '@globalfishingwatch/ui-components/modal'
+
 import type { LabellingProject } from '../../types'
+
 import ProjectForm from './ProjectForm'
+
 import styles from './ProjectsList.module.css'
 
 export function ProjectItem({ project }: { project: LabellingProject }) {

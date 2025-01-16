@@ -1,26 +1,30 @@
 import { Fragment, useCallback, useMemo, useRef } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import { isPrintSupported, useLocalStorage } from '@globalfishingwatch/react-hooks'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import {
+  Button,
+  Choice,
   IconButton,
+  MAIN_DOM_ID,
   Modal,
   Spinner,
-  Button,
-  MAIN_DOM_ID,
-  Choice,
 } from '@globalfishingwatch/ui-components'
-import { isPrintSupported, useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
-import { setInlineStyles, cleantInlineStyles } from 'utils/dom'
-import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useDOMElement } from 'hooks/dom.hooks'
+import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'routes/routes.selectors'
-import MapScreenshot, { MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
+import { cleantInlineStyles,setInlineStyles } from 'utils/dom'
+
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
+import MapScreenshot, { MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
+
 import styles from './MapControls.module.css'
 
 type ScrenshotArea = 'map' | 'withTimebar' | 'withTimebarAndLegend'

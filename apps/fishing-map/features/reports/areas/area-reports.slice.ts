@@ -1,16 +1,18 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import { stringify } from 'qs'
-import type { APIPagination, Report } from '@globalfishingwatch/api-types'
+
 import {
   GFWAPI,
   parseAPIError,
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
+import type { APIPagination, Report } from '@globalfishingwatch/api-types'
+
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 const fetchReportByIdThunk = createAsyncThunk(
   'reports/fetchById',

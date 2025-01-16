@@ -1,9 +1,11 @@
 import React from 'react'
 import cx from 'classnames'
-import type { TooltipPlacement } from '../tooltip'
+
 import { IconButton } from '../icon-button'
+import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
+
 import styles from './Tag.module.css'
 
 interface TagProps {

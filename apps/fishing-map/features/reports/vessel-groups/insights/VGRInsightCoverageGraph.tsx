@@ -1,13 +1,17 @@
 import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { BarChart, Bar, XAxis, ResponsiveContainer, LabelList } from 'recharts'
 import { groupBy } from 'es-toolkit'
+import { Bar, BarChart, LabelList,ResponsiveContainer, XAxis } from 'recharts'
+
 import type { VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
+
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { weightedMean } from 'utils/statistics'
+
 import { selectVGRDataview } from '../vessel-group-report.selectors'
+
 import styles from './VGRInsightCoverageGraph.module.css'
 
 const CustomTick = (props: any) => {

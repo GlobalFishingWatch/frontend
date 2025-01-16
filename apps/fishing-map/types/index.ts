@@ -1,5 +1,5 @@
-import type { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { EventType } from '@globalfishingwatch/api-types'
+import type { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   DrawFeatureType,
   FourwingsVisualizationMode,
@@ -8,21 +8,23 @@ import type {
   RulerData,
   VesselsColorByProperty,
 } from '@globalfishingwatch/deck-layers'
+
 import type { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
 import type {
   AreaReportState,
   AreaReportStateProperty,
 } from 'features/reports/areas/area-reports.types'
+import type {
+  PortsReportState,
+  PortsReportStateProperty,
+} from 'features/reports/ports/ports-report.types'
+import type { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
 import type { VesselProfileState, VesselProfileStateProperty } from 'features/vessel/vessel.types'
 import type {
   VesselGroupReportState,
   VesselGroupReportStateProperty,
 } from 'features/vessel-groups/vessel-groups.types'
-import type { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
-import type {
-  PortsReportState,
-  PortsReportStateProperty,
-} from 'features/reports/ports/ports-report.types'
+
 export { Locale } from '@globalfishingwatch/api-types'
 
 type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'

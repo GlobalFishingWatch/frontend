@@ -1,7 +1,8 @@
 import { join } from 'path'
-import type { NextConfig } from 'next'
+
 import withNx from '@nx/next/plugins/with-nx'
 import CircularDependencyPlugin from 'circular-dependency-plugin'
+import type { NextConfig } from 'next'
 
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: true, //process.env.ANALYZE === 'true' || process.env.NODE_ENV === 'development',

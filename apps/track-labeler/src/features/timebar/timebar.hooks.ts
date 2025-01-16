@@ -1,18 +1,19 @@
-import { useSelector } from 'react-redux'
 import { useState } from 'react'
-import {
-  selectTimebarMode,
-  getDateRange,
-  selectFilterMode,
-  selectColorMode,
-} from '../../routes/routes.selectors'
-import { updateQueryParams } from '../../routes/routes.actions'
-import type { CoordinatePosition } from '../../types'
+import { useSelector } from 'react-redux'
+
 import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
 import { addSelectedTrack, setSelectedTrack } from '../../features/vessels/selectedTracks.slice'
 import { selectTimestamps } from '../../features/vessels/vessels.slice'
-import { findNextTimestamp, findPreviousTimestamp } from '../../utils/shared'
+import { updateQueryParams } from '../../routes/routes.actions'
+import {
+  getDateRange,
+  selectColorMode,
+  selectFilterMode,
+  selectTimebarMode,
+} from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
+import type { CoordinatePosition } from '../../types'
+import { findNextTimestamp, findPreviousTimestamp } from '../../utils/shared'
 
 export const useTimerangeConnect = () => {
   const dispatch = useAppDispatch()

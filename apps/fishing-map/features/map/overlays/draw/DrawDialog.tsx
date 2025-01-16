@@ -1,33 +1,38 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import bbox from '@turf/bbox'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
 import type { Feature, Polygon } from 'geojson'
-import { useSelector } from 'react-redux'
-import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
+import type { Bbox } from 'types'
+
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
-import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
+import { Button, IconButton, InputText, SwitchRow } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import type { DrawnDatasetGeometry } from 'features/areas/areas.slice'
+import {
+  fetchDatasetAreasThunk,
+  resetAreaList,
+  selectDatasetAreasById,
+} from 'features/areas/areas.slice'
 import {
   useAddDataviewFromDatasetToWorkspace,
   useDatasetsAPI,
 } from 'features/datasets/datasets.hook'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
-import { useAppDispatch } from 'features/app/app.hooks'
-import type { DrawnDatasetGeometry } from 'features/areas/areas.slice'
-import {
-  resetAreaList,
-  fetchDatasetAreasThunk,
-  selectDatasetAreasById,
-} from 'features/areas/areas.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
 import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
-import type { Bbox } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { useMapDrawConnect } from '../../map-draw.hooks'
-import { getDrawDatasetDefinition, getFileWithFeatures } from './draw.utils'
-import styles from './DrawDialog.module.css'
+
 import { useDrawLayerInstance } from './draw.hooks'
+import { getDrawDatasetDefinition, getFileWithFeatures } from './draw.utils'
+
+import styles from './DrawDialog.module.css'
 
 type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
 const MIN_DATASET_NAME_LENGTH = 3

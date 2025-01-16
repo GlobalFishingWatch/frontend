@@ -1,8 +1,11 @@
 import React, { useCallback } from 'react'
 import cx from 'classnames'
+
 import { Tag } from '../tag'
-import styles from './TagList.module.css'
+
 import type { TagItem, TagListOnRemove } from './index'
+
+import styles from './TagList.module.css'
 
 interface TagListProps {
   className?: string

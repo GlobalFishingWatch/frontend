@@ -1,4 +1,5 @@
 import { VesselAPISource } from 'types'
+
 import * as gfwSlice from './sources/gfw.slice'
 import * as tmtSlice from './sources/tmt.slice'
 import { mergeVesselFromSources } from './vessels.utils'

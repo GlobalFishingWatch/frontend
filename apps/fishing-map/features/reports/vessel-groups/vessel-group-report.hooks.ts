@@ -1,11 +1,14 @@
 import { useCallback } from 'react'
+
 import type { VesselGroup } from '@globalfishingwatch/api-types'
+
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
+  setVesselGroupConfirmationMode,
   setVesselGroupEditId,
   setVesselGroupsModalOpen,
-  setVesselGroupConfirmationMode,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
+
 import { fetchVesselGroupReportThunk } from './vessel-group-report.slice'
 
 export function useFetchVesselGroupReport() {

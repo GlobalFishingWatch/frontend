@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
-import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 
 export const useUpdateVesselEventsVisibility = () => {
   const { setVesselEventVisibility } = useVisibleVesselEvents()

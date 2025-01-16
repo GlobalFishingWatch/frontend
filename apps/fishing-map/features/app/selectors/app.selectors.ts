@@ -1,14 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { RulerData } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_HIGH_RES_ID } from '@globalfishingwatch/deck-layers'
-import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
+
 import {
   getActiveActivityDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
 import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 
 const EMPTY_ARRAY: [] = []

@@ -1,20 +1,24 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import type { DeckGLRef } from '@deck.gl/react'
-import DeckGL from '@deck.gl/react'
-import { SolidPolygonLayer } from '@deck.gl/layers'
 import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
+import { SolidPolygonLayer } from '@deck.gl/layers'
+import type { DeckGLRef } from '@deck.gl/react'
+import DeckGL from '@deck.gl/react'
 import { scaleSqrt } from 'd3-scale'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import { usePrintSize } from '@globalfishingwatch/react-hooks'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
+
 import TimelineContext from '../timelineContext'
-import { useUpdateChartsData } from './chartsData.atom'
+
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
-import styles from './tracks-graph.module.css'
 import type { TimebarChartData } from '.'
+import { useUpdateChartsData } from './chartsData.atom'
+
+import styles from './tracks-graph.module.css'
 
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const GRAPH_STYLE = { zIndex: '-1' }

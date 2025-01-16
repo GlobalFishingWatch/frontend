@@ -3,10 +3,12 @@
 import type { ReactNode } from 'react'
 import React from 'react'
 import cx from 'classnames'
+
+import { Icon } from '../icon'
 import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
-import { Icon } from '../icon'
+
 import styles from './Checkbox.module.css'
 
 interface CheckboxProps {

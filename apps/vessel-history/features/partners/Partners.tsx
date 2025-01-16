@@ -1,5 +1,7 @@
 import { Logo } from "@globalfishingwatch/ui-components"
+
 import tmtLogo from '../../assets/images/tmt_logo_final_full_colour@2x.png'
+
 import styles from './Partners.module.css'
 
 const Partners: React.FC = () => {

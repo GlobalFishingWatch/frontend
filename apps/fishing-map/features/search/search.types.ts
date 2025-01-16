@@ -1,4 +1,5 @@
 import type { GearType, VesselIdentitySourceEnum, VesselType } from '@globalfishingwatch/api-types'
+
 import type { SearchType } from './search.config'
 
 export type VesselSearchState = {

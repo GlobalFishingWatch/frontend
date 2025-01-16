@@ -1,18 +1,22 @@
-import { Link, getRouteApi, useNavigate } from '@tanstack/react-router'
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import uniqBy from 'lodash/uniqBy'
-import { Spinner } from '@globalfishingwatch/ui-components/spinner'
-import { Slider } from '@globalfishingwatch/ui-components/slider'
-import { Button } from '@globalfishingwatch/ui-components/button'
-import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+
 import { useLocalStorage } from '@globalfishingwatch/react-hooks/use-local-storage'
+import { Button } from '@globalfishingwatch/ui-components/button'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Slider } from '@globalfishingwatch/ui-components/slider'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+
 import {
   useGetLabellingProjectTasksByIdQuery,
   useGetLabellingProjectTasksQuery,
 } from '../../api/project'
 import type { LabellingTask } from '../../types'
+
 import Task from './Task'
+
 import styles from './Project.module.css'
 
 const routePath = '/project/$projectId'

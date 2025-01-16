@@ -3,16 +3,19 @@ import { CompositeLayer } from '@deck.gl/core'
 import type { PathLayerProps } from '@deck.gl/layers'
 import { PathLayer } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
-import type { UserTrackBinaryData, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
-import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
-import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
+import type { UserTrackBinaryData, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
+import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
+
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { MAX_FILTER_VALUE } from '../layers.config'
+import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import type { GetSegmentsFromDataParams } from '../vessel/vessel.utils'
+
 import type { UserTrackLayerProps } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>

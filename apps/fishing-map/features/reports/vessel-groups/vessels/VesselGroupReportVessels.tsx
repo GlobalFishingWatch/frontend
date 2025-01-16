@@ -1,18 +1,20 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
+
 import ReportVesselsFilter from 'features/reports/shared/activity/vessels/ReportVesselsFilter'
-import { selectVGRVesselsGraphDataGrouped } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
-import {} from 'features/reports/vessel-groups/vessel-group-report.selectors'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import {
   selectVGRVesselFilter,
   selectVGRVesselsSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+import { selectVGRDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
+import { selectVGRVesselsGraphDataGrouped } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import type { VGREventsVesselsProperty } from 'features/vessel-groups/vessel-groups.types'
-import { selectVGRDataview } from '../vessel-group-report.selectors'
-import VesselGroupReportVesselsGraphSelector from './VesselGroupReportVesselsGraphSelector'
+
 import VesselGroupReportVesselsGraph from './VesselGroupReportVesselsGraph'
+import VesselGroupReportVesselsGraphSelector from './VesselGroupReportVesselsGraphSelector'
 import VesselGroupReportVesselsTable from './VesselGroupReportVesselsTable'
+
 import styles from './VesselGroupReportVessels.module.css'
 
 function VesselGroupReportVessels({ loading }: { loading: boolean }) {

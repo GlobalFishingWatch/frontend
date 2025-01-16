@@ -1,19 +1,22 @@
 import type { FeatureCollection, LineString } from 'geojson'
+
 import type {
-  SourceSpecification,
-  LayerSpecification,
-  GeoJSONSourceSpecification,
-} from '@globalfishingwatch/maplibre-gl'
-import type { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import type {
-  TrackSegment,
-  Locale,
   Anchorage,
   EventTypes,
+  Locale,
   TimeFilterType,
+  TrackSegment,
 } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
+import type { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import type {
+  GeoJSONSourceSpecification,
+  LayerSpecification,
+  SourceSpecification,
+} from '@globalfishingwatch/maplibre-gl'
+
 import type { GeneratorType, Group } from '..'
+
 import type { Interval } from './heatmap/types'
 
 export type LayerVisibility = 'visible' | 'none'

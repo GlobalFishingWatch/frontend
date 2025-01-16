@@ -1,39 +1,42 @@
 import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import {
-  Button,
-  Spinner,
-  IconButton,
-  Modal,
-  Icon,
-  InputText,
-} from '@globalfishingwatch/ui-components'
+
 import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
+import {
+  Button,
+  Icon,
+  IconButton,
+  InputText,
+  Modal,
+  Spinner,
+} from '@globalfishingwatch/ui-components'
+
+import { ROOT_DOM_ELEMENT } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import {
   getDataviewInstanceByDataset,
   useDatasetModalConfigConnect,
   useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
-import { getDatasetTypeIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   deleteDatasetThunk,
   selectDatasetsStatus,
   selectDatasetsStatusId,
 } from 'features/datasets/datasets.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { getDatasetLabel,getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import InfoError from 'features/workspace/common/InfoError'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
-import { ROOT_DOM_ELEMENT } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
-import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
-import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { getHighlightedText } from 'utils/text'
+
 import styles from './User.module.css'
 
 function UserDatasets() {

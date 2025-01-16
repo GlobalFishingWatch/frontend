@@ -1,8 +1,11 @@
-import cx from 'classnames'
 import type { ReactNode } from 'react'
+import cx from 'classnames'
+
 import type { IconType} from '@globalfishingwatch/ui-components';
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+
 import styles from './risk-section.module.css'
 
 export interface RiskSectionProps {

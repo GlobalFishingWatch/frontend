@@ -1,13 +1,16 @@
-import React, { Suspense, lazy, Fragment, useEffect, useState } from 'react'
-import { BrowserRouter as Router, Route, Navigate, Routes } from 'react-router-dom'
+import React, { Fragment, lazy, Suspense, useEffect, useState } from 'react'
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Footer } from '@globalfishingwatch/ui-components'
-import { useGFWLogin } from './components/login/use-login'
-import Login from './pages/login/login.jsx'
+
 import HeaderHtml from './components/header/header.jsx'
 import Loader from './components/loader/loader.jsx'
-import styles from './app.module.css'
+import { useGFWLogin } from './components/login/use-login'
+import Login from './pages/login/login.jsx'
+
 import '../../../libs/ui-components/src/base.css'
+import styles from './app.module.css'
 
 const Home = lazy(() => import('./pages/home/home'))
 const Dataset = lazy(() => import('./pages/dataset/dataset'))

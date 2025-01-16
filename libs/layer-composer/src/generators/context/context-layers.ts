@@ -4,10 +4,12 @@ import type {
   LineLayerSpecification,
   SymbolLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+
 import type { ExtendedLayerMeta} from '../../types';
 import { Group } from '../../types'
-import { ContextLayerType } from '../types'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
+import { ContextLayerType } from '../types'
+
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from './config'
 
 export const INTERACTION_SUFIX = '_interaction'

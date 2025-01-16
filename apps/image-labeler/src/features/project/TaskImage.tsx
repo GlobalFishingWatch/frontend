@@ -1,7 +1,9 @@
 import { Fragment, useEffect, useRef } from 'react'
-import { Jimp } from 'jimp'
 import cx from 'classnames'
+import { Jimp } from 'jimp'
+
 import { useLocalStorage } from '@globalfishingwatch/react-hooks/use-local-storage'
+
 import styles from './TaskImage.module.css'
 
 type TaskImageProps = {

@@ -1,49 +1,53 @@
 /* eslint-disable @next/next/no-img-element */
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import type { Tab, TabsProps } from '@globalfishingwatch/ui-components'
-import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
+import { saveAs } from 'file-saver'
+
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { Tab, TabsProps } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import type { VesselLastIdentity } from 'features/search/search.slice'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
+import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   CUSTOM_VMS_IDENTITY_FIELD_GROUPS,
   IDENTITY_FIELD_GROUPS,
   REGISTRY_FIELD_GROUPS,
   REGISTRY_SOURCES,
 } from 'features/vessel/vessel.config'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
+import {
+  selectVesselIdentityId,
+  selectVesselIdentitySource,
+} from 'features/vessel/vessel.config.selectors'
+import { parseVesselToCSV } from 'features/vessel/vessel.download'
+import {
+  filterRegistryInfoByDateAndSSVID,
+  getCurrentIdentityVessel,
+} from 'features/vessel/vessel.utils'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsVesselLocation } from 'routes/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
   getVesselGearTypeLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
-import {
-  filterRegistryInfoByDateAndSSVID,
-  getCurrentIdentityVessel,
-} from 'features/vessel/vessel.utils'
-import { parseVesselToCSV } from 'features/vessel/vessel.download'
-import {
-  selectVesselIdentityId,
-  selectVesselIdentitySource,
-} from 'features/vessel/vessel.config.selectors'
-import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
-import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
-import { useLocationConnect } from 'routes/routes.hook'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectIsVesselLocation } from 'routes/routes.selectors'
-import type { VesselLastIdentity } from 'features/search/search.slice'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
-import styles from './VesselIdentity.module.css'
+
 import VesselRegistryField from './VesselRegistryField'
 import VesselTypesField from './VesselTypesField'
+
+import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation()

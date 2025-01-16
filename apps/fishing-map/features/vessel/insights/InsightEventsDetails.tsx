@@ -1,8 +1,11 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { IconButton } from '@globalfishingwatch/ui-components'
-import Event from '../activity/event/Event'
+
 import type VesselEvent from '../activity/event/Event'
+import Event from '../activity/event/Event'
+
 import styles from './Insights.module.css'
 
 const InsightEventDetails = ({

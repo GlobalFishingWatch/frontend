@@ -1,9 +1,11 @@
 import type { MouseEvent } from 'react'
 import React from 'react'
 import cx from 'classnames'
+
 import type { TooltipPlacement } from '../tooltip'
-import type { TooltipTypes } from '../types/types'
 import { Tooltip } from '../tooltip'
+import type { TooltipTypes } from '../types/types'
+
 import styles from './Switch.module.css'
 
 // TODO Maybe a simple way is to have the Switch component wrap an <input type="checkbox"> so that we can use the React native event

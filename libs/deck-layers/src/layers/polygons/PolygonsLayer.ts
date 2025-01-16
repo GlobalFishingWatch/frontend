@@ -2,18 +2,21 @@ import type { Color, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
+
 import type { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
-import { PREVIEW_BUFFER_GENERATOR_ID } from '../layers.config'
+
 import {
-  hexToDeckColor,
-  LayerGroup,
+  COLOR_HIGHLIGHT_FILL,
+  COLOR_HIGHLIGHT_LINE,
+  COLOR_TRANSPARENT,
+  DEFAULT_BACKGROUND_COLOR,
   getLayerGroupOffset,
   getPickedFeatureToHighlight,
-  COLOR_HIGHLIGHT_FILL,
-  COLOR_TRANSPARENT,
-  COLOR_HIGHLIGHT_LINE,
-  DEFAULT_BACKGROUND_COLOR,
+  hexToDeckColor,
+  LayerGroup,
 } from '../../utils'
+import { PREVIEW_BUFFER_GENERATOR_ID } from '../layers.config'
+
 import type { PolygonFeature, PolygonPickingInfo, PolygonPickingObject } from './polygons.types'
 
 const defaultProps: DefaultProps<PolygonsLayerProps> = {

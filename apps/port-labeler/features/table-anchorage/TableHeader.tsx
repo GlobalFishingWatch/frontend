@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react'
+
 import { Icon } from '@globalfishingwatch/ui-components'
+
 import styles from './TableAnchorage.module.css'
 
 type SidebarProps = {

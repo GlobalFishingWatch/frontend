@@ -1,6 +1,7 @@
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { isActivityDataview, isDetectionsDataview } from '@globalfishingwatch/dataviews-client'
+
 import { FISHING_DATAVIEW_SLUG, PRESENCE_DATAVIEW_SLUG } from 'data/workspaces'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 

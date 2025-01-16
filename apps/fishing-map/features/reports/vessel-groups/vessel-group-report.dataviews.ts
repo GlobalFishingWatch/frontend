@@ -6,6 +6,7 @@ import type {
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
+
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,

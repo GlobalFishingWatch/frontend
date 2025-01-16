@@ -1,10 +1,12 @@
-import { DateTime } from 'luxon'
 import type { Feature, FeatureCollection } from 'geojson'
+import { DateTime } from 'luxon'
+
 import type { EventType, TrackSegment } from '@globalfishingwatch/api-types'
 import {
-  segmentsToGeoJSON,
   filterTrackByCoordinateProperties,
+  segmentsToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
+
 import type { Dictionary } from '../../types'
 import type { AuthorizationOptions, RawEvent } from '../types'
 

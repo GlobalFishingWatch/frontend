@@ -1,23 +1,27 @@
 import { useCallback, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+
 import type { Locale } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from 'utils/info'
+import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+
 import { FIRST_YEAR_OF_DATA } from 'data/config'
-import I18nDate from 'features/i18n/i18nDate'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getSearchIdentityResolved, isFieldLoginRequired } from 'features/vessel/vessel.utils'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
-import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import styles from './VesselGroupModal.module.css'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import I18nDate from 'features/i18n/i18nDate'
+import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import { getSearchIdentityResolved, isFieldLoginRequired } from 'features/vessel/vessel.utils'
+import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from 'utils/info'
+
 import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 import {
   selectVesselGroupModalVessels,
   setVesselGroupModalVessels,
 } from './vessel-groups-modal.slice'
+
+import styles from './VesselGroupModal.module.css'
 
 type VesselGroupVesselRowProps = {
   vessel: VesselGroupVesselIdentity

@@ -1,13 +1,18 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
-import InsightError from 'features/vessel/insights/InsightErrorMessage'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+
 import { ReportBarGraphPlaceholder } from 'features/reports/shared/placeholders/ReportBarGraphPlaceholder'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
+
 import { selectFetchVesselGroupReportCoverageParams } from '../vessel-group-report.selectors'
-import styles from './VGRInsights.module.css'
+
 import VesselGroupReportInsightCoverageGraph from './VGRInsightCoverageGraph'
+
+import styles from './VGRInsights.module.css'
 
 const VesselGroupReportInsightCoverage = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()

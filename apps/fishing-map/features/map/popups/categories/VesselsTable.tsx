@@ -1,10 +1,32 @@
 import { Fragment } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import { DateTime } from 'luxon'
-import { Tooltip } from '@globalfishingwatch/ui-components'
+
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { Tooltip } from '@globalfishingwatch/ui-components'
+
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
+import DatasetLabel from 'features/datasets/DatasetLabel'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { t } from 'features/i18n/i18n'
+import I18nDate from 'features/i18n/i18nDate'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { TimeRangeDates } from 'features/map/controls/MapInfo'
+import type {
+  ActivityProperty,
+  ExtendedFeatureVessel,
+  SliceExtendedFourwingsDeckSublayer,
+} from 'features/map/map.slice'
+import { MAX_TOOLTIP_LIST } from 'features/map/map.slice'
+import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map-interactions.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
+import VesselLink from 'features/vessel/VesselLink'
+import VesselPin from 'features/vessel/VesselPin'
+import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
+import { getUTCDateTime } from 'utils/dates'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -13,26 +35,7 @@ import {
   getVesselOtherNamesLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import I18nNumber from 'features/i18n/i18nNumber'
-import type {
-  ActivityProperty,
-  ExtendedFeatureVessel,
-  SliceExtendedFourwingsDeckSublayer,
-} from 'features/map/map.slice'
-import { MAX_TOOLTIP_LIST } from 'features/map/map.slice'
-import { t } from 'features/i18n/i18n'
-import I18nDate from 'features/i18n/i18nDate'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { TimeRangeDates } from 'features/map/controls/MapInfo'
-import DatasetLabel from 'features/datasets/DatasetLabel'
-import { getUTCDateTime } from 'utils/dates'
-import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
-import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
-import VesselLink from 'features/vessel/VesselLink'
-import VesselPin from 'features/vessel/VesselPin'
-import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
-import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map-interactions.hooks'
+
 import styles from './VesselsTable.module.css'
 
 export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {

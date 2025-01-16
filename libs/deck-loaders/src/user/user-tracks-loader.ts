@@ -1,6 +1,8 @@
 import type { Loader, LoaderOptions, LoaderWithParser } from '@loaders.gl/loader-utils'
+
 import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
+
 import type { ParseUserTrackParams} from './lib/parse-user-tracks';
 import { parseUserTrack } from './lib/parse-user-tracks'
 import type { UserTrackData } from './lib/types'

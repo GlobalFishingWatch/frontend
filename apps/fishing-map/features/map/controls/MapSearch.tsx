@@ -1,18 +1,22 @@
 import { memo, useRef, useState } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
-import { InputText, IconButton } from '@globalfishingwatch/ui-components'
-import type { OceanAreaLocale, OceanArea } from '@globalfishingwatch/ocean-areas'
-import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 import type { Bbox } from 'types'
+
+import type { OceanArea,OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
+import { IconButton,InputText } from '@globalfishingwatch/ui-components'
+
+import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
+import { useAppDispatch } from 'features/app/app.hooks'
 import Hint from 'features/help/Hint'
 import { setHintDismissed } from 'features/help/hints.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
+
 import { useMapFitBounds } from '../map-bounds.hooks'
+
 import styles from './MapSearch.module.css'
 
 const MapSearch = () => {

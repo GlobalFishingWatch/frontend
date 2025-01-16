@@ -3,10 +3,12 @@ import { ClipExtension } from '@deck.gl/extensions'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { Matrix4 } from '@math.gl/core'
+
 import { isNumeric } from '@globalfishingwatch/deck-loaders'
+
 import type { ContextPickingObject } from '../layers/context'
-import type { FilterOperators, UserLayerPickingObject } from '../layers/user'
 import type { PolygonPickingObject } from '../layers/polygons'
+import type { FilterOperators, UserLayerPickingObject } from '../layers/user'
 
 const WORLD_SIZE = 512
 

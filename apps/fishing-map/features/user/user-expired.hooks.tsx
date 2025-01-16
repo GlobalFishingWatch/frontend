@@ -1,10 +1,13 @@
-import { useSelector } from 'react-redux'
 import { useEffect, useRef } from 'react'
-import { toast } from 'react-toastify'
 import { Trans } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+
 import LocalStorageLoginLink from 'routes/LoginLink'
-import styles from './User.module.css'
+
 import { selectIsUserExpired } from './selectors/user.selectors'
+
+import styles from './User.module.css'
 
 export const useUserExpiredToast = () => {
   const isUserExpired = useSelector(selectIsUserExpired)

@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectWorkspaceViewport } from 'features/workspace/workspace.selectors'
 import { selectUrlViewport } from 'routes/routes.selectors'

@@ -1,4 +1,5 @@
 import path from 'path'
+
 import dynamic from 'next/dynamic'
 
 // This is needed by nx/next builder to run build the standalone next app properly

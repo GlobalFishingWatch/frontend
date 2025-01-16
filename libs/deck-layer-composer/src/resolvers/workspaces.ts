@@ -1,4 +1,5 @@
 import type { WorkspacesLayerProps } from '@globalfishingwatch/deck-layers'
+
 import type { DeckResolverFunction } from './types'
 
 export const resolveDeckWorkspacesLayerProps: DeckResolverFunction<WorkspacesLayerProps> = (

@@ -1,15 +1,5 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { DRAW_DATASET_SOURCE, DatasetTypes } from '@globalfishingwatch/api-types'
-import type {
-  BaseUserLayerProps,
-  UserPolygonsLayerProps,
-  UserLayerPickingObject,
-  UserPointsLayerProps,
-  ContextLayerConfig,
-  DeckLayerSubcategory,
-  UserTrackLayerProps,
-} from '@globalfishingwatch/deck-layers'
-import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
+import { DatasetTypes,DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import {
   findDatasetByType,
   getDatasetConfiguration,
@@ -17,6 +7,17 @@ import {
   getDatasetRangeSteps,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
+import type {
+  BaseUserLayerProps,
+  ContextLayerConfig,
+  DeckLayerSubcategory,
+  UserLayerPickingObject,
+  UserPointsLayerProps,
+  UserPolygonsLayerProps,
+  UserTrackLayerProps,
+} from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
+
 import type { DeckResolverFunction } from './types'
 
 const getUserContexTimeFilterProps = ({

@@ -1,8 +1,10 @@
-import { Children, isValidElement, cloneElement, type JSX } from 'react'
+import { Children, cloneElement, isValidElement, type JSX } from 'react'
 import { useSelector } from 'react-redux'
-import type { TooltipPlacement } from '@globalfishingwatch/ui-components'
-import type { IconButtonProps, ButtonProps } from '@globalfishingwatch/ui-components'
+
+import type { ButtonProps,IconButtonProps,TooltipPlacement  } from '@globalfishingwatch/ui-components'
+
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+
 import LocalStorageLoginLink from './LoginLink'
 
 interface LoginButtonWrapperProps {

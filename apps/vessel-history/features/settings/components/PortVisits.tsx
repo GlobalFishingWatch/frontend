@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react'
-import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
+import cx from 'classnames'
+
 import { InputText, MultiSelect } from '@globalfishingwatch/ui-components'
+
 import {
   PORTVISIT_EVENTS_MAX_DISTANCE,
   PORTVISIT_EVENTS_MAX_DURATION,
@@ -9,8 +11,10 @@ import {
   PORTVISIT_EVENTS_MIN_DURATION,
 } from 'data/constants'
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import type { SettingEventSectionName, SettingsPortVisits } from '../settings.slice'
+
 import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
+import type { SettingEventSectionName, SettingsPortVisits } from '../settings.slice'
+
 import styles from './SettingsComponents.module.css'
 
 // Remove once https://github.com/i18next/react-i18next/issues/1483 fixed

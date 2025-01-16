@@ -1,13 +1,17 @@
-import { useTranslation } from 'react-i18next'
 import { Fragment, useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { InsightResponse } from '@globalfishingwatch/api-types'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import type { InsightResponse } from '@globalfishingwatch/api-types'
+
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import InsightEventDetails from 'features/vessel/insights/InsightEventsDetails'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
+
 import { selectVesselEventsDataWithVoyages } from '../selectors/vessel.resources.selectors'
+
 import styles from './Insights.module.css'
 
 const InsightFishing = ({

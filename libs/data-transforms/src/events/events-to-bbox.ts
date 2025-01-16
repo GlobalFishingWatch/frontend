@@ -1,8 +1,10 @@
 import { point } from '@turf/helpers'
 import type { Position } from 'geojson'
+
 import type { ApiEvent } from '@globalfishingwatch/api-types'
-import type { BBox } from '../types'
+
 import { getBboxFromPoints } from '../segments'
+import type { BBox } from '../types'
 
 export function eventsToBbox(events: ApiEvent[]): BBox {
   const points = events.flatMap((event) => {

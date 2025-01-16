@@ -1,6 +1,12 @@
-import { useTranslation } from 'react-i18next'
 import { Fragment, useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { FeatureCollection, Point } from 'geojson'
+
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
+import { POINT_SIZES_DEFAULT_RANGE } from '@globalfishingwatch/deck-layers'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
@@ -10,15 +16,7 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import {
-  getDatasetConfiguration,
-  getDatasetConfigurationProperty,
-} from '@globalfishingwatch/datasets-client'
-import { POINT_SIZES_DEFAULT_RANGE } from '@globalfishingwatch/deck-layers'
-import UserGuideLink from 'features/help/UserGuideLink'
-import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
-import type { FileType } from 'utils/files'
-import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
+
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
@@ -28,8 +26,12 @@ import {
   getPointsDatasetMetadata,
   parseGeoJsonProperties,
 } from 'features/datasets/upload/datasets-upload.utils'
+import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
-import styles from './NewDataset.module.css'
+import UserGuideLink from 'features/help/UserGuideLink'
+import type { FileType } from 'utils/files'
+import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
+
 import type { DataList, DataParsed } from './datasets-parse.utils'
 import {
   getDatasetParsed,
@@ -38,6 +40,8 @@ import {
 } from './datasets-parse.utils'
 import FileDropzone from './FileDropzone'
 import { TimeFieldsGroup } from './TimeFieldsGroup'
+
+import styles from './NewDataset.module.css'
 
 const MIN_POINT_SIZE = 1
 const MAX_POINT_SIZE = 50

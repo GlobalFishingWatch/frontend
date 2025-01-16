@@ -1,11 +1,12 @@
 import { normal, screen } from 'color-blend'
 import type { RGBA } from 'color-blend/dist/types'
+
 import {
   hexToRgb,
   hexToRgbString,
-  rgbToRgbString,
   rgbaStringToObject,
   rgbaToString,
+  rgbToRgbString,
 } from './colors'
 
 export const COLOR_RAMP_DEFAULT_NUM_STEPS = 10

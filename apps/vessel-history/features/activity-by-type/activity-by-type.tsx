@@ -1,12 +1,23 @@
 import React, { Suspense, useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { useTranslation } from 'react-i18next'
-import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_VESSEL_MAP_ZOOM, IS_STANDALONE_APP } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import DateRangeLabel from 'features/date-range-label/date-range-label'
+import useMapEvents from 'features/map/map-events.hooks'
+import useViewport from 'features/map/map-viewport.hooks'
+import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
+import ActivityGroup from 'features/profile/components/activity/ActivityGroup'
+import AisCoverage from 'features/profile/components/activity/AisCoverage'
+import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
+import { useUser } from 'features/user/user.hooks'
 import type {
   RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
@@ -14,18 +25,12 @@ import {
 } from 'features/vessels/activity/vessels-activity.selectors'
 import type { Voyage } from 'types/voyage';
 import { EventTypeVoyage } from 'types/voyage'
-import useMapEvents from 'features/map/map-events.hooks'
-import useViewport from 'features/map/map-viewport.hooks'
-import ActivityGroup from 'features/profile/components/activity/ActivityGroup'
-import AisCoverage from 'features/profile/components/activity/AisCoverage'
-import useRiskIndicator from 'features/risk-indicator/risk-indicator.hook'
-import { useUser } from 'features/user/user.hooks'
-import DateRangeLabel from 'features/date-range-label/date-range-label'
-import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import ActivityDataAndTerminology from 'features/profile/components/activity/ActivityDataAndTerminology'
+
 import ActivityItem from '../profile/components/activity/ActivityItem'
 import ActivityModalContent from '../profile/components/activity/ActivityModalContent'
+
 import { useActivityByType } from './activity-by-type.hook'
+
 import styles from './activity-by-type.module.css'
 
 export interface ActivityByTypeProps {

@@ -1,7 +1,13 @@
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { useCallback, useEffect, useState } from 'react'
 import type { FeatureCollection } from 'geojson'
+
+import { checkRecordValidity } from '@globalfishingwatch/data-transforms'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
@@ -11,29 +17,27 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { checkRecordValidity } from '@globalfishingwatch/data-transforms'
-import {
-  getDatasetConfiguration,
-  getDatasetConfigurationProperty,
-} from '@globalfishingwatch/datasets-client'
-import UserGuideLink from 'features/help/UserGuideLink'
-import type { FileType } from 'utils/files'
-import { getFileFromGeojson, getFileType, getFileName } from 'utils/files'
-import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
-import FileDropzone from 'features/datasets/upload/FileDropzone'
+
 import type { DataList } from 'features/datasets/upload/datasets-parse.utils'
 import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
-import {
-  getMetadataFromDataset,
-  getTracksDatasetMetadata,
-} from 'features/datasets/upload/datasets-upload.utils'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
 } from 'features/datasets/upload/datasets-upload.hooks'
+import {
+  getMetadataFromDataset,
+  getTracksDatasetMetadata,
+} from 'features/datasets/upload/datasets-upload.utils'
+import FileDropzone from 'features/datasets/upload/FileDropzone'
+import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
-import styles from './NewDataset.module.css'
+import UserGuideLink from 'features/help/UserGuideLink'
+import type { FileType } from 'utils/files'
+import { getFileFromGeojson, getFileName,getFileType } from 'utils/files'
+
 import { TimeFieldsGroup } from './TimeFieldsGroup'
+
+import styles from './NewDataset.module.css'
 
 function NewTrackDataset({
   onConfirm,

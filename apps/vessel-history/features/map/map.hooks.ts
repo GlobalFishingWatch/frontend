@@ -1,11 +1,14 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch,useSelector } from 'react-redux'
+
 import type {
   StyleTransformation} from '@globalfishingwatch/layer-composer';
 import {
-  sort,
   getInteractiveLayerIds,
+  sort,
 } from '@globalfishingwatch/layer-composer'
+
 import { LAST_POSITION_LAYERS_PREFIX } from 'data/config'
+
 import { selectDefaultMapGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 import type { UpdateGeneratorPayload } from './map.slice';
 import { updateGenerator } from './map.slice'

@@ -1,7 +1,8 @@
 import type { PickingInfo } from '@deck.gl/core'
-import type { Feature, Polygon, MultiPolygon } from 'geojson'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import type { DeckPickingObject, DeckLayerProps } from '../../types'
+import type { Feature, MultiPolygon,Polygon } from 'geojson'
+
+import type { DeckLayerProps,DeckPickingObject } from '../../types'
 
 export enum ContextLayerId {
   EEZ = 'eez-areas',

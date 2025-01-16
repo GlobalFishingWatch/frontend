@@ -1,7 +1,7 @@
-import type { Locale } from './i18n'
-import type { ApiAppName } from './workspaces'
 import type { Dataset } from './datasets'
+import type { Locale } from './i18n'
 import type { VesselGroup } from './vesselGroups'
+import type { ApiAppName } from './workspaces'
 
 export type ColorCyclingType = 'fill' | 'line'
 export const INCLUDE_FILTER_ID = 'include'

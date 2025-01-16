@@ -1,11 +1,15 @@
 import React from 'react'
 import cx from 'classnames'
-import { IconButton } from '@globalfishingwatch/ui-components'
+
 import type { ApiEvent, RegionType } from '@globalfishingwatch/api-types'
-import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import EventIcon from 'features/vessel/activity/event/EventIcon'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+
 import ActivityDate from './ActivityDate'
 import { useActivityEventTranslations } from './event.hook'
+
 import styles from './Event.module.css'
 
 type VesselEvent = ActivityEvent | ApiEvent

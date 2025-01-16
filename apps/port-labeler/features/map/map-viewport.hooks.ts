@@ -1,11 +1,13 @@
 import { useCallback } from 'react'
-import { atom, useRecoilState } from 'recoil'
-import { debounce } from 'lodash'
 import type { ViewStateChangeEvent } from 'react-map-gl'
+import { debounce } from 'lodash'
+import { atom, useRecoilState } from 'recoil'
 import type { MapCoordinates } from 'types'
+
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { selectUrlViewport } from 'routes/routes.selectors'
+
 import type { RootState } from '../../store';
 import store from '../../store'
 

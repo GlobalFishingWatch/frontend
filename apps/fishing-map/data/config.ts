@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
+
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+
 import type { AppState, WorkspaceState } from '../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'

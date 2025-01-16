@@ -1,12 +1,14 @@
 import { useTranslation } from 'react-i18next'
+
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
-  IconButton,
   ColorBar,
   FillColorBarOptions,
+  IconButton,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
 import ExpandedContainer from '../shared/ExpandedContainer'
 
 type ColorProps = {
