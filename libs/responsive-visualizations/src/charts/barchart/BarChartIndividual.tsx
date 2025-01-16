@@ -12,7 +12,7 @@ export function IndividualBarChart({
   data,
   color,
   barLabel,
-  valueKey,
+  valueKeys,
   labelKey,
   barValueFormatter,
   customTooltip,
@@ -36,25 +36,33 @@ export function IndividualBarChart({
         <foreignObject width="100%" height="100%">
           <div className={styles.container} style={{ paddingBottom: AXIS_LABEL_PADDING }}>
             {data.map((item, index) => {
-              const points = item?.[valueKey] as ResponsiveVisualizationValue<'individual'>[]
+              const totalPoints = valueKeys.reduce((acc, valueKey) => {
+                const points = item?.[valueKey] as ResponsiveVisualizationValue<'individual'>[]
+                return acc + points.length
+              }, 0)
               return (
                 <div key={index} className={styles.barContainer}>
                   <label className={styles.label}>
-                    {barValueFormatter?.(points.length) || points.length}
+                    {barValueFormatter?.(totalPoints) || totalPoints}
                   </label>
-                  <ul className={styles.bar} style={{ gap: POINT_GAP }}>
-                    {points?.map((point, pointIndex) => (
-                      <IndividualPoint
-                        key={pointIndex}
-                        pointSize={pointSize}
-                        point={point}
-                        color={color}
-                        tooltip={customTooltip}
-                        item={customItem}
-                        onClick={onClick}
-                      />
-                    ))}
-                  </ul>
+                  {valueKeys.map((valueKey) => {
+                    const points = item?.[valueKey] as ResponsiveVisualizationValue<'individual'>[]
+                    return (
+                      <ul className={styles.bar} style={{ gap: POINT_GAP }}>
+                        {points?.map((point, pointIndex) => (
+                          <IndividualPoint
+                            key={pointIndex}
+                            pointSize={pointSize}
+                            point={point}
+                            color={point.color || color}
+                            tooltip={customTooltip}
+                            item={customItem}
+                            onClick={onClick}
+                          />
+                        ))}
+                      </ul>
+                    )
+                  })}
                 </div>
               )
             })}

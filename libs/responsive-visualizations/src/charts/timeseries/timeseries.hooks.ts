@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import type { ResponsiveVisualizationData } from '../../types'
-import type { ResponsiveVisualizationAnyItemKey } from '../types'
 
 export function useTimeseriesDomain({
   start,
@@ -31,7 +30,7 @@ type UseFullTimeseriesProps = {
   end: string
   data: ResponsiveVisualizationData
   timeseriesInterval: FourwingsInterval
-  dateKey: ResponsiveVisualizationAnyItemKey
+  dateKey: keyof ResponsiveVisualizationData[0]
   valueKey: keyof ResponsiveVisualizationData[0]
   aggregated?: boolean
 }

@@ -100,7 +100,7 @@ const CustomTick = (props: any) => {
         ? cleanFlagState(
             (
               othersData?.flatMap((d) =>
-                EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)
+                EMPTY_API_VALUES.includes(d.name as string) ? [] : getTickLabel(d.name as string)
               ) || []
             ).join('|')
           )
@@ -198,7 +198,7 @@ export default function ReportVesselsGraph() {
           ? cleanFlagState(
               (
                 othersData?.flatMap((d) =>
-                  EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)
+                  EMPTY_API_VALUES.includes(d.name as string) ? [] : getTickLabel(d.name as string)
                 ) || []
               ).join('|')
             )
@@ -235,7 +235,7 @@ export default function ReportVesselsGraph() {
           getAggregatedData={getAggregatedData}
           // onAggregatedItemClick={onBarClick}
           // onIndividualItemClick={onPointClick}
-          aggregatedValueKey={dataviews[0]?.id}
+          aggregatedValueKey={dataviews.map((dataview) => dataview.id)}
           barValueFormatter={(value: any) => {
             return formatI18nNumber(value).toString()
           }}

@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, sumBy, uniq, uniqBy } from 'es-toolkit'
 import { t } from 'i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import {
   selectReportVesselGraph,
   selectReportCategory,
@@ -138,7 +139,6 @@ const selectReportVesselsGraphData = createSelector(
   [selectReportVesselGraph, selectReportVesselsFiltered, selectReportDataviewsWithPermissions],
   (reportGraph, vesselsFiltered, dataviews) => {
     if (!vesselsFiltered?.length) return null
-
     const reportData = groupBy(vesselsFiltered, (v) => v.dataviewId || '')
 
     const dataByDataview = dataviews.map((dataview) => {
@@ -156,11 +156,11 @@ const selectReportVesselsGraphData = createSelector(
     const allDistributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
 
     const dataviewIds = dataviews.map((d) => d.id)
-    const data = allDistributionKeys
+    const data: ResponsiveVisualizationData<'aggregated'> = allDistributionKeys
       .flatMap((key) => {
         const distributionData: Record<any, any> = { name: key }
-        dataByDataview.forEach(({ id, data }) => {
-          distributionData[id] = (data?.[key] || []).length
+        dataByDataview.forEach(({ id, color, data }) => {
+          distributionData[id] = { color, value: (data?.[key] || []).length }
         })
         if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return EMPTY_ARRAY
         return distributionData
@@ -177,7 +177,7 @@ const selectReportVesselsGraphData = createSelector(
 
 export const selectReportVesselsGraphDataGrouped = createSelector(
   [selectReportVesselsGraphData, selectReportDataviewsWithPermissions],
-  (reportGraph, dataviews) => {
+  (reportGraph, dataviews): ResponsiveVisualizationData<'aggregated'> | null => {
     if (!reportGraph?.data?.length) return null
     if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data
     const dataviewIds = dataviews.map((d) => d.id)
@@ -186,7 +186,10 @@ export const selectReportVesselsGraphDataGrouped = createSelector(
     const others = {
       name: OTHERS_CATEGORY_LABEL,
       ...Object.fromEntries(
-        dataviewIds.map((dataview) => [dataview, sum(rest.map((key: any) => key[dataview]))])
+        dataviewIds.map((dataview) => [
+          dataview,
+          { value: sum(rest.map((key: any) => key[dataview]?.value)) },
+        ])
       ),
     }
     return [...top, others]
@@ -201,24 +204,30 @@ export const selectReportVesselsGraphIndividualData = createSelector(
   }
 )
 
-const defaultOthersLabel: any[] = []
+const defaultOthersLabel: ResponsiveVisualizationData<'aggregated'> = []
 export const selectReportVesselsGraphDataOthers = createSelector(
   [selectReportVesselsGraphData],
-  (reportGraph) => {
+  (reportGraph): ResponsiveVisualizationData<'aggregated'> | null => {
     if (!reportGraph?.data?.length) return null
     if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return defaultOthersLabel
     const others = reportGraph.data.slice(MAX_CATEGORIES)
+
     return reportGraph.distributionKeys
       .flatMap((key) => {
         const other = others.find((o) => o.name === key)
         if (!other) return EMPTY_ARRAY
         const { name, ...rest } = other
-        return { name, value: sum(Object.values(rest)) }
+        return {
+          name,
+          value: {
+            value: sum(Object.values(rest).map((v) => (v as any).value)),
+          },
+        }
       })
       .sort((a, b) => {
-        if (EMPTY_API_VALUES.includes(a.name)) return 1
-        if (EMPTY_API_VALUES.includes(b.name)) return -1
-        return b.value - a.value
+        if (EMPTY_API_VALUES.includes(a.name as string)) return 1
+        if (EMPTY_API_VALUES.includes(b.name as string)) return -1
+        return b.value?.value - a.value?.value
       })
   }
 )

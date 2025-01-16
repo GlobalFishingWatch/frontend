@@ -6,13 +6,47 @@ import type {
   getIsIndividualTimeseriesSupported,
   IsIndividualSupportedParams,
 } from '../lib/density'
-import type { BaseResponsiveChartProps } from './types'
+import type {
+  BaseResponsiveChartProps,
+  ResponsiveVisualizationAggregatedValueKey,
+  ResponsiveVisualizationIndividualValueKey,
+} from './types'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
   DEFAULT_LABEL_KEY,
   DEFAULT_POINT_SIZE,
 } from './config'
+
+export function useValueKeys(
+  individualValueKey:
+    | ResponsiveVisualizationIndividualValueKey
+    | ResponsiveVisualizationIndividualValueKey[],
+  aggregatedValueKey:
+    | ResponsiveVisualizationAggregatedValueKey
+    | ResponsiveVisualizationIndividualValueKey[]
+) {
+  const individualValueKeysHash = Array.isArray(individualValueKey)
+    ? individualValueKey.join(',')
+    : individualValueKey
+  const individualValueKeys = useMemo(
+    () => (Array.isArray(individualValueKey) ? individualValueKey : [individualValueKey]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [individualValueKeysHash]
+  )
+  const aggregatedValueKeysHash = Array.isArray(aggregatedValueKey)
+    ? aggregatedValueKey.join(',')
+    : aggregatedValueKey
+  const aggregatedValueKeys = useMemo(
+    () => (Array.isArray(aggregatedValueKey) ? aggregatedValueKey : [aggregatedValueKey]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [aggregatedValueKeysHash]
+  )
+  return useMemo(
+    () => ({ individualValueKeys, aggregatedValueKeys }),
+    [individualValueKeys, aggregatedValueKeys]
+  )
+}
 
 type ResponsiveVisualizationContainerRef = React.RefObject<HTMLElement | null>
 export function useResponsiveDimensions(containerRef: ResponsiveVisualizationContainerRef) {
@@ -45,8 +79,8 @@ type UseResponsiveVisualizationDataProps = {
   end?: string
   timeseriesInterval?: FourwingsInterval
   labelKey: keyof ResponsiveVisualizationData[0]
-  individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
-  aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0]
+  individualValueKeys: ResponsiveVisualizationIndividualValueKey[]
+  aggregatedValueKeys: ResponsiveVisualizationAggregatedValueKey[]
   getAggregatedData?: BaseResponsiveChartProps['getAggregatedData']
   getIndividualData?: BaseResponsiveChartProps['getIndividualData']
   getIsIndividualSupported:
@@ -56,8 +90,8 @@ type UseResponsiveVisualizationDataProps = {
 
 export function useResponsiveVisualizationData({
   labelKey = DEFAULT_LABEL_KEY,
-  individualValueKey = DEFAULT_INDIVIDUAL_VALUE_KEY,
-  aggregatedValueKey = DEFAULT_AGGREGATED_VALUE_KEY,
+  individualValueKeys = [DEFAULT_INDIVIDUAL_VALUE_KEY],
+  aggregatedValueKeys = [DEFAULT_AGGREGATED_VALUE_KEY],
   start,
   end,
   timeseriesInterval,
@@ -77,8 +111,8 @@ export function useResponsiveVisualizationData({
         start,
         end,
         timeseriesInterval,
-        individualValueKey,
-        aggregatedValueKey,
+        individualValueKeys,
+        aggregatedValueKeys,
       }
       if (getAggregatedData) {
         const aggregatedData = await getAggregatedData()
@@ -130,10 +164,11 @@ export function useResponsiveVisualizationData({
           setData(individualData)
         } else {
           const aggregatedData = individualData.map((item) => {
-            const value = item[individualValueKey] as ResponsiveVisualizationValue[]
+            // TODO: handle multiple individual value keys
+            const value = item[individualValueKeys[0]] as ResponsiveVisualizationValue[]
             return {
               [labelKey]: item[labelKey as keyof typeof item],
-              [individualValueKey]: value.length,
+              [individualValueKeys[0]]: value.length,
             }
           }) as ResponsiveVisualizationData<'aggregated'>
           setIsIndividualSupported(false)
@@ -149,8 +184,8 @@ export function useResponsiveVisualizationData({
       start,
       end,
       timeseriesInterval,
-      individualValueKey,
-      aggregatedValueKey,
+      individualValueKeys,
+      aggregatedValueKeys,
       labelKey,
     ]
   )

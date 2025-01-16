@@ -6,13 +6,15 @@ export type ResponsiveVisualizationKey = string
 
 export type ResponsiveVisualizationLabel = string
 export type ResponsiveVisualizationIndividualValue = Record<string, any>
+export type ResponsiveVisualizationAggregatedObjectValue = {
+  label?: string
+  color?: string
+  value: number
+}
+
 export type ResponsiveVisualizationAggregatedValue =
   | number
-  | {
-      label?: string
-      color?: string
-      value: number
-    }
+  | ResponsiveVisualizationAggregatedObjectValue
 
 export type ResponsiveVisualizationValue<
   Mode extends ResponsiveVisualizationMode | undefined = undefined,
@@ -31,14 +33,19 @@ export type ResponsiveVisualizationIndividualItem = Record<
   ResponsiveVisualizationLabel | ResponsiveVisualizationValue<'individual'>[]
 >
 
-export type ResponsiveVisualizationItem =
-  | ResponsiveVisualizationAggregatedItem
-  | ResponsiveVisualizationIndividualItem
+export type ResponsiveVisualizationItem<
+  D = ResponsiveVisualizationAggregatedItem | ResponsiveVisualizationIndividualItem,
+> = D
 
 export type ResponsiveVisualizationData<
   Mode extends ResponsiveVisualizationMode | undefined = undefined,
+  Data extends
+    | ResponsiveVisualizationAggregatedItem
+    | ResponsiveVisualizationIndividualItem = Mode extends 'aggregated'
+    ? ResponsiveVisualizationAggregatedItem
+    : ResponsiveVisualizationIndividualItem,
 > = Mode extends 'aggregated'
-  ? ResponsiveVisualizationAggregatedItem[]
+  ? ResponsiveVisualizationItem<Data>[]
   : Mode extends 'individual'
-    ? ResponsiveVisualizationIndividualItem[]
-    : (ResponsiveVisualizationAggregatedItem | ResponsiveVisualizationIndividualItem)[]
+    ? ResponsiveVisualizationItem<Data>[]
+    : ResponsiveVisualizationItem[]

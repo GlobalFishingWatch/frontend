@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import type { ResponsiveVisualizationData } from '../../types'
 import { getIsIndividualTimeseriesSupported } from '../../lib/density'
 import type { BaseResponsiveChartProps, BaseResponsiveTimeseriesProps } from '../types'
-import { useResponsiveVisualization } from '../hooks'
+import { useResponsiveVisualization, useValueKeys } from '../hooks'
 import {
   DEFAULT_AGGREGATED_VALUE_KEY,
   DEFAULT_INDIVIDUAL_VALUE_KEY,
@@ -35,14 +35,19 @@ export function ResponsiveTimeseries({
   onAggregatedItemClick,
   individualIcon,
 }: ResponsiveTimeseriesProps) {
+  // TODO: add support for multiple value keys
+  const { individualValueKeys, aggregatedValueKeys } = useValueKeys(
+    individualValueKey,
+    aggregatedValueKey
+  )
   const containerRef = useRef<HTMLDivElement>(null)
   const { width, data, isIndividualSupported } = useResponsiveVisualization(containerRef, {
     start,
     end,
     timeseriesInterval,
     labelKey: dateKey,
-    aggregatedValueKey,
-    individualValueKey,
+    aggregatedValueKeys,
+    individualValueKeys,
     getAggregatedData,
     getIndividualData,
     getIsIndividualSupported: getIsIndividualTimeseriesSupported,
@@ -66,7 +71,7 @@ export function ResponsiveTimeseries({
           color={color}
           dateKey={dateKey}
           timeseriesInterval={timeseriesInterval}
-          valueKey={individualValueKey}
+          valueKeys={individualValueKeys}
           onClick={onIndividualItemClick}
           tickLabelFormatter={tickLabelFormatter}
           customTooltip={individualTooltip}
@@ -80,7 +85,7 @@ export function ResponsiveTimeseries({
           color={color}
           dateKey={dateKey}
           timeseriesInterval={timeseriesInterval}
-          valueKey={aggregatedValueKey}
+          valueKeys={aggregatedValueKeys}
           onClick={onAggregatedItemClick}
           tickLabelFormatter={tickLabelFormatter}
           customTooltip={aggregatedTooltip}

@@ -168,8 +168,7 @@ export default function VesselGroupReportVesselsGraph({
 }: VesselGroupReportVesselsGraphProps) {
   const { dispatchQueryParams } = useLocationConnect()
 
-  const onBarClick: ResponsiveVisualizationInteractionCallback = (e) => {
-    const { payload } = e.activePayload?.[0] || {}
+  const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
     if (payload && payload?.name !== OTHER_CATEGORY_LABEL) {
       dispatchQueryParams({
         [filterQueryParam]: `${FILTER_PROPERTIES[property as VGRVesselsSubsection]}:${

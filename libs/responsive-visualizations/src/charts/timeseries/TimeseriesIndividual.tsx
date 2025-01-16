@@ -21,7 +21,7 @@ export function IndividualTimeseries({
   start,
   end,
   dateKey,
-  valueKey,
+  valueKeys,
   timeseriesInterval,
   tickLabelFormatter,
   customTooltip,
@@ -34,7 +34,8 @@ export function IndividualTimeseries({
     data,
     timeseriesInterval,
     dateKey,
-    valueKey: valueKey as keyof ResponsiveVisualizationData[0],
+    // TODO: add support for multiple value keys
+    valueKey: valueKeys[0] as keyof ResponsiveVisualizationData[0],
     aggregated: false,
   })
 
@@ -55,7 +56,7 @@ export function IndividualTimeseries({
             style={{ paddingBottom: AXIS_LABEL_PADDING, paddingInline: TIMESERIES_PADDING }}
           >
             {fullTimeseries.map((item, index) => {
-              const points = item?.[valueKey] as ResponsiveVisualizationValue<'individual'>[]
+              const points = item?.[valueKeys[0]] as ResponsiveVisualizationValue<'individual'>[]
               return (
                 <div
                   key={index}

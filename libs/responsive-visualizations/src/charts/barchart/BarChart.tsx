@@ -7,7 +7,7 @@ import {
   DEFAULT_INDIVIDUAL_VALUE_KEY,
   DEFAULT_LABEL_KEY,
 } from '../config'
-import { useResponsiveVisualization } from '../hooks'
+import { useResponsiveVisualization, useValueKeys } from '../hooks'
 import { BarChartPlaceholder } from '../placeholders/BarChartPlaceholder'
 import { IndividualBarChart } from './BarChartIndividual'
 import { AggregatedBarChart } from './BarChartAggregated'
@@ -31,13 +31,17 @@ export function ResponsiveBarChart({
   onIndividualItemClick,
   onAggregatedItemClick,
 }: ResponsiveBarChartProps) {
+  const { individualValueKeys, aggregatedValueKeys } = useValueKeys(
+    individualValueKey,
+    aggregatedValueKey
+  )
   const containerRef = useRef<HTMLDivElement>(null)
   const { data, isIndividualSupported, individualItemSize } = useResponsiveVisualization(
     containerRef,
     {
       labelKey,
-      aggregatedValueKey,
-      individualValueKey,
+      aggregatedValueKeys,
+      individualValueKeys,
       getAggregatedData,
       getIndividualData,
       getIsIndividualSupported: getIsIndividualBarChartSupported,
@@ -58,7 +62,7 @@ export function ResponsiveBarChart({
           data={data as ResponsiveVisualizationData<'individual'>}
           color={color}
           pointSize={individualItemSize}
-          valueKey={individualValueKey}
+          valueKeys={individualValueKeys}
           labelKey={labelKey}
           onClick={onIndividualItemClick}
           barLabel={barLabel}
@@ -70,7 +74,7 @@ export function ResponsiveBarChart({
         <AggregatedBarChart
           data={data as ResponsiveVisualizationData<'aggregated'>}
           color={color}
-          valueKey={aggregatedValueKey}
+          valueKeys={aggregatedValueKeys}
           labelKey={labelKey}
           onClick={onAggregatedItemClick}
           barLabel={barLabel}

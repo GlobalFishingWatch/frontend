@@ -12,6 +12,10 @@ import {
   POINT_SIZES,
 } from '../charts/config'
 import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
+import type {
+  ResponsiveVisualizationAggregatedValueKey,
+  ResponsiveVisualizationIndividualValueKey,
+} from '../charts/types'
 
 export const getItemValue = (value: ResponsiveVisualizationValue) => {
   if (typeof value === 'number') {
@@ -38,14 +42,24 @@ type ColumnsStats = {
 }
 export const getColumnsStats = (
   data: ResponsiveVisualizationData,
-  aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0],
-  individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
+  aggregatedValueKeys: ResponsiveVisualizationAggregatedValueKey[],
+  individualValueKeys: ResponsiveVisualizationIndividualValueKey[]
 ): ColumnsStats => {
   return data.reduce<ColumnsStats>(
     (acc, column) => {
-      const value: number = column[aggregatedValueKey]
-        ? getItemValue(column[aggregatedValueKey] as ResponsiveVisualizationValue)
-        : (column[individualValueKey] as ResponsiveVisualizationValue[])?.length || 0
+      const useAggregatedValue = aggregatedValueKeys.every((key) => column[key] !== undefined)
+      let value = 0
+      if (useAggregatedValue) {
+        value = aggregatedValueKeys.reduce((acc, key) => {
+          const v = getItemValue(column[key] as ResponsiveVisualizationValue)
+          return acc + v
+        }, 0)
+      } else {
+        value = individualValueKeys.reduce((acc, key) => {
+          const v = (column[key] as ResponsiveVisualizationValue[])?.length || 0
+          return acc + v
+        }, 0)
+      }
       return { total: acc.total + value, max: Math.max(acc.max, value) }
     },
     { total: 0, max: 0 }
@@ -59,8 +73,8 @@ export type IsIndividualSupportedParams = {
   timeseriesInterval?: FourwingsInterval
   width: number
   height: number
-  aggregatedValueKey: keyof ResponsiveVisualizationData<'aggregated'>[0]
-  individualValueKey: keyof ResponsiveVisualizationData<'individual'>[0]
+  aggregatedValueKeys: ResponsiveVisualizationAggregatedValueKey[]
+  individualValueKeys: ResponsiveVisualizationIndividualValueKey[]
 }
 type IsIndividualSupportedResult = {
   isSupported: boolean
@@ -70,10 +84,10 @@ export function getIsIndividualBarChartSupported({
   data,
   width,
   height,
-  aggregatedValueKey,
-  individualValueKey,
+  aggregatedValueKeys,
+  individualValueKeys,
 }: IsIndividualSupportedParams): IsIndividualSupportedResult {
-  const { total, max } = getColumnsStats(data, aggregatedValueKey, individualValueKey)
+  const { total, max } = getColumnsStats(data, aggregatedValueKeys, individualValueKeys)
   if (total > MAX_INDIVIDUAL_ITEMS) {
     return { isSupported: false }
   }
@@ -93,10 +107,10 @@ export function getIsIndividualTimeseriesSupported({
   start,
   end,
   timeseriesInterval,
-  aggregatedValueKey,
-  individualValueKey,
+  aggregatedValueKeys,
+  individualValueKeys,
 }: IsIndividualSupportedParams): IsIndividualSupportedResult {
-  const { total, max } = getColumnsStats(data, aggregatedValueKey, individualValueKey)
+  const { total, max } = getColumnsStats(data, aggregatedValueKeys, individualValueKeys)
   if (total > MAX_INDIVIDUAL_ITEMS) {
     return { isSupported: false }
   }

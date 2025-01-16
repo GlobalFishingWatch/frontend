@@ -1,5 +1,8 @@
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
-import type { ResponsiveVisualizationValue } from '../../types'
+import type {
+  ResponsiveVisualizationAggregatedObjectValue,
+  ResponsiveVisualizationValue,
+} from '../../types'
 import type { BarChartByTypeProps } from '../types'
 
 type AggregatedBarChartProps = BarChartByTypeProps<'aggregated'>
@@ -8,13 +11,12 @@ export function AggregatedBarChart({
   data,
   color,
   barLabel,
-  valueKey,
+  valueKeys,
   labelKey,
   onClick,
   customTooltip,
   barValueFormatter,
 }: AggregatedBarChartProps) {
-  const dataKey = typeof data[0][valueKey] === 'number' ? valueKey : `${valueKey}.value`
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -27,26 +29,34 @@ export function AggregatedBarChart({
           left: 0,
           bottom: 0,
         }}
-        // TODO: restore this
-        // onClick={(d) => onClick?.(d.activePayload)}
+        onClick={(d: any) => {
+          onClick?.(d.activePayload[0].payload)
+        }}
       >
         {data && <Tooltip content={customTooltip} />}
-        {/* {valueKeys.map((valueKey) => ( */}
-        <Bar
-          key={valueKey}
-          dataKey={dataKey}
-          fill={color}
-          stackId="a"
-          onClick={(e) => onClick?.(e.activePayload as ResponsiveVisualizationValue)}
-        >
-          <LabelList
-            position="top"
-            valueAccessor={({ value }: { value: [number, number] }) => {
-              return barValueFormatter?.(value[1]) || value[1]
-            }}
-          />
-        </Bar>
-        {/* ))} */}
+        {valueKeys.map((valueKey) => {
+          const isValueObject = typeof data[0][valueKey] === 'object'
+          const dataKey = isValueObject ? `${valueKey}.value` : valueKey
+          const barColor = isValueObject
+            ? (data[0][valueKey] as ResponsiveVisualizationAggregatedObjectValue).color || color
+            : color
+          return (
+            <Bar
+              key={valueKey}
+              dataKey={dataKey}
+              fill={barColor}
+              stackId="a"
+              onClick={(e) => onClick?.(e.activePayload as ResponsiveVisualizationValue)}
+            >
+              <LabelList
+                position="top"
+                valueAccessor={({ value }: { value: [number, number] }) => {
+                  return barValueFormatter?.(value[1]) || value[1]
+                }}
+              />
+            </Bar>
+          )
+        })}
         <XAxis
           dataKey={labelKey}
           interval="equidistantPreserveStart"

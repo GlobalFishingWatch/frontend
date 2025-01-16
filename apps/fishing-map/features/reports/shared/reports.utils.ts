@@ -12,6 +12,11 @@ import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.confi
 import type { VesselGroupVesselTableParsed } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import type { ReportVesselGraph } from '../areas/area-reports.types'
 
+type VesselVisualizationData = ResponsiveVisualizationData<
+  'individual',
+  { name: string; values: any[] }
+>
+
 export function getVesselIndividualGroupedData(
   vessels: (EventsStatsVessel | VesselGroupVesselTableParsed | ReportVesselWithDatasets)[],
   groupByProperty: VGRSubsection | VGREventsVesselsProperty | ReportVesselGraph
@@ -50,20 +55,16 @@ export function getVesselIndividualGroupedData(
       break
     }
   }
-  const orderedGroups: ResponsiveVisualizationData<'individual', { name: string; values: any[] }> =
-    Object.entries(vesselsGrouped)
-      .map(([key, value]) => ({
-        name: key,
-        values: value as any[],
-      }))
-      .sort((a, b) => {
-        return b.values.length - a.values.length
-      })
-  const groupsWithoutOther: ResponsiveVisualizationData<
-    'individual',
-    { name: string; values: any[] }
-  > = []
-  const otherGroups: ResponsiveVisualizationData<'individual', { name: string; values: any[] }> = []
+  const orderedGroups: VesselVisualizationData = Object.entries(vesselsGrouped)
+    .map(([key, value]) => ({
+      name: key,
+      values: value as any[],
+    }))
+    .sort((a, b) => {
+      return b.values.length - a.values.length
+    })
+  const groupsWithoutOther: VesselVisualizationData = []
+  const otherGroups: VesselVisualizationData = []
   orderedGroups.forEach((group) => {
     if (
       group.name === 'null' ||
@@ -86,7 +87,7 @@ export function getVesselIndividualGroupedData(
         ]
       : groupsWithoutOther
   if (allGroups.length <= MAX_CATEGORIES) {
-    return allGroups as ResponsiveVisualizationData<'individual'>
+    return allGroups as VesselVisualizationData
   }
   const firstGroups = allGroups.slice(0, MAX_CATEGORIES)
   const restOfGroups = allGroups.slice(MAX_CATEGORIES)
@@ -97,5 +98,5 @@ export function getVesselIndividualGroupedData(
       name: OTHER_CATEGORY_LABEL,
       values: restOfGroups.flatMap((group) => group.values),
     },
-  ] as ResponsiveVisualizationData<'individual'>
+  ] as VesselVisualizationData
 }

@@ -11,18 +11,28 @@ export type ResponsiveVisualizationInteractionCallback<Item = ResponsiveVisualiz
   item: Item
 ) => void
 
+export type ResponsiveVisualizationAggregatedValueKey =
+  keyof ResponsiveVisualizationData<'aggregated'>[0]
+
+export type ResponsiveVisualizationIndividualValueKey =
+  keyof ResponsiveVisualizationData<'individual'>[0]
+
 export type BaseResponsiveChartProps = {
   // Aggregated props
   aggregatedTooltip?: ReactElement
   onAggregatedItemClick?: ResponsiveVisualizationInteractionCallback
   getAggregatedData?: () => Promise<ResponsiveVisualizationData<'aggregated'> | undefined>
-  aggregatedValueKey?: keyof ResponsiveVisualizationData<'aggregated'>[0]
+  aggregatedValueKey?:
+    | ResponsiveVisualizationAggregatedValueKey
+    | ResponsiveVisualizationAggregatedValueKey[]
   // Individual props
   individualTooltip?: ReactElement
   individualItem?: ReactElement
   onIndividualItemClick?: ResponsiveVisualizationInteractionCallback
   getIndividualData?: () => Promise<ResponsiveVisualizationData<'individual'> | undefined>
-  individualValueKey?: keyof ResponsiveVisualizationData<'individual'>[0]
+  individualValueKey?:
+    | ResponsiveVisualizationIndividualValueKey
+    | ResponsiveVisualizationIndividualValueKey[]
   individualIcon?: ReactElement
 }
 
@@ -36,7 +46,7 @@ export type BaseResponsiveBarChartProps = {
 export type BarChartByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveBarChartProps & {
     labelKey: keyof ResponsiveVisualizationData<M>[0]
-    valueKey: keyof ResponsiveVisualizationData<M>[0]
+    valueKeys: (keyof ResponsiveVisualizationData<M>[0])[]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback
     customTooltip?: ReactElement
@@ -55,7 +65,7 @@ export type BaseResponsiveTimeseriesProps = {
 export type TimeseriesByTypeProps<M extends ResponsiveVisualizationMode> =
   BaseResponsiveTimeseriesProps & {
     dateKey: keyof ResponsiveVisualizationData<M>[0]
-    valueKey: keyof ResponsiveVisualizationData<M>[0]
+    valueKeys: (keyof ResponsiveVisualizationData<M>[0])[]
     data: ResponsiveVisualizationData<M>
     onClick?: ResponsiveVisualizationInteractionCallback
     customTooltip?: ReactElement

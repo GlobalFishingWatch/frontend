@@ -22,13 +22,14 @@ export function AggregatedTimeseries({
   start,
   end,
   dateKey,
-  valueKey,
+  valueKeys,
   customTooltip,
   timeseriesInterval,
   tickLabelFormatter,
 }: AggregatedTimeseriesProps) {
-  const dataMin: number = data.length ? (min(data.map((item) => item[valueKey])) as number) : 0
-  const dataMax: number = data.length ? (max(data.map((item) => item[valueKey])) as number) : 0
+  // TODO: add support for multiple value keys
+  const dataMin: number = data.length ? (min(data.map((item) => item[valueKeys[0]])) as number) : 0
+  const dataMax: number = data.length ? (max(data.map((item) => item[valueKeys[0]])) as number) : 0
 
   const domainPadding = (dataMax - dataMin) / 8
   const paddedDomain: [number, number] = [
@@ -43,7 +44,7 @@ export function AggregatedTimeseries({
     data,
     timeseriesInterval,
     dateKey,
-    valueKey: valueKey as keyof ResponsiveVisualizationData[0],
+    valueKey: valueKeys[0] as keyof ResponsiveVisualizationData[0],
   })
 
   if (!fullTimeseries.length) {
@@ -74,7 +75,7 @@ export function AggregatedTimeseries({
         <Line
           name="line"
           type="monotone"
-          dataKey={valueKey}
+          dataKey={valueKeys[0]}
           // TODO: add unit
           // unit={t('common.events', 'Events').toLowerCase()}
           dot={false}
