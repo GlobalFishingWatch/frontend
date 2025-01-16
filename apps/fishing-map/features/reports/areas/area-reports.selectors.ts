@@ -47,7 +47,7 @@ const EMPTY_ARRAY: [] = []
 type ReportVesselWithMeta = ReportVessel & {
   // Merging detections or hours depending on the activity unit into the same property
   value: number
-  sourceColor: string
+  color: string
   activityDatasetId: string
   category: ReportCategory
   dataviewId: string
@@ -57,7 +57,7 @@ type ReportVesselWithMeta = ReportVessel & {
 
 export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName'> &
   Partial<ReportVessel> &
-  Pick<ReportVesselWithMeta, 'sourceColor' | 'value'> & {
+  Pick<ReportVesselWithMeta, 'color' | 'value'> & {
     infoDataset?: Dataset
     trackDataset?: Dataset
     dataviewId?: string
@@ -132,8 +132,8 @@ export const selectReportActivityFlatten = createSelector(
               : vessel.shipName,
             activityDatasetId: datasetId,
             dataviewId: dataview?.id,
+            color: dataview?.config?.color,
             category: getReportCategoryFromDataview(dataview),
-            sourceColor: dataview?.config?.color,
           } as ReportVesselWithMeta
         })
       })

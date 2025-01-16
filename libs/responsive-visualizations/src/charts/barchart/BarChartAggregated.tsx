@@ -1,4 +1,4 @@
-import { Bar, BarChart, LabelList,ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { Bar, BarChart, LabelList, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 
 import type {
   ResponsiveVisualizationAggregatedObjectValue,
@@ -35,7 +35,7 @@ export function AggregatedBarChart({
         }}
       >
         {data && <Tooltip content={customTooltip} />}
-        {valueKeys.map((valueKey) => {
+        {valueKeys.map((valueKey, index) => {
           const isValueObject = typeof data[0][valueKey] === 'object'
           const dataKey = isValueObject ? `${valueKey}.value` : valueKey
           const barColor = isValueObject
@@ -49,12 +49,14 @@ export function AggregatedBarChart({
               stackId="a"
               onClick={(e) => onClick?.(e.activePayload as ResponsiveVisualizationValue)}
             >
-              <LabelList
-                position="top"
-                valueAccessor={({ value }: { value: [number, number] }) => {
-                  return barValueFormatter?.(value[1]) || value[1]
-                }}
-              />
+              {index && valueKeys.length - 1 && (
+                <LabelList
+                  position="top"
+                  valueAccessor={({ value }: { value: [number, number] }) => {
+                    return barValueFormatter?.(value[1]) || value[1]
+                  }}
+                />
+              )}
             </Bar>
           )
         })}

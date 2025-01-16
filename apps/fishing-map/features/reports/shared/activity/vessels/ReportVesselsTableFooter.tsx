@@ -66,8 +66,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
         reportVesselFilter
       )?.map((vessel) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { dataviewId, category, sourceColor, flagTranslatedClean, hours, value, ...rest } =
-          vessel
+        const { dataviewId, category, color, flagTranslatedClean, hours, value, ...rest } = vessel
         return { ...rest, value: formatI18nNumber(hours || value) }
       })
       trackEvent({

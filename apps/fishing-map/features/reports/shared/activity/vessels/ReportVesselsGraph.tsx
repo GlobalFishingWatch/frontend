@@ -23,12 +23,11 @@ import {
   selectReportVesselsGraphIndividualData,
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
+import { ReportBarGraphPlaceholder } from 'features/reports/shared/placeholders/ReportBarGraphPlaceholder'
 import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getVesselGearTypeLabel } from 'utils/info'
-
-import { ReportBarGraphPlaceholder } from '../../placeholders/ReportBarGraphPlaceholder'
 
 import styles from './ReportVesselsGraph.module.css'
 

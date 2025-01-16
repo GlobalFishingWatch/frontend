@@ -88,7 +88,7 @@ export const selectReportVesselsList = createSelector(
           value: vesselActivity[0]?.value,
           infoDataset,
           trackDataset,
-          sourceColor: vesselActivity[0]?.sourceColor,
+          color: vesselActivity[0]?.color,
         } as ReportVesselWithDatasets
       })
       .sort((a, b) => (b.value as number) - (a.value as number))

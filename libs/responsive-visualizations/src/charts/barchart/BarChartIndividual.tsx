@@ -50,7 +50,7 @@ export function IndividualBarChart({
                   {valueKeys.map((valueKey) => {
                     const points = item?.[valueKey] as ResponsiveVisualizationValue<'individual'>[]
                     return (
-                      <ul className={styles.bar} style={{ gap: POINT_GAP }}>
+                      <ul key={valueKey} className={styles.bar} style={{ gap: POINT_GAP }}>
                         {points?.map((point, pointIndex) => (
                           <IndividualPoint
                             key={pointIndex}
