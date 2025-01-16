@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, sum, sumBy, uniq, uniqBy } from 'es-toolkit'
+import { groupBy, memoize, sum, sumBy, uniq, uniqBy } from 'es-toolkit'
 import { t } from 'i18next'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -178,25 +178,41 @@ const selectReportVesselsGraphData = createSelector(
   }
 )
 
-export const selectReportVesselsGraphDataGrouped = createSelector(
-  [selectReportVesselsGraphData, selectReportDataviewsWithPermissions],
-  (reportGraph, dataviews): ResponsiveVisualizationData<'aggregated'> | null => {
-    if (!reportGraph?.data?.length) return null
-    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data
-    const dataviewIds = dataviews.map((d) => d.id)
-    const top = reportGraph.data.slice(0, MAX_CATEGORIES)
-    const rest = reportGraph.data.slice(MAX_CATEGORIES)
-    const others = {
-      name: OTHERS_CATEGORY_LABEL,
-      ...Object.fromEntries(
-        dataviewIds.map((dataview) => [
-          dataview,
-          { value: sum(rest.map((key: any) => key[dataview]?.value)) },
-        ])
-      ),
-    }
-    return [...top, others]
-  }
+export const selectReportVesselsGraphDataGrouped = memoize(
+  ({ labelKey, valueKeys }: { labelKey: string; valueKeys: string[] }) =>
+    createSelector(
+      [selectReportVesselsGraphData],
+      (reportGraph): ResponsiveVisualizationData<'aggregated'> | null => {
+        if (!reportGraph?.data?.length || !valueKeys?.length) return null
+        if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data
+        const sortedData = reportGraph.data.toSorted((a, b) => {
+          if (a[labelKey] === 'OTHERS' || b[labelKey] === 'OTHERS') {
+            return -1
+          }
+          const sumA = valueKeys.reduce(
+            (sum, key) => sum + (typeof a[key] === 'object' ? a[key].value : (a[key] as number)),
+            0
+          )
+          const sumB = valueKeys.reduce(
+            (sum, key) => sum + (typeof b[key] === 'object' ? b[key].value : (b[key] as number)),
+            0
+          )
+          return sumB - sumA
+        })
+        const top = sortedData.slice(0, MAX_CATEGORIES)
+        const rest = sortedData.slice(MAX_CATEGORIES)
+        const others = {
+          name: OTHERS_CATEGORY_LABEL,
+          ...Object.fromEntries(
+            valueKeys.map((valueKey) => [
+              valueKey,
+              { value: sum(rest.map((key: any) => key[valueKey]?.value)) },
+            ])
+          ),
+        }
+        return [...top, others]
+      }
+    )
 )
 
 export const selectReportVesselsGraphIndividualData = createSelector(

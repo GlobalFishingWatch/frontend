@@ -170,7 +170,9 @@ const CustomTick = (props: any) => {
 
 export default function ReportVesselsGraph() {
   const dataviews = useSelector(selectReportDataviewsWithPermissions)
-  const data = useSelector(selectReportVesselsGraphDataGrouped)
+  const valueKeys = dataviews.map((dataview) => dataview.id)
+  const labelKey = 'name'
+  const data = useSelector(selectReportVesselsGraphDataGrouped({ labelKey, valueKeys }))
   const individualData = useSelector(selectReportVesselsGraphIndividualData)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   const othersData = useSelector(selectReportVesselsGraphDataOthers)
@@ -238,12 +240,12 @@ export default function ReportVesselsGraph() {
           getAggregatedData={getAggregatedData}
           // onAggregatedItemClick={onBarClick}
           // onIndividualItemClick={onPointClick}
-          aggregatedValueKey={dataviews.map((dataview) => dataview.id)}
+          aggregatedValueKey={valueKeys}
           barValueFormatter={(value: any) => {
             return formatI18nNumber(value).toString()
           }}
           barLabel={<CustomTick getTickLabel={getTickLabel} />}
-          labelKey={'name'}
+          labelKey={labelKey}
           individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
           individualItem={<VesselGraphLink />}
           aggregatedTooltip={<ReportGraphTooltip type={selectedReportVesselGraph} />}
