@@ -1,23 +1,25 @@
 import type { Layer } from '@deck.gl/core'
+
 import type { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { PolygonPickingObject } from '@globalfishingwatch/deck-layers'
+
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
+import type { ContextPickingInfo,ContextPickingObject } from './layers/context'
 import type { ContextLayer } from './layers/context/ContextLayer'
-import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
-import type { VesselLayer } from './layers/vessel/VesselLayer'
-import type { RulersLayer } from './layers/rulers/RulersLayer'
-import type { ContextPickingObject, ContextPickingInfo } from './layers/context'
+import type { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
 import type {
-  FourwingsPickingObject,
-  FourwingsPickingInfo,
+  FourwingsClusterPickingInfo,
   FourwingsClusterPickingObject,
   FourwingsClustersLayer,
-  FourwingsClusterPickingInfo,
+  FourwingsPickingInfo,
+  FourwingsPickingObject,
 } from './layers/fourwings'
-import type { RulerPickingObject, RulerPickingInfo } from './layers/rulers'
-import type { VesselEventPickingObject, VesselEventPickingInfo } from './layers/vessel'
-import type { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
+import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
+import type { RulerPickingInfo,RulerPickingObject } from './layers/rulers'
+import type { RulersLayer } from './layers/rulers/RulersLayer'
 import type { UserLayerPickingObject } from './layers/user'
+import type { VesselEventPickingInfo,VesselEventPickingObject } from './layers/vessel'
+import type { VesselLayer } from './layers/vessel/VesselLayer'
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
 export type DeckLayerSubcategory = `${DataviewType}` | 'draw-polygons' | 'draw-points'

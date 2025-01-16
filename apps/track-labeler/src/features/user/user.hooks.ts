@@ -1,11 +1,14 @@
 // checkExistPermissionInList
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { useSelector } from 'react-redux'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+
 import type { UserData } from '@globalfishingwatch/api-types'
+
 import { LABELER_LOAD_PERMISSION } from '../../data/constants'
-import { selectProject } from '../../routes/routes.selectors'
 import type { Project} from '../../data/projects';
 import { PROJECTS } from '../../data/projects'
+import { selectProject } from '../../routes/routes.selectors'
+
 import { selectUserData, selectUserLogged } from './user.slice'
 
 export interface UserHookType {

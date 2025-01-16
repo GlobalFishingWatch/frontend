@@ -1,15 +1,18 @@
-import React, { useCallback, useState, Fragment } from 'react'
-import { matchSorter } from 'match-sorter'
-import escapeRegExp from 'lodash/escapeRegExp'
-import { useTable, useSortBy, useRowSelect, useFlexLayout, useGlobalFilter } from 'react-table'
+import React, { Fragment,useCallback, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useFlexLayout, useGlobalFilter,useRowSelect, useSortBy, useTable } from 'react-table'
 import { FixedSizeList } from 'react-window'
+import escapeRegExp from 'lodash/escapeRegExp'
+import { matchSorter } from 'match-sorter'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config.js'
-import IconSearch from '../../assets/icons/search.svg'
-import IconClose from '../../assets/icons/close.svg'
+
 import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
+import IconClose from '../../assets/icons/close.svg'
+import IconSearch from '../../assets/icons/search.svg'
+import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config.js'
+
 import styles from './table.module.scss'
 
 const IndeterminateCheckbox = React.forwardRef(({ indeterminate, title, ...rest }, ref) => {

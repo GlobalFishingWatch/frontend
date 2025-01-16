@@ -1,7 +1,9 @@
 import React, { useId, useMemo } from 'react'
 import ReactModal from 'react-modal'
 import cx from 'classnames'
+
 import { IconButton } from '../icon-button'
+
 import styles from './Modal.module.css'
 
 interface ModalProps {

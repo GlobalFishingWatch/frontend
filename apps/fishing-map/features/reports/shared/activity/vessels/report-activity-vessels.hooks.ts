@@ -1,6 +1,7 @@
-import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import { uniq, uniqBy } from 'es-toolkit'
+
 import type {
   Dataset,
   DataviewInstance,
@@ -8,24 +9,25 @@ import type {
   Resource,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
+
+import { useAppDispatch } from 'features/app/app.hooks'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+import { setResource } from 'features/resources/resources.slice'
+import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import {
   fetchAllSearchVessels,
   getAllSearchVesselsUrl,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
-import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { setResource } from 'features/resources/resources.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 
 export const MAX_VESSEL_REPORT_PIN = 50

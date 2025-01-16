@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef,useState } from 'react'
 import { saveAs } from 'file-saver'
-import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
+
 import { useDeckMap } from 'features/map/map-context.hooks'
+import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
 export const useDownloadDomElementAsImage = () => {
   const [error, setError] = useState<string | null>('')

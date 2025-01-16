@@ -1,25 +1,28 @@
-import { useCallback } from 'react'
-import cx from 'classnames'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import React from 'react'
 import { useSelector } from 'react-redux'
-import type { ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
+import type { ButtonSize,ButtonType } from '@globalfishingwatch/ui-components'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
+
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   MAX_VESSEL_GROUP_VESSELS,
   searchVesselGroupsVesselsThunk,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { useAppDispatch } from 'features/app/app.hooks'
-import styles from './VesselGroupListTooltip.module.css'
-import VesselGroupListTooltip from './VesselGroupListTooltip'
+
 import type { AddVesselGroupVessel } from './vessel-groups.hooks'
 import {
+  NEW_VESSEL_GROUP_ID,
   useVesselGroupsModal,
   useVesselGroupsUpdate,
-  NEW_VESSEL_GROUP_ID,
 } from './vessel-groups.hooks'
 import { parseVesselGroupVessels } from './vessel-groups.utils'
+import VesselGroupListTooltip from './VesselGroupListTooltip'
+
+import styles from './VesselGroupListTooltip.module.css'
 
 type VesselGroupAddButtonProps = {
   children?: React.ReactNode

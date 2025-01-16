@@ -1,11 +1,8 @@
 import type { ChangeEvent } from 'react'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type { SelectOption } from '@globalfishingwatch/ui-components'
-import { InputText, Button, Modal, Select } from '@globalfishingwatch/ui-components'
-import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
+import { useSelector } from 'react-redux'
+
 import type {
   WorkspaceEditAccessType,
   WorkspaceViewAccessType,
@@ -15,17 +12,23 @@ import {
   WORKSPACE_PRIVATE_ACCESS,
   WORKSPACE_PUBLIC_ACCESS,
 } from '@globalfishingwatch/api-types'
-import { saveWorkspaceThunk, setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
+
+import { ROOT_DOM_ELEMENT } from 'data/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { ROOT_DOM_ELEMENT } from 'data/config'
-import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
+import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { saveWorkspaceThunk, setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
-import styles from './WorkspaceSaveModal.module.css'
+
 import { useSaveWorkspaceModalConnect, useSaveWorkspaceTimerange } from './workspace-save.hooks'
 import type { WorkspaceTimeRangeMode } from './workspace-save.utils'
 import {
@@ -36,6 +39,8 @@ import {
   getWorkspaceTimerangeName,
   isValidDaysFromLatest,
 } from './workspace-save.utils'
+
+import styles from './WorkspaceSaveModal.module.css'
 
 type CreateWorkspaceModalProps = {
   title?: string

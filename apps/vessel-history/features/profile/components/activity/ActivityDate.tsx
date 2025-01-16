@@ -1,7 +1,9 @@
 import React, { Fragment, useMemo } from 'react'
 import { DateTime } from 'luxon'
+
 import I18nDate from 'features/i18n/i18nDate'
 import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+
 import styles from './Activity.module.css'
 
 interface ActivityDateProps {

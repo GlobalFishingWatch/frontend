@@ -1,18 +1,19 @@
 import type { PropsWithChildren, PropsWithoutRef } from 'react'
+import { Children, cloneElement, Fragment, isValidElement, useState } from 'react'
 import type { Placement } from '@floating-ui/react'
 import {
-  useFloating,
   autoUpdate,
-  offset,
   flip,
-  shift,
-  useInteractions,
-  useHover,
-  useTransitionStyles,
   FloatingPortal,
+  offset,
+  shift,
+  useFloating,
+  useHover,
+  useInteractions,
+  useTransitionStyles,
 } from '@floating-ui/react'
 import cx from 'classnames'
-import { cloneElement, Children, isValidElement, Fragment, useState } from 'react'
+
 import styles from './Tooltip.module.css'
 
 export type TooltipPlacement = Placement

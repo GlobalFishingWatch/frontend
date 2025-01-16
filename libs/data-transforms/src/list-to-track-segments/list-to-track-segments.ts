@@ -1,9 +1,11 @@
 import { groupBy } from 'es-toolkit'
+
 import type { TrackSegment } from '@globalfishingwatch/api-types'
-import type { SegmentColumns } from '../types'
+
 import { parseCoords } from '../coordinates'
-import { normalizePropertiesKeys } from '../schema'
 import { getUTCDate } from '../dates'
+import { normalizePropertiesKeys } from '../schema'
+import type { SegmentColumns } from '../types'
 
 type Args = SegmentColumns & {
   records: Record<string, any>[]

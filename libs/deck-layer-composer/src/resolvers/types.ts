@@ -10,6 +10,7 @@ import type {
   VesselsColorByProperty,
 } from '@globalfishingwatch/deck-layers'
 import type { VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
+
 import type { TimeRange } from './dataviews'
 
 export type ResolverGlobalConfig = {

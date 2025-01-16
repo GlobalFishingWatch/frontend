@@ -1,5 +1,6 @@
-import { atom, useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
+import { atom, useSetAtom } from 'jotai'
+
 import type { ChartType, TimebarChartData, TimebarChartsData } from '.'
 
 const chartsDataState = atom({} as TimebarChartsData)

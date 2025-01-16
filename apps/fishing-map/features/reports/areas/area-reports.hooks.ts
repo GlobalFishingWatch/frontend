@@ -1,23 +1,38 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useGetStatsByDataviewQuery } from 'queries/stats-api'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { Bbox } from 'types'
+
 import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
-import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+
+import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
+import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
 } from 'features/app/selectors/app.reports.selector'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
   fetchAreaDetailThunk,
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
+import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
+import { useMapViewState,useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import type { LastReportStorage } from 'features/reports/areas/area-reports.config'
+import {
+  ENTIRE_WORLD_REPORT_AREA_BOUNDS,
+  LAST_REPORTS_STORAGE_KEY,
+} from 'features/reports/areas/area-reports.config'
 import {
   selectReportArea,
   selectReportAreaDataviews,
@@ -26,20 +41,6 @@ import {
   selectReportDataviewsWithPermissions,
   selectTimeComparisonValues,
 } from 'features/reports/areas/area-reports.selectors'
-import { useDeckMap } from 'features/map/map-context.hooks'
-import type { Bbox } from 'types'
-import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
-import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
-import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
-import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
-import type { LastReportStorage } from 'features/reports/areas/area-reports.config'
-import {
-  ENTIRE_WORLD_REPORT_AREA_BOUNDS,
-  LAST_REPORTS_STORAGE_KEY,
-} from 'features/reports/areas/area-reports.config'
-import { selectIsVesselGroupReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   fetchReportVesselsThunk,
   getReportQuery,
@@ -47,7 +48,9 @@ import {
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from 'features/reports/shared/activity/reports-activity.slice'
-import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectIsVesselGroupReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { selectVGRActivityDataview } from '../vessel-groups/vessel-group-report.selectors'
 
 export type DateTimeSeries = {
@@ -250,7 +253,7 @@ export function useFetchReportVessel() {
       includes: reportDataviews.flatMap(
         ({ datasets }) => datasets.flatMap(({ unit }) => unit || []) || []
       ),
-      filters: reportDataviews.map(({ filter }) => filter).filter(Boolean),
+      filters: reportDataviews.map(({ filter }) => filter),
       vesselGroups: reportDataviews.flatMap(({ vesselGroups }) => vesselGroups || []),
       region: {
         id: areaId,

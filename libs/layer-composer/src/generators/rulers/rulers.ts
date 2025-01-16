@@ -1,13 +1,15 @@
-import memoizeOne from 'memoize-one'
-import type { FeatureCollection, Feature, LineString, Point } from 'geojson'
-import length from '@turf/length'
 import greatCircle from '@turf/great-circle'
 import { point } from '@turf/helpers'
+import length from '@turf/length'
+import type { Feature, FeatureCollection, LineString, Point } from 'geojson'
+import memoizeOne from 'memoize-one'
+
 import type { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import { memoizeByLayerId, memoizeCache } from '../../utils'
+
 import type { Dictionary } from '../../types'
 import { Group } from '../../types'
-import type { RulersGeneratorConfig, Ruler } from '../types'
+import { memoizeByLayerId, memoizeCache } from '../../utils'
+import type { Ruler,RulersGeneratorConfig } from '../types'
 import { GeneratorType } from '../types'
 
 const COLOR = '#ffaa00'

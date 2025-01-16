@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react'
 import type { DateTimeUnit } from 'luxon'
+
 import { getUnitsPositions } from '../layouts'
-import { clampToAbsoluteBoundaries, getDeltaMs, getDeltaDays } from '../utils/internal-utils'
 import type { TimelineScale } from '../timelineContext'
+import { clampToAbsoluteBoundaries, getDeltaDays,getDeltaMs } from '../utils/internal-utils'
+
 import styles from './timeline-units.module.css'
 
 type TimelineUnitsProps = {

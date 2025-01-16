@@ -3,15 +3,18 @@ import { Component } from 'react'
 import classNames from 'classnames'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
+
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
-  LIMITS_BY_INTERVAL,
-  getFourwingsInterval,
   FOURWINGS_INTERVALS_ORDER,
+  getFourwingsInterval,
+  LIMITS_BY_INTERVAL,
 } from '@globalfishingwatch/deck-loaders'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select, Tooltip } from '@globalfishingwatch/ui-components'
+
 import { getLastX } from '../utils'
+
 import styles from './timerange-selector.module.css'
 
 type TimeRangeSelectorProps = {

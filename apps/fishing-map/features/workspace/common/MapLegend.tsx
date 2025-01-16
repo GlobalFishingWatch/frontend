@@ -1,15 +1,18 @@
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import type { UILegend } from '@globalfishingwatch/ui-components'
-import { LegendType, MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { DeckLegendAtom } from '@globalfishingwatch/deck-layer-composer'
 import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import type { UILegend } from '@globalfishingwatch/ui-components'
+import { LegendType, MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
+
 import { t } from 'features/i18n/i18n'
-import MapLegendPlaceholder from 'features/workspace/common/MapLegendPlaceholder'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
+import MapLegendPlaceholder from 'features/workspace/common/MapLegendPlaceholder'
+
 import styles from './MapLegend.module.css'
 
 const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {

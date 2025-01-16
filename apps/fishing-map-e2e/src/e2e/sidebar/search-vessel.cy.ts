@@ -1,5 +1,5 @@
-import { API_URL_SEARCH_VESSELS, URL_YEAR_2018 } from '../../constants/urls'
 import { SEARCH_VESSEL_MMSI, SEARCH_VESSEL_NAME } from '../../constants/search'
+import { API_URL_SEARCH_VESSELS, URL_YEAR_2018 } from '../../constants/urls'
 import {
   disablePopups,
   getDOMTimeout,

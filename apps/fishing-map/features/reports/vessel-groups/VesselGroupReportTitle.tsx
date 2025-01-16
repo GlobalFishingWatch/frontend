@@ -1,35 +1,39 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
+import cx from 'classnames'
 import parse from 'html-react-parser'
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { DateTime } from 'luxon'
+
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectHasOtherVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePlaceholder'
+import {
+  selectVGRUniqVessels,
+  selectVGRVesselsFlags,
+  selectVGRVesselsTimeRange,
+} from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+// import { getEventLabel } from 'utils/analytics'
+// import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import {
   setVesselGroupEditId,
   setVesselGroupModalVessels,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectHasOtherVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  selectVGRUniqVessels,
-  selectVGRVesselsFlags,
-  selectVGRVesselsTimeRange,
-} from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
-import { selectUserData } from 'features/user/selectors/user.selectors'
-// import { getEventLabel } from 'utils/analytics'
-// import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import styles from './VesselGroupReportTitle.module.css'
-import type { VesselGroupReport } from './vessel-group-report.slice'
+
 import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
+import type { VesselGroupReport } from './vessel-group-report.slice'
+
+import styles from './VesselGroupReportTitle.module.css'
 
 type ReportTitleProps = {
   loading?: boolean

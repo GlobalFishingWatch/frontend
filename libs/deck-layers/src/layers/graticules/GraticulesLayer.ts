@@ -1,28 +1,30 @@
 import type {
-  DefaultProps,
   Accessor,
-  LayerContext,
-  UpdateParameters,
   AccessorFunction,
+  DefaultProps,
+  LayerContext,
   Position,
+  UpdateParameters,
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathLayer, TextLayer } from '@deck.gl/layers'
-import type { GeoJsonProperties } from 'geojson'
 import type { PathGeometry } from '@deck.gl/layers/dist/path-layer/path'
+import type { GeoJsonProperties } from 'geojson'
+
 import {
+  BLEND_BACKGROUND,
+  getLayerGroupOffset,
+  getViewportHash,
   hexToDeckColor,
   LayerGroup,
-  getLayerGroupOffset,
-  BLEND_BACKGROUND,
-  getViewportHash,
 } from '../../utils'
+
+import { generateGraticulesFeatures } from './graticules.data'
 import type {
   GraticulesFeature,
   GraticulesLayerProps,
   GraticulesLayerState,
 } from './graticules.types'
-import { generateGraticulesFeatures } from './graticules.data'
 import { checkScaleRankByViewport } from './graticules.utils'
 
 const defaultProps: DefaultProps<GraticulesLayerProps> = {

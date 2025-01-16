@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import useRulers from 'features/map/overlays/rulers/rulers.hooks'
+
 import MapControlGroup from 'features/map/controls/MapControlGroup'
+import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 
 const Rulers = () => {
   const { t } = useTranslation()

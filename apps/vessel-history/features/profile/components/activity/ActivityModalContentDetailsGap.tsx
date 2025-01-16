@@ -1,14 +1,17 @@
 import React, { Fragment, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import type {
   RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
   getEventRegionDescription
 } from 'features/vessels/activity/vessels-activity.selectors'
-import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
+
 import ActivityModalContentDetails from './ActivityModalContentDetails'
 import ActivityModalContentField from './ActivityModalContentField'
+
 import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {

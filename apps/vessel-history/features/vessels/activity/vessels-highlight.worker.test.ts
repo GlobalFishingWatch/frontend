@@ -1,12 +1,13 @@
 import { anyRegion } from 'features/regions/regions.slice'
 import type { Settings } from 'features/settings/settings.slice'
-import type { RenderedEvent } from './vessels-activity.selectors'
-import { filterActivityHighlightEvents } from './vessels-highlight.worker'
-import { fishingEvents, emptySettings } from './__mocks__/highlight.mock'
+
+import { emptySettings,fishingEvents } from './__mocks__/highlight.mock'
 import {
   loiteringAndEncounterEvents,
   portVisitEvents,
 } from './__mocks__/selectEventsWithRenderingInfo.mock'
+import type { RenderedEvent } from './vessels-activity.selectors'
+import { filterActivityHighlightEvents } from './vessels-highlight.worker'
 
 describe('filterActivityHighlightEvents', () => {
   const cases: [string, RenderedEvent[], Settings, number][] = [

@@ -1,7 +1,7 @@
 // Duplicated from react-hooks to avoid a circular dependency
 // TODO think a way of share it
 
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback,useEffect, useState } from 'react'
 
 const DEFAULT_BREAKPOINT = 800
 

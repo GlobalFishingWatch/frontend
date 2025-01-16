@@ -1,30 +1,32 @@
+import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useCallback, useMemo } from 'react'
+
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 import {
-  HEATMAP_ID,
   HEATMAP_HIGH_RES_ID,
-  POSITIONS_ID,
+  HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
+  POSITIONS_ID,
 } from '@globalfishingwatch/deck-layers'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Icon } from '@globalfishingwatch/ui-components'
-import {
-  selectActivityMergedDataviewId,
-  selectDetectionsMergedDataviewId,
-} from 'features/dataviews/selectors/dataviews.selectors'
+
+import { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
 } from 'features/app/selectors/app.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectActivityMergedDataviewId,
+  selectDetectionsMergedDataviewId,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { setUserSetting } from 'features/user/user.slice'
-import { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
+import { useLocationConnect } from 'routes/routes.hook'
 
 export const useVisualizationsOptions = (
   category: DataviewCategory.Activity | DataviewCategory.Detections | DataviewCategory.Environment

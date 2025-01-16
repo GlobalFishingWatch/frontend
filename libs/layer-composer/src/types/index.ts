@@ -1,22 +1,23 @@
-import type {
-  SourceSpecification,
-  LayerSpecification,
-  StyleSpecification,
-} from '@globalfishingwatch/maplibre-gl'
+import type { DataviewType } from '@globalfishingwatch/api-types'
 import type {
   AggregationOperation,
   SublayerCombinationMode,
 } from '@globalfishingwatch/fourwings-aggregate'
-import type { DataviewType } from '@globalfishingwatch/api-types'
 import type {
-  GeneratorLegend,
-  HeatmapAnimatedGeneratorSublayer,
-  GeneratorConfig,
+  LayerSpecification,
+  SourceSpecification,
+  StyleSpecification,
+} from '@globalfishingwatch/maplibre-gl'
+
+import type { GeneratorsRecord } from '../generators'
+import type { TimeChunks } from '../generators/heatmap/util/time-chunks'
+import type {
   AnyGeneratorConfig,
   ContextLayerType,
+  GeneratorConfig,
+  GeneratorLegend,
+  HeatmapAnimatedGeneratorSublayer,
 } from '../generators/types'
-import type { TimeChunks } from '../generators/heatmap/util/time-chunks'
-import type { GeneratorsRecord } from '../generators'
 
 export interface Dictionary<T> {
   [key: string]: T

@@ -1,10 +1,12 @@
 import type { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import type { TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types';
-import { GeneratorType } from '../types'
-import { isUrlAbsolute } from '../../utils'
+
 import { API_GATEWAY } from '../../config'
 import { Group } from '../../types'
+import { isUrlAbsolute } from '../../utils'
+import type { MergedGeneratorConfig,TileClusterGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 import { addURLSearchParams } from '../utils'
+
 import { DEFAULT_POINTS_SOURCE_LAYER, MAX_ZOOM_TO_CLUSTER_POINTS } from './config'
 
 export type GlobalTileClusterGeneratorConfig = Required<

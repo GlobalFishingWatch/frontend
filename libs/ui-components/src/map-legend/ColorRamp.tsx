@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
-import styles from './MapLegend.module.css'
+
 import {
   formatLegendValue,
   parseLegendNumber,
@@ -9,6 +9,8 @@ import {
   SCIENTIFIC_NOTATION_E,
 } from './map-legend.utils'
 import type { UILegendColorRamp } from './types'
+
+import styles from './MapLegend.module.css'
 
 type ColorRampLegendProps = {
   layer: UILegendColorRamp

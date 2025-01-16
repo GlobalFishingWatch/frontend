@@ -1,11 +1,18 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
-import type { GeneratorType } from '@globalfishingwatch/layer-composer'
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
-import { parseAPIErrorMessage, parseAPIErrorStatus } from '@globalfishingwatch/api-client'
+import type { RootState } from 'store'
 import type { VesselWithHistory } from 'types';
+
+import { parseAPIErrorMessage, parseAPIErrorStatus } from '@globalfishingwatch/api-client'
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import type { GeneratorType } from '@globalfishingwatch/layer-composer'
+
+import gfwThunk from 'features/vessels/sources/gfw.slice'
+import tmtThunk from 'features/vessels/sources/tmt.slice'
 import { VesselAPISource } from 'types'
+import type { VesselSourceId } from 'types/vessel'
+import type { RenderedVoyage } from 'types/voyage'
 import type {
   AsyncReducer} from 'utils/async-slice';
 import {
@@ -13,11 +20,7 @@ import {
   AsyncReducerStatus,
   createAsyncSlice,
 } from 'utils/async-slice'
-import type { VesselSourceId } from 'types/vessel'
-import gfwThunk from 'features/vessels/sources/gfw.slice'
-import tmtThunk from 'features/vessels/sources/tmt.slice'
-import type { RootState } from 'store'
-import type { RenderedVoyage } from 'types/voyage'
+
 import { mergeVesselFromSources, NOT_AVAILABLE } from './vessels.utils'
 
 export type VoyagesState = {

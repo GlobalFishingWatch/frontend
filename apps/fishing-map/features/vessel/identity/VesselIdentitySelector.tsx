@@ -1,24 +1,27 @@
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
+
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
-import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   getVesselIdentities,
   getVesselIdentity,
   getVesselIdentityId,
 } from 'features/vessel/vessel.utils'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+
 import styles from './VesselIdentitySelector.module.css'
 
 function isRegistryInTimerange(registry: VesselDataIdentity, start: string, end: string) {

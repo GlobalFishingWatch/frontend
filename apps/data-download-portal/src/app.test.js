@@ -1,6 +1,7 @@
-import { createRoot, createRoot } from "react-dom/client";
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { createRoot, createRoot } from "react-dom/client";
+
 import App from './App'
 
 it('renders without crashing', () => {

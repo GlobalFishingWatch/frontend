@@ -1,6 +1,8 @@
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
+
 import { IconButton } from '@globalfishingwatch/ui-components'
+
 import styles from './UserGuideLink.module.css'
 
 export type UserGuideSection =

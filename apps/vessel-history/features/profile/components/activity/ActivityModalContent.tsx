@@ -1,12 +1,16 @@
 import React, { Fragment, useMemo } from 'react'
+
 import { EventTypes } from '@globalfishingwatch/api-types'
+
 import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import ActivityModalContentDetailsFishing from './ActivityModalContentDetailsFishing'
-import ActivityModalContentDetailsLoitering from './ActivityModalContentDetailsLoitering'
+
 import ActivityModalContentDetailsEncounter from './ActivityModalContentDetailsEncounter'
-import styles from './ActivityModalDetails.module.css'
-import ActivityModalContentDetailsPortVisit from './ActivityModalContentDetailsPortVisit'
+import ActivityModalContentDetailsFishing from './ActivityModalContentDetailsFishing'
 import ActivityModalContentDetailsGap from './ActivityModalContentDetailsGap'
+import ActivityModalContentDetailsLoitering from './ActivityModalContentDetailsLoitering'
+import ActivityModalContentDetailsPortVisit from './ActivityModalContentDetailsPortVisit'
+
+import styles from './ActivityModalDetails.module.css'
 
 interface ActivityModalContentProps {
   event: RenderedEvent

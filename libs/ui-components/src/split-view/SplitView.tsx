@@ -1,8 +1,11 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo,useState } from 'react'
 import cx from 'classnames'
-import { Icon } from '../icon'
+
 import { Choice } from '../choice'
+import { Icon } from '../icon'
+
 import useSmallScreen from './use-small-screen'
+
 import styles from './SplitView.module.css'
 
 export const MAIN_DOM_ID = 'app-main'

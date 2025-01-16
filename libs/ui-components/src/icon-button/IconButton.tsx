@@ -1,13 +1,15 @@
-import type { Ref, CSSProperties } from 'react'
+import type { CSSProperties,Ref } from 'react'
 import React, { forwardRef, Fragment } from 'react'
 import cx from 'classnames'
-import type { TooltipPlacement } from '../tooltip'
+
+import type { HTMLButtonType } from '../button/Button'
 import type { IconType } from '../icon'
 import { Icon } from '../icon'
-import type { TooltipTypes } from '../types/types'
-import { Tooltip } from '../tooltip'
 import { Spinner } from '../spinner'
-import type { HTMLButtonType } from '../button/Button'
+import type { TooltipPlacement } from '../tooltip'
+import { Tooltip } from '../tooltip'
+import type { TooltipTypes } from '../types/types'
+
 import styles from './IconButton.module.css'
 
 export type IconButtonType =

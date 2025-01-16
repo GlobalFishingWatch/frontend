@@ -1,16 +1,19 @@
 import { Fragment } from 'react'
-import { format } from 'd3-format'
 import { useSelector } from 'react-redux'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { format } from 'd3-format'
+
 import { DataviewType } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   FourwingsHeatmapPickingObject,
   FourwingsHeatmapStaticPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/deck-layers'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+
 import styles from '../Popup.module.css'
 
 type ContextTooltipRowProps = {

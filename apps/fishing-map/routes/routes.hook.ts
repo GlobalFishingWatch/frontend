@@ -1,20 +1,23 @@
-import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import { parse } from 'qs'
+import type { QueryParams } from 'types'
+
 import { ACCESS_TOKEN_STRING, removeUrlParameterByName } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CALLBACK_URL_PARAM, useLoginRedirect } from '@globalfishingwatch/react-hooks'
-import type { QueryParams } from 'types'
+
+import { SHOW_LEAVE_CONFIRMATION } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectSuggestWorkspaceSave } from 'features/workspace/workspace.selectors'
 import {
   selectIsRouteWithWorkspace,
   selectLocationPayload,
   selectLocationType,
 } from 'routes/routes.selectors'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectSuggestWorkspaceSave } from 'features/workspace/workspace.selectors'
-import { setModalOpen } from 'features/modals/modals.slice'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { SHOW_LEAVE_CONFIRMATION } from 'data/config'
+
 import type { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 

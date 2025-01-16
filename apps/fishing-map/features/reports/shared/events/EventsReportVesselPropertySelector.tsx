@@ -1,12 +1,15 @@
 import { useTranslation } from 'react-i18next'
+
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
-import { useLocationConnect } from 'routes/routes.hook'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import type {
   VesselGroupReportState,
   VGREventsVesselsProperty,
 } from 'features/vessel-groups/vessel-groups.types'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
+
 import type { PortsReportState } from '../../ports/ports-report.types'
 
 function EventsReportVesselPropertySelector({

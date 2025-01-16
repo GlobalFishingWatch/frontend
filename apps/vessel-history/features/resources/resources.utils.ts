@@ -5,9 +5,10 @@ import {
   EndpointId
 } from '@globalfishingwatch/api-types'
 import { getTracksChunkSetId } from '@globalfishingwatch/dataviews-client'
+
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.util'
 import { TimebarGraphs } from 'types'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 type ThinningConfigParam = { zoom: number; config: ThinningConfig }
 

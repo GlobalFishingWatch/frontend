@@ -1,4 +1,5 @@
 import cx from 'classnames'
+
 import styles from './placeholders.module.css'
 
 export function ReportBarGraphPlaceholder({

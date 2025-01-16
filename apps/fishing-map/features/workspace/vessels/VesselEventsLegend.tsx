@@ -1,19 +1,22 @@
 import { useCallback, useMemo } from 'react'
-import cx from 'classnames'
-import { uniqBy } from 'es-toolkit'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import cx from 'classnames'
+import { uniqBy } from 'es-toolkit'
+
 import type { EventType } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { SwitchEvent } from '@globalfishingwatch/ui-components'
 import { Switch } from '@globalfishingwatch/ui-components'
+
 import { EVENTS_COLORS, PATH_BASENAME } from 'data/config'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
-import { upperFirst } from 'utils/info'
-import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import styles from 'features/workspace/shared/Sections.module.css'
+import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import { upperFirst } from 'utils/info'
+
 import layerStyles from './VesselEventsLegend.module.css'
 
 type VesselEventsLegendProps = {

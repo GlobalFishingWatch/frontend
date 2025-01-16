@@ -1,11 +1,14 @@
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { unparse as unparseCSV } from 'papaparse'
+import { useSelector } from 'react-redux'
 import { saveAs } from 'file-saver'
+import { unparse as unparseCSV } from 'papaparse'
+
 import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+
 import { selectSearchResults, selectSelectedVessels } from './search.slice'
 
 function SearchDownload() {

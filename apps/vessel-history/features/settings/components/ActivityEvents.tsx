@@ -1,16 +1,19 @@
 import React, { useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import cx from 'classnames'
+
 import type {
   MultiSelectOnFilter,
   MultiSelectOption} from '@globalfishingwatch/ui-components';
 import {
-  MultiSelect,
-  InputText
-} from '@globalfishingwatch/ui-components'
+  InputText,
+  MultiSelect} from '@globalfishingwatch/ui-components'
+
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import type { SettingEventSectionName, SettingsEvents } from '../settings.slice'
+
 import { useSettingsConnect, useSettingsRegionsConnect } from '../settings.hooks'
+import type { SettingEventSectionName, SettingsEvents } from '../settings.slice'
+
 import styles from './SettingsComponents.module.css'
 
 interface SettingsProps {

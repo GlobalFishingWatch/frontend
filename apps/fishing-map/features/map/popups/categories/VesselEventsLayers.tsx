@@ -1,17 +1,21 @@
 import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { groupBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { groupBy } from 'es-toolkit'
+
 import type { IdentityVessel, SelfReportedInfo } from '@globalfishingwatch/api-types'
 import type { VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
-import { getEventDescriptionComponent } from 'utils/events'
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
+import { getEventDescriptionComponent } from 'utils/events'
+import { formatInfoField } from 'utils/info'
+
 import { MAX_TOOLTIP_LIST } from '../../map.slice'
+
 import styles from '../Popup.module.css'
 
 type VesselEventsTooltipRowProps = {

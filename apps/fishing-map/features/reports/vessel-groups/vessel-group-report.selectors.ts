@@ -5,14 +5,17 @@ import {
   selectVesselGroupInsightApiSlice,
 } from 'queries/vessel-insight-api'
 import type { RootState } from 'reducers'
+
 import type { InsightType } from '@globalfishingwatch/api-types'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
+
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { dataviewHasVesselGroupId } from 'features/dataviews/dataviews.utils'
 import {
   selectActiveVesselGroupDataviews,
   selectEventsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectReportVesselGroupId } from 'routes/routes.selectors'
+
 import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,

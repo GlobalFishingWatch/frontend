@@ -1,17 +1,21 @@
 import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
+
 import { type VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
+
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { weightedMean } from 'utils/statistics'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
-import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
+
 import { selectVGRDataview } from '../vessel-group-report.selectors'
+
 import styles from './VGRInsightCoverageGraph.module.css'
 
 const CustomTick = (props: any) => {

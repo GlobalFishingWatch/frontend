@@ -1,4 +1,5 @@
 import { DataviewType } from '@globalfishingwatch/api-types'
+
 import AnnotationsGenerator from './annotations/annotations'
 import BackgroundGenerator from './background/background'
 import BaseMapGenerator from './basemap/basemap'
@@ -7,8 +8,8 @@ import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-po
 import ContextGenerator from './context/context'
 import GLStyleGenerator from './gl/gl'
 import HeatmapGenerator from './heatmap/heatmap'
-import HeatmapStaticGenerator from './heatmap/heatmap-static'
 import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
+import HeatmapStaticGenerator from './heatmap/heatmap-static'
 import PolygonsGenerator from './polygons/polygons'
 import RulersGenerator from './rulers/rulers'
 import TileClusterGenerator from './tile-cluster/tile-cluster'

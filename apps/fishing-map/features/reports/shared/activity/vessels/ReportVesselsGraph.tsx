@@ -1,20 +1,21 @@
 import React, { Fragment, useCallback } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
-import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
+
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
-import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
-import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { useLocationConnect } from 'routes/routes.hook'
+import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
+
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
+import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
+import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
-import { getVesselGearTypeLabel } from 'utils/info'
+import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
 import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import {
   selectReportVesselsGraphDataGrouped,
@@ -22,10 +23,13 @@ import {
   selectReportVesselsGraphIndividualData,
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
-import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
 import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
+import { useLocationConnect } from 'routes/routes.hook'
+import { getVesselGearTypeLabel } from 'utils/info'
+
 import { ReportBarGraphPlaceholder } from '../../placeholders/ReportBarGraphPlaceholder'
+
 import styles from './ReportVesselsGraph.module.css'
 
 const MAX_OTHER_TOOLTIP_ITEMS = 10

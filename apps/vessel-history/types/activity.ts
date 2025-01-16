@@ -5,6 +5,7 @@ import type {
   EventTypes,
   Regions,
 } from '@globalfishingwatch/api-types'
+
 import type { GroupRegions } from 'features/regions/regions.slice'
 import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 

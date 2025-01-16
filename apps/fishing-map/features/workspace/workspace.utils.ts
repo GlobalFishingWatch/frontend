@@ -1,8 +1,10 @@
+import type { WorkspaceState } from 'types'
+
 import type { Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfishingwatch/api-types'
+
 import { PUBLIC_SUFIX } from 'data/config'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import type { WorkspaceState } from 'types'
 
 export const MIN_WORKSPACE_PASSWORD_LENGTH = 5
 

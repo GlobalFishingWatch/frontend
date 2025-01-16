@@ -1,8 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { Query, RouteObject } from 'redux-first-router'
-import { DEFAULT_WORKSPACE } from 'data/config'
 import type { RootState } from 'store'
 import type { WorkspaceParam } from 'types'
+
+import { DEFAULT_WORKSPACE } from 'data/config'
+
 import type { ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location

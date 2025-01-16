@@ -1,13 +1,4 @@
-import {
-  GROUPBY_DAY,
-  GROUPBY_FLAG,
-  GROUPBY_FLAG_GEAR,
-  GROUPBY_GEAR,
-  GROUPBY_MMSI,
-  GROUPBY_MONTH,
-  REPORT_FORMAT_CSV,
-  REPORT_FORMAT_JSON,
-} from '../../support/map/eez-download.po'
+import { MAP_POPUP_EEZ_SECTION, SIDEBAR_TOGGLE_EEZ } from '../../constants/buttons'
 import { SEARCH_EEZ, SEARCH_EEZ_FULL_NAME } from '../../constants/search'
 import { API_URL_4WINGS_REPORT, API_URL_GALAPAGOS_INFO, URL_ONE_MONTH } from '../../constants/urls'
 import {
@@ -24,13 +15,19 @@ import {
 import {
   filename,
   folderToUse,
+  GROUPBY_DAY,
+  GROUPBY_FLAG,
+  GROUPBY_FLAG_GEAR,
+  GROUPBY_GEAR,
+  GROUPBY_MMSI,
+  GROUPBY_MONTH,
+  REPORT_FORMAT_CSV,
+  REPORT_FORMAT_JSON,
   testCsvOptions,
   testJsonOptions,
   verifyFileDownload,
   zipFilename,
-  zipPath,
-} from '../../support/map/eez-download.po'
-import { MAP_POPUP_EEZ_SECTION, SIDEBAR_TOGGLE_EEZ } from '../../constants/buttons'
+  zipPath} from '../../support/map/eez-download.po'
 
 describe('Download reports for an area', () => {
   before(() => {

@@ -1,7 +1,7 @@
 import { VALUE_MULTIPLIER } from './constants'
 import type { CellAggregationParams } from './types';
 import { AggregationOperation, SublayerCombinationMode } from './types'
-import { getCellValues, getCellArrayIndex, getRealValues } from './util'
+import { getCellArrayIndex, getCellValues, getRealValues } from './util'
 
 export const aggregateCell = ({
   rawValues,

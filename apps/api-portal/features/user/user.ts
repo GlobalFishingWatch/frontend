@@ -1,7 +1,8 @@
+import { useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { useMemo } from 'react'
 import { useRouter } from 'next/router'
+
 import {
   getAccessTokenFromUrl,
   GFWAPI,

@@ -1,6 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { GoogleSpreadsheet } from 'google-spreadsheet'
 import { JWT } from 'google-auth-library'
+import { GoogleSpreadsheet } from 'google-spreadsheet'
+import type { NextApiRequest, NextApiResponse } from 'next'
+
 import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
 const FEEDBACK_CLIENT_EMAIL = process.env.NEXT_SPREADSHEET_CLIENT_EMAIL

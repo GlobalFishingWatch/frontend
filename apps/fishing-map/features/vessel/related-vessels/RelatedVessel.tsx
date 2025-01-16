@@ -1,14 +1,17 @@
 import { Fragment } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
 import type { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
+
 import { selectVesselDataset } from 'features/vessel/selectors/vessel.resources.selectors'
-import { formatInfoField } from 'utils/info'
+import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
-import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import type { VesselToResolve } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
-import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
+import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
+import { formatInfoField } from 'utils/info'
+
 import styles from './RelatedVessels.module.css'
 
 const RelatedVessel = ({

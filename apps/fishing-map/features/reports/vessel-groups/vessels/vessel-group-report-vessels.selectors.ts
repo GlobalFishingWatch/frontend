@@ -1,41 +1,43 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
+
 import type { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
+
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { t } from 'features/i18n/i18n'
+import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
+import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
+import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
+import { getVesselIndividualGroupedData } from 'features/reports/shared/reports.utils'
+import {
+  selectVGREventsVesselsProperty,
+  selectVGRVesselFilter,
+  selectVGRVesselPage,
+  selectVGRVesselsOrderDirection,
+  selectVGRVesselsOrderProperty,
+  selectVGRVesselsResultsPerPage,
+  selectVGRVesselsSubsection,
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import {
   OTHER_CATEGORY_LABEL,
   REPORT_FILTER_PROPERTIES,
 } from 'features/reports/vessel-groups/vessel-group-report.config'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
-import {
-  selectVGRVesselsResultsPerPage,
-  selectVGRVesselFilter,
-  selectVGRVesselPage,
-  selectVGREventsVesselsProperty,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
+import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
   getVesselGearTypeLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
-import { t } from 'features/i18n/i18n'
-import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
-import {
-  selectVGRVesselsOrderDirection,
-  selectVGRVesselsOrderProperty,
-  selectVGRVesselsSubsection,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
-import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
-import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
-import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import { getVesselIndividualGroupedData } from 'features/reports/shared/reports.utils'
-import { selectVGRVessels } from '../vessel-group-report.slice'
+
 import { selectVGREventsVesselsFiltered } from '../events/vgr-events.selectors'
+import { selectVGRVessels } from '../vessel-group-report.slice'
+
 import type { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
 
 const getVesselSource = (vessel: IdentityVessel) => {

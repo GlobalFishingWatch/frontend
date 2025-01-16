@@ -1,11 +1,13 @@
 import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import type { AppDispatch } from 'store'
+
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportPortId, selectUrlTimeRange } from 'routes/routes.selectors'
-import type { AppDispatch } from 'store'
-import { fetchPortsReportThunk } from './ports-report.slice'
+
 import { selectPortsReportDatasetId } from './ports-report.config.selectors'
 import { selectPortReportsConfidences } from './ports-report.selectors'
+import { fetchPortsReportThunk } from './ports-report.slice'
 
 let reportAction: (ReturnType<AppDispatch> & { abort?: () => void }) | undefined
 

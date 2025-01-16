@@ -1,19 +1,18 @@
+import { parse,stringify } from 'qs'
 import type { Dispatch } from 'redux'
 import type {
+  NavigationAction,  Options,
   RoutesMap,
-  Options,
-  StateGetter,
-  NavigationAction} from 'redux-first-router';
+  StateGetter} from 'redux-first-router';
 import {
+  connectRoutes,
   NOT_FOUND,
-  redirect,
-  connectRoutes
-} from 'redux-first-router'
-import { stringify, parse } from 'qs'
-import type { AppActions, AppState } from 'types/redux.types'
-import { fetchRegionsThunk } from 'features/regions/regions.slice'
-import { fetchPsmaThunk } from 'features/psma/psma.slice'
+  redirect} from 'redux-first-router'
+
 import { BASE_URL } from 'data/constants'
+import { fetchPsmaThunk } from 'features/psma/psma.slice'
+import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import type { AppActions, AppState } from 'types/redux.types'
 
 export const PATH_BASENAME = BASE_URL
 

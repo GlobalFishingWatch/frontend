@@ -1,5 +1,6 @@
 import type { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 

@@ -1,14 +1,18 @@
 import React, { memo, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { redirect } from 'redux-first-router'
-import { useTranslation } from 'react-i18next'
-import { Button } from '@globalfishingwatch/ui-components'
+
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
+import { Button } from '@globalfishingwatch/ui-components'
+
+import Partners from 'features/partners/Partners'
 import { useUser } from 'features/user/user.hooks'
 import { HOME } from 'routes/routes'
 import { useLoginRedirect } from 'routes/routes.hook'
-import Partners from 'features/partners/Partners'
+
 import vesselHistoryLogo from '../../assets/images/splash-screen-image@2x.png'
+
 import styles from './Splash.module.css'
 
 const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {

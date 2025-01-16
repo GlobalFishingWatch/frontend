@@ -1,19 +1,22 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
-import { useReportTimeCompareConnect } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
-import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
-import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
+import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
-  MAX_MONTHS_TO_COMPARE,
   MAX_DAYS_TO_COMPARE,
+  MAX_MONTHS_TO_COMPARE,
 } from 'features/reports/areas/area-reports.config'
 import { selectReportTimeComparison } from 'features/reports/areas/area-reports.config.selectors'
+import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
+import { useReportTimeCompareConnect } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+
 import styles from './ReportActivityBeforeAfter.module.css'
 
 export default function ReportActivityBeforeAfter() {

@@ -1,25 +1,29 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Modal, Tabs } from '@globalfishingwatch/ui-components'
+
+import { ROOT_DOM_ELEMENT } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectActiveActivityAndDetectionsDataviews,
+  selectActiveHeatmapAnimatedEnvironmentalDataviews,
+} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectDownloadActivityModalOpen } from 'features/download/download.selectors'
 import {
   resetDownloadActivityState,
   selectDownloadActiveTabId,
   setDownloadActiveTab,
 } from 'features/download/downloadActivity.slice'
-import { ROOT_DOM_ELEMENT } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDownloadActivityModalOpen } from 'features/download/download.selectors'
 import DownloadActivityEnvironment from 'features/download/DownloadActivityEnvironment'
-import {
-  selectActiveHeatmapAnimatedEnvironmentalDataviews,
-  selectActiveActivityAndDetectionsDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
+
+import { HeatmapDownloadTab } from './downloadActivity.config'
 import DownloadActivityByVessel from './DownloadActivityByVessel'
 import DownloadActivityGridded from './DownloadActivityGridded'
+
 import styles from './DownloadModal.module.css'
-import { HeatmapDownloadTab } from './downloadActivity.config'
 
 function DownloadActivityModal() {
   const { t } = useTranslation()

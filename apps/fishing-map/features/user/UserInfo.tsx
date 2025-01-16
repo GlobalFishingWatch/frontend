@@ -1,18 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment, useCallback, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-import { Button, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
-import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  selectIsGFWUser,
-  selectIsUserLogged,
-  selectUserData,
-} from 'features/user/selectors/user.selectors'
+import { Button, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+
 import ambassadorImg from 'assets/images/badges/ambassador.webp'
 import ambassadorPlaceholderImg from 'assets/images/badges/ambassador-placeholder.webp'
 import fixerImg from 'assets/images/badges/fixer.webp'
@@ -21,15 +14,26 @@ import presenterImg from 'assets/images/badges/presenter.webp'
 import presenterPlaceholderImg from 'assets/images/badges/presenter-placeholder.webp'
 import teacherImg from 'assets/images/badges/teacher.webp'
 import teacherPlaceholderImg from 'assets/images/badges/teacher-placeholder.webp'
-import { fetchUserThunk, logoutUserThunk } from './user.slice'
-import styles from './User.module.css'
+import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
-  selectHasTeacherBadge,
+  selectIsGFWUser,
+  selectIsUserLogged,
+  selectUserData,
+} from 'features/user/selectors/user.selectors'
+import { HOME } from 'routes/routes'
+import { updateLocation } from 'routes/routes.actions'
+
+import {
+  selectHasAmbassadorBadge,
   selectHasFeedbackProviderBadge,
   selectHasPresenterBadge,
+  selectHasTeacherBadge,
   selectUserGroupsClean,
-  selectHasAmbassadorBadge,
 } from './selectors/user.permissions.selectors'
+import { fetchUserThunk, logoutUserThunk } from './user.slice'
+
+import styles from './User.module.css'
 
 // t('user.badges.ambassador.title', 'Ambassador')
 // t('user.badges.ambassador.description')

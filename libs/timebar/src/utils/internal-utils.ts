@@ -1,6 +1,8 @@
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
+
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
+
 import { DEFAULT_DATE_FORMAT, DEFAULT_FULL_DATE_FORMAT } from '../constants'
 
 export const getTime = (dateISO: string) => getUTCDate(dateISO).getTime()

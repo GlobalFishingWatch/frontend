@@ -1,18 +1,20 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { saveAs } from 'file-saver'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { parseEventsToCSV } from 'features/vessel/vessel.download'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
   selectVesselSection,
 } from 'features/vessel/vessel.config.selectors'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import { parseEventsToCSV } from 'features/vessel/vessel.download'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
 const VesselActivityDownload = () => {

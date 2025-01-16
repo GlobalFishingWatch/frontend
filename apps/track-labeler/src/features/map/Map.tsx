@@ -1,36 +1,39 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
-import MapComponent from 'react-map-gl/maplibre'
 import type { MapRef } from 'react-map-gl/maplibre'
-import { useLayerComposer } from '@globalfishingwatch/layer-composer'
-import * as Generators from '@globalfishingwatch/layer-composer'
-import type { ExtendedLayer, StyleTransformation } from '@globalfishingwatch/layer-composer'
-import { getInteractiveLayerIds, Group } from '@globalfishingwatch/layer-composer'
+import MapComponent from 'react-map-gl/maplibre'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { selectRulers } from '../../features/rulers/rulers.selectors'
-import type { ActionType, Label } from '../../types'
-import { selectColorMode, selectProjectColors } from '../../routes/routes.selectors'
+import type { ExtendedLayer, StyleTransformation } from '@globalfishingwatch/layer-composer'
+import { getInteractiveLayerIds, Group,useLayerComposer  } from '@globalfishingwatch/layer-composer'
+import * as Generators from '@globalfishingwatch/layer-composer'
+
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
+import { selectRulers } from '../../features/rulers/rulers.selectors'
+import { selectColorMode, selectProjectColors } from '../../routes/routes.selectors'
+import type { ActionType, Label } from '../../types'
+
+import MapControls from './map-controls/MapControls'
+import MapData from './map-data/map-data'
+import { useMapboxRef, useMapboxRefCallback } from './map.context'
+import {
+  useGeneratorsConnect,
+  useHiddenLabelsConnect,
+  useMapBounds,
+  useMapClick,
+  useMapMove,
+  useViewport,
+} from './map.hooks'
 import {
   getLayerComposerLayers,
   getMapboxPaintIcon,
   selectDirectionPointsLayers,
   selectLegendLabels,
 } from './map.selectors'
-import {
-  useGeneratorsConnect,
-  useMapBounds,
-  useMapMove,
-  useViewport,
-  useMapClick,
-  useHiddenLabelsConnect,
-} from './map.hooks'
+
 import 'maplibre-gl/dist/maplibre-gl.css'
 import styles from './Map.module.css'
-import MapControls from './map-controls/MapControls'
-import MapData from './map-data/map-data'
-import { useMapboxRef, useMapboxRefCallback } from './map.context'
 
 const GROUP_ORDER = [
   Group.Background,

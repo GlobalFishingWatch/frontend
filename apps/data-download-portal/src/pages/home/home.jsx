@@ -1,8 +1,11 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { Fragment,useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { getUTCString } from '../../utils/dates.js'
+
 import Loader from '../../components/loader/loader.jsx'
+import { getUTCString } from '../../utils/dates.js'
+
 import styles from './home.module.css'
 
 function HomePage() {

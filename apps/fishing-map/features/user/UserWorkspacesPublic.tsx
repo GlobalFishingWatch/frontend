@@ -1,25 +1,29 @@
 import { useCallback, useState } from 'react'
-import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'
-import { WORKSPACE } from 'routes/routes'
+import Link from 'redux-first-router-link'
+
+import { IconButton, Modal,Spinner } from '@globalfishingwatch/ui-components'
+
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import EditWorkspace from 'features/workspace/save/WorkspaceEdit'
+import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
   deleteWorkspaceThunk,
   selectWorkspaceListStatus,
   selectWorkspaceListStatusId,
 } from 'features/workspaces-list/workspaces-list.slice'
+import { WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
-import EditWorkspace from 'features/workspace/save/WorkspaceEdit'
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import { getHighlightedText } from 'utils/text'
-import styles from './User.module.css'
+
 import { selectUserWorkspaces } from './selectors/user.permissions.selectors'
+
+import styles from './User.module.css'
 
 function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   const { t } = useTranslation()

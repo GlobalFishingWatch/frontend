@@ -1,12 +1,16 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Button } from '@globalfishingwatch/ui-components'
+
 import type { Dataview } from '@globalfishingwatch/api-types'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { Button } from '@globalfishingwatch/ui-components'
+
 import { selectHasDataviewEditPermissions } from 'features/user/selectors/user.permissions.selectors'
-import WorkspaceEditor from './WorkspaceEditor'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import DataviewEditor from './DataviewEditor'
+import WorkspaceEditor from './WorkspaceEditor'
+
 import styles from './EditorMenu.module.css'
 
 type Section = 'dataviews' | 'new-dataview'

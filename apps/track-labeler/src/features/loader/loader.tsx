@@ -1,5 +1,7 @@
 import React from 'react'
+
 import brand from '../../assets/images/brand.png'
+
 import styles from './loader.module.scss'
 
 interface LoaderProps {

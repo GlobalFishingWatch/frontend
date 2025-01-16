@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import {
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,

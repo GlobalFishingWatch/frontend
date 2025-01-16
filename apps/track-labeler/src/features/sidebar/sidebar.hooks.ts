@@ -1,15 +1,19 @@
 import { useState } from 'react'
-import { ActionCreators as UndoActionCreators } from 'redux-undo'
 import { useSelector } from 'react-redux'
 import { kebabCase } from 'lodash'
-import type { TrackPoint } from '@globalfishingwatch/api-types'
+import { ActionCreators as UndoActionCreators } from 'redux-undo'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { ActionType, ExportData, ExportFeature, Label } from '../../types'
-import { updateQueryParams } from '../../routes/routes.actions'
-import type { Project} from '../../data/projects';
-import { commonFilters, PROJECTS } from '../../data/projects'
+import type { TrackPoint } from '@globalfishingwatch/api-types'
+
 import { LABELER_VERSION } from '../../data/config'
 import { Field } from '../../data/models'
+import type { Project} from '../../data/projects';
+import { commonFilters, PROJECTS } from '../../data/projects'
+import { setProject } from '../../features/projects/projects.slice'
+import { getVesselInfo, selectVesselOriginalTrack } from '../../features/tracks/tracks.selectors'
+import { extractLabeledTrack, fixCoordinates } from '../../features/tracks/tracks.utils'
+import { selectUserData } from '../../features/user/user.slice'
 import type {
   SelectedTrackType} from '../../features/vessels/selectedTracks.slice';
 import {
@@ -21,11 +25,10 @@ import {
   setSelectedTrack,
   updateActionSelectedTrack,
 } from '../../features/vessels/selectedTracks.slice'
-import { selectUserData } from '../../features/user/user.slice'
-import { getVesselInfo, selectVesselOriginalTrack } from '../../features/tracks/tracks.selectors'
-import { extractLabeledTrack, fixCoordinates } from '../../features/tracks/tracks.utils'
-import { setProject } from '../../features/projects/projects.slice'
+import { updateQueryParams } from '../../routes/routes.actions'
 import { useAppDispatch } from '../../store.hooks'
+import type { ActionType, ExportData, ExportFeature, Label } from '../../types'
+
 import { selectProject, selectProjectId, selectVessel } from './../../routes/routes.selectors'
 import type { TrackInterface } from './../vessels/vessels.slice';
 import { setImportedData, setVesselInfo } from './../vessels/vessels.slice'

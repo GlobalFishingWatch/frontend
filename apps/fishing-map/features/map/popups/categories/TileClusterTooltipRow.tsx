@@ -1,37 +1,42 @@
 import { Fragment, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { stringify } from 'qs'
 import { useSelector } from 'react-redux'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { stringify } from 'qs'
+
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import I18nDate from 'features/i18n/i18nDate'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
+
+import { CARRIER_PORTAL_URL, LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
+import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   ENCOUNTER_EVENTS_SOURCES,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
-import { formatInfoField } from 'utils/info'
-import { CARRIER_PORTAL_URL, LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
-import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
+import I18nDate from 'features/i18n/i18nDate'
+import PortsReportLink from 'features/reports/ports/PortsReportLink'
+import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { getEventDescriptionComponent } from 'utils/events'
-import PortsReportLink from 'features/reports/ports/PortsReportLink'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectIsPortReportLocation } from 'routes/routes.selectors'
-import { useMapViewState } from '../../map-viewport.hooks'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { getEventDescriptionComponent } from 'utils/events'
+import { formatInfoField } from 'utils/info'
+
 import type {
   ExtendedEventVessel,
   ExtendedFeatureByVesselEvent,
   ExtendedFeatureSingleEvent,
   SliceExtendedClusterPickingObject,
 } from '../../map.slice'
-import styles from '../Popup.module.css'
+import { useMapViewState } from '../../map-viewport.hooks'
+
 import VesselsTable from './VesselsTable'
+
+import styles from '../Popup.module.css'
 
 const parseEncounterEvent = (
   event: ExtendedFeatureSingleEvent | undefined

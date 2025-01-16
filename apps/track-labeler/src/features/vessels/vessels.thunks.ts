@@ -1,9 +1,12 @@
 import type { Dispatch } from 'redux'
 import type { StateGetter } from 'redux-first-router'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { AppState } from '../../types/redux.types'
+
 import { selectIsImportView, selectVessel } from '../../routes/routes.selectors'
+import type { AppState } from '../../types/redux.types'
 import { getVesselInfo } from '../tracks/tracks.selectors'
+
 import type { VesselInfo } from './vessels.slice';
 import { selectImportedData, setVesselInfo } from './vessels.slice'
 

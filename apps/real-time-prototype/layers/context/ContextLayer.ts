@@ -1,6 +1,7 @@
 import { CompositeLayer } from '@deck.gl/core'
 import type { MVTLayerProps, TileLayerProps } from '@deck.gl/geo-layers';
 import { MVTLayer } from '@deck.gl/geo-layers'
+
 import { API_PATH, CONTEXT_LAYERS_OBJECT } from './context.config'
 
 export type ContextLayerProps = TileLayerProps & MVTLayerProps & { id: string }

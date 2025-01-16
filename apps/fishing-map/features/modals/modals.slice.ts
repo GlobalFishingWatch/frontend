@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
+
 import type { DatasetGeometryType, DataviewCategory } from '@globalfishingwatch/api-types'
 
 type ModalId =

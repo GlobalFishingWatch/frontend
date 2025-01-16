@@ -1,13 +1,15 @@
 import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
 // Import the generated route tree
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
+import { createRouter,RouterProvider } from '@tanstack/react-router'
+
 import { projectApi, projectCreateApi, projectEditApi, projectsListApi, taskApi } from './api'
 import { routeTree } from './routeTree.gen'
-import styles from './main.module.css'
+
 import '../../../libs/ui-components/src/base.css'
+import styles from './main.module.css'
 
 // Create a new router instance
 export const router = createRouter({ routeTree })

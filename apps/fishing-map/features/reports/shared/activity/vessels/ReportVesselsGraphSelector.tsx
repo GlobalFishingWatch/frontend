@@ -1,19 +1,20 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
-import { useLocationConnect } from 'routes/routes.hook'
+
 import {
-  REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { selectReportCategory,selectReportVesselGraph  } from 'features/app/selectors/app.reports.selector'
 import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import { useLocationConnect } from 'routes/routes.hook'
 
 export default function ReportVesselsGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()

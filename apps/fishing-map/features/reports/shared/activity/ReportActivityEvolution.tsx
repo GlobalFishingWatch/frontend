@@ -1,24 +1,27 @@
 import React, { useMemo } from 'react'
+import max from 'lodash/max'
+import min from 'lodash/min'
+import { DateTime } from 'luxon'
 import {
-  ResponsiveContainer,
+  Area,
   CartesianGrid,
+  ComposedChart,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Line,
-  ComposedChart,
-  Area,
 } from 'recharts'
-import min from 'lodash/min'
-import max from 'lodash/max'
-import { DateTime } from 'luxon'
+
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import i18n from 'features/i18n/i18n'
-import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { formatEvolutionData } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
-import type { ReportActivityProps } from 'features/reports/shared/activity/ReportActivityGraph'
 import { tickFormatter } from 'features/reports/areas/area-reports.utils'
+import type { ReportActivityProps } from 'features/reports/shared/activity/ReportActivityGraph'
+import { formatEvolutionData } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
+import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
+
 import styles from './ReportActivityEvolution.module.css'
 
 type ReportGraphTooltipProps = {

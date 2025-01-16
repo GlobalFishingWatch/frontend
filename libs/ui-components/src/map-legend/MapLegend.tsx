@@ -1,10 +1,12 @@
 import React from 'react'
 import cx from 'classnames'
-import { SolidLegend } from './Solid'
-import { ColorRampLegend } from './ColorRamp'
+
 import { BivariateLegend } from './Bivariate'
-import styles from './MapLegend.module.css'
+import { ColorRampLegend } from './ColorRamp'
+import { SolidLegend } from './Solid'
 import type { UILegend, UILegendBivariate, UILegendColorRamp, UILegendSolid } from './types'
+
+import styles from './MapLegend.module.css'
 
 interface MapLegendProps {
   className?: string

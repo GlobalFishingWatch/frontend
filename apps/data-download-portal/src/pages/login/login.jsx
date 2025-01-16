@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
 function LoginPage() {

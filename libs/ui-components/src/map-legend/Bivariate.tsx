@@ -1,10 +1,12 @@
 import React from 'react'
 import cx from 'classnames'
+
+import BivariateArrows from './Bivariate-arrows'
+import { formatLegendValue,roundLegendNumber } from './map-legend.utils'
 import type { UILegendBivariate } from './types'
+
 import styles from './Bivariate.module.css'
 import legendStyles from './MapLegend.module.css'
-import BivariateArrows from './Bivariate-arrows'
-import { roundLegendNumber, formatLegendValue } from './map-legend.utils'
 
 type BivariateLegendProps = {
   layer: UILegendBivariate

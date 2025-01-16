@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react'
+
 import { I18nSpecialDate } from './i18nDate'
 
 jest.mock('features/i18n/i18n')

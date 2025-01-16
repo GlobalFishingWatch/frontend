@@ -1,13 +1,15 @@
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector,createSlice } from '@reduxjs/toolkit'
+import type { RootState } from 'store'
+
 import {
-  GFWAPI,
   getAccessTokenFromUrl,
-  removeAccessTokenFromUrl,
+  GFWAPI,
   GUEST_USER_TYPE,
+  removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
-import type { RootState } from 'store'
+
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 interface UserState {

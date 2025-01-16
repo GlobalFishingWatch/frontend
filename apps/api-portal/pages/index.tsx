@@ -1,10 +1,13 @@
 import path from 'path'
+
 import type { NextPage } from 'next'
 // import Layout from 'components/layout'
 import dynamic from 'next/dynamic'
-import AccessTokenList from 'components/access-token/access-token-list/access-token-list'
+
 import AccessTokenCreate from 'components/access-token/access-token-create/access-token-create'
+import AccessTokenList from 'components/access-token/access-token-list/access-token-list'
 import RequireAdditionalInfo from 'components/require-additional-info/require-additional-info'
+
 import styles from '../styles/index.module.css'
 
 // This is needed by nx/next builder to run build the standalone next app properly

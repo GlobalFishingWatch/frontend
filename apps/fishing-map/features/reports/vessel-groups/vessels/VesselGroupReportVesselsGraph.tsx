@@ -1,25 +1,28 @@
 import React, { Fragment, useCallback } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
+
 import type {
   ResponsiveVisualizationData,
   ResponsiveVisualizationInteractionCallback,
 } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
+
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
-import { formatInfoField } from 'utils/info'
-import { useLocationConnect } from 'routes/routes.hook'
+import type { PortsReportState } from 'features/reports/ports/ports-report.types'
+import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
+import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
+import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
 import type {
   VesselGroupReportState,
   VGREventsVesselsProperty,
   VGRVesselsSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
-import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
-import type { PortsReportState } from 'features/reports/ports/ports-report.types'
-import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
-import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
+import { useLocationConnect } from 'routes/routes.hook'
+import { formatInfoField } from 'utils/info'
+
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {

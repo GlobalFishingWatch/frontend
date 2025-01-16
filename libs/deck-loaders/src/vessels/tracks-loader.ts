@@ -1,6 +1,8 @@
 import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
+
 import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
+
 import { parseTrack } from './lib/parse-tracks'
 
 /**

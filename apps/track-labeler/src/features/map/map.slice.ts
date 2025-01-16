@@ -1,14 +1,16 @@
 import type { PayloadAction} from '@reduxjs/toolkit';
-import { createSlice, createSelector } from '@reduxjs/toolkit'
-import * as Generators from '@globalfishingwatch/layer-composer'
+import { createSelector,createSlice } from '@reduxjs/toolkit'
+
+import {GFWAPI} from '@globalfishingwatch/api-client'
 import type {
   AnyGeneratorConfig,
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
-import {GFWAPI} from '@globalfishingwatch/api-client'
+import * as Generators from '@globalfishingwatch/layer-composer'
+
+import { getDateRange,selectMapZoomQuery } from '../../routes/routes.selectors'
 import type { RootState } from '../../store'
-import { selectMapZoomQuery, getDateRange } from '../../routes/routes.selectors'
 
 export interface MapState {
   generatorsConfig: AnyGeneratorConfig[]

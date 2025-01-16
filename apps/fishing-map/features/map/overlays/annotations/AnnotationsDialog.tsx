@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next'
+
+import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import {
   Button,
   ColorBar,
@@ -6,13 +8,15 @@ import {
   InputText,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
-import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
+
+import { useAppDispatch } from 'features/app/app.hooks'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
-import { useLocationConnect } from 'routes/routes.hook'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
+
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
+
 import styles from './Annotations.module.css'
 
 const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]

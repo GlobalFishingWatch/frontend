@@ -1,6 +1,7 @@
 import type { FeatureCollection } from 'geojson'
 import capitalize from 'lodash/capitalize'
 import lowerCase from 'lodash/lowerCase'
+
 import type {
   DatasetConfigurationSourceFormat,
   DatasetGeometryType,

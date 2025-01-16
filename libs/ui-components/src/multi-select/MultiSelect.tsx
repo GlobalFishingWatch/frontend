@@ -1,17 +1,19 @@
-import React, { useCallback, useState, useMemo, Fragment, useRef, type JSX } from 'react'
-import { matchSorter } from 'match-sorter'
+import React, { Fragment, type JSX,useCallback, useMemo, useRef, useState } from 'react'
+import cx from 'classnames'
 import type {
   UseComboboxState,
-  UseComboboxStateChangeTypes,
   UseComboboxStateChange,
+  UseComboboxStateChangeTypes,
 } from 'downshift'
-import { useMultipleSelection, useCombobox } from 'downshift'
-import cx from 'classnames'
+import { useCombobox,useMultipleSelection } from 'downshift'
+import { matchSorter } from 'match-sorter'
+
 import type { IconType } from '../icon'
 import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
-import { Tooltip } from '../tooltip'
 import { InputText } from '../input-text'
+import { Tooltip } from '../tooltip'
+
 import styles from '../select/Select.module.css'
 import multiSelectStyles from './MultiSelect.module.css'
 

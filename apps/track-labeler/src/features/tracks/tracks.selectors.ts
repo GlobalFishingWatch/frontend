@@ -1,16 +1,10 @@
-import { createSelector } from 'reselect'
 import createTree from 'functional-red-black-tree'
 import { DateTime } from 'luxon'
+import { createSelector } from 'reselect'
+
 import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
-import {
-  selectQueryParam,
-  selectFilteredSpeed,
-  selectFilteredHours,
-  selectFilteredElevation,
-  selectVessel,
-  selectFilteredDistanceFromPort,
-  selectFilterMode,
-} from '../../routes/routes.selectors'
+
+import { Field } from '../../data/models'
 import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import {
@@ -18,9 +12,17 @@ import {
   selectTracks,
   selectVessels,
 } from '../../features/vessels/vessels.slice'
+import {
+  selectFilteredDistanceFromPort,
+  selectFilteredElevation,
+  selectFilteredHours,
+  selectFilteredSpeed,
+  selectFilterMode,
+  selectQueryParam,
+  selectVessel,
+} from '../../routes/routes.selectors'
 import type { LayersData } from '../../types';
 import { ActionType } from '../../types'
-import { Field } from '../../data/models'
 
 export const getVesselTrack = createSelector(
   [selectTracks, selectQueryParam('vessel')],

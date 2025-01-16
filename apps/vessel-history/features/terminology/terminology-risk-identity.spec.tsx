@@ -1,5 +1,6 @@
-import { render } from '@testing-library/react'
 import { Trans, useTranslation } from 'react-i18next'
+import { render } from '@testing-library/react'
+
 import TerminologyRiskIdentity from './terminology-risk-identity'
 
 jest.mock('react-i18next')

@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { VesselAPISource } from 'types'
 import { VesselFieldLabel } from 'types/vessel'

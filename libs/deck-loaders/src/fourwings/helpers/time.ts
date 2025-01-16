@@ -1,5 +1,6 @@
-import { DateTime, Duration } from 'luxon'
 import intersection from 'lodash/intersection'
+import { DateTime, Duration } from 'luxon'
+
 import type { FourwingsInterval } from '../lib/types'
 
 export const FOURWINGS_INTERVALS_ORDER: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']

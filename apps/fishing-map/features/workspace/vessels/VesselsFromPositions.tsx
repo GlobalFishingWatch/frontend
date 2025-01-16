@@ -1,26 +1,28 @@
 import { useEffect, useState } from 'react'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { t } from 'i18next'
+import cx from 'classnames'
 import { uniq } from 'es-toolkit'
+import { t } from 'i18next'
+
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { Collapsable } from '@globalfishingwatch/ui-components'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import styles from 'features/workspace/shared/Sections.module.css'
-import VesselPin from 'features/vessel/VesselPin'
-import { formatInfoField } from 'utils/info'
-import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
-import I18nNumber from 'features/i18n/i18nNumber'
+
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import I18nNumber from 'features/i18n/i18nNumber'
+import VesselPin from 'features/vessel/VesselPin'
+import styles from 'features/workspace/shared/Sections.module.css'
+import { formatInfoField } from 'utils/info'
 
 const MAX_VESSLES_TO_DISPLAY = 10
 

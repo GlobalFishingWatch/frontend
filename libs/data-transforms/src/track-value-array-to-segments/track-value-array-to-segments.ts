@@ -1,4 +1,4 @@
-import type { TrackSegment, TrackPoint } from '@globalfishingwatch/api-types';
+import type { TrackPoint,TrackSegment } from '@globalfishingwatch/api-types';
 import { TrackField } from '@globalfishingwatch/api-types'
 
 export const TRACK_FIELDS = [TrackField.lonlat, TrackField.timestamp, TrackField.speed]

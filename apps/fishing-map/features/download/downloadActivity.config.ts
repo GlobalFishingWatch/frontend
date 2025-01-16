@@ -1,4 +1,5 @@
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+
 import { t } from 'features/i18n/i18n'
 
 export enum HeatmapDownloadTab {

@@ -1,9 +1,12 @@
-import { useRef, useEffect } from 'react'
-import cx from 'classnames'
+import { useEffect,useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import packageJson from '../../package.json'
+
 import styles from './WhatsNew.module.css'
 
 const GFW_LAST_VERSION_SEEN_KEY = 'GFW_LAST_VERSION_SEEN'

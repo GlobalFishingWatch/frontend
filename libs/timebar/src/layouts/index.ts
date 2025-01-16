@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+
 import type { TimelineScale } from '../timelineContext'
 import { getTime } from '../utils/internal-utils'
 

@@ -1,4 +1,5 @@
 import { t } from 'i18next'
+
 import { EMPTY_FIELD_PLACEHOLDER, getVesselGearTypeLabel } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 

@@ -1,21 +1,21 @@
-import { Fragment, useRef, useState } from 'react'
-import cx from 'classnames'
+import React, { Fragment, useRef, useState } from 'react'
 import type { Placement, UseFloatingOptions } from '@floating-ui/react'
 import {
-  useFloating,
-  autoUpdate,
-  offset,
-  flip,
-  shift,
-  useDismiss,
-  useRole,
-  useClick,
-  useInteractions,
-  FloatingFocusManager,
   arrow,
+  autoUpdate,
+  flip,
   FloatingArrow,
+  FloatingFocusManager,
+  offset,
+  shift,
+  useClick,
+  useDismiss,
+  useFloating,
+  useInteractions,
+  useRole,
 } from '@floating-ui/react'
-import React from 'react'
+import cx from 'classnames'
+
 import styles from './Popover.module.css'
 
 export type PopoverProps = {

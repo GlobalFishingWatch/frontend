@@ -1,15 +1,13 @@
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { Tooltip } from '@globalfishingwatch/ui-components'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import cx from 'classnames'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { isActivityDataview } from '@globalfishingwatch/dataviews-client'
+
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
-import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
-import layerPanelStyles from 'features/workspace/shared/LayerPanel.module.css'
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+
 import styles from './ReportSummaryTags.module.css'
 
 type LayerPanelProps = {

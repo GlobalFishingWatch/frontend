@@ -1,31 +1,34 @@
-import cx from 'classnames'
+import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Fragment, useCallback, useState } from 'react'
-import { Spinner, IconButton, Button, Icon, InputText } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import type { VesselGroup } from '@globalfishingwatch/api-types'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import {
-  selectVesselGroupsStatus,
-  selectVesselGroupsStatusId,
-  deleteVesselGroupThunk,
-} from 'features/vessel-groups/vessel-groups.slice'
+import { Button, Icon, IconButton, InputText,Spinner } from '@globalfishingwatch/ui-components'
+
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import { useEditVesselGroupModal } from 'features/reports/vessel-groups/vessel-group-report.hooks'
+import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
+import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
+import {
+  deleteVesselGroupThunk,
+  selectVesselGroupsStatus,
+  selectVesselGroupsStatusId,
+} from 'features/vessel-groups/vessel-groups.slice'
 import {
   getVesselGroupLabel,
   getVesselGroupVesselsCount,
   isOutdatedVesselGroup,
 } from 'features/vessel-groups/vessel-groups.utils'
-import { sortByCreationDate } from 'utils/dates'
-import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
 import {
   selectVesselGroupEditId,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { useEditVesselGroupModal } from 'features/reports/vessel-groups/vessel-group-report.hooks'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
-import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
+
 import styles from './User.module.css'
 
 function UserVesselGroups() {

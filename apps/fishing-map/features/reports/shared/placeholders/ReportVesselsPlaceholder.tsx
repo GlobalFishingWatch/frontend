@@ -1,6 +1,8 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
+
 import { ReportBarGraphPlaceholder } from 'features/reports/shared/placeholders/ReportBarGraphPlaceholder'
+
 import styles from './placeholders.module.css'
 
 export default function ReportVesselsPlaceholder({

@@ -1,4 +1,5 @@
 import Sticky from 'react-sticky-el'
+
 import styles from './SidebarHeader.module.css'
 
 function SidebarHeader() {

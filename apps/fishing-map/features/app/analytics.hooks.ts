@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux'
+
 import {
   trackEvent as trackEventBase,
   useAnalytics as useAnalyticsBase,
 } from '@globalfishingwatch/react-hooks'
+
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
 import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectLocationCategory } from 'routes/routes.selectors'

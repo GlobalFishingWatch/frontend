@@ -1,15 +1,18 @@
 import { useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useDropzone } from 'react-dropzone'
+import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
+
 import type { DatasetGeometryType } from '@globalfishingwatch/api-types'
+
 import FilesCsvIcon from 'assets/icons/file-csv.svg'
 import FilesJsonIcon from 'assets/icons/file-json.svg'
-import FileZipIcon from 'assets/icons/file-zip.svg'
 import FileKMLIcon from 'assets/icons/file-kml.svg'
+import FileZipIcon from 'assets/icons/file-zip.svg'
 import { joinTranslatedList } from 'features/i18n/utils'
 import type { FileType, MimeExtention } from 'utils/files'
 import { FILE_TYPES_CONFIG, getFilesAcceptedByMime } from 'utils/files'
+
 import styles from './FileDropzone.module.css'
 
 // t('dataset.formats.csv', 'csv')

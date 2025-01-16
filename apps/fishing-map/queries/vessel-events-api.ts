@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import type { ApiEvents } from '@globalfishingwatch/api-types'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
+
+import type { ApiEvents } from '@globalfishingwatch/api-types'
 
 type VesselEventsApiParams = {
   ids?: string[]

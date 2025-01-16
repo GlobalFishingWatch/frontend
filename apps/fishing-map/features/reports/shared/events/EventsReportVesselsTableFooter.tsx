@@ -1,20 +1,23 @@
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { Fragment } from 'react'
-import { unparse as unparseCSV } from 'papaparse'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { saveAs } from 'file-saver'
+import { unparse as unparseCSV } from 'papaparse'
+
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
-import I18nNumber from 'features/i18n/i18nNumber'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import I18nNumber from 'features/i18n/i18nNumber'
 import type { VesselsPagination } from 'features/reports/vessel-groups/events/vgr-events.selectors'
+import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTableFooter.module.css'
 import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
-import type { PortsReportState } from '../../ports/ports-report.types'
+import { useLocationConnect } from 'routes/routes.hook'
+
 import type { EventsStatsVessel } from '../../ports/ports-report.slice'
+import type { PortsReportState } from '../../ports/ports-report.types'
 
 export default function EventsReportVesselsTableFooter({
   vessels,

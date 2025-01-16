@@ -1,26 +1,29 @@
 import type { StateGetter } from 'redux-first-router'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
-import type { AppState } from '../../types/redux.types'
+import { trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
+
 import { TRACK_FIELDS } from '../../data/config'
-import {
-  selectVessel,
-  getDateRange,
-  selectProject,
-  selectIsImportView,
-} from '../../routes/routes.selectors'
 import type {
   TrackItem} from '../../features/vessels/vessels.slice';
 import {
   initVesselTrack,
-  selectTracks,
-  setVesselTrack,
   selectImportedData,
+  selectTracks,
   setSearchableTimstamps,
+  setVesselTrack,
 } from '../../features/vessels/vessels.slice'
 import { updateQueryParams } from '../../routes/routes.actions'
+import {
+  getDateRange,
+  selectIsImportView,
+  selectProject,
+  selectVessel,
+} from '../../routes/routes.selectors'
 import type { AppDispatch } from '../../store'
+import type { AppState } from '../../types/redux.types'
+
 import type { ExportData, ExportFeature } from './../../types/index'
 
 const fetchTrack = async (

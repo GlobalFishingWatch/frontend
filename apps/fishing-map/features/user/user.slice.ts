@@ -1,20 +1,22 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
+
 import {
-  GFWAPI,
   getAccessTokenFromUrl,
+  GFWAPI,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
-import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { redirectToLogin } from '@globalfishingwatch/react-hooks'
+
+import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
+import { USER_SETTINGS } from 'data/config'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
-import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
-import { USER_SETTINGS } from 'data/config'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode

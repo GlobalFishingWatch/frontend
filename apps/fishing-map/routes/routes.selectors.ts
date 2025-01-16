@@ -1,22 +1,24 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { Query } from 'redux-first-router'
 import type { RootState } from 'reducers'
-import type { WorkspaceParam, QueryParams } from 'types'
+import type { Query } from 'redux-first-router'
+import type { QueryParams,WorkspaceParam } from 'types'
+
 import { WorkspaceCategory } from 'data/workspaces'
+
 import type { ROUTE_TYPES } from './routes'
 import {
+  PORT_REPORT,
   REPORT,
-  WORKSPACE_REPORT,
-  VESSEL,
-  WORKSPACE_ROUTES,
-  WORKSPACE_VESSEL,
+  ROUTES_WITH_WORKSPACES,
   SEARCH,
   USER,
-  WORKSPACES_LIST,
-  WORKSPACE_SEARCH,
+  VESSEL,
   VESSEL_GROUP_REPORT,
-  PORT_REPORT,
-  ROUTES_WITH_WORKSPACES,
+  WORKSPACE_REPORT,
+  WORKSPACE_ROUTES,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location

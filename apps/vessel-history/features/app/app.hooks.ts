@@ -2,8 +2,9 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TypedUseSelectorHook} from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux'
+import type { AppDispatch,RootState } from 'store'
+
 import { FEEDBACK_EN, FEEDBACK_FR } from 'data/config'
-import type { RootState, AppDispatch } from 'store'
 import { getBrowser, getHref, getOperatingSystem } from 'utils/dom'
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`

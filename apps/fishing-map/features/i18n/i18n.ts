@@ -1,10 +1,11 @@
-import i18n from 'i18next'
-import Backend from 'i18next-http-backend'
-import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
-import { Locale } from 'types'
-import { WORKSPACE_ENV } from 'data/workspaces'
+import i18n from 'i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
+import Backend from 'i18next-http-backend'
+
 import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
+import { WORKSPACE_ENV } from 'data/workspaces'
+import { Locale } from 'types'
 
 export const CROWDIN_IN_CONTEXT_LANG = 'val'
 

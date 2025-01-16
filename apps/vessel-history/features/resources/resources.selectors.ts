@@ -1,6 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { ResourceStatus } from '@globalfishingwatch/api-types'
+
 import { selectVisibleEvents } from 'features/event-filters/filters.selectors'
+
 import { selectResources } from './resources.slice'
 
 export const selectVisibleResources = createSelector(

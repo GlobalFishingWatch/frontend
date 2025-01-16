@@ -1,21 +1,23 @@
-import type { Layer, LayerContext, LayersList, DefaultProps, UpdateParameters } from '@deck.gl/core'
+import type { DefaultProps, Layer, LayerContext, LayersList, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import { parse } from '@loaders.gl/core'
 import type { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { parse } from '@loaders.gl/core'
+
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type {
-  FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
+  FourwingsValuesAndDatesFeature,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+
 import {
-  HEATMAP_API_TILES_URL,
   FOURWINGS_MAX_ZOOM,
+  HEATMAP_API_TILES_URL,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
 } from '../fourwings.config'
 import type {
@@ -27,14 +29,15 @@ import type {
 import { FourwingsAggregationOperation } from '../fourwings.types'
 import {
   aggregateCellTimeseries,
-  getFourwingsChunk,
   getDataUrlBySublayer,
+  getFourwingsChunk,
 } from '../heatmap/fourwings-heatmap.utils'
-import { FourwingsFootprintLayer } from './FourwingsFootprintLayer'
+
 import type {
   FourwingsFootprintTileLayerProps,
   FourwingsFootprintTileLayerState,
 } from './fourwings-footprint.types'
+import { FourwingsFootprintLayer } from './FourwingsFootprintLayer'
 
 const defaultProps: DefaultProps<FourwingsFootprintTileLayerProps> = {
   maxRequests: 100,
