@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
+
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+
 import styles from './Info.module.css'
 
 interface GuideAndVideoProps {

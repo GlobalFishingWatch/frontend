@@ -1,6 +1,9 @@
-import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { FeatureCollection, Polygon } from 'geojson'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
@@ -10,12 +13,7 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import UserGuideLink from 'features/help/UserGuideLink'
-import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
-import type { FileType } from 'utils/files'
-import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
+
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
@@ -25,11 +23,17 @@ import {
   getPolygonsDatasetMetadata,
   parseGeoJsonProperties,
 } from 'features/datasets/upload/datasets-upload.utils'
+import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import { TimeFieldsGroup } from 'features/datasets/upload/TimeFieldsGroup'
-import styles from './NewDataset.module.css'
+import UserGuideLink from 'features/help/UserGuideLink'
+import type { FileType } from 'utils/files'
+import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
+
 import { getDatasetParsed } from './datasets-parse.utils'
 import FileDropzone from './FileDropzone'
+
+import styles from './NewDataset.module.css'
 
 type PolygonFeatureCollection = FeatureCollection<Polygon> & { metadata: Record<string, any> }
 

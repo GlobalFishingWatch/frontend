@@ -1,9 +1,13 @@
 import { DateTime } from 'luxon'
+
 import { Spinner, Switch, Tooltip } from '@globalfishingwatch/ui-components'
+
 import ContextLayersSection from 'features/sidebar/ContextLayersSection'
 import VesselsSection from 'features/sidebar/VesselsSection'
 import { getTimeAgo } from 'utils/dates'
+
 import SidebarHeader from './SidebarHeader'
+
 import styles from './Sidebar.module.css'
 
 function Sidebar({ lastUpdate, showLatestPositions, setShowLatestPositions }) {

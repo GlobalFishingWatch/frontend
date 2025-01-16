@@ -1,6 +1,7 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document'
-import { BASE_URL } from 'data/constants'
+import Document, { Head, Html, Main, NextScript } from 'next/document'
+
 import { GOOGLE_TAG_MANAGER_ID } from 'data/config'
+import { BASE_URL } from 'data/constants'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {

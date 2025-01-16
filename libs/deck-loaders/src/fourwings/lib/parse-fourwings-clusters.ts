@@ -1,5 +1,6 @@
-import Pbf from 'pbf'
 import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
+import Pbf from 'pbf'
+
 import type {
   BBox} from '../helpers/cells';
 import {
@@ -7,12 +8,13 @@ import {
   getCellPointCoordinates,
   getCellProperties,
 } from '../helpers/cells'
+
 import type {
+  FourwingsClustersLoaderOptions,
   FourwingsLoaderOptions,
+  FourwingsPointFeature,
   FourwingsRawData,
   ParseFourwingsClustersOptions,
-  FourwingsPointFeature,
-  FourwingsClustersLoaderOptions,
 } from './types'
 
 const SCALE_VALUE = 1

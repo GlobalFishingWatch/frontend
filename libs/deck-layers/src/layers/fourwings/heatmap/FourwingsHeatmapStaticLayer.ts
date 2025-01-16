@@ -1,36 +1,38 @@
 import type {
+  Color,
+  DefaultProps,
   Layer,
   LayerContext,
   LayersList,
-  DefaultProps,
-  Color,
-  UpdateParameters,
   PickingInfo,
+  UpdateParameters,
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { scaleLinear } from 'd3-scale'
+import { PathStyleExtension } from '@deck.gl/extensions'
 import { MVTLayer } from '@deck.gl/geo-layers'
-import { debounce } from 'es-toolkit'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { PathLayer } from '@deck.gl/layers'
-import { stringify } from 'qs'
-import { PathStyleExtension } from '@deck.gl/extensions'
+import { scaleLinear } from 'd3-scale'
+import { debounce } from 'es-toolkit'
 import type { Feature, Geometry } from 'geojson'
+import { stringify } from 'qs'
+
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsFeature,
   FourwingsStaticFeature,
   FourwingsStaticFeatureProperties,
 } from '@globalfishingwatch/deck-loaders'
-import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import type { ColorRampId } from '../../../utils/colorRamps'
-import { getColorRamp } from '../../../utils/colorRamps'
+
 import {
   COLOR_HIGHLIGHT_LINE,
-  GFWMVTLoader,
-  LayerGroup,
   getLayerGroupOffset,
   getSteps,
+  GFWMVTLoader,
+  LayerGroup,
 } from '../../../utils'
+import type { ColorRampId } from '../../../utils/colorRamps'
+import { getColorRamp } from '../../../utils/colorRamps'
 import {
   FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
@@ -38,7 +40,7 @@ import {
   MAX_RAMP_VALUES,
 } from '../fourwings.config'
 import type { GetViewportDataParams } from '../fourwings.types'
-import { EMPTY_CELL_COLOR, filterCells, getZoomOffsetByResolution } from './fourwings-heatmap.utils'
+
 import type {
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapStaticPickingInfo,
@@ -47,6 +49,7 @@ import type {
   FourwingsTileLayerState,
 } from './fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
+import { EMPTY_CELL_COLOR, filterCells, getZoomOffsetByResolution } from './fourwings-heatmap.utils'
 
 const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   maxRequests: 100,

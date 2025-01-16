@@ -1,14 +1,14 @@
 import type {
-  SymbolLayerSpecification,
-  FillLayerSpecification,
-  LineLayerSpecification,
-  FillExtrusionLayerSpecification,
-  HeatmapLayerSpecification,
   DataDrivenPropertyValueSpecification,
-  FormattedSpecification,
   ExpressionSpecification,
+  FillExtrusionLayerSpecification,
+  FillLayerSpecification,
+  FormattedSpecification,
+  HeatmapLayerSpecification,
+  LineLayerSpecification,
+  SymbolLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import type { GlobalHeatmapStaticGeneratorConfig } from '../heatmap-static'
+
 import type { ExtendedLayerMeta} from '../../../types';
 import { Group } from '../../../types'
 import { GeneratorType } from '../../types'
@@ -18,6 +18,7 @@ import {
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
 } from '../config'
 import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+import type { GlobalHeatmapStaticGeneratorConfig } from '../heatmap-static'
 
 function getBaseLayer(
   config: GlobalHeatmapAnimatedGeneratorConfig,

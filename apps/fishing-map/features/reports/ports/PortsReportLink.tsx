@@ -1,22 +1,26 @@
+import React from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import React from 'react'
 import Link from 'redux-first-router-link'
-import { Tooltip } from '@globalfishingwatch/ui-components'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
 import { DataviewType } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
-import { PORT_REPORT } from 'routes/routes'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { Tooltip } from '@globalfishingwatch/ui-components'
+
 import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
-import { selectLocationQuery } from 'routes/routes.selectors'
 import type { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
-import styles from './PortsReport.module.css'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { PORT_REPORT } from 'routes/routes'
+import { selectLocationQuery } from 'routes/routes.selectors'
+
 import { getPortClusterDataviewForReport } from './ports-report.utils'
+
+import styles from './PortsReport.module.css'
 
 type PortsReportLinkProps = {
   port: ExtendedFeatureByVesselEventPort

@@ -1,28 +1,30 @@
+// import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
+import type { WorkspaceState } from 'types'
+
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
 import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
 import {
-  DEFAULT_WORKSPACE_ID,
-  SAR_DATAVIEW_SLUG,
-  HIGH_SEAS_DATAVIEW_SLUG,
+  BASEMAP_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_SLUG,
-  FISHING_DATAVIEW_SLUG,
-  PRESENCE_DATAVIEW_SLUG,
-  VIIRS_MATCH_DATAVIEW_SLUG,
+  BASEMAP_LABELS_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
-  GRATICULES_DATAVIEW_SLUG,
-  BASEMAP_LABELS_DATAVIEW_SLUG,
-  BASEMAP_DATAVIEW_INSTANCE_ID,
-  FIXED_SAR_INFRASTRUCTURE,
   DEFAULT_WORKSPACE_CATEGORY,
+  DEFAULT_WORKSPACE_ID,
+  FISHING_DATAVIEW_SLUG,
+  FIXED_SAR_INFRASTRUCTURE,
+  GRATICULES_DATAVIEW_SLUG,
+  HIGH_SEAS_DATAVIEW_SLUG,
+  PRESENCE_DATAVIEW_SLUG,
+  SAR_DATAVIEW_SLUG,
+  VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
-// import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
-import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,

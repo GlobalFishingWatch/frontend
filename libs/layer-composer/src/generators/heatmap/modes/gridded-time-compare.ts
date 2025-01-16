@@ -1,14 +1,15 @@
-import type { LayerSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { FilterSpecification,LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+
 import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+import { getLayerId, getSourceId } from '../util'
 import getBaseLayer, {
   getBaseDebugLabelsLayer,
   getBaseInteractionHoverLayer,
   getBaseInteractionLayer,
 } from '../util/get-base-layers'
+import { getColorRampBaseExpression } from '../util/get-legends'
 import type { TimeChunks} from '../util/time-chunks';
 import { pickActiveTimeChunk } from '../util/time-chunks'
-import { getLayerId, getSourceId } from '../util'
-import { getColorRampBaseExpression } from '../util/get-legends'
 
 export default function griddedTimeCompare(
   config: GlobalHeatmapAnimatedGeneratorConfig,

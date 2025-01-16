@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
+
+import { DataviewType } from '@globalfishingwatch/api-types'
 import {
   Button,
   FillColorBarOptions,
@@ -8,18 +10,19 @@ import {
   LineColorBarOptions,
   Tooltip,
 } from '@globalfishingwatch/ui-components'
-import { DataviewType } from '@globalfishingwatch/api-types'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { setModalOpen } from 'features/modals/modals.slice'
-import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
-import { selectDatasetById } from 'features/datasets/datasets.slice'
-import type { LibraryLayer } from 'data/layer-library'
-import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { LAYER_LIBRARY_EVENTS_IDS } from 'data/layer-library/layers-events'
+
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
-import { getHighlightedText } from 'utils/text'
+import type { LibraryLayer } from 'data/layer-library'
+import { LAYER_LIBRARY_EVENTS_IDS } from 'data/layer-library/layers-events'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
+import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { getHighlightedText } from 'utils/text'
+
 import styles from './LayerLibraryItem.module.css'
 
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }

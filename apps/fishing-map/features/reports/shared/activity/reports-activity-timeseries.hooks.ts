@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import memoizeOne from 'memoize-one'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { mean, min, max } from 'simple-statistics'
 import { DateTime } from 'luxon'
+import memoizeOne from 'memoize-one'
+import { max,mean, min } from 'simple-statistics'
+
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
@@ -18,32 +19,33 @@ import type {
   FourwingsInterval,
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
+
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import type { FilteredPolygons } from 'features/reports/shared/activity/reports-activity-geo.utils'
-import type { FeaturesToTimeseriesParams } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/areas/area-reports.config'
 import {
-  featuresToTimeseries,
-  filterTimeseriesByTimerange,
-} from 'features/reports/shared/activity/reports-activity-timeseries.utils'
+  selectReportActivityGraph,
+  selectReportTimeComparison,
+} from 'features/reports/areas/area-reports.config.selectors'
 import { useReportAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import {
   selectReportArea,
   selectReportBufferHash,
   selectShowTimeComparison,
 } from 'features/reports/areas/area-reports.selectors'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import type { Area, AreaGeometry } from 'features/areas/areas.slice'
-import { useFilterCellsByPolygonWorker } from 'features/reports/shared/activity/reports-activity-geo.utils.workers.hooks'
-import type { TimeRange } from 'features/timebar/timebar.slice'
 import type { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import type { FilteredPolygons } from 'features/reports/shared/activity/reports-activity-geo.utils'
+import { useFilterCellsByPolygonWorker } from 'features/reports/shared/activity/reports-activity-geo.utils.workers.hooks'
+import type { FeaturesToTimeseriesParams } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
 import {
-  selectReportActivityGraph,
-  selectReportTimeComparison,
-} from 'features/reports/areas/area-reports.config.selectors'
-import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/areas/area-reports.config'
+  featuresToTimeseries,
+  filterTimeseriesByTimerange,
+} from 'features/reports/shared/activity/reports-activity-timeseries.utils'
 import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import type { TimeRange } from 'features/timebar/timebar.slice'
 
 interface EvolutionGraphData {
   date: string

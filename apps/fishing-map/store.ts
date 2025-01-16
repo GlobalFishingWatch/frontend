@@ -1,10 +1,12 @@
 import type { Action, AnyAction, Middleware, ThunkAction, ThunkDispatch } from '@reduxjs/toolkit'
 import { configureStore } from '@reduxjs/toolkit'
+import { logoutUserMiddleware } from 'middlewares'
 import { createWrapper } from 'next-redux-wrapper'
 import { queriesApiMiddlewares } from 'queries'
-import { logoutUserMiddleware } from 'middlewares'
+
 import connectedRoutes from 'routes/routes'
 import { routerQueryMiddleware, routerWorkspaceMiddleware } from 'routes/routes.middlewares'
+
 import { rootReducer } from './reducers'
 
 const {

@@ -1,19 +1,21 @@
 import type { DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core';
 import { CompositeLayer } from '@deck.gl/core'
+import { DataFilterExtension } from '@deck.gl/extensions'
 import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { DataFilterExtension } from '@deck.gl/extensions'
+
+import type { DeckLayerProps } from '../../types'
+import { getFeatureInFilter } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import type { ContextFeature } from '../context'
 import { getContextId } from '../context/context.utils'
-import type { DeckLayerProps } from '../../types'
-import { getFeatureInFilter } from '../../utils'
+
 import type {
-  UserPointsLayerProps,
-  UserLayerPickingInfo,
-  UserLayerFeature,
-  UserLayerPickingObject,
   BaseUserLayerProps,
+  UserLayerFeature,
+  UserLayerPickingInfo,
+  UserLayerPickingObject,
+  UserPointsLayerProps,
   UserPolygonsLayerProps,
   UserTrackLayerProps,
 } from './user.types'

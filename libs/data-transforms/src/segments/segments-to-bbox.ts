@@ -1,9 +1,11 @@
-import { featureCollection, point } from '@turf/helpers'
 import bbox from '@turf/bbox'
+import { featureCollection, point } from '@turf/helpers'
 import type { Feature, Point, Position } from 'geojson'
+
 import type { TrackSegment } from '@globalfishingwatch/api-types'
-import { wrapPointLongitudes } from '../wrap-longitudes'
+
 import type { BBox } from '../types'
+import { wrapPointLongitudes } from '../wrap-longitudes'
 
 export function getBboxFromPoints(points: Feature<Point>[]): BBox {
   const wrappedPoints = featureCollection(wrapPointLongitudes(points))

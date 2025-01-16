@@ -1,7 +1,9 @@
-import { DateTime, Duration } from 'luxon'
 import type { TFunction } from 'i18next'
+import { DateTime, Duration } from 'luxon'
+
 import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 export type SupportedDateType = string | number

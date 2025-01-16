@@ -1,6 +1,19 @@
 import { createSelector } from '@reduxjs/toolkit'
+import type { BufferOperation, BufferUnit } from 'types'
+
 import { selectActiveReportCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import {
+  selectReportBufferOperationSelector,
+  selectReportBufferUnitSelector,
+  selectReportBufferValueSelector,
+  selectReportCategorySelector,
+  selectReportVesselGraphSelector,
+} from 'features/reports/areas/area-reports.config.selectors'
 import { selectReportById } from 'features/reports/areas/area-reports.slice'
+import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import { WORLD_REGION_ID } from 'features/reports/shared/activity/reports-activity.slice'
+import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import {
   selectIsVesselGroupReportLocation,
   selectLocationAreaId,
@@ -10,18 +23,6 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import type { BufferOperation, BufferUnit } from 'types'
-import {
-  selectReportBufferOperationSelector,
-  selectReportBufferUnitSelector,
-  selectReportBufferValueSelector,
-  selectReportCategorySelector,
-  selectReportVesselGraphSelector,
-} from 'features/reports/areas/area-reports.config.selectors'
-import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
-import { WORLD_REGION_ID } from 'features/reports/shared/activity/reports-activity.slice'
-import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],

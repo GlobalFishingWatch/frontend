@@ -1,6 +1,8 @@
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
+
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
+
 import { getDefaultFormat } from './internal-utils'
 
 export const getHumanizedDates = (start: string, end: string, locale: string) => {

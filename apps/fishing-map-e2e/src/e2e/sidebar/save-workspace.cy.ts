@@ -1,7 +1,7 @@
-import { disablePopups, getWorkspaceTitle, waitForSidebarLoaded } from '../../support/app.po'
-import { WORKSPACE_NAME } from '../../constants/workspace'
-import { deleteUserWorkspaces } from '../../support/sidebar/save-workspace.po'
 import { SIDEBAR_USER_BUTTON } from '../../constants/buttons'
+import { WORKSPACE_NAME } from '../../constants/workspace'
+import { disablePopups, getWorkspaceTitle, waitForSidebarLoaded } from '../../support/app.po'
+import { deleteUserWorkspaces } from '../../support/sidebar/save-workspace.po'
 
 describe('Save a workspace', () => {
   before(() => {

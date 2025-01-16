@@ -1,7 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
+
 import type { RelatedVesselSearchMerged} from '@globalfishingwatch/api-types';
 import { VesselSearch } from '@globalfishingwatch/api-types'
+
 import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { fetchVesselSearchThunk, getSerializedQuery } from './search.thunk'
 import { mergeSearchVessels } from './search.utils'
 

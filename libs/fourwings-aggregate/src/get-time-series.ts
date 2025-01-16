@@ -1,4 +1,5 @@
 import type { VectorTileFeature } from '@mapbox/vector-tile'
+
 import { CELL_VALUES_START_INDEX, VALUE_MULTIPLIER } from './constants'
 import { AggregationOperation } from './types'
 import { getCellValues } from './util'

@@ -1,34 +1,39 @@
-import type { SetStateAction, Dispatch } from 'react'
-import { useState, useCallback, Fragment } from 'react'
-import cx from 'classnames'
+import type { Dispatch,SetStateAction } from 'react'
+import { Fragment,useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, Modal } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
+import { Button, Modal } from '@globalfishingwatch/ui-components'
+
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
-import { selectLocationType } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import NewPolygonDataset from 'features/datasets/upload/NewPolygonDataset'
-import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
-import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
-import { selectDatasetById } from 'features/datasets/datasets.slice'
-import type { DatasetUploadStyle } from 'features/modals/modals.slice'
-import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
-import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
-import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
-import UserGuideLink from 'features/help/UserGuideLink'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
+import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
+import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
+import NewPolygonDataset from 'features/datasets/upload/NewPolygonDataset'
+import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
+import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import UserGuideLink from 'features/help/UserGuideLink'
+import type { DatasetUploadStyle } from 'features/modals/modals.slice'
+import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
+import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { selectLocationType } from 'routes/routes.selectors'
+
 import {
-  useDatasetsAPI,
-  useDatasetModalOpenConnect,
   useAddDataviewFromDatasetToWorkspace,
   useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
+  useDatasetsAPI,
 } from '../datasets.hook'
+
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
+
 import styles from './NewDataset.module.css'
 
 export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'

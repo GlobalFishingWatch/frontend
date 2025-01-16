@@ -1,5 +1,6 @@
-import type { GetItemPropsOptions } from 'downshift'
 import { Fragment } from 'react'
+import type { GetItemPropsOptions } from 'downshift'
+
 import SearchBasicResult from 'features/search/basic/SearchBasicResult'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 

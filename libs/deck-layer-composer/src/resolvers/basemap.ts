@@ -4,6 +4,7 @@ import type {
 import {
   BasemapType,
 } from '@globalfishingwatch/deck-layers'
+
 import type { DeckResolverFunction } from './types'
 
 export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLabelsLayerProps> = (

@@ -1,19 +1,24 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { useState } from 'react'
+import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
-import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
-import InsightError from 'features/vessel/insights/InsightErrorMessage'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVGRData } from '../vessel-group-report.slice'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
+
 import { selectFetchVesselGroupReportIUUParams } from '../vessel-group-report.selectors'
-import styles from './VGRInsights.module.css'
-import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
+import { selectVGRData } from '../vessel-group-report.slice'
+
 import { selectVGRIUUVessels } from './vessel-group-report-insights.selectors'
+import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
 import VesselGroupReportInsightVesselTable from './VGRInsightVesselsTable'
+
+import styles from './VGRInsights.module.css'
 
 const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()

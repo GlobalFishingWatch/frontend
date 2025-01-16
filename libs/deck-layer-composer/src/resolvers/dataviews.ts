@@ -1,17 +1,30 @@
 import { uniq, uniqBy } from 'es-toolkit'
+
 import type {
-  Dataset,
   ApiEvent,
+  Dataset,
   DataviewInstance,
-  EventTypes,
   DataviewSublayerConfig,
+  EventTypes,
 } from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
-  EndpointId,
   DataviewCategory,
   DataviewType,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getMergedDataviewId,
+  isActivityDataview,
+  isDetectionsDataview,
+  isEnvironmentalDataview,
+  isHeatmapStaticDataview,
+  isTrackDataview,
+  isUserHeatmapDataview,
+  isUserTrackDataview,
+  isVesselGroupDataview,
+} from '@globalfishingwatch/dataviews-client'
 import type {
   FourwingsVisualizationMode,
   HEATMAP_ID,
@@ -20,18 +33,6 @@ import type {
 import { FourwingsComparisonMode } from '@globalfishingwatch/deck-layers'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import {
-  getMergedDataviewId,
-  isActivityDataview,
-  isDetectionsDataview,
-  isVesselGroupDataview,
-  isEnvironmentalDataview,
-  isHeatmapStaticDataview,
-  isTrackDataview,
-  isUserHeatmapDataview,
-  isUserTrackDataview,
-} from '@globalfishingwatch/dataviews-client'
 
 export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
 

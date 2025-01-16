@@ -1,10 +1,12 @@
 import { useCallback, useEffect } from 'react'
+import type { ViewStateChangeParameters } from '@deck.gl/core/dist/controllers/controller'
+import { number,object } from '@recoiljs/refine'
 import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { urlSyncEffect } from 'recoil-sync'
-import { object, number } from '@recoiljs/refine'
-import type { ViewStateChangeParameters } from '@deck.gl/core/dist/controllers/controller'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { MapCoordinates } from 'types'
+
+import { useDebounce } from '@globalfishingwatch/react-hooks'
+
 import { DEFAULT_URL_DEBOUNCE, DEFAULT_VIEWPORT } from 'data/config'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom'

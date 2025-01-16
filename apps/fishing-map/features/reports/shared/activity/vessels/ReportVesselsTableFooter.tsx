@@ -1,31 +1,35 @@
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { Fragment, useMemo } from 'react'
-import { unparse as unparseCSV } from 'papaparse'
-import { saveAs } from 'file-saver'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { uniq } from 'es-toolkit'
+import { saveAs } from 'file-saver'
+import { unparse as unparseCSV } from 'papaparse'
+
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
-import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { useLocationConnect } from 'routes/routes.hook'
-import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectReportVesselFilter } from 'features/reports/areas/area-reports.config.selectors'
 import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
 import { selectReportAreaName } from 'features/reports/areas/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
-import styles from './ReportVesselsTableFooter.module.css'
+import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
+import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import { useLocationConnect } from 'routes/routes.hook'
+
 import {
-  selectReportVesselsListWithAllInfo,
-  selectReportVesselsList,
   selectReportVesselsFiltered,
+  selectReportVesselsList,
+  selectReportVesselsListWithAllInfo,
   selectReportVesselsPagination,
 } from './report-activity-vessels.selectors'
 import ReportVesselsTablePinAll from './ReportVesselsTablePin'
+
+import styles from './ReportVesselsTableFooter.module.css'
 
 type ReportVesselsTableFooterProps = {
   reportName?: string

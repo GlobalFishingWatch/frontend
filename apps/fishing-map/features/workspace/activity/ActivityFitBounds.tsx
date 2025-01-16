@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
-import type { Bbox } from '@globalfishingwatch/data-transforms'
+
 import type { StatFields } from '@globalfishingwatch/api-types'
-import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 
 type ActivityFitBoundsProps = {
   stats: StatFields

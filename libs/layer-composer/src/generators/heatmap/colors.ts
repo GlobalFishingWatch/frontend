@@ -1,4 +1,5 @@
 import type { ColorRampsIds } from '../types'
+
 import { getColorRampByOpacitySteps, getMixedOpacityToWhiteColorRamp } from './util/colors'
 
 export const HEATMAP_COLORS_BY_ID = {

@@ -1,5 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux'
+import type { PortPosition } from 'types'
+
 import { flags } from '@globalfishingwatch/i18n-labels'
+
 import {
   selectMapData,
   selectPointValues,
@@ -7,18 +10,16 @@ import {
   selectPortValues,
   selectSubareas,
   selectSubareaValues,
+  setCountriesMetadata,
   setCountry,
   setData,
   setPointValues,
   setPorts,
   setPortValues,
   setSubareas,
-  setSubareaValues,
-  setCountriesMetadata
-} from 'features/labeler/labeler.slice'
-import type { PortPosition } from 'types'
-import { getFixedColorForUnknownLabel } from 'utils/colors'
+  setSubareaValues} from 'features/labeler/labeler.slice'
 import { useMapConnect } from 'features/map/map.hooks'
+import { getFixedColorForUnknownLabel } from 'utils/colors'
 
 export const useSelectedTracksConnect = () => {
   const dispatch = useDispatch()

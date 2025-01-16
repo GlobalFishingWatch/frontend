@@ -1,25 +1,27 @@
 import type {
-  LayerSpecification,
   CircleLayerSpecification,
-  LineLayerSpecification,
   FillLayerSpecification,
+  LayerSpecification,
+  LineLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import type { ContextGeneratorConfig } from '../types';
-import { GeneratorType } from '../types'
+
+import { API_GATEWAY } from '../../config'
 import type { ExtendedLayerMeta } from '../../types'
 import { isUrlAbsolute } from '../../utils'
-import { API_GATEWAY } from '../../config'
-import LAYERS, { HIGHLIGHT_SUFIX, INTERACTION_SUFIX } from './context-layers'
-import {
-  DEFAULT_LINE_COLOR,
-  getFillPaintWithFeatureState,
-  getLinePaintWithFeatureState,
-} from './context.utils'
+import type { ContextGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
+
 import {
   DEFAULT_CONTEXT_MAX_ZOOM,
   DEFAULT_CONTEXT_PROMOTE_ID,
   DEFAULT_CONTEXT_SOURCE_LAYER,
 } from './config'
+import {
+  DEFAULT_LINE_COLOR,
+  getFillPaintWithFeatureState,
+  getLinePaintWithFeatureState,
+} from './context.utils'
+import LAYERS, { HIGHLIGHT_SUFIX, INTERACTION_SUFIX } from './context-layers'
 
 const getPaintPropertyByType = (layer: LayerSpecification, config: any) => {
   const opacity = config.opacity !== undefined ? config.opacity : 1

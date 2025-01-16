@@ -1,7 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { selectLocationQuery } from 'routes/routes.selectors'
-import type { AreaReportState, AreaReportStateProperty } from './area-reports.types'
+
 import { DEFAULT_AREA_REPORT_STATE } from './area-reports.config'
+import type { AreaReportState, AreaReportStateProperty } from './area-reports.types'
 
 type AreaReportProperty<P extends AreaReportStateProperty> = Required<AreaReportState>[P]
 function selectAreaReportStateProperty<P extends AreaReportStateProperty>(property: P) {

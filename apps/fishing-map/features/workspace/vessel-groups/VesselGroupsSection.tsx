@@ -1,27 +1,30 @@
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
-import styles from 'features/workspace/shared/Sections.module.css'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import VesselGroupListTooltip from 'features/vessel-groups/VesselGroupListTooltip'
-import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import {
   selectVesselGroupsStatusId,
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
-import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
-import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
-import LayerPanelContainer from '../shared/LayerPanelContainer'
+import VesselGroupListTooltip from 'features/vessel-groups/VesselGroupListTooltip'
+import styles from 'features/workspace/shared/Sections.module.css'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from '../highlight-panel/highlight-panel.content'
+import LayerPanelContainer from '../shared/LayerPanelContainer'
 import { setWorkspaceSuggestSave } from '../workspace.slice'
+
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
 const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {

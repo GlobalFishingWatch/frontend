@@ -1,18 +1,22 @@
 import { useCallback } from 'react'
-import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import Link from 'redux-first-router-link'
+
 import type { Workspace } from '@globalfishingwatch/api-types'
-import { WORKSPACE } from 'routes/routes'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
-import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
+import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
+import { WORKSPACE } from 'routes/routes'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
+
 import { selectUserWorkspacesPrivate } from './selectors/user.permissions.selectors'
+
 import styles from './User.module.css'
 
 function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {

@@ -1,33 +1,37 @@
 import { Fragment, useRef, useState } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, Choice, Icon, Tag, Modal } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import { THINNING_LEVELS, ThinningLevels } from '@globalfishingwatch/api-client'
+import { Button, Choice, Icon, Modal,Tag } from '@globalfishingwatch/ui-components'
+
+import { ROOT_DOM_ELEMENT } from 'data/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
+import type { DateRange } from 'features/download/downloadActivity.slice'
 import type { DownloadTrackParams } from 'features/download/downloadTrack.slice'
 import {
-  selectDownloadTrackStatus,
-  selectDownloadTrackIds,
-  selectDownloadTrackName,
+  clearDownloadTrackVessel,
   downloadTrackThunk,
   resetDownloadTrackStatus,
   selectDownloadTrackDataset,
-  clearDownloadTrackVessel,
+  selectDownloadTrackIds,
+  selectDownloadTrackName,
   selectDownloadTrackRateLimit,
+  selectDownloadTrackStatus,
 } from 'features/download/downloadTrack.slice'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { ROOT_DOM_ELEMENT } from 'data/config'
-import type { DateRange } from 'features/download/downloadActivity.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import styles from './DownloadModal.module.css'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
 import type { Format } from './downloadTrack.config'
 import { FORMAT_OPTIONS } from './downloadTrack.config'
+
+import styles from './DownloadModal.module.css'
 
 function DownloadTrackModal() {
   const { t } = useTranslation()

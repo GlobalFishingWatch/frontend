@@ -1,36 +1,40 @@
 import type { ComponentType } from 'react'
 import { Fragment, useState } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Radio } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import useClickedOutside from 'hooks/use-clicked-outside'
-import { TimebarGraphs, TimebarVisualisations } from 'types'
-import {
-  selectActiveReportActivityDataviews,
-  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
-} from 'features/dataviews/selectors/dataviews.selectors'
-import { getEventLabel } from 'utils/analytics'
+import { IconButton, Radio } from '@globalfishingwatch/ui-components'
+
 import AreaIcon from 'assets/icons/timebar-area.svg'
-import TracksIcon from 'assets/icons/timebar-tracks.svg'
-import TrackSpeedIcon from 'assets/icons/timebar-track-speed.svg'
 import TrackDepthIcon from 'assets/icons/timebar-track-depth.svg'
-import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import TrackSpeedIcon from 'assets/icons/timebar-track-speed.svg'
+import TracksIcon from 'assets/icons/timebar-tracks.svg'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectIsVesselLocation } from 'routes/routes.selectors'
-import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import {
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
-  useTimebarVisualisationConnect,
-  useTimebarGraphConnect,
+  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+  selectActiveReportActivityDataviews,
+} from 'features/dataviews/selectors/dataviews.selectors'
+import useClickedOutside from 'hooks/use-clicked-outside'
+import { selectIsVesselLocation } from 'routes/routes.selectors'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { getEventLabel } from 'utils/analytics'
+
+import {
   useTimebarEnvironmentConnect,
+  useTimebarGraphConnect,
   useTimebarVesselGroupConnect,
+  useTimebarVisualisationConnect,
 } from './timebar.hooks'
+
 import styles from './TimebarSettings.module.css'
 
 const Icon = ({

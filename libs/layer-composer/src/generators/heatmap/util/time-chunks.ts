@@ -1,7 +1,9 @@
+import { intersection } from 'lodash'
 import type { DurationLikeObject} from 'luxon';
 import { DateTime, Duration, Interval as LuxonInterval } from 'luxon'
-import { intersection } from 'lodash'
+
 import type { Interval } from '../types'
+
 import { getSourceId } from '.'
 
 export type TimeChunk = {

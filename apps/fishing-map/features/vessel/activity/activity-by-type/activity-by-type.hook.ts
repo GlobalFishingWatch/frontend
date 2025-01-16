@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+
 import type { EventType } from '@globalfishingwatch/api-types'
 
 export const useActivityByType = (): [EventType | null, (eventType: EventType) => void] => {

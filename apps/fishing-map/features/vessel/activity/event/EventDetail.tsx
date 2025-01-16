@@ -1,16 +1,20 @@
 import React, { useMemo } from 'react'
-import get from 'lodash/get'
 import { useTranslation } from 'react-i18next'
+import get from 'lodash/get'
 import { DateTime } from 'luxon'
+
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import type { VesselRenderField } from 'features/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
-import styles from './Event.module.css'
+
 import type VesselEvent from './Event'
+
+import styles from './Event.module.css'
 
 interface ActivityContentProps {
   event: VesselEvent

@@ -1,9 +1,11 @@
 import type { Accessor, PickingInfo } from '@deck.gl/core'
-import type { Feature, Geometry } from 'geojson'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Feature, Geometry } from 'geojson'
+
 import type { TimeFilterType } from '@globalfishingwatch/api-types'
-import type { ContextLayerConfig } from '../context'
+
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
+import type { ContextLayerConfig } from '../context'
 
 export type FilterOperators = Record<string, 'include' | 'exclude'>
 

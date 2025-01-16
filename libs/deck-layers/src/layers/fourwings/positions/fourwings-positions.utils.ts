@@ -1,6 +1,7 @@
 import type { Viewport } from '@deck.gl/core'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 
 export const upperFirst = (text: string) => {

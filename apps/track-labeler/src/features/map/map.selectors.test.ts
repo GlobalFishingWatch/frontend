@@ -1,4 +1,5 @@
 import { TRACK_COLORS } from 'types'
+
 import { selectActionColors } from './map.selectors'
 
 describe('selectActionColors', () => {

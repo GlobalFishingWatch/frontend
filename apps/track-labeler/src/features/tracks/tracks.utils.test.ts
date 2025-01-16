@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
 import type { ExportData } from 'types'
-import { extractLabeledTrack } from './tracks.utils'
+
 import labeledTrackJson from './__mocks__/labeled_track.json'
+import { extractLabeledTrack } from './tracks.utils'
 
 describe('tracks.utils', () => {
   test('extractLabeledTrack build segments properly', () => {

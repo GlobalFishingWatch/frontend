@@ -2,8 +2,10 @@
 
 import React from 'react'
 import cx from 'classnames'
+
 import type { SwitchProps } from '../switch'
 import { Switch } from '../switch'
+
 import styles from './SwitchRow.module.css'
 
 type SwitchRowProps = SwitchProps & {

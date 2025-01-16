@@ -1,34 +1,37 @@
-import { useSelector } from 'react-redux'
-import { Trans, useTranslation } from 'react-i18next'
 import type { ChangeEvent } from 'react'
 import { useCallback } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
-import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
+
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectSearchQuery } from 'features/search/search.config.selectors'
-import { EMPTY_FILTERS } from 'features/search/search.config'
+import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
+
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  cleanVesselSearchResults,
-  selectSearchStatus,
-  selectSearchStatusCode,
-} from 'features/search/search.slice'
 import styles from 'features/search/advanced/SearchAdvanced.module.css'
 import SearchAdvancedFilters from 'features/search/advanced/SearchAdvancedFilters'
+import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
+import { EMPTY_FILTERS } from 'features/search/search.config'
+import { selectSearchQuery } from 'features/search/search.config.selectors'
 import {
   useSearchConnect,
   useSearchFiltersConnect,
   useSearchFiltersErrors,
 } from 'features/search/search.hook'
-import SearchPlaceholder, {
-  SearchNoResultsState,
-  SearchEmptyState,
-} from 'features/search/SearchPlaceholders'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
+import {
+  cleanVesselSearchResults,
+  selectSearchStatus,
+  selectSearchStatusCode,
+} from 'features/search/search.slice'
+import SearchPlaceholder, {
+  SearchEmptyState,
+  SearchNoResultsState,
+} from 'features/search/SearchPlaceholders'
+import LocalStorageLoginLink from 'routes/LoginLink'
+import { useLocationConnect } from 'routes/routes.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import SearchError from '../basic/SearchError'
 
 const SearchAdvancedResults = dynamic(

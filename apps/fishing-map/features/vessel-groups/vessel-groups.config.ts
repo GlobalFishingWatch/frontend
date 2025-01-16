@@ -1,4 +1,5 @@
 import type { SelectOption } from '@globalfishingwatch/ui-components'
+
 import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
 
 // Look for these ID columns by order of preference

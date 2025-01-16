@@ -1,16 +1,17 @@
 import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { getLocationType, isOfflineForced } from 'routes/routes.selectors'
-import { PROFILE, SETTINGS } from 'routes/routes'
+
+import { IS_STANDALONE_APP } from 'data/config'
 import { SPLASH_TIMEOUT } from 'data/constants'
+import { useAnalytics } from 'features/app/analytics.hooks'
 import Home from 'features/home/Home'
 import Profile from 'features/profile/Profile'
-import Splash from 'features/splash/Splash'
 import Settings from 'features/settings/Settings'
+import Splash from 'features/splash/Splash'
 import { useUser } from 'features/user/user.hooks'
-import { useAnalytics } from 'features/app/analytics.hooks'
+import { PROFILE, SETTINGS } from 'routes/routes'
 import { useReplaceLoginUrl } from 'routes/routes.hook'
-import { IS_STANDALONE_APP } from 'data/config'
+import { getLocationType, isOfflineForced } from 'routes/routes.selectors'
 
 function App() {
   useAnalytics()

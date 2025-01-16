@@ -1,16 +1,19 @@
-import { DateTime } from 'luxon'
-import memoize from 'lodash/memoize'
 import { scaleLinear } from 'd3-scale'
 import { uniqBy } from 'es-toolkit'
+import memoize from 'lodash/memoize'
+import { DateTime } from 'luxon'
+
+import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
 import type {
   UserTrackBinaryData,
   VesselTrackData,
   VesselTrackGraphExtent,
 } from '@globalfishingwatch/deck-loaders'
-import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
+
 import { getUTCDateTime } from '../../utils'
-import type { VesselEventsLayer } from './VesselEventsLayer'
+
 import { VESSEL_GRAPH_COLORS } from './vessel.config'
+import type { VesselEventsLayer } from './VesselEventsLayer'
 import type { VesselsColorByProperty } from './VesselTrackLayer'
 
 export const FIRST_YEAR_OF_DATA = 2012

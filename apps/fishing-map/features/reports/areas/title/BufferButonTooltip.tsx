@@ -1,18 +1,21 @@
 import { useMemo, useState } from 'react'
-import { Range, getTrackBackground } from 'react-range'
 import { useTranslation } from 'react-i18next'
+import { getTrackBackground,Range } from 'react-range'
 import { useSelector } from 'react-redux'
+import type { BufferOperation, BufferUnit } from 'types'
+
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Choice, IconButton, InputText } from '@globalfishingwatch/ui-components'
+
+import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import {
+  DIFFERENCE,
+  DISSOLVE,
   KILOMETERS,
   NAUTICAL_MILES,
-  DISSOLVE,
-  DIFFERENCE,
 } from 'features/reports/areas/area-reports.config'
-import type { BufferOperation, BufferUnit } from 'types'
-import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import { selectReportPreviewBufferFeature } from 'features/reports/areas/area-reports.selectors'
+
 import styles from './ReportTitle.module.css'
 
 type BufferButonTooltipProps = {

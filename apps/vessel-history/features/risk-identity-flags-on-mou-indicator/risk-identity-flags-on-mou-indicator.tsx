@@ -1,9 +1,10 @@
-import { capitalize } from 'lodash'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { capitalize } from 'lodash'
+import type { ValueItem } from 'types'
+
 import RiskIdentityIndicator from 'features/risk-identity-indicator/risk-identity-indicator'
 import { VesselFieldLabel } from 'types/vessel'
-import type { ValueItem } from 'types'
 
 export interface RiskIdentityFlagsOnMouIndicatorProps {
   name: string

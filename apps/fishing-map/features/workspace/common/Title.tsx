@@ -1,10 +1,14 @@
 import type { ReactNode } from 'react'
 import cx from 'classnames'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
-import { getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+
 import { CONTEXT_LAYERS_DATAVIEWS } from 'data/workspaces'
+import { getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+
 import { useDataviewInstancesConnect } from '../workspace.hook'
+
 import styles from './Title.module.css'
 
 type TitleProps = {

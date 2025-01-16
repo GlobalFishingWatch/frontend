@@ -1,21 +1,23 @@
-import { parse } from 'papaparse'
 import type { Feature, FeatureCollection } from 'geojson'
-import {
-  pointsListToGeojson,
-  pointsGeojsonToNormalizedGeojson,
-  listToTrackSegments,
-  segmentsToGeoJSON,
-  kmlToGeoJSON,
-  zipToFiles,
-  shpToGeoJSON,
-  isZipFile,
-} from '@globalfishingwatch/data-transforms'
+import { parse } from 'papaparse'
+
 import type {
   DatasetGeometryToGeoJSONGeometry,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
+import {
+  isZipFile,
+  kmlToGeoJSON,
+  listToTrackSegments,
+  pointsGeojsonToNormalizedGeojson,
+  pointsListToGeojson,
+  segmentsToGeoJSON,
+  shpToGeoJSON,
+  zipToFiles,
+} from '@globalfishingwatch/data-transforms'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
+
 import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import type { DatasetGeometryTypesSupported } from 'utils/files'
 import { getFileType, readBlobAs } from 'utils/files'

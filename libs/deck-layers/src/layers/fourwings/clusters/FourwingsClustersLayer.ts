@@ -1,5 +1,4 @@
-import { parse } from '@loaders.gl/core'
-import type { Layer, LayerContext, LayersList, DefaultProps, PickingInfo } from '@deck.gl/core'
+import type { DefaultProps, Layer, LayerContext, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
@@ -10,15 +9,17 @@ import type {
   TileLoadProps,
 } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
-import Supercluster from 'supercluster'
+import { parse } from '@loaders.gl/core'
 import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
 import { max } from 'simple-statistics'
+import Supercluster from 'supercluster'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
 import type { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
-import { PATH_BASENAME } from '../../layers.config'
+import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
+
 import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
@@ -27,6 +28,8 @@ import {
   hexToDeckColor,
   LayerGroup,
 } from '../../../utils'
+import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
+import { PATH_BASENAME } from '../../layers.config'
 import {
   FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
@@ -34,7 +37,7 @@ import {
   POSITIONS_VISUALIZATION_MAX_ZOOM,
 } from '../fourwings.config'
 import { getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
-import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
+
 import type {
   FourwingsClusterEventType,
   FourwingsClusterFeature,

@@ -1,6 +1,8 @@
 import { uniq } from 'es-toolkit'
+
 import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 
 // Logic to debug where a dataset is loaded from a unkwown dataview

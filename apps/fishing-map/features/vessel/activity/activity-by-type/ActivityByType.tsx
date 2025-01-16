@@ -1,29 +1,34 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { GroupedVirtuoso } from 'react-virtuoso'
-import { useTranslation } from 'react-i18next'
+
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import EventDetail from 'features/vessel/activity/event/EventDetail'
+
 import { DEFAULT_VIEWPORT } from 'data/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { getScrollElement } from 'features/sidebar/sidebar.utils'
+import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
+import { setHighlightedEvents } from 'features/timebar/timebar.slice'
+import EventDetail from 'features/vessel/activity/event/EventDetail'
 import {
   ActivityEvent,
   selectEventsGroupedByType,
 } from 'features/vessel/activity/vessels-activity.selectors'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { setHighlightedEvents } from 'features/timebar/timebar.slice'
-import { getScrollElement } from 'features/sidebar/sidebar.utils'
-import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
-import Event, { EVENT_HEIGHT } from '../event/Event'
-import styles from '../ActivityGroupedList.module.css'
+import { useLocationConnect } from 'routes/routes.hook'
+
 import type VesselEvent from '../event/Event'
+import Event, { EVENT_HEIGHT } from '../event/Event'
+
 import { useActivityByType } from './activity-by-type.hook'
 import ActivityGroup from './ActivityGroup'
+
+import styles from '../ActivityGroupedList.module.css'
 
 export const EVENTS_ORDER = [
   EventTypes.Port,

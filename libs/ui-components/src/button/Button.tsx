@@ -1,9 +1,11 @@
 import React from 'react'
 import cx from 'classnames'
+
+import { Spinner } from '../spinner'
 import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
-import { Spinner } from '../spinner'
 import type { TooltipTypes } from '../types/types'
+
 import styles from './Button.module.css'
 
 export type ButtonType = 'default' | 'secondary' | 'border-secondary'

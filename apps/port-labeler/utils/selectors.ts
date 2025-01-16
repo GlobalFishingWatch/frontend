@@ -1,5 +1,5 @@
-import { createSelectorCreator, lruMemoize } from 'reselect'
 import { isEqual } from 'lodash'
+import { createSelectorCreator, lruMemoize } from 'reselect'
 
 /**
  * Returns a deep equal selector creator to prevent selectors recalculation

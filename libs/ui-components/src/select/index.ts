@@ -1,5 +1,7 @@
 import type { JSX } from 'react'
+
 import type { TooltipPlacement } from '../tooltip'
+
 export * from './Select'
 
 export type SelectOption<Id = any, Label = string | JSX.Element> = {

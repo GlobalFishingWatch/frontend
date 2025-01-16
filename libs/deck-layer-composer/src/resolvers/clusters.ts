@@ -1,5 +1,9 @@
 import { uniqBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
+
+import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import { EndpointId } from '@globalfishingwatch/api-types'
+import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDataviewSqlFiltersResolved } from '@globalfishingwatch/dataviews-client'
 import type {
@@ -7,9 +11,7 @@ import type {
   FourwingsClustersLayerProps,
 } from '@globalfishingwatch/deck-layers'
 import { FOURWINGS_MAX_ZOOM, getUTCDateTime } from '@globalfishingwatch/deck-layers'
-import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
-import { EndpointId } from '@globalfishingwatch/api-types'
+
 import type { DeckResolverFunction, ResolverGlobalConfig } from './types'
 
 const getDateRangeQuery = ({

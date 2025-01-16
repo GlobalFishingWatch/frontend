@@ -1,9 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Interval } from 'luxon'
+
 import type { EventTypes } from '@globalfishingwatch/api-types'
+
+import { RISK_SUMMARY_SETTINGS } from 'data/config'
 import type { RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import { selectEvents } from 'features/vessels/activity/vessels-activity.selectors'
-import { RISK_SUMMARY_SETTINGS } from 'data/config'
 import { getUTCDateTime } from 'utils/dates'
 
 const selectEventsForRiskSummary = createSelector([selectEvents], (events) => {

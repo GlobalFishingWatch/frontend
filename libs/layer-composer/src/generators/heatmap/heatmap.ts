@@ -1,23 +1,26 @@
 import { flatten, zip } from 'lodash'
+
 import type {
   FillLayerSpecification,
   LineLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+
+import { API_GATEWAY } from '../../config'
 import { Group } from '../../types'
+import { isUrlAbsolute } from '../../utils'
 import type { HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types';
 import { GeneratorType } from '../types'
-import { isUrlAbsolute } from '../../utils'
-import { API_GATEWAY } from '../../config'
 import { addURLSearchParams } from '../utils'
+
 import fetchStats from './util/fetch-stats'
+import getBreaks from './util/get-breaks'
+import { HEATMAP_COLOR_RAMPS } from './colors'
 import {
-  HEATMAP_DEFAULT_MAX_ZOOM,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
+  HEATMAP_DEFAULT_MAX_ZOOM,
   TEMPORALGRID_SOURCE_LAYER,
 } from './config'
-import { HEATMAP_COLOR_RAMPS } from './colors'
 import type { StatsByZoom } from './types'
-import getBreaks from './util/get-breaks'
 
 export type GlobalHeatmapGeneratorConfig = MergedGeneratorConfig<HeatmapGeneratorConfig>
 

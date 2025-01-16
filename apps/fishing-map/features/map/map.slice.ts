@@ -1,27 +1,29 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import type { RootState } from 'reducers'
+import type { AppDispatch } from 'store'
+
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getDataviewSqlFiltersResolved } from '@globalfishingwatch/dataviews-client'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
-  DataviewDatasetConfig,
-  Dataset,
-  IdentityVessel,
   ApiEvent,
-  EventVessel,
   APIPagination,
+  Dataset,
+  DataviewDatasetConfig,
+  EventVessel,
   FourwingsEventsInteraction,
+  IdentityVessel,
 } from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
   EndpointId,
-  EventVesselTypeEnum,
   EventTypes,
-} from '@globalfishingwatch/api-types'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+  EventVesselTypeEnum,
+ VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDataviewSqlFiltersResolved } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ClusterPickingObject,
@@ -34,10 +36,7 @@ import type {
   UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import type { AppDispatch } from 'store'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+
 import {
   fetchDatasetByIdThunk,
   getDatasetByIdsThunk,
@@ -48,13 +47,15 @@ import {
   getRelatedDatasetsByType,
   getVesselGroupInDataview,
 } from 'features/datasets/datasets.utils'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   selectEventsDataviews,
   selectVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const MAX_TOOLTIP_LIST = 5
 

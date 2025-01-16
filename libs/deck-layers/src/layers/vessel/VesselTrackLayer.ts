@@ -1,14 +1,17 @@
-import type { NumericArray } from '@math.gl/core'
 import type { AccessorFunction, ChangeFlags, DefaultProps } from '@deck.gl/core'
 import type { PathLayerProps } from '@deck.gl/layers'
 import { PathLayer } from '@deck.gl/layers'
+import type { NumericArray } from '@math.gl/core'
+
+import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
-import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
-import type { ThinningLevels } from '@globalfishingwatch/api-client'
-import { MAX_FILTER_VALUE } from '../layers.config'
+import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
+
 import { colorToVec, hexToDeckColor } from '../../utils/colors'
+import { MAX_FILTER_VALUE } from '../layers.config'
+
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { generateVesselGraphSteps, getSegmentsFromData, VESSEL_GRAPH_STEPS } from './vessel.utils'

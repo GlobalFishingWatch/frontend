@@ -1,13 +1,15 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import type { Position } from '@deck.gl/core'
-import { useLocationConnect } from 'routes/routes.hook'
+
 import {
   selectAreMapAnnotationsVisible,
   selectMapAnnotations,
 } from 'features/app/selectors/app.selectors'
-import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
+import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
+import { useLocationConnect } from 'routes/routes.hook'
+
 import type { MapAnnotation } from './annotations.types'
 
 /**

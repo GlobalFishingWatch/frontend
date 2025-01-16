@@ -1,11 +1,12 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
+
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../config'
+import { isUrlAbsolute } from '../../../utils'
+import { HeatmapAnimatedMode } from '../../types'
+import { toURLArray } from '../../utils'
 import { API_ENDPOINTS, COLOR_RAMP_DEFAULT_NUM_STEPS } from '../config'
 import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import { HeatmapAnimatedMode } from '../../types'
-import { isUrlAbsolute } from '../../../utils'
 import type { Interval } from '../types'
-import { toURLArray } from '../../utils'
 
 export type Breaks = number[][]
 

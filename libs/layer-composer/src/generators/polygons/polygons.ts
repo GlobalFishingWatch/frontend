@@ -2,13 +2,14 @@ import type {
   FillLayerSpecification,
   LineLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+
+import { API_GATEWAY } from '../../config'
 import { Group } from '../../types'
 import { isUrlAbsolute } from '../../utils'
-import { API_GATEWAY } from '../../config'
+import { getFillPaintWithFeatureState } from '../context/context.utils'
 import type { MergedGeneratorConfig, PolygonsGeneratorConfig } from '../types';
 import { GeneratorType } from '../types'
 import { isConfigVisible } from '../utils'
-import { getFillPaintWithFeatureState } from '../context/context.utils'
 
 const DEFAULT_COLOR = 'rgba(0, 193, 231, 1)'
 

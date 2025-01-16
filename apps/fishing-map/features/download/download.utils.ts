@@ -1,17 +1,20 @@
 import { t } from 'i18next'
-import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getUTCDateTime } from 'utils/dates'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+
 import { REPORT_DAYS_LIMIT } from 'data/config'
 import { getActiveDatasetsInDataview, getDatasetSchemaItem } from 'features/datasets/datasets.utils'
+import { getUTCDateTime } from 'utils/dates'
+
 import {
+  getTemporalResolutionOptions,
   GroupBy,
   TemporalResolution,
-  getTemporalResolutionOptions,
 } from './downloadActivity.config'
 
 export function getDownloadReportSupported(start: string, end: string) {

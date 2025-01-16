@@ -1,6 +1,8 @@
 import type { Anchorage, EventTypes } from '@globalfishingwatch/api-types'
+
 import { anyRegion } from 'features/regions/regions.slice'
 import type { Settings, SettingsEvents, SettingsPortVisits } from 'features/settings/settings.slice'
+
 import type { RenderedEvent } from './vessels-activity.selectors'
 
 const isNullOrUndefined = (value: any) => value === undefined || value === null

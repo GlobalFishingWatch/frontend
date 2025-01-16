@@ -1,8 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInDataview,
@@ -10,23 +14,29 @@ import {
   getRelatedDatasetByType,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
-import { createDeepEqualSelector } from 'utils/selectors'
-import {
-  selectIsAnyAreaReportLocation,
-  selectIsVesselGroupReportLocation,
-  selectReportVesselGroupId,
-  selectUrlDataviewInstances,
-  selectVesselId,
-} from 'routes/routes.selectors'
 import {
   isBathymetryDataview,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
+import {
+  selectActiveActivityDataviews,
+  selectActiveContextAreasDataviews,
+  selectActiveDetectionsDataviews,
+  selectActiveEnvironmentalDataviews,
+  selectActiveEventsDataviews,
+  selectActiveVesselGroupDataviews,
+  selectActiveVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
+import {
+  selectAllDataviewInstancesResolved,
+  selectDataviewInstancesMergedOrdered,
+  selectDataviewInstancesResolved,
+} from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
+import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
   selectVGRSection,
   selectVGRSubsection,
@@ -35,24 +45,16 @@ import {
   getReportVesselGroupVisibleDataviews,
   isVesselGroupActivityDataview,
 } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
-import {
-  selectActiveActivityDataviews,
-  selectActiveContextAreasDataviews,
-  selectActiveEventsDataviews,
-  selectActiveVesselsDataviews,
-  selectActiveEnvironmentalDataviews,
-  selectActiveDetectionsDataviews,
-  selectActiveVesselGroupDataviews,
-} from 'features/dataviews/selectors/dataviews.categories.selectors'
-import {
-  selectDataviewInstancesResolved,
-  selectAllDataviewInstancesResolved,
-  selectDataviewInstancesMergedOrdered,
-} from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectVGRActivityDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
+import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import {
+  selectIsAnyAreaReportLocation,
+  selectIsVesselGroupReportLocation,
+  selectReportVesselGroupId,
+  selectUrlDataviewInstances,
+  selectVesselId,
+} from 'routes/routes.selectors'
+import { createDeepEqualSelector } from 'utils/selectors'
 
 export const selectHasOtherVesselGroupDataviews = createSelector(
   [

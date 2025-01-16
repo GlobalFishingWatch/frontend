@@ -1,5 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { selectLocationQuery } from 'routes/routes.selectors'
+
 import { DEFAULT_PORT_REPORT_STATE } from './ports-report.config'
 import type { PortsReportState, PortsReportStateProperty } from './ports-report.types'
 

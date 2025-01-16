@@ -1,12 +1,16 @@
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
 import { Modal } from '@globalfishingwatch/ui-components'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
-import styles from './WorkspaceSaveModal.module.css'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+
 import { useSaveWorkspaceModalConnect } from './workspace-save.hooks'
 import EditWorkspace from './WorkspaceEdit'
+
+import styles from './WorkspaceSaveModal.module.css'
 
 type EditWorkspaceModalProps = {
   title?: string

@@ -1,21 +1,23 @@
 import React, { Fragment } from 'react'
-import cx from 'classnames'
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
+import cx from 'classnames'
 import type { ReportEventsStatsResponseGroups } from 'queries/report-events-stats-api'
+import { Bar, BarChart, LabelList,ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
+
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
-import { formatInfoField } from 'utils/info'
-import { useLocationConnect } from 'routes/routes.hook'
+import type { PortsReportState } from 'features/reports/ports/ports-report.types'
+import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
 import type {
   VesselGroupReportState,
   VGREventsVesselsProperty,
   VGRVesselsSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
-import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
-import type { PortsReportState } from 'features/reports/ports/ports-report.types'
+import { useLocationConnect } from 'routes/routes.hook'
+import { formatInfoField } from 'utils/info'
+
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {

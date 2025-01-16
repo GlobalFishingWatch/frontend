@@ -1,5 +1,7 @@
 import { AuthorizationOptions, EventTypes } from '@globalfishingwatch/api-types'
+
 import type { ActivityEvent } from 'types/activity'
+
 import { getEncounterStatus } from './vessels-activity.utils'
 
 describe('vessels.activity.utils', () => {

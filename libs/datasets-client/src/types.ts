@@ -1,4 +1,4 @@
-import type { Dataview, DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
+import type { Dataview, DataviewInstance,DataviewType } from '@globalfishingwatch/api-types'
 
 // Duplicated from resolve-datavies (dataviews-client lib) to avoid circular dependency
 export type UrlDataviewInstance<T = DataviewType> = Omit<DataviewInstance<T>, 'dataviewId'> & {

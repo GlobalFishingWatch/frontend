@@ -1,15 +1,18 @@
-import { useState, useCallback, Component, useEffect } from 'react'
+import { Component, useCallback, useEffect,useState } from 'react'
 import type { AppProps } from 'next/app'
-import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 import dynamic from 'next/dynamic'
 import { RecoilRoot } from 'recoil'
-import { redirectToLogin, useGFWLogin } from '@globalfishingwatch/react-hooks'
+import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { redirectToLogin, useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { SplitView } from '@globalfishingwatch/ui-components'
+
 import { API_BASE } from 'data/config'
-import styles from './App.module.css'
+
 import './styles.css'
 import './base.css'
+import styles from './App.module.css'
 
 class ErrorBoundary extends Component<{ children: any }, { hasError: boolean }> {
   constructor(props) {

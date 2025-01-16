@@ -1,18 +1,21 @@
-import { useContext, useCallback, useMemo } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import DeckGL from '@deck.gl/react'
 import { OrthographicView } from '@deck.gl/core'
 import { ScatterplotLayer } from '@deck.gl/layers'
+import DeckGL from '@deck.gl/react'
+
 import { TimelineContext } from '@globalfishingwatch/timebar'
+
+import { Field } from '../../data/models'
 import { useSegmentsLabeledConnect } from '../../features/timebar/timebar.hooks'
+import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import {
   selectColorMode,
   selectProjectColors,
   selectTimebarMode,
 } from '../../routes/routes.selectors'
-import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
-import { Field } from '../../data/models'
 import { ActionType } from '../../types'
+
 import {
   selectVesselDirectionPoints,
   selectVesselDirectionsMinMaxValues,

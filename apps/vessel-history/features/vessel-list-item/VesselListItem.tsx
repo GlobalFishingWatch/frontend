@@ -1,18 +1,22 @@
 import React, { Fragment, useCallback, useState } from 'react'
-import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import { DateTime } from 'luxon'
-import { Button, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+
 import type { Locale, VesselSearch as Vessel } from '@globalfishingwatch/api-types'
+import { Button, IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_EMPTY_VALUE, FIRST_YEAR_OF_DATA } from 'data/config'
+import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useVesselsConnect } from 'features/vessels/vessels.hook'
+import type { OfflineVessel } from 'types/vessel'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
-import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import type { OfflineVessel } from 'types/vessel'
+
 import RelatedVesselListItem from './components/RelatedVesselListItem'
+
 import styles from './VesselListItem.module.css'
 
 interface ListItemProps {

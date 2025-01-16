@@ -1,8 +1,10 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import Pbf from 'pbf'
-import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
+
 import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
+import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
+
 import type { FourwingsFeature, FourwingsLoaderOptions, ParseFourwingsOptions } from './types'
 
 export const NO_DATA_VALUE = 4294967295

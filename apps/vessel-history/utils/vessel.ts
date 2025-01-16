@@ -1,4 +1,5 @@
 import type { VesselSearch } from '@globalfishingwatch/api-types'
+
 import { VesselAPISource } from 'types'
 import type { Position } from 'types/activity'
 

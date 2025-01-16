@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   BADGES_GROUP_ADMIN_ID,
@@ -6,7 +7,9 @@ import {
   type UserData,
   type UserGroup,
 } from '@globalfishingwatch/api-types'
+
 import { ADMIN_GROUP_ID, ANONYMOUS_GROUP_ID } from '../../data/config'
+
 import styles from './user-groups.module.css'
 
 type UserGroupsListProps = {

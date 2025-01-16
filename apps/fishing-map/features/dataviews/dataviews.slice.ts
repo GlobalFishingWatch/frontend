@@ -3,16 +3,18 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
-import type { Dataview, APIPagination } from '@globalfishingwatch/api-types'
+
 import {
   GFWAPI,
   parseAPIError,
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
+import type { APIPagination,Dataview } from '@globalfishingwatch/api-types'
+
+import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { createAsyncSlice } from 'utils/async-slice'
-import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 
 const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',

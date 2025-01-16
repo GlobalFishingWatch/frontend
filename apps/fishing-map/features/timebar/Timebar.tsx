@@ -1,66 +1,70 @@
-import { Fragment, memo, useCallback, useState, useMemo, useEffect } from 'react'
+import { Fragment, memo, useCallback, useEffect,useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { useTranslation } from 'react-i18next'
+import type { Locale } from 'types'
+
+import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type {
+  HighlightedChunks,
   TimebarChartChunk,
+  TimebarProps,
   TrackEventChunkProps,
   TrackGraphOrientation,
-  HighlightedChunks,
-  TimebarProps,
 } from '@globalfishingwatch/timebar'
 import {
   Timebar,
-  TimebarTracks,
   TimebarHighlighter,
+  TimebarTracks,
   TimebarTracksEvents,
   TimebarTracksGraph,
 } from '@globalfishingwatch/timebar'
-import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import type { Locale } from 'types'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import {
-  useTimerangeConnect,
-  useTimebarVisualisation,
-  useTimebarVisualisationConnect,
+  selectTimebarGraph,
+  selectTimebarVisualisation,
+} from 'features/app/selectors/app.timebar.selectors'
+import Hint from 'features/help/Hint'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
+import { useMapViewState,useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
+import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
+import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
+import {
   useDisableHighlightTimeConnect,
   useHighlightedEventsConnect,
+  useTimebarVisualisation,
+  useTimebarVisualisationConnect,
+  useTimerangeConnect,
 } from 'features/timebar/timebar.hooks'
-import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
-import { TimebarGraphs, TimebarVisualisations } from 'types'
-import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
-import { getEventLabel } from 'utils/analytics'
-import { upperFirst } from 'utils/info'
-import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
-import Hint from 'features/help/Hint'
-import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
-import { getUTCDateTime } from 'utils/dates'
-import { selectIsAnyReportLocation } from 'routes/routes.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   useTimebarVesselEvents,
   useTimebarVesselTracks,
   useTimebarVesselTracksGraph,
 } from 'features/timebar/timebar-vessel.hooks'
-import {
-  selectTimebarGraph,
-  selectTimebarVisualisation,
-} from 'features/app/selectors/app.timebar.selectors'
+import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
-import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
-import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
-import { setHighlightedTime, selectHighlightedTime } from './timebar.slice'
-import TimebarSettings from './TimebarSettings'
+import { selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { getEventLabel } from 'utils/analytics'
+import { getUTCDateTime } from 'utils/dates'
+import { upperFirst } from 'utils/info'
+
 import {
-  selectAvailableStart,
   selectAvailableEnd,
+  selectAvailableStart,
   selectTimebarSelectedVisualizationMode,
 } from './timebar.selectors'
+import { selectHighlightedTime,setHighlightedTime } from './timebar.slice'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import TimebarSettings from './TimebarSettings'
+
 import styles from './Timebar.module.css'
 
 export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5

@@ -1,12 +1,20 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
+
 import type { VesselGroup } from '@globalfishingwatch/api-types'
+
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { getVesselGroupsInDataviews } from 'features/datasets/datasets.utils'
+import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { getVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
-import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
+import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import {
   MAX_VESSEL_GROUP_VESSELS,
-  selectVesselGroupsModalSearchText,
-} from 'features/vessel-groups/vessel-groups-modal.slice'
+ selectVesselGroupModalVessels,  selectVesselGroupsModalSearchText } from 'features/vessel-groups/vessel-groups-modal.slice'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -14,15 +22,8 @@ import {
 } from 'features/workspace/workspace.selectors'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { WORKSPACE } from 'routes/routes'
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { getVesselGroupsInDataviews } from 'features/datasets/datasets.utils'
-import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
-import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
-import { getVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
-import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
-import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectVesselGroupModalVessels } from './vessel-groups-modal.slice'
+import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
+
 import { selectAllVesselGroups } from './vessel-groups.slice'
 
 export const selectVesselGroupsModalSearchIds = createSelector(

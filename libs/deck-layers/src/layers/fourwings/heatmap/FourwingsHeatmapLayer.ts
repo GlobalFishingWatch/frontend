@@ -1,29 +1,32 @@
 import type { Color, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
+import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { screen } from 'color-blend'
+
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
+
 import {
   COLOR_HIGHLIGHT_LINE,
   EMPTY_RGBA_COLOR,
-  LayerGroup,
   getLayerGroupOffset,
+  LayerGroup,
 } from '../../../utils'
-import {
-  EMPTY_CELL_COLOR,
-  aggregateCell,
-  compareCell,
-  getIntervalFrames,
-  getVisualizationModeByResolution,
-} from './fourwings-heatmap.utils'
+
 import type {
   FourwingsHeatmapLayerProps,
   FourwingsHeatmapPickingInfo,
   FourwingsHeatmapPickingObject,
 } from './fourwings-heatmap.types'
 import { FourwingsComparisonMode } from './fourwings-heatmap.types'
+import {
+  aggregateCell,
+  compareCell,
+  EMPTY_CELL_COLOR,
+  getIntervalFrames,
+  getVisualizationModeByResolution,
+} from './fourwings-heatmap.utils'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'

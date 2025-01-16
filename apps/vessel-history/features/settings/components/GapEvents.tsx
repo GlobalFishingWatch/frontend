@@ -4,8 +4,11 @@ import {
   GAP_EVENTS_MIN_DISTANCE,
   GAP_EVENTS_MIN_DURATION,
 } from 'data/constants'
+
 import type { SettingEventSectionName, SettingsEvents } from '../settings.slice'
+
 import ActivityEvents from './ActivityEvents'
+
 import styles from './SettingsComponents.module.css'
 
 interface SettingsProps {

@@ -3,10 +3,14 @@ import { Fragment, memo, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 // import { getParser } from 'bowser'
 import type { Deck } from '@deck.gl/core'
+
 import { usePrintSize } from '@globalfishingwatch/react-hooks'
+
 import { useDeckMap } from 'features/map/map-context.hooks'
-import styles from './Map.module.css'
+
 import { MAP_WRAPPER_ID } from './map.config'
+
+import styles from './Map.module.css'
 
 export const MAP_IMAGE_DEBOUNCE = 800
 

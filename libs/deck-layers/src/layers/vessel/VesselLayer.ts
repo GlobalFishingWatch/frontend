@@ -1,32 +1,33 @@
-import { DataFilterExtension } from '@deck.gl/extensions'
 import type {
-  Layer,
-  LayersList,
-  LayerProps,
   Color,
+  Layer,
+  LayerProps,
+  LayersList,
   PickingInfo,
   UpdateParameters,
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
+import { DataFilterExtension } from '@deck.gl/extensions'
+import { TextLayer } from '@deck.gl/layers'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
 import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
-import type { BBox, Position } from 'geojson'
 import { rhumbBearing } from '@turf/turf'
-import { TextLayer } from '@deck.gl/layers'
+import type { BBox, Position } from 'geojson'
 import { extent } from 'simple-statistics'
+
+import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
 import {
   getVesselGraphExtentClamped,
   VesselEventsLoader,
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
-import type { Bbox } from '@globalfishingwatch/data-transforms'
-import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { PATH_BASENAME } from '../layers.config'
-import { deckToHexColor, hexToDeckColor } from '../../utils/colors'
+
+import type { DeckLayerProps } from '../../types'
 import {
   BLEND_BACKGROUND,
   getFetchLoadOptions,
@@ -34,31 +35,33 @@ import {
   LayerGroup,
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../utils'
-import type { DeckLayerProps } from '../../types'
+import { deckToHexColor, hexToDeckColor } from '../../utils/colors'
 import { DECK_FONT, loadDeckFont } from '../../utils/fonts'
-import type { _VesselEventsLayerProps } from './VesselEventsLayer'
-import { VesselEventsLayer } from './VesselEventsLayer'
-import type { _VesselTrackLayerProps } from './VesselTrackLayer'
-import { VesselTrackLayer } from './VesselTrackLayer'
-import type { GetSegmentsFromDataParams } from './vessel.utils'
-import { getEvents, getVesselResourceChunks } from './vessel.utils'
+import { PATH_BASENAME } from '../layers.config'
+
 import {
-  EVENTS_COLORS,
-  EVENT_LAYER_TYPE,
   DEFAULT_FISHING_EVENT_COLOR,
-  TRACK_LAYER_TYPE,
-  TRACK_DEFAULT_THINNING_CONFIG,
+  EVENT_LAYER_TYPE,
+  EVENTS_COLORS,
   TRACK_DEFAULT_THINNING,
+  TRACK_DEFAULT_THINNING_CONFIG,
+  TRACK_LAYER_TYPE,
 } from './vessel.config'
 import type {
+  _VesselLayerProps,
   VesselDataType,
   VesselDeckLayersEvent,
   VesselEventPickingInfo,
   VesselEventPickingObject,
   VesselEventProperties,
-  _VesselLayerProps,
 } from './vessel.types'
+import type { GetSegmentsFromDataParams } from './vessel.utils'
+import { getEvents, getVesselResourceChunks } from './vessel.utils'
+import type { _VesselEventsLayerProps } from './VesselEventsLayer'
+import { VesselEventsLayer } from './VesselEventsLayer'
 import { VesselPositionLayer } from './VesselPositionLayer'
+import type { _VesselTrackLayerProps } from './VesselTrackLayer'
+import { VesselTrackLayer } from './VesselTrackLayer'
 
 export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
   events: VesselDeckLayersEvent[]

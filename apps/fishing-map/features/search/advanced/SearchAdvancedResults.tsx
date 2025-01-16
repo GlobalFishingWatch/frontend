@@ -1,12 +1,22 @@
-import { useSelector } from 'react-redux'
-import type { MRT_ColumnDef } from 'material-react-table'
-import { MaterialReactTable } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import type { MRT_ColumnDef } from 'material-react-table'
+import { MaterialReactTable } from 'material-react-table'
+import type { Locale } from 'types'
+
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+
+import { FIRST_YEAR_OF_DATA } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
+import I18nDate from 'features/i18n/i18nDate'
+import I18nFlag from 'features/i18n/i18nFlag'
+import I18nNumber from 'features/i18n/i18nNumber'
+import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
+import { useSearchFiltersConnect } from 'features/search/search.hook'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import {
   cleanVesselSearchResults,
@@ -15,21 +25,9 @@ import {
   selectSelectedVessels,
   setSelectedVessels,
 } from 'features/search/search.slice'
-import {
-  formatInfoField,
-  EMPTY_FIELD_PLACEHOLDER,
-  getVesselGearTypeLabel,
-  getVesselShipTypeLabel,
-  getVesselOtherNamesLabel,
-} from 'utils/info'
-import I18nFlag from 'features/i18n/i18nFlag'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { FIRST_YEAR_OF_DATA } from 'data/config'
-import type { Locale } from 'types'
 import type { VesselSearchState } from 'features/search/search.types'
-import I18nDate from 'features/i18n/i18nDate'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import type { VesselIdentityProperty } from 'features/vessel/vessel.utils'
 import {
   getBestMatchCriteriaIdentity,
@@ -37,12 +35,17 @@ import {
   getSearchIdentityResolved,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
-import type { IdentityVesselData } from 'features/vessel/vessel.slice'
-import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useSearchFiltersConnect } from 'features/search/search.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getVesselGearTypeLabel,
+  getVesselOtherNamesLabel,
+  getVesselShipTypeLabel,
+} from 'utils/info'
+
 import styles from '../basic/SearchBasicResult.module.css'
 
 const PINNED_COLUMN = 'shipname'

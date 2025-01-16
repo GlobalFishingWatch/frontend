@@ -10,6 +10,7 @@ import {
   ViewMode
 } from '@deck.gl-community/editable-layers'
 import uniqBy from 'lodash/uniqBy'
+
 import type { EditHandleFeature } from './draw.types'
 
 export type DrawLayerMode =

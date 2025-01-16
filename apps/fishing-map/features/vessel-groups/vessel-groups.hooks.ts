@@ -1,17 +1,21 @@
 import { useCallback, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+
 import type { VesselGroup } from '@globalfishingwatch/api-types'
+import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
+
+// import { VesselLastIdentity } from 'features/search/search.slice'
+// import { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
   getVesselGroupLabel,
   getVesselGroupVesselsCount,
 } from 'features/vessel-groups/vessel-groups.utils'
-import type { IdentityVesselData } from 'features/vessel/vessel.slice'
-// import { VesselLastIdentity } from 'features/search/search.slice'
-// import { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { sortByCreationDate } from 'utils/dates'
+
+import { selectAllVisibleVesselGroups } from './vessel-groups.selectors'
 import type { UpdateVesselGroupThunkParams } from './vessel-groups.slice'
 import { selectVesselGroupsStatusId, updateVesselGroupVesselsThunk } from './vessel-groups.slice'
 import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
@@ -20,7 +24,6 @@ import {
   setVesselGroupModalVessels,
   setVesselGroupsModalOpen,
 } from './vessel-groups-modal.slice'
-import { selectAllVisibleVesselGroups } from './vessel-groups.selectors'
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 

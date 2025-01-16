@@ -1,21 +1,23 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { stringify } from 'qs'
+import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
+import { stringify } from 'qs'
+import type { BufferOperation, BufferUnit } from 'types'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-types'
-import type { AsyncError } from 'utils/async-slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { getUTCDateTime } from 'utils/dates'
+
 import {
-  HeatmapDownloadFormat,
   GroupBy,
+  HeatmapDownloadFormat,
   SpatialResolution,
   TemporalResolution,
 } from 'features/download/downloadActivity.config'
-import type { BufferOperation, BufferUnit } from 'types'
 import type { DateRange } from 'features/download/downloadActivity.slice'
 import type { ReportTimeComparisonValues } from 'features/reports/areas/area-reports.types'
+import type { AsyncError } from 'utils/async-slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { getUTCDateTime } from 'utils/dates'
 
 type ReportStateError = AsyncError<{ currentReportUrl: string }>
 interface ReportState {

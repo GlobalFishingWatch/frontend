@@ -1,8 +1,9 @@
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
+import { getTrackBackground,Range } from 'react-range'
 import cx from 'classnames'
-import { Range, getTrackBackground } from 'react-range'
 import { format } from 'd3-format'
 import { scaleLinear } from 'd3-scale'
+
 import styles from './slider.module.css'
 
 export type SliderThumbsSize = 'default' | 'small' | 'mini'

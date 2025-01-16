@@ -1,7 +1,9 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import lowerCase from 'lodash/lowerCase'
-import { capitalize } from 'utils/shared'
+
 import { t } from 'features/i18n/i18n'
+import { capitalize } from 'utils/shared'
+
 import {
   HOME,
   REPORT,
@@ -9,10 +11,10 @@ import {
   USER,
   VESSEL,
   WORKSPACE,
-  WORKSPACES_LIST,
   WORKSPACE_REPORT,
   WORKSPACE_SEARCH,
   WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
 } from './routes'
 
 const PREFIX = 'GFW'

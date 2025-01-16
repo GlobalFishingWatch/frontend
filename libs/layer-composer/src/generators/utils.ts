@@ -1,4 +1,5 @@
 import type { ExpressionSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
+
 import type {
   AnyGeneratorConfig,
   GlobalUserContextGeneratorConfig,

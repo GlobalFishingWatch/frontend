@@ -1,8 +1,9 @@
 import get from 'lodash/get'
-import appEnglish from '../public/locales/en/translations.json'
-import appSource from '../public/locales/source/translations.json'
+
 import flagsEnglish from '../../../libs/i18n-labels/en/flags.json'
 import flagsSource from '../../../libs/i18n-labels/source/flags.json'
+import appEnglish from '../public/locales/en/translations.json'
+import appSource from '../public/locales/source/translations.json'
 
 type Namespace = { translations: typeof appEnglish; flags: typeof flagsEnglish }
 const namespaces: Namespace = {

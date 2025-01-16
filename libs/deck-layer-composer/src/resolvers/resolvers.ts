@@ -1,5 +1,5 @@
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
-import { DataviewType, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory,DataviewType } from '@globalfishingwatch/api-types'
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
   BaseMapLabelsLayer,
@@ -16,21 +16,22 @@ import {
   VesselLayer,
   WorkspacesLayer,
 } from '@globalfishingwatch/deck-layers'
-import { resolveDeckWorkspacesLayerProps } from './workspaces'
-import type { ResolverGlobalConfig } from './types'
+
 import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
-import { resolveDeckFourwingsLayerProps } from './fourwings'
-import { resolveDeckContextLayerProps } from './context'
 import { resolveDeckFourwingsClustersLayerProps } from './clusters'
-import { resolveDeckVesselLayerProps } from './vessels'
+import { resolveDeckContextLayerProps } from './context'
+import { resolveDeckFourwingsLayerProps } from './fourwings'
+import { resolveDeckGraticulesLayerProps } from './graticules'
+import { resolveDeckPolygonsLayerProps } from './polygons'
+import { resolveDeckTileClusterLayerProps } from './tile-cluster'
+import type { ResolverGlobalConfig } from './types'
 import {
   resolveDeckUserContextLayerProps,
   resolveDeckUserPointsLayerProps,
   resolveDeckUserTracksLayerProps,
 } from './user'
-import { resolveDeckGraticulesLayerProps } from './graticules'
-import { resolveDeckPolygonsLayerProps } from './polygons'
-import { resolveDeckTileClusterLayerProps } from './tile-cluster'
+import { resolveDeckVesselLayerProps } from './vessels'
+import { resolveDeckWorkspacesLayerProps } from './workspaces'
 
 export const getDataviewHighlightedFeatures = (
   dataview: DataviewInstance,

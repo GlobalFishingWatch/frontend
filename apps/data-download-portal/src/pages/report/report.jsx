@@ -1,7 +1,10 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { Fragment,useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
+
 import Loader from '../../components/loader/loader'
+
 import styles from './report.module.scss'
 
 function ReportPage() {

@@ -1,4 +1,5 @@
 import { uniqBy } from 'es-toolkit'
+
 import type {
   Dataset,
   DatasetSchema,
@@ -19,8 +20,8 @@ import {
   EXCLUDE_FILTER_ID,
   INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
-import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
+import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 export function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
