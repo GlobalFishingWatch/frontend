@@ -49,7 +49,7 @@ export function AggregatedBarChart({
               stackId="a"
               onClick={(e) => onClick?.(e.activePayload as ResponsiveVisualizationValue)}
             >
-              {index && valueKeys.length - 1 && (
+              {index === valueKeys.length - 1 && (
                 <LabelList
                   position="top"
                   valueAccessor={({ value }: { value: [number, number] }) => {
