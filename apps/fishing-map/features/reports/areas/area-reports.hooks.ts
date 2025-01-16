@@ -250,7 +250,7 @@ export function useFetchReportVessel() {
       includes: reportDataviews.flatMap(
         ({ datasets }) => datasets.flatMap(({ unit }) => unit || []) || []
       ),
-      filters: reportDataviews.map(({ filter }) => filter).filter(Boolean),
+      filters: reportDataviews.map(({ filter }) => filter),
       vesselGroups: reportDataviews.flatMap(({ vesselGroups }) => vesselGroups || []),
       region: {
         id: areaId,

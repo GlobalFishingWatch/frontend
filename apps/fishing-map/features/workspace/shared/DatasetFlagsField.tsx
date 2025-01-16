@@ -46,7 +46,9 @@ function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldP
     <div className={styles.filter}>
       <label>
         {t('layer.flagState_other', 'Flag States')}
-        {filterOperation === EXCLUDE_FILTER_ID && ` (${t('common.excluded', 'Excluded')})`}
+        {filterOperation === EXCLUDE_FILTER_ID &&
+          fishingFiltersOptions[0]?.id !== 'all' &&
+          ` (${t('common.excluded', 'Excluded')})`}
       </label>
       <TagList
         tags={fishingFiltersOptions}
