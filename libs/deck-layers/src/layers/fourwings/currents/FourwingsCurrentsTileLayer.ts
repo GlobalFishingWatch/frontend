@@ -13,10 +13,11 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { FOURWINGS_MAX_ZOOM, HEATMAP_API_TILES_URL } from '../fourwings.config'
+import { HEATMAP_API_TILES_URL } from '../fourwings.config'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
+  FourwingsPickingObject,
   FourwingsVisualizationMode,
 } from '../fourwings.types'
 import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
@@ -38,6 +39,7 @@ export type FourwingsCurrentsTileLayerState = {
 export type _FourwingsCurrentsTileLayerProps<DataT = FourwingsFeature> = BaseFourwingsLayerProps & {
   data?: DataT
   availableIntervals?: FourwingsInterval[]
+  highlightedFeatures?: FourwingsPickingObject[]
   visualizationMode: FourwingsVisualizationMode
 }
 
@@ -224,7 +226,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
       return []
     }
     const { tilesCache } = this.state
-    const { visualizationMode, maxRequests, debounceTime } = this.props
+    const { visualizationMode, maxRequests, debounceTime, maxZoom } = this.props
 
     const cacheKey = this._getTileDataCacheKey()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
@@ -237,7 +239,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
         tilesCache,
         minZoom: 0,
         onTileError: this._onLayerError,
-        maxZoom: FOURWINGS_MAX_ZOOM,
+        maxZoom: maxZoom || 8,
         zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
         opacity: 1,
         maxRequests,
