@@ -103,9 +103,9 @@ export default class CurrentsLayer<
           }
         `,
         'vs:DECKGL_FILTER_SIZE': `
-          float minWidth = 0.1; // Minimum width in pixels
-          float maxWidth = 0.4; // Define your maximum width here
-          float minHeight = 0.4; // Minimum width in pixels
+          float minWidth = 0.05; // Minimum width in pixels
+          float maxWidth = 0.2; // Define your maximum width here
+          float minHeight = 0.7; // Minimum width in pixels
           float maxHeight = 1.0; // Define your maximum width here
           // float normalizedVelocity = min(instanceVelocity / 2.0, 1.0);
           float widthFactor = mix(minWidth, maxWidth, instanceVelocity); // Interpolate between min and max based on instanceVelocity
@@ -122,15 +122,12 @@ export default class CurrentsLayer<
           in float vVelocity;
         `,
         'fs:DECKGL_FILTER_COLOR': `
-          // float yPos = abs(geometry.uv.y - uTime);
-          // color.a = mix(0.0, 1.0, 1.0 - (yPos * 2.0));
           float minSpeed = 0.0; // Minimum speed in pixels
-          float maxSpeed = 1.5; // Define your maximum speed here
+          float maxSpeed = 1.2; // Define your maximum speed here
           float speedFactor = mix(minSpeed, maxSpeed, vVelocity);
-          float minOpacity = 0.4 * speedFactor; // Minimum speed in pixels
+          float minOpacity = 0.1 * speedFactor; // Minimum speed in pixels
           float maxOpacity = 1.4 * speedFactor; // Define your maximum speed here
           float alphaFactor = mix(minOpacity, maxOpacity, geometry.uv.y); // Interpolate between min and max based on instanceVelocity
-          // float yPos = mod(geometry.uv.y - uTime, 1.0 ); // Use modulo for smooth transition
           // float yPos = mod(geometry.uv.y - uTime, 1.0 ); // Use modulo for smooth transition
           // color.a = mix(0.2, 1.0, 1.0 - sin(yPos * 3.14)); // Inverted opacity calculation
           color.a *= alphaFactor; // Inverted opacity calculation
