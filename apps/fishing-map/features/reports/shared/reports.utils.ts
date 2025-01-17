@@ -53,6 +53,7 @@ export function getVesselIndividualGroupedData(
       break
     }
     case 'shiptype':
+    case 'vesselType':
     case 'shiptypes': {
       vesselsGrouped = groupBy(vesselsSorted, (vessel) =>
         (vessel as VesselGroupVesselTableParsed).vesselType
