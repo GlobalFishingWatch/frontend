@@ -43,6 +43,14 @@ export function aggregateSublayerValues(
       }, 0) / (nonEmptyValuesLength || 1)
     )
   }
+  if (aggregationOperation === FourwingsAggregationOperation.AvgDegrees) {
+    const radians = values.map((degree) => degree * (Math.PI / 180))
+    const sinSum = radians.reduce((acc, rad) => acc + Math.sin(rad), 0)
+    const cosSum = radians.reduce((acc, rad) => acc + Math.cos(rad), 0)
+
+    const avgRad = Math.atan2(sinSum, cosSum)
+    return avgRad * (180 / Math.PI)
+  }
   return values.reduce((acc: number, value = 0) => {
     return acc + value
   }, 0)

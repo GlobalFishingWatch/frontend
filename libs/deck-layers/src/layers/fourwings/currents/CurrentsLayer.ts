@@ -125,7 +125,7 @@ export default class CurrentsLayer<
           float minSpeed = 0.0; // Minimum speed in pixels
           float maxSpeed = 1.2; // Define your maximum speed here
           float speedFactor = mix(minSpeed, maxSpeed, vVelocity);
-          float minOpacity = 0.1 * speedFactor; // Minimum speed in pixels
+          float minOpacity = 0.5 * speedFactor; // Minimum speed in pixels
           float maxOpacity = 1.4 * speedFactor; // Define your maximum speed here
           float alphaFactor = mix(minOpacity, maxOpacity, geometry.uv.y); // Interpolate between min and max based on instanceVelocity
           // float yPos = mod(geometry.uv.y - uTime, 1.0 ); // Use modulo for smooth transition
