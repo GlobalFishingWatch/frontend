@@ -4,6 +4,7 @@ import type {
   ColorRampId,
   FourwingsCurrentsTileLayerProps,
   FourwingsDeckSublayer,
+  FourwingsPickingObject,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
@@ -13,7 +14,7 @@ import type { DeckResolverFunction } from './types'
 
 export const resolveDeckCurrentsLayerProps: DeckResolverFunction<
   FourwingsCurrentsTileLayerProps
-> = (dataview, { start, end }): FourwingsCurrentsTileLayerProps => {
+> = (dataview, { start, end, highlightedFeatures }): FourwingsCurrentsTileLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
 
@@ -75,7 +76,8 @@ export const resolveDeckCurrentsLayerProps: DeckResolverFunction<
     subcategory: dataview.config?.type,
     visualizationMode,
     sublayers,
-    // highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
+    maxZoom: 8,
+    highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     visible: dataview.config?.visible ?? true,
     availableIntervals,
     ...(tilesUrl && { tilesUrl }),

@@ -1,15 +1,20 @@
-import type { LayerContext, LayersList } from '@deck.gl/core'
+import type { LayerContext, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
+import { PathStyleExtension } from '@deck.gl/extensions'
+import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
   FourwingsAggregationOperation,
   getLayerGroupOffset,
+  HEATMAP_ID,
   LayerGroup,
 } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import type { FourwingsHeatmapLayerProps } from '../fourwings.types'
+import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '../../../utils'
+import type { FourwingsHeatmapLayerProps, FourwingsHeatmapPickingObject } from '../fourwings.types'
 import {
   aggregateCell,
   EMPTY_CELL_COLOR,
@@ -44,85 +49,40 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
     }, 16)
   }
 
-  // getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }) => {
-  //   const { id, tile, startTime, endTime, sublayers, tilesCache } = this.props
+  getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }) => {
+    const { id, tile, startTime, endTime, sublayers, tilesCache, category, subcategory } =
+      this.props
 
-  //   const { interval } = getIntervalFrames({
-  //     startTime,
-  //     endTime,
-  //     bufferedStart: tilesCache.bufferedStart,
-  //   })
-  //   const object = {
-  //     ...(info.object || ({} as FourwingsFeature)),
-  //     layerId: this.root.id,
-  //     id: id,
-  //     title: id,
-  //     tile: tile.index,
-  //     sublayers,
-  //     startTime,
-  //     endTime,
-  //     interval,
-  //     visualizationMode: HEATMAP_ID,
-  //   }
-  //   if (info.object) {
-  //     object.sublayers = object.sublayers?.map((sublayer, i) => ({
-  //       ...sublayer,
-  //       value: info.object?.aggregatedValues?.[i],
-  //     }))
-  //     if (!object.sublayers?.filter(({ value }) => value).length) {
-  //       return { ...info, object: undefined }
-  //     }
-  //   }
-  //   return { ...info, object }
-  // }
-
-  // getCompareFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
-  //   const { colorDomain, colorRanges, aggregationOperation, scales } = this.props
-  //   if (!colorDomain?.length || !colorRanges?.length) {
-  //     target = EMPTY_CELL_COLOR
-  //     return target
-  //   }
-  //   const aggregatedCellValues =
-  //     feature.properties.initialValues[this.timeRangeKey] ||
-  //     aggregateCell({
-  //       cellValues: feature.properties.values,
-  //       startFrame: this.startFrame,
-  //       endFrame: this.endFrame,
-  //       aggregationOperation,
-  //       cellStartOffsets: feature.properties.startOffsets,
-  //     })
-  //   let chosenValueIndex = 0
-  //   let chosenValue: number | undefined
-  //   feature.aggregatedValues = aggregatedCellValues
-  //   aggregatedCellValues.forEach((value, index) => {
-  //     if (value && (!chosenValue || value > chosenValue)) {
-  //       chosenValue = value
-  //       chosenValueIndex = index
-  //     }
-  //   })
-  //   if (!chosenValue) {
-  //     target = EMPTY_CELL_COLOR
-  //     return target
-  //   }
-  //   let color: FourwingsColorObject | undefined
-  //   if (scales[chosenValueIndex]) {
-  //     const colorChosen = scales[chosenValueIndex](chosenValue)
-  //     if (colorChosen) {
-  //       color = colorChosen
-  //     }
-  //   } else {
-  //     const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
-  //       (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
-  //     )
-  //     color = colorRanges[chosenValueIndex]?.[colorIndex]
-  //   }
-  //   if (color) {
-  //     target = [color.r, color.g, color.b, color.a * 255]
-  //   } else {
-  //     target = EMPTY_CELL_COLOR
-  //   }
-  //   return target
-  // }
+    const { interval } = getIntervalFrames({
+      startTime,
+      endTime,
+      bufferedStart: tilesCache.bufferedStart,
+    })
+    const object: FourwingsHeatmapPickingObject = {
+      ...(info.object || ({} as FourwingsFeature)),
+      layerId: this.root.id,
+      category: category || DataviewCategory.Environment,
+      subcategory: subcategory || DataviewType.Currents,
+      id: id,
+      title: id,
+      tile: tile.index,
+      sublayers,
+      startTime,
+      endTime,
+      interval,
+      visualizationMode: HEATMAP_ID,
+    }
+    if (info.object) {
+      object.sublayers = object.sublayers?.map((sublayer, i) => ({
+        ...sublayer,
+        value: info.object?.aggregatedValues?.[i],
+      }))
+      if (!object.sublayers?.filter(({ value }) => value).length) {
+        return { ...info, object: undefined }
+      }
+    }
+    return { ...info, object }
+  }
 
   getVelocity = (feature: FourwingsFeature, { target }: { target: number }) => {
     const forces = feature.properties.values[0].map((value, i) => {
@@ -140,6 +100,10 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
     })
     if (force) {
       target = force
+      if (!feature.aggregatedValues) {
+        feature.aggregatedValues = []
+      }
+      feature.aggregatedValues[0] = force
       return target
     }
     return EMPTY_CELL_COLOR
@@ -150,10 +114,11 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
       const u = feature.properties.values[0][i]
       return Math.round(180 + ((RAD_TO_DEG * Math.atan2(v, u)) % 360))
     })
+
     const [angle] = aggregateCell({
       // TODO:currents get U instead of by index
       cellValues: [angles],
-      aggregationOperation: FourwingsAggregationOperation.Avg,
+      aggregationOperation: FourwingsAggregationOperation.AvgDegrees,
       startFrame: this.startFrame,
       endFrame: this.endFrame,
       cellStartOffsets: [31],
@@ -161,13 +126,17 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
 
     if (angle) {
       target = angle
+      if (!feature.aggregatedValues) {
+        feature.aggregatedValues = []
+      }
+      feature.aggregatedValues[1] = angle
       return target
     }
     return EMPTY_CELL_COLOR
   }
 
   renderLayers() {
-    const { data, endTime, startTime, tilesCache } = this.props
+    const { data, endTime, startTime, tilesCache, highlightedFeatures } = this.props
 
     if (!data || !tilesCache) {
       return []
@@ -183,6 +152,8 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
     this.startFrame = startFrame
     this.endFrame = endFrame
 
+    const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)
+
     return [
       new CurrentsLayer(
         this.props,
@@ -193,6 +164,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           getLineColor: [0, 0, 0, 255],
           radiusMinPixels: 15,
           stroked: false,
+          // pickable: true,
           positionFormat: 'XY',
           filled: true,
           billboard: false,
@@ -202,7 +174,10 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           getVelocity: this.getVelocity,
           getDirection: this.getDirection,
           getPosition: (d: FourwingsFeature) => {
-            return [d.coordinates[0], d.coordinates[1]]
+            return [
+              (d.coordinates[0] + d.coordinates[2]) / 2,
+              (d.coordinates[1] + d.coordinates[5]) / 2,
+            ]
           },
           // getLineWidth: 1,
           // updateTriggers: {
@@ -211,6 +186,44 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           // },
         })
       ),
+
+      new SolidPolygonLayer(
+        this.props,
+        this.getSubLayerProps({
+          id: `fourwings-currents-interaction`,
+          pickable: true,
+          material: false,
+          _normalize: false,
+          positionFormat: 'XY',
+          getPickingInfo: this.getPickingInfo,
+          getFillColor: COLOR_TRANSPARENT,
+          getPolygon: (d: FourwingsFeature) => d.coordinates,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
+        })
+      ),
+      ...([
+        layerHighlightedFeature
+          ? new PathLayer(
+              this.props,
+              this.getSubLayerProps({
+                pickable: false,
+                material: false,
+                _normalize: false,
+                positionFormat: 'XY',
+                data: [layerHighlightedFeature],
+                id: `fourwings-cell-highlight`,
+                widthUnits: 'pixels',
+                widthMinPixels: 4,
+                getPath: (d: FourwingsFeature) => d.coordinates,
+                getColor: COLOR_HIGHLIGHT_LINE,
+                getOffset: 0.5,
+                getPolygonOffset: (params: any) =>
+                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+                extensions: [new PathStyleExtension({ offset: true })],
+              })
+            )
+          : [],
+      ] as LayersList),
     ] as LayersList
   }
 
