@@ -22,7 +22,17 @@ const dataviews: Dataview[] = [
           },
         ],
         endpoint: '4wings-tiles',
-        datasetId: 'public-global-presence:v3.0',
+        datasetId: 'public-global-currents-uo:v20231213',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-global-currents-vo:v20231213',
       },
     ],
     category: DataviewCategory.Environment,

@@ -383,12 +383,13 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
-  const currentsDataviewsParsed = currentsDataviews.flatMap(
-    (d) =>
-      getFourwingsDataviewsResolved(d, {
-        visualizationMode: params.environmentVisualizationMode,
-      }) || []
-  )
+  const currentsDataviewsParsed = currentsDataviews.flatMap((dataview) => {
+    return {
+      ...dataview,
+      config: { ...dataview.config, visualizationMode: params.environmentVisualizationMode },
+    }
+  })
+
   const vesselGroupDataviewParsed = vesselGroupDataview.flatMap((d) => {
     const comparisonMode = getComparisonMode([d], params)
     return (

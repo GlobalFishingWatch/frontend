@@ -1,7 +1,6 @@
-import { Geometry } from '@luma.gl/engine'
-import { Model } from '@luma.gl/engine'
-import type { LayerProps, Accessor, DefaultProps, LayerDataSource } from '@deck.gl/core'
+import type { Accessor, DefaultProps, LayerDataSource, LayerProps } from '@deck.gl/core'
 import { ScatterplotLayer } from '@deck.gl/layers'
+import { Geometry, Model } from '@luma.gl/engine'
 
 type _CurrentsLayerProps<DataT> = {
   data: LayerDataSource<DataT>
@@ -30,15 +29,25 @@ export default class CurrentsLayer<
   protected _getModel() {
     // a square that minimally cover the unit circle
     // const positions = [-1, -1, 0, 0.5, 0.5, 0, 1, 1, 0];
-    const positions = [0.0, 0.5, 0, -0.5, -0.5, 0, 0.5, -0.5, 0]
+    // Updated positions for square model
+    const positions = [
+      -0.5,
+      -0.5, // Bottom left
+      0.5,
+      -0.5, // Bottom right
+      -0.5,
+      0.5, // Top left
+      0.5,
+      0.5, // Top right
+    ]
     return new Model(this.context.device, {
       ...this.getShaders(),
       id: this.props.id,
       bufferLayout: this.getAttributeManager()!.getBufferLayouts(),
       geometry: new Geometry({
-        topology: 'triangle-list',
+        topology: 'triangle-strip', // Using triangle-strip to create a square
         attributes: {
-          positions: { size: 3, value: new Float32Array(positions) },
+          positions: { size: 2, value: new Float32Array(positions) }, // Size remains 2 for x, y coordinates
         },
       }),
       isInstanced: true,
@@ -83,6 +92,7 @@ export default class CurrentsLayer<
         'vs:#decl': `
           in float instanceDirections;
           in float instanceVelocity;
+          out float vVelocity;
 
           vec2 rotate_by_angle(vec2 vertex, float angle) {
             float angle_radian = angle * PI / 180.0;
@@ -93,21 +103,37 @@ export default class CurrentsLayer<
           }
         `,
         'vs:DECKGL_FILTER_SIZE': `
-          float minWidth = 0.0; // Minimum width in pixels
-          float maxWidth = 1.0; // Define your maximum width here
-          float normalizedVelocity = min(instanceVelocity / 100.0, 1.0);
-          float widthFactor = mix(minWidth, maxWidth, normalizedVelocity); // Interpolate between min and max based on instanceVelocity
+          float minWidth = 0.1; // Minimum width in pixels
+          float maxWidth = 0.4; // Define your maximum width here
+          float minHeight = 0.4; // Minimum width in pixels
+          float maxHeight = 1.0; // Define your maximum width here
+          // float normalizedVelocity = min(instanceVelocity / 2.0, 1.0);
+          float widthFactor = mix(minWidth, maxWidth, instanceVelocity); // Interpolate between min and max based on instanceVelocity
+          float heightFactor = mix(minHeight, maxHeight, instanceVelocity); // Interpolate between min and max based on instanceVelocity
           size.x *= widthFactor; // Scale the size based on the variable
+          size.y *= heightFactor; // Scale the size based on the variable
           size.xy = rotate_by_angle(size.xy, instanceDirections);
+        `,
+        'vs:#main-end': `
+          vVelocity = instanceVelocity;
         `,
         'fs:#decl': `
           uniform float uTime;
+          in float vVelocity;
         `,
         'fs:DECKGL_FILTER_COLOR': `
           // float yPos = abs(geometry.uv.y - uTime);
           // color.a = mix(0.0, 1.0, 1.0 - (yPos * 2.0));
-          float yPos = mod(geometry.uv.y - uTime, 1.0); // Use modulo for smooth transition
-          color.a = mix(0.2, 1.0, 1.0 - sin(yPos * 3.14)); // Inverted opacity calculation
+          float minSpeed = 0.0; // Minimum speed in pixels
+          float maxSpeed = 1.5; // Define your maximum speed here
+          float speedFactor = mix(minSpeed, maxSpeed, vVelocity);
+          float minOpacity = 0.4 * speedFactor; // Minimum speed in pixels
+          float maxOpacity = 1.4 * speedFactor; // Define your maximum speed here
+          float alphaFactor = mix(minOpacity, maxOpacity, geometry.uv.y); // Interpolate between min and max based on instanceVelocity
+          // float yPos = mod(geometry.uv.y - uTime, 1.0 ); // Use modulo for smooth transition
+          // float yPos = mod(geometry.uv.y - uTime, 1.0 ); // Use modulo for smooth transition
+          // color.a = mix(0.2, 1.0, 1.0 - sin(yPos * 3.14)); // Inverted opacity calculation
+          color.a *= alphaFactor; // Inverted opacity calculation
         `,
       },
     }
