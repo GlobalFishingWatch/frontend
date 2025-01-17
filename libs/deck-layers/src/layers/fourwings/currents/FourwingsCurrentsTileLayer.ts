@@ -1,30 +1,33 @@
-import type { Layer, LayerContext, LayersList, DefaultProps, UpdateParameters } from '@deck.gl/core'
+import type { DefaultProps, Layer, LayerContext, LayersList, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import { parse } from '@loaders.gl/core'
 import type { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { parse } from '@loaders.gl/core'
+
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   FourwingsFeature,
   FourwingsInterval,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { HEATMAP_API_TILES_URL, FOURWINGS_MAX_ZOOM } from '../fourwings.config'
+
+import { FOURWINGS_MAX_ZOOM, HEATMAP_API_TILES_URL } from '../fourwings.config'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
   FourwingsVisualizationMode,
 } from '../fourwings.types'
+import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
 import {
-  getFourwingsChunk,
   getDataUrlBySublayer,
-  getTileDataCache,
+  getFourwingsChunk,
   getResolutionByVisualizationMode,
+  getTileDataCache,
   getZoomOffsetByResolution,
 } from '../heatmap/fourwings-heatmap.utils'
-import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
+
 import { FourwingsCurrentsLayer } from './FourwingsCurrentsLayer'
 
 export type FourwingsCurrentsTileLayerState = {
@@ -161,6 +164,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
         ),
       } as ParseFourwingsOptions,
     })
+
     return data
   }
 
@@ -221,7 +225,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
     }
     const { tilesCache } = this.state
     const { visualizationMode, maxRequests, debounceTime } = this.props
-    console.log('🚀 ~ renderLayers ~ visualizationMode:', visualizationMode)
+
     const cacheKey = this._getTileDataCacheKey()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
 

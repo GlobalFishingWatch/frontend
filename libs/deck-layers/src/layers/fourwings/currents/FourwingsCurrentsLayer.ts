@@ -1,17 +1,28 @@
-import type { LayersList, LayerContext } from '@deck.gl/core'
+import type { LayerContext, LayersList } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
+
+import {
+  FourwingsAggregationOperation,
+  getLayerGroupOffset,
+  LayerGroup,
+} from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
-import { getLayerGroupOffset } from '@globalfishingwatch/deck-layers'
-import { LayerGroup } from '@globalfishingwatch/deck-layers'
+
 import type { FourwingsHeatmapLayerProps } from '../fourwings.types'
-import { getIntervalFrames } from '../heatmap/fourwings-heatmap.utils'
+import {
+  aggregateCell,
+  EMPTY_CELL_COLOR,
+  getIntervalFrames,
+} from '../heatmap/fourwings-heatmap.utils'
+
 import CurrentsLayer from './CurrentsLayer'
 
 type CurrentsLayerState = {
   time: number
 }
 
+const RAD_TO_DEG = 180 / Math.PI
 function getUTime() {
   return (Date.now() % 3000) / 3000
 }
@@ -113,6 +124,48 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
   //   return target
   // }
 
+  getVelocity = (feature: FourwingsFeature, { target }: { target: number }) => {
+    const forces = feature.properties.values[0].map((value, i) => {
+      const u = value
+      const v = feature.properties.values[1][i]
+      return Math.sqrt(u * u + v * v)
+    })
+    const [force] = aggregateCell({
+      // TODO:currents get U instead of by index
+      cellValues: [forces],
+      aggregationOperation: FourwingsAggregationOperation.Avg,
+      startFrame: this.startFrame,
+      endFrame: this.endFrame,
+      cellStartOffsets: [31],
+    })
+    if (force) {
+      target = force
+      return target
+    }
+    return EMPTY_CELL_COLOR
+  }
+  getDirection = (feature: FourwingsFeature, { target }: { target: number }) => {
+    const angles = feature.properties.values[1].map((value, i) => {
+      const v = value
+      const u = feature.properties.values[0][i]
+      return Math.round(180 + ((RAD_TO_DEG * Math.atan2(v, u)) % 360))
+    })
+    const [angle] = aggregateCell({
+      // TODO:currents get U instead of by index
+      cellValues: [angles],
+      aggregationOperation: FourwingsAggregationOperation.Avg,
+      startFrame: this.startFrame,
+      endFrame: this.endFrame,
+      cellStartOffsets: [31],
+    })
+
+    if (angle) {
+      target = angle
+      return target
+    }
+    return EMPTY_CELL_COLOR
+  }
+
   renderLayers() {
     const { data, endTime, startTime, tilesCache } = this.props
 
@@ -139,20 +192,16 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           getFillColor: [255, 255, 255, 255],
           getLineColor: [0, 0, 0, 255],
           getRadius: 1,
-          radiusMinPixels: 8,
+          radiusMinPixels: 12,
           stroked: false,
           positionFormat: 'XY',
           filled: true,
           billboard: false,
           antialiasing: true,
-          time: this.state.time,
+          // time: this.state.time,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
-          getVelocity: (d: FourwingsFeature) => {
-            return Math.floor(Math.random() * 100)
-          },
-          getDirection: (d: FourwingsFeature) => {
-            return Math.floor(Math.random() * 361)
-          },
+          getVelocity: this.getVelocity,
+          getDirection: this.getDirection,
           getPosition: (d: FourwingsFeature) => {
             return [d.coordinates[0], d.coordinates[1]]
           },
