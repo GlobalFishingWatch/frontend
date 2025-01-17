@@ -31,7 +31,7 @@ export function AggregatedBarChart({
           bottom: 0,
         }}
         onClick={(d: any) => {
-          onClick?.(d.activePayload[0].payload)
+          onClick?.(d.activePayload?.[0]?.payload)
         }}
       >
         {data && <Tooltip content={customTooltip} />}
