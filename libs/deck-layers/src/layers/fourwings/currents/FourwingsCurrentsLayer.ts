@@ -167,7 +167,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           positionFormat: 'XY',
           filled: true,
           billboard: false,
-          antialiasing: true,
+          // antialiasing: true,
           // time: this.state.time,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
           getVelocity: this.getVelocity,

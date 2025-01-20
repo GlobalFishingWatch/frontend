@@ -99,14 +99,18 @@ export default class CurrentsLayer<
           in float vVelocity;
         `,
         'fs:DECKGL_FILTER_COLOR': `
-          if (geometry.uv.y > 0.0 && abs(geometry.uv).x + abs(geometry.uv).y > 0.5) {
-            color = vec4(0.0,0.0,0.0,0.0);
-          } else {
-            float minOpacity = 0.2;
-            float maxOpacity = 1.5;
-            float speedFactor = mix(minOpacity, maxOpacity, vVelocity);
-            color.a *= mix(minOpacity, maxOpacity, geometry.uv.y) * speedFactor;
-           }
+          vec2 uv = abs(geometry.uv);
+          if (geometry.uv.y > 0.0 && uv.x + uv.y >= 0.5) {
+            if (uv.x + uv.y < 0.53) {
+              color.a = smoothstep(1.0, 0.0, uv.x + uv.y);
+            } else {
+             color.a = 0.0;
+            }
+          }
+          float minOpacity = 0.2;
+          float maxOpacity = 1.5;
+          float speedFactor = mix(minOpacity, maxOpacity, vVelocity);
+          color.a *= mix(minOpacity, maxOpacity, geometry.uv.y) * speedFactor;
         `,
       },
     }
