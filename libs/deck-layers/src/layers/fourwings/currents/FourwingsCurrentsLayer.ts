@@ -109,11 +109,9 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
     return EMPTY_CELL_COLOR
   }
   getDirection = (feature: FourwingsFeature, { target }: { target: number }) => {
-    const angles = feature.properties.values[1].map((value, i) => {
-      const v = value
-      const u = feature.properties.values[0][i]
-      return Math.round(180 + ((RAD_TO_DEG * Math.atan2(v, u)) % 360))
-    })
+    const angles = feature.properties.values[1].map((value, i) =>
+      Math.round((90 - RAD_TO_DEG * Math.atan2(value, feature.properties.values[0][i])) % 360)
+    )
 
     const [angle] = aggregateCell({
       // TODO:currents get U instead of by index
@@ -136,7 +134,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
   }
 
   renderLayers() {
-    const { data, endTime, startTime, tilesCache, highlightedFeatures } = this.props
+    const { data, endTime, startTime, tilesCache, zoomOffset } = this.props
 
     if (!data || !tilesCache) {
       return []
@@ -152,7 +150,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
     this.startFrame = startFrame
     this.endFrame = endFrame
 
-    const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)
+    // const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)
 
     return [
       new CurrentsLayer(
@@ -162,13 +160,14 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           data,
           getFillColor: [255, 255, 255, 255],
           getLineColor: [0, 0, 0, 255],
-          radiusMinPixels: 15,
+          getRadius:
+            160 *
+            Math.pow(2, Math.abs(Math.round(this.context.viewport.zoom + (zoomOffset || 0)) - 12)),
           stroked: false,
-          // pickable: true,
           positionFormat: 'XY',
           filled: true,
           billboard: false,
-          // antialiasing: true,
+          antialiasing: true,
           // time: this.state.time,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
           getVelocity: this.getVelocity,
@@ -186,7 +185,6 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           // },
         })
       ),
-
       new SolidPolygonLayer(
         this.props,
         this.getSubLayerProps({
@@ -194,36 +192,37 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           pickable: true,
           material: false,
           _normalize: false,
+          stroked: false,
           positionFormat: 'XY',
           getPickingInfo: this.getPickingInfo,
           getFillColor: COLOR_TRANSPARENT,
           getPolygon: (d: FourwingsFeature) => d.coordinates,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Background, params),
         })
       ),
-      ...([
-        layerHighlightedFeature
-          ? new PathLayer(
-              this.props,
-              this.getSubLayerProps({
-                pickable: false,
-                material: false,
-                _normalize: false,
-                positionFormat: 'XY',
-                data: [layerHighlightedFeature],
-                id: `fourwings-cell-highlight`,
-                widthUnits: 'pixels',
-                widthMinPixels: 4,
-                getPath: (d: FourwingsFeature) => d.coordinates,
-                getColor: COLOR_HIGHLIGHT_LINE,
-                getOffset: 0.5,
-                getPolygonOffset: (params: any) =>
-                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-                extensions: [new PathStyleExtension({ offset: true })],
-              })
-            )
-          : [],
-      ] as LayersList),
+      // ...([
+      //   layerHighlightedFeature
+      //     ? new PathLayer(
+      //         this.props,
+      //         this.getSubLayerProps({
+      //           pickable: false,
+      //           material: false,
+      //           _normalize: false,
+      //           positionFormat: 'XY',
+      //           data: [layerHighlightedFeature],
+      //           id: `fourwings-cell-highlight`,
+      //           widthUnits: 'pixels',
+      //           widthMinPixels: 1,
+      //           getPath: (d: FourwingsFeature) => d.coordinates,
+      //           getColor: COLOR_HIGHLIGHT_LINE,
+      //           getOffset: 0.5,
+      //           getPolygonOffset: (params: any) =>
+      //             getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+      //           extensions: [new PathStyleExtension({ offset: true })],
+      //         })
+      //       )
+      //     : [],
+      // ] as LayersList),
     ] as LayersList
   }
 

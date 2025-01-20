@@ -27,19 +27,8 @@ export default class CurrentsLayer<
   static layerName: string = 'Layer'
 
   protected _getModel() {
-    // a square that minimally cover the unit circle
-    // const positions = [-1, -1, 0, 0.5, 0.5, 0, 1, 1, 0];
-    // Updated positions for square model
-    const positions = [
-      -0.5,
-      -0.5, // Bottom left
-      0.5,
-      -0.5, // Bottom right
-      -0.5,
-      0.5, // Top left
-      0.5,
-      0.5, // Top right
-    ]
+    // Positions for a square
+    const positions = [-0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5]
     return new Model(this.context.device, {
       ...this.getShaders(),
       id: this.props.id,
@@ -79,12 +68,6 @@ export default class CurrentsLayer<
     }
   }
 
-  // updateState({ props, oldProps }: UpdateParameters<this>) {
-  //   requestAnimationFrame(() => {
-  //     this.setState({ time: (Date.now() % 1000) / 1000 });
-  //   });
-  // }
-
   getShaders() {
     return {
       ...super.getShaders(),
@@ -103,42 +86,29 @@ export default class CurrentsLayer<
           }
         `,
         'vs:DECKGL_FILTER_SIZE': `
-          float minWidth = 0.05; // Minimum width in pixels
-          float maxWidth = 0.2; // Define your maximum width here
-          float minHeight = 0.7; // Minimum width in pixels
-          float maxHeight = 1.0; // Define your maximum width here
-          // float normalizedVelocity = min(instanceVelocity / 2.0, 1.0);
-          float widthFactor = mix(minWidth, maxWidth, instanceVelocity); // Interpolate between min and max based on instanceVelocity
-          float heightFactor = mix(minHeight, maxHeight, instanceVelocity); // Interpolate between min and max based on instanceVelocity
-          size.x *= widthFactor; // Scale the size based on the variable
-          size.y *= heightFactor; // Scale the size based on the variable
+          float widthFactor = mix(0.3, 0.5, instanceVelocity);
+          float heightFactor = mix(0.5, 1.0, instanceVelocity);
+          size.x *= widthFactor;
+          size.y *= heightFactor;
           size.xy = rotate_by_angle(size.xy, instanceDirections);
         `,
         'vs:#main-end': `
           vVelocity = instanceVelocity;
         `,
         'fs:#decl': `
-          uniform float uTime;
           in float vVelocity;
         `,
         'fs:DECKGL_FILTER_COLOR': `
-          float minSpeed = 0.0; // Minimum speed in pixels
-          float maxSpeed = 1.2; // Define your maximum speed here
-          float speedFactor = mix(minSpeed, maxSpeed, vVelocity);
-          float minOpacity = 0.5 * speedFactor; // Minimum speed in pixels
-          float maxOpacity = 1.4 * speedFactor; // Define your maximum speed here
-          float alphaFactor = mix(minOpacity, maxOpacity, geometry.uv.y); // Interpolate between min and max based on instanceVelocity
-          // float yPos = mod(geometry.uv.y - uTime, 1.0 ); // Use modulo for smooth transition
-          // color.a = mix(0.2, 1.0, 1.0 - sin(yPos * 3.14)); // Inverted opacity calculation
-          color.a *= alphaFactor; // Inverted opacity calculation
+          if (geometry.uv.y > 0.0 && abs(geometry.uv).x + abs(geometry.uv).y > 0.5) {
+            color = vec4(0.0,0.0,0.0,0.0);
+          } else {
+            float minOpacity = 0.2;
+            float maxOpacity = 1.5;
+            float speedFactor = mix(minOpacity, maxOpacity, vVelocity);
+            color.a *= mix(minOpacity, maxOpacity, geometry.uv.y) * speedFactor;
+           }
         `,
       },
     }
-  }
-
-  draw(params: any) {
-    const { uniforms } = params
-    uniforms.uTime = (this.props as any).time || 0
-    super.draw(params)
   }
 }
