@@ -11,7 +11,11 @@ import type {
   FourwingsInterval,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
-import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import {
+  CurrentsLoader,
+  FourwingsLoader,
+  getFourwingsInterval,
+} from '@globalfishingwatch/deck-loaders'
 
 import { HEATMAP_API_TILES_URL } from '../fourwings.config'
 import type {
@@ -145,8 +149,10 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
 
+    // TODO add another loader to pre-calculate the current direction and speed
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
+      postLoader: CurrentsLoader,
       fourwings: {
         sublayers: 1,
         cols,
@@ -240,6 +246,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
         tileSize: 512,
         tilesCache,
         minZoom: 0,
+        refinementStrategy: 'no-overlap',
         onTileError: this._onLayerError,
         maxZoom: maxZoom || 8,
         zoomOffset: getZoomOffsetByResolution(resolution!, zoom),

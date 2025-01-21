@@ -1,4 +1,4 @@
-import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
+import type { Loader, LoaderContext, LoaderWithParser } from '@loaders.gl/loader-utils'
 
 import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
@@ -16,7 +16,7 @@ export const FourwingsWorkerLoader: Loader = {
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: true,
+  worker: false,
   category: 'geometry',
   options: {
     fourwings: {
@@ -42,7 +42,8 @@ export const FourwingsWorkerLoader: Loader = {
  */
 export const FourwingsLoader: LoaderWithParser = {
   ...FourwingsWorkerLoader,
-  parse: async (data, options?: FourwingsLoaderOptions) => parseFourwings(data, options),
+  parse: async (data, options: FourwingsLoaderOptions, context: LoaderContext) =>
+    parseFourwings(data, options, context),
   parseSync: parseFourwings,
   binary: true,
 }

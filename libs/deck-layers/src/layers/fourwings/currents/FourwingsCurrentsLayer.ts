@@ -1,7 +1,6 @@
 import type { LayerContext, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { PathStyleExtension } from '@deck.gl/extensions'
-import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
+import { SolidPolygonLayer } from '@deck.gl/layers'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
@@ -13,7 +12,7 @@ import {
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '../../../utils'
+import { COLOR_TRANSPARENT } from '../../../utils'
 import type { FourwingsHeatmapLayerProps, FourwingsHeatmapPickingObject } from '../fourwings.types'
 import {
   aggregateCell,
@@ -95,13 +94,13 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
   }
 
   getVelocity = (feature: FourwingsFeature, { target }: { target: number }) => {
+    // TODO:currents get U instead of by index
     const forces = feature.properties.values[0].map((value, i) => {
       const u = value
       const v = feature.properties.values[1][i]
       return Math.sqrt(u * u + v * v)
     })
     const [force] = aggregateCell({
-      // TODO:currents get U instead of by index
       cellValues: [forces],
       aggregationOperation: FourwingsAggregationOperation.Avg,
       startFrame: this.startFrame,

@@ -1,4 +1,6 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { LoaderContext } from '@loaders.gl/loader-utils'
+// import { parseWithContext } from '@loaders.gl/loader-utils'
 import Pbf from 'pbf'
 
 import type { BBox } from '../helpers/cells'
@@ -142,7 +144,7 @@ export const getCellTimeseries = (
             feature.properties.initialValues[timeRangeKey][subLayerIndex] /
             numValuesBySubLayer[subLayerIndex]
         }
-
+        // TODO add avgDegrees operation for currents
         // resseting indexInCell to start with the new cell
         indexInCell = -1
         break
@@ -156,12 +158,16 @@ export const getCellTimeseries = (
   }
 }
 
-export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
+export const parseFourwings = (
+  datasetsBuffer: ArrayBuffer,
+  options: FourwingsLoaderOptions,
+  context: LoaderContext
+) => {
   if (!options?.fourwings?.buffersLength?.length) {
     return []
   }
 
-  return Array.from(
+  const values = Array.from(
     new Pbf(datasetsBuffer)
       .readFields(getCellTimeseries, {
         features: new Map<number, FourwingsFeature>(),
@@ -169,4 +175,18 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
       })
       .features.values()
   )
+
+  debugger
+  if (options.postLoader) {
+    const valuesLoader = parseWithContext(
+      values,
+      options.postLoader,
+      options.postLoaderOptions,
+      context
+    )
+    debugger
+    return valuesLoader
+  }
+
+  return values
 }
