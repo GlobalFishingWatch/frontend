@@ -179,7 +179,7 @@ export const selectDataviewInstancesMerged = createSelector(
         config: {
           visible: true,
           filters: {
-            port_id: [reportPortId],
+            gfw_id: [reportPortId],
           },
         },
       }

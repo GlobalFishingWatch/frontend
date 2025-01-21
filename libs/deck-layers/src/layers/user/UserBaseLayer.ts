@@ -1,4 +1,4 @@
-import type { DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core';
+import type { DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { DataFilterExtension } from '@deck.gl/extensions'
 import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
@@ -47,7 +47,7 @@ export type UserBaseLayerState = {
 
 type UserBaseLayerProps = DeckLayerProps<BaseUserLayerProps>
 export abstract class UserBaseLayer<
-  PropsT extends UserBaseLayerProps
+  PropsT extends UserBaseLayerProps,
 > extends CompositeLayer<PropsT> {
   static layerName = 'UserBaseLayer'
   static defaultProps = defaultProps
@@ -153,8 +153,9 @@ export abstract class UserBaseLayer<
       circleRadiusProperty || '',
       ...Object.keys(filters || {}),
     ].filter((p) => !!p)
-    if (properties.length) {
-      properties.forEach((property, index) => {
+    const uniqProperties = Array.from(new Set([...properties]))
+    if (uniqProperties.length) {
+      uniqProperties.forEach((property, index) => {
         tilesUrlObject.searchParams.set(`properties[${index}]`, property)
       })
     }

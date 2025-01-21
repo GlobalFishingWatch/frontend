@@ -29,7 +29,7 @@ import {
   rgbaStringToComponents,
 } from '../../utils'
 
-import type { UserLayerFeature,UserPolygonsLayerProps } from './user.types'
+import type { UserLayerFeature, UserPolygonsLayerProps } from './user.types'
 import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
 
@@ -96,6 +96,14 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
       return COLOR_TRANSPARENT
     }
     return hexToDeckColor(color)
+  }
+
+  _getLineWidth: AccessorFunction<Feature<Geometry, GeoJsonProperties>, number> = (d) => {
+    const { filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
+      return 0
+    }
+    return 1
   }
 
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
@@ -170,12 +178,15 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
               id: `${props.id}-lines`,
-              lineWidthMinPixels: 1,
+              lineWidthMinPixels: 0,
+              lineWidthUnits: 'pixels',
               filled: false,
               getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
               getLineColor: this._getLineColor,
+              getLineWidth: this._getLineWidth,
               updateTriggers: {
                 getLineColor: [filters, color],
+                getLineWidth: [filters],
               },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
