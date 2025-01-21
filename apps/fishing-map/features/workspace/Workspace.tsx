@@ -5,7 +5,7 @@ import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 
-import { Button, InputText,Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { Button, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { WIZARD_TEMPLATE_ID } from 'data/default-workspaces/marine-manager'
@@ -48,8 +48,8 @@ import styles from './Workspace.module.css'
 
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
-  useMigrateWorkspaceToast()
   useUserExpiredToast()
+  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
@@ -83,7 +83,7 @@ function Workspace() {
     if (workspaceVesselGroupsIds.length) {
       dispatch(fetchWorkspaceVesselGroupsThunk(workspaceVesselGroupsIds))
     }
-     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceVesselGroupsIdsHash, dispatch])
 
   const handleDragEnd = useCallback(

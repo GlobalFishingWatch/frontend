@@ -17,6 +17,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
@@ -68,6 +69,7 @@ function ActivityLayerPanel({
   const isGFWUser = useSelector(selectIsGFWUser)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
   const dataviewId = useActivityDataviewId(dataview)
@@ -195,7 +197,8 @@ function ActivityLayerPanel({
           <div className={styles.header}>
             <LayerSwitch
               onToggle={onLayerSwitchToggle}
-              active={layerActive}
+              disabled={hasDeprecatedDataviewInstances}
+              active={layerActive && !hasDeprecatedDataviewInstances}
               className={styles.switch}
               dataview={dataview}
             />
@@ -204,6 +207,7 @@ function ActivityLayerPanel({
               className={styles.name}
               classNameActive={styles.active}
               dataview={dataview}
+              toggleVisibility={!hasDeprecatedDataviewInstances}
               onToggle={onLayerSwitchToggle}
             />
             <div
@@ -256,7 +260,10 @@ function ActivityLayerPanel({
                 showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
               />
               {!readOnly && (
-                <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
+                <Remove
+                  onClick={onRemoveLayerClick}
+                  loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
+                />
               )}
               {!readOnly && layerActive && layerError && (
                 <IconButton
@@ -277,7 +284,7 @@ function ActivityLayerPanel({
             <IconButton
               icon={layerError ? 'warning' : layerActive ? 'more' : undefined}
               type={layerError ? 'warning' : 'default'}
-              loading={layerActive && !layerLoaded}
+              loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
               className={cx('print-hidden', styles.shownUntilHovered)}
               size="small"
             />

@@ -1,4 +1,4 @@
-import { Fragment,useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -209,6 +209,7 @@ function App() {
         action.abort()
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
