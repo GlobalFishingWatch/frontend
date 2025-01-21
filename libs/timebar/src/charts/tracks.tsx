@@ -1,12 +1,16 @@
 import React, { Fragment, useContext, useMemo } from 'react'
+
 import { ResourceStatus } from '@globalfishingwatch/api-types'
+
 import type { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import TimelineContext from '../timelineContext'
-import { getTrackY } from './common/utils'
-import styles from './tracks.module.css'
+
 import { useFilteredChartData, useOuterScale } from './common/hooks'
 import type { TimebarChartData, TimebarChartItem, TrackChunkProps } from './common/types'
+import { getTrackY } from './common/utils'
 import { useUpdateChartsData } from './chartsData.atom'
+
+import styles from './tracks.module.css'
 
 export const MAX_THICK_TRACKS_NUMBER = 2
 

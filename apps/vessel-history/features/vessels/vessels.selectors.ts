@@ -1,10 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { getVesselDataviewInstanceId } from 'features/dataviews/dataviews.utils'
 import {
   selectMergedVesselId,
   selectUrlAkaVesselQuery,
   selectVesselId,
 } from 'routes/routes.selectors'
+
 import { selectVesselDataview, selectVesselVoyages } from './vessels.slice'
 import { NOT_AVAILABLE } from './vessels.utils'
 

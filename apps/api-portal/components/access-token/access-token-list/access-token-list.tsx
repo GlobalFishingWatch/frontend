@@ -1,14 +1,17 @@
 import React, { Fragment, useCallback, useState } from 'react'
+import { useClipboardNotification } from 'app/clipboard.hooks'
 import cx from 'classnames'
+import { formatI18nDate } from 'lib/dates'
+
 import type { UserApplication} from '@globalfishingwatch/api-types';
 import { UserData } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
-import { useClipboardNotification } from 'app/clipboard.hooks'
-import { formatI18nDate } from 'lib/dates'
+
+import useUser from 'features/user/user'
 import useUserApplications, {
   useDeleteUserApplication,
 } from 'features/user-applications/user-applications'
-import useUser from 'features/user/user'
+
 import styles from './access-token-list.module.css'
 
 /* eslint-disable-next-line */

@@ -1,5 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
+
 import styles from './Logo.module.css'
 
 export enum SubBrands {

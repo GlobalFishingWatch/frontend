@@ -1,12 +1,14 @@
-import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
-import { getUTCDate, segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
-import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useTranslation } from 'react-i18next'
 import type { Bbox } from 'types'
+
+import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
+import { getUTCDate, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 
 type FitBoundsProps = {

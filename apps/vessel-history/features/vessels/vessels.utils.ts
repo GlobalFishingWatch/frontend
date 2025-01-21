@@ -1,6 +1,7 @@
-import { typedKeys } from 'utils/shared'
 import type { VesselFieldsHistory, VesselWithHistory } from 'types';
+
 import { VesselAPISource } from 'types'
+import { typedKeys } from 'utils/shared'
 
 type VesselFieldKey = keyof VesselWithHistory
 

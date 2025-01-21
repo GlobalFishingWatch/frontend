@@ -1,17 +1,19 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
-import cx from 'classnames'
 import type { Middleware } from '@floating-ui/react'
 import {
+  arrow,
+  detectOverflow,
+  FloatingArrow,
+  offset,
+  useClick,
+  useDismiss,
   useFloating,
   useInteractions,
-  useClick,
-  detectOverflow,
-  offset,
-  arrow,
-  FloatingArrow,
-  useDismiss,
 } from '@floating-ui/react'
+import cx from 'classnames'
+
 import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/Sidebar'
+
 import styles from './ExpandedContainer.module.css'
 
 interface ExpandedContainerProps {

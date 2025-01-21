@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
+
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+
 import { dataviewWithPrivateDatasets } from 'features/dataviews/dataviews.utils'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type DatasetFilterSourceProps = {
   dataview: UrlDataviewInstance

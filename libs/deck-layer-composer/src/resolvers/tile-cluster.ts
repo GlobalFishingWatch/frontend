@@ -1,6 +1,7 @@
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { ClusterLayerProps } from '@globalfishingwatch/deck-layers'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+
 import type { DeckResolverFunction, ResolverGlobalConfig } from './types'
 
 // TODO: decide if include static here or create a new one

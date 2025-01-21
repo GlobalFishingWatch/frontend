@@ -1,26 +1,29 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
-import memoize from 'memoize-one'
+import type { NumberValue } from 'd3-scale'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
-import type { NumberValue } from 'd3-scale'
+import memoize from 'memoize-one'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { getTime } from './utils/internal-utils'
-import styles from './timebar.module.css'
-import TimeRangeSelector from './components/timerange-selector'
+
 import IntervalSelector from './components/interval-selector'
-import Timeline from './components/timeline'
 import Playback from './components/playback'
+import Timeline from './components/timeline'
+import TimeRangeSelector from './components/timerange-selector'
+import { getTime } from './utils/internal-utils'
 import {
-  EVENT_SOURCE,
   EVENT_INTERVAL_SOURCE,
-  MINIMUM_TIMEBAR_HEIGHT,
+  EVENT_SOURCE,
   MAXIMUM_TIMEBAR_HEIGHT,
+  MINIMUM_TIMEBAR_HEIGHT,
 } from './constants'
 import type { TrackGraphOrientation } from './timelineContext'
+
+import styles from './timebar.module.css'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
 const MINIMUM_RANGE = ONE_HOUR_MS

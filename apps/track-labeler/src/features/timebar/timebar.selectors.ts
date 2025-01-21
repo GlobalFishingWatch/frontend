@@ -1,8 +1,15 @@
 import { createSelector } from 'reselect'
-import type { Dataview } from '@globalfishingwatch/api-types'
+
+import type { Dataview , TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
 import * as Generators from '@globalfishingwatch/layer-composer'
-import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
+
+import { TimebarMode } from '../../data/config'
 import { selectDataviews } from '../../features/dataviews/dataviews.slice'
+import {
+  getVesselFilteredTrackGeojsonByDateRange,
+  getVesselParsedTrack,
+  getVesselTrackData,
+} from '../../features/tracks/tracks.selectors'
 import { selectEvents } from '../../features/vessels/vessels.slice'
 import {
   getDateRangeTS,
@@ -15,13 +22,8 @@ import {
   selectMinSpeed,
   selectTimebarMode,
 } from '../../routes/routes.selectors'
-import {
-  getVesselFilteredTrackGeojsonByDateRange,
-  getVesselParsedTrack,
-  getVesselTrackData,
-} from '../../features/tracks/tracks.selectors'
 import type { DayNightLayer, VesselPoint } from '../../types'
-import { TimebarMode } from '../../data/config'
+
 import { getTimebarPoints } from './timebar.utils'
 
 type TimebarTrackSegment = {

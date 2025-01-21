@@ -1,68 +1,71 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
+import type { AppDispatch } from 'store'
+import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
+
+import type { FetchOptions } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
-  Workspace,
-  Dataview,
-  WorkspaceUpsert,
-  DataviewInstance,
   Dataset,
+  Dataview,
+  DataviewInstance,
+  Workspace,
   WorkspaceEditAccessType,
+  WorkspaceUpsert,
   WorkspaceViewAccessType,
 } from '@globalfishingwatch/api-types'
 import {
+  DatasetCategory,
+  DatasetTypes,
   DataviewCategory,
   EndpointId,
-  DatasetTypes,
-  DatasetCategory,
 } from '@globalfishingwatch/api-types'
-import type { FetchOptions } from '@globalfishingwatch/api-client'
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
+
 import type { VALID_PASSWORD } from 'data/config'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
-import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
+import { LIBRARY_LAYERS } from 'data/layer-library'
+import {
+  DEFAULT_DATAVIEW_SLUGS,
+  DEFAULT_WORKSPACE_ID,
+  getWorkspaceEnv,
+  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
+  WorkspaceCategory,
+} from 'data/workspaces'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
+import {
+  getDatasetsInDataviews,
+  getLatestEndDateFromDatasets,
+  getVesselGroupsInDataviews,
+} from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
+import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
+import { DEFAULT_AREA_REPORT_STATE } from 'features/reports/areas/area-reports.config'
+import { fetchReportsThunk } from 'features/reports/areas/area-reports.slice'
+import { DEFAULT_PORT_REPORT_STATE } from 'features/reports/ports/ports-report.config'
+import { cleanPortClusterDataviewFromReport } from 'features/reports/ports/ports-report.utils'
+import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/reports/vessel-groups/vessel-group-report.config'
+import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
+import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
+import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import type { ROUTE_TYPES } from 'routes/routes'
+import { HOME, REPORT, WORKSPACE } from 'routes/routes'
+import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import {
   selectLocationCategory,
   selectLocationType,
   selectReportId,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
-import type { ROUTE_TYPES } from 'routes/routes'
-import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
-import {
-  DEFAULT_DATAVIEW_SLUGS,
-  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
-  getWorkspaceEnv,
-  WorkspaceCategory,
-  DEFAULT_WORKSPACE_ID,
-} from 'data/workspaces'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import {
-  getDatasetsInDataviews,
-  getLatestEndDateFromDatasets,
-  getVesselGroupsInDataviews,
-} from 'features/datasets/datasets.utils'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
-import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { getUTCDateTime } from 'utils/dates'
-import { fetchReportsThunk } from 'features/reports/areas/area-reports.slice'
-import type { AppDispatch } from 'store'
-import { LIBRARY_LAYERS } from 'data/layer-library'
-import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
-import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
-import { DEFAULT_AREA_REPORT_STATE } from 'features/reports/areas/area-reports.config'
-import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/reports/vessel-groups/vessel-group-report.config'
-import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
-import { DEFAULT_PORT_REPORT_STATE } from 'features/reports/ports/ports-report.config'
-import { cleanPortClusterDataviewFromReport } from 'features/reports/ports/ports-report.utils'
+
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,

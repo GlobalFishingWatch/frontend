@@ -1,11 +1,15 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
+
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+
 import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { getEncounterStatus } from 'features/vessels/activity/vessels-activity.utils'
+
 import ActivityDate from './ActivityDate'
-import styles from './Activity.module.css'
 import ActivityEventPortVisit from './ActivityEventPortVisit'
+
+import styles from './Activity.module.css'
 
 interface EventProps {
   classname?: string

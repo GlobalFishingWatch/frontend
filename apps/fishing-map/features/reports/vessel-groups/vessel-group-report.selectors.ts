@@ -1,18 +1,21 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { InsightType } from '@globalfishingwatch/api-types'
 import type { VesselGroupInsightParams } from 'queries/vessel-insight-api'
 import {
   selectVesselGroupInsight,
   selectVesselGroupInsightApiSlice,
 } from 'queries/vessel-insight-api'
 import type { RootState } from 'reducers'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
+
+import type { InsightType } from '@globalfishingwatch/api-types'
+
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { dataviewHasVesselGroupId } from 'features/dataviews/dataviews.utils'
 import {
   selectActiveVesselGroupDataviews,
   selectEventsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectReportVesselGroupId } from 'routes/routes.selectors'
+
 import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,

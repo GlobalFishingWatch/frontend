@@ -20,24 +20,24 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
       color: '#FAE9A0',
     },
   },
-  // {
-  //   id: LOITERING_EVENTS_SOURCE_ID,
-  //   dataviewId: CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
-  //   previewImageUrl: `${PATH_BASENAME}/images/layer-library/loitering.jpg`,
-  //   config: {
-  //     color: '#CEA9F9',
-  //   },
-  //   onlyGFWUser: true,
-  // },
-  // {
-  //   id: PORT_VISITS_EVENTS_SOURCE_ID,
-  //   dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
-  //   previewImageUrl: `${PATH_BASENAME}/images/layer-library/port-visits.jpg`,
-  //   config: {
-  //     color: '#9AEEFF',
-  //   },
-  //   onlyGFWUser: true,
-  // },
+  {
+    id: LOITERING_EVENTS_SOURCE_ID,
+    dataviewId: CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/loitering.jpg`,
+    config: {
+      color: '#CEA9F9',
+    },
+    onlyGFWUser: true,
+  },
+  {
+    id: PORT_VISITS_EVENTS_SOURCE_ID,
+    dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/port-visits.jpg`,
+    config: {
+      color: '#9AEEFF',
+    },
+    onlyGFWUser: true,
+  },
 ]
 
 export const LAYER_LIBRARY_EVENTS_IDS = LAYERS_LIBRARY_EVENTS.map((layer) => layer.id)

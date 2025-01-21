@@ -3,23 +3,27 @@ import { createPortal } from 'react-dom'
 import cx from 'classnames'
 import { useAtomValue } from 'jotai'
 import { DateTime } from 'luxon'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
+
 import type { TimelineScale } from '../timelineContext'
 import TimelineContext from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
-import styles from './highlighter.module.css'
+
+import { useOuterScale } from './common/hooks'
 import type {
+  ChartType,
+  HighlightedChunks,
+  HighlighterDateCallback,
   TimebarChartChunk,
   TimebarChartItem,
   TimebarChartsData,
-  HighlightedChunks,
-  ChartType,
-  HighlighterDateCallback,
 } from './common/types'
 import chartsDataState, { hoveredEventState } from './chartsData.atom'
-import { useOuterScale } from './common/hooks'
+
+import styles from './highlighter.module.css'
 
 const getCoords = (
   hoverStart: string,

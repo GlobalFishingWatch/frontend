@@ -1,9 +1,10 @@
 import type { Placement } from '@floating-ui/react'
+
+import areaSearchImg from 'assets/images/hints/areaSearch.png'
+import changingTheTimeRangeImg from 'assets/images/hints/changingTheTimeRange.png'
+import clickingOnAGridCellToShowVesselsImg from 'assets/images/hints/clickingOnAGridCellToShowVessels.png'
 import fishingEffortHeatmapImg from 'assets/images/hints/fishingEffortHeatmap.png'
 import howToFilterActivityLayersImg from 'assets/images/hints/howToFilterActivityLayers.png'
-import clickingOnAGridCellToShowVesselsImg from 'assets/images/hints/clickingOnAGridCellToShowVessels.png'
-import changingTheTimeRangeImg from 'assets/images/hints/changingTheTimeRange.png'
-import areaSearchImg from 'assets/images/hints/areaSearch.png'
 
 // t('help-hints:areaSearch', 'Search by country, sea or ocean to focus on an area you\'re interested in.')
 // t('help-hints:changingTheTimeRange', 'Click and drag to change the time range you are viewing in the time bar.')

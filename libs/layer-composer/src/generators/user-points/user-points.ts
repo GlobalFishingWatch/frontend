@@ -1,13 +1,14 @@
-import type { LayerSpecification, CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { CircleLayerSpecification,LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+
+import { API_GATEWAY } from '../../config'
+import { Group } from '../../types'
+import { isUrlAbsolute } from '../../utils'
+import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 import { DEFAULT_CONTEXT_MAX_ZOOM, DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
+import { getCirclePaintWithFeatureState } from '../context/context.utils'
 import type { GlobalUserPointsGeneratorConfig } from '../types';
 import { GeneratorType } from '../types'
-import { isUrlAbsolute } from '../../utils'
-import { Group } from '../../types'
-import { API_GATEWAY } from '../../config'
-import { getCirclePaintWithFeatureState } from '../context/context.utils'
 import { getCircleRadiusWithPointSizeProperty } from '../user-points/user-points.utils'
-import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 import { getFilterForUserPointsLayer } from '../utils'
 
 class UserPointsGenerator {

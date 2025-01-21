@@ -1,10 +1,13 @@
 import { Fragment, useCallback } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import type { EventType } from '@globalfishingwatch/api-types'
-import EventIcon from 'features/vessel/activity/event/EventIcon'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import I18nNumber from 'features/i18n/i18nNumber'
+import EventIcon from 'features/vessel/activity/event/EventIcon'
+
 import styles from '../ActivityGroupedList.module.css'
 
 interface ActivityGroupProps {

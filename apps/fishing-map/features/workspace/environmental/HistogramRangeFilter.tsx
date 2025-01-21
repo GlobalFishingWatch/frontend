@@ -1,15 +1,18 @@
 import { useCallback } from 'react'
-import { BarChart, Bar, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import type { SliderRangeValues } from '@globalfishingwatch/ui-components'
-import { SliderRange } from '@globalfishingwatch/ui-components'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { Bar, BarChart, ResponsiveContainer } from 'recharts'
+
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { SliderRangeValues } from '@globalfishingwatch/ui-components'
+import { SliderRange } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useDataviewHistogram } from 'features/workspace/environmental/histogram.hooks'
 import { getEventLabel } from 'utils/analytics'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+
 import styles from './HistogramRangeFilter.module.css'
 
 type HistogramRangeFilterProps = {

@@ -1,5 +1,6 @@
 import type { Ref } from 'react'
 import { forwardRef } from 'react'
+
 import { getDatasetLabel, GFW_ONLY_SUFFIX } from 'features/datasets/datasets.utils'
 import GFWOnly from 'features/user/GFWOnly'
 

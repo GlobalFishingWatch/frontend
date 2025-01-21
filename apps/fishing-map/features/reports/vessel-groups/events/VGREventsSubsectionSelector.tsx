@@ -1,14 +1,16 @@
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectVGRStatus } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import type { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
-import { selectVGREventsSubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVGREventsSubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { selectVGRStatus } from 'features/reports/vessel-groups/vessel-group-report.slice'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
+import type { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
+import { useLocationConnect } from 'routes/routes.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 function VesselGroupReportEventsSubsectionSelector() {
   const { t } = useTranslation()

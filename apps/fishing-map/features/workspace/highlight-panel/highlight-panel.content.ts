@@ -1,9 +1,9 @@
-import type { Locale } from '../../../types'
 import {
   IS_PRODUCTION_BUILD,
   IS_PRODUCTION_WORKSPACE_ENV,
   PATH_BASENAME,
 } from '../../../data/config'
+import type { Locale } from '../../../types'
 
 type HighlighPanelConfigLocale = {
   [locale in Locale]?: {

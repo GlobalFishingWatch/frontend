@@ -1,4 +1,5 @@
 import { saveAs } from 'file-saver'
+
 import type {
   APIPagination,
   ResourceRequestType,
@@ -6,8 +7,10 @@ import type {
   UserData,
   UserPermission,
 } from '@globalfishingwatch/api-types'
-import { isUrlAbsolute } from './utils/url'
+
 import { getIsUnauthorizedError, isAuthError, parseAPIError } from './utils/errors'
+import { parseJSON, processStatus } from './utils/parse'
+import { isUrlAbsolute } from './utils/url'
 import {
   API_GATEWAY,
   API_VERSION,
@@ -18,7 +21,6 @@ import {
   USER_REFRESH_TOKEN_STORAGE_KEY,
   USER_TOKEN_STORAGE_KEY,
 } from './config'
-import { parseJSON, processStatus } from './utils/parse'
 
 export { GUEST_USER_TYPE, API_VERSION, API_GATEWAY } from './config'
 

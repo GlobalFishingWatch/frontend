@@ -1,25 +1,26 @@
-import type { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import type { GeneratorsRecord } from './generators'
-import Generators, { EVENTS_COLORS } from './generators'
-import { flatObjectArrays, layersDictToArray } from './utils'
+import type { LayerSpecification,SourceSpecification } from '@globalfishingwatch/maplibre-gl'
+
 import type {
-  Dictionary,
-  LayerComposerStyles,
-  LayerComposerOptions,
-  GeneratorStyles,
-  ExtendedStyle,
-  ExtendedStyleMeta,
-  GeneratorPromise,
-  HeatmapLayerMeta,
-} from './types'
-import type {
-  GlobalGeneratorConfig,
   AnyGeneratorConfig,
+  GlobalGeneratorConfig,
   GlobalGeneratorConfigExtended,
 } from './generators/types'
 import { isConfigVisible } from './generators/utils'
 import { DEFAULT_STYLE } from './config'
+import type { GeneratorsRecord } from './generators'
+import Generators, { EVENTS_COLORS } from './generators'
+import type {
+  Dictionary,
+  ExtendedStyle,
+  ExtendedStyleMeta,
+  GeneratorPromise,
+  GeneratorStyles,
+  HeatmapLayerMeta,
+  LayerComposerOptions,
+  LayerComposerStyles,
+} from './types'
+import { flatObjectArrays, layersDictToArray } from './utils'
 
 export class LayerComposer {
   glyphs: string

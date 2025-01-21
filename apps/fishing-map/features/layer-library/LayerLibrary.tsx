@@ -1,19 +1,22 @@
-import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
 import type { ChangeEvent, FC } from 'react'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { uniq } from 'es-toolkit'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { InputText } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+import { uniq } from 'es-toolkit'
+
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { InputText } from '@globalfishingwatch/ui-components'
+
 import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
-import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
-import { selectLayerLibraryModal } from 'features/modals/modals.slice'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
+import { selectLayerLibraryModal } from 'features/modals/modals.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { upperFirst } from 'utils/info'
+
 import styles from './LayerLibrary.module.css'
 
 const LayerLibrary: FC = () => {

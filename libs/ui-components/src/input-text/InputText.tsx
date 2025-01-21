@@ -1,19 +1,21 @@
 import type {
   Ref} from 'react';
 import React, {
-  useRef,
   forwardRef,
-  useImperativeHandle,
   Fragment,
-  useState,
   useCallback,
+  useImperativeHandle,
+  useRef,
+  useState,
 } from 'react'
 import cx from 'classnames'
-import { IconButton } from '../icon-button'
-import { Tooltip } from '../tooltip'
+
 import { Icon } from '../icon'
+import { IconButton } from '../icon-button'
 import { Spinner } from '../spinner'
+import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
+
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'

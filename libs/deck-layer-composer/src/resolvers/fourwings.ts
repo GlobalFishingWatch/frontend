@@ -1,24 +1,24 @@
 import { uniq } from 'es-toolkit'
-import type {
-  FourwingsDeckSublayer,
-  FourwingsLayerProps,
-  FourwingsPickingObject,
-  FourwingsVisualizationMode,
-} from '@globalfishingwatch/deck-layers'
-import {
-  FourwingsAggregationOperation,
-  FourwingsComparisonMode,
-  TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
-  getUTCDateTime,
-} from '@globalfishingwatch/deck-layers'
+
 import {
   DatasetTypes,
   DataviewCategory,
   DataviewType,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import type {
+ ColorRampId,  FourwingsDeckSublayer,
+  FourwingsLayerProps,
+  FourwingsPickingObject,
+  FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
+import {
+  FourwingsAggregationOperation,
+  FourwingsComparisonMode,
+  getUTCDateTime,
+  TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
+} from '@globalfishingwatch/deck-layers'
+
 import { getDataviewAvailableIntervals } from './dataviews'
 import type { DeckResolverFunction } from './types'
 

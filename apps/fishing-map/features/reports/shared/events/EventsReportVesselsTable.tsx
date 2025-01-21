@@ -1,17 +1,19 @@
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 import { Fragment } from 'react'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
-import { useLocationConnect } from 'routes/routes.hook'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
+import type { EventsStatsVessel } from 'features/reports/ports/ports-report.slice'
+import styles from 'features/reports/shared/events/EventsReportVesselsTable.module.css'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import type { EventsStatsVessel } from 'features/reports/ports/ports-report.slice'
-import styles from 'features/reports/shared/events/EventsReportVesselsTable.module.css'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 export default function EventsReportVesselsTable({ vessels }: { vessels: EventsStatsVessel[] }) {
   const { t } = useTranslation()

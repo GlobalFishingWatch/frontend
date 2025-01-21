@@ -1,5 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import get from 'lodash/get'
+import type { RootState } from 'reducers'
+
 import type {
   InsightFishing,
   InsightGaps,
@@ -11,10 +13,11 @@ import type {
   VesselGroupInsight,
   VesselGroupInsightResponse,
 } from '@globalfishingwatch/api-types'
-import type { RootState } from 'reducers'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
+
 import type { VesselLastIdentity } from 'features/search/search.slice'
+import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { getVesselsWithoutDuplicates } from 'features/vessel-groups/vessel-groups.utils'
+
 import {
   selectVGRFishingInsightData,
   selectVGRFlagChangeInsightData,

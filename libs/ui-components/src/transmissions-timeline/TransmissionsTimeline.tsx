@@ -1,6 +1,8 @@
 import { Fragment, useLayoutEffect, useRef, useState } from 'react'
 import { DateTime } from 'luxon'
+
 import { Locale } from '@globalfishingwatch/api-types'
+
 import styles from './TransmissionsTimeline.module.css'
 
 export const FIRST_YEAR_OF_DATA = 2012

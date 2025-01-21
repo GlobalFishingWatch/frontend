@@ -1,13 +1,16 @@
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { WorkspaceCategory } from 'data/workspaces'
-import { selectLocationCategory } from 'routes/routes.selectors'
+
 import LogoDonaBertarelli from 'assets/images/partner-logos/dona-bertarelli@2x.png'
+import LogoGoogle from 'assets/images/partner-logos/google@2x.png'
 import LogoOceana from 'assets/images/partner-logos/oceana@2x.png'
 import LogoSkytruth from 'assets/images/partner-logos/skytruth@2x.png'
-import LogoGoogle from 'assets/images/partner-logos/google@2x.png'
+import { WorkspaceCategory } from 'data/workspaces'
+import { selectLocationCategory } from 'routes/routes.selectors'
+
 import styles from './Footer.module.css'
 
 export const FOOTER_HEIGHT = 24

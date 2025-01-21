@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import type { DatasetAreaDetail } from 'features/areas/areas.slice'
 import { selectAreas } from 'features/areas/areas.slice'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'

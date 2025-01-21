@@ -1,4 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
+
 import { HOME } from './routes'
 
 const PREFIX = 'GFW'

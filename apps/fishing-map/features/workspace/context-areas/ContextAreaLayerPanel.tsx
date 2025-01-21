@@ -1,58 +1,61 @@
-import { useState, useCallback, Fragment, useEffect } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { Fragment, useCallback, useEffect,useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import parse from 'html-react-parser'
+
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { Tooltip, Modal, IconButton, Collapsable, Spinner } from '@globalfishingwatch/ui-components'
+import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAddDataset } from 'features/datasets/datasets.hook'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
-import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import GFWOnly from 'features/user/GFWOnly'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { Collapsable, IconButton, Modal, Spinner,Tooltip } from '@globalfishingwatch/ui-components'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
 import {
   BASEMAP_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE_ID,
+  HIDDEN_DATAVIEW_FILTERS,
   MPA_DATAVIEW_INSTANCE_ID,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-  HIDDEN_DATAVIEW_FILTERS,
 } from 'data/workspaces'
-import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  CONTEXT_FEATURES_LIMIT,
-  filterFeaturesByDistance,
-  parseContextFeatures,
-} from 'features/workspace/context-areas/context.utils'
-import { ReportPopupLink } from 'features/map/popups/categories/ContextLayersRow'
-import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
+import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
+import { useAddDataset } from 'features/datasets/datasets.hook'
 import {
   getDatasetLabel,
   getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
-import DatasetNotFound from '../shared/DatasetNotFound'
+import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
+import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
+import { ReportPopupLink } from 'features/map/popups/categories/ContextLayersRow'
+import GFWOnly from 'features/user/GFWOnly'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import {
+  CONTEXT_FEATURES_LIMIT,
+  filterFeaturesByDistance,
+  parseContextFeatures,
+} from 'features/workspace/context-areas/context.utils'
+import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+
 import Color from '../common/Color'
+import InfoModal from '../common/InfoModal'
+import Filters from '../common/LayerFilters'
+import { showSchemaFilter } from '../common/LayerSchemaFilter'
 import LayerSwitch from '../common/LayerSwitch'
+import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
-import Filters from '../common/LayerFilters'
-import InfoModal from '../common/InfoModal'
-import ExpandedContainer from '../shared/ExpandedContainer'
+import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
-import { showSchemaFilter } from '../common/LayerSchemaFilter'
-import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
+import ExpandedContainer from '../shared/ExpandedContainer'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance

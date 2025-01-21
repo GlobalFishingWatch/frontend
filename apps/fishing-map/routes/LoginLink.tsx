@@ -1,7 +1,9 @@
 import { forwardRef } from 'react'
+
 import { getLoginUrl, useLoginRedirect } from '@globalfishingwatch/react-hooks'
-import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+
 import { useAppDispatch } from 'features/app/app.hooks'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 
 type LocalStorageLoginLinkProps = {
   children: React.ReactNode

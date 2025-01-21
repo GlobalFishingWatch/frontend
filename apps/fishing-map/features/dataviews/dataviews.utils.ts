@@ -1,22 +1,24 @@
 import kebabCase from 'lodash/kebabCase'
+
 import type {
   ColorCyclingType,
   Dataset,
   Dataview,
-  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
+  DataviewType,
 } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
+
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
-  TEMPLATE_CONTEXT_DATAVIEW_SLUG,
-  TEMPLATE_USER_TRACK_SLUG,
-  TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
+  TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+  TEMPLATE_POINTS_DATAVIEW_SLUG,
+  TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'

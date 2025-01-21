@@ -1,14 +1,19 @@
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+
+import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselInWorkspace, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { useAppDispatch } from 'features/app/app.hooks'
+import type { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+
 import { setPinningVessels } from '../reports-activity.slice'
+
 import usePinReportVessels, { MAX_VESSEL_REPORT_PIN } from './report-activity-vessels.hooks'
+
 import styles from './ReportVesselsTable.module.css'
 
 type ReportVesselTablePinProps = {

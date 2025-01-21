@@ -1,20 +1,22 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
-import { useLocationConnect } from 'routes/routes.hook'
+
 import {
-  REPORT_ACTIVITY_GRAPH_EVOLUTION,
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
+  REPORT_ACTIVITY_GRAPH_EVOLUTION,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
 } from 'data/config'
-import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
-import { useSetReportTimeComparison } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportActivityGraph } from 'features/reports/areas/area-reports.config.selectors'
+import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import type { ReportActivityGraph } from 'features/reports/areas/area-reports.types'
+import { useSetReportTimeComparison } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
 
 type ReportActivityGraphSelectorProps = {
   loading: boolean

@@ -1,15 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux'
+
+import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
 import {
+  selectCountry,
   selectPointValues,
   selectPorts,
   selectPortValues,
   selectSubareas,
   selectSubareaValues,
-  selectCountry,
   setSelectedPoints,
 } from 'features/labeler/labeler.slice'
 import { useMapConnect } from 'features/map/map.hooks'
-import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
 
 type Dictionary<T> = Record<string, T>
 

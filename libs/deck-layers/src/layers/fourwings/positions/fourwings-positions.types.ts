@@ -1,6 +1,8 @@
 import type { PickingInfo } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
+
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+
 import type { DeckPickingObject } from '../../../types'
 import type {
   BaseFourwingsLayerProps,

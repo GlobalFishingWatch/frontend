@@ -1,10 +1,12 @@
 import type { FeatureCollection } from 'geojson'
 import memoizeOne from 'memoize-one'
+
 import { filterTrackByCoordinateProperties } from '@globalfishingwatch/data-transforms'
+
 import { Group } from '../../types'
+import { memoizeByLayerId, memoizeCache } from '../../utils'
 import type { MergedGeneratorConfig } from '../types'
 import { GeneratorType } from '../types'
-import { memoizeByLayerId, memoizeCache } from '../../utils'
 
 export interface VesselPositionsGeneratorConfig {
   id: string

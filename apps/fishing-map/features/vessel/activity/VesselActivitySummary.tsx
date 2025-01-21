@@ -1,29 +1,32 @@
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { useCallback, useMemo } from 'react'
-import type { IconType, SwitchEvent } from '@globalfishingwatch/ui-components'
-import { Icon, Switch, Tooltip } from '@globalfishingwatch/ui-components'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
+import type { IconType, SwitchEvent } from '@globalfishingwatch/ui-components'
+import { Icon, Switch, Tooltip } from '@globalfishingwatch/ui-components'
+
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { useRegionNamesByType } from 'features/regions/regions.hooks'
+import { EVENTS_ORDER } from 'features/vessel/activity/activity-by-type/ActivityByType'
+import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import {
   selectActivitySummary,
   selectEventsGroupedByType,
   selectVoyagesNumber,
 } from 'features/vessel/activity/vessels-activity.selectors'
-import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
-import { formatInfoField } from 'utils/info'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
-import { useRegionNamesByType } from 'features/regions/regions.hooks'
-import { EVENTS_ORDER } from 'features/vessel/activity/activity-by-type/ActivityByType'
-import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
-import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
+import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
+import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import { formatInfoField } from 'utils/info'
+
 import styles from './VesselActivitySummary.module.css'
 
 const MAX_PORTS = 3

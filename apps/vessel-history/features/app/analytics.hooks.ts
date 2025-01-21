@@ -2,10 +2,11 @@ import {
   trackEvent as trackEventBase,
   useAnalytics as useAnalyticsBase,
 } from '@globalfishingwatch/react-hooks'
+
 import {
-  GOOGLE_TAG_MANAGER_ID,
-  GOOGLE_MEASUREMENT_ID,
   GOOGLE_ANALYTICS_DEBUG_MODE,
+  GOOGLE_MEASUREMENT_ID,
+  GOOGLE_TAG_MANAGER_ID,
 } from 'data/config'
 import { useUser } from 'features/user/user.hooks'
 

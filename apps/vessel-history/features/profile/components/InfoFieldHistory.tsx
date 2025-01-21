@@ -1,9 +1,12 @@
-import type { ReactNode, JSX } from 'react';
+import type { JSX,ReactNode } from 'react';
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Modal } from '@globalfishingwatch/ui-components'
 import type { ValueItem } from 'types'
+
+import { Modal } from '@globalfishingwatch/ui-components'
+
 import type { VesselFieldLabel } from 'types/vessel'
+
 import InfoFieldHistoryTable from './InfoFieldHistoryTable'
 
 interface ListItemProps {

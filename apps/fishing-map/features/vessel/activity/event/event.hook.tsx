@@ -1,18 +1,21 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+
 import type { GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
-import { getUTCDateTime } from 'utils/dates'
-import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
-import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
-import VesselLink from 'features/vessel/VesselLink'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
+import VesselLink from 'features/vessel/VesselLink'
+import { getUTCDateTime } from 'utils/dates'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+
 import styles from './Event.module.css'
 
 export function useFetchRegionsData() {

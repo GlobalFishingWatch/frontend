@@ -1,12 +1,13 @@
 import { zip } from 'lodash'
+
+import type { ExtendedLayerMeta } from '../../../types'
 import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import type { TimeChunks} from '../util/time-chunks';
-import { pickActiveTimeChunk } from '../util/time-chunks'
-import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
-import getBaseLayer from '../util/get-base-layers'
 import { getLayerId, getSourceId } from '../util'
 import type { Breaks } from '../util/fetch-breaks'
-import type { ExtendedLayerMeta } from '../../../types'
+import getBaseLayer from '../util/get-base-layers'
+import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
+import type { TimeChunks} from '../util/time-chunks';
+import { pickActiveTimeChunk } from '../util/time-chunks'
 
 const baseBlobIntensity = 0.5
 const baseBlobRadius = 30

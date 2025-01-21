@@ -1,20 +1,34 @@
-import { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
+import { Fragment, useCallback,useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { Tab } from '@globalfishingwatch/ui-components';
-import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
+
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
-import { VesselAPISource } from 'types'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import I18nDate from 'features/i18n/i18nDate'
+import type { Tab } from '@globalfishingwatch/ui-components';
+import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
+
+import { IS_STANDALONE_APP } from 'data/config'
+import ActivityByType from 'features/activity-by-type/activity-by-type'
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import {
-  selectMergedVesselId,
-  selectSearchableQueryParams,
-  selectUrlAkaVesselQuery,
-  selectVesselProfileId,
-} from 'routes/routes.selectors'
-import { HOME } from 'routes/routes'
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.selectors'
+import { selectDatasets } from 'features/datasets/datasets.slice'
+import {
+  selectDataviewsResources,
+  selectGetVesselDataviewInstance,
+} from 'features/dataviews/dataviews.selectors'
+import { resetFilters } from 'features/event-filters/filters.slice'
+import I18nDate from 'features/i18n/i18nDate'
+import Map from 'features/map/Map'
+import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
+import { fetchResourceThunk } from 'features/resources/resources.slice'
+import RiskSummary from 'features/risk-summary/risk-summary'
+import RiskTitle from 'features/risk-title/risk-title'
+import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
+import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
 import {
   clearVesselDataview,
   fetchVesselByIdThunk,
@@ -23,33 +37,23 @@ import {
   selectVesselsStatus,
   upsertVesselDataview,
 } from 'features/vessels/vessels.slice'
-import Map from 'features/map/Map'
-import {
-  getRelatedDatasetByType,
-  getRelatedDatasetsByType,
-} from 'features/datasets/datasets.selectors'
-import {
-  selectDataviewsResources,
-  selectGetVesselDataviewInstance,
-} from 'features/dataviews/dataviews.selectors'
-import { selectDatasets } from 'features/datasets/datasets.slice'
-import { fetchResourceThunk } from 'features/resources/resources.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { resetFilters } from 'features/event-filters/filters.slice'
-import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
 import { NOT_AVAILABLE, parseVesselProfileId } from 'features/vessels/vessels.utils'
-import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
+import { HOME } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
-import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
-import { useApp, useAppDispatch } from 'features/app/app.hooks'
-import RiskSummary from 'features/risk-summary/risk-summary'
-import RiskTitle from 'features/risk-title/risk-title'
-import ActivityByType from 'features/activity-by-type/activity-by-type'
-import { IS_STANDALONE_APP } from 'data/config'
-import Info from './components/Info'
+import {
+  selectMergedVesselId,
+  selectSearchableQueryParams,
+  selectUrlAkaVesselQuery,
+  selectVesselProfileId,
+} from 'routes/routes.selectors'
+import { VesselAPISource } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import Activity from './components/activity/Activity'
-import styles from './Profile.module.css'
+import Info from './components/Info'
 import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
+
+import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement<any> => {
   const dispatch = useAppDispatch()

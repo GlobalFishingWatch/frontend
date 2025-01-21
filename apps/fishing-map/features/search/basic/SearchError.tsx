@@ -1,10 +1,13 @@
-import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import { useSelector } from 'react-redux'
+
 import { selectIsUserExpired } from 'features/user/selectors/user.selectors'
+import LocalStorageLoginLink from 'routes/LoginLink'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { selectSearchStatus, selectSearchStatusCode } from '../search.slice'
 import SearchPlaceholder from '../SearchPlaceholders'
+
 import styles from './SearchBasic.module.css'
 
 function SearchError() {

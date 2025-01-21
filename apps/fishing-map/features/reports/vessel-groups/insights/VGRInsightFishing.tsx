@@ -1,26 +1,31 @@
-import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import cx from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import { Collapsable } from '@globalfishingwatch/ui-components'
-import { RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import cx from 'classnames'
 import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
-import InsightError from 'features/vessel/insights/InsightErrorMessage'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { formatInfoField } from 'utils/info'
-import VesselLink from 'features/vessel/VesselLink'
+
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { Collapsable } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVGRData } from '../vessel-group-report.slice'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import VesselLink from 'features/vessel/VesselLink'
+import { formatInfoField } from 'utils/info'
+
 import { selectFetchVesselGroupReportFishingParams } from '../vessel-group-report.selectors'
-import styles from './VGRInsights.module.css'
-import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
-import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
+import { selectVGRData } from '../vessel-group-report.slice'
+
 import type { VesselGroupReportInsightVessel } from './vessel-group-report-insights.selectors'
 import {
-  selectVGRVesselsWithNoTakeMpas,
   selectVGRVesselsInRfmoWithoutKnownAuthorization,
+  selectVGRVesselsWithNoTakeMpas,
 } from './vessel-group-report-insights.selectors'
+import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
+import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
+
+import styles from './VGRInsights.module.css'
 
 export const RFMO_REGIONS_PRIORITY: RegionType[] = [
   RegionType.rfmo,

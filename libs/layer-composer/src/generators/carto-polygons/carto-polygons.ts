@@ -2,6 +2,7 @@ import type { GeneratorStyles} from '../../types';
 import { Group } from '../../types'
 import type { CartoPolygonsGeneratorConfig } from '../types';
 import { GeneratorType } from '../types'
+
 import layersDirectory from './carto-polygons-layers'
 
 export const CARTO_FISHING_MAP_API = 'https://carto.globalfishingwatch.org/user/admin/api/v1/map'

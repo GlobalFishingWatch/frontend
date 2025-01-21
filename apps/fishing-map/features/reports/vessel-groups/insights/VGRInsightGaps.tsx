@@ -1,22 +1,27 @@
-import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import cx from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import { Collapsable } from '@globalfishingwatch/ui-components'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import cx from 'classnames'
 import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
-import InsightError from 'features/vessel/insights/InsightErrorMessage'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { formatInfoField } from 'utils/info'
-import VesselLink from 'features/vessel/VesselLink'
+
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { Collapsable } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVGRData } from '../vessel-group-report.slice'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import VesselLink from 'features/vessel/VesselLink'
+import { formatInfoField } from 'utils/info'
+
 import { selectFetchVesselGroupReportGapParams } from '../vessel-group-report.selectors'
-import styles from './VGRInsights.module.css'
+import { selectVGRData } from '../vessel-group-report.slice'
+
+import { selectVGRGapVessels } from './vessel-group-report-insights.selectors'
 import VesselGroupReportInsightPlaceholder from './VGRInsightsPlaceholders'
 import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
-import { selectVGRGapVessels } from './vessel-group-report-insights.selectors'
+
+import styles from './VGRInsights.module.css'
 
 const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()

@@ -1,5 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
+
 import geometries from '../data/geometries'
 
 async function start() {

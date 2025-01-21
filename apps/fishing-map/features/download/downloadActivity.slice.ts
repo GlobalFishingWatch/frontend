@@ -1,23 +1,26 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
-import type { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
+import { stringify } from 'qs'
+import type { RootState } from 'reducers'
+import type { BufferOperation, BufferUnit } from 'types'
+
 import {
   getIsConcurrentError,
   getIsTimeoutError,
   GFWAPI,
   parseAPIError,
 } from '@globalfishingwatch/api-client'
+import type { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { RootState } from 'reducers'
+
+import type { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import type { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
 import { getUTCDateTime } from 'utils/dates'
-import type { BufferOperation, BufferUnit } from 'types'
+
 import type { GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
-import { HeatmapDownloadTab, HeatmapDownloadFormat } from './downloadActivity.config'
+import { HeatmapDownloadFormat,HeatmapDownloadTab } from './downloadActivity.config'
 
 export type DateRange = {
   start: string

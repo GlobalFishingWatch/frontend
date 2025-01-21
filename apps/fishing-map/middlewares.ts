@@ -1,11 +1,13 @@
-import type { Middleware } from 'redux'
 import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { isRejectedWithValue } from '@reduxjs/toolkit'
-import { isUnauthorized } from '@globalfishingwatch/api-client'
 import type { RootState } from 'reducers'
-import type { AsyncError } from 'utils/async-slice'
-import { setLoginExpired } from 'features/user/user.slice'
+import type { Middleware } from 'redux'
+
+import { isUnauthorized } from '@globalfishingwatch/api-client'
+
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { setLoginExpired } from 'features/user/user.slice'
+import type { AsyncError } from 'utils/async-slice'
 
 export const logoutUserMiddleware: Middleware =
   ({

@@ -24,7 +24,9 @@
   font: var(--font-L);
   line-height: 1;
   margin: var(--space-XS);
-  transition: opacity 0.15s linear, color 0.15s linear;
+  transition:
+    opacity 0.15s linear,
+    color 0.15s linear;
   z-index: 1;
   top: -2rem;
   right: -2rem;
@@ -282,4 +284,10 @@
   max-width: var(--sidebar-width);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.portCTA {
+  margin-top: var(--space-S);
+  display: block;
+  width: 100%;
 }

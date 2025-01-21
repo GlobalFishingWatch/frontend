@@ -1,14 +1,18 @@
-import { useState, useRef, useEffect } from 'react'
-import cx from 'classnames'
+import { useEffect,useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { Placement } from '@floating-ui/react'
-import { Button, Popover } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { Button, Popover } from '@globalfishingwatch/ui-components'
+
 import { selectIsMapLoaded } from 'features/map/map.slice'
 import { Locale } from 'types'
+
 import type { HighlightPanelConfig } from './highlight-panel.content'
 import HIGHLIGHT_CONFIG from './highlight-panel.content'
+
 import styles from './HighlightPanel.module.css'
 
 type HighlightPanelProps = {

@@ -1,11 +1,14 @@
-import React, { Suspense, lazy } from 'react'
+import React, { lazy,Suspense } from 'react'
 import cx from 'classnames'
+
 import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
-import styles from './Icon.module.css'
+
 import type { IconType } from './icon.config'
 import icons from './icon.config'
+
+import styles from './Icon.module.css'
 
 const IconComponents = icons.reduce(
   (acc, icon) => {

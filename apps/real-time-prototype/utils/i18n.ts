@@ -1,6 +1,8 @@
 import type { DateTimeFormatOptions } from 'luxon';
 import { DateTime } from 'luxon'
+
 import { LOCALE } from 'data/config'
+
 import { getUTCDateTime } from './dates'
 
 export const UTC_SUFFIX = 'UTC'

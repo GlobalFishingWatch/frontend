@@ -1,20 +1,23 @@
-import { useSelector, useDispatch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
+import { useDispatch,useSelector } from 'react-redux'
 import { parse } from 'qs'
-import {
-  useLoginRedirect as commonUseLoginRedirect,
-  setRedirectUrl as commonSetRedirectUrl,
-  getLoginUrl as commonGetLoginUrl,
-  redirectToLogin as commonRedirectToLogin,
-} from '@globalfishingwatch/react-hooks'
+import type { QueryParams } from 'types'
+
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
-import type { QueryParams } from 'types'
+import {
+  getLoginUrl as commonGetLoginUrl,
+  redirectToLogin as commonRedirectToLogin,
+  setRedirectUrl as commonSetRedirectUrl,
+  useLoginRedirect as commonUseLoginRedirect,
+} from '@globalfishingwatch/react-hooks'
+
 import {
   selectCurrentLocation,
   selectLocationPayload,
   selectLocationType,
 } from 'routes/routes.selectors'
+
 import type { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
 

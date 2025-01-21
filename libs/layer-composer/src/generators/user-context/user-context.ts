@@ -1,27 +1,29 @@
-import { zip, flatten } from 'lodash'
+import { flatten,zip } from 'lodash'
+
 import type {
-  LayerSpecification,
-  FillLayerSpecification,
-  LineLayerSpecification,
   DataDrivenPropertyValueSpecification,
-  FormattedSpecification,
   ExpressionSpecification,
+  FillLayerSpecification,
+  FormattedSpecification,
+  LayerSpecification,
+  LineLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+
+import { API_GATEWAY } from '../../config'
+import { Group } from '../../types'
+import { isUrlAbsolute } from '../../utils'
 import {
   DEFAULT_CONTEXT_MAX_ZOOM,
   DEFAULT_CONTEXT_PROMOTE_ID,
   DEFAULT_CONTEXT_SOURCE_LAYER,
 } from '../context/config'
-import type { GlobalUserContextGeneratorConfig } from '../types';
-import { GeneratorType } from '../types'
-import { isUrlAbsolute } from '../../utils'
-import { Group } from '../../types'
-import { API_GATEWAY } from '../../config'
 import {
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
 } from '../context/context.utils'
 import { getColorRampByOpacitySteps } from '../heatmap/util/colors'
+import type { GlobalUserContextGeneratorConfig } from '../types';
+import { GeneratorType } from '../types'
 import { getTimeFilterForUserContextLayer } from '../utils'
 
 class UserContextGenerator {

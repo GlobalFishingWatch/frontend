@@ -1,6 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
+import type { RootState } from 'reducers'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
@@ -15,13 +17,11 @@ import type {
   VesselRegistryInfo,
   VesselType,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { setResource } from '@globalfishingwatch/dataviews-client'
+import { DatasetTypes, ResourceStatus , VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import type { RootState } from 'reducers'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectResources } from 'features/resources/resources.slice'
+import { setResource } from '@globalfishingwatch/dataviews-client'
+
+import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import {
   fetchDatasetByIdThunk,
   fetchDatasetsByIdsThunk,
@@ -29,15 +29,16 @@ import {
 } from 'features/datasets/datasets.slice'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
+import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
   getVesselDataviewInstance,
   getVesselInfoDataviewInstanceDatasetConfig,
 } from 'features/dataviews/dataviews.utils'
-import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
-import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
+import { selectResources } from 'features/resources/resources.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
+import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum

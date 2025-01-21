@@ -1,4 +1,5 @@
 import type { RelatedVesselSearchMerged, VesselSearch } from '@globalfishingwatch/api-types'
+
 import { sortByDate } from 'utils/shared'
 
 const getMergedVessel = (

@@ -1,13 +1,15 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { bin, scaleLinear } from 'd3'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
-import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
+
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 
 export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {

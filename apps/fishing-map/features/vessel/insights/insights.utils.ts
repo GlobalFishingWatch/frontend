@@ -1,4 +1,5 @@
 import type { ApiEvent } from '@globalfishingwatch/api-types'
+
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
 const TUNA_RFMO_AREAS = ['CCSBT', 'IATTC', 'ICCAT', 'IOTC', 'NPFC', 'SPRFMO', 'WCPFC']

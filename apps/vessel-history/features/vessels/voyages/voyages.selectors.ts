@@ -1,13 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Interval } from 'luxon'
+
 import { EventTypes } from '@globalfishingwatch/api-types'
+
+import { DEFAULT_WORKSPACE } from 'data/config'
 import type { Filters} from 'features/event-filters/filters.slice';
 import { selectFilters } from 'features/event-filters/filters.slice'
 import type { ActivityEvent } from 'types/activity'
 import type { Voyage} from 'types/voyage';
 import { EventTypeVoyage } from 'types/voyage'
-import { DEFAULT_WORKSPACE } from 'data/config'
 import { getUTCDateTime } from 'utils/dates'
+
 import type {
   RenderedEvent} from '../activity/vessels-activity.selectors';
 import {

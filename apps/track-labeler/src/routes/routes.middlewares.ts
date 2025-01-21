@@ -1,7 +1,9 @@
 import type { Middleware } from 'redux'
-import type { RootState } from '../store'
+
 import { selectUserTokenExpirationTimestamp } from '../features/user/user.slice'
 import { userLoginThunk } from '../features/user/user.thunks'
+import type { RootState } from '../store'
+
 import { routesMap } from './routes'
 import type { UpdateQueryParamsAction } from './routes.actions'
 

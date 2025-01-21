@@ -1,8 +1,10 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit'
+
 import type { Resource } from '@globalfishingwatch/api-types'
-import type { Vessel } from '../vessels/vessels.slice'
+
 import type { RootState } from '../../store'
+import type { Vessel } from '../vessels/vessels.slice'
 
 export interface AppResource extends Resource {
   loaded?: boolean

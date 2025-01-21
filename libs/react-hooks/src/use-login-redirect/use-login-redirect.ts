@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
+
 import { useLocalStorage } from '../use-local-storage'
 
 export const DEFAULT_CALLBACK_URL_KEY = 'CallbackUrl'

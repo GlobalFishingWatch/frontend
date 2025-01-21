@@ -1,5 +1,6 @@
-import cx from 'classnames'
 import { Fragment } from 'react'
+import cx from 'classnames'
+
 import styles from './placeholders.module.css'
 
 export default function VGRTitlePlaceholder() {

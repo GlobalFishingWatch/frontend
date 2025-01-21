@@ -1,5 +1,6 @@
  
 import React, { Fragment } from 'react'
+
 import type { UserData } from '@globalfishingwatch/api-types'
 import type {
   MenuItem} from '@globalfishingwatch/ui-components';
@@ -8,6 +9,7 @@ import {
   HeaderMenuItem,
   IconButton
 } from '@globalfishingwatch/ui-components'
+
 import styles from './header.module.css'
 
 interface HeaderProps {

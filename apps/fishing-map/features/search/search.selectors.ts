@@ -1,18 +1,20 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+
 import type { Dataset, UserData } from '@globalfishingwatch/api-types'
+
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   filterDatasetsByUserType,
   getDatasetLabel,
   getDatasetsInDataviews,
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import type { SearchType } from 'features/search/search.config'
-import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
+import type { SearchType } from 'features/search/search.config'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
+import { selectIsGuestUser,selectUserData } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 
 const EMPTY_ARRAY: [] = []

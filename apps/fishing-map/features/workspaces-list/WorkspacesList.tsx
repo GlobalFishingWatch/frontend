@@ -1,22 +1,26 @@
-import { useCallback, Fragment } from 'react'
-import cx from 'classnames'
+import { Fragment,useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import type { To } from 'redux-first-router-link'
 import Link from 'redux-first-router-link'
-import { useTranslation } from 'react-i18next'
+import type { Locale } from 'types'
+
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
-import { HOME, WORKSPACE } from 'routes/routes'
-import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import type { Locale } from 'types'
-import styles from './WorkspacesList.module.css'
+import { HOME, WORKSPACE } from 'routes/routes'
+import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import type { HighlightedWorkspaceMerged } from './workspaces-list.selectors'
 import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'
 import type { HighlightedWorkspace } from './workspaces-list.slice'
 import { selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
 import WorkspaceWizard from './WorkspaceWizard'
+
+import styles from './WorkspacesList.module.css'
 
 const geti18nProperty = (
   workspace: HighlightedWorkspace,

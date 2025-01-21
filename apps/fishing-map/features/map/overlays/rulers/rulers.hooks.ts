@@ -1,12 +1,14 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { throttle } from 'es-toolkit'
 import type { PickingInfo, Position } from '@deck.gl/core'
+import { throttle } from 'es-toolkit'
+
 import type { RulerData } from '@globalfishingwatch/deck-layers'
 import { RulersLayer } from '@globalfishingwatch/deck-layers'
-import { useLocationConnect } from 'routes/routes.hook'
+
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
 
 const useRulers = () => {
   const rulers = useSelector(selectMapRulers)

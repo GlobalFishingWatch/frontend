@@ -2,13 +2,15 @@ import type { PickingInfo } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import type { ScaleLinear } from 'd3-scale'
+
 import type {
+  Cell,
   FourwingsFeature,
-  FourwingsStaticFeature,
   FourwingsFeatureProperties,
   FourwingsInterval,
-  Cell,
+  FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
+
 import type { DeckPickingObject } from '../../../types'
 import type {
   BaseFourwingsLayerProps,

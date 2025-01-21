@@ -1,13 +1,17 @@
 import { useState } from 'react'
+
 import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks/use-login'
-import { Spinner } from '@globalfishingwatch/ui-components/spinner'
-import { Modal } from '@globalfishingwatch/ui-components/modal'
 import { Button } from '@globalfishingwatch/ui-components/button'
+import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+
 import { useGetLabellingProjectsListQuery } from '../../api/projects-list'
 import type { LabellingProject } from '../../types'
+
 import ProjectForm from './ProjectForm'
-import styles from './ProjectsList.module.css'
 import ProjectItem from './ProjectItem'
+
+import styles from './ProjectsList.module.css'
 
 const EMPTY_PROJECT: Omit<LabellingProject, 'id'> = {
   name: '',

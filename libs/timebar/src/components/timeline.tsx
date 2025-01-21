@@ -1,29 +1,33 @@
 import React, { PureComponent } from 'react'
-import memoize from 'memoize-one'
 import cx from 'classnames'
 import type { NumberValue, ScaleTime } from 'd3-scale'
 import { scaleTime } from 'd3-scale'
 import throttle from 'lodash/throttle'
-import ResizeObserver from 'resize-observer-polyfill'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
-import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
+import memoize from 'memoize-one'
+import ResizeObserver from 'resize-observer-polyfill'
+
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { FOURWINGS_INTERVALS_ORDER,getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
+import { EVENT_SOURCE } from '../constants'
+import type { TimebarProps } from '../timebar'
+import type { TrackGraphOrientation } from '../timelineContext'
+import TimelineContext from '../timelineContext'
+import { getLast30Days } from '../utils'
 import {
-  getTime,
   clampToAbsoluteBoundaries,
   getDeltaMs,
+  getTime,
   isMoreThanADay,
   stickToClosestUnit,
 } from '../utils/internal-utils'
-import { EVENT_SOURCE } from '../constants'
-import { getLast30Days } from '../utils'
-import type { TrackGraphOrientation } from '../timelineContext'
-import TimelineContext from '../timelineContext'
-import type { TimebarProps } from '../timebar'
+
 import Bookmark from './bookmark'
-import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
+import TimelineUnits from './timeline-units'
+
 import styles from './timeline.module.css'
 
 const DRAG_INNER = 'DRAG_INNER'

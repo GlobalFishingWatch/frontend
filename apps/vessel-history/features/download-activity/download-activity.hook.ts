@@ -1,22 +1,23 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
-import FileSaver from 'file-saver'
 import { useTranslation } from 'react-i18next'
-import type { Voyage } from 'types/voyage';
-import { EventTypeVoyage } from 'types/voyage'
-import { getUTCDateTime } from 'utils/dates'
+import { useSelector } from 'react-redux'
+import FileSaver from 'file-saver'
+import { DateTime } from 'luxon'
+
+import { BASE_URL } from 'data/constants'
+import { selectFiltersUpdated } from 'features/event-filters/filters.selectors'
+import type { Filters} from 'features/event-filters/filters.slice';
+import { selectFilters } from 'features/event-filters/filters.slice'
+import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
+import { selectVesselById } from 'features/vessels/vessels.slice'
 import {
   selectAllEventsByVoyages,
   selectFilteredEventsByVoyages,
 } from 'features/vessels/voyages/voyages.selectors'
-import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectMergedVesselId } from 'routes/routes.selectors'
-import { selectVesselById } from 'features/vessels/vessels.slice'
-import type { Filters} from 'features/event-filters/filters.slice';
-import { selectFilters } from 'features/event-filters/filters.slice'
-import { selectFiltersUpdated } from 'features/event-filters/filters.selectors'
-import { BASE_URL } from 'data/constants'
+import type { Voyage } from 'types/voyage';
+import { EventTypeVoyage } from 'types/voyage'
+import { getUTCDateTime } from 'utils/dates'
 
 function useDownloadActivity() {
   const { t, i18n } = useTranslation()

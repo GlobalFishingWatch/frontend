@@ -1,15 +1,18 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { DateTime, Duration } from 'luxon'
 import cx from 'classnames'
+import { DateTime, Duration } from 'luxon'
+
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import type { ButtonType } from '@globalfishingwatch/ui-components';
 import { Button } from '@globalfishingwatch/ui-components'
+
 import { AIS_DATA_DELAY_DAYS, RISK_SUMMARY_SETTINGS } from 'data/config'
 import type { Filters } from 'features/event-filters/filters.slice'
 import FiltersLabel from 'features/filters-label/filters-label'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { getUTCDateTime } from 'utils/dates'
+
 import styles from './date-range-label.module.css'
 
 export interface DateRangeLabelProps {

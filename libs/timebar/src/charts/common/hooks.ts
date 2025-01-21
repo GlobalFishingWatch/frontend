@@ -1,18 +1,21 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { useDebouncedCallback } from 'use-debounce'
 import { scaleTime } from 'd3-scale'
+import { useDebouncedCallback } from 'use-debounce'
+
 import { EventTypes } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
 import type { TimelineScale } from '../../timelineContext'
 import TimelineContext from '../../timelineContext'
+
 import type {
-  TimebarChartData,
-  TimebarChartChunk,
   ActivityTimeseriesFrame,
+  HighlighterCallback,
+  TimebarChartChunk,
+  TimebarChartData,
   TimebarChartItem,
   TimebarChartValue,
-  HighlighterCallback,
 } from './types'
 
 export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {

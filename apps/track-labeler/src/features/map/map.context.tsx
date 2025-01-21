@@ -1,11 +1,11 @@
 import React, {
   createContext,
-  useRef,
+  useCallback,
   useContext,
-  useState,
   useEffect,
   useMemo,
-  useCallback,
+  useRef,
+  useState,
 } from 'react'
 import type { Map } from 'maplibre-gl'
 

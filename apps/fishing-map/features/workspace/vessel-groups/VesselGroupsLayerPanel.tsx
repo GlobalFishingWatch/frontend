@@ -1,41 +1,45 @@
 import { Fragment, useEffect, useState } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import { formatInfoField } from 'utils/info'
-import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setVesselGroupModalVessels,
-  setVesselGroupEditId,
-  setVesselGroupsModalOpen,
-  setVesselGroupConfirmationMode,
-} from 'features/vessel-groups/vessel-groups-modal.slice'
-import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import {
   useReportAreaCenter,
   useVesselGroupBounds,
 } from 'features/reports/areas/area-reports.hooks'
-import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
+import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import {
   getVesselGroupVesselsCount,
   isOutdatedVesselGroup,
 } from 'features/vessel-groups/vessel-groups.utils'
-import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
+import {
+  setVesselGroupConfirmationMode,
+  setVesselGroupEditId,
+  setVesselGroupModalVessels,
+  setVesselGroupsModalOpen,
+} from 'features/vessel-groups/vessel-groups-modal.slice'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { formatInfoField } from 'utils/info'
+
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+
 import VesselGroupNotFound from './VesselGroupNotFound'
 
 export type VesselGroupLayerPanelProps = {

@@ -2,47 +2,49 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
+
+import { DataviewType } from '@globalfishingwatch/api-types'
+import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Tabs } from '@globalfishingwatch/ui-components'
-import type { ContextFeature } from '@globalfishingwatch/deck-layers'
-import { DataviewType } from '@globalfishingwatch/api-types'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { useLocationConnect } from 'routes/routes.hook'
-import { isActivityReport } from 'features/dataviews/selectors/dataviews.selectors'
-import WorkspaceError, { ErrorPlaceHolder } from 'features/workspace/WorkspaceError'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
-import {
-  selectHasReportBuffer,
-  selectReportArea,
-  selectReportAreaStatus,
-} from 'features/reports/areas/area-reports.selectors'
-import { TimebarVisualisations } from 'types'
-import {
-  useTimebarEnvironmentConnect,
-  useTimebarVisualisationConnect,
-} from 'features/timebar/timebar.hooks'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
-import {
-  resetReportData,
-  selectReportVesselsStatus,
-} from 'features/reports/shared/activity/reports-activity.slice'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
-import { useSetTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import ActivityReport from 'features/reports/shared/activity/ReportActivity'
-import ReportTitle from 'features/reports/areas/title/ReportTitle'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
-import ReportSummary from 'features/reports/areas/summary/ReportSummary'
-import ReportEnvironment from 'features/reports/areas/environment/ReportEnvironment'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { isActivityReport } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   useFetchReportArea,
   useFitAreaInViewport,
   useHighlightReportArea,
 } from 'features/reports/areas/area-reports.hooks'
+import {
+  selectHasReportBuffer,
+  selectReportArea,
+  selectReportAreaStatus,
+} from 'features/reports/areas/area-reports.selectors'
+import { ReportCategory } from 'features/reports/areas/area-reports.types'
+import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import styles from 'features/reports/areas/AreaReport.module.css'
-import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import ReportEnvironment from 'features/reports/areas/environment/ReportEnvironment'
+import ReportSummary from 'features/reports/areas/summary/ReportSummary'
+import ReportTitle from 'features/reports/areas/title/ReportTitle'
+import ActivityReport from 'features/reports/shared/activity/ReportActivity'
+import {
+  resetReportData,
+  selectReportVesselsStatus,
+} from 'features/reports/shared/activity/reports-activity.slice'
+import { useSetTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
+import {
+  useTimebarEnvironmentConnect,
+  useTimebarVisualisationConnect,
+} from 'features/timebar/timebar.hooks'
+import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import WorkspaceError, { ErrorPlaceHolder } from 'features/workspace/WorkspaceError'
+import { useLocationConnect } from 'routes/routes.hook'
+import { TimebarVisualisations } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 

@@ -1,7 +1,9 @@
 import { Fragment } from 'react'
-import { render } from '@testing-library/react'
 import { I18nextProvider } from 'react-i18next'
+import { render } from '@testing-library/react'
+
 import i18n from 'features/i18n/i18n'
+
 import { SearchEmptyState, SearchNoResultsState, SearchNotAllowed } from './SearchPlaceholders'
 
 jest.mock('features/i18n/i18n')

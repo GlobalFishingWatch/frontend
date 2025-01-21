@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+
 import copyToClipboard from 'utils/clipboard'
 
 export function useClipboardNotification(feedbackTime = 10000) {

@@ -2,9 +2,11 @@
 import type { ReactElement } from 'react'
 import React from 'react'
 import cx from 'classnames'
+
 import type { TooltipPlacement } from '../tooltip'
 import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
+
 import styles from './Radio.module.css'
 
 interface RadioProps {

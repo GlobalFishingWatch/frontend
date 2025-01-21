@@ -1,12 +1,14 @@
 import type { RGBA } from 'color-blend/dist/types'
-import { Switch } from '@globalfishingwatch/ui-components'
-import { rgbaToString } from '@globalfishingwatch/layer-composer'
 import { CONTEXT_LAYERS_IDS, CONTEXT_LAYERS_OBJECT } from 'layers/context/context.config'
 import {
-  useRemoveContextInLayer,
   useAddContextInLayer,
   useContextsLayerIds,
+  useRemoveContextInLayer,
 } from 'layers/context/context.hooks'
+
+import { rgbaToString } from '@globalfishingwatch/layer-composer'
+import { Switch } from '@globalfishingwatch/ui-components'
+
 import styles from './Sidebar.module.css'
 
 function ContextLayersSection() {

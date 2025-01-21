@@ -1,8 +1,11 @@
 import classNames from 'classnames'
 import type { ScaleTime } from 'd3-scale'
-import { Icon } from '@globalfishingwatch/ui-components'
+
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { getHumanizedDates } from '../utils'
+
 import styles from './bookmark.module.css'
 
 const MIN_WIDTH = 32

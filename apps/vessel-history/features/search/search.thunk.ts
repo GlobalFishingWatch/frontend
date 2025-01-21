@@ -1,14 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { GFWApiClient } from 'http-client/http-client'
 import { stringify } from 'qs'
+import type { RootState } from 'store'
+import type { SearchResults } from 'types'
+
 import type { AdvancedSearchQueryField} from '@globalfishingwatch/api-client';
 import { getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 import type { VesselSearch } from '@globalfishingwatch/api-types'
-import { GFWApiClient } from 'http-client/http-client'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
-import type { RootState } from 'store'
-import type { SearchResults } from 'types'
+
 import { IS_STANDALONE_APP } from 'data/config'
+import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+
 import type { CachedVesselSearch } from './search.slice'
 
 export const getSerializedQuery = (query: string, advancedSearch?: Record<string, any>) => {

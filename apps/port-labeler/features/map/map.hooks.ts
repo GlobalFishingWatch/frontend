@@ -1,15 +1,18 @@
 import { useCallback, useState } from 'react'
-import Point from '@mapbox/point-geometry'
 import { useDispatch, useSelector } from 'react-redux'
+import Point from '@mapbox/point-geometry'
 import { fitBounds } from '@math.gl/web-mercator'
+import type { PortPosition } from 'types'
+
 import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import type { LngLat, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
+
 import {
   selectSelectedPoints,
   setHoverPoint,
   setSelectedPoints,
 } from 'features/labeler/labeler.slice'
-import type { PortPosition } from 'types'
+
 import useMapInstance from './map-context.hooks'
 import { useViewport } from './map-viewport.hooks'
 

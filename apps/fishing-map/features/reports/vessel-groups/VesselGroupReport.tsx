@@ -1,39 +1,43 @@
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect, useMemo } from 'react'
+
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Button, Tabs } from '@globalfishingwatch/ui-components'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
-import type { VGRSection } from 'features/vessel-groups/vessel-groups.types'
-import { TimebarVisualisations } from 'types'
-import {
-  useTimebarVesselGroupConnect,
-  useTimebarVisualisationConnect,
-} from 'features/timebar/timebar.hooks'
-import VGREvents from 'features/reports/vessel-groups/events/VGREvents'
-import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { selectUserData } from 'features/user/selectors/user.selectors'
-import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
-import { getEventLabel } from 'utils/analytics'
 import {
   useFitAreaInViewport,
   useReportAreaCenter,
   useVesselGroupBounds,
 } from 'features/reports/areas/area-reports.hooks'
-import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
-import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
-import VesselGroupReportTitle from './VesselGroupReportTitle'
+import VGRActivity from 'features/reports/vessel-groups/activity/VGRActivity'
+import VGREvents from 'features/reports/vessel-groups/events/VGREvents'
+import {
+  useTimebarVesselGroupConnect,
+  useTimebarVisualisationConnect,
+} from 'features/timebar/timebar.hooks'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import type { VGRSection } from 'features/vessel-groups/vessel-groups.types'
+import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectReportVesselGroupId } from 'routes/routes.selectors'
+import { TimebarVisualisations } from 'types'
+import { getEventLabel } from 'utils/analytics'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import VesselGroupReportInsights from './insights/VGRInsights'
+import { selectVGRVesselsTimeRange } from './vessels/vessel-group-report-vessels.selectors'
 import VesselGroupReportVessels from './vessels/VesselGroupReportVessels'
 import { selectVGRSection } from './vessel-group.config.selectors'
-import VesselGroupReportInsights from './insights/VGRInsights'
+import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRDataview } from './vessel-group-report.selectors'
-import styles from './VesselGroupReport.module.css'
-import { selectVGRVesselsTimeRange } from './vessels/vessel-group-report-vessels.selectors'
+import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportError from './VesselGroupReportError'
+import VesselGroupReportTitle from './VesselGroupReportTitle'
+
+import styles from './VesselGroupReport.module.css'
 
 function VesselGroupReport() {
   const { t } = useTranslation()

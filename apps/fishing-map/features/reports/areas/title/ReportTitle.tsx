@@ -1,48 +1,53 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
-import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
+import cx from 'classnames'
+import parse from 'html-react-parser'
+import type { BufferOperation, BufferUnit } from 'types'
+
+import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
-import type { ContextFeature } from '@globalfishingwatch/deck-layers'
-import { useAppDispatch } from 'features/app/app.hooks'
-import type { Area } from 'features/areas/areas.slice'
-import {
-  DEFAULT_BUFFER_OPERATION,
-  DEFAULT_BUFFER_VALUE,
-  NAUTICAL_MILES,
-} from 'features/reports/areas/area-reports.config'
-import {
-  resetReportData,
-  selectReportPreviewBuffer,
-  setPreviewBuffer,
-} from 'features/reports/shared/activity/reports-activity.slice'
-import {
-  selectReportArea,
-  selectReportAreaDataviews,
-  selectReportAreaStatus,
-} from 'features/reports/areas/area-reports.selectors'
-import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectCurrentReport,
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
 } from 'features/app/selectors/app.reports.selector'
-import { useLocationConnect } from 'routes/routes.hook'
-import type { BufferOperation, BufferUnit } from 'types'
-import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import type { Area } from 'features/areas/areas.slice'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import {
+  DEFAULT_BUFFER_OPERATION,
+  DEFAULT_BUFFER_VALUE,
+  NAUTICAL_MILES,
+} from 'features/reports/areas/area-reports.config'
+import {
+  selectReportArea,
+  selectReportAreaDataviews,
+  selectReportAreaStatus,
+} from 'features/reports/areas/area-reports.selectors'
+import {
+  resetReportData,
+  selectReportPreviewBuffer,
+  setPreviewBuffer,
+} from 'features/reports/shared/activity/reports-activity.slice'
 import { useReportFeaturesLoading } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
+import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
+import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
+import { useLocationConnect } from 'routes/routes.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { useHighlightReportArea } from '../area-reports.hooks'
+
 import { BufferButtonTooltip } from './BufferButonTooltip'
+
 import styles from './ReportTitle.module.css'
 
 type ReportTitleProps = {

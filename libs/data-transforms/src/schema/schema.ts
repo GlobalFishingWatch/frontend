@@ -1,18 +1,21 @@
 import { uniq } from 'es-toolkit'
-import snakeCase from 'lodash/snakeCase'
-import toNumber from 'lodash/toNumber'
+import type { FeatureCollection } from 'geojson'
 import max from 'lodash/max'
 import min from 'lodash/min'
-import type { FeatureCollection } from 'geojson'
+import snakeCase from 'lodash/snakeCase'
+import toNumber from 'lodash/toNumber'
 import type { DateTimeOptions } from 'luxon'
 import { DateTime } from 'luxon'
+
 import type {
   Dataset,
   DatasetConfigurationUI,
   DatasetSchemaItem,
   DatasetSchemaType,
 } from '@globalfishingwatch/api-types'
+
 import { parseCoords } from '../coordinates'
+
 import { GUESS_COLUMN_DICT } from './guess-columns'
 
 type GetFieldSchemaParams = {

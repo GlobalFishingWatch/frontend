@@ -1,10 +1,12 @@
-import { useSelector } from 'react-redux'
 import React from 'react'
+import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
-import { VESSEL_GROUP_REPORT } from 'routes/routes'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
+
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { VESSEL_GROUP_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
+
 import styles from './VesselGroupReport.module.css'
 
 type VesselGroupReportLinkProps = {

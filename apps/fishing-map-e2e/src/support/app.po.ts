@@ -1,4 +1,5 @@
 import { HINTS } from 'apps/fishing-map/data/config'
+
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from '../../../fishing-map/features/workspace/highlight-panel/highlight-panel.content'
 import { API_URL_4WINGS_TILES } from '../constants/urls'
 

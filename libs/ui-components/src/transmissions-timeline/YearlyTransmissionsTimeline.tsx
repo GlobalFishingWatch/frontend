@@ -1,8 +1,11 @@
 import cx from 'classnames'
 import { DateTime } from 'luxon'
+
 import { Locale } from '@globalfishingwatch/api-types'
-import styles from './TransmissionsTimeline.module.css'
+
 import { FIRST_YEAR_OF_DATA } from './TransmissionsTimeline'
+
+import styles from './TransmissionsTimeline.module.css'
 
 type TransmissionsTimelineProps = {
   firstTransmissionDate: string

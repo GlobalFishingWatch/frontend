@@ -1,10 +1,13 @@
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
-import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
+
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectVesselId } from 'routes/routes.selectors'
+
 import { setVesselEvents } from './vessel.slice'
 
 const useVesselProfileLayer = () => {
