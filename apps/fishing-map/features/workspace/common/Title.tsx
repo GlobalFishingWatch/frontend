@@ -54,7 +54,10 @@ const Title = (props: TitleProps) => {
   return (
     <Tooltip content={showTooltip && (title as string).length > 20 ? title : ''}>
       <h3
-        className={cx(styles.titleSpan, className, { [classNameActive]: layerActive })}
+        className={cx(styles.titleSpan, className, {
+          [classNameActive]: layerActive,
+          [styles.disabled]: !toggleVisibility,
+        })}
         onClick={onToggleLayerActive}
       >
         {showIcon &&
