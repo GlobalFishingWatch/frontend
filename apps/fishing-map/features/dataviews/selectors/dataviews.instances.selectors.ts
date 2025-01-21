@@ -84,7 +84,11 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     const visibleDataviews = dataviews.filter((dataview) => dataview.config?.visible)
     if (hasDeprecatedDataviewInstances) {
       return visibleDataviews.filter(
-        (d) => d.category === DataviewCategory.Context || d.slug === BASEMAP_DATAVIEW_SLUG
+        (d) =>
+          d.category === DataviewCategory.Context ||
+          d.category === DataviewCategory.User ||
+          d.category === DataviewCategory.Environment ||
+          d.slug === BASEMAP_DATAVIEW_SLUG
       )
     }
     if (isAreaReportLocation) {
