@@ -13,7 +13,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TimeRangeDates } from 'features/map/controls/MapInfo'
+import TimeRangeDates from 'features/map/controls/TimeRangeDates'
 import type {
   ActivityProperty,
   ExtendedFeatureVessel,

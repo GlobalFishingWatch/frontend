@@ -11,7 +11,7 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
+import { pickDateFormatByRange } from 'features/map/controls/TimeRangeDates'
 
 export const DAYS_FROM_LATEST_MIN = 1
 export const DAYS_FROM_LATEST_MAX = 100

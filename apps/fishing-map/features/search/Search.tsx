@@ -41,7 +41,7 @@ import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlace
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'

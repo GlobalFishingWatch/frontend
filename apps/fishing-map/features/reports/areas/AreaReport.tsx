@@ -40,8 +40,9 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
+import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import WorkspaceError, { ErrorPlaceHolder } from 'features/workspace/WorkspaceError'
+import WorkspaceError from 'features/workspace/WorkspaceError'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -167,9 +168,9 @@ export default function Report() {
 
   if (reportAreaError) {
     return (
-      <ErrorPlaceHolder
+      <ErrorPlaceholder
         title={t('errors.areaLoad', 'There was an error loading the report area')}
-      ></ErrorPlaceHolder>
+      ></ErrorPlaceholder>
     )
   }
 
