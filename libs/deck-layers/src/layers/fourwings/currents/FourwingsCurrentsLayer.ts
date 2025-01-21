@@ -160,9 +160,13 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           data,
           getFillColor: [255, 255, 255, 255],
           getLineColor: [0, 0, 0, 255],
-          getRadius:
-            160 *
-            Math.pow(2, Math.abs(Math.round(this.context.viewport.zoom + (zoomOffset || 0)) - 12)),
+          getRadius: (d: FourwingsFeature) => {
+            return (
+              160 *
+              ((90 - Math.abs(d.coordinates[1]) / 1.03) / 90) *
+              Math.pow(2, Math.abs(Math.round(this.context.viewport.zoom + (zoomOffset || 0)) - 12))
+            )
+          },
           stroked: false,
           positionFormat: 'XY',
           filled: true,
