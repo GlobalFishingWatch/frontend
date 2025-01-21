@@ -148,7 +148,7 @@ export const useClickedEventConnect = () => {
 
     event?.features?.forEach((feature) => {
       const analyticsEvent = getAnalyticsEvent(feature)
-      trackEvent(analyticsEvent)
+      trackEvent(analyticsEvent as any)
     })
     const clusterFeature = event?.features?.find(
       (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
