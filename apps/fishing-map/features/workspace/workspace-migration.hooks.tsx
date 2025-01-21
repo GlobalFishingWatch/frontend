@@ -155,13 +155,13 @@ export const useMigrateWorkspaceToast = () => {
     toast.dismiss(toastId.current)
   }
 
-  const dissmissToast = () => {
-    trackEvent({
-      category: TrackCategory.WorkspaceManagement,
-      action: 'Skip workspace migration',
-    })
-    closeToast()
-  }
+  // const dissmissToast = () => {
+  //   trackEvent({
+  //     category: TrackCategory.WorkspaceManagement,
+  //     action: 'Skip workspace migration',
+  //   })
+  //   closeToast()
+  // }
 
   const updateWorkspace = async () => {
     trackEvent({
@@ -195,9 +195,9 @@ export const useMigrateWorkspaceToast = () => {
         )}
       </p>
       <div className={styles.disclaimerFooter}>
-        <Button onClick={dissmissToast} type="secondary" className={styles.updateBtn}>
+        {/* <Button onClick={dissmissToast} type="secondary" className={styles.updateBtn}>
           {t('workspace.migrationMaintain', 'Skip')}
-        </Button>
+        </Button> */}
         <Button loading={loading} onClick={updateWorkspace} className={styles.updateBtn}>
           {t('workspace.migrationUpdate', 'Update')}
         </Button>
@@ -211,6 +211,10 @@ export const useMigrateWorkspaceToast = () => {
         toastId: 'migrateWorkspace',
         autoClose: false,
       })
+      return () => {
+        closeToast()
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasDeprecatedDataviews])
 }

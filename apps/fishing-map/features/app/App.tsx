@@ -36,7 +36,6 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import {
   HOME,
@@ -134,7 +133,6 @@ function App() {
   useDatasetDrag()
   useReplaceLoginUrl()
   useBeforeUnload()
-  useMigrateWorkspaceToast()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)

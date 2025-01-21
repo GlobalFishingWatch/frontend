@@ -40,8 +40,8 @@ const PortsReport = dynamic(
 const VesselGroupReport = dynamic(
   () => import(/* webpackChunkName: "Report" */ 'features/reports/vessel-groups/VesselGroupReport')
 )
-const VesselDetailWrapper = dynamic(
-  () => import(/* webpackChunkName: "VesselDetailWrapper" */ 'features/vessel/Vessel')
+const VesselProfile = dynamic(
+  () => import(/* webpackChunkName: "VesselProfile" */ 'features/vessel/Vessel')
 )
 const User = dynamic(() => import(/* webpackChunkName: "User" */ 'features/user/User'))
 const Workspace = dynamic(
@@ -103,7 +103,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
 
     if (isVesselLocation) {
-      return <VesselDetailWrapper />
+      return <VesselProfile />
     }
 
     if (isWorkspacesListLocation) {

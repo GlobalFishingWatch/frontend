@@ -40,6 +40,7 @@ import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -56,6 +57,7 @@ import type { VesselSection } from './vessel.types'
 import styles from './Vessel.module.css'
 
 const Vessel = () => {
+  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
