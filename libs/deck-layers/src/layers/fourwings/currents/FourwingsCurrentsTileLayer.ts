@@ -201,10 +201,12 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
     const zoom = Math.round(this.context.viewport.zoom)
     const isStartOutRange = startTime < tilesCache.start
     const isEndOutRange = endTime > tilesCache.end
+    // TODO debug why not re-rendering on out of range
+    // TODO debug why re-renders when not needed
     const needsCacheKeyUpdate =
       isStartOutRange ||
       isEndOutRange ||
-      getFourwingsInterval(startTime, endTime) !== tilesCache.interval ||
+      getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       zoom !== tilesCache.zoom
     if (needsCacheKeyUpdate) {
       requestAnimationFrame(() => {

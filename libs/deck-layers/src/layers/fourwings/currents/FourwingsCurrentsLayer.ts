@@ -50,13 +50,23 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }) => {
-    const { id, tile, startTime, endTime, sublayers, tilesCache, category, subcategory } =
-      this.props
+    const {
+      id,
+      tile,
+      startTime,
+      endTime,
+      sublayers,
+      tilesCache,
+      category,
+      subcategory,
+      availableIntervals,
+    } = this.props
 
     const { interval } = getIntervalFrames({
       startTime,
       endTime,
       bufferedStart: tilesCache.bufferedStart,
+      availableIntervals,
     })
     const object: FourwingsHeatmapPickingObject = {
       ...(info.object || ({} as FourwingsFeature)),
@@ -96,7 +106,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
       aggregationOperation: FourwingsAggregationOperation.Avg,
       startFrame: this.startFrame,
       endFrame: this.endFrame,
-      cellStartOffsets: [31],
+      cellStartOffsets: feature.properties.startOffsets,
     })
     if (force) {
       target = force
@@ -119,7 +129,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
       aggregationOperation: FourwingsAggregationOperation.AvgDegrees,
       startFrame: this.startFrame,
       endFrame: this.endFrame,
-      cellStartOffsets: [31],
+      cellStartOffsets: feature.properties.startOffsets,
     })
 
     if (angle) {
@@ -134,7 +144,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
   }
 
   renderLayers() {
-    const { data, endTime, startTime, tilesCache, zoomOffset } = this.props
+    const { data, endTime, startTime, tilesCache, zoomOffset, availableIntervals } = this.props
 
     if (!data || !tilesCache) {
       return []
@@ -144,6 +154,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
       startTime,
       endTime,
       bufferedStart: tilesCache.bufferedStart,
+      availableIntervals,
     })
 
     this.timeRangeKey = getTimeRangeKey(startFrame, endFrame)
