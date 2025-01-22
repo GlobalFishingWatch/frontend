@@ -1,7 +1,6 @@
 import type { LayerContext, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { PathStyleExtension } from '@deck.gl/extensions'
-import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
+import { SolidPolygonLayer } from '@deck.gl/layers'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
@@ -13,40 +12,22 @@ import {
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '../../../utils'
+import { COLOR_TRANSPARENT, hexToDeckColor } from '../../../utils'
 import type { FourwingsHeatmapLayerProps, FourwingsHeatmapPickingObject } from '../fourwings.types'
-import {
-  aggregateCell,
-  EMPTY_CELL_COLOR,
-  getIntervalFrames,
-} from '../heatmap/fourwings-heatmap.utils'
+import { aggregateCell, getIntervalFrames } from '../heatmap/fourwings-heatmap.utils'
 
 import CurrentsLayer from './CurrentsLayer'
 
-type CurrentsLayerState = {
-  time: number
-}
-
 const RAD_TO_DEG = 180 / Math.PI
-function getUTime() {
-  return (Date.now() % 3000) / 3000
-}
 
 export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsCurrentsLayer'
   timeRangeKey!: string
   startFrame!: number
   endFrame!: number
-  state!: CurrentsLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
-    this.state = {
-      time: getUTime(),
-    }
-    setInterval(() => {
-      this.setState({ time: getUTime() })
-    }, 16)
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }) => {
@@ -116,8 +97,10 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
       feature.aggregatedValues[0] = force
       return target
     }
-    return EMPTY_CELL_COLOR
+    target = 0
+    return target
   }
+
   getDirection = (feature: FourwingsFeature, { target }: { target: number }) => {
     const angles = feature.properties.values[1].map((value, i) =>
       Math.round((90 - RAD_TO_DEG * Math.atan2(value, feature.properties.values[0][i])) % 360)
@@ -140,11 +123,14 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
       feature.aggregatedValues[1] = angle
       return target
     }
-    return EMPTY_CELL_COLOR
+    target = 0
+    return target
   }
 
   renderLayers() {
-    const { data, endTime, startTime, tilesCache, zoomOffset, availableIntervals } = this.props
+    const { data, endTime, startTime, tilesCache, zoomOffset, availableIntervals, sublayers } =
+      this.props
+    const color = hexToDeckColor(sublayers?.[0]?.color || '#ffffff')
 
     if (!data || !tilesCache) {
       return []
@@ -161,16 +147,13 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
     this.startFrame = startFrame
     this.endFrame = endFrame
 
-    // const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)
-
     return [
       new CurrentsLayer(
         this.props,
         this.getSubLayerProps({
           id: `fourwings-tile`,
           data,
-          getFillColor: [255, 255, 255, 255],
-          getLineColor: [0, 0, 0, 255],
+          getFillColor: color,
           getRadius: (d: FourwingsFeature) => {
             return (
               160 *
@@ -182,8 +165,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           positionFormat: 'XY',
           filled: true,
           billboard: false,
-          // antialiasing: true,
-          // time: this.state.time,
+          antialiasing: true,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
           getVelocity: this.getVelocity,
           getDirection: this.getDirection,
@@ -193,11 +175,6 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
               (d.coordinates[1] + d.coordinates[5]) / 2,
             ]
           },
-          // getLineWidth: 1,
-          // updateTriggers: {
-          //   // This tells deck.gl to recalculate fillColor on changes
-          //   getFillColor: [startTime, endTime, colorDomain, colorRanges],
-          // },
         })
       ),
       new SolidPolygonLayer(
@@ -215,29 +192,6 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Background, params),
         })
       ),
-      // ...([
-      //   layerHighlightedFeature
-      //     ? new PathLayer(
-      //         this.props,
-      //         this.getSubLayerProps({
-      //           pickable: false,
-      //           material: false,
-      //           _normalize: false,
-      //           positionFormat: 'XY',
-      //           data: [layerHighlightedFeature],
-      //           id: `fourwings-cell-highlight`,
-      //           widthUnits: 'pixels',
-      //           widthMinPixels: 1,
-      //           getPath: (d: FourwingsFeature) => d.coordinates,
-      //           getColor: COLOR_HIGHLIGHT_LINE,
-      //           getOffset: 0.5,
-      //           getPolygonOffset: (params: any) =>
-      //             getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-      //           extensions: [new PathStyleExtension({ offset: true })],
-      //         })
-      //       )
-      //     : [],
-      // ] as LayersList),
     ] as LayersList
   }
 
