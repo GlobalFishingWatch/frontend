@@ -15,6 +15,7 @@ import {
 } from '@globalfishingwatch/deck-layer-composer'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapControls from 'features/map/controls/MapControls'
 import { useSetMapInstance } from 'features/map/map-context.hooks'
@@ -110,6 +111,7 @@ const MapWrapper = () => {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
 
   const onMapLoad = useCallback(() => {
     dispatch(setMapLoaded(true))
@@ -125,7 +127,12 @@ const MapWrapper = () => {
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
   return (
-    <div id={MAP_CONTAINER_ID} className={styles.container} onMouseLeave={onMouseLeave}>
+    <div
+      id={MAP_CONTAINER_ID}
+      className={styles.container}
+      onMouseLeave={onMouseLeave}
+      style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+    >
       <DeckGL
         id={MAP_CANVAS_ID}
         ref={deckRef}
