@@ -1,14 +1,11 @@
-import { Fragment,useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import cx from 'classnames'
-import dynamic from 'next/dynamic'
 import MemoryStatsComponent from 'next-react-memory-stats'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 
 import menuBgImage from 'assets/images/menubg.jpg'
@@ -17,13 +14,11 @@ import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import Footer from 'features/footer/Footer'
 import { t } from 'features/i18n/i18n'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import AppModals from 'features/modals/Modals'
 import { selectReportAreaBounds } from 'features/reports/areas/area-reports.config.selectors'
-import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
 import Sidebar from 'features/sidebar/Sidebar'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchUserThunk } from 'features/user/user.slice'
@@ -31,9 +26,7 @@ import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
 import {
   isWorkspacePasswordProtected,
   selectCurrentWorkspaceId,
-  selectIsWorkspaceMapReady,
   selectWorkspaceCustomStatus,
-  selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
@@ -57,7 +50,6 @@ import {
   selectIsAnySearchLocation,
   selectIsAnyVesselLocation,
   selectIsMapDrawing,
-  selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
   selectIsVesselLocation,
   selectIsWorkspaceLocation,
@@ -69,58 +61,14 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
 import { useAppDispatch } from './app.hooks'
+import Main from './Main'
 
 import styles from './App.module.css'
-
-const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
-const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 declare global {
   interface Window {
     gtag: any
   }
-}
-
-const Main = () => {
-  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const isPortReportLocation = useSelector(selectIsPortReportLocation)
-  const locationType = useSelector(selectLocationType)
-  const reportLocation = useSelector(selectIsAnyAreaReportLocation)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
-  const isSmallScreen = useSmallScreen()
-
-  const isRouteWithTimebar = locationType === VESSEL
-  const isRouteWithMap = locationType !== SEARCH
-  const isWorkspacesRouteWithTimebar =
-    isWorkspaceLocation ||
-    locationType === WORKSPACE_VESSEL ||
-    isPortReportLocation ||
-    (isVesselGroupReportLocation && !isTimeComparisonReport) ||
-    (reportLocation && !isTimeComparisonReport)
-  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
-  const showTimebar =
-    isRouteWithTimebar ||
-    (isWorkspacesRouteWithTimebar && workspaceStatus === AsyncReducerStatus.Finished)
-
-  return (
-    <Fragment>
-      {isRouteWithMap && (
-        <div
-          className={cx(styles.mapContainer, {
-            [styles.withTimebar]: showTimebar && isWorkspaceMapReady,
-            [styles.withSmallScreenSwitch]: isSmallScreen,
-            [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
-          })}
-        >
-          {isWorkspaceMapReady && <Map />}
-        </div>
-      )}
-      {showTimebar && isWorkspaceMapReady && <Timebar />}
-      <Footer />
-    </Fragment>
-  )
 }
 
 const setMobileSafeVH = () => {
