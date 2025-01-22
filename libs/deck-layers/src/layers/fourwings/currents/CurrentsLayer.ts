@@ -13,30 +13,29 @@ export type CurrentsLayerProps<DataT = unknown> = _CurrentsLayerProps<DataT> & L
 
 const defaultProps: DefaultProps<CurrentsLayerProps> = {
   data: { type: 'data', value: [] },
-  time: { type: 'number', value: 0 },
   getVelocity: { type: 'accessor', value: (d: any) => d.velocity || 0 },
   getDirection: { type: 'accessor', value: (d: any) => d.direction || 0 },
 }
 
-/** Render circles at given coordinates. */
 export default class CurrentsLayer<
   DataT = unknown,
   ExtraPropsT extends object = object,
 > extends ScatterplotLayer<ExtraPropsT & Required<_CurrentsLayerProps<DataT>>> {
   static defaultProps = defaultProps
-  static layerName: string = 'Layer'
+  static layerName: string = 'CurrentsLayer'
 
   protected _getModel() {
-    // Positions for a square
-    const positions = [-0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5]
+    // Define the vertices of a single triangle
+    const positions = new Float32Array([-0.5, -0.5, 0.5, -0.5, 0.0, 0.5])
+
     return new Model(this.context.device, {
       ...this.getShaders(),
       id: this.props.id,
       bufferLayout: this.getAttributeManager()!.getBufferLayouts(),
       geometry: new Geometry({
-        topology: 'triangle-strip', // Using triangle-strip to create a square
+        topology: 'triangle-list',
         attributes: {
-          positions: { size: 2, value: new Float32Array(positions) }, // Size remains 2 for x, y coordinates
+          positions: { size: 2, value: positions },
         },
       }),
       isInstanced: true,
@@ -55,8 +54,6 @@ export default class CurrentsLayer<
             instanceDirections: {},
           },
         },
-      })
-      attributeManager.addInstanced({
         velocity: {
           size: 1,
           accessor: 'getVelocity',
@@ -86,10 +83,7 @@ export default class CurrentsLayer<
           }
         `,
         'vs:DECKGL_FILTER_SIZE': `
-          float widthFactor = mix(0.3, 0.5, instanceVelocity);
-          float heightFactor = mix(0.5, 1.0, instanceVelocity);
-          size.x *= widthFactor;
-          size.y *= heightFactor;
+          size.xy *= mix(0.5, 1.0, instanceVelocity);
           size.xy = rotate_by_angle(size.xy, instanceDirections);
         `,
         'vs:#main-end': `
@@ -99,14 +93,6 @@ export default class CurrentsLayer<
           in float vVelocity;
         `,
         'fs:DECKGL_FILTER_COLOR': `
-          vec2 uv = abs(geometry.uv);
-          if (geometry.uv.y > 0.0 && uv.x + uv.y >= 0.5) {
-            if (uv.x + uv.y < 0.53) {
-              color.a = smoothstep(1.0, 0.0, uv.x + uv.y);
-            } else {
-             color.a = 0.0;
-            }
-          }
           float minOpacity = 0.2;
           float maxOpacity = 1.5;
           float speedFactor = mix(minOpacity, maxOpacity, vVelocity);
