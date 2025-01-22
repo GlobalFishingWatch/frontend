@@ -91,7 +91,7 @@ export const getVesselIdentityTooltipSummary = (
           {info}
           <br />
           {selfReportedInfo.map((s, index) => (
-            <Fragment key={s.id}>
+            <Fragment key={s.id || index}>
               <GFWOnly type="only-icon" /> {s.id}
               {index < selfReportedInfo.length - 1 && <br />}
             </Fragment>

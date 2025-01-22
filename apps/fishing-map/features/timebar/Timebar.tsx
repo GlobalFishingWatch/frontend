@@ -1,4 +1,4 @@
-import { Fragment, memo, useCallback, useEffect,useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
@@ -28,11 +28,12 @@ import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
-import { useMapViewState,useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
@@ -61,7 +62,7 @@ import {
   selectAvailableStart,
   selectTimebarSelectedVisualizationMode,
 } from './timebar.selectors'
-import { selectHighlightedTime,setHighlightedTime } from './timebar.slice'
+import { selectHighlightedTime, setHighlightedTime } from './timebar.slice'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import TimebarSettings from './TimebarSettings'
 
@@ -174,6 +175,7 @@ const TimebarWrapper = () => {
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
@@ -397,6 +399,7 @@ const TimebarWrapper = () => {
       onMouseUp={onMouseUp}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
     >
       <Timebar
         disablePlayback={vesselGroupsFiltering}
