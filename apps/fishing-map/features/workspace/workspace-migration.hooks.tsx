@@ -30,6 +30,9 @@ export const useMigrateWorkspace = () => {
   const deprecatedDataviewInstances = useSelector(selectDeprecatedDataviewInstances)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const workspace = useSelector(selectWorkspaceWithCurrentState)
+  // const vesselDatasetId = useSelector(selectVesselDatasetId)
+  // const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
+  // const { dispatchQueryParams } = useLocationConnect()
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -91,6 +94,12 @@ export const useMigrateWorkspace = () => {
       if (dataviewInstancesToMigrate.length) {
         upsertDataviewInstance(dataviewInstancesToMigrate)
       }
+      // TODO update the vesselDatasetId in the url too
+      // if (isAnyVesselLocation && deprecatedDatasets[vesselDatasetId]) {
+      //   setTimeout(() => {
+      //     dispatchQueryParams({ vesselDatasetId: deprecatedDatasets[vesselDatasetId] })
+      //   }, 100)
+      // }
       const migratedWorkspace = {
         ...workspace,
         // This is needed to get the latest workspace state without waiting to resolve dataviewInstances
@@ -175,6 +184,7 @@ export const useMigrateWorkspaceToast = () => {
     if (workspace && isWorkspaceOwner) {
       await dispatch(updatedCurrentWorkspaceThunk(workspace))
     }
+    // TODO update report is reportOwner too
     closeToast()
   }
 
