@@ -1,5 +1,7 @@
 import type { BBox } from 'geojson'
 
+import type { TrackInterface } from '../features/vessels/vessels.slice'
+
 export function typedKeys<T>(o: T): (keyof T)[] {
   // type cast should be safe because that's what really Object.keys() does
   return Object.keys(o as any) as (keyof T)[]
@@ -32,4 +34,26 @@ export const findNextTimestamp = (timestamps: number[], timestamp: number): numb
   }
 
   return null
+}
+
+export const findPreviousPosition = (
+  timestamps: number[],
+  positions: TrackInterface | null,
+  startCoordinate: number | null
+) => {
+  if (!startCoordinate) return null
+  const index = timestamps.indexOf(startCoordinate)
+  if (index === -1) return null
+  return positions?.data?.[0][index]
+}
+
+export const findNextPosition = (
+  timestamps: number[],
+  positions: TrackInterface | null,
+  endCoordinate: number | null
+) => {
+  if (!endCoordinate) return null
+  const index = timestamps.indexOf(endCoordinate)
+  if (index === -1) return null
+  return positions?.data?.[0][index + 1]
 }

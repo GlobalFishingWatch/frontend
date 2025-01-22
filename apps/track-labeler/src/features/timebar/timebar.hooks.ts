@@ -13,7 +13,13 @@ import {
 } from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
 import type { CoordinatePosition } from '../../types'
-import { findNextTimestamp, findPreviousTimestamp } from '../../utils/shared'
+import {
+  findNextPosition,
+  findNextTimestamp,
+  findPreviousPosition,
+  findPreviousTimestamp,
+} from '../../utils/shared'
+import { getVesselTrackData } from '../tracks/tracks.selectors'
 
 export const useTimerangeConnect = () => {
   const dispatch = useAppDispatch()
@@ -84,6 +90,7 @@ export const useTimebarModeConnect = () => {
 export const useSegmentsLabeledConnect = () => {
   const dispatch = useAppDispatch()
   const timestamps = useSelector(selectTimestamps)
+  const positions = useSelector(getVesselTrackData)
   // Add internal state to track segment being created
   const [pendingSegment, setPendingSegment] = useState<{
     firstClick: {
@@ -98,7 +105,19 @@ export const useSegmentsLabeledConnect = () => {
     timestamp2: number,
     position2: CoordinatePosition
   ): SelectedTrackType => {
-    // Ensure the segment is always ordered by timestamp
+    // If both timestamps are the same, create a single-point segment
+    if (timestamp1 === timestamp2) {
+      return {
+        start: timestamp1,
+        startLatitude: position1.latitude,
+        startLongitude: position1.longitude,
+        end: timestamp1,
+        endLatitude: position1.latitude,
+        endLongitude: position1.longitude,
+      }
+    }
+
+    // Otherwise handle normal case where timestamps differ
     if (timestamp1 < timestamp2) {
       return {
         start: timestamp1,
@@ -135,14 +154,14 @@ export const useSegmentsLabeledConnect = () => {
         {
           ...segment,
           end: findPreviousTimestamp(timestamps, newSegment.start),
-          endLatitude: newSegment.startLatitude,
-          endLongitude: newSegment.startLongitude,
+          endLatitude: findPreviousPosition(timestamps, positions, newSegment.start)?.latitude,
+          endLongitude: findPreviousPosition(timestamps, positions, newSegment.start)?.longitude,
         },
         {
           ...segment,
           start: findNextTimestamp(timestamps, newSegment.end),
-          startLatitude: newSegment.endLatitude,
-          startLongitude: newSegment.endLongitude,
+          startLatitude: findNextPosition(timestamps, positions, newSegment.end)?.latitude,
+          startLongitude: findNextPosition(timestamps, positions, newSegment.end)?.longitude,
         },
       ]
     }
@@ -198,7 +217,6 @@ export const useSegmentsLabeledConnect = () => {
       return
     }
 
-    // If we have a first click, we can create a complete segment
     const newSegment = createNewSegment(
       pendingSegment.firstClick.timestamp,
       pendingSegment.firstClick.position,
