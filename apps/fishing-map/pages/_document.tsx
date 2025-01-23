@@ -189,7 +189,8 @@ class MyDocument extends Document {
           <meta name="msapplication-config" content="icons/browserconfig.xml" />
           <link rel="canonical" href="https://globalfishingwatch.org/map" />
 
-          {(process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'preview') && (
+          {(process.env.NODE_ENV === 'development' ||
+            process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development') && (
             // eslint-disable-next-line @next/next/no-sync-scripts
             <script
               data-recording-token="wx44qRL21nnWDzNqbbQdBNgKJjhz3n174qxAxYMv"

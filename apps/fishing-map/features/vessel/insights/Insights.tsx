@@ -18,7 +18,7 @@ import { INSIGHTS_FISHING, INSIGHTS_NON_FISHING, MIN_INSIGHTS_YEAR } from './ins
 import InsightWrapper from './InsightWrapper'
 
 import styles from './Insights.module.css'
-
+// TODO stop requesting data when hasDeprecatedDatasets
 const Insights = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
