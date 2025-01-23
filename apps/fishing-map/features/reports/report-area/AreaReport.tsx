@@ -71,7 +71,8 @@ export default function Report() {
         (d) =>
           d.config?.visible === true &&
           (d.config?.type === DataviewType.HeatmapAnimated ||
-            d.config?.type === DataviewType.HeatmapStatic)
+            d.config?.type === DataviewType.HeatmapStatic ||
+            d.config?.type === DataviewType.Currents)
       ),
     [dataviews]
   )

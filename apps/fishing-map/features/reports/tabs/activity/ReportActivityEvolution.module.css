@@ -36,3 +36,21 @@
 .graph :global(.recharts-tooltip-cursor) {
   stroke: var(--color-secondary-blue);
 }
+
+.line {
+  stroke: var(--color-terthiary-blue);
+}
+
+.curentsArc {
+  stroke: var(--color-white);
+  stroke-width: 0.5;
+}
+
+.curentsArc:hover {
+  filter: brightness(90%);
+}
+
+.labels {
+  font: var(--font-S);
+  fill: var(--color-secondary-blue);
+}

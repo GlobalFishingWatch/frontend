@@ -15,9 +15,11 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
+import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
+  useReportFilteredFeatures,
   useReportFilteredTimeSeries,
   useTimeseriesStats,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
@@ -31,6 +33,7 @@ function ReportEnvironment() {
   const timerange = useSelector(selectTimeRange)
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const layersFilteredFeatures = useReportFilteredFeatures()
   const timeseriesStats = useTimeseriesStats()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
   const allAvailableIntervals = getAvailableIntervalsInDataviews(environmentalDataviews)
@@ -42,6 +45,7 @@ function ReportEnvironment() {
     <Fragment>
       {environmentalDataviews.map((dataview, index) => {
         const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
+        const isCurrents = dataview.config?.type === DataviewType.Currents
         const { min, mean, max } = timeseriesStats[dataview.id] || {}
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
@@ -54,7 +58,7 @@ function ReportEnvironment() {
                 <span>{upperFirst(t('common.average', 'Average'))} </span>
               )}
               <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-              {isDynamic && (
+              {(isDynamic || isCurrents) && (
                 <Fragment>
                   {t('common.between', 'betweeen')}{' '}
                   <strong>{formatI18nDate(timerange.start)}</strong> {t('common.and', 'and')}{' '}
@@ -73,9 +77,19 @@ function ReportEnvironment() {
                 />
               )
             ) : null}
+            {isCurrents ? (
+              isLoading || !layersFilteredFeatures?.[index] ? (
+                <ReportActivityPlaceholder showHeader={false} />
+              ) : (
+                <ReportCurrentsGraph
+                  color={dataview.config?.color}
+                  data={layersFilteredFeatures?.[index]}
+                />
+              )
+            ) : null}
             {!isLoading && min && mean && max && (
-              <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
-                {isDynamic
+              <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic || isCurrents })}>
+                {isDynamic || isCurrents
                   ? t('analysis.statsDisclaimerDynamic', {
                       defaultValue:
                         'During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.',
