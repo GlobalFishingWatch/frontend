@@ -6,6 +6,8 @@ image-labeler:
   - apps/image-labeler/**/*
 port-labeler:
   - apps/port-labeler/**/*
+track-labeler:
+  - apps/track-labeler/**/*
 user-groups-admin:
   - apps/user-groups-admin/**/*
 vessel-history:
