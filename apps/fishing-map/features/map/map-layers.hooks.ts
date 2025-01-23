@@ -26,7 +26,10 @@ import {
   selectEnvironmentVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
-import { selectDataviewInstancesResolvedVisible , selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectDataviewInstancesResolvedVisible,
+  selectTrackDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectActivityMergedDataviewId,
   selectDetectionsMergedDataviewId,
@@ -37,7 +40,7 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/areas/area-reports.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectHighlightedEvents,selectHighlightedTime } from 'features/timebar/timebar.slice'
+import { selectHighlightedEvents, selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { useVesselTracksLayers } from 'features/timebar/timebar-vessel.hooks'
 import {
   selectWorkspaceStatus,
@@ -68,8 +71,8 @@ export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
     dataview.category === DataviewCategory.Environment
       ? dataview.id
       : dataview.category === DataviewCategory.Detections
-      ? detectionsMergedDataviewId
-      : activityMergedDataviewId
+        ? detectionsMergedDataviewId
+        : activityMergedDataviewId
   return dataviewId
 }
 
@@ -80,37 +83,35 @@ export const useTimebarTracksGraphExtent = () => {
   const areAllVesselsLoaded = vessels.every((vessel) => vessel.loaded)
   const vesselsHash = vessels.map((v) => v.id).join()
 
-  return useMemo(() => {
-    if (vesselsTimebarGraph === 'none' || !vessels?.length || !areAllVesselsLoaded) {
-      return
-    }
-    const vesselExtents = vessels.flatMap((v) =>
-      (v.instance as VesselLayer).getVesselTrackGraphExtent(vesselsTimebarGraph)
-    )
-    if (!vesselExtents.length) {
-      return
-    }
-
-    return getVesselGraphExtentClamped(
-      extent(vesselExtents),
-      vesselsTimebarGraph
-    ) as VesselTrackGraphExtent
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areAllVesselsLoaded, vesselsHash, vesselsTimebarGraph])
+  if (vesselsTimebarGraph === 'none' || !vessels?.length) {
+    return
+  }
+  const isLoaded = vessels.every((vessel) => vessel.instance.isLoaded)
+  if (!isLoaded) {
+    return
+  }
+  const extents = getVesselGraphExtentClamped(
+    extent(
+      vessels.flatMap((v) =>
+        (v.instance as VesselLayer).getVesselTrackGraphExtent(vesselsTimebarGraph)
+      )
+    ),
+    vesselsTimebarGraph
+  )
+  return extents as VesselTrackGraphExtent
 }
 
 export const useTimebarTracksGraphSteps = () => {
   const extent = useTimebarTracksGraphExtent()
+  console.log('extent:', extent)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
-  return useMemo(() => {
-    if (
-      !extent?.length ||
-      (vesselsTimebarGraph !== 'speed' && vesselsTimebarGraph !== 'elevation')
-    ) {
-      return []
-    }
-    return generateVesselGraphSteps(extent, vesselsTimebarGraph)
-  }, [extent, vesselsTimebarGraph])
+  if (!extent?.length || (vesselsTimebarGraph !== 'speed' && vesselsTimebarGraph !== 'elevation')) {
+    console.log('entra aquí')
+
+    return []
+  }
+  console.log('sigue')
+  return generateVesselGraphSteps(extent, vesselsTimebarGraph)
 }
 
 export const useGlobalConfigConnect = () => {
