@@ -261,4 +261,39 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
     const layer = this.getSubLayers()[0] as TileLayer
     return layer
   }
+
+  getFourwingsLayers() {
+    return this.props.sublayers
+  }
+
+  getTilesData({ aggregated } = {} as { aggregated?: boolean }) {
+    const layer = this.getLayerInstance()
+    if (layer) {
+      const resolution = getResolutionByVisualizationMode(this.props.visualizationMode)
+      const offset = getZoomOffsetByResolution(resolution!, this.context.viewport.zoom)
+      const roudedZoom = Math.round(this.context.viewport.zoom)
+      return layer
+        .getSubLayers()
+        .map((l: any) => {
+          if (!l.props.tile.isVisible) {
+            return []
+          }
+          if (l.props.tile.zoom === l.props.maxZoom) {
+            return l.getData({ aggregated })
+          }
+          return l.props.tile.zoom === roudedZoom + offset ? l.getData({ aggregated }) : []
+        })
+        .filter((t) => t.length > 0) as FourwingsFeature[][]
+    }
+    return [[]] as FourwingsFeature[][]
+  }
+
+  getData({ aggregated } = {} as { aggregated?: boolean }) {
+    return this.getTilesData({ aggregated }).flat()
+  }
+
+  getChunk = () => {
+    const { startTime, endTime, availableIntervals } = this.props
+    return getFourwingsChunk(startTime, endTime, availableIntervals)
+  }
 }

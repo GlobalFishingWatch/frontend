@@ -115,7 +115,7 @@ export function useTimeseriesStats() {
   return useAtomValue(reportStateAtom)?.stats
 }
 
-const useReportInstances = () => {
+export const useReportInstances = () => {
   const currentCategory = useSelector(selectReportCategory)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   let ids = ['']
@@ -423,4 +423,8 @@ export const useReportFilteredTimeSeries = () => {
     }
     return timeseries
   }, [timeseries, timebarStart, timebarEnd, showTimeComparison])
+}
+
+export const useReportFilteredFeatures = () => {
+  return useAtomValue(reportStateAtom)?.featuresFiltered
 }
