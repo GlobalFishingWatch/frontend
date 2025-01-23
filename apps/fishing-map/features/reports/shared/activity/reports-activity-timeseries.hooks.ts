@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { DateTime } from 'luxon'
 import memoizeOne from 'memoize-one'
-import { max,mean, min } from 'simple-statistics'
+import { max, mean, min } from 'simple-statistics'
 
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
@@ -87,6 +87,7 @@ export type ReportGraphStats = Record<
 
 const mapTimeseriesAtom = atom([] as ReportGraphProps[] | undefined)
 const mapTimeseriesStatsAtom = atom({} as ReportGraphStats)
+const mapFeaturesFilteredAtom = atom([] as FilteredPolygons[][])
 
 if (process.env.NODE_ENV !== 'production') {
   mapTimeseriesAtom.debugLabel = 'mapTimeseries'
@@ -104,7 +105,11 @@ export function useTimeseriesStats() {
   return useAtomValue(mapTimeseriesStatsAtom)
 }
 
-const useReportInstances = () => {
+export function useSetFeaturesFiltered() {
+  return useSetAtom(mapFeaturesFilteredAtom)
+}
+
+export const useReportInstances = () => {
   const currentCategory = useSelector(selectReportCategory)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   let ids = ['']
@@ -128,7 +133,7 @@ export const useReportFeaturesLoading = () => {
 const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const [timeseries, setTimeseries] = useAtom(mapTimeseriesAtom)
   const setTimeseriesStats = useSetAtom(mapTimeseriesStatsAtom)
-  const [featuresFiltered, setFeaturesFiltered] = useState<FilteredPolygons[][]>([])
+  const [featuresFiltered, setFeaturesFiltered] = useAtom(mapFeaturesFilteredAtom)
   const featuresFilteredDirtyRef = useRef<boolean>(true)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
@@ -222,6 +227,8 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
           const props = instance.props as FourwingsLayerProps
           const chunk = instance.getChunk()
           const sublayers = instance.getFourwingsLayers()
+          console.log(instance, sublayers)
+
           const params: FeaturesToTimeseriesParams = {
             staticHeatmap: props.static,
             interval: chunk.interval,
@@ -368,4 +375,9 @@ export const useReportFilteredTimeSeries = () => {
     }
   }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
   return layersTimeseriesFiltered
+}
+
+export const useReportFilteredFeatures = () => {
+  const features = useAtomValue(mapFeaturesFilteredAtom)
+  return features
 }
