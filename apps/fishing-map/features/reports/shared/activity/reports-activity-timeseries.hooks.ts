@@ -227,8 +227,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
           const props = instance.props as FourwingsLayerProps
           const chunk = instance.getChunk()
           const sublayers = instance.getFourwingsLayers()
-          console.log(instance, sublayers)
-
           const params: FeaturesToTimeseriesParams = {
             staticHeatmap: props.static,
             interval: chunk.interval,

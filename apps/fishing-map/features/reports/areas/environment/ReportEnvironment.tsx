@@ -81,10 +81,18 @@ function ReportEnvironment() {
               isLoading || !layersFilteredFeatures?.[index] ? (
                 <ReportActivityPlaceholder showHeader={false} />
               ) : (
-                <ReportCurrentsGraph
-                  color={dataview.config?.color}
-                  data={layersFilteredFeatures?.[index]}
-                />
+                <Fragment>
+                  <ReportCurrentsGraph
+                    color={dataview.config?.color}
+                    data={layersFilteredFeatures?.[index]}
+                  />
+                  {/* TODO: add this graph when we calculate the currents timeseries properly */}
+                  {/* <ReportActivityEvolution
+                    start={timerange.start}
+                    end={timerange.end}
+                    data={layersTimeseriesFiltered?.[index]}
+                  /> */}
+                </Fragment>
               )
             ) : null}
             {!isLoading && min && mean && max && (
