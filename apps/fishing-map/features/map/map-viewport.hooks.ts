@@ -9,7 +9,7 @@ import type { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
+import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { getUrlViewstateNumericParam } from 'utils/url'
 
@@ -51,7 +51,7 @@ export function useSetMapCoordinates() {
 
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useAtomValue(viewStateAtom)
-  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
+  const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
   const dispatch = useAppDispatch()
 
   const updateUrlViewportDebounced = useCallback(

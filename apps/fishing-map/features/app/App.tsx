@@ -31,7 +31,7 @@ import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
 import {
   isWorkspacePasswordProtected,
   selectCurrentWorkspaceId,
-  selectIsWorkspaceMapReady,
+  selectIsWorkspaceReady,
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
@@ -99,7 +99,7 @@ const Main = () => {
     isPortReportLocation ||
     (isVesselGroupReportLocation && !isTimeComparisonReport) ||
     (reportLocation && !isTimeComparisonReport)
-  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
+  const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
   const showTimebar =
     isRouteWithTimebar ||
     (isWorkspacesRouteWithTimebar && workspaceStatus === AsyncReducerStatus.Finished)
@@ -220,6 +220,7 @@ function App() {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

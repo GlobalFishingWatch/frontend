@@ -15,6 +15,7 @@ import {
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
+import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnyVesselLocation,
@@ -46,9 +47,9 @@ export const selectDeprecatedDataviewInstances = createSelector(
 )
 
 export const selectHasDeprecatedDataviewInstances = createSelector(
-  [selectDeprecatedDataviewInstances],
-  (deprecatedDataviews) => {
-    return deprecatedDataviews && deprecatedDataviews.length > 0
+  [selectIsWorkspaceReady, selectDeprecatedDataviewInstances],
+  (isWorkspaceReady, deprecatedDataviews) => {
+    return isWorkspaceReady && deprecatedDataviews && deprecatedDataviews.length > 0
   }
 )
 
