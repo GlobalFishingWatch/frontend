@@ -11,14 +11,17 @@ import { Button } from '@globalfishingwatch/ui-components'
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectCurrentReport } from 'features/app/selectors/app.reports.selector'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import {
   selectDeprecatedDataviewInstances,
   selectHasDeprecatedDataviewInstances,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { updateReportThunk } from 'features/reports/areas/area-reports.slice'
+import { getWorkspaceReport } from 'features/reports/areas/area-reports.utils'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation, selectUrlDataviewInstances } from 'routes/routes.selectors'
 
 import { useDataviewInstancesConnect } from './workspace.hook'
 import { selectIsWorkspaceOwner } from './workspace.selectors'
@@ -157,6 +160,8 @@ export const useMigrateWorkspaceToast = () => {
   const dispatch = useAppDispatch()
   const hasDeprecatedDataviews = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const report = useSelector(selectCurrentReport)
+  const isAnyAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const migrateWorkspace = useMigrateWorkspace()
   const toastId = useRef<any>(undefined)
 
@@ -182,9 +187,13 @@ export const useMigrateWorkspaceToast = () => {
     })
     const { workspace } = await migrateWorkspace()
     if (workspace && isWorkspaceOwner) {
-      await dispatch(updatedCurrentWorkspaceThunk(workspace))
+      if (isAnyAreaReportLocation) {
+        const workspaceReport = getWorkspaceReport(workspace)
+        await dispatch(updateReportThunk({ ...report, workspace: workspaceReport }))
+      } else {
+        await dispatch(updatedCurrentWorkspaceThunk(workspace))
+      }
     }
-    // TODO update report is reportOwner too
     closeToast()
   }
 
