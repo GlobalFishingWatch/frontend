@@ -18,6 +18,7 @@ import {
   selectDeprecatedDataviewInstances,
   selectHasDeprecatedDataviewInstances,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectIsReportOwner } from 'features/reports/areas/area-reports.selectors'
 import { updateReportThunk } from 'features/reports/areas/area-reports.slice'
 import { getWorkspaceReport } from 'features/reports/areas/area-reports.utils'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
@@ -161,6 +162,7 @@ export const useMigrateWorkspaceToast = () => {
   const hasDeprecatedDataviews = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const report = useSelector(selectCurrentReport)
+  const isReportOwner = useSelector(selectIsReportOwner)
   const isAnyAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const migrateWorkspace = useMigrateWorkspace()
   const toastId = useRef<any>(undefined)
@@ -186,13 +188,14 @@ export const useMigrateWorkspaceToast = () => {
       render: <ToastContent loading={true} />,
     })
     const { workspace } = await migrateWorkspace()
-    if (workspace && isWorkspaceOwner) {
-      if (isAnyAreaReportLocation) {
+
+    if (isAnyAreaReportLocation) {
+      if (workspace && report && isReportOwner) {
         const workspaceReport = getWorkspaceReport(workspace)
         await dispatch(updateReportThunk({ ...report, workspace: workspaceReport }))
-      } else {
-        await dispatch(updatedCurrentWorkspaceThunk(workspace))
       }
+    } else if (workspace && isWorkspaceOwner) {
+      await dispatch(updatedCurrentWorkspaceThunk(workspace))
     }
     closeToast()
   }
