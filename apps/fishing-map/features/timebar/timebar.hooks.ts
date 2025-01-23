@@ -26,7 +26,7 @@ import {
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
-import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
+import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
@@ -83,7 +83,7 @@ export const useSetTimerange = () => {
   const setAtomTimerange = useSetAtom(timerangeState)
   const dispatch = useAppDispatch()
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
+  const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
 
   const updateUrlTimerangeDebounced = useCallback(
     debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
