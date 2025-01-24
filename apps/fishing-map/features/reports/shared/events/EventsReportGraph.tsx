@@ -150,25 +150,25 @@ export default function EventsReportGraph({
   }
 
   const getAggregatedData = useCallback(async () => timeseries, [timeseries])
-  const getIndividualData = useCallback(async () => {
-    const params = {
-      ...getEventsStatsQuery({
-        start,
-        end,
-        filters: filtersMemo,
-        dataset: datasetId,
-      }),
-      ...(includesMemo && { includes: includesMemo }),
-      limit: 1000,
-      offset: 0,
-    }
-    const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
-    const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
+  // const getIndividualData = useCallback(async () => {
+  //   const params = {
+  //     ...getEventsStatsQuery({
+  //       start,
+  //       end,
+  //       filters: filtersMemo,
+  //       dataset: datasetId,
+  //     }),
+  //     ...(includesMemo && { includes: includesMemo }),
+  //     limit: 1000,
+  //     offset: 0,
+  //   }
+  //   const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
+  //   const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
 
-    return Object.entries(groupedData)
-      .map(([date, events]) => ({ date, values: events }))
-      .sort((a, b) => a.date.localeCompare(b.date))
-  }, [start, end, filtersMemo, includesMemo, datasetId, interval])
+  //   return Object.entries(groupedData)
+  //     .map(([date, events]) => ({ date, values: events }))
+  //     .sort((a, b) => a.date.localeCompare(b.date))
+  // }, [start, end, filtersMemo, includesMemo, datasetId, interval])
 
   if (!timeseries.length) {
     return null
@@ -181,7 +181,7 @@ export default function EventsReportGraph({
         end={end}
         timeseriesInterval={interval}
         getAggregatedData={getAggregatedData}
-        getIndividualData={getIndividualData}
+        // getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}
         aggregatedTooltip={<AggregatedGraphTooltip />}
         individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
