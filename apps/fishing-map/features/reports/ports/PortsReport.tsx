@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -14,6 +14,7 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import ReportVesselsFilter from 'features/reports/shared/activity/vessels/ReportVesselsFilter'
 import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import EventsReportVesselPropertySelector from 'features/reports/shared/events/EventsReportVesselPropertySelector'
@@ -27,6 +28,7 @@ import { selectReportPortId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
+import { useFitAreaInViewport } from '../areas/area-reports.hooks'
 import { getDateRangeHash } from '../shared/activity/reports-activity.slice'
 import EventsReportVesselsGraph from '../vessel-groups/vessels/VesselGroupReportVesselsGraph'
 
@@ -37,7 +39,7 @@ import {
   selectPortReportVesselsProperty,
   selectPortsReportDatasetId,
 } from './ports-report.config.selectors'
-import { useFetchPortsReport } from './ports-report.hooks'
+import { useFetchPortsReport, usePortsReportAreaFootprintBounds } from './ports-report.hooks'
 import {
   selectPortReportsDataview,
   selectPortReportVesselsGrouped,
@@ -57,6 +59,7 @@ const MAX_VESSELS_REPORT = 500
 
 function PortsReport() {
   useMigrateWorkspaceToast()
+  const { loaded, bbox } = usePortsReportAreaFootprintBounds()
   const dispatchFetchReport = useFetchPortsReport()
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
