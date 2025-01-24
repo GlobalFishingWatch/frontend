@@ -224,7 +224,8 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
         {isGFWUser && event?.port && !isPortReportLocation && (
           <PortsReportLink port={event.port}>
             <Button className={styles.portCTA}>
-              {t('portsReport.seePortReport', 'See all entry events to this port')}
+              {t('portsReport.seePortReport', 'See all entry events to this port')} (
+              {event.port.name})
             </Button>
           </PortsReportLink>
         )}
