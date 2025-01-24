@@ -193,7 +193,7 @@ class MyDocument extends Document {
             process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development') && (
             // eslint-disable-next-line @next/next/no-sync-scripts
             <script
-              data-recording-token="wx44qRL21nnWDzNqbbQdBNgKJjhz3n174qxAxYMv"
+              data-recording-token="OdtneXMLbdjnMXixIvHVgAKe9T1RQhmfWf5a68Jj"
               data-is-production-environment="false"
               src="https://snippet.meticulous.ai/v1/meticulous.js"
             />
