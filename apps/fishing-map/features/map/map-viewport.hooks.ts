@@ -51,7 +51,7 @@ export function useSetMapCoordinates() {
 
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useAtomValue(viewStateAtom)
-  const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
+  const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
   const dispatch = useAppDispatch()
 
   const updateUrlViewportDebounced = useCallback(
@@ -60,14 +60,14 @@ export const useUpdateViewStateUrlParams = () => {
   )
 
   useEffect(() => {
-    if (isWorkspaceMapReady) {
+    if (isWorkspaceReady) {
       const { longitude, latitude, zoom } = viewState
       updateUrlViewportDebounced({ longitude, latitude, zoom })
     }
     return () => {
       updateUrlViewportDebounced.cancel()
     }
-  }, [viewState, updateUrlViewportDebounced, isWorkspaceMapReady])
+  }, [viewState, updateUrlViewportDebounced, isWorkspaceReady])
 }
 
 export const MAP_CONTAINER_ID = 'map-container'

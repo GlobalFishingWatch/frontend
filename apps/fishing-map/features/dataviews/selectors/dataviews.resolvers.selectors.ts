@@ -23,6 +23,7 @@ import {
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
+import { PORTS_FOOTPRINT_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -56,9 +57,11 @@ import {
 } from 'features/workspace/workspace.selectors'
 import {
   selectIsAnyVesselLocation,
+  selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
   selectIsVesselLocation,
   selectIsWorkspaceLocation,
+  selectReportPortId,
   selectReportVesselGroupId,
   selectUrlDataviewInstances,
   selectUrlDataviewInstancesOrder,
@@ -77,11 +80,13 @@ export const selectDataviewInstancesMerged = createSelector(
     selectUrlDataviewInstances,
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
+    selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectVGRSection,
     selectVGRActivitySubsection,
     selectVGREventsSubsection,
     selectReportVesselGroupId,
+    selectReportPortId,
     selectVesselId,
     selectVesselInfoData,
   ],
@@ -92,11 +97,13 @@ export const selectDataviewInstancesMerged = createSelector(
     urlDataviewInstances = EMPTY_ARRAY,
     isAnyVesselLocation,
     isVesselLocation,
+    isPortReportLocation,
     isVesselGroupReportLocation,
     vGRSection,
     vGRActivitySubsection,
     vGREventsSubsection,
     reportVesselGroupId,
+    reportPortId,
     urlVesselId,
     vessel
   ): UrlDataviewInstance[] | undefined => {
@@ -164,6 +171,19 @@ export const selectDataviewInstancesMerged = createSelector(
           ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, vGREventsSubsection)
         )
       }
+    }
+    if (isPortReportLocation) {
+      const footprintDataviewInstance = {
+        id: `${PORTS_FOOTPRINT_DATAVIEW_SLUG}-${Date.now()}`,
+        dataviewId: PORTS_FOOTPRINT_DATAVIEW_SLUG,
+        config: {
+          visible: true,
+          filters: {
+            gfw_id: [reportPortId],
+          },
+        },
+      }
+      mergedDataviewInstances.push(footprintDataviewInstance)
     }
     return mergedDataviewInstances
   }

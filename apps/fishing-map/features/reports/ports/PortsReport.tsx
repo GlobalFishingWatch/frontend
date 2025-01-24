@@ -38,7 +38,7 @@ import {
   selectPortReportVesselsProperty,
   selectPortsReportDatasetId,
 } from './ports-report.config.selectors'
-import { useFetchPortsReport } from './ports-report.hooks'
+import { useFetchPortsReport, usePortsReportAreaFootprintFitBounds } from './ports-report.hooks'
 import {
   selectPortReportsDataview,
   selectPortReportVesselsGrouped,
@@ -59,6 +59,7 @@ const MAX_VESSELS_REPORT = 500
 
 function PortsReport() {
   useMigrateWorkspaceToast()
+  usePortsReportAreaFootprintFitBounds()
   const dispatchFetchReport = useFetchPortsReport()
   const dispatch = useAppDispatch()
   const { t } = useTranslation()

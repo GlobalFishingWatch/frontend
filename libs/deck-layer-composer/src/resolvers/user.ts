@@ -1,5 +1,5 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { DatasetTypes,DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import {
   findDatasetByType,
   getDatasetConfiguration,
@@ -177,7 +177,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
   }
   return {
     ...baseLayerProps,
-    pickable: !dataset.configuration?.disableInteraction,
+    pickable: !dataset.configuration?.disableInteraction || dataview.config?.pickable,
     layers: [layer],
     highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
     ...(filter && { filter }),

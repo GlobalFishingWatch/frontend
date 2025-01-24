@@ -27,7 +27,11 @@ import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selec
 import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import { useMapViewState,useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import {
+  useMapViewport,
+  useMapViewState,
+  useSetMapCoordinates,
+} from 'features/map/map-viewport.hooks'
 import type { LastReportStorage } from 'features/reports/areas/area-reports.config'
 import {
   ENTIRE_WORLD_REPORT_AREA_BOUNDS,
@@ -48,9 +52,14 @@ import {
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from 'features/reports/shared/activity/reports-activity.slice'
-import { selectIsVesselGroupReportLocation, selectUrlTimeRange } from 'routes/routes.selectors'
+import {
+  selectIsPortReportLocation,
+  selectIsVesselGroupReportLocation,
+  selectUrlTimeRange,
+} from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import { usePortsReportAreaFootprintBounds } from '../ports/ports-report.hooks'
 import { selectVGRActivityDataview } from '../vessel-groups/vessel-group-report.selectors'
 
 export type DateTimeSeries = {
@@ -79,8 +88,9 @@ export const useHighlightReportArea = () => {
 const defaultParams = {} as FitBoundsParams
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
   const map = useDeckMap()
+  const viewport = useMapViewport()
   return useMemo(() => {
-    if (!bounds || !map) return null
+    if (!bounds || !map || !viewport) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
       ...params,
@@ -90,7 +100,7 @@ export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
       longitude: parseFloat(longitude.toFixed(8)),
       zoom: parseFloat(zoom.toFixed(8)),
     }
-  }, [bounds, map, params])
+  }, [bounds, map, params, viewport])
 }
 
 export function useStatsBounds(dataview?: UrlDataviewInstance) {
@@ -136,13 +146,26 @@ export function useVesselGroupBounds(dataviewId?: string) {
 
 export function useReportAreaBounds() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const { loaded, bbox } = useVesselGroupActivityBounds()
-  const area = useSelector(selectReportArea)
-  const areaStatus = useSelector(selectReportAreaStatus)
-  const areaBbox = isVesselGroupReportLocation ? bbox : area?.geometry?.bbox || area?.bounds
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
+  const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
+  const { loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
+  const reportArea = useSelector(selectReportArea)
+  const reportAreaStatus = useSelector(selectReportAreaStatus)
+  if (isVesselGroupReportLocation) {
+    return {
+      loaded: vesselGroupLoaded,
+      bbox: vesselGroupBbox,
+    }
+  }
+  if (isPortReportLocation) {
+    return {
+      loaded: portLoaded,
+      bbox: portBbox,
+    }
+  }
   return {
-    loaded: isVesselGroupReportLocation ? loaded : areaStatus === AsyncReducerStatus.Finished,
-    bbox: areaBbox,
+    loaded: reportAreaStatus === AsyncReducerStatus.Finished,
+    bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
   }
 }
 
@@ -157,10 +180,10 @@ export function useReportAreaInViewport() {
   )
 }
 
-export function useFitAreaInViewport() {
+export function useFitAreaInViewport(params = defaultParams) {
   const setMapCoordinates = useSetMapCoordinates()
   const { bbox } = useReportAreaBounds()
-  const areaCenter = useReportAreaCenter(bbox as Bbox)
+  const areaCenter = useReportAreaCenter(bbox as Bbox, params)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
