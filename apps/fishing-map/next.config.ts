@@ -8,8 +8,7 @@ import type { NextConfig } from 'next'
 //   enabled: true, //process.env.ANALYZE === 'true' || process.env.NODE_ENV === 'development',
 // })
 
-const basePath =
-  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : '')
+const basePath = process.env.NEXT_PUBLIC_URL || '/map'
 
 const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' ||
