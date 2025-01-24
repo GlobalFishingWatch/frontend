@@ -1,10 +1,13 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { Bar, BarChart, LabelList,ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
 
+import {
+  getResponsiveVisualizationItemValue,
+  ResponsiveBarChart,
+} from '@globalfishingwatch/responsive-visualizations'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
 import {
@@ -15,17 +18,20 @@ import {
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
-import { selectReportDataviewsWithPermissions } from 'features/reports/areas/area-reports.selectors'
 import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
 import {
+  REPORT_GRAPH_LABEL_KEY,
   selectReportVesselsGraphDataGrouped,
+  selectReportVesselsGraphDataKeys,
   selectReportVesselsGraphDataOthers,
+  selectReportVesselsGraphIndividualData,
 } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
 import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
+import { ReportBarGraphPlaceholder } from 'features/reports/shared/placeholders/ReportBarGraphPlaceholder'
+import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
+import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getVesselGearTypeLabel } from 'utils/info'
-
-import { ReportBarGraphPlaceholder } from '../../placeholders/ReportBarGraphPlaceholder'
 
 import styles from './ReportVesselsGraph.module.css'
 
@@ -101,7 +107,7 @@ const CustomTick = (props: any) => {
         ? cleanFlagState(
             (
               othersData?.flatMap((d) =>
-                EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)
+                EMPTY_API_VALUES.includes(d.name as string) ? [] : getTickLabel(d.name as string)
               ) || []
             ).join('|')
           )
@@ -115,9 +121,13 @@ const CustomTick = (props: any) => {
 
   const tooltip = isOtherCategory ? (
     <ul>
-      {othersData?.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
-        <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
-      ))}
+      {othersData
+        ?.slice(0, MAX_OTHER_TOOLTIP_ITEMS)
+        .map(({ name, value }) => (
+          <li
+            key={`${name}-${value}`}
+          >{`${getTickLabel(name)}: ${getResponsiveVisualizationItemValue(value)}`}</li>
+        ))}
       {othersData && othersData.length > MAX_OTHER_TOOLTIP_ITEMS && (
         <li>
           + {othersData.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
@@ -165,8 +175,9 @@ const CustomTick = (props: any) => {
 }
 
 export default function ReportVesselsGraph() {
-  const dataviews = useSelector(selectReportDataviewsWithPermissions)
+  const valueKeys = useSelector(selectReportVesselsGraphDataKeys)
   const data = useSelector(selectReportVesselsGraphDataGrouped)
+  const individualData = useSelector(selectReportVesselsGraphIndividualData)
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
   const othersData = useSelector(selectReportVesselsGraphDataOthers)
   const { dispatchQueryParams } = useLocationConnect()
@@ -186,6 +197,7 @@ export default function ReportVesselsGraph() {
         return label
     }
   }
+  // TODO: add this interaction
   const onLabelClick: CategoricalChartFunc = (e) => {
     const { payload } = e.activePayload?.[0] || {}
     if (!payload) return
@@ -195,7 +207,7 @@ export default function ReportVesselsGraph() {
           ? cleanFlagState(
               (
                 othersData?.flatMap((d) =>
-                  EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)
+                  EMPTY_API_VALUES.includes(d.name as string) ? [] : getTickLabel(d.name as string)
                 ) || []
               ).join('|')
             )
@@ -206,56 +218,41 @@ export default function ReportVesselsGraph() {
       })
     }
   }
+
+  // const getIndividualData = useCallback(async () => {
+  //   return individualData
+  // }, [individualData])
+
+  const getAggregatedData = useCallback(async () => {
+    return data as any[]
+  }, [data])
+
+  if (!data) {
+    return (
+      <div className={styles.graph} data-test="activity-report-vessels-graph">
+        <ReportBarGraphPlaceholder animate={false} />
+      </div>
+    )
+  }
+
   return (
     <Fragment>
-      <div className={styles.graph} data-test="report-vessels-graph">
-        {data ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              width={500}
-              height={300}
-              data={data}
-              margin={{
-                top: 15,
-                right: 0,
-                left: 0,
-                bottom: 0,
-              }}
-              onClick={onLabelClick}
-            >
-              {data && (
-                <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
-              )}
-              {dataviews.map((dataview, index) => {
-                return (
-                  <Bar
-                    key={dataview.id}
-                    dataKey={dataview.id}
-                    stackId="a"
-                    fill={dataview.config?.color}
-                  >
-                    {index === dataviews.length - 1 && (
-                      <LabelList
-                        position="top"
-                        valueAccessor={(entry: any) => formatI18nNumber(entry.value[1])}
-                      />
-                    )}
-                  </Bar>
-                )
-              })}
-              <XAxis
-                dataKey="name"
-                interval="preserveStart"
-                tickLine={false}
-                minTickGap={-1000}
-                tick={<CustomTick getTickLabel={getTickLabel} />}
-                tickMargin={0}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <ReportBarGraphPlaceholder animate={false} />
-        )}
+      <div className={styles.graph} data-test="activity-report-vessels-graph">
+        <ResponsiveBarChart
+          // getIndividualData={getIndividualData}
+          getAggregatedData={getAggregatedData}
+          // onAggregatedItemClick={onBarClick}
+          // onIndividualItemClick={onPointClick}
+          aggregatedValueKey={valueKeys}
+          barValueFormatter={(value: any) => {
+            return formatI18nNumber(value).toString()
+          }}
+          barLabel={<CustomTick getTickLabel={getTickLabel} />}
+          labelKey={REPORT_GRAPH_LABEL_KEY}
+          individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+          individualItem={<VesselGraphLink />}
+          aggregatedTooltip={<ReportGraphTooltip type={selectedReportVesselGraph} />}
+        />
       </div>
     </Fragment>
   )

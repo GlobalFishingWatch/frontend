@@ -14,7 +14,9 @@ import {
   useGetReportEventsVesselsQuery,
 } from 'queries/report-events-stats-api'
 
+import type { EventType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
@@ -25,7 +27,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import ReportVesselsFilter from 'features/reports/shared/activity/vessels/ReportVesselsFilter'
-import VGREventsGraph from 'features/reports/shared/events/EventsReportGraph'
+import EventsReportGraph from 'features/reports/shared/events/EventsReportGraph'
 import VGREventsVesselPropertySelector from 'features/reports/shared/events/EventsReportVesselPropertySelector'
 import VGREventsVesselsTable from 'features/reports/shared/events/EventsReportVesselsTable'
 import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
@@ -34,19 +36,24 @@ import {
   selectVGREventsVessels,
   selectVGREventsVesselsFlags,
   selectVGREventsVesselsGrouped,
- selectVGREventsVesselsPaginated,  selectVGREventsVesselsPagination } from 'features/reports/vessel-groups/events/vgr-events.selectors'
+  selectVGREventsVesselsPaginated,
+  selectVGREventsVesselsPagination,
+} from 'features/reports/vessel-groups/events/vgr-events.selectors'
 import VGREventsSubsectionSelector from 'features/reports/vessel-groups/events/VGREventsSubsectionSelector'
 import {
   selectVGREventsVesselFilter,
   selectVGREventsVesselsProperty,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
 import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
-import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import {
+  selectVGREventsVesselsIndividualData,
+  selectVGRVesselDatasetsWithoutEventsRelated,
+} from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import VesselGroupReportVesselsGraph from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsGraph'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 
 import VGREventsVesselsTableFooter from '../../shared/events/EventsReportVesselsTableFooter'
+import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from '../vessel-group-report.dataviews'
 
 import styles from './VGREvents.module.css'
 
@@ -59,6 +66,7 @@ function VGREvents() {
   const vesselsWithEvents = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
   const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
+  const individualData = useSelector(selectVGREventsVesselsIndividualData)
   const vesselsPaginated = useSelector(selectVGREventsVesselsPaginated)
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
@@ -131,9 +139,8 @@ function VGREvents() {
       </Fragment>
     )
   }
-  const subCategoryDataset = eventsDataview?.datasets?.find(
-    (d) => d.type === DatasetTypes.Events
-  )?.subcategory
+  const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const eventType = eventDataset?.subcategory as EventType
   const totalEvents = data.timeseries.reduce((acc, group) => acc + group.value, 0)
   return (
     <Fragment>
@@ -152,11 +159,8 @@ function VGREvents() {
                   flags: vesselFlags?.size,
                   activityQuantity: totalEvents,
                   activityUnit: `${
-                    subCategoryDataset !== undefined
-                      ? t(
-                          `common.eventLabels.${subCategoryDataset.toLowerCase()}`,
-                          lowerCase(subCategoryDataset)
-                        )
+                    eventType !== undefined
+                      ? t(`common.eventLabels.${eventType.toLowerCase()}`, lowerCase(eventType))
                       : ''
                   } ${(t('common.events', 'events') as string).toLowerCase()}`,
                   start: formatI18nDate(start, {
@@ -168,12 +172,27 @@ function VGREvents() {
                 })
               )}
             </h2>
-            <VGREventsGraph
-              color={color}
-              start={start}
-              end={end}
-              timeseries={data.timeseries || []}
-            />
+            {eventDataset?.id && (
+              <EventsReportGraph
+                datasetId={eventDataset?.id}
+                filters={{
+                  vesselGroupId,
+                  ...(eventsDataview && { ...getDataviewFilters(eventsDataview) }),
+                }}
+                includes={[
+                  'id',
+                  'start',
+                  'end',
+                  'vessel',
+                  ...(eventType === 'encounter' ? ['encounter.vessel'] : []),
+                ]}
+                color={color}
+                start={start}
+                end={end}
+                timeseries={data.timeseries || []}
+                eventType={eventType}
+              />
+            )}
           </div>
           <div className={styles.container}>
             <div className={styles.flex}>
@@ -185,6 +204,7 @@ function VGREvents() {
             </div>
             <VesselGroupReportVesselsGraph
               data={vesselGroups as ReportEventsStatsResponseGroups}
+              individualData={individualData}
               color={eventsDataview?.config?.color}
               property={vesselsGroupByProperty}
               filterQueryParam="vGREventsVesselFilter"

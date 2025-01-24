@@ -8,7 +8,10 @@ import {
   selectVGRVesselsSubsection,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import { selectVGRDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
-import { selectVGRVesselsGraphDataGrouped } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import {
+  selectVGRVesselsGraphAggregatedData,
+  selectVGRVesselsGraphIndividualData,
+} from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import type { VGREventsVesselsProperty } from 'features/vessel-groups/vessel-groups.types'
 
 import VesselGroupReportVesselsGraph from './VesselGroupReportVesselsGraph'
@@ -21,7 +24,8 @@ function VesselGroupReportVessels({ loading }: { loading: boolean }) {
   const subsection = useSelector(selectVGRVesselsSubsection)
   const reportDataview = useSelector(selectVGRDataview)
   const filter = useSelector(selectVGRVesselFilter)
-  const data = useSelector(selectVGRVesselsGraphDataGrouped)
+  const data = useSelector(selectVGRVesselsGraphAggregatedData)
+  const individualData = useSelector(selectVGRVesselsGraphIndividualData)
   return (
     <div className={styles.container}>
       <VesselGroupReportVesselsGraphSelector />
@@ -31,6 +35,7 @@ function VesselGroupReportVessels({ loading }: { loading: boolean }) {
         <Fragment>
           <VesselGroupReportVesselsGraph
             data={data}
+            individualData={individualData}
             color={reportDataview?.config?.color}
             property={subsection as VGREventsVesselsProperty}
             filterQueryParam="vGRVesselFilter"

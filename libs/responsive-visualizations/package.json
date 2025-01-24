@@ -1,0 +1,23 @@
+{
+  "name": "@globalfishingwatch/responsive-visualizations",
+  "version": "14.0.9",
+  "description": "Set of react components and hooks to render responsive visualizations",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "scripts": {},
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "dependencies": {
+    "classnames": "2.x",
+    "lodash": "4.x",
+    "luxon": "3.x",
+    "react-dom": "18.x",
+    "react": "18.x",
+    "recharts": "2.x"
+  }
+}

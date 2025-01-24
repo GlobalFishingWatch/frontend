@@ -6,16 +6,20 @@ import type { RootState } from 'reducers'
 import type { StatsIncludes } from '@globalfishingwatch/api-types'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-export type ReportEventsVesselsParams = {
+export type BaseReportEventsVesselsParamsFilters = {
+  portId?: string
+  vesselGroupId?: string
+  encounter_type?: string
+  confidence?: number
+}
+export type BaseReportEventsVesselsParams = {
   start: string
   end: string
+  filters?: BaseReportEventsVesselsParamsFilters
+}
+
+export type ReportEventsVesselsParams = BaseReportEventsVesselsParams & {
   dataset: string
-  filters?: {
-    portId?: string
-    vesselGroupId?: string
-    encounter_type?: string
-    confidence?: number
-  }
 }
 
 export type ReportEventsStatsParams = ReportEventsVesselsParams & {
@@ -44,11 +48,7 @@ export type ReportEventsVesselsResponse = ReportEventsVesselsResponseItem[]
 
 export const EVENTS_TIME_FILTER_MODE = 'START-DATE'
 
-function getBaseStatsQuery({
-  filters,
-  start,
-  end,
-}: ReportEventsVesselsParams | ReportEventsStatsParams) {
+function getBaseStatsQuery({ filters, start, end }: BaseReportEventsVesselsParams) {
   const query = {
     'start-date': start,
     'end-date': end,
@@ -59,6 +59,13 @@ function getBaseStatsQuery({
     ...(filters?.confidence && { confidences: [filters.confidence] }),
   }
   return query
+}
+
+export function getEventsStatsQuery(params: ReportEventsVesselsParams) {
+  return {
+    ...getBaseStatsQuery(params),
+    datasets: [params.dataset],
+  }
 }
 
 export const reportEventsStatsApi = createApi({
@@ -73,9 +80,8 @@ export const reportEventsStatsApi = createApi({
         const endMillis = DateTime.fromISO(params.end).toMillis()
         const interval = getFourwingsInterval(startMillis, endMillis)
         const query = {
-          ...getBaseStatsQuery(params),
+          ...getEventsStatsQuery(params),
           includes: params.includes,
-          datasets: [params.dataset],
           'timeseries-interval': interval,
         }
         return {

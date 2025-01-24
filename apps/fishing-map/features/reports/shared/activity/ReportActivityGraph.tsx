@@ -60,6 +60,7 @@ export default function ReportActivity() {
     if (loaded && bbox?.length) {
       fitAreaInViewport()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, bboxHash])
 
   const { t } = useTranslation()

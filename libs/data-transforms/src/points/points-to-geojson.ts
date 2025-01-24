@@ -3,7 +3,8 @@ import type { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojs
 import type { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
 
 import { parseCoords } from '../coordinates'
-import { getUTCDate, normalizePropertiesKeys } from '../schema'
+import { getUTCDate } from '../dates'
+import { normalizePropertiesKeys } from '../schema'
 import type { PointColumns } from '../types'
 
 export const cleanProperties = (

@@ -1,12 +1,16 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
-import { Bar, BarChart, LabelList,ResponsiveContainer, XAxis } from 'recharts'
 
-import type { VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
+import { type VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
+import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
+import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { weightedMean } from 'utils/statistics'
 
@@ -26,11 +30,6 @@ const CustomTick = (props: any) => {
   )
 }
 
-type VesselGroupReportCoverageGraphData = {
-  name: string
-  value: number
-}
-
 const COVERAGE_GRAPH_BUCKETS: Record<string, number> = {
   '<20%': 20,
   '20-40%': 40,
@@ -46,18 +45,20 @@ function parseCoverageGraphValueBucket(value: number) {
   )
 }
 
-function parseCoverageGraphData(
+function getDataByCoverage(
   data: VesselGroupInsightResponse['coverage'],
   vessels: VesselGroupVesselIdentity[]
-): VesselGroupReportCoverageGraphData[] {
-  if (!data) return []
+): Record<string, any[]> {
+  if (!data) return {}
   const groupedData: Record<string, any> = {}
   data.forEach((d) => {
-    const relationId = vessels.find((v) => v.vesselId === d.vesselId)?.relationId
+    const vessel = vessels.find((v) => v.vesselId === d.vesselId)
+    const { relationId } = vessel || {}
     if (!relationId) return
     if (!groupedData[relationId]) {
       groupedData[relationId] = {
         name: relationId,
+        vessel,
         values: [d.percentage],
         counts: [parseInt(d.blocks)],
       }
@@ -69,13 +70,32 @@ function parseCoverageGraphData(
 
   const dataByCoverage = Object.values(groupedData).map((d) => ({
     name: d.name,
+    vessel: d.vessel,
     value: parseCoverageGraphValueBucket(weightedMean(d.values, d.counts)),
   }))
 
-  const groupedDataByCoverage = groupBy(dataByCoverage, (entry) => entry.value!)
+  return groupBy(dataByCoverage, (entry) => entry.value!)
+}
+
+function parseCoverageGraphAggregatedData(
+  data: VesselGroupInsightResponse['coverage'],
+  vessels: VesselGroupVesselIdentity[]
+): ResponsiveVisualizationData<'aggregated'> {
+  const groupedDataByCoverage = getDataByCoverage(data, vessels)
   return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
-    name: key,
+    label: key,
     value: groupedDataByCoverage[key]?.length || 0,
+  }))
+}
+
+function parseCoverageGraphIndividualData(
+  data: VesselGroupInsightResponse['coverage'],
+  vessels: VesselGroupVesselIdentity[]
+): ResponsiveVisualizationData<'individual'> {
+  const groupedDataByCoverage = getDataByCoverage(data, vessels)
+  return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
+    label: key,
+    values: (groupedDataByCoverage[key] || []).map((d) => d.vessel),
   }))
 }
 
@@ -85,48 +105,32 @@ export default function VesselGroupReportInsightCoverageGraph({
   data: VesselGroupInsightResponse['coverage']
 }) {
   const vesselGroup = useSelector(selectVGRData)
-  const dataGrouped = useMemo(() => {
+  // const getIndividualData = useCallback(async () => {
+  //   if (vesselGroup?.vessels.length) {
+  //     return parseCoverageGraphIndividualData(data, vesselGroup.vessels)
+  //   } else return []
+  // }, [data, vesselGroup?.vessels])
+  const getAggregatedData = useCallback(async () => {
     if (vesselGroup?.vessels.length) {
-      return parseCoverageGraphData(data, vesselGroup.vessels)
+      return parseCoverageGraphAggregatedData(data, vesselGroup.vessels)
     } else return []
   }, [data, vesselGroup?.vessels])
 
   const reportDataview = useSelector(selectVGRDataview)
   return (
-    <Fragment>
-      <div className={styles.graph} data-test="report-vessels-graph">
-        {dataGrouped && (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              width={500}
-              height={300}
-              data={dataGrouped}
-              margin={{
-                top: 15,
-                right: 0,
-                left: 0,
-                bottom: 0,
-              }}
-            >
-              <Bar
-                className={styles.bar}
-                dataKey="value"
-                fill={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
-              >
-                <LabelList position="top" valueAccessor={(entry: any) => entry.value} />
-              </Bar>
-              <XAxis
-                dataKey="name"
-                interval="equidistantPreserveStart"
-                tickLine={false}
-                minTickGap={-1000}
-                tick={<CustomTick />}
-                tickMargin={0}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
-      </div>
-    </Fragment>
+    <div className={styles.graph} data-test="insights-report-vessels-graph">
+      <ResponsiveBarChart
+        color={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
+        // getIndividualData={getIndividualData}
+        getAggregatedData={getAggregatedData}
+        barValueFormatter={(value: any) => {
+          return formatI18nNumber(value).toString()
+        }}
+        barLabel={<CustomTick />}
+        labelKey="label"
+        individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+        individualItem={<VesselGraphLink />}
+      />
+    </div>
   )
 }
