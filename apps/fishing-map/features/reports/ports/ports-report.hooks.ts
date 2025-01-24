@@ -7,6 +7,8 @@ import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { selectReportPortId, selectUrlTimeRange } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import { useFitAreaInViewport } from '../areas/area-reports.hooks'
+
 import { selectPortsReportDatasetId } from './ports-report.config.selectors'
 import {
   selectPortReportFootprintArea,
@@ -68,4 +70,25 @@ export function usePortsReportAreaFootprint() {
   }, [dispatch, portReportFootprintArea, portReportFootprintDatasetId, portReportId])
 
   return portReportFootprintArea
+}
+
+export function usePortsReportAreaFootprintBounds() {
+  const portReportFootprintArea = usePortsReportAreaFootprint()
+  return {
+    loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
+    bbox: portReportFootprintArea?.data?.bounds,
+  }
+}
+
+export function usePortsReportAreaFootprintFitBounds() {
+  const { loaded, bbox } = usePortsReportAreaFootprintBounds()
+  const fitAreaInViewport = useFitAreaInViewport({ padding: 10 })
+  const bboxHash = bbox ? bbox.join(',') : ''
+  // This ensures that the area is in viewport when then area load finishes
+  useEffect(() => {
+    if (loaded && bbox?.length) {
+      fitAreaInViewport()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, bboxHash])
 }

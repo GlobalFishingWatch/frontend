@@ -211,7 +211,6 @@ export const fetchAreaDetailThunk = createAsyncThunk(
           dataset = action.payload
         }
       }
-      console.log('🚀 ~ dataset:', dataset)
       const area = await fetchAreaDetail({ dataset, areaId, areaName, signal, simplify })
       return area
     } catch (e: any) {
