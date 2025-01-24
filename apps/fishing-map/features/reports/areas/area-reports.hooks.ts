@@ -79,8 +79,9 @@ export const useHighlightReportArea = () => {
 const defaultParams = {} as FitBoundsParams
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
   const map = useDeckMap()
+  const viewport = useMapViewport()
   return useMemo(() => {
-    if (!bounds || !map) return null
+    if (!bounds || !map || !viewport) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
       ...params,
@@ -90,7 +91,7 @@ export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
       longitude: parseFloat(longitude.toFixed(8)),
       zoom: parseFloat(zoom.toFixed(8)),
     }
-  }, [bounds, map, params])
+  }, [bounds, map, params, viewport])
 }
 
 export function useStatsBounds(dataview?: UrlDataviewInstance) {

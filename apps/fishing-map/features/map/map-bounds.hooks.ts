@@ -90,7 +90,7 @@ export function useMapFitBounds() {
         })
       }
     },
-     
+
     [viewport]
   )
   return fitBounds
