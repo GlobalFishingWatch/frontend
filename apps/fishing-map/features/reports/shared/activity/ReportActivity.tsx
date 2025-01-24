@@ -52,7 +52,7 @@ import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 

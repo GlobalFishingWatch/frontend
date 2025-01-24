@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 

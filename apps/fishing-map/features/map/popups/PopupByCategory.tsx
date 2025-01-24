@@ -28,13 +28,13 @@ import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
+import ClusterTooltipRow from 'features/map/popups/categories/ClusterTooltipRow'
 import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
 import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
-import TileClusterTooltipRow from 'features/map/popups/categories/TileClusterTooltipRow'
 import UserPointsTooltipSection from 'features/map/popups/categories/UserPointsLayers'
 import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayers'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
@@ -188,7 +188,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               )
             }
             return (
-              <TileClusterTooltipRow
+              <ClusterTooltipRow
                 key={featureCategory}
                 features={features as SliceExtendedClusterPickingObject[]}
                 showFeaturesDetails={type === 'click'}

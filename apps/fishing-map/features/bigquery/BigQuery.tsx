@@ -1,14 +1,15 @@
-import { Fragment,useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
+import type { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
 import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { AggregationOptions, VisualisationOptions } from 'features/bigquery/bigquery.config'
 import {
   getBigQuery4WingsDataviewInstance,
   getBigQueryEventsDataviewInstance,
@@ -44,36 +45,6 @@ const BigQueryMenu: React.FC = () => {
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [query, setQuery] = useState('')
-
-  const VisualisationOptions: { id: BigQueryVisualisation; label: string; fieldsHint: string }[] = [
-    {
-      id: '4wings',
-      label: t('bigQuery.visualisationActivity', 'Activity (heatmap)'),
-      fieldsHint: t(
-        'bigQuery.visualisationActivityHint',
-        '(Ensure id, lat, lon, timestamp and value are all present)'
-      ),
-    },
-    {
-      id: 'events',
-      label: t('bigQuery.visualisationEvents', 'Events (clusters)'),
-      fieldsHint: t(
-        'bigQuery.visualisationEventsHint',
-        '(Ensure event_id, event_start, event_end and geom are all present)'
-      ),
-    },
-  ]
-
-  const AggregationOptions = [
-    {
-      id: FourwingsAggregationOperation.Avg,
-      label: t('bigQuery.aggregateAvg', 'Average'),
-    },
-    {
-      id: FourwingsAggregationOperation.Sum,
-      label: t('bigQuery.aggregateSum', 'Sum'),
-    },
-  ]
 
   const currentVisualisationMode = VisualisationOptions.find(({ id }) => id === visualisationMode)
 
@@ -215,11 +186,11 @@ const BigQueryMenu: React.FC = () => {
             error
               ? t('bigQuery.queryError', 'There is an error in the query')
               : disableCreation
-              ? t(
-                  'bigQuery.validationError',
-                  'Query, name, visualisation mode, aggregation mode and checking creation cost are required'
-                )
-              : ''
+                ? t(
+                    'bigQuery.validationError',
+                    'Query, name, visualisation mode, aggregation mode and checking creation cost are required'
+                  )
+                : ''
           }
           loading={creationStatus === AsyncReducerStatus.Loading}
           onClick={onCreateClick}
