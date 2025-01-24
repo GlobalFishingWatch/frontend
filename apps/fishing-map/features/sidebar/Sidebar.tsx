@@ -8,6 +8,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
@@ -40,8 +41,8 @@ const PortsReport = dynamic(
 const VesselGroupReport = dynamic(
   () => import(/* webpackChunkName: "Report" */ 'features/reports/vessel-groups/VesselGroupReport')
 )
-const VesselDetailWrapper = dynamic(
-  () => import(/* webpackChunkName: "VesselDetailWrapper" */ 'features/vessel/Vessel')
+const VesselProfile = dynamic(
+  () => import(/* webpackChunkName: "VesselProfile" */ 'features/vessel/Vessel')
 )
 const User = dynamic(() => import(/* webpackChunkName: "User" */ 'features/user/User'))
 const Workspace = dynamic(
@@ -61,6 +62,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const readOnly = useSelector(selectReadOnly)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const isUserLocation = useSelector(selectIsUserLocation)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -103,7 +105,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
 
     if (isVesselLocation) {
-      return <VesselDetailWrapper />
+      return <VesselProfile />
     }
 
     if (isWorkspacesListLocation) {
@@ -147,7 +149,12 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     <div className={styles.container}>
       {!readOnly && !isSmallScreen && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
-      <div id={SCROLL_CONTAINER_DOM_ID} className="scrollContainer" data-test="sidebar-container">
+      <div
+        id={SCROLL_CONTAINER_DOM_ID}
+        className="scrollContainer"
+        data-test="sidebar-container"
+        style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+      >
         <SidebarHeader />
         {sidebarComponent}
       </div>

@@ -6,6 +6,7 @@ import type { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 
 import {
+  selectCurrentReport,
   selectReportAreaId,
   selectReportBufferOperation,
   selectReportBufferUnit,
@@ -77,6 +78,13 @@ export const selectReportAreaDataviews = createSelector(
       )
     })
     return areaDataview
+  }
+)
+
+export const selectIsReportOwner = createSelector(
+  [selectCurrentReport, selectUserData],
+  (report, userData) => {
+    return report?.ownerId === userData?.id
   }
 )
 
