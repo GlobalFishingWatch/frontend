@@ -1,0 +1,41 @@
+# Workflow for serving app locally & running Meticulous tests against it
+
+name: Meticulous
+
+# Important: The workflow needs to run both on pushes to your main branch and on
+# pull requests. It needs to run on your main branch because it'll use the results
+# from the base commit of the PR on the main branch to compare against.
+on:
+  pull_request: {}
+  # Important: We need the workflow to be triggered on workflow_dispatch events,
+  # so that Meticulous can run the workflow on the base commit to compare
+  # against if an existing workflow hasn't run
+  workflow_dispatch: {}
+
+# Important: The workflow needs all the permissions below.
+# These permissions are mainly need to post and update the status check and
+# feedback comment on your PR. Meticulous won't work without them.
+permissions:
+  actions: write
+  contents: read
+  issues: write
+  pull-requests: write
+  statuses: read
+
+jobs:
+  test:
+    name: Report diffs
+    runs-on: ubuntu-latest
+    # Only run if the label 'deploy-dev' is present
+    if: contains(github.event.pull_request.labels.*.name, 'deploy-dev')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Meticulous tests
+        uses: alwaysmeticulous/report-diffs-action/cloud-compute@v1
+        with:
+          api-token: ${{ secrets.METICULOUS_API_TOKEN }}
+          # TODO grab the url from the preview PR
+          app-url: https://fishing-map-fishing-map-responsive-visualization-jzzp2ui3wq-uc.a.run.app
