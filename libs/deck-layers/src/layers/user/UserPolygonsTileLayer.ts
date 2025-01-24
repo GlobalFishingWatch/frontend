@@ -145,7 +145,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   renderLayers() {
-    const { layers, steps, stepsPickValue, filters, color } = this.props
+    const { layers, steps, stepsPickValue, filters, color, pickable } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
@@ -168,7 +168,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
               id: `${props.id}-highlight-fills`,
               stroked: false,
-              pickable: true,
+              pickable: pickable,
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
               getFillColor: hasColorSteps ? this._getFillStepsColor : this._getFillColor,
