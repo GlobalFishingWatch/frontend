@@ -64,12 +64,21 @@ function SearchBasic({
     searchPagination.since &&
     searchResults?.length < searchPagination.total
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchQueryParams({ query: e.target.value }, isStandaloneSearchLocation)
-    if (e.target.value !== searchQuery && searchSuggestionClicked) {
-      dispatch(setSuggestionClicked(false))
-    }
-  }
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatchQueryParams({ query: e.target.value }, isStandaloneSearchLocation)
+      if (e.target.value !== searchQuery && searchSuggestionClicked) {
+        dispatch(setSuggestionClicked(false))
+      }
+    },
+    [
+      dispatch,
+      dispatchQueryParams,
+      isStandaloneSearchLocation,
+      searchQuery,
+      searchSuggestionClicked,
+    ]
+  )
 
   const handleIntersection = useCallback(
     (entry: IntersectionObserverEntry) => {

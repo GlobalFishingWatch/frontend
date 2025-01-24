@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Interval as TimeInterval } from 'luxon'
 import {
@@ -19,20 +19,17 @@ import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import i18n, { t } from 'features/i18n/i18n'
 import { selectReportTimeComparison } from 'features/reports/areas/area-reports.config.selectors'
-import {
-  formatDate,
-  formatTooltipValue,
-  tickFormatter,
-} from 'features/reports/areas/area-reports.utils'
+import { tickFormatter } from 'features/reports/areas/area-reports.utils'
 import { getUTCDateTime } from 'utils/dates'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
+import PeriodComparisonGraphTooltip, {
+  BASELINE,
+  COLOR_DECREASE,
+  COLOR_INCREASE,
+  DIFFERENCE,
+} from './PeriodComparisonGraphTooltip'
 
 import styles from './ReportActivityEvolution.module.css'
-
-const DIFFERENCE = 'difference'
-const BASELINE = 'baseline'
-const COLOR_DECREASE = 'rgb(63, 238, 254)'
-const COLOR_INCREASE = 'rgb(360, 62, 98)'
 
 export interface ComparisonGraphData {
   date: string
@@ -69,59 +66,6 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Fourwin
     : `${diff.length('days').toFixed()} ${
         diff.length('days') === 1 ? t('common.days_one') : t('common.days_other')
       }`
-}
-
-type PeriodComparisonGraphTooltipProps = {
-  active: boolean
-  payload: {
-    name: string
-    dataKey: string
-    label: number
-    value: number
-    payload: any
-    color: string
-    unit: string
-  }[]
-  label: number
-  timeChunkInterval: FourwingsInterval
-  offsetedLastDataUpdate: number
-}
-const PeriodComparisonGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval, offsetedLastDataUpdate } =
-    props as PeriodComparisonGraphTooltipProps
-
-  if (label && active && payload && payload.length > 0) {
-    const difference = payload.find(({ name }) => name === DIFFERENCE)
-    if (!difference) return null
-    const baselineDate = getUTCDateTime(difference?.payload.date).setLocale(i18n.language)
-    const compareDate = getUTCDateTime(difference?.payload.compareDate).setLocale(i18n.language)
-
-    const differenceValue = difference?.payload.difference
-    return (
-      <div className={styles.tooltipContainer}>
-        <p className={styles.tooltipLabel}>{formatDate(baselineDate, timeChunkInterval)}</p>
-        <span className={styles.tooltipValue}>
-          {formatTooltipValue(difference?.payload.baseline as number, difference?.unit as string)}
-        </span>
-        <p className={styles.tooltipLabel}>{formatDate(compareDate, timeChunkInterval)}</p>
-        <span className={styles.tooltipValue}>
-          {difference?.payload.date > offsetedLastDataUpdate ? (
-            EMPTY_FIELD_PLACEHOLDER
-          ) : (
-            <Fragment>
-              <span
-                className={styles.tooltipValueDot}
-                style={{ color: differenceValue > 0 ? COLOR_INCREASE : COLOR_DECREASE }}
-              ></span>
-              {formatTooltipValue(differenceValue as number, difference?.unit as string, true)}
-            </Fragment>
-          )}
-        </span>
-      </div>
-    )
-  }
-
-  return null
 }
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }

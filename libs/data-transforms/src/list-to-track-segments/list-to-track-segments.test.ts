@@ -3,7 +3,7 @@ import path from 'path'
 
 import { parse } from 'papaparse'
 
-import { getUTCDate } from '../schema'
+import { getUTCDate } from '../dates'
 import { guessColumn } from '../schema/guess-columns'
 
 import { checkRecordValidity } from './check-record-validity'

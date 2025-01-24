@@ -6,6 +6,7 @@ import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
 import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
 
+import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
@@ -41,6 +42,7 @@ import { useFetchPortsReport, usePortsReportAreaFootprintFitBounds } from './por
 import {
   selectPortReportsDataview,
   selectPortReportVesselsGrouped,
+  selectPortReportVesselsIndividualData,
   selectPortReportVesselsPaginated,
   selectPortReportVesselsPagination,
 } from './ports-report.selectors'
@@ -73,6 +75,7 @@ function PortsReport() {
   const portsReportData = useSelector(selectPortsReportData)
   const portsReportDataStatus = useSelector(selectPortsReportStatus)
   const portsReportVesselsGrouped = useSelector(selectPortReportVesselsGrouped)
+  const portReportIndividualData = useSelector(selectPortReportVesselsIndividualData)
   const portsReportVesselsPaginated = useSelector(selectPortReportVesselsPaginated)
   const {
     data,
@@ -163,6 +166,12 @@ function PortsReport() {
             color={color}
             start={start}
             end={end}
+            filters={{
+              portId,
+              ...(dataview && { ...getDataviewFilters(dataview) }),
+            }}
+            includes={['id', 'start', 'end', 'vessel']}
+            datasetId={datasetId}
             timeseries={data.timeseries || []}
           />
         )}
@@ -223,6 +232,7 @@ function PortsReport() {
           </div>
           <EventsReportVesselsGraph
             data={portsReportVesselsGrouped}
+            individualData={portReportIndividualData}
             color={color}
             property={portReportVesselsProperty}
             filterQueryParam="portsReportVesselsFilter"

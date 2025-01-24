@@ -1,5 +1,4 @@
 import { Fragment } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
@@ -27,7 +26,6 @@ type PositionsRowProps = {
 }
 
 function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
-  const { t } = useTranslation()
   const allDatasets = useSelector(selectAllDatasets)
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color

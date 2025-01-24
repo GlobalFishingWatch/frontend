@@ -17,8 +17,11 @@ import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import { selectReportPortId } from 'routes/routes.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
-import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
-import { REPORT_FILTER_PROPERTIES } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
+import { getVesselIndividualGroupedData } from '../shared/reports.utils'
+import {
+  OTHER_CATEGORY_LABEL,
+  REPORT_FILTER_PROPERTIES,
+} from '../vessel-groups/vessel-group-report.config'
 
 import {
   selectPortReportVesselsFilter,
@@ -139,6 +142,14 @@ export const selectPortReportVesselsGrouped = createSelector(
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
     ] as GraphDataGroup[]
+  }
+)
+
+export const selectPortReportVesselsIndividualData = createSelector(
+  [selectPortReportVesselsFiltered, selectPortReportVesselsProperty],
+  (vessels, groupBy) => {
+    if (!vessels || !groupBy) return []
+    return getVesselIndividualGroupedData(vessels, groupBy)
   }
 )
 

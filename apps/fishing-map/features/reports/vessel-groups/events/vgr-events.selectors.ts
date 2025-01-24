@@ -22,10 +22,12 @@ import {
   selectVGREventsVesselPage,
   selectVGREventsVesselsProperty,
 } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
+import {
+  OTHER_CATEGORY_LABEL,
+  REPORT_FILTER_PROPERTIES,
+} from 'features/reports/vessel-groups/vessel-group-report.config'
 import { selectVGREventsSubsectionDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import { REPORT_FILTER_PROPERTIES } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.selectors'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
