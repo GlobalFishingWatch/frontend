@@ -49,8 +49,8 @@ import styles from './Workspace.module.css'
 
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
-  useMigrateWorkspaceToast()
   useUserExpiredToast()
+  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)

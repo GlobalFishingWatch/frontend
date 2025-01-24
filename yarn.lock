@@ -1479,7 +1479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.11.1, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.24.5, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.25.7, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.24.5, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.25.7, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.26.0
   resolution: "@babel/runtime@npm:7.26.0"
   dependencies:
@@ -3063,7 +3063,7 @@ __metadata:
     protobufjs: "npm:7.4.0"
     purgecss: "npm:^7.0.2"
     qs: "npm:6.14.0"
-    rc-slider: "npm:^9.7.5"
+    rc-slider: "npm:^11.1.8"
     react: "npm:19.0.0"
     react-dom: "npm:19.0.0"
     react-dropzone: "npm:14.3.5"
@@ -13745,7 +13745,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:2.5.1, classnames@npm:2.x, classnames@npm:^2.2.1, classnames@npm:^2.2.5, classnames@npm:^2.2.6, classnames@npm:^2.3.1":
+"classnames@npm:2.5.1, classnames@npm:^2.2.5":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: 10/58eb394e8817021b153bb6e7d782cfb667e4ab390cb2e9dac2fc7c6b979d1cc2b2a733093955fc5c94aa79ef5c8c89f11ab77780894509be6afbb91dddd79d15
@@ -15922,13 +15922,6 @@ __metadata:
   version: 0.6.3
   resolution: "dom-accessibility-api@npm:0.6.3"
   checksum: 10/83d3371f8226487fbad36e160d44f1d9017fb26d46faba6a06fcad15f34633fc827b8c3e99d49f71d5f3253d866e2131826866fd0a3c86626f8eccfc361881ff
-  languageName: node
-  linkType: hard
-
-"dom-align@npm:^1.7.0":
-  version: 1.12.4
-  resolution: "dom-align@npm:1.12.4"
-  checksum: 10/fbfb005fcb1572700dc164bdb0c5ba2a6b438ddf8b7fb1d7250b697f7899922364a671a37fa3f09b16596fc289d9bddeae6406a45f9587b91c24438590c73a2b
   languageName: node
   linkType: hard
 
@@ -26736,92 +26729,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-align@npm:^4.0.0":
-  version: 4.0.15
-  resolution: "rc-align@npm:4.0.15"
-  dependencies:
-    "@babel/runtime": "npm:^7.10.1"
-    classnames: "npm:2.x"
-    dom-align: "npm:^1.7.0"
-    rc-util: "npm:^5.26.0"
-    resize-observer-polyfill: "npm:^1.5.1"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10/de1af4a58a371bc01cf5f327ce82b5e5631960c3e2dbae03532081e63bf86a809cebf9b8a231495db1dc659c28b6dbb35b0b33f2c29579b8b068388c1288c1b1
-  languageName: node
-  linkType: hard
-
-"rc-motion@npm:^2.0.0":
-  version: 2.9.4
-  resolution: "rc-motion@npm:2.9.4"
-  dependencies:
-    "@babel/runtime": "npm:^7.11.1"
-    classnames: "npm:^2.2.1"
-    rc-util: "npm:^5.44.0"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10/afb866b0dcf8eaeb64e988c827b084deadf43435d974a3dbbd7f0601e334803c4b0a6acf915a26de61e86deced9af057e9c6a47c326f15e6f0290a801363ee9a
-  languageName: node
-  linkType: hard
-
-"rc-slider@npm:^9.7.5":
-  version: 9.7.5
-  resolution: "rc-slider@npm:9.7.5"
+"rc-slider@npm:^11.1.8":
+  version: 11.1.8
+  resolution: "rc-slider@npm:11.1.8"
   dependencies:
     "@babel/runtime": "npm:^7.10.1"
     classnames: "npm:^2.2.5"
-    rc-tooltip: "npm:^5.0.1"
-    rc-util: "npm:^5.16.1"
-    shallowequal: "npm:^1.1.0"
+    rc-util: "npm:^5.36.0"
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 10/500649e4d4d87bf3adb8a4318dddf095fffa46e8693a59a6ee7cc6d9c86bb76cedd83e4c4c9222b84419a5d86d69c16078aded06463139f58bfaff5fc6b3d868
+  checksum: 10/3efaefebd1699f9fcdb7008f03f9ecc73eb0c9db69b8a4009fbec1107950ec84b241275503505fa7e77d85fcef62d93934b8a94efb2be44d70d3e889db1070b4
   languageName: node
   linkType: hard
 
-"rc-tooltip@npm:^5.0.1":
-  version: 5.3.1
-  resolution: "rc-tooltip@npm:5.3.1"
-  dependencies:
-    "@babel/runtime": "npm:^7.11.2"
-    classnames: "npm:^2.3.1"
-    rc-trigger: "npm:^5.3.1"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10/c7627fbfae753a0e73548d1f93329a5132d76727f737d4eedc5a142f2950986f429dae11b5d8bc13f39bd72a631a22cb32f3b8aaad83bfdde770c19e220708bf
-  languageName: node
-  linkType: hard
-
-"rc-trigger@npm:^5.3.1":
-  version: 5.3.4
-  resolution: "rc-trigger@npm:5.3.4"
-  dependencies:
-    "@babel/runtime": "npm:^7.18.3"
-    classnames: "npm:^2.2.6"
-    rc-align: "npm:^4.0.0"
-    rc-motion: "npm:^2.0.0"
-    rc-util: "npm:^5.19.2"
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: 10/32e0a3083ecea27b44d47c8638e399fadab658fe48a526b0f072011acd99f5b26871a9b3c07fc7f121ddbec900e41bf3eb9085a7be18aa66007aae7fd311b1f9
-  languageName: node
-  linkType: hard
-
-"rc-util@npm:^5.16.1, rc-util@npm:^5.19.2, rc-util@npm:^5.26.0, rc-util@npm:^5.44.0":
-  version: 5.44.2
-  resolution: "rc-util@npm:5.44.2"
+"rc-util@npm:^5.36.0":
+  version: 5.44.3
+  resolution: "rc-util@npm:5.44.3"
   dependencies:
     "@babel/runtime": "npm:^7.18.3"
     react-is: "npm:^18.2.0"
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 10/5be4e632e453c4e4134a136045225af264c8e1f36354c12c40ff86d7ea7ad34ea15a57f74706d91f9c3fc1ec9e080f6c64b2914f742714e37130b06dd91a9702
+  checksum: 10/d254f339b10d7bb850cf3d792371a3ae569a4d768ceccbd5dc52779ac6edcd2aa2eb94859b10fce782f2baee4fdf5582a3d8a2293208a77edd07309c577e55f8
   languageName: node
   linkType: hard
 
@@ -27688,7 +27619,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resize-observer-polyfill@npm:1.5.1, resize-observer-polyfill@npm:^1.5.1":
+"resize-observer-polyfill@npm:1.5.1":
   version: 1.5.1
   resolution: "resize-observer-polyfill@npm:1.5.1"
   checksum: 10/e10ee50cd6cf558001de5c6fb03fee15debd011c2f694564b71f81742eef03fb30d6c2596d1d5bf946d9991cb692fcef529b7bd2e4057041377ecc9636c753ce
@@ -28694,13 +28625,6 @@ __metadata:
   dependencies:
     kind-of: "npm:^6.0.2"
   checksum: 10/e066bd540cfec5e1b0f78134853e0d892d1c8945fb9a926a579946052e7cb0c70ca4fc34f875a8083aa7910d751805d36ae64af250a6de6f3d28f9fa7be6c21b
-  languageName: node
-  linkType: hard
-
-"shallowequal@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "shallowequal@npm:1.1.0"
-  checksum: 10/f4c1de0837f106d2dbbfd5d0720a5d059d1c66b42b580965c8f06bb1db684be8783538b684092648c981294bf817869f743a066538771dbecb293df78f765e00
   languageName: node
   linkType: hard
 
@@ -30421,21 +30345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser@npm:^5.0.0":
-  version: 5.36.0
-  resolution: "terser@npm:5.36.0"
-  dependencies:
-    "@jridgewell/source-map": "npm:^0.3.3"
-    acorn: "npm:^8.8.2"
-    commander: "npm:^2.20.0"
-    source-map-support: "npm:~0.5.20"
-  bin:
-    terser: bin/terser
-  checksum: 10/52e641419f79d7ccdecd136b9a8e0b03f93cfe3b53cce556253aaabc347d3f2af1745419b9e622abc95d592084dc76e57774b8f9e68d29d543f4dd11c044daf4
-  languageName: node
-  linkType: hard
-
-"terser@npm:^5.17.4, terser@npm:^5.31.1":
+"terser@npm:^5.0.0, terser@npm:^5.17.4, terser@npm:^5.31.1":
   version: 5.37.0
   resolution: "terser@npm:5.37.0"
   dependencies:

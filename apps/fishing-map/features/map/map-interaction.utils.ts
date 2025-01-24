@@ -59,8 +59,8 @@ export const getAnalyticsEvent = (feature: DeckLayerPickingObject) => {
       break
   }
   return {
-    category: TrackCategory.MapInteraction,
-    action: `Map click on ${feature.category}-${feature.layerId} layer.`,
+    category: `Map click on ${feature.category}`,
+    action: TrackCategory.MapInteraction,
     label: eventLabel,
   }
 }

@@ -5,7 +5,11 @@ import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { EventTypes, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
 
-import { DEFAULT_WORKSPACE, PREFERRED_FOURWINGS_VISUALISATION_MODE , VALID_PASSWORD } from 'data/config'
+import {
+  DEFAULT_WORKSPACE,
+  PREFERRED_FOURWINGS_VISUALISATION_MODE,
+  VALID_PASSWORD,
+} from 'data/config'
 import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE,
   DEFAULT_WORKSPACE_CATEGORY,
@@ -13,7 +17,7 @@ import {
 } from 'data/workspaces'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import type { UserSettings } from 'features/user/user.slice'
-import { selectIsWorkspaceLocation, selectLocationQuery } from 'routes/routes.selectors'
+import { selectIsRouteWithWorkspace, selectLocationQuery } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
@@ -65,10 +69,10 @@ export const selectIsWorkspacePasswordRequired = createSelector(
   }
 )
 
-export const selectIsWorkspaceMapReady = createSelector(
-  [selectIsWorkspaceLocation, selectWorkspaceStatus, selectIsWorkspacePasswordRequired],
-  (isWorkspaceLocation, workspaceStatus, isWorkspacePasswordRequired) => {
-    return isWorkspaceLocation
+export const selectIsWorkspaceReady = createSelector(
+  [selectIsRouteWithWorkspace, selectWorkspaceStatus, selectIsWorkspacePasswordRequired],
+  (isRouteWithWorkspace, workspaceStatus, isWorkspacePasswordRequired) => {
+    return isRouteWithWorkspace
       ? workspaceStatus === AsyncReducerStatus.Finished && !isWorkspacePasswordRequired
       : true
   }

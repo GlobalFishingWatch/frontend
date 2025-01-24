@@ -5,10 +5,10 @@ import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { DateTime } from 'luxon'
 import { matchSorter } from 'match-sorter'
 import { parse } from 'qs'
-import type { Bbox, BufferOperation, BufferUnit } from 'types'
+import type { Bbox, BufferOperation, BufferUnit, WorkspaceState } from 'types'
 
 import { API_VERSION } from '@globalfishingwatch/api-client'
-import type { Dataview } from '@globalfishingwatch/api-types'
+import type { Dataview, Workspace } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -38,6 +38,13 @@ import type { ReportVesselWithDatasets } from './area-reports.selectors'
 import type { ReportCategory } from './area-reports.types'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
+
+export function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
+  const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
+    workspace
+
+  return { ...workspaceProperties, state: { ...state, daysFromLatest } }
+}
 
 export const tickFormatter = (tick: number) => {
   const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
@@ -290,7 +297,7 @@ export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
 }
 
 export function getVesselsFiltered<
-  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed | VesselGroupVesselTableParsed
+  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed | VesselGroupVesselTableParsed,
 >(vessels: Vessel[], filter: string, filterProperties = FILTER_PROPERTIES) {
   if (!filter || !filter.length) {
     return vessels

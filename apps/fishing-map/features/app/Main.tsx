@@ -8,7 +8,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import Footer from 'features/footer/Footer'
 import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
 import {
-  selectIsWorkspaceMapReady,
+  selectIsWorkspaceReady,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
@@ -44,7 +44,7 @@ const Main = () => {
     isPortReportLocation ||
     (isVesselGroupReportLocation && !isTimeComparisonReport) ||
     (reportLocation && !isTimeComparisonReport)
-  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
+  const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
   const showTimebar =
     isRouteWithTimebar ||
     (isWorkspacesRouteWithTimebar && workspaceStatus === AsyncReducerStatus.Finished)
@@ -54,15 +54,15 @@ const Main = () => {
       {isRouteWithMap && (
         <div
           className={cx(styles.mapContainer, {
-            [styles.withTimebar]: showTimebar && isWorkspaceMapReady,
+            [styles.withTimebar]: showTimebar && isWorkspaceReady,
             [styles.withSmallScreenSwitch]: isSmallScreen,
             [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
           })}
         >
-          {isWorkspaceMapReady && <Map />}
+          {isWorkspaceReady && <Map />}
         </div>
       )}
-      {showTimebar && isWorkspaceMapReady && <Timebar />}
+      {showTimebar && isWorkspaceReady && <Timebar />}
       <Footer />
     </Fragment>
   )

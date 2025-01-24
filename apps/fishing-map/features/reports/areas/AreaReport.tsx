@@ -42,6 +42,7 @@ import {
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
@@ -50,6 +51,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 export type ReportActivityUnit = 'hour' | 'detection'
 
 export default function Report() {
+  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const setTimeseries = useSetTimeseries()

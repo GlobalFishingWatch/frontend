@@ -23,6 +23,7 @@ import EventsReportVesselsTableFooter from 'features/reports/shared/events/Event
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { selectReportPortId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
@@ -57,6 +58,7 @@ import styles from './PortsReport.module.css'
 const MAX_VESSELS_REPORT = 500
 
 function PortsReport() {
+  useMigrateWorkspaceToast()
   const dispatchFetchReport = useFetchPortsReport()
   const dispatch = useAppDispatch()
   const { t } = useTranslation()

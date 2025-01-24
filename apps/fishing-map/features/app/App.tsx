@@ -157,6 +157,7 @@ function App() {
         action.abort()
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
@@ -167,6 +168,7 @@ function App() {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

@@ -219,9 +219,9 @@ export default function ReportVesselsGraph() {
     }
   }
 
-  const getIndividualData = useCallback(async () => {
-    return individualData
-  }, [individualData])
+  // const getIndividualData = useCallback(async () => {
+  //   return individualData
+  // }, [individualData])
 
   const getAggregatedData = useCallback(async () => {
     return data as any[]
@@ -239,7 +239,7 @@ export default function ReportVesselsGraph() {
     <Fragment>
       <div className={styles.graph} data-test="activity-report-vessels-graph">
         <ResponsiveBarChart
-          getIndividualData={getIndividualData}
+          // getIndividualData={getIndividualData}
           getAggregatedData={getAggregatedData}
           // onAggregatedItemClick={onBarClick}
           // onIndividualItemClick={onPointClick}
