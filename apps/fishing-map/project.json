@@ -84,7 +84,7 @@
           "mkdir -p ./server && mkdir -p server/apps/fishing-map/public && mkdir -p server/dist/apps/fishing-map/.next/static",
           "cp -rp ./dist/apps/fishing-map/public/ ./server/apps/fishing-map/public/",
           "cp -rp ./dist/apps/fishing-map/.next/standalone/* ./server/",
-          "cp -rp ./dist/apps/fishing-map/.next/static/ ./server/dist/apps/fishing-map/.next/static/"
+          "cp -rp ./dist/apps/fishing-map/.next/static/* ./server/dist/apps/fishing-map/.next/static/"
         ],
         "parallel": false
       }
