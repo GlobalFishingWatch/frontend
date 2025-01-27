@@ -55,11 +55,15 @@ import {
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
+  selectReportPortId,
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { usePortsReportAreaFootprintBounds } from '../ports/ports-report.hooks'
+import {
+  selectPortReportFootprintArea,
+  selectPortReportFootprintDatasetId,
+} from '../ports/ports-report.selectors'
 import { selectVGRActivityDataview } from '../vessel-groups/vessel-group-report.selectors'
 
 export type DateTimeSeries = {
@@ -309,4 +313,42 @@ export function useFetchReportVessel() {
     () => ({ status, data, error, dispatchFetchReport }),
     [status, data, error, dispatchFetchReport]
   )
+}
+
+export function usePortsReportAreaFootprint() {
+  const dispatch = useAppDispatch()
+  const portReportId = useSelector(selectReportPortId)
+  const portReportFootprintArea = useSelector(selectPortReportFootprintArea)
+  const portReportFootprintDatasetId = useSelector(selectPortReportFootprintDatasetId)
+
+  useEffect(() => {
+    if (!portReportFootprintArea && portReportFootprintDatasetId && portReportId) {
+      dispatch(
+        fetchAreaDetailThunk({ datasetId: portReportFootprintDatasetId, areaId: portReportId })
+      )
+    }
+  }, [dispatch, portReportFootprintArea, portReportFootprintDatasetId, portReportId])
+
+  return portReportFootprintArea
+}
+
+export function usePortsReportAreaFootprintBounds() {
+  const portReportFootprintArea = usePortsReportAreaFootprint()
+  return {
+    loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
+    bbox: portReportFootprintArea?.data?.bounds,
+  }
+}
+
+export function usePortsReportAreaFootprintFitBounds() {
+  const { loaded, bbox } = usePortsReportAreaFootprintBounds()
+  const fitAreaInViewport = useFitAreaInViewport({ padding: 10 })
+  const bboxHash = bbox ? bbox.join(',') : ''
+  // This ensures that the area is in viewport when then area load finishes
+  useEffect(() => {
+    if (loaded && bbox?.length) {
+      fitAreaInViewport()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, bboxHash])
 }

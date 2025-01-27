@@ -28,6 +28,7 @@ import { selectReportPortId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
+import { usePortsReportAreaFootprintFitBounds } from '../areas/area-reports.hooks'
 import { getDateRangeHash } from '../shared/activity/reports-activity.slice'
 import EventsReportVesselsGraph from '../vessel-groups/vessels/VesselGroupReportVesselsGraph'
 
@@ -38,7 +39,7 @@ import {
   selectPortReportVesselsProperty,
   selectPortsReportDatasetId,
 } from './ports-report.config.selectors'
-import { useFetchPortsReport, usePortsReportAreaFootprintFitBounds } from './ports-report.hooks'
+import { useFetchPortsReport } from './ports-report.hooks'
 import {
   selectPortReportsDataview,
   selectPortReportVesselsGrouped,
