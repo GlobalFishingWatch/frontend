@@ -186,6 +186,7 @@ export const useHighlightedEventsConnect = () => {
       highlightedEventIds,
       dispatchHighlightedEvents,
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serializedHighlightedEventIds, dispatchHighlightedEvents])
 }
 
@@ -204,7 +205,10 @@ export const useTimebarVisualisationConnect = () => {
     [dispatchQueryParams, dispatch]
   )
 
-  return { timebarVisualisation, dispatchTimebarVisualisation }
+  return useMemo(
+    () => ({ timebarVisualisation, dispatchTimebarVisualisation }),
+    [dispatchTimebarVisualisation, timebarVisualisation]
+  )
 }
 
 export const useTimebarEnvironmentConnect = () => {
@@ -218,7 +222,10 @@ export const useTimebarEnvironmentConnect = () => {
     [dispatchQueryParams]
   )
 
-  return { timebarSelectedEnvId, dispatchTimebarSelectedEnvId }
+  return useMemo(
+    () => ({ timebarSelectedEnvId, dispatchTimebarSelectedEnvId }),
+    [dispatchTimebarSelectedEnvId, timebarSelectedEnvId]
+  )
 }
 
 export const useTimebarVesselGroupConnect = () => {
@@ -232,7 +239,10 @@ export const useTimebarVesselGroupConnect = () => {
     [dispatchQueryParams]
   )
 
-  return { timebarSelectedVGId, dispatchTimebarSelectedVGId }
+  return useMemo(
+    () => ({ timebarSelectedVGId, dispatchTimebarSelectedVGId }),
+    [dispatchTimebarSelectedVGId, timebarSelectedVGId]
+  )
 }
 
 export const useTimebarGraphConnect = () => {
@@ -245,10 +255,13 @@ export const useTimebarGraphConnect = () => {
     [dispatchQueryParams]
   )
 
-  return {
-    timebarGraph,
-    dispatchTimebarGraph,
-  }
+  return useMemo(
+    () => ({
+      timebarGraph,
+      dispatchTimebarGraph,
+    }),
+    [dispatchTimebarGraph, timebarGraph]
+  )
 }
 
 // Used to automate the behave depending on vessels or activity state

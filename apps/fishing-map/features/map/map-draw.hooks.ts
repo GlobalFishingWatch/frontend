@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
@@ -29,11 +29,20 @@ export const useMapDrawConnect = () => {
     dispatchQueryParams({ mapDrawing: false, mapDrawingEditId: undefined })
   }, [dispatchQueryParams])
 
-  return {
-    isMapDrawing,
-    mapDrawingMode,
-    dispatchResetMapDraw,
-    dispatchSetMapDrawing,
-    dispatchSetMapDrawEditDataset,
-  }
+  return useMemo(
+    () => ({
+      isMapDrawing,
+      mapDrawingMode,
+      dispatchResetMapDraw,
+      dispatchSetMapDrawing,
+      dispatchSetMapDrawEditDataset,
+    }),
+    [
+      dispatchResetMapDraw,
+      dispatchSetMapDrawEditDataset,
+      dispatchSetMapDrawing,
+      isMapDrawing,
+      mapDrawingMode,
+    ]
+  )
 }

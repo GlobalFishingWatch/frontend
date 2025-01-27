@@ -124,16 +124,22 @@ export function useStatsBounds(dataview?: UrlDataviewInstance) {
     }
   )
 
-  const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)
+  const statsBbox = useMemo(
+    () => stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox),
+    [stats]
+  )
   const loaded = !isFetching && isSuccess
-  return {
-    loaded: loaded,
-    bbox: loaded
-      ? statsBbox?.some((v) => v === null || v === undefined)
-        ? ENTIRE_WORLD_REPORT_AREA_BOUNDS
-        : statsBbox!
-      : null,
-  }
+  return useMemo(
+    () => ({
+      loaded: loaded,
+      bbox: loaded
+        ? statsBbox?.some((v) => v === null || v === undefined)
+          ? ENTIRE_WORLD_REPORT_AREA_BOUNDS
+          : statsBbox!
+        : null,
+    }),
+    [loaded, statsBbox]
+  )
 }
 
 export function useVesselGroupActivityBounds() {
@@ -155,22 +161,34 @@ export function useReportAreaBounds() {
   const { loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
-  if (isVesselGroupReportLocation) {
-    return {
-      loaded: vesselGroupLoaded,
-      bbox: vesselGroupBbox,
+  return useMemo(() => {
+    if (isVesselGroupReportLocation) {
+      return {
+        loaded: vesselGroupLoaded,
+        bbox: vesselGroupBbox,
+      }
     }
-  }
-  if (isPortReportLocation) {
-    return {
-      loaded: portLoaded,
-      bbox: portBbox,
+    if (isPortReportLocation) {
+      return {
+        loaded: portLoaded,
+        bbox: portBbox,
+      }
     }
-  }
-  return {
-    loaded: reportAreaStatus === AsyncReducerStatus.Finished,
-    bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
-  }
+    return {
+      loaded: reportAreaStatus === AsyncReducerStatus.Finished,
+      bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
+    }
+  }, [
+    isPortReportLocation,
+    isVesselGroupReportLocation,
+    portBbox,
+    portLoaded,
+    reportArea?.bounds,
+    reportArea?.geometry?.bbox,
+    reportAreaStatus,
+    vesselGroupBbox,
+    vesselGroupLoaded,
+  ])
 }
 
 export function useReportAreaInViewport() {

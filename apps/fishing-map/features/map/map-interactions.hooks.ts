@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { ThunkDispatch } from '@reduxjs/toolkit'
@@ -98,6 +98,7 @@ export const useCancelInteractionPromises = () => {
 
   return cancelPendingInteractionRequests
 }
+
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
@@ -113,130 +114,156 @@ export const useClickedEventConnect = () => {
   // const fishingPromiseRef = useRef<any>()
   // const eventsPromiseRef = useRef<any>()
 
-  const dispatchClickedEvent = (deckEvent: InteractionEvent | null) => {
-    // Cancel all pending promises
-    cancelPendingInteractionRequests()
+  const dispatchClickedEvent = useCallback(
+    (deckEvent: InteractionEvent | null) => {
+      // Cancel all pending promises
+      cancelPendingInteractionRequests()
 
-    if (deckEvent === null) {
-      dispatch(setClickedEvent(null))
-      return
-    }
-    if (isMapAnnotating) {
-      addMapAnnotation([deckEvent.longitude, deckEvent.latitude])
-      return
-    }
-    if (isErrorNotificationEditing) {
-      addErrorNotification([deckEvent.longitude, deckEvent.latitude])
-      return
-    }
-    if (rulersEditing) {
-      onRulerMapClick([deckEvent.longitude, deckEvent.latitude])
-      return
-    }
+      if (deckEvent === null) {
+        dispatch(setClickedEvent(null))
+        return
+      }
+      if (isMapAnnotating) {
+        addMapAnnotation([deckEvent.longitude, deckEvent.latitude])
+        return
+      }
+      if (isErrorNotificationEditing) {
+        addErrorNotification([deckEvent.longitude, deckEvent.latitude])
+        return
+      }
+      if (rulersEditing) {
+        onRulerMapClick([deckEvent.longitude, deckEvent.latitude])
+        return
+      }
 
-    const event = {
-      features: deckEvent.features,
-      //   .map((feature) => {
-      //   const { geometry, ...rest } = feature as any
-      //   return rest
-      // }),
-      latitude: deckEvent.latitude,
-      longitude: deckEvent.longitude,
-      zoom: deckEvent.viewport?.zoom,
-      point: { x: deckEvent.point.x, y: deckEvent.point.y },
-    } as SliceInteractionEvent
+      const event = {
+        features: deckEvent.features,
+        //   .map((feature) => {
+        //   const { geometry, ...rest } = feature as any
+        //   return rest
+        // }),
+        latitude: deckEvent.latitude,
+        longitude: deckEvent.longitude,
+        zoom: deckEvent.viewport?.zoom,
+        point: { x: deckEvent.point.x, y: deckEvent.point.y },
+      } as SliceInteractionEvent
 
-    event?.features?.forEach((feature) => {
-      const analyticsEvent = getAnalyticsEvent(feature)
-      trackEvent(analyticsEvent as any)
-    })
-    const clusterFeature = event?.features?.find(
-      (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
-    ) as FourwingsClusterPickingObject
+      event?.features?.forEach((feature) => {
+        const analyticsEvent = getAnalyticsEvent(feature)
+        trackEvent(analyticsEvent as any)
+      })
+      const clusterFeature = event?.features?.find(
+        (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
+      ) as FourwingsClusterPickingObject
 
-    if (clusterFeature) {
-      if (isTilesClusterLayerCluster(clusterFeature)) {
-        const { expansionZoom } = clusterFeature
-        const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
-        const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
-        if (!areTilesClusterLoading && expansionZoomValue) {
+      if (clusterFeature) {
+        if (isTilesClusterLayerCluster(clusterFeature)) {
+          const { expansionZoom } = clusterFeature
+          const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
+          const expansionZoomValue =
+            expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
+          if (!areTilesClusterLoading && expansionZoomValue) {
+            setMapCoordinates({
+              latitude: event.latitude,
+              longitude: event.longitude,
+              zoom: expansionZoomValue,
+            })
+          }
+          return
+        } else if (clusterFeature.clusterMode === 'country') {
           setMapCoordinates({
             latitude: event.latitude,
             longitude: event.longitude,
-            zoom: expansionZoomValue,
+            zoom: (event.zoom as number) + 1,
           })
+          return
+        }
+      }
+
+      if (!event || !event.features) {
+        if (clickedEvent) {
+          dispatch(setClickedEvent(null))
         }
         return
-      } else if (clusterFeature.clusterMode === 'country') {
-        setMapCoordinates({
-          latitude: event.latitude,
-          longitude: event.longitude,
-          zoom: (event.zoom as number) + 1,
-        })
-        return
       }
-    }
 
-    if (!event || !event.features) {
-      if (clickedEvent) {
-        dispatch(setClickedEvent(null))
-      }
-      return
-    }
+      dispatch(setClickedEvent(event))
 
-    dispatch(setClickedEvent(event))
-
-    // get temporal grid clicked features and order them by sublayerindex
-    const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
-      (feature) => {
-        if (
-          feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
-          feature.visualizationMode === 'positions'
-        ) {
-          return false
+      // get temporal grid clicked features and order them by sublayerindex
+      const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
+        (feature) => {
+          if (
+            feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
+            feature.visualizationMode === 'positions'
+          ) {
+            return false
+          }
+          return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+            feature.category as DataviewCategory
+          )
         }
-        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-          feature.category as DataviewCategory
+      )
+
+      if (heatmapFeatures?.length) {
+        dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
+        const heatmapProperties = heatmapFeatures.map((feature) =>
+          feature.category === 'detections' ? 'detections' : 'hours'
         )
+        const heatmapPromise = dispatch(
+          fetchHeatmapInteractionThunk({ heatmapFeatures, heatmapProperties })
+        )
+        setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise as any }))
       }
-    )
 
-    if (heatmapFeatures?.length) {
-      dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
-      const heatmapProperties = heatmapFeatures.map((feature) =>
-        feature.category === 'detections' ? 'detections' : 'hours'
-      )
-      const heatmapPromise = dispatch(
-        fetchHeatmapInteractionThunk({ heatmapFeatures, heatmapProperties })
-      )
-      setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise as any }))
-    }
+      const tileClusterFeature = event.features.find(
+        (f) => f.category === DataviewCategory.Events && isTilesClusterLayer(f)
+      ) as SliceExtendedClusterPickingObject
 
-    const tileClusterFeature = event.features.find(
-      (f) => f.category === DataviewCategory.Events && isTilesClusterLayer(f)
-    ) as SliceExtendedClusterPickingObject
+      if (tileClusterFeature) {
+        const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
+        // TODO:deck migrate bqPocQuery to FourwingsClusters
+        const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchClusterEventThunk
+        // TODO:deck remove fetchLegacyEncounterEventThunk once fourwings cluster goes to pro
+        const clusterFn =
+          tileClusterFeature?.subcategory === DataviewType.TileCluster
+            ? fetchLegacyEncounterEventThunk
+            : fetchClusterEventThunk
+        const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
+        setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+      }
+    },
+    [
+      addErrorNotification,
+      addMapAnnotation,
+      areTilesClusterLoading,
+      cancelPendingInteractionRequests,
+      clickedEvent,
+      dispatch,
+      isErrorNotificationEditing,
+      isMapAnnotating,
+      onRulerMapClick,
+      rulersEditing,
+      setInteractionPromises,
+      setMapCoordinates,
+    ]
+  )
 
-    if (tileClusterFeature) {
-      const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
-      // TODO:deck migrate bqPocQuery to FourwingsClusters
-      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchClusterEventThunk
-      // TODO:deck remove fetchLegacyEncounterEventThunk once fourwings cluster goes to pro
-      const clusterFn =
-        tileClusterFeature?.subcategory === DataviewType.TileCluster
-          ? fetchLegacyEncounterEventThunk
-          : fetchClusterEventThunk
-      const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
-      setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
-    }
-  }
-
-  return {
-    clickedEvent,
-    fishingInteractionStatus,
-    apiEventStatus,
-    dispatchClickedEvent,
-    cancelPendingInteractionRequests,
-  }
+  return useMemo(
+    () => ({
+      clickedEvent,
+      fishingInteractionStatus,
+      apiEventStatus,
+      dispatchClickedEvent,
+      cancelPendingInteractionRequests,
+    }),
+    [
+      apiEventStatus,
+      cancelPendingInteractionRequests,
+      clickedEvent,
+      dispatchClickedEvent,
+      fishingInteractionStatus,
+    ]
+  )
 }
 
 const useGetPickingInteraction = () => {
@@ -292,37 +319,38 @@ export const useMapMouseHover = () => {
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
 
-  const onMouseMove: DeckProps['onHover'] = useCallback(
-    throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
-      setHoveredCoordinates(info.coordinate)
-      if (
-        event.type === 'pointerleave' ||
-        isMapAnnotating ||
-        isMapDrawing ||
-        isErrorNotificationEditing
-      ) {
-        setMapHoverFeatures({} as InteractionEvent)
-        return
-      }
-      if (rulersEditing) {
-        onRulerMapHover(info)
-        return
-      }
-      const hoverInteraction = getPickingInteraction(info, 'hover')
-      if (hoverInteraction) {
-        const eventsInteraction = {
-          ...hoverInteraction,
-          features: hoverInteraction.features?.filter(
-            (f) => f.category === DataviewCategory.Events
-          ),
-        }
-        if (eventsInteraction.features?.length) {
-          setMapHoverFeatures(eventsInteraction)
+  const onMouseMove: DeckProps['onHover'] = useMemo(
+    () =>
+      throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
+        setHoveredCoordinates(info.coordinate)
+        if (
+          event.type === 'pointerleave' ||
+          isMapAnnotating ||
+          isMapDrawing ||
+          isErrorNotificationEditing
+        ) {
+          setMapHoverFeatures({} as InteractionEvent)
           return
         }
-        setMapHoverFeatures(hoverInteraction)
-      }
-    }, 50),
+        if (rulersEditing) {
+          onRulerMapHover(info)
+          return
+        }
+        const hoverInteraction = getPickingInteraction(info, 'hover')
+        if (hoverInteraction) {
+          const eventsInteraction = {
+            ...hoverInteraction,
+            features: hoverInteraction.features?.filter(
+              (f) => f.category === DataviewCategory.Events
+            ),
+          }
+          if (eventsInteraction.features?.length) {
+            setMapHoverFeatures(eventsInteraction)
+            return
+          }
+          setMapHoverFeatures(hoverInteraction)
+        }
+      }, 50),
     [
       getPickingInteraction,
       isErrorNotificationEditing,
@@ -334,13 +362,16 @@ export const useMapMouseHover = () => {
     ]
   )
 
-  return {
-    onMouseMove,
-    // resetHoverState,
-    hoveredCoordinates,
-    // hoveredDebouncedEvent,
-    // hoveredTooltipEvent,
-  }
+  return useMemo(
+    () => ({
+      onMouseMove,
+      // resetHoverState,
+      hoveredCoordinates,
+      // hoveredDebouncedEvent,
+      // hoveredTooltipEvent,
+    }),
+    [hoveredCoordinates, onMouseMove]
+  )
 }
 
 export const useMapMouseClick = () => {
@@ -372,6 +403,7 @@ export const useMapCursor = () => {
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
   const hoverFeatures = useMapHoverInteraction()?.features
+  const hoverFeaturesHash = hoverFeatures?.map((f) => f.id).join()
 
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
@@ -404,9 +436,10 @@ export const useMapCursor = () => {
       }
       return 'grab'
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       annotationsCursor,
-      hoverFeatures,
+      hoverFeaturesHash,
       isMapAnnotating,
       isErrorNotificationEditing,
       rulersEditing,
@@ -454,20 +487,24 @@ export const useMapDrag = () => {
     },
     [onRulerDragEnd]
   )
-  return { onMapDrag, onMapDragStart, onMapDragEnd }
+  return useMemo(
+    () => ({ onMapDrag, onMapDragStart, onMapDragEnd }),
+    [onMapDrag, onMapDragEnd, onMapDragStart]
+  )
 }
 
 export const useDebouncedDispatchHighlightedEvent = () => {
   const dispatch = useAppDispatch()
 
-  return useCallback(
-    debounce((eventIds?: string | string[]) => {
-      let ids: string[] | undefined
-      if (eventIds) {
-        ids = Array.isArray(eventIds) ? eventIds : [eventIds]
-      }
-      dispatch(setHighlightedEvents(ids))
-    }, 100),
+  return useMemo(
+    () =>
+      debounce((eventIds?: string | string[]) => {
+        let ids: string[] | undefined
+        if (eventIds) {
+          ids = Array.isArray(eventIds) ? eventIds : [eventIds]
+        }
+        dispatch(setHighlightedEvents(ids))
+      }, 100),
     []
   )
 }

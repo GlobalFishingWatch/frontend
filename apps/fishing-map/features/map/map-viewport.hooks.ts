@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
@@ -21,13 +21,16 @@ const viewStateAtom = atom<MapCoordinates>({
   zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
 })
 
-export const useMapViewState = () => useAtomValue(viewStateAtom)
+export const useMapViewState = () => {
+  return useAtomValue(viewStateAtom)
+}
 export const useMapSetViewState = () => {
   const setViewState = useSetAtom(viewStateAtom)
-  return useCallback(
-    throttle((coordinates: Partial<MapCoordinates>) => {
-      setViewState((prev) => ({ ...prev, ...coordinates }))
-    }, 1),
+  return useMemo(
+    () =>
+      throttle((coordinates: Partial<MapCoordinates>) => {
+        setViewState((prev) => ({ ...prev, ...coordinates }))
+      }, 1),
     [setViewState]
   )
 }
@@ -54,9 +57,9 @@ export const useUpdateViewStateUrlParams = () => {
   const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
   const dispatch = useAppDispatch()
 
-  const updateUrlViewportDebounced = useCallback(
-    debounce(dispatch(updateUrlViewport), URL_VIEWPORT_DEBOUNCED_TIME),
-    []
+  const updateUrlViewportDebounced = useMemo(
+    () => debounce(dispatch(updateUrlViewport), URL_VIEWPORT_DEBOUNCED_TIME),
+    [dispatch]
   )
 
   useEffect(() => {

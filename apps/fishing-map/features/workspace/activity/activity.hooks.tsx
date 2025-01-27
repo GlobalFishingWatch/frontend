@@ -45,8 +45,8 @@ export const useVisualizationsOptions = (
     category === DataviewCategory.Detections
       ? selectDetectionsVisualizationMode
       : category === DataviewCategory.Environment
-      ? selectEnvironmentVisualizationMode
-      : selectActivityVisualizationMode
+        ? selectEnvironmentVisualizationMode
+        : selectActivityVisualizationMode
   )
 
   const onVisualizationModeChange = useCallback(
@@ -99,5 +99,8 @@ export const useVisualizationsOptions = (
     ]
   }, [category, isPositionsLayerAvailable, t])
 
-  return { visualizationOptions, activeVisualizationOption, onVisualizationModeChange }
+  return useMemo(
+    () => ({ visualizationOptions, activeVisualizationOption, onVisualizationModeChange }),
+    [activeVisualizationOption, onVisualizationModeChange, visualizationOptions]
+  )
 }

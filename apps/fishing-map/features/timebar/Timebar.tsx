@@ -209,7 +209,7 @@ const TimebarWrapper = () => {
   const isSmallScreen = useSmallScreen()
 
   const onMouseMove = useCallback(
-    (clientX: number | null, scale: ((arg: number) => Date) | null, isDay?: boolean) => {
+    (clientX: number | null, scale: ((arg: number) => Date) | null) => {
       if (clientX === null || clientX === undefined || isNaN(clientX)) {
         dispatchDisableHighlightedTime()
       } else {
@@ -271,12 +271,12 @@ const TimebarWrapper = () => {
   }, [])
 
   useEffect(() => {
-    if (!isMouseInside) {
+    if (!isMouseInside && highlightedEventIds) {
       requestAnimationFrame(() => {
         dispatchHighlightedEvents(undefined)
       })
     }
-  }, [dispatchHighlightedEvents, isMouseInside])
+  }, [dispatchHighlightedEvents, highlightedEventIds, isMouseInside])
 
   const onMouseDown = useCallback(() => {
     rootElement?.classList.add('dragging')
@@ -297,7 +297,6 @@ const TimebarWrapper = () => {
     [start, end]
   )
 
-  const { zoom } = viewState
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
       if (event?.coordinates) {
@@ -305,11 +304,12 @@ const TimebarWrapper = () => {
           ...viewState,
           latitude: event?.coordinates?.[1],
           longitude: event.coordinates?.[0],
-          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
+          zoom:
+            viewState.zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : viewState.zoom,
         })
       }
     },
-    [viewState, setMapCoordinates, zoom]
+    [viewState, setMapCoordinates]
   )
 
   const showGraph = useMemo(() => {
@@ -330,22 +330,13 @@ const TimebarWrapper = () => {
     }[timebarGraph] as TrackGraphOrientation
   }, [timebarGraph, tracksGraphsData])
 
-  if (!start || !end || isMapDrawing || showTimeComparison) return null
-
-  const loading = false
-  // tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
-  // tracksGraphsData?.some(
-  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-  // ) ||
-  // tracksEvents?.some(
-  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-  // )
-
-  const hasTrackError = false
   // tracks?.some(({ status }) => status === ResourceStatus.Error) ||
   // tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
+  const hasTrackError = false
 
-  const getTracksComponents = () => {
+  const tracksComponents = useMemo(() => {
+    console.log('tracksComponents')
+
     if (hasTrackError) {
       return (
         <div className={styles.error}>
@@ -390,7 +381,45 @@ const TimebarWrapper = () => {
         )}
       </Fragment>
     )
-  }
+  }, [
+    events,
+    hasTrackError,
+    highlightedEventIds,
+    onEventClick,
+    screenshotModalOpen,
+    showGraph,
+    t,
+    trackGraphSteps,
+    tracks,
+    tracksGraphsData,
+  ])
+
+  const timebarChildren = useMemo(() => {
+    console.log('timebarChildren')
+    return (
+      <Fragment>
+        {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
+          timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
+          timebarVisualisation === TimebarVisualisations.VesselGroup ||
+          timebarVisualisation === TimebarVisualisations.Environment) && (
+          <TimebarActivityGraph visualisation={timebarVisualisation} />
+        )}
+        {timebarVisualisation === TimebarVisualisations.Vessel && tracksComponents}
+        <TimebarHighlighterWrapper showTooltip={isMouseInside} />
+      </Fragment>
+    )
+  }, [isMouseInside, timebarVisualisation, tracksComponents])
+
+  if (!start || !end || isMapDrawing || showTimeComparison) return null
+
+  const loading = false
+  // tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
+  // tracksGraphsData?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // ) ||
+  // tracksEvents?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // )
 
   return (
     <div
@@ -400,6 +429,7 @@ const TimebarWrapper = () => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+      role="toolbar"
     >
       <Timebar
         disablePlayback={vesselGroupsFiltering}
@@ -429,18 +459,7 @@ const TimebarWrapper = () => {
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language as Locale}
       >
-        {!isSmallScreen ? (
-          <Fragment>
-            {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
-              timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
-              timebarVisualisation === TimebarVisualisations.VesselGroup ||
-              timebarVisualisation === TimebarVisualisations.Environment) && (
-              <TimebarActivityGraph visualisation={timebarVisualisation} />
-            )}
-            {timebarVisualisation === TimebarVisualisations.Vessel && getTracksComponents()}
-            <TimebarHighlighterWrapper showTooltip={isMouseInside} />
-          </Fragment>
-        ) : null}
+        {!isSmallScreen ? timebarChildren : null}
       </Timebar>
       {!isSmallScreen && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />
