@@ -89,7 +89,6 @@ const ReportActivityEvolution: React.FC<{
             interval="preserveStartEnd"
             tickFormatter={(tick: string) => formatDateTicks(tick, data?.interval)}
             axisLine={paddedDomain[0] === 0}
-            type={'number'}
           />
           <YAxis
             scale="linear"
