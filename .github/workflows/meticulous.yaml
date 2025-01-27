@@ -63,11 +63,11 @@ jobs:
         # The sleep is often required to ensure your app is readily being served
         # by the time the Meticulous tests start
         run: |
-          yarn nx build:prepare fishing-map
+          yarn nx prepare:build fishing-map
 
       - name: Serve project
         run: |
-          yarn nx serve fishing-map &
+          yarn nx serve:build fishing-map &
           sleep 15
 
       - name: Run Meticulous tests
