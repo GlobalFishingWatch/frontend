@@ -13,9 +13,11 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { t } from 'features/i18n/i18n'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
-import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
+import {
+  getVesselsFiltered,
+  normalizeVesselProperties,
+} from 'features/reports/areas/area-reports.utils'
 import {
   selectVGREventsResultsPerPage,
   selectVGREventsVesselFilter,
@@ -94,13 +96,8 @@ export const selectVGREventsVessels = createSelector(
       return {
         ...vesselWithEvents,
         ...identity,
+        ...normalizeVesselProperties(identity),
         shipName,
-        geartype:
-          (identity.geartypes || [])
-            .sort()
-            .map((g) => formatInfoField(g, 'geartypes'))
-            .join(', ') || OTHER_CATEGORY_LABEL,
-        flagTranslated: t(`flags:${identity.flag as string}` as any),
       } as EventsStatsVessel
     })
     return insightVessels.sort((a, b) => b.numEvents - a.numEvents)
@@ -132,9 +129,10 @@ export const selectVGREventsVesselsGrouped = createSelector(
   [selectVGREventsVesselsFiltered, selectVGREventsVesselsProperty],
   (vessels, property) => {
     if (!vessels?.length) return []
+
     const orderedGroups: { name: string; value: number }[] = Object.entries(
       groupBy(vessels, (vessel) => {
-        return property === 'flag' ? vessel.flagTranslated : (vessel.geartype as string)
+        return property === 'flag' ? vessel.flagTranslated : (vessel[property] as string)
       })
     )
       .map(([key, value]) => ({ name: key, property: key, value: value.length }))
@@ -142,6 +140,7 @@ export const selectVGREventsVesselsGrouped = createSelector(
 
     const groupsWithoutOther: GraphDataGroup[] = []
     const otherGroups: GraphDataGroup[] = []
+
     orderedGroups.forEach((group) => {
       if (
         group.name === 'null' ||

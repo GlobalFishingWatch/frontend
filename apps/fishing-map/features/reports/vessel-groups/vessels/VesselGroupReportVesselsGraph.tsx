@@ -40,8 +40,9 @@ type ReportGraphTooltipProps = {
   type: VGRVesselsSubsection | 'geartype'
 }
 
-const FILTER_PROPERTIES: Record<VGRVesselsSubsection | 'geartype', string> = {
+const FILTER_PROPERTIES: Record<VGRVesselsSubsection | 'geartype' | 'shiptype', string> = {
   flag: 'flag',
+  shiptype: 'type',
   shiptypes: 'type',
   geartypes: 'gear',
   geartype: 'gear',
@@ -172,11 +173,10 @@ export default function VesselGroupReportVesselsGraph({
   const { dispatchQueryParams } = useLocationConnect()
 
   const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
-    if (payload && payload?.name !== OTHER_CATEGORY_LABEL) {
+    const propertyParam = FILTER_PROPERTIES[property as VGRVesselsSubsection]
+    if (payload && propertyParam && payload?.name !== OTHER_CATEGORY_LABEL) {
       dispatchQueryParams({
-        [filterQueryParam]: `${FILTER_PROPERTIES[property as VGRVesselsSubsection]}:${
-          payload.name
-        }`,
+        [filterQueryParam]: `${propertyParam}:${payload.name}`,
         [pageQueryParam]: 0,
       })
     }
