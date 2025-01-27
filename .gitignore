@@ -96,6 +96,7 @@ typings/
 .nuxt
 dist
 build
+/server
 
 # Gatsby files
 .cache/
