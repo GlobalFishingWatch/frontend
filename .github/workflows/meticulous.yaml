@@ -10,6 +10,9 @@ name: Meticulous
 # from the base commit of the PR on the main branch to compare against.
 on:
   pull_request: {}
+  push:
+    branches:
+      - master
   # Important: We need the workflow to be triggered on workflow_dispatch events,
   # so that Meticulous can run the workflow on the base commit to compare
   # against if an existing workflow hasn't run
@@ -29,7 +32,7 @@ jobs:
   test:
     name: Report diffs
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'test')
+    if: contains(github.event.pull_request.labels.*.name, 'test') && github.event_name != 'push'
 
     steps:
       - name: Checkout repository
@@ -65,7 +68,7 @@ jobs:
       - name: Serve project
         run: |
           yarn nx serve fishing-map &
-          sleep 5
+          sleep 15
 
       - name: Run Meticulous tests
         uses: alwaysmeticulous/report-diffs-action/cloud-compute@v1
