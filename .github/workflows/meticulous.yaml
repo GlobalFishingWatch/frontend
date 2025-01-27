@@ -32,7 +32,7 @@ jobs:
   test:
     name: Report diffs
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'test') && github.event_name != 'push'
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'test'))
 
     steps:
       - name: Checkout repository
