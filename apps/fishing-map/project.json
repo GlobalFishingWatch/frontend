@@ -70,51 +70,43 @@
         "commands": ["rm -rf dist/apps/fishing-map", "rm -rf .next"]
       }
     },
-    "serve": {
-      "executor": "@nx/next:server",
-      "options": {
-        "buildTarget": "fishing-map:build",
-        "dev": true,
-        "port": 3003,
-        "turbo": true
-      },
-      "configurations": {
-        "production": {
-          "buildTarget": "fishing-map:build:production",
-          "dev": false
-        }
-      }
-    },
-    "export": {
-      "executor": "@nx/next:export",
-      "options": {
-        "buildTarget": "fishing-map:build:production"
-      }
-    },
     "i18n": {
       "executor": "nx:run-script",
       "options": {
         "script": "i18n:parser"
       }
     },
-    "rename-export": {
+    "prepare-serve": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "rm -rf dist/apps/fishing-map/map",
-          "mv dist/apps/fishing-map/exported dist/apps/fishing-map/map"
+          "rm -rf server",
+          "mkdir -p ./server && mkdir -p server/apps/fishing-map/public && mkdir -p server/dist/apps/fishing-map/.next/static",
+          "cp -rp ./dist/apps/fishing-map/public/ ./server/apps/fishing-map/public/",
+          "cp -rp ./dist/apps/fishing-map/.next/standalone/* ./server/",
+          "cp -rp ./dist/apps/fishing-map/.next/static/ ./server/dist/apps/fishing-map/.next/static/"
         ],
         "parallel": false
       }
     },
-    "serve:build": {
+    "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "nx build fishing-map --parallel",
-          "nx rename-export fishing-map",
-          "serve dist/apps/fishing-map"
-        ],
+        "commands": ["node ./server/apps/fishing-map/server.js"],
+        "parallel": false
+      }
+    },
+    "build:prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx build fishing-map --parallel", "nx prepare-serve fishing-map"],
+        "parallel": false
+      }
+    },
+    "build:serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx build:prepare fishing-map", "nx serve fishing-map"],
         "parallel": false
       }
     },
