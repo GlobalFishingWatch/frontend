@@ -35,6 +35,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
+import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import {
@@ -51,7 +52,7 @@ import {
 } from 'features/timebar/timebar-vessel.hooks'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
-import { selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { getUTCDateTime } from 'utils/dates'
@@ -177,6 +178,8 @@ const TimebarWrapper = () => {
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
+  const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
+  const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
@@ -258,8 +261,11 @@ const TimebarWrapper = () => {
         })
       }
       onTimebarChange(e.start, e.end)
+      if (reportAreaLocation) {
+        fitAreaInViewport()
+      }
     },
-    [onTimebarChange]
+    [fitAreaInViewport, onTimebarChange, reportAreaLocation]
   )
 
   const onMouseEnter = useCallback(() => {

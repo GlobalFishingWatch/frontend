@@ -85,9 +85,9 @@ export const useSetTimerange = () => {
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
 
-  const updateUrlTimerangeDebounced = useCallback(
-    debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
-    []
+  const updateUrlTimerangeDebounced = useMemo(
+    () => debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
+    [dispatch]
   )
 
   const setTimerange = useCallback(
@@ -120,17 +120,12 @@ export const useSetTimerange = () => {
 export const useTimerangeConnect = () => {
   const timerangeAtom = useAtomValue(timerangeState)
   const setTimerange = useSetTimerange()
-  const reportLocation = useSelector(selectIsAnyAreaReportLocation)
-  const fitAreaInViewport = useFitAreaInViewport()
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
       setTimerange({ start, end })
-      if (reportLocation) {
-        fitAreaInViewport()
-      }
     },
-    [fitAreaInViewport, reportLocation, setTimerange]
+    [setTimerange]
   )
 
   return useMemo(() => {
@@ -329,5 +324,8 @@ export const useTimebarVisualisation = () => {
     activeEnvDataviews,
     hasChangedSettingsOnce,
   ])
-  return { timebarVisualisation, dispatchTimebarVisualisation }
+  return useMemo(
+    () => ({ timebarVisualisation, dispatchTimebarVisualisation }),
+    [dispatchTimebarVisualisation, timebarVisualisation]
+  )
 }

@@ -90,7 +90,6 @@ export function useMapViewport() {
       ?.getViewports?.()
       .find((v: any) => v.id === MAP_VIEW_ID) as WebMercatorViewport
   } catch (e: any) {
-    console.warn(e)
     return undefined
   }
 }
