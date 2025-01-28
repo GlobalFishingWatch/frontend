@@ -1,6 +1,7 @@
 import { featureCollection, multiPolygon } from '@turf/helpers'
 import { difference, dissolve } from '@turf/turf'
 import { format } from 'd3-format'
+import { uniq } from 'es-toolkit'
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { DateTime } from 'luxon'
 import { matchSorter } from 'match-sorter'
@@ -23,8 +24,15 @@ import {
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import type { VesselGroupReportVesselParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.types'
+import type { VesselLastIdentity } from 'features/search/search.slice'
+import { formatInfoField } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 
+import type { FilterProperty } from '../vessel-groups/vessel-group-report.config'
+import {
+  FILTER_PROPERTIES,
+  OTHER_CATEGORY_LABEL,
+} from '../vessel-groups/vessel-group-report.config'
 import type { VesselGroupVesselTableParsed } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 
 import {
@@ -287,13 +295,21 @@ export const parseReportUrl = (url: string) => {
   }
 }
 
-export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
-export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
-  name: ['shipName'],
-  flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
-  mmsi: ['mmsi'],
-  gear: ['geartype'],
-  type: ['vesselType'],
+export function normalizeVesselProperties(identity: VesselLastIdentity) {
+  return {
+    shipName: formatInfoField(identity.shipname, 'shipname') as string,
+    geartype:
+      uniq(identity.geartypes || [])
+        .sort()
+        .map((g) => formatInfoField(g, 'geartypes'))
+        .join(', ') || OTHER_CATEGORY_LABEL,
+    shiptype:
+      uniq(identity.shiptypes || [])
+        .sort()
+        .map((g) => formatInfoField(g, 'shiptypes'))
+        .join(', ') || OTHER_CATEGORY_LABEL,
+    flagTranslated: t(`flags:${identity.flag as string}` as any),
+  }
 }
 
 export function getVesselsFiltered<
