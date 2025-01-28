@@ -13,7 +13,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>
           <meta charSet="utf-8" />
           <meta
             property="og:description"
