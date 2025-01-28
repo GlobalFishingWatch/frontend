@@ -234,7 +234,12 @@ export const useMigrateWorkspaceToast = () => {
         {/* <Button onClick={dissmissToast} type="secondary" className={styles.updateBtn}>
           {t('workspace.migrationMaintain', 'Skip')}
         </Button> */}
-        <Button loading={loading} onClick={updateWorkspace} className={styles.updateBtn}>
+        <Button
+          loading={loading}
+          testId="migrate-workspace-btn"
+          onClick={updateWorkspace}
+          className={styles.updateBtn}
+        >
           {t('workspace.migrationUpdate', 'Update')}
         </Button>
       </div>
