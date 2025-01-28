@@ -92,19 +92,22 @@ export const useHighlightReportArea = () => {
 const defaultParams = {} as FitBoundsParams
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
   const map = useDeckMap()
-  const viewport = useMapViewport()
   return useMemo(() => {
-    if (!bounds || !map || !viewport) return null
-    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
-      padding: FIT_BOUNDS_REPORT_PADDING,
-      ...params,
-    })
-    return {
-      latitude: parseFloat(latitude.toFixed(8)),
-      longitude: parseFloat(longitude.toFixed(8)),
-      zoom: parseFloat(zoom.toFixed(8)),
+    if (!bounds || !map) return null
+    try {
+      const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
+        padding: FIT_BOUNDS_REPORT_PADDING,
+        ...params,
+      })
+      return {
+        latitude: parseFloat(latitude.toFixed(8)),
+        longitude: parseFloat(longitude.toFixed(8)),
+        zoom: parseFloat(zoom.toFixed(8)),
+      }
+    } catch (e: any) {
+      return null
     }
-  }, [bounds, map, params, viewport])
+  }, [bounds, map, params])
 }
 
 export function useStatsBounds(dataview?: UrlDataviewInstance) {
@@ -124,16 +127,23 @@ export function useStatsBounds(dataview?: UrlDataviewInstance) {
     }
   )
 
-  const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)
+  console.log('stats:', stats)
+  const statsBbox = useMemo(
+    () => stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox),
+    [stats]
+  )
   const loaded = !isFetching && isSuccess
-  return {
-    loaded: loaded,
-    bbox: loaded
-      ? statsBbox?.some((v) => v === null || v === undefined)
-        ? ENTIRE_WORLD_REPORT_AREA_BOUNDS
-        : statsBbox!
-      : null,
-  }
+  return useMemo(
+    () => ({
+      loaded: loaded,
+      bbox: loaded
+        ? statsBbox?.some((v) => v === null || v === undefined)
+          ? ENTIRE_WORLD_REPORT_AREA_BOUNDS
+          : statsBbox!
+        : null,
+    }),
+    [loaded, statsBbox]
+  )
 }
 
 export function useVesselGroupActivityBounds() {
@@ -149,28 +159,37 @@ export function useVesselGroupBounds(dataviewId?: string) {
 }
 
 export function useReportAreaBounds() {
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  // const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  // const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
-  const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
   const { loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
-  if (isVesselGroupReportLocation) {
-    return {
-      loaded: vesselGroupLoaded,
-      bbox: vesselGroupBbox,
+  return useMemo(() => {
+    // if (isVesselGroupReportLocation) {
+    //   return {
+    //     loaded: vesselGroupLoaded,
+    //     bbox: vesselGroupBbox,
+    //   }
+    // }
+    if (isPortReportLocation) {
+      return {
+        loaded: portLoaded,
+        bbox: portBbox,
+      }
     }
-  }
-  if (isPortReportLocation) {
     return {
-      loaded: portLoaded,
-      bbox: portBbox,
+      loaded: reportAreaStatus === AsyncReducerStatus.Finished,
+      bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
     }
-  }
-  return {
-    loaded: reportAreaStatus === AsyncReducerStatus.Finished,
-    bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
-  }
+  }, [
+    isPortReportLocation,
+    portBbox,
+    portLoaded,
+    reportArea?.bounds,
+    reportArea?.geometry?.bbox,
+    reportAreaStatus,
+  ])
 }
 
 export function useReportAreaInViewport() {
@@ -334,10 +353,13 @@ export function usePortsReportAreaFootprint() {
 
 export function usePortsReportAreaFootprintBounds() {
   const portReportFootprintArea = usePortsReportAreaFootprint()
-  return {
-    loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
-    bbox: portReportFootprintArea?.data?.bounds,
-  }
+  return useMemo(
+    () => ({
+      loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
+      bbox: portReportFootprintArea?.data?.bounds,
+    }),
+    [portReportFootprintArea?.data?.bounds, portReportFootprintArea?.status]
+  )
 }
 
 export function usePortsReportAreaFootprintFitBounds() {

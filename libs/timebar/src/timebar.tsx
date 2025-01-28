@@ -244,14 +244,6 @@ export class Timebar extends Component<TimebarProps> {
     this.notifyChange(start, end, EVENT_SOURCE.MOUNT)
   }
 
-  static getDerivedStateFromProps(props: TimebarProps) {
-    // let absolute end run through the end of the day
-    const absoluteEnd = DateTime.fromISO(props.absoluteEnd, { zone: 'utc' }).endOf('day').toISO()
-    return {
-      absoluteEnd,
-    }
-  }
-
   toggleTimeRangeSelector = () => {
     this.setState((prevState: TimebarState) => ({
       showTimeRangeSelector: !prevState.showTimeRangeSelector,
@@ -386,6 +378,7 @@ export class Timebar extends Component<TimebarProps> {
       start,
       end,
       absoluteStart,
+      absoluteEnd,
       bookmarkStart,
       bookmarkEnd,
       bookmarkPlacement,
@@ -405,9 +398,6 @@ export class Timebar extends Component<TimebarProps> {
     } = this.props as TimebarProps
 
     // this.setLocale(locale)
-
-    // state.absoluteEnd overrides the value set in props.absoluteEnd - see getDerivedStateFromProps
-    const { showTimeRangeSelector, absoluteEnd } = this.state
 
     this.maximumRangeMs = this.getMaximumRangeMs(maximumRange, maximumRangeUnit)
     this.minimumRangeMs = this.getMinimumRangeMs(minimumRange, minimumRangeUnit)
@@ -441,7 +431,7 @@ export class Timebar extends Component<TimebarProps> {
             start={start}
             end={end}
             absoluteStart={absoluteStart}
-            absoluteEnd={absoluteEnd as string}
+            absoluteEnd={this.state.absoluteEnd as string}
             onTick={this.onPlaybackTick}
             onTogglePlay={this.onTogglePlay}
             intervals={intervals}
@@ -452,13 +442,13 @@ export class Timebar extends Component<TimebarProps> {
         )}
 
         <div className={cx('print-hidden', styles.timeActions)}>
-          {showTimeRangeSelector && (
+          {this.state.showTimeRangeSelector && (
             <TimeRangeSelector
               labels={labels.timerange}
               start={start}
               end={end}
               absoluteStart={absoluteStart}
-              absoluteEnd={absoluteEnd as string}
+              absoluteEnd={this.state.absoluteEnd as string}
               onSubmit={this.onTimeRangeSelectorSubmit}
               onDiscard={this.toggleTimeRangeSelector}
               latestAvailableDataDate={this.props.latestAvailableDataDate}
@@ -506,7 +496,7 @@ export class Timebar extends Component<TimebarProps> {
           onMouseLeave={this.props.onMouseLeave}
           onMouseMove={this.props.onMouseMove}
           absoluteStart={absoluteStart}
-          absoluteEnd={absoluteEnd as string}
+          absoluteEnd={absoluteEnd}
           onBookmarkChange={this.props.onBookmarkChange}
           bookmarkStart={bookmarkStart}
           bookmarkEnd={bookmarkEnd}

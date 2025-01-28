@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
@@ -81,7 +81,7 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
     [upsertDataviewInstance]
   )
 
-  return { addDataviewFromDatasetToWorkspace }
+  return useMemo(() => ({ addDataviewFromDatasetToWorkspace }), [addDataviewFromDatasetToWorkspace])
 }
 
 export const useDatasetModalOpenConnect = () => {
@@ -95,10 +95,13 @@ export const useDatasetModalOpenConnect = () => {
     [dispatch]
   )
 
-  return {
-    datasetModalOpen,
-    dispatchDatasetModalOpen,
-  }
+  return useMemo(
+    () => ({
+      datasetModalOpen,
+      dispatchDatasetModalOpen,
+    }),
+    [datasetModalOpen, dispatchDatasetModalOpen]
+  )
 }
 
 export const useDatasetModalConfigConnect = () => {
@@ -112,10 +115,13 @@ export const useDatasetModalConfigConnect = () => {
     [dispatch]
   )
 
-  return {
-    ...datasetModal,
-    dispatchDatasetModalConfig,
-  }
+  return useMemo(
+    () => ({
+      ...datasetModal,
+      dispatchDatasetModalConfig,
+    }),
+    [datasetModal, dispatchDatasetModalConfig]
+  )
 }
 
 export const useDatasetsAPI = () => {
@@ -166,12 +172,15 @@ export const useDatasetsAPI = () => {
     [dispatch]
   )
 
-  return {
-    dispatchFetchDataset,
-    dispatchUpsertDataset,
-    dispatchUpdateDataset,
-    dispatchDeleteDataset,
-  }
+  return useMemo(
+    () => ({
+      dispatchFetchDataset,
+      dispatchUpsertDataset,
+      dispatchUpdateDataset,
+      dispatchDeleteDataset,
+    }),
+    [dispatchDeleteDataset, dispatchFetchDataset, dispatchUpdateDataset, dispatchUpsertDataset]
+  )
 }
 
 export const useCarrierLatestConnect = () => {
@@ -191,11 +200,14 @@ export const useCarrierLatestConnect = () => {
     }
   }, [dispatch])
 
-  return {
-    carrierLatest,
-    carrierLatestStatus,
-    dispatchFetchLatestCarrier,
-  }
+  return useMemo(
+    () => ({
+      carrierLatest,
+      carrierLatestStatus,
+      dispatchFetchLatestCarrier,
+    }),
+    [carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier]
+  )
 }
 
 export const useAutoRefreshImportingDataset = (

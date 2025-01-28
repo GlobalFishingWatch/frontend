@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
 import type { Query } from 'redux-first-router'
-import type { QueryParams,WorkspaceParam } from 'types'
+import type { QueryParams, WorkspaceParam } from 'types'
 
 import { WorkspaceCategory } from 'data/workspaces'
 

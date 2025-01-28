@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { gfwBaseQuery } from 'queries/base'
 
-import type { StatFields, StatsParams,StatType } from '@globalfishingwatch/api-types'
+import type { StatFields, StatsParams, StatType } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -22,6 +22,7 @@ interface CustomBaseQueryArg extends FetchBaseQueryArgs {
   dataview: UrlDataviewInstance
   timerange: TimeRange
 }
+
 const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ queryArgs }) => {
   return [
     queryArgs.dataview?.id,

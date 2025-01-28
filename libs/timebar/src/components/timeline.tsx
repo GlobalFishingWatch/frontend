@@ -9,7 +9,7 @@ import memoize from 'memoize-one'
 import ResizeObserver from 'resize-observer-polyfill'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { FOURWINGS_INTERVALS_ORDER,getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { EVENT_SOURCE } from '../constants'
 import type { TimebarProps } from '../timebar'

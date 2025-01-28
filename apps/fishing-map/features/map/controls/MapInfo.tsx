@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 
+import { useMapMouseHover } from 'features/map/map-interactions.hooks'
 import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
 import { toFixed } from 'utils/shared'
 
@@ -10,9 +11,10 @@ import TimelineDatesRange from './TimelineDatesRange'
 
 import styles from './MapInfo.module.css'
 
-export default function MapInfo({ center }: { center?: number[] }) {
+export default function MapInfo() {
   const showTimeComparison = useSelector(selectShowTimeComparison)
-  const [x, y] = center || []
+  const { hoveredCoordinates } = useMapMouseHover()
+  const [x, y] = hoveredCoordinates || []
   return (
     <div className={styles.info}>
       <div className={styles.flex}>

@@ -73,16 +73,19 @@ export const selectActiveActivityDataviewsByVisualisation = (
     }
   )
 
-const selectDatasetsExtent = createSelector(
+const selectActiveDatasets = createSelector(
   [selectDataviewInstancesResolved, selectAllDatasets],
   (dataviews, datasets) => {
     const activeDataviewDatasets = getDatasetsInDataviews(dataviews)
-    const activeDatasets = datasets.filter((d) => activeDataviewDatasets.includes(d.id))
-    return getDatasetsExtent<number>(activeDatasets, {
-      format: 'timestamp',
-    })
+    return datasets.filter((d) => activeDataviewDatasets.includes(d.id))
   }
 )
+
+const selectDatasetsExtent = createSelector([selectActiveDatasets], (activeDatasets) => {
+  return getDatasetsExtent<number>(activeDatasets, {
+    format: 'timestamp',
+  })
+})
 
 export const selectAvailableStart = createSelector([selectDatasetsExtent], (datasetsExtent) => {
   const defaultAvailableStartMs = getUTCDateTime(AVAILABLE_START).toMillis()
@@ -96,7 +99,9 @@ export const selectAvailableEnd = createSelector([selectDatasetsExtent], (datase
   const defaultAvailableEndMs = getUTCDateTime(AVAILABLE_END).toMillis()
   const availableEndMs = getUTCDateTime(
     Math.max(defaultAvailableEndMs, datasetsExtent.extentEnd || -Infinity)
-  ).toISO() as string
+  )
+    .endOf('day')
+    .toISO() as string
   return availableEndMs
 })
 

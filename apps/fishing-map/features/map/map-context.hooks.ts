@@ -2,7 +2,7 @@ import type { RefObject } from 'react'
 import { useEffect } from 'react'
 import type { Deck } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
-import { atom, useAtomValue,useSetAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 
 const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)
