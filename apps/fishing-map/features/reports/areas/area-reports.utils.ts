@@ -28,7 +28,11 @@ import type { VesselLastIdentity } from 'features/search/search.slice'
 import { formatInfoField } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 
-import { OTHER_CATEGORY_LABEL } from '../vessel-groups/vessel-group-report.config'
+import type { FilterProperty } from '../vessel-groups/vessel-group-report.config'
+import {
+  FILTER_PROPERTIES,
+  OTHER_CATEGORY_LABEL,
+} from '../vessel-groups/vessel-group-report.config'
 import type { VesselGroupVesselTableParsed } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 
 import {
@@ -289,15 +293,6 @@ export const parseReportUrl = (url: string) => {
     end: (reportConfig['date-range'] as string)?.split(',')[1],
     datasets: reportConfig.datasets,
   }
-}
-
-export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
-export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
-  name: ['shipName'],
-  flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
-  mmsi: ['mmsi'],
-  gear: ['geartype'],
-  type: ['vesselType', 'shiptype'],
 }
 
 export function normalizeVesselProperties(identity: VesselLastIdentity) {
