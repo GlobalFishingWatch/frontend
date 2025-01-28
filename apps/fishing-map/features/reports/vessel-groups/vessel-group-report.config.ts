@@ -1,9 +1,6 @@
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
 
-import type { FilterProperty } from '../areas/area-reports.utils'
-import { FILTER_PROPERTIES } from '../areas/area-reports.utils'
-
 export const OTHER_CATEGORY_LABEL = 'OTHER'
 
 export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
@@ -19,6 +16,15 @@ export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
   vGREventsResultsPerPage: REPORT_VESSELS_PER_PAGE,
   vGRVesselsOrderProperty: 'shipname',
   vGRVesselsOrderDirection: 'asc',
+}
+
+export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
+export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
+  name: ['shipName'],
+  flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
+  mmsi: ['mmsi'],
+  gear: ['geartype'],
+  type: ['vesselType', 'shiptype'],
 }
 
 type ReportFilterProperty = FilterProperty | 'source'

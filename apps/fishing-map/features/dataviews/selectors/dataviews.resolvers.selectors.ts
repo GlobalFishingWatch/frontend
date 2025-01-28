@@ -173,16 +173,31 @@ export const selectDataviewInstancesMerged = createSelector(
       }
     }
     if (isPortReportLocation) {
-      const footprintDataviewInstance = {
-        id: `${PORTS_FOOTPRINT_DATAVIEW_SLUG}-${Date.now()}`,
-        dataviewId: PORTS_FOOTPRINT_DATAVIEW_SLUG,
-        config: {
-          visible: true,
+      let footprintDataviewInstance = mergedDataviewInstances?.find(
+        (dataview) => dataview.id === PORTS_FOOTPRINT_DATAVIEW_SLUG
+      )
+      if (footprintDataviewInstance) {
+        footprintDataviewInstance.config = {
+          ...footprintDataviewInstance.config,
           filters: {
+            ...footprintDataviewInstance.config?.filters,
             gfw_id: [reportPortId],
           },
-        },
+        }
+      } else {
+        footprintDataviewInstance = {
+          id: `${PORTS_FOOTPRINT_DATAVIEW_SLUG}-${Date.now()}`,
+          dataviewId: PORTS_FOOTPRINT_DATAVIEW_SLUG,
+          config: {
+            pickable: false,
+            visible: true,
+            filters: {
+              gfw_id: [reportPortId],
+            },
+          },
+        }
       }
+      console.log('🚀 ~ footprintDataviewInstance:', footprintDataviewInstance)
       mergedDataviewInstances.push(footprintDataviewInstance)
     }
     return mergedDataviewInstances
