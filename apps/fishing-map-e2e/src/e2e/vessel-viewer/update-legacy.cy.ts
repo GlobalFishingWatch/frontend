@@ -1,4 +1,4 @@
-import { URL_VESSEL_PROFILE } from '../../constants/urls'
+import { URL_VESSEL_PROFILE_2020 } from '../../constants/urls'
 import { disablePopups, switchLanguage, verifyTracksInTimebar } from '../../support/app.po'
 
 describe('Access to vessel viewver - direct', () => {
@@ -11,8 +11,11 @@ describe('Access to vessel viewver - direct', () => {
     })
   })
 
-  it('should access to a vessel profile using a link and check basic data', () => {
-    cy.visit(URL_VESSEL_PROFILE)
+  it('should access to a vessel profile using a link and check basic data after run migration updated', () => {
+    cy.visit(URL_VESSEL_PROFILE_2020)
+
+    cy.getBySel('migrate-workspace-btn').click()
+
     verifyTracksInTimebar(4)
 
     // Do a quick test of the loaded content
@@ -50,16 +53,5 @@ describe('Access to vessel viewver - direct', () => {
 
     cy.getBySel('vv-insights-tab').click()
     cy.get('#insights').contains('Vessel insights')
-  })
-
-  it('should access to a vessel insights profile using a link post v3', () => {
-    cy.visit(URL_VESSEL_PROFILE)
-    cy.getBySel('vv-insights-tab').click()
-    cy.get('#coverage').contains('AIS Coverage')
-    cy.get('#gaps').contains('AIS Off Events')
-    // cy.get('#fishing').contains('Fishing Events')
-    cy.get('#IUU').contains('RFMO IUU Vessel List')
-    cy.get('#flagChanges').contains('Flag changes')
-    cy.get('#MOULists').contains('Tokyo and Paris MOU Lists')
   })
 })
