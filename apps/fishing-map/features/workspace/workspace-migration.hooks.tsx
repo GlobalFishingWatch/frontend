@@ -21,8 +21,16 @@ import {
 import { selectIsReportOwner } from 'features/reports/areas/area-reports.selectors'
 import { updateReportThunk } from 'features/reports/areas/area-reports.slice'
 import { getWorkspaceReport } from 'features/reports/areas/area-reports.utils'
+import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
+import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { selectIsAnyAreaReportLocation, selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import {
+  selectIsAnyAreaReportLocation,
+  selectIsAnyVesselLocation,
+  selectUrlDataviewInstances,
+  selectVesselId,
+} from 'routes/routes.selectors'
 
 import { useDataviewInstancesConnect } from './workspace.hook'
 import { selectIsWorkspaceOwner } from './workspace.selectors'
@@ -34,9 +42,10 @@ export const useMigrateWorkspace = () => {
   const deprecatedDataviewInstances = useSelector(selectDeprecatedDataviewInstances)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const workspace = useSelector(selectWorkspaceWithCurrentState)
-  // const vesselDatasetId = useSelector(selectVesselDatasetId)
-  // const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
-  // const { dispatchQueryParams } = useLocationConnect()
+  const vesselDatasetId = useSelector(selectVesselDatasetId)
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const vesselId = useSelector(selectVesselId)
+  const { dispatchQueryParams } = useLocationConnect()
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -98,12 +107,13 @@ export const useMigrateWorkspace = () => {
       if (dataviewInstancesToMigrate.length) {
         upsertDataviewInstance(dataviewInstancesToMigrate)
       }
-      // TODO update the vesselDatasetId in the url too
-      // if (isAnyVesselLocation && deprecatedDatasets[vesselDatasetId]) {
-      //   setTimeout(() => {
-      //     dispatchQueryParams({ vesselDatasetId: deprecatedDatasets[vesselDatasetId] })
-      //   }, 100)
-      // }
+      if (isAnyVesselLocation && deprecatedDatasets[vesselDatasetId]) {
+        const newVesselDatasetId = deprecatedDatasets[vesselDatasetId]
+        setTimeout(() => {
+          dispatchQueryParams({ vesselDatasetId: newVesselDatasetId })
+          dispatch(fetchVesselInfoThunk({ vesselId, datasetId: newVesselDatasetId }))
+        }, 100)
+      }
       const migratedWorkspace = {
         ...workspace,
         // This is needed to get the latest workspace state without waiting to resolve dataviewInstances
@@ -148,8 +158,12 @@ export const useMigrateWorkspace = () => {
     deprecatedDatasets,
     deprecatedDataviewInstances,
     dispatch,
+    dispatchQueryParams,
+    isAnyVesselLocation,
     upsertDataviewInstance,
     urlDataviewInstances,
+    vesselDatasetId,
+    vesselId,
     workspace,
   ])
 
