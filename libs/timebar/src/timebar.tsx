@@ -378,6 +378,7 @@ export class Timebar extends Component<TimebarProps> {
       start,
       end,
       absoluteStart,
+      absoluteEnd,
       bookmarkStart,
       bookmarkEnd,
       bookmarkPlacement,
@@ -495,7 +496,7 @@ export class Timebar extends Component<TimebarProps> {
           onMouseLeave={this.props.onMouseLeave}
           onMouseMove={this.props.onMouseMove}
           absoluteStart={absoluteStart}
-          absoluteEnd={this.state.absoluteEnd as string}
+          absoluteEnd={absoluteEnd}
           onBookmarkChange={this.props.onBookmarkChange}
           bookmarkStart={bookmarkStart}
           bookmarkEnd={bookmarkEnd}

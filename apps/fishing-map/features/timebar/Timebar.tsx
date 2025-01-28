@@ -335,8 +335,6 @@ const TimebarWrapper = () => {
   const hasTrackError = false
 
   const tracksComponents = useMemo(() => {
-    console.log('tracksComponents')
-
     if (hasTrackError) {
       return (
         <div className={styles.error}>
@@ -395,7 +393,6 @@ const TimebarWrapper = () => {
   ])
 
   const timebarChildren = useMemo(() => {
-    console.log('timebarChildren')
     return (
       <Fragment>
         {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
