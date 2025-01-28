@@ -1,15 +1,15 @@
-import { Fragment, useCallback,useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
-import type { Tab } from '@globalfishingwatch/ui-components';
+import type { Tab } from '@globalfishingwatch/ui-components'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
 import { IS_STANDALONE_APP } from 'data/config'
 import ActivityByType from 'features/activity-by-type/activity-by-type'
-import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
 import {
   getRelatedDatasetByType,
@@ -22,10 +22,10 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { resetFilters } from 'features/event-filters/filters.slice'
 import I18nDate from 'features/i18n/i18nDate'
-import Map from 'features/map/Map'
+// import Map from 'features/map/Map'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
-import RiskSummary from 'features/risk-summary/risk-summary'
+// import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectVesselDataviewMatchesCurrentVessel } from 'features/vessels/vessels.selectors'
@@ -44,14 +44,16 @@ import {
   selectMergedVesselId,
   selectSearchableQueryParams,
   selectUrlAkaVesselQuery,
+  selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { VesselAPISource } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import Activity from './components/activity/Activity'
+// import Activity from './components/activity/Activity'
 import Info from './components/Info'
 import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
+import TabDeprecated from './TabDeprecated'
 
 import styles from './Profile.module.css'
 
@@ -63,6 +65,7 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
   const [lastPosition] = useState(null)
   const query = useSelector(selectSearchableQueryParams)
   const vesselProfileId = useSelector(selectVesselProfileId)
+  const vesselId = useSelector(selectVesselId)
   const { dispatchLocation } = useLocationConnect()
   const vesselStatus = useSelector(selectVesselsStatus)
   const vesselDataview = useSelector(selectVesselDataview)
@@ -213,27 +216,17 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
     () => ({
       id: 'map',
       title: t('common.map', 'MAP').toLocaleUpperCase(),
-      content: vessel ? (
-        <div className={styles.mapContainer}>
-          <Map />
-        </div>
-      ) : loading ? (
-        <Spinner className={styles.spinnerFull} />
-      ) : null,
+      content: <TabDeprecated vesselId={vesselId} />,
     }),
-    [loading, t, vessel]
+    [t, vesselId]
   )
   const riskSummaryTab = useMemo(
     () => ({
       id: 'risk',
       title: <RiskTitle />,
-      content: vessel ? (
-        <RiskSummary onMoveToMap={() => setActiveTab(mapTab)} />
-      ) : loading ? (
-        <Spinner className={styles.spinnerFull} />
-      ) : null,
+      content: <TabDeprecated vesselId={vesselId} />,
     }),
-    [loading, mapTab, vessel]
+    [vesselId]
   )
 
   const infoTab = useMemo(
@@ -262,18 +255,9 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
           {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
         </div>
       ),
-      content: vessel ? (
-        <Activity
-          vessel={vessel}
-          lastPosition={lastPosition}
-          lastPortVisit={lastPortVisit}
-          onMoveToMap={() => setActiveTab(mapTab)}
-        />
-      ) : loading ? (
-        <Spinner className={styles.spinnerFull} />
-      ) : null,
+      content: <TabDeprecated vesselId={vesselId} />,
     }),
-    [lastPortVisit, lastPosition, loading, mapTab, t, vessel, visibleHighlights]
+    [t, vesselId, visibleHighlights]
   )
 
   const activityByTypeTab = useMemo(
@@ -295,8 +279,8 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
       IS_STANDALONE_APP
         ? [infoTab, activityByTypeTab]
         : currentProfileIsInsurer
-        ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
-        : [infoTab, activityTab, mapTab, riskSummaryTab],
+          ? [riskSummaryTab, infoTab, activityByTypeTab, mapTab]
+          : [infoTab, activityTab, mapTab, riskSummaryTab],
     [currentProfileIsInsurer, riskSummaryTab, infoTab, activityTab, mapTab, activityByTypeTab]
   )
 
