@@ -16,75 +16,25 @@ import {
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import i18n from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { tickFormatter } from 'features/reports/areas/area-reports.utils'
-import type { ReportActivityProps } from 'features/reports/shared/activity/ReportActivityGraph'
+import type { ComparisonGraphData } from 'features/reports/shared/activity/ReportActivityPeriodComparisonGraph'
 import { formatEvolutionData } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 
+import EvolutionGraphTooltip from './EvolutionGraphTooltip'
+
 import styles from './ReportActivityEvolution.module.css'
 
-type ReportGraphTooltipProps = {
-  active: boolean
-  payload: {
-    name: string
-    dataKey: string
-    label: number
-    value: number
-    payload: any
-    color: string
-    unit: string
+interface ComparisonGraphProps {
+  timeseries: ComparisonGraphData[]
+  sublayers: {
+    id: string
+    legend: {
+      color?: string
+      unit?: string
+    }
   }[]
-  label: number
-  timeChunkInterval: FourwingsInterval
-}
-
-const formatTooltipValue = (value: number, payload: any, unit: string) => {
-  if (value === undefined || !payload?.range) {
-    return null
-  }
-  const index = payload.avg?.findIndex((avg: number) => avg === value)
-  const range = payload.range?.[index]
-  const difference = range ? range[1] - value : 0
-  const imprecision = value > 0 && (difference / value) * 100
-  // TODO review why abs is needed and why we have negative imprecision
-  const imprecisionFormatted = imprecision ? Math.round(Math.abs(imprecision)).toString() : '0'
-  const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
-  const valueLabel = `${valueFormatted} ${unit ? unit : ''}`
-  const imprecisionLabel =
-    imprecisionFormatted !== '0' && valueFormatted !== '0' ? ` ± ${imprecisionFormatted}%` : ''
-  return valueLabel + imprecisionLabel
-}
-
-const ReportGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval } = props as ReportGraphTooltipProps
-
-  if (active && payload && payload.length) {
-    const date = getUTCDateTime(label).setLocale(i18n.language)
-    const formattedLabel = formatDateForInterval(date, timeChunkInterval)
-    const formattedValues = payload.filter(({ name }) => {
-      return name === 'line'
-    })
-    return (
-      <div className={styles.tooltipContainer}>
-        <p className={styles.tooltipLabel}>{formattedLabel}</p>
-        <ul>
-          {formattedValues
-            .sort((a, b) => b.value - a.value)
-            .map(({ value, payload, color, unit }, index) => {
-              return (
-                <li key={index} className={styles.tooltipValue}>
-                  <span className={styles.tooltipValueDot} style={{ color }}></span>
-                  {formatTooltipValue(value, payload, unit)}
-                </li>
-              )
-            })}
-        </ul>
-      </div>
-    )
-  }
-
-  return null
+  interval: FourwingsInterval
 }
 
 const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
@@ -94,17 +44,22 @@ const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => 
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
-export default function ReportActivityGraph({ start, end, data }: ReportActivityProps) {
+const ReportActivityEvolution: React.FC<{
+  data: ComparisonGraphProps
+  start: string
+  end: string
+}> = (props) => {
+  const { data } = props
   const dataFormated = formatEvolutionData(data)
 
   const domain = useMemo(() => {
-    if (start && end && data?.interval) {
-      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
+    if (props.start && props.end && data?.interval) {
+      const cleanEnd = DateTime.fromISO(props.end, { zone: 'utc' })
         .minus({ [data?.interval]: 1 })
         .toISO() as string
-      return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
+      return [new Date(props.start).getTime(), new Date(cleanEnd).getTime()]
     }
-  }, [start, end, data?.interval])
+  }, [props.start, props.end, data?.interval])
 
   if (!dataFormated || !domain) {
     return null
@@ -134,8 +89,6 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
             interval="preserveStartEnd"
             tickFormatter={(tick: string) => formatDateTicks(tick, data?.interval)}
             axisLine={paddedDomain[0] === 0}
-            // scale={'time'}
-            type={'number'}
           />
           <YAxis
             scale="linear"
@@ -147,7 +100,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
             tickCount={4}
           />
           {dataFormated?.length && (
-            <Tooltip content={<ReportGraphTooltip timeChunkInterval={data?.interval} />} />
+            <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={data?.interval} />} />
           )}
           {data?.sublayers.map(({ id, legend }, index) => (
             <Line
@@ -180,3 +133,5 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
     </div>
   )
 }
+
+export default ReportActivityEvolution

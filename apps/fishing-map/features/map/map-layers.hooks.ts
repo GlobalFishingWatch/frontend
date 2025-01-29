@@ -26,7 +26,10 @@ import {
   selectEnvironmentVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
-import { selectDataviewInstancesResolvedVisible , selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectDataviewInstancesResolvedVisible,
+  selectTrackDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectActivityMergedDataviewId,
   selectDetectionsMergedDataviewId,
@@ -37,7 +40,7 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/areas/area-reports.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectHighlightedEvents,selectHighlightedTime } from 'features/timebar/timebar.slice'
+import { selectHighlightedEvents, selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { useVesselTracksLayers } from 'features/timebar/timebar-vessel.hooks'
 import {
   selectWorkspaceStatus,
@@ -64,12 +67,15 @@ import { useMapViewState } from './map-viewport.hooks'
 export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
   const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
   const detectionsMergedDataviewId = useSelector(selectDetectionsMergedDataviewId)
-  const dataviewId =
-    dataview.category === DataviewCategory.Environment
-      ? dataview.id
-      : dataview.category === DataviewCategory.Detections
-      ? detectionsMergedDataviewId
-      : activityMergedDataviewId
+  const dataviewId = useMemo(
+    () =>
+      dataview.category === DataviewCategory.Environment
+        ? dataview.id
+        : dataview.category === DataviewCategory.Detections
+          ? detectionsMergedDataviewId
+          : activityMergedDataviewId,
+    [activityMergedDataviewId, dataview.category, dataview.id, detectionsMergedDataviewId]
+  )
   return dataviewId
 }
 

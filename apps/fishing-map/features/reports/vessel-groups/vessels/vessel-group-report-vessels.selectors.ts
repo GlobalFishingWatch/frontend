@@ -3,22 +3,28 @@ import { groupBy } from 'es-toolkit'
 
 import type { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { MAX_CATEGORIES } from 'features/reports/areas/area-reports.config'
-import type { FilterProperty } from 'features/reports/areas/area-reports.utils'
-import { FILTER_PROPERTIES, getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
+import { getVesselsFiltered } from 'features/reports/areas/area-reports.utils'
 import { cleanFlagState } from 'features/reports/shared/activity/vessels/report-activity-vessels.utils'
+import { getVesselIndividualGroupedData } from 'features/reports/shared/reports.utils'
 import {
+  selectVGREventsVesselsProperty,
   selectVGRVesselFilter,
   selectVGRVesselPage,
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,
   selectVGRVesselsResultsPerPage,
-  selectVGRVesselsSubsection} from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
+  selectVGRVesselsSubsection,
+} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import {
+  OTHER_CATEGORY_LABEL,
+  REPORT_FILTER_PROPERTIES,
+} from 'features/reports/vessel-groups/vessel-group-report.config'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -29,6 +35,7 @@ import {
   getVesselShipTypeLabel,
 } from 'utils/info'
 
+import { selectVGREventsVesselsFiltered } from '../events/vgr-events.selectors'
 import { selectVGRVessels } from '../vessel-group-report.slice'
 
 import type { VesselGroupReportVesselParsed } from './vessel-group-report-vessels.types'
@@ -86,12 +93,6 @@ export const selectVGRVesselsParsed = createSelector([selectVGRUniqVessels], (ve
     } as VesselGroupVesselTableParsed
   })
 })
-
-type ReportFilterProperty = FilterProperty | 'source'
-export const REPORT_FILTER_PROPERTIES: Record<ReportFilterProperty, string[]> = {
-  ...FILTER_PROPERTIES,
-  source: ['source'],
-}
 
 export const selectVGRVesselsTimeRange = createSelector([selectVGRVesselsParsed], (vessels) => {
   if (!vessels?.length) return null
@@ -194,7 +195,7 @@ type GraphDataGroup = {
   value: number
 }
 
-export const selectVGRVesselsGraphDataGrouped = createSelector(
+export const selectVGRVesselsGraphAggregatedData = createSelector(
   [selectVGRVesselsFiltered, selectVGRVesselsSubsection],
   (vessels, subsection) => {
     if (!vessels) return []
@@ -255,7 +256,23 @@ export const selectVGRVesselsGraphDataGrouped = createSelector(
         name: OTHER_CATEGORY_LABEL,
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
-    ] as GraphDataGroup[]
+    ] as ResponsiveVisualizationData<'aggregated'>
+  }
+)
+
+export const selectVGRVesselsGraphIndividualData = createSelector(
+  [selectVGRVesselsFiltered, selectVGRVesselsSubsection],
+  (vessels, groupBy) => {
+    if (!vessels || !groupBy) return []
+    return getVesselIndividualGroupedData(vessels, groupBy)
+  }
+)
+
+export const selectVGREventsVesselsIndividualData = createSelector(
+  [selectVGREventsVesselsFiltered, selectVGREventsVesselsProperty],
+  (vessels, groupBy) => {
+    if (!vessels || !groupBy) return []
+    return getVesselIndividualGroupedData(vessels, groupBy)
   }
 )
 

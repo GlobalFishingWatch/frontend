@@ -1,4 +1,4 @@
-import { Fragment,useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import area from '@turf/area'
@@ -20,7 +20,7 @@ import {
   selectDownloadActivityArea,
   selectIsDownloadActivityAreaLoading,
 } from 'features/download/download.selectors'
-import type { DateRange,DownloadActivityParams } from 'features/download/downloadActivity.slice'
+import type { DateRange, DownloadActivityParams } from 'features/download/downloadActivity.slice'
 import {
   downloadActivityThunk,
   selectDownloadActivityAreaKey,
@@ -31,7 +31,7 @@ import {
 } from 'features/download/downloadActivity.slice'
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { TimelineDatesRange } from 'features/map/controls/MapInfo'
+import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'

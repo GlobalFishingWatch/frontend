@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo,useState } from 'react'
+import { Fragment, memo, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -11,7 +11,7 @@ import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-component
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
-import { useMapViewState,useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -83,11 +83,17 @@ const MapControls = ({
     setMapCoordinates({ zoom: Math.max(zoom - 1, 0) })
   }, [setMapCoordinates, zoom])
 
-  const basemapDataviewInstance = resolvedDataviewInstances?.find(
-    (d) => d.config?.type === DataviewType.Basemap
+  const basemapDataviewInstance = useMemo(
+    () => resolvedDataviewInstances?.find((d) => d.config?.type === DataviewType.Basemap),
+    [resolvedDataviewInstances]
   )
-  const currentBasemap = basemapDataviewInstance?.config?.basemap ?? BasemapType.Default
-  const switchBasemap = () => {
+
+  const currentBasemap = useMemo(
+    () => basemapDataviewInstance?.config?.basemap ?? BasemapType.Default,
+    [basemapDataviewInstance?.config?.basemap]
+  )
+
+  const switchBasemap = useCallback(() => {
     upsertDataviewInstance({
       id: basemapDataviewInstance?.id,
       config: {
@@ -95,15 +101,15 @@ const MapControls = ({
           currentBasemap === BasemapType.Default ? BasemapType.Satellite : BasemapType.Default,
       },
     })
-  }
+  }, [basemapDataviewInstance?.id, currentBasemap, upsertDataviewInstance])
+
+  const enterMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(true), [])
+  const leaveMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(false), [])
 
   return (
     <Fragment>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
-        <div
-          onMouseEnter={() => setMiniGlobeHovered(true)}
-          onMouseLeave={() => setMiniGlobeHovered(false)}
-        >
+        <div onMouseEnter={enterMiniGlobeHandler} onMouseLeave={leaveMiniGlobeHandler}>
           <MiniGlobe
             className={styles.miniglobe}
             size={60}
@@ -174,4 +180,4 @@ const MapControls = ({
   )
 }
 
-export default MapControls
+export default memo(MapControls)

@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
-import { AVAILABLE_END,AVAILABLE_START } from 'data/config'
+import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
 import {} from 'features/app/selectors/app.reports.selector'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
@@ -87,7 +87,10 @@ export const useSetReportTimeComparison = () => {
     dispatchQueryParams({ start: timebarStart, end: timebarEnd, reportTimeComparison: undefined })
   }, [dispatchQueryParams, timebarEnd, timebarStart])
 
-  return { setReportTimecomparison, resetReportTimecomparison }
+  return useMemo(
+    () => ({ setReportTimecomparison, resetReportTimecomparison }),
+    [resetReportTimecomparison, setReportTimecomparison]
+  )
 }
 
 export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) => {

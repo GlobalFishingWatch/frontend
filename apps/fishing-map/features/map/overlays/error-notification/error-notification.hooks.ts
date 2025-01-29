@@ -1,7 +1,8 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import type { Position } from '@deck.gl/core'
 
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
+import { MAP_CONTROL_ERROR_NOTIFICATIONS } from 'features/map/controls/map-controls.slice'
 
 import type { MapAnnotation } from '../annotations/annotations.types'
 
@@ -16,7 +17,7 @@ export const useMapErrorNotification = () => {
     setMapControlValue,
     toggleMapControl,
     resetMapControlValue,
-  } = useMapControl('errorNotification')
+  } = useMapControl(MAP_CONTROL_ERROR_NOTIFICATIONS)
 
   const addErrorNotification = useCallback(
     (coords: Position) => {
@@ -28,13 +29,24 @@ export const useMapErrorNotification = () => {
     [setMapControlValue]
   )
 
-  return {
-    addErrorNotification,
-    errorNotification: value as MapAnnotation,
-    isErrorNotificationEditing: isEditing,
-    resetErrorNotification: resetMapControlValue,
-    toggleErrorNotification: toggleMapControl,
-    setErrorNotification: setMapControlValue,
-    setNotifyingErrorEdit: setMapControl,
-  }
+  return useMemo(
+    () => ({
+      addErrorNotification,
+      errorNotification: value as MapAnnotation,
+      isErrorNotificationEditing: isEditing,
+      resetErrorNotification: resetMapControlValue,
+      toggleErrorNotification: toggleMapControl,
+      setErrorNotification: setMapControlValue,
+      setNotifyingErrorEdit: setMapControl,
+    }),
+    [
+      addErrorNotification,
+      isEditing,
+      resetMapControlValue,
+      setMapControl,
+      setMapControlValue,
+      toggleMapControl,
+      value,
+    ]
+  )
 }

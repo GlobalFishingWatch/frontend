@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { PickingInfo, Position } from '@deck.gl/core'
 import { throttle } from 'es-toolkit'
@@ -8,6 +8,7 @@ import { RulersLayer } from '@globalfishingwatch/deck-layers'
 
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
+import { MAP_CONTROL_RULERS } from 'features/map/controls/map-controls.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 
 const useRulers = () => {
@@ -22,7 +23,7 @@ const useRulers = () => {
     toggleMapControl,
     setMapControlValue,
     resetMapControlValue,
-  } = useMapControl('rulers')
+  } = useMapControl(MAP_CONTROL_RULERS)
 
   const setRuleStart = useCallback(
     (start: RulerData['start']) => {
@@ -38,7 +39,7 @@ const useRulers = () => {
     [setMapControlValue]
   )
 
-  const throttledSetRuleEnd = useCallback(throttle(setRulerEnd, 16), [setRulerEnd])
+  const throttledSetRuleEnd = useMemo(() => throttle(setRulerEnd, 16), [setRulerEnd])
 
   const onRulerMapHover = useCallback(
     (info: PickingInfo) => {
@@ -94,31 +95,49 @@ const useRulers = () => {
     dispatchQueryParams({ mapRulers: undefined })
   }, [dispatchQueryParams, resetMapControlValue, setMapControl])
 
-  return {
-    rulers,
-    resetRulers,
-    editingRuler: value as RulerData,
-    rulersEditing: isEditing,
-    rulersVisible,
-    deleteMapRuler,
-    onRulerMapHover,
-    onRulerMapClick,
-    toggleRulersEditing: toggleMapControl,
-    resetEditingRule: resetMapControlValue,
-    setRulersEditing: setMapControl,
-    toggleRulersVisibility,
-  }
+  return useMemo(
+    () => ({
+      rulers,
+      resetRulers,
+      editingRuler: value as RulerData,
+      rulersEditing: isEditing,
+      rulersVisible,
+      deleteMapRuler,
+      onRulerMapHover,
+      onRulerMapClick,
+      toggleRulersEditing: toggleMapControl,
+      resetEditingRule: resetMapControlValue,
+      setRulersEditing: setMapControl,
+      toggleRulersVisibility,
+    }),
+    [
+      deleteMapRuler,
+      isEditing,
+      onRulerMapClick,
+      onRulerMapHover,
+      resetMapControlValue,
+      resetRulers,
+      rulers,
+      rulersVisible,
+      setMapControl,
+      toggleMapControl,
+      toggleRulersVisibility,
+      value,
+    ]
+  )
 }
 
 export const useMapRulerInstance = () => {
   const { rulers, editingRuler, rulersVisible } = useRulers()
-  const currentRuler = editingRuler ? [editingRuler] : []
-  if (editingRuler || rulers) {
-    return new RulersLayer({
-      rulers: [...(rulers || []), ...currentRuler],
-      visible: rulersVisible,
-    })
-  }
+  return useMemo(() => {
+    const currentRuler = editingRuler ? [editingRuler] : []
+    if (editingRuler || rulers) {
+      return new RulersLayer({
+        rulers: [...(rulers || []), ...currentRuler],
+        visible: rulersVisible,
+      })
+    }
+  }, [editingRuler, rulers, rulersVisible])
 }
 
 export default useRulers

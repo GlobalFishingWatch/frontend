@@ -109,11 +109,8 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                     />
                   </div>
                   <div className={cx({ [styles.border]: !isLastRow })}>
-                    {vessel.sourceColor && (
-                      <span
-                        className={styles.dot}
-                        style={{ backgroundColor: vessel.sourceColor }}
-                      ></span>
+                    {vessel.color && (
+                      <span className={styles.dot} style={{ backgroundColor: vessel.color }}></span>
                     )}
                     <VesselLink
                       className={styles.link}

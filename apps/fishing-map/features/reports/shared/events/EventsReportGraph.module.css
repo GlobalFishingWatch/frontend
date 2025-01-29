@@ -36,3 +36,22 @@
 .graph :global(.recharts-tooltip-cursor) {
   stroke: var(--color-secondary-blue);
 }
+
+.event {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.properties {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.property label {
+  font: var(--font-XS);
+}
+
+.property span {
+  font: var(--font-S);
+}

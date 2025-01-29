@@ -1,27 +1,31 @@
-import React, { useMemo } from 'react'
+import type { ReactElement } from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import max from 'lodash/max'
-import min from 'lodash/min'
-import type { DurationUnit } from 'luxon'
-import { DateTime, Duration } from 'luxon'
-import {
-  CartesianGrid,
-  ComposedChart,
-  Line,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { groupBy } from 'es-toolkit'
+import { DateTime } from 'luxon'
+import { stringify } from 'qs'
+import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
+import { getEventsStatsQuery } from 'queries/report-events-stats-api'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
+import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { useMemoCompare } from '@globalfishingwatch/react-hooks'
+import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
+import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { tickFormatter } from 'features/reports/areas/area-reports.utils'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
+import { getTimeLabels } from 'utils/events'
+import { formatInfoField, upperFirst } from 'utils/info'
+
+import EncounterIcon from '../../shared/events/icons/event-encounter.svg'
+import LoiteringIcon from '../../shared/events/icons/event-loitering.svg'
+import PortVisitIcon from '../../shared/events/icons/event-port.svg'
 
 import styles from './EventsReportGraph.module.css'
 
@@ -40,7 +44,8 @@ type EventsReportGraphTooltipProps = {
   timeChunkInterval: FourwingsInterval
 }
 
-const ReportGraphTooltip = (props: any) => {
+const AggregatedGraphTooltip = (props: any) => {
+  const { t } = useTranslation()
   const { active, payload, label, timeChunkInterval } = props as EventsReportGraphTooltipProps
 
   if (active && payload && payload.length) {
@@ -50,7 +55,7 @@ const ReportGraphTooltip = (props: any) => {
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <p className={styles.tooltipValue}>
-          {formatI18nNumber(payload[0].payload.value)} {payload[0].unit}
+          {formatI18nNumber(payload[0].payload.value)} {t('common.events', 'Events').toLowerCase()}
         </p>
       </div>
     )
@@ -59,111 +64,130 @@ const ReportGraphTooltip = (props: any) => {
   return null
 }
 
-const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
+const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: EventType }) => {
+  const { t } = useTranslation()
+  if (!data?.vessel) {
+    return null
+  }
+  const { start, duration } = getTimeLabels({ start: data.start, end: data.end })
+
+  return (
+    <div className={styles.event}>
+      {eventType && upperFirst(t(`common.eventLabels.${eventType}`, eventType))}
+      <div className={styles.properties}>
+        <div className={styles.property}>
+          <label>
+            {`${formatInfoField(data.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}
+          </label>
+          <span>
+            {formatInfoField(data.vessel?.name, 'shipname')}{' '}
+            {data.vessel?.flag && <span>({formatInfoField(data.vessel?.flag, 'flag')})</span>}
+          </span>
+        </div>
+        {eventType === 'encounter' && data.encounter?.vessel?.flag && (
+          <div className={styles.property}>
+            <label>{`${formatInfoField(data.encounter?.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}</label>
+            <span>{`${formatInfoField(data.encounter?.vessel?.name, 'shipname')} (${formatInfoField(data.encounter?.vessel?.flag, 'flag')})`}</span>
+          </div>
+        )}
+      </div>
+      <div className={styles.properties}>
+        <div className={styles.property}>
+          <label>{t('eventInfo.start', 'Start')}</label>
+          <span>{start}</span>
+        </div>
+        <div className={styles.property}>
+          <label>{t('eventInfo.duration', 'Duration')}</label>
+          <span>{duration}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
+  tick,
+  timeChunkInterval
+) => {
   const date = getUTCDateTime(tick).setLocale(i18n.language)
   return formatDateForInterval(date, timeChunkInterval)
 }
 
-const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
-
 export default function EventsReportGraph({
+  datasetId,
+  filters,
+  includes,
   color = COLOR_PRIMARY_BLUE,
   end,
   start,
   timeseries,
+  eventType,
 }: {
+  datasetId: string
+  filters?: BaseReportEventsVesselsParamsFilters
+  includes?: string[]
   color?: string
   end: string
   start: string
   timeseries: { date: string; value: number }[]
+  eventType?: EventType
 }) {
-  const { t } = useTranslation()
+  const containerRef = React.useRef<HTMLDivElement>(null)
+
   const startMillis = DateTime.fromISO(start).toMillis()
   const endMillis = DateTime.fromISO(end).toMillis()
   const interval = getFourwingsInterval(startMillis, endMillis)
+  const filtersMemo = useMemoCompare(filters)
+  const includesMemo = useMemoCompare(includes)
 
-  const domain = useMemo(() => {
-    if (start && end && interval) {
-      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
-        .minus({ [interval]: 1 })
-        .toISO() as string
-      return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
-    }
-  }, [start, end, interval])
+  let icon: ReactElement | undefined
+  if (eventType === 'encounter') {
+    icon = <EncounterIcon />
+  } else if (eventType === 'loitering') {
+    icon = <LoiteringIcon />
+  } else if (eventType === 'port_visit') {
+    icon = <PortVisitIcon />
+  }
 
-  const dataMin: number = timeseries.length
-    ? (min(timeseries.map(({ value }: { value: number }) => value)) as number)
-    : 0
-  const dataMax: number = timeseries.length
-    ? (max(timeseries.map(({ value }: { value: number }) => value)) as number)
-    : 0
+  const getAggregatedData = useCallback(async () => timeseries, [timeseries])
+  // const getIndividualData = useCallback(async () => {
+  //   const params = {
+  //     ...getEventsStatsQuery({
+  //       start,
+  //       end,
+  //       filters: filtersMemo,
+  //       dataset: datasetId,
+  //     }),
+  //     ...(includesMemo && { includes: includesMemo }),
+  //     limit: 1000,
+  //     offset: 0,
+  //   }
+  //   const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
+  //   const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
 
-  const domainPadding = (dataMax - dataMin) / 8
-  const paddedDomain: [number, number] = [
-    Math.max(0, Math.floor(dataMin - domainPadding)),
-    Math.ceil(dataMax + domainPadding),
-  ]
-  const intervalDiff = Math.floor(
-    Duration.fromMillis(endMillis - startMillis).as(interval.toLowerCase() as DurationUnit)
-  )
-  const fullTimeseries = useMemo(() => {
-    if (!timeseries || !domain) {
-      return []
-    }
-    return Array(intervalDiff)
-      .fill(0)
-      .map((_, i) => i)
-      .map((i) => {
-        const d = DateTime.fromMillis(startMillis, { zone: 'UTC' })
-          .plus({ [interval]: i })
-          .toISO()
-        return {
-          date: d,
-          value: timeseries.find(({ date }: { date: string }) => date === d)?.value || 0,
-        }
-      })
-  }, [timeseries, domain, intervalDiff, startMillis, interval])
+  //   return Object.entries(groupedData)
+  //     .map(([date, events]) => ({ date, values: events }))
+  //     .sort((a, b) => a.date.localeCompare(b.date))
+  // }, [start, end, filtersMemo, includesMemo, datasetId, interval])
 
-  if (!fullTimeseries.length || !domain) {
+  if (!timeseries.length) {
     return null
   }
 
   return (
-    <div className={styles.graph}>
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={fullTimeseries} margin={graphMargin}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            domain={domain}
-            dataKey="date"
-            interval="preserveStartEnd"
-            tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
-            axisLine={paddedDomain[0] === 0}
-          />
-          <YAxis
-            scale="linear"
-            domain={paddedDomain}
-            interval="preserveEnd"
-            tickFormatter={tickFormatter}
-            axisLine={false}
-            tickLine={false}
-            tickCount={4}
-          />
-          {timeseries?.length && (
-            <Tooltip content={<ReportGraphTooltip timeChunkInterval={interval} />} />
-          )}
-          <Line
-            name="line"
-            type="monotone"
-            dataKey="value"
-            unit={t('common.events', 'Events').toLowerCase()}
-            dot={false}
-            isAnimationActive={false}
-            stroke={color}
-            strokeWidth={2}
-          />
-        </ComposedChart>
-      </ResponsiveContainer>
+    <div ref={containerRef} className={styles.graph}>
+      <ResponsiveTimeseries
+        start={start}
+        end={end}
+        timeseriesInterval={interval}
+        getAggregatedData={getAggregatedData}
+        // getIndividualData={getIndividualData}
+        tickLabelFormatter={formatDateTicks}
+        aggregatedTooltip={<AggregatedGraphTooltip />}
+        individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
+        color={color}
+        individualIcon={icon}
+      />
     </div>
   )
 }

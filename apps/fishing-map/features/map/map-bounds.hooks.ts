@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import type { Deck } from '@deck.gl/core'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useAtom } from 'jotai'
@@ -34,7 +34,7 @@ export const useMapBounds = (): { bounds: MiniglobeBounds } => {
     }
   }, [setBounds, viewport])
 
-  return { bounds }
+  return useMemo(() => ({ bounds }), [bounds])
 }
 
 export type FitBoundsParams = {
@@ -90,7 +90,7 @@ export function useMapFitBounds() {
         })
       }
     },
-     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [viewport]
   )
   return fitBounds

@@ -1,6 +1,6 @@
 import type { Dispatch } from '@reduxjs/toolkit'
-import type { Bag,Options, RoutesMap, StateGetter } from 'redux-first-router'
-import { connectRoutes,NOT_FOUND, redirect } from 'redux-first-router'
+import type { Bag, Options, RoutesMap, StateGetter } from 'redux-first-router'
+import { connectRoutes, NOT_FOUND, redirect } from 'redux-first-router'
 
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 

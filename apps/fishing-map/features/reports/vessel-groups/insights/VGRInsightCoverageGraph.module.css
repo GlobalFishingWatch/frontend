@@ -30,13 +30,6 @@
   color: var(--color-secondary-blue);
 }
 
-.graph tspan.info {
-  text-transform: lowercase;
-  font-family: serif;
-  font-style: italic;
-  font-weight: 600;
-}
-
 .graph :global(.recharts-tooltip-cursor) {
   fill: var(--color-terthiary-blue);
 }
@@ -45,18 +38,22 @@
   transition: fill 300ms linear;
 }
 
-.graph :global(.recharts-bar-rectangle):nth-child(1) {
+.graph :global(.recharts-bar-rectangle):nth-child(1),
+.graph foreignObject > div > div:nth-child(1) ul {
   opacity: 0.3;
 }
 
-.graph :global(.recharts-bar-rectangle):nth-child(2) {
+.graph :global(.recharts-bar-rectangle):nth-child(2),
+.graph foreignObject > div > div:nth-child(2) ul {
   opacity: 0.5;
 }
 
-.graph :global(.recharts-bar-rectangle):nth-child(3) {
+.graph :global(.recharts-bar-rectangle):nth-child(3),
+.graph foreignObject > div > div:nth-child(3) ul {
   opacity: 0.7;
 }
 
-.graph :global(.recharts-bar-rectangle):nth-child(4) {
+.graph :global(.recharts-bar-rectangle):nth-child(4),
+.graph foreignObject > div > div:nth-child(4) ul {
   opacity: 0.85;
 }

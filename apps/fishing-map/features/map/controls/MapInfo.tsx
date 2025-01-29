@@ -1,55 +1,20 @@
-import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
-import type { DateTimeFormatOptions } from 'luxon'
-import { DateTime } from 'luxon'
 
-import I18nDate from 'features/i18n/i18nDate'
+import { useMapMouseHover } from 'features/map/map-interactions.hooks'
 import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { toFixed } from 'utils/shared'
 
 import MapScaleControl from './MapScaleControl'
+import TimelineDatesRange from './TimelineDatesRange'
 
 import styles from './MapInfo.module.css'
 
-export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
-  const A_DAY = 1000 * 60 * 60 * 24
-  const timeΔ = start && end ? new Date(end).getTime() - new Date(start).getTime() : 0
-  return timeΔ <= A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
-}
-
-export const TimeRangeDates = ({
-  start,
-  end,
-  format = pickDateFormatByRange(start, end),
-}: {
-  start: string
-  end: string
-  format?: DateTimeFormatOptions
-}) => {
-  return (
-    <Fragment>
-      <I18nDate date={start} format={format} /> - <I18nDate date={end} format={format} />
-    </Fragment>
-  )
-}
-
-export const TimelineDatesRange = () => {
-  const { start, end } = useTimerangeConnect()
-  if (!start || !end) return null
-
-  return (
-    <div className={styles.dateRange}>
-      <TimeRangeDates start={start} end={end} />
-    </div>
-  )
-}
-
-const MapInfo = ({ center }: { center?: number[] }) => {
+export default function MapInfo() {
   const showTimeComparison = useSelector(selectShowTimeComparison)
-  const [x, y] = center || []
+  const { hoveredCoordinates } = useMapMouseHover()
+  const [x, y] = hoveredCoordinates || []
   return (
     <div className={styles.info}>
       <div className={styles.flex}>
@@ -69,5 +34,3 @@ const MapInfo = ({ center }: { center?: number[] }) => {
     </div>
   )
 }
-
-export default MapInfo

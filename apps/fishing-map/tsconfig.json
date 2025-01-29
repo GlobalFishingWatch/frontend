@@ -21,6 +21,7 @@
       "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],
       "@globalfishingwatch/data-transforms": ["../../libs/data-transforms/src/index.ts"],
+      "@globalfishingwatch/data-transforms/*": ["../../libs/data-transforms/src/*"],
       "@globalfishingwatch/datasets-client": ["../../libs/datasets-client/src/index.ts"],
       "@globalfishingwatch/dataviews-client": ["../../libs/dataviews-client/src/index.ts"],
       "@globalfishingwatch/deck-layer-composer": ["../../libs/deck-layer-composer/src/index.ts"],
@@ -31,6 +32,9 @@
       "@globalfishingwatch/ocean-areas": ["../../libs/ocean-areas/src/index.ts"],
       "@globalfishingwatch/pbf-decoders": ["../../libs/pbf-decoders/index.ts"],
       "@globalfishingwatch/react-hooks": ["../../libs/react-hooks/src/index.ts"],
+      "@globalfishingwatch/responsive-visualizations": [
+        "../../libs/responsive-visualizations/src/index.ts"
+      ],
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.ts"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"]
     },

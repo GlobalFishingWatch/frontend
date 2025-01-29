@@ -32,26 +32,28 @@ type VesselLinkProps = {
   dataviewId?: string
   vesselId?: string
   identity?: VesselDataIdentity
-  children: any
+  children?: any
   onClick?: (e: MouseEvent, vesselId?: string) => void
   tooltip?: React.ReactNode
   fitBounds?: boolean
   className?: string
   query?: Partial<Record<keyof QueryParams, string | number>>
   testId?: string
+  showTooltip?: boolean
 }
 const VesselLink = ({
   vesselId: vesselIdProp,
   datasetId,
   dataviewId,
   identity,
-  children,
+  children = '',
   onClick,
   tooltip,
   fitBounds = false,
   className = '',
   query,
   testId = 'link-vessel-profile',
+  showTooltip = true,
 }: VesselLinkProps) => {
   const { t } = useTranslation()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
@@ -133,12 +135,16 @@ const VesselLink = ({
       }}
       onClick={onLinkClick}
     >
-      <Tooltip
-        className={styles.linkTooltip}
-        content={tooltip || t('vessel.clickToSeeMore', 'Click to see more information')}
-      >
-        <span>{children}</span>
-      </Tooltip>
+      {showTooltip ? (
+        <Tooltip
+          className={styles.linkTooltip}
+          content={tooltip || t('vessel.clickToSeeMore', 'Click to see more information')}
+        >
+          <span>{children}</span>
+        </Tooltip>
+      ) : (
+        children
+      )}
     </Link>
   )
 }

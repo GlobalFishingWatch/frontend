@@ -1,0 +1,19 @@
+.properties {
+  margin-top: var(--space-S);
+  margin-bottom: var(--space-XS);
+  display: flex;
+  gap: var(--space-S);
+}
+
+.property label {
+  font: var(--font-XS);
+}
+
+.property span {
+  font: var(--font-S);
+}
+
+.cta {
+  color: var(--color-secondary-blue);
+  font: var(--font-S);
+}

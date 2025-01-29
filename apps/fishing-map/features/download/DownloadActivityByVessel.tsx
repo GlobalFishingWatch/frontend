@@ -1,4 +1,4 @@
-import { Fragment,useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -22,7 +22,7 @@ import {
   selectActiveHeatmapVesselDatasets,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsDownloadActivityAreaLoading } from 'features/download/download.selectors'
-import type { DateRange,DownloadActivityParams } from 'features/download/downloadActivity.slice'
+import type { DateRange, DownloadActivityParams } from 'features/download/downloadActivity.slice'
 import {
   downloadActivityThunk,
   selectDownloadActivityAreaKey,
@@ -32,7 +32,7 @@ import {
 } from 'features/download/downloadActivity.slice'
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { TimelineDatesRange } from 'features/map/controls/MapInfo'
+import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
@@ -50,7 +50,7 @@ import {
   getSupportedTemporalResolutions,
 } from './download.utils'
 import type { GroupBy, HeatmapDownloadFormat, TemporalResolution } from './downloadActivity.config'
-import { getVesselGroupOptions,VESSEL_FORMAT_OPTIONS } from './downloadActivity.config'
+import { getVesselGroupOptions, VESSEL_FORMAT_OPTIONS } from './downloadActivity.config'
 import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
 
 import styles from './DownloadModal.module.css'

@@ -6,6 +6,7 @@ import type { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 
 import {
+  selectCurrentReport,
   selectReportAreaId,
   selectReportBufferOperation,
   selectReportBufferUnit,
@@ -47,7 +48,7 @@ const EMPTY_ARRAY: [] = []
 type ReportVesselWithMeta = ReportVessel & {
   // Merging detections or hours depending on the activity unit into the same property
   value: number
-  sourceColor: string
+  color: string
   activityDatasetId: string
   category: ReportCategory
   dataviewId: string
@@ -57,7 +58,7 @@ type ReportVesselWithMeta = ReportVessel & {
 
 export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName'> &
   Partial<ReportVessel> &
-  Pick<ReportVesselWithMeta, 'sourceColor' | 'value'> & {
+  Pick<ReportVesselWithMeta, 'color' | 'value'> & {
     infoDataset?: Dataset
     trackDataset?: Dataset
     dataviewId?: string
@@ -77,6 +78,13 @@ export const selectReportAreaDataviews = createSelector(
       )
     })
     return areaDataview
+  }
+)
+
+export const selectIsReportOwner = createSelector(
+  [selectCurrentReport, selectUserData],
+  (report, userData) => {
+    return report?.ownerId === userData?.id
   }
 )
 
@@ -132,8 +140,8 @@ export const selectReportActivityFlatten = createSelector(
               : vessel.shipName,
             activityDatasetId: datasetId,
             dataviewId: dataview?.id,
+            color: dataview?.config?.color,
             category: getReportCategoryFromDataview(dataview),
-            sourceColor: dataview?.config?.color,
           } as ReportVesselWithMeta
         })
       })

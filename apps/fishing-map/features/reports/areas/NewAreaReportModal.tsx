@@ -30,6 +30,8 @@ import {
 } from 'features/workspace/save/workspace-save.utils'
 import type { AsyncError } from 'utils/async-slice'
 
+import { getWorkspaceReport } from './area-reports.utils'
+
 import styles from './NewAreaReportModal.module.css'
 
 type NewReportModalProps = {
@@ -38,13 +40,6 @@ type NewReportModalProps = {
   onClose: () => void
   onFinish?: (report: Report) => void
   report?: Report
-}
-
-function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
-  const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
-    workspace
-
-  return { ...workspaceProperties, state: { ...state, daysFromLatest } }
 }
 
 function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportModalProps) {

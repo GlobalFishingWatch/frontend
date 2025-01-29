@@ -53,8 +53,11 @@ const Title = (props: TitleProps) => {
 
   return (
     <Tooltip content={showTooltip && (title as string).length > 20 ? title : ''}>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <h3
-        className={cx(styles.titleSpan, className, { [classNameActive]: layerActive })}
+        className={cx(styles.titleSpan, className, {
+          [classNameActive]: layerActive,
+        })}
         onClick={onToggleLayerActive}
       >
         {showIcon &&

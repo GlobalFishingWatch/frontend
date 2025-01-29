@@ -1,15 +1,20 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import type { ReportEventsStatsResponseGroups } from 'queries/report-events-stats-api'
-import { Bar, BarChart, LabelList,ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import type { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart'
+
+import type {
+  ResponsiveVisualizationData,
+  ResponsiveVisualizationInteractionCallback,
+} from '@globalfishingwatch/responsive-visualizations'
+import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/areas/area-reports.config'
 import type { PortsReportState } from 'features/reports/ports/ports-report.types'
+import VesselGraphLink from 'features/reports/shared/VesselGraphLink'
 import { OTHER_CATEGORY_LABEL } from 'features/reports/vessel-groups/vessel-group-report.config'
+import VesselGroupReportVesselsIndividualTooltip from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsIndividualTooltip'
 import type {
   VesselGroupReportState,
   VGREventsVesselsProperty,
@@ -35,15 +40,16 @@ type ReportGraphTooltipProps = {
   type: VGRVesselsSubsection | 'geartype'
 }
 
-const FILTER_PROPERTIES: Record<VGRVesselsSubsection | 'geartype', string> = {
+const FILTER_PROPERTIES: Record<VGRVesselsSubsection | 'geartype' | 'shiptype', string> = {
   flag: 'flag',
+  shiptype: 'type',
   shiptypes: 'type',
   geartypes: 'gear',
   geartype: 'gear',
   source: 'source',
 }
 
-const ReportGraphTooltip = (props: any) => {
+const ReportBarTooltip = (props: any) => {
   const { active, payload, label, type } = props as ReportGraphTooltipProps
   const { t } = useTranslation()
 
@@ -76,7 +82,7 @@ const ReportGraphTooltip = (props: any) => {
   return null
 }
 
-const CustomTick = (props: any) => {
+const ReportGraphTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount, property, filterQueryParam, pageQueryParam } =
     props
 
@@ -143,14 +149,9 @@ const CustomTick = (props: any) => {
   )
 }
 
-export default function VesselGroupReportVesselsGraph({
-  data,
-  color = COLOR_PRIMARY_BLUE,
-  property,
-  filterQueryParam,
-  pageQueryParam,
-}: {
-  data: ReportEventsStatsResponseGroups
+type VesselGroupReportVesselsGraphProps = {
+  data: ResponsiveVisualizationData<'aggregated'>
+  individualData?: ResponsiveVisualizationData<'individual'>
   color?: string
   property: VGREventsVesselsProperty
   filterQueryParam:
@@ -159,61 +160,58 @@ export default function VesselGroupReportVesselsGraph({
   pageQueryParam:
     | keyof Pick<VesselGroupReportState, 'vGRVesselPage' | 'vGREventsVesselPage'>
     | keyof Pick<PortsReportState, 'portsReportVesselsPage'>
-}) {
+}
+
+export default function VesselGroupReportVesselsGraph({
+  data,
+  individualData,
+  color = COLOR_PRIMARY_BLUE,
+  property,
+  filterQueryParam,
+  pageQueryParam,
+}: VesselGroupReportVesselsGraphProps) {
   const { dispatchQueryParams } = useLocationConnect()
-  const onBarClick: CategoricalChartFunc = (e) => {
-    const { payload } = e.activePayload?.[0] || {}
-    if (payload && payload?.name !== OTHER_CATEGORY_LABEL) {
+
+  const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
+    const propertyParam = FILTER_PROPERTIES[property as VGRVesselsSubsection]
+    if (payload && propertyParam && payload?.name !== OTHER_CATEGORY_LABEL) {
       dispatchQueryParams({
-        [filterQueryParam]: `${FILTER_PROPERTIES[property as VGRVesselsSubsection]}:${
-          payload.name
-        }`,
+        [filterQueryParam]: `${propertyParam}:${payload.name}`,
         [pageQueryParam]: 0,
       })
     }
   }
+
+  const getAggregatedData = useCallback(async () => {
+    return data
+  }, [data])
+
+  // const getIndividualData = useCallback(async () => {
+  //   return individualData
+  // }, [individualData])
+
   return (
-    <Fragment>
-      <div className={styles.graph} data-test="report-vessels-graph">
-        {data && data.length > 0 && (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              width={500}
-              height={300}
-              data={data}
-              margin={{
-                top: 15,
-                right: 0,
-                left: 0,
-                bottom: 0,
-              }}
-              onClick={onBarClick}
-            >
-              {data && <Tooltip content={<ReportGraphTooltip type={property} />} />}
-              <Bar className={styles.bar} dataKey="value" fill={color}>
-                <LabelList
-                  position="top"
-                  valueAccessor={(entry: any) => formatI18nNumber(entry.value)}
-                />
-              </Bar>
-              <XAxis
-                dataKey="name"
-                interval="equidistantPreserveStart"
-                tickLine={false}
-                minTickGap={-1000}
-                tick={
-                  <CustomTick
-                    property={property}
-                    filterQueryParam={filterQueryParam}
-                    pageQueryParam={pageQueryParam}
-                  />
-                }
-                tickMargin={0}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
-      </div>
-    </Fragment>
+    <div className={styles.graph} data-test="report-vessels-graph">
+      <ResponsiveBarChart
+        color={color}
+        // getIndividualData={getIndividualData}
+        getAggregatedData={getAggregatedData}
+        onAggregatedItemClick={onBarClick}
+        barValueFormatter={(value: any) => {
+          return formatI18nNumber(value).toString()
+        }}
+        barLabel={
+          <ReportGraphTick
+            property={property}
+            filterQueryParam={filterQueryParam}
+            pageQueryParam={pageQueryParam}
+          />
+        }
+        labelKey={'name'}
+        individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+        individualItem={<VesselGraphLink />}
+        aggregatedTooltip={<ReportBarTooltip type={property} />}
+      />
+    </div>
   )
 }

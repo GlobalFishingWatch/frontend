@@ -26,10 +26,11 @@ type VesselGroupListTooltipProps = {
   vessels?: VesselGroupVesselIdentity[]
   onAddToVesselGroup?: (vesselGroupId: string) => void
   keepOpenWhileAdding?: boolean
+  disabled?: boolean
 }
 
 function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
-  const { onAddToVesselGroup, children, keepOpenWhileAdding = false } = props
+  const { onAddToVesselGroup, children, keepOpenWhileAdding = false, disabled = false } = props
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselGroupOptions = useVesselGroupsOptions()
@@ -39,8 +40,10 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
   const guestUser = useSelector(selectIsGuestUser)
 
   const toggleVesselGroupsOpen = useCallback(() => {
-    setVesselGroupsOpen(!vesselGroupsOpen)
-  }, [vesselGroupsOpen])
+    if (!disabled) {
+      setVesselGroupsOpen(!vesselGroupsOpen)
+    }
+  }, [vesselGroupsOpen, disabled])
 
   useEffect(() => {
     if (addingToGroup && !vesselGroupsStatusId) {
@@ -109,6 +112,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
               {
                 ...props,
                 onToggleClick: toggleVesselGroupsOpen,
+                disabled,
               } as any,
               (child.props as any).children
             )

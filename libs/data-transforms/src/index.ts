@@ -1,5 +1,6 @@
 export * from './buffer'
 export * from './coordinates'
+export * from './dates'
 export * from './dissolve'
 export * from './events'
 export * from './features'

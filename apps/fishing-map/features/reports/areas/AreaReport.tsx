@@ -40,8 +40,10 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
+import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import WorkspaceError, { ErrorPlaceHolder } from 'features/workspace/WorkspaceError'
+import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
+import WorkspaceError from 'features/workspace/WorkspaceError'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -49,6 +51,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 export type ReportActivityUnit = 'hour' | 'detection'
 
 export default function Report() {
+  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const setTimeseries = useSetTimeseries()
@@ -167,9 +170,9 @@ export default function Report() {
 
   if (reportAreaError) {
     return (
-      <ErrorPlaceHolder
+      <ErrorPlaceholder
         title={t('errors.areaLoad', 'There was an error loading the report area')}
-      ></ErrorPlaceHolder>
+      ></ErrorPlaceholder>
     )
   }
 

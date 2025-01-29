@@ -1225,6 +1225,18 @@
     "name": "Port Visits Events (AIS)",
     "description": "The dataset contains port visits events for AIS (Confidence 2)"
   },
+  "public-global-ports-footprint": {
+    "name": "Anchorages convex hulls by portId",
+    "description": "Anchorages footprint using the convex hull grouped by portId",
+    "schema": {
+      "area": "area",
+      "label": {
+        "keyword": "label",
+        "enum": {}
+      },
+      "perimeter": "perimeter"
+    }
+  },
   "public-global-presence-tracks": {
     "name": "Tracks",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 20201001",

@@ -4,7 +4,8 @@ import type { DateTimeFormatOptions } from 'luxon'
 import { DateTime } from 'luxon'
 import type { Locale } from 'types'
 
-import type { SupportedDateType } from 'utils/dates'
+import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
+
 import { getUTCDateTime } from 'utils/dates'
 
 import i18n from './i18n'

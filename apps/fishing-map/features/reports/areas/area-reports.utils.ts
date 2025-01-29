@@ -1,14 +1,15 @@
 import { featureCollection, multiPolygon } from '@turf/helpers'
 import { difference, dissolve } from '@turf/turf'
 import { format } from 'd3-format'
+import { uniq } from 'es-toolkit'
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { DateTime } from 'luxon'
 import { matchSorter } from 'match-sorter'
 import { parse } from 'qs'
-import type { Bbox, BufferOperation, BufferUnit } from 'types'
+import type { Bbox, BufferOperation, BufferUnit, WorkspaceState } from 'types'
 
 import { API_VERSION } from '@globalfishingwatch/api-client'
-import type { Dataview } from '@globalfishingwatch/api-types'
+import type { Dataview, Workspace } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -23,8 +24,15 @@ import {
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import type { VesselGroupReportVesselParsed } from 'features/reports/vessel-groups/vessels/vessel-group-report-vessels.types'
+import type { VesselLastIdentity } from 'features/search/search.slice'
+import { formatInfoField } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 
+import type { FilterProperty } from '../vessel-groups/vessel-group-report.config'
+import {
+  FILTER_PROPERTIES,
+  OTHER_CATEGORY_LABEL,
+} from '../vessel-groups/vessel-group-report.config'
 import type { VesselGroupVesselTableParsed } from '../vessel-groups/vessels/vessel-group-report-vessels.selectors'
 
 import {
@@ -38,6 +46,13 @@ import type { ReportVesselWithDatasets } from './area-reports.selectors'
 import type { ReportCategory } from './area-reports.types'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
+
+export function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
+  const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
+    workspace
+
+  return { ...workspaceProperties, state: { ...state, daysFromLatest } }
+}
 
 export const tickFormatter = (tick: number) => {
   const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
@@ -280,17 +295,25 @@ export const parseReportUrl = (url: string) => {
   }
 }
 
-export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
-export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
-  name: ['shipName'],
-  flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
-  mmsi: ['mmsi'],
-  gear: ['geartype'],
-  type: ['vesselType'],
+export function normalizeVesselProperties(identity: VesselLastIdentity) {
+  return {
+    shipName: formatInfoField(identity.shipname, 'shipname') as string,
+    geartype:
+      uniq(identity.geartypes || [])
+        .sort()
+        .map((g) => formatInfoField(g, 'geartypes'))
+        .join(', ') || OTHER_CATEGORY_LABEL,
+    shiptype:
+      uniq(identity.shiptypes || [])
+        .sort()
+        .map((g) => formatInfoField(g, 'shiptypes'))
+        .join(', ') || OTHER_CATEGORY_LABEL,
+    flagTranslated: t(`flags:${identity.flag as string}` as any),
+  }
 }
 
 export function getVesselsFiltered<
-  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed | VesselGroupVesselTableParsed
+  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed | VesselGroupVesselTableParsed,
 >(vessels: Vessel[], filter: string, filterProperties = FILTER_PROPERTIES) {
   if (!filter || !filter.length) {
     return vessels

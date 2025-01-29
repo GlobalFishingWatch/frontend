@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
@@ -29,16 +30,18 @@ const OutOfTimerangeDisclaimer = ({
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
 
-  const activeDatasetIds =
-    dataview.category === DataviewCategory.Environment ||
-    dataview.category === DataviewCategory.Context
-      ? getDatasetsInDataviews([dataview])
-      : getActiveDatasetsInActivityDataviews([dataview])
+  const { extentStart, extentEnd = LAST_DATA_UPDATE } = useMemo(() => {
+    const activeDatasetIds =
+      dataview.category === DataviewCategory.Environment ||
+      dataview.category === DataviewCategory.Context
+        ? getDatasetsInDataviews([dataview])
+        : getActiveDatasetsInActivityDataviews([dataview])
 
-  const activeDatasets = dataview.datasets?.filter((d) => activeDatasetIds.includes(d.id))
-  const { extentStart, extentEnd = LAST_DATA_UPDATE } = getDatasetsExtent<string>(activeDatasets, {
-    format: 'isoString',
-  })
+    const activeDatasets = dataview.datasets?.filter((d) => activeDatasetIds.includes(d.id))
+    return getDatasetsExtent<string>(activeDatasets, {
+      format: 'isoString',
+    })
+  }, [dataview])
 
   if (validate === 'start') {
     if (!extentStart) {

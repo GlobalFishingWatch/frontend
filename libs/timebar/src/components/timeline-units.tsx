@@ -3,7 +3,7 @@ import type { DateTimeUnit } from 'luxon'
 
 import { getUnitsPositions } from '../layouts'
 import type { TimelineScale } from '../timelineContext'
-import { clampToAbsoluteBoundaries, getDeltaDays,getDeltaMs } from '../utils/internal-utils'
+import { clampToAbsoluteBoundaries, getDeltaDays, getDeltaMs } from '../utils/internal-utils'
 
 import styles from './timeline-units.module.css'
 
