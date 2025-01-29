@@ -173,24 +173,26 @@ export const useSegmentsLabeledConnect = () => {
 
     // Case 3: Overlap at start
     if (newSegment.start <= segment.start && newSegment.end >= segment.start) {
+      const nextPosition = findNextPosition(timestamps, positions, newSegment.end)
       return [
         {
           ...segment,
           start: findNextTimestamp(timestamps, newSegment.end),
-          startLatitude: newSegment.endLatitude,
-          startLongitude: newSegment.endLongitude,
+          startLatitude: nextPosition?.latitude,
+          startLongitude: nextPosition?.longitude,
         },
       ]
     }
 
     // Case 4: Overlap at end
     if (newSegment.end >= segment.end && newSegment.start <= segment.end) {
+      const previousPosition = findPreviousPosition(timestamps, positions, newSegment.start)
       return [
         {
           ...segment,
           end: findPreviousTimestamp(timestamps, newSegment.start),
-          endLatitude: newSegment.startLatitude,
-          endLongitude: newSegment.startLongitude,
+          endLatitude: previousPosition?.latitude,
+          endLongitude: previousPosition?.longitude,
         },
       ]
     }
