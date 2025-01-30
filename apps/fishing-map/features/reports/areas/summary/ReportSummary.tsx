@@ -44,12 +44,15 @@ import styles from './ReportSummary.module.css'
 
 type ReportSummaryProps = {
   activityUnit: ReportActivityUnit
-  reportStatus: AsyncReducerStatus
+  reportStatus?: AsyncReducerStatus
 }
 
 export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 
-export default function ReportSummary({ activityUnit, reportStatus }: ReportSummaryProps) {
+export default function ReportSummary({
+  activityUnit,
+  reportStatus = AsyncReducerStatus.Finished,
+}: ReportSummaryProps) {
   const { t, i18n } = useTranslation()
   const timerange = useSelector(selectTimeRange)
   const category = useSelector(selectReportCategory)
@@ -82,8 +85,8 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
       : category === ReportCategory.Fishing || category === ReportCategory.Presence
-      ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
-      : undefined
+        ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
+        : undefined
 
     if (
       reportHours &&

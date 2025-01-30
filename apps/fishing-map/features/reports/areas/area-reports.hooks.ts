@@ -27,14 +27,11 @@ import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selec
 import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import {
-  useMapViewport,
-  useMapViewState,
-  useSetMapCoordinates,
-} from 'features/map/map-viewport.hooks'
+import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import type { LastReportStorage } from 'features/reports/areas/area-reports.config'
 import {
   ENTIRE_WORLD_REPORT_AREA_BOUNDS,
+  ENTIRE_WORLD_REPORT_AREA_ID,
   LAST_REPORTS_STORAGE_KEY,
 } from 'features/reports/areas/area-reports.config'
 import {
@@ -127,7 +124,6 @@ export function useStatsBounds(dataview?: UrlDataviewInstance) {
     }
   )
 
-  console.log('stats:', stats)
   const statsBbox = useMemo(
     () => stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox),
     [stats]
@@ -159,36 +155,46 @@ export function useVesselGroupBounds(dataviewId?: string) {
 }
 
 export function useReportAreaBounds() {
-  // const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  // const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
-  const { loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
+  const { id: portId, loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
   return useMemo(() => {
-    // if (isVesselGroupReportLocation) {
-    //   return {
-    //     loaded: vesselGroupLoaded,
-    //     bbox: vesselGroupBbox,
-    //   }
-    // }
+    if (isVesselGroupReportLocation) {
+      return {
+        loaded: vesselGroupLoaded,
+        bbox: vesselGroupBbox,
+      }
+    }
     if (isPortReportLocation) {
       return {
+        areaId: portId,
         loaded: portLoaded,
         bbox: portBbox,
       }
     }
     return {
-      loaded: reportAreaStatus === AsyncReducerStatus.Finished,
+      areaId: reportArea?.id,
+      loaded:
+        reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+          ? true
+          : reportAreaStatus === AsyncReducerStatus.Finished,
       bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
     }
   }, [
     isPortReportLocation,
+    isVesselGroupReportLocation,
     portBbox,
+    portId,
     portLoaded,
     reportArea?.bounds,
     reportArea?.geometry?.bbox,
+    reportArea?.id,
     reportAreaStatus,
+    vesselGroupBbox,
+    vesselGroupLoaded,
   ])
 }
 
@@ -205,8 +211,16 @@ export function useReportAreaInViewport() {
 
 export function useFitAreaInViewport(params = defaultParams) {
   const setMapCoordinates = useSetMapCoordinates()
-  const { bbox } = useReportAreaBounds()
-  const areaCenter = useReportAreaCenter(bbox as Bbox, params)
+  const { areaId, bbox } = useReportAreaBounds()
+  let areaCenter = useReportAreaCenter(bbox as Bbox, params)
+  const entireWorldAreaInViewport = areaId === ENTIRE_WORLD_REPORT_AREA_ID
+  if (entireWorldAreaInViewport && !areaCenter) {
+    areaCenter = {
+      latitude: 0,
+      longitude: 0,
+      zoom: 0,
+    }
+  }
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
@@ -355,10 +369,15 @@ export function usePortsReportAreaFootprintBounds() {
   const portReportFootprintArea = usePortsReportAreaFootprint()
   return useMemo(
     () => ({
+      id: portReportFootprintArea?.data?.id,
       loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
       bbox: portReportFootprintArea?.data?.bounds,
     }),
-    [portReportFootprintArea?.data?.bounds, portReportFootprintArea?.status]
+    [
+      portReportFootprintArea?.data?.id,
+      portReportFootprintArea?.data?.bounds,
+      portReportFootprintArea?.status,
+    ]
   )
 }
 
