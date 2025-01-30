@@ -9,7 +9,7 @@ import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import styles from 'features/workspace/shared/Sections.module.css'
 
-import MapLegendPlaceholder from '../common/MapLegendPlaceholder'
+import MapLegendPlaceholder from '../shared/MapLegendPlaceholder'
 
 function VesselTracksLegend(): React.ReactElement<any> | null {
   const { t } = useTranslation()

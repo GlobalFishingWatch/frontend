@@ -9,7 +9,7 @@ import {
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
 
-import ExpandedContainer from '../shared/ExpandedContainer'
+import ExpandedContainer from './ExpandedContainer'
 
 type ColorProps = {
   open: boolean

@@ -45,17 +45,17 @@ import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../common/Color'
-import InfoModal from '../common/InfoModal'
-import Filters from '../common/LayerFilters'
-import { showSchemaFilter } from '../common/LayerSchemaFilter'
-import LayerSwitch from '../common/LayerSwitch'
-import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
+import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
+import InfoModal from '../shared/InfoModal'
+import Filters from '../shared/LayerFilters'
+import { showSchemaFilter } from '../shared/LayerSchemaFilter'
+import LayerSwitch from '../shared/LayerSwitch'
+import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
