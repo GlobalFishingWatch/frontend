@@ -11,7 +11,7 @@ import { LegendType, MapLegend, Tooltip } from '@globalfishingwatch/ui-component
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
-import MapLegendPlaceholder from 'features/workspace/common/MapLegendPlaceholder'
+import MapLegendPlaceholder from 'features/workspace/shared/MapLegendPlaceholder'
 
 import styles from './MapLegend.module.css'
 
@@ -23,8 +23,8 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
     legend.unit === 'hours'
       ? tFn('common.hour_other', 'hours').toLowerCase()
       : legend.unit === 'detections'
-      ? tFn('common.detections', 'detections').toLowerCase()
-      : legend.label
+        ? tFn('common.detections', 'detections').toLowerCase()
+        : legend.label
 
   if (legend.label?.includes('²')) {
     const isSquareKm = (legend.gridArea as number) > 50000

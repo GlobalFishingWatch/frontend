@@ -6,7 +6,7 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
-import Remove from '../common/Remove'
+import Remove from '../shared/Remove'
 
 function VesselGroupNotFound({ dataview }: { dataview: UrlDataviewInstance }) {
   const { t } = useTranslation()

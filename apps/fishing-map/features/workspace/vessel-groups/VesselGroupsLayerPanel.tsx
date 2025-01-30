@@ -35,10 +35,10 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
-import Color from '../common/Color'
-import LayerSwitch from '../common/LayerSwitch'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
+import Color from '../shared/Color'
+import LayerSwitch from '../shared/LayerSwitch'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
 
 import VesselGroupNotFound from './VesselGroupNotFound'
 

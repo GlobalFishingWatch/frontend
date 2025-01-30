@@ -26,10 +26,10 @@ import {
   selectDatasetsStatus,
   selectDatasetsStatusId,
 } from 'features/datasets/datasets.slice'
-import { getDatasetLabel,getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+import { getDatasetLabel, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
-import InfoError from 'features/workspace/common/InfoError'
-import InfoModalContent from 'features/workspace/common/InfoModalContent'
+import InfoError from 'features/workspace/shared/InfoError'
+import InfoModalContent from 'features/workspace/shared/InfoModalContent'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
