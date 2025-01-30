@@ -1,4 +1,4 @@
-import { useCallback, useMemo,useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -7,7 +7,7 @@ import { uniq } from 'es-toolkit'
 import type { FeatureCollection } from 'geojson'
 
 import type { Locale } from '@globalfishingwatch/api-types'
-import { API_LOGIN_REQUIRED , VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -147,11 +147,11 @@ function SearchBasicResult({
   const vesselQuery = useMemo(() => {
     const query = { start: transmissionDateFrom, end: transmissionDateTo }
     if (trackBbox) {
-      const coordinates = getMapCoordinatesFromBounds(map, trackBbox)
+      const coordinates = getMapCoordinatesFromBounds(trackBbox)
       return { ...query, ...coordinates }
     }
     return query
-  }, [map, trackBbox, transmissionDateFrom, transmissionDateTo])
+  }, [trackBbox, transmissionDateFrom, transmissionDateTo])
 
   const onVesselClick = useCallback(
     (e: MouseEvent) => {

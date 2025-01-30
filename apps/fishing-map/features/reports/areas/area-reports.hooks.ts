@@ -88,23 +88,18 @@ export const useHighlightReportArea = () => {
 
 const defaultParams = {} as FitBoundsParams
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
-  const map = useDeckMap()
   return useMemo(() => {
-    if (!bounds || !map) return null
-    try {
-      const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
-        padding: FIT_BOUNDS_REPORT_PADDING,
-        ...params,
-      })
-      return {
-        latitude: parseFloat(latitude.toFixed(8)),
-        longitude: parseFloat(longitude.toFixed(8)),
-        zoom: parseFloat(zoom.toFixed(8)),
-      }
-    } catch (e: any) {
-      return null
+    if (!bounds) return null
+    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
+      padding: FIT_BOUNDS_REPORT_PADDING,
+      ...params,
+    })
+    return {
+      latitude: parseFloat(latitude.toFixed(8)),
+      longitude: parseFloat(longitude.toFixed(8)),
+      zoom: parseFloat(zoom.toFixed(8)),
     }
-  }, [bounds, map, params])
+  }, [bounds, params])
 }
 
 export function useStatsBounds(dataview?: UrlDataviewInstance) {
@@ -211,16 +206,8 @@ export function useReportAreaInViewport() {
 
 export function useFitAreaInViewport(params = defaultParams) {
   const setMapCoordinates = useSetMapCoordinates()
-  const { areaId, bbox } = useReportAreaBounds()
-  let areaCenter = useReportAreaCenter(bbox as Bbox, params)
-  const entireWorldAreaInViewport = areaId === ENTIRE_WORLD_REPORT_AREA_ID
-  if (entireWorldAreaInViewport && !areaCenter) {
-    areaCenter = {
-      latitude: 0,
-      longitude: 0,
-      zoom: 0,
-    }
-  }
+  const { bbox } = useReportAreaBounds()
+  const areaCenter = useReportAreaCenter(bbox as Bbox, params)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
