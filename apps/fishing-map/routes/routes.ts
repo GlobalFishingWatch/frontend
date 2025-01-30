@@ -20,6 +20,7 @@ export const REPORT = 'REPORT'
 export const VESSEL_GROUP_REPORT = 'VESSEL_GROUP_REPORT'
 export const PORT_REPORT = 'PORT_REPORT'
 export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
+export const REPORTS_LIST = 'REPORTS_LIST'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
 export const REPORT_ROUTES = [REPORT, WORKSPACE_REPORT]
 
@@ -33,6 +34,7 @@ export type ROUTE_TYPES =
   | typeof WORKSPACE_VESSEL
   | typeof REPORT
   | typeof WORKSPACE_REPORT
+  | typeof REPORTS_LIST
   | typeof SEARCH
   | typeof WORKSPACE_SEARCH
   | typeof REPORT
@@ -80,6 +82,11 @@ export const routesMap: RoutesMap = {
   [VESSEL]: {
     path: '/vessel/:vesselId',
   },
+  // TODO:CVP decide if we need this or we integrate within WORKSPACES_LIST
+  // [REPORTS_LIST]: {
+  //   path: '/reports',
+  //   confirmLeave,
+  // },
   [WORKSPACES_LIST]: {
     path: '/:category',
   },
