@@ -153,7 +153,7 @@ export function useReportAreaBounds() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
-  const { id: portId, loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
+  const { loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
   return useMemo(() => {
@@ -165,13 +165,11 @@ export function useReportAreaBounds() {
     }
     if (isPortReportLocation) {
       return {
-        areaId: portId,
         loaded: portLoaded,
         bbox: portBbox,
       }
     }
     return {
-      areaId: reportArea?.id,
       loaded:
         reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
           ? true
@@ -182,7 +180,6 @@ export function useReportAreaBounds() {
     isPortReportLocation,
     isVesselGroupReportLocation,
     portBbox,
-    portId,
     portLoaded,
     reportArea?.bounds,
     reportArea?.geometry?.bbox,
@@ -356,15 +353,10 @@ export function usePortsReportAreaFootprintBounds() {
   const portReportFootprintArea = usePortsReportAreaFootprint()
   return useMemo(
     () => ({
-      id: portReportFootprintArea?.data?.id,
       loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
       bbox: portReportFootprintArea?.data?.bounds,
     }),
-    [
-      portReportFootprintArea?.data?.id,
-      portReportFootprintArea?.data?.bounds,
-      portReportFootprintArea?.status,
-    ]
+    [portReportFootprintArea?.data?.bounds, portReportFootprintArea?.status]
   )
 }
 

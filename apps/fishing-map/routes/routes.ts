@@ -82,11 +82,6 @@ export const routesMap: RoutesMap = {
   [VESSEL]: {
     path: '/vessel/:vesselId',
   },
-  // TODO:CVP decide if we need this or we integrate within WORKSPACES_LIST
-  // [REPORTS_LIST]: {
-  //   path: '/reports',
-  //   confirmLeave,
-  // },
   [WORKSPACES_LIST]: {
     path: '/:category',
   },

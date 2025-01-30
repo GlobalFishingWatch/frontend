@@ -17,6 +17,7 @@ function VGRActivity() {
     <Fragment>
       <div className={styles.container}>
         <VGRActivitySubsectionSelector />
+        {/* TODO:CVP uncomment this */}
         {/* <ReportSummary activityUnit={activityUnit} showTags={false} />
         <AreaReportSearch /> */}
       </div>
