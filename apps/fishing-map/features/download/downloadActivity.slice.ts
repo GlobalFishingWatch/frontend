@@ -3,7 +3,6 @@ import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { saveAs } from 'file-saver'
 import { stringify } from 'qs'
 import type { RootState } from 'reducers'
-import type { BufferOperation, BufferUnit } from 'types'
 
 import {
   getIsConcurrentError,
@@ -15,6 +14,7 @@ import type { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import type { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
+import type { BufferOperation, BufferUnit } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'

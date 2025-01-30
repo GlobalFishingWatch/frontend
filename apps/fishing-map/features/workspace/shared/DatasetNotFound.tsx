@@ -4,9 +4,9 @@ import cx from 'classnames'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-
 import Remove from './Remove'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 function DatasetNotFound({ dataview }: { dataview: UrlDataviewInstance }) {
   const { t } = useTranslation()

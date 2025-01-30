@@ -4,13 +4,13 @@ import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
 import { debounce, throttle } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import type { MapCoordinates } from 'types'
 
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { updateUrlViewport } from 'routes/routes.actions'
+import type { MapCoordinates } from 'types'
 import { getUrlViewstateNumericParam } from 'utils/url'
 
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000

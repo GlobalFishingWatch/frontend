@@ -6,10 +6,11 @@ import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
 
 import { getSchemaFilterOperationInDataview } from 'features/datasets/datasets.utils'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getFlagsByIds } from 'utils/flags'
 
 import { useDataviewInstancesConnect } from '../workspace.hook'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type DatasetFlagFieldProps = {
   dataview: UrlDataviewInstance

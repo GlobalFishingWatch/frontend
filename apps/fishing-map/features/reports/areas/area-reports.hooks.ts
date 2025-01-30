@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useGetStatsByDataviewQuery } from 'queries/stats-api'
-import type { Bbox } from 'types'
 
 import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -55,6 +54,7 @@ import {
   selectReportPortId,
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
+import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import {

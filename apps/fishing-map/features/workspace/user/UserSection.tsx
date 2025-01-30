@@ -22,13 +22,14 @@ import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
-import styles from 'features/workspace/shared/Sections.module.css'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 
 import LayerPanel from './UserLayerPanel'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 export function RegisterOrLoginToUpload() {
   return (

@@ -2,7 +2,6 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import kebabCase from 'lodash/kebabCase'
 import memoize from 'lodash/memoize'
 import { stringify } from 'qs'
-import type { WorkspaceState } from 'types'
 
 import {
   GFWAPI,
@@ -17,6 +16,7 @@ import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import type { WorkspaceCategory } from 'data/workspaces'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
+import type { WorkspaceState } from 'types'
 import type { AsyncError,AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 

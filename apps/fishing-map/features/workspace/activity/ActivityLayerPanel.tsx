@@ -26,7 +26,6 @@ import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAux
 import Color from 'features/workspace/shared/Color'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -45,6 +44,7 @@ import Title from '../shared/Title'
 import { isDefaultActivityDataview, isDefaultDetectionsDataview } from './activity.utils'
 
 import activityStyles from './ActivitySection.module.css'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   isOpen: boolean

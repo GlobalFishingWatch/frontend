@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import type { FilterContext } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
-import type { MapCoordinates } from 'types'
 
 import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 
@@ -26,6 +25,7 @@ import {
   selectIsAnyAreaReportLocation,
   selectIsVesselGroupReportLocation,
 } from 'routes/routes.selectors'
+import type { MapCoordinates } from 'types'
 
 const mapStyles = {
   width: '100%',

@@ -1,8 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
-import type { AppDispatch } from 'store'
-import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 
 import type { FetchOptions } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
@@ -62,6 +60,8 @@ import {
   selectReportId,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
+import type { AppDispatch } from 'store'
+import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'

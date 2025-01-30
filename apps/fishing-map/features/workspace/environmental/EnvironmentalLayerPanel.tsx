@@ -24,7 +24,6 @@ import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel
 import ActivityFilters, {
   isHistogramDataviewSupported,
 } from 'features/workspace/shared/LayerFilters'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -36,6 +35,8 @@ import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance

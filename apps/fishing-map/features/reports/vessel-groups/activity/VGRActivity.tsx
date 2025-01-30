@@ -6,8 +6,9 @@ import { isActivityReport } from 'features/dataviews/selectors/dataviews.selecto
 import ReportSummary from 'features/reports/areas/summary/ReportSummary'
 import ReportActivity from 'features/reports/shared/activity/ReportActivity'
 import AreaReportSearch from 'features/reports/shared/area/AreaReportSearch'
-import styles from 'features/reports/vessel-groups/activity/VGRActivity.module.css'
 import VGRActivitySubsectionSelector from 'features/reports/vessel-groups/activity/VGRActivitySubsectionSelector.tsx'
+
+import styles from 'features/reports/vessel-groups/activity/VGRActivity.module.css'
 
 function VGRActivity() {
   const reportCategory = useSelector(selectReportCategory)

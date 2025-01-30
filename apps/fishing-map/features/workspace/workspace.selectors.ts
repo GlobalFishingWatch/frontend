@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
-import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { EventTypes, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
@@ -18,6 +17,7 @@ import {
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import type { UserSettings } from 'features/user/user.slice'
 import { selectIsRouteWithWorkspace, selectLocationQuery } from 'routes/routes.selectors'
+import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data

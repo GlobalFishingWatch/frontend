@@ -40,7 +40,6 @@ import VesselLink from 'features/vessel/VesselLink'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { formatInfoField, getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
@@ -51,6 +50,8 @@ import Filters from '../shared/LayerFilters'
 import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { parse } from 'qs'
-import type { QueryParams } from 'types'
 
 import { ACCESS_TOKEN_STRING, removeUrlParameterByName } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
@@ -17,6 +16,7 @@ import {
   selectLocationPayload,
   selectLocationType,
 } from 'routes/routes.selectors'
+import type { QueryParams } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'

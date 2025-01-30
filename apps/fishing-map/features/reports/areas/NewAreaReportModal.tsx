@@ -2,7 +2,6 @@ import type { ChangeEvent } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { WorkspaceState } from 'types'
 
 import type { Report, Workspace, WorkspaceViewAccessType } from '@globalfishingwatch/api-types'
 import {
@@ -28,6 +27,7 @@ import {
   DAYS_FROM_LATEST_MIN,
   getViewAccessOptions,
 } from 'features/workspace/save/workspace-save.utils'
+import type { WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 
 import { getWorkspaceReport } from './area-reports.utils'

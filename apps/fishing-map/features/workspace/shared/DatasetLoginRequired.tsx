@@ -4,8 +4,9 @@ import cx from 'classnames'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 function DatasetLoginRequired({ dataview }: { dataview: UrlDataviewInstance }) {
   const { t } = useTranslation()
