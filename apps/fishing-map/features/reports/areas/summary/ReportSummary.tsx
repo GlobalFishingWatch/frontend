@@ -45,6 +45,7 @@ import styles from './ReportSummary.module.css'
 type ReportSummaryProps = {
   activityUnit: ReportActivityUnit
   reportStatus?: AsyncReducerStatus
+  showTags?: boolean
 }
 
 export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
@@ -52,6 +53,7 @@ export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 export default function ReportSummary({
   activityUnit,
   reportStatus = AsyncReducerStatus.Finished,
+  showTags = true,
 }: ReportSummaryProps) {
   const { t, i18n } = useTranslation()
   const timerange = useSelector(selectTimeRange)
@@ -198,7 +200,7 @@ export default function ReportSummary({
           <ReportSummaryPlaceholder />
         )}
       </div>
-      {summary ? (
+      {summary && showTags ? (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
           {dataviews?.length > 0 && (
             <div className={styles.tagsContainer}>
@@ -214,7 +216,7 @@ export default function ReportSummary({
             </div>
           )}
         </Sticky>
-      ) : reportTimeComparison ? null : (
+      ) : reportTimeComparison || !showTags ? null : (
         <div className={styles.tagsContainer}>
           <ReportSummaryTagsPlaceholder />
         </div>

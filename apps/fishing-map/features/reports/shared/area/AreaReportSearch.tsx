@@ -1,31 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
-import Link from 'redux-first-router-link'
 
-import type { Dataview } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
-import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import {
-  MARINE_MANAGER_DATAVIEWS,
-  MARINE_MANAGER_DATAVIEWS_INSTANCES,
-  WIZARD_TEMPLATE_ID,
-} from 'data/default-workspaces/marine-manager'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
-import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
-import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { t as trans } from 'features/i18n/i18n'
-import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useDeckMap } from 'features/map/map-context.hooks'
-import { useMapViewState } from 'features/map/map-viewport.hooks'
-import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
+import { WORKSPACE_REPORT } from 'routes/routes'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectLocationQuery } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 
 import styles from './AreaReportSearch.module.css'
@@ -43,17 +33,15 @@ const getItemLabel = (item: OceanArea | null) => {
   )})`
 }
 
-function WorkspaceWizard() {
+function AreaReportSearch() {
   const { t, i18n } = useTranslation()
-  const dispatch = useAppDispatch()
-  const fitBounds = useMapFitBounds()
-  const map = useDeckMap()
-  const viewState = useMapViewState()
-  const dataviews = useSelector(selectAllDataviews)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
   const [inputSearch, setInputSearch] = useState<string>('')
+  const dataviews = useSelector(selectContextAreasDataviews)
+  const query = useSelector(selectLocationQuery)
+  const { dispatchLocation } = useLocationConnect()
 
   const updateMatchingAreas = async (inputValue: string) => {
     const matchingAreas = await searchOceanAreas(inputValue, {
@@ -66,53 +54,75 @@ function WorkspaceWizard() {
     if (inputValue === '') {
       setSelectedItem(null)
       setAreasMatching([])
-      fitBounds([-90, -180, 90, 180])
     } else {
       updateMatchingAreas(inputValue as string)
     }
     setInputSearch(inputValue as string)
   }
 
-  const onSelectResult = ({ selectedItem }: UseComboboxStateChange<OceanArea>) => {
-    trackEvent({
-      category: TrackCategory.Analysis,
-      action: 'Search for an area in report',
-      label: getEventLabel([inputSearch, selectedItem?.properties?.name || '']),
-    })
-    setSelectedItem(selectedItem as any)
-    setAreasMatching([])
-  }
-
-  const onSearchClick = () => {
-    if (selectedItem) {
-      const bounds = selectedItem?.properties.bounds
-      if (bounds) {
-        fitBounds(bounds)
+  const navigateToAreaReport = (area: OceanArea) => {
+    const dataview = dataviews?.find((dataview) => dataview.slug?.includes(area.properties?.type))
+    if (dataview) {
+      const datasetId = dataview.datasetsConfig?.[0]?.datasetId
+      if (datasetId) {
+        const dataviewInstance = (query.dataviewInstances || []).find(
+          (d: UrlDataviewInstance) => d.id === dataview.id
+        )
+        const dataviewInstances = dataviewInstance
+          ? query.dataviewInstances.map((d: UrlDataviewInstance) => {
+              if (d.id === dataviewInstance.id) {
+                return {
+                  ...d,
+                  config: {
+                    ...d.config,
+                    visible: true,
+                  },
+                }
+              }
+            })
+          : [...(query.dataviewInstances || []), { id: dataview.id, config: { visible: true } }]
+        dispatchLocation(WORKSPACE_REPORT, {
+          payload: { datasetId, areaId: area.properties.area },
+          query: {
+            ...query,
+            dataviewInstances,
+          },
+        })
       }
+    } else {
+      console.warn('No dataset found for area', area)
     }
   }
 
-  const onHighlightedIndexChange = ({ highlightedIndex }: UseComboboxStateChange<OceanArea>) => {
-    const highlightedArea = areasMatching[highlightedIndex as number]
-    const bounds = highlightedArea?.properties.bounds
-    if (bounds) {
-      fitBounds(bounds)
+  const onSelectResult = ({ selectedItem, inputValue = '' }: UseComboboxStateChange<OceanArea>) => {
+    setAreasMatching([])
+    if (selectedItem) {
+      setSelectedItem(selectedItem)
+      navigateToAreaReport(selectedItem)
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: 'Search for an area in report',
+        label: getEventLabel([inputValue, selectedItem?.properties?.name || '']),
+      })
+    } else {
+      setSelectedItem(null)
     }
   }
 
   const { getMenuProps, getInputProps, getItemProps, highlightedIndex, inputValue, isOpen } =
     useCombobox({
+      inputValue: inputSearch,
       selectedItem,
       items: areasMatching,
       itemToString: getItemLabel,
       onInputValueChange: onInputChange,
       onSelectedItemChange: onSelectResult,
-      onHighlightedIndexChange: onHighlightedIndexChange,
     })
 
   const onInputBlur = () => {
     if (inputValue !== getItemLabel(selectedItem)) {
       setSelectedItem(null)
+      setInputSearch('')
       setAreasMatching([])
     }
   }
@@ -130,7 +140,6 @@ function WorkspaceWizard() {
         <IconButton
           icon="search"
           className={cx(styles.search, { [styles.disabled]: isOpen })}
-          onClick={onSearchClick}
         ></IconButton>
         <ul {...getMenuProps()} className={styles.results}>
           {isOpen &&
@@ -151,4 +160,4 @@ function WorkspaceWizard() {
   )
 }
 
-export default WorkspaceWizard
+export default AreaReportSearch
