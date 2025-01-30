@@ -7,6 +7,7 @@ import { TagList } from '@globalfishingwatch/ui-components'
 
 import { dataviewWithPrivateDatasets } from 'features/dataviews/dataviews.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type DatasetFilterSourceProps = {

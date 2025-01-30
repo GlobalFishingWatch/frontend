@@ -12,12 +12,13 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import type { VesselsPagination } from 'features/reports/vessel-groups/events/vgr-events.selectors'
 import { selectVGRData } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTableFooter.module.css'
 import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import type { EventsStatsVessel } from '../../ports/ports-report.slice'
 import type { PortsReportState } from '../../ports/ports-report.types'
+
+import styles from 'features/reports/vessel-groups/vessels/VesselGroupReportVesselsTableFooter.module.css'
 
 export default function EventsReportVesselsTableFooter({
   vessels,

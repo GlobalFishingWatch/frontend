@@ -37,7 +37,6 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import FitBounds from 'features/workspace/shared/FitBounds'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import Color from '../shared/Color'
@@ -52,6 +51,8 @@ import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
 import UserLayerTrackPanel, { useUserLayerTrackMetadata } from './UserLayerTrackPanel'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance

@@ -18,7 +18,6 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupListTooltip from 'features/vessel-groups/VesselGroupListTooltip'
-import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -27,6 +26,8 @@ import LayerPanelContainer from '../shared/LayerPanelContainer'
 import { setWorkspaceSuggestSave } from '../workspace.slice'
 
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {
   id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,

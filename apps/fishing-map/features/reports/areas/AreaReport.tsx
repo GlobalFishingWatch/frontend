@@ -25,7 +25,6 @@ import {
 } from 'features/reports/areas/area-reports.selectors'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
-import styles from 'features/reports/areas/AreaReport.module.css'
 import ReportEnvironment from 'features/reports/areas/environment/ReportEnvironment'
 import ReportSummary from 'features/reports/areas/summary/ReportSummary'
 import ReportTitle from 'features/reports/areas/title/ReportTitle'
@@ -47,6 +46,8 @@ import WorkspaceError from 'features/workspace/WorkspaceError'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+import styles from 'features/reports/areas/AreaReport.module.css'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 

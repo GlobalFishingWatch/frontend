@@ -37,7 +37,6 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/areas/area-reports.selectors'
 import { parseReportUrl } from 'features/reports/areas/area-reports.utils'
-import styles from 'features/reports/areas/AreaReport.module.css'
 import ReportDownload from 'features/reports/shared/activity/download/ReportDownload'
 import ReportActivityGraph from 'features/reports/shared/activity/ReportActivityGraph'
 import {
@@ -55,6 +54,8 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+import styles from 'features/reports/areas/AreaReport.module.css'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 

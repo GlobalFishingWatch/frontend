@@ -30,7 +30,6 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
@@ -41,6 +40,8 @@ import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
 import VesselGroupNotFound from './VesselGroupNotFound'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 export type VesselGroupLayerPanelProps = {
   dataview: UrlDataviewInstance

@@ -11,7 +11,6 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { EMPTY_API_VALUES } from 'features/reports/areas/area-reports.config'
-import styles from 'features/reports/shared/events/EventsReportVesselsTable.module.css'
 import {
   selectVGRVesselsOrderDirection,
   selectVGRVesselsOrderProperty,
@@ -32,6 +31,8 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import { selectVGRVesselsPaginated } from './vessel-group-report-vessels.selectors'
 import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTableFooter'
+
+import styles from 'features/reports/shared/events/EventsReportVesselsTable.module.css'
 
 export default function VesselGroupReportVesselsTable() {
   const { t } = useTranslation()

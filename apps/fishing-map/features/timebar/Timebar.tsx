@@ -2,7 +2,6 @@ import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import type { Locale } from 'types'
 
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -53,6 +52,7 @@ import {
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'routes/routes.selectors'
+import type { Locale } from 'types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { getUTCDateTime } from 'utils/dates'

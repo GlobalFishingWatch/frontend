@@ -11,11 +11,12 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
-import styles from 'features/workspace/shared/Sections.module.css'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 
 import LayerPanel from './EventsLayerPanel'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 function EventsLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()

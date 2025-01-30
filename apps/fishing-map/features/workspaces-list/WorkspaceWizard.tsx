@@ -5,7 +5,6 @@ import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
 import Link from 'redux-first-router-link'
-import type { Bbox } from 'types'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
@@ -32,6 +31,7 @@ import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-b
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
 import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
+import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
 
 import styles from './WorkspaceWizard.module.css'

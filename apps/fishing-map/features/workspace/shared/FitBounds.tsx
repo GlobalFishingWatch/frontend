@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Bbox } from 'types'
 
 import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
 import { getUTCDate, segmentsToBbox } from '@globalfishingwatch/data-transforms'
@@ -10,6 +9,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import type { Bbox } from 'types'
 
 type FitBoundsProps = {
   hasError?: boolean

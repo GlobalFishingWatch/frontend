@@ -1,5 +1,3 @@
-import type { Bbox, BufferOperation, BufferUnit } from 'types'
-
 import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
 
 import type {
@@ -10,6 +8,7 @@ import type {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
+import type { Bbox, BufferOperation, BufferUnit } from 'types'
 
 export type ReportActivityGraph =
   | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION

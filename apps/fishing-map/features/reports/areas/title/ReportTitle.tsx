@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
 import cx from 'classnames'
 import parse from 'html-react-parser'
-import type { BufferOperation, BufferUnit } from 'types'
 
 import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -42,6 +41,7 @@ import { useReportFeaturesLoading } from 'features/reports/shared/activity/repor
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import type { BufferOperation, BufferUnit } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useHighlightReportArea } from '../area-reports.hooks'

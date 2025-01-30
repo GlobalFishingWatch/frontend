@@ -17,7 +17,6 @@ import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/datav
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserEnvironmentDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { useVisualizationsOptions } from 'features/workspace/activity/activity.hooks'
-import styles from 'features/workspace/shared/Sections.module.css'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -25,6 +24,8 @@ import { getEventLabel } from 'utils/analytics'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()

@@ -15,7 +15,6 @@ import { EMPTY_API_VALUES } from 'features/reports/areas/area-reports.config'
 import { ReportCategory } from 'features/reports/areas/area-reports.types'
 import type { ReportActivityUnit } from 'features/reports/areas/AreaReport'
 import { selectReportVesselsPaginated } from 'features/reports/shared/activity/vessels/report-activity-vessels.selectors'
-import styles from 'features/reports/shared/activity/vessels/ReportVesselsTable.module.css'
 import ReportVesselsTableFooter from 'features/reports/shared/activity/vessels/ReportVesselsTableFooter'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import VesselLink from 'features/vessel/VesselLink'
@@ -25,6 +24,8 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import ReportVesselsPlaceholder from '../../placeholders/ReportVesselsPlaceholder'
 import { selectReportIsPinningVessels } from '../reports-activity.slice'
+
+import styles from 'features/reports/shared/activity/vessels/ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {
   activityUnit: ReportActivityUnit

@@ -5,7 +5,6 @@ import Sticky from 'react-sticky-el'
 import cx from 'classnames'
 import dynamic from 'next/dynamic'
 import Link from 'redux-first-router-link'
-import type { QueryParams } from 'types'
 
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -75,6 +74,7 @@ import {
   selectLocationQuery,
   selectLocationType,
 } from 'routes/routes.selectors'
+import type { QueryParams } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useClipboardNotification } from './sidebar.hooks'

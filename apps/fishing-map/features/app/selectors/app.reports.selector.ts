@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { BufferOperation, BufferUnit } from 'types'
 
 import { selectActiveReportCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
@@ -23,6 +22,7 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
+import type { BufferOperation, BufferUnit } from 'types'
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
