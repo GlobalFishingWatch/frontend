@@ -10,6 +10,7 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
 import tseslint from 'typescript-eslint'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -95,7 +96,7 @@ export default tseslint.config({
           ['^(@|@globalfishingwatch)(/.*|$)'],
           // Internal paths.
           [
-            '^(features|store|routes|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!.css)$)',
+            '^(features|store|routes|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',
           ],
           // Side effect imports.
           ['^\\u0000'],
