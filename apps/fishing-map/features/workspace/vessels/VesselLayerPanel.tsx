@@ -45,12 +45,12 @@ import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { formatInfoField, getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
 
-import Color from '../common/Color'
-import FitBounds from '../common/FitBounds'
-import Filters from '../common/LayerFilters'
-import LayerSwitch from '../common/LayerSwitch'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
+import Color from '../shared/Color'
+import FitBounds from '../shared/FitBounds'
+import Filters from '../shared/LayerFilters'
+import LayerSwitch from '../shared/LayerSwitch'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
 
 export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance

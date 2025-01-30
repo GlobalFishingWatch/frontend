@@ -15,8 +15,8 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { getValueLabelByUnit } from 'features/workspace/common/LayerSchemaFilter'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { getValueLabelByUnit } from 'features/workspace/shared/LayerSchemaFilter'
 
 import { useDataviewInstancesConnect } from '../workspace.hook'
 

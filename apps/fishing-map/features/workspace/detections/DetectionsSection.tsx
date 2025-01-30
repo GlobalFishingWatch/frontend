@@ -16,8 +16,8 @@ import {
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
 import styles from 'features/workspace/shared/Sections.module.css'
+import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'

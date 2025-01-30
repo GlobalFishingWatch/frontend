@@ -14,7 +14,7 @@ import type { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/dat
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import type { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
+import type { OnSelectFilterArgs } from 'features/workspace/shared/LayerFilters'
 
 import styles from './LayerFilters.module.css'
 

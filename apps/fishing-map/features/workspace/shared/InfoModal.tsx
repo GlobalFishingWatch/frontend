@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo,useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'es-toolkit'
 
@@ -13,7 +13,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import type { UserGuideSection } from 'features/help/UserGuideLink'
 import UserGuideLink from 'features/help/UserGuideLink'
-import InfoModalContent from 'features/workspace/common/InfoModalContent'
+import InfoModalContent from 'features/workspace/shared/InfoModalContent'
 
 import styles from './InfoModal.module.css'
 
