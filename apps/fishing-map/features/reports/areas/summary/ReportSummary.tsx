@@ -44,12 +44,17 @@ import styles from './ReportSummary.module.css'
 
 type ReportSummaryProps = {
   activityUnit: ReportActivityUnit
-  reportStatus: AsyncReducerStatus
+  reportStatus?: AsyncReducerStatus
+  showTags?: boolean
 }
 
 export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 
-export default function ReportSummary({ activityUnit, reportStatus }: ReportSummaryProps) {
+export default function ReportSummary({
+  activityUnit,
+  reportStatus = AsyncReducerStatus.Finished,
+  showTags = true,
+}: ReportSummaryProps) {
   const { t, i18n } = useTranslation()
   const timerange = useSelector(selectTimeRange)
   const category = useSelector(selectReportCategory)
@@ -82,8 +87,8 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
       : category === ReportCategory.Fishing || category === ReportCategory.Presence
-      ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
-      : undefined
+        ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
+        : undefined
 
     if (
       reportHours &&
@@ -195,7 +200,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
           <ReportSummaryPlaceholder />
         )}
       </div>
-      {summary ? (
+      {summary && showTags ? (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
           {dataviews?.length > 0 && (
             <div className={styles.tagsContainer}>
@@ -211,7 +216,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
             </div>
           )}
         </Sticky>
-      ) : reportTimeComparison ? null : (
+      ) : reportTimeComparison || !showTags ? null : (
         <div className={styles.tagsContainer}>
           <ReportSummaryTagsPlaceholder />
         </div>

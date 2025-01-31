@@ -27,14 +27,11 @@ import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selec
 import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import {
-  useMapViewport,
-  useMapViewState,
-  useSetMapCoordinates,
-} from 'features/map/map-viewport.hooks'
+import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import type { LastReportStorage } from 'features/reports/areas/area-reports.config'
 import {
   ENTIRE_WORLD_REPORT_AREA_BOUNDS,
+  ENTIRE_WORLD_REPORT_AREA_ID,
   LAST_REPORTS_STORAGE_KEY,
 } from 'features/reports/areas/area-reports.config'
 import {
@@ -91,11 +88,9 @@ export const useHighlightReportArea = () => {
 
 const defaultParams = {} as FitBoundsParams
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
-  const map = useDeckMap()
-  const viewport = useMapViewport()
   return useMemo(() => {
-    if (!bounds || !map || !viewport) return null
-    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
+    if (!bounds) return null
+    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
       ...params,
     })
@@ -104,7 +99,7 @@ export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
       longitude: parseFloat(longitude.toFixed(8)),
       zoom: parseFloat(zoom.toFixed(8)),
     }
-  }, [bounds, map, params, viewport])
+  }, [bounds, params])
 }
 
 export function useStatsBounds(dataview?: UrlDataviewInstance) {
@@ -124,16 +119,22 @@ export function useStatsBounds(dataview?: UrlDataviewInstance) {
     }
   )
 
-  const statsBbox = stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox)
+  const statsBbox = useMemo(
+    () => stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox),
+    [stats]
+  )
   const loaded = !isFetching && isSuccess
-  return {
-    loaded: loaded,
-    bbox: loaded
-      ? statsBbox?.some((v) => v === null || v === undefined)
-        ? ENTIRE_WORLD_REPORT_AREA_BOUNDS
-        : statsBbox!
-      : null,
-  }
+  return useMemo(
+    () => ({
+      loaded: loaded,
+      bbox: loaded
+        ? statsBbox?.some((v) => v === null || v === undefined)
+          ? ENTIRE_WORLD_REPORT_AREA_BOUNDS
+          : statsBbox!
+        : null,
+    }),
+    [loaded, statsBbox]
+  )
 }
 
 export function useVesselGroupActivityBounds() {
@@ -150,27 +151,43 @@ export function useVesselGroupBounds(dataviewId?: string) {
 
 export function useReportAreaBounds() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const { loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
-  if (isVesselGroupReportLocation) {
-    return {
-      loaded: vesselGroupLoaded,
-      bbox: vesselGroupBbox,
+  return useMemo(() => {
+    if (isVesselGroupReportLocation) {
+      return {
+        loaded: vesselGroupLoaded,
+        bbox: vesselGroupBbox,
+      }
     }
-  }
-  if (isPortReportLocation) {
-    return {
-      loaded: portLoaded,
-      bbox: portBbox,
+    if (isPortReportLocation) {
+      return {
+        loaded: portLoaded,
+        bbox: portBbox,
+      }
     }
-  }
-  return {
-    loaded: reportAreaStatus === AsyncReducerStatus.Finished,
-    bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
-  }
+    return {
+      loaded:
+        reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+          ? true
+          : reportAreaStatus === AsyncReducerStatus.Finished,
+      bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
+    }
+  }, [
+    isPortReportLocation,
+    isVesselGroupReportLocation,
+    portBbox,
+    portLoaded,
+    reportArea?.bounds,
+    reportArea?.geometry?.bbox,
+    reportArea?.id,
+    reportAreaStatus,
+    vesselGroupBbox,
+    vesselGroupLoaded,
+  ])
 }
 
 export function useReportAreaInViewport() {
@@ -334,10 +351,13 @@ export function usePortsReportAreaFootprint() {
 
 export function usePortsReportAreaFootprintBounds() {
   const portReportFootprintArea = usePortsReportAreaFootprint()
-  return {
-    loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
-    bbox: portReportFootprintArea?.data?.bounds,
-  }
+  return useMemo(
+    () => ({
+      loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
+      bbox: portReportFootprintArea?.data?.bounds,
+    }),
+    [portReportFootprintArea?.data?.bounds, portReportFootprintArea?.status]
+  )
 }
 
 export function usePortsReportAreaFootprintFitBounds() {

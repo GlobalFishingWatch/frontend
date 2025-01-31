@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
@@ -193,10 +193,18 @@ export const useDataviewInstancesConnect = () => {
     },
     [dispatchQueryParams, urlDataviewInstances, workspaceDataviewInstances]
   )
-  return {
-    upsertDataviewInstance,
-    removeDataviewInstance,
-    deleteDataviewInstance,
-    addNewDataviewInstances,
-  }
+  return useMemo(
+    () => ({
+      upsertDataviewInstance,
+      removeDataviewInstance,
+      deleteDataviewInstance,
+      addNewDataviewInstances,
+    }),
+    [
+      addNewDataviewInstances,
+      deleteDataviewInstance,
+      removeDataviewInstance,
+      upsertDataviewInstance,
+    ]
+  )
 }

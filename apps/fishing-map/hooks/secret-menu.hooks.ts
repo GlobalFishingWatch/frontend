@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'reducers'
 
@@ -60,7 +60,7 @@ const useSecretMenu = ({
   }, [dispatch, onToggle])
   useSecretKeyboardCombo({ key, onToggle: dispatchToggleMenu, repeatNumber })
   const menuActive = useSelector(selectMenuActive)
-  return [menuActive, dispatchToggleMenu]
+  return useMemo(() => [menuActive, dispatchToggleMenu], [dispatchToggleMenu, menuActive])
 }
 
 export default useSecretMenu

@@ -4,7 +4,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { PORT_VISITS_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 
 export function isPortClusterDataviewForReport(dataview: UrlDataviewInstance) {
-  return dataview.id.includes(PORT_VISITS_EVENTS_SOURCE_ID)
+  return dataview?.id?.includes(PORT_VISITS_EVENTS_SOURCE_ID)
 }
 
 export function getPortClusterDataviewForReport(

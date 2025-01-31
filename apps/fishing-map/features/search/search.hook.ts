@@ -36,7 +36,10 @@ export const useSearchConnect = () => {
   const searchPagination = useSelector(selectSearchPagination)
   const searchSuggestion = useSelector(selectSearchSuggestion)
   const searchSuggestionClicked = useSelector(selectSearchSuggestionClicked)
-  return { searchPagination, searchSuggestion, searchSuggestionClicked }
+  return useMemo(
+    () => ({ searchPagination, searchSuggestion, searchSuggestionClicked }),
+    [searchPagination, searchSuggestion, searchSuggestionClicked]
+  )
 }
 
 const FIRST_FETCH_FILTERS_TO_IGNORE = [
@@ -115,11 +118,14 @@ export const useSearchFiltersConnect = () => {
 
   const hasFilters = hasFiltersActive(searchFilters)
 
-  return {
-    hasFilters,
-    searchFilters,
-    setSearchFilters,
-  }
+  return useMemo(
+    () => ({
+      hasFilters,
+      searchFilters,
+      setSearchFilters,
+    }),
+    [hasFilters, searchFilters, setSearchFilters]
+  )
 }
 
 type FetchSearchResultsParams = {
