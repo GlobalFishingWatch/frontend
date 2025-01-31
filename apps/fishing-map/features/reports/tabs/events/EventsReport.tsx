@@ -26,12 +26,12 @@ import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import {
-  selectVGREventsVesselFilter,
-  selectVGREventsVesselsProperty,
-} from 'features/reports/report-vessel-group/vessel-group.config.selectors'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectVGREventsSubsectionDataview } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
+import {
+  selectReportVesselFilter,
+  selectReportVesselGraph,
+} from 'features/reports/reports.config.selectors'
 import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
 import {
   selectVGREventsVesselsIndividualData,
@@ -60,9 +60,9 @@ import styles from './EventsReport.module.css'
 function EventsReport() {
   const { t } = useTranslation()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
-  const filter = useSelector(selectVGREventsVesselFilter)
+  const filter = useSelector(selectReportVesselFilter)
   const eventsDataview = useSelector(selectVGREventsSubsectionDataview)
-  const vesselsGroupByProperty = useSelector(selectVGREventsVesselsProperty)
+  const vesselsGroupByProperty = useSelector(selectReportVesselGraph)
   const vesselsWithEvents = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
   const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
@@ -71,7 +71,7 @@ function EventsReport() {
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
-  const reportVesselFilter = useSelector(selectVGREventsVesselFilter)
+  const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectVGREventsVesselsPagination)
   const params = useSelector(selectFetchVGREventsVesselsParams)
   const { status: vessselStatus } = useGetReportEventsVesselsQuery(

@@ -8,21 +8,18 @@ import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
-import { MAX_CATEGORIES } from 'features/reports/report-area/area-reports.config'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
+import { REPORT_FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
+import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import {
-  selectVGREventsVesselsProperty,
-  selectVGRVesselFilter,
-  selectVGRVesselPage,
-  selectVGRVesselsOrderDirection,
-  selectVGRVesselsOrderProperty,
-  selectVGRVesselsResultsPerPage,
-  selectVGRVesselsSubsection,
-} from 'features/reports/report-vessel-group/vessel-group.config.selectors'
-import {
-  OTHER_CATEGORY_LABEL,
-  REPORT_FILTER_PROPERTIES,
-} from 'features/reports/report-vessel-group/vessel-group-report.config'
+  selectReportVesselFilter,
+  selectReportVesselGraph,
+  selectReportVesselPage,
+  selectReportVesselResultsPerPage,
+  selectReportVesselsOrderDirection,
+  selectReportVesselsOrderProperty,
+  selectReportVesselsSubCategory,
+} from 'features/reports/reports.config.selectors'
 import { getVesselIndividualGroupedData } from 'features/reports/shared/utils/reports.utils'
 import { cleanFlagState } from 'features/reports/tabs/activity/vessels/report-activity-vessels.utils'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
@@ -122,7 +119,7 @@ export const selectVGRVesselsFlags = createSelector([selectVGRVesselsParsed], (v
 })
 
 export const selectVGRVesselsFiltered = createSelector(
-  [selectVGRVesselsParsed, selectVGRVesselFilter],
+  [selectVGRVesselsParsed, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
     return getVesselsFiltered<VesselGroupVesselTableParsed>(
@@ -134,7 +131,7 @@ export const selectVGRVesselsFiltered = createSelector(
 )
 
 export const selectVGRVesselsOrdered = createSelector(
-  [selectVGRVesselsFiltered, selectVGRVesselsOrderProperty, selectVGRVesselsOrderDirection],
+  [selectVGRVesselsFiltered, selectReportVesselsOrderProperty, selectReportVesselsOrderDirection],
   (vessels, property, direction) => {
     if (!vessels?.length) return []
     return vessels.toSorted((a, b) => {
@@ -161,8 +158,9 @@ export const selectVGRVesselsOrdered = createSelector(
   }
 )
 
+// TODO:CVP rename all of this prefixed with VGR
 export const selectVGRVesselsPaginated = createSelector(
-  [selectVGRVesselsOrdered, selectVGRVesselPage, selectVGRVesselsResultsPerPage],
+  [selectVGRVesselsOrdered, selectReportVesselPage, selectReportVesselResultsPerPage],
   (vessels, page, resultsPerPage) => {
     if (!vessels?.length) return []
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
@@ -174,8 +172,8 @@ export const selectVGRVesselsPagination = createSelector(
     selectVGRVesselsPaginated,
     selectVGRUniqVessels,
     selectVGRVesselsFiltered,
-    selectVGRVesselPage,
-    selectVGRVesselsResultsPerPage,
+    selectReportVesselPage,
+    selectReportVesselResultsPerPage,
   ],
   (vessels, allVessels, allVesselsFiltered, page = 0, resultsPerPage) => {
     return {
@@ -196,7 +194,7 @@ type GraphDataGroup = {
 }
 
 export const selectVGRVesselsGraphAggregatedData = createSelector(
-  [selectVGRVesselsFiltered, selectVGRVesselsSubsection],
+  [selectVGRVesselsFiltered, selectReportVesselsSubCategory],
   (vessels, subsection) => {
     if (!vessels) return []
     let vesselsGrouped = {}
@@ -226,7 +224,7 @@ export const selectVGRVesselsGraphAggregatedData = createSelector(
     orderedGroups.forEach((group) => {
       if (
         group.name === 'null' ||
-        group.name.toLowerCase() === OTHER_CATEGORY_LABEL.toLowerCase() ||
+        group.name.toLowerCase() === OTHERS_CATEGORY_LABEL.toLowerCase() ||
         group.name === EMPTY_FIELD_PLACEHOLDER
       ) {
         otherGroups.push(group)
@@ -239,7 +237,7 @@ export const selectVGRVesselsGraphAggregatedData = createSelector(
         ? [
             ...groupsWithoutOther,
             {
-              name: OTHER_CATEGORY_LABEL,
+              name: OTHERS_CATEGORY_LABEL,
               value: otherGroups.reduce((acc, group) => acc + group.value, 0),
             },
           ]
@@ -253,7 +251,7 @@ export const selectVGRVesselsGraphAggregatedData = createSelector(
     return [
       ...firstGroups,
       {
-        name: OTHER_CATEGORY_LABEL,
+        name: OTHERS_CATEGORY_LABEL,
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
     ] as ResponsiveVisualizationData<'aggregated'>
@@ -261,7 +259,7 @@ export const selectVGRVesselsGraphAggregatedData = createSelector(
 )
 
 export const selectVGRVesselsGraphIndividualData = createSelector(
-  [selectVGRVesselsFiltered, selectVGRVesselsSubsection],
+  [selectVGRVesselsFiltered, selectReportVesselsSubCategory],
   (vessels, groupBy) => {
     if (!vessels || !groupBy) return []
     return getVesselIndividualGroupedData(vessels, groupBy)
@@ -269,7 +267,7 @@ export const selectVGRVesselsGraphIndividualData = createSelector(
 )
 
 export const selectVGREventsVesselsIndividualData = createSelector(
-  [selectVGREventsVesselsFiltered, selectVGREventsVesselsProperty],
+  [selectVGREventsVesselsFiltered, selectReportVesselGraph],
   (vessels, groupBy) => {
     if (!vessels || !groupBy) return []
     return getVesselIndividualGroupedData(vessels, groupBy)

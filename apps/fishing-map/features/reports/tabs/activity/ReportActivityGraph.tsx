@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import UserGuideLink from 'features/help/UserGuideLink'
-import { selectReportActivityGraph } from 'features/reports/report-area/area-reports.config.selectors'
 import {
   useFitAreaInViewport,
   useReportAreaBounds,
 } from 'features/reports/report-area/area-reports.hooks'
 import { selectTimeComparisonValues } from 'features/reports/report-area/area-reports.selectors'
-import type { ReportActivityGraph } from 'features/reports/report-area/area-reports.types'
+import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
+import type { ReportActivityGraph } from 'features/reports/reports.types'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportActivityGraphSelector from 'features/reports/tabs/activity/ReportActivityGraphSelector'
 import ReportActivityPeriodComparison from 'features/reports/tabs/activity/ReportActivityPeriodComparison'

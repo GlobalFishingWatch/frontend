@@ -29,10 +29,11 @@ import { TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import { selectReportCategory } from '../reports.config.selectors'
+import { ReportCategory } from '../reports.types'
 import { selectVGRVesselsTimeRange } from '../shared/vessels/report-vessels.selectors'
 import ReportActivity from '../tabs/activity/ReportActivity'
 
-import { selectVGRSection } from './vessel-group.config.selectors'
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRDataview } from './vessel-group-report.selectors'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
@@ -49,7 +50,7 @@ function VesselGroupReport() {
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const vesselGroup = useSelector(selectVGRData)!
   const reportStatus = useSelector(selectVGRStatus)
-  const reportSection = useSelector(selectVGRSection)
+  const reportSection = useSelector(selectReportCategory)
   const reportDataview = useSelector(selectVGRDataview)
   const timeRange = useSelector(selectVGRVesselsTimeRange)
   const userData = useSelector(selectUserData)
@@ -78,7 +79,7 @@ function VesselGroupReport() {
   ])
 
   useEffect(() => {
-    if (reportSection === 'vessels' && coordinates) {
+    if (reportSection === ReportCategory.VesselGroup && coordinates) {
       setMapCoordinates(coordinates)
     }
   }, [bboxHash, setMapCoordinates])

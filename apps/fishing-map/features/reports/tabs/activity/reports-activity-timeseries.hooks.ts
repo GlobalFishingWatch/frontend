@@ -25,19 +25,19 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
-import {
-  selectReportActivityGraph,
-  selectReportTimeComparison,
-} from 'features/reports/report-area/area-reports.config.selectors'
 import { useReportAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import {
   selectReportArea,
   selectReportBufferHash,
   selectShowTimeComparison,
 } from 'features/reports/report-area/area-reports.selectors'
-import type { ReportActivityGraph } from 'features/reports/report-area/area-reports.types'
-import { ReportCategory } from 'features/reports/report-area/area-reports.types'
-import { selectVGRActivitySubsection } from 'features/reports/report-vessel-group/vessel-group.config.selectors'
+import {
+  selectReportActivityGraph,
+  selectReportActivitySubCategory,
+  selectReportTimeComparison,
+} from 'features/reports/reports.config.selectors'
+import type { ReportActivityGraph } from 'features/reports/reports.types'
+import { ReportCategory } from 'features/reports/reports.types'
 import type { FilteredPolygons } from 'features/reports/tabs/activity/reports-activity-geo.utils'
 import { useFilterCellsByPolygonWorker } from 'features/reports/tabs/activity/reports-activity-geo.utils.workers.hooks'
 import type { FeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
@@ -135,7 +135,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const areaInViewport = useReportAreaInViewport()
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportCategory = useSelector(selectReportCategory)
-  const vGRActivitySubsection = useSelector(selectVGRActivitySubsection)
+  const vGRActivitySubsection = useSelector(selectReportActivitySubCategory)
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
   const dataviews = useSelector(selectActiveReportDataviews)

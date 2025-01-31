@@ -7,6 +7,7 @@ import DeckGL from '@deck.gl/react'
 import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { MAP_CANVAS_ID } from 'features/map/map.config'
 import { setMapLoaded } from 'features/map/map.slice'
 import { useSetMapInstance } from 'features/map/map-context.hooks'
@@ -19,7 +20,6 @@ import {
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import { MAP_VIEW, useMapSetViewState, useMapViewState } from 'features/map/map-viewport.hooks'
 import MapAnnotations from 'features/map/overlays/annotations/Annotations'
-import { selectVGRSection } from 'features/reports/report-vessel-group/vessel-group.config.selectors'
 import { useHasReportTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import {
   selectIsAnyAreaReportLocation,
@@ -54,7 +54,7 @@ const DeckGLWrapper = () => {
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   const layers = useMapLayers()
   const isVGRReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const vesselGroupSection = useSelector(selectVGRSection)
+  const vesselGroupSection = useSelector(selectReportCategory)
 
   const onMapLoad = useCallback(() => {
     dispatch(setMapLoaded(true))

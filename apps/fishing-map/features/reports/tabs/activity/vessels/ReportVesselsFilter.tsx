@@ -6,9 +6,7 @@ import { useDebounce } from 'use-debounce'
 import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import type { AreaReportState } from 'features/reports/report-area/area-reports.types'
-import type { PortsReportState } from 'features/reports/report-port/ports-report.types'
-import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
+import type { ReportState } from 'features/reports/reports.types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationType } from 'routes/routes.selectors'
 
@@ -16,20 +14,14 @@ import styles from './ReportVesselsFilter.module.css'
 
 type ReportVesselsFilterProps = {
   filter: string
-  filterQueryParam:
-    | keyof Pick<AreaReportState, 'reportVesselFilter'>
-    | keyof Pick<VesselGroupReportState, 'vGRVesselFilter' | 'vGREventsVesselFilter'>
-    | keyof Pick<PortsReportState, 'portsReportVesselsFilter'>
-  pageQueryParam:
-    | keyof Pick<AreaReportState, 'reportVesselPage'>
-    | keyof Pick<VesselGroupReportState, 'vGRVesselPage' | 'vGREventsVesselPage'>
-    | keyof Pick<PortsReportState, 'portsReportVesselsPage'>
+  filterQueryParam?: keyof Pick<ReportState, 'reportVesselFilter'>
+  pageQueryParam?: keyof Pick<ReportState, 'reportVesselPage'>
 }
 
 export default function ReportVesselsFilter({
   filter,
-  filterQueryParam,
-  pageQueryParam,
+  filterQueryParam = 'reportVesselFilter',
+  pageQueryParam = 'reportVesselPage',
 }: ReportVesselsFilterProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()

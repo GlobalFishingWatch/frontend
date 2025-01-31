@@ -19,10 +19,7 @@ import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.work
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
-import {
-  createReportThunk,
-  updateReportThunk,
-} from 'features/reports/report-area/area-reports.slice'
+import { createReportThunk, updateReportThunk } from 'features/reports/reports.slice'
 import { useSaveWorkspaceTimerange } from 'features/workspace/save/workspace-save.hooks'
 import type { WorkspaceTimeRangeMode } from 'features/workspace/save/workspace-save.utils'
 import {
@@ -33,9 +30,14 @@ import {
 import type { WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 
-import { getWorkspaceReport } from './area-reports.utils'
-
 import styles from './NewAreaReportModal.module.css'
+
+export function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
+  const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
+    workspace
+
+  return { ...workspaceProperties, state: { ...state, daysFromLatest } }
+}
 
 type NewReportModalProps = {
   title?: string

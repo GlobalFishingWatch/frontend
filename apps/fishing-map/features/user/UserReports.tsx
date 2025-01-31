@@ -13,7 +13,7 @@ import {
   fetchReportsThunk,
   selectReportsStatus,
   selectReportsStatusId,
-} from 'features/reports/report-area/area-reports.slice'
+} from 'features/reports/reports.slice'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'

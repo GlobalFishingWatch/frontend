@@ -11,7 +11,6 @@ import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import type { EventsStatsVessel } from 'features/reports/report-port/ports-report.slice'
-import type { PortsReportState } from 'features/reports/report-port/ports-report.types'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import type { VesselsPagination } from 'features/reports/tabs/events/events-report.selectors'
 import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
@@ -29,12 +28,8 @@ export default function EventsReportVesselsTableFooter({
   vessels: EventsStatsVessel[]
   filter: string
   pagination: VesselsPagination
-  pageQueryParam?:
-    | keyof Pick<VesselGroupReportState, 'vGREventsVesselPage'>
-    | keyof Pick<PortsReportState, 'portsReportVesselsPage'>
-  resultsPerPageQueryParam?:
-    | keyof Pick<VesselGroupReportState, 'vGREventsResultsPerPage'>
-    | keyof Pick<PortsReportState, 'portsReportVesselsResultsPerPage'>
+  pageQueryParam?: keyof Pick<VesselGroupReportState, 'vGREventsVesselPage'>
+  resultsPerPageQueryParam?: keyof Pick<VesselGroupReportState, 'vGREventsResultsPerPage'>
 }) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()

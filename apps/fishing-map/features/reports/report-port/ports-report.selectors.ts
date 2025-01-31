@@ -12,23 +12,20 @@ import {
 import { selectAreas } from 'features/areas/areas.slice'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { MAX_CATEGORIES } from 'features/reports/report-area/area-reports.config'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
+import {
+  selectReportVesselFilter,
+  selectReportVesselGraph,
+  selectReportVesselPage,
+  selectReportVesselResultsPerPage,
+} from 'features/reports/reports.config.selectors'
 import { selectReportPortId } from 'routes/routes.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
-import {
-  OTHER_CATEGORY_LABEL,
-  REPORT_FILTER_PROPERTIES,
-} from '../report-vessel-group/vessel-group-report.config'
+import { REPORT_FILTER_PROPERTIES } from '../report-vessel-group/vessel-group-report.config'
+import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from '../reports.config'
 import { getVesselIndividualGroupedData } from '../shared/utils/reports.utils'
 
-import {
-  selectPortReportVesselsFilter,
-  selectPortReportVesselsPage,
-  selectPortReportVesselsProperty,
-  selectPortReportVesselsResultsPerPage,
-} from './ports-report.config.selectors'
 import { selectPortsReportVessels } from './ports-report.slice'
 
 export const selectPortReportsDataview = createSelector([selectEventsDataviews], (dataviews) => {
@@ -84,7 +81,7 @@ export const selectPortReportFootprintArea = createSelector(
 )
 
 export const selectPortReportVesselsFiltered = createSelector(
-  [selectPortsReportVessels, selectPortReportVesselsFilter],
+  [selectPortsReportVessels, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
     return getVesselsFiltered(vessels, filter, REPORT_FILTER_PROPERTIES)
@@ -96,7 +93,7 @@ type GraphDataGroup = {
   value: number
 }
 export const selectPortReportVesselsGrouped = createSelector(
-  [selectPortReportVesselsFiltered, selectPortReportVesselsProperty],
+  [selectPortReportVesselsFiltered, selectReportVesselGraph],
   (vessels, property) => {
     if (!vessels?.length) return []
     const orderedGroups: { name: string; value: number }[] = Object.entries(
@@ -112,7 +109,7 @@ export const selectPortReportVesselsGrouped = createSelector(
     orderedGroups.forEach((group) => {
       if (
         group.name === 'null' ||
-        group.name.toLowerCase() === OTHER_CATEGORY_LABEL.toLowerCase() ||
+        group.name.toLowerCase() === OTHERS_CATEGORY_LABEL.toLowerCase() ||
         group.name === EMPTY_FIELD_PLACEHOLDER
       ) {
         otherGroups.push(group)
@@ -125,7 +122,7 @@ export const selectPortReportVesselsGrouped = createSelector(
         ? [
             ...groupsWithoutOther,
             {
-              name: OTHER_CATEGORY_LABEL,
+              name: OTHERS_CATEGORY_LABEL,
               value: otherGroups.reduce((acc, group) => acc + group.value, 0),
             },
           ]
@@ -138,7 +135,7 @@ export const selectPortReportVesselsGrouped = createSelector(
     return [
       ...firstGroups,
       {
-        name: OTHER_CATEGORY_LABEL,
+        name: OTHERS_CATEGORY_LABEL,
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
     ] as GraphDataGroup[]
@@ -146,7 +143,7 @@ export const selectPortReportVesselsGrouped = createSelector(
 )
 
 export const selectPortReportVesselsIndividualData = createSelector(
-  [selectPortReportVesselsFiltered, selectPortReportVesselsProperty],
+  [selectPortReportVesselsFiltered, selectReportVesselGraph],
   (vessels, groupBy) => {
     if (!vessels || !groupBy) return []
     return getVesselIndividualGroupedData(vessels, groupBy)
@@ -154,11 +151,7 @@ export const selectPortReportVesselsIndividualData = createSelector(
 )
 
 export const selectPortReportVesselsPaginated = createSelector(
-  [
-    selectPortReportVesselsFiltered,
-    selectPortReportVesselsPage,
-    selectPortReportVesselsResultsPerPage,
-  ],
+  [selectPortReportVesselsFiltered, selectReportVesselPage, selectReportVesselResultsPerPage],
   (vessels, page, resultsPerPage) => {
     if (!vessels?.length) return []
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
@@ -178,8 +171,8 @@ export const selectPortReportVesselsPagination = createSelector(
     selectPortReportVesselsPaginated,
     selectPortsReportVessels,
     selectPortReportVesselsFiltered,
-    selectPortReportVesselsPage,
-    selectPortReportVesselsResultsPerPage,
+    selectReportVesselPage,
+    selectReportVesselResultsPerPage,
   ],
   (vessels, allVessels, allVesselsFiltered, page = 0, resultsPerPage): VesselsPagination => {
     return {

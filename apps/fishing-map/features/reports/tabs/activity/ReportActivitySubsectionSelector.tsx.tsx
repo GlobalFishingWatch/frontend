@@ -7,7 +7,7 @@ import { Choice } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
-import { selectVGRActivitySubsection } from 'features/reports/report-vessel-group/vessel-group.config.selectors'
+import { selectReportActivitySubCategory } from 'features/reports/reports.config.selectors'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import type { VGRActivitySubsection } from 'features/vessel-groups/vessel-groups.types'
@@ -17,7 +17,7 @@ function ReportActivitySubsectionSelector() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
-  const subsection = useSelector(selectVGRActivitySubsection)
+  const subsection = useSelector(selectReportActivitySubCategory)
   const loading = useReportFeaturesLoading()
   const fitAreaInViewport = useFitAreaInViewport()
   const options: ChoiceOption<VGRActivitySubsection>[] = [

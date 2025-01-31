@@ -3,6 +3,8 @@ import { groupBy } from 'lodash'
 import { type ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
 import type { EventsStatsVessel } from 'features/reports/report-port/ports-report.slice'
+import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
+import type { ReportVesselGraph } from 'features/reports/reports.types'
 import type { VesselGroupVesselTableParsed } from 'features/reports/shared/vessels/report-vessels.selectors'
 import type {
   VGREventsVesselsProperty,
@@ -10,10 +12,7 @@ import type {
 } from 'features/vessel-groups/vessel-groups.types'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
-import { MAX_CATEGORIES } from '../../report-area/area-reports.config'
 import type { ReportVesselWithDatasets } from '../../report-area/area-reports.selectors'
-import type { ReportVesselGraph } from '../../report-area/area-reports.types'
-import { OTHER_CATEGORY_LABEL } from '../../report-vessel-group/vessel-group-report.config'
 
 type VesselVisualizationData = ResponsiveVisualizationData<
   'individual',
@@ -88,7 +87,7 @@ export function getVesselIndividualGroupedData(
   orderedGroups.forEach((group) => {
     if (
       group.name === 'null' ||
-      group.name.toLowerCase() === OTHER_CATEGORY_LABEL.toLowerCase() ||
+      group.name.toLowerCase() === OTHERS_CATEGORY_LABEL.toLowerCase() ||
       group.name === EMPTY_FIELD_PLACEHOLDER
     ) {
       otherGroups.push(group)
@@ -101,7 +100,7 @@ export function getVesselIndividualGroupedData(
       ? [
           ...groupsWithoutOther,
           {
-            name: OTHER_CATEGORY_LABEL,
+            name: OTHERS_CATEGORY_LABEL,
             values: otherGroups.flatMap((group) => group.values),
           },
         ]
@@ -115,7 +114,7 @@ export function getVesselIndividualGroupedData(
   return [
     ...firstGroups,
     {
-      name: OTHER_CATEGORY_LABEL,
+      name: OTHERS_CATEGORY_LABEL,
       values: restOfGroups.flatMap((group) => group.values),
     },
   ] as VesselVisualizationData

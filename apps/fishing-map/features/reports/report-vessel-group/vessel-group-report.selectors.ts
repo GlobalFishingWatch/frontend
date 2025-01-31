@@ -16,11 +16,8 @@ import {
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 
-import {
-  selectVGRActivitySubsection,
-  selectVGREventsSubsection,
-  selectVGRSubsection,
-} from './vessel-group.config.selectors'
+import { selectReportEventsSubCategory } from '../reports.config.selectors'
+
 import type { VesselGroupEventsDataviewId } from './vessel-group-report.dataviews'
 import {
   isVesselGroupActivityDataview,
@@ -55,9 +52,8 @@ export const selectVGRActivityDataview = createSelector(
 export const selectVGREventsSubsectionDataview = createSelector(
   [
     selectEventsDataviews,
-    selectVGRSubsection,
-    selectVGRActivitySubsection,
-    selectVGREventsSubsection,
+    // TODO:CVP review this really works
+    selectReportEventsSubCategory,
   ],
   (dataviews, eventsSubsection) => {
     if (!dataviews?.length || !eventsSubsection) {

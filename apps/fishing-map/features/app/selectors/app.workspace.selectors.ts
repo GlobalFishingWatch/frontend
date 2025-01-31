@@ -32,11 +32,11 @@ import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selecto
 import {
   selectReportActivityGraph,
   selectReportAreaBounds,
-  selectReportResultsPerPage,
   selectReportTimeComparison,
   selectReportVesselFilter,
   selectReportVesselPage,
-} from 'features/reports/report-area/area-reports.config.selectors'
+  selectReportVesselResultsPerPage,
+} from 'features/reports/reports.config.selectors'
 import { selectDaysFromLatest, selectWorkspace } from 'features/workspace/workspace.selectors'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
@@ -46,7 +46,7 @@ const selectWorkspaceReportState = createSelector(
     selectReportActivityGraph,
     selectReportAreaBounds,
     selectReportCategory,
-    selectReportResultsPerPage,
+    selectReportVesselResultsPerPage,
     selectReportTimeComparison,
     selectReportVesselFilter,
     selectReportVesselGraph,

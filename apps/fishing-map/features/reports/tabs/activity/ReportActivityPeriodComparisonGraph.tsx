@@ -18,8 +18,8 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import i18n, { t } from 'features/i18n/i18n'
-import { selectReportTimeComparison } from 'features/reports/report-area/area-reports.config.selectors'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
+import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
 import { getUTCDateTime } from 'utils/dates'
 
 import PeriodComparisonGraphTooltip, {
@@ -104,7 +104,7 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
     }
   }, [dtLastDataUpdate, timeComparison])
 
-  const comparisonStartIndex = timeseries.findIndex((t) => t.date === timeComparison.compareStart)
+  const comparisonStartIndex = timeseries.findIndex((t) => t.date === timeComparison?.compareStart)
   const baselineTimeseries = timeseries.slice(0, comparisonStartIndex).map((t) => ({
     d: t.date,
     date: getUTCDateTime(t.date)?.toMillis(),

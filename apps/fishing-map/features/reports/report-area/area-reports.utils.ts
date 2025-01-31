@@ -23,35 +23,29 @@ import {
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import type { FilterProperty } from 'features/reports/report-vessel-group/vessel-group-report.config'
-import {
-  FILTER_PROPERTIES,
-  OTHER_CATEGORY_LABEL,
-} from 'features/reports/report-vessel-group/vessel-group-report.config'
+import { FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
+import type { ReportCategory } from 'features/reports/reports.types'
 import type { VesselGroupVesselTableParsed } from 'features/reports/shared/vessels/report-vessels.selectors'
 import type { VesselGroupReportVesselParsed } from 'features/reports/shared/vessels/report-vessels.types'
 import type { VesselLastIdentity } from 'features/search/search.slice'
-import type { Bbox, BufferOperation, BufferUnit, WorkspaceState } from 'types'
+import type { Bbox, BufferOperation, BufferUnit } from 'types'
 import { formatInfoField } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 
 import {
   DEFAULT_BUFFER_OPERATION,
-  DEFAULT_POINT_BUFFER_UNIT,
+  DEFAULT_BUFFER_UNIT,
+  OTHERS_CATEGORY_LABEL,
+} from '../reports.config'
+
+import {
   DEFAULT_POINT_BUFFER_VALUE,
   DIFFERENCE,
   REPORT_BUFFER_FEATURE_ID,
 } from './area-reports.config'
 import type { ReportVesselWithDatasets } from './area-reports.selectors'
-import type { ReportCategory } from './area-reports.types'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
-
-export function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
-  const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
-    workspace
-
-  return { ...workspaceProperties, state: { ...state, daysFromLatest } }
-}
 
 export const tickFormatter = (tick: number) => {
   const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
@@ -224,7 +218,7 @@ export const getBufferedArea = ({
 export const getBufferedAreaBbox = ({
   area,
   value = DEFAULT_POINT_BUFFER_VALUE,
-  unit = DEFAULT_POINT_BUFFER_UNIT,
+  unit = DEFAULT_BUFFER_UNIT,
   operation = DEFAULT_BUFFER_OPERATION,
 }: BufferedAreaParams): Bbox | undefined => {
   const bufferedFeature = getBufferedFeature({
@@ -301,12 +295,12 @@ export function normalizeVesselProperties(identity: VesselLastIdentity) {
       uniq(identity.geartypes || [])
         .sort()
         .map((g) => formatInfoField(g, 'geartypes'))
-        .join(', ') || OTHER_CATEGORY_LABEL,
+        .join(', ') || OTHERS_CATEGORY_LABEL,
     shiptype:
       uniq(identity.shiptypes || [])
         .sort()
         .map((g) => formatInfoField(g, 'shiptypes'))
-        .join(', ') || OTHER_CATEGORY_LABEL,
+        .join(', ') || OTHERS_CATEGORY_LABEL,
     flagTranslated: t(`flags:${identity.flag as string}` as any),
   }
 }

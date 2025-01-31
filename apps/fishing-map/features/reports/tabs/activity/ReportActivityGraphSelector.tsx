@@ -12,9 +12,9 @@ import {
 } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectReportActivityGraph } from 'features/reports/report-area/area-reports.config.selectors'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
-import type { ReportActivityGraph } from 'features/reports/report-area/area-reports.types'
+import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
+import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 

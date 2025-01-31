@@ -10,20 +10,20 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { EMPTY_API_VALUES } from 'features/reports/report-area/area-reports.config'
+import { EMPTY_API_VALUES } from 'features/reports/reports.config'
 import {
-  selectVGRVesselsOrderDirection,
-  selectVGRVesselsOrderProperty,
-} from 'features/reports/report-vessel-group/vessel-group.config.selectors'
+  selectReportVesselsOrderDirection,
+  selectReportVesselsOrderProperty,
+} from 'features/reports/reports.config.selectors'
+import type {
+  ReportVesselOrderDirection,
+  ReportVesselOrderProperty,
+} from 'features/reports/reports.types'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import type { VesselPinClickProps } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
-import type {
-  VGRVesselsOrderDirection,
-  VGRVesselsOrderProperty,
-} from 'features/vessel-groups/vessel-groups.types'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -41,24 +41,24 @@ export default function VesselGroupReportVesselsTable() {
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const orderProperty = useSelector(selectVGRVesselsOrderProperty)
-  const orderDirection = useSelector(selectVGRVesselsOrderDirection)
+  const orderProperty = useSelector(selectReportVesselsOrderProperty)
+  const orderDirection = useSelector(selectReportVesselsOrderDirection)
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
     userData?.permissions || []
   )
 
-  const onFilterClick = (vGRVesselFilter: any) => {
-    dispatchQueryParams({ vGRVesselFilter, vGRVesselPage: 0 })
+  const onFilterClick = (reportVesselFilter: any) => {
+    dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
   }
 
   const handleSortClick = (
-    property: VGRVesselsOrderProperty,
-    direction: VGRVesselsOrderDirection
+    property: ReportVesselOrderProperty,
+    direction: ReportVesselOrderDirection
   ) => {
     dispatchQueryParams({
-      vGRVesselsOrderProperty: property,
-      vGRVesselsOrderDirection: direction,
+      reportVesselOrderProperty: property,
+      reportVesselOrderDirection: direction,
     })
   }
 

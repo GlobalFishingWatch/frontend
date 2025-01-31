@@ -17,9 +17,9 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
-import { selectReportTimeComparison } from 'features/reports/report-area/area-reports.config.selectors'
-import type { ReportActivityTimeComparison } from 'features/reports/report-area/area-reports.types'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
+import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
+import type { ReportActivityTimeComparison } from 'features/reports/reports.types'
 import { getUTCDateTime } from 'utils/dates'
 
 import BeforeAfterGraphTooltip from './BeforeAfterGraphTooltip'

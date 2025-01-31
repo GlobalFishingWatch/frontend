@@ -4,7 +4,6 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import type { PortsReportState } from 'features/reports/report-port/ports-report.types'
 import type {
   VesselGroupReportState,
   VGREventsVesselsProperty,
@@ -16,9 +15,7 @@ function EventsReportVesselPropertySelector({
   propertyQueryParam,
 }: {
   property: string
-  propertyQueryParam:
-    | keyof Pick<VesselGroupReportState, 'vGREventsVesselsProperty'>
-    | keyof Pick<PortsReportState, 'portsReportVesselsProperty'>
+  propertyQueryParam: keyof Pick<VesselGroupReportState, 'vGREventsVesselsProperty'>
 }) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()

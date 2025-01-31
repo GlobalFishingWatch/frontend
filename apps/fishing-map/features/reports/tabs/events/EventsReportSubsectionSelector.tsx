@@ -5,8 +5,8 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVGREventsSubsection } from 'features/reports/report-vessel-group/vessel-group.config.selectors'
 import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { selectReportEventsSubCategory } from 'features/reports/reports.config.selectors'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import type { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -16,7 +16,7 @@ function VesselGroupReportEventsSubsectionSelector() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
-  const subsection = useSelector(selectVGREventsSubsection)
+  const subsection = useSelector(selectReportEventsSubCategory)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
   const gfwUser = useSelector(selectIsGFWUser)
   const jacUser = useSelector(selectIsJACUser)
