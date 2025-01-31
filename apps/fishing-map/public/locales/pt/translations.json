@@ -156,6 +156,7 @@
     "flag": "Bandeira",
     "from": "de",
     "geartype": "Tipo de petrecho",
+    "global": "Global",
     "globally": "globalmente",
     "help": "Ajuda",
     "hideAllHelpHints": "Ignorar Todos",
