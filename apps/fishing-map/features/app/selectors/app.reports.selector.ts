@@ -2,16 +2,16 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import { selectActiveReportCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
+  selectReportActivitySubCategory,
   selectReportBufferOperationSelector,
   selectReportBufferUnitSelector,
   selectReportBufferValueSelector,
-  selectReportCategorySelector,
-  selectReportVesselGraphSelector,
-} from 'features/reports/report-area/area-reports.config.selectors'
-import { selectReportById } from 'features/reports/report-area/area-reports.slice'
-import type { ReportVesselGraph } from 'features/reports/report-area/area-reports.types'
-import { ReportCategory } from 'features/reports/report-area/area-reports.types'
-import { selectVGRActivitySubsection } from 'features/reports/report-vessel-group/vessel-group.config.selectors'
+  selectReportCategory as selectReportCategorySelector,
+  selectReportVesselGraph as selectReportVesselGraphSelector,
+} from 'features/reports/reports.config.selectors'
+import { selectReportById } from 'features/reports/reports.slice'
+import type { ReportVesselGraph } from 'features/reports/reports.types'
+import { ReportCategory } from 'features/reports/reports.types'
 import { WORLD_REGION_ID } from 'features/reports/tabs/activity/reports-activity.slice'
 import {
   selectIsVesselGroupReportLocation,
@@ -64,12 +64,13 @@ export const selectReportActiveCategories = createSelector(
   }
 )
 
+// TODO:CVP merge with selectReportCategory from reports.config.selectors
 export const selectReportCategory = createSelector(
   [
     selectReportCategorySelector,
     selectReportActiveCategories,
     selectIsVesselGroupReportLocation,
-    selectVGRActivitySubsection,
+    selectReportActivitySubCategory,
   ],
   (
     reportCategory,

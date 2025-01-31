@@ -16,6 +16,13 @@ import { getDownloadReportSupported } from 'features/download/download.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { usePortsReportAreaFootprintFitBounds } from 'features/reports/report-area/area-reports.hooks'
+import {
+  selectPortReportCountry,
+  selectPortReportDatasetId,
+  selectPortReportName,
+  selectReportVesselFilter,
+  selectReportVesselGraph,
+} from 'features/reports/reports.config.selectors'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
@@ -32,13 +39,6 @@ import { formatInfoField } from 'utils/info'
 import EventsReportVesselsGraph from '../shared/vessels/ReportVesselsGraph'
 import { getDateRangeHash } from '../tabs/activity/reports-activity.slice'
 
-import {
-  selectPortReportCountry,
-  selectPortReportName,
-  selectPortReportVesselsFilter,
-  selectPortReportVesselsProperty,
-  selectPortsReportDatasetId,
-} from './ports-report.config.selectors'
 import { useFetchPortsReport } from './ports-report.hooks'
 import {
   selectPortReportsDataview,
@@ -68,9 +68,9 @@ function PortsReport() {
   const portId = useSelector(selectReportPortId)
   const reportName = useSelector(selectPortReportName)
   const reportCountry = useSelector(selectPortReportCountry)
-  const datasetId = useSelector(selectPortsReportDatasetId)
-  const portReportVesselsProperty = useSelector(selectPortReportVesselsProperty)
-  const portReportVesselFilter = useSelector(selectPortReportVesselsFilter)
+  const datasetId = useSelector(selectPortReportDatasetId)
+  const portReportVesselsProperty = useSelector(selectReportVesselGraph)
+  const portReportVesselFilter = useSelector(selectReportVesselFilter)
   const { start, end } = useSelector(selectTimeRange)
   const portsReportPagination = useSelector(selectPortReportVesselsPagination)
   const portsReportData = useSelector(selectPortsReportData)
@@ -236,14 +236,8 @@ function PortsReport() {
             individualData={portReportIndividualData}
             color={color}
             property={portReportVesselsProperty}
-            filterQueryParam="portsReportVesselsFilter"
-            pageQueryParam="portsReportVesselsPage"
           />
-          <ReportVesselsFilter
-            filter={portReportVesselFilter}
-            filterQueryParam="portsReportVesselsFilter"
-            pageQueryParam="portsReportVesselsPage"
-          />
+          <ReportVesselsFilter filter={portReportVesselFilter} />
           <EventsReportVesselsTable vessels={portsReportVesselsPaginated} />
           {portsReportData?.vessels && portsReportData?.vessels?.length > 0 && (
             <EventsReportVesselsTableFooter

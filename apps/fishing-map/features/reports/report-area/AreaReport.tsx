@@ -23,17 +23,17 @@ import {
   selectReportArea,
   selectReportAreaStatus,
 } from 'features/reports/report-area/area-reports.selectors'
-import { ReportCategory } from 'features/reports/report-area/area-reports.types'
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
-import ReportEnvironment from 'features/reports/report-area/environment/ReportEnvironment'
 import ReportSummary from 'features/reports/report-area/summary/ReportSummary'
 import ReportTitle from 'features/reports/report-area/title/ReportTitle'
+import { ReportCategory } from 'features/reports/reports.types'
 import ActivityReport from 'features/reports/tabs/activity/ReportActivity'
 import {
   resetReportData,
   selectReportVesselsStatus,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useSetTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+import ReportEnvironment from 'features/reports/tabs/environment/ReportEnvironment'
 import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
@@ -86,13 +86,14 @@ export default function Report() {
   )
   const categoryTabs: Tab<ReportCategory>[] = [
     {
-      id: ReportCategory.Fishing,
+      id: ReportCategory.Activity,
       title: t('common.fishing', 'Fishing'),
     },
-    {
-      id: ReportCategory.Presence,
-      title: t('common.presence', 'Presence'),
-    },
+    // TODO:CVP remove presence as different category and insert in activity
+    // {
+    //   id: ReportCategory.Presence,
+    //   title: t('common.presence', 'Presence'),
+    // },
     {
       id: ReportCategory.Detections,
       title: t('common.detections', 'Detections'),
@@ -121,6 +122,7 @@ export default function Report() {
       fitAreaInViewport()
     }
     // Reacting only to the area status and fitting bounds after load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, reportArea])
 
   useEffect(() => {
@@ -147,7 +149,7 @@ export default function Report() {
 
   useEffect(() => {
     setTimebarVisualizationByCategory(reportCategory)
-  }, [reportCategory])
+  }, [reportCategory, setTimebarVisualizationByCategory])
 
   const handleTabClick = (option: Tab<ReportCategory>) => {
     if (option.id !== reportCategory) {

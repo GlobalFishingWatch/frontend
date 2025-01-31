@@ -23,7 +23,6 @@ import type { Area } from 'features/areas/areas.slice'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
-  DEFAULT_BUFFER_OPERATION,
   DEFAULT_BUFFER_VALUE,
   NAUTICAL_MILES,
 } from 'features/reports/report-area/area-reports.config'
@@ -32,6 +31,7 @@ import {
   selectReportAreaDataviews,
   selectReportAreaStatus,
 } from 'features/reports/report-area/area-reports.selectors'
+import { DEFAULT_BUFFER_OPERATION } from 'features/reports/reports.config'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import {
   resetReportData,

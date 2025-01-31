@@ -16,6 +16,8 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { FIELDS, getCommonProperties } from 'features/reports/report-area/area-reports.utils'
 import type { ReportActivityUnit } from 'features/reports/report-area/AreaReport'
 import ReportSummaryTags from 'features/reports/report-area/summary/ReportSummaryTags'
+import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
+import { ReportCategory } from 'features/reports/reports.types'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
 import ReportSummaryTagsPlaceholder from 'features/reports/shared/placeholders/ReportSummaryTagsPlaceholder'
 import {
@@ -36,9 +38,6 @@ import {
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
-
-import { selectReportTimeComparison } from '../area-reports.config.selectors'
-import { ReportCategory } from '../area-reports.types'
 
 import styles from './ReportSummary.module.css'
 
@@ -86,7 +85,7 @@ export default function ReportSummary({
     const sameTitleDataviews = datasetTitles.every((d) => d === datasetTitles?.[0])
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
-      : category === ReportCategory.Fishing || category === ReportCategory.Presence
+      : category === ReportCategory.Activity
         ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
         : undefined
 

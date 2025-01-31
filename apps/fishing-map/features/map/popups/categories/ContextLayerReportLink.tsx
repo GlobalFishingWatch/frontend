@@ -11,11 +11,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { selectHasReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  DEFAULT_BUFFER_OPERATION,
-  DEFAULT_POINT_BUFFER_UNIT,
-  DEFAULT_POINT_BUFFER_VALUE,
-} from 'features/reports/report-area/area-reports.config'
+import { DEFAULT_POINT_BUFFER_VALUE } from 'features/reports/report-area/area-reports.config'
+import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/reports.config'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
@@ -97,7 +94,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
     },
     query: {
       ...query,
-      reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
+      reportBufferUnit: isPointFeature ? DEFAULT_BUFFER_UNIT : undefined,
       reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
       reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
       ...(!isSidebarOpen && { sidebarOpen: true }),

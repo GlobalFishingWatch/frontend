@@ -25,7 +25,6 @@ import {
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
-import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import type { LastReportStorage } from 'features/reports/report-area/area-reports.config'
 import {

@@ -17,11 +17,8 @@ import {
 } from 'data/config'
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import {
-  EMPTY_API_VALUES,
-  OTHERS_CATEGORY_LABEL,
-} from 'features/reports/report-area/area-reports.config'
-import type { ReportVesselGraph } from 'features/reports/report-area/area-reports.types'
+import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
+import type { ReportVesselGraph } from 'features/reports/reports.types'
 import { ReportBarGraphPlaceholder } from 'features/reports/shared/placeholders/ReportBarGraphPlaceholder'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'

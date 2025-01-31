@@ -13,10 +13,10 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { selectReportVesselFilter } from 'features/reports/report-area/area-reports.config.selectors'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportAreaName } from 'features/reports/report-area/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
+import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -88,7 +88,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   }
   const onShowMoreClick = () => {
     dispatchQueryParams({
-      reportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      reportVesselResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
     trackEvent({
@@ -97,7 +97,10 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
     })
   }
   const onShowLessClick = () => {
-    dispatchQueryParams({ reportResultsPerPage: REPORT_VESSELS_PER_PAGE, reportVesselPage: 0 })
+    dispatchQueryParams({
+      reportVesselResultsPerPage: REPORT_VESSELS_PER_PAGE,
+      reportVesselPage: 0,
+    })
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Click on show less vessels`,

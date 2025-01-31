@@ -11,8 +11,8 @@ import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { selectVGRVesselFilter } from 'features/reports/report-vessel-group/vessel-group.config.selectors'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
@@ -26,7 +26,7 @@ export default function VesselGroupReportVesselsTableFooter() {
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroup = useSelector(selectVGRData)
   const allVessels = useSelector(selectVGRVesselsFiltered)
-  const reportVesselFilter = useSelector(selectVGRVesselFilter)
+  const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectVGRVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
 
@@ -66,15 +66,15 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
 
   const onPrevPageClick = () => {
-    dispatchQueryParams({ vGRVesselPage: pagination.page - 1 })
+    dispatchQueryParams({ reportVesselPage: pagination.page - 1 })
   }
   const onNextPageClick = () => {
-    dispatchQueryParams({ vGRVesselPage: pagination.page + 1 })
+    dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
   }
   const onShowMoreClick = () => {
     dispatchQueryParams({
-      vGRVesselsResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-      vGRVesselPage: 0,
+      reportVesselResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      reportVesselPage: 0,
     })
     // trackEvent({
     //   category: TrackCategory.Analysis,
@@ -83,7 +83,7 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
   const onShowLessClick = () => {
     dispatchQueryParams({
-      vGRVesselsResultsPerPage: REPORT_VESSELS_PER_PAGE,
+      reportVesselResultsPerPage: REPORT_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
     // trackEvent({

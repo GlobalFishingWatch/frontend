@@ -14,22 +14,22 @@ import {
 } from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import {
-  EMPTY_API_VALUES,
-  MAX_CATEGORIES,
-  OTHERS_CATEGORY_LABEL,
-} from 'features/reports/report-area/area-reports.config'
-import {
-  selectReportResultsPerPage,
-  selectReportVesselFilter,
-  selectReportVesselPage,
-} from 'features/reports/report-area/area-reports.config.selectors'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import {
   selectReportActivityFlatten,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/report-area/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
+import {
+  EMPTY_API_VALUES,
+  MAX_CATEGORIES,
+  OTHERS_CATEGORY_LABEL,
+} from 'features/reports/reports.config'
+import {
+  selectReportVesselFilter,
+  selectReportVesselPage,
+  selectReportVesselResultsPerPage,
+} from 'features/reports/reports.config.selectors'
 import {
   cleanFlagState,
   cleanVesselOrGearType,
@@ -114,7 +114,7 @@ export const selectReportVesselsFiltered = createSelector(
 
 const defaultVesselsList: ReportVesselWithDatasets[] = []
 export const selectReportVesselsPaginated = createSelector(
-  [selectReportVesselsFiltered, selectReportVesselPage, selectReportResultsPerPage],
+  [selectReportVesselsFiltered, selectReportVesselPage, selectReportVesselResultsPerPage],
   (vessels, page = 0, resultsPerPage) => {
     if (!vessels?.length) return defaultVesselsList
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
@@ -127,7 +127,7 @@ export const selectReportVesselsPagination = createSelector(
     selectReportVesselsFiltered,
     selectReportVesselsList,
     selectReportVesselPage,
-    selectReportResultsPerPage,
+    selectReportVesselResultsPerPage,
   ],
   (vessels, allVesselsFiltered, allVessels, page = 0, resultsPerPage) => {
     return {

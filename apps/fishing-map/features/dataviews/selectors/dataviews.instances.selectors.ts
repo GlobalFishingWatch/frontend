@@ -8,12 +8,11 @@ import { selectReportCategory } from 'features/app/selectors/app.reports.selecto
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
-import {
-  selectVGRSection,
-  selectVGRSubsection,
-  selectViewOnlyVesselGroup,
-} from 'features/reports/report-vessel-group/vessel-group.config.selectors'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import {
+  selectReportVesselsSubCategory,
+  selectViewOnlyVesselGroup,
+} from 'features/reports/reports.config.selectors'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
@@ -64,8 +63,8 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectVesselId,
     selectIsVesselGroupReportLocation,
     selectReportVesselGroupId,
-    selectVGRSection,
-    selectVGRSubsection,
+    selectReportCategory,
+    selectReportVesselsSubCategory,
     selectViewOnlyVesselGroup,
   ],
   (
@@ -78,8 +77,8 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     vesselId,
     isVesselGroupReportLocation,
     reportVesselGroupId,
-    vGRSection,
-    vGRSubsection,
+    vGRCategory,
+    vGRSubcategory,
     viewOnlyVesselGroup
   ) => {
     const visibleDataviews = dataviews.filter((dataview) => dataview.config?.visible)
@@ -116,8 +115,8 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
       const dataviewsVisible = getReportVesselGroupVisibleDataviews({
         dataviews: visibleDataviews,
         reportVesselGroupId,
-        vesselGroupReportSection: vGRSection,
-        vesselGroupReportSubSection: vGRSubsection,
+        vesselGroupReportSection: vGRCategory,
+        vesselGroupReportSubSection: vGRSubcategory,
       })
       return dataviewsVisible
     }

@@ -40,11 +40,9 @@ import {
 } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
-import { DEFAULT_AREA_REPORT_STATE } from 'features/reports/report-area/area-reports.config'
-import { fetchReportsThunk } from 'features/reports/report-area/area-reports.slice'
-import { DEFAULT_PORT_REPORT_STATE } from 'features/reports/report-port/ports-report.config'
 import { cleanPortClusterDataviewFromReport } from 'features/reports/report-port/ports-report.utils'
-import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/reports/report-vessel-group/vessel-group-report.config'
+import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
+import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
@@ -438,15 +436,10 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk<
   }
 })
 
-const ALL_REPORTS_STATE = {
-  ...DEFAULT_AREA_REPORT_STATE,
-  ...DEFAULT_VESSEL_GROUP_REPORT_STATE,
-  ...DEFAULT_PORT_REPORT_STATE,
-}
 export function cleanReportQuery(query: QueryParams) {
   return {
     ...query,
-    ...Object.keys(ALL_REPORTS_STATE).reduce(
+    ...Object.keys(DEFAULT_REPORT_STATE).reduce(
       (acc, key) => {
         acc[key] = undefined
         return acc

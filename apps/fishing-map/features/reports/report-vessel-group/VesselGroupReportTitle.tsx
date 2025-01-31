@@ -30,7 +30,8 @@ import {
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 
-import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
+import { selectViewOnlyVesselGroup } from '../reports.config.selectors'
+
 import type { VesselGroupReport } from './vessel-group-report.slice'
 
 import styles from './VesselGroupReportTitle.module.css'

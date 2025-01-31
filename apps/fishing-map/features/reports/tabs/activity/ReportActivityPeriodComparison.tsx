@@ -9,14 +9,12 @@ import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import Hint from 'features/help/Hint'
-import {
-  MAX_DAYS_TO_COMPARE,
-  MAX_MONTHS_TO_COMPARE,
-} from 'features/reports/report-area/area-reports.config'
-import { selectReportTimeComparison } from 'features/reports/report-area/area-reports.config.selectors'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
+import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
 import { useReportTimeCompareConnect } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+
+import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from './reports-activity.config'
 
 import styles from './ReportActivityBeforeAfter.module.css'
 

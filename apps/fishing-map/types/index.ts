@@ -18,6 +18,8 @@ import type {
   PortsReportState,
   PortsReportStateProperty,
 } from 'features/reports/report-port/ports-report.types'
+import type { ReportState } from 'features/reports/reports.types'
+import type { ActivityReportState } from 'features/reports/tabs/activity/reports-activity.types'
 import type { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
 import type { VesselProfileState, VesselProfileStateProperty } from 'features/vessel/vessel.types'
 import type {
@@ -95,13 +97,17 @@ export type AppState = {
   mapDrawingEditId?: string
 }
 
+export type AppReportState = Partial<ReportState> &
+  Partial<ActivityReportState> &
+  Partial<AreaReportState> &
+  Partial<VesselGroupReportState> &
+  Partial<PortsReportState>
+
 export type QueryParams = Partial<WorkspaceViewport> &
   WorkspaceState &
   Partial<WorkspaceTimeRange> &
   Partial<VesselProfileState> &
-  Partial<AreaReportState> &
-  Partial<VesselGroupReportState> &
-  Partial<PortsReportState> &
+  AppReportState &
   AppState &
   RedirectParam &
   VesselSearchState

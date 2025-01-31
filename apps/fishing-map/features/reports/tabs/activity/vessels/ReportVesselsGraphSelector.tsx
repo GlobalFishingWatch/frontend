@@ -15,8 +15,8 @@ import {
   selectReportCategory,
   selectReportVesselGraph,
 } from 'features/app/selectors/app.reports.selector'
-import type { ReportVesselGraph } from 'features/reports/report-area/area-reports.types'
-import { ReportCategory } from 'features/reports/report-area/area-reports.types'
+import type { ReportVesselGraph } from 'features/reports/reports.types'
+import { ReportCategory } from 'features/reports/reports.types'
 import { useLocationConnect } from 'routes/routes.hook'
 
 export default function ReportVesselsGraphSelector() {

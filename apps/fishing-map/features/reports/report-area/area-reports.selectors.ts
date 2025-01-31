@@ -19,15 +19,13 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  EMPTY_API_VALUES,
-  ENTIRE_WORLD_REPORT_AREA,
-} from 'features/reports/report-area/area-reports.config'
+import { ENTIRE_WORLD_REPORT_AREA } from 'features/reports/report-area/area-reports.config'
 import {
   getBufferedArea,
   getBufferedFeature,
   getReportCategoryFromDataview,
 } from 'features/reports/report-area/area-reports.utils'
+import type { ReportCategory } from 'features/reports/reports.types'
 import {
   selectReportPreviewBuffer,
   selectReportVesselsData,
@@ -37,11 +35,9 @@ import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { createDeepEqualSelector } from 'utils/selectors'
 
-import {
-  selectReportActivityGraph,
-  selectReportTimeComparison,
-} from './area-reports.config.selectors'
-import type { ReportCategory, ReportTimeComparisonValues } from './area-reports.types'
+import { EMPTY_API_VALUES } from '../reports.config'
+import { selectReportActivityGraph, selectReportTimeComparison } from '../reports.config.selectors'
+import type { ReportTimeComparisonValues } from '../tabs/activity/reports-activity.types'
 
 const EMPTY_ARRAY: [] = []
 

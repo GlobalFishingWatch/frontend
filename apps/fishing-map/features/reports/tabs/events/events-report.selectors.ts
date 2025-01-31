@@ -13,24 +13,21 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { MAX_CATEGORIES } from 'features/reports/report-area/area-reports.config'
 import {
   getVesselsFiltered,
   normalizeVesselProperties,
 } from 'features/reports/report-area/area-reports.utils'
 import type { EventsStatsVessel } from 'features/reports/report-port/ports-report.slice'
-import {
-  selectVGREventsResultsPerPage,
-  selectVGREventsVesselFilter,
-  selectVGREventsVesselPage,
-  selectVGREventsVesselsProperty,
-} from 'features/reports/report-vessel-group/vessel-group.config.selectors'
-import {
-  OTHER_CATEGORY_LABEL,
-  REPORT_FILTER_PROPERTIES,
-} from 'features/reports/report-vessel-group/vessel-group-report.config'
+import { REPORT_FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
 import { selectVGREventsSubsectionDataview } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
+import {
+  selectReportVesselFilter,
+  selectReportVesselGraph,
+  selectReportVesselPage,
+  selectReportVesselResultsPerPage,
+} from 'features/reports/reports.config.selectors'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -104,7 +101,7 @@ export const selectVGREventsVessels = createSelector(
 )
 
 export const selectVGREventsVesselsFiltered = createSelector(
-  [selectVGREventsVessels, selectVGREventsVesselFilter],
+  [selectVGREventsVessels, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
     return getVesselsFiltered(vessels, filter, REPORT_FILTER_PROPERTIES)
@@ -112,7 +109,7 @@ export const selectVGREventsVesselsFiltered = createSelector(
 )
 
 export const selectVGREventsVesselsPaginated = createSelector(
-  [selectVGREventsVesselsFiltered, selectVGREventsVesselPage, selectVGREventsResultsPerPage],
+  [selectVGREventsVesselsFiltered, selectReportVesselPage, selectReportVesselResultsPerPage],
   (vessels, page, resultsPerPage) => {
     if (!vessels?.length) return []
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
@@ -125,7 +122,7 @@ type GraphDataGroup = {
 }
 
 export const selectVGREventsVesselsGrouped = createSelector(
-  [selectVGREventsVesselsFiltered, selectVGREventsVesselsProperty],
+  [selectVGREventsVesselsFiltered, selectReportVesselGraph],
   (vessels, property) => {
     if (!vessels?.length) return []
 
@@ -143,7 +140,7 @@ export const selectVGREventsVesselsGrouped = createSelector(
     orderedGroups.forEach((group) => {
       if (
         group.name === 'null' ||
-        group.name.toLowerCase() === OTHER_CATEGORY_LABEL.toLowerCase() ||
+        group.name.toLowerCase() === OTHERS_CATEGORY_LABEL.toLowerCase() ||
         group.name === EMPTY_FIELD_PLACEHOLDER
       ) {
         otherGroups.push(group)
@@ -156,7 +153,7 @@ export const selectVGREventsVesselsGrouped = createSelector(
         ? [
             ...groupsWithoutOther,
             {
-              name: OTHER_CATEGORY_LABEL,
+              name: OTHERS_CATEGORY_LABEL,
               value: otherGroups.reduce((acc, group) => acc + group.value, 0),
             },
           ]
@@ -169,7 +166,7 @@ export const selectVGREventsVesselsGrouped = createSelector(
     return [
       ...firstGroups,
       {
-        name: OTHER_CATEGORY_LABEL,
+        name: OTHERS_CATEGORY_LABEL,
         value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
       },
     ] as GraphDataGroup[]
@@ -200,8 +197,8 @@ export const selectVGREventsVesselsPagination = createSelector(
     selectVGREventsVesselsPaginated,
     selectVGREventsVessels,
     selectVGREventsVesselsFiltered,
-    selectVGREventsVesselPage,
-    selectVGREventsResultsPerPage,
+    selectReportVesselPage,
+    selectReportVesselResultsPerPage,
   ],
   (vessels, allVessels, allVesselsFiltered, page = 0, resultsPerPage): VesselsPagination => {
     return {
