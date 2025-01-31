@@ -7,12 +7,12 @@ import {
   selectReportBufferValueSelector,
   selectReportCategorySelector,
   selectReportVesselGraphSelector,
-} from 'features/reports/areas/area-reports.config.selectors'
-import { selectReportById } from 'features/reports/areas/area-reports.slice'
-import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
-import { WORLD_REGION_ID } from 'features/reports/shared/activity/reports-activity.slice'
-import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+} from 'features/reports/report-area/area-reports.config.selectors'
+import { selectReportById } from 'features/reports/report-area/area-reports.slice'
+import type { ReportVesselGraph } from 'features/reports/report-area/area-reports.types'
+import { ReportCategory } from 'features/reports/report-area/area-reports.types'
+import { selectVGRActivitySubsection } from 'features/reports/report-vessel-group/vessel-group.config.selectors'
+import { WORLD_REGION_ID } from 'features/reports/tabs/activity/reports-activity.slice'
 import {
   selectIsVesselGroupReportLocation,
   selectLocationAreaId,

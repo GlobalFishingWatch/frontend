@@ -15,8 +15,8 @@ import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
-} from 'features/reports/areas/area-reports.config'
-import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
+} from 'features/reports/report-area/area-reports.config'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'

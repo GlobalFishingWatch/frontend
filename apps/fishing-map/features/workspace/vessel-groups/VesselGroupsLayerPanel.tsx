@@ -15,8 +15,8 @@ import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import {
   useReportAreaCenter,
   useVesselGroupBounds,
-} from 'features/reports/areas/area-reports.hooks'
-import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
+} from 'features/reports/report-area/area-reports.hooks'
+import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
 import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import {

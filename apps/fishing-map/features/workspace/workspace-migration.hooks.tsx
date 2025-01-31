@@ -18,9 +18,9 @@ import {
   selectDeprecatedDataviewInstances,
   selectHasDeprecatedDataviewInstances,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectIsReportOwner } from 'features/reports/areas/area-reports.selectors'
-import { updateReportThunk } from 'features/reports/areas/area-reports.slice'
-import { getWorkspaceReport } from 'features/reports/areas/area-reports.utils'
+import { selectIsReportOwner } from 'features/reports/report-area/area-reports.selectors'
+import { updateReportThunk } from 'features/reports/report-area/area-reports.slice'
+import { getWorkspaceReport } from 'features/reports/report-area/area-reports.utils'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'

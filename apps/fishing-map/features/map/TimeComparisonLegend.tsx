@@ -7,7 +7,7 @@ import type { UILegend } from '@globalfishingwatch/ui-components'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectActivityMergedDataviewId } from 'features/dataviews/selectors/dataviews.selectors'
-import { useTimeCompareTimeDescription } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
+import { useTimeCompareTimeDescription } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 
 import styles from './MapLegends.module.css'
 

@@ -19,8 +19,8 @@ import {
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import { MAP_VIEW, useMapSetViewState, useMapViewState } from 'features/map/map-viewport.hooks'
 import MapAnnotations from 'features/map/overlays/annotations/Annotations'
-import { useHasReportTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
-import { selectVGRSection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { selectVGRSection } from 'features/reports/report-vessel-group/vessel-group.config.selectors'
+import { useHasReportTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import {
   selectIsAnyAreaReportLocation,
   selectIsVesselGroupReportLocation,

@@ -5,7 +5,7 @@ import Link from 'redux-first-router-link'
 
 import type { Report } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
-import { IconButton, InputText,Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -13,8 +13,8 @@ import {
   fetchReportsThunk,
   selectReportsStatus,
   selectReportsStatusId,
-} from 'features/reports/areas/area-reports.slice'
-import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
+} from 'features/reports/report-area/area-reports.slice'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
 import { REPORT } from 'routes/routes'

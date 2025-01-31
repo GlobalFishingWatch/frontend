@@ -10,7 +10,7 @@ import type {
 import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
-import type { FeaturesToTimeseriesParams } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
+import type { FeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<

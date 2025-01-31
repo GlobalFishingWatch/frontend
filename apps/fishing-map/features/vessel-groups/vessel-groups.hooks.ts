@@ -6,7 +6,7 @@ import type { VesselGroup } from '@globalfishingwatch/api-types'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 
 // import { VesselLastIdentity } from 'features/search/search.slice'
-// import { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+// import { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {

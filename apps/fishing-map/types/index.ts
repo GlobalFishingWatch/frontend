@@ -13,11 +13,11 @@ import type { MapAnnotation } from 'features/map/overlays/annotations/annotation
 import type {
   AreaReportState,
   AreaReportStateProperty,
-} from 'features/reports/areas/area-reports.types'
+} from 'features/reports/report-area/area-reports.types'
 import type {
   PortsReportState,
   PortsReportStateProperty,
-} from 'features/reports/ports/ports-report.types'
+} from 'features/reports/report-port/ports-report.types'
 import type { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
 import type { VesselProfileState, VesselProfileStateProperty } from 'features/vessel/vessel.types'
 import type {

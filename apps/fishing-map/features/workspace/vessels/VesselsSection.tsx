@@ -18,7 +18,7 @@ import {
   selectHasDeprecatedDataviewInstances,
   selectVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import type { ResourcesState } from 'features/resources/resources.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'

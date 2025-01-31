@@ -24,7 +24,7 @@ import {
   selectActiveReportActivityDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
+import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
