@@ -36,7 +36,7 @@ import {
   selectReportTimeComparison,
   selectReportVesselFilter,
   selectReportVesselPage,
-} from 'features/reports/areas/area-reports.config.selectors'
+} from 'features/reports/report-area/area-reports.config.selectors'
 import { selectDaysFromLatest, selectWorkspace } from 'features/workspace/workspace.selectors'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'

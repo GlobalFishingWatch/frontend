@@ -34,8 +34,8 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
-import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
-import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
+import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
+import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import {
   useDisableHighlightTimeConnect,

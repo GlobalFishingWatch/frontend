@@ -33,18 +33,18 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import type { ReportCategory } from 'features/reports/areas/area-reports.types'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
+import type { ReportCategory } from 'features/reports/report-area/area-reports.types'
+import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import {
   selectVGRActivitySubsection,
   selectVGREventsSubsection,
   selectVGRSection,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+} from 'features/reports/report-vessel-group/vessel-group.config.selectors'
 import {
   getVesselGroupActivityDataviewInstance,
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
-} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+} from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'

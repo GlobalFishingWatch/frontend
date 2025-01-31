@@ -4,7 +4,7 @@ import cx from 'classnames'
 import type { FourwingsHeatmapPickingObject } from '@globalfishingwatch/deck-layers'
 
 import I18nNumber from 'features/i18n/i18nNumber'
-import { useTimeCompareTimeDescription } from 'features/reports/shared/activity/reports-activity-timecomparison.hooks'
+import { useTimeCompareTimeDescription } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 
 import styles from '../Popup.module.css'
 

@@ -26,7 +26,7 @@ import {
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
   selectActiveReportActivityDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { getUTCDateTime } from 'utils/dates'

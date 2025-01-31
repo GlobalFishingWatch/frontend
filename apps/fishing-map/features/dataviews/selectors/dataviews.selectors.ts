@@ -35,17 +35,17 @@ import {
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
+import { ReportCategory } from 'features/reports/report-area/area-reports.types'
+import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import {
   selectVGRSection,
   selectVGRSubsection,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+} from 'features/reports/report-vessel-group/vessel-group.config.selectors'
 import {
   getReportVesselGroupVisibleDataviews,
   isVesselGroupActivityDataview,
-} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { selectVGRActivityDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
+} from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectVGRActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import {
   selectIsAnyAreaReportLocation,

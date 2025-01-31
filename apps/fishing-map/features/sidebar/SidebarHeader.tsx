@@ -28,12 +28,12 @@ import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors
 import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { useHighlightReportArea } from 'features/reports/areas/area-reports.hooks'
-import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
-import { selectReportsStatus } from 'features/reports/areas/area-reports.slice'
-import { resetPortsReportData } from 'features/reports/ports/ports-report.slice'
-import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
-import { resetVesselGroupReportData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { useHighlightReportArea } from 'features/reports/report-area/area-reports.hooks'
+import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
+import { selectReportsStatus } from 'features/reports/report-area/area-reports.slice'
+import { resetPortsReportData } from 'features/reports/report-port/ports-report.slice'
+import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import type { SearchType } from 'features/search/search.config'
 import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
@@ -83,7 +83,9 @@ import styles from './SidebarHeader.module.css'
 
 const NewReportModal = dynamic(
   () =>
-    import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/areas/NewAreaReportModal')
+    import(
+      /* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/report-area/NewAreaReportModal'
+    )
 )
 
 function SaveReportButton() {

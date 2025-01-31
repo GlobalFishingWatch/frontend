@@ -7,13 +7,13 @@ import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
+import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import {
   selectVGRSection,
   selectVGRSubsection,
   selectViewOnlyVesselGroup,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+} from 'features/reports/report-vessel-group/vessel-group.config.selectors'
+import { getReportVesselGroupVisibleDataviews } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
