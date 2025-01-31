@@ -27,14 +27,11 @@ import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selec
 import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import {
-  useMapViewport,
-  useMapViewState,
-  useSetMapCoordinates,
-} from 'features/map/map-viewport.hooks'
+import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import type { LastReportStorage } from 'features/reports/areas/area-reports.config'
 import {
   ENTIRE_WORLD_REPORT_AREA_BOUNDS,
+  ENTIRE_WORLD_REPORT_AREA_ID,
   LAST_REPORTS_STORAGE_KEY,
 } from 'features/reports/areas/area-reports.config'
 import {
@@ -91,23 +88,18 @@ export const useHighlightReportArea = () => {
 
 const defaultParams = {} as FitBoundsParams
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
-  const map = useDeckMap()
   return useMemo(() => {
-    if (!bounds || !map) return null
-    try {
-      const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
-        padding: FIT_BOUNDS_REPORT_PADDING,
-        ...params,
-      })
-      return {
-        latitude: parseFloat(latitude.toFixed(8)),
-        longitude: parseFloat(longitude.toFixed(8)),
-        zoom: parseFloat(zoom.toFixed(8)),
-      }
-    } catch (e: any) {
-      return null
+    if (!bounds) return null
+    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
+      padding: FIT_BOUNDS_REPORT_PADDING,
+      ...params,
+    })
+    return {
+      latitude: parseFloat(latitude.toFixed(8)),
+      longitude: parseFloat(longitude.toFixed(8)),
+      zoom: parseFloat(zoom.toFixed(8)),
     }
-  }, [bounds, map, params])
+  }, [bounds, params])
 }
 
 export function useStatsBounds(dataview?: UrlDataviewInstance) {
@@ -127,7 +119,6 @@ export function useStatsBounds(dataview?: UrlDataviewInstance) {
     }
   )
 
-  console.log('stats:', stats)
   const statsBbox = useMemo(
     () => stats && ([stats.minLon, stats.minLat, stats.maxLon, stats.maxLat] as Bbox),
     [stats]
@@ -159,19 +150,19 @@ export function useVesselGroupBounds(dataviewId?: string) {
 }
 
 export function useReportAreaBounds() {
-  // const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  // const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const { loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
   return useMemo(() => {
-    // if (isVesselGroupReportLocation) {
-    //   return {
-    //     loaded: vesselGroupLoaded,
-    //     bbox: vesselGroupBbox,
-    //   }
-    // }
+    if (isVesselGroupReportLocation) {
+      return {
+        loaded: vesselGroupLoaded,
+        bbox: vesselGroupBbox,
+      }
+    }
     if (isPortReportLocation) {
       return {
         loaded: portLoaded,
@@ -179,16 +170,23 @@ export function useReportAreaBounds() {
       }
     }
     return {
-      loaded: reportAreaStatus === AsyncReducerStatus.Finished,
+      loaded:
+        reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+          ? true
+          : reportAreaStatus === AsyncReducerStatus.Finished,
       bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
     }
   }, [
     isPortReportLocation,
+    isVesselGroupReportLocation,
     portBbox,
     portLoaded,
     reportArea?.bounds,
     reportArea?.geometry?.bbox,
+    reportArea?.id,
     reportAreaStatus,
+    vesselGroupBbox,
+    vesselGroupLoaded,
   ])
 }
 

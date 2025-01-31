@@ -197,7 +197,6 @@ export const selectDataviewInstancesMerged = createSelector(
           },
         }
       }
-      console.log('🚀 ~ footprintDataviewInstance:', footprintDataviewInstance)
       mergedDataviewInstances.push(footprintDataviewInstance)
     }
     return mergedDataviewInstances
