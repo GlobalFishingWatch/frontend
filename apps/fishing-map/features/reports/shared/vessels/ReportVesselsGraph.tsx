@@ -11,13 +11,9 @@ import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualization
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
-import type { ReportState } from 'features/reports/reports.types'
+import type { ReportState, ReportVesselsSubCategory } from 'features/reports/reports.types'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
-import type {
-  VGREventsVesselsProperty,
-  VGRVesselsSubsection,
-} from 'features/vessel-groups/vessel-groups.types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { formatInfoField } from 'utils/info'
 
@@ -35,10 +31,10 @@ type ReportGraphTooltipProps = {
     unit: string
   }[]
   label: string
-  type: VGRVesselsSubsection | 'geartype'
+  type: ReportVesselsSubCategory | 'geartype'
 }
 
-const FILTER_PROPERTIES: Record<VGRVesselsSubsection | 'geartype' | 'shiptype', string> = {
+const FILTER_PROPERTIES: Record<ReportVesselsSubCategory | 'geartype' | 'shiptype', string> = {
   flag: 'flag',
   shiptype: 'type',
   shiptypes: 'type',
@@ -104,7 +100,7 @@ const ReportGraphTick = (props: any) => {
   const onLabelClick = () => {
     if (payload.value !== OTHERS_CATEGORY_LABEL) {
       dispatchQueryParams({
-        [filterQueryParam]: `${FILTER_PROPERTIES[property as VGRVesselsSubsection]}:${
+        [filterQueryParam]: `${FILTER_PROPERTIES[property as ReportVesselsSubCategory]}:${
           payload.value
         }`,
         [pageQueryParam]: 0,
@@ -151,7 +147,7 @@ type VesselGroupReportVesselsGraphProps = {
   data: ResponsiveVisualizationData<'aggregated'>
   individualData?: ResponsiveVisualizationData<'individual'>
   color?: string
-  property: VGREventsVesselsProperty
+  property: ReportVesselsSubCategory
   filterQueryParam?: keyof Pick<ReportState, 'reportVesselFilter'>
   pageQueryParam?: keyof Pick<ReportState, 'reportVesselPage'>
 }
@@ -167,7 +163,7 @@ export default function VesselGroupReportVesselsGraph({
   const { dispatchQueryParams } = useLocationConnect()
 
   const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
-    const propertyParam = FILTER_PROPERTIES[property as VGRVesselsSubsection]
+    const propertyParam = FILTER_PROPERTIES[property as ReportVesselsSubCategory]
     if (payload && propertyParam && payload?.name !== OTHERS_CATEGORY_LABEL) {
       dispatchQueryParams({
         [filterQueryParam]: `${propertyParam}:${payload.name}`,

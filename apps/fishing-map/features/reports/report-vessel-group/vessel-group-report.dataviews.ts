@@ -16,17 +16,18 @@ import {
   FISHING_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
 } from 'data/workspaces'
+
 import type {
-  VGRActivitySubsection,
-  VGREventsSubsection,
-  VGRSection,
-  VGRSubsection,
-} from 'features/vessel-groups/vessel-groups.types'
+  AnyReportSubCategory,
+  ReportActivitySubCategory,
+  ReportCategory,
+  ReportEventsSubCategory,
+} from '../reports.types'
 
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 
 export type VesselGroupActivityDataviewId =
-  `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${VGRActivitySubsection}`
+  `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${ReportActivitySubCategory}`
 
 export const VESSEL_GROUP_FISHING_ACTIVITY_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}fishing`
 export const VESSEL_GROUP_PRESENCE_ACTIVITY_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}presence`
@@ -41,12 +42,12 @@ export function isVesselGroupActivityDataview(dataviewId: string) {
 }
 
 export type VesselGroupEventsDataviewId =
-  `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${VGREventsSubsection}`
+  `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${ReportEventsSubCategory}`
 
 export const VESSEL_GROUP_ENCOUNTER_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}encounter`
 export const VESSEL_GROUP_LOITERING_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}loitering`
-export const VESSEL_GROUP_PORT_VISITS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}port_visits`
-export const VESSEL_GROUP_GAPS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}gaps`
+export const VESSEL_GROUP_PORT_VISITS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}port_visit`
+export const VESSEL_GROUP_GAPS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}gap`
 
 export const VESSEL_GROUP_EVENTS_DATAVIEW_IDS: VesselGroupEventsDataviewId[] = [
   VESSEL_GROUP_ENCOUNTER_EVENTS_ID,
@@ -55,21 +56,22 @@ export const VESSEL_GROUP_EVENTS_DATAVIEW_IDS: VesselGroupEventsDataviewId[] = [
   VESSEL_GROUP_GAPS_EVENTS_ID,
 ]
 
+type VGReportEventsSubCategory = Exclude<ReportEventsSubCategory, 'fishing'>
 export const DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS: Record<
-  VGREventsSubsection,
+  VGReportEventsSubCategory,
   VesselGroupEventsDataviewId
 > = {
   encounter: VESSEL_GROUP_ENCOUNTER_EVENTS_ID,
   loitering: VESSEL_GROUP_LOITERING_EVENTS_ID,
-  port_visits: VESSEL_GROUP_PORT_VISITS_EVENTS_ID,
-  gaps: VESSEL_GROUP_GAPS_EVENTS_ID,
+  port_visit: VESSEL_GROUP_PORT_VISITS_EVENTS_ID,
+  gap: VESSEL_GROUP_GAPS_EVENTS_ID,
 }
 
 type GetReportVesselGroupVisibleDataviewsParams = {
   dataviews: UrlDataviewInstance[]
   reportVesselGroupId: string
-  vesselGroupReportSection: VGRSection
-  vesselGroupReportSubSection?: VGRSubsection
+  vesselGroupReportSection: ReportCategory
+  vesselGroupReportSubSection?: AnyReportSubCategory
 }
 export function getReportVesselGroupVisibleDataviews({
   dataviews,
@@ -83,7 +85,7 @@ export function getReportVesselGroupVisibleDataviews({
     }
     if (vesselGroupReportSection === 'events') {
       const dataviewIdBySubSection =
-        DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS[vesselGroupReportSubSection as VGREventsSubsection]
+        DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS[vesselGroupReportSubSection as VGReportEventsSubCategory]
       return id.toString() === dataviewIdBySubSection
     }
     if (vesselGroupReportSection === 'activity') {
@@ -125,7 +127,7 @@ export const getVesselGroupActivityDataviewInstance = ({
   vesselGroupId: string
   color?: string
   colorRamp?: ColorRampId
-  activityType: VGRActivitySubsection
+  activityType: ReportActivitySubCategory
 }): DataviewInstance<DataviewType> | undefined => {
   if (vesselGroupId) {
     return {
@@ -194,7 +196,7 @@ export const getVesselGroupPortVisitsDataviewInstance = (vesselGroupId: string) 
 
 export const getVesselGroupEventsDataviewInstances = (
   vesselGroupId: string,
-  subsection: VGREventsSubsection
+  subsection: ReportEventsSubCategory
 ) => {
   const dataviewInstances: (DataviewInstance | undefined)[] = []
   if (subsection === 'encounter') {
@@ -203,7 +205,7 @@ export const getVesselGroupEventsDataviewInstances = (
   if (subsection === 'loitering') {
     dataviewInstances.push(getVesselGroupLoiteringDataviewInstance(vesselGroupId))
   }
-  if (subsection === 'port_visits') {
+  if (subsection === 'port_visit') {
     dataviewInstances.push(getVesselGroupPortVisitsDataviewInstance(vesselGroupId))
   }
   return dataviewInstances.filter(Boolean) as DataviewInstance<DataviewType>[]
