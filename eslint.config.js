@@ -50,6 +50,7 @@ module.exports = tseslint.config({
     'node_modules',
     'dist',
     'public',
+    '.next',
     'exported',
     '**/dist/**/*',
     '**/public/**/*',
