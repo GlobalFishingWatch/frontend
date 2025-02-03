@@ -15,7 +15,7 @@ function selectReportStateProperty<P extends ReportStateProperty>(property: P) {
 }
 
 // Category
-export const selectReportCategory = selectReportStateProperty('reportCategory')
+export const selectReportCategorySelector = selectReportStateProperty('reportCategory')
 
 // Subcategory
 export const selectReportActivitySubCategory = selectReportStateProperty(
@@ -43,7 +43,7 @@ export const selectPortReportDatasetId = selectReportStateProperty('portsReportD
 export const selectViewOnlyVesselGroup = selectReportStateProperty('viewOnlyVesselGroup')
 
 // Vessels
-export const selectReportVesselGraph = selectReportStateProperty('reportVesselGraph')
+export const selectReportVesselGraphSelector = selectReportStateProperty('reportVesselGraph')
 export const selectReportVesselFilter = selectReportStateProperty('reportVesselFilter')
 export const selectReportVesselPage = selectReportStateProperty('reportVesselPage')
 export const selectReportVesselResultsPerPage = selectReportStateProperty(

@@ -21,7 +21,7 @@ import {
   selectPortReportDatasetId,
   selectPortReportName,
   selectReportVesselFilter,
-  selectReportVesselGraph,
+  selectReportVesselGraphSelector,
 } from 'features/reports/reports.config.selectors'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
@@ -69,7 +69,7 @@ function PortsReport() {
   const reportName = useSelector(selectPortReportName)
   const reportCountry = useSelector(selectPortReportCountry)
   const datasetId = useSelector(selectPortReportDatasetId)
-  const portReportVesselsProperty = useSelector(selectReportVesselGraph)
+  const portReportVesselsProperty = useSelector(selectReportVesselGraphSelector)
   const portReportVesselFilter = useSelector(selectReportVesselFilter)
   const { start, end } = useSelector(selectTimeRange)
   const portsReportPagination = useSelector(selectPortReportVesselsPagination)
@@ -85,7 +85,7 @@ function PortsReport() {
   } = useGetReportEventsStatsQuery(
     {
       filters: { portId },
-      dataset: datasetId,
+      dataset: datasetId || '',
       start,
       end,
     },
@@ -160,7 +160,7 @@ function PortsReport() {
             )}
           </h2>
         )}
-        {isPortsStatsLoading || !data ? (
+        {isPortsStatsLoading || !data || !datasetId ? (
           <ReportActivityPlaceholder showHeader={false} />
         ) : (
           <EventsReportGraph
@@ -226,10 +226,7 @@ function PortsReport() {
         <div className={styles.container}>
           <div className={styles.flex}>
             <label>{t('common.vessels', 'Vessels')}</label>
-            <EventsReportVesselPropertySelector
-              property={portReportVesselsProperty}
-              propertyQueryParam="portsReportVesselsProperty"
-            />
+            <EventsReportVesselPropertySelector property={portReportVesselsProperty} />
           </div>
           <EventsReportVesselsGraph
             data={portsReportVesselsGrouped}
@@ -241,8 +238,6 @@ function PortsReport() {
           <EventsReportVesselsTable vessels={portsReportVesselsPaginated} />
           {portsReportData?.vessels && portsReportData?.vessels?.length > 0 && (
             <EventsReportVesselsTableFooter
-              pageQueryParam="portsReportVesselsPage"
-              resultsPerPageQueryParam="portsReportVesselsResultsPerPage"
               vessels={portsReportData.vessels}
               filter={portReportVesselFilter}
               pagination={portsReportPagination}

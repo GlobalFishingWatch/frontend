@@ -4,10 +4,16 @@ import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatc
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import {
+  selectReportCategory,
+  selectReportSubCategory,
+} from 'features/app/selectors/app.reports.selector'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
+import {
+  getReportCategoryFromDataview,
+  getReportSubCategoryFromDataview,
+} from 'features/reports/report-area/area-reports.utils'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   selectReportVesselsSubCategory,
@@ -58,12 +64,12 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectDataviewInstancesResolved,
     selectIsAnyAreaReportLocation,
     selectReportCategory,
+    selectReportSubCategory,
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
     selectVesselId,
     selectIsVesselGroupReportLocation,
     selectReportVesselGroupId,
-    selectReportCategory,
     selectReportVesselsSubCategory,
     selectViewOnlyVesselGroup,
   ],
@@ -72,13 +78,12 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     dataviews = [],
     isAreaReportLocation,
     reportCategory,
+    reportSubCategory,
     isVesselLocation,
     viewOnlyVessel,
     vesselId,
     isVesselGroupReportLocation,
     reportVesselGroupId,
-    vGRCategory,
-    vGRSubcategory,
     viewOnlyVesselGroup
   ) => {
     const visibleDataviews = dataviews.filter((dataview) => dataview.config?.visible)
@@ -97,7 +102,10 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           dataview.category === DataviewCategory.Activity ||
           dataview.category === DataviewCategory.Detections
         ) {
-          return getReportCategoryFromDataview(dataview) === reportCategory
+          const matchesCategory = getReportCategoryFromDataview(dataview) === reportCategory
+          const matchesSubcategory =
+            getReportSubCategoryFromDataview(dataview) === reportSubCategory
+          return matchesCategory && matchesSubcategory
         }
         return true
       })
@@ -115,8 +123,8 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
       const dataviewsVisible = getReportVesselGroupVisibleDataviews({
         dataviews: visibleDataviews,
         reportVesselGroupId,
-        vesselGroupReportSection: vGRCategory,
-        vesselGroupReportSubSection: vGRSubcategory,
+        vesselGroupReportSection: reportCategory,
+        vesselGroupReportSubSection: reportSubCategory,
       })
       return dataviewsVisible
     }

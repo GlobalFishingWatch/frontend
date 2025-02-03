@@ -24,9 +24,10 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import {
-  isActivityReport,
-  selectActiveReportDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
+  selectActiveActivityReportSubCategories,
+  selectActiveDetectionsReportSubCategories,
+} from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { LastReportStorage } from 'features/reports/report-area/area-reports.config'
@@ -37,6 +38,7 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
 import { parseReportUrl } from 'features/reports/report-area/area-reports.utils'
+import { AnyReportSubCategory, ReportCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import ReportDownload from 'features/reports/tabs/activity/download/ReportDownload'
 import ReportActivityGraph from 'features/reports/tabs/activity/ReportActivityGraph'
@@ -58,8 +60,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-export type ReportActivityUnit = 'hour' | 'detection'
-
 function ActivityReport({ reportName }: { reportName?: string }) {
   useFetchDataviewResources()
   const { t } = useTranslation()
@@ -72,6 +72,11 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   const datasetId = useSelector(selectReportDatasetId)
   const areaId = useSelector(selectReportAreaId)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
+  const activeReportSubCategories = useSelector(
+    reportCategory === ReportCategory.Activity
+      ? selectActiveActivityReportSubCategories
+      : selectActiveDetectionsReportSubCategories
+  )
   const userData = useSelector(selectUserData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -87,7 +92,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
 
   // TODO get this from datasets config
-  const activityUnit = isActivityReport(reportCategory) ? 'hour' : 'detection'
+  const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
 
   const reportLoading = reportStatus === AsyncReducerStatus.Loading
   const reportError = reportStatus === AsyncReducerStatus.Error
@@ -369,7 +374,11 @@ function ActivityReport({ reportName }: { reportName?: string }) {
 
   return (
     <Fragment>
-      <ReportActivitySubsectionSelector />
+      {activeReportSubCategories.length > 1 && (
+        <div className={styles.container}>
+          <ReportActivitySubsectionSelector />
+        </div>
+      )}
       <ReportActivityGraph />
       {ReportComponent}
     </Fragment>
