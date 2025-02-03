@@ -106,6 +106,7 @@ export const selectReportVesselsFiltered = createSelector(
   [selectReportVesselsList, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
+    if (!filter) return vessels.sort((a, b) => b.value - a.value)
     return getVesselsFiltered<ReportVesselWithDatasets>(vessels, filter).sort(
       (a, b) => b.value - a.value
     )

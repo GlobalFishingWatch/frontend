@@ -63,8 +63,17 @@ export const selectReportAreaId = createSelector(
 )
 
 export const selectReportActiveCategories = createSelector(
-  [selectActiveReportCategories],
-  (activeCategories): ReportCategory[] => {
+  [selectActiveReportCategories, selectIsVesselGroupReportLocation],
+  (activeCategories, isVesselGroupReportLocation): ReportCategory[] => {
+    // TODO:CVP ensure ports report doesn't need something similar
+    if (isVesselGroupReportLocation) {
+      return [
+        ReportCategory.VesselGroup,
+        ReportCategory.VesselGroupInsights,
+        ReportCategory.Activity,
+        ReportCategory.Events,
+      ]
+    }
     const orderedCategories = [
       ReportCategory.Activity,
       ReportCategory.Detections,

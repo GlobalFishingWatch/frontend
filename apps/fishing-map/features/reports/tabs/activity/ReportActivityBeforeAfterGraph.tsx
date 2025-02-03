@@ -130,7 +130,7 @@ const ReportActivityBeforeAfterGraph: React.FC<{
     return sublayers?.[0]?.legend?.unit
   }, [sublayers])
 
-  if (!start || !end || !range) {
+  if (!start || !end || !range || !timeComparison) {
     return null
   }
 

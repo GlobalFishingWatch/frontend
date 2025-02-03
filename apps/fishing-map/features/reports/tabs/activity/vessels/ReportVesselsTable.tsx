@@ -6,13 +6,14 @@ import cx from 'classnames'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
+import type { ReportActivityUnit } from 'features/reports/report-area/AreaReport'
 import { EMPTY_API_VALUES } from 'features/reports/reports.config'
 import { selectReportActivitySubCategory } from 'features/reports/reports.config.selectors'
-import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
 import { selectReportVesselsPaginated } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import ReportVesselsTableFooter from 'features/reports/tabs/activity/vessels/ReportVesselsTableFooter'
 import { selectUserData } from 'features/user/selectors/user.selectors'
@@ -31,10 +32,12 @@ type ReportVesselTableProps = {
   reportName?: string
 }
 
+// TODO:CVP DELETE
 export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
+  const reportCategory = useSelector(selectReportCategory)
   const activitySubCategory = useSelector(selectReportActivitySubCategory)
   const isPinningVessels = useSelector(selectReportIsPinningVessels)
   const userData = useSelector(selectUserData)

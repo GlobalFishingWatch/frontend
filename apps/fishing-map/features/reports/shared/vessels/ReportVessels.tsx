@@ -1,50 +1,71 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 
-import { selectVGRDataview } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
+import type {
+  ResponsiveVisualizationAggregatedItem,
+  ResponsiveVisualizationIndividualItem,
+} from '@globalfishingwatch/responsive-visualizations'
+
 import {
   selectReportVesselFilter,
   selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
 import type { ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
-import {
-  selectVGRVesselsGraphAggregatedData,
-  selectVGRVesselsGraphIndividualData,
-} from 'features/reports/shared/vessels/report-vessels.selectors'
-import ReportVesselsFilter from 'features/reports/tabs/activity/vessels/ReportVesselsFilter'
+import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
 
-import VesselGroupReportVesselsGraph from './ReportVesselsGraph'
-import VesselGroupReportVesselsGraphSelector from './ReportVesselsGraphSelector'
-import VesselGroupReportVesselsTable from './ReportVesselsTable'
+import { selectReportVesselsPaginated } from './report-vessels.selectors'
+import ReportVesselsFilter from './ReportVesselsFilter'
+import ReportVesselsGraph from './ReportVesselsGraph'
+import ReportVesselsGraphSelector from './ReportVesselsGraphSelector'
+import ReportVesselsTable from './ReportVesselsTable'
 
 import styles from './ReportVessels.module.css'
 
-function VesselGroupReportVessels({ loading }: { loading: boolean }) {
-  const subsection = useSelector(selectReportVesselsSubCategory)
-  const reportDataview = useSelector(selectVGRDataview)
+function ReportVessels({
+  title,
+  loading,
+  data,
+  color,
+  activityUnit,
+  individualData,
+}: {
+  title?: string
+  loading: boolean
+  color?: string
+  activityUnit?: ReportActivityUnit
+  data: ResponsiveVisualizationAggregatedItem[]
+  individualData?: ResponsiveVisualizationIndividualItem[]
+}) {
+  const property = useSelector(selectReportVesselsSubCategory)
   const filter = useSelector(selectReportVesselFilter)
-  const data = useSelector(selectVGRVesselsGraphAggregatedData)
-  const individualData = useSelector(selectVGRVesselsGraphIndividualData)
+  const vessels = useSelector(selectReportVesselsPaginated)
   return (
     <div className={styles.container}>
-      <VesselGroupReportVesselsGraphSelector />
+      <div className={styles.titleRow}>
+        {title && <label className={styles.blockTitle}>{title}</label>}
+        <ReportVesselsGraphSelector />
+      </div>
       {loading ? (
         <ReportVesselsPlaceholder showGraphHeader={false} />
       ) : (
         <Fragment>
-          <VesselGroupReportVesselsGraph
+          <ReportVesselsGraph
             data={data}
             individualData={individualData}
-            color={reportDataview?.config?.color}
-            property={subsection as ReportVesselsSubCategory}
+            color={color}
+            property={property as ReportVesselsSubCategory}
           />
           <ReportVesselsFilter filter={filter} />
-          <VesselGroupReportVesselsTable />
+          <ReportVesselsTable
+            activityUnit={activityUnit}
+            allowSorting={activityUnit !== undefined}
+            vessels={vessels}
+          />
         </Fragment>
       )}
     </div>
   )
 }
 
-export default VesselGroupReportVessels
+export default ReportVessels

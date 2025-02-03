@@ -12,8 +12,9 @@ import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import type { ReportState, ReportVesselsSubCategory } from 'features/reports/reports.types'
-import VesselGroupReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
+import ReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
+import { REPORT_GRAPH_LABEL_KEY } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { formatInfoField } from 'utils/info'
 
@@ -41,6 +42,10 @@ const FILTER_PROPERTIES: Record<ReportVesselsSubCategory | 'geartype' | 'shiptyp
   geartypes: 'gear',
   geartype: 'gear',
   source: 'source',
+  // TODO:CVP this comes from activity graph component, ensure it works
+  // [REPORT_VESSELS_GRAPH_FLAG]: 'flag',
+  // [REPORT_VESSELS_GRAPH_GEARTYPE]: 'gear',
+  // [REPORT_VESSELS_GRAPH_VESSELTYPE]: 'type',
 }
 
 const ReportBarTooltip = (props: any) => {
@@ -60,9 +65,11 @@ const ReportBarTooltip = (props: any) => {
         <p className={styles.tooltipLabel}>{parsedLabel}</p>
         <ul>
           {payload
-            .map(({ value }, index) => {
+            .map(({ value, color }, index) => {
               return value !== 0 ? (
                 <li key={index} className={styles.tooltipValue}>
+                  {/* TODO:CVP review if this apply for every table */}
+                  {/* <span className={styles.tooltipValueDot} style={{ color }}></span> */}
                   <I18nNumber number={value} /> {t('common.vessel', { count: value }).toLowerCase()}
                 </li>
               ) : null
@@ -75,7 +82,7 @@ const ReportBarTooltip = (props: any) => {
 
   return null
 }
-
+// TODO:CVP merge this with reports/tabs/activity/vessels/ReportVesselsGraph.tsx
 const ReportGraphTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount, property, filterQueryParam, pageQueryParam } =
     props
@@ -143,7 +150,7 @@ const ReportGraphTick = (props: any) => {
   )
 }
 
-type VesselGroupReportVesselsGraphProps = {
+type ReportVesselsGraphProps = {
   data: ResponsiveVisualizationData<'aggregated'>
   individualData?: ResponsiveVisualizationData<'individual'>
   color?: string
@@ -152,14 +159,14 @@ type VesselGroupReportVesselsGraphProps = {
   pageQueryParam?: keyof Pick<ReportState, 'reportVesselPage'>
 }
 
-export default function VesselGroupReportVesselsGraph({
+export default function ReportVesselsGraph({
   data,
   individualData,
   color = COLOR_PRIMARY_BLUE,
   property,
   filterQueryParam = 'reportVesselFilter',
   pageQueryParam = 'reportVesselPage',
-}: VesselGroupReportVesselsGraphProps) {
+}: ReportVesselsGraphProps) {
   const { dispatchQueryParams } = useLocationConnect()
 
   const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
@@ -197,8 +204,8 @@ export default function VesselGroupReportVesselsGraph({
             pageQueryParam={pageQueryParam}
           />
         }
-        labelKey={'name'}
-        individualTooltip={<VesselGroupReportVesselsIndividualTooltip />}
+        labelKey={REPORT_GRAPH_LABEL_KEY}
+        individualTooltip={<ReportVesselsIndividualTooltip />}
         individualItem={<VesselGraphLink />}
         aggregatedTooltip={<ReportBarTooltip type={property} />}
       />

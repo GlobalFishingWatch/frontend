@@ -17,15 +17,24 @@ import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 
-import { selectVGRVesselsFiltered, selectVGRVesselsPagination } from './report-vessels.selectors'
+import { selectReportVesselsFiltered, selectVGRVesselsPagination } from './report-vessels.selectors'
+import ReportVesselsTablePinAll from './ReportVesselsTablePin'
 
 import styles from './ReportVesselsTableFooter.module.css'
 
-export default function VesselGroupReportVesselsTableFooter() {
+type ReportVesselsTableFooterProps = {
+  reportName?: string
+}
+
+export default function ReportVesselsTableFooter({
+  reportName = 'vessel-report',
+}: ReportVesselsTableFooterProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroup = useSelector(selectVGRData)
-  const allVessels = useSelector(selectVGRVesselsFiltered)
+  // TODO:CVP get this vessels depending on the report type
+  // TODO:CVP migrate funcionality from reports/tabs/activity/vessels/ReportVesselsTableFooter.tsx
+  const allVessels = useSelector(selectReportVesselsFiltered)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectVGRVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
@@ -51,10 +60,10 @@ export default function VesselGroupReportVesselsTableFooter() {
     if (vessels?.length) {
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `vessel-group-${vesselGroup?.name}-${start}-${end}.csv`)
+      saveAs(blob, `${reportName}-${vesselGroup?.name}-${start}-${end}.csv`)
       trackEvent({
         category: TrackCategory.VesselGroupReport,
-        action: 'vessel_group_profile_download_csv',
+        action: 'vessel_report_download_csv',
         label: getEventLabel([
           `Groupd id: ${vesselGroup?.id}`,
           `start date: ${start}`,
@@ -160,12 +169,16 @@ export default function VesselGroupReportVesselsTableFooter() {
         </Fragment>
       </div>
       <div className={cx(styles.flex, styles.expand, styles.end)}>
-        {/* <VesselGroupAddButton
+        <div className={cx(styles.flex)}>
+          {/* TODO:CVP make this work */}
+          {/* <ReportVesselsTablePinAll vessels={allVessels!} /> */}
+          {/* <VesselGroupAddButton
           vessels={allVessels}
           onAddToVesselGroup={onAddToVesselGroup}
           disabled
           tooltip="TODO"
         /> */}
+        </div>
         <Button
           // testId="download-vessel-table-report"
           onClick={onDownloadVesselsClick}
