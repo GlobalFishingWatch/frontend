@@ -1,5 +1,10 @@
 import { URL_VESSEL_PROFILE_2020 } from '../../constants/urls'
-import { disablePopups, switchLanguage, verifyTracksInTimebar } from '../../support/app.po'
+import {
+  disablePopups,
+  switchLanguage,
+  verifyTracksInTimebar,
+  waitForSidebarLoaded,
+} from '../../support/app.po'
 
 describe('Access to vessel viewver - direct', () => {
   before(() => {
@@ -15,6 +20,8 @@ describe('Access to vessel viewver - direct', () => {
     cy.visit(URL_VESSEL_PROFILE_2020)
 
     cy.getBySel('migrate-workspace-btn').click()
+
+    waitForSidebarLoaded()
 
     verifyTracksInTimebar(4)
 

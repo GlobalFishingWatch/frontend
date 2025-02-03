@@ -21,6 +21,9 @@ export const getSidebar = () => cy.getBySel('sidebar-container', getDOMTimeout(1
 export const waitForSidebarLoaded = () =>
   getSidebar().find(`[data-test*="activity-section"]`, getDOMTimeout(10000)).should('exist')
 
+export const waitForVesselViewerLoaded = () =>
+  getSidebar().find(`[data-test*="vessel-profile-info"]`, getDOMTimeout(10000)).should('exist')
+
 export const waitForMapLoadTiles = (extraDelay?: number) => {
   cy.intercept(API_URL_4WINGS_TILES).as('loadTiles')
   cy.wait('@loadTiles', getRequestTimeout(10000))
