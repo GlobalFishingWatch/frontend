@@ -7,8 +7,8 @@ import { Choice } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { selectReportVesselsSubCategory } from 'features/reports/reports.config.selectors'
+import type { ReportVesselsSubCategory } from 'features/reports/reports.types'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import type { VGRVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -22,7 +22,7 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
   const subsection = useSelector(selectReportVesselsSubCategory)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
-  const options: ChoiceOption<VGRVesselsSubsection>[] = [
+  const options: ChoiceOption<ReportVesselsSubCategory>[] = [
     {
       id: 'flag',
       label: t('vessel.flag', 'Flag'),
@@ -56,7 +56,7 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
     },
   ]
 
-  const onSelectSubsection = (option: ChoiceOption<VGRVesselsSubsection>) => {
+  const onSelectSubsection = (option: ChoiceOption<ReportVesselsSubCategory>) => {
     if (subsection !== option.id) {
       dispatchQueryParams({ vGRVesselsSubsection: option.id })
       trackEvent({

@@ -6,13 +6,13 @@ import {
   selectReportVesselFilter,
   selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
+import type { ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import {
   selectVGRVesselsGraphAggregatedData,
   selectVGRVesselsGraphIndividualData,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
 import ReportVesselsFilter from 'features/reports/tabs/activity/vessels/ReportVesselsFilter'
-import type { VGREventsVesselsProperty } from 'features/vessel-groups/vessel-groups.types'
 
 import VesselGroupReportVesselsGraph from './ReportVesselsGraph'
 import VesselGroupReportVesselsGraphSelector from './ReportVesselsGraphSelector'
@@ -37,7 +37,7 @@ function VesselGroupReportVessels({ loading }: { loading: boolean }) {
             data={data}
             individualData={individualData}
             color={reportDataview?.config?.color}
-            property={subsection as VGREventsVesselsProperty}
+            property={subsection as ReportVesselsSubCategory}
           />
           <ReportVesselsFilter filter={filter} />
           <VesselGroupReportVesselsTable />

@@ -4,12 +4,12 @@ import { type ResponsiveVisualizationData } from '@globalfishingwatch/responsive
 
 import type { EventsStatsVessel } from 'features/reports/report-port/ports-report.slice'
 import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
-import type { ReportVesselGraph } from 'features/reports/reports.types'
-import type { VesselGroupVesselTableParsed } from 'features/reports/shared/vessels/report-vessels.selectors'
 import type {
-  VGREventsVesselsProperty,
-  VGRSubsection,
-} from 'features/vessel-groups/vessel-groups.types'
+  ReportCategory,
+  ReportVesselGraph,
+  ReportVesselsSubCategory,
+} from 'features/reports/reports.types'
+import type { VesselGroupVesselTableParsed } from 'features/reports/shared/vessels/report-vessels.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import type { ReportVesselWithDatasets } from '../../report-area/area-reports.selectors'
@@ -21,7 +21,7 @@ type VesselVisualizationData = ResponsiveVisualizationData<
 
 export function getVesselIndividualGroupedData(
   vessels: (EventsStatsVessel | VesselGroupVesselTableParsed | ReportVesselWithDatasets)[],
-  groupByProperty: VGRSubsection | VGREventsVesselsProperty | ReportVesselGraph,
+  groupByProperty: ReportCategory | ReportVesselsSubCategory | ReportVesselGraph,
   dataviewsIdsOrder?: string[]
 ) {
   if (!vessels?.length) {

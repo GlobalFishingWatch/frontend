@@ -20,7 +20,6 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import type { VGRSection } from 'features/vessel-groups/vessel-groups.types'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -29,7 +28,7 @@ import { TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { selectReportCategory } from '../reports.config.selectors'
+import { selectReportCategorySelector } from '../reports.config.selectors'
 import { ReportCategory } from '../reports.types'
 import { selectVGRVesselsTimeRange } from '../shared/vessels/report-vessels.selectors'
 import ReportActivity from '../tabs/activity/ReportActivity'
@@ -50,7 +49,7 @@ function VesselGroupReport() {
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const vesselGroup = useSelector(selectVGRData)!
   const reportStatus = useSelector(selectVGRStatus)
-  const reportSection = useSelector(selectReportCategory)
+  const reportSection = useSelector(selectReportCategorySelector)
   const reportDataview = useSelector(selectVGRDataview)
   const timeRange = useSelector(selectVGRVesselsTimeRange)
   const userData = useSelector(selectUserData)
@@ -93,7 +92,7 @@ function VesselGroupReport() {
   }, [timeRange])
 
   const changeTab = useCallback(
-    (tab: Tab<VGRSection>) => {
+    (tab: Tab<ReportCategory>) => {
       dispatchQueryParams({ vGRSection: tab.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
@@ -110,25 +109,25 @@ function VesselGroupReport() {
 
   const loading = reportStatus === AsyncReducerStatus.Loading
 
-  const sectionTabs: Tab<VGRSection>[] = useMemo(
+  const sectionTabs: Tab<ReportCategory>[] = useMemo(
     () => [
       {
-        id: 'vessels',
+        id: ReportCategory.VesselGroup,
         title: t('common.vessels', 'vessels'),
         content: <VesselGroupReportVessels loading={loading} />,
       },
       {
-        id: 'insights',
+        id: ReportCategory.VesselGroupInsights,
         title: t('common.insights', 'Insights'),
         content: <VesselGroupReportInsights />,
       },
       {
-        id: 'activity',
+        id: ReportCategory.Activity,
         title: t('common.activity', 'Activity'),
         content: <ReportActivity />,
       },
       {
-        id: 'events',
+        id: ReportCategory.Events,
         title: t('common.events', 'Events'),
         content: <VGREvents />,
       },
