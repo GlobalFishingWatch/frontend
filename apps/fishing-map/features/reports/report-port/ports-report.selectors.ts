@@ -15,7 +15,7 @@ import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.ca
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
 import {
   selectReportVesselFilter,
-  selectReportVesselGraph,
+  selectReportVesselGraphSelector,
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
 } from 'features/reports/reports.config.selectors'
@@ -93,7 +93,7 @@ type GraphDataGroup = {
   value: number
 }
 export const selectPortReportVesselsGrouped = createSelector(
-  [selectPortReportVesselsFiltered, selectReportVesselGraph],
+  [selectPortReportVesselsFiltered, selectReportVesselGraphSelector],
   (vessels, property) => {
     if (!vessels?.length) return []
     const orderedGroups: { name: string; value: number }[] = Object.entries(
@@ -143,7 +143,7 @@ export const selectPortReportVesselsGrouped = createSelector(
 )
 
 export const selectPortReportVesselsIndividualData = createSelector(
-  [selectPortReportVesselsFiltered, selectReportVesselGraph],
+  [selectPortReportVesselsFiltered, selectReportVesselGraphSelector],
   (vessels, groupBy) => {
     if (!vessels || !groupBy) return []
     return getVesselIndividualGroupedData(vessels, groupBy)

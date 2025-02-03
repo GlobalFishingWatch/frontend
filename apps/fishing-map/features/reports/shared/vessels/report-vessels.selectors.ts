@@ -13,7 +13,7 @@ import { REPORT_FILTER_PROPERTIES } from 'features/reports/report-vessel-group/v
 import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import {
   selectReportVesselFilter,
-  selectReportVesselGraph,
+  selectReportVesselGraphSelector,
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
   selectReportVesselsOrderDirection,
@@ -267,7 +267,7 @@ export const selectVGRVesselsGraphIndividualData = createSelector(
 )
 
 export const selectVGREventsVesselsIndividualData = createSelector(
-  [selectVGREventsVesselsFiltered, selectReportVesselGraph],
+  [selectVGREventsVesselsFiltered, selectReportVesselGraphSelector],
   (vessels, groupBy) => {
     if (!vessels || !groupBy) return []
     return getVesselIndividualGroupedData(vessels, groupBy)

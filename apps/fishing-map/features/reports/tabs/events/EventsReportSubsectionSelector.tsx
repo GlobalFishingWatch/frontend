@@ -7,8 +7,8 @@ import { Choice } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { selectReportEventsSubCategory } from 'features/reports/reports.config.selectors'
+import type { ReportEventsSubCategory } from 'features/reports/reports.types'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
-import type { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -21,7 +21,7 @@ function VesselGroupReportEventsSubsectionSelector() {
   const gfwUser = useSelector(selectIsGFWUser)
   const jacUser = useSelector(selectIsJACUser)
   const hasAccessToAllSubsections = gfwUser || jacUser
-  const options: ChoiceOption<VGREventsSubsection>[] = [
+  const options: ChoiceOption<ReportEventsSubCategory>[] = [
     {
       id: 'encounter',
       label: t('event.encountersShort', 'Encounters'),
@@ -35,14 +35,14 @@ function VesselGroupReportEventsSubsectionSelector() {
       tooltipPlacement: 'top',
     },
     {
-      id: 'gaps',
+      id: 'gap',
       label: t('event.gap_other', 'AIS off events'),
       disabled: true,
       tooltip: t('common.comingSoon', 'Coming Soon!'),
       tooltipPlacement: 'top',
     },
     {
-      id: 'port_visits',
+      id: 'port_visit',
       label: t('event.port_visit_other', 'Port visits'),
       disabled: !hasAccessToAllSubsections,
       tooltip: !hasAccessToAllSubsections ? t('common.comingSoon', 'Coming Soon!') : '',
@@ -50,8 +50,9 @@ function VesselGroupReportEventsSubsectionSelector() {
     },
   ]
 
-  const onSelectSubsection = (option: ChoiceOption<VGREventsSubsection>) => {
+  const onSelectSubsection = (option: ChoiceOption<ReportEventsSubCategory>) => {
     if (subsection !== option.id) {
+      // TODO:CVP fix this
       dispatchQueryParams({ vGREventsSubsection: option.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,

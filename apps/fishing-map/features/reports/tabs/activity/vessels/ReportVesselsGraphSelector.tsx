@@ -11,18 +11,15 @@ import {
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import {
-  selectReportCategory,
-  selectReportVesselGraph,
-} from 'features/app/selectors/app.reports.selector'
+import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
+import { selectReportActivitySubCategory } from 'features/reports/reports.config.selectors'
 import type { ReportVesselGraph } from 'features/reports/reports.types'
-import { ReportCategory } from 'features/reports/reports.types'
 import { useLocationConnect } from 'routes/routes.hook'
 
 export default function ReportVesselsGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()
   const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
-  const reportCategory = useSelector(selectReportCategory)
+  const activitySubCategory = useSelector(selectReportActivitySubCategory)
   const { t } = useTranslation()
 
   const options: ChoiceOption[] = [
@@ -30,7 +27,7 @@ export default function ReportVesselsGraphSelector() {
       id: REPORT_VESSELS_GRAPH_FLAG,
       label: t('analysis.groupByFlag', 'by flag'),
     },
-    ...(reportCategory !== ReportCategory.Fishing
+    ...(activitySubCategory !== 'fishing'
       ? [
           {
             id: REPORT_VESSELS_GRAPH_VESSELTYPE,

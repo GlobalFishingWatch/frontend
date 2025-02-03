@@ -12,6 +12,7 @@ import {
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
+import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
   getVesselsFiltered,
@@ -24,7 +25,6 @@ import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group
 import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import {
   selectReportVesselFilter,
-  selectReportVesselGraph,
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
 } from 'features/reports/reports.config.selectors'

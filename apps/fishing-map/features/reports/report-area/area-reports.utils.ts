@@ -8,8 +8,8 @@ import { matchSorter } from 'match-sorter'
 import { parse } from 'qs'
 
 import { API_VERSION } from '@globalfishingwatch/api-client'
-import type { Dataview, Workspace } from '@globalfishingwatch/api-types'
-import { DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { Dataview } from '@globalfishingwatch/api-types'
+import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
@@ -24,7 +24,11 @@ import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import type { FilterProperty } from 'features/reports/report-vessel-group/vessel-group-report.config'
 import { FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
-import type { ReportCategory } from 'features/reports/reports.types'
+import type {
+  ReportActivitySubCategory,
+  ReportCategory,
+  ReportDetectionsSubCategory,
+} from 'features/reports/reports.types'
 import type { VesselGroupVesselTableParsed } from 'features/reports/shared/vessels/report-vessels.selectors'
 import type { VesselGroupReportVesselParsed } from 'features/reports/shared/vessels/report-vessels.types'
 import type { VesselLastIdentity } from 'features/search/search.slice'
@@ -191,9 +195,15 @@ export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
 export const getReportCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportCategory => {
-  return dataview.category === DataviewCategory.Activity
-    ? (dataview.datasets?.[0]?.subcategory as unknown as ReportCategory)
-    : (dataview.category as unknown as ReportCategory)
+  return dataview.category as unknown as ReportCategory
+}
+
+export const getReportSubCategoryFromDataview = (
+  dataview: Dataview | UrlDataviewInstance
+): ReportActivitySubCategory | ReportDetectionsSubCategory => {
+  return dataview.datasets?.[0]?.subcategory as unknown as
+    | ReportActivitySubCategory
+    | ReportDetectionsSubCategory
 }
 
 type BufferedAreaParams = {

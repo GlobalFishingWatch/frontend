@@ -25,9 +25,20 @@ export type ReportCategoryState = {
 }
 
 // REPORT SUBCATEGORIES
-export type ReportActivitySubCategory = DatasetSubCategory.Fishing | DatasetSubCategory.Presence
-export type ReportDetectionsSubCategory = DatasetSubCategory.Sar | DatasetSubCategory.Viirs
+export type ReportActivitySubCategory =
+  | `${DatasetSubCategory.Fishing}`
+  | `${DatasetSubCategory.Presence}`
+export type ReportDetectionsSubCategory =
+  | `${DatasetSubCategory.Sar}`
+  | `${DatasetSubCategory.Viirs}`
 export type ReportEventsSubCategory = EventType
+export type ReportVesselsSubCategory = 'flag' | 'shiptypes' | 'geartypes' | 'source'
+
+export type AnyReportSubCategory =
+  | ReportActivitySubCategory
+  | ReportDetectionsSubCategory
+  | ReportEventsSubCategory
+  | ReportVesselsSubCategory
 
 export type ReportSubcategoryState = {
   reportActivitySubCategory: ReportActivitySubCategory | undefined
@@ -52,10 +63,6 @@ export type PortsReportState = {
 }
 
 // VESSEL GROUP REPORT
-export type ReportVesselsSubCategory = 'flag' | 'shiptypes' | 'geartypes' | 'source'
-// TODO:CVP replace this with ReportEventsSubCategory
-export type VGREventsSubsection = 'encounter' | 'loitering' | 'gaps' | 'port_visits'
-
 export type VesselGroupReportState = {
   viewOnlyVesselGroup: boolean
 }

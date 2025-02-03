@@ -6,41 +6,70 @@ import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectReportCategory,
+  selectReportSubCategory,
+} from 'features/app/selectors/app.reports.selector'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
-import { selectReportActivitySubCategory } from 'features/reports/reports.config.selectors'
+import type {
+  ReportActivitySubCategory,
+  ReportDetectionsSubCategory,
+} from 'features/reports/reports.types'
+import { ReportCategory } from 'features/reports/reports.types'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
-import type { VGRActivitySubsection } from 'features/vessel-groups/vessel-groups.types'
 import { useLocationConnect } from 'routes/routes.hook'
 
 function ReportActivitySubsectionSelector() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
-  const subsection = useSelector(selectReportActivitySubCategory)
+  const reportCategory = useSelector(selectReportCategory)
+  const subsection = useSelector(selectReportSubCategory)
   const loading = useReportFeaturesLoading()
   const fitAreaInViewport = useFitAreaInViewport()
-  const options: ChoiceOption<VGRActivitySubsection>[] = [
-    {
-      id: 'fishing',
-      label: t('common.apparentFishing', 'Apparent fishing effort'),
-      disabled: loading,
-    },
-    {
-      id: 'presence',
-      label: t('common.vesselPresence', 'Vessel presence'),
-      disabled: loading,
-    },
-  ]
 
-  const onSelectSubsection = (option: ChoiceOption<VGRActivitySubsection>) => {
+  const options: ChoiceOption<ReportActivitySubCategory | ReportDetectionsSubCategory>[] =
+    reportCategory === ReportCategory.Activity
+      ? [
+          {
+            id: 'fishing',
+            label: t('common.apparentFishing', 'Apparent fishing effort'),
+            disabled: loading,
+          },
+          {
+            id: 'presence',
+            label: t('common.vesselPresence', 'Vessel presence'),
+            disabled: loading,
+          },
+        ]
+      : [
+          {
+            id: 'viirs',
+            label: t('common.viirs', 'Night light detections (VIIRS)'),
+            disabled: loading,
+          },
+          {
+            id: 'sar',
+            label: t('common.sar', 'Radar vessel detections (SAR)'),
+            disabled: loading,
+          },
+        ]
+
+  const onSelectSubsection = (
+    option: ChoiceOption<ReportActivitySubCategory | ReportDetectionsSubCategory>
+  ) => {
     if (subsection !== option.id) {
-      dispatchQueryParams({ vGRActivitySubsection: option.id })
+      const queryParam =
+        reportCategory === ReportCategory.Activity
+          ? 'reportActivitySubCategory'
+          : 'reportDetectionsSubCategory'
+      dispatchQueryParams({ [queryParam]: option.id })
       fitAreaInViewport()
       dispatch(resetReportData())
       trackEvent({
-        category: TrackCategory.VesselGroupReport,
-        action: `vessel_group_profile_activity_tab_toggle_${option.id}`,
+        category: TrackCategory.Analysis,
+        action: `activity_tab_toggle_${option.id}`,
       })
     }
   }

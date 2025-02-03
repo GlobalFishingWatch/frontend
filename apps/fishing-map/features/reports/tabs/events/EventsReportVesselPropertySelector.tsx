@@ -4,37 +4,34 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import type {
-  VesselGroupReportState,
-  VGREventsVesselsProperty,
-} from 'features/vessel-groups/vessel-groups.types'
+import type { ReportState, ReportVesselsSubCategory } from 'features/reports/reports.types'
 import { useLocationConnect } from 'routes/routes.hook'
 
 function EventsReportVesselPropertySelector({
   property,
-  propertyQueryParam,
+  propertyQueryParam = 'reportVesselGraph',
 }: {
   property: string
-  propertyQueryParam: keyof Pick<VesselGroupReportState, 'vGREventsVesselsProperty'>
+  propertyQueryParam?: keyof Pick<ReportState, 'reportVesselGraph'>
 }) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const options: ChoiceOption<VGREventsVesselsProperty>[] = [
+  const options: ChoiceOption<ReportVesselsSubCategory>[] = [
     {
       id: 'flag',
       label: t('analysis.groupByFlag', 'by flag'),
     },
     {
-      id: 'shiptype',
+      id: 'shiptypes',
       label: t('analysis.groupByVesseltype', 'by vessel type'),
     },
     {
-      id: 'geartype',
+      id: 'geartypes',
       label: t('analysis.groupByGeartype', 'by gear type'),
     },
   ]
 
-  const onSelectSubsection = (option: ChoiceOption<VGREventsVesselsProperty>) => {
+  const onSelectSubsection = (option: ChoiceOption<ReportVesselsSubCategory>) => {
     if (property !== option.id) {
       dispatchQueryParams({ [propertyQueryParam]: option.id })
       trackEvent({

@@ -35,7 +35,6 @@ import {
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
-import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import {
   getReportVesselGroupVisibleDataviews,
   isVesselGroupActivityDataview,
@@ -45,7 +44,6 @@ import { selectReportVesselsSubCategory } from 'features/reports/reports.config.
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import {
-  selectIsAnyAreaReportLocation,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
   selectUrlDataviewInstances,
@@ -98,23 +96,10 @@ export const selectActiveReportActivityDataviews = createSelector(
     selectActiveActivityDataviews,
     selectActiveVesselGroupDataviews,
     selectIsVesselGroupReportLocation,
-    selectIsAnyAreaReportLocation,
-    selectReportCategory,
   ],
-  (
-    activityDataviews,
-    vesselGroupDataviews,
-    isVGRLocation,
-    isAreaReportLocation,
-    reportCategory
-  ): UrlDataviewInstance[] => {
+  (activityDataviews, vesselGroupDataviews, isVGRLocation): UrlDataviewInstance[] => {
     if (isVGRLocation) {
       return vesselGroupDataviews.filter((d) => isVesselGroupActivityDataview(d.id))
-    }
-    if (isAreaReportLocation) {
-      return activityDataviews.filter((dataview) => {
-        return getReportCategoryFromDataview(dataview) === reportCategory
-      })
     }
     return activityDataviews
   }
@@ -142,10 +127,6 @@ export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
   }
 )
 
-export function isActivityReport(reportCategory: ReportCategory) {
-  return reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
-}
-
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [
     selectReportCategory,
@@ -164,7 +145,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     if (isVesselGroupReportLocation) {
       return activityDataviews
     }
-    if (isActivityReport(reportCategory)) {
+    if (reportCategory === ReportCategory.Activity) {
       return activityDataviews
     }
     if (reportCategory === ReportCategory.Detections) {

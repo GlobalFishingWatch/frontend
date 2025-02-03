@@ -12,8 +12,8 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import type { EventsStatsVessel } from 'features/reports/report-port/ports-report.slice'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import type { ReportState } from 'features/reports/reports.types'
 import type { VesselsPagination } from 'features/reports/tabs/events/events-report.selectors'
-import type { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import styles from 'features/reports/shared/vessels/ReportVesselsTableFooter.module.css'
@@ -22,14 +22,14 @@ export default function EventsReportVesselsTableFooter({
   vessels,
   filter,
   pagination,
-  pageQueryParam = 'vGREventsVesselPage',
-  resultsPerPageQueryParam = 'vGREventsResultsPerPage',
+  pageQueryParam = 'reportVesselPage',
+  resultsPerPageQueryParam = 'reportVesselResultsPerPage',
 }: {
   vessels: EventsStatsVessel[]
-  filter: string
+  filter: ReportState['reportVesselFilter']
   pagination: VesselsPagination
-  pageQueryParam?: keyof Pick<VesselGroupReportState, 'vGREventsVesselPage'>
-  resultsPerPageQueryParam?: keyof Pick<VesselGroupReportState, 'vGREventsResultsPerPage'>
+  pageQueryParam?: keyof Pick<ReportState, 'reportVesselPage'>
+  resultsPerPageQueryParam?: keyof Pick<ReportState, 'reportVesselResultsPerPage'>
 }) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()

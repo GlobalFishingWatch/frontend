@@ -14,7 +14,6 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { FIELDS, getCommonProperties } from 'features/reports/report-area/area-reports.utils'
-import type { ReportActivityUnit } from 'features/reports/report-area/AreaReport'
 import ReportSummaryTags from 'features/reports/report-area/summary/ReportSummaryTags'
 import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
@@ -24,6 +23,7 @@ import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
 } from 'features/reports/tabs/activity/reports-activity.slice'
+import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
 import { useTimeCompareTimeDescription } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 import type { ReportGraphProps } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import {

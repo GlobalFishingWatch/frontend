@@ -12,7 +12,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { isActivityReport } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   useFetchReportArea,
   useFitAreaInViewport,
@@ -49,8 +48,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-export type ReportActivityUnit = 'hour' | 'detection'
-
 export default function Report() {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
@@ -67,7 +64,7 @@ export default function Report() {
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
-  const activityUnit = isActivityReport(reportCategory) ? 'hour' : 'detection'
+  const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
 
   const dataviews = useSelector(selectAllDataviewInstancesResolved)
   const heatmapDataviews = useMemo(
@@ -89,11 +86,6 @@ export default function Report() {
       id: ReportCategory.Activity,
       title: t('common.fishing', 'Fishing'),
     },
-    // TODO:CVP remove presence as different category and insert in activity
-    // {
-    //   id: ReportCategory.Presence,
-    //   title: t('common.presence', 'Presence'),
-    // },
     {
       id: ReportCategory.Detections,
       title: t('common.detections', 'Detections'),

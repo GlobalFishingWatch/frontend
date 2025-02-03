@@ -13,7 +13,7 @@ import { selectLocationType } from 'routes/routes.selectors'
 import styles from './ReportVesselsFilter.module.css'
 
 type ReportVesselsFilterProps = {
-  filter: string
+  filter: ReportState['reportVesselFilter']
   filterQueryParam?: keyof Pick<ReportState, 'reportVesselFilter'>
   pageQueryParam?: keyof Pick<ReportState, 'reportVesselPage'>
 }
