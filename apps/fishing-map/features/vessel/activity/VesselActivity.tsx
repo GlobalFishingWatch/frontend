@@ -92,7 +92,7 @@ const VesselActivity = () => {
 
   return (
     <Fragment>
-      <div className={styles.activityTitleContainer}>
+      <div data-test="vessel-profile-info" className={styles.activityTitleContainer}>
         <VesselActivitySummary />
         <Choice
           options={areaOptions}
