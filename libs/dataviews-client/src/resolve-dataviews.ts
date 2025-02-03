@@ -65,6 +65,10 @@ export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
   return dataview?.config?.type === DataviewType.HeatmapStatic
 }
 
+export function isHeatmapCurrentsDataview(dataview: UrlDataviewInstance) {
+  return dataview?.config?.type === DataviewType.Currents
+}
+
 export function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Environment &&
@@ -338,17 +342,23 @@ export const resolveDataviewDatasetResource = (
 
 export function getDataviewFilters(dataview: UrlDataviewInstance): DataviewDatasetFilter {
   if (!dataview) return {}
-  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
-    return { ...acc, ...(datasetConfig.filters || {}) }
-  }, {} as Record<string, any>)
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce(
+    (acc, datasetConfig) => {
+      return { ...acc, ...(datasetConfig.filters || {}) }
+    },
+    {} as Record<string, any>
+  )
   const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
   return filters
 }
 
 export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDataviewInstance) {
-  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
-    return { ...acc, ...(datasetConfig.filters || {}) }
-  }, {} as Record<string, any>)
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce(
+    (acc, datasetConfig) => {
+      return { ...acc, ...(datasetConfig.filters || {}) }
+    },
+    {} as Record<string, any>
+  )
   const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
   if (!Object.keys(filters).length) {
     return ''

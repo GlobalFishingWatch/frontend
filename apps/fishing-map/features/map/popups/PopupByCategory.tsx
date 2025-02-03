@@ -52,6 +52,7 @@ import {
   selectApiEventStatus,
 } from '../map.slice'
 
+import CurrentsTooltipRow from './categories/CurrentsLayers'
 import ReportBufferTooltip from './categories/ReportBufferLayers'
 import UserContextTooltipSection from './categories/UserContextLayers'
 
@@ -204,11 +205,29 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const contextFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.UserContext
             )
+            const currentsFeatures = (features as FourwingsHeatmapPickingObject[])
+              .filter((feature) => feature.subcategory === DataviewType.Currents)
+              .map((feature) => ({
+                ...feature,
+                // TODO translate this
+                title: 'Currents',
+              }))
             const environmentalFeatures = (
               features as SliceExtendedFourwingsPickingObject[]
-            ).filter((feature) => feature.subcategory !== DataviewType.UserContext)
+            ).filter(
+              (feature) =>
+                feature.subcategory !== DataviewType.UserContext &&
+                feature.subcategory !== DataviewType.Currents
+            )
             return (
               <Fragment key={featureCategory}>
+                {currentsFeatures.map((currentsFeature) => (
+                  <CurrentsTooltipRow
+                    key={currentsFeature.id}
+                    feature={currentsFeature}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                ))}
                 <UserContextTooltipSection
                   features={contextFeatures}
                   showFeaturesDetails={type === 'click'}
