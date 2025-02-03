@@ -9,11 +9,7 @@ import type { VesselGroupVesselTableParsed } from './report-vessels.selectors'
 
 import styles from './ReportVesselsIndividualTooltip.module.css'
 
-const VesselGroupReportVesselsIndividualTooltip = ({
-  data,
-}: {
-  data?: VesselGroupVesselTableParsed
-}) => {
+const ReportVesselsIndividualTooltip = ({ data }: { data?: VesselGroupVesselTableParsed }) => {
   const { t } = useTranslation()
   if (!data) {
     return null
@@ -68,4 +64,4 @@ const VesselGroupReportVesselsIndividualTooltip = ({
   )
 }
 
-export default VesselGroupReportVesselsIndividualTooltip
+export default ReportVesselsIndividualTooltip

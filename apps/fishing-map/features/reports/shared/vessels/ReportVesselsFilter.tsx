@@ -25,7 +25,7 @@ export default function ReportVesselsFilter({
 }: ReportVesselsFilterProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const [query, setQuery] = useState(filter)
+  const [query, setQuery] = useState(filter || '')
   const [debouncedQuery] = useDebounce(query, 200)
   const locationType = useSelector(selectLocationType)
 
@@ -36,13 +36,14 @@ export default function ReportVesselsFilter({
       action: `Type search into vessel list from ${locationType}`,
       label: debouncedQuery,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
   useEffect(() => {
     if (filter !== query) {
-      setQuery(filter)
+      setQuery(filter || '')
     }
-  }, [filter])
+  }, [filter, query])
 
   return (
     <div className={styles.inputContainer}>

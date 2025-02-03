@@ -14,9 +14,9 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePlaceholder'
 import {
-  selectVGRUniqVessels,
-  selectVGRVesselsFlags,
-  selectVGRVesselsTimeRange,
+  selectReportUniqVessels,
+  selectReportVesselsFlags,
+  selectReportVesselsTimeRange,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 // import { getEventLabel } from 'utils/analytics'
@@ -48,9 +48,9 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   const isSmallScreen = useSmallScreen()
   const viewOnlyVesselGroup = useSelector(selectViewOnlyVesselGroup)
   const hasOtherLayers = useSelector(selectHasOtherVesselGroupDataviews)
-  const vessels = useSelector(selectVGRUniqVessels)
-  const timeRange = useSelector(selectVGRVesselsTimeRange)
-  const flags = useSelector(selectVGRVesselsFlags)
+  const vessels = useSelector(selectReportUniqVessels)
+  const timeRange = useSelector(selectReportVesselsTimeRange)
+  const flags = useSelector(selectReportVesselsFlags)
   const userData = useSelector(selectUserData)
   const userIsVesselGroupOwner = userData?.id === vesselGroup?.ownerId
 

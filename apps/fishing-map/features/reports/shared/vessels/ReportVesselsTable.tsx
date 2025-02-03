@@ -6,12 +6,15 @@ import cx from 'classnames'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import I18nNumber from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES } from 'features/reports/reports.config'
 import {
+  selectReportActivitySubCategory,
   selectReportVesselsOrderDirection,
   selectReportVesselsOrderProperty,
 } from 'features/reports/reports.config.selectors'
@@ -19,6 +22,8 @@ import type {
   ReportVesselOrderDirection,
   ReportVesselOrderProperty,
 } from 'features/reports/reports.types'
+import { selectReportIsPinningVessels } from 'features/reports/tabs/activity/reports-activity.slice'
+import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
@@ -29,15 +34,29 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
-import { selectVGRVesselsPaginated } from './report-vessels.selectors'
-import VesselGroupReportVesselsTableFooter from './ReportVesselsTableFooter'
+// TODO:CVP rename this type to something more generic
+import type { VesselGroupVesselTableParsed } from './report-vessels.selectors'
+import ReportVesselsTableFooter from './ReportVesselsTableFooter'
 
 import styles from 'features/reports/tabs/activity/vessels/ReportVesselsTable.module.css'
 
-export default function VesselGroupReportVesselsTable() {
+type ReportVesselTableProps = {
+  vessels: VesselGroupVesselTableParsed[]
+  activityUnit?: ReportActivityUnit
+  reportName?: string
+  allowSorting?: boolean
+}
+
+export default function ReportVesselsTable({
+  vessels,
+  activityUnit,
+  reportName,
+  allowSorting = true,
+}: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const vessels = useSelector(selectVGRVesselsPaginated)
+  const activitySubCategory = useSelector(selectReportActivitySubCategory)
+  const isPinningVessels = useSelector(selectReportIsPinningVessels)
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -47,6 +66,8 @@ export default function VesselGroupReportVesselsTable() {
     dataviews,
     userData?.permissions || []
   )
+
+  const isFishingReport = activitySubCategory === 'fishing'
 
   const onFilterClick = (reportVesselFilter: any) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
@@ -68,7 +89,7 @@ export default function VesselGroupReportVesselsTable() {
     }
     trackEvent({
       category: TrackCategory.VesselGroupReport,
-      action: `vessel_group_profile_pin_vessel`,
+      action: `vessel_report_pin_vessel`,
       label: vesselId,
     })
   }
@@ -90,66 +111,109 @@ export default function VesselGroupReportVesselsTable() {
             ))}
           </p>
         )}
-        <div className={styles.vesselsTable}>
+        <div className={cx(styles.vesselsTable, { [styles.vesselsTableWithValue]: activityUnit })}>
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
             {t('common.name', 'Name')}
-            <IconButton
-              size="tiny"
-              icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
-              onClick={() => handleSortClick('shipname', orderDirection === 'asc' ? 'desc' : 'asc')}
-              className={cx(styles.sortIcon, { [styles.active]: orderProperty === 'shipname' })}
-            />
+            {allowSorting && (
+              <IconButton
+                size="tiny"
+                icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
+                onClick={() =>
+                  handleSortClick('shipname', orderDirection === 'asc' ? 'desc' : 'asc')
+                }
+                className={cx(styles.sortIcon, { [styles.active]: orderProperty === 'shipname' })}
+              />
+            )}
           </div>
           <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
           <div className={styles.header}>
             {t('layer.flagState_one', 'Flag state')}
-            <IconButton
-              size="tiny"
-              icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
-              onClick={() => handleSortClick('flag', orderDirection === 'asc' ? 'desc' : 'asc')}
-              className={cx(styles.sortIcon, { [styles.active]: orderProperty === 'flag' })}
-            />
+            {allowSorting && (
+              <IconButton
+                size="tiny"
+                icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
+                onClick={() => handleSortClick('flag', orderDirection === 'asc' ? 'desc' : 'asc')}
+                className={cx(styles.sortIcon, { [styles.active]: orderProperty === 'flag' })}
+              />
+            )}
           </div>
           <div className={styles.header}>
             {t('vessel.gearType', 'Gear Type')}
-            <IconButton
-              size="tiny"
-              icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
-              onClick={() => handleSortClick('shiptype', orderDirection === 'asc' ? 'desc' : 'asc')}
-              className={cx(styles.sortIcon, { [styles.active]: orderProperty === 'shiptype' })}
-            />
+            {allowSorting && (
+              <IconButton
+                size="tiny"
+                icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
+                onClick={() =>
+                  handleSortClick('shiptype', orderDirection === 'asc' ? 'desc' : 'asc')
+                }
+                className={cx(styles.sortIcon, { [styles.active]: orderProperty === 'shiptype' })}
+              />
+            )}
           </div>
+          {activityUnit && (
+            <div className={cx(styles.header, styles.right)}>
+              {activityUnit === 'hour'
+                ? t('common.hour_other', 'hours')
+                : t('common.detection_other', 'detections')}
+            </div>
+          )}
           {vessels?.map((vessel, i) => {
             const { shipName, flagTranslated, flagTranslatedClean, identity, geartype } = vessel
             const { id, flag, ssvid } = getSearchIdentityResolved(identity!)
             const isLastRow = i === vessels.length - 1
+            const type = isFishingReport ? vessel.geartype : vessel.vesselType
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const gearTypeInteractionEnabled = geartype !== EMPTY_FIELD_PLACEHOLDER
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
+            // TODO:CVP normalize this vessel types
+            const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
+              ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+              : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const pinTrackDisabled = !workspaceReady || !hasDatasets || isPinningVessels
             return (
               <Fragment key={id}>
-                <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
+                <div
+                  className={cx({ [styles.border]: !isLastRow }, styles.icon)}
+                  data-test={`vessel-${vessel.vesselId}`}
+                >
                   <VesselPin
                     vessel={vessel.identity}
-                    disabled={!workspaceReady}
+                    vesselToResolve={
+                      vessel.identity
+                        ? undefined
+                        : {
+                            id: vessel.id || vessel.vesselId,
+                            datasetId: vessel.infoDataset?.id || (vessel.dataset as string),
+                          }
+                    }
+                    disabled={pinTrackDisabled}
                     onClick={onPinClick}
                   />
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   {workspaceReady ? (
-                    <VesselLink
-                      className={styles.link}
-                      vesselId={id}
-                      datasetId={vessel.dataset}
-                      query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
-                    >
-                      {shipName}
-                    </VesselLink>
+                    <Fragment>
+                      {vessel.color && (
+                        <span
+                          className={styles.dot}
+                          style={{ backgroundColor: vessel.color }}
+                        ></span>
+                      )}
+                      <VesselLink
+                        className={styles.link}
+                        vesselId={id}
+                        datasetId={vessel.dataset}
+                        query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
+                      >
+                        {shipName}
+                      </VesselLink>
+                    </Fragment>
                   ) : (
                     shipName
                   )}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
+                  {/* TODO:CVP normalize between mmsi and ssvid */}
                   <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
                 </div>
                 <div
@@ -192,12 +256,21 @@ export default function VesselGroupReportVesselsTable() {
                 >
                   {geartype}
                 </div>
+                {activityUnit && (
+                  <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
+                    {vessel.value !== undefined ? (
+                      <I18nNumber number={vessel.value} />
+                    ) : (
+                      EMPTY_FIELD_PLACEHOLDER
+                    )}
+                  </div>
+                )}
               </Fragment>
             )
           })}
         </div>
       </div>
-      <VesselGroupReportVesselsTableFooter />
+      <ReportVesselsTableFooter reportName={reportName} />
     </Fragment>
   )
 }

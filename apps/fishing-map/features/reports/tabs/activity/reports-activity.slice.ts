@@ -97,7 +97,7 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
     reportBufferValue,
     reportBufferOperation,
   } = params
-
+  const hasBufferParams = reportBufferUnit && reportBufferValue && reportBufferOperation
   const query = stringify(
     {
       datasets,
@@ -119,9 +119,11 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
             'region-id': region.id,
             'region-dataset': region.dataset,
           }),
-      'buffer-unit': reportBufferUnit?.toUpperCase(),
-      'buffer-value': reportBufferValue,
-      'buffer-operation': reportBufferOperation?.toUpperCase(),
+      ...(hasBufferParams && {
+        'buffer-unit': reportBufferUnit.toUpperCase(),
+        'buffer-value': reportBufferValue,
+        'buffer-operation': reportBufferOperation.toUpperCase(),
+      }),
     },
     { arrayFormat: 'indices' }
   )

@@ -26,7 +26,7 @@ import {
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
-import ReportVesselsFilter from 'features/reports/tabs/activity/vessels/ReportVesselsFilter'
+import ReportVesselsFilter from 'features/reports/shared/vessels/ReportVesselsFilter'
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import EventsReportVesselPropertySelector from 'features/reports/tabs/events/EventsReportVesselPropertySelector'
 import EventsReportVesselsTable from 'features/reports/tabs/events/EventsReportVesselsTable'

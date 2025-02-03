@@ -8,11 +8,10 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselInWorkspace, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
+import { setPinningVessels } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 
-import { setPinningVessels } from '../reports-activity.slice'
-
-import usePinReportVessels, { MAX_VESSEL_REPORT_PIN } from './report-activity-vessels.hooks'
+import usePinReportVessels, { MAX_VESSEL_REPORT_PIN } from './report-vessels.hooks'
 
 import styles from './ReportVesselsTable.module.css'
 

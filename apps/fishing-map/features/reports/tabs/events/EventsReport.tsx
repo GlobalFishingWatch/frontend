@@ -35,8 +35,8 @@ import {
   selectVGREventsVesselsIndividualData,
   selectVGRVesselDatasetsWithoutEventsRelated,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
+import ReportVesselsFilter from 'features/reports/shared/vessels/ReportVesselsFilter'
 import VesselGroupReportVesselsGraph from 'features/reports/shared/vessels/ReportVesselsGraph'
-import ReportVesselsFilter from 'features/reports/tabs/activity/vessels/ReportVesselsFilter'
 import {
   selectFetchVGREventsVesselsParams,
   selectVGREventsVessels,

@@ -12,7 +12,6 @@ import {
   useReportAreaCenter,
   useVesselGroupBounds,
 } from 'features/reports/report-area/area-reports.hooks'
-import VesselGroupReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import VGREvents from 'features/reports/tabs/events/EventsReport'
 import VesselGroupReportInsights from 'features/reports/tabs/vessel-group-insights/VGRInsights'
 import {
@@ -30,8 +29,9 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectReportCategorySelector } from '../reports.config.selectors'
 import { ReportCategory } from '../reports.types'
-import { selectVGRVesselsTimeRange } from '../shared/vessels/report-vessels.selectors'
+import { selectReportVesselsTimeRange } from '../shared/vessels/report-vessels.selectors'
 import ReportActivity from '../tabs/activity/ReportActivity'
+import ReportVesselsGroup from '../tabs/vessel-group/ReportVessels'
 
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRDataview } from './vessel-group-report.selectors'
@@ -51,7 +51,7 @@ function VesselGroupReport() {
   const reportStatus = useSelector(selectVGRStatus)
   const reportSection = useSelector(selectReportCategorySelector)
   const reportDataview = useSelector(selectVGRDataview)
-  const timeRange = useSelector(selectVGRVesselsTimeRange)
+  const timeRange = useSelector(selectReportVesselsTimeRange)
   const userData = useSelector(selectUserData)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
@@ -114,7 +114,7 @@ function VesselGroupReport() {
       {
         id: ReportCategory.VesselGroup,
         title: t('common.vessels', 'vessels'),
-        content: <VesselGroupReportVessels loading={loading} />,
+        content: <ReportVesselsGroup loading={loading} />,
       },
       {
         id: ReportCategory.VesselGroupInsights,
