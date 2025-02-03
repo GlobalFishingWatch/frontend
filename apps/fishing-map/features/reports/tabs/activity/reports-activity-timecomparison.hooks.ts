@@ -137,7 +137,8 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
         // If new duration is set, make sure there delta from start to compareStart is >= of new duration
         if (
           newDuration &&
-          startFromCompareStart.toMillis() - getUTCDateTime(timeComparison?.start!).toMillis() <= 0
+          timeComparison?.start &&
+          startFromCompareStart.toMillis() - getUTCDateTime(timeComparison?.start).toMillis() <= 0
         ) {
           start = startFromCompareStart.toISO() as string
         }
