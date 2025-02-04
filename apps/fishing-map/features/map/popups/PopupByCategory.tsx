@@ -251,7 +251,12 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
           }
           case DataviewCategory.Buffer: {
-            return <ReportBufferTooltip features={features as PolygonPickingObject[]} />
+            return (
+              <ReportBufferTooltip
+                key={featureCategory}
+                features={features as PolygonPickingObject[]}
+              />
+            )
           }
           case DataviewCategory.User: {
             const userPointFeatures = (features as UserLayerPickingObject[]).filter(
