@@ -39,7 +39,10 @@ export const getFieldSchema = (
   // As soon as we find a string, there are no compatibility with others
   // this is needed because there are cases where are mixed types in the same column
   const isStringType = values.some((d) => typeof d === 'string')
-  const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType)
+  const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType | 'object')
+  if (type === 'object') {
+    return null
+  }
 
   if (values?.length) {
     const schema: DatasetSchemaItem = {
