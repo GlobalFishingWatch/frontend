@@ -150,6 +150,9 @@ class Timeline extends PureComponent<TimelineProps> {
   )
 
   getSvgTransform = memoize((overallScale, start, end, innerWidth, innerStartPx) => {
+    if (!innerWidth || !innerStartPx) {
+      return ''
+    }
     const startX = overallScale(getUTCDate(start))
     const endX = overallScale(getUTCDate(end))
     const deltaX = endX - startX
@@ -212,7 +215,11 @@ class Timeline extends PureComponent<TimelineProps> {
   onWindowResize = () => {
     if (this.graphContainer !== null && typeof window !== 'undefined') {
       const graphStyle = window.getComputedStyle(this.graphContainer)
-      const outerX = this.graphContainer.getBoundingClientRect().left
+      const boundingRect = this.graphContainer.getBoundingClientRect()
+      if (!boundingRect.left || !boundingRect.width) {
+        return
+      }
+      const outerX = boundingRect.left
       const relativeOffsetX = -this.node?.offsetLeft
       const outerWidth = parseFloat(graphStyle.width)
       const outerHeight = parseFloat(graphStyle.height)
