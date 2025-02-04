@@ -203,10 +203,12 @@ export default function ReportTitle({ area }: ReportTitleProps) {
           if (dataset?.source === DRAW_DATASET_SOURCE) {
             areaName = getDatasetLabel(dataset)
           } else {
+            const propertyValue =
+              reportArea?.properties?.[propertyToInclude] || reportArea?.properties?.[valueProperty]
             areaName =
-              reportArea?.properties?.[propertyToInclude] ||
-              reportArea?.properties?.[valueProperty] ||
-              getDatasetLabel(dataset)
+              propertyValue && typeof propertyValue === 'string'
+                ? propertyValue
+                : getDatasetLabel(dataset)
           }
         }
       } else {
