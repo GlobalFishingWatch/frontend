@@ -39,21 +39,21 @@ export const findNextTimestamp = (timestamps: number[], timestamp: number): numb
 export const findPreviousPosition = (
   timestamps: number[],
   positions: TrackInterface | null,
-  startCoordinate: number | null
+  startCoordinate: number,
+  coordinateType: 'latitude' | 'longitude'
 ) => {
-  if (!startCoordinate) return null
   const index = timestamps.indexOf(startCoordinate)
-  if (index === -1) return null
-  return positions?.data?.[0][index]
+  if (index === -1) return startCoordinate
+  return positions?.data?.[0][index][coordinateType]
 }
 
 export const findNextPosition = (
   timestamps: number[],
   positions: TrackInterface | null,
-  endCoordinate: number | null
+  endCoordinate: number,
+  coordinateType: 'latitude' | 'longitude'
 ) => {
-  if (!endCoordinate) return null
   const index = timestamps.indexOf(endCoordinate)
-  if (index === -1) return null
-  return positions?.data?.[0][index + 1]
+  if (index === -1) return endCoordinate
+  return positions?.data?.[0][index + 1][coordinateType]
 }

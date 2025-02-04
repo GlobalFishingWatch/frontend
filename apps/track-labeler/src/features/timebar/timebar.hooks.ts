@@ -150,18 +150,27 @@ export const useSegmentsLabeledConnect = () => {
 
     // Case 1: Segment completely contains new segment
     if (segment.start <= newSegment.start && segment.end >= newSegment.end) {
+      const endLatitude = findPreviousPosition(timestamps, positions, newSegment.start, 'latitude')
+      const endLongitude = findPreviousPosition(
+        timestamps,
+        positions,
+        newSegment.start,
+        'longitude'
+      )
+      const startLatitude = findNextPosition(timestamps, positions, newSegment.end, 'latitude')
+      const startLongitude = findNextPosition(timestamps, positions, newSegment.end, 'longitude')
       return [
         {
           ...segment,
           end: findPreviousTimestamp(timestamps, newSegment.start),
-          endLatitude: findPreviousPosition(timestamps, positions, newSegment.start)?.latitude,
-          endLongitude: findPreviousPosition(timestamps, positions, newSegment.start)?.longitude,
+          endLatitude,
+          endLongitude,
         },
         {
           ...segment,
           start: findNextTimestamp(timestamps, newSegment.end),
-          startLatitude: findNextPosition(timestamps, positions, newSegment.end)?.latitude,
-          startLongitude: findNextPosition(timestamps, positions, newSegment.end)?.longitude,
+          startLatitude,
+          startLongitude,
         },
       ]
     }
@@ -173,26 +182,33 @@ export const useSegmentsLabeledConnect = () => {
 
     // Case 3: Overlap at start
     if (newSegment.start <= segment.start && newSegment.end >= segment.start) {
-      const nextPosition = findNextPosition(timestamps, positions, newSegment.end)
+      const startLatitude = findNextPosition(timestamps, positions, newSegment.end, 'latitude')
+      const startLongitude = findNextPosition(timestamps, positions, newSegment.end, 'longitude')
       return [
         {
           ...segment,
           start: findNextTimestamp(timestamps, newSegment.end),
-          startLatitude: nextPosition?.latitude,
-          startLongitude: nextPosition?.longitude,
+          startLatitude,
+          startLongitude,
         },
       ]
     }
 
     // Case 4: Overlap at end
     if (newSegment.end >= segment.end && newSegment.start <= segment.end) {
-      const previousPosition = findPreviousPosition(timestamps, positions, newSegment.start)
+      const endLatitude = findPreviousPosition(timestamps, positions, newSegment.start, 'latitude')
+      const endLongitude = findPreviousPosition(
+        timestamps,
+        positions,
+        newSegment.start,
+        'longitude'
+      )
       return [
         {
           ...segment,
           end: findPreviousTimestamp(timestamps, newSegment.start),
-          endLatitude: previousPosition?.latitude,
-          endLongitude: previousPosition?.longitude,
+          endLatitude,
+          endLongitude,
         },
       ]
     }
