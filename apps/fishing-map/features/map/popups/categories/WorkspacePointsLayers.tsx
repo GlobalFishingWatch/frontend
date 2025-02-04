@@ -1,7 +1,6 @@
 import { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import Link from 'redux-first-router-link'
-import type { MapCoordinates } from 'types'
 
 import type { WorkspacesPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -10,6 +9,7 @@ import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { WORKSPACE } from 'routes/routes'
+import type { MapCoordinates } from 'types'
 
 import styles from '../Popup.module.css'
 

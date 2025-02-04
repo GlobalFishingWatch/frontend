@@ -3,7 +3,7 @@ import cx from 'classnames'
 import formatcoords from 'formatcoords'
 
 import { useMapMouseHover } from 'features/map/map-interactions.hooks'
-import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
+import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
 import { toFixed } from 'utils/shared'
 
 import MapScaleControl from './MapScaleControl'

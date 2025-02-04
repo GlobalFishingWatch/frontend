@@ -33,18 +33,25 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import type { ReportCategory } from 'features/reports/areas/area-reports.types'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
-  selectVGRActivitySubsection,
-  selectVGREventsSubsection,
-  selectVGRSection,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+  getReportCategoryFromDataview,
+  getReportSubCategoryFromDataview,
+} from 'features/reports/report-area/area-reports.utils'
 import {
   getVesselGroupActivityDataviewInstance,
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
-} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+} from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import {
+  selectReportActivitySubCategory,
+  selectReportCategorySelector,
+  selectReportEventsSubCategory,
+} from 'features/reports/reports.config.selectors'
+import type {
+  ReportActivitySubCategory,
+  ReportCategory,
+  ReportDetectionsSubCategory,
+} from 'features/reports/reports.types'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
@@ -82,9 +89,9 @@ export const selectDataviewInstancesMerged = createSelector(
     selectIsVesselLocation,
     selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
-    selectVGRSection,
-    selectVGRActivitySubsection,
-    selectVGREventsSubsection,
+    selectReportCategorySelector,
+    selectReportActivitySubCategory,
+    selectReportEventsSubCategory,
     selectReportVesselGroupId,
     selectReportPortId,
     selectVesselId,
@@ -160,13 +167,13 @@ export const selectDataviewInstancesMerged = createSelector(
           vesselGroupId: reportVesselGroupId,
           color: vesselGroupDataviewInstance?.config?.color,
           colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
-          activityType: vGRActivitySubsection,
+          activityType: vGRActivitySubsection as ReportActivitySubCategory,
         })
         if (activityVGRInstance) {
           mergedDataviewInstances.push(activityVGRInstance)
         }
       }
-      if (vGRSection === 'events') {
+      if (vGRSection === 'events' && vGREventsSubsection) {
         mergedDataviewInstances.push(
           ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, vGREventsSubsection)
         )
@@ -354,5 +361,27 @@ export const selectActiveReportCategories = createSelector(
   [selectActiveSupportedReportDataviews],
   (dataviews): ReportCategory[] => {
     return uniq(dataviews.flatMap((d) => getReportCategoryFromDataview(d) || []))
+  }
+)
+
+export const selectActiveActivityReportSubCategories = createSelector(
+  [selectActiveSupportedReportDataviews],
+  (dataviews): (ReportActivitySubCategory | ReportDetectionsSubCategory)[] => {
+    return uniq(
+      dataviews.flatMap((d) =>
+        d.category === DataviewCategory.Activity ? getReportSubCategoryFromDataview(d) || [] : []
+      ) as ReportActivitySubCategory[]
+    )
+  }
+)
+
+export const selectActiveDetectionsReportSubCategories = createSelector(
+  [selectActiveSupportedReportDataviews],
+  (dataviews): (ReportActivitySubCategory | ReportDetectionsSubCategory)[] => {
+    return uniq(
+      dataviews.flatMap((d) =>
+        d.category === DataviewCategory.Detections ? getReportSubCategoryFromDataview(d) || [] : []
+      ) as ReportDetectionsSubCategory[]
+    )
   }
 )

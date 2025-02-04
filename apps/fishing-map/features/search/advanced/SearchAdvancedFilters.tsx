@@ -25,7 +25,7 @@ import {
   DEFAULT_VESSEL_IDENTITY_DATASET,
   DEFAULT_VESSEL_IDENTITY_ID,
 } from 'features/vessel/vessel.config'
-import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 
 import styles from './SearchAdvancedFilters.module.css'
 

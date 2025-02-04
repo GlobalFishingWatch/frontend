@@ -13,17 +13,18 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import Remove from 'features/workspace/common/Remove'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
+import Remove from 'features/workspace/shared/Remove'
 
-import InfoModal from '../common/InfoModal'
-import Filters from '../common/LayerFilters'
-import LayerSwitch from '../common/LayerSwitch'
-import Title from '../common/Title'
 import DatasetNotFound from '../shared/DatasetNotFound'
+import InfoModal from '../shared/InfoModal'
+import Filters from '../shared/LayerFilters'
+import LayerSwitch from '../shared/LayerSwitch'
+import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type EventsLayerPanelProps = {
   dataview: UrlDataviewInstance

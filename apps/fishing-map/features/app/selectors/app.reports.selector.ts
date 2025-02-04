@@ -1,19 +1,31 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { BufferOperation, BufferUnit } from 'types'
 
-import { selectActiveReportCategories } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
+  selectActiveActivityReportSubCategories,
+  selectActiveDetectionsReportSubCategories,
+  selectActiveReportCategories,
+} from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import {
+  selectReportActivitySubCategory,
   selectReportBufferOperationSelector,
   selectReportBufferUnitSelector,
   selectReportBufferValueSelector,
   selectReportCategorySelector,
+  selectReportDetectionsSubCategory,
+  selectReportEventsSubCategory,
   selectReportVesselGraphSelector,
-} from 'features/reports/areas/area-reports.config.selectors'
-import { selectReportById } from 'features/reports/areas/area-reports.slice'
-import type { ReportVesselGraph } from 'features/reports/areas/area-reports.types'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
-import { WORLD_REGION_ID } from 'features/reports/shared/activity/reports-activity.slice'
-import { selectVGRActivitySubsection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
+  selectReportVesselsSubCategory,
+} from 'features/reports/reports.config.selectors'
+import { selectReportById } from 'features/reports/reports.slice'
+import type {
+  AnyReportSubCategory,
+  ReportActivitySubCategory,
+  ReportEventsSubCategory,
+  ReportVesselGraph,
+  ReportVesselsSubCategory,
+} from 'features/reports/reports.types'
+import { ReportCategory } from 'features/reports/reports.types'
+import { WORLD_REGION_ID } from 'features/reports/tabs/activity/reports-activity.slice'
 import {
   selectIsVesselGroupReportLocation,
   selectLocationAreaId,
@@ -23,6 +35,7 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
+import type { BufferOperation, BufferUnit } from 'types'
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
@@ -50,13 +63,22 @@ export const selectReportAreaId = createSelector(
 )
 
 export const selectReportActiveCategories = createSelector(
-  [selectActiveReportCategories],
-  (activeCategories): ReportCategory[] => {
+  [selectActiveReportCategories, selectIsVesselGroupReportLocation],
+  (activeCategories, isVesselGroupReportLocation): ReportCategory[] => {
+    // TODO:CVP ensure ports report doesn't need something similar
+    if (isVesselGroupReportLocation) {
+      return [
+        ReportCategory.VesselGroup,
+        ReportCategory.VesselGroupInsights,
+        ReportCategory.Activity,
+        ReportCategory.Events,
+      ]
+    }
     const orderedCategories = [
-      ReportCategory.Fishing,
-      ReportCategory.Presence,
+      ReportCategory.Activity,
       ReportCategory.Detections,
       ReportCategory.Environment,
+      ReportCategory.Events,
     ]
     return orderedCategories.flatMap((category) =>
       activeCategories.some((a) => a === category) ? category : []
@@ -64,33 +86,72 @@ export const selectReportActiveCategories = createSelector(
   }
 )
 
+// TODO:CVP merge with selectReportCategory from reports.config.selectors
 export const selectReportCategory = createSelector(
-  [
-    selectReportCategorySelector,
-    selectReportActiveCategories,
-    selectIsVesselGroupReportLocation,
-    selectVGRActivitySubsection,
-  ],
-  (
-    reportCategory,
-    activeCategories,
-    isVesselGroupReportLocation,
-    vGRActivitySubsection
-  ): ReportCategory => {
-    if (isVesselGroupReportLocation) {
-      return vGRActivitySubsection as ReportCategory
-    }
+  [selectReportCategorySelector, selectReportActiveCategories],
+  (reportCategory, activeCategories): ReportCategory => {
     if (activeCategories.some((category) => category === reportCategory)) {
-      return reportCategory
+      return reportCategory as ReportCategory
     }
     return activeCategories[0]
   }
 )
 
+export const selectReportSubCategory = createSelector(
+  [
+    selectReportCategory,
+    selectActiveActivityReportSubCategories,
+    selectReportActivitySubCategory,
+    selectReportDetectionsSubCategory,
+    selectActiveDetectionsReportSubCategories,
+    selectReportVesselsSubCategory,
+    selectReportEventsSubCategory,
+  ],
+  (
+    reportCategory,
+    activeActivityReportSubCategories,
+    reportActivitySubCategory,
+    reportDetectionsSubCategory,
+    activeDetectionsReportSubCategories,
+    reportVesselsSubCategory,
+    reportEventsSubCategory
+  ): AnyReportSubCategory | undefined => {
+    if (
+      reportCategory === ReportCategory.Activity ||
+      reportCategory === ReportCategory.Detections
+    ) {
+      const subCategory =
+        reportCategory === ReportCategory.Activity
+          ? reportActivitySubCategory
+          : reportDetectionsSubCategory
+      if (
+        (reportCategory === ReportCategory.Activity
+          ? activeActivityReportSubCategories
+          : activeDetectionsReportSubCategories
+        ).some((category) => category === subCategory)
+      ) {
+        return subCategory as ReportActivitySubCategory
+      }
+      return activeActivityReportSubCategories[0] as ReportActivitySubCategory
+    }
+    if (reportCategory === ReportCategory.VesselGroup) {
+      return reportVesselsSubCategory as ReportVesselsSubCategory
+    }
+    if (reportCategory === ReportCategory.Events) {
+      return reportEventsSubCategory as ReportEventsSubCategory
+    }
+    return undefined
+  }
+)
+
 export const selectReportVesselGraph = createSelector(
-  [selectReportVesselGraphSelector, selectReportCategory],
-  (reportVesselGraph, reportCategory): ReportVesselGraph => {
-    if (reportCategory === ReportCategory.Fishing && reportVesselGraph === 'vesselType') {
+  [selectReportVesselGraphSelector, selectReportCategory, selectReportActivitySubCategory],
+  (reportVesselGraph, reportCategory, reportActivitySubCategory): ReportVesselGraph => {
+    if (
+      reportCategory === ReportCategory.Activity &&
+      reportActivitySubCategory === 'fishing' &&
+      reportVesselGraph === 'vesselType'
+    ) {
       return 'geartype'
     }
     return reportVesselGraph

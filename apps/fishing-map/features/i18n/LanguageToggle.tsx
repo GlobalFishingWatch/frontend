@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import Script from 'next/script'
-import type { Locale } from 'types'
 
 import { Icon } from '@globalfishingwatch/ui-components'
 
@@ -13,6 +12,7 @@ import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
 import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import type { Locale } from 'types'
 
 import styles from './LanguageToggle.module.css'
 

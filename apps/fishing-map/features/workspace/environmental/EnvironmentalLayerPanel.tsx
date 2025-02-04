@@ -9,7 +9,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { IconButton,Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import type { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
@@ -18,24 +18,25 @@ import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import ActivityFilters, {
-  isHistogramDataviewSupported,
-} from 'features/workspace/common/LayerFilters'
-import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
-import MapLegend from 'features/workspace/common/MapLegend'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
+import ActivityFilters, {
+  isHistogramDataviewSupported,
+} from 'features/workspace/shared/LayerFilters'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../common/Color'
-import InfoModal from '../common/InfoModal'
-import LayerSwitch from '../common/LayerSwitch'
-import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
+import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
+import InfoModal from '../shared/InfoModal'
+import LayerSwitch from '../shared/LayerSwitch'
+import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance

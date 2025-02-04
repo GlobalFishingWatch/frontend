@@ -5,7 +5,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import PortsReportLink from 'features/reports/ports/PortsReportLink'
+import PortsReportLink from 'features/reports/report-port/PortsReportLink'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectIsPortReportLocation } from 'routes/routes.selectors'
 

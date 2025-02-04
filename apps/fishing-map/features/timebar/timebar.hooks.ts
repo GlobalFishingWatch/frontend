@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import type { TimebarGraphs } from 'types'
 
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
@@ -25,11 +24,12 @@ import {
   selectActiveReportActivityDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
+import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
 
 import type { TimeRange } from './timebar.slice'

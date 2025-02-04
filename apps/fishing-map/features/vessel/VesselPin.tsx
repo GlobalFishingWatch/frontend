@@ -22,7 +22,7 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
-import { usePopulateVesselResource } from 'features/reports/shared/activity/vessels/report-activity-vessels.hooks'
+import { usePopulateVesselResource } from 'features/reports/shared/vessels/report-vessels.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'

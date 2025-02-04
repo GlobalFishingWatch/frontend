@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
-import type { QueryParams } from 'types'
 
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -24,6 +23,7 @@ import {
   selectIsVesselLocation,
   selectLocationQuery,
 } from 'routes/routes.selectors'
+import type { QueryParams } from 'types'
 
 import styles from './Vessel.module.css'
 

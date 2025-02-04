@@ -1,6 +1,5 @@
-import type { Locale } from 'types'
-
 import { WorkspaceCategory } from 'data/workspaces'
+import type { Locale } from 'types'
 
 type WelcomeContentLang = {
   [locale in Locale]?: {

@@ -10,7 +10,7 @@ import ClusterEventTooltipRow from 'features/map/popups/categories/ClusterEventT
 import EncounterTooltipRow from 'features/map/popups/categories/EncounterTooltipRow'
 import GenericClusterTooltipRow from 'features/map/popups/categories/GenericClusterTooltipRow'
 import PortVisitEventTooltipRow from 'features/map/popups/categories/PortVisitEventTooltipRow'
-import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 
 import type {
   ExtendedFeatureByVesselEvent,

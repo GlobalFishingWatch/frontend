@@ -15,8 +15,8 @@ import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import {
   useReportAreaCenter,
   useVesselGroupBounds,
-} from 'features/reports/areas/area-reports.hooks'
-import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
+} from 'features/reports/report-area/area-reports.hooks'
+import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
 import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import {
@@ -30,17 +30,18 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
-import Color from '../common/Color'
-import LayerSwitch from '../common/LayerSwitch'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
+import Color from '../shared/Color'
+import LayerSwitch from '../shared/LayerSwitch'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
 
 import VesselGroupNotFound from './VesselGroupNotFound'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 export type VesselGroupLayerPanelProps = {
   dataview: UrlDataviewInstance

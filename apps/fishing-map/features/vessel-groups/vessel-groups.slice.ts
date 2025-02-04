@@ -3,7 +3,6 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import memoize from 'lodash/memoize'
 import { stringify } from 'qs'
-import type { RootState } from 'store'
 
 import type { FetchOptions, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
@@ -11,6 +10,7 @@ import type { APIPagination, VesselGroup, VesselGroupUpsert } from '@globalfishi
 
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import type { RootState } from 'store'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 

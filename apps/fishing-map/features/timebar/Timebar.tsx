@@ -2,7 +2,6 @@ import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import type { Locale } from 'types'
 
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -35,8 +34,8 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
-import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
-import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
+import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
+import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import {
   useDisableHighlightTimeConnect,
@@ -53,6 +52,7 @@ import {
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'routes/routes.selectors'
+import type { Locale } from 'types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { getUTCDateTime } from 'utils/dates'

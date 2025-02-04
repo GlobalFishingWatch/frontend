@@ -35,20 +35,15 @@ import {
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
-import { ReportCategory } from 'features/reports/areas/area-reports.types'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
-import {
-  selectVGRSection,
-  selectVGRSubsection,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
 import {
   getReportVesselGroupVisibleDataviews,
   isVesselGroupActivityDataview,
-} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { selectVGRActivityDataview } from 'features/reports/vessel-groups/vessel-group-report.selectors'
+} from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectVGRActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
+import { selectReportVesselsSubCategory } from 'features/reports/reports.config.selectors'
+import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import {
-  selectIsAnyAreaReportLocation,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
   selectUrlDataviewInstances,
@@ -60,8 +55,8 @@ export const selectHasOtherVesselGroupDataviews = createSelector(
   [
     selectDataviewInstancesResolved,
     selectReportVesselGroupId,
-    selectVGRSection,
-    selectVGRSubsection,
+    selectReportCategory,
+    selectReportVesselsSubCategory,
   ],
   (dataviews, reportVesselGroupId, vGRSection, vGRSubsection) => {
     if (!dataviews?.length) return false
@@ -101,23 +96,10 @@ export const selectActiveReportActivityDataviews = createSelector(
     selectActiveActivityDataviews,
     selectActiveVesselGroupDataviews,
     selectIsVesselGroupReportLocation,
-    selectIsAnyAreaReportLocation,
-    selectReportCategory,
   ],
-  (
-    activityDataviews,
-    vesselGroupDataviews,
-    isVGRLocation,
-    isAreaReportLocation,
-    reportCategory
-  ): UrlDataviewInstance[] => {
+  (activityDataviews, vesselGroupDataviews, isVGRLocation): UrlDataviewInstance[] => {
     if (isVGRLocation) {
       return vesselGroupDataviews.filter((d) => isVesselGroupActivityDataview(d.id))
-    }
-    if (isAreaReportLocation) {
-      return activityDataviews.filter((dataview) => {
-        return getReportCategoryFromDataview(dataview) === reportCategory
-      })
     }
     return activityDataviews
   }
@@ -145,10 +127,6 @@ export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
   }
 )
 
-export function isActivityReport(reportCategory: ReportCategory) {
-  return reportCategory === ReportCategory.Fishing || reportCategory === ReportCategory.Presence
-}
-
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [
     selectReportCategory,
@@ -167,7 +145,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     if (isVesselGroupReportLocation) {
       return activityDataviews
     }
-    if (isActivityReport(reportCategory)) {
+    if (reportCategory === ReportCategory.Activity) {
       return activityDataviews
     }
     if (reportCategory === ReportCategory.Detections) {

@@ -1,6 +1,4 @@
 // import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
-import type { WorkspaceState } from 'types'
-
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 
@@ -25,6 +23,7 @@ import {
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
+import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,

@@ -5,7 +5,6 @@ import Sticky from 'react-sticky-el'
 import cx from 'classnames'
 import dynamic from 'next/dynamic'
 import Link from 'redux-first-router-link'
-import type { QueryParams } from 'types'
 
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -29,12 +28,12 @@ import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors
 import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { useHighlightReportArea } from 'features/reports/areas/area-reports.hooks'
-import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
-import { selectReportsStatus } from 'features/reports/areas/area-reports.slice'
-import { resetPortsReportData } from 'features/reports/ports/ports-report.slice'
-import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
-import { resetVesselGroupReportData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { useHighlightReportArea } from 'features/reports/report-area/area-reports.hooks'
+import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
+import { resetPortsReportData } from 'features/reports/report-port/ports-report.slice'
+import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { selectReportsStatus } from 'features/reports/reports.slice'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import type { SearchType } from 'features/search/search.config'
 import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
@@ -75,6 +74,7 @@ import {
   selectLocationQuery,
   selectLocationType,
 } from 'routes/routes.selectors'
+import type { QueryParams } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useClipboardNotification } from './sidebar.hooks'
@@ -83,7 +83,9 @@ import styles from './SidebarHeader.module.css'
 
 const NewReportModal = dynamic(
   () =>
-    import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/areas/NewAreaReportModal')
+    import(
+      /* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/shared/new-report-modal/NewAreaReportModal'
+    )
 )
 
 function SaveReportButton() {

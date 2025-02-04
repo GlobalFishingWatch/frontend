@@ -16,7 +16,7 @@ import MapControls from 'features/map/controls/MapControls'
 import DeckGLWrapper from 'features/map/DeckGLWrapper'
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
 import MapPopups from 'features/map/popups/MapPopups'
-import { selectReportAreaStatus } from 'features/reports/areas/area-reports.selectors'
+import { selectReportAreaStatus } from 'features/reports/report-area/area-reports.selectors'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,

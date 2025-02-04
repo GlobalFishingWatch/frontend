@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { Dataset,DatasetGeometryType } from '@globalfishingwatch/api-types'
+import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfigurationProperty,
@@ -17,7 +17,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { HIDDEN_DATAVIEW_FILTERS,ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
+import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
 import { COLOR_SECONDARY_BLUE } from 'features/app/app.config'
 import {
   useAutoRefreshImportingDataset,
@@ -34,24 +34,25 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import FitBounds from 'features/workspace/common/FitBounds'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
+import FitBounds from 'features/workspace/shared/FitBounds'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../common/Color'
-import InfoModal from '../common/InfoModal'
-import Filters from '../common/LayerFilters'
-import { showSchemaFilter } from '../common/LayerSchemaFilter'
-import LayerSwitch from '../common/LayerSwitch'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
+import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
+import InfoModal from '../shared/InfoModal'
+import Filters from '../shared/LayerFilters'
+import { showSchemaFilter } from '../shared/LayerSchemaFilter'
+import LayerSwitch from '../shared/LayerSwitch'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
 
 import UserLayerTrackPanel, { useUserLayerTrackMetadata } from './UserLayerTrackPanel'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance

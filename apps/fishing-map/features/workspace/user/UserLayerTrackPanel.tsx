@@ -22,6 +22,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectActiveUserTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useDisableHighlightTimeConnect } from 'features/timebar/timebar.hooks'
 import { setHighlightedTime } from 'features/timebar/timebar.slice'
+
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type UserPanelProps = {

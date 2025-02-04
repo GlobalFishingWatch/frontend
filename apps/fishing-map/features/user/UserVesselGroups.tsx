@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
-import { Button, Icon, IconButton, InputText,Spinner } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
-import { useEditVesselGroupModal } from 'features/reports/vessel-groups/vessel-group-report.hooks'
-import VesselGroupReportLink from 'features/reports/vessel-groups/VesselGroupReportLink'
+import { useEditVesselGroupModal } from 'features/reports/report-vessel-group/vessel-group-report.hooks'
+import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
 import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
 import {
   deleteVesselGroupThunk,

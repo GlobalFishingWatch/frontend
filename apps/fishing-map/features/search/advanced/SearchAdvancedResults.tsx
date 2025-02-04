@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import type { MRT_ColumnDef } from 'material-react-table'
 import { MaterialReactTable } from 'material-react-table'
-import type { Locale } from 'types'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -38,6 +37,7 @@ import {
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import type { Locale } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   EMPTY_FIELD_PLACEHOLDER,

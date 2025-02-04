@@ -33,13 +33,16 @@ import styles from './Sidebar.module.css'
 export const SCROLL_CONTAINER_DOM_ID = 'scroll-container'
 
 const AreaReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/areas/AreaReport')
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-area/AreaReport')
 )
 const PortsReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/ports/PortsReport')
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-port/PortsReport')
 )
 const VesselGroupReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/vessel-groups/VesselGroupReport')
+  () =>
+    import(
+      /* webpackChunkName: "Report" */ 'features/reports/report-vessel-group/VesselGroupReport'
+    )
 )
 const VesselProfile = dynamic(
   () => import(/* webpackChunkName: "VesselProfile" */ 'features/vessel/Vessel')
