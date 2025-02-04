@@ -1,16 +1,15 @@
 import React, { useContext, useMemo } from 'react'
 import { max } from 'd3-array'
 import { scaleLinear } from 'd3-scale'
-import { area, curveStepAfter,stack, stackOffsetSilhouette } from 'd3-shape'
+import { area, curveStepAfter, stack, stackOffsetSilhouette } from 'd3-shape'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import { DEFAULT_CSS_TRANSITION } from '../constants'
-import type { TimelineScale } from '../timelineContext';
+import type { TimelineScale } from '../timelineContext'
 import TimelineContext from '../timelineContext'
 
 import { useTimeseriesToChartData } from './common/hooks'
-import type { HighlighterCallback,Timeseries } from './common/types'
+import type { HighlighterCallback, Timeseries } from './common/types'
 import { useUpdateChartsData } from './chartsData.atom'
 
 const MARGIN_BOTTOM = 20
@@ -86,6 +85,9 @@ const StackedActivity = ({
   }, [timeseries, graphHeight, overallScale, subLayers])
 
   const middleY = graphHeight / 2 - MARGIN_BOTTOM / 2
+  if (!svgTransform || !outerWidth || !graphHeight) {
+    return null
+  }
   return (
     <svg width={outerWidth} height={graphHeight}>
       <g
