@@ -56,7 +56,7 @@ export function getUserContextLayerLabel(
 
   const label = (feature.value ?? feature.title) as string
   // Check if the string starts with { or [ which would indicate JSON
-  if (!label || /^[[{]/.test(label.trim())) {
+  if (!label || (typeof label === 'string' && /^[[{]/.test(label?.trim()))) {
     return getDatasetLabel(dataset)
   }
   return label
