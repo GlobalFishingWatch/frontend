@@ -8,10 +8,12 @@ import {
 } from '@globalfishingwatch/api-types'
 import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
- ColorRampId,  FourwingsDeckSublayer,
+  ColorRampId,
+  FourwingsDeckSublayer,
   FourwingsLayerProps,
   FourwingsPickingObject,
-  FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
+  FourwingsVisualizationMode,
+} from '@globalfishingwatch/deck-layers'
 import {
   FourwingsAggregationOperation,
   FourwingsComparisonMode,

@@ -159,8 +159,6 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.fishing', 'Fishing Events')}</label>
         <DataTerminology
-          size="tiny"
-          type="default"
           title={t('vessel.insights.fishing', 'Fishing Events')}
           terminologyKey="insightsFishing"
         />

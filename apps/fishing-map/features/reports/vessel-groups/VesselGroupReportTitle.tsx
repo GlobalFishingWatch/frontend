@@ -119,8 +119,6 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
               })
             )}
             <DataTerminology
-              size="tiny"
-              type="default"
               title={t('vesselGroupReport.vessels', 'Vessel group report vessels')}
               terminologyKey="vessels"
             />

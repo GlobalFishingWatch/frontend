@@ -30,8 +30,11 @@ export const useVesselProfileBbox = () => {
   const vesselLayer = useVesselProfileLayer()
   const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
   return useMemo(() => {
-    return vesselLayer?.instance?.getVesselTrackBounds()
-     
+    if (trackLoaded) {
+      return vesselLayer?.instance?.getVesselTrackBounds()
+    }
+    return null
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackLoaded])
 }
 
@@ -67,7 +70,6 @@ export const useVesselProfileBounds = () => {
         }
       }
     }
-     
   }, [
     isTrackLoaded,
     canFitDates,
@@ -129,7 +131,6 @@ const useVesselFitTranmissionsBounds = () => {
         seTimerangeBoundsUpdated(true)
       })
     }
-     
   }, [needsTimerangeUpdate])
 
   // There has to wait for the timerange to be updated so the track loads with the entire track

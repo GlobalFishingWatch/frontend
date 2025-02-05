@@ -58,6 +58,10 @@ export const getVesselInfoDataviewInstanceDatasetConfig = (
         id: 'includes',
         value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
       },
+      {
+        id: 'registries-info-data',
+        value: 'ALL',
+      },
     ],
     endpoint: EndpointId.Vessel,
   } as DataviewDatasetConfig
