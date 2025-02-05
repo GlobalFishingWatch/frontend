@@ -302,8 +302,6 @@ function SearchBasicResult({
                 <label>
                   {t('vessel.infoSource', 'Info Source')}
                   <DataTerminology
-                    size="tiny"
-                    type="default"
                     title={t('vessel.infoSource', 'Info Source')}
                     terminologyKey="registryInfo"
                   />

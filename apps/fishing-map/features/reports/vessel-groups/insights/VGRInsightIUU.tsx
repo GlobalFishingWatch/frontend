@@ -49,8 +49,6 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.IUU', 'RFMO IUU Vessel List')}</label>
         <DataTerminology
-          size="tiny"
-          type="default"
           title={t('vessel.insights.IUU', 'RFMO IUU Vessel List')}
           terminologyKey="insightsIUU"
         />
