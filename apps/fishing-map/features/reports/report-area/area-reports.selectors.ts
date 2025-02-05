@@ -59,6 +59,7 @@ export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName
     trackDataset?: Dataset
     dataviewId?: string
     category?: ReportCategory
+    flagTranslated?: string
     flagTranslatedClean?: string
   }
 

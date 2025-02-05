@@ -10,8 +10,8 @@ import {
   selectReportVesselGraph,
 } from 'features/app/selectors/app.reports.selector'
 import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
-import { selectReportVesselsSubCategory } from 'features/reports/reports.config.selectors'
-import { ReportCategory, type ReportVesselsSubCategory } from 'features/reports/reports.types'
+import type { ReportVesselGraph, ReportVesselsSubCategory } from 'features/reports/reports.types'
+import { ReportCategory } from 'features/reports/reports.types'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -25,28 +25,23 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
   const reportCategory = useSelector(selectReportCategory)
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
-  const selectedReportVesselGraph = useSelector(selectReportVesselGraph)
-  const selectedReportVesselsSubCategory = useSelector(selectReportVesselsSubCategory)
-  const selectedOptionId =
-    reportCategory === ReportCategory.VesselGroup
-      ? selectedReportVesselsSubCategory
-      : selectedReportVesselGraph
+  const selectedOptionId = useSelector(selectReportVesselGraph)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
   // TODO:CVP generate this list based on location
   // TODO:CVP use by `analysis.groupByFlag` or this translations?
-  const options: ChoiceOption<ReportVesselsSubCategory>[] = [
+  const options: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>[] = [
     {
       id: 'flag',
       label: t('vessel.flag', 'Flag'),
       disabled: loading,
     },
     {
-      id: 'shiptypes',
+      id: 'vesselType',
       label: t('vessel.shiptype', 'Vessel type'),
       disabled: loading,
     },
     {
-      id: 'geartypes',
+      id: 'geartype',
       label: t('vessel.geartype', 'Gear type'),
       disabled: loading,
     },
@@ -74,9 +69,15 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
       : []),
   ]
 
-  const onSelectSubsection = (option: ChoiceOption<ReportVesselsSubCategory>) => {
+  const onSelectSubsection = (
+    option: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>
+  ) => {
     if (selectedOptionId !== option.id) {
-      dispatchQueryParams({ reportVesselsSubCategory: option.id })
+      dispatchQueryParams(
+        reportCategory === ReportCategory.VesselGroup
+          ? { reportVesselsSubCategory: option.id as ReportVesselsSubCategory }
+          : { reportVesselGraph: option.id as ReportVesselGraph }
+      )
       trackEvent({
         category: TrackCategory.Analysis,
         action: `vessel_report_group_by_${option.id}`,

@@ -10,7 +10,10 @@ import { Tabs } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import {
+  selectActiveReportSubCategories,
+  selectReportCategory,
+} from 'features/app/selectors/app.reports.selector'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
   useFetchReportArea,
@@ -46,6 +49,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import ReportActivitySubsectionSelector from '../tabs/activity/ReportActivitySubsectionSelector.tsx'
+
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
 export default function Report() {
@@ -62,6 +67,7 @@ export default function Report() {
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+  const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
   const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
@@ -84,7 +90,7 @@ export default function Report() {
   const categoryTabs: Tab<ReportCategory>[] = [
     {
       id: ReportCategory.Activity,
-      title: t('common.fishing', 'Fishing'),
+      title: t('common.activity', 'Activity'),
     },
     {
       id: ReportCategory.Detections,
@@ -181,6 +187,11 @@ export default function Report() {
             activeTab={reportCategory}
             onTabClick={handleTabClick}
           />
+        </div>
+      )}
+      {activeReportSubCategories.length > 1 && (
+        <div className={styles.container}>
+          <ReportActivitySubsectionSelector />
         </div>
       )}
       {reportCategory === ReportCategory.Environment ? (

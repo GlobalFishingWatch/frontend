@@ -20,7 +20,7 @@ export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   reportActivitySubCategory: undefined,
   reportDetectionsSubCategory: undefined,
   reportEventsSubCategory: undefined,
-  reportVesselsSubCategory: undefined,
+  reportVesselsSubCategory: 'flag',
   // Area
   reportAreaBounds: undefined,
   reportBufferValue: undefined,

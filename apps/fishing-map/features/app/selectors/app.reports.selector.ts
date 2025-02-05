@@ -20,6 +20,7 @@ import { selectReportById } from 'features/reports/reports.slice'
 import type {
   AnyReportSubCategory,
   ReportActivitySubCategory,
+  ReportDetectionsSubCategory,
   ReportEventsSubCategory,
   ReportVesselGraph,
   ReportVesselsSubCategory,
@@ -97,6 +98,23 @@ export const selectReportCategory = createSelector(
   }
 )
 
+export const selectActiveReportSubCategories = createSelector(
+  [
+    selectReportCategory,
+    selectActiveActivityReportSubCategories,
+    selectActiveDetectionsReportSubCategories,
+  ],
+  (
+    reportCategory,
+    activeActivityReportSubCategories,
+    activeDetectionsReportSubCategories
+  ): (ReportActivitySubCategory | ReportDetectionsSubCategory)[] => {
+    return reportCategory === ReportCategory.Activity
+      ? activeActivityReportSubCategories
+      : activeDetectionsReportSubCategories
+  }
+)
+
 export const selectReportSubCategory = createSelector(
   [
     selectReportCategory,
@@ -145,14 +163,14 @@ export const selectReportSubCategory = createSelector(
 )
 
 export const selectReportVesselGraph = createSelector(
-  [selectReportVesselGraphSelector, selectReportCategory, selectReportActivitySubCategory],
-  (reportVesselGraph, reportCategory, reportActivitySubCategory): ReportVesselGraph => {
-    if (
-      reportCategory === ReportCategory.Activity &&
-      reportActivitySubCategory === 'fishing' &&
-      reportVesselGraph === 'vesselType'
-    ) {
-      return 'geartype'
+  [selectReportVesselGraphSelector, selectReportCategory, selectReportVesselsSubCategory],
+  (
+    reportVesselGraph,
+    reportCategory,
+    reportVesselsSubCategory
+  ): ReportVesselGraph | ReportVesselsSubCategory => {
+    if (reportCategory === ReportCategory.VesselGroup) {
+      return reportVesselsSubCategory as ReportVesselsSubCategory
     }
     return reportVesselGraph
   }

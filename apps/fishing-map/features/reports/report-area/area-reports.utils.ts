@@ -29,8 +29,7 @@ import type {
   ReportCategory,
   ReportDetectionsSubCategory,
 } from 'features/reports/reports.types'
-import type { VesselGroupVesselTableParsed } from 'features/reports/shared/vessels/report-vessels.selectors'
-import type { VesselGroupReportVesselParsed } from 'features/reports/shared/vessels/report-vessels.types'
+import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { Bbox, BufferOperation, BufferUnit } from 'types'
 import { formatInfoField } from 'utils/info'
@@ -315,9 +314,11 @@ export function normalizeVesselProperties(identity: VesselLastIdentity) {
   }
 }
 
-export function getVesselsFiltered<
-  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed | VesselGroupVesselTableParsed,
->(vessels: Vessel[], filter: string, filterProperties = FILTER_PROPERTIES) {
+export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTableVessel>(
+  vessels: Vessel[],
+  filter: string,
+  filterProperties = FILTER_PROPERTIES
+) {
   if (!filter || !filter.length) {
     return vessels
   }
@@ -351,15 +352,11 @@ export function getVesselsFiltered<
     if (block.startsWith('-')) {
       const uniqMatchedIds = new Set<string>()
       uniqMatched.forEach((vessel) => {
-        const id =
-          (vessel as ReportVesselWithDatasets).vesselId ||
-          (vessel as VesselGroupReportVesselParsed).id
+        const id = (vessel as ReportVesselWithDatasets).vesselId || (vessel as ReportTableVessel).id
         uniqMatchedIds.add(id)
       })
       return vessels.filter((vessel) => {
-        const id =
-          (vessel as ReportVesselWithDatasets).vesselId ||
-          (vessel as VesselGroupReportVesselParsed).id
+        const id = (vessel as ReportVesselWithDatasets).vesselId || (vessel as ReportTableVessel).id
         return !uniqMatchedIds.has(id)
       })
     } else {

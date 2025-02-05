@@ -23,10 +23,6 @@ import {
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
-import {
-  selectActiveActivityReportSubCategories,
-  selectActiveDetectionsReportSubCategories,
-} from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -38,11 +34,10 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
 import { parseReportUrl } from 'features/reports/report-area/area-reports.utils'
-import { AnyReportSubCategory, ReportCategory } from 'features/reports/reports.types'
+import { ReportCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import ReportDownload from 'features/reports/tabs/activity/download/ReportDownload'
 import ReportActivityGraph from 'features/reports/tabs/activity/ReportActivityGraph'
-import ReportActivitySubsectionSelector from 'features/reports/tabs/activity/ReportActivitySubsectionSelector.tsx'
 import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
@@ -65,18 +60,13 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [lastReports] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
-  const reportCategory = useSelector(selectReportCategory)
   const timerange = useSelector(selectTimeRange)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
   const guestUser = useSelector(selectIsGuestUser)
   const datasetId = useSelector(selectReportDatasetId)
   const areaId = useSelector(selectReportAreaId)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
-  const activeReportSubCategories = useSelector(
-    reportCategory === ReportCategory.Activity
-      ? selectActiveActivityReportSubCategories
-      : selectActiveDetectionsReportSubCategories
-  )
+  const reportCategory = useSelector(selectReportCategory)
   const userData = useSelector(selectUserData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -374,11 +364,6 @@ function ActivityReport({ reportName }: { reportName?: string }) {
 
   return (
     <Fragment>
-      {activeReportSubCategories.length > 1 && (
-        <div className={styles.container}>
-          <ReportActivitySubsectionSelector />
-        </div>
-      )}
       <ReportActivityGraph />
       {ReportComponent}
     </Fragment>

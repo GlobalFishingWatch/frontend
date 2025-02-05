@@ -14,7 +14,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePlaceholder'
 import {
-  selectReportUniqVessels,
+  selectReportVesselsByCategory,
   selectReportVesselsFlags,
   selectReportVesselsTimeRange,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
@@ -48,7 +48,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   const isSmallScreen = useSmallScreen()
   const viewOnlyVesselGroup = useSelector(selectViewOnlyVesselGroup)
   const hasOtherLayers = useSelector(selectHasOtherVesselGroupDataviews)
-  const vessels = useSelector(selectReportUniqVessels)
+  const vessels = useSelector(selectReportVesselsByCategory)
   const timeRange = useSelector(selectReportVesselsTimeRange)
   const flags = useSelector(selectReportVesselsFlags)
   const userData = useSelector(selectUserData)

@@ -9,10 +9,10 @@ import type {
   ReportVesselGraph,
   ReportVesselsSubCategory,
 } from 'features/reports/reports.types'
-import type { VesselGroupVesselTableParsed } from 'features/reports/shared/vessels/report-vessels.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import type { ReportVesselWithDatasets } from '../../report-area/area-reports.selectors'
+import type { ReportTableVessel } from '../vessels/report-vessels.types'
 
 type VesselVisualizationData = ResponsiveVisualizationData<
   'individual',
@@ -20,7 +20,7 @@ type VesselVisualizationData = ResponsiveVisualizationData<
 >
 
 export function getVesselIndividualGroupedData(
-  vessels: (EventsStatsVessel | VesselGroupVesselTableParsed | ReportVesselWithDatasets)[],
+  vessels: (EventsStatsVessel | ReportTableVessel | ReportVesselWithDatasets)[],
   groupByProperty: ReportCategory | ReportVesselsSubCategory | ReportVesselGraph,
   dataviewsIdsOrder?: string[]
 ) {
@@ -45,19 +45,16 @@ export function getVesselIndividualGroupedData(
       vesselsGrouped = groupBy(
         vesselsSorted,
         (vessel) =>
-          (vessel as VesselGroupVesselTableParsed).flagTranslatedClean ||
+          (vessel as ReportTableVessel).flagTranslatedClean ||
           (vessel as EventsStatsVessel).flagTranslated ||
           (vessel as EventsStatsVessel).flag
       )
       break
     }
-    case 'shiptype':
-    case 'vesselType':
     case 'shiptypes': {
-      vesselsGrouped = groupBy(vesselsSorted, (vessel) =>
-        (vessel as VesselGroupVesselTableParsed).vesselType
-          ? (vessel as VesselGroupVesselTableParsed).vesselType.split(', ')[0]
-          : (vessel as EventsStatsVessel).shiptypes[0]
+      vesselsGrouped = groupBy(
+        vesselsSorted,
+        (vessel) => (vessel as ReportTableVessel).vesselType?.split(', ')[0]
       )
       break
     }
@@ -67,10 +64,7 @@ export function getVesselIndividualGroupedData(
       break
     }
     case 'source': {
-      vesselsGrouped = groupBy(
-        vesselsSorted,
-        (vessel) => (vessel as VesselGroupVesselTableParsed).source
-      )
+      vesselsGrouped = groupBy(vesselsSorted, (vessel) => (vessel as ReportTableVessel).source)
       break
     }
   }

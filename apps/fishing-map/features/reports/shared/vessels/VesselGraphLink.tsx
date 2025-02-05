@@ -1,23 +1,18 @@
-import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
-import type { VesselGroupVesselTableParsed } from 'features/reports/shared/vessels/report-vessels.selectors'
 import VesselLink from 'features/vessel/VesselLink'
+
+import type { ReportTableVessel } from './report-vessels.types'
 
 import styles from './VesselGraphLink.module.css'
 
-export default function VesselGraphLink({
-  data,
-}: {
-  data?: VesselGroupVesselTableParsed | ReportVesselWithDatasets
-}) {
+export default function VesselGraphLink({ data }: { data?: ReportTableVessel }) {
   if (!data) {
     return null
   }
-  const { vesselId, dataset } = data
-  const datasetId = dataset || (data as ReportVesselWithDatasets).infoDataset?.id
+  const { id, datasetId } = data
   return (
     <VesselLink
       className={styles.hiddenLink}
-      vesselId={vesselId}
+      vesselId={id}
       datasetId={datasetId}
       showTooltip={false}
     />

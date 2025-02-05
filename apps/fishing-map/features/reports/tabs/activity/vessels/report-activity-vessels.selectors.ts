@@ -30,10 +30,7 @@ import {
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
 } from 'features/reports/reports.config.selectors'
-import {
-  cleanFlagState,
-  cleanVesselOrGearType,
-} from 'features/reports/tabs/activity/vessels/report-activity-vessels.utils'
+import { cleanFlagState } from 'features/reports/tabs/activity/vessels/report-activity-vessels.utils'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { getVesselGearTypeLabel } from 'utils/info'
 
@@ -50,7 +47,6 @@ export const selectReportVesselsList = createSelector(
   ],
   (vessels, datasets, reportCategory, isVesselGroupReportLocation) => {
     if (!vessels?.length) return null
-
     return Object.values(groupBy(vessels, (v) => v.vesselId))
       .flatMap((vesselActivity) => {
         const notMatchesCurrentCategory = isVesselGroupReportLocation
@@ -73,21 +69,8 @@ export const selectReportVesselsList = createSelector(
           shipName: vesselActivity[0]?.shipName,
           mmsi: vesselActivity[0]?.mmsi,
           flag: vesselActivity[0]?.flag,
-          flagTranslated: t(
-            `flags:${vesselActivity[0]?.flag as string}` as any,
-            vesselActivity[0]?.flag
-          ),
-          flagTranslatedClean: cleanFlagState(
-            t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
-          ),
-          geartype: cleanVesselOrGearType({
-            value: vesselActivity[0]?.geartype,
-            property: 'geartype',
-          }),
-          vesselType: cleanVesselOrGearType({
-            value: vesselActivity[0]?.vesselType,
-            property: 'vesselType',
-          }),
+          geartype: vesselActivity[0]?.geartype,
+          vesselType: vesselActivity[0]?.vesselType,
           value: vesselActivity[0]?.value,
           infoDataset,
           trackDataset,

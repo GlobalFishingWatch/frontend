@@ -1,11 +1,6 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 
-import type {
-  ResponsiveVisualizationAggregatedItem,
-  ResponsiveVisualizationIndividualItem,
-} from '@globalfishingwatch/responsive-visualizations'
-
 import {
   selectReportVesselFilter,
   selectReportVesselsSubCategory,
@@ -14,7 +9,12 @@ import type { ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
 
-import { selectReportVesselsPaginated } from './report-vessels.selectors'
+import { ReportBarGraphPlaceholder } from '../placeholders/ReportBarGraphPlaceholder'
+
+import {
+  selectReportVesselsGraphAggregatedData,
+  selectReportVesselsPaginated,
+} from './report-vessels.selectors'
 import ReportVesselsFilter from './ReportVesselsFilter'
 import ReportVesselsGraph from './ReportVesselsGraph'
 import ReportVesselsGraphSelector from './ReportVesselsGraphSelector'
@@ -25,34 +25,34 @@ import styles from './ReportVessels.module.css'
 function ReportVessels({
   title,
   loading,
-  data,
   color,
   activityUnit,
-  individualData,
 }: {
   title?: string
   loading: boolean
   color?: string
   activityUnit?: ReportActivityUnit
-  data: ResponsiveVisualizationAggregatedItem[]
-  individualData?: ResponsiveVisualizationIndividualItem[]
 }) {
+  const aggregatedData = useSelector(selectReportVesselsGraphAggregatedData)
+  // const individualData = useSelector(selectReportVesselsGraphIndividualData)
   const property = useSelector(selectReportVesselsSubCategory)
   const filter = useSelector(selectReportVesselFilter)
   const vessels = useSelector(selectReportVesselsPaginated)
+
   return (
     <div className={styles.container}>
       <div className={styles.titleRow}>
         {title && <label className={styles.blockTitle}>{title}</label>}
         <ReportVesselsGraphSelector />
       </div>
+      {/* TODO:CVP add when no data available */}
       {loading ? (
         <ReportVesselsPlaceholder showGraphHeader={false} />
       ) : (
         <Fragment>
           <ReportVesselsGraph
-            data={data}
-            individualData={individualData}
+            data={aggregatedData}
+            // individualData={individualData}
             color={color}
             property={property as ReportVesselsSubCategory}
           />

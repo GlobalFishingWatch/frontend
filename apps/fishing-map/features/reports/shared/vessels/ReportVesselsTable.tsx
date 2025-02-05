@@ -25,7 +25,6 @@ import type {
 import { selectReportIsPinningVessels } from 'features/reports/tabs/activity/reports-activity.slice'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import type { VesselPinClickProps } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
@@ -34,14 +33,13 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
-// TODO:CVP rename this type to something more generic
-import type { VesselGroupVesselTableParsed } from './report-vessels.selectors'
+import type { ReportTableVessel } from './report-vessels.types'
 import ReportVesselsTableFooter from './ReportVesselsTableFooter'
 
 import styles from 'features/reports/tabs/activity/vessels/ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {
-  vessels: VesselGroupVesselTableParsed[]
+  vessels: ReportTableVessel[]
   activityUnit?: ReportActivityUnit
   reportName?: string
   allowSorting?: boolean
@@ -158,8 +156,16 @@ export default function ReportVesselsTable({
             </div>
           )}
           {vessels?.map((vessel, i) => {
-            const { shipName, flagTranslated, flagTranslatedClean, identity, geartype } = vessel
-            const { id, flag, ssvid } = getSearchIdentityResolved(identity!)
+            const {
+              id,
+              shipName,
+              flag,
+              flagTranslated,
+              flagTranslatedClean,
+              geartype,
+              vesselType,
+              ssvid,
+            } = vessel
             const isLastRow = i === vessels.length - 1
             const type = isFishingReport ? vessel.geartype : vessel.vesselType
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)

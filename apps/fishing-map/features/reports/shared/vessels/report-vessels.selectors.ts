@@ -8,10 +8,12 @@ import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive
 import {
   selectReportCategory,
   selectReportSubCategory,
+  selectReportVesselGraph,
 } from 'features/app/selectors/app.reports.selector'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
+import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
 import { REPORT_FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
 import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
@@ -41,7 +43,7 @@ import {
 import { selectVGRVessels } from '../../report-vessel-group/vessel-group-report.slice'
 import { selectVGREventsVesselsFiltered } from '../../tabs/events/events-report.selectors'
 
-import type { VesselGroupReportVesselParsed } from './report-vessels.types'
+import type { ReportTableVessel } from './report-vessels.types'
 
 const getVesselSource = (vessel: IdentityVessel) => {
   let source = ''
@@ -55,9 +57,7 @@ const getVesselSource = (vessel: IdentityVessel) => {
   return source
 }
 
-export type VesselGroupVesselTableParsed = VesselGroupVesselIdentity & VesselGroupReportVesselParsed
-
-export const selectReportVessels = createSelector(
+export const selectReportVesselsByCategory = createSelector(
   [selectReportCategory, selectReportSubCategory, selectReportVesselsList, selectVGRVessels],
   (reportCategory, reportSubCategory, reportVesselsList, vGRVessels) => {
     if (!reportCategory) {
@@ -70,7 +70,10 @@ export const selectReportVessels = createSelector(
       return reportVesselsList
     }
     if (reportCategory === ReportCategory.VesselGroup) {
-      return vGRVessels
+      if (vGRVessels?.length) {
+        return getVesselGroupUniqVessels(vGRVessels).filter((v) => v.identity)
+      }
+      return []
     }
     if (reportCategory === ReportCategory.Events) {
       // TODO:CVP add events vessels
@@ -80,68 +83,89 @@ export const selectReportVessels = createSelector(
   }
 )
 
-export const selectReportUniqVessels = createSelector([selectReportVessels], (vessels) => {
-  if (!vessels?.length) {
-    return
-  }
-  return getVesselGroupUniqVessels(vessels).filter((v) => v.identity)
-})
-
-export const selectReportVesselsParsed = createSelector([selectReportUniqVessels], (vessels) => {
-  if (!vessels?.length) {
-    return
-  }
-  return vessels.flatMap((vessel) => {
-    if (!vessel.identity) {
-      return []
+export const selectReportVessels = createSelector(
+  [selectReportVesselsByCategory],
+  (vessels): ReportTableVessel[] | null => {
+    if (!vessels?.length) {
+      return null
     }
-    const { shipname, ...vesselData } = getSearchIdentityResolved(vessel.identity!)
-    const source = getVesselSource(vessel.identity)
-    const vesselType = getVesselShipTypeLabel(vesselData) as string
-    const geartype = getVesselGearTypeLabel(vesselData) as string
-    const flag = getVesselProperty(vessel.identity, 'flag', {
-      identitySource: VesselIdentitySourceEnum.SelfReported,
+    return vessels.flatMap((vessel) => {
+      const identity = (vessel as VesselGroupVesselIdentity)?.identity
+      // Vessels have identity when coming from events or vessel groups
+      if (identity) {
+        const { shipname, ...vesselData } = getSearchIdentityResolved(identity!)
+        const source = getVesselSource(identity)
+        const vesselType = getVesselShipTypeLabel(vesselData) as string
+        const geartype = getVesselGearTypeLabel(vesselData) as string
+        const flag = getVesselProperty(identity, 'flag', {
+          identitySource: VesselIdentitySourceEnum.SelfReported,
+        })
+
+        const tableVessel: ReportTableVessel = {
+          id: vessel.vesselId,
+          datasetId: vessel.dataset as string,
+          // TODO:CVP add tracks for vessel group vessels if want to pin them
+          // trackDatasetId: '',
+          shipName: formatInfoField(shipname, 'shipname') as string,
+          vesselType,
+          geartype,
+          ssvid: getVesselProperty(identity, 'ssvid', {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          }),
+          flag: flag,
+          flagTranslated: flag ? t(`flags:${flag}` as any) : EMPTY_FIELD_PLACEHOLDER,
+          flagTranslatedClean: flag
+            ? cleanFlagState(t(`flags:${flag}` as any))
+            : EMPTY_FIELD_PLACEHOLDER,
+          source: t(`common.sourceOptions.${source}`, source),
+        }
+        return tableVessel
+      } else {
+        // Don't have identity when coming from activity or detections reports
+        const reportVessel = vessel as ReportVesselWithDatasets
+        const tableVessel: ReportTableVessel = {
+          id: reportVessel.vesselId,
+          datasetId: (reportVessel.infoDataset?.id || reportVessel.dataset) as string,
+          trackDatasetId: reportVessel.trackDataset?.id,
+          shipName: formatInfoField(reportVessel.shipName, 'shipname') as string,
+          vesselType: formatInfoField(reportVessel.vesselType, 'vesselType') as string,
+          geartype: formatInfoField(reportVessel.geartype, 'geartypes') as string,
+          ssvid: reportVessel.mmsi || EMPTY_FIELD_PLACEHOLDER,
+          flag: reportVessel.flag || EMPTY_FIELD_PLACEHOLDER,
+          value: reportVessel.value as number,
+          flagTranslated: reportVessel.flag
+            ? t(`flags:${reportVessel.flag}` as any)
+            : EMPTY_FIELD_PLACEHOLDER,
+          flagTranslatedClean: reportVessel.flag
+            ? cleanFlagState(t(`flags:${reportVessel.flag}` as any))
+            : EMPTY_FIELD_PLACEHOLDER,
+          // TODO:CVP add the needed values of identity here
+        }
+        return tableVessel
+      }
     })
+  }
+)
 
-    return {
-      ...vessel,
-      shipName: formatInfoField(shipname, 'shipname') as string,
-      vesselType,
-      geartype,
-      mmsi: getVesselProperty(vessel.identity, 'ssvid', {
-        identitySource: VesselIdentitySourceEnum.SelfReported,
-      }),
-      flagTranslated: flag ? t(`flags:${flag}` as any) : EMPTY_FIELD_PLACEHOLDER,
-      flagTranslatedClean: flag
-        ? cleanFlagState(t(`flags:${flag}` as any))
-        : EMPTY_FIELD_PLACEHOLDER,
-      source: t(`common.sourceOptions.${source}`, source),
-    } as VesselGroupVesselTableParsed
-  })
-})
-
-export const selectReportVesselsTimeRange = createSelector(
-  [selectReportVesselsParsed],
-  (vessels) => {
-    if (!vessels?.length) return null
-    let start: string = ''
-    let end: string = ''
-    vessels.forEach((vessel) => {
-      const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(
-        vessel.identity!
-      )
+export const selectReportVesselsTimeRange = createSelector([selectReportVessels], (vessels) => {
+  if (!vessels?.length) return null
+  let start: string = ''
+  let end: string = ''
+  vessels.forEach((vessel) => {
+    const { transmissionDateFrom, transmissionDateTo } = vessel
+    if (transmissionDateFrom && transmissionDateTo) {
       if (!start || transmissionDateFrom < start) {
         start = transmissionDateFrom
       }
       if (!end || transmissionDateTo > end) {
         end = transmissionDateTo
       }
-    })
-    return { start, end }
-  }
-)
+    }
+  })
+  return { start, end }
+})
 
-export const selectReportVesselsFlags = createSelector([selectReportVesselsParsed], (vessels) => {
+export const selectReportVesselsFlags = createSelector([selectReportVessels], (vessels) => {
   if (!vessels?.length) return null
   const flags = new Set<string>()
   vessels.forEach((vessel) => {
@@ -153,15 +177,11 @@ export const selectReportVesselsFlags = createSelector([selectReportVesselsParse
 })
 
 export const selectReportVesselsFiltered = createSelector(
-  [selectReportVesselsParsed, selectReportVesselFilter],
+  [selectReportVessels, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
     if (!filter) return vessels
-    return getVesselsFiltered<VesselGroupVesselTableParsed>(
-      vessels,
-      filter,
-      REPORT_FILTER_PROPERTIES
-    )
+    return getVesselsFiltered<ReportTableVessel>(vessels, filter, REPORT_FILTER_PROPERTIES)
   }
 )
 
@@ -209,7 +229,7 @@ export const selectReportVesselsPaginated = createSelector(
 export const selectVGRVesselsPagination = createSelector(
   [
     selectReportVesselsPaginated,
-    selectReportUniqVessels,
+    selectReportVesselsByCategory,
     selectReportVesselsFiltered,
     selectReportVesselPage,
     selectReportVesselResultsPerPage,
@@ -233,7 +253,7 @@ type GraphDataGroup = {
 }
 
 export const selectReportVesselsGraphAggregatedData = createSelector(
-  [selectReportVesselsFiltered, selectReportVesselsSubCategory],
+  [selectReportVesselsFiltered, selectReportVesselGraph],
   (vessels, subsection) => {
     if (!vessels) return []
     let vesselsGrouped = {}
@@ -241,14 +261,14 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
       case 'flag':
         vesselsGrouped = groupBy(vessels, (vessel) => vessel.flagTranslatedClean)
         break
-      case 'shiptypes':
+      case 'vesselType':
         vesselsGrouped = groupBy(vessels, (vessel) => vessel.vesselType.split(', ')[0])
         break
-      case 'geartypes':
+      case 'geartype':
         vesselsGrouped = groupBy(vessels, (vessel) => vessel.geartype.split(', ')[0])
         break
       case 'source':
-        vesselsGrouped = groupBy(vessels, (vessel) => vessel.source)
+        vesselsGrouped = groupBy(vessels, (vessel) => vessel.source as string)
     }
     const orderedGroups = Object.entries(vesselsGrouped)
       .map(([key, value]) => ({
