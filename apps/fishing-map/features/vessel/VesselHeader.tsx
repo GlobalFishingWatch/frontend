@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Sticky from 'react-sticky-el'
@@ -57,13 +57,15 @@ const VesselHeader = () => {
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
   const { boundsReady, setVesselBounds } = useVesselProfileBounds()
-  const vesselIdentity = getCurrentIdentityVessel(vessel, {
-    identityId,
-    identitySource,
-  })
   const vesselPrintCallback = useCallback(() => {
     window.print()
   }, [])
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const vesselImages = isGFWUser
+    ? vessel.identities
+        .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img.url) || [])
+        .filter(Boolean)
+    : []
 
   const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
     trackEvent({
@@ -108,7 +110,6 @@ const VesselHeader = () => {
 
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
-  const vesselImage = isGFWUser && vesselIdentity?.images?.[0]?.url
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
@@ -131,7 +132,29 @@ const VesselHeader = () => {
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={styles.summaryContainer}>
         <div className={styles.summaryWrapper}>
-          {vesselImage && <img src={vesselImage} alt={shipname} className={styles.vesselImage} />}
+          {vesselImages.length > 0 && (
+            <div className={styles.imageSliderContainer}>
+              <img
+                src={vesselImages[currentImageIndex]}
+                alt={`${shipname} - vessel ${currentImageIndex + 1}`}
+                className={styles.vesselImage}
+              />
+              {vesselImages.length > 1 && (
+                <div className={styles.navigationButtons}>
+                  {vesselImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`${styles.dot} ${index === currentImageIndex ? styles.activeDot : ''}`}
+                      aria-label={t('vessel.goToImage', 'Go to image {{number}}', {
+                        number: index + 1,
+                      })}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           <div className={styles.titleContainer}>
             <h1 data-test="vv-vessel-name" className={styles.title}>
               <svg className={styles.vesselIcon} width="16" height="16">

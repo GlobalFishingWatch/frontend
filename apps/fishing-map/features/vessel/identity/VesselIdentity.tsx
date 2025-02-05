@@ -138,8 +138,6 @@ const VesselIdentity = () => {
             {t('vessel.infoSources.registry', 'Registry')}
             {identitySource === VesselIdentitySourceEnum.Registry && (
               <DataTerminology
-                size="tiny"
-                type="default"
                 title={t('vessel.infoSources.registry', 'Registry')}
                 terminologyKey="registryInfo"
               />
@@ -155,8 +153,6 @@ const VesselIdentity = () => {
             {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS'}
             {identitySource === VesselIdentitySourceEnum.SelfReported && (
               <DataTerminology
-                size="tiny"
-                type="default"
                 title={t('vessel.infoSources.selfReported', 'Self Reported')}
                 terminologyKey="selfReported"
               />
@@ -261,8 +257,6 @@ const VesselIdentity = () => {
                         <label>{t(`vessel.${label}` as any, label)}</label>
                         {field.terminologyKey && (
                           <DataTerminology
-                            size="tiny"
-                            type="default"
                             title={t(`vessel.${label}`, label) as string}
                             terminologyKey={field.terminologyKey}
                           />

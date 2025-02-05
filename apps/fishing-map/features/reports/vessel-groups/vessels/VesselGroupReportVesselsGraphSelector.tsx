@@ -45,8 +45,6 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
           {t('common.sources', 'Sources')}
           {subsection === 'source' && (
             <DataTerminology
-              size="tiny"
-              type="default"
               title={t('vesselGroupReport.sources', 'Vessel group report sources')}
               terminologyKey="sources"
               className={styles.dataTerminology}

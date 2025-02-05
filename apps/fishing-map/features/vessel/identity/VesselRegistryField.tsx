@@ -84,8 +84,6 @@ const VesselRegistryField = ({
         <label className={styles.twoCells}>{t(`vessel.${label}`, label || '')}</label>
         {terminologyKey && (
           <DataTerminology
-            size="tiny"
-            type="default"
             title={t(`vessel.${label}`, label || '')}
             terminologyKey={terminologyKey}
           />
