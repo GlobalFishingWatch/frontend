@@ -43,7 +43,8 @@ export default function ReportVesselsFilter({
     if (filter !== query) {
       setQuery(filter || '')
     }
-  }, [filter, query])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter])
 
   return (
     <div className={styles.inputContainer}>

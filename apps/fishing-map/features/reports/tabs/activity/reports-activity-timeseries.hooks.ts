@@ -33,9 +33,9 @@ import {
 } from 'features/reports/report-area/area-reports.selectors'
 import {
   selectReportActivityGraph,
-  selectReportActivitySubCategory,
   selectReportTimeComparison,
 } from 'features/reports/reports.config.selectors'
+import { selectReportActivitySubCategory } from 'features/reports/reports.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
 import type { FilteredPolygons } from 'features/reports/tabs/activity/reports-activity-geo.utils'

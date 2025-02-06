@@ -1,27 +1,22 @@
 import { createSelector } from '@reduxjs/toolkit'
 
+import { selectActiveReportCategories } from 'features/dataviews/selectors/dataviews.reports.selectors'
 import {
-  selectActiveActivityReportSubCategories,
-  selectActiveDetectionsReportSubCategories,
-  selectActiveReportCategories,
-} from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import {
-  selectReportActivitySubCategory,
   selectReportBufferOperationSelector,
   selectReportBufferUnitSelector,
   selectReportBufferValueSelector,
   selectReportCategorySelector,
-  selectReportDetectionsSubCategory,
-  selectReportEventsSubCategory,
   selectReportVesselGraphSelector,
   selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
+import {
+  selectReportActivitySubCategory,
+  selectReportDetectionsSubCategory,
+  selectReportEventsSubCategory,
+} from 'features/reports/reports.selectors'
 import { selectReportById } from 'features/reports/reports.slice'
 import type {
   AnyReportSubCategory,
-  ReportActivitySubCategory,
-  ReportDetectionsSubCategory,
-  ReportEventsSubCategory,
   ReportVesselGraph,
   ReportVesselsSubCategory,
 } from 'features/reports/reports.types'
@@ -38,6 +33,7 @@ import {
 } from 'routes/routes.selectors'
 import type { BufferOperation, BufferUnit } from 'types'
 
+// TODO:CVP move this selectors to reports.selectors
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
   (reportId, reports) => {
@@ -87,7 +83,6 @@ export const selectReportActiveCategories = createSelector(
   }
 )
 
-// TODO:CVP merge with selectReportCategory from reports.config.selectors
 export const selectReportCategory = createSelector(
   [selectReportCategorySelector, selectReportActiveCategories],
   (reportCategory, activeCategories): ReportCategory => {
@@ -98,65 +93,32 @@ export const selectReportCategory = createSelector(
   }
 )
 
-export const selectActiveReportSubCategories = createSelector(
-  [
-    selectReportCategory,
-    selectActiveActivityReportSubCategories,
-    selectActiveDetectionsReportSubCategories,
-  ],
-  (
-    reportCategory,
-    activeActivityReportSubCategories,
-    activeDetectionsReportSubCategories
-  ): (ReportActivitySubCategory | ReportDetectionsSubCategory)[] => {
-    return reportCategory === ReportCategory.Activity
-      ? activeActivityReportSubCategories
-      : activeDetectionsReportSubCategories
-  }
-)
-
 export const selectReportSubCategory = createSelector(
   [
     selectReportCategory,
-    selectActiveActivityReportSubCategories,
     selectReportActivitySubCategory,
     selectReportDetectionsSubCategory,
-    selectActiveDetectionsReportSubCategories,
-    selectReportVesselsSubCategory,
     selectReportEventsSubCategory,
+    selectReportVesselsSubCategory,
   ],
   (
     reportCategory,
-    activeActivityReportSubCategories,
     reportActivitySubCategory,
     reportDetectionsSubCategory,
-    activeDetectionsReportSubCategories,
-    reportVesselsSubCategory,
-    reportEventsSubCategory
+    reportEventsSubCategory,
+    reportVesselsSubCategory
   ): AnyReportSubCategory | undefined => {
-    if (
-      reportCategory === ReportCategory.Activity ||
-      reportCategory === ReportCategory.Detections
-    ) {
-      const subCategory =
-        reportCategory === ReportCategory.Activity
-          ? reportActivitySubCategory
-          : reportDetectionsSubCategory
-      if (
-        (reportCategory === ReportCategory.Activity
-          ? activeActivityReportSubCategories
-          : activeDetectionsReportSubCategories
-        ).some((category) => category === subCategory)
-      ) {
-        return subCategory as ReportActivitySubCategory
-      }
-      return activeActivityReportSubCategories[0] as ReportActivitySubCategory
-    }
     if (reportCategory === ReportCategory.VesselGroup) {
-      return reportVesselsSubCategory as ReportVesselsSubCategory
+      return reportVesselsSubCategory
     }
     if (reportCategory === ReportCategory.Events) {
-      return reportEventsSubCategory as ReportEventsSubCategory
+      return reportEventsSubCategory
+    }
+    if (reportCategory === ReportCategory.Activity) {
+      return reportActivitySubCategory
+    }
+    if (reportCategory === ReportCategory.Detections) {
+      return reportDetectionsSubCategory
     }
     return undefined
   }
@@ -176,6 +138,7 @@ export const selectReportVesselGraph = createSelector(
   }
 )
 
+// TODO:CVP move this selectors to reports.area.selectors
 export const selectReportBufferValue = createSelector(
   [selectReportBufferValueSelector, selectUrlBufferValueQuery],
   (workspaceBufferValue, urlBufferValue): number => {

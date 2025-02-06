@@ -14,8 +14,8 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePlaceholder'
 import {
-  selectReportVesselsByCategory,
-  selectReportVesselsFlags,
+  selectReportVesselGroupFlags,
+  selectReportVesselGroupTimeRange,
   selectReportVesselsTimeRange,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
@@ -48,9 +48,8 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   const isSmallScreen = useSmallScreen()
   const viewOnlyVesselGroup = useSelector(selectViewOnlyVesselGroup)
   const hasOtherLayers = useSelector(selectHasOtherVesselGroupDataviews)
-  const vessels = useSelector(selectReportVesselsByCategory)
-  const timeRange = useSelector(selectReportVesselsTimeRange)
-  const flags = useSelector(selectReportVesselsFlags)
+  const timeRange = useSelector(selectReportVesselGroupTimeRange)
+  const flags = useSelector(selectReportVesselGroupFlags)
   const userData = useSelector(selectUserData)
   const userIsVesselGroupOwner = userData?.id === vesselGroup?.ownerId
 
@@ -82,9 +81,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
     dispatchQueryParams({ viewOnlyVesselGroup: !viewOnlyVesselGroup })
   }
 
-  const showTitle = timeRange && vessels && flags
-
-  if (!vesselGroup || !showTitle || loading) {
+  if (!vesselGroup || !timeRange || loading || !flags) {
     return (
       <div className={cx(styles.container, styles.minHeight)}>
         <VGRTitlePlaceholder />

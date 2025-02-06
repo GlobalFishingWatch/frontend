@@ -7,14 +7,13 @@ import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { weightedMean } from 'utils/statistics'
-
-import { selectVGRDataview } from '../../report-vessel-group/vessel-group-report.selectors'
 
 import styles from './VGRInsightCoverageGraph.module.css'
 
@@ -116,7 +115,7 @@ export default function VesselGroupReportInsightCoverageGraph({
     } else return []
   }, [data, vesselGroup?.vessels])
 
-  const reportDataview = useSelector(selectVGRDataview)
+  const reportDataview = useSelector(selectVGRFootprintDataview)
   return (
     <div className={styles.graph} data-test="insights-report-vessels-graph">
       <ResponsiveBarChart

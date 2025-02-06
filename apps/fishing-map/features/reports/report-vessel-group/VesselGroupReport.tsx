@@ -6,13 +6,15 @@ import type { Tab } from '@globalfishingwatch/ui-components'
 import { Button, Tabs } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import {
   useFitAreaInViewport,
   useReportAreaCenter,
   useVesselGroupBounds,
 } from 'features/reports/report-area/area-reports.hooks'
-import VGREvents from 'features/reports/tabs/events/EventsReport'
+import EventsReport from 'features/reports/tabs/events/EventsReport'
 import VesselGroupReportInsights from 'features/reports/tabs/vessel-group-insights/VGRInsights'
 import {
   useTimebarVesselGroupConnect,
@@ -27,14 +29,12 @@ import { TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { selectReportCategorySelector } from '../reports.config.selectors'
 import { ReportCategory } from '../reports.types'
 import { selectReportVesselsTimeRange } from '../shared/vessels/report-vessels.selectors'
 import ReportActivity from '../tabs/activity/ReportActivity'
 import ReportVesselsGroup from '../tabs/vessel-group/ReportVessels'
 
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
-import { selectVGRDataview } from './vessel-group-report.selectors'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportError from './VesselGroupReportError'
 import VesselGroupReportTitle from './VesselGroupReportTitle'
@@ -49,8 +49,8 @@ function VesselGroupReport() {
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const vesselGroup = useSelector(selectVGRData)!
   const reportStatus = useSelector(selectVGRStatus)
-  const reportSection = useSelector(selectReportCategorySelector)
-  const reportDataview = useSelector(selectVGRDataview)
+  const reportCategory = useSelector(selectReportCategory)
+  const reportDataview = useSelector(selectVGRFootprintDataview)
   const timeRange = useSelector(selectReportVesselsTimeRange)
   const userData = useSelector(selectUserData)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
@@ -78,7 +78,7 @@ function VesselGroupReport() {
   ])
 
   useEffect(() => {
-    if (reportSection === ReportCategory.VesselGroup && coordinates) {
+    if (reportCategory === ReportCategory.VesselGroup && coordinates) {
       setMapCoordinates(coordinates)
     }
   }, [bboxHash, setMapCoordinates])
@@ -93,7 +93,7 @@ function VesselGroupReport() {
 
   const changeTab = useCallback(
     (tab: Tab<ReportCategory>) => {
-      dispatchQueryParams({ vGRSection: tab.id })
+      dispatchQueryParams({ reportCategory: tab.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: `access_vessel_group_${tab.id}_tab`,
@@ -129,7 +129,7 @@ function VesselGroupReport() {
       {
         id: ReportCategory.Events,
         title: t('common.events', 'Events'),
-        content: <VGREvents />,
+        content: <EventsReport />,
       },
     ],
     [t, loading]
@@ -165,7 +165,7 @@ function VesselGroupReport() {
       <VesselGroupReportTitle vesselGroup={vesselGroup} loading={loading} />
       <Tabs
         tabs={sectionTabs}
-        activeTab={reportSection}
+        activeTab={reportCategory}
         onTabClick={changeTab}
         // mountAllTabsOnLoad
       />

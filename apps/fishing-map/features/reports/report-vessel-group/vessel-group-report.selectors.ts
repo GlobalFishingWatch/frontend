@@ -9,20 +9,7 @@ import type { RootState } from 'reducers'
 import type { InsightType } from '@globalfishingwatch/api-types'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { dataviewHasVesselGroupId } from 'features/dataviews/dataviews.utils'
-import {
-  selectActiveVesselGroupDataviews,
-  selectEventsDataviews,
-} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
-
-import { selectReportEventsSubCategory } from '../reports.config.selectors'
-
-import type { VesselGroupEventsDataviewId } from './vessel-group-report.dataviews'
-import {
-  isVesselGroupActivityDataview,
-  VESSEL_GROUP_EVENTS_DATAVIEW_IDS,
-} from './vessel-group-report.dataviews'
 
 export const COVERAGE_INSIGHT_ID = 'COVERAGE' as InsightType
 export const GAP_INSIGHT_ID = 'GAP' as InsightType
@@ -30,42 +17,6 @@ export const FISHING_INSIGHT_ID = 'FISHING' as InsightType
 export const IUU_INSIGHT_ID = 'VESSEL-IDENTITY-IUU-VESSEL-LIST' as InsightType
 export const FLAG_CHANGE_INSIGHT_ID = 'VESSEL-IDENTITY-FLAG-CHANGES' as InsightType
 export const MOU_INSIGHT_ID = 'VESSEL-IDENTITY-MOU-LIST' as InsightType
-
-export const selectVGRDataviews = createSelector(
-  [selectActiveVesselGroupDataviews, selectReportVesselGroupId],
-  (dataviews, reportVesselGroupId) => {
-    return dataviews?.filter((dataview) => dataviewHasVesselGroupId(dataview, reportVesselGroupId))
-  }
-)
-
-export const selectVGRDataview = createSelector([selectVGRDataviews], (vesselGroupDataviews) => {
-  return vesselGroupDataviews?.find((dataview) => !isVesselGroupActivityDataview(dataview.id))
-})
-
-export const selectVGRActivityDataview = createSelector(
-  [selectVGRDataviews],
-  (vesselGroupDataviews) => {
-    return vesselGroupDataviews?.find((dataview) => isVesselGroupActivityDataview(dataview.id))
-  }
-)
-
-export const selectVGREventsSubsectionDataview = createSelector(
-  [
-    selectEventsDataviews,
-    // TODO:CVP review this really works
-    selectReportEventsSubCategory,
-  ],
-  (dataviews, eventsSubsection) => {
-    if (!dataviews?.length || !eventsSubsection) {
-      return
-    }
-    return dataviews.find(
-      ({ id }) =>
-        id.includes(eventsSubsection) &&
-        VESSEL_GROUP_EVENTS_DATAVIEW_IDS.includes(id as VesselGroupEventsDataviewId)
-    )
-  }
-)
 
 export const selectBaseVesselGroupReportParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId],

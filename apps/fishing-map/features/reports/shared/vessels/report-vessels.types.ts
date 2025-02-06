@@ -4,6 +4,7 @@ export type ReportTableVessel = {
   id: string
   // TODO:CVP remove index if not needed
   index?: number
+  color?: string
   shipName: string
   vesselType: string
   geartype: string

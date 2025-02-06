@@ -14,7 +14,6 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { FIELDS, getCommonProperties } from 'features/reports/report-area/area-reports.utils'
-import ReportSummaryTags from 'features/reports/report-area/summary/ReportSummaryTags'
 import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
@@ -31,6 +30,7 @@ import {
   useReportFilteredTimeSeries,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
+import ReportSummaryTags from 'features/reports/tabs/activity/summary/ReportSummaryTags'
 import {
   selectReportVesselsHours,
   selectReportVesselsNumber,

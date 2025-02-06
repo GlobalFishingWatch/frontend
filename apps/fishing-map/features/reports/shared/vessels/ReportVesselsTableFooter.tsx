@@ -13,11 +13,14 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 
-import { selectReportVesselsFiltered, selectVGRVesselsPagination } from './report-vessels.selectors'
+import {
+  selectReportVessels,
+  selectReportVesselsFiltered,
+  selectVGRVesselsPagination,
+} from './report-vessels.selectors'
 import ReportVesselsTablePinAll from './ReportVesselsTablePin'
 
 import styles from './ReportVesselsTableFooter.module.css'
@@ -34,7 +37,7 @@ export default function ReportVesselsTableFooter({
   const vesselGroup = useSelector(selectVGRData)
   // TODO:CVP get this vessels depending on the report type
   // TODO:CVP migrate funcionality from reports/tabs/activity/vessels/ReportVesselsTableFooter.tsx
-  const allVessels = useSelector(selectReportVesselsFiltered)
+  const allVessels = useSelector(selectReportVessels)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectVGRVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
@@ -45,15 +48,17 @@ export default function ReportVesselsTableFooter({
     const vessels = allVessels?.map((vessel) => {
       return {
         dataset: vessel.dataset,
-        flag: getVesselProperty(vessel.identity!, 'flag'),
+        flag: vessel.flag,
         'flag translated': vessel.flagTranslated,
         'GFW vessel type': vessel.vesselType,
         'GFW gear type': vessel.geartype,
         sources: vessel.source,
         name: vessel.shipName,
-        MMSI: getVesselProperty(vessel.identity!, 'ssvid'),
-        IMO: getVesselProperty(vessel.identity!, 'imo'),
-        'call sign': getVesselProperty(vessel.identity!, 'callsign'),
+        MMSI: vessel.ssvid,
+        // TODO:CVP add imo
+        IMO: vessel.imo,
+        // TODO:CVP add callsign
+        'call sign': vessel.callsign,
         vesselId: vessel.vesselId,
       }
     })

@@ -18,13 +18,16 @@ function selectReportStateProperty<P extends ReportStateProperty>(property: P) {
 export const selectReportCategorySelector = selectReportStateProperty('reportCategory')
 
 // Subcategory
-export const selectReportActivitySubCategory = selectReportStateProperty(
+export const selectReportActivitySubCategorySelector = selectReportStateProperty(
   'reportActivitySubCategory'
 )
-export const selectReportDetectionsSubCategory = selectReportStateProperty(
+export const selectReportDetectionsSubCategorySelector = selectReportStateProperty(
   'reportDetectionsSubCategory'
 )
-export const selectReportEventsSubCategory = selectReportStateProperty('reportEventsSubCategory')
+export const selectReportEventsSubCategorySelector =
+  selectReportStateProperty('reportEventsSubCategory')
+
+// This doesn't need to be suffixed by Selector as the value can be used directly and doesn't depend of the active dataviews
 export const selectReportVesselsSubCategory = selectReportStateProperty('reportVesselsSubCategory')
 
 // Area

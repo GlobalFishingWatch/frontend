@@ -22,10 +22,7 @@ import {
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import {
-  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
-  selectActiveReportActivityDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 import { TimebarVisualisations } from 'types'
@@ -36,7 +33,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
 ) =>
   createSelector(
     [
-      selectActiveReportActivityDataviews,
+      selectActiveActivityDataviews,
       selectActiveDetectionsDataviews,
       selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
       selectActiveVesselGroupDataviews,

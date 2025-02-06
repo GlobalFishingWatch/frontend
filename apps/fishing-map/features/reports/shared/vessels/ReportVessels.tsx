@@ -59,7 +59,7 @@ function ReportVessels({
           <ReportVesselsFilter filter={filter} />
           <ReportVesselsTable
             activityUnit={activityUnit}
-            allowSorting={activityUnit !== undefined}
+            allowSorting={activityUnit === undefined}
             vessels={vessels}
           />
         </Fragment>

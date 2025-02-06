@@ -25,10 +25,10 @@ import { selectReportVesselGraph } from 'features/app/selectors/app.reports.sele
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import { selectVGREventsSubsectionDataview } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
 import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
 import {
@@ -59,7 +59,7 @@ function EventsReport() {
   const { t } = useTranslation()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const filter = useSelector(selectReportVesselFilter)
-  const eventsDataview = useSelector(selectVGREventsSubsectionDataview)
+  const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const vesselsGroupByProperty = useSelector(selectReportVesselGraph)
   const vesselsWithEvents = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)

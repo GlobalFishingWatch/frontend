@@ -34,6 +34,7 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
 import { parseReportUrl } from 'features/reports/report-area/area-reports.utils'
+import { selectActiveReportSubCategories } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import ReportDownload from 'features/reports/tabs/activity/download/ReportDownload'
@@ -43,6 +44,7 @@ import {
   selectReportVesselsDateRangeHash,
   setDateRangeHash,
 } from 'features/reports/tabs/activity/reports-activity.slice'
+import ReportSummary from 'features/reports/tabs/activity/summary/ReportSummary'
 import { selectHasReportVessels } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import ReportVessels from 'features/reports/tabs/activity/vessels/ReportVessels'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
@@ -52,6 +54,8 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector.tsx'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
@@ -70,6 +74,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   const userData = useSelector(selectUserData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dataviews = useSelector(selectActiveReportDataviews)
+  const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
     userData?.permissions || []
@@ -364,6 +369,12 @@ function ActivityReport({ reportName }: { reportName?: string }) {
 
   return (
     <Fragment>
+      {activeReportSubCategories && activeReportSubCategories.length > 1 && (
+        <div className={styles.container}>
+          <ReportActivitySubsectionSelector />
+        </div>
+      )}
+      <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
       <ReportActivityGraph />
       {ReportComponent}
     </Fragment>

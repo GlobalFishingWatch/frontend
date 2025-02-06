@@ -5,8 +5,8 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectReportSubCategory } from 'features/app/selectors/app.reports.selector'
 import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
-import { selectReportEventsSubCategory } from 'features/reports/reports.config.selectors'
 import type { ReportEventsSubCategory } from 'features/reports/reports.types'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -16,11 +16,12 @@ function VesselGroupReportEventsSubsectionSelector() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
-  const subsection = useSelector(selectReportEventsSubCategory)
+  const subsection = useSelector(selectReportSubCategory)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
   const gfwUser = useSelector(selectIsGFWUser)
   const jacUser = useSelector(selectIsJACUser)
   const hasAccessToAllSubsections = gfwUser || jacUser
+  // TODO:CVP generate this options from the dataviews available
   const options: ChoiceOption<ReportEventsSubCategory>[] = [
     {
       id: 'encounter',
@@ -52,8 +53,7 @@ function VesselGroupReportEventsSubsectionSelector() {
 
   const onSelectSubsection = (option: ChoiceOption<ReportEventsSubCategory>) => {
     if (subsection !== option.id) {
-      // TODO:CVP fix this
-      dispatchQueryParams({ vGREventsSubsection: option.id })
+      dispatchQueryParams({ reportEventsSubCategory: option.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: `vessel_group_profile_events_tab_${option.id}_graph`,

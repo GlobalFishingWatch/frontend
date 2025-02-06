@@ -14,15 +14,20 @@ import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
 } from 'features/reports/report-area/area-reports.utils'
-import { getReportVesselGroupVisibleDataviews } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import {
+  getReportVesselGroupVisibleDataviews,
+  isVesselGroupActivityDataview,
+} from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   selectReportVesselsSubCategory,
   selectViewOnlyVesselGroup,
 } from 'features/reports/reports.config.selectors'
+import { ReportCategory } from 'features/reports/reports.types'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
   selectIsAnyAreaReportLocation,
+  selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
@@ -62,7 +67,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
   [
     selectHasDeprecatedDataviewInstances,
     selectDataviewInstancesResolved,
-    selectIsAnyAreaReportLocation,
+    selectIsAnyReportLocation,
     selectReportCategory,
     selectReportSubCategory,
     selectIsAnyVesselLocation,
@@ -76,7 +81,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
   (
     hasDeprecatedDataviewInstances,
     dataviews = [],
-    isAreaReportLocation,
+    isAnyReportLocation,
     reportCategory,
     reportSubCategory,
     isVesselLocation,
@@ -96,16 +101,27 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           d.slug === BASEMAP_DATAVIEW_SLUG
       )
     }
-    if (isAreaReportLocation) {
+    if (isAnyReportLocation) {
       return visibleDataviews.filter((dataview) => {
         if (
           dataview.category === DataviewCategory.Activity ||
-          dataview.category === DataviewCategory.Detections
+          dataview.category === DataviewCategory.Detections ||
+          dataview.category === DataviewCategory.Events
         ) {
           const matchesCategory = getReportCategoryFromDataview(dataview) === reportCategory
           const matchesSubcategory =
             getReportSubCategoryFromDataview(dataview) === reportSubCategory
           return matchesCategory && matchesSubcategory
+        }
+        if (dataview.category === DataviewCategory.VesselGroups) {
+          // For vessel groups we can't match the category as we inject the category in the dataviews
+          if (reportCategory === ReportCategory.Activity) {
+            const matchesGroupActivityDataview = isVesselGroupActivityDataview(dataview.id)
+            const matchesSubcategory =
+              getReportSubCategoryFromDataview(dataview) === reportSubCategory
+            return matchesGroupActivityDataview && matchesSubcategory
+          }
+          return !isVesselGroupActivityDataview(dataview.id)
         }
         return true
       })

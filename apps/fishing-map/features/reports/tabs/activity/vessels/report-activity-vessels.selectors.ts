@@ -1,40 +1,20 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, sum, sumBy, uniq, uniqBy } from 'es-toolkit'
-import { t } from 'i18next'
+import { groupBy, uniqBy } from 'es-toolkit'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import {
-  getResponsiveVisualizationItemValue,
-  type ResponsiveVisualizationData,
-} from '@globalfishingwatch/responsive-visualizations'
 
-import {
-  selectReportCategory,
-  selectReportVesselGraph,
-} from 'features/app/selectors/app.reports.selector'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
-import {
-  selectReportActivityFlatten,
-  selectReportDataviewsWithPermissions,
-} from 'features/reports/report-area/area-reports.selectors'
+import { selectReportActivityFlatten } from 'features/reports/report-area/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
-import {
-  EMPTY_API_VALUES,
-  MAX_CATEGORIES,
-  OTHERS_CATEGORY_LABEL,
-} from 'features/reports/reports.config'
 import {
   selectReportVesselFilter,
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
 } from 'features/reports/reports.config.selectors'
-import { cleanFlagState } from 'features/reports/tabs/activity/vessels/report-activity-vessels.utils'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
-import { getVesselGearTypeLabel } from 'utils/info'
-
-import { getVesselIndividualGroupedData } from '../../../shared/utils/reports.utils'
 
 const EMPTY_ARRAY: [] = []
 
@@ -105,131 +85,6 @@ export const selectReportVesselsPaginated = createSelector(
   }
 )
 
-export const selectReportVesselsPagination = createSelector(
-  [
-    selectReportVesselsPaginated,
-    selectReportVesselsFiltered,
-    selectReportVesselsList,
-    selectReportVesselPage,
-    selectReportVesselResultsPerPage,
-  ],
-  (vessels, allVesselsFiltered, allVessels, page = 0, resultsPerPage) => {
-    return {
-      page,
-      offset: resultsPerPage * page,
-      resultsPerPage,
-      resultsNumber: vessels?.length,
-      totalFiltered: allVesselsFiltered?.length,
-      total: allVessels?.length,
-    }
-  }
-)
-
-const selectReportVesselsGraphData = createSelector(
-  [selectReportVesselGraph, selectReportVesselsFiltered, selectReportDataviewsWithPermissions],
-  (reportGraph, vesselsFiltered, dataviews) => {
-    if (!vesselsFiltered?.length) return null
-    const reportData = groupBy(vesselsFiltered, (v) => v.dataviewId || '')
-
-    const dataByDataview = dataviews.map((dataview) => {
-      const dataviewData = reportData[dataview.id]
-        ? Object.values(reportData[dataview.id]).flatMap((v) => v || [])
-        : []
-      const dataByKey = groupBy(dataviewData, (d) => d[reportGraph] || '')
-      return {
-        id: dataview.id,
-        color: dataview.config?.color,
-        data: dataByKey,
-      }
-    })
-
-    const allDistributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
-
-    const dataviewIds = dataviews.map((d) => d.id)
-    const data: ResponsiveVisualizationData<'aggregated'> = allDistributionKeys
-      .flatMap((key) => {
-        const distributionData: Record<any, any> = { name: key }
-        dataByDataview.forEach(({ id, color, data }) => {
-          distributionData[id] = { color, value: (data?.[key] || []).length }
-        })
-        if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return EMPTY_ARRAY
-        return distributionData as ResponsiveVisualizationData<'aggregated'>
-      })
-      .sort((a, b) => {
-        if (EMPTY_API_VALUES.includes(a.name as string)) return 1
-        if (EMPTY_API_VALUES.includes(b.name as string)) return -1
-        return (
-          sum(dataviewIds.map((d) => getResponsiveVisualizationItemValue(b[d]))) -
-          sum(dataviewIds.map((d) => getResponsiveVisualizationItemValue(a[d])))
-        )
-      })
-
-    return { distributionKeys: data.map((d) => d.name), data }
-  }
-)
-
-export const REPORT_GRAPH_LABEL_KEY = 'name'
-export const selectReportVesselsGraphDataKeys = createSelector(
-  [selectReportDataviewsWithPermissions],
-  (dataviews) => dataviews.map((dataview) => dataview.id)
-)
-
-export const selectReportVesselsGraphDataGrouped = createSelector(
-  [selectReportVesselsGraphData, selectReportVesselsGraphDataKeys],
-  (reportGraph, valueKeys): ResponsiveVisualizationData<'aggregated'> | null => {
-    if (!reportGraph?.data?.length || !valueKeys?.length) return null
-    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return reportGraph.data
-    const top = reportGraph.data.slice(0, MAX_CATEGORIES)
-    const rest = reportGraph.data.slice(MAX_CATEGORIES)
-    const others = {
-      name: OTHERS_CATEGORY_LABEL,
-      ...Object.fromEntries(
-        valueKeys.map((valueKey) => [
-          valueKey,
-          { value: sum(rest.map((key: any) => key[valueKey]?.value)) },
-        ])
-      ),
-    }
-    return [...top, others]
-  }
-)
-
-export const selectReportVesselsGraphIndividualData = createSelector(
-  [selectReportVesselsFiltered, selectReportVesselGraph, selectReportVesselsGraphDataKeys],
-  (vessels, groupBy, valueKeys) => {
-    if (!vessels || !groupBy || !valueKeys) return []
-    return getVesselIndividualGroupedData(vessels, groupBy, valueKeys)
-  }
-)
-
-const defaultOthersLabel: ResponsiveVisualizationData<'aggregated'> = []
-export const selectReportVesselsGraphDataOthers = createSelector(
-  [selectReportVesselsGraphData],
-  (reportGraph): ResponsiveVisualizationData<'aggregated'> | null => {
-    if (!reportGraph?.data?.length) return null
-    if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return defaultOthersLabel
-    const others = reportGraph.data.slice(MAX_CATEGORIES)
-
-    return reportGraph.distributionKeys
-      .flatMap((key) => {
-        const other = others.find((o) => o.name === key)
-        if (!other) return EMPTY_ARRAY
-        const { name, ...rest } = other
-        return {
-          name,
-          value: {
-            value: sum(Object.values(rest).map((v) => (v as any).value)),
-          },
-        }
-      })
-      .sort((a, b) => {
-        if (EMPTY_API_VALUES.includes(a.name as string)) return 1
-        if (EMPTY_API_VALUES.includes(b.name as string)) return -1
-        return b.value?.value - a.value?.value
-      })
-  }
-)
-
 export const selectReportVesselsNumber = createSelector(
   [selectReportActivityFlatten],
   (vessels) => {
@@ -243,31 +98,3 @@ export const selectReportVesselsHours = createSelector([selectReportActivityFlat
   if (!vessels?.length) return null
   return vessels.map((vessel) => vessel?.value || 0).reduce((acc, value) => acc + value, 0)
 })
-
-export const selectReportVesselsListWithAllInfo = createSelector(
-  [selectReportActivityFlatten],
-  (vessels) => {
-    if (!vessels?.length) return null
-
-    return Object.values(groupBy(vessels, (v) => v.vesselId))
-      .map((vesselActivity) => {
-        return {
-          ...vesselActivity[0],
-          value: sumBy(vesselActivity, (a) => a.value),
-          flagTranslated: t(
-            `flags:${vesselActivity[0]?.flag as string}` as any,
-            vesselActivity[0]?.flag
-          ),
-          flagTranslatedClean: cleanFlagState(
-            t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
-          ),
-          geartype: getVesselGearTypeLabel({ geartypes: vesselActivity[0]?.geartype }),
-          vesselType: t(
-            `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
-            vesselActivity[0]?.vesselType
-          ),
-        }
-      })
-      .sort((a, b) => b.value - a.value)
-  }
-)

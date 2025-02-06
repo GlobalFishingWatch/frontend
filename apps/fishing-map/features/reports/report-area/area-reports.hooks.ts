@@ -22,6 +22,7 @@ import {
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
+import { selectVGReportActivityDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
@@ -59,8 +60,6 @@ import {
 } from 'routes/routes.selectors'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
-
-import { selectVGRActivityDataview } from '../report-vessel-group/vessel-group-report.selectors'
 
 export type DateTimeSeries = {
   date: string
@@ -138,8 +137,8 @@ export function useStatsBounds(dataview?: UrlDataviewInstance) {
 
 export function useVesselGroupActivityBounds() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const dataview = useSelector(selectVGRActivityDataview)!
-  return useStatsBounds(isVesselGroupReportLocation ? dataview : undefined)
+  const dataview = useSelector(selectVGReportActivityDataviews)?.[0]
+  return useStatsBounds(isVesselGroupReportLocation && dataview ? dataview : undefined)
 }
 
 export function useVesselGroupBounds(dataviewId?: string) {

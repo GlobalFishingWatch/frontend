@@ -7,6 +7,7 @@ import type {
   ResponsiveVisualizationInteractionCallback,
 } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
+import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -14,9 +15,10 @@ import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/report
 import type { ReportState, ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
-import { REPORT_GRAPH_LABEL_KEY } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { formatInfoField } from 'utils/info'
+
+import { REPORT_GRAPH_LABEL_KEY } from './report-vessels.selectors'
 
 import styles from './ReportVesselsGraph.module.css'
 
@@ -82,6 +84,7 @@ const ReportBarTooltip = (props: any) => {
 
   return null
 }
+
 // TODO:CVP merge this with reports/tabs/activity/vessels/ReportVesselsGraph.tsx
 const ReportGraphTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount, property, filterQueryParam, pageQueryParam } =
@@ -91,6 +94,7 @@ const ReportGraphTick = (props: any) => {
   const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
+  // const othersData = useSelector(selectReportVesselsGraphDataOthers)
 
   const getTickLabel = (label: string) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
@@ -99,6 +103,8 @@ const ReportGraphTick = (props: any) => {
         return formatInfoField(label, 'flag') as string
       case 'geartype':
         return formatInfoField(label, 'geartypes') as string
+      case 'vesselType':
+        return formatInfoField(label, 'vesselType') as string
       default:
         return label
     }
@@ -106,6 +112,17 @@ const ReportGraphTick = (props: any) => {
 
   const onLabelClick = () => {
     if (payload.value !== OTHERS_CATEGORY_LABEL) {
+      // TODO:CVP review if this is needed (comes from the activity graph component)
+      // const vesselFilter =
+      //   payload.name === OTHERS_CATEGORY_LABEL
+      //     ? cleanFlagState(
+      //         (
+      //           othersData?.flatMap((d) =>
+      //             EMPTY_API_VALUES.includes(d.name as string) ? [] : getTickLabel(d.name as string)
+      //           ) || []
+      //         ).join('|')
+      //       )
+      //     : getTickLabel(payload.name)
       dispatchQueryParams({
         [filterQueryParam]: `${FILTER_PROPERTIES[property as ReportVesselsSubCategory]}:${
           payload.value
@@ -116,6 +133,25 @@ const ReportGraphTick = (props: any) => {
   }
 
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
+  // TODO:CVP prepare othersData so we can restore the feature of filtering by others
+  // const label = isOtherCategory ? (
+  //   <ul>
+  //     {othersData
+  //       ?.slice(0, MAX_OTHER_TOOLTIP_ITEMS)
+  //       .map(({ name, value }) => (
+  //         <li
+  //           key={`${name}-${value}`}
+  //         >{`${getTickLabel(name)}: ${getResponsiveVisualizationItemValue(value)}`}</li>
+  //       ))}
+  //     {othersData && othersData.length > MAX_OTHER_TOOLTIP_ITEMS && (
+  //       <li>
+  //         + {othersData.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
+  //       </li>
+  //     )}
+  //   </ul>
+  // ) : (
+  //   ''
+  // )
   const labelChunks = label.split(' ')
   const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {
@@ -128,25 +164,27 @@ const ReportGraphTick = (props: any) => {
   })
 
   return (
-    <text
-      className={cx({ [styles.axisLabel]: isCategoryInteractive })}
-      transform={`translate(${x},${y - 3})`}
-      onClick={onLabelClick}
-    >
-      {labelChunksClean.map((chunk) => (
-        <Fragment key={chunk}>
-          <tspan textAnchor="middle" x="0" dy={12}>
-            {chunk}{' '}
-          </tspan>
-          {isOtherCategory && (
-            <Fragment>
-              <tspan>&nbsp;</tspan>
-              <tspan className={styles.info}>i</tspan>
-            </Fragment>
-          )}
-        </Fragment>
-      ))}
-    </text>
+    <GFWTooltip content={label} placement="bottom">
+      <text
+        className={cx({ [styles.axisLabel]: isCategoryInteractive })}
+        transform={`translate(${x},${y - 3})`}
+        onClick={onLabelClick}
+      >
+        {labelChunksClean.map((chunk) => (
+          <Fragment key={chunk}>
+            <tspan textAnchor="middle" x="0" dy={12}>
+              {chunk}{' '}
+            </tspan>
+            {isOtherCategory && (
+              <Fragment>
+                <tspan>&nbsp;</tspan>
+                <tspan className={styles.info}>i</tspan>
+              </Fragment>
+            )}
+          </Fragment>
+        ))}
+      </text>
+    </GFWTooltip>
   )
 }
 

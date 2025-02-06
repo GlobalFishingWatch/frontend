@@ -29,10 +29,10 @@ import {
 import { ReportCategory } from 'features/reports/reports.types'
 import { getVesselIndividualGroupedData } from 'features/reports/shared/utils/reports.utils'
 import { selectReportVesselsList } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
-import { cleanFlagState } from 'features/reports/tabs/activity/vessels/report-activity-vessels.utils'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { cleanFlagState } from 'utils/flags'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -133,6 +133,7 @@ export const selectReportVessels = createSelector(
           ssvid: reportVessel.mmsi || EMPTY_FIELD_PLACEHOLDER,
           flag: reportVessel.flag || EMPTY_FIELD_PLACEHOLDER,
           value: reportVessel.value as number,
+          color: reportVessel.color,
           flagTranslated: reportVessel.flag
             ? t(`flags:${reportVessel.flag}` as any)
             : EMPTY_FIELD_PLACEHOLDER,
@@ -165,12 +166,48 @@ export const selectReportVesselsTimeRange = createSelector([selectReportVessels]
   return { start, end }
 })
 
+export const selectReportVesselGroupTimeRange = createSelector([selectVGRVessels], (vessels) => {
+  if (!vessels?.length) return null
+  let start: string = ''
+  let end: string = ''
+  vessels.forEach((vessel) => {
+    if (vessel.identity) {
+      const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(
+        vessel.identity
+      )
+      if (transmissionDateFrom && transmissionDateTo) {
+        if (!start || transmissionDateFrom < start) {
+          start = transmissionDateFrom
+        }
+        if (!end || transmissionDateTo > end) {
+          end = transmissionDateTo
+        }
+      }
+    }
+  })
+  return { start, end }
+})
+
 export const selectReportVesselsFlags = createSelector([selectReportVessels], (vessels) => {
   if (!vessels?.length) return null
   const flags = new Set<string>()
   vessels.forEach((vessel) => {
     if (vessel.flagTranslated && vessel.flagTranslated !== 'null') {
       flags.add(vessel.flagTranslated)
+    }
+  })
+  return flags
+})
+
+export const selectReportVesselGroupFlags = createSelector([selectVGRVessels], (vessels) => {
+  if (!vessels?.length) return null
+  const flags = new Set<string>()
+  vessels.forEach((vessel) => {
+    if (vessel.identity) {
+      const { flag } = getSearchIdentityResolved(vessel.identity)
+      if (flag && flag !== 'null') {
+        flags.add(flag)
+      }
     }
   })
   return flags
@@ -274,6 +311,7 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
       .map(([key, value]) => ({
         name: key,
         value: (value as any[]).length,
+        color: (value as any[])[0]?.color,
       }))
       .sort((a, b) => {
         return b.value - a.value
@@ -316,6 +354,78 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
     ] as ResponsiveVisualizationData<'aggregated'>
   }
 )
+
+export const REPORT_GRAPH_LABEL_KEY = 'name'
+// TODO:CVP merge this with selectReportVesselsGraphAggregatedData
+// const selectReportVesselsGraphData = createSelector(
+//   [selectReportVesselGraph, selectReportVesselsFiltered, selectReportDataviewsWithPermissions],
+//   (reportGraph, vesselsFiltered, dataviews) => {
+//     if (!vesselsFiltered?.length) return null
+//     const reportData = groupBy(vesselsFiltered, (v) => v.dataviewId || '')
+
+//     const dataByDataview = dataviews.map((dataview) => {
+//       const dataviewData = reportData[dataview.id]
+//         ? Object.values(reportData[dataview.id]).flatMap((v) => v || [])
+//         : []
+//       const dataByKey = groupBy(dataviewData, (d) => d[reportGraph] || '')
+//       return {
+//         id: dataview.id,
+//         color: dataview.config?.color,
+//         data: dataByKey,
+//       }
+//     })
+
+//     const allDistributionKeys = uniq(dataByDataview.flatMap(({ data }) => Object.keys(data)))
+
+//     const dataviewIds = dataviews.map((d) => d.id)
+//     const data: ResponsiveVisualizationData<'aggregated'> = allDistributionKeys
+//       .flatMap((key) => {
+//         const distributionData: Record<any, any> = { name: key }
+//         dataByDataview.forEach(({ id, color, data }) => {
+//           distributionData[id] = { color, value: (data?.[key] || []).length }
+//         })
+//         if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return EMPTY_ARRAY
+//         return distributionData as ResponsiveVisualizationData<'aggregated'>
+//       })
+//       .sort((a, b) => {
+//         if (EMPTY_API_VALUES.includes(a.name as string)) return 1
+//         if (EMPTY_API_VALUES.includes(b.name as string)) return -1
+//         return (
+//           sum(dataviewIds.map((d) => getResponsiveVisualizationItemValue(b[d]))) -
+//           sum(dataviewIds.map((d) => getResponsiveVisualizationItemValue(a[d])))
+//         )
+//       })
+
+//     return { distributionKeys: data.map((d) => d.name), data }
+//   }
+// )
+
+// export const selectReportVesselsGraphDataOthers = createSelector(
+//   [selectReportVesselsGraphAggregatedData],
+//   (reportGraph): ResponsiveVisualizationData<'aggregated'> | null => {
+//     if (!reportGraph?.data?.length) return null
+//     if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return defaultOthersLabel
+//     const others = reportGraph.data.slice(MAX_CATEGORIES)
+
+//     return reportGraph.distributionKeys
+//       .flatMap((key) => {
+//         const other = others.find((o) => o.name === key)
+//         if (!other) return EMPTY_ARRAY
+//         const { name, ...rest } = other
+//         return {
+//           name,
+//           value: {
+//             value: sum(Object.values(rest).map((v) => (v as any).value)),
+//           },
+//         }
+//       })
+//       .sort((a, b) => {
+//         if (EMPTY_API_VALUES.includes(a.name as string)) return 1
+//         if (EMPTY_API_VALUES.includes(b.name as string)) return -1
+//         return b.value?.value - a.value?.value
+//       })
+//   }
+// )
 
 export const selectReportVesselsGraphIndividualData = createSelector(
   [selectReportVesselsFiltered, selectReportVesselsSubCategory],

@@ -7,6 +7,7 @@ import { Choice } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectReportCategory,
+  selectReportSubCategory,
   selectReportVesselGraph,
 } from 'features/app/selectors/app.reports.selector'
 import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
@@ -23,6 +24,7 @@ type VesselGroupReportVesselsGraphSelectorProps = Record<string, any>
 function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGraphSelectorProps) {
   const { t } = useTranslation()
   const reportCategory = useSelector(selectReportCategory)
+  const reportSubCategory = useSelector(selectReportSubCategory)
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
   const selectedOptionId = useSelector(selectReportVesselGraph)
@@ -35,11 +37,15 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
       label: t('vessel.flag', 'Flag'),
       disabled: loading,
     },
-    {
-      id: 'vesselType',
-      label: t('vessel.shiptype', 'Vessel type'),
-      disabled: loading,
-    },
+    ...(reportSubCategory !== 'fishing'
+      ? [
+          {
+            id: 'vesselType' as ReportVesselsSubCategory,
+            label: t('vessel.shiptype', 'Vessel type'),
+            disabled: loading,
+          },
+        ]
+      : []),
     {
       id: 'geartype',
       label: t('vessel.geartype', 'Gear type'),

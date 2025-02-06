@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { uniq } from 'es-toolkit'
 
 import type {
   DataviewDatasetConfig,
@@ -7,7 +6,7 @@ import type {
   IdentityVessel,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import type {
   GetDatasetConfigsCallbacks,
   UrlDataviewInstance,
@@ -34,23 +33,18 @@ import {
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import {
-  getReportCategoryFromDataview,
-  getReportSubCategoryFromDataview,
-} from 'features/reports/report-area/area-reports.utils'
-import {
   getVesselGroupActivityDataviewInstance,
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
 } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
-  selectReportActivitySubCategory,
+  selectReportActivitySubCategorySelector,
   selectReportCategorySelector,
-  selectReportEventsSubCategory,
+  selectReportEventsSubCategorySelector,
 } from 'features/reports/reports.config.selectors'
 import type {
   ReportActivitySubCategory,
-  ReportCategory,
-  ReportDetectionsSubCategory,
+  ReportEventsSubCategory,
 } from 'features/reports/reports.types'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
@@ -78,53 +72,37 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
 const EMPTY_ARRAY: [] = []
-
-export const selectDataviewInstancesMerged = createSelector(
+// Inject dataviews on the fly for reports and vessel profile
+export const selectDataviewInstancesInjected = createSelector(
   [
-    selectIsWorkspaceLocation,
-    selectWorkspaceStatus,
-    selectWorkspaceDataviewInstances,
-    selectUrlDataviewInstances,
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
     selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportCategorySelector,
-    selectReportActivitySubCategory,
-    selectReportEventsSubCategory,
+    selectReportActivitySubCategorySelector,
+    selectReportEventsSubCategorySelector,
     selectReportVesselGroupId,
     selectReportPortId,
     selectVesselId,
     selectVesselInfoData,
   ],
   (
-    isWorkspaceLocation,
-    workspaceStatus,
-    workspaceDataviewInstances,
-    urlDataviewInstances = EMPTY_ARRAY,
     isAnyVesselLocation,
     isVesselLocation,
     isPortReportLocation,
     isVesselGroupReportLocation,
-    vGRSection,
-    vGRActivitySubsection,
-    vGREventsSubsection,
+    reportCategory,
+    reportActivitySubCategory,
+    reportEventsSubCategory,
     reportVesselGroupId,
     reportPortId,
     urlVesselId,
     vessel
   ): UrlDataviewInstance[] | undefined => {
-    if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
-      return
-    }
-    const mergedDataviewInstances =
-      mergeWorkspaceUrlDataviewInstances(
-        workspaceDataviewInstances as DataviewInstance<any>[],
-        urlDataviewInstances
-      ) || []
-
+    const dataviewInstances = EMPTY_ARRAY as UrlDataviewInstance[]
     if (isAnyVesselLocation) {
-      const existingDataviewInstance = mergedDataviewInstances?.find(
+      const existingDataviewInstance = dataviewInstances?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
       )
       if (!existingDataviewInstance && vessel?.identities) {
@@ -142,45 +120,56 @@ export const selectDataviewInstancesMerged = createSelector(
           urlVesselId,
           vesselDatasets
         )
-        mergedDataviewInstances.push({ ...dataviewInstance, datasetsConfig })
+        dataviewInstances.push({ ...dataviewInstance, datasetsConfig })
       }
       if (isVesselLocation) {
         VESSEL_PROFILE_DATAVIEWS_INSTANCES.forEach((dataviewInstance) => {
-          if (!mergedDataviewInstances.find(({ id }) => id === dataviewInstance.id)) {
-            mergedDataviewInstances.push({ ...dataviewInstance })
+          if (!dataviewInstances.find(({ id }) => id === dataviewInstance.id)) {
+            dataviewInstances.push({ ...dataviewInstance })
           }
         })
       }
     }
     if (isVesselGroupReportLocation) {
-      let vesselGroupDataviewInstance = mergedDataviewInstances?.find((dataview) =>
+      let vesselGroupDataviewInstance = dataviewInstances?.find((dataview) =>
         dataviewHasVesselGroupId(dataview, reportVesselGroupId)
       )
       if (!vesselGroupDataviewInstance) {
         vesselGroupDataviewInstance = getVesselGroupDataviewInstance(reportVesselGroupId)
         if (vesselGroupDataviewInstance) {
-          mergedDataviewInstances.push(vesselGroupDataviewInstance)
+          dataviewInstances.push(vesselGroupDataviewInstance)
         }
       }
-      if (vGRSection === 'activity') {
-        const activityVGRInstance = getVesselGroupActivityDataviewInstance({
-          vesselGroupId: reportVesselGroupId,
-          color: vesselGroupDataviewInstance?.config?.color,
-          colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
-          activityType: vGRActivitySubsection as ReportActivitySubCategory,
+      if (reportCategory === 'activity') {
+        const activityReportSubCategories: ReportActivitySubCategory[] = ['fishing', 'presence']
+        activityReportSubCategories.forEach((category) => {
+          const activitySubcategoryInstance = getVesselGroupActivityDataviewInstance({
+            vesselGroupId: reportVesselGroupId,
+            color: vesselGroupDataviewInstance?.config?.color,
+            colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
+            activityType: category,
+          })
+          if (activitySubcategoryInstance) {
+            dataviewInstances.push(activitySubcategoryInstance)
+          }
         })
-        if (activityVGRInstance) {
-          mergedDataviewInstances.push(activityVGRInstance)
-        }
       }
-      if (vGRSection === 'events' && vGREventsSubsection) {
-        mergedDataviewInstances.push(
-          ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, vGREventsSubsection)
-        )
+      if (reportCategory === 'events') {
+        const eventsReportSubCategories: ReportEventsSubCategory[] = [
+          'encounter',
+          'loitering',
+          'gap',
+          'port_visit',
+        ]
+        eventsReportSubCategories.forEach((category) => {
+          dataviewInstances.push(
+            ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, category)
+          )
+        })
       }
     }
     if (isPortReportLocation) {
-      let footprintDataviewInstance = mergedDataviewInstances?.find(
+      let footprintDataviewInstance = dataviewInstances?.find(
         (dataview) => dataview.id === PORTS_FOOTPRINT_DATAVIEW_SLUG
       )
       if (footprintDataviewInstance) {
@@ -204,9 +193,36 @@ export const selectDataviewInstancesMerged = createSelector(
           },
         }
       }
-      mergedDataviewInstances.push(footprintDataviewInstance)
+      dataviewInstances.push(footprintDataviewInstance)
     }
-    return mergedDataviewInstances
+    return dataviewInstances
+  }
+)
+export const selectDataviewInstancesMerged = createSelector(
+  [
+    selectIsWorkspaceLocation,
+    selectWorkspaceStatus,
+    selectWorkspaceDataviewInstances,
+    selectUrlDataviewInstances,
+    selectDataviewInstancesInjected,
+  ],
+  (
+    isWorkspaceLocation,
+    workspaceStatus,
+    workspaceDataviewInstances,
+    urlDataviewInstances = EMPTY_ARRAY,
+    injectedDataviewInstances = EMPTY_ARRAY
+  ): UrlDataviewInstance[] | undefined => {
+    if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
+      return
+    }
+    const mergedDataviewInstances =
+      mergeWorkspaceUrlDataviewInstances(
+        workspaceDataviewInstances as DataviewInstance<any>[],
+        urlDataviewInstances
+      ) || []
+
+    return [...mergedDataviewInstances, ...injectedDataviewInstances]
   }
 )
 
@@ -334,54 +350,5 @@ export const selectDataviewInstancesResolved = createSelector(
       } as UrlDataviewInstance
     })
     return dataviews
-  }
-)
-
-const SUPPORTED_REPORT_CATEGORIES = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Environment,
-]
-const SUPPORTED_REPORT_TYPES = [DataviewType.HeatmapAnimated, DataviewType.HeatmapStatic]
-export const selectActiveSupportedReportDataviews = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviews) => {
-    return dataviews.filter(
-      (d) =>
-        d.config?.visible &&
-        d.category &&
-        d.config?.type &&
-        SUPPORTED_REPORT_CATEGORIES.includes(d.category) &&
-        SUPPORTED_REPORT_TYPES.includes(d.config?.type)
-    )
-  }
-)
-
-export const selectActiveReportCategories = createSelector(
-  [selectActiveSupportedReportDataviews],
-  (dataviews): ReportCategory[] => {
-    return uniq(dataviews.flatMap((d) => getReportCategoryFromDataview(d) || []))
-  }
-)
-
-export const selectActiveActivityReportSubCategories = createSelector(
-  [selectActiveSupportedReportDataviews],
-  (dataviews): (ReportActivitySubCategory | ReportDetectionsSubCategory)[] => {
-    return uniq(
-      dataviews.flatMap((d) =>
-        d.category === DataviewCategory.Activity ? getReportSubCategoryFromDataview(d) || [] : []
-      ) as ReportActivitySubCategory[]
-    )
-  }
-)
-
-export const selectActiveDetectionsReportSubCategories = createSelector(
-  [selectActiveSupportedReportDataviews],
-  (dataviews): (ReportActivitySubCategory | ReportDetectionsSubCategory)[] => {
-    return uniq(
-      dataviews.flatMap((d) =>
-        d.category === DataviewCategory.Detections ? getReportSubCategoryFromDataview(d) || [] : []
-      ) as ReportDetectionsSubCategory[]
-    )
   }
 )

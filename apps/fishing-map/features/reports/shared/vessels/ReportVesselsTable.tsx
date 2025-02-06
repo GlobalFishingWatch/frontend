@@ -14,10 +14,10 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import I18nNumber from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES } from 'features/reports/reports.config'
 import {
-  selectReportActivitySubCategory,
   selectReportVesselsOrderDirection,
   selectReportVesselsOrderProperty,
 } from 'features/reports/reports.config.selectors'
+import { selectReportActivitySubCategory } from 'features/reports/reports.selectors'
 import type {
   ReportVesselOrderDirection,
   ReportVesselOrderProperty,
@@ -36,7 +36,7 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import type { ReportTableVessel } from './report-vessels.types'
 import ReportVesselsTableFooter from './ReportVesselsTableFooter'
 
-import styles from 'features/reports/tabs/activity/vessels/ReportVesselsTable.module.css'
+import styles from './ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {
   vessels: ReportTableVessel[]
@@ -172,24 +172,25 @@ export default function ReportVesselsTable({
             const gearTypeInteractionEnabled = geartype !== EMPTY_FIELD_PLACEHOLDER
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             // TODO:CVP normalize this vessel types
-            const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
-              ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
-              : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const hasDatasets = vessel.datasetId?.includes(GLOBAL_VESSELS_DATASET_ID)
+              ? vessel.datasetId !== undefined && vessel.trackDatasetId !== undefined
+              : vessel.datasetId !== undefined || vessel.trackDatasetId !== undefined
             const pinTrackDisabled = !workspaceReady || !hasDatasets || isPinningVessels
             return (
               <Fragment key={id}>
                 <div
                   className={cx({ [styles.border]: !isLastRow }, styles.icon)}
-                  data-test={`vessel-${vessel.vesselId}`}
+                  data-test={`vessel-${vessel.id}`}
                 >
+                  {/* TODO:CVP make the pin working withouth the need of requesting identity when already available */}
                   <VesselPin
                     vessel={vessel.identity}
                     vesselToResolve={
                       vessel.identity
                         ? undefined
                         : {
-                            id: vessel.id || vessel.vesselId,
-                            datasetId: vessel.infoDataset?.id || (vessel.dataset as string),
+                            id: vessel.id || vessel.id,
+                            datasetId: vessel.datasetId,
                           }
                     }
                     disabled={pinTrackDisabled}
@@ -208,7 +209,7 @@ export default function ReportVesselsTable({
                       <VesselLink
                         className={styles.link}
                         vesselId={id}
-                        datasetId={vessel.dataset}
+                        datasetId={vessel.datasetId}
                         query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
                       >
                         {shipName}

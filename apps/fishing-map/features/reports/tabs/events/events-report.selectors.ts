@@ -14,13 +14,13 @@ import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   getVesselsFiltered,
   normalizeVesselProperties,
 } from 'features/reports/report-area/area-reports.utils'
 import type { EventsStatsVessel } from 'features/reports/report-port/ports-report.slice'
 import { REPORT_FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
-import { selectVGREventsSubsectionDataview } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import {
@@ -33,13 +33,14 @@ import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 export const selectFetchVGREventsVesselsParams = createSelector(
-  [selectTimeRange, selectReportVesselGroupId, selectVGREventsSubsectionDataview],
-  ({ start, end }, reportVesselGroupId, eventsDataview) => {
-    if (!eventsDataview) {
+  [selectTimeRange, selectReportVesselGroupId, selectActiveReportDataviews],
+  ({ start, end }, reportVesselGroupId, eventsDataviews) => {
+    if (!eventsDataviews?.[0]) {
       return
     }
+    const eventsDataview = eventsDataviews?.[0]
 
-    const dataset = eventsDataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
+    const dataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
     return {
       dataset: dataset,
       filters: {
@@ -104,6 +105,7 @@ export const selectVGREventsVesselsFiltered = createSelector(
   [selectVGREventsVessels, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
+    if (!filter) return vessels
     return getVesselsFiltered(vessels, filter, REPORT_FILTER_PROPERTIES)
   }
 )

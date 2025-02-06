@@ -5,7 +5,7 @@ import {
 } from 'data/config'
 import type { BufferOperation, BufferUnit } from 'types'
 
-import type { ReportState, ReportVesselOrderProperty } from './reports.types'
+import { ReportCategory, type ReportState, type ReportVesselOrderProperty } from './reports.types'
 
 export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5
@@ -15,11 +15,11 @@ export const OTHERS_CATEGORY_LABEL = 'OTHERS'
 
 export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   // Category
-  reportCategory: undefined,
+  reportCategory: ReportCategory.Activity,
   // Subcategory
   reportActivitySubCategory: undefined,
   reportDetectionsSubCategory: undefined,
-  reportEventsSubCategory: undefined,
+  reportEventsSubCategory: 'encounter',
   reportVesselsSubCategory: 'flag',
   // Area
   reportAreaBounds: undefined,
