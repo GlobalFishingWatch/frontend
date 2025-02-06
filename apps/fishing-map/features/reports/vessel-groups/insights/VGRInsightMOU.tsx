@@ -157,8 +157,6 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
       <div className={styles.insightTitle}>
         <label>{t('vesselGroupReport.insights.MOULists', 'MOU Lists')}</label>
         <DataTerminology
-          size="tiny"
-          type="default"
           title={t('vesselGroupReport.insights.MOULists', 'MOU Lists')}
           terminologyKey="insightsMOUList"
         />

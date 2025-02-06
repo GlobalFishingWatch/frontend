@@ -24,8 +24,6 @@ const InsightCoverage = ({
       <div className={styles.insightTitle}>
         <label className="experimental">{t('vessel.insights.coverage', 'AIS Coverage')}</label>
         <DataTerminology
-          size="tiny"
-          type="default"
           title={t('vessel.insights.coverage', 'AIS Coverage')}
           terminologyKey="insightsCoverage"
         />

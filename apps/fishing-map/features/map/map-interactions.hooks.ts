@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { ThunkDispatch } from '@reduxjs/toolkit'
@@ -309,6 +309,7 @@ const useGetPickingInteraction = () => {
   return getPickingInteraction
 }
 
+export const hoverCoordinatesAtom = atom<[number, number] | undefined>()
 export const useMapMouseHover = () => {
   const getPickingInteraction = useGetPickingInteraction()
   const setMapHoverFeatures = useSetMapHoverInteraction()
@@ -317,12 +318,12 @@ export const useMapMouseHover = () => {
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { onRulerMapHover, rulersEditing } = useRulers()
 
-  const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
+  const [hoveredCoordinates, setHoveredCoordinates] = useAtom(hoverCoordinatesAtom)
 
   const onMouseMove: DeckProps['onHover'] = useMemo(
     () =>
       throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
-        setHoveredCoordinates(info.coordinate)
+        setHoveredCoordinates(info.coordinate as [number, number])
         if (
           event.type === 'pointerleave' ||
           isMapAnnotating ||
@@ -358,6 +359,7 @@ export const useMapMouseHover = () => {
       isMapDrawing,
       onRulerMapHover,
       rulersEditing,
+      setHoveredCoordinates,
       setMapHoverFeatures,
     ]
   )
@@ -365,10 +367,7 @@ export const useMapMouseHover = () => {
   return useMemo(
     () => ({
       onMouseMove,
-      // resetHoverState,
       hoveredCoordinates,
-      // hoveredDebouncedEvent,
-      // hoveredTooltipEvent,
     }),
     [hoveredCoordinates, onMouseMove]
   )
