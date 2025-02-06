@@ -149,7 +149,7 @@ export const useSegmentsLabeledConnect = () => {
     }
 
     // Case 1: Segment completely contains new segment
-    if (segment.start <= newSegment.start && segment.end >= newSegment.end) {
+    if (segment.start < newSegment.start && segment.end > newSegment.end) {
       const endLatitude = findPreviousPosition(timestamps, positions, newSegment.start, 'latitude')
       const endLongitude = findPreviousPosition(
         timestamps,
