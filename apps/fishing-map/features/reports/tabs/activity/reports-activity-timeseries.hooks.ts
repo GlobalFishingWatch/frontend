@@ -146,7 +146,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const timeComparisonHash = timeComparison ? JSON.stringify(timeComparison) : undefined
   const instancesChunkHash = instances
-    ?.map((instance) => JSON.stringify(instance.getChunk()))
+    ?.map((instance) => JSON.stringify(instance?.getChunk()))
     .join(',')
   const timerangeHash = timerange ? JSON.stringify(timerange) : ''
   const reportGraphMode = getReportGraphMode(reportGraph)

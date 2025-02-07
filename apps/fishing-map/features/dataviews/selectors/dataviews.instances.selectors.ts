@@ -105,8 +105,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
       return visibleDataviews.filter((dataview) => {
         if (
           dataview.category === DataviewCategory.Activity ||
-          dataview.category === DataviewCategory.Detections ||
-          dataview.category === DataviewCategory.Events
+          dataview.category === DataviewCategory.Detections
         ) {
           const matchesCategory = getReportCategoryFromDataview(dataview) === reportCategory
           const matchesSubcategory =
@@ -122,6 +121,11 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
             return matchesGroupActivityDataview && matchesSubcategory
           }
           return !isVesselGroupActivityDataview(dataview.id)
+        }
+        if (dataview.category === DataviewCategory.Events) {
+          const matchesSubcategory =
+            getReportSubCategoryFromDataview(dataview) === reportSubCategory
+          return matchesSubcategory
         }
         return true
       })

@@ -18,6 +18,8 @@ import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { PORT_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
+import { ReportCategory } from '../reports.types'
+
 import { getPortClusterDataviewForReport } from './ports-report.utils'
 
 import styles from './PortsReport.module.css'
@@ -69,6 +71,7 @@ function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
         },
         query: {
           ...query,
+          reportCategory: ReportCategory.Events,
           portsReportName: port.name,
           portsReportCountry: port.country,
           portsReportDatasetId: port.datasetId,

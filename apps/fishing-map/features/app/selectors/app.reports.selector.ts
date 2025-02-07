@@ -62,7 +62,6 @@ export const selectReportAreaId = createSelector(
 export const selectReportActiveCategories = createSelector(
   [selectActiveReportCategories, selectIsVesselGroupReportLocation],
   (activeCategories, isVesselGroupReportLocation): ReportCategory[] => {
-    // TODO:CVP ensure ports report doesn't need something similar
     if (isVesselGroupReportLocation) {
       return [
         ReportCategory.VesselGroup,

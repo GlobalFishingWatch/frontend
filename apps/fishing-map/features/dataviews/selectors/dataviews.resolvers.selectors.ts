@@ -37,11 +37,7 @@ import {
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
 } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import {
-  selectReportActivitySubCategorySelector,
-  selectReportCategorySelector,
-  selectReportEventsSubCategorySelector,
-} from 'features/reports/reports.config.selectors'
+import { selectReportCategorySelector } from 'features/reports/reports.config.selectors'
 import type {
   ReportActivitySubCategory,
   ReportEventsSubCategory,
@@ -80,8 +76,6 @@ export const selectDataviewInstancesInjected = createSelector(
     selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportCategorySelector,
-    selectReportActivitySubCategorySelector,
-    selectReportEventsSubCategorySelector,
     selectReportVesselGroupId,
     selectReportPortId,
     selectVesselId,
@@ -93,14 +87,13 @@ export const selectDataviewInstancesInjected = createSelector(
     isPortReportLocation,
     isVesselGroupReportLocation,
     reportCategory,
-    reportActivitySubCategory,
-    reportEventsSubCategory,
     reportVesselGroupId,
     reportPortId,
     urlVesselId,
     vessel
   ): UrlDataviewInstance[] | undefined => {
     const dataviewInstances = EMPTY_ARRAY as UrlDataviewInstance[]
+    debugger
     if (isAnyVesselLocation) {
       const existingDataviewInstance = dataviewInstances?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
@@ -221,6 +214,7 @@ export const selectDataviewInstancesMerged = createSelector(
         workspaceDataviewInstances as DataviewInstance<any>[],
         urlDataviewInstances
       ) || []
+    console.log('🚀 ~ injectedDataviewInstances:', injectedDataviewInstances)
 
     return [...mergedDataviewInstances, ...injectedDataviewInstances]
   }

@@ -20,36 +20,23 @@ import {
   selectPortReportCountry,
   selectPortReportDatasetId,
   selectPortReportName,
-  selectReportVesselFilter,
-  selectReportVesselGraphSelector,
 } from 'features/reports/reports.config.selectors'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
-import ReportVesselsFilter from 'features/reports/shared/vessels/ReportVesselsFilter'
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
-import EventsReportVesselPropertySelector from 'features/reports/tabs/events/EventsReportVesselPropertySelector'
-import EventsReportVesselsTable from 'features/reports/tabs/events/EventsReportVesselsTable'
-import EventsReportVesselsTableFooter from 'features/reports/tabs/events/EventsReportVesselsTableFooter'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { selectReportPortId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
-import EventsReportVesselsGraph from '../shared/vessels/ReportVesselsGraph'
+import ReportVessels from '../shared/vessels/ReportVessels'
 import { getDateRangeHash } from '../tabs/activity/reports-activity.slice'
 
 import { useFetchPortsReport } from './ports-report.hooks'
-import {
-  selectPortReportsDataview,
-  selectPortReportVesselsGrouped,
-  selectPortReportVesselsIndividualData,
-  selectPortReportVesselsPaginated,
-  selectPortReportVesselsPagination,
-} from './ports-report.selectors'
+import { selectPortReportsDataview } from './ports-report.selectors'
 import {
   resetPortsReportData,
-  selectPortsReportData,
   selectPortsReportDateRangeHash,
   selectPortsReportStatus,
 } from './ports-report.slice'
@@ -69,15 +56,8 @@ function PortsReport() {
   const reportName = useSelector(selectPortReportName)
   const reportCountry = useSelector(selectPortReportCountry)
   const datasetId = useSelector(selectPortReportDatasetId)
-  const portReportVesselsProperty = useSelector(selectReportVesselGraphSelector)
-  const portReportVesselFilter = useSelector(selectReportVesselFilter)
   const { start, end } = useSelector(selectTimeRange)
-  const portsReportPagination = useSelector(selectPortReportVesselsPagination)
-  const portsReportData = useSelector(selectPortsReportData)
   const portsReportDataStatus = useSelector(selectPortsReportStatus)
-  const portsReportVesselsGrouped = useSelector(selectPortReportVesselsGrouped)
-  const portReportIndividualData = useSelector(selectPortReportVesselsIndividualData)
-  const portsReportVesselsPaginated = useSelector(selectPortReportVesselsPaginated)
   const {
     data,
     error,
@@ -224,25 +204,10 @@ function PortsReport() {
         </ReportVesselsPlaceholder>
       ) : (
         <div className={styles.container}>
-          <div className={styles.flex}>
-            <label>{t('common.vessels', 'Vessels')}</label>
-            <EventsReportVesselPropertySelector property={portReportVesselsProperty} />
-          </div>
-          <EventsReportVesselsGraph
-            data={portsReportVesselsGrouped}
-            individualData={portReportIndividualData}
-            color={color}
-            property={portReportVesselsProperty}
+          <ReportVessels
+            title={t('common.vessels', 'Vessels')}
+            loading={isPortsStatsLoading || isPortsReportDataLoading}
           />
-          <ReportVesselsFilter filter={portReportVesselFilter} />
-          <EventsReportVesselsTable vessels={portsReportVesselsPaginated} />
-          {portsReportData?.vessels && portsReportData?.vessels?.length > 0 && (
-            <EventsReportVesselsTableFooter
-              vessels={portsReportData.vessels}
-              filter={portReportVesselFilter}
-              pagination={portsReportPagination}
-            />
-          )}
         </div>
       )}
     </Fragment>

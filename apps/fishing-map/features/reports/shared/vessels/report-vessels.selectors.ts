@@ -7,7 +7,6 @@ import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive
 
 import {
   selectReportCategory,
-  selectReportSubCategory,
   selectReportVesselGraph,
 } from 'features/app/selectors/app.reports.selector'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
@@ -15,6 +14,7 @@ import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
+import { selectPortsReportVessels } from 'features/reports/report-port/ports-report.slice'
 import { REPORT_FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
 import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import {
@@ -58,8 +58,8 @@ const getVesselSource = (vessel: IdentityVessel) => {
 }
 
 export const selectReportVesselsByCategory = createSelector(
-  [selectReportCategory, selectReportSubCategory, selectReportVesselsList, selectVGRVessels],
-  (reportCategory, reportSubCategory, reportVesselsList, vGRVessels) => {
+  [selectReportCategory, selectReportVesselsList, selectVGRVessels, selectPortsReportVessels],
+  (reportCategory, reportVesselsList, vGRVessels, portsReportVessels) => {
     if (!reportCategory) {
       return []
     }
@@ -76,8 +76,7 @@ export const selectReportVesselsByCategory = createSelector(
       return []
     }
     if (reportCategory === ReportCategory.Events) {
-      // TODO:CVP add events vessels
-      return []
+      return portsReportVessels
     }
     return []
   }
