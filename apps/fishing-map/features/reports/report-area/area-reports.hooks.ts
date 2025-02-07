@@ -11,11 +11,6 @@ import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  selectReportBufferOperation,
-  selectReportBufferUnit,
-  selectReportBufferValue,
-} from 'features/app/selectors/app.reports.selector'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
   fetchAreaDetailThunk,
@@ -38,6 +33,9 @@ import {
   selectReportAreaDataviews,
   selectReportAreaIds,
   selectReportAreaStatus,
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
   selectReportDataviewsWithPermissions,
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'

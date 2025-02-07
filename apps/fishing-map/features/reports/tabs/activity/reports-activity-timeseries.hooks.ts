@@ -20,7 +20,6 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
@@ -35,7 +34,10 @@ import {
   selectReportActivityGraph,
   selectReportTimeComparison,
 } from 'features/reports/reports.config.selectors'
-import { selectReportActivitySubCategory } from 'features/reports/reports.selectors'
+import {
+  selectReportActivitySubCategory,
+  selectReportCategory,
+} from 'features/reports/reports.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
 import type { FilteredPolygons } from 'features/reports/tabs/activity/reports-activity-geo.utils'
@@ -146,7 +148,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const timeComparisonHash = timeComparison ? JSON.stringify(timeComparison) : undefined
   const instancesChunkHash = instances
-    ?.map((instance) => JSON.stringify(instance?.getChunk()))
+    ?.map((instance) => JSON.stringify(instance?.getChunk?.()))
     .join(',')
   const timerangeHash = timerange ? JSON.stringify(timerange) : ''
   const reportGraphMode = getReportGraphMode(reportGraph)

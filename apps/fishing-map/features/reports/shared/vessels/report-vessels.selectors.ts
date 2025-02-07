@@ -5,10 +5,6 @@ import type { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
-import {
-  selectReportCategory,
-  selectReportVesselGraph,
-} from 'features/app/selectors/app.reports.selector'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
@@ -26,6 +22,7 @@ import {
   selectReportVesselsOrderProperty,
   selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
+import { selectReportCategory, selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { getVesselIndividualGroupedData } from 'features/reports/shared/utils/reports.utils'
 import { selectReportVesselsList } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'

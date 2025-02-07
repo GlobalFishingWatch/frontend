@@ -3,16 +3,9 @@ import type { FeatureCollection, MultiPolygon } from 'geojson'
 import { t } from 'i18next'
 
 import type { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
+import type { BufferOperation, BufferUnit } from '@globalfishingwatch/data-transforms'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 
-import {
-  selectCurrentReport,
-  selectReportAreaId,
-  selectReportBufferOperation,
-  selectReportBufferUnit,
-  selectReportBufferValue,
-  selectReportDatasetId,
-} from 'features/app/selectors/app.reports.selector'
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { selectAreas } from 'features/areas/areas.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -25,21 +18,58 @@ import {
   getBufferedFeature,
   getReportCategoryFromDataview,
 } from 'features/reports/report-area/area-reports.utils'
+import {
+  selectCurrentReport,
+  selectReportAreaId,
+  selectReportDatasetId,
+} from 'features/reports/reports.selectors'
 import type { ReportCategory } from 'features/reports/reports.types'
 import {
   selectReportPreviewBuffer,
   selectReportVesselsData,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import {
+  selectIsVesselGroupReportLocation,
+  selectUrlBufferOperationQuery,
+  selectUrlBufferUnitQuery,
+  selectUrlBufferValueQuery,
+} from 'routes/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 import { EMPTY_API_VALUES } from '../reports.config'
-import { selectReportActivityGraph, selectReportTimeComparison } from '../reports.config.selectors'
+import {
+  selectReportActivityGraph,
+  selectReportBufferOperationSelector,
+  selectReportBufferUnitSelector,
+  selectReportBufferValueSelector,
+  selectReportTimeComparison,
+} from '../reports.config.selectors'
 import type { ReportTimeComparisonValues } from '../tabs/activity/reports-activity.types'
 
 const EMPTY_ARRAY: [] = []
+
+export const selectReportBufferValue = createSelector(
+  [selectReportBufferValueSelector, selectUrlBufferValueQuery],
+  (workspaceBufferValue, urlBufferValue): number => {
+    return workspaceBufferValue || urlBufferValue
+  }
+)
+
+export const selectReportBufferUnit = createSelector(
+  [selectReportBufferUnitSelector, selectUrlBufferUnitQuery],
+  (workspaceBufferUnit, urlBufferUnit): BufferUnit => {
+    return workspaceBufferUnit || urlBufferUnit
+  }
+)
+
+export const selectReportBufferOperation = createSelector(
+  [selectReportBufferOperationSelector, selectUrlBufferOperationQuery],
+  (workspaceBufferOperation, urlBufferOperation): BufferOperation => {
+    return workspaceBufferOperation || urlBufferOperation
+  }
+)
 
 type ReportVesselWithMeta = ReportVessel & {
   // Merging detections or hours depending on the activity unit into the same property

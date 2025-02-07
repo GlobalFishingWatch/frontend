@@ -5,12 +5,12 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import {
   selectReportCategory,
   selectReportSubCategory,
   selectReportVesselGraph,
-} from 'features/app/selectors/app.reports.selector'
-import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+} from 'features/reports/reports.selectors'
 import type { ReportVesselGraph, ReportVesselsSubCategory } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
 import DataTerminology from 'features/vessel/identity/DataTerminology'

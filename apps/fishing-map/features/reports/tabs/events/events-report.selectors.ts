@@ -12,7 +12,6 @@ import {
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
-import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
@@ -28,6 +27,7 @@ import {
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
 } from 'features/reports/reports.config.selectors'
+import { selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'

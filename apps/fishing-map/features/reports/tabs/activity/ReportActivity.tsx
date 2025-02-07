@@ -15,11 +15,6 @@ import { Button } from '@globalfishingwatch/ui-components'
 import { SUPPORT_EMAIL } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  selectReportAreaId,
-  selectReportCategory,
-  selectReportDatasetId,
-} from 'features/app/selectors/app.reports.selector'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
@@ -34,7 +29,12 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
 import { parseReportUrl } from 'features/reports/report-area/area-reports.utils'
-import { selectActiveReportSubCategories } from 'features/reports/reports.selectors'
+import {
+  selectActiveReportSubCategories,
+  selectReportAreaId,
+  selectReportCategory,
+  selectReportDatasetId,
+} from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import ReportDownload from 'features/reports/tabs/activity/download/ReportDownload'

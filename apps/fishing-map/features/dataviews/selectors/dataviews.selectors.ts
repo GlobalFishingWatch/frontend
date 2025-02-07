@@ -6,7 +6,6 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInDataview,
@@ -37,6 +36,7 @@ import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportVesselsSubCategory } from 'features/reports/reports.config.selectors'
+import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import {

@@ -11,7 +11,6 @@ import { Button } from '@globalfishingwatch/ui-components'
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectCurrentReport } from 'features/app/selectors/app.reports.selector'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -19,6 +18,7 @@ import {
   selectHasDeprecatedDataviewInstances,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsReportOwner } from 'features/reports/report-area/area-reports.selectors'
+import { selectCurrentReport } from 'features/reports/reports.selectors'
 import { updateReportThunk } from 'features/reports/reports.slice'
 import { getWorkspaceReport } from 'features/reports/shared/new-report-modal/NewAreaReportModal'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'

@@ -4,10 +4,6 @@ import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatc
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
-import {
-  selectReportCategory,
-  selectReportSubCategory,
-} from 'features/app/selectors/app.reports.selector'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import {
@@ -22,6 +18,7 @@ import {
   selectReportVesselsSubCategory,
   selectViewOnlyVesselGroup,
 } from 'features/reports/reports.config.selectors'
+import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'

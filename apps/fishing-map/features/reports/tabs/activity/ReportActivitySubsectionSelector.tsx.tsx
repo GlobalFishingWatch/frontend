@@ -6,11 +6,8 @@ import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  selectReportCategory,
-  selectReportSubCategory,
-} from 'features/app/selectors/app.reports.selector'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
+import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import type {
   ReportActivitySubCategory,
   ReportDetectionsSubCategory,

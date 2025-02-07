@@ -6,7 +6,6 @@ import { DateTime } from 'luxon'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
 import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
-import {} from 'features/app/selectors/app.reports.selector'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import {

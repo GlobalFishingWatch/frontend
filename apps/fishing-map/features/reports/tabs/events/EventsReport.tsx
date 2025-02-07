@@ -21,7 +21,6 @@ import { Icon } from '@globalfishingwatch/ui-components'
 
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -30,6 +29,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
+import { selectReportVesselGraph } from 'features/reports/reports.selectors'
 import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
 import {
   selectVGREventsVesselsIndividualData,

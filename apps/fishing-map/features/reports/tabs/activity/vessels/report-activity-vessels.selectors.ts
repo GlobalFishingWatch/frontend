@@ -3,7 +3,6 @@ import { groupBy, uniqBy } from 'es-toolkit'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
@@ -14,6 +13,7 @@ import {
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
 } from 'features/reports/reports.config.selectors'
+import { selectReportCategory } from 'features/reports/reports.selectors'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 
 const EMPTY_ARRAY: [] = []

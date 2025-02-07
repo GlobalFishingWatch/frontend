@@ -6,7 +6,6 @@ import type { Tab } from '@globalfishingwatch/ui-components'
 import { Button, Tabs } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import {
@@ -14,6 +13,7 @@ import {
   useReportAreaCenter,
   useVesselGroupBounds,
 } from 'features/reports/report-area/area-reports.hooks'
+import { selectReportCategory } from 'features/reports/reports.selectors'
 import EventsReport from 'features/reports/tabs/events/EventsReport'
 import VesselGroupReportInsights from 'features/reports/tabs/vessel-group-insights/VGRInsights'
 import {

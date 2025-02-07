@@ -10,7 +10,6 @@ import { Tabs } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
   useFetchReportArea,
@@ -24,6 +23,7 @@ import {
 } from 'features/reports/report-area/area-reports.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import ReportTitle from 'features/reports/report-area/title/ReportTitle'
+import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ActivityReport from 'features/reports/tabs/activity/ReportActivity'
 import {

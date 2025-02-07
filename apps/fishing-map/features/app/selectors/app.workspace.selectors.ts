@@ -5,13 +5,6 @@ import type { DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME } from 'data/config'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import {
-  selectReportBufferOperation,
-  selectReportBufferUnit,
-  selectReportBufferValue,
-  selectReportCategory,
-  selectReportVesselGraph,
-} from 'features/app/selectors/app.reports.selector'
-import {
   selectActivityCategory,
   selectAreMapAnnotationsVisible,
   selectAreMapRulersVisible,
@@ -30,6 +23,11 @@ import {
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+} from 'features/reports/report-area/area-reports.selectors'
+import {
   selectReportActivityGraph,
   selectReportAreaBounds,
   selectReportTimeComparison,
@@ -37,6 +35,7 @@ import {
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
 } from 'features/reports/reports.config.selectors'
+import { selectReportCategory, selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { selectDaysFromLatest, selectWorkspace } from 'features/workspace/workspace.selectors'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'

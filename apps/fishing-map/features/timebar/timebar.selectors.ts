@@ -4,7 +4,6 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 
 import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
 import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
@@ -24,6 +23,7 @@ import {
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
+import { selectReportCategory } from 'features/reports/reports.selectors'
 import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { getUTCDateTime } from 'utils/dates'

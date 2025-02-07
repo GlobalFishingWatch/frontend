@@ -13,12 +13,6 @@ import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  selectCurrentReport,
-  selectReportBufferOperation,
-  selectReportBufferUnit,
-  selectReportBufferValue,
-} from 'features/app/selectors/app.reports.selector'
 import type { Area } from 'features/areas/areas.slice'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -30,8 +24,12 @@ import {
   selectReportArea,
   selectReportAreaDataviews,
   selectReportAreaStatus,
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
 import { DEFAULT_BUFFER_OPERATION } from 'features/reports/reports.config'
+import { selectCurrentReport } from 'features/reports/reports.selectors'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import {
   resetReportData,
