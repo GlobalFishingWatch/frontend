@@ -7,6 +7,8 @@ import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { VESSEL_GROUP_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
+import { ReportCategory } from '../reports.types'
+
 import styles from './VesselGroupReport.module.css'
 
 type VesselGroupReportLinkProps = {
@@ -31,7 +33,7 @@ function VesselGroupReportLink({ children, vesselGroupId }: VesselGroupReportLin
           workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
           vesselGroupId: vesselGroupId,
         },
-        query: query,
+        query: { ...query, reportCategory: ReportCategory.VesselGroup },
       }}
     >
       {children}

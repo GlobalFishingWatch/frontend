@@ -68,9 +68,36 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
 const EMPTY_ARRAY: [] = []
+export const selectWorkspaceDataviewInstancesMerged = createSelector(
+  [
+    selectIsWorkspaceLocation,
+    selectWorkspaceStatus,
+    selectWorkspaceDataviewInstances,
+    selectUrlDataviewInstances,
+  ],
+  (
+    isWorkspaceLocation,
+    workspaceStatus,
+    workspaceDataviewInstances,
+    urlDataviewInstances = EMPTY_ARRAY
+  ): UrlDataviewInstance[] | undefined => {
+    if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
+      return
+    }
+    const mergedDataviewInstances =
+      mergeWorkspaceUrlDataviewInstances(
+        workspaceDataviewInstances as DataviewInstance<any>[],
+        urlDataviewInstances
+      ) || []
+
+    return mergedDataviewInstances
+  }
+)
+
 // Inject dataviews on the fly for reports and vessel profile
 export const selectDataviewInstancesInjected = createSelector(
   [
+    selectWorkspaceDataviewInstancesMerged,
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
     selectIsPortReportLocation,
@@ -82,6 +109,7 @@ export const selectDataviewInstancesInjected = createSelector(
     selectVesselInfoData,
   ],
   (
+    dataviewInstances,
     isAnyVesselLocation,
     isVesselLocation,
     isPortReportLocation,
@@ -92,10 +120,9 @@ export const selectDataviewInstancesInjected = createSelector(
     urlVesselId,
     vessel
   ): UrlDataviewInstance[] | undefined => {
-    const dataviewInstances = EMPTY_ARRAY as UrlDataviewInstance[]
-    debugger
+    const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     if (isAnyVesselLocation) {
-      const existingDataviewInstance = dataviewInstances?.find(
+      const existingDataviewInstance = dataviewInstancesInjected?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
       )
       if (!existingDataviewInstance && vessel?.identities) {
@@ -113,12 +140,12 @@ export const selectDataviewInstancesInjected = createSelector(
           urlVesselId,
           vesselDatasets
         )
-        dataviewInstances.push({ ...dataviewInstance, datasetsConfig })
+        dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
       }
       if (isVesselLocation) {
         VESSEL_PROFILE_DATAVIEWS_INSTANCES.forEach((dataviewInstance) => {
-          if (!dataviewInstances.find(({ id }) => id === dataviewInstance.id)) {
-            dataviewInstances.push({ ...dataviewInstance })
+          if (!dataviewInstancesInjected.find(({ id }) => id === dataviewInstance.id)) {
+            dataviewInstancesInjected.push({ ...dataviewInstance })
           }
         })
       }
@@ -130,7 +157,7 @@ export const selectDataviewInstancesInjected = createSelector(
       if (!vesselGroupDataviewInstance) {
         vesselGroupDataviewInstance = getVesselGroupDataviewInstance(reportVesselGroupId)
         if (vesselGroupDataviewInstance) {
-          dataviewInstances.push(vesselGroupDataviewInstance)
+          dataviewInstancesInjected.push(vesselGroupDataviewInstance)
         }
       }
       if (reportCategory === 'activity') {
@@ -143,7 +170,7 @@ export const selectDataviewInstancesInjected = createSelector(
             activityType: category,
           })
           if (activitySubcategoryInstance) {
-            dataviewInstances.push(activitySubcategoryInstance)
+            dataviewInstancesInjected.push(activitySubcategoryInstance)
           }
         })
       }
@@ -155,14 +182,14 @@ export const selectDataviewInstancesInjected = createSelector(
           'port_visit',
         ]
         eventsReportSubCategories.forEach((category) => {
-          dataviewInstances.push(
+          dataviewInstancesInjected.push(
             ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, category)
           )
         })
       }
     }
     if (isPortReportLocation) {
-      let footprintDataviewInstance = dataviewInstances?.find(
+      let footprintDataviewInstance = dataviewInstancesInjected?.find(
         (dataview) => dataview.id === PORTS_FOOTPRINT_DATAVIEW_SLUG
       )
       if (footprintDataviewInstance) {
@@ -186,37 +213,19 @@ export const selectDataviewInstancesInjected = createSelector(
           },
         }
       }
-      dataviewInstances.push(footprintDataviewInstance)
+      dataviewInstancesInjected.push(footprintDataviewInstance)
     }
-    return dataviewInstances
+    return dataviewInstancesInjected
   }
 )
+
 export const selectDataviewInstancesMerged = createSelector(
-  [
-    selectIsWorkspaceLocation,
-    selectWorkspaceStatus,
-    selectWorkspaceDataviewInstances,
-    selectUrlDataviewInstances,
-    selectDataviewInstancesInjected,
-  ],
+  [selectWorkspaceDataviewInstancesMerged, selectDataviewInstancesInjected],
   (
-    isWorkspaceLocation,
-    workspaceStatus,
-    workspaceDataviewInstances,
-    urlDataviewInstances = EMPTY_ARRAY,
+    dataviewInstances = EMPTY_ARRAY,
     injectedDataviewInstances = EMPTY_ARRAY
   ): UrlDataviewInstance[] | undefined => {
-    if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
-      return
-    }
-    const mergedDataviewInstances =
-      mergeWorkspaceUrlDataviewInstances(
-        workspaceDataviewInstances as DataviewInstance<any>[],
-        urlDataviewInstances
-      ) || []
-    console.log('🚀 ~ injectedDataviewInstances:', injectedDataviewInstances)
-
-    return [...mergedDataviewInstances, ...injectedDataviewInstances]
+    return [...dataviewInstances, ...injectedDataviewInstances]
   }
 )
 
