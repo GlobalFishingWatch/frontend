@@ -140,7 +140,9 @@ export const selectVGREventsVesselsGrouped = createSelector(
 
     const orderedGroups: { name: string; value: number }[] = Object.entries(
       groupBy(vessels, (vessel) => {
-        return property === 'flag' ? vessel.flagTranslated : (vessel[property] as string)
+        return property === 'flag'
+          ? vessel.flagTranslated
+          : (vessel[property as keyof typeof vessel] as string)
       })
     )
       .map(([key, value]) => ({ name: key, property: key, value: value.length }))

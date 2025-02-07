@@ -12,7 +12,11 @@ import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
-import type { ReportState, ReportVesselsSubCategory } from 'features/reports/reports.types'
+import type {
+  ReportState,
+  ReportVesselGraph,
+  ReportVesselsSubCategory,
+} from 'features/reports/reports.types'
 import ReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -192,7 +196,7 @@ type ReportVesselsGraphProps = {
   data: ResponsiveVisualizationData<'aggregated'>
   individualData?: ResponsiveVisualizationData<'individual'>
   color?: string
-  property: ReportVesselsSubCategory
+  property: ReportVesselGraph | ReportVesselsSubCategory
   filterQueryParam?: keyof Pick<ReportState, 'reportVesselFilter'>
   pageQueryParam?: keyof Pick<ReportState, 'reportVesselPage'>
 }

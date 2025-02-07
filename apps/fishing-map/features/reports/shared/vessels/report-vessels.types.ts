@@ -8,6 +8,8 @@ export type ReportTableVessel = {
   shipName: string
   vesselType: string
   geartype: string
+  imo?: string
+  callsign?: string
   flag: string
   flagTranslated: string
   flagTranslatedClean: string
