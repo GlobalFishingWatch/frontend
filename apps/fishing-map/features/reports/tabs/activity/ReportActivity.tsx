@@ -314,7 +314,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     if (reportLoaded) {
       return hasVessels ? (
         <Fragment>
-          <ReportVessels activityUnit={activityUnit} reportName={reportName} />
+          <ReportVessels reportName={reportName} />
           <ReportDownload />
         </Fragment>
       ) : (
@@ -361,7 +361,6 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     dispatch,
     dispatchFetchReport,
     hasVessels,
-    activityUnit,
     reportName,
     datasetsDownloadNotSupported,
     isVesselGroupReportLocation,

@@ -74,6 +74,7 @@ function UserReports() {
   )
   const loading = reportsStatus === AsyncReducerStatus.Loading
 
+  // TODO:CVP group reports by type when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged
   return (
     <Fragment>
       <div className={styles.search}>

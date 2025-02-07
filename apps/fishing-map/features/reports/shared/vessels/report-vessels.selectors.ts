@@ -11,7 +11,6 @@ import { t } from 'features/i18n/i18n'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
 import { selectPortsReportVessels } from 'features/reports/report-port/ports-report.slice'
-import { REPORT_FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
 import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import {
   selectReportVesselFilter,
@@ -25,6 +24,7 @@ import {
 import { selectReportCategory, selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { getVesselIndividualGroupedData } from 'features/reports/shared/utils/reports.utils'
+import { REPORT_FILTER_PROPERTIES } from 'features/reports/shared/vessels/report-vessels.config'
 import { selectReportVesselsList } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
@@ -259,7 +259,7 @@ export const selectReportVesselsPaginated = createSelector(
   }
 )
 
-export const selectVGRVesselsPagination = createSelector(
+export const selectReportVesselsPagination = createSelector(
   [
     selectReportVesselsPaginated,
     selectReportVesselsByCategory,
@@ -425,15 +425,6 @@ export const REPORT_GRAPH_LABEL_KEY = 'name'
 
 export const selectReportVesselsGraphIndividualData = createSelector(
   [selectReportVesselsFiltered, selectReportVesselsSubCategory],
-  (vessels, groupBy) => {
-    if (!vessels || !groupBy) return []
-    return getVesselIndividualGroupedData(vessels, groupBy)
-  }
-)
-
-// TODO:CVP work on this when events are implemented
-export const selectVGREventsVesselsIndividualData = createSelector(
-  [selectVGREventsVesselsFiltered, selectReportVesselGraphSelector],
   (vessels, groupBy) => {
     if (!vessels || !groupBy) return []
     return getVesselIndividualGroupedData(vessels, groupBy)

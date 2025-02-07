@@ -31,14 +31,12 @@ import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel
 import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
 import { selectReportVesselGraph } from 'features/reports/reports.selectors'
 import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
-import {
-  selectVGREventsVesselsIndividualData,
-  selectVGRVesselDatasetsWithoutEventsRelated,
-} from 'features/reports/shared/vessels/report-vessels.selectors'
+import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
 import ReportVesselsFilter from 'features/reports/shared/vessels/ReportVesselsFilter'
 import VesselGroupReportVesselsGraph from 'features/reports/shared/vessels/ReportVesselsGraph'
 import {
   selectFetchVGREventsVesselsParams,
+  selectReportEventsVesselsIndividualData,
   selectVGREventsVessels,
   selectVGREventsVesselsFlags,
   selectVGREventsVesselsGrouped,
@@ -64,7 +62,7 @@ function EventsReport() {
   const vesselsWithEvents = useSelector(selectVGREventsVessels)
   const vesselFlags = useSelector(selectVGREventsVesselsFlags)
   const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
-  const individualData = useSelector(selectVGREventsVesselsIndividualData)
+  const individualData = useSelector(selectReportEventsVesselsIndividualData)
   const vesselsPaginated = useSelector(selectVGREventsVesselsPaginated)
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)

@@ -22,13 +22,13 @@ import {
 } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import type { FilterProperty } from 'features/reports/report-vessel-group/vessel-group-report.config'
-import { FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
 import type {
   ReportActivitySubCategory,
   ReportCategory,
   ReportDetectionsSubCategory,
 } from 'features/reports/reports.types'
+import type { FilterProperty } from 'features/reports/shared/vessels/report-vessels.config'
+import { FILTER_PROPERTIES } from 'features/reports/shared/vessels/report-vessels.config'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { Bbox, BufferOperation, BufferUnit } from 'types'

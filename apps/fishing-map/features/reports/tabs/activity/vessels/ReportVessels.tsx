@@ -17,7 +17,7 @@ type ReportVesselTableProps = {
   reportName?: string
 }
 
-// TODO:CVP remove this
+// TODO:CVP remove this component
 export default function ActivityReportVessels({
   // activityUnit,
   reportName,
@@ -45,8 +45,7 @@ export default function ActivityReportVessels({
 
   return (
     <div className={styles.graph} data-test="activity-report-vessels-graph">
-      {/* TODO:CVP add activityUnit */}
-      <ReportVessels title={title} loading={false} activityUnit={activityUnit} />
+      <ReportVessels title={title} activityUnit={activityUnit} />
     </div>
   )
 }

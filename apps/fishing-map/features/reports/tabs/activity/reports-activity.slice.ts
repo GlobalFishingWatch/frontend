@@ -202,7 +202,7 @@ export const { resetReportData, setDateRangeHash, setPreviewBuffer, setPinningVe
 export const selectReportVesselsStatus = (state: ReportSliceState) => state.report.status
 export const selectReportVesselsError = (state: ReportSliceState) => state.report.error
 export const selectReportVesselsData = (state: ReportSliceState) => state.report.data
-// TODO:CVP move this to report-area
+
 export const selectReportPreviewBuffer = (state: ReportSliceState) => state.report.previewBuffer
 export const selectReportIsPinningVessels = (state: ReportSliceState) =>
   state.report.isPinningVessels

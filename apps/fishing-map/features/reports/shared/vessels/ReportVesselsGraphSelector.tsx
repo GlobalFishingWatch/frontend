@@ -29,7 +29,6 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
   const selectedOptionId = useSelector(selectReportVesselGraph)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
-  // TODO:CVP generate this list based on location
   // TODO:CVP use by `analysis.groupByFlag` or this translations?
   const options: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>[] = [
     {

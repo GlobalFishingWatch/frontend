@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import {
@@ -8,8 +9,6 @@ import {
 import type { ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
-
-import { ReportBarGraphPlaceholder } from '../placeholders/ReportBarGraphPlaceholder'
 
 import {
   selectReportVesselsGraphAggregatedData,
@@ -29,10 +28,11 @@ function ReportVessels({
   activityUnit,
 }: {
   title?: string
-  loading: boolean
+  loading?: boolean
   color?: string
   activityUnit?: ReportActivityUnit
 }) {
+  const { t } = useTranslation()
   const aggregatedData = useSelector(selectReportVesselsGraphAggregatedData)
   // const individualData = useSelector(selectReportVesselsGraphIndividualData)
   const property = useSelector(selectReportVesselsSubCategory)
@@ -45,10 +45,9 @@ function ReportVessels({
         {title && <label className={styles.blockTitle}>{title}</label>}
         <ReportVesselsGraphSelector />
       </div>
-      {/* TODO:CVP add when no data available */}
       {loading ? (
         <ReportVesselsPlaceholder showGraphHeader={false} />
-      ) : (
+      ) : aggregatedData.length > 0 ? (
         <Fragment>
           <ReportVesselsGraph
             data={aggregatedData}
@@ -63,6 +62,12 @@ function ReportVessels({
             vessels={vessels}
           />
         </Fragment>
+      ) : (
+        <ReportVesselsPlaceholder>
+          <div className={styles.emptyState}>
+            <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
+          </div>
+        </ReportVesselsPlaceholder>
       )}
     </div>
   )

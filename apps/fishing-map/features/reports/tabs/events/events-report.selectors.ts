@@ -19,15 +19,17 @@ import {
   normalizeVesselProperties,
 } from 'features/reports/report-area/area-reports.utils'
 import type { EventsStatsVessel } from 'features/reports/report-port/ports-report.slice'
-import { REPORT_FILTER_PROPERTIES } from 'features/reports/report-vessel-group/vessel-group-report.config'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import {
   selectReportVesselFilter,
+  selectReportVesselGraphSelector,
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
 } from 'features/reports/reports.config.selectors'
 import { selectReportVesselGraph } from 'features/reports/reports.selectors'
+import { getVesselIndividualGroupedData } from 'features/reports/shared/utils/reports.utils'
+import { REPORT_FILTER_PROPERTIES } from 'features/reports/shared/vessels/report-vessels.config'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -107,6 +109,14 @@ export const selectVGREventsVesselsFiltered = createSelector(
     if (!vessels?.length) return null
     if (!filter) return vessels
     return getVesselsFiltered(vessels, filter, REPORT_FILTER_PROPERTIES)
+  }
+)
+
+export const selectReportEventsVesselsIndividualData = createSelector(
+  [selectVGREventsVesselsFiltered, selectReportVesselGraphSelector],
+  (vessels, groupBy) => {
+    if (!vessels || !groupBy) return []
+    return getVesselIndividualGroupedData(vessels, groupBy)
   }
 )
 

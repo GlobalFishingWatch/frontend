@@ -14,6 +14,7 @@ import {
   useVesselGroupBounds,
 } from 'features/reports/report-area/area-reports.hooks'
 import { selectReportCategory } from 'features/reports/reports.selectors'
+import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import EventsReport from 'features/reports/tabs/events/EventsReport'
 import VesselGroupReportInsights from 'features/reports/tabs/vessel-group-insights/VGRInsights'
 import {
@@ -32,7 +33,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { ReportCategory } from '../reports.types'
 import { selectReportVesselsTimeRange } from '../shared/vessels/report-vessels.selectors'
 import ReportActivity from '../tabs/activity/ReportActivity'
-import ReportVesselsGroup from '../tabs/vessel-group/ReportVessels'
 
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
@@ -114,7 +114,7 @@ function VesselGroupReport() {
       {
         id: ReportCategory.VesselGroup,
         title: t('common.vessels', 'vessels'),
-        content: <ReportVesselsGroup loading={loading} />,
+        content: <ReportVessels />,
       },
       {
         id: ReportCategory.VesselGroupInsights,
@@ -132,7 +132,7 @@ function VesselGroupReport() {
         content: <EventsReport />,
       },
     ],
-    [t, loading]
+    [t]
   )
 
   const isOwnedByUser = vesselGroup?.ownerId === userData?.id

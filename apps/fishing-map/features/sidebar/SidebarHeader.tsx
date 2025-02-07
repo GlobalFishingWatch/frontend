@@ -586,6 +586,7 @@ function SidebarHeader() {
         </a>
         {!readOnly && (
           <Fragment>
+            {/* TODO:CVP add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && <SaveWorkspaceButton />}
             {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) && (

@@ -182,17 +182,13 @@ export default function ReportVesselsTable({
                   className={cx({ [styles.border]: !isLastRow }, styles.icon)}
                   data-test={`vessel-${vessel.id}`}
                 >
-                  {/* TODO:CVP make the pin working withouth the need of requesting identity when already available */}
                   <VesselPin
-                    vessel={vessel.identity}
-                    vesselToResolve={
-                      vessel.identity
-                        ? undefined
-                        : {
-                            id: vessel.id || vessel.id,
-                            datasetId: vessel.datasetId,
-                          }
-                    }
+                    // TODO:CVP make the pin working withouth the need of requesting identity when already available
+                    // vessel={vessel.identity}
+                    vesselToResolve={{
+                      id: vessel.id || vessel.id,
+                      datasetId: vessel.datasetId,
+                    }}
                     disabled={pinTrackDisabled}
                     onClick={onPinClick}
                   />

@@ -19,7 +19,7 @@ import { getEventLabel } from 'utils/analytics'
 import {
   selectReportVessels,
   selectReportVesselsFiltered,
-  selectVGRVesselsPagination,
+  selectReportVesselsPagination,
 } from './report-vessels.selectors'
 import ReportVesselsTablePinAll from './ReportVesselsTablePin'
 
@@ -39,7 +39,7 @@ export default function ReportVesselsTableFooter({
   // TODO:CVP migrate funcionality from reports/tabs/activity/vessels/ReportVesselsTableFooter.tsx
   const allVessels = useSelector(selectReportVessels)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
-  const pagination = useSelector(selectVGRVesselsPagination)
+  const pagination = useSelector(selectReportVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
 
   if (!allVessels?.length) return null
@@ -59,7 +59,7 @@ export default function ReportVesselsTableFooter({
         IMO: vessel.imo,
         // TODO:CVP add callsign
         'call sign': vessel.callsign,
-        vesselId: vessel.vesselId,
+        vesselId: vessel.id,
       }
     })
     if (vessels?.length) {

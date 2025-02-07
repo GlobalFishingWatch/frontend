@@ -1,4 +1,3 @@
-// TODO:CVP move this to vessels
 export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
 export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
   name: ['shipName'],
