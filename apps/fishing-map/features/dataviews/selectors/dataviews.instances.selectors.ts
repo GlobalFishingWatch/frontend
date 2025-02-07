@@ -23,7 +23,6 @@ import { ReportCategory } from 'features/reports/reports.types'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
-  selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsVesselGroupReportLocation,
@@ -98,8 +97,25 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           d.slug === BASEMAP_DATAVIEW_SLUG
       )
     }
+    if (isVesselLocation && viewOnlyVessel && vesselId !== undefined) {
+      return visibleDataviews.filter(({ id, config }) => {
+        if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
+          return true
+        }
+        return config?.type === DataviewType.Track && id.includes(vesselId)
+      })
+    }
     if (isAnyReportLocation) {
-      return visibleDataviews.filter((dataview) => {
+      let reportDataviews = visibleDataviews
+      if (isVesselGroupReportLocation && viewOnlyVesselGroup && reportVesselGroupId !== undefined) {
+        reportDataviews = getReportVesselGroupVisibleDataviews({
+          dataviews: visibleDataviews,
+          reportVesselGroupId,
+          vesselGroupReportSection: reportCategory,
+          vesselGroupReportSubSection: reportSubCategory,
+        })
+      }
+      return reportDataviews.filter((dataview) => {
         if (
           dataview.category === DataviewCategory.Activity ||
           dataview.category === DataviewCategory.Detections
@@ -127,25 +143,6 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         return true
       })
     }
-    if (isVesselLocation && viewOnlyVessel && vesselId !== undefined) {
-      return visibleDataviews.filter(({ id, config }) => {
-        if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
-          return true
-        }
-        return config?.type === DataviewType.Track && id.includes(vesselId)
-      })
-    }
-
-    if (isVesselGroupReportLocation && viewOnlyVesselGroup && reportVesselGroupId !== undefined) {
-      const dataviewsVisible = getReportVesselGroupVisibleDataviews({
-        dataviews: visibleDataviews,
-        reportVesselGroupId,
-        vesselGroupReportSection: reportCategory,
-        vesselGroupReportSubSection: reportSubCategory,
-      })
-      return dataviewsVisible
-    }
-
     return visibleDataviews
   }
 )
