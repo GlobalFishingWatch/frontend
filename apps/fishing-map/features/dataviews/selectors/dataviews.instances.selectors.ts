@@ -3,7 +3,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
-import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
+import { BASEMAP_DATAVIEW_SLUG, CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import {
@@ -25,6 +25,7 @@ import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
+  selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
   selectVesselId,
@@ -69,6 +70,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
     selectVesselId,
+    selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportVesselGroupId,
     selectReportVesselsSubCategory,
@@ -83,6 +85,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     isVesselLocation,
     viewOnlyVessel,
     vesselId,
+    isPortReportLocation,
     isVesselGroupReportLocation,
     reportVesselGroupId,
     viewOnlyVesselGroup
@@ -136,6 +139,9 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           return !isVesselGroupActivityDataview(dataview.id)
         }
         if (dataview.category === DataviewCategory.Events) {
+          if (isPortReportLocation) {
+            return dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
+          }
           const matchesSubcategory =
             getReportSubCategoryFromDataview(dataview) === reportSubCategory
           return matchesSubcategory

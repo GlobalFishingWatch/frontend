@@ -1,13 +1,9 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
 import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
-
-import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
-import { Button } from '@globalfishingwatch/ui-components'
 
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -21,25 +17,17 @@ import {
   selectPortReportDatasetId,
   selectPortReportName,
 } from 'features/reports/reports.config.selectors'
-import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
-import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
-import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
-import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { selectReportPortId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
-import ReportVessels from '../shared/vessels/ReportVessels'
 import { getDateRangeHash } from '../tabs/activity/reports-activity.slice'
+import EventsReport from '../tabs/events/EventsReport'
 
 import { useFetchPortsReport } from './ports-report.hooks'
 import { selectPortReportsDataview } from './ports-report.selectors'
-import {
-  resetPortsReportData,
-  selectPortsReportDateRangeHash,
-  selectPortsReportStatus,
-} from './ports-report.slice'
+import { selectPortsReportDateRangeHash, selectPortsReportStatus } from './ports-report.slice'
 
 import styles from './PortsReport.module.css'
 
@@ -109,6 +97,24 @@ function PortsReport() {
     )
   }
 
+  const title = data
+    ? parse(
+        t('portsReport.summaryEvents', {
+          defaultValue:
+            '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+          vessels: formatI18nNumber(data.numVessels || 0),
+          flags: data?.numFlags,
+          activityQuantity: data.numEvents,
+          start: formatI18nDate(start, {
+            format: DateTime.DATE_MED,
+          }),
+          end: formatI18nDate(end, {
+            format: DateTime.DATE_MED,
+          }),
+        })
+      )
+    : ''
+
   return (
     <Fragment>
       <div className={styles.titleContainer}>
@@ -118,98 +124,7 @@ function PortsReport() {
           {formatInfoField(reportCountry, 'flag')})
         </h1>
       </div>
-      <div className={styles.container}>
-        {isPortsStatsLoading || !data ? (
-          <ReportTitlePlaceholder />
-        ) : (
-          <h2 className={styles.summary}>
-            {parse(
-              t('portsReport.summaryEvents', {
-                defaultValue:
-                  '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-                vessels: formatI18nNumber(data.numVessels || 0),
-                flags: data?.numFlags,
-                activityQuantity: data.numEvents,
-                start: formatI18nDate(start, {
-                  format: DateTime.DATE_MED,
-                }),
-                end: formatI18nDate(end, {
-                  format: DateTime.DATE_MED,
-                }),
-              })
-            )}
-          </h2>
-        )}
-        {isPortsStatsLoading || !data || !datasetId ? (
-          <ReportActivityPlaceholder showHeader={false} />
-        ) : (
-          <EventsReportGraph
-            color={color}
-            start={start}
-            end={end}
-            filters={{
-              portId,
-              ...(dataview && { ...getDataviewFilters(dataview) }),
-            }}
-            includes={['id', 'start', 'end', 'vessel']}
-            datasetId={datasetId}
-            timeseries={data.timeseries || []}
-          />
-        )}
-      </div>
-
-      {!allowsVesselsReport ? (
-        <ReportVesselsPlaceholder>
-          <div className={cx(styles.cover, styles.error)}>
-            <p>
-              {!isVesselSupported &&
-                t('portsReport.maxVessels', {
-                  defaultValue: 'Vessels report is available for up to {{vessels}} vessels',
-                  vessels: MAX_VESSELS_REPORT,
-                })}
-              {!timerangeSupported &&
-                t(
-                  'analysis.timeRangeTooLong',
-                  'The selected time range is too long, please select a shorter time range'
-                )}
-            </p>
-          </div>
-        </ReportVesselsPlaceholder>
-      ) : isPortsReportDataLoading ? (
-        <ReportVesselsPlaceholder />
-      ) : isPortsReportDataIdle || reportOutdated ? (
-        <ReportVesselsPlaceholder>
-          {!isPortsStatsLoading && (
-            <div className={cx(styles.cover, styles.center, styles.top)}>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: t('portsReport.newTimeRange', {
-                    defaultValue:
-                      'Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-                    start: formatI18nDate(start),
-                    end: formatI18nDate(end),
-                  }),
-                }}
-              />
-              <Button
-                onClick={() => {
-                  dispatch(resetPortsReportData())
-                  dispatchFetchReport()
-                }}
-              >
-                {t('analysis.seeVessels', 'See vessels')}
-              </Button>
-            </div>
-          )}
-        </ReportVesselsPlaceholder>
-      ) : (
-        <div className={styles.container}>
-          <ReportVessels
-            title={t('common.vessels', 'Vessels')}
-            loading={isPortsStatsLoading || isPortsReportDataLoading}
-          />
-        </div>
-      )}
+      <EventsReport title={title} />
     </Fragment>
   )
 }

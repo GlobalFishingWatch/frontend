@@ -195,7 +195,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       featuresFilteredDirtyRef.current &&
       instances.length
     ) {
-      const data = instances.map((l) => l.getData() as FourwingsFeature[])
+      const data = instances.map((l) => l?.getData?.() as FourwingsFeature[])
       if (data.some((d) => d.length)) {
         updateFeaturesFiltered(data, area, reportCategory === 'environment' ? 'point' : 'cell')
         featuresFilteredDirtyRef.current = false

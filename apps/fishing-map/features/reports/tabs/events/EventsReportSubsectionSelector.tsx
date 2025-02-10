@@ -1,12 +1,15 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
-import { selectReportSubCategory } from 'features/reports/reports.selectors'
+import {
+  selectActiveReportSubCategories,
+  selectReportSubCategory,
+} from 'features/reports/reports.selectors'
 import type { ReportEventsSubCategory } from 'features/reports/reports.types'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -17,38 +20,55 @@ function VesselGroupReportEventsSubsectionSelector() {
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
   const subsection = useSelector(selectReportSubCategory)
+  const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
   const gfwUser = useSelector(selectIsGFWUser)
   const jacUser = useSelector(selectIsJACUser)
   const hasAccessToAllSubsections = gfwUser || jacUser
-  // TODO:CVP generate this options from the dataviews available
+
   const options: ChoiceOption<ReportEventsSubCategory>[] = [
-    {
-      id: 'encounter',
-      label: t('event.encountersShort', 'Encounters'),
-      disabled: loading,
-    },
-    {
-      id: 'loitering',
-      label: t('event.loitering_other', 'Loitering events'),
-      disabled: !hasAccessToAllSubsections,
-      tooltip: !hasAccessToAllSubsections ? t('common.comingSoon', 'Coming Soon!') : '',
-      tooltipPlacement: 'top',
-    },
-    {
-      id: 'gap',
-      label: t('event.gap_other', 'AIS off events'),
-      disabled: true,
-      tooltip: t('common.comingSoon', 'Coming Soon!'),
-      tooltipPlacement: 'top',
-    },
-    {
-      id: 'port_visit',
-      label: t('event.port_visit_other', 'Port visits'),
-      disabled: !hasAccessToAllSubsections,
-      tooltip: !hasAccessToAllSubsections ? t('common.comingSoon', 'Coming Soon!') : '',
-      tooltipPlacement: 'top',
-    },
+    ...(activeReportSubCategories?.includes('encounter')
+      ? [
+          {
+            id: 'encounter' as ReportEventsSubCategory,
+            label: t('event.encountersShort', 'Encounters'),
+            disabled: loading,
+          },
+        ]
+      : []),
+    ...(activeReportSubCategories?.includes('loitering')
+      ? [
+          {
+            id: 'loitering' as ReportEventsSubCategory,
+            label: t('event.loitering_other', 'Loitering events'),
+            disabled: !hasAccessToAllSubsections,
+            tooltip: !hasAccessToAllSubsections ? t('common.comingSoon', 'Coming Soon!') : '',
+            tooltipPlacement: 'top' as TooltipPlacement,
+          },
+        ]
+      : []),
+    ...(activeReportSubCategories?.includes('gap')
+      ? [
+          {
+            id: 'gap' as ReportEventsSubCategory,
+            label: t('event.gap_other', 'AIS off events'),
+            disabled: true,
+            tooltip: t('common.comingSoon', 'Coming Soon!'),
+            tooltipPlacement: 'top' as TooltipPlacement,
+          },
+        ]
+      : []),
+    ...(activeReportSubCategories?.includes('port_visit')
+      ? [
+          {
+            id: 'port_visit' as ReportEventsSubCategory,
+            label: t('event.port_visit_other', 'Port visits'),
+            disabled: !hasAccessToAllSubsections,
+            tooltip: !hasAccessToAllSubsections ? t('common.comingSoon', 'Coming Soon!') : '',
+            tooltipPlacement: 'top' as TooltipPlacement,
+          },
+        ]
+      : []),
   ]
 
   const onSelectSubsection = (option: ChoiceOption<ReportEventsSubCategory>) => {
@@ -59,6 +79,10 @@ function VesselGroupReportEventsSubsectionSelector() {
         action: `vessel_group_profile_events_tab_${option.id}_graph`,
       })
     }
+  }
+
+  if (options?.length <= 1) {
+    return null
   }
 
   const selectedOption = subsection ? options.find((o) => o.id === subsection) : options[0]

@@ -38,7 +38,7 @@ import {
 } from 'utils/info'
 
 import { selectVGRVessels } from '../../report-vessel-group/vessel-group-report.slice'
-import { selectVGREventsVesselsFiltered } from '../../tabs/events/events-report.selectors'
+import { selectEventsVessels } from '../../tabs/events/events-report.selectors'
 
 import type { ReportTableVessel } from './report-vessels.types'
 
@@ -55,8 +55,8 @@ const getVesselSource = (vessel: IdentityVessel) => {
 }
 
 export const selectReportVesselsByCategory = createSelector(
-  [selectReportCategory, selectReportVesselsList, selectVGRVessels, selectPortsReportVessels],
-  (reportCategory, reportVesselsList, vGRVessels, portsReportVessels) => {
+  [selectReportCategory, selectReportVesselsList, selectVGRVessels, selectEventsVessels],
+  (reportCategory, reportVesselsList, vGRVessels, eventsVessels) => {
     if (!reportCategory) {
       return []
     }
@@ -73,7 +73,8 @@ export const selectReportVesselsByCategory = createSelector(
       return []
     }
     if (reportCategory === ReportCategory.Events) {
-      return portsReportVessels
+      console.log('🚀 ~ eventsVessels:', eventsVessels)
+      return eventsVessels
     }
     return []
   }

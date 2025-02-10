@@ -1,12 +1,9 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { lowerCase } from 'es-toolkit'
-import parse from 'html-react-parser'
-import { DateTime } from 'luxon'
+import cx from 'classnames'
 import type {
   ReportEventsStatsParams,
-  ReportEventsStatsResponseGroups,
   ReportEventsVesselsParams,
 } from 'queries/report-events-stats-api'
 import {
@@ -25,57 +22,49 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { getDownloadReportSupported } from 'features/download/download.utils'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
-import { selectReportVesselGraph } from 'features/reports/reports.selectors'
+import { selectActiveReportSubCategories } from 'features/reports/reports.selectors'
 import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
-import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
-import ReportVesselsFilter from 'features/reports/shared/vessels/ReportVesselsFilter'
-import VesselGroupReportVesselsGraph from 'features/reports/shared/vessels/ReportVesselsGraph'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import {
-  selectFetchVGREventsVesselsParams,
-  selectReportEventsVesselsIndividualData,
-  selectVGREventsVessels,
-  selectVGREventsVesselsFlags,
-  selectVGREventsVesselsGrouped,
-  selectVGREventsVesselsPaginated,
-  selectVGREventsVesselsPagination,
+  selectReportVesselsFlags,
+  selectVGRVesselDatasetsWithoutEventsRelated,
+} from 'features/reports/shared/vessels/report-vessels.selectors'
+import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
+import {
+  selectEventsVessels,
+  selectFetchEventsVesselsParams,
 } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import VGREventsSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
-import VGREventsVesselPropertySelector from 'features/reports/tabs/events/EventsReportVesselPropertySelector'
-import VGREventsVesselsTable from 'features/reports/tabs/events/EventsReportVesselsTable'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
-
-import VGREventsVesselsTableFooter from './EventsReportVesselsTableFooter'
+import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
 
 import styles from './EventsReport.module.css'
 
-function EventsReport() {
+function EventsReport({ title }: { title: string }) {
   const { t } = useTranslation()
+  const portId = useSelector(selectReportPortId)
   const vesselGroupId = useSelector(selectReportVesselGroupId)
-  const filter = useSelector(selectReportVesselFilter)
+  const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
-  const vesselsGroupByProperty = useSelector(selectReportVesselGraph)
-  const vesselsWithEvents = useSelector(selectVGREventsVessels)
-  const vesselFlags = useSelector(selectVGREventsVesselsFlags)
-  const vesselGroups = useSelector(selectVGREventsVesselsGrouped)
-  const individualData = useSelector(selectReportEventsVesselsIndividualData)
-  const vesselsPaginated = useSelector(selectVGREventsVesselsPaginated)
+  // TODO:CVP decide if we
+  // const vesselsWithEvents = useSelector(selectEventsVessels)
+  // const vesselFlags = useSelector(selectReportVesselsFlags)
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
-  const reportVesselFilter = useSelector(selectReportVesselFilter)
-  const pagination = useSelector(selectVGREventsVesselsPagination)
-  const params = useSelector(selectFetchVGREventsVesselsParams)
+  const params = useSelector(selectFetchEventsVesselsParams)
+  const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
+  const timerangeSupported = getDownloadReportSupported(start, end)
+
   const { status: vessselStatus } = useGetReportEventsVesselsQuery(
     params as ReportEventsVesselsParams,
     {
-      skip: !params,
+      skip: !params || !timerangeSupported,
     }
   )
+
   const {
     data,
     error,
@@ -86,7 +75,7 @@ function EventsReport() {
       includes: ['TIME_SERIES'],
     } as ReportEventsStatsParams,
     {
-      skip: !vesselGroupId || !eventsDataview,
+      skip: !eventsDataview,
     }
   )
   const isLoading = statsStatus === 'pending' || vessselStatus === 'pending'
@@ -94,9 +83,11 @@ function EventsReport() {
   if (!vesselDatasets.length) {
     return (
       <Fragment>
-        <div className={styles.selector}>
-          <VGREventsSubsectionSelector />
-        </div>
+        {showSubsectionSelector && (
+          <div className={styles.selector}>
+            <VGREventsSubsectionSelector />
+          </div>
+        )}
         <ReportEventsPlaceholder />
       </Fragment>
     )
@@ -127,9 +118,11 @@ function EventsReport() {
   if (error || !data || isLoading) {
     return (
       <Fragment>
-        <div className={styles.selector}>
-          <VGREventsSubsectionSelector />
-        </div>
+        {showSubsectionSelector && (
+          <div className={styles.selector}>
+            <VGREventsSubsectionSelector />
+          </div>
+        )}
         {isLoading && <ReportEventsPlaceholder />}
         {error && !isLoading ? <p className={styles.error}>{(error as any).message}</p> : null}
       </Fragment>
@@ -140,38 +133,20 @@ function EventsReport() {
   const totalEvents = data.timeseries.reduce((acc, group) => acc + group.value, 0)
   return (
     <Fragment>
-      <div className={styles.selector}>
-        <VGREventsSubsectionSelector />
-      </div>
+      {showSubsectionSelector && (
+        <div className={styles.selector}>
+          <VGREventsSubsectionSelector />
+        </div>
+      )}
       {totalEvents > 0 ? (
         <Fragment>
           <div className={styles.container}>
-            <h2 className={styles.summary}>
-              {parse(
-                t('vesselGroup.summaryEvents', {
-                  defaultValue:
-                    '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-                  vessels: formatI18nNumber(vesselsWithEvents?.length || 0),
-                  flags: vesselFlags?.size,
-                  activityQuantity: totalEvents,
-                  activityUnit: `${
-                    eventType !== undefined
-                      ? t(`common.eventLabels.${eventType.toLowerCase()}`, lowerCase(eventType))
-                      : ''
-                  } ${(t('common.events', 'events') as string).toLowerCase()}`,
-                  start: formatI18nDate(start, {
-                    format: DateTime.DATE_MED,
-                  }),
-                  end: formatI18nDate(end, {
-                    format: DateTime.DATE_MED,
-                  }),
-                })
-              )}
-            </h2>
+            <h2 className={styles.summary}>{title}</h2>
             {eventDataset?.id && (
               <EventsReportGraph
                 datasetId={eventDataset?.id}
                 filters={{
+                  portId,
                   vesselGroupId,
                   ...(eventsDataview && { ...getDataviewFilters(eventsDataview) }),
                 }}
@@ -190,27 +165,20 @@ function EventsReport() {
               />
             )}
           </div>
-          <div className={styles.container}>
-            <div className={styles.flex}>
-              <label>{t('common.vessels', 'Vessels')}</label>
-              <VGREventsVesselPropertySelector property={vesselsGroupByProperty} />
-            </div>
-            <VesselGroupReportVesselsGraph
-              data={vesselGroups as ReportEventsStatsResponseGroups}
-              individualData={individualData}
-              color={eventsDataview?.config?.color}
-              property={vesselsGroupByProperty}
-            />
-            <ReportVesselsFilter filter={filter} />
-            <VGREventsVesselsTable vessels={vesselsPaginated} />
-            {vesselsWithEvents && vesselsWithEvents.length > 0 && (
-              <VGREventsVesselsTableFooter
-                vessels={vesselsWithEvents}
-                filter={reportVesselFilter}
-                pagination={pagination}
-              />
-            )}
-          </div>
+          {!timerangeSupported ? (
+            <ReportVesselsPlaceholder>
+              <div className={cx(styles.cover, styles.error)}>
+                <p>
+                  {t(
+                    'analysis.timeRangeTooLong',
+                    'The selected time range is too long, please select a shorter time range'
+                  )}
+                </p>
+              </div>
+            </ReportVesselsPlaceholder>
+          ) : (
+            <ReportVessels title={t('common.vessels', 'Vessels')} loading={isLoading} />
+          )}
         </Fragment>
       ) : (
         <div className={styles.emptyState}>

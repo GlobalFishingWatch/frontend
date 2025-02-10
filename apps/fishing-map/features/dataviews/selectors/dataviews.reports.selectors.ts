@@ -14,7 +14,10 @@ import type {
   ReportDetectionsSubCategory,
   ReportEventsSubCategory,
 } from 'features/reports/reports.types'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import {
+  selectIsPortReportLocation,
+  selectIsVesselGroupReportLocation,
+} from 'routes/routes.selectors'
 
 import { selectDataviewInstancesResolved } from './dataviews.resolvers.selectors'
 
@@ -82,5 +85,15 @@ export const selectActiveDetectionsReportSubCategories =
     DataviewCategory.Detections
   )
 
-export const selectActiveEventsReportSubCategories =
-  selectActiveReportSubCategoriesByCategory<ReportEventsSubCategory>(DataviewCategory.Events)
+export const selectActiveEventsReportSubCategories = createSelector(
+  [
+    selectIsPortReportLocation,
+    selectActiveReportSubCategoriesByCategory<ReportEventsSubCategory>(DataviewCategory.Events),
+  ],
+  (isPortReportLocation, activeEventsReportSubCategories) => {
+    return isPortReportLocation
+      ? // In ports report only port visit events are available
+        ['port_visit' as ReportEventsSubCategory]
+      : activeEventsReportSubCategories
+  }
+)

@@ -109,6 +109,27 @@ function VesselGroupReport() {
 
   const loading = reportStatus === AsyncReducerStatus.Loading
 
+  // const eventsTitle = parse(
+  //   t('vesselGroup.summaryEvents', {
+  //     defaultValue:
+  //       '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+  //     vessels: formatI18nNumber(vesselsWithEvents?.length || 0),
+  //     flags: vesselFlags?.size,
+  //     activityQuantity: totalEvents,
+  //     activityUnit: `${
+  //       eventType !== undefined
+  //         ? t(`common.eventLabels.${eventType.toLowerCase()}`, lowerCase(eventType))
+  //         : ''
+  //     } ${(t('common.events', 'events') as string).toLowerCase()}`,
+  //     start: formatI18nDate(start, {
+  //       format: DateTime.DATE_MED,
+  //     }),
+  //     end: formatI18nDate(end, {
+  //       format: DateTime.DATE_MED,
+  //     }),
+  //   })
+  // )
+
   const sectionTabs: Tab<ReportCategory>[] = useMemo(
     () => [
       {
