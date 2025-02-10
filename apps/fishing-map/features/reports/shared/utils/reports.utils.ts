@@ -2,7 +2,6 @@ import { groupBy } from 'lodash'
 
 import { type ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
-import type { EventsStatsVessel } from 'features/reports/report-port/ports-report.slice'
 import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import type {
   ReportCategory,
@@ -20,7 +19,7 @@ type VesselVisualizationData = ResponsiveVisualizationData<
 >
 
 export function getVesselIndividualGroupedData(
-  vessels: (EventsStatsVessel | ReportTableVessel | ReportVesselWithDatasets)[],
+  vessels: (ReportTableVessel | ReportVesselWithDatasets)[],
   groupByProperty: ReportCategory | ReportVesselsSubCategory | ReportVesselGraph,
   dataviewsIdsOrder?: string[]
 ) {
@@ -44,18 +43,12 @@ export function getVesselIndividualGroupedData(
     case 'flag': {
       vesselsGrouped = groupBy(
         vesselsSorted,
-        (vessel) =>
-          (vessel as ReportTableVessel).flagTranslatedClean ||
-          (vessel as EventsStatsVessel).flagTranslated ||
-          (vessel as EventsStatsVessel).flag
+        (vessel) => vessel.flagTranslatedClean || vessel.flagTranslated || vessel.flag
       )
       break
     }
     case 'shiptypes': {
-      vesselsGrouped = groupBy(
-        vesselsSorted,
-        (vessel) => (vessel as ReportTableVessel).vesselType?.split(', ')[0]
-      )
+      vesselsGrouped = groupBy(vesselsSorted, (vessel) => vessel.vesselType?.split(', ')[0])
       break
     }
     case 'geartype':

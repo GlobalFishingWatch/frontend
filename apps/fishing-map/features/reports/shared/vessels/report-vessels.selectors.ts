@@ -10,11 +10,13 @@ import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
-import { selectPortsReportVessels } from 'features/reports/report-port/ports-report.slice'
-import { MAX_CATEGORIES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
+import {
+  EMPTY_API_VALUES,
+  MAX_CATEGORIES,
+  OTHERS_CATEGORY_LABEL,
+} from 'features/reports/reports.config'
 import {
   selectReportVesselFilter,
-  selectReportVesselGraphSelector,
   selectReportVesselPage,
   selectReportVesselResultsPerPage,
   selectReportVesselsOrderDirection,
@@ -86,62 +88,68 @@ export const selectReportVessels = createSelector(
     if (!vessels?.length) {
       return null
     }
-    return vessels.flatMap((vessel) => {
-      const identity = (vessel as VesselGroupVesselIdentity)?.identity
-      // Vessels have identity when coming from events or vessel groups
-      if (identity) {
-        const { shipname, ...vesselData } = getSearchIdentityResolved(identity!)
-        const source = getVesselSource(identity)
-        const vesselType = getVesselShipTypeLabel(vesselData) as string
-        const geartype = getVesselGearTypeLabel(vesselData) as string
-        const flag = getVesselProperty(identity, 'flag', {
-          identitySource: VesselIdentitySourceEnum.SelfReported,
-        })
-
-        const tableVessel: ReportTableVessel = {
-          id: vessel.vesselId,
-          datasetId: vessel.dataset as string,
-          // TODO:CVP add tracks for vessel group vessels if want to pin them
-          // trackDatasetId: '',
-          shipName: formatInfoField(shipname, 'shipname') as string,
-          vesselType,
-          geartype,
-          ssvid: getVesselProperty(identity, 'ssvid', {
+    return vessels
+      .flatMap((vessel) => {
+        const identity = (vessel as VesselGroupVesselIdentity)?.identity
+        // Vessels have identity when coming from events or vessel groups
+        if (identity) {
+          const { shipname, ...vesselData } = getSearchIdentityResolved(identity!)
+          const source = getVesselSource(identity)
+          const vesselType = getVesselShipTypeLabel(vesselData) as string
+          const geartype = getVesselGearTypeLabel(vesselData) as string
+          const flag = getVesselProperty(identity, 'flag', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
-          }),
-          flag: flag,
-          flagTranslated: flag ? t(`flags:${flag}` as any) : EMPTY_FIELD_PLACEHOLDER,
-          flagTranslatedClean: flag
-            ? cleanFlagState(t(`flags:${flag}` as any))
-            : EMPTY_FIELD_PLACEHOLDER,
-          source: t(`common.sourceOptions.${source}`, source),
+          })
+
+          const tableVessel: ReportTableVessel = {
+            id: vessel.vesselId,
+            datasetId: vessel.dataset as string,
+            // TODO:CVP add tracks for vessel group vessels if want to pin them
+            // trackDatasetId: '',
+            shipName: formatInfoField(shipname, 'shipname') as string,
+            vesselType,
+            geartype,
+            ssvid: getVesselProperty(identity, 'ssvid', {
+              identitySource: VesselIdentitySourceEnum.SelfReported,
+            }),
+            flag: flag,
+            flagTranslated: flag ? t(`flags:${flag}` as any) : EMPTY_FIELD_PLACEHOLDER,
+            flagTranslatedClean: flag
+              ? cleanFlagState(t(`flags:${flag}` as any))
+              : EMPTY_FIELD_PLACEHOLDER,
+            source: t(`common.sourceOptions.${source}`, source),
+          }
+          return tableVessel
+        } else {
+          // Don't have identity when coming from activity or detections reports
+          const reportVessel = vessel as ReportVesselWithDatasets
+          const tableVessel: ReportTableVessel = {
+            id: reportVessel.vesselId,
+            datasetId: (reportVessel.infoDataset?.id || reportVessel.dataset) as string,
+            trackDatasetId: reportVessel.trackDataset?.id,
+            shipName: formatInfoField(reportVessel.shipName, 'shipname') as string,
+            vesselType: formatInfoField(reportVessel.vesselType, 'vesselType') as string,
+            geartype: formatInfoField(reportVessel.geartype, 'geartypes') as string,
+            ssvid: reportVessel.mmsi || EMPTY_FIELD_PLACEHOLDER,
+            flag: reportVessel.flag || EMPTY_FIELD_PLACEHOLDER,
+            value: (reportVessel.value || reportVessel.numEvents) as number,
+            color: reportVessel.color,
+            flagTranslated: reportVessel.flag
+              ? t(`flags:${reportVessel.flag}` as any)
+              : EMPTY_FIELD_PLACEHOLDER,
+            flagTranslatedClean: reportVessel.flag
+              ? cleanFlagState(t(`flags:${reportVessel.flag}` as any))
+              : EMPTY_FIELD_PLACEHOLDER,
+            // TODO:CVP add the needed values of identity here
+          }
+          return tableVessel
         }
-        return tableVessel
-      } else {
-        // Don't have identity when coming from activity or detections reports
-        const reportVessel = vessel as ReportVesselWithDatasets
-        const tableVessel: ReportTableVessel = {
-          id: reportVessel.vesselId,
-          datasetId: (reportVessel.infoDataset?.id || reportVessel.dataset) as string,
-          trackDatasetId: reportVessel.trackDataset?.id,
-          shipName: formatInfoField(reportVessel.shipName, 'shipname') as string,
-          vesselType: formatInfoField(reportVessel.vesselType, 'vesselType') as string,
-          geartype: formatInfoField(reportVessel.geartype, 'geartypes') as string,
-          ssvid: reportVessel.mmsi || EMPTY_FIELD_PLACEHOLDER,
-          flag: reportVessel.flag || EMPTY_FIELD_PLACEHOLDER,
-          value: reportVessel.value as number,
-          color: reportVessel.color,
-          flagTranslated: reportVessel.flag
-            ? t(`flags:${reportVessel.flag}` as any)
-            : EMPTY_FIELD_PLACEHOLDER,
-          flagTranslatedClean: reportVessel.flag
-            ? cleanFlagState(t(`flags:${reportVessel.flag}` as any))
-            : EMPTY_FIELD_PLACEHOLDER,
-          // TODO:CVP add the needed values of identity here
-        }
-        return tableVessel
-      }
-    })
+      })
+      .sort((a, b) => {
+        if (EMPTY_API_VALUES.includes(a.shipName as string)) return 1
+        if (EMPTY_API_VALUES.includes(b.shipName as string)) return -1
+        return b?.value - a?.value
+      })
   }
 )
 

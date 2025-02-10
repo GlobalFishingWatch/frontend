@@ -152,7 +152,9 @@ export default function ReportVesselsTable({
             <div className={cx(styles.header, styles.right)}>
               {activityUnit === 'hour'
                 ? t('common.hour_other', 'hours')
-                : t('common.detection_other', 'detections')}
+                : activityUnit === 'detection'
+                  ? t('common.detection_other', 'detections')
+                  : t('common.event_other', 'events')}
             </div>
           )}
           {vessels?.map((vessel, i) => {
@@ -171,6 +173,7 @@ export default function ReportVesselsTable({
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const gearTypeInteractionEnabled = geartype !== EMPTY_FIELD_PLACEHOLDER
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
+            const value = vessel.value || vessel[activityUnit as any]
             // TODO:CVP normalize this vessel types
             const hasDatasets = vessel.datasetId?.includes(GLOBAL_VESSELS_DATASET_ID)
               ? vessel.datasetId !== undefined && vessel.trackDatasetId !== undefined
@@ -261,11 +264,7 @@ export default function ReportVesselsTable({
                 </div>
                 {activityUnit && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                    {vessel.value !== undefined ? (
-                      <I18nNumber number={vessel.value} />
-                    ) : (
-                      EMPTY_FIELD_PLACEHOLDER
-                    )}
+                    {value !== undefined ? <I18nNumber number={value} /> : EMPTY_FIELD_PLACEHOLDER}
                   </div>
                 )}
               </Fragment>
