@@ -185,14 +185,13 @@ const VesselIdentity = () => {
             <div>
               <label>{t('vessel.registrySources', 'Registry Sources')}</label>
               {vesselIdentity?.sourceCode ? (
-                <Tooltip content={vesselIdentity?.sourceCode?.join(', ')}>
-                  <VesselIdentityField
-                    className={styles.help}
-                    value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
-                      vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
-                    }`}
-                  />
-                </Tooltip>
+                <VesselIdentityField
+                  tooltip={vesselIdentity?.sourceCode?.join(', ')}
+                  className={styles.help}
+                  value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
+                    vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
+                  }`}
+                />
               ) : (
                 EMPTY_FIELD_PLACEHOLDER
               )}
