@@ -36,7 +36,7 @@ import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/sh
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import { selectFetchEventsVesselsParams } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
-import VGREventsSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
+import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
@@ -147,7 +147,7 @@ function EventsReport() {
       <Fragment>
         {showSubsectionSelector && (
           <div className={styles.selector}>
-            <VGREventsSubsectionSelector />
+            <EventsReportSubsectionSelector />
           </div>
         )}
         <ReportEventsPlaceholder />
@@ -182,7 +182,7 @@ function EventsReport() {
       <Fragment>
         {showSubsectionSelector && (
           <div className={styles.selector}>
-            <VGREventsSubsectionSelector />
+            <EventsReportSubsectionSelector />
           </div>
         )}
         {isLoading && <ReportEventsPlaceholder />}
@@ -194,7 +194,7 @@ function EventsReport() {
     <Fragment>
       {showSubsectionSelector && (
         <div className={styles.selector}>
-          <VGREventsSubsectionSelector />
+          <EventsReportSubsectionSelector />
         </div>
       )}
       {totalEvents && totalEvents > 0 ? (
@@ -237,6 +237,7 @@ function EventsReport() {
             </ReportVesselsPlaceholder>
           ) : (
             <ReportVessels
+              color={eventsDataview?.config?.color}
               activityUnit="numEvents"
               title={t('common.vessels', 'Vessels')}
               loading={isLoading}
@@ -245,6 +246,7 @@ function EventsReport() {
         </Fragment>
       ) : (
         <div className={styles.emptyState}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={EventsEmptyState.src}
             alt=""

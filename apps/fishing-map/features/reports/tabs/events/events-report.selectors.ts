@@ -1,8 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type {
-  ReportEventsVesselsParams,
-  ReportEventsVesselsResponseItem,
-} from 'queries/report-events-stats-api'
+import type { ReportEventsVesselsParams } from 'queries/report-events-stats-api'
 import {
   selectReportEventsStatsApiSlice,
   selectReportEventsVessels,
@@ -13,11 +10,7 @@ import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { normalizeVesselProperties } from 'features/reports/report-area/area-reports.utils'
-import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
-import { formatInfoField } from 'utils/info'
 
 export const selectFetchEventsVesselsParams = createSelector(
   [selectTimeRange, selectReportVesselGroupId, selectReportPortId, selectActiveReportDataviews],
@@ -41,7 +34,7 @@ export const selectFetchEventsVesselsParams = createSelector(
   }
 )
 
-export const selectEventsVessels = createSelector(
+export const selectEventsVesselsData = createSelector(
   [selectReportEventsStatsApiSlice, selectFetchEventsVesselsParams],
   (reportEventsStatsApi, params) => {
     if (!params) {
@@ -50,6 +43,26 @@ export const selectEventsVessels = createSelector(
     return selectReportEventsVessels(params)({ reportEventsStatsApi })?.data
   }
 )
+
+export const selectEventsVessels = createSelector([selectEventsVesselsData], (eventsVessels) => {
+  if (!eventsVessels) {
+    return
+  }
+  return eventsVessels.map((vessel) => ({
+    ...vessel,
+    // TODO:CVP see what is needed to
+    // vesselId: vessel?.vesselId,
+    // shipName: vessel?.shipName,
+    // mmsi: vessel?.mmsi,
+    // flag: vessel?.flag,
+    // geartype: vessel?.geartype,
+    // vesselType: vessel?.vesselType,
+    // value: vessel?.value,
+    // infoDataset,
+    // trackDataset,
+    value: vessel.numEvents,
+  }))
+})
 
 // TODO:CVP decide if we use this selector for events vessels in vessel-group report as we have all the identities
 // export const selectEventsVessels = createSelector(

@@ -114,7 +114,7 @@ function VesselGroupReport() {
       {
         id: ReportCategory.VesselGroup,
         title: t('common.vessels', 'vessels'),
-        content: <ReportVessels />,
+        content: <ReportVessels color={reportDataview?.config?.color} />,
       },
       {
         id: ReportCategory.VesselGroupInsights,
@@ -132,7 +132,7 @@ function VesselGroupReport() {
         content: <EventsReport />,
       },
     ],
-    [t]
+    [t, reportDataview?.config?.color]
   )
 
   const isOwnedByUser = vesselGroup?.ownerId === userData?.id

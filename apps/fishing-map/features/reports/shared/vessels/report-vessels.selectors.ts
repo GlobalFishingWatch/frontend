@@ -148,7 +148,7 @@ export const selectReportVessels = createSelector(
       .sort((a, b) => {
         if (EMPTY_API_VALUES.includes(a.shipName as string)) return 1
         if (EMPTY_API_VALUES.includes(b.shipName as string)) return -1
-        return b?.value - a?.value
+        return (b?.value || 0) - (a?.value || 0)
       })
   }
 )
@@ -227,7 +227,7 @@ export const selectReportVesselsFiltered = createSelector(
   }
 )
 
-export const selectVGRVesselsOrdered = createSelector(
+export const selectReportVesselsOrdered = createSelector(
   [
     selectReportVesselsFiltered,
     selectReportVesselsOrderProperty,
@@ -261,7 +261,7 @@ export const selectVGRVesselsOrdered = createSelector(
 
 // TODO:CVP rename all of this prefixed with VGR
 export const selectReportVesselsPaginated = createSelector(
-  [selectVGRVesselsOrdered, selectReportVesselPage, selectReportVesselResultsPerPage],
+  [selectReportVesselsOrdered, selectReportVesselPage, selectReportVesselResultsPerPage],
   (vessels, page, resultsPerPage) => {
     if (!vessels?.length) return []
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))

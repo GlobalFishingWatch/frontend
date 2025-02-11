@@ -333,11 +333,12 @@ function ActivityReport({ reportName }: { reportName?: string }) {
               ))}
             </p>
           )}
-          {isVesselGroupReportLocation ? (
+          {/* TODO:CVP remove this */}
+          {/* {isVesselGroupReportLocation ? (
             <p>{t('vesselGroupReport.noData', 'No data available')}</p>
           ) : (
             <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
-          )}
+          )} */}
         </div>
       )
     }
@@ -363,7 +364,6 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     hasVessels,
     reportName,
     datasetsDownloadNotSupported,
-    isVesselGroupReportLocation,
   ])
 
   return (
