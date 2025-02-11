@@ -44,25 +44,29 @@ export const selectEventsVesselsData = createSelector(
   }
 )
 
-export const selectEventsVessels = createSelector([selectEventsVesselsData], (eventsVessels) => {
-  if (!eventsVessels) {
-    return
+export const selectEventsVessels = createSelector(
+  [selectEventsVesselsData, selectActiveReportDataviews],
+  (eventsVessels, activeReportDataviews) => {
+    if (!eventsVessels) {
+      return
+    }
+    return eventsVessels.map((vessel) => ({
+      ...vessel,
+      dataviewId: activeReportDataviews?.[0]?.id,
+      // TODO:CVP see what is needed to
+      // vesselId: vessel?.vesselId,
+      // shipName: vessel?.shipName,
+      // mmsi: vessel?.mmsi,
+      // flag: vessel?.flag,
+      // geartype: vessel?.geartype,
+      // vesselType: vessel?.vesselType,
+      // value: vessel?.value,
+      // infoDataset,
+      // trackDataset,
+      value: vessel.numEvents,
+    }))
   }
-  return eventsVessels.map((vessel) => ({
-    ...vessel,
-    // TODO:CVP see what is needed to
-    // vesselId: vessel?.vesselId,
-    // shipName: vessel?.shipName,
-    // mmsi: vessel?.mmsi,
-    // flag: vessel?.flag,
-    // geartype: vessel?.geartype,
-    // vesselType: vessel?.vesselType,
-    // value: vessel?.value,
-    // infoDataset,
-    // trackDataset,
-    value: vessel.numEvents,
-  }))
-})
+)
 
 // TODO:CVP decide if we use this selector for events vessels in vessel-group report as we have all the identities
 // export const selectEventsVessels = createSelector(

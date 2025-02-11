@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import type {
+  BaseResponsiveChartProps,
   ResponsiveVisualizationData,
   ResponsiveVisualizationInteractionCallback,
 } from '@globalfishingwatch/responsive-visualizations'
@@ -195,6 +196,7 @@ const ReportGraphTick = (props: any) => {
 type ReportVesselsGraphProps = {
   data: ResponsiveVisualizationData<'aggregated'>
   individualData?: ResponsiveVisualizationData<'individual'>
+  aggregatedValueKey?: BaseResponsiveChartProps['aggregatedValueKey']
   color?: string
   property: ReportVesselGraph | ReportVesselsSubCategory
   filterQueryParam?: keyof Pick<ReportState, 'reportVesselFilter'>
@@ -204,6 +206,7 @@ type ReportVesselsGraphProps = {
 export default function ReportVesselsGraph({
   data,
   individualData,
+  aggregatedValueKey,
   color = COLOR_PRIMARY_BLUE,
   property,
   filterQueryParam = 'reportVesselFilter',
@@ -233,6 +236,7 @@ export default function ReportVesselsGraph({
     <div className={styles.graph} data-test="report-vessels-graph">
       <ResponsiveBarChart
         color={color}
+        aggregatedValueKey={aggregatedValueKey}
         // getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         onAggregatedItemClick={onBarClick}

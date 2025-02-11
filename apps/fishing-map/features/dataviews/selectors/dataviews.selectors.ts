@@ -26,6 +26,7 @@ import {
   selectActiveEventsDataviews,
   selectActiveVesselsDataviews,
   selectVGReportActivityDataviews,
+  selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectAllDataviewInstancesResolved,
@@ -116,6 +117,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectActiveActivityDataviews,
     selectActiveDetectionsDataviews,
     selectActiveHeatmapEnvironmentalDataviews,
+    selectVGRFootprintDataview,
     selectActiveEventsDataviews,
     selectVGReportActivityDataviews,
     selectIsVesselGroupReportLocation,
@@ -125,6 +127,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     activityDataviews = EMPTY_ARRAY,
     detectionsDataviews = EMPTY_ARRAY,
     environmentalDataviews = EMPTY_ARRAY,
+    vGRFootprintDataview,
     eventsDataviews = EMPTY_ARRAY,
     vesselGroupDataviews = EMPTY_ARRAY,
     isVesselGroupReportLocation
@@ -137,6 +140,9 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     }
     if (reportCategory === ReportCategory.Events) {
       return eventsDataviews
+    }
+    if (reportCategory === ReportCategory.VesselGroup) {
+      return vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
     }
     return environmentalDataviews
   }

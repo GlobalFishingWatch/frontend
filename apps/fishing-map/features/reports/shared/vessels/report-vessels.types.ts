@@ -16,6 +16,7 @@ export type ReportTableVessel = {
   ssvid: string
   // TODO:CVP remove Dataset if not needed
   dataset?: Dataset
+  dataviewId?: string
   datasetId: string
   trackDatasetId?: string
   // Only available in vessel group

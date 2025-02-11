@@ -12,6 +12,7 @@ import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-
 
 import {
   selectReportVesselsGraphAggregatedData,
+  selectReportVesselsGraphDataKeys,
   selectReportVesselsPaginated,
 } from './report-vessels.selectors'
 import ReportVesselsFilter from './ReportVesselsFilter'
@@ -38,6 +39,7 @@ function ReportVessels({
   const property = useSelector(selectReportVesselsSubCategory)
   const filter = useSelector(selectReportVesselFilter)
   const vessels = useSelector(selectReportVesselsPaginated)
+  const valueKeys = useSelector(selectReportVesselsGraphDataKeys)
 
   return (
     <div className={styles.container}>
@@ -47,11 +49,12 @@ function ReportVessels({
       </div>
       {loading ? (
         <ReportVesselsPlaceholder showGraphHeader={false} />
-      ) : aggregatedData.length > 0 ? (
+      ) : aggregatedData && aggregatedData.length > 0 ? (
         <Fragment>
           <ReportVesselsGraph
             data={aggregatedData}
             // individualData={individualData}
+            aggregatedValueKey={valueKeys}
             color={color}
             property={property as ReportVesselsSubCategory}
           />
