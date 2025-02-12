@@ -139,13 +139,13 @@
     "edit": "Editar",
     "edit ": "editar",
     "environment": "Ambiente",
-    "eventLabels": {
-      "loitering": "deriva",
-      "encounter": "encontro",
-      "port_visit": "visita portuária"
-    },
     "event_one": "evento",
     "event_other": "eventos",
+    "eventLabels": {
+      "encounter": "encontro",
+      "loitering": "deriva",
+      "port_visit": "visita portuária"
+    },
     "events": "Eventos",
     "Events": "Eventos",
     "exclude": "Excluir",
@@ -176,6 +176,7 @@
     "layerList": "Lista de camadas",
     "learnMore": "Saber mais",
     "less": "menos",
+    "loading": "Loading",
     "loggedAs": "Logado como",
     "login": "Fazer login",
     "logout": "Efetuar logout",
@@ -485,7 +486,6 @@
     "privateView": "Esta é uma visualização privada",
     "profileEvents": "Ocorreu um erro ao solicitar os eventos da embarcação.",
     "profileLogin": "Faça login para ver esta embarcação",
-    "vesselGroupReportLogin": "Faça login para ver as embarcações ativas",
     "reportLogin": "Faça login para ver as embarcações ativas na área",
     "requestAccess": "Solicitar acesso",
     "searchLogin": "Faça login para pesquisar embarcações",
@@ -501,6 +501,7 @@
     "uploadKML": "Erro ao ler o arquivo KML: {{error}}",
     "uploadShapefile": "Erro ao ler shapefile: {{error}}",
     "uploadShapefileComponents": "Erro ao ler shapefile: deve conter arquivos com extensões *.shp, *.shx, *.dbf e *.prj.",
+    "vesselGroupReportLogin": "Faça login para ver as embarcações ativas",
     "vesselLoading": "Ocorreu um erro ao carregar os detalhes da rota da embarcação",
     "workspaceLoad": "Ocorreu um erro ao carregar o espaço de trabalho. Por favor, tente novamente mais tarde",
     "workspaceNotFound": "A visualização solicitada não foi encontrada"
@@ -554,10 +555,10 @@
   "eventInfo": {
     "authorization": "autorização",
     "averageSpeedKnots": "velocidade média (nós)",
+    "depth": "depth",
     "distanceFromPortKm": "distanceFromPortKm",
     "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "duração",
-    "depth": "depth",
     "encounteredVesselName": "embarcação encontrada",
     "end": "fim",
     "flag": "bandeira",
@@ -708,7 +709,6 @@
     "rulersDelete": "Excluir todas as medições",
     "rulersHover": "Arraste para mover ou clique para ver mais",
     "rulersStop": "Parar medições",
-    "search": "Procure por oceanos e mares, AMPs ou ZEEs",
     "screenshotArea": {
       "map": "Somente mapa",
       "withTimebar": "com barra de tempo",
@@ -716,13 +716,14 @@
     },
     "screenshotDownload": "Descarregar imagem",
     "screenshotPreview": "Pré-visualizar imagem",
+    "search": "Procure por oceanos e mares, AMPs ou ZEEs",
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },
   "portsReport": {
+    "maxVessels": "O relatório de embarcações está disponível para até {{vessels}} embarcações",
     "newTimeRange": "Clique no botão para ver as embarcações que entraram neste porto <br/>entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "seePortReport": "Ver todos os eventos de entrada neste porto",
-    "maxVessels": "O relatório de embarcações está disponível para até {{vessels}} embarcações",
     "summaryEvents": "<strong>{{vessels}} embarcações</strong> com as <strong>bandeiras {{flags}}</strong> entraram neste porto <strong>{{activityQuantity}}</strong> vezes entre <strong>{{start}}</strong> e <strong>{{end}}</strong>"
   },
   "search": {
@@ -798,26 +799,26 @@
     "maxPointsVisualizationExceeded": "Visualização máxima de pontos excedida, alternando para o modo de mapa de calor."
   },
   "user": {
-    "gfwBadges": "GFW Badges",
     "badges": {
       "ambassador": {
-        "title": "Ambassador",
-        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications.",
+        "title": "Ambassador"
       },
       "fixer": {
-        "title": "Fixer",
-        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support.",
+        "title": "Fixer"
       },
       "presenter": {
-        "title": "Presenter",
-        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest.",
+        "title": "Presenter"
       },
       "teacher": {
-        "title": "Teacher",
-        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow.",
+        "title": "Teacher"
       }
     },
     "datasets": "Conjuntos de dados do usuário",
+    "gfwBadges": "GFW Badges",
     "groupMissing": "Você pertence a um grupo de usuários que não aparece aqui? <2>Solicitar acesso</2>",
     "groups": "Grupos de usuários",
     "info": "Informações do usuário",
@@ -853,13 +854,15 @@
     "capacity": "Capacidade",
     "carrier": "Navio cargueiro",
     "casco": "Casco",
-    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Centralizar mapa nos eventos",
     "clickToSeeMore": "Clique para ver mais informações",
     "close": "Fechar",
     "codMarinha": "Cod Marinha",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "dataset": "Fonte",
+    "depthM": "Depth (m)",
     "donor": "Navio doador",
+    "extraInfo": "Request additional information at",
     "firstTransmissionDate": "Primeira data de transmissão",
     "fishingZone": "Área de pesca",
     "flag": "Bandeira",
@@ -929,6 +932,7 @@
     },
     "gfw_geartypes": "GFW Gear type",
     "gfw_shiptypes": "GFW Vessel type",
+    "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonelagem bruta",
     "grossTonnageRange": "Intervalo de arqueação bruta",
     "hideOtherLayers": "Ocultar outras camadas",
@@ -1021,6 +1025,7 @@
     "owners": "Owners",
     "registeredGearType": "Tipo de petrecho registrado",
     "registryGeartype": "Registry Gear Type",
+    "registryOperator": "Operators",
     "registrySources": "fontes de registro",
     "removeAllVessels": "Remover todas as embarcações",
     "sectionActivity": "Atividade",
@@ -1124,7 +1129,6 @@
   "vesselGroupReport": {
     "clickToSee": "Clique para analisar o grupo de embarcações e ver o relatório",
     "insights": {
-      "title": "Informações sobre o grupo de embarcações",
       "fishingEventsError": "Ocorreu um erro ao carregar os eventos de pesca",
       "fishingInNoTakeMpas_one": "{{count}} evento de pesca de {{vessels}} embarcações detectadas em AMPs de pesca proibida",
       "fishingInNoTakeMpas_other": "{{count}} eventos de pesca de {{vessels}} embarcações detectadas em AMPs de pesca proibida",
@@ -1144,7 +1148,8 @@
       "MOUListsCount": "{{vessels}} embarcações operadas sob uma bandeira presente na lista {{list}}",
       "MOUListsCount_one": "{{vessels}} embarcação operada sob uma bandeira presente na lista {{list}}",
       "MOUListsCount_other": "{{vessels}} embarcações operadas sob uma bandeira presente na lista {{list}}",
-      "MOUListsEmpty": "Nenhuma embarcação com uma bandeira presente nas listas negra ou cinza do MOU de {{country}}"
+      "MOUListsEmpty": "Nenhuma embarcação com uma bandeira presente nas listas negra ou cinza do MOU de {{country}}",
+      "title": "Informações sobre o grupo de embarcações"
     },
     "linkDisabled": "Este grupo de embarcações precisa ser atualizado com os dados mais recentes disponíveis",
     "linkToReport": "Confira aqui o relatório do grupo de embarcações",
