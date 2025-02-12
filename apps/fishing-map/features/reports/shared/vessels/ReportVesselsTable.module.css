@@ -23,7 +23,6 @@
   font: var(--font-S);
   color: var(--color-secondary-blue);
   text-transform: uppercase;
-  margin-right: 1rem;
   display: flex;
   align-items: center;
 }

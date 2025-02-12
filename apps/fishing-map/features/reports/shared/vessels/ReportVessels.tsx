@@ -6,9 +6,11 @@ import {
   selectReportVesselFilter,
   selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
-import type { ReportVesselsSubCategory } from 'features/reports/reports.types'
+import { selectReportCategory } from 'features/reports/reports.selectors'
+import { ReportCategory, type ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 
 import {
   selectReportVesselsGraphAggregatedData,
@@ -22,24 +24,28 @@ import ReportVesselsTable from './ReportVesselsTable'
 
 import styles from './ReportVessels.module.css'
 
-function ReportVessels({
-  title,
-  loading,
-  color,
-  activityUnit,
-}: {
-  title?: string
-  loading?: boolean
-  color?: string
-  activityUnit?: ReportActivityUnit
-}) {
+function ReportVessels({ loading, color }: { loading?: boolean; color?: string }) {
   const { t } = useTranslation()
   const aggregatedData = useSelector(selectReportVesselsGraphAggregatedData)
   // const individualData = useSelector(selectReportVesselsGraphIndividualData)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const reportCategory = useSelector(selectReportCategory)
   const property = useSelector(selectReportVesselsSubCategory)
   const filter = useSelector(selectReportVesselFilter)
   const vessels = useSelector(selectReportVesselsPaginated)
   const valueKeys = useSelector(selectReportVesselsGraphDataKeys)
+
+  const title = isVesselGroupReportLocation
+    ? undefined
+    : reportCategory === ReportCategory.Detections
+      ? t('common.matchedVessels', 'Matched vessels')
+      : t('common.vessel_other', 'Vessels')
+
+  const activityUnit: ReportActivityUnit | undefined = isVesselGroupReportLocation
+    ? undefined
+    : reportCategory === ReportCategory.Activity
+      ? 'hour'
+      : 'detection'
 
   return (
     <div className={styles.container}>
@@ -66,11 +72,7 @@ function ReportVessels({
           />
         </Fragment>
       ) : (
-        <ReportVesselsPlaceholder>
-          <div className={styles.emptyState}>
-            <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
-          </div>
-        </ReportVesselsPlaceholder>
+        <ReportVesselsPlaceholder />
       )}
     </div>
   )

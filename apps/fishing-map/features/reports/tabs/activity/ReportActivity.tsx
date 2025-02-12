@@ -37,6 +37,7 @@ import {
 } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import ReportDownload from 'features/reports/tabs/activity/download/ReportDownload'
 import ReportActivityGraph from 'features/reports/tabs/activity/ReportActivityGraph'
 import {
@@ -46,7 +47,6 @@ import {
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import ReportSummary from 'features/reports/tabs/activity/summary/ReportSummary'
 import { selectHasReportVessels } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
-import ReportVessels from 'features/reports/tabs/activity/vessels/ReportVessels'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
@@ -314,12 +314,12 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     if (reportLoaded) {
       return hasVessels ? (
         <Fragment>
-          <ReportVessels reportName={reportName} />
+          <ReportVessels />
           <ReportDownload />
         </Fragment>
       ) : (
         <div className={styles.error}>
-          {datasetsDownloadNotSupported.length > 0 && (
+          {datasetsDownloadNotSupported.length > 0 ? (
             <p className={styles.secondary}>
               {t(
                 'analysis.datasetsNotAllowed',
@@ -332,13 +332,9 @@ function ActivityReport({ reportName }: { reportName?: string }) {
                 </Fragment>
               ))}
             </p>
-          )}
-          {/* TODO:CVP remove this */}
-          {/* {isVesselGroupReportLocation ? (
-            <p>{t('vesselGroupReport.noData', 'No data available')}</p>
           ) : (
             <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
-          )} */}
+          )}
         </div>
       )
     }
@@ -362,7 +358,6 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     dispatch,
     dispatchFetchReport,
     hasVessels,
-    reportName,
     datasetsDownloadNotSupported,
   ])
 
