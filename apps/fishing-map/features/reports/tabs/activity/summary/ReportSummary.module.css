@@ -1,5 +1,5 @@
 .summaryContainer {
-  padding: 0 var(--space-M);
+  padding: var(--space-SM) var(--space-M);
   padding-bottom: 0;
 }
 

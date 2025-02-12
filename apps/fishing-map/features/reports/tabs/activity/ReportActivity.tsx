@@ -369,7 +369,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
   return (
     <Fragment>
       {activeReportSubCategories && activeReportSubCategories.length > 1 && (
-        <div className={styles.container}>
+        <div className={styles.subsectionSelectorContainer}>
           <ReportActivitySubsectionSelector />
         </div>
       )}
