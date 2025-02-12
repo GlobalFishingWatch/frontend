@@ -36,6 +36,7 @@ import {
   selectReportVesselsNumber,
 } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
 
@@ -59,6 +60,7 @@ export default function ReportSummary({
   const category = useSelector(selectReportCategory)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const reportTimeComparison = useSelector(selectReportTimeComparison)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours) as number
@@ -199,27 +201,29 @@ export default function ReportSummary({
           <ReportSummaryPlaceholder />
         )}
       </div>
-      {summary && showTags ? (
-        <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-          {dataviews?.length > 0 && (
-            <div className={styles.tagsContainer}>
-              {dataviews?.map((dataview, index) => (
-                <ReportSummaryTags
-                  key={dataview.id}
-                  dataview={dataview}
-                  index={index}
-                  hiddenProperties={commonProperties}
-                  availableFields={FIELDS}
-                />
-              ))}
-            </div>
-          )}
-        </Sticky>
-      ) : reportTimeComparison || !showTags ? null : (
-        <div className={styles.tagsContainer}>
-          <ReportSummaryTagsPlaceholder />
-        </div>
-      )}
+      {!isVesselGroupReportLocation ? (
+        summary && showTags ? (
+          <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
+            {dataviews?.length > 0 && (
+              <div className={styles.tagsContainer}>
+                {dataviews?.map((dataview, index) => (
+                  <ReportSummaryTags
+                    key={dataview.id}
+                    dataview={dataview}
+                    index={index}
+                    hiddenProperties={commonProperties}
+                    availableFields={FIELDS}
+                  />
+                ))}
+              </div>
+            )}
+          </Sticky>
+        ) : reportTimeComparison || !showTags ? null : (
+          <div className={styles.tagsContainer}>
+            <ReportSummaryTagsPlaceholder />
+          </div>
+        )
+      ) : null}
     </Fragment>
   )
 }

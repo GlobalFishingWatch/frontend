@@ -2,6 +2,11 @@
   padding: var(--space-M);
 }
 
+.subsectionSelectorContainer {
+  padding: var(--space-SM) var(--space-M);
+  padding-bottom: 0;
+}
+
 .error {
   width: 100%;
   text-align: center;

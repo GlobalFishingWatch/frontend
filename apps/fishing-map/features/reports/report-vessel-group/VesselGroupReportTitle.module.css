@@ -5,10 +5,6 @@
   min-height: 5.2rem;
 }
 
-.minHeight {
-  height: 11.6rem;
-}
-
 .row {
   flex: 1;
   gap: var(--space-S);

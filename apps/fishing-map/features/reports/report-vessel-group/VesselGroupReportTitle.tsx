@@ -16,7 +16,6 @@ import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePl
 import {
   selectReportVesselGroupFlags,
   selectReportVesselGroupTimeRange,
-  selectReportVesselsTimeRange,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 // import { getEventLabel } from 'utils/analytics'
@@ -83,14 +82,14 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
 
   if (!vesselGroup || !timeRange || loading || !flags) {
     return (
-      <div className={cx(styles.container, styles.minHeight)}>
+      <div className={styles.container}>
         <VGRTitlePlaceholder />
       </div>
     )
   }
 
   return (
-    <div className={cx(styles.container, styles.minHeight)}>
+    <div className={styles.container}>
       <div className={cx(styles.row, styles.border)}>
         <div>
           {vesselGroup.ownerType === 'user' && (

@@ -23,7 +23,6 @@
   font: var(--font-S);
   color: var(--color-secondary-blue);
   text-transform: uppercase;
-  margin-right: 1rem;
   display: flex;
   align-items: center;
 }
@@ -87,4 +86,16 @@
 .top {
   justify-content: unset;
   padding-top: 12rem;
+}
+
+.sortIcon {
+  visibility: hidden;
+}
+
+.header:hover .sortIcon {
+  visibility: visible;
+}
+
+.active {
+  visibility: visible;
 }
