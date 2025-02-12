@@ -1,13 +1,7 @@
-import type { Ref } from 'react'
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
+
+import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 
@@ -17,16 +11,12 @@ import styles from './VesselIdentityField.module.css'
 
 type VesselIdentityFieldProps = {
   value: string
+  tooltip?: string
   className?: string
 }
-const VesselIdentityField = (
-  { value, className = '' }: VesselIdentityFieldProps,
-  forwardedRef: Ref<HTMLSpanElement>
-) => {
+const VesselIdentityField = ({ tooltip, value, className = '' }: VesselIdentityFieldProps) => {
   const prevValue = useRef(value)
   const [highlighted, setHighlighted] = useState(false)
-  const ref = useRef<HTMLSpanElement>(null)
-  useImperativeHandle(forwardedRef, () => ref.current as HTMLSpanElement)
 
   // Needed to remove the class before adding it again in case
   // there is a new value before the timeout is finished
@@ -55,10 +45,12 @@ const VesselIdentityField = (
   }
 
   return (
-    <span ref={ref} className={cx(styles.value, { [styles.highlight]: highlighted }, className)}>
-      {value}
-    </span>
+    <Tooltip content={tooltip}>
+      <span className={cx(styles.value, { [styles.highlight]: highlighted }, className)}>
+        {value}
+      </span>
+    </Tooltip>
   )
 }
 
-export default forwardRef<HTMLSpanElement, VesselIdentityFieldProps>(VesselIdentityField)
+export default VesselIdentityField
