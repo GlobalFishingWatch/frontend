@@ -118,12 +118,11 @@ const VesselRegistryField = ({
                   .map(getRegionTranslationsById)
                   .join(',')
                 Component = (
-                  <Tooltip content={sourceTranslations}>
-                    <VesselIdentityField
-                      className={styles.help}
-                      value={formatInfoField(registry.sourceCode.join(','), fieldType) as string}
-                    />
-                  </Tooltip>
+                  <VesselIdentityField
+                    tooltip={sourceTranslations}
+                    className={styles.help}
+                    value={formatInfoField(registry.sourceCode.join(','), fieldType) as string}
+                  />
                 )
               }
             }

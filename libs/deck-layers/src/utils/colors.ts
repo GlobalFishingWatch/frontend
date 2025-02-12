@@ -8,6 +8,9 @@ export const DEFAULT_BACKGROUND_COLOR: Color = [0, 36, 87]
 export const DEFAULT_LINE_COLOR: Color = [...DEFAULT_BACKGROUND_COLOR, 0.5]
 
 export const hexToRgb = (hex: string) => {
+  if (!hex) {
+    return { r: 0, g: 0, b: 0 }
+  }
   const cleanHex = hex.replace('#', '')
   const color = {
     r: parseInt(cleanHex.slice(0, 2), 16),
@@ -18,6 +21,9 @@ export const hexToRgb = (hex: string) => {
 }
 
 export const hexToDeckColor = (hex: string, opacity = 1): Color => {
+  if (!hex) {
+    return COLOR_TRANSPARENT
+  }
   const cleanHex = hex.replace('#', '')
   const color = {
     r: parseInt(cleanHex.slice(0, 2), 16),
