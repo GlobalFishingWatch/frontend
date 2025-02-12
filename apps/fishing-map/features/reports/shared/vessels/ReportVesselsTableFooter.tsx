@@ -77,7 +77,7 @@ export default function ReportVesselsTableFooter({
     if (vessels?.length) {
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${reportName}-${vesselGroup?.name}-${start}-${end}.csv`)
+      saveAs(blob, `${reportName}-${start}-${end}.csv`)
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: 'vessel_report_download_csv',

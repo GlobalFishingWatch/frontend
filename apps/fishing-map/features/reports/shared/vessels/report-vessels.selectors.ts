@@ -117,7 +117,7 @@ export const selectReportVessels = createSelector(
 
         const tableVessel: ReportTableVessel = {
           id: vessel.vesselId,
-          datasetId: vessel.dataset as string,
+          datasetId: vesselData.dataset as string,
           dataviewId: vessel.dataviewId,
           // TODO:CVP add tracks for vessel group vessels if want to pin them
           // trackDatasetId: '',
