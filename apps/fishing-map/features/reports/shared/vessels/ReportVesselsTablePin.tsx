@@ -7,7 +7,7 @@ import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselInWorkspace, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
+import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import { setPinningVessels } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 
@@ -16,7 +16,7 @@ import usePinReportVessels, { MAX_VESSEL_REPORT_PIN } from './report-vessels.hoo
 import styles from './ReportVesselsTable.module.css'
 
 type ReportVesselTablePinProps = {
-  vessels: ReportVesselWithDatasets[]
+  vessels: ReportTableVessel[]
   onClick?: (action: 'add' | 'delete') => void
 }
 
@@ -29,10 +29,10 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
   const allVesselsInWorkspace = useSelector(selectVesselsDataviews)
   const vesselPinnedIds = allVesselsInWorkspace.map((dI) => dI.id.split(VESSEL_LAYER_PREFIX)[1])
   const vesselDataviewInstancesPinned = vessels.flatMap(
-    (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.vesselId!) || []
+    (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.id!) || []
   )
   const hasAllVesselsInWorkspace = vesselDataviewInstancesPinned?.length
-    ? vessels.every(({ vesselId }) => vesselPinnedIds.includes(vesselId))
+    ? vessels.every(({ id }) => vesselPinnedIds.includes(id))
     : false
 
   const totalVesselsLength = (allVesselsInWorkspace?.length || 0) + (vessels?.length || 0)
@@ -43,7 +43,7 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
     if (action === 'add') {
       dispatch(setPinningVessels(true))
       setLoading(true)
-      const notPinnedVessels = vessels.filter(({ vesselId }) => !vesselPinnedIds.includes(vesselId))
+      const notPinnedVessels = vessels.filter(({ id }) => !vesselPinnedIds.includes(id))
       try {
         await pinVessels(notPinnedVessels)
       } catch (e: any) {

@@ -7,16 +7,6 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportActivityFlatten } from 'features/reports/report-area/area-reports.selectors'
-import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
-import {
-  selectReportVesselFilter,
-  selectReportVesselPage,
-  selectReportVesselResultsPerPage,
-} from 'features/reports/reports.config.selectors'
-import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
-
-const EMPTY_ARRAY: [] = []
 
 export const selectReportVesselsList = createSelector(
   [
@@ -70,26 +60,6 @@ export const selectReportVesselsList = createSelector(
 export const selectHasReportVessels = createSelector([selectReportVesselsList], (vessels) => {
   return vessels && vessels?.length > 0
 })
-
-export const selectReportVesselsFiltered = createSelector(
-  [selectReportVesselsList, selectReportVesselFilter],
-  (vessels, filter) => {
-    if (!vessels?.length) return null
-    if (!filter) return vessels.sort((a, b) => b.value - a.value)
-    return getVesselsFiltered<ReportVesselWithDatasets>(vessels, filter).sort(
-      (a, b) => b.value - a.value
-    )
-  }
-)
-
-const defaultVesselsList: ReportVesselWithDatasets[] = []
-export const selectReportVesselsPaginated = createSelector(
-  [selectReportVesselsFiltered, selectReportVesselPage, selectReportVesselResultsPerPage],
-  (vessels, page = 0, resultsPerPage) => {
-    if (!vessels?.length) return defaultVesselsList
-    return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
-  }
-)
 
 export const selectReportVesselsNumber = createSelector(
   [selectReportActivityFlatten],

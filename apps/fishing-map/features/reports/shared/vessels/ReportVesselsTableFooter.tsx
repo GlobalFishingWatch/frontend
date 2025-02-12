@@ -1,7 +1,8 @@
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { uniq } from 'es-toolkit'
 import { saveAs } from 'file-saver'
 import { unparse as unparseCSV } from 'papaparse'
 
@@ -13,6 +14,7 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
+import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 
@@ -35,12 +37,22 @@ export default function ReportVesselsTableFooter({
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroup = useSelector(selectVGRData)
-  // TODO:CVP get this vessels depending on the report type
-  // TODO:CVP migrate funcionality from reports/tabs/activity/vessels/ReportVesselsTableFooter.tsx
   const allVessels = useSelector(selectReportVessels)
+  const allFilteredVessels = useSelector(selectReportVesselsFiltered)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectReportVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
+
+  const vesselGroupVessels = useMemo(() => {
+    const vessels = reportVesselFilter ? allFilteredVessels : allVessels
+    if (!vessels?.length) {
+      return { ids: [], datasets: [] }
+    }
+    return {
+      ids: vessels?.flatMap((v) => v.id || v.id || []),
+      datasets: uniq(vessels.flatMap((v) => v.datasetId || [])),
+    }
+  }, [allFilteredVessels, allVessels, reportVesselFilter])
 
   if (!allVessels?.length) return null
 
@@ -90,30 +102,30 @@ export default function ReportVesselsTableFooter({
       reportVesselResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
-    // trackEvent({
-    //   category: TrackCategory.Analysis,
-    //   action: `Click on show more vessels`,
-    // })
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Click on show more vessels`,
+    })
   }
   const onShowLessClick = () => {
     dispatchQueryParams({
       reportVesselResultsPerPage: REPORT_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
-    // trackEvent({
-    //   category: TrackCategory.Analysis,
-    //   action: `Click on show less vessels`,
-    // })
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Click on show less vessels`,
+    })
   }
-  // const onAddToVesselGroup = () => {
-  //   const dataviewIds = heatmapDataviews.map(({ id }) => id)
-  //   dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-  //   trackEvent({
-  //     category: TrackCategory.VesselGroups,
-  //     action: 'add_to_vessel_group',
-  //     label: 'report',
-  //   })
-  // }
+
+  const onAddToVesselGroup = () => {
+    // dispatch(setVesselGroupConfirmationMode('saveAndSeeInWorkspace'))
+    trackEvent({
+      category: TrackCategory.VesselGroups,
+      action: 'add_to_vessel_group',
+      label: 'report',
+    })
+  }
 
   const isShowingMore = pagination.resultsPerPage === REPORT_SHOW_MORE_VESSELS_PER_PAGE
   const hasLessVesselsThanAPage =
@@ -173,16 +185,14 @@ export default function ReportVesselsTableFooter({
           </span>
         </Fragment>
       </div>
-      <div className={cx(styles.flex, styles.expand, styles.end)}>
+      <div className={cx(styles.flex, styles.expand)}>
         <div className={cx(styles.flex)}>
-          {/* TODO:CVP make this work */}
-          {/* <ReportVesselsTablePinAll vessels={allVessels!} /> */}
-          {/* <VesselGroupAddButton
-          vessels={allVessels}
-          onAddToVesselGroup={onAddToVesselGroup}
-          disabled
-          tooltip="TODO"
-        /> */}
+          <ReportVesselsTablePinAll vessels={allFilteredVessels!} />
+          <VesselGroupAddButton
+            vesselsToResolve={vesselGroupVessels.ids}
+            datasetsToResolve={vesselGroupVessels.datasets}
+            onAddToVesselGroup={onAddToVesselGroup}
+          />
         </div>
         <Button
           // testId="download-vessel-table-report"

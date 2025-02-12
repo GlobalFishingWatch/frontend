@@ -13,6 +13,7 @@ import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
   getVesselDataviewInstance,
@@ -20,7 +21,7 @@ import {
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
+import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import { setResource } from 'features/resources/resources.slice'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import {
@@ -64,80 +65,88 @@ export function usePopulateVesselResource() {
 
 export default function usePinReportVessels() {
   const dispatch = useAppDispatch()
+  const datasets = useSelector(selectAllDatasets)
   const allVesselsInWorkspace = useSelector(selectTrackDataviews)
   const populateVesselInfoResource = usePopulateVesselResource()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
 
-  const pinVessels = useCallback(async (vessels: ReportVesselWithDatasets[]) => {
-    const infoDataset = vessels?.[0]?.infoDataset
-    if (infoDataset) {
-      const url = getAllSearchVesselsUrl(infoDataset)
-      if (!url) {
-        throw new Error('Missing search url')
-      }
-      const vesselsWithIdentity = await fetchAllSearchVessels({
-        url: `${url}`,
-        body: {
-          datasets: uniq(vessels.flatMap((v) => v.infoDataset?.id || [])),
-          ids: uniq(vessels.flatMap((v) => v.vesselId || [])),
-        },
-      })
-
-      const vesselsWithDataviewInstances = vesselsWithIdentity.flatMap((vessel) => {
-        const trackDataset = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]
-        const vesselEventsDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
-        const eventsDatasetsId =
-          vesselEventsDatasets && vesselEventsDatasets?.length
-            ? vesselEventsDatasets.map((d) => d.id)
-            : []
-        const vesselDataviewInstance = getVesselDataviewInstance(
-          { id: getVesselId(vessel) },
-          {
-            info: vessel.dataset,
-            track: trackDataset?.id,
-            ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
-            relatedVesselIds: getRelatedIdentityVesselIds(vessel),
-          }
-        )
-        if (!vesselDataviewInstance?.config) {
-          return []
+  const pinVessels = useCallback(
+    async (vessels: ReportTableVessel[]) => {
+      const infoDataset = datasets.find((d) => d.id === vessels?.[0]?.datasetId)
+      if (infoDataset) {
+        const url = getAllSearchVesselsUrl(infoDataset)
+        if (!url) {
+          throw new Error('Missing search url')
         }
-
-        const { colorCyclingType, ...config } = vesselDataviewInstance.config
-        return {
-          identity: vessel,
-          instance: {
-            ...vesselDataviewInstance,
-            config: {
-              ...config,
-              color:
-                LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)]?.value,
-              colorCyclingType: undefined,
-            },
-          } as DataviewInstance<any>,
-        }
-      })
-      if (vesselsWithDataviewInstances.length) {
-        const instances = uniqBy(
-          vesselsWithDataviewInstances.map((v) => v.instance),
-          (d) => d.id
-        )
-        upsertDataviewInstance(instances)
-        vesselsWithDataviewInstances.forEach(({ identity, instance }) => {
-          populateVesselInfoResource(identity, instance, infoDataset)
+        const vesselsWithIdentity = await fetchAllSearchVessels({
+          url: `${url}`,
+          body: {
+            datasets: uniq(vessels.flatMap((v) => v.datasetId || [])),
+            ids: uniq(vessels.flatMap((v) => v.id || [])),
+          },
         })
-      }
-      dispatch(setWorkspaceSuggestSave(true))
-    }
-  }, [])
 
-  const unPinVessels = useCallback((vessels: ReportVesselWithDatasets[]) => {
-    const pinnedVesselsInstances = vessels.flatMap(
-      (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.vesselId!) || []
-    )
-    deleteDataviewInstance(pinnedVesselsInstances.map((v) => v.id))
-    dispatch(setWorkspaceSuggestSave(true))
-  }, [])
+        const vesselsWithDataviewInstances = vesselsWithIdentity.flatMap((vessel) => {
+          const trackDataset = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]
+          const vesselEventsDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
+          const eventsDatasetsId =
+            vesselEventsDatasets && vesselEventsDatasets?.length
+              ? vesselEventsDatasets.map((d) => d.id)
+              : []
+          const vesselDataviewInstance = getVesselDataviewInstance(
+            { id: getVesselId(vessel) },
+            {
+              info: vessel.dataset,
+              track: trackDataset?.id,
+              ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
+              relatedVesselIds: getRelatedIdentityVesselIds(vessel),
+            }
+          )
+          if (!vesselDataviewInstance?.config) {
+            return []
+          }
+
+          const { colorCyclingType, ...config } = vesselDataviewInstance.config
+          return {
+            identity: vessel,
+            instance: {
+              ...vesselDataviewInstance,
+              config: {
+                ...config,
+                color:
+                  LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)]
+                    ?.value,
+                colorCyclingType: undefined,
+              },
+            } as DataviewInstance<any>,
+          }
+        })
+        if (vesselsWithDataviewInstances.length) {
+          const instances = uniqBy(
+            vesselsWithDataviewInstances.map((v) => v.instance),
+            (d) => d.id
+          )
+          upsertDataviewInstance(instances)
+          vesselsWithDataviewInstances.forEach(({ identity, instance }) => {
+            populateVesselInfoResource(identity, instance, infoDataset)
+          })
+        }
+        dispatch(setWorkspaceSuggestSave(true))
+      }
+    },
+    [datasets, dispatch, populateVesselInfoResource, upsertDataviewInstance]
+  )
+
+  const unPinVessels = useCallback(
+    (vessels: ReportTableVessel[]) => {
+      const pinnedVesselsInstances = vessels.flatMap(
+        (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.id!) || []
+      )
+      deleteDataviewInstance(pinnedVesselsInstances.map((v) => v.id))
+      dispatch(setWorkspaceSuggestSave(true))
+    },
+    [allVesselsInWorkspace, deleteDataviewInstance, dispatch]
+  )
 
   return useMemo(() => ({ pinVessels, unPinVessels }), [pinVessels, unPinVessels])
 }

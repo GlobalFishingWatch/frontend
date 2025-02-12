@@ -78,7 +78,6 @@ const selectVesselGroupVessels = createSelector(
 export const selectReportVesselsByCategory = createSelector(
   [selectReportCategory, selectReportVesselsList, selectVesselGroupVessels, selectEventsVessels],
   (reportCategory, reportVesselsList, vesselGroupVessels, eventsVessels) => {
-    console.log('🚀 ~ reportVesselsList:', reportVesselsList)
     if (!reportCategory) {
       return []
     }

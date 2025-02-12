@@ -173,7 +173,7 @@ export default function ReportVesselsTable({
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const gearTypeInteractionEnabled = geartype !== EMPTY_FIELD_PLACEHOLDER
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
-            const value = vessel.value || vessel[activityUnit as any]
+            const value = vessel.value || (vessel as any)[activityUnit as any]
             // TODO:CVP normalize this vessel types
             const hasDatasets = vessel.datasetId?.includes(GLOBAL_VESSELS_DATASET_ID)
               ? vessel.datasetId !== undefined && vessel.trackDatasetId !== undefined
