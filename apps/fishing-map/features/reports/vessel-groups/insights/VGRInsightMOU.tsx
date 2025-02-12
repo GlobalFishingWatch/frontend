@@ -182,7 +182,7 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
                 })}
               </p>
             )}
-            <label className={styles.row}>{t('insights.countries.tokyo', 'Tokyo')}</label>
+            <label className={styles.row}>{t('vessel.insights.countries.tokyo', 'Tokyo')}</label>
             {hasVesselsInTokyoMOU ? (
               getVesselsInMOU(MOUVesselsGrouped.tokyo, 'tokyo')
             ) : (
@@ -190,7 +190,7 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
                 {t('vesselGroupReport.insights.MOUListsEmpty', {
                   defaultValue:
                     'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
-                  country: t('insights.countries.tokyo', 'Tokyo'),
+                  country: t('vessel.insights.countries.tokyo', 'Tokyo'),
                 })}
               </p>
             )}
