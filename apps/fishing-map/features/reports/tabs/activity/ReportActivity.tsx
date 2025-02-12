@@ -314,7 +314,22 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     if (reportLoaded) {
       return hasVessels ? (
         <Fragment>
-          <ReportVessels />
+          <ReportVessels
+            title={
+              isVesselGroupReportLocation
+                ? undefined
+                : reportCategory === ReportCategory.Detections
+                  ? t('common.matchedVessels', 'Matched vessels')
+                  : t('common.vessel_other', 'Vessels')
+            }
+            activityUnit={
+              isVesselGroupReportLocation
+                ? undefined
+                : reportCategory === ReportCategory.Activity
+                  ? 'hour'
+                  : 'detection'
+            }
+          />
           <ReportDownload />
         </Fragment>
       ) : (
@@ -358,6 +373,8 @@ function ActivityReport({ reportName }: { reportName?: string }) {
     dispatch,
     dispatchFetchReport,
     hasVessels,
+    isVesselGroupReportLocation,
+    reportCategory,
     datasetsDownloadNotSupported,
   ])
 

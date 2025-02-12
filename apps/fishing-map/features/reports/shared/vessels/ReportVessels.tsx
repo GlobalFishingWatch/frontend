@@ -1,16 +1,13 @@
 import { Fragment } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import {
   selectReportVesselFilter,
   selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
-import { selectReportCategory } from 'features/reports/reports.selectors'
-import { ReportCategory, type ReportVesselsSubCategory } from 'features/reports/reports.types'
+import { type ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 
 import {
   selectReportVesselsGraphAggregatedData,
@@ -24,28 +21,23 @@ import ReportVesselsTable from './ReportVesselsTable'
 
 import styles from './ReportVessels.module.css'
 
-function ReportVessels({ loading, color }: { loading?: boolean; color?: string }) {
-  const { t } = useTranslation()
+function ReportVessels({
+  loading,
+  color,
+  title,
+  activityUnit,
+}: {
+  loading?: boolean
+  color?: string
+  title?: string
+  activityUnit?: ReportActivityUnit
+}) {
   const aggregatedData = useSelector(selectReportVesselsGraphAggregatedData)
   // const individualData = useSelector(selectReportVesselsGraphIndividualData)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const reportCategory = useSelector(selectReportCategory)
   const property = useSelector(selectReportVesselsSubCategory)
   const filter = useSelector(selectReportVesselFilter)
   const vessels = useSelector(selectReportVesselsPaginated)
   const valueKeys = useSelector(selectReportVesselsGraphDataKeys)
-
-  const title = isVesselGroupReportLocation
-    ? undefined
-    : reportCategory === ReportCategory.Detections
-      ? t('common.matchedVessels', 'Matched vessels')
-      : t('common.vessel_other', 'Vessels')
-
-  const activityUnit: ReportActivityUnit | undefined = isVesselGroupReportLocation
-    ? undefined
-    : reportCategory === ReportCategory.Activity
-      ? 'hour'
-      : 'detection'
 
   return (
     <div className={styles.container}>
