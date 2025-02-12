@@ -45,13 +45,13 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
           },
         ]
       : []),
-    {
-      id: 'geartype',
-      label: t('vessel.geartype', 'Gear type'),
-      disabled: loading,
-    },
     ...(reportCategory === ReportCategory.VesselGroup
       ? [
+          {
+            id: 'geartype' as ReportVesselsSubCategory,
+            label: t('vessel.geartype', 'Gear type'),
+            disabled: loading,
+          },
           {
             id: 'source' as ReportVesselsSubCategory,
             label: (
