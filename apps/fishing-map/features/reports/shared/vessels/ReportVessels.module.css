@@ -8,3 +8,7 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.titleRow > * {
+  flex: 1;
+}
