@@ -36,7 +36,13 @@ export const formatInfoField = (
     | 'vesselType'
     | 'port'
     | 'fleet',
-  translationFn = t
+  {
+    translationFn = t,
+    fallbackValue = EMPTY_FIELD_PLACEHOLDER,
+  }: {
+    translationFn?: TFunction
+    fallbackValue?: string
+  } = {}
 ) => {
   if (!fieldValue && type === 'shipname') {
     return translationFn('common.unknownVessel', 'Unknown Vessel')
@@ -69,7 +75,7 @@ export const formatInfoField = (
   } else if (fieldValue) {
     return formatI18nNumber(fieldValue)
   }
-  return fieldValue || EMPTY_FIELD_PLACEHOLDER
+  return fieldValue || fallbackValue
 }
 
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {

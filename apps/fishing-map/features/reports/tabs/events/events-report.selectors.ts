@@ -9,7 +9,9 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
 
 export const selectFetchEventsVesselsParams = createSelector(
@@ -45,24 +47,30 @@ export const selectEventsVesselsData = createSelector(
 )
 
 export const selectEventsVessels = createSelector(
-  [selectEventsVesselsData, selectActiveReportDataviews],
-  (eventsVessels, activeReportDataviews) => {
+  [selectEventsVesselsData, selectActiveReportDataviews, selectAllDatasets],
+  (eventsVessels, activeReportDataviews, allDatasets): ReportVesselWithDatasets[] | undefined => {
     if (!eventsVessels) {
       return
     }
+    // TODO:CVP2 support multiple events report dataviews
+    const eventsDataset = activeReportDataviews[0]?.datasets?.[0]
+    const vesselDatasetId = eventsDataset?.relatedDatasets?.find(
+      (d) => d.type === DatasetTypes.Vessels
+    )?.id
+    const vesselDataset = allDatasets?.find((d) => d.id === vesselDatasetId)
+    const trackDatasetId = vesselDataset?.relatedDatasets?.find(
+      (d) => d.type === DatasetTypes.Tracks
+    )?.id
+    const trackDataset = allDatasets?.find((d) => d.id === trackDatasetId)
+
     return eventsVessels.map((vessel) => ({
       ...vessel,
+      // TODO:CVP2 support multiple events report dataviews
       dataviewId: activeReportDataviews?.[0]?.id,
-      // TODO:CVP see what is needed to
-      // vesselId: vessel?.vesselId,
-      // shipName: vessel?.shipName,
-      // mmsi: vessel?.mmsi,
-      // flag: vessel?.flag,
-      // geartype: vessel?.geartype,
-      // vesselType: vessel?.vesselType,
-      // value: vessel?.value,
-      // infoDataset,
-      // trackDataset,
+      datasetId: vesselDataset?.id,
+      infoDataset: vesselDataset,
+      trackDataset: trackDataset,
+      color: activeReportDataviews?.[0]?.config?.color || '',
       value: vessel.numEvents,
     }))
   }
