@@ -88,3 +88,15 @@
   justify-content: unset;
   padding-top: 12rem;
 }
+
+.sortIcon {
+  visibility: hidden;
+}
+
+.header:hover .sortIcon {
+  visibility: visible;
+}
+
+.active {
+  visibility: visible;
+}
