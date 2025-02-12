@@ -2,7 +2,7 @@ import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { lowerCase, uniq } from 'es-toolkit'
+import { lowerCase } from 'es-toolkit'
 import htmlParser from 'html-react-parser'
 import { DateTime } from 'luxon'
 import type {
@@ -32,7 +32,10 @@ import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel
 import { selectActiveReportSubCategories } from 'features/reports/reports.selectors'
 import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
-import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
+import {
+  selectReportVesselsFlags,
+  selectVGRVesselDatasetsWithoutEventsRelated,
+} from 'features/reports/shared/vessels/report-vessels.selectors'
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import { selectFetchEventsVesselsParams } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
@@ -56,6 +59,7 @@ function EventsReport() {
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
+  const reportVesselsFlags = useSelector(selectReportVesselsFlags)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
   const params = useSelector(selectFetchEventsVesselsParams)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
@@ -91,8 +95,6 @@ function EventsReport() {
     if (!vesselsData) {
       return ''
     }
-    // TODO:CVP chedk flags
-    const flags = uniq(vesselsData.map((v) => v.flag)).length
     const vessels = formatI18nNumber(vesselsData?.length || 0)
     const startDate = formatI18nDate(start, {
       format: DateTime.DATE_MED,
@@ -106,7 +108,7 @@ function EventsReport() {
           defaultValue:
             '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
           vessels,
-          flags: 'TODO',
+          flags: reportVesselsFlags?.size || 0,
           activityQuantity: totalEvents,
           start: startDate,
           end: endDate,
@@ -118,7 +120,7 @@ function EventsReport() {
           defaultValue:
             '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
           vessels,
-          flags: 'TODO',
+          flags: reportVesselsFlags?.size || 0,
           activityQuantity: totalEvents,
           activityUnit: `${
             eventType !== undefined
@@ -132,14 +134,15 @@ function EventsReport() {
     }
     return ''
   }, [
-    isPortReportLocation,
-    isVesselGroupReportLocation,
-    eventType,
+    vesselsData,
     start,
     end,
+    isPortReportLocation,
+    isVesselGroupReportLocation,
     t,
+    reportVesselsFlags?.size,
     totalEvents,
-    vesselsData,
+    eventType,
   ])
 
   if (!vesselDatasets.length) {
