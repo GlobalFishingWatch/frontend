@@ -1,10 +1,8 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 
-import {
-  selectReportVesselFilter,
-  selectReportVesselsSubCategory,
-} from 'features/reports/reports.config.selectors'
+import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
+import { selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { type ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
@@ -34,7 +32,7 @@ function ReportVessels({
 }) {
   const aggregatedData = useSelector(selectReportVesselsGraphAggregatedData)
   // const individualData = useSelector(selectReportVesselsGraphIndividualData)
-  const property = useSelector(selectReportVesselsSubCategory)
+  const property = useSelector(selectReportVesselGraph)
   const filter = useSelector(selectReportVesselFilter)
   const vessels = useSelector(selectReportVesselsPaginated)
   const valueKeys = useSelector(selectReportVesselsGraphDataKeys)
@@ -47,10 +45,10 @@ function ReportVessels({
       </div>
       {loading ? (
         <ReportVesselsPlaceholder showGraphHeader={false} />
-      ) : aggregatedData && aggregatedData.length > 0 ? (
+      ) : (
         <Fragment>
           <ReportVesselsGraph
-            data={aggregatedData}
+            data={aggregatedData!}
             // individualData={individualData}
             aggregatedValueKey={valueKeys}
             color={color}
@@ -63,8 +61,6 @@ function ReportVessels({
             vessels={vessels}
           />
         </Fragment>
-      ) : (
-        <ReportVesselsPlaceholder />
       )}
     </div>
   )
