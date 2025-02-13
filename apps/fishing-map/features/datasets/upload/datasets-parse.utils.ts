@@ -1,3 +1,4 @@
+import { lineToPolygon } from '@turf/line-to-polygon'
 import type { Feature, FeatureCollection } from 'geojson'
 import { parse } from 'papaparse'
 
@@ -87,9 +88,22 @@ const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) => {
     polygons: ['Polygon', 'MultiPolygon'],
   }
   const geoJSON = JSON.parse(fileText)
-  const validFeatures = geoJSON.features.filter((feature: Feature) => {
-    return normalizedTypes[type]?.includes(feature.geometry.type)
-  })
+  const validFeatures = geoJSON.features
+    .map((feature: Feature) => {
+      if (
+        type === 'polygons' &&
+        (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString')
+      ) {
+        const polygon = lineToPolygon(feature.geometry, {
+          properties: feature.properties,
+        })
+        return polygon
+      }
+      return feature
+    })
+    .filter((feature: Feature) => {
+      return normalizedTypes[type]?.includes(feature.geometry.type)
+    })
   if (!validFeatures.length) {
     throw new Error(NOT_VALID_GEOJSON_FEATURES_ERROR)
   }
