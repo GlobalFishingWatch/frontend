@@ -40,7 +40,7 @@ function VesselGroupReportEventsSubsectionSelector() {
           },
         ]
       : []),
-    // TODO:CVP3 add gap events
+    // TODO:CVP2 add gap events
     // ...(activeReportSubCategories?.includes('gap')
     //   ? [
     //       {

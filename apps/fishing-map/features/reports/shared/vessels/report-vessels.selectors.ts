@@ -298,7 +298,6 @@ export const selectReportVesselsOrdered = createSelector(
   }
 )
 
-// TODO:CVP rename all of this prefixed with VGR
 export const selectReportVesselsPaginated = createSelector(
   [selectReportVesselsOrdered, selectReportVesselPage, selectReportVesselResultsPerPage],
   (vessels, page, resultsPerPage) => {

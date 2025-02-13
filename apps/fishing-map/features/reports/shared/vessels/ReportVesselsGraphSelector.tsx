@@ -24,9 +24,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ReportVesselsGraph.module.css'
 
-type VesselGroupReportVesselsGraphSelectorProps = Record<string, any>
-
-function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGraphSelectorProps) {
+function VesselGroupReportVesselsGraphSelector() {
   const { t } = useTranslation()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
@@ -34,18 +32,17 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
   const selectedOptionId = useSelector(selectReportVesselGraph)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
-  // TODO:CVP use by `analysis.groupByFlag` or this translations?
   const options: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>[] = [
     {
       id: REPORT_VESSELS_GRAPH_FLAG,
-      label: t('vessel.flag', 'Flag'),
+      label: t('analysis.groupByFlag', 'by flag'),
       disabled: loading,
     },
     ...(reportSubCategory !== 'fishing'
       ? [
           {
             id: REPORT_VESSELS_GRAPH_VESSELTYPE,
-            label: t('vessel.shiptype', 'Vessel type'),
+            label: t('analysis.groupByVesseltype', 'by vessel type'),
             disabled: loading,
           },
         ]
@@ -54,7 +51,7 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
       ? [
           {
             id: REPORT_VESSELS_GRAPH_GEARTYPE,
-            label: t('vessel.geartype', 'Gear type'),
+            label: t('analysis.groupByGeartype', 'by gear type'),
             disabled: loading,
           },
         ]
@@ -65,7 +62,7 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
             id: 'source' as ReportVesselsSubCategory,
             label: (
               <span>
-                {t('common.sources', 'Sources')}
+                {t('analysis.groupBySource', 'by source')}
                 {selectedOptionId === 'source' && (
                   <DataTerminology
                     size="tiny"

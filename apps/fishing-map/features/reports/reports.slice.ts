@@ -56,7 +56,7 @@ export const fetchReportsThunk = createAsyncThunk(
   }
 )
 
-// TODO:CVP add support for ports and vessel-groups reports including some kind of reportType
+// TODO:CVP2 add support for ports and vessel-groups reports including some kind of reportType
 export const createReportThunk = createAsyncThunk<
   Report,
   Partial<Report>,

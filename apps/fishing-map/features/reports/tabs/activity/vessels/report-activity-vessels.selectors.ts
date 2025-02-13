@@ -9,28 +9,11 @@ import type { ReportVesselWithDatasets } from 'features/reports/report-area/area
 import { selectReportActivityFlatten } from 'features/reports/report-area/area-reports.selectors'
 
 export const selectReportVesselsList = createSelector(
-  [
-    selectReportActivityFlatten,
-    selectAllDatasets,
-    // selectReportCategory,
-    // selectReportSubCategory,
-    // selectIsVesselGroupReportLocation,
-  ],
-  (
-    vessels,
-    datasets
-    // reportCategory, reportSubCategory, isVesselGroupReportLocation
-  ) => {
+  [selectReportActivityFlatten, selectAllDatasets],
+  (vessels, datasets) => {
     if (!vessels?.length) return null
     return Object.values(groupBy(vessels, (v) => v.vesselId))
       .flatMap((vesselActivity) => {
-        // TODO:CVP ensure this is not needed
-        // const notMatchesCurrentCategory = isVesselGroupReportLocation
-        //   ? !vesselActivity[0]?.dataviewId.includes(reportSubCategory as string)
-        //   : vesselActivity[0]?.category !== reportCategory
-        // if (notMatchesCurrentCategory) {
-        //   return EMPTY_ARRAY
-        // }
         const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)
         const infoDatasetId = getRelatedDatasetByType(activityDataset, DatasetTypes.Vessels)?.id
         const infoDataset = datasets.find((d) => d.id === infoDatasetId)

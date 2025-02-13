@@ -172,7 +172,6 @@ export default function ReportVesselsTable({
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             const value = vessel.value || (vessel as any)[activityUnit as any]
-            // TODO:CVP normalize this vessel types
             const hasDatasets = vessel.datasetId?.includes(GLOBAL_VESSELS_DATASET_ID)
               ? vessel.datasetId !== undefined && vessel.trackDatasetId !== undefined
               : vessel.datasetId !== undefined || vessel.trackDatasetId !== undefined
@@ -184,8 +183,6 @@ export default function ReportVesselsTable({
                   data-test={`vessel-${vessel.id}`}
                 >
                   <VesselPin
-                    // TODO:CVP make the pin working withouth the need of requesting identity when already available
-                    // vessel={vessel.identity}
                     vesselToResolve={{
                       id: vessel.id || vessel.id,
                       datasetId: vessel.datasetId,
@@ -217,7 +214,6 @@ export default function ReportVesselsTable({
                   )}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
-                  {/* TODO:CVP normalize between mmsi and ssvid */}
                   <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
                 </div>
                 <div

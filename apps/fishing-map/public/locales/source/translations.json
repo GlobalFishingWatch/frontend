@@ -33,6 +33,7 @@
     "evolution": "evolution",
     "groupByFlag": "by flag",
     "groupByGeartype": "by gear type",
+    "groupBySource": "by source",
     "groupByVesseltype": "by vessel type",
     "kilometers": "kilometers",
     "linkToReport": "Check the dynamic report here",

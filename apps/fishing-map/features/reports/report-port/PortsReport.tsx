@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import { usePortsReportAreaFootprintFitBounds } from 'features/reports/report-area/area-reports.hooks'
 import {
   selectPortReportCountry,
-  selectPortReportDatasetId,
   selectPortReportName,
 } from 'features/reports/reports.config.selectors'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
@@ -23,8 +22,6 @@ function PortsReport() {
   const portId = useSelector(selectReportPortId)
   const reportName = useSelector(selectPortReportName)
   const reportCountry = useSelector(selectPortReportCountry)
-  // TODO:CVP review if this is needed in ports report
-  const datasetId = useSelector(selectPortReportDatasetId)
 
   return (
     <Fragment>
