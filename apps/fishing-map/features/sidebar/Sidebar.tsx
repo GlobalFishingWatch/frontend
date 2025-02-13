@@ -65,6 +65,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const readOnly = useSelector(selectReadOnly)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const isUserLocation = useSelector(selectIsUserLocation)
+  const isUserLogged = useSelector(selectIsUserLogged)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
@@ -73,12 +74,13 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const userLogged = useSelector(selectIsUserLogged)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 
   useEffect(() => {
-    dispatch(fetchVesselGroupsThunk())
-  }, [dispatch])
+    if (isUserLogged) {
+      dispatch(fetchVesselGroupsThunk())
+    }
+  }, [dispatch, isUserLogged])
 
   useEffect(() => {
     if (dataviewsResources?.resources?.length) {
@@ -99,7 +101,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   }, [dispatch, dataviewsResources])
 
   const sidebarComponent = useMemo(() => {
-    if (!userLogged) {
+    if (!isUserLogged) {
       return <Spinner />
     }
 
@@ -145,7 +147,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     isVesselGroupReportLocation,
     isVesselLocation,
     isWorkspacesListLocation,
-    userLogged,
+    isUserLogged,
   ])
 
   return (
