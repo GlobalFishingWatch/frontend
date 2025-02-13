@@ -29,10 +29,12 @@ import styles from './ReportVesselsTableFooter.module.css'
 
 type ReportVesselsTableFooterProps = {
   reportName?: string
+  activityUnit?: string
 }
 
 export default function ReportVesselsTableFooter({
   reportName = 'vessel-report',
+  activityUnit,
 }: ReportVesselsTableFooterProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
@@ -59,19 +61,18 @@ export default function ReportVesselsTableFooter({
   const onDownloadVesselsClick = () => {
     const vessels = allVessels?.map((vessel) => {
       return {
-        dataset: vessel.dataset,
-        flag: vessel.flag,
-        'flag translated': vessel.flagTranslated,
-        'GFW vessel type': vessel.vesselType,
-        'GFW gear type': vessel.geartype,
-        sources: vessel.source,
         name: vessel.shipName,
         MMSI: vessel.ssvid,
-        // TODO:CVP add imo
+        flag: vessel.flag,
+        'flag translated': vessel.flagTranslated,
         IMO: vessel.imo,
-        // TODO:CVP add callsign
         'call sign': vessel.callsign,
+        'GFW vessel type': vessel.vesselType,
+        'GFW gear type': vessel.geartype,
+        ...(activityUnit ? { value: vessel.value } : {}),
+        sources: vessel.source,
         vesselId: vessel.id,
+        dataset: vessel.datasetId,
       }
     })
     if (vessels?.length) {

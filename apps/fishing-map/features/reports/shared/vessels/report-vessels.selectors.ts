@@ -139,6 +139,12 @@ export const selectReportVessels = createSelector(
           ssvid: getVesselProperty(identity, 'ssvid', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           }),
+          imo: getVesselProperty(identity, 'imo', {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          }),
+          callsign: getVesselProperty(identity, 'callsign', {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          }),
           flag: flag,
           flagTranslated: flag ? t(`flags:${flag}` as any) : EMPTY_FIELD_PLACEHOLDER,
           flagTranslatedClean: flag

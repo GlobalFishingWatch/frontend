@@ -261,7 +261,7 @@ export default function ReportVesselsTable({
           })}
         </div>
       </div>
-      <ReportVesselsTableFooter reportName={reportName} />
+      <ReportVesselsTableFooter reportName={reportName} activityUnit={activityUnit} />
     </Fragment>
   )
 }
