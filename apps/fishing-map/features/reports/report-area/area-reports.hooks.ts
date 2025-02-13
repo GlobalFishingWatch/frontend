@@ -287,11 +287,11 @@ export function useFetchReportVessel() {
 
   const dispatchFetchReport = useCallback(() => {
     const params = {
-      datasets: reportDataviews.map(({ datasets }) =>
+      datasets: reportDataviews.map(({ datasets = [] }) =>
         datasets?.map((d: Dataset) => d.id).join(',')
       ),
       includes: reportDataviews.flatMap(
-        ({ datasets }) => datasets.flatMap(({ unit }) => unit || []) || []
+        ({ datasets = [] }) => datasets.flatMap(({ unit }) => unit || []) || []
       ),
       filters: reportDataviews.map(({ filter }) => filter),
       vesselGroups: reportDataviews.flatMap(({ vesselGroups }) => vesselGroups || []),
