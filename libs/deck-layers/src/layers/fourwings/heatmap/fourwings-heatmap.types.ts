@@ -33,6 +33,7 @@ export type FourwingsChunk = {
 export enum FourwingsAggregationOperation {
   Sum = 'sum',
   Avg = 'avg',
+  AvgDegrees = 'avgDegrees',
 }
 
 export enum FourwingsComparisonMode {
