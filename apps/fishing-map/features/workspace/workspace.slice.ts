@@ -221,7 +221,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           [...dataviews, ...dataviewInstances],
           guestUser
         )
-        dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
+        if (vesselGroupsIds?.length) {
+          dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
+        }
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
         // Don't abort datasets as they are needed in the search
         // signal.addEventListener('abort', fetchDatasetsAction.abort)

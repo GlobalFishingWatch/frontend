@@ -14,10 +14,7 @@ import {
   getReportVesselGroupVisibleDataviews,
   isVesselGroupActivityDataview,
 } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import {
-  selectReportVesselsSubCategory,
-  selectViewOnlyVesselGroup,
-} from 'features/reports/reports.config.selectors'
+import { selectViewOnlyVesselGroup } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
@@ -73,7 +70,6 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportVesselGroupId,
-    selectReportVesselsSubCategory,
     selectViewOnlyVesselGroup,
   ],
   (
