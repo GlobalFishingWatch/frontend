@@ -8,8 +8,6 @@ import { uniqBy } from 'es-toolkit'
 import type { FeatureCollection, GeometryCollection, MultiPolygon, Polygon } from 'geojson'
 import kebabCase from 'lodash/kebabCase'
 import memoize from 'lodash/memoize'
-import type { RootState } from 'store'
-import type { Bbox } from 'types'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { Dataset, TileContextAreaFeature } from '@globalfishingwatch/api-types'
@@ -19,6 +17,8 @@ import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { t } from 'features/i18n/i18n'
+import type { RootState } from 'store'
+import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
 

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { To } from 'redux-first-router-link'
 import Link from 'redux-first-router-link'
-import type { Locale } from 'types'
 
 import { Spinner } from '@globalfishingwatch/ui-components'
 
@@ -12,6 +11,7 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
+import type { Locale } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import type { HighlightedWorkspaceMerged } from './workspaces-list.selectors'

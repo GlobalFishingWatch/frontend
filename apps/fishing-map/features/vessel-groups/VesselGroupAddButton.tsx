@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { ButtonSize,ButtonType } from '@globalfishingwatch/ui-components'
+import type { ButtonSize, ButtonType } from '@globalfishingwatch/ui-components'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -69,11 +69,11 @@ export function VesselGroupAddActionButton({
         guestUser
           ? t('vesselGroup.loginToAdd', 'Login to add to group')
           : tooManyVessels
-          ? t('vesselGroup.tooManyVessels', {
-              count: MAX_VESSEL_GROUP_VESSELS,
-              defaultValue: 'Maximum number of vessels is {{count}}',
-            })
-          : ''
+            ? t('vesselGroup.tooManyVessels', {
+                count: MAX_VESSEL_GROUP_VESSELS,
+                defaultValue: 'Maximum number of vessels is {{count}}',
+              })
+            : ''
       }
       tooltipPlacement="top"
     >

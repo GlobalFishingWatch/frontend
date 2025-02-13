@@ -13,11 +13,11 @@ import { EVENTS_COLORS, PATH_BASENAME } from 'data/config'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import styles from 'features/workspace/shared/Sections.module.css'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { upperFirst } from 'utils/info'
 
 import layerStyles from './VesselEventsLegend.module.css'
+import styles from 'features/workspace/shared/Sections.module.css'
 
 type VesselEventsLegendProps = {
   dataviews: UrlDataviewInstance[]

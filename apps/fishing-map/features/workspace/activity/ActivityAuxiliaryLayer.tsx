@@ -8,7 +8,7 @@ import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { Spinner, Switch } from '@globalfishingwatch/ui-components'
 
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
-import Title from 'features/workspace/common/Title'
+import Title from 'features/workspace/shared/Title'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import styles from './ActivityAuxiliaryLayer.module.css'

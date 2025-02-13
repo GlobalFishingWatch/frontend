@@ -2,7 +2,6 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import type { RootState } from 'reducers'
-import type { AppDispatch } from 'store'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
@@ -55,6 +54,7 @@ import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import type { AppDispatch } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const MAX_TOOLTIP_LIST = 5

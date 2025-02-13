@@ -3,11 +3,11 @@ import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { orderBy } from 'es-toolkit'
 
 import type { UserPermission } from '@globalfishingwatch/api-types'
-import { BADGES_GROUP_PREFIX,DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
+import { BADGES_GROUP_PREFIX, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectAllReports } from 'features/reports/areas/area-reports.slice'
+import { selectAllReports } from 'features/reports/reports.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { DEFAULT_GROUP_ID } from 'features/user/user.config'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'

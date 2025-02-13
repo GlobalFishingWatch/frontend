@@ -21,8 +21,9 @@ import {
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselPin from 'features/vessel/VesselPin'
-import styles from 'features/workspace/shared/Sections.module.css'
 import { formatInfoField } from 'utils/info'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 const MAX_VESSLES_TO_DISPLAY = 10
 

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useRef,useState } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -23,11 +23,11 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   fetchVesselGroupReportThunk,
   resetVesselGroupReportData,
-} from 'features/reports/vessel-groups/vessel-group-report.slice'
+} from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
@@ -371,8 +371,8 @@ function VesselGroupModal(): React.ReactElement<any> {
             param: t('vesselGroup.idField', 'ID field').toLowerCase(),
           })
         : searchVesselStatus === AsyncReducerStatus.Loading
-        ? t('common.loading', 'Loading')
-        : t('vesselGroup.searchVesselsRequired', 'Search for vessels to create a vessel group')
+          ? t('common.loading', 'Loading')
+          : t('vesselGroup.searchVesselsRequired', 'Search for vessels to create a vessel group')
   }
 
   const onIdFieldChange = useCallback(
