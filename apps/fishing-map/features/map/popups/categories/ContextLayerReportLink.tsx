@@ -13,16 +13,13 @@ import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { selectHasReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import { DEFAULT_POINT_BUFFER_VALUE } from 'features/reports/report-area/area-reports.config'
 import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/reports.config'
+import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import { WORKSPACE_REPORT } from 'routes/routes'
-import {
-  selectLocationAreaId,
-  selectLocationDatasetId,
-  selectLocationQuery,
-} from 'routes/routes.selectors'
+import { selectLocationQuery } from 'routes/routes.selectors'
 
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
 
@@ -44,8 +41,8 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const isPointFeature = (feature?.geometry as any)?.type === 'Point'
   const query = useSelector(selectLocationQuery)
-  const reportAreaDataset = useSelector(selectLocationDatasetId)
-  const reportAreaId = useSelector(selectLocationAreaId)
+  const reportAreaDataset = useSelector(selectReportDatasetId)
+  const reportAreaId = useSelector(selectReportAreaId)
   const areaId = getAreaIdFromFeature(feature)
   const isSameAreaId = reportAreaId?.toString() === areaId?.toString()
   const isSameDataset = feature.datasetId === reportAreaDataset
