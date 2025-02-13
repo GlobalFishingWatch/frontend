@@ -47,12 +47,11 @@ export function getVesselIndividualGroupedData(
       )
       break
     }
-    case 'shiptypes': {
+    case 'vesselType': {
       vesselsGrouped = groupBy(vesselsSorted, (vessel) => vessel.vesselType?.split(', ')[0])
       break
     }
-    case 'geartype':
-    case 'geartypes': {
+    case 'geartype': {
       vesselsGrouped = groupBy(vesselsSorted, (vessel) => vessel.geartype?.split(', ')[0])
       break
     }
