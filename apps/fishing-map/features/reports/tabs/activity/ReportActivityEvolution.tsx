@@ -72,7 +72,7 @@ const ReportActivityEvolution: React.FC<{
     ? (max(dataFormated.flatMap(({ range }) => range[0][1])) as number)
     : 0
 
-  const domainPadding = (dataMax - dataMin) / 8
+  const domainPadding = (dataMax - dataMin) / 10
   const paddedDomain: [number, number] = [
     Math.max(0, Math.floor(dataMin - domainPadding)),
     Math.ceil(dataMax + domainPadding),
@@ -82,11 +82,11 @@ const ReportActivityEvolution: React.FC<{
     <div className={styles.graph} data-test="report-activity-evolution">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={dataFormated} margin={graphMargin}>
-          <CartesianGrid vertical={false} />
+          <CartesianGrid vertical={false} syncWithTicks />
           <XAxis
             domain={domain}
             dataKey="date"
-            interval="preserveStartEnd"
+            interval="equidistantPreserveStart"
             tickFormatter={(tick: string) => formatDateTicks(tick, data?.interval)}
             axisLine={paddedDomain[0] === 0}
           />
@@ -97,7 +97,6 @@ const ReportActivityEvolution: React.FC<{
             tickFormatter={tickFormatter}
             axisLine={false}
             tickLine={false}
-            tickCount={4}
           />
           {dataFormated?.length && (
             <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={data?.interval} />} />
