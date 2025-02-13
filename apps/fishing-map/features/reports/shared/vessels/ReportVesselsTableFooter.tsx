@@ -163,18 +163,20 @@ export default function ReportVesselsTableFooter({
               size="medium"
             />
           </div>
-          <button onClick={isShowingMore ? onShowLessClick : onShowMoreClick}>
-            <label className={styles.pointer}>
-              {t('analysis.resultsPerPage', {
-                results: isShowingMore
-                  ? REPORT_VESSELS_PER_PAGE
-                  : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-                defaultValue: `Show ${
-                  isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
-                } per page`,
-              })}
-            </label>
-          </button>
+          {pagination.total > REPORT_VESSELS_PER_PAGE && (
+            <button onClick={isShowingMore ? onShowLessClick : onShowMoreClick}>
+              <label className={styles.pointer}>
+                {t('analysis.resultsPerPage', {
+                  results: isShowingMore
+                    ? REPORT_VESSELS_PER_PAGE
+                    : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+                  defaultValue: `Show ${
+                    isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
+                  } per page`,
+                })}
+              </label>
+            </button>
+          )}
           <span className={cx(styles.noWrap, styles.right)}>
             {reportVesselFilter && (
               <Fragment>
