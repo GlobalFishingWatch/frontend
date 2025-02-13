@@ -10,6 +10,11 @@ import type {
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
+import {
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
+} from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
@@ -46,17 +51,11 @@ type ReportGraphTooltipProps = {
   type: ReportVesselsSubCategory | 'geartype'
 }
 
-const FILTER_PROPERTIES: Record<ReportVesselsSubCategory | 'geartype' | 'shiptype', string> = {
-  flag: 'flag',
-  shiptype: 'type',
-  shiptypes: 'type',
-  geartypes: 'gear',
-  geartype: 'gear',
+const FILTER_PROPERTIES: Record<ReportVesselGraph | ReportVesselsSubCategory, string> = {
+  [REPORT_VESSELS_GRAPH_FLAG]: 'flag',
+  [REPORT_VESSELS_GRAPH_GEARTYPE]: 'gear',
+  [REPORT_VESSELS_GRAPH_VESSELTYPE]: 'type',
   source: 'source',
-  // TODO:CVP this comes from activity graph component, ensure it works
-  // [REPORT_VESSELS_GRAPH_FLAG]: 'flag',
-  // [REPORT_VESSELS_GRAPH_GEARTYPE]: 'gear',
-  // [REPORT_VESSELS_GRAPH_VESSELTYPE]: 'type',
 }
 
 const ReportBarTooltip = (props: any) => {

@@ -189,10 +189,10 @@ export const selectReportSubCategory = createSelector(
 )
 
 export const selectReportVesselGraph = createSelector(
-  [selectReportVesselGraphSelector, selectReportCategory, selectReportVesselsSubCategory],
+  [selectReportCategory, selectReportVesselGraphSelector, selectReportVesselsSubCategory],
   (
-    reportVesselGraph,
     reportCategory,
+    reportVesselGraph,
     reportVesselsSubCategory
   ): ReportVesselGraph | ReportVesselsSubCategory => {
     if (reportCategory === ReportCategory.VesselGroup) {

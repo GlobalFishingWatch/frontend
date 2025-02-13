@@ -29,6 +29,7 @@ import type { VesselPinClickProps } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
@@ -57,6 +58,7 @@ export default function ReportVesselsTable({
   const dataviews = useSelector(selectActiveReportDataviews)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const orderProperty = useSelector(selectReportVesselsOrderProperty)
+  const isAnyAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const orderDirection = useSelector(selectReportVesselsOrderDirection)
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
@@ -91,7 +93,7 @@ export default function ReportVesselsTable({
   return (
     <Fragment>
       <div className={styles.tableContainer} data-test="report-vessels-table">
-        {datasetsDownloadNotSupported.length > 0 && (
+        {isAnyAreaReportLocation && datasetsDownloadNotSupported.length > 0 && (
           <p className={styles.error}>
             {t(
               'analysis.datasetsNotAllowed',
@@ -245,7 +247,7 @@ export default function ReportVesselsTable({
                     [styles.border]: !isLastRow,
                   })}
                   title={`${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`}
-                  onClick={() => onFilterClick(`${'gear'}:${type}`)}
+                  onClick={() => onFilterClick(`${'type'}:${type}`)}
                 >
                   {type}
                 </div>

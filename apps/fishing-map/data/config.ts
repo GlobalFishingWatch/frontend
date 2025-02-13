@@ -39,12 +39,12 @@ export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_
 
 export const REPORT_VESSELS_PER_PAGE = 10
 export const REPORT_SHOW_MORE_VESSELS_PER_PAGE = REPORT_VESSELS_PER_PAGE * 5
-export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype'
-export const REPORT_VESSELS_GRAPH_VESSELTYPE = 'vesselType'
-export const REPORT_VESSELS_GRAPH_FLAG = 'flag'
-export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution'
-export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter'
-export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison'
+export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype' as const
+export const REPORT_VESSELS_GRAPH_VESSELTYPE = 'vesselType' as const
+export const REPORT_VESSELS_GRAPH_FLAG = 'flag' as const
+export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution' as const
+export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter' as const
+export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison' as const
 
 // Local storage keys
 export const HINTS = 'hints'

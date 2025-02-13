@@ -1,10 +1,9 @@
-export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
+export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'type'
 export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
   name: ['shipName'],
   flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
   mmsi: ['mmsi'],
-  gear: ['geartype'],
-  type: ['vesselType', 'shiptype'],
+  type: ['geartype', 'vesselType', 'shiptype'],
 }
 
 type ReportFilterProperty = FilterProperty | 'source'

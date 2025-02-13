@@ -11,7 +11,6 @@ import {
   selectReportSubCategory,
 } from 'features/reports/reports.selectors'
 import type { ReportEventsSubCategory } from 'features/reports/reports.types'
-import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -22,9 +21,6 @@ function VesselGroupReportEventsSubsectionSelector() {
   const subsection = useSelector(selectReportSubCategory)
   const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
-  const gfwUser = useSelector(selectIsGFWUser)
-  const jacUser = useSelector(selectIsJACUser)
-  const hasAccessToAllSubsections = gfwUser || jacUser
 
   const options: ChoiceOption<ReportEventsSubCategory>[] = [
     ...(activeReportSubCategories?.includes('encounter')
@@ -41,30 +37,26 @@ function VesselGroupReportEventsSubsectionSelector() {
           {
             id: 'loitering' as ReportEventsSubCategory,
             label: t('event.loitering_other', 'Loitering events'),
-            disabled: !hasAccessToAllSubsections,
-            tooltip: !hasAccessToAllSubsections ? t('common.comingSoon', 'Coming Soon!') : '',
-            tooltipPlacement: 'top' as TooltipPlacement,
           },
         ]
       : []),
-    ...(activeReportSubCategories?.includes('gap')
-      ? [
-          {
-            id: 'gap' as ReportEventsSubCategory,
-            label: t('event.gap_other', 'AIS off events'),
-            disabled: true,
-            tooltip: t('common.comingSoon', 'Coming Soon!'),
-            tooltipPlacement: 'top' as TooltipPlacement,
-          },
-        ]
-      : []),
+    // TODO:CVP3 add gap events
+    // ...(activeReportSubCategories?.includes('gap')
+    //   ? [
+    //       {
+    //         id: 'gap' as ReportEventsSubCategory,
+    //         label: t('event.gap_other', 'AIS off events'),
+    //         disabled: true,
+    //         tooltip: t('common.comingSoon', 'Coming Soon!'),
+    //         tooltipPlacement: 'top' as TooltipPlacement,
+    //       },
+    //     ]
+    //   : []),
     ...(activeReportSubCategories?.includes('port_visit')
       ? [
           {
             id: 'port_visit' as ReportEventsSubCategory,
             label: t('event.port_visit_other', 'Port visits'),
-            disabled: !hasAccessToAllSubsections,
-            tooltip: !hasAccessToAllSubsections ? t('common.comingSoon', 'Coming Soon!') : '',
             tooltipPlacement: 'top' as TooltipPlacement,
           },
         ]

@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { FeatureCollection, MultiPolygon } from 'geojson'
 import { t } from 'i18next'
 
-import type { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
+import { type Dataset, DataviewCategory, type ReportVessel } from '@globalfishingwatch/api-types'
 import type { BufferOperation, BufferUnit } from '@globalfishingwatch/data-transforms'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 
@@ -133,14 +133,18 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
         )
         return {
           ...dataview,
-          datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)) as Dataset[],
+          datasets:
+            dataview.category === DataviewCategory.Activity ||
+            dataview.category === DataviewCategory.Detections
+              ? (dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)) as Dataset[])
+              : dataview.datasets,
           filter: dataview.config?.filter || '',
           ...(dataview.config?.['vessel-groups']?.length && {
             vesselGroups: dataview.config?.['vessel-groups'],
           }),
         }
       })
-      .filter((dataview) => dataview.datasets?.length > 0)
+      .filter((dataview) => dataview.datasets && dataview.datasets?.length > 0)
   }
 )
 

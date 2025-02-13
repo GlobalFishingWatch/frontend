@@ -4,6 +4,11 @@ import { useSelector } from 'react-redux'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
+import {
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
+} from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import {
@@ -32,14 +37,14 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
   // TODO:CVP use by `analysis.groupByFlag` or this translations?
   const options: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>[] = [
     {
-      id: 'flag',
+      id: REPORT_VESSELS_GRAPH_FLAG,
       label: t('vessel.flag', 'Flag'),
       disabled: loading,
     },
     ...(reportSubCategory !== 'fishing'
       ? [
           {
-            id: 'vesselType' as ReportVesselsSubCategory,
+            id: REPORT_VESSELS_GRAPH_VESSELTYPE,
             label: t('vessel.shiptype', 'Vessel type'),
             disabled: loading,
           },
@@ -48,7 +53,7 @@ function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGr
     ...(reportCategory !== ReportCategory.Events
       ? [
           {
-            id: 'geartype' as ReportVesselsSubCategory,
+            id: REPORT_VESSELS_GRAPH_GEARTYPE,
             label: t('vessel.geartype', 'Gear type'),
             disabled: loading,
           },
