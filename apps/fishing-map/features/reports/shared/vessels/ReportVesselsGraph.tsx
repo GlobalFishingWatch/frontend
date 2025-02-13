@@ -12,7 +12,11 @@ import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
+import {
+  EMPTY_API_VALUES,
+  MAX_CATEGORIES,
+  OTHERS_CATEGORY_LABEL,
+} from 'features/reports/reports.config'
 import type {
   ReportState,
   ReportVesselGraph,
@@ -59,6 +63,8 @@ const ReportBarTooltip = (props: any) => {
   const { active, payload, label, type } = props as ReportGraphTooltipProps
   const { t } = useTranslation()
 
+  const isOthersCategory = payload?.some((p) => p.name === OTHERS_CATEGORY_LABEL)
+  let otherLabelCounted = false
   let parsedLabel = label
   if (label === EMPTY_FIELD_PLACEHOLDER) {
     parsedLabel = t('analysis.unknownProperty', 'Unknown')
@@ -73,16 +79,42 @@ const ReportBarTooltip = (props: any) => {
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{parsedLabel}</p>
-        <ul>
+        <ul className={isOthersCategory ? styles.maxHeight : ''}>
           {payload
-            .map(({ value, color }, index) => {
-              return value !== 0 ? (
+            .map(({ value, payload }, index) => {
+              if (value === 0 || otherLabelCounted) {
+                return null
+              }
+              if (payload.name === OTHERS_CATEGORY_LABEL && payload.others) {
+                otherLabelCounted = true
+                const top = payload.others.slice(0, MAX_CATEGORIES)
+                const restValue = payload.others
+                  .slice(MAX_CATEGORIES)
+                  .reduce((acc: number, curr: { value: number }) => {
+                    return acc + curr.value
+                  }, 0)
+                return (
+                  <Fragment>
+                    {top.map(({ name, value }: { name: string; value: number }) => (
+                      <li key={name} className={styles.tooltipValue}>
+                        {name}: <I18nNumber number={value} />
+                      </li>
+                    ))}
+                    {restValue && (
+                      <li key="others" className={styles.tooltipValue}>
+                        {t('analysis.others', 'Others')}: {restValue}
+                      </li>
+                    )}
+                  </Fragment>
+                )
+              }
+              return (
                 <li key={index} className={styles.tooltipValue}>
                   {/* TODO:CVP review if this apply for every table */}
                   {/* <span className={styles.tooltipValueDot} style={{ color }}></span> */}
                   <I18nNumber number={value} /> {t('common.vessel', { count: value }).toLowerCase()}
                 </li>
-              ) : null
+              )
             })
             .reverse()}
         </ul>
@@ -93,7 +125,6 @@ const ReportBarTooltip = (props: any) => {
   return null
 }
 
-// TODO:CVP merge this with reports/tabs/activity/vessels/ReportVesselsGraph.tsx
 const ReportGraphTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount, property, filterQueryParam, pageQueryParam } =
     props
@@ -102,7 +133,6 @@ const ReportGraphTick = (props: any) => {
   const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
-  // const othersData = useSelector(selectReportVesselsGraphDataOthers)
 
   const getTickLabel = (label: string) => {
     if (label === EMPTY_FIELD_PLACEHOLDER) {
@@ -188,12 +218,6 @@ const ReportGraphTick = (props: any) => {
             <tspan textAnchor="middle" x="0" dy={12}>
               {chunk}{' '}
             </tspan>
-            {isOtherCategory && (
-              <Fragment>
-                <tspan>&nbsp;</tspan>
-                <tspan className={styles.info}>i</tspan>
-              </Fragment>
-            )}
           </Fragment>
         ))}
       </text>

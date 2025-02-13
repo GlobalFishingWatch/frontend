@@ -372,8 +372,17 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
         return distributionData as ResponsiveVisualizationData<'aggregated'>
       })
       .sort((a, b) => {
-        if (EMPTY_API_VALUES.includes(a.name as string)) return 1
-        if (EMPTY_API_VALUES.includes(b.name as string)) return -1
+        if (
+          EMPTY_API_VALUES.includes(a.name as string) ||
+          // This moves the "other" category from the api to the end to group when feasible
+          a.name === getVesselShipTypeLabel({ shiptypes: 'other' })
+        )
+          return 1
+        if (
+          EMPTY_API_VALUES.includes(b.name as string) ||
+          b.name === getVesselShipTypeLabel({ shiptypes: 'other' })
+        )
+          return -1
         return (
           sum(dataviewIds.map((d) => getResponsiveVisualizationItemValue(b[d]))) -
           sum(dataviewIds.map((d) => getResponsiveVisualizationItemValue(a[d])))
@@ -389,6 +398,12 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
     const rest = data.slice(MAX_CATEGORIES)
     const others = {
       name: OTHERS_CATEGORY_LABEL,
+      others: rest
+        .map((other) => ({
+          name: other.name,
+          value: sum(dataviewIds.map((id) => getResponsiveVisualizationItemValue(other[id]) || 0)),
+        }))
+        .sort((a, b) => b.value - a.value),
       ...Object.fromEntries(
         dataviewIds.map((valueKey) => [
           valueKey,
@@ -397,84 +412,10 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
       ),
     }
     return [...top, others] as ResponsiveVisualizationData<'aggregated'>
-
-    // const orderedGroups = Object.entries(vesselsGrouped)
-    //   .map(([key, value]) => ({
-    //     name: key,
-    //     value: (value as any[]).length,
-    //     color: (value as any[])[0]?.color,
-    //   }))
-    //   .sort((a, b) => {
-    //     return b.value - a.value
-    //   })
-    // const groupsWithoutOther: GraphDataGroup[] = []
-    // const otherGroups: GraphDataGroup[] = []
-    // orderedGroups.forEach((group) => {
-    //   if (
-    //     group.name === 'null' ||
-    //     group.name.toLowerCase() === OTHERS_CATEGORY_LABEL.toLowerCase() ||
-    //     group.name === EMPTY_FIELD_PLACEHOLDER
-    //   ) {
-    //     otherGroups.push(group)
-    //   } else {
-    //     groupsWithoutOther.push(group)
-    //   }
-    // })
-    // const allGroups =
-    //   otherGroups.length > 0
-    //     ? [
-    //         ...groupsWithoutOther,
-    //         {
-    //           name: OTHERS_CATEGORY_LABEL,
-    //           value: otherGroups.reduce((acc, group) => acc + group.value, 0),
-    //         },
-    //       ]
-    //     : groupsWithoutOther
-    // if (allGroups.length <= MAX_CATEGORIES) {
-    //   return allGroups
-    // }
-    // const firstGroups = allGroups.slice(0, MAX_CATEGORIES)
-    // const restOfGroups = allGroups.slice(MAX_CATEGORIES)
-
-    // return [
-    //   ...firstGroups,
-    //   {
-    //     name: OTHERS_CATEGORY_LABEL,
-    //     value: restOfGroups.reduce((acc, group) => acc + group.value, 0),
-    //   },
-    // ] as ResponsiveVisualizationData<'aggregated'>
   }
 )
 
 export const REPORT_GRAPH_LABEL_KEY = 'name'
-const defaultOthersLabel: ResponsiveVisualizationData<'aggregated'> = []
-// export const selectReportVesselsGraphDataOthers = createSelector(
-//   [selectReportVesselsGraphAggregatedData],
-//   (reportGraph): ResponsiveVisualizationData<'aggregated'> | null => {
-//     if (!reportGraph?.data?.length) return null
-//     if (reportGraph?.distributionKeys.length <= MAX_CATEGORIES) return defaultOthersLabel
-//     const others = reportGraph.data.slice(MAX_CATEGORIES)
-
-//     return reportGraph.distributionKeys
-//       .flatMap((key) => {
-//         const other = others.find((o) => o.name === key)
-//         if (!other) return EMPTY_ARRAY
-//         const { name, ...rest } = other
-//         return {
-//           name,
-//           value: {
-//             value: sum(Object.values(rest).map((v) => (v as any).value)),
-//           },
-//         }
-//       })
-//       .sort((a, b) => {
-//         if (EMPTY_API_VALUES.includes(a.name as string)) return 1
-//         if (EMPTY_API_VALUES.includes(b.name as string)) return -1
-//         return b.value?.value - a.value?.value
-//       })
-//   }
-// )
-
 export const selectReportVesselsGraphIndividualData = createSelector(
   [selectReportVesselsFiltered, selectReportVesselsSubCategory],
   (vessels, groupBy) => {
