@@ -53,7 +53,6 @@ export default function ReportVesselsTable({
 }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const activitySubCategory = useSelector(selectReportActivitySubCategory)
   const isPinningVessels = useSelector(selectReportIsPinningVessels)
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -64,8 +63,6 @@ export default function ReportVesselsTable({
     dataviews,
     userData?.permissions || []
   )
-
-  const isFishingReport = activitySubCategory === 'fishing'
 
   const onFilterClick = (reportVesselFilter: any) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
@@ -136,7 +133,7 @@ export default function ReportVesselsTable({
             )}
           </div>
           <div className={styles.header}>
-            {t('vessel.gearType', 'Gear Type')}
+            {t('vessel.type', 'Type')}
             {allowSorting && (
               <IconButton
                 size="tiny"
@@ -169,9 +166,9 @@ export default function ReportVesselsTable({
               ssvid,
             } = vessel
             const isLastRow = i === vessels.length - 1
-            const type = isFishingReport ? vessel.geartype : vessel.vesselType
+            const hasGearType = geartype !== '' && geartype !== EMPTY_FIELD_PLACEHOLDER
+            const type = hasGearType ? geartype : vesselType
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
-            const gearTypeInteractionEnabled = geartype !== EMPTY_FIELD_PLACEHOLDER
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             const value = vessel.value || (vessel as any)[activityUnit as any]
             // TODO:CVP normalize this vessel types
@@ -245,22 +242,13 @@ export default function ReportVesselsTable({
                 <div
                   role="button"
                   tabIndex={0}
-                  className={cx({
+                  className={cx(styles.pointer, {
                     [styles.border]: !isLastRow,
-                    [styles.pointer]: gearTypeInteractionEnabled,
                   })}
-                  title={
-                    gearTypeInteractionEnabled
-                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${geartype}`
-                      : undefined
-                  }
-                  onClick={
-                    gearTypeInteractionEnabled
-                      ? () => onFilterClick(`${'gear'}:${geartype}`)
-                      : undefined
-                  }
+                  title={`${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`}
+                  onClick={() => onFilterClick(`${'type'}:${type}`)}
                 >
-                  {geartype}
+                  {type}
                 </div>
                 {activityUnit && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>

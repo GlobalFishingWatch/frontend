@@ -21,7 +21,7 @@ import type {
 import ReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
 import { useLocationConnect } from 'routes/routes.hook'
-import { formatInfoField } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import { REPORT_GRAPH_LABEL_KEY } from './report-vessels.selectors'
 
@@ -60,8 +60,11 @@ const ReportBarTooltip = (props: any) => {
   const { t } = useTranslation()
 
   let parsedLabel = label
-  if (EMPTY_API_VALUES.includes(label)) parsedLabel = t('common.unknown', 'Unknown')
-  else if (type === 'flag') {
+  if (label === EMPTY_FIELD_PLACEHOLDER) {
+    parsedLabel = t('analysis.unknownProperty', 'Unknown')
+  } else if (EMPTY_API_VALUES.includes(label)) {
+    parsedLabel = t('common.unknown', 'Unknown')
+  } else if (type === 'flag') {
     parsedLabel = formatInfoField(label, 'flag') as string
   } else if (type === 'geartype') {
     parsedLabel = formatInfoField(label, 'geartypes') as string
@@ -102,7 +105,12 @@ const ReportGraphTick = (props: any) => {
   // const othersData = useSelector(selectReportVesselsGraphDataOthers)
 
   const getTickLabel = (label: string) => {
-    if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
+    if (label === EMPTY_FIELD_PLACEHOLDER) {
+      return t('analysis.unknownProperty', 'Unknown')
+    }
+    if (EMPTY_API_VALUES.includes(label)) {
+      return t('analysis.unknown', 'Unknown')
+    }
     switch (property) {
       case 'flag':
         return formatInfoField(label, 'flag') as string

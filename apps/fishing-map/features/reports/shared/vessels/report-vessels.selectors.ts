@@ -39,7 +39,12 @@ import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/ve
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { cleanFlagState } from 'utils/flags'
-import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getVesselGearTypeLabel,
+  getVesselShipTypeLabel,
+} from 'utils/info'
 
 import { selectVGRVessels } from '../../report-vessel-group/vessel-group-report.slice'
 import { selectEventsVessels } from '../../tabs/events/events-report.selectors'
@@ -110,7 +115,6 @@ export const selectReportVessels = createSelector(
     if (!vessels?.length) {
       return null
     }
-    const fallbackValue = t('common.unknownProperty', 'Unknown')
     return vessels.flatMap((vessel) => {
       const identity = (vessel as VesselGroupVessel)?.identity
       // Vessels have identity when coming from events or vessel groups
@@ -118,8 +122,8 @@ export const selectReportVessels = createSelector(
         const reportVessel = vessel as VesselGroupVessel
         const { shipname, ...vesselData } = getSearchIdentityResolved(identity!)
         const source = getVesselSource(identity)
-        const vesselType = getVesselShipTypeLabel(vesselData) as string
-        const geartype = getVesselGearTypeLabel(vesselData) as string
+        const vesselType = getVesselShipTypeLabel(vesselData) || EMPTY_FIELD_PLACEHOLDER
+        const geartype = getVesselGearTypeLabel(vesselData) || EMPTY_FIELD_PLACEHOLDER
         const flag = getVesselProperty(identity, 'flag', {
           identitySource: VesselIdentitySourceEnum.SelfReported,
         })
@@ -129,15 +133,17 @@ export const selectReportVessels = createSelector(
           datasetId: vesselData.dataset as string,
           dataviewId: reportVessel.dataviewId,
           trackDatasetId: reportVessel.trackDatasetId,
-          shipName: formatInfoField(shipname, 'shipname', { fallbackValue }) as string,
+          shipName: formatInfoField(shipname, 'shipname') as string,
           vesselType,
           geartype,
           ssvid: getVesselProperty(identity, 'ssvid', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           }),
           flag: flag,
-          flagTranslated: flag ? t(`flags:${flag}` as any) : fallbackValue,
-          flagTranslatedClean: flag ? cleanFlagState(t(`flags:${flag}` as any)) : fallbackValue,
+          flagTranslated: flag ? t(`flags:${flag}` as any) : EMPTY_FIELD_PLACEHOLDER,
+          flagTranslatedClean: flag
+            ? cleanFlagState(t(`flags:${flag}` as any))
+            : EMPTY_FIELD_PLACEHOLDER,
           source: t(`common.sourceOptions.${source}`, source),
         }
         return tableVessel
@@ -149,26 +155,20 @@ export const selectReportVessels = createSelector(
           datasetId: (reportVessel.infoDataset?.id || reportVessel.dataset) as string,
           dataviewId: reportVessel.dataviewId,
           trackDatasetId: reportVessel.trackDataset?.id,
-          shipName: formatInfoField(reportVessel.shipName, 'shipname', {
-            fallbackValue,
-          }) as string,
-          vesselType: formatInfoField(reportVessel.vesselType, 'vesselType', {
-            fallbackValue,
-          }) as string,
-          geartype: formatInfoField(reportVessel.geartype, 'geartypes', {
-            fallbackValue,
-          }) as string,
-          ssvid: reportVessel.mmsi || fallbackValue,
-          flag: reportVessel.flag || fallbackValue,
+          shipName: formatInfoField(reportVessel.shipName, 'shipname') || EMPTY_FIELD_PLACEHOLDER,
+          vesselType:
+            formatInfoField(reportVessel.vesselType, 'vesselType') || EMPTY_FIELD_PLACEHOLDER,
+          geartype: formatInfoField(reportVessel.geartype, 'geartypes') || EMPTY_FIELD_PLACEHOLDER,
+          ssvid: reportVessel.mmsi || EMPTY_FIELD_PLACEHOLDER,
+          flag: reportVessel.flag || EMPTY_FIELD_PLACEHOLDER,
           value: reportVessel.value as number,
           color: reportVessel.color,
           flagTranslated: reportVessel.flag
             ? t(`flags:${reportVessel.flag}` as any)
-            : fallbackValue,
+            : EMPTY_FIELD_PLACEHOLDER,
           flagTranslatedClean: reportVessel.flag
             ? cleanFlagState(t(`flags:${reportVessel.flag}` as any))
-            : fallbackValue,
-          // TODO:CVP add the needed values of identity here
+            : EMPTY_FIELD_PLACEHOLDER,
         }
         return tableVessel
       }
