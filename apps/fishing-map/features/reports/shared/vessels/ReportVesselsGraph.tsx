@@ -60,10 +60,10 @@ const FILTER_PROPERTIES: Record<ReportVesselsSubCategory | 'geartype' | 'shiptyp
 }
 
 const ReportBarTooltip = (props: any) => {
-  const { active, payload, label, type } = props as ReportGraphTooltipProps
+  const { active, payload: tooltipPayload, label, type } = props as ReportGraphTooltipProps
   const { t } = useTranslation()
 
-  const isOthersCategory = payload?.some((p) => p.name === OTHERS_CATEGORY_LABEL)
+  const isOthersCategory = tooltipPayload?.some((p) => p.name === OTHERS_CATEGORY_LABEL)
   let otherLabelCounted = false
   let parsedLabel = label
   if (label === EMPTY_FIELD_PLACEHOLDER) {
@@ -75,13 +75,13 @@ const ReportBarTooltip = (props: any) => {
   } else if (type === 'geartype') {
     parsedLabel = formatInfoField(label, 'geartypes') as string
   }
-  if (active && payload && payload.length) {
+  if (active && tooltipPayload && tooltipPayload.length) {
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{parsedLabel}</p>
         <ul className={isOthersCategory ? styles.maxHeight : ''}>
-          {payload
-            .map(({ value, payload }, index) => {
+          {tooltipPayload
+            .map(({ value, color, payload }, index) => {
               if (value === 0 || otherLabelCounted) {
                 return null
               }
@@ -110,8 +110,9 @@ const ReportBarTooltip = (props: any) => {
               }
               return (
                 <li key={index} className={styles.tooltipValue}>
-                  {/* TODO:CVP review if this apply for every table */}
-                  {/* <span className={styles.tooltipValueDot} style={{ color }}></span> */}
+                  {tooltipPayload.length > 1 && (
+                    <span className={styles.tooltipValueDot} style={{ color }}></span>
+                  )}
                   <I18nNumber number={value} /> {t('common.vessel', { count: value }).toLowerCase()}
                 </li>
               )
@@ -155,17 +156,6 @@ const ReportGraphTick = (props: any) => {
 
   const onLabelClick = () => {
     if (payload.value !== OTHERS_CATEGORY_LABEL) {
-      // TODO:CVP review if this is needed (comes from the activity graph component)
-      // const vesselFilter =
-      //   payload.name === OTHERS_CATEGORY_LABEL
-      //     ? cleanFlagState(
-      //         (
-      //           othersData?.flatMap((d) =>
-      //             EMPTY_API_VALUES.includes(d.name as string) ? [] : getTickLabel(d.name as string)
-      //           ) || []
-      //         ).join('|')
-      //       )
-      //     : getTickLabel(payload.name)
       dispatchQueryParams({
         [filterQueryParam]: `${FILTER_PROPERTIES[property as ReportVesselsSubCategory]}:${
           payload.value
@@ -176,25 +166,6 @@ const ReportGraphTick = (props: any) => {
   }
 
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
-  // TODO:CVP prepare othersData so we can restore the feature of filtering by others
-  // const label = isOtherCategory ? (
-  //   <ul>
-  //     {othersData
-  //       ?.slice(0, MAX_OTHER_TOOLTIP_ITEMS)
-  //       .map(({ name, value }) => (
-  //         <li
-  //           key={`${name}-${value}`}
-  //         >{`${getTickLabel(name)}: ${getResponsiveVisualizationItemValue(value)}`}</li>
-  //       ))}
-  //     {othersData && othersData.length > MAX_OTHER_TOOLTIP_ITEMS && (
-  //       <li>
-  //         + {othersData.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
-  //       </li>
-  //     )}
-  //   </ul>
-  // ) : (
-  //   ''
-  // )
   const labelChunks = label.split(' ')
   const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {
