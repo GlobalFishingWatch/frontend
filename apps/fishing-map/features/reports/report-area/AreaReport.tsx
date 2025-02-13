@@ -63,7 +63,6 @@ export default function Report() {
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
-  const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
 
   const dataviews = useSelector(selectAllDataviewInstancesResolved)
   const heatmapDataviews = useMemo(

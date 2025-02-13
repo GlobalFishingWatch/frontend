@@ -202,7 +202,10 @@ export default function ReportTitle({ area }: ReportTitleProps) {
             areaName = getDatasetLabel(dataset)
           } else {
             const propertyValue =
-              reportArea?.properties?.[propertyToInclude] || reportArea?.properties?.[valueProperty]
+              reportArea?.properties?.[propertyToInclude] ||
+              reportArea?.properties?.[valueProperty] ||
+              (reportArea as any)?.[propertyToInclude?.toLowerCase()] ||
+              (reportArea as any)?.[valueProperty?.toLowerCase()]
             areaName =
               propertyValue && typeof propertyValue === 'string'
                 ? propertyValue
@@ -244,7 +247,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     urlBufferOperation,
     areaDataview?.config?.type,
     reportAreaStatus,
-    reportArea?.properties,
+    reportArea,
     area?.name,
     t,
     urlBufferUnit,
