@@ -17,7 +17,6 @@ import {
   selectReportVesselsOrderDirection,
   selectReportVesselsOrderProperty,
 } from 'features/reports/reports.config.selectors'
-import { selectReportActivitySubCategory } from 'features/reports/reports.selectors'
 import type {
   ReportVesselOrderDirection,
   ReportVesselOrderProperty,
@@ -246,7 +245,7 @@ export default function ReportVesselsTable({
                     [styles.border]: !isLastRow,
                   })}
                   title={`${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`}
-                  onClick={() => onFilterClick(`${'type'}:${type}`)}
+                  onClick={() => onFilterClick(`${'gear'}:${type}`)}
                 >
                   {type}
                 </div>
