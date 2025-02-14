@@ -79,14 +79,15 @@ export default function ReportActivity() {
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportGraphMode = getReportGraphMode(reportActivityGraph)
-  const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
+  const isSameTimeseriesMode = layersTimeseriesFiltered?.length
+    ? layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
+    : true
   const showSelectors = layersTimeseriesFiltered !== undefined
-  const showPlaceholder = loading || !isSameTimeseriesMode
+  const showPlaceholder = loading !== false || !isSameTimeseriesMode
   const isEmptyData =
     layersTimeseriesFiltered &&
     layersTimeseriesFiltered.every(({ timeseries }) => timeseries.length === 0) &&
-    !loading
-
+    loading === false
   return (
     <div className={styles.container}>
       {showSelectors && (

@@ -121,7 +121,7 @@ export default function ReportSummary({
       })
     }
     if (
-      (!timeseriesLoading && layersTimeseriesFiltered?.[0]) ||
+      (!timeseriesLoading && layersTimeseriesFiltered !== undefined) ||
       (category === ReportCategory.Detections &&
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours)
@@ -139,7 +139,7 @@ export default function ReportSummary({
           ? `<span>${formatI18nNumber(timeseriesHours.toFixed(), {
               locale: i18n.language as Locale,
             })}</span>`
-          : ''
+          : 0
       if (
         category === ReportCategory.Detections &&
         reportStatus === AsyncReducerStatus.Finished &&

@@ -57,7 +57,11 @@ export const tickFormatter = (tick: number) => {
 
 export const formatDate = (date: DateTime, timeChunkInterval: FourwingsInterval | string) => {
   let formattedLabel = ''
-  switch (timeChunkInterval) {
+  switch (timeChunkInterval.toLowerCase()) {
+    case 'year':
+    case 'years':
+      formattedLabel += date.toFormat('y')
+      break
     case 'month':
     case 'months':
       formattedLabel += date.toFormat('LLLL y')

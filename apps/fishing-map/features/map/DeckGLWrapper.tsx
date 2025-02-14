@@ -21,10 +21,6 @@ import { MAP_VIEW, useMapSetViewState, useMapViewState } from 'features/map/map-
 import MapAnnotations from 'features/map/overlays/annotations/Annotations'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { useHasReportTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
-import {
-  selectIsAnyAreaReportLocation,
-  selectIsVesselGroupReportLocation,
-} from 'routes/routes.selectors'
 import type { MapCoordinates } from 'types'
 
 const mapStyles = {
@@ -40,6 +36,7 @@ const DeckGLWrapper = () => {
   const dispatch = useAppDispatch()
   const viewState = useMapViewState()
   const hasReportTimeseries = useHasReportTimeseries()
+
   const onViewStateChange = useCallback(
     (params: any) => {
       // add transitionDuration: 0 to avoid unresponsive zoom
@@ -53,20 +50,19 @@ const DeckGLWrapper = () => {
   const getCursor = useMapCursor()
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   const layers = useMapLayers()
-  const isVGRReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const vesselGroupSection = useSelector(selectReportCategory)
 
   const onMapLoad = useCallback(() => {
     dispatch(setMapLoaded(true))
   }, [dispatch])
 
-  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
-
-  const isLoadingReport = useMemo(
-    () =>
-      (isAreaReportLocation || (isVGRReportLocation && vesselGroupSection === 'activity')) &&
-      !hasReportTimeseries,
-    [hasReportTimeseries, isAreaReportLocation, isVGRReportLocation, vesselGroupSection]
+  const isFourwingsReport =
+    vesselGroupSection === 'activity' ||
+    vesselGroupSection === 'detections' ||
+    vesselGroupSection === 'environment'
+  const isWaitingForFourwingsTiles = useMemo(
+    () => isFourwingsReport && !hasReportTimeseries,
+    [hasReportTimeseries, isFourwingsReport]
   )
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
@@ -96,7 +92,7 @@ const DeckGLWrapper = () => {
       layerFilter={layerFilterHandler}
       viewState={viewState}
       // Needs to lock the ui to avoid loading other tiles until report timeseries are loaded
-      onViewStateChange={isLoadingReport ? undefined : onViewStateChange}
+      onViewStateChange={isWaitingForFourwingsTiles ? undefined : onViewStateChange}
       onClick={onMapClick}
       onHover={onMouseMove}
       onDragStart={onMapDragStart}
