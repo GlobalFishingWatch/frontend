@@ -99,7 +99,7 @@ const ReportBarTooltip = (props: any) => {
                         {name}: <I18nNumber number={value} />
                       </li>
                     ))}
-                    {restValue && (
+                    {restValue !== 0 && (
                       <li key="others" className={styles.tooltipValue}>
                         {t('analysis.others', 'Others')}: {restValue}
                       </li>
