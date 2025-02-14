@@ -57,11 +57,33 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
         )}
         {!intro && !loading && !user && (
           <div>
-            <div>
-              {t(
+            <div className={styles.deprecationWarning}>
+              {/* {t(
                 'user.notLoggedIn',
                 'Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials'
-              )}
+              )} */}
+              <p>
+                Welcome! This is the private prototype version of Vessel Viewer that is being phased
+                out in late 2025, as we focus improvements on the public Vessel Viewer platform.
+              </p>
+              <p>
+                This prototype currently contains more vessels than the public Vessel Viewer
+                version, however part of the data it contains is no longer updated since 24 January
+                2025. Therefore, we recommend only using this prototype version in parallel to the
+                public version, to ensure you can access vessels not visible on the public version,
+                and can still access up-to-date vessel identity information.
+              </p>
+              <p>
+                Please log in with your Global Fishing Watch credentials. If you experience any
+                issue or require support using Vessel Viewer, please{' '}
+                <a
+                  href="mailto:support@globalfishingwatch.org?subject=Vessel Viewer prototype issues"
+                  className={styles.link}
+                >
+                  email us
+                </a>
+                .
+              </p>
             </div>
             <div className={styles.buttons}>
               <Button onClick={onLoginClick}>{t('user.login', 'Log in')}</Button>

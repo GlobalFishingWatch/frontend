@@ -45,6 +45,18 @@
   animation: load2 2s infinite ease;
 }
 
+.deprecationWarning {
+  max-width: 900px;
+  margin: 0 auto;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.deprecationWarning p {
+  font: var(--font-M);
+}
+
 .vhLogo {
   padding: 0;
   display: block;
