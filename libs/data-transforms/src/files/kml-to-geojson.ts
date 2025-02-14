@@ -4,7 +4,7 @@ import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'ge
 
 import type { DatasetGeometryType } from '@globalfishingwatch/api-types'
 
-import type { JSZipObject } from './zip-to-files';
+import type { JSZipObject } from './zip-to-files'
 import { zipToFiles } from './zip-to-files'
 
 export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
@@ -24,7 +24,9 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
       if (type === 'polygons') {
         hasFeaturesOfDesiredType =
           kmlDoc.getElementsByTagName('Polygon').length > 0 ||
-          kmlDoc.getElementsByTagName('MultiPolygon').length > 0
+          kmlDoc.getElementsByTagName('MultiPolygon').length > 0 ||
+          kmlDoc.getElementsByTagName('LineString').length > 0 ||
+          kmlDoc.getElementsByTagName('MultiLineString').length > 0
       } else if (type === 'tracks') {
         hasFeaturesOfDesiredType =
           kmlDoc.getElementsByTagName('LineString').length > 0 ||
