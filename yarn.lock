@@ -2946,6 +2946,7 @@ __metadata:
     "@turf/helpers": "npm:7.2.0"
     "@turf/kinks": "npm:7.2.0"
     "@turf/length": "npm:7.2.0"
+    "@turf/line-to-polygon": "npm:^7.2.0"
     "@turf/simplify": "npm:7.2.0"
     "@turf/turf": "npm:7.2.0"
     "@turf/union": "npm:7.2.0"
