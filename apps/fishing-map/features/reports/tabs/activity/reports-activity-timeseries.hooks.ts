@@ -99,7 +99,7 @@ export function useSetTimeseries() {
 
 export function useHasReportTimeseries() {
   const timeseries = useAtomValue(mapTimeseriesAtom)
-  return timeseries && timeseries.length > 0
+  return timeseries !== undefined
 }
 
 export function useTimeseriesStats() {
@@ -122,8 +122,12 @@ const useReportInstances = () => {
 }
 
 export const useReportFeaturesLoading = () => {
-  const reportLayerInstanceLoaded = useReportInstances()?.every((layer) => layer.loaded)
+  const reportInstances = useReportInstances()
   const areaInViewport = useReportAreaInViewport()
+  // Using undefined to show the placeholder when the layers are not ready
+  if (!reportInstances?.length) return undefined
+
+  const reportLayerInstanceLoaded = reportInstances?.every((layer) => layer.loaded)
   return areaInViewport && !reportLayerInstanceLoaded
 }
 
@@ -155,7 +159,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   // We need to re calculate the timeseries and the filteredFeatures when any of this params changes
   useEffect(() => {
-    setTimeseries([])
+    setTimeseries(undefined)
     setFeaturesFiltered([])
     featuresFilteredDirtyRef.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -307,7 +311,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       })
       setTimeseriesStats(timeseriesStats)
     },
-    [dataviews, setTimeseriesStats]
+    [dataviews, setTimeseriesStats, timeseries]
   )
 
   useEffect(() => {
