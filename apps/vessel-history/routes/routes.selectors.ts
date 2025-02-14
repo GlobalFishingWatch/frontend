@@ -1,12 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { Query, RouteObject } from 'redux-first-router'
-import type { RootState } from 'store'
-import type { WorkspaceParam } from 'types'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
+import type { RootState } from 'store'
+import type { WorkspaceParam } from 'types'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 import type { ROUTE_TYPES } from './routes'
@@ -207,5 +207,5 @@ export const selectSearchableQueryParams = createSelector(
       q: query,
       ...filters,
       flags: filters?.flags.join(','),
-    } as any)
+    }) as any
 )

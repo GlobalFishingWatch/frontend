@@ -216,17 +216,17 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
     () => ({
       id: 'map',
       title: t('common.map', 'MAP').toLocaleUpperCase(),
-      content: <TabDeprecated vesselId={vesselId} />,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} />,
     }),
-    [t, vesselId]
+    [t, vessel, vesselId]
   )
   const riskSummaryTab = useMemo(
     () => ({
       id: 'risk',
       title: <RiskTitle />,
-      content: <TabDeprecated vesselId={vesselId} />,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} />,
     }),
-    [vesselId]
+    [vessel, vesselId]
   )
 
   const infoTab = useMemo(
@@ -234,17 +234,22 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
       id: 'info',
       title: t('common.info', 'INFO').toLocaleUpperCase(),
       content: vessel ? (
-        <Info
-          vessel={vessel}
-          lastPosition={lastPosition}
-          lastPortVisit={lastPortVisit}
-          onMoveToMap={() => setActiveTab(mapTab)}
-        />
+        <Fragment>
+          <TabDeprecated vessel={vessel} vesselId={vesselId} fullHeight={false} />
+          <Info
+            vessel={vessel}
+            lastPosition={lastPosition}
+            lastPortVisit={lastPortVisit}
+            onMoveToMap={() => setActiveTab(mapTab)}
+          />
+        </Fragment>
       ) : loading ? (
         <Spinner className={styles.spinnerFull} />
-      ) : null,
+      ) : (
+        <TabDeprecated vessel={vessel} vesselId={vesselId} />
+      ),
     }),
-    [lastPortVisit, lastPosition, loading, mapTab, t, vessel]
+    [lastPortVisit, lastPosition, loading, mapTab, t, vessel, vesselId]
   )
   const activityTab = useMemo(
     () => ({
@@ -255,9 +260,9 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
           {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
         </div>
       ),
-      content: <TabDeprecated vesselId={vesselId} />,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} />,
     }),
-    [t, vesselId, visibleHighlights]
+    [t, vessel, vesselId, visibleHighlights]
   )
 
   const activityByTypeTab = useMemo(
