@@ -53,11 +53,7 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
         )}
         {!intro && !loading && !user && (
           <div>
-            <div>
-              {t(
-                'user.notLoggedIn',
-                'Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials'
-              )}
+            <div className={styles.deprecationWarning}>
               {i18n.language === 'fr' ? (
                 <Fragment>
                   <p>
