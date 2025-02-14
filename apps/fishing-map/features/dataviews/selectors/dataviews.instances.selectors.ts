@@ -142,6 +142,10 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
             getReportSubCategoryFromDataview(dataview) === reportSubCategory
           return matchesSubcategory
         }
+        if (dataview.category === DataviewCategory.Environment) {
+          const matchesCategory = getReportCategoryFromDataview(dataview) === reportCategory
+          return matchesCategory
+        }
         return true
       })
     }
