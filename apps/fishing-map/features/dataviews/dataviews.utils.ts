@@ -47,17 +47,17 @@ export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGr
 
 export const getVesselInfoDataviewInstanceDatasetConfig = (
   vesselId: string,
-  { info }: VesselInstanceDatasets
+  { info }: VesselInstanceDatasets,
+  includeRelatedIdentities = true
 ) => {
   return {
     datasetId: info,
     params: [{ id: 'vesselId', value: vesselId }],
     query: [
       { id: 'dataset', value: info },
-      {
-        id: 'includes',
-        value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
-      },
+      ...(includeRelatedIdentities
+        ? [{ id: 'includes', value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID] }]
+        : []),
       {
         id: 'registries-info-data',
         value: 'ALL',

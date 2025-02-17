@@ -4,7 +4,6 @@ import ImageGallery from 'react-image-gallery'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { DateTime, Interval } from 'luxon'
-import type { VesselWithHistory } from 'types'
 
 import type { VesselTypeV2 } from '@globalfishingwatch/api-types'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
@@ -25,6 +24,7 @@ import {
   selectUrlQuery,
   selectVesselId,
 } from 'routes/routes.selectors'
+import type { VesselWithHistory } from 'types'
 import type { OfflineVessel } from 'types/vessel'
 import { VesselFieldLabel } from 'types/vessel'
 import { getUTCDateTime } from 'utils/dates'

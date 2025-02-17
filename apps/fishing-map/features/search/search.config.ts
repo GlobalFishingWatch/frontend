@@ -8,6 +8,7 @@ export const RESULTS_PER_PAGE = 20
 export const SSVID_LENGTH = 9
 export const IMO_LENGTH = 7
 export const EMPTY_FILTERS = {
+  id: undefined,
   query: undefined,
   flag: undefined,
   infoSource: undefined,

@@ -32,6 +32,7 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselArea: 'eez',
   vesselRelated: 'encounters',
   viewOnlyVessel: true,
+  includeRelatedIdentities: true,
 }
 
 export type VesselRenderField<Key = string> = {

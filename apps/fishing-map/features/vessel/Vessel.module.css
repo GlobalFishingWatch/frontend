@@ -12,6 +12,15 @@
   z-index: 1;
 }
 
+.fullProfileMessage {
+  color: var(--color-secondary-blue);
+  padding: var(--space-S) var(--space-S) var(--space-S) var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border);
+}
+
 .linkTooltip {
   max-width: none;
 }

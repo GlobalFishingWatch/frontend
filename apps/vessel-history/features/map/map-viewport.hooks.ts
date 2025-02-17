@@ -2,11 +2,11 @@ import { useCallback } from 'react'
 import type { ViewStateChangeEvent } from 'react-map-gl'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useAtom } from 'jotai'
-import type { Bbox, MapCoordinates } from 'types'
 
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_VIEWPORT } from 'data/config'
+import type { Bbox, MapCoordinates } from 'types'
 
 import useMapInstance from './map-context.hooks'
 
