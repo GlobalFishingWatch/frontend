@@ -1,7 +1,24 @@
-# react-hooks
+# @globalfishingwatch/react-hooks
 
-This library was generated with [Nx](https://nx.dev).
+A collection of React hooks used across Global Fishing Watch applications.
 
-## Building
+## Installation
 
-Run `nx build react-hooks` to build the library.
+```bash
+yarn add @globalfishingwatch/react-hooks
+```
+
+## Available Hooks
+
+See the [hooks](https://github.com/GlobalFishingWatch/frontend/tree/master/libs/react-hooks/src) folder for the available hooks.
+
+## Build and publish
+
+```bash
+nx build react-hooks
+nx publish react-hooks
+```
+
+## License
+
+MIT
