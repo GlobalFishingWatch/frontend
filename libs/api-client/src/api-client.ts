@@ -303,7 +303,6 @@ export class GFW_API_CLASS {
             }),
           }),
           Authorization: `Bearer ${this.getToken()}`,
-          'Cache-Control': 'stale-if-error=0',
         }
         const fetchUrl = isUrlAbsolute(url) ? url : this.baseUrl + url
         const data = await fetch(fetchUrl, {
