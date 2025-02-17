@@ -28,6 +28,12 @@ It handles the 4wings tile format, specifically designed for geo temporal data:
 
 Parse custom data for user track layers to filter out points and properties
 
+## Installation
+
+```bash
+yarn add @globalfishingwatch/deck-loaders
+```
+
 ## Usage example
 
 ```ts
