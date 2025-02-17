@@ -62,14 +62,14 @@ const VesselHeader = () => {
     window.print()
   }, [])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const vesselImages = isGFWUser
-    ? uniqBy(
-        vessel.identities
-          .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img) || [])
-          .filter(Boolean),
-        (img) => img.url
-      )
-    : []
+
+  const allVesselImages = uniqBy(
+    vessel.identities
+      .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img) || [])
+      .filter(Boolean),
+    (img) => img.url
+  )
+  const filteredImages = allVesselImages.filter((img) => isGFWUser || img.copyright === 'TMT')
 
   const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
     trackEvent({
@@ -136,21 +136,21 @@ const VesselHeader = () => {
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={styles.summaryContainer}>
         <div className={styles.summaryWrapper}>
-          {vesselImages.length > 0 && (
+          {filteredImages.length > 0 && (
             <div className={styles.imageSliderContainer}>
               <img
-                src={vesselImages[currentImageIndex].url}
+                src={filteredImages[currentImageIndex].url}
                 alt={`${shipname} - ${currentImageIndex + 1}`}
                 title={
-                  vesselImages[currentImageIndex].copyright
-                    ? `copyright: ${vesselImages[currentImageIndex].copyright}`
+                  filteredImages[currentImageIndex].copyright
+                    ? `copyright: ${filteredImages[currentImageIndex].copyright}`
                     : undefined
                 }
                 className={styles.vesselImage}
               />
-              {vesselImages.length > 1 && (
+              {filteredImages.length > 1 && (
                 <div className={styles.navigationButtons}>
-                  {vesselImages.map((_, index) => (
+                  {filteredImages.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
