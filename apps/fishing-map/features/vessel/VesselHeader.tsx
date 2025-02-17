@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Sticky from 'react-sticky-el'
+import { uniqBy } from 'es-toolkit'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -62,9 +63,12 @@ const VesselHeader = () => {
   }, [])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const vesselImages = isGFWUser
-    ? vessel.identities
-        .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img) || [])
-        .filter(Boolean)
+    ? uniqBy(
+        vessel.identities
+          .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img) || [])
+          .filter(Boolean),
+        (img) => img.url
+      )
     : []
 
   const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
