@@ -63,7 +63,7 @@ const VesselHeader = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const vesselImages = isGFWUser
     ? vessel.identities
-        .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img.url) || [])
+        .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img) || [])
         .filter(Boolean)
     : []
 
@@ -135,8 +135,13 @@ const VesselHeader = () => {
           {vesselImages.length > 0 && (
             <div className={styles.imageSliderContainer}>
               <img
-                src={vesselImages[currentImageIndex]}
-                alt={`${shipname} - vessel ${currentImageIndex + 1}`}
+                src={vesselImages[currentImageIndex].url}
+                alt={`${shipname} - ${currentImageIndex + 1}`}
+                title={
+                  vesselImages[currentImageIndex].copyright
+                    ? `copyright: ${vesselImages[currentImageIndex].copyright}`
+                    : undefined
+                }
                 className={styles.vesselImage}
               />
               {vesselImages.length > 1 && (
