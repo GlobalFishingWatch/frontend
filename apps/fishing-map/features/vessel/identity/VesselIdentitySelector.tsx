@@ -81,11 +81,10 @@ const VesselIdentitySelector = () => {
           const identityId = getVesselIdentityId(identity)
           return (
             <Tooltip
-              key={identity.id}
+              key={identityId}
               content={t('vessel.selectIdentity', 'See the identity for this dates')}
             >
               <li
-                key={identityId}
                 className={cx(styles.icon, {
                   [styles.selected]: identityId === getVesselIdentityId(currentIdentity),
                 })}

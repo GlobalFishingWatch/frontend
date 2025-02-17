@@ -1,0 +1,67 @@
+.inputContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputContainer:not(:first-child) {
+  margin-top: var(--space-S);
+}
+
+.input input,
+.input input:placeholder-shown {
+  border-radius: var(--border-radius);
+  padding-inline: 1.5rem;
+  padding-right: var(--size-M);
+}
+
+.input label {
+  margin-bottom: 0;
+}
+
+.open .input {
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+}
+
+.open .input input {
+  border-bottom: 1px solid var(--color-primary-blue);
+  border-radius: 0;
+}
+
+.search {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.error {
+  font: var(--font-S);
+  color: var(--color-danger-red);
+}
+
+.highlighted {
+  background-color: var(--color-terthiary-blue);
+}
+
+.comboContainer {
+  position: relative;
+}
+
+.results {
+  position: absolute;
+  top: 4rem;
+  width: 100%;
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+  z-index: 1;
+}
+
+.result {
+  cursor: pointer;
+  padding: 0.8rem;
+}
+
+.result:not(:last-child) {
+  border-bottom: var(--border);
+}

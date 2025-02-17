@@ -1,8 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
-import type { AppDispatch } from 'store'
-import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 
 import type { FetchOptions } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
@@ -42,11 +40,9 @@ import {
 } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
-import { DEFAULT_AREA_REPORT_STATE } from 'features/reports/areas/area-reports.config'
-import { fetchReportsThunk } from 'features/reports/areas/area-reports.slice'
-import { DEFAULT_PORT_REPORT_STATE } from 'features/reports/ports/ports-report.config'
-import { cleanPortClusterDataviewFromReport } from 'features/reports/ports/ports-report.utils'
-import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/reports/vessel-groups/vessel-group-report.config'
+import { cleanPortClusterDataviewFromReport } from 'features/reports/report-port/ports-report.utils'
+import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
+import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
@@ -62,6 +58,8 @@ import {
   selectReportId,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
+import type { AppDispatch } from 'store'
+import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
@@ -223,7 +221,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           [...dataviews, ...dataviewInstances],
           guestUser
         )
-        dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
+        if (vesselGroupsIds?.length) {
+          dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
+        }
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
         // Don't abort datasets as they are needed in the search
         // signal.addEventListener('abort', fetchDatasetsAction.abort)
@@ -438,18 +438,16 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk<
   }
 })
 
-const ALL_REPORTS_STATE = {
-  ...DEFAULT_AREA_REPORT_STATE,
-  ...DEFAULT_VESSEL_GROUP_REPORT_STATE,
-  ...DEFAULT_PORT_REPORT_STATE,
-}
 export function cleanReportQuery(query: QueryParams) {
   return {
     ...query,
-    ...Object.keys(ALL_REPORTS_STATE).reduce((acc, key) => {
-      acc[key] = undefined
-      return acc
-    }, {} as Record<string, undefined>),
+    ...Object.keys(DEFAULT_REPORT_STATE).reduce(
+      (acc, key) => {
+        acc[key] = undefined
+        return acc
+      },
+      {} as Record<string, undefined>
+    ),
 
     ...(query?.dataviewInstances?.length && {
       dataviewInstances: query?.dataviewInstances?.map(cleanPortClusterDataviewFromReport),

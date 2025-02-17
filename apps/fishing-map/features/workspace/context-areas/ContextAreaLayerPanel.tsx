@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect,useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -11,7 +11,7 @@ import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { Collapsable, IconButton, Modal, Spinner,Tooltip } from '@globalfishingwatch/ui-components'
+import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
@@ -31,8 +31,8 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
+import ContextLayerReportLink from 'features/map/popups/categories/ContextLayerReportLink'
 import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
-import { ReportPopupLink } from 'features/map/popups/categories/ContextLayersRow'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
@@ -42,20 +42,21 @@ import {
 } from 'features/workspace/context-areas/context.utils'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../common/Color'
-import InfoModal from '../common/InfoModal'
-import Filters from '../common/LayerFilters'
-import { showSchemaFilter } from '../common/LayerSchemaFilter'
-import LayerSwitch from '../common/LayerSwitch'
-import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
+import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
+import InfoModal from '../shared/InfoModal'
+import Filters from '../shared/LayerFilters'
+import { showSchemaFilter } from '../shared/LayerSchemaFilter'
+import LayerSwitch from '../shared/LayerSwitch'
+import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -394,7 +395,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                       >
                         {title}
                       </span>
-                      <ReportPopupLink feature={feature} onClick={onReportClick}></ReportPopupLink>
+                      <ContextLayerReportLink feature={feature} onClick={onReportClick} />
                     </li>
                   )
                 })}

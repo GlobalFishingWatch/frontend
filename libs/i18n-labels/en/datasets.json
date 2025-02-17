@@ -1225,6 +1225,18 @@
     "name": "Port Visits Events (AIS)",
     "description": "The dataset contains port visits events for AIS (Confidence 2)"
   },
+  "public-global-ports-footprint": {
+    "name": "Anchorages convex hulls by portId",
+    "description": "Anchorages footprint using the convex hull grouped by portId",
+    "schema": {
+      "area": "area",
+      "label": {
+        "keyword": "label",
+        "enum": {}
+      },
+      "perimeter": "perimeter"
+    }
+  },
   "public-global-presence-tracks": {
     "name": "Tracks",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 20201001",
@@ -1822,7 +1834,7 @@
   },
   "public-rfmo": {
     "name": "RFMOs",
-    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
+    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes all regional fishery bodies (RFB) areas provided by the FAO Geonetwork along with the convention areas provided by the five tuna RFMOs. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {
       "ID": {
         "keyword": "RFMO",

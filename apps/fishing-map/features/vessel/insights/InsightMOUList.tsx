@@ -193,8 +193,6 @@ const InsightMOUList = ({
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.MOULists', 'MOU Lists')}</label>
         <DataTerminology
-          size="tiny"
-          type="default"
           title={t('vessel.insights.MOULists', 'MOU Lists')}
           terminologyKey="insightsMOUList"
         />

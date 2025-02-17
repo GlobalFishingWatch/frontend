@@ -10,6 +10,7 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
 import tseslint from 'typescript-eslint'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -17,7 +18,7 @@ const __dirname = path.dirname(__filename)
 const gitignorePath = path.resolve(__dirname, '.gitignore')
 
 export default tseslint.config({
-  files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
+  files: ['**/*.{js,ts,jsx,tsx}', '**/*.mjs'],
   plugins: {
     '@nx': nxPlugin,
     '@next/next': nextPlugin,
@@ -48,7 +49,6 @@ export default tseslint.config({
     'node_modules',
     'dist',
     'public',
-    '.next',
     'exported',
     '**/dist/**/*',
     '**/public/**/*',
@@ -74,6 +74,7 @@ export default tseslint.config({
     'import/no-named-as-default': 0,
     'import/named': 0,
     'import/namespace': 0,
+    'import/order': 0,
     'import/first': 1,
     'import/newline-after-import': 1,
     'import/no-duplicates': 1,
@@ -95,7 +96,7 @@ export default tseslint.config({
           ['^(@|@globalfishingwatch)(/.*|$)'],
           // Internal paths.
           [
-            '^(features|store|routes|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*|$)',
+            '^(features|store|routes|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',
           ],
           // Side effect imports.
           ['^\\u0000'],
@@ -126,6 +127,8 @@ export default tseslint.config({
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
     '@typescript-eslint/no-empty-function': 0,
+    '@typescript-eslint/ban-ts-comment': 'warn',
+    'jsx-a11y/no-autofocus': 1,
     'jsx-a11y/click-events-have-key-events': 0,
     'jsx-a11y/label-has-associated-control': 0,
     'jsx-a11y/mouse-events-have-key-events': 'warn',

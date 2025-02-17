@@ -4,7 +4,7 @@ import { groupBy } from 'es-toolkit'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { ContextPickingObject,UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -37,7 +37,6 @@ export function getUserContextLayerLabel(
   ) {
     return getDatasetLabel(dataset)
   }
-  let label = (feature.value ?? feature.title) as string
   if (feature.layerId.includes(OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID)) {
     const startDate = Number(feature.properties.structure_start_date)
     const endDate = Number(feature.properties.structure_end_date)
@@ -49,10 +48,16 @@ export function getUserContextLayerLabel(
             end: formatI18nDate(endDate, i18nParams),
           })
         : `${t('common.since', 'since')} ${formatI18nDate(startDate, i18nParams)}`
-    label = `${feature.properties.label} - ${feature.properties.label_confidence} ${t(
+    return `${feature.properties.label} - ${feature.properties.label_confidence} ${t(
       'common.confidence',
       'confidence'
     )} (${rangeLabel})`
+  }
+
+  const label = (feature.value ?? feature.title) as string
+  // Check if the string starts with { or [ which would indicate JSON
+  if (!label || (typeof label === 'string' && /^[[{]/.test(label?.trim()))) {
+    return getDatasetLabel(dataset)
   }
   return label
 }

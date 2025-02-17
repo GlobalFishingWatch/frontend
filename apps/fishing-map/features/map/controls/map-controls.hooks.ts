@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -38,12 +38,15 @@ export const useMapControl = (control: MapControl) => {
     dispatch(resetMapControlValueAction(control))
   }, [control, dispatch])
 
-  return {
-    isEditing,
-    value,
-    setMapControl,
-    toggleMapControl,
-    setMapControlValue,
-    resetMapControlValue,
-  }
+  return useMemo(
+    () => ({
+      isEditing,
+      value,
+      setMapControl,
+      toggleMapControl,
+      setMapControlValue,
+      resetMapControlValue,
+    }),
+    [isEditing, resetMapControlValue, setMapControl, setMapControlValue, toggleMapControl, value]
+  )
 }

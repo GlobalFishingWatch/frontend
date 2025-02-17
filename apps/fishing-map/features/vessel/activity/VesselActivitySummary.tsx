@@ -224,8 +224,6 @@ export const VesselActivitySummary = () => {
                     )}
                   </p>
                   <DataTerminology
-                    size="tiny"
-                    type="default"
                     title={t(`event.${eventType}`, eventType)}
                     terminologyKey={eventType as any}
                   />

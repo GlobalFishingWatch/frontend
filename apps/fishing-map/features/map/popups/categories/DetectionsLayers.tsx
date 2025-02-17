@@ -5,27 +5,26 @@ import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import I18nNumber from 'features/i18n/i18nNumber'
-import VesselsTable, {
-  getVesselsInfoConfig,
-  VesselDetectionTimestamps,
-} from 'features/map/popups/categories/VesselsTable'
+import VesselDetectionTimestamps from 'features/map/popups/categories/VesselDetectionTimestamps'
+import VesselsTable, { getVesselsInfoConfig } from 'features/map/popups/categories/VesselsTable'
 
 import type { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
 
 import styles from '../Popup.module.css'
 
-type ViirsMatchTooltipRowProps = {
+type DetectionsTooltipRowProps = {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory; title?: string }
   loading?: boolean
   error?: string
   showFeaturesDetails: boolean
 }
-function ViirsMatchTooltipRow({
+
+function DetectionsTooltipRow({
   feature,
   showFeaturesDetails,
   loading,
   error,
-}: ViirsMatchTooltipRowProps) {
+}: DetectionsTooltipRowProps) {
   const { t } = useTranslation()
   // Avoid showing not matched detections
   const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
@@ -90,4 +89,4 @@ function ViirsMatchTooltipRow({
   )
 }
 
-export default ViirsMatchTooltipRow
+export default DetectionsTooltipRow

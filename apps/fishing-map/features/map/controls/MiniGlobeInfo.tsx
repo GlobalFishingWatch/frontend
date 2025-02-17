@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import formatcoords from 'formatcoords'
-import type { MapCoordinates } from 'types'
 
 import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 
+import type { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 
 import styles from './MapControls.module.css'

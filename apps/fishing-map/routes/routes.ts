@@ -1,6 +1,6 @@
 import type { Dispatch } from '@reduxjs/toolkit'
-import type { Bag,Options, RoutesMap, StateGetter } from 'redux-first-router'
-import { connectRoutes,NOT_FOUND, redirect } from 'redux-first-router'
+import type { Bag, Options, RoutesMap, StateGetter } from 'redux-first-router'
+import { connectRoutes, NOT_FOUND, redirect } from 'redux-first-router'
 
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
@@ -20,6 +20,7 @@ export const REPORT = 'REPORT'
 export const VESSEL_GROUP_REPORT = 'VESSEL_GROUP_REPORT'
 export const PORT_REPORT = 'PORT_REPORT'
 export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
+export const REPORTS_LIST = 'REPORTS_LIST'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
 export const REPORT_ROUTES = [REPORT, WORKSPACE_REPORT]
 
@@ -33,6 +34,7 @@ export type ROUTE_TYPES =
   | typeof WORKSPACE_VESSEL
   | typeof REPORT
   | typeof WORKSPACE_REPORT
+  | typeof REPORTS_LIST
   | typeof SEARCH
   | typeof WORKSPACE_SEARCH
   | typeof REPORT

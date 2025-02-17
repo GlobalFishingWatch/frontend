@@ -59,8 +59,6 @@ const Insights = () => {
           end: formatI18nDate(end),
         })}
         <DataTerminology
-          size="tiny"
-          type="default"
           title={t('vessel.sectionInsights', 'Insights')}
           terminologyKey="insights"
         />

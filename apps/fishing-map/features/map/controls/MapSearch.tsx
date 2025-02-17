@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
-import type { Bbox } from 'types'
 
 import type { OceanArea,OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
@@ -14,6 +13,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import Hint from 'features/help/Hint'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import type { Bbox } from 'types'
 
 import { useMapFitBounds } from '../map-bounds.hooks'
 

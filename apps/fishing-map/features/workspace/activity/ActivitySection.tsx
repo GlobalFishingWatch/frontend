@@ -16,8 +16,7 @@ import {
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
-import styles from 'features/workspace/shared/Sections.module.css'
+import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
@@ -28,6 +27,7 @@ import { useVisualizationsOptions } from './activity.hooks'
 import LayerPanel from './ActivityLayerPanel'
 
 import activityStyles from './ActivitySection.module.css'
+import styles from 'features/workspace/shared/Sections.module.css'
 
 function ActivitySection(): React.ReactElement<any> {
   const { t } = useTranslation()

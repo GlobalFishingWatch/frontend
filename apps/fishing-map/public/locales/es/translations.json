@@ -33,6 +33,7 @@
     "evolution": "evolución",
     "groupByFlag": "por bandera",
     "groupByGeartype": "por arte de pesca",
+    "groupBySource": "by source",
     "groupByVesseltype": "por tipo de embarcación",
     "kilometers": "kilómetros",
     "linkToReport": "Verifique el informe dinámico aquí",
@@ -139,13 +140,13 @@
     "edit": "Edit",
     "edit ": "edit",
     "environment": "Datos ambientales",
-    "eventLabels": {
-      "loitering": "loitering",
-      "encounter": "encounter",
-      "port_visit": "port visit"
-    },
     "event_one": "evento",
     "event_other": "eventos",
+    "eventLabels": {
+      "encounter": "encounter",
+      "loitering": "loitering",
+      "port_visit": "port visit"
+    },
     "events": "Eventos",
     "Events": "Events",
     "exclude": "Excluir",
@@ -156,6 +157,7 @@
     "flag": "Flag",
     "from": "desde",
     "geartype": "Gear type",
+    "global": "Global",
     "globally": "globalmente",
     "help": "Ayuda",
     "hideAllHelpHints": "Ocultar todos",
@@ -175,6 +177,7 @@
     "layerList": "Lista de capas",
     "learnMore": "Ver más",
     "less": "menos",
+    "loading": "Loading",
     "loggedAs": "Registrado como",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
@@ -242,6 +245,7 @@
     "unionOf": "Unión de",
     "unit": "unidad",
     "unknown": "Desconocido",
+    "unknownProperty": "Unknown",
     "unknownVessel": "Buque desconocido",
     "update": "Actualizar",
     "user": "Usuario",
@@ -484,7 +488,6 @@
     "privateView": "Esta es una vista privada",
     "profileEvents": "Se ha producido un error al cargar los eventos de la embarcación.",
     "profileLogin": "Inicia sesión para ver este buque",
-    "vesselGroupReportLogin": "Login to see the vessels active",
     "reportLogin": "Inicia sesión para ver las embarcaciones activas en el área (gratis, 2 minutos)",
     "requestAccess": "Solicitar acceso",
     "searchLogin": "Login para buscar embarcaciones",
@@ -500,6 +503,7 @@
     "uploadKML": "Error al leer el archivo KML: {{error}}",
     "uploadShapefile": "Error leyendo el shapefile: {{error}}",
     "uploadShapefileComponents": "Error leyendo shapefile: debe contener archivos con las extensiones *.shp, *.shx, *.dbf y *.prj.",
+    "vesselGroupReportLogin": "Login to see the vessels active",
     "vesselLoading": "Se ha producido un error al cargar los detalles de la embarcación",
     "workspaceLoad": "Hubo un error cargando tu espacio de trabajo, inténtalo de nuevo.",
     "workspaceNotFound": "La vista que solicitó no se encontró"
@@ -553,10 +557,10 @@
   "eventInfo": {
     "authorization": "autorización",
     "averageSpeedKnots": "velocidad media (nudos)",
+    "depth": "profundidad",
     "distanceFromPortKm": "distancia desde el puerto (km)",
     "distanceFromShoreKm": "distancia desde costa (km)",
     "duration": "duración",
-    "depth": "profundidad",
     "encounteredVesselName": "embarcación encontrada",
     "end": "Fin",
     "flag": "bandera",
@@ -707,7 +711,6 @@
     "rulersDelete": "Eliminar todas las medidas",
     "rulersHover": "Arrastre para mover o haga clic para ver más",
     "rulersStop": "Detener medidas",
-    "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
     "screenshotArea": {
       "map": "Solo mapa",
       "withTimebar": "Con barra temporal",
@@ -715,13 +718,14 @@
     },
     "screenshotDownload": "Descargar imagen",
     "screenshotPreview": "Vista previa de captura de pantalla",
+    "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
   "portsReport": {
+    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "seePortReport": "See all entry events to this port",
-    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
   },
   "search": {
@@ -797,26 +801,26 @@
     "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor."
   },
   "user": {
-    "gfwBadges": "GFW Badges",
     "badges": {
       "ambassador": {
-        "title": "Ambassador",
-        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications.",
+        "title": "Ambassador"
       },
       "fixer": {
-        "title": "Fixer",
-        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support.",
+        "title": "Fixer"
       },
       "presenter": {
-        "title": "Presenter",
-        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest.",
+        "title": "Presenter"
       },
       "teacher": {
-        "title": "Teacher",
-        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow.",
+        "title": "Teacher"
       }
     },
     "datasets": "Conjuntos de datos del usuario",
+    "gfwBadges": "GFW Badges",
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",
     "info": "Información de usuario",
@@ -852,13 +856,15 @@
     "capacity": "Capacidad",
     "carrier": "Embarcación de transporte",
     "casco": "Casco",
-    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Centrar mapa en los eventos",
     "clickToSeeMore": "Haga clic para ver más información",
     "close": "Cerrar",
     "codMarinha": "Cod Marinha",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "dataset": "Fuente",
+    "depthM": "Depth (m)",
     "donor": "Embarcación donante",
+    "extraInfo": "Request additional information at",
     "firstTransmissionDate": "Fecha primera transmisión",
     "fishingZone": "Zona de pesca",
     "flag": "Bandera",
@@ -928,6 +934,7 @@
     },
     "gfw_geartypes": "GFW Gear type",
     "gfw_shiptypes": "GFW Vessel type",
+    "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
     "hideOtherLayers": "Ocultar otras capas",
@@ -1020,6 +1027,7 @@
     "owners": "Propietarios",
     "registeredGearType": "Arte de pesca registrado",
     "registryGeartype": "Registry Gear Type",
+    "registryOperator": "Operators",
     "registrySources": "Fuentes",
     "removeAllVessels": "Eliminar toda embarcación",
     "sectionActivity": "Actividad",
@@ -1123,7 +1131,6 @@
   "vesselGroupReport": {
     "clickToSee": "Click to analyse vessel group and see report",
     "insights": {
-      "title": "Vessel group insights",
       "fishingEventsError": "There was an error loading the fishing events",
       "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
       "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
@@ -1143,7 +1150,8 @@
       "MOUListsCount": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsCount_one": "{{vessels}} vessel operated under a flag present on the {{list}} list",
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
-      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
+      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists",
+      "title": "Vessel group insights"
     },
     "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",

@@ -1,0 +1,14 @@
+.container {
+  padding: var(--space-M);
+}
+
+.titleRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titleRow > * {
+  flex: 1;
+}

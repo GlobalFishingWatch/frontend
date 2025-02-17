@@ -7,22 +7,24 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsClustersLayer } from '@globalfishingwatch/deck-layers'
-import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import Remove from 'features/workspace/common/Remove'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
+import Remove from 'features/workspace/shared/Remove'
 
-import InfoModal from '../common/InfoModal'
-import Filters from '../common/LayerFilters'
-import LayerSwitch from '../common/LayerSwitch'
-import Title from '../common/Title'
 import DatasetNotFound from '../shared/DatasetNotFound'
+import InfoModal from '../shared/InfoModal'
+import Filters from '../shared/LayerFilters'
+import LayerSwitch from '../shared/LayerSwitch'
+import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type EventsLayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -41,6 +43,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
     (schema) => schema.optionsSelected?.length > 0
   )
   const eventLayer = useGetDeckLayer<FourwingsClustersLayer>(dataview?.id)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const layerError = eventLayer?.instance?.getError?.()
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
@@ -74,12 +77,18 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
       {...attributes}
     >
       <div className={styles.header}>
-        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
+        <LayerSwitch
+          active={layerActive && !hasDeprecatedDataviewInstances}
+          className={styles.switch}
+          disabled={hasDeprecatedDataviewInstances}
+          dataview={dataview}
+        />
         <Title
           title={title}
           className={styles.name}
           classNameActive={styles.active}
           dataview={dataview}
+          toggleVisibility={!hasDeprecatedDataviewInstances}
         />
         <div
           className={cx(
@@ -111,7 +120,10 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
-          <Remove dataview={dataview} loading={layerActive && !layerLoaded} />
+          <Remove
+            dataview={dataview}
+            loading={layerActive && !layerLoaded && !hasDeprecatedDataviewInstances}
+          />
           {!readOnly && layerActive && layerError && (
             <IconButton
               icon={'warning'}
@@ -141,7 +153,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
         <IconButton
           icon={layerActive ? 'more' : undefined}
           type="default"
-          loading={layerActive && !layerLoaded}
+          loading={layerActive && !layerLoaded && !hasDeprecatedDataviewInstances}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />

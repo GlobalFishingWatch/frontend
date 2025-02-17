@@ -5,7 +5,6 @@ import Sticky from 'react-sticky-el'
 import cx from 'classnames'
 import dynamic from 'next/dynamic'
 import Link from 'redux-first-router-link'
-import type { QueryParams } from 'types'
 
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -22,19 +21,18 @@ import {
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectCurrentReport } from 'features/app/selectors/app.reports.selector'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { useHighlightReportArea } from 'features/reports/areas/area-reports.hooks'
-import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
-import { selectReportsStatus } from 'features/reports/areas/area-reports.slice'
-import { resetPortsReportData } from 'features/reports/ports/ports-report.slice'
-import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
-import { resetVesselGroupReportData } from 'features/reports/vessel-groups/vessel-group-report.slice'
+import { useHighlightReportArea } from 'features/reports/report-area/area-reports.hooks'
+import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
+import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { selectCurrentReport } from 'features/reports/reports.selectors'
+import { selectReportsStatus } from 'features/reports/reports.slice'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import type { SearchType } from 'features/search/search.config'
 import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
@@ -75,6 +73,7 @@ import {
   selectLocationQuery,
   selectLocationType,
 } from 'routes/routes.selectors'
+import type { QueryParams } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useClipboardNotification } from './sidebar.hooks'
@@ -83,7 +82,9 @@ import styles from './SidebarHeader.module.css'
 
 const NewReportModal = dynamic(
   () =>
-    import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/areas/NewAreaReportModal')
+    import(
+      /* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/shared/new-report-modal/NewAreaReportModal'
+    )
 )
 
 function SaveReportButton() {
@@ -376,7 +377,6 @@ function CloseReportButton() {
     dispatch(resetVesselGroupReportData())
     dispatch(resetAreaDetail(reportAreaIds))
     dispatch(cleanCurrentWorkspaceReportState())
-    dispatch(resetPortsReportData())
   }
 
   const isWorkspaceRoute = workspaceId !== undefined && workspaceId !== DEFAULT_WORKSPACE_ID
@@ -584,6 +584,7 @@ function SidebarHeader() {
         </a>
         {!readOnly && (
           <Fragment>
+            {/* TODO:CVP2 add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && <SaveWorkspaceButton />}
             {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) && (

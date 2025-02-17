@@ -84,8 +84,6 @@ const VesselRegistryField = ({
         <label className={styles.twoCells}>{t(`vessel.${label}`, label || '')}</label>
         {terminologyKey && (
           <DataTerminology
-            size="tiny"
-            type="default"
             title={t(`vessel.${label}`, label || '')}
             terminologyKey={terminologyKey}
           />
@@ -120,12 +118,11 @@ const VesselRegistryField = ({
                   .map(getRegionTranslationsById)
                   .join(',')
                 Component = (
-                  <Tooltip content={sourceTranslations}>
-                    <VesselIdentityField
-                      className={styles.help}
-                      value={formatInfoField(registry.sourceCode.join(','), fieldType) as string}
-                    />
-                  </Tooltip>
+                  <VesselIdentityField
+                    tooltip={sourceTranslations}
+                    className={styles.help}
+                    value={formatInfoField(registry.sourceCode.join(','), fieldType) as string}
+                  />
                 )
               }
             }

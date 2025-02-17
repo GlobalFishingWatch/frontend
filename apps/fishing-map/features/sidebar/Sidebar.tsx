@@ -8,6 +8,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
@@ -32,16 +33,19 @@ import styles from './Sidebar.module.css'
 export const SCROLL_CONTAINER_DOM_ID = 'scroll-container'
 
 const AreaReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/areas/AreaReport')
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-area/AreaReport')
 )
 const PortsReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/ports/PortsReport')
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-port/PortsReport')
 )
 const VesselGroupReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/vessel-groups/VesselGroupReport')
+  () =>
+    import(
+      /* webpackChunkName: "Report" */ 'features/reports/report-vessel-group/VesselGroupReport'
+    )
 )
-const VesselDetailWrapper = dynamic(
-  () => import(/* webpackChunkName: "VesselDetailWrapper" */ 'features/vessel/Vessel')
+const VesselProfile = dynamic(
+  () => import(/* webpackChunkName: "VesselProfile" */ 'features/vessel/Vessel')
 )
 const User = dynamic(() => import(/* webpackChunkName: "User" */ 'features/user/User'))
 const Workspace = dynamic(
@@ -61,6 +65,8 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const readOnly = useSelector(selectReadOnly)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const isUserLocation = useSelector(selectIsUserLocation)
+  const isUserLogged = useSelector(selectIsUserLogged)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -68,12 +74,13 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const userLogged = useSelector(selectIsUserLogged)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 
   useEffect(() => {
-    dispatch(fetchVesselGroupsThunk())
-  }, [dispatch])
+    if (isUserLogged) {
+      dispatch(fetchVesselGroupsThunk())
+    }
+  }, [dispatch, isUserLogged])
 
   useEffect(() => {
     if (dataviewsResources?.resources?.length) {
@@ -94,7 +101,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   }, [dispatch, dataviewsResources])
 
   const sidebarComponent = useMemo(() => {
-    if (!userLogged) {
+    if (!isUserLogged) {
       return <Spinner />
     }
 
@@ -103,7 +110,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
 
     if (isVesselLocation) {
-      return <VesselDetailWrapper />
+      return <VesselProfile />
     }
 
     if (isWorkspacesListLocation) {
@@ -140,14 +147,19 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     isVesselGroupReportLocation,
     isVesselLocation,
     isWorkspacesListLocation,
-    userLogged,
+    isUserLogged,
   ])
 
   return (
     <div className={styles.container}>
       {!readOnly && !isSmallScreen && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
-      <div id={SCROLL_CONTAINER_DOM_ID} className="scrollContainer" data-test="sidebar-container">
+      <div
+        id={SCROLL_CONTAINER_DOM_ID}
+        className="scrollContainer"
+        data-test="sidebar-container"
+        style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+      >
         <SidebarHeader />
         {sidebarComponent}
       </div>

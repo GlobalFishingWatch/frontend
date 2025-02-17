@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { THINNING_LEVELS, ThinningLevels } from '@globalfishingwatch/api-client'
-import { Button, Choice, Icon, Modal,Tag } from '@globalfishingwatch/ui-components'
+import { Button, Choice, Icon, Modal, Tag } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -22,7 +22,7 @@ import {
   selectDownloadTrackRateLimit,
   selectDownloadTrackStatus,
 } from 'features/download/downloadTrack.slice'
-import { TimelineDatesRange } from 'features/map/controls/MapInfo'
+import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -126,11 +126,11 @@ function DownloadTrackModal() {
                   limit: rateLimit?.limit,
                 }) as string)
               : rateLimit?.remaining
-              ? (t('download.trackRemaining', {
-                  defaultValue: 'You can download {{count}} more tracks today',
-                  count: rateLimit?.remaining as number,
-                }) as string)
-              : null}
+                ? (t('download.trackRemaining', {
+                    defaultValue: 'You can download {{count}} more tracks today',
+                    count: rateLimit?.remaining as number,
+                  }) as string)
+                : null}
           </p>
           <Button
             className={styles.downloadBtn}

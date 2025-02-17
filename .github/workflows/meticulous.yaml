@@ -1,0 +1,79 @@
+# Workflow for serving app locally & running Meticulous tests against it
+
+name: Meticulous
+
+# env:
+#   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+# Important: The workflow needs to run both on pushes to your main branch and on
+# pull requests. It needs to run on your main branch because it'll use the results
+# from the base commit of the PR on the main branch to compare against.
+on:
+  pull_request: {}
+  push:
+    branches:
+      - master
+  # Important: We need the workflow to be triggered on workflow_dispatch events,
+  # so that Meticulous can run the workflow on the base commit to compare
+  # against if an existing workflow hasn't run
+  workflow_dispatch: {}
+
+# Important: The workflow needs all the permissions below.
+# These permissions are mainly need to post and update the status check and
+# feedback comment on your PR. Meticulous won't work without them.
+permissions:
+  actions: write
+  contents: read
+  issues: write
+  pull-requests: write
+  statuses: read
+
+jobs:
+  test:
+    name: Report diffs
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' ||
+      (github.event_name == 'pull_request' && (contains(github.event.pull_request.labels.*.name, 'test') ||
+      (github.event.action == 'labeled' && github.event.label.name == 'test')))
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # with:
+        #   fetch-depth: 0
+
+      - name: Use Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - name: Build project
+        # We strongly recommend you serve the app with a non-development server.
+        # The sleep is often required to ensure your app is readily being served
+        # by the time the Meticulous tests start
+        run: |
+          yarn nx prepare:build fishing-map
+
+      - name: Serve project
+        run: |
+          yarn nx serve:build fishing-map &
+          sleep 15
+
+      - name: Run Meticulous tests
+        uses: alwaysmeticulous/report-diffs-action/cloud-compute@v1
+        with:
+          api-token: ${{ secrets.METICULOUS_API_TOKEN }}
+          app-url: 'http://localhost:3000/'

@@ -50,6 +50,7 @@ module.exports = tseslint.config({
     'node_modules',
     'dist',
     'public',
+    '.next',
     'exported',
     '**/dist/**/*',
     '**/public/**/*',
@@ -97,7 +98,7 @@ module.exports = tseslint.config({
           ['^(@|@globalfishingwatch)(/.*|$)'],
           // Internal paths.
           [
-            '^(features|store|routes|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*|$)',
+            '^(features|store|routes|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',
           ],
           // Side effect imports.
           ['^\\u0000'],

@@ -355,7 +355,9 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
 
     const firstPointIndex = timestamps.findIndex((t) => t > this.props.startTime)
     const lastPointIndex = timestamps.findLastIndex((t) => t < this.props.endTime)
-    if (firstPointIndex === -1 || lastPointIndex === -1) return null
+    if (firstPointIndex === -1 || lastPointIndex === -1 || firstPointIndex >= lastPointIndex) {
+      return null
+    }
 
     const bounds = [Infinity, Infinity, -Infinity, -Infinity] as Bbox
     for (let index = firstPointIndex; index <= lastPointIndex; index++) {

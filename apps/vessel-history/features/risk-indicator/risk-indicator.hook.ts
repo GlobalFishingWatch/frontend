@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import type { ValueItem, VesselWithHistory } from 'types'
 
 import { EventTypes } from '@globalfishingwatch/api-types'
 
@@ -12,7 +11,8 @@ import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.s
 import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import { selectMergedVesselId } from 'routes/routes.selectors'
-import type { AISCoverage, FlagOnMOU} from 'types/risk-indicator';
+import type { ValueItem, VesselWithHistory } from 'types'
+import type { AISCoverage, FlagOnMOU } from 'types/risk-indicator'
 import { IndicatorType } from 'types/risk-indicator'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -91,15 +91,15 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
     ],
     []
   )
-
-  useEffect(() => {
-    if (!IS_STANDALONE_APP) {
-      // Avoid multiple requests without permission
-      indicatorsKeys.forEach((indicator) =>
-        dispatch(fetchIndicatorsByIdThunk({ idData, indicator }))
-      )
-    }
-  }, [dispatch, idData, indicatorsKeys])
+  // deprecated
+  // useEffect(() => {
+  //   if (!IS_STANDALONE_APP) {
+  //     // Avoid multiple requests without permission
+  //     indicatorsKeys.forEach((indicator) =>
+  //       dispatch(fetchIndicatorsByIdThunk({ idData, indicator }))
+  //     )
+  //   }
+  // }, [dispatch, idData, indicatorsKeys])
 
   const encountersInMPA = useSelector(selectEncountersInMPA)
   const fishingInMPA = useSelector(selectFishingInMPA)

@@ -4,14 +4,13 @@ import ImageGallery from 'react-image-gallery'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { DateTime, Interval } from 'luxon'
-import type { VesselWithHistory } from 'types'
 
 import type { VesselTypeV2 } from '@globalfishingwatch/api-types'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
 import { TMT_CONTACT_US_URL } from 'data/constants'
-import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import I18nDate, { formatI18nSpecialDate } from 'features/i18n/i18nDate'
 import { useUser } from 'features/user/user.hooks'
 import { selectUserData } from 'features/user/user.slice'
@@ -25,7 +24,8 @@ import {
   selectUrlQuery,
   selectVesselId,
 } from 'routes/routes.selectors'
-import type { OfflineVessel} from 'types/vessel';
+import type { VesselWithHistory } from 'types'
+import type { OfflineVessel } from 'types/vessel'
 import { VesselFieldLabel } from 'types/vessel'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -33,7 +33,7 @@ import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.s
 
 import AuthorizationsField from './AuthorizationsField'
 import ForcedLabor from './ForcedLabor'
-import Highlights from './Highlights'
+// import Highlights from './Highlights'
 import HistoryDate from './HistoryDate'
 import InfoField from './InfoField'
 
@@ -424,7 +424,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement<any> => {
             if you have questions or would like more information about this vessel.
           </Trans>
         </div>
-        <Highlights onMoveToMap={props.onMoveToMap}></Highlights>
+        {/* <Highlights onMoveToMap={props.onMoveToMap}></Highlights> */}
       </div>
     </Fragment>
   )

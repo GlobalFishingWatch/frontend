@@ -8,7 +8,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import {
@@ -17,7 +18,6 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupListTooltip from 'features/vessel-groups/VesselGroupListTooltip'
-import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -26,6 +26,8 @@ import LayerPanelContainer from '../shared/LayerPanelContainer'
 import { setWorkspaceSuggestSave } from '../workspace.slice'
 
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {
   id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
@@ -36,6 +38,7 @@ function VesselGroupSection(): React.ReactElement<any> {
   const dispatch = useAppDispatch()
   const dataviews = useSelector(selectVesselGroupDataviews)
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const vesselGroupsStatusId = useSelector(selectVesselGroupsStatusId)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
@@ -66,7 +69,10 @@ function VesselGroupSection(): React.ReactElement<any> {
       <div className={cx('print-hidden', styles.header)}>
         <h2 className={styles.sectionTitle}>{t('vesselGroup.vesselGroups', 'Vessel groups')}</h2>
         {!readOnly && (
-          <VesselGroupListTooltip onAddToVesselGroup={onAddVesselGroupClick}>
+          <VesselGroupListTooltip
+            disabled={hasDeprecatedDataviewInstances}
+            onAddToVesselGroup={onAddVesselGroupClick}
+          >
             <UserLoggedIconButton
               type="border"
               icon="vessel-group"

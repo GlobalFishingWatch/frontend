@@ -4,17 +4,17 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import type { MRT_ColumnDef } from 'material-react-table'
 import { MaterialReactTable } from 'material-react-table'
-import type { Locale, QueryParam } from 'types'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import I18nNumber from 'features/i18n/i18nNumber'
+import AdvancedResultCellWithFilter from 'features/search/advanced/AdvancedResultCellWithFilter'
 import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import type { VesselLastIdentity } from 'features/search/search.slice'
@@ -25,10 +25,8 @@ import {
   selectSelectedVessels,
   setSelectedVessels,
 } from 'features/search/search.slice'
-import type { VesselSearchState } from 'features/search/search.types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
-import type { VesselIdentityProperty } from 'features/vessel/vessel.utils'
 import {
   getBestMatchCriteriaIdentity,
   getOtherVesselNames,
@@ -37,6 +35,7 @@ import {
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import type { Locale, QueryParam } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   EMPTY_FIELD_PLACEHOLDER,
@@ -50,55 +49,6 @@ import styles from '../basic/SearchBasicResult.module.css'
 
 const PINNED_COLUMN = 'shipname'
 const TOOLTIP_LABEL_CHARACTERS = 25
-const MULTIPLE_SELECTION_FILTERS_COLUMN = ['flag', 'shiptypes', 'geartypes', 'owner']
-
-type CellWithFilterProps = {
-  vessel: IdentityVesselData
-  column: VesselIdentityProperty
-  children: React.ReactNode
-  identitySource?: VesselIdentitySourceEnum
-  onClick?: (params: { query?: string; filters?: VesselSearchState }) => void
-}
-function CellWithFilter({
-  vessel,
-  column,
-  children,
-  identitySource,
-  onClick,
-}: CellWithFilterProps) {
-  const { setSearchFilters, searchFilters } = useSearchFiltersConnect()
-  const value = getVesselProperty(vessel, column, { identitySource }) as string
-  const onFilterClick = useCallback(() => {
-    let filter: string | string[] = value
-    if (MULTIPLE_SELECTION_FILTERS_COLUMN.includes(column)) {
-      filter = column === 'owner' ? value.split(', ') : Array.isArray(value) ? value : [value]
-    }
-    setSearchFilters({ [column]: filter })
-    if (onClick) {
-      onClick({
-        filters: { ...searchFilters, [column]: filter },
-      })
-    }
-  }, [column, onClick, searchFilters, setSearchFilters, value])
-
-  const showFilter = value && !(searchFilters as any)[column]?.includes(value)
-
-  if (!showFilter) return children
-
-  return (
-    <div className={styles.cellFilter}>
-      {value && (
-        <IconButton
-          className={styles.cellFilterBtn}
-          size="small"
-          onClick={onFilterClick}
-          icon="filter-off"
-        />
-      )}
-      {children}
-    </div>
-  )
-}
 
 function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchComponentProps) {
   const { t, i18n } = useTranslation()
@@ -133,9 +83,9 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           })
           const label = getVesselShipTypeLabel({ shiptypes })
           return (
-            <CellWithFilter vessel={vessel} column="shiptypes" onClick={fetchResults}>
+            <AdvancedResultCellWithFilter vessel={vessel} column="shiptypes" onClick={fetchResults}>
               {label || EMPTY_FIELD_PLACEHOLDER}
-            </CellWithFilter>
+            </AdvancedResultCellWithFilter>
           )
         },
         header: t('vessel.gfw_shiptypes', 'GFW Vessel Type'),
@@ -148,11 +98,11 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           })
           const label = getVesselGearTypeLabel({ geartypes })
           return (
-            <CellWithFilter vessel={vessel} column="geartypes" onClick={fetchResults}>
+            <AdvancedResultCellWithFilter vessel={vessel} column="geartypes" onClick={fetchResults}>
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
                 <span>{label}</span>
               </Tooltip>
-            </CellWithFilter>
+            </AdvancedResultCellWithFilter>
           )
         },
         header: t('vessel.gfw_geartypes', 'GFW Gear Type'),
@@ -167,7 +117,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           })
           const label = getVesselGearTypeLabel({ geartypes })
           return (
-            <CellWithFilter
+            <AdvancedResultCellWithFilter
               vessel={vessel}
               column="geartypes"
               onClick={fetchResults}
@@ -176,7 +126,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
                 <span>{label}</span>
               </Tooltip>
-            </CellWithFilter>
+            </AdvancedResultCellWithFilter>
           )
         },
         header: t('vessel.registryGeartype', 'Registry Gear Type'),
@@ -256,9 +206,9 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         id: 'flag',
         accessorFn: (vessel: IdentityVesselData) => {
           return (
-            <CellWithFilter vessel={vessel} column="flag" onClick={fetchResults}>
+            <AdvancedResultCellWithFilter vessel={vessel} column="flag" onClick={fetchResults}>
               <I18nFlag iso={getVesselProperty(vessel, 'flag')} />
-            </CellWithFilter>
+            </AdvancedResultCellWithFilter>
           )
         },
         header: t('vessel.flag', 'Flag'),
@@ -288,13 +238,13 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const label =
             formatInfoField(getVesselProperty(vessel, 'owner'), 'owner') || EMPTY_FIELD_PLACEHOLDER
           return (
-            <CellWithFilter vessel={vessel} column="owner" onClick={fetchResults}>
+            <AdvancedResultCellWithFilter vessel={vessel} column="owner" onClick={fetchResults}>
               <Tooltip
                 content={(label as string[])?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}
               >
                 <span>{label}</span>
               </Tooltip>
-            </CellWithFilter>
+            </AdvancedResultCellWithFilter>
           )
         },
         header: t('vessel.owner', 'Owner'),

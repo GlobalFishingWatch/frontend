@@ -33,6 +33,7 @@
     "evolution": "evolusi",
     "groupByFlag": "berdasarkan bendera",
     "groupByGeartype": "berdasarkan jenis penangkap",
+    "groupBySource": "by source",
     "groupByVesseltype": "berdasarkan jenis kapal",
     "kilometers": "kilometer",
     "linkToReport": "Periksa laporan dinamis di sini",
@@ -139,13 +140,13 @@
     "edit": "Edit",
     "edit ": "edit",
     "environment": "Lingkungan",
-    "eventLabels": {
-      "loitering": "loitering",
-      "encounter": "encounter",
-      "port_visit": "port visit"
-    },
     "event_one": "peristiwa",
     "event_other": "peristiwa",
+    "eventLabels": {
+      "encounter": "encounter",
+      "loitering": "loitering",
+      "port_visit": "port visit"
+    },
     "events": "Acara",
     "Events": "Events",
     "exclude": "Kecualikan",
@@ -156,6 +157,7 @@
     "flag": "Flag",
     "from": "dari",
     "geartype": "Gear type",
+    "global": "Global",
     "globally": "secara global",
     "help": "Tolong",
     "hideAllHelpHints": "Abaikan Semua",
@@ -175,6 +177,7 @@
     "layerList": "Layer tabel",
     "learnMore": "Pelajari lebih lanjut",
     "less": "lebih sedikit",
+    "loading": "Loading",
     "loggedAs": "Masuk sebagai",
     "login": "Masuk",
     "logout": "Keluar",
@@ -242,6 +245,7 @@
     "unionOf": "Union of",
     "unit": "unit",
     "unknown": "Tidak diketahui",
+    "unknownProperty": "Unknown",
     "unknownVessel": "Kapal tidak dikenal",
     "update": "Memperbarui",
     "user": "Pengguna",
@@ -484,7 +488,6 @@
     "privateView": "Ini adalah tampilan pribadi",
     "profileEvents": "Terjadi kesalahan saat meminta info peristiwa kapal.",
     "profileLogin": "Masuk untuk melihat kapal ini",
-    "vesselGroupReportLogin": "Login to see the vessels active",
     "reportLogin": "Masuk untuk melihat kapal yang aktif di area ini",
     "requestAccess": "Meminta akses",
     "searchLogin": "Masuk untuk mencari kapal",
@@ -500,6 +503,7 @@
     "uploadKML": "Terjadi kesalahan saat membaca file KLM: {{error}}",
     "uploadShapefile": "Terjadi kesalahan saat membaca shapefile: {{error}}",
     "uploadShapefileComponents": "Terjadi kesalahan saat membaca shapefile: harus berisi file dengan ekstensi *.shp, *.shx, *.dbf dan *.prj.",
+    "vesselGroupReportLogin": "Login to see the vessels active",
     "vesselLoading": "Terjadi kesalahan saat memuat detail trek kapal",
     "workspaceLoad": "Terjadi kesalahan saat memuat ruang kerja, silahkan coba lagi",
     "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
@@ -553,10 +557,10 @@
   "eventInfo": {
     "authorization": "otorisasi",
     "averageSpeedKnots": "kecepatan rata-rata (knot)",
+    "depth": "depth",
     "distanceFromPortKm": "distanceFromPortKm",
     "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "durasi",
-    "depth": "depth",
     "encounteredVesselName": "kapal yang ditemui",
     "end": "akhir",
     "flag": "bendera",
@@ -707,7 +711,6 @@
     "rulersDelete": "Hapus semua anontasi",
     "rulersHover": "Seret untuk memindahkan atau klik untuk melihat lebih banyak",
     "rulersStop": "Berhenti mengukur",
-    "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
     "screenshotArea": {
       "map": "Only map",
       "withTimebar": "With timebar",
@@ -715,13 +718,14 @@
     },
     "screenshotDownload": "Download image",
     "screenshotPreview": "Screenshot preview",
+    "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
   "portsReport": {
+    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "seePortReport": "See all entry events to this port",
-    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
   },
   "search": {
@@ -797,26 +801,26 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
   },
   "user": {
-    "gfwBadges": "GFW Badges",
     "badges": {
       "ambassador": {
-        "title": "Ambassador",
-        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications."
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications.",
+        "title": "Ambassador"
       },
       "fixer": {
-        "title": "Fixer",
-        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support."
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support.",
+        "title": "Fixer"
       },
       "presenter": {
-        "title": "Presenter",
-        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest."
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest.",
+        "title": "Presenter"
       },
       "teacher": {
-        "title": "Teacher",
-        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow."
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow.",
+        "title": "Teacher"
       }
     },
     "datasets": "Dataset pengguna",
+    "gfwBadges": "GFW Badges",
     "groupMissing": "Apakah Anda termasuk dalam grup pengguna yang tidak muncul di sini? <2>Meminta akses</2>",
     "groups": "Grup Pengguna",
     "info": "Info Pengguna",
@@ -852,13 +856,15 @@
     "capacity": "Kapasitas",
     "carrier": "Pembawa",
     "casco": "Casco",
-    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Peta di tengah dengan peristiwa di dalam",
     "clickToSeeMore": "Klik untuk informasi lebih lanjut",
     "close": "Tutup",
     "codMarinha": "Cod Marinha",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "dataset": "Sumber",
+    "depthM": "Depth (m)",
     "donor": "Kapal donor",
+    "extraInfo": "Request additional information at",
     "firstTransmissionDate": "Tanggal transmisi pertama",
     "fishingZone": "Zona penangkapan ikan",
     "flag": "Bendera",
@@ -928,6 +934,7 @@
     },
     "gfw_geartypes": "GFW Gear type",
     "gfw_shiptypes": "GFW Vessel type",
+    "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonase Kotor",
     "grossTonnageRange": "Rentang Gross Tonnage",
     "hideOtherLayers": "Sembunyikan lapisan lain",
@@ -1020,6 +1027,7 @@
     "owners": "Owners",
     "registeredGearType": "Jenis Peralatan Terdaftar",
     "registryGeartype": "Registry Gear Type",
+    "registryOperator": "Operators",
     "registrySources": "sumber registri",
     "removeAllVessels": "Remove all vessels",
     "sectionActivity": "Aktivitas",
@@ -1123,7 +1131,6 @@
   "vesselGroupReport": {
     "clickToSee": "Click to analyse vessel group and see report",
     "insights": {
-      "title": "Vessel group insights",
       "fishingEventsError": "There was an error loading the fishing events",
       "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
       "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
@@ -1143,7 +1150,8 @@
       "MOUListsCount": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsCount_one": "{{vessels}} vessel operated under a flag present on the {{list}} list",
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
-      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
+      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists",
+      "title": "Vessel group insights"
     },
     "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",

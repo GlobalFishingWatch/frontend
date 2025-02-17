@@ -28,6 +28,7 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
@@ -39,17 +40,18 @@ import VesselLink from 'features/vessel/VesselLink'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { formatInfoField, getVesselOtherNamesLabel,getVesselShipNameLabel } from 'utils/info'
+import { formatInfoField, getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
 
-import Color from '../common/Color'
-import FitBounds from '../common/FitBounds'
-import Filters from '../common/LayerFilters'
-import LayerSwitch from '../common/LayerSwitch'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
+import Color from '../shared/Color'
+import FitBounds from '../shared/FitBounds'
+import Filters from '../shared/LayerFilters'
+import LayerSwitch from '../shared/LayerSwitch'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -90,7 +92,7 @@ export const getVesselIdentityTooltipSummary = (
           {info}
           <br />
           {selfReportedInfo.map((s, index) => (
-            <Fragment key={s.id}>
+            <Fragment key={s.id || index}>
               <GFWOnly type="only-icon" /> {s.id}
               {index < selfReportedInfo.length - 1 && <br />}
             </Fragment>
@@ -115,6 +117,7 @@ function VesselLayerPanel({
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const vesselLayer = useGetDeckLayer<VesselLayer>(dataview.id)
   // const vesselInstance = useMapVesselLayer(dataview.id)
@@ -218,20 +221,24 @@ function VesselLayerPanel({
   const TitleComponentContent = () => (
     <Fragment>
       <span className={cx({ [styles.faded]: infoLoading || infoError })}>
-        <VesselLink
-          className={styles.link}
-          vesselId={vesselId}
-          datasetId={dataset?.id}
-          tooltip={<div>{identitiesSummary}</div>}
-          query={{
-            vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-            vesselSelfReportedId: vesselId,
-          }}
-          testId="vessel-layer-vessel-name"
-          dataviewId={dataview.id}
-        >
-          {getVesselTitle()}
-        </VesselLink>
+        {hasDeprecatedDataviewInstances ? (
+          getVesselTitle()
+        ) : (
+          <VesselLink
+            className={styles.link}
+            vesselId={vesselId}
+            datasetId={dataset?.id}
+            tooltip={<div>{identitiesSummary}</div>}
+            query={{
+              vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+              vesselSelfReportedId: vesselId,
+            }}
+            testId="vessel-layer-vessel-name"
+            dataviewId={dataview.id}
+          >
+            {getVesselTitle()}
+          </VesselLink>
+        )}
       </span>
     </Fragment>
   )
@@ -250,7 +257,12 @@ function VesselLayerPanel({
       {...attributes}
     >
       <div className={styles.header}>
-        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
+        <LayerSwitch
+          active={layerActive && !hasDeprecatedDataviewInstances}
+          className={styles.switch}
+          dataview={dataview}
+          disabled={hasDeprecatedDataviewInstances}
+        />
         <Title
           title={<TitleComponentContent />}
           showTooltip={false}

@@ -1225,6 +1225,18 @@
     "name": "crwdns83804:0crwdne83804:0",
     "description": "crwdns83806:0crwdne83806:0"
   },
+  "public-global-ports-footprint": {
+    "name": "crwdns84082:0crwdne84082:0",
+    "description": "crwdns84084:0crwdne84084:0",
+    "schema": {
+      "area": "crwdns84086:0crwdne84086:0",
+      "label": {
+        "keyword": "crwdns84088:0crwdne84088:0",
+        "enum": {}
+      },
+      "perimeter": "crwdns84090:0crwdne84090:0"
+    }
+  },
   "public-global-presence-tracks": {
     "name": "crwdns83152:0crwdne83152:0",
     "description": "crwdns83154:0crwdne83154:0",

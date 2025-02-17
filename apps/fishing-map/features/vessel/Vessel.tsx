@@ -15,6 +15,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
@@ -39,9 +40,11 @@ import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
 import VesselHeader from 'features/vessel/VesselHeader'
+import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
+import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsWorkspaceVesselLocation,
@@ -57,10 +60,12 @@ import type { VesselSection } from './vessel.types'
 import styles from './Vessel.module.css'
 
 const Vessel = () => {
+  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const vesselId = useSelector(selectVesselId)
   const isGFWUser = useSelector(selectIsGFWUser)
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
@@ -111,26 +116,28 @@ const Vessel = () => {
       {
         id: 'areas',
         title: t('vessel.sectionAreas', 'Areas'),
-        content: <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />,
+        content: hasDeprecatedDataviewInstances ? null : (
+          <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />
+        ),
         disabled: !hasEventsDataset,
         testId: 'vv-areas-tab',
       },
       {
         id: 'related_vessels',
         title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
-        content: <RelatedVessels />,
+        content: hasDeprecatedDataviewInstances ? null : <RelatedVessels />,
         disabled: !hasEventsDataset,
         testId: 'vv-related-tab',
       },
       {
         id: 'insights' as VesselSection,
         title: t('vessel.sectionInsights', 'Insights'),
-        content: <Insights />,
+        content: hasDeprecatedDataviewInstances ? null : <Insights />,
         disabled: !hasEventsDataset,
         testId: 'vv-insights-tab',
       },
     ],
-    [t, updateAreaLayersVisibility, hasEventsDataset]
+    [t, hasDeprecatedDataviewInstances, updateAreaLayersVisibility, hasEventsDataset]
   )
 
   useEffect(() => {
@@ -206,7 +213,7 @@ const Vessel = () => {
         emailSubject={`Requesting access for ${datasetId}-${vesselId} profile`}
       />
     ) : (
-      <ErrorPlaceHolder title={infoError?.message || 'Unexpected error'} />
+      <ErrorPlaceholder title={infoError?.message || 'Unexpected error'} />
     )
   }
 

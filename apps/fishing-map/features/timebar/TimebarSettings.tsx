@@ -14,15 +14,13 @@ import TracksIcon from 'assets/icons/timebar-tracks.svg'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import {
+  selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import {
-  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
-  selectActiveReportActivityDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
@@ -66,7 +64,7 @@ const Icon = ({
 const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
-  const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
+  const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEnvironmentalDataviews = useSelector(
     selectActiveHeatmapEnvironmentalDataviewsWithoutStatic
@@ -195,8 +193,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
           loading
             ? t('vessel.loadingInfo')
             : optionsPanelOpen
-            ? t('timebarSettings.settings_close', 'Close timebar settings')
-            : t('timebarSettings.settings_open', 'Open timebar settings')
+              ? t('timebarSettings.settings_close', 'Close timebar settings')
+              : t('timebarSettings.settings_open', 'Open timebar settings')
         }
       />
       {optionsPanelOpen && (

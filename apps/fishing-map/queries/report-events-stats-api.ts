@@ -3,19 +3,23 @@ import { DateTime } from 'luxon'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import type { RootState } from 'reducers'
 
-import type { StatsIncludes } from '@globalfishingwatch/api-types'
+import type { StatsByVessel, StatsIncludes } from '@globalfishingwatch/api-types'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-export type ReportEventsVesselsParams = {
+export type BaseReportEventsVesselsParamsFilters = {
+  portId?: string
+  vesselGroupId?: string
+  encounter_type?: string
+  confidence?: number
+}
+export type BaseReportEventsVesselsParams = {
   start: string
   end: string
+  filters?: BaseReportEventsVesselsParamsFilters
+}
+
+export type ReportEventsVesselsParams = BaseReportEventsVesselsParams & {
   dataset: string
-  filters?: {
-    portId?: string
-    vesselGroupId?: string
-    encounter_type?: string
-    confidence?: number
-  }
 }
 
 export type ReportEventsStatsParams = ReportEventsVesselsParams & {
@@ -32,23 +36,11 @@ export type ReportEventsStatsResponse = {
   groups: ReportEventsStatsResponseGroups
 }
 
-export type ReportEventsVesselsResponseItem = {
-  numEvents: number
-  portCountry: string
-  portName: string
-  totalDuration: number
-  vesselId: string
-}
-
-export type ReportEventsVesselsResponse = ReportEventsVesselsResponseItem[]
+export type ReportEventsVesselsResponse = StatsByVessel[]
 
 export const EVENTS_TIME_FILTER_MODE = 'START-DATE'
 
-function getBaseStatsQuery({
-  filters,
-  start,
-  end,
-}: ReportEventsVesselsParams | ReportEventsStatsParams) {
+function getBaseStatsQuery({ filters, start, end }: BaseReportEventsVesselsParams) {
   const query = {
     'start-date': start,
     'end-date': end,
@@ -61,6 +53,13 @@ function getBaseStatsQuery({
   return query
 }
 
+export function getEventsStatsQuery(params: ReportEventsVesselsParams) {
+  return {
+    ...getBaseStatsQuery(params),
+    datasets: [params.dataset],
+  }
+}
+
 export const reportEventsStatsApi = createApi({
   reducerPath: 'reportEventsStatsApi',
   baseQuery: gfwBaseQuery({
@@ -68,19 +67,17 @@ export const reportEventsStatsApi = createApi({
   }),
   endpoints: (builder) => ({
     getReportEventsStats: builder.query<ReportEventsStatsResponse, ReportEventsStatsParams>({
-      query: (params) => {
+      queryFn: async (params, { signal }, extraOptions, baseQuery) => {
         const startMillis = DateTime.fromISO(params.start).toMillis()
         const endMillis = DateTime.fromISO(params.end).toMillis()
         const interval = getFourwingsInterval(startMillis, endMillis)
         const query = {
-          ...getBaseStatsQuery(params),
+          ...getEventsStatsQuery(params),
           includes: params.includes,
-          datasets: [params.dataset],
           'timeseries-interval': interval,
         }
-        return {
-          url: `${getQueryParamsResolved(query)}`,
-        }
+        const url = getQueryParamsResolved(query)
+        return baseQuery({ url, signal }) as Promise<{ data: ReportEventsStatsResponse }>
       },
     }),
     getReportEventsVessels: builder.query<ReportEventsVesselsResponse, ReportEventsVesselsParams>({

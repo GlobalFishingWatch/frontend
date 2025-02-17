@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import type { TimebarGraphs } from 'types'
 
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
@@ -16,20 +15,17 @@ import {
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import {
+  selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import {
-  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
-  selectActiveReportActivityDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
-import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
+import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
 
 import type { TimeRange } from './timebar.slice'
@@ -83,11 +79,11 @@ export const useSetTimerange = () => {
   const setAtomTimerange = useSetAtom(timerangeState)
   const dispatch = useAppDispatch()
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
+  const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
 
-  const updateUrlTimerangeDebounced = useCallback(
-    debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
-    []
+  const updateUrlTimerangeDebounced = useMemo(
+    () => debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
+    [dispatch]
   )
 
   const setTimerange = useCallback(
@@ -120,17 +116,12 @@ export const useSetTimerange = () => {
 export const useTimerangeConnect = () => {
   const timerangeAtom = useAtomValue(timerangeState)
   const setTimerange = useSetTimerange()
-  const reportLocation = useSelector(selectIsAnyAreaReportLocation)
-  const fitAreaInViewport = useFitAreaInViewport()
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
       setTimerange({ start, end })
-      if (reportLocation) {
-        fitAreaInViewport()
-      }
     },
-    [fitAreaInViewport, reportLocation, setTimerange]
+    [setTimerange]
   )
 
   return useMemo(() => {
@@ -186,6 +177,7 @@ export const useHighlightedEventsConnect = () => {
       highlightedEventIds,
       dispatchHighlightedEvents,
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serializedHighlightedEventIds, dispatchHighlightedEvents])
 }
 
@@ -204,7 +196,10 @@ export const useTimebarVisualisationConnect = () => {
     [dispatchQueryParams, dispatch]
   )
 
-  return { timebarVisualisation, dispatchTimebarVisualisation }
+  return useMemo(
+    () => ({ timebarVisualisation, dispatchTimebarVisualisation }),
+    [dispatchTimebarVisualisation, timebarVisualisation]
+  )
 }
 
 export const useTimebarEnvironmentConnect = () => {
@@ -218,7 +213,10 @@ export const useTimebarEnvironmentConnect = () => {
     [dispatchQueryParams]
   )
 
-  return { timebarSelectedEnvId, dispatchTimebarSelectedEnvId }
+  return useMemo(
+    () => ({ timebarSelectedEnvId, dispatchTimebarSelectedEnvId }),
+    [dispatchTimebarSelectedEnvId, timebarSelectedEnvId]
+  )
 }
 
 export const useTimebarVesselGroupConnect = () => {
@@ -232,7 +230,10 @@ export const useTimebarVesselGroupConnect = () => {
     [dispatchQueryParams]
   )
 
-  return { timebarSelectedVGId, dispatchTimebarSelectedVGId }
+  return useMemo(
+    () => ({ timebarSelectedVGId, dispatchTimebarSelectedVGId }),
+    [dispatchTimebarSelectedVGId, timebarSelectedVGId]
+  )
 }
 
 export const useTimebarGraphConnect = () => {
@@ -245,17 +246,20 @@ export const useTimebarGraphConnect = () => {
     [dispatchQueryParams]
   )
 
-  return {
-    timebarGraph,
-    dispatchTimebarGraph,
-  }
+  return useMemo(
+    () => ({
+      timebarGraph,
+      dispatchTimebarGraph,
+    }),
+    [dispatchTimebarGraph, timebarGraph]
+  )
 }
 
 // Used to automate the behave depending on vessels or activity state
 // should be instanciated only once to avoid doing it more than needed
 export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
-  const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
+  const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
@@ -308,6 +312,7 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeActivityDataviews,
     activeDetectionsDataviews,
@@ -316,5 +321,8 @@ export const useTimebarVisualisation = () => {
     activeEnvDataviews,
     hasChangedSettingsOnce,
   ])
-  return { timebarVisualisation, dispatchTimebarVisualisation }
+  return useMemo(
+    () => ({ timebarVisualisation, dispatchTimebarVisualisation }),
+    [dispatchTimebarVisualisation, timebarVisualisation]
+  )
 }

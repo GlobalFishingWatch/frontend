@@ -138,8 +138,6 @@ const VesselIdentity = () => {
             {t('vessel.infoSources.registry', 'Registry')}
             {identitySource === VesselIdentitySourceEnum.Registry && (
               <DataTerminology
-                size="tiny"
-                type="default"
                 title={t('vessel.infoSources.registry', 'Registry')}
                 terminologyKey="registryInfo"
               />
@@ -155,8 +153,6 @@ const VesselIdentity = () => {
             {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS'}
             {identitySource === VesselIdentitySourceEnum.SelfReported && (
               <DataTerminology
-                size="tiny"
-                type="default"
                 title={t('vessel.infoSources.selfReported', 'Self Reported')}
                 terminologyKey="selfReported"
               />
@@ -189,14 +185,13 @@ const VesselIdentity = () => {
             <div>
               <label>{t('vessel.registrySources', 'Registry Sources')}</label>
               {vesselIdentity?.sourceCode ? (
-                <Tooltip content={vesselIdentity?.sourceCode?.join(', ')}>
-                  <VesselIdentityField
-                    className={styles.help}
-                    value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
-                      vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
-                    }`}
-                  />
-                </Tooltip>
+                <VesselIdentityField
+                  tooltip={vesselIdentity?.sourceCode?.join(', ')}
+                  className={styles.help}
+                  value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
+                    vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
+                  }`}
+                />
               ) : (
                 EMPTY_FIELD_PLACEHOLDER
               )}
@@ -261,8 +256,6 @@ const VesselIdentity = () => {
                         <label>{t(`vessel.${label}` as any, label)}</label>
                         {field.terminologyKey && (
                           <DataTerminology
-                            size="tiny"
-                            type="default"
                             title={t(`vessel.${label}`, label) as string}
                             terminologyKey={field.terminologyKey}
                           />

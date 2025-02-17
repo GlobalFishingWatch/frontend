@@ -8,7 +8,6 @@ import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import styles from 'features/search/advanced/SearchAdvanced.module.css'
 import SearchAdvancedFilters from 'features/search/advanced/SearchAdvancedFilters'
 import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { EMPTY_FILTERS } from 'features/search/search.config'
@@ -34,6 +33,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import SearchError from '../basic/SearchError'
+
+import styles from 'features/search/advanced/SearchAdvanced.module.css'
 
 const SearchAdvancedResults = dynamic(
   () => import(/* webpackChunkName: "SearchAdvancedResults" */ './SearchAdvancedResults')

@@ -1,11 +1,11 @@
 import type { RootState } from 'reducers'
 import type { Dispatch,Middleware } from 'redux'
-import type { QueryParam, QueryParams } from 'types'
 
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 
 import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
+import type { QueryParam, QueryParams } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
 import { routesMap, WORKSPACE_ROUTES } from './routes'

@@ -1,4 +1,4 @@
-import { useEffect, useMemo,useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -7,7 +7,7 @@ import { useCombobox } from 'downshift'
 import Link from 'redux-first-router-link'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
-import type { OceanArea,OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
@@ -31,6 +31,7 @@ import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-b
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
 import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
+import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
 
 import styles from './WorkspaceWizard.module.css'
@@ -137,7 +138,7 @@ function WorkspaceWizard() {
   }
   const linkToArea = useMemo(() => {
     const linkViewport = selectedItem
-      ? getMapCoordinatesFromBounds(map, selectedItem.properties?.bounds as any)
+      ? getMapCoordinatesFromBounds(selectedItem.properties?.bounds as Bbox)
       : viewState
 
     return {
@@ -163,7 +164,7 @@ function WorkspaceWizard() {
       },
       replaceQuery: true,
     }
-  }, [map, selectedItem, viewState])
+  }, [selectedItem, viewState])
 
   const linkToReport = useMemo(() => {
     if (!selectedItem || selectedItem?.properties?.type === 'ocean') {

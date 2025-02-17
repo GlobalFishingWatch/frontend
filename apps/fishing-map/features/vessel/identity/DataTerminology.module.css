@@ -21,6 +21,20 @@
 
 .infoButton {
   vertical-align: text-bottom;
+  transition: var(--transition);
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: var(--color-primary-blue);
+  opacity: var(--opacity-secondary);
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.infoButton:focus,
+.infoButton:hover {
+  opacity: 1;
+  background-color: var(--color-terthiary-blue);
 }
 
 .content h2 {

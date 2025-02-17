@@ -188,6 +188,16 @@ class MyDocument extends Document {
           <meta name="msapplication-TileImage" content="icons/mstile-144x144.png" />
           <meta name="msapplication-config" content="icons/browserconfig.xml" />
           <link rel="canonical" href="https://globalfishingwatch.org/map" />
+
+          {(process.env.NODE_ENV === 'development' ||
+            process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development') && (
+            // eslint-disable-next-line @next/next/no-sync-scripts
+            <script
+              data-recording-token="OdtneXMLbdjnMXixIvHVgAKe9T1RQhmfWf5a68Jj"
+              data-is-production-environment="false"
+              src="https://snippet.meticulous.ai/v1/meticulous.js"
+            />
+          )}
         </Head>
         <body>
           <noscript

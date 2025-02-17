@@ -17,33 +17,34 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
-import Color from 'features/workspace/common/Color'
-import MapLegend from 'features/workspace/common/MapLegend'
+import Color from 'features/workspace/shared/Color'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
+import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
-import InfoModal from '../common/InfoModal'
-import Filters from '../common/LayerFilters'
-import LayerSwitch from '../common/LayerSwitch'
-import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import DatasetFilterSource from '../shared/DatasetSourceField'
+import InfoModal from '../shared/InfoModal'
+import Filters from '../shared/LayerFilters'
+import LayerSwitch from '../shared/LayerSwitch'
+import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
 
 import { isDefaultActivityDataview, isDefaultDetectionsDataview } from './activity.utils'
 
 import activityStyles from './ActivitySection.module.css'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   isOpen: boolean
@@ -68,6 +69,7 @@ function ActivityLayerPanel({
   const isGFWUser = useSelector(selectIsGFWUser)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
   const dataviewId = useActivityDataviewId(dataview)
@@ -195,7 +197,8 @@ function ActivityLayerPanel({
           <div className={styles.header}>
             <LayerSwitch
               onToggle={onLayerSwitchToggle}
-              active={layerActive}
+              disabled={hasDeprecatedDataviewInstances}
+              active={layerActive && !hasDeprecatedDataviewInstances}
               className={styles.switch}
               dataview={dataview}
             />
@@ -204,6 +207,7 @@ function ActivityLayerPanel({
               className={styles.name}
               classNameActive={styles.active}
               dataview={dataview}
+              toggleVisibility={!hasDeprecatedDataviewInstances}
               onToggle={onLayerSwitchToggle}
             />
             <div
@@ -256,7 +260,10 @@ function ActivityLayerPanel({
                 showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
               />
               {!readOnly && (
-                <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
+                <Remove
+                  onClick={onRemoveLayerClick}
+                  loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
+                />
               )}
               {!readOnly && layerActive && layerError && (
                 <IconButton
@@ -277,7 +284,7 @@ function ActivityLayerPanel({
             <IconButton
               icon={layerError ? 'warning' : layerActive ? 'more' : undefined}
               type={layerError ? 'warning' : 'default'}
-              loading={layerActive && !layerLoaded}
+              loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
               className={cx('print-hidden', styles.shownUntilHovered)}
               size="small"
             />

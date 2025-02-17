@@ -5,7 +5,7 @@ import { createSelector } from 'reselect'
 import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
 
 import { Field } from '../../data/models'
-import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import {
   selectOriginalTracks,
@@ -21,7 +21,7 @@ import {
   selectQueryParam,
   selectVessel,
 } from '../../routes/routes.selectors'
-import type { LayersData } from '../../types';
+import type { LayersData } from '../../types'
 import { ActionType } from '../../types'
 
 export const getVesselTrack = createSelector(
@@ -233,7 +233,6 @@ export const getVesselParsedTrack = createSelector(
       .filter((segment: TrackSegment) => segment.length)
       .forEach((segment: any) => {
         let trackPoints: TrackPoint[] = []
-        let previousPoint: TrackPoint = segment[0]
         let actionFlag: ActionType | string = getCurrentVesselAction(segment[0], selectedTracksTree)
         segment.forEach((point: TrackPoint) => {
           const currentAction: ActionType | string | null = getCurrentVesselAction(
@@ -249,7 +248,7 @@ export const getVesselParsedTrack = createSelector(
               })
             }
             if (currentAction !== ActionType.untracked) {
-              trackPoints = previousPoint ? [previousPoint, point] : [point]
+              trackPoints = [point]
             } else {
               trackPoints = []
             }
@@ -259,7 +258,6 @@ export const getVesselParsedTrack = createSelector(
             }
           }
           actionFlag = currentAction ?? ''
-          previousPoint = point
         })
         layersData.push({
           trackPoints: trackPoints,
