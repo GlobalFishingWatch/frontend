@@ -73,7 +73,7 @@ const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: E
 
   return (
     <div className={styles.event}>
-      {eventType && upperFirst(t(`common.eventLabels.${eventType}`, eventType))}
+      {eventType && upperFirst(t(`event.${eventType}`, eventType))}
       <div className={styles.properties}>
         <div className={styles.property}>
           <label>

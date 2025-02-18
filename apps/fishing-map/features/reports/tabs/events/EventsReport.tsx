@@ -115,6 +115,14 @@ function EventsReport() {
       format: DateTime.DATE_MED,
     })
     const activityQuantity = formatI18nNumber(totalEvents || 0)
+
+    const activityUnit = eventType
+      ? t(`event.${eventType.toLowerCase()}`, {
+          defaultValue: lowerCase(eventType),
+          count: totalEvents,
+        }).toLowerCase()
+      : ''
+
     if (!vesselsData) {
       if (!data?.timeseries?.length) {
         return ''
@@ -124,11 +132,7 @@ function EventsReport() {
           defaultValue:
             '<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
           activityQuantity,
-          activityUnit: `${
-            eventType !== undefined
-              ? t(`common.eventLabels.${eventType.toLowerCase()}`, lowerCase(eventType))
-              : ''
-          }`,
+          activityUnit,
           start: startDate,
           end: endDate,
         })
@@ -155,11 +159,7 @@ function EventsReport() {
         vessels,
         flags: reportVesselsFlags?.size || 0,
         activityQuantity,
-        activityUnit: `${
-          eventType !== undefined
-            ? t(`common.eventLabels.${eventType.toLowerCase()}`, lowerCase(eventType))
-            : ''
-        }`,
+        activityUnit,
         start: startDate,
         end: endDate,
       })

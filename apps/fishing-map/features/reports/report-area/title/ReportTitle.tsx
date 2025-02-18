@@ -182,6 +182,9 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
   const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {
+    if (area?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
+      return t('common.globalReport', 'Global report')
+    }
     const propertyToInclude = getDatasetConfigurationProperty({
       dataset,
       property: 'propertyToInclude',
@@ -243,15 +246,16 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     }
     return ''
   }, [
+    area?.id,
+    area?.name,
     dataset,
     report?.name,
     urlBufferValue,
     urlBufferOperation,
+    t,
     areaDataview?.config?.type,
     reportAreaStatus,
     reportArea,
-    area?.name,
-    t,
     urlBufferUnit,
   ])
 
@@ -260,9 +264,10 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       ? parse(report?.description)
       : report?.description || ''
 
-  const reportAreaSpace = reportArea?.geometry
-    ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
-    : null
+  const reportAreaSpace =
+    area?.id !== ENTIRE_WORLD_REPORT_AREA_ID && reportArea?.geometry
+      ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
+      : null
 
   if (!reportTitle) {
     return (
