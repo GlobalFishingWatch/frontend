@@ -30,7 +30,6 @@ import {
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import {
-  selectIsVesselGroupReportLocation,
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
@@ -312,19 +311,11 @@ export const selectHasReportBuffer = createSelector(
 )
 
 export const selectReportArea = createSelector(
-  [
-    selectReportAreaData,
-    selectHasReportBuffer,
-    selectReportBufferArea,
-    selectIsVesselGroupReportLocation,
-  ],
-  (area, hasReportBuffer, bufferedArea, isVesselGroupReportLocation) => {
-    if (isVesselGroupReportLocation) {
-      return ENTIRE_WORLD_REPORT_AREA
-    }
+  [selectReportAreaData, selectHasReportBuffer, selectReportBufferArea],
+  (area, hasReportBuffer, bufferedArea) => {
     if (hasReportBuffer) {
       return bufferedArea
     }
-    return area
+    return area || ENTIRE_WORLD_REPORT_AREA
   }
 )
