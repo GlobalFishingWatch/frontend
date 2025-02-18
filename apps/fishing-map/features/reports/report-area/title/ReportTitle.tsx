@@ -31,6 +31,7 @@ import {
 } from 'features/reports/report-area/area-reports.selectors'
 import { DEFAULT_BUFFER_OPERATION } from 'features/reports/reports.config'
 import { selectCurrentReport } from 'features/reports/reports.selectors'
+import AreaReportSearch from 'features/reports/shared/area-search/AreaReportSearch'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import {
   resetReportData,
@@ -284,7 +285,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
         <a className={styles.reportLink} href={window.location.href}>
           {t('analysis.linkToReport', 'Check the dynamic report here')}
         </a>
-
+        {reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID && <AreaReportSearch />}
         <div className={styles.actions}>
           {reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && (
             <Popover
