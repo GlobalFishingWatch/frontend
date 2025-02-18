@@ -18,6 +18,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   DEFAULT_BUFFER_VALUE,
+  ENTIRE_WORLD_REPORT_AREA_ID,
   NAUTICAL_MILES,
 } from 'features/reports/report-area/area-reports.config'
 import {
@@ -285,40 +286,42 @@ export default function ReportTitle({ area }: ReportTitleProps) {
         </a>
 
         <div className={styles.actions}>
-          <Popover
-            open={showBufferTooltip}
-            onClickOutside={handleTooltipHide}
-            className={cx(styles.highlightPanel, 'print-hidden')}
-            placement="bottom"
-            content={
-              <div className={styles.filterButtonWrapper}>
-                <BufferButtonTooltip
-                  areaType={area?.properties?.originalGeometryType}
-                  activeUnit={previewBuffer.unit || NAUTICAL_MILES}
-                  defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                  activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
-                  handleRemoveBuffer={handleRemoveBuffer}
-                  handleConfirmBuffer={handleConfirmBuffer}
-                  handleBufferUnitChange={handleBufferUnitChange}
-                  handleBufferValueChange={handleBufferValueChange}
-                  handleBufferOperationChange={handleBufferOperationChange}
-                />
+          {reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && (
+            <Popover
+              open={showBufferTooltip}
+              onClickOutside={handleTooltipHide}
+              className={cx(styles.highlightPanel, 'print-hidden')}
+              placement="bottom"
+              content={
+                <div className={styles.filterButtonWrapper}>
+                  <BufferButtonTooltip
+                    areaType={area?.properties?.originalGeometryType}
+                    activeUnit={previewBuffer.unit || NAUTICAL_MILES}
+                    defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
+                    activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
+                    handleRemoveBuffer={handleRemoveBuffer}
+                    handleConfirmBuffer={handleConfirmBuffer}
+                    handleBufferUnitChange={handleBufferUnitChange}
+                    handleBufferValueChange={handleBufferValueChange}
+                    handleBufferOperationChange={handleBufferOperationChange}
+                  />
+                </div>
+              }
+            >
+              <div>
+                <Button
+                  onClick={handleTooltipShow}
+                  // onHide: handleTooltipHide,
+                  type="border-secondary"
+                  size="small"
+                  className={styles.actionButton}
+                >
+                  {t('analysis.buffer', 'Buffer Area')}
+                  <Icon icon="expand" type="default" />
+                </Button>
               </div>
-            }
-          >
-            <div>
-              <Button
-                onClick={handleTooltipShow}
-                // onHide: handleTooltipHide,
-                type="border-secondary"
-                size="small"
-                className={styles.actionButton}
-              >
-                {t('analysis.buffer', 'Buffer Area')}
-                <Icon icon="expand" type="default" />
-              </Button>
-            </div>
-          </Popover>
+            </Popover>
+          )}
           <Button
             type="border-secondary"
             size="small"
