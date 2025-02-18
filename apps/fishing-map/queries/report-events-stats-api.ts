@@ -15,6 +15,8 @@ export type BaseReportEventsVesselsParamsFilters = {
 export type BaseReportEventsVesselsParams = {
   start: string
   end: string
+  regionId?: string
+  regionDataset?: string
   filters?: BaseReportEventsVesselsParamsFilters
 }
 
@@ -40,11 +42,19 @@ export type ReportEventsVesselsResponse = StatsByVessel[]
 
 export const EVENTS_TIME_FILTER_MODE = 'START-DATE'
 
-function getBaseStatsQuery({ filters, start, end }: BaseReportEventsVesselsParams) {
+function getBaseStatsQuery({
+  filters,
+  start,
+  end,
+  regionId,
+  regionDataset,
+}: BaseReportEventsVesselsParams) {
   const query = {
     'start-date': start,
     'end-date': end,
     'time-filter-mode': EVENTS_TIME_FILTER_MODE,
+    ...(regionId && { 'region-id': regionId }),
+    ...(regionDataset && { 'region-dataset': regionDataset }),
     ...(filters?.portId && { 'port-ids': [filters.portId] }),
     ...(filters?.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
     ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),

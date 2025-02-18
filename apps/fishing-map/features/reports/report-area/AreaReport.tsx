@@ -32,6 +32,7 @@ import {
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useSetTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import ReportEnvironment from 'features/reports/tabs/environment/ReportEnvironment'
+import EventsReport from 'features/reports/tabs/events/EventsReport'
 import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
@@ -65,19 +66,20 @@ export default function Report() {
   const hasReportBuffer = useSelector(selectHasReportBuffer)
 
   const dataviews = useSelector(selectAllDataviewInstancesResolved)
-  const heatmapDataviews = useMemo(
+  const reportDataviews = useMemo(
     () =>
       dataviews?.filter(
         (d) =>
           d.config?.visible === true &&
-          (d.config?.type === DataviewType.HeatmapAnimated ||
+          (d.config?.type === DataviewType.FourwingsTileCluster ||
+            d.config?.type === DataviewType.HeatmapAnimated ||
             d.config?.type === DataviewType.HeatmapStatic)
       ),
     [dataviews]
   )
   const dataviewCategories = useMemo(
-    () => uniq(heatmapDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
-    [heatmapDataviews]
+    () => uniq(reportDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
+    [reportDataviews]
   )
   const categoryTabs: Tab<ReportCategory>[] = [
     {
@@ -87,6 +89,10 @@ export default function Report() {
     {
       id: ReportCategory.Detections,
       title: t('common.detections', 'Detections'),
+    },
+    {
+      id: ReportCategory.Events,
+      title: t('common.events', 'Events'),
     },
     {
       id: ReportCategory.Environment,
@@ -183,10 +189,10 @@ export default function Report() {
       )}
       {reportCategory === ReportCategory.Environment ? (
         <ReportEnvironment />
+      ) : reportCategory === ReportCategory.Events ? (
+        <EventsReport />
       ) : (
-        <div>
-          <ActivityReport reportName={reportArea?.name} />
-        </div>
+        <ActivityReport reportName={reportArea?.name} />
       )}
     </Fragment>
   )

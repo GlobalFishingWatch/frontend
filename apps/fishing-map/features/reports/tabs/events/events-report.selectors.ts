@@ -11,20 +11,32 @@ import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
+import {
+  type ReportVesselWithDatasets,
+  selectReportAreaIds,
+} from 'features/reports/report-area/area-reports.selectors'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
 
 export const selectFetchEventsVesselsParams = createSelector(
-  [selectTimeRange, selectReportVesselGroupId, selectReportPortId, selectActiveReportDataviews],
-  ({ start, end }, reportVesselGroupId, portId, eventsDataviews) => {
+  [
+    selectTimeRange,
+    selectReportAreaIds,
+    selectReportVesselGroupId,
+    selectReportPortId,
+    selectActiveReportDataviews,
+  ],
+  ({ start, end }, reportAreaIds, reportVesselGroupId, portId, eventsDataviews) => {
     if (!eventsDataviews?.[0]) {
       return
     }
     const eventsDataview = eventsDataviews?.[0]
 
     const dataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
+
     return {
       dataset: dataset,
+      regionId: reportAreaIds.areaId,
+      regionDataset: reportAreaIds.datasetId,
       filters: {
         portId,
         vesselGroupId: reportVesselGroupId,
