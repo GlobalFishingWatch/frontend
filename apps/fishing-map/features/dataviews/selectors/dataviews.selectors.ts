@@ -215,11 +215,23 @@ export const selectActiveTemporalgridDataviews: (
   }
 )
 
+export const selectReportLayersVisible = createSelector(
+  [selectAllDataviewInstancesResolved],
+  (allDataviewInstancesResolved) => {
+    return allDataviewInstancesResolved?.filter(
+      ({ config }) =>
+        config?.visible === true &&
+        (config?.type === DataviewType.FourwingsTileCluster ||
+          config?.type === DataviewType.HeatmapAnimated ||
+          config?.type === DataviewType.HeatmapStatic)
+    )
+  }
+)
+
 export const selectHasReportLayersVisible = createSelector(
-  [selectActiveHeatmapDowloadDataviews],
-  (reportDataviews) => {
-    const visibleDataviews = reportDataviews?.filter(({ config }) => config?.visible === true)
-    return visibleDataviews && visibleDataviews.length > 0
+  [selectReportLayersVisible],
+  (reportLayersVisible) => {
+    return reportLayersVisible && reportLayersVisible.length > 0
   }
 )
 
