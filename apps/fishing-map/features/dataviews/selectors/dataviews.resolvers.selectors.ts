@@ -266,6 +266,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     }
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
+        dataviewInstance &&
         dataviewInstance.id?.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
         !dataviewInstance.datasetsConfig?.length &&
         dataviewInstance.config?.info

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -8,7 +8,7 @@ import { useCombobox } from 'downshift'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
-import { IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { InputText } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -126,6 +126,22 @@ function AreaReportSearch() {
       setAreasMatching([])
     }
   }
+
+  useEffect(() => {
+    const handleCloseSearch = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedItem(null)
+        setInputSearch('')
+        setAreasMatching([])
+        inputRef.current?.blur()
+      }
+    }
+    document.addEventListener('keydown', handleCloseSearch)
+    return () => {
+      document.removeEventListener('keydown', handleCloseSearch)
+    }
+  }, [])
+
   return (
     <div
       className={cx(styles.inputContainer, { [styles.open]: isOpen && areasMatching.length > 0 })}
@@ -136,11 +152,9 @@ function AreaReportSearch() {
           className={styles.input}
           placeholder={t('map.search', 'Search areas')}
           onBlur={onInputBlur}
+          inputSize="small"
+          type="search"
         />
-        <IconButton
-          icon="search"
-          className={cx(styles.search, { [styles.disabled]: isOpen })}
-        ></IconButton>
         <ul {...getMenuProps()} className={styles.results}>
           {isOpen &&
             areasMatching?.map((item, index) => (
