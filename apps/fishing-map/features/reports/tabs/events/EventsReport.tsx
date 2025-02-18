@@ -102,21 +102,19 @@ function EventsReport() {
   )
 
   const totalEvents = data?.timeseries.reduce((acc, group) => acc + group.value, 0)
-  console.log('🚀 ~ EventsReport ~ data:', data)
   const isLoadingStats = statsStatus === 'pending'
   const isLoadingVessels = vessselStatus === 'pending'
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const eventType = eventDataset?.subcategory as EventType
 
   const title = useMemo(() => {
-    console.log('🚀 ~ title ~ vesselsData:', vesselsData)
     const startDate = formatI18nDate(start, {
       format: DateTime.DATE_MED,
     })
     const endDate = formatI18nDate(end, {
       format: DateTime.DATE_MED,
     })
-
+    const activityQuantity = formatI18nNumber(totalEvents || 0)
     if (!vesselsData) {
       if (!data?.timeseries?.length) {
         return ''
@@ -125,7 +123,7 @@ function EventsReport() {
         t('analysis.summaryEventsNoVessels', {
           defaultValue:
             '<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
-          activityQuantity: totalEvents,
+          activityQuantity,
           activityUnit: `${
             eventType !== undefined
               ? t(`common.eventLabels.${eventType.toLowerCase()}`, lowerCase(eventType))
@@ -144,7 +142,7 @@ function EventsReport() {
             '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
           vessels,
           flags: reportVesselsFlags?.size || 0,
-          activityQuantity: totalEvents,
+          activityQuantity,
           start: startDate,
           end: endDate,
         })
@@ -156,7 +154,7 @@ function EventsReport() {
           '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         vessels,
         flags: reportVesselsFlags?.size || 0,
-        activityQuantity: totalEvents,
+        activityQuantity,
         activityUnit: `${
           eventType !== undefined
             ? t(`common.eventLabels.${eventType.toLowerCase()}`, lowerCase(eventType))
