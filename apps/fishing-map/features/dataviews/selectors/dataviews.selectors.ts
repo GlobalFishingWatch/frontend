@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import type { Dataset, Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
@@ -225,6 +225,13 @@ export const selectReportLayersVisible = createSelector(
           config?.type === DataviewType.HeatmapAnimated ||
           config?.type === DataviewType.HeatmapStatic)
     )
+  }
+)
+
+export const selectEnvironmentReportLayersVisible = createSelector(
+  [selectReportLayersVisible],
+  (reportLayersVisible) => {
+    return reportLayersVisible?.filter(({ category }) => category === DataviewCategory.Environment)
   }
 )
 
