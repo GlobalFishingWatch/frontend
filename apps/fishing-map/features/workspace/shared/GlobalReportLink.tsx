@@ -21,6 +21,9 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
     },
     query: {
       reportCategory,
+      latitude: 0,
+      longitude: 0,
+      zoom: 0,
     },
   }
   return (
