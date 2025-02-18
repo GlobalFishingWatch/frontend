@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import type { KeyboardEventHandler } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -126,21 +127,17 @@ function AreaReportSearch() {
       setAreasMatching([])
     }
   }
+  const inputProps = getInputProps({ ref: inputRef })
 
-  useEffect(() => {
-    const handleCloseSearch = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setSelectedItem(null)
-        setInputSearch('')
-        setAreasMatching([])
-        inputRef.current?.blur()
-      }
+  const handleKeyDown: KeyboardEventHandler = (e) => {
+    if (e.key === 'Escape') {
+      setSelectedItem(null)
+      setInputSearch('')
+      setAreasMatching([])
+      inputRef.current?.blur()
     }
-    document.addEventListener('keydown', handleCloseSearch)
-    return () => {
-      document.removeEventListener('keydown', handleCloseSearch)
-    }
-  }, [])
+    inputProps.onKeyDown?.(e)
+  }
 
   return (
     <div
@@ -148,10 +145,11 @@ function AreaReportSearch() {
     >
       <div className={styles.comboContainer}>
         <InputText
-          {...getInputProps({ ref: inputRef })}
+          {...inputProps}
           className={styles.input}
           placeholder={t('map.search', 'Search areas')}
           onBlur={onInputBlur}
+          onKeyDown={handleKeyDown}
           inputSize="small"
           type="search"
         />
