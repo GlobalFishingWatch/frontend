@@ -15,6 +15,7 @@ import {
   type ReportVesselWithDatasets,
   selectReportAreaIds,
 } from 'features/reports/report-area/area-reports.selectors'
+import { WORLD_REGION_ID } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
 
 export const selectFetchEventsVesselsParams = createSelector(
@@ -35,7 +36,7 @@ export const selectFetchEventsVesselsParams = createSelector(
 
     return {
       dataset: dataset,
-      regionId: reportAreaIds.areaId,
+      regionId: reportAreaIds.areaId !== WORLD_REGION_ID ? reportAreaIds.areaId : undefined,
       regionDataset: reportAreaIds.datasetId,
       filters: {
         portId,
