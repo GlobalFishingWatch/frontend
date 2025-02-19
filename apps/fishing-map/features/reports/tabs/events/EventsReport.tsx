@@ -5,10 +5,7 @@ import cx from 'classnames'
 import { lowerCase } from 'es-toolkit'
 import htmlParser from 'html-react-parser'
 import { DateTime } from 'luxon'
-import type {
-  ReportEventsStatsParams,
-  ReportEventsVesselsParams,
-} from 'queries/report-events-stats-api'
+import type { GetReportEventParams } from 'queries/report-events-stats-api'
 import {
   useGetReportEventsStatsQuery,
   useGetReportEventsVesselsQuery,
@@ -43,7 +40,12 @@ import {
 } from 'features/reports/shared/vessels/report-vessels.selectors'
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import { getDateRangeHash } from 'features/reports/tabs/activity/reports-activity.slice'
-import { selectFetchEventsVesselsParams } from 'features/reports/tabs/events/events-report.selectors'
+import {
+  selectEventsStats,
+  selectEventsStatsValueKeys,
+  selectFetchEventsStatsParams,
+  selectFetchEventsVesselsParams,
+} from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
 import {
@@ -74,6 +76,9 @@ function EventsReport() {
   const subsection = useSelector(selectReportSubCategory)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
   const params = useSelector(selectFetchEventsVesselsParams)
+  const statsParams = useSelector(selectFetchEventsStatsParams)
+  const stats = useSelector(selectEventsStats)
+  const eventsStatsValueKeys = useSelector(selectEventsStatsValueKeys)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
   const timerangeSupported = getDownloadReportSupported(start, end)
 
@@ -81,7 +86,7 @@ function EventsReport() {
   const reportOutdated = reportHash !== getReportHash(subsection, { start, end })
 
   const { data: vesselsData, status: vessselStatus } = useGetReportEventsVesselsQuery(
-    params as ReportEventsVesselsParams,
+    params as GetReportEventParams,
     {
       skip: !params || !timerangeSupported || reportOutdated,
     }
@@ -91,17 +96,14 @@ function EventsReport() {
     data,
     error,
     status: statsStatus,
-  } = useGetReportEventsStatsQuery(
-    {
-      ...params,
-      includes: ['TIME_SERIES'],
-    } as ReportEventsStatsParams,
-    {
-      skip: !eventsDataview,
-    }
-  )
+  } = useGetReportEventsStatsQuery(statsParams, {
+    skip: !eventsDataview,
+  })
 
-  const totalEvents = data?.timeseries.reduce((acc, group) => acc + group.value, 0)
+  const totalEvents = data?.reduce(
+    (acc, layer) => acc + layer?.timeseries.reduce((acc, group) => acc + group.value, 0),
+    0
+  )
   const isLoadingStats = statsStatus === 'pending'
   const isLoadingVessels = vessselStatus === 'pending'
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
@@ -124,7 +126,7 @@ function EventsReport() {
       : ''
 
     if (!vesselsData) {
-      if (!data?.timeseries?.length) {
+      if (!data?.length) {
         return ''
       }
       return htmlParser(
@@ -173,7 +175,7 @@ function EventsReport() {
     reportVesselsFlags?.size,
     totalEvents,
     eventType,
-    data?.timeseries?.length,
+    data?.length,
   ])
 
   if (!vesselDatasets.length) {
@@ -250,10 +252,11 @@ function EventsReport() {
                   'vessel',
                   ...(eventType === 'encounter' ? ['encounter.vessel'] : []),
                 ]}
+                valueKeys={eventsStatsValueKeys}
                 color={color}
                 start={start}
                 end={end}
-                timeseries={data.timeseries || []}
+                data={stats || []}
                 eventType={eventType}
               />
             )}

@@ -1,12 +1,18 @@
+import { date } from '@recoiljs/refine'
 import { createSelector } from '@reduxjs/toolkit'
-import type { ReportEventsVesselsParams } from 'queries/report-events-stats-api'
+import { groupBy, uniq } from 'es-toolkit'
+import type { GetReportEventParams } from 'queries/report-events-stats-api'
 import {
+  selectReportEventsStats,
   selectReportEventsStatsApiSlice,
   selectReportEventsVessels,
 } from 'queries/report-events-stats-api'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
+import {
+  getDataviewFilters,
+  getDataviewSqlFiltersResolved,
+} from '@globalfishingwatch/dataviews-client'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -30,22 +36,38 @@ export const selectFetchEventsVesselsParams = createSelector(
     if (!eventsDataviews?.[0]) {
       return
     }
-    const eventsDataview = eventsDataviews?.[0]
 
-    const dataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
-
-    return {
-      dataset: dataset,
-      regionId: reportAreaIds.areaId !== WORLD_REGION_ID ? reportAreaIds.areaId : undefined,
-      regionDataset: reportAreaIds.datasetId,
-      filters: {
+    const datasets = eventsDataviews?.flatMap(
+      (dataview) => dataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.id || []
+    )
+    const filters = eventsDataviews?.flatMap((dataview) => {
+      return {
         portId,
         vesselGroupId: reportVesselGroupId,
-        ...getDataviewFilters(eventsDataview),
-      },
+        ...getDataviewFilters(dataview),
+        // TODO:CVP2 add flags filter using this
+        // sql: getDataviewSqlFiltersResolved(dataview),
+      }
+    })
+
+    return {
       start,
       end,
-    } as ReportEventsVesselsParams
+      regionId: reportAreaIds.areaId !== WORLD_REGION_ID ? reportAreaIds.areaId : undefined,
+      regionDataset: reportAreaIds.datasetId,
+      filters,
+      datasets,
+    } as GetReportEventParams
+  }
+)
+
+export const selectFetchEventsStatsParams = createSelector(
+  [selectFetchEventsVesselsParams],
+  (params) => {
+    return {
+      ...params,
+      includes: ['TIME_SERIES'],
+    } as GetReportEventParams
   }
 )
 
@@ -56,6 +78,47 @@ export const selectEventsVesselsData = createSelector(
       return
     }
     return selectReportEventsVessels(params)({ reportEventsStatsApi })?.data
+  }
+)
+
+export const selectEventsStatsData = createSelector(
+  [selectReportEventsStatsApiSlice, selectFetchEventsStatsParams],
+  (reportEventsStatsApi, params) => {
+    if (!params) {
+      return
+    }
+    return selectReportEventsStats(params)({ reportEventsStatsApi })?.data
+  }
+)
+
+export const selectEventsStatsValueKeys = createSelector(
+  [selectActiveReportDataviews],
+  (dataviews) => {
+    return dataviews.map((d) => d.id)
+  }
+)
+export const selectEventsStats = createSelector(
+  [selectEventsStatsData, selectActiveReportDataviews],
+  (stats, dataviews) => {
+    if (!stats) {
+      return
+    }
+    const statsByDate = groupBy(
+      stats.flatMap((s, i) =>
+        s.timeseries.map((t) => ({
+          date: t.date,
+          dataviewId: dataviews[i].id,
+          color: dataviews[i]?.config?.color,
+          value: t.value,
+        }))
+      ),
+      (s) => s.date
+    )
+    const data = Object.entries(statsByDate).map(([date, values]) => ({
+      date,
+      ...Object.fromEntries(values.map((s) => [s.dataviewId, { color: s.color, value: s.value }])),
+    }))
+    return data
   }
 )
 

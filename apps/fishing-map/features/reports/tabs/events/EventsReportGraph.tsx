@@ -1,24 +1,22 @@
 import type { ReactElement } from 'react'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { groupBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
-import { stringify } from 'qs'
 import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
-import { getEventsStatsQuery } from 'queries/report-events-stats-api'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
-import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
+import type { EventType } from '@globalfishingwatch/api-types'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
-import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
+import type {
+  BaseResponsiveTimeseriesProps,
+  ResponsiveVisualizationData,
+} from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { getTimeLabels } from 'utils/events'
 import { formatInfoField, upperFirst } from 'utils/info'
@@ -54,9 +52,18 @@ const AggregatedGraphTooltip = (props: any) => {
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
-        <p className={styles.tooltipValue}>
-          {formatI18nNumber(payload[0].payload.value)} {t('common.events', 'Events').toLowerCase()}
-        </p>
+        <ul>
+          {payload
+            .sort((a: any, b: any) => b.value - a.value)
+            .map(({ value, color }: any, index: number) => {
+              return (
+                <li key={index} className={styles.tooltipValue}>
+                  <span className={styles.tooltipValueDot} style={{ color }}></span>
+                  {formatTooltipValue(value, t('common.events', 'Events').toLowerCase())}
+                </li>
+              )
+            })}
+        </ul>
       </div>
     )
   }
@@ -120,7 +127,8 @@ export default function EventsReportGraph({
   color = COLOR_PRIMARY_BLUE,
   end,
   start,
-  timeseries,
+  data,
+  valueKeys,
   eventType,
 }: {
   datasetId: string
@@ -129,7 +137,8 @@ export default function EventsReportGraph({
   color?: string
   end: string
   start: string
-  timeseries: { date: string; value: number }[]
+  data: ResponsiveVisualizationData<'aggregated'>
+  valueKeys: string[]
   eventType?: EventType
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
@@ -149,7 +158,7 @@ export default function EventsReportGraph({
     icon = <PortVisitIcon />
   }
 
-  const getAggregatedData = useCallback(async () => timeseries, [timeseries])
+  const getAggregatedData = useCallback(async () => data, [data])
   // const getIndividualData = useCallback(async () => {
   //   const params = {
   //     ...getEventsStatsQuery({
@@ -170,7 +179,7 @@ export default function EventsReportGraph({
   //     .sort((a, b) => a.date.localeCompare(b.date))
   // }, [start, end, filtersMemo, includesMemo, datasetId, interval])
 
-  if (!timeseries.length) {
+  if (!data.length) {
     return null
   }
 
@@ -180,6 +189,7 @@ export default function EventsReportGraph({
         start={start}
         end={end}
         timeseriesInterval={interval}
+        aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
         // getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}

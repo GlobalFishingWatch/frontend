@@ -10,7 +10,7 @@ import {
   YAxis,
 } from 'recharts'
 
-import type { ResponsiveVisualizationData } from '../../types'
+import type { ResponsiveVisualizationAggregatedObjectValue } from '../../types'
 import type { TimeseriesByTypeProps } from '../types'
 
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
@@ -43,13 +43,14 @@ export function AggregatedTimeseries({
   ]
 
   const domain = useTimeseriesDomain({ start, end, timeseriesInterval })
+
   const fullTimeseries = useFullTimeseries({
     start,
     end,
     data,
     timeseriesInterval,
     dateKey,
-    valueKey: valueKeys as keyof ResponsiveVisualizationData[0],
+    valueKeys: Array.isArray(valueKeys) ? valueKeys : [valueKeys],
   })
 
   if (!fullTimeseries.length) {
@@ -78,18 +79,25 @@ export function AggregatedTimeseries({
         />
         {data?.length && customTooltip ? <Tooltip content={customTooltip} /> : null}
         {Array.isArray(valueKeys) ? (
-          valueKeys.map((valueKey) => (
-            <Line
-              key={valueKey}
-              name="line"
-              type="monotone"
-              dataKey={valueKey}
-              dot={false}
-              isAnimationActive={false}
-              stroke={color}
-              strokeWidth={2}
-            />
-          ))
+          valueKeys.map((valueKey) => {
+            const isValueObject = typeof data?.[0]?.[valueKey] === 'object'
+            const dataKey = isValueObject ? `${valueKey}.value` : valueKey
+            const lineColor = isValueObject
+              ? (data[0][valueKey] as ResponsiveVisualizationAggregatedObjectValue).color || color
+              : color
+            return (
+              <Line
+                key={valueKey}
+                name="line"
+                type="monotone"
+                dataKey={dataKey}
+                dot={false}
+                isAnimationActive={false}
+                stroke={lineColor}
+                strokeWidth={2}
+              />
+            )
+          })
         ) : (
           <Line
             name="line"
