@@ -55,9 +55,9 @@ import {
 import {
   selectIsAnyVesselLocation,
   selectIsPortReportLocation,
+  selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
   selectIsVesselLocation,
-  selectIsWorkspaceLocation,
   selectReportPortId,
   selectReportVesselGroupId,
   selectUrlDataviewInstances,
@@ -70,7 +70,7 @@ import { formatInfoField } from 'utils/info'
 const EMPTY_ARRAY: [] = []
 export const selectWorkspaceDataviewInstancesMerged = createSelector(
   [
-    selectIsWorkspaceLocation,
+    selectIsRouteWithWorkspace,
     selectWorkspaceStatus,
     selectWorkspaceDataviewInstances,
     selectUrlDataviewInstances,
