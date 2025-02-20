@@ -1,3 +1,4 @@
+import { format } from 'd3-format'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import {
@@ -16,6 +17,11 @@ import type { TimeseriesByTypeProps } from '../types'
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
+
+const tickFormatter = (tick: number) => {
+  const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
+  return format(formatter)(tick)
+}
 
 type AggregatedTimeseriesProps = TimeseriesByTypeProps<'aggregated'>
 export function AggregatedTimeseries({
@@ -60,11 +66,11 @@ export function AggregatedTimeseries({
   return (
     <ResponsiveContainer width="100%" height="100%">
       <ComposedChart data={fullTimeseries} margin={graphMargin}>
-        <CartesianGrid vertical={false} />
+        <CartesianGrid vertical={false} syncWithTicks />
         <XAxis
           domain={domain}
           dataKey={dateKey}
-          interval="preserveStartEnd"
+          interval="equidistantPreserveStart"
           tickFormatter={(tick: string) => tickLabelFormatter?.(tick, timeseriesInterval) || tick}
           axisLine={paddedDomain[0] === 0}
         />
@@ -72,10 +78,9 @@ export function AggregatedTimeseries({
           scale="linear"
           domain={paddedDomain}
           interval="preserveEnd"
-          // tickFormatter={tickFormatter}
+          tickFormatter={tickFormatter}
           axisLine={false}
           tickLine={false}
-          tickCount={4}
         />
         {data?.length && customTooltip ? <Tooltip content={customTooltip} /> : null}
         {Array.isArray(valueKeys) ? (
