@@ -36,16 +36,12 @@ export function AggregatedTimeseries({
   timeseriesInterval,
   tickLabelFormatter,
 }: AggregatedTimeseriesProps) {
-  const dataMin: number = data.length
-    ? (min(
-        data.map((item) => getResponsiveVisualizationItemValue(item[valueKeys as string]))
-      ) as number)
-    : 0
-  const dataMax: number = data.length
-    ? (max(
-        data.map((item) => getResponsiveVisualizationItemValue(item[valueKeys as string]))
-      ) as number)
-    : 0
+  const valueKeysArray = Array.isArray(valueKeys) ? valueKeys : [valueKeys]
+  const allValues = data.flatMap((item) =>
+    valueKeysArray.map((valueKey) => getResponsiveVisualizationItemValue(item[valueKey as string]))
+  )
+  const dataMin: number = allValues.length ? (min(allValues) as number) : 0
+  const dataMax: number = allValues.length ? (max(allValues) as number) : 0
 
   const domainPadding = (dataMax - dataMin) / 10
   const paddedDomain: [number, number] = [
@@ -61,7 +57,7 @@ export function AggregatedTimeseries({
     data,
     timeseriesInterval,
     dateKey,
-    valueKeys: Array.isArray(valueKeys) ? valueKeys : [valueKeys],
+    valueKeys: valueKeysArray,
   })
 
   if (!fullTimeseries.length) {
