@@ -6,6 +6,7 @@ import { redirect } from 'redux-first-router'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { Button } from '@globalfishingwatch/ui-components'
 
+import { GFW_CONTACT_US_MAIL } from 'data/constants'
 import Partners from 'features/partners/Partners'
 import { useUser } from 'features/user/user.hooks'
 import { HOME } from 'routes/routes'
@@ -23,8 +24,7 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
   const { online } = useNavigatorOnline()
 
   const requestAccess = useCallback(() => {
-    window.location.href =
-      'mailto:support@globalfishingwatch.org?subject=Requesting access to Vessel Viewer App'
+    window.location.href = `mailto:${GFW_CONTACT_US_MAIL}?subject=Requesting access to Vessel Viewer App`
   }, [])
 
   const goToOfflineHome = useCallback(() => {
@@ -73,20 +73,22 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
                     </a>
                   </p>
                   <p>
-                    This prototype currently contains more vessels than the public Vessel Viewer
-                    version, however part of the data it contains is no longer updated since 24
-                    January 2025. Therefore, we recommend only using this prototype version in
-                    parallel to the public version, to ensure you can access vessels not visible on
-                    the public version, and can still access up-to-date vessel identity information.
+                    Ce prototype contient actuellement davantage de navires que la version publique
+                    de Vessel Viewer, toutefois il ne fait plus l’objet de mises à jour depuis le 24
+                    janvier 2025. Nous vous recommandons donc d'utiliser cette version prototype
+                    uniquement en parallèle de la version publique, afin de vous permettre d’accéder
+                    à des navires non visibles sur la version publique tout en ayant toujours accès
+                    à des informations à jour concernant l’identité des navires .
                   </p>
                   <p>
-                    Please log in with your Global Fishing Watch credentials. If you experience any
-                    issue or require support using Vessel Viewer, please{' '}
+                    Veuillez vous connecter avec vos identifiants Global Fishing Watch. Si vous
+                    rencontrez un problème ou avez besoin d'assistance pour utiliser Vessel Viewer,
+                    veuillez envoyer un e-mail à :{' '}
                     <a
-                      href="mailto:support@globalfishingwatch.org?subject=Vessel Viewer prototype issues"
+                      href={`mailto:${GFW_CONTACT_US_MAIL}?subject=Vessel Viewer prototype issues`}
                       className={styles.link}
                     >
-                      email us
+                      {GFW_CONTACT_US_MAIL}
                     </a>
                     .
                   </p>
@@ -109,12 +111,12 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
                   </p>
                   <p>
                     Please log in with your Global Fishing Watch credentials. If you experience any
-                    issue or require support using Vessel Viewer, please{' '}
+                    issue or require support using Vessel Viewer, please email
                     <a
-                      href="mailto:support@globalfishingwatch.org?subject=Vessel Viewer prototype issues"
+                      href={`mailto:${GFW_CONTACT_US_MAIL}?subject=Vessel Viewer prototype issues`}
                       className={styles.link}
                     >
-                      email us
+                      {GFW_CONTACT_US_MAIL}
                     </a>
                     .
                   </p>
