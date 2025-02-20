@@ -1,7 +1,7 @@
-import React, { memo, useCallback } from 'react'
+import React, { Fragment, memo, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { redirect } from 'redux-first-router'
-import { useTranslation } from 'react-i18next'
 import { Button } from '@globalfishingwatch/ui-components'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
 import { useUser } from 'features/user/user.hooks'
@@ -12,7 +12,7 @@ import vesselHistoryLogo from '../../assets/images/splash-screen-image@2x.png'
 import styles from './Splash.module.css'
 
 const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { loading, logout, user, authorized } = useUser()
   const { onLoginClick } = useLoginRedirect()
   const dispatch = useDispatch()
@@ -57,6 +57,64 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
               {t(
                 'user.notLoggedIn',
                 'Only some specific registered users can use this product. Please log in with your Global Fishing Watch credentials'
+              )} */}
+              {i18n.language === 'fr' ? (
+                <Fragment>
+                  <p>
+                    Bienvenue ! Ceci est la version prototype privée de Vessel Viewer, qui sera
+                    progressivement abandonnée à la fin de l'année 2025, alors que nous concentrons
+                    nos efforts sur l’amélioration de la{' '}
+                    <a href="https://globalfishingwatch.org/map/vessel-search?lng=fr">
+                      plateforme publique de Vessel Viewer.
+                    </a>
+                  </p>
+                  <p>
+                    This prototype currently contains more vessels than the public Vessel Viewer
+                    version, however part of the data it contains is no longer updated since 24
+                    January 2025. Therefore, we recommend only using this prototype version in
+                    parallel to the public version, to ensure you can access vessels not visible on
+                    the public version, and can still access up-to-date vessel identity information.
+                  </p>
+                  <p>
+                    Please log in with your Global Fishing Watch credentials. If you experience any
+                    issue or require support using Vessel Viewer, please{' '}
+                    <a
+                      href="mailto:support@globalfishingwatch.org?subject=Vessel Viewer prototype issues"
+                      className={styles.link}
+                    >
+                      email us
+                    </a>
+                    .
+                  </p>
+                </Fragment>
+              ) : (
+                <Fragment>
+                  <p>
+                    Welcome! This is the private prototype version of Vessel Viewer that is being
+                    phased out in late 2025, as we focus improvements on the{' '}
+                    <a href="https://globalfishingwatch.org/map/vessel-search">
+                      public Vessel Viewer platform.
+                    </a>
+                  </p>
+                  <p>
+                    This prototype currently contains more vessels than the public Vessel Viewer
+                    version, however part of the data it contains is no longer updated since 24
+                    January 2025. Therefore, we recommend only using this prototype version in
+                    parallel to the public version, to ensure you can access vessels not visible on
+                    the public version, and can still access up-to-date vessel identity information.
+                  </p>
+                  <p>
+                    Please log in with your Global Fishing Watch credentials. If you experience any
+                    issue or require support using Vessel Viewer, please{' '}
+                    <a
+                      href="mailto:support@globalfishingwatch.org?subject=Vessel Viewer prototype issues"
+                      className={styles.link}
+                    >
+                      email us
+                    </a>
+                    .
+                  </p>
+                </Fragment>
               )}
             </div>
             <div className={styles.buttons}>

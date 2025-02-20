@@ -75,16 +75,17 @@ export const selectUrlQuery = createSelector([selectQueryParam('q')], (q: string
 
 export const selectUrlDataviewInstances = createSelector(
   [selectQueryParam('dataviewInstances')],
-  (dataviewInstances: UrlDataviewInstance[]) => dataviewInstances?.map(dataviewInstance => {
-    const visibility: string = (dataviewInstance.config?.visible as any)
-    return {
-      ...dataviewInstance,
-      config: {
-        ...dataviewInstance.config,
-        visible: visibility === 'true' ? true : (visibility === 'false' ? false : !!visibility)
+  (dataviewInstances: UrlDataviewInstance[]) =>
+    dataviewInstances?.map((dataviewInstance) => {
+      const visibility: string = dataviewInstance.config?.visible as any
+      return {
+        ...dataviewInstance,
+        config: {
+          ...dataviewInstance.config,
+          visible: visibility === 'true' ? true : visibility === 'false' ? false : !!visibility,
+        },
       }
-    }
-  })
+    })
 )
 
 export const selectUrlViewport = createSelector(
@@ -199,9 +200,9 @@ export const selectMergedVesselId = createSelector(
 export const selectSearchableQueryParams = createSelector(
   [selectAdvancedSearchFields, selectUrlQuery],
   (filters, query) =>
-  ({
-    q: query,
-    ...filters,
-    flags: filters?.flags.join(','),
-  } as any)
+    ({
+      q: query,
+      ...filters,
+      flags: filters?.flags.join(','),
+    }) as any
 )

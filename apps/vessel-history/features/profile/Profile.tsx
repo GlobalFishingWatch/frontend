@@ -48,6 +48,7 @@ import Info from './components/Info'
 import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
 import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
+import TabDeprecated from 'features/profile/TabDeprecated'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useAppDispatch()
@@ -207,27 +208,17 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => ({
       id: 'map',
       title: t('common.map', 'MAP').toLocaleUpperCase(),
-      content: vessel ? (
-        <div className={styles.mapContainer}>
-          <Map />
-        </div>
-      ) : loading ? (
-        <Spinner className={styles.spinnerFull} />
-      ) : null,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} />,
     }),
-    [loading, t, vessel]
+    [t, vessel, vesselId]
   )
   const riskSummaryTab = useMemo(
     () => ({
       id: 'risk',
       title: <RiskTitle />,
-      content: vessel ? (
-        <RiskSummary onMoveToMap={() => setActiveTab(mapTab)} />
-      ) : loading ? (
-        <Spinner className={styles.spinnerFull} />
-      ) : null,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} />,
     }),
-    [loading, mapTab, vessel]
+    [vessel, vesselId]
   )
 
   const infoTab = useMemo(
@@ -235,17 +226,22 @@ const Profile: React.FC = (props): React.ReactElement => {
       id: 'info',
       title: t('common.info', 'INFO').toLocaleUpperCase(),
       content: vessel ? (
-        <Info
-          vessel={vessel}
-          lastPosition={lastPosition}
-          lastPortVisit={lastPortVisit}
-          onMoveToMap={() => setActiveTab(mapTab)}
-        />
+        <Fragment>
+          <TabDeprecated vessel={vessel} vesselId={vesselId} fullHeight={false} />
+          <Info
+            vessel={vessel}
+            lastPosition={lastPosition}
+            lastPortVisit={lastPortVisit}
+            onMoveToMap={() => setActiveTab(mapTab)}
+          />
+        </Fragment>
       ) : loading ? (
         <Spinner className={styles.spinnerFull} />
-      ) : null,
+      ) : (
+        <TabDeprecated vessel={vessel} vesselId={vesselId} />
+      ),
     }),
-    [lastPortVisit, lastPosition, loading, mapTab, t, vessel]
+    [lastPortVisit, lastPosition, loading, mapTab, t, vessel, vesselId]
   )
   const activityTab = useMemo(
     () => ({
@@ -256,18 +252,9 @@ const Profile: React.FC = (props): React.ReactElement => {
           {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
         </div>
       ),
-      content: vessel ? (
-        <Activity
-          vessel={vessel}
-          lastPosition={lastPosition}
-          lastPortVisit={lastPortVisit}
-          onMoveToMap={() => setActiveTab(mapTab)}
-        />
-      ) : loading ? (
-        <Spinner className={styles.spinnerFull} />
-      ) : null,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} />,
     }),
-    [lastPortVisit, lastPosition, loading, mapTab, t, vessel, visibleHighlights]
+    [t, vessel, vesselId, visibleHighlights]
   )
 
   const activityByTypeTab = useMemo(

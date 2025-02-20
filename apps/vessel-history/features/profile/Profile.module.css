@@ -5,10 +5,27 @@
   width: 100%;
   height: var(--header-height);
   background: #fff;
-  box-shadow: 0 1px 2px 0 rgba(22, 63, 137, 0.2), 0 2px 10px 0 rgba(1, 37, 91, 0.15);
+  box-shadow:
+    0 1px 2px 0 rgba(22, 63, 137, 0.2),
+    0 2px 10px 0 rgba(1, 37, 91, 0.15);
   z-index: 100;
   display: flex;
   align-items: center;
+}
+
+.deprecatedContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.deprecatedFullHeight {
+  height: calc(100vh - var(--header-height) - var(--tabs-height));
+}
+
+.emptyState {
+  color: var(--color-secondary-blue);
+  padding: var(--space-M);
+  text-align: center;
 }
 
 .feedback {
