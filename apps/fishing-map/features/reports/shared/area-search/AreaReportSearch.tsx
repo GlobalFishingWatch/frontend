@@ -80,6 +80,7 @@ function AreaReportSearch() {
                   },
                 }
               }
+              return d
             })
           : [...(query.dataviewInstances || []), { id: dataview.id, config: { visible: true } }]
         dispatchLocation(WORKSPACE_REPORT, {
