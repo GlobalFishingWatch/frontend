@@ -69,12 +69,10 @@ export function useFullTimeseries({
             const dataValue = data.find((item) =>
               d?.startsWith(item[dateKey as keyof typeof item] as any)
             )?.[valueKey]
-            return [valueKey, dataValue ? dataValue : aggregated ? 0 : []]
+            const fallbackValue = typeof dataValue === 'number' ? 0 : { value: 0 }
+            return [valueKey, dataValue ? dataValue : aggregated ? fallbackValue : []]
           })
         )
-        // const dataValue = data.find((item) =>
-        //   d?.startsWith(item[dateKey as keyof typeof item] as any)
-        // )?.[valueKey]
         return {
           [dateKey]: d,
           ...values,
