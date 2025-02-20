@@ -39,7 +39,7 @@ const getSerializedFilterFields = (dataview: UrlDataviewInstance, filterKey: str
 export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
   const commonProperties: string[] = []
 
-  if (dataviews && dataviews?.length > 1) {
+  if (dataviews && dataviews?.length) {
     if (
       dataviews?.every((dataview) => dataview.category === dataviews[0].category) &&
       dataviews?.every((dataview) => dataview.name === dataviews[0].name)

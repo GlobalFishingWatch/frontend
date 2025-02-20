@@ -64,7 +64,8 @@ export default function ReportSummaryActivity({
   }, [dataviews])
 
   const activitySummary = useMemo(() => {
-    if (!dataviews.length) return
+    if (!dataviews.length || !layersTimeseriesFiltered?.length) return
+
     if (timeCompareTimeDescription) {
       return timeCompareTimeDescription
     }
@@ -137,14 +138,14 @@ export default function ReportSummaryActivity({
         }) as string
       }
       const activityUnitLabel =
-        reportCategory === ReportCategory.Detections
-          ? t('common.detection', { defaultValue: 'detections', count: Math.floor(reportHours) })
-          : `<strong>${t(`common.${activityUnit}`, {
+        reportCategory === ReportCategory.Activity
+          ? `<strong>${t(`common.${activityUnit}`, {
               defaultValue: 'hours',
               count: Math.floor(reportHours),
             })}</strong> ${
               Math.round(timeseriesImprecision) ? `± ${Math.round(timeseriesImprecision)}% ` : ''
             }${t('common.of', 'of')}`
+          : ''
 
       return t('analysis.summaryNoVessels', {
         defaultValue:
@@ -154,11 +155,12 @@ export default function ReportSummaryActivity({
         activityType: datasetTitle,
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
-        sources: commonProperties.includes('source')
-          ? `(${listAsSentence(
-              getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
-            )}) `
-          : '',
+        sources:
+          commonProperties.includes('source') && reportCategory === ReportCategory.Activity
+            ? `(${listAsSentence(
+                getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
+              )}) `
+            : '',
       })
     }
   }, [

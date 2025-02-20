@@ -31,17 +31,6 @@ export default function ReportSummaryTags({
     !hiddenProperties?.includes('flag') ||
     hasFilters
 
-  const areAllPropertiesHidden =
-    hiddenProperties?.includes('dataset') &&
-    hiddenProperties?.includes('source') &&
-    hiddenProperties?.includes('flag') &&
-    availableFields.every((f) => hiddenProperties?.includes(f[0]))
-
-  if (areAllPropertiesHidden) {
-    // TODO I don't understand that logic
-    return null
-  }
-
   return (
     <div className={cx(styles.row)}>
       <div className={cx(styles.content, { [styles.contentDot]: showDot })}>
