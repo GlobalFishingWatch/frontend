@@ -33,7 +33,7 @@ import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
-import type { ReportTableVessel } from './report-vessels.types'
+import type { ReportTableVessel, ReportVesselValues } from './report-vessels.types'
 import ReportVesselsTableFooter from './ReportVesselsTableFooter'
 
 import styles from './ReportVesselsTable.module.css'
@@ -172,10 +172,16 @@ export default function ReportVesselsTable({
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             const value = vessel.value || (vessel as any)[activityUnit as any]
+            const values = vessel.values
+              ? vessel.values
+              : value
+                ? ([{ value }] as ReportVesselValues)
+                : []
             const hasDatasets = vessel.datasetId?.includes(GLOBAL_VESSELS_DATASET_ID)
               ? vessel.datasetId !== undefined && vessel.trackDatasetId !== undefined
               : vessel.datasetId !== undefined || vessel.trackDatasetId !== undefined
             const pinTrackDisabled = !workspaceReady || !hasDatasets || isPinningVessels
+            const showVesselColor = values.length && !values.some((v) => v.color)
             return (
               <Fragment key={id}>
                 <div
@@ -194,7 +200,7 @@ export default function ReportVesselsTable({
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   {workspaceReady ? (
                     <Fragment>
-                      {vessel.color && (
+                      {showVesselColor && vessel.color && (
                         <span
                           className={styles.dot}
                           style={{ backgroundColor: vessel.color }}
@@ -249,7 +255,24 @@ export default function ReportVesselsTable({
                 </div>
                 {activityUnit && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                    {value !== undefined ? <I18nNumber number={value} /> : EMPTY_FIELD_PLACEHOLDER}
+                    {values.length &&
+                      values.map((v) =>
+                        v.value ? (
+                          <Fragment>
+                            {v.color && (
+                              <span
+                                className={styles.dot}
+                                style={{ backgroundColor: v.color }}
+                              ></span>
+                            )}
+                            <span className={styles.value}>
+                              <I18nNumber number={v.value} />
+                            </span>
+                          </Fragment>
+                        ) : (
+                          EMPTY_FIELD_PLACEHOLDER
+                        )
+                      )}
                   </div>
                 )}
               </Fragment>

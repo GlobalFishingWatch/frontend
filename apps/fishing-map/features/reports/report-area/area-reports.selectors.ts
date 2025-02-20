@@ -24,6 +24,7 @@ import {
   selectReportDatasetId,
 } from 'features/reports/reports.selectors'
 import type { ReportCategory } from 'features/reports/reports.types'
+import type { ReportVesselValues } from 'features/reports/shared/vessels/report-vessels.types'
 import {
   selectReportPreviewBuffer,
   selectReportVesselsData,
@@ -90,6 +91,7 @@ export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName
     category?: ReportCategory
     flagTranslated?: string
     flagTranslatedClean?: string
+    values?: ReportVesselValues
   }
 
 export const selectReportAreaDataviews = createSelector(

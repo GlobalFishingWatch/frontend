@@ -1,6 +1,5 @@
-import { date } from '@recoiljs/refine'
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, uniq } from 'es-toolkit'
+import { groupBy } from 'es-toolkit'
 import type { GetReportEventParams } from 'queries/report-events-stats-api'
 import {
   selectReportEventsStats,
@@ -9,10 +8,12 @@ import {
 } from 'queries/report-events-stats-api'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import {
-  getDataviewFilters,
-  getDataviewSqlFiltersResolved,
-} from '@globalfishingwatch/dataviews-client'
+  getResponsiveVisualizationItemValue,
+  type ResponsiveVisualizationAggregatedValue,
+  type ResponsiveVisualizationData,
+} from '@globalfishingwatch/responsive-visualizations'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -33,7 +34,7 @@ export const selectFetchEventsVesselsParams = createSelector(
     selectActiveReportDataviews,
   ],
   ({ start, end }, reportAreaIds, reportVesselGroupId, portId, eventsDataviews) => {
-    if (!eventsDataviews?.[0]) {
+    if (!eventsDataviews?.length) {
       return
     }
 
@@ -41,6 +42,8 @@ export const selectFetchEventsVesselsParams = createSelector(
       (dataview) => dataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.id || []
     )
     const filters = eventsDataviews?.flatMap((dataview) => {
+      const filters = getDataviewFilters(dataview)
+      console.log('🚀 ~ filters ~ filters:', filters)
       return {
         portId,
         vesselGroupId: reportVesselGroupId,
@@ -97,7 +100,7 @@ export const selectEventsStatsValueKeys = createSelector(
     return dataviews.map((d) => d.id)
   }
 )
-export const selectEventsStats = createSelector(
+export const selectEventsTimeseries = createSelector(
   [selectEventsStatsData, selectActiveReportDataviews],
   (stats, dataviews) => {
     if (!stats) {
@@ -105,7 +108,7 @@ export const selectEventsStats = createSelector(
     }
     const statsByDate = groupBy(
       stats.flatMap((s, i) =>
-        s.timeseries.map((t) => ({
+        (s.timeseries || []).map((t) => ({
           date: t.date,
           dataviewId: dataviews[i].id,
           color: dataviews[i]?.config?.color,
@@ -114,13 +117,31 @@ export const selectEventsStats = createSelector(
       ),
       (s) => s.date
     )
-    const data = Object.entries(statsByDate).map(([date, values]) => ({
-      date,
-      ...Object.fromEntries(values.map((s) => [s.dataviewId, { color: s.color, value: s.value }])),
-    }))
+    const data: ResponsiveVisualizationData<'aggregated'> = Object.entries(statsByDate).map(
+      ([date, values]) => ({
+        date,
+        ...Object.fromEntries(
+          values.map((s) => [s.dataviewId, { color: s.color, value: s.value }])
+        ),
+      })
+    )
     return data
   }
 )
+
+export const selectTotalStatsEvents = createSelector([selectEventsTimeseries], (timeseries) => {
+  if (!timeseries) {
+    return
+  }
+  return timeseries?.reduce((acc, eventsDate) => {
+    const { date, ...rest } = eventsDate
+    const value = Object.values(rest as ResponsiveVisualizationAggregatedValue).reduce(
+      (count, item) => count + getResponsiveVisualizationItemValue(item),
+      0
+    )
+    return acc + value
+  }, 0)
+})
 
 export const selectEventsVessels = createSelector(
   [selectEventsVesselsData, selectActiveReportDataviews, selectAllDatasets],
@@ -128,26 +149,46 @@ export const selectEventsVessels = createSelector(
     if (!eventsVessels) {
       return
     }
-    // TODO:CVP2 support multiple events report dataviews
-    const eventsDataset = activeReportDataviews[0]?.datasets?.[0]
-    const vesselDatasetId = eventsDataset?.relatedDatasets?.find(
-      (d) => d.type === DatasetTypes.Vessels
-    )?.id
-    const vesselDataset = allDatasets?.find((d) => d.id === vesselDatasetId)
-    const trackDatasetId = vesselDataset?.relatedDatasets?.find(
-      (d) => d.type === DatasetTypes.Tracks
-    )?.id
-    const trackDataset = allDatasets?.find((d) => d.id === trackDatasetId)
 
-    return eventsVessels.map((vessel) => ({
-      ...vessel,
-      // TODO:CVP2 support multiple events report dataviews
-      dataviewId: activeReportDataviews?.[0]?.id,
-      datasetId: vesselDataset?.id,
-      infoDataset: vesselDataset,
-      trackDataset: trackDataset,
-      color: activeReportDataviews?.[0]?.config?.color || '',
-      value: vessel.numEvents,
-    }))
+    const statsByVessel = groupBy(
+      eventsVessels.flatMap((vessels, i) => {
+        const eventsDataset = activeReportDataviews[i]?.datasets?.find(
+          (d) => d.type === DatasetTypes.Events
+        )
+        const vesselDatasetId = eventsDataset?.relatedDatasets?.find(
+          (d) => d.type === DatasetTypes.Vessels
+        )?.id
+        const vesselDataset = allDatasets?.find((d) => d.id === vesselDatasetId)
+        const trackDatasetId = vesselDataset?.relatedDatasets?.find(
+          (d) => d.type === DatasetTypes.Tracks
+        )?.id
+        const trackDataset = allDatasets?.find((d) => d.id === trackDatasetId)
+        return vessels.map((vessel) => ({
+          ...vessel,
+          dataviewId: activeReportDataviews[i].id,
+          color: activeReportDataviews[i]?.config?.color as string,
+          value: vessel.numEvents,
+          datasetId: vesselDataset?.id,
+          infoDataset: vesselDataset,
+          trackDataset: trackDataset,
+        }))
+      }),
+      (s) => s.vesselId
+    )
+
+    return Object.values(statsByVessel).map((values) => {
+      const sortedValues = values.sort((a, b) => b.value - a.value)
+      return {
+        ...sortedValues[0],
+        values: sortedValues.map((v) => ({
+          value: v.value,
+          color: v.color,
+        })),
+      }
+    })
   }
 )
+
+export const selectTotalEventsVessels = createSelector([selectEventsVessels], (eventsVessels) => {
+  return eventsVessels?.length
+})

@@ -41,10 +41,12 @@ import {
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import { getDateRangeHash } from 'features/reports/tabs/activity/reports-activity.slice'
 import {
-  selectEventsStats,
   selectEventsStatsValueKeys,
+  selectEventsTimeseries,
   selectFetchEventsStatsParams,
   selectFetchEventsVesselsParams,
+  selectTotalEventsVessels,
+  selectTotalStatsEvents,
 } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
@@ -77,7 +79,9 @@ function EventsReport() {
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
   const params = useSelector(selectFetchEventsVesselsParams)
   const statsParams = useSelector(selectFetchEventsStatsParams)
-  const stats = useSelector(selectEventsStats)
+  const eventsTimeseries = useSelector(selectEventsTimeseries)
+  const totalEvents = useSelector(selectTotalStatsEvents)
+  const totalEventsVessels = useSelector(selectTotalEventsVessels)
   const eventsStatsValueKeys = useSelector(selectEventsStatsValueKeys)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
   const timerangeSupported = getDownloadReportSupported(start, end)
@@ -85,25 +89,14 @@ function EventsReport() {
   const [reportHash, setReportHash] = useState('idle')
   const reportOutdated = reportHash !== getReportHash(subsection, { start, end })
 
-  const { data: vesselsData, status: vessselStatus } = useGetReportEventsVesselsQuery(
-    params as GetReportEventParams,
-    {
-      skip: !params || !timerangeSupported || reportOutdated,
-    }
-  )
+  const { status: vessselStatus } = useGetReportEventsVesselsQuery(params as GetReportEventParams, {
+    skip: !params || !timerangeSupported || reportOutdated,
+  })
 
-  const {
-    data,
-    error,
-    status: statsStatus,
-  } = useGetReportEventsStatsQuery(statsParams, {
+  const { error, status: statsStatus } = useGetReportEventsStatsQuery(statsParams, {
     skip: !eventsDataview,
   })
 
-  const totalEvents = data?.reduce(
-    (acc, layer) => acc + layer?.timeseries.reduce((acc, group) => acc + group.value, 0),
-    0
-  )
   const isLoadingStats = statsStatus === 'pending'
   const isLoadingVessels = vessselStatus === 'pending'
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
@@ -125,8 +118,8 @@ function EventsReport() {
         }).toLowerCase()
       : ''
 
-    if (!vesselsData) {
-      if (!data?.length) {
+    if (!totalEventsVessels) {
+      if (!eventsTimeseries?.length) {
         return ''
       }
       return htmlParser(
@@ -140,7 +133,7 @@ function EventsReport() {
         })
       )
     }
-    const vessels = formatI18nNumber(vesselsData?.length || 0)
+    const vessels = formatI18nNumber(totalEventsVessels || 0)
     if (isPortReportLocation) {
       return htmlParser(
         t('portsReport.summaryEvents', {
@@ -167,15 +160,15 @@ function EventsReport() {
       })
     )
   }, [
-    vesselsData,
     start,
     end,
-    isPortReportLocation,
-    t,
-    reportVesselsFlags?.size,
     totalEvents,
     eventType,
-    data?.length,
+    t,
+    totalEventsVessels,
+    isPortReportLocation,
+    reportVesselsFlags?.size,
+    eventsTimeseries?.length,
   ])
 
   if (!vesselDatasets.length) {
@@ -213,7 +206,7 @@ function EventsReport() {
     color = 'rgb(247 222 110)' // Needed to make the graph lines more visible
   }
 
-  if (error || !data || isLoadingStats) {
+  if (error || !eventsTimeseries || isLoadingStats) {
     return (
       <Fragment>
         {showSubsectionSelector && (
@@ -256,7 +249,7 @@ function EventsReport() {
                 color={color}
                 start={start}
                 end={end}
-                data={stats || []}
+                data={eventsTimeseries || []}
                 eventType={eventType}
               />
             )}

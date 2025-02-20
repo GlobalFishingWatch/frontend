@@ -49,7 +49,7 @@ import {
 import { selectVGRVessels } from '../../report-vessel-group/vessel-group-report.slice'
 import { selectEventsVessels } from '../../tabs/events/events-report.selectors'
 
-import type { ReportTableVessel } from './report-vessels.types'
+import type { ReportTableVessel, ReportVesselValues } from './report-vessels.types'
 
 const getVesselSource = (vessel: IdentityVessel) => {
   let source = ''
@@ -173,6 +173,7 @@ export const selectReportVessels = createSelector(
           ssvid: reportVessel.mmsi || EMPTY_FIELD_PLACEHOLDER,
           flag: reportVessel.flag || EMPTY_FIELD_PLACEHOLDER,
           value: reportVessel.value as number,
+          values: reportVessel.values as ReportVesselValues,
           color: reportVessel.color,
           flagTranslated: reportVessel.flag
             ? t(`flags:${reportVessel.flag}` as any)
@@ -341,6 +342,7 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
   [selectReportVesselsFiltered, selectReportVesselGraph, selectReportDataviewsWithPermissions],
   (vessels, subsection, dataviews) => {
     if (!vessels) return []
+
     const reportData = groupBy(vessels, (v) => v.dataviewId || '')
 
     const dataByDataview = dataviews.map((dataview) => {
