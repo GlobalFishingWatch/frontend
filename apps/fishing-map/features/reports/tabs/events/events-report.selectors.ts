@@ -42,14 +42,11 @@ export const selectFetchEventsVesselsParams = createSelector(
       (dataview) => dataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.id || []
     )
     const filters = eventsDataviews?.flatMap((dataview) => {
-      const filters = getDataviewFilters(dataview)
-      console.log('🚀 ~ filters ~ filters:', filters)
       return {
         portId,
         vesselGroupId: reportVesselGroupId,
         ...getDataviewFilters(dataview),
-        // TODO:CVP2 add flags filter using this
-        // sql: getDataviewSqlFiltersResolved(dataview),
+        // TODO:CVP2 add other filters using this
       }
     })
 

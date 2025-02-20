@@ -23,7 +23,8 @@ export default function ReportSummaryTags({
   availableFields,
 }: LayerPanelProps) {
   const { t } = useTranslation()
-  const hasFilters = dataview.config?.filters && Object.keys(dataview.config.filters).length > 0
+  const hasFilters =
+    dataview.config?.filters && Object.values(dataview.config.filters).filter(Boolean).length > 0
 
   const showDot =
     !hiddenProperties?.includes('dataset') ||
