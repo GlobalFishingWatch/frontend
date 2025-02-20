@@ -37,7 +37,7 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/port-labeler/public/locales"]
+        "commands": ["rimraf dist/apps/port-labeler/public/locales"]
       }
     },
     "serve": {

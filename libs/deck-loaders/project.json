@@ -22,8 +22,8 @@
       "options": {
         "commands": [
           "nx build:workers deck-loaders",
-          "rm -rf dist/libs/deck-loaders/workers/libs",
-          "rm -rf dist/libs/deck-loaders/workers/package.json"
+          "rimraf dist/libs/deck-loaders/workers/libs",
+          "rimraf dist/libs/deck-loaders/workers/package.json"
         ],
         "parallel": false
       }
