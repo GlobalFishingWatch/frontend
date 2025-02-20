@@ -1,4 +1,5 @@
 import { format } from 'd3-format'
+import { getResponsiveVisualizationItemValue } from 'libs/responsive-visualizations/src/lib/density'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import {
@@ -36,13 +37,17 @@ export function AggregatedTimeseries({
   tickLabelFormatter,
 }: AggregatedTimeseriesProps) {
   const dataMin: number = data.length
-    ? (min(data.map((item) => item[valueKeys as string])) as number)
+    ? (min(
+        data.map((item) => getResponsiveVisualizationItemValue(item[valueKeys as string]))
+      ) as number)
     : 0
   const dataMax: number = data.length
-    ? (max(data.map((item) => item[valueKeys as string])) as number)
+    ? (max(
+        data.map((item) => getResponsiveVisualizationItemValue(item[valueKeys as string]))
+      ) as number)
     : 0
 
-  const domainPadding = (dataMax - dataMin) / 8
+  const domainPadding = (dataMax - dataMin) / 10
   const paddedDomain: [number, number] = [
     Math.max(0, Math.floor(dataMin - domainPadding)),
     Math.ceil(dataMax + domainPadding),
