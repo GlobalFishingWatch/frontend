@@ -12,7 +12,7 @@
     "postinstall": "husky",
     "knip": "knip",
     "knip:fix": "knip --fix",
-    "clean:cache": "rm -rf .nx && rm -rf ./dist",
+    "clean:cache": "rimraf .nx && rimraf -rf ./dist",
     "purge": "node scripts/purge-css.js",
     "prepare": "husky install"
   },
@@ -157,6 +157,7 @@
     "remark-gfm": "4.0.0",
     "reselect": "^5.1.1",
     "resize-observer-polyfill": "1.5.1",
+    "rimraf": "^6.0.1",
     "shpjs": "6.1.0",
     "simple-statistics": "7.8.7",
     "skmeans": "0.11.3",
