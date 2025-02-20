@@ -4,7 +4,6 @@ import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import type { RootState } from 'reducers'
 
 import type { StatsByVessel, StatsIncludes } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 export type BaseReportEventsVesselsParamsFilters = {
@@ -12,7 +11,7 @@ export type BaseReportEventsVesselsParamsFilters = {
   vesselGroupId?: string
   encounter_type?: string
   confidence?: number
-  sql?: string
+  flag?: string[]
 }
 export type BaseReportEventsVesselsParams = {
   start: string
@@ -69,7 +68,7 @@ function getBaseStatsQuery({
     ...(filters?.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
     ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),
     ...(filters?.confidence && { confidences: [filters.confidence] }),
-    ...(filters?.sql && { filters: filters.sql }),
+    ...(filters?.flag && { flags: filters.flag }),
   }
   return query
 }
@@ -78,6 +77,13 @@ export function getEventsStatsQuery(params: ReportEventsVesselsParams) {
   return {
     ...getBaseStatsQuery(params),
     datasets: [params.dataset],
+  }
+}
+
+export function getEventsVesselQuery(params: ReportEventsVesselsParams) {
+  return {
+    ...getBaseStatsQuery(params),
+    dataset: params.dataset,
   }
 }
 
@@ -102,27 +108,33 @@ export const reportEventsStatsApi = createApi({
           return baseQuery({ url, signal }) as Promise<{ data: ReportEventsStatsResponse }>
         })
         const settledPromises = await Promise.allSettled(promises)
-        const data = settledPromises.flatMap((d) => {
+        const data = settledPromises.map((d) => {
           return d.status === 'fulfilled' && !(d.value as any).error
             ? (d.value as { data: ReportEventsStatsResponse }).data
-            : []
+            : ({} as ReportEventsStatsResponse)
         })
-        // const data = stats.reduce(
-        //   (acc, curr) => ({
-        //     ...acc,
-        //     timeseries: [...(acc.timeseries || []), ...curr.data.timeseries],
-        //   }),
-        //   {} as ReportEventsStatsResponse
-        // )
         return { data }
       },
     }),
-    getReportEventsVessels: builder.query<ReportEventsVesselsResponse, GetReportEventParams>({
-      query: (params) => {
-        const query = { ...getBaseStatsQuery(params), dataset: params.datasets[0] }
-        return {
-          url: `-by-vessel${getQueryParamsResolved(query)}`,
-        }
+    getReportEventsVessels: builder.query<ReportEventsVesselsResponse[], GetReportEventParams>({
+      queryFn: async (params, { signal }, extraOptions, baseQuery) => {
+        const promises = params.datasets.map((dataset, index) => {
+          const query = getEventsVesselQuery({
+            ...params,
+            dataset: dataset,
+            filters: params.filters?.[index] || {},
+          })
+          const url = `-by-vessel${getQueryParamsResolved(query)}`
+          return baseQuery({ url, signal }) as Promise<{ data: ReportEventsVesselsResponse }>
+        })
+        const settledPromises = await Promise.allSettled(promises)
+        const data = settledPromises.map((d) => {
+          return d.status === 'fulfilled' && !(d.value as any).error
+            ? (d.value as { data: ReportEventsVesselsResponse }).data
+            : []
+        })
+
+        return { data }
       },
     }),
   }),
