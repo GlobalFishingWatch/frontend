@@ -33,13 +33,16 @@ import styles from './Sidebar.module.css'
 export const SCROLL_CONTAINER_DOM_ID = 'scroll-container'
 
 const AreaReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/areas/AreaReport')
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-area/AreaReport')
 )
 const PortsReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/ports/PortsReport')
+  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-port/PortsReport')
 )
 const VesselGroupReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/vessel-groups/VesselGroupReport')
+  () =>
+    import(
+      /* webpackChunkName: "Report" */ 'features/reports/report-vessel-group/VesselGroupReport'
+    )
 )
 const VesselProfile = dynamic(
   () => import(/* webpackChunkName: "VesselProfile" */ 'features/vessel/Vessel')
@@ -62,6 +65,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const readOnly = useSelector(selectReadOnly)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const isUserLocation = useSelector(selectIsUserLocation)
+  const isUserLogged = useSelector(selectIsUserLogged)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
@@ -70,12 +74,13 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const userLogged = useSelector(selectIsUserLogged)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 
   useEffect(() => {
-    dispatch(fetchVesselGroupsThunk())
-  }, [dispatch])
+    if (isUserLogged) {
+      dispatch(fetchVesselGroupsThunk())
+    }
+  }, [dispatch, isUserLogged])
 
   useEffect(() => {
     if (dataviewsResources?.resources?.length) {
@@ -96,7 +101,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   }, [dispatch, dataviewsResources])
 
   const sidebarComponent = useMemo(() => {
-    if (!userLogged) {
+    if (!isUserLogged) {
       return <Spinner />
     }
 
@@ -142,7 +147,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     isVesselGroupReportLocation,
     isVesselLocation,
     isWorkspacesListLocation,
-    userLogged,
+    isUserLogged,
   ])
 
   return (

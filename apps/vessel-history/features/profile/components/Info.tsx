@@ -4,13 +4,12 @@ import ImageGallery from 'react-image-gallery'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { DateTime, Interval } from 'luxon'
-import type { VesselWithHistory } from 'types'
 
 import type { VesselTypeV2 } from '@globalfishingwatch/api-types'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { TMT_CONTACT_US_URL } from 'data/constants'
+import { GFW_CONTACT_US_MAIL, TMT_CONTACT_US_URL } from 'data/constants'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import I18nDate, { formatI18nSpecialDate } from 'features/i18n/i18nDate'
 import { useUser } from 'features/user/user.hooks'
@@ -25,6 +24,7 @@ import {
   selectUrlQuery,
   selectVesselId,
 } from 'routes/routes.selectors'
+import type { VesselWithHistory } from 'types'
 import type { OfflineVessel } from 'types/vessel'
 import { VesselFieldLabel } from 'types/vessel'
 import { getUTCDateTime } from 'utils/dates'
@@ -136,9 +136,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement<any> => {
   )
   const contactUsLink = useMemo(
     () =>
-      `${TMT_CONTACT_US_URL}&email=${encodeURIComponent(
-        email
-      )}&usercontext=${searchContext}&data=${JSON.stringify({
+      `mailto:${GFW_CONTACT_US_MAIL}?subject=${searchContext}&body=${JSON.stringify({
         name: query,
         ...advancedSearch,
         tmtMatchId: vesselTmtId,
@@ -151,7 +149,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement<any> => {
         vesselCallsign: vessel?.callsign,
         vesselGeartype: vessel?.geartype,
       })}`,
-    [advancedSearch, email, query, searchContext, vessel, vesselId, vesselTmtId]
+    [advancedSearch, query, searchContext, vessel, vesselId, vesselTmtId]
   )
 
   const onContactUsClick = useCallback(() => {

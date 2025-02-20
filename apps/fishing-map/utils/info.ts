@@ -36,7 +36,13 @@ export const formatInfoField = (
     | 'vesselType'
     | 'port'
     | 'fleet',
-  translationFn = t
+  {
+    translationFn = t,
+    fallbackValue,
+  }: {
+    translationFn?: TFunction
+    fallbackValue?: string
+  } = {}
 ) => {
   if (!fieldValue && type === 'shipname') {
     return translationFn('common.unknownVessel', 'Unknown Vessel')
@@ -46,10 +52,10 @@ export const formatInfoField = (
       return translationFn(`flags:${fieldValue}` as any, fieldValue)
     }
     if (type === 'shiptypes' || type === 'vesselType') {
-      return getVesselShipTypeLabel({ shiptypes: fieldValue }, { translationFn })
+      return getVesselShipTypeLabel({ shiptypes: fieldValue }, { translationFn }) || fallbackValue
     }
     if (type === 'geartypes') {
-      return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn })
+      return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn }) || fallbackValue
     }
     if (type === 'shipname' || type === 'owner' || type === 'port') {
       return fieldValue
@@ -62,14 +68,20 @@ export const formatInfoField = (
     }
   } else if (Array.isArray(fieldValue)) {
     if (type === 'geartypes') {
-      return getVesselGearTypeLabel({ geartypes: fieldValue as GearType[] }, { translationFn })
+      return (
+        getVesselGearTypeLabel({ geartypes: fieldValue as GearType[] }, { translationFn }) ||
+        fallbackValue
+      )
     } else if (type === 'shiptypes') {
-      return getVesselShipTypeLabel({ shiptypes: fieldValue as VesselType[] }, { translationFn })
+      return (
+        getVesselShipTypeLabel({ shiptypes: fieldValue as VesselType[] }, { translationFn }) ||
+        fallbackValue
+      )
     }
   } else if (fieldValue) {
     return formatI18nNumber(fieldValue)
   }
-  return fieldValue || EMPTY_FIELD_PLACEHOLDER
+  return fieldValue || fallbackValue || EMPTY_FIELD_PLACEHOLDER
 }
 
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {

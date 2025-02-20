@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useNavigatorOnline } from '@globalfishingwatch/react-hooks'
@@ -24,6 +25,7 @@ import { resetFilters } from 'features/event-filters/filters.slice'
 import I18nDate from 'features/i18n/i18nDate'
 // import Map from 'features/map/Map'
 import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
+import InfoDeprecated from 'features/profile/InfoDeprecated'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 // import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
@@ -216,17 +218,17 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
     () => ({
       id: 'map',
       title: t('common.map', 'MAP').toLocaleUpperCase(),
-      content: <TabDeprecated vesselId={vesselId} />,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} action="map" />,
     }),
-    [t, vesselId]
+    [t, vessel, vesselId]
   )
   const riskSummaryTab = useMemo(
     () => ({
       id: 'risk',
       title: <RiskTitle />,
-      content: <TabDeprecated vesselId={vesselId} />,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} action="risk" />,
     }),
-    [vesselId]
+    [vessel, vesselId]
   )
 
   const infoTab = useMemo(
@@ -234,17 +236,22 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
       id: 'info',
       title: t('common.info', 'INFO').toLocaleUpperCase(),
       content: vessel ? (
-        <Info
-          vessel={vessel}
-          lastPosition={lastPosition}
-          lastPortVisit={lastPortVisit}
-          onMoveToMap={() => setActiveTab(mapTab)}
-        />
+        <Fragment>
+          <InfoDeprecated vessel={vessel} vesselId={vesselId} fullHeight={false} />
+          <Info
+            vessel={vessel}
+            lastPosition={lastPosition}
+            lastPortVisit={lastPortVisit}
+            onMoveToMap={() => setActiveTab(mapTab)}
+          />
+        </Fragment>
       ) : loading ? (
         <Spinner className={styles.spinnerFull} />
-      ) : null,
+      ) : (
+        <InfoDeprecated vessel={vessel} vesselId={vesselId} />
+      ),
     }),
-    [lastPortVisit, lastPosition, loading, mapTab, t, vessel]
+    [lastPortVisit, lastPosition, loading, mapTab, t, vessel, vesselId]
   )
   const activityTab = useMemo(
     () => ({
@@ -255,9 +262,9 @@ const Profile: React.FC = (props): React.ReactElement<any> => {
           {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
         </div>
       ),
-      content: <TabDeprecated vesselId={vesselId} />,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} action="activity" />,
     }),
-    [t, vesselId, visibleHighlights]
+    [t, vessel, vesselId, visibleHighlights]
   )
 
   const activityByTypeTab = useMemo(

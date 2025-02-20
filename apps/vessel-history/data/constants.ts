@@ -15,6 +15,7 @@ export const LANDMASS_OFFLINE_GEOJSON = `${
 }/data/ne_10m_admin_0_countries_gj.geojson`
 
 export const TMT_CONTACT_US_URL = process.env.NEXT_PUBLIC_TMT_CONTACT_US_URL
+export const GFW_CONTACT_US_MAIL = 'support@globalfishingwatch.org'
 
 export const ENCOUNTERS_MIN_DURATION = 2
 export const ENCOUNTERS_MAX_DURATION = 99

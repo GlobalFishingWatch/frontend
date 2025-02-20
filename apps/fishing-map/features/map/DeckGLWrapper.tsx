@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import type { FilterContext } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
-import type { MapCoordinates } from 'types'
 
 import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 
@@ -20,12 +19,9 @@ import {
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import { MAP_VIEW, useMapSetViewState, useMapViewState } from 'features/map/map-viewport.hooks'
 import MapAnnotations from 'features/map/overlays/annotations/Annotations'
-import { useHasReportTimeseries } from 'features/reports/shared/activity/reports-activity-timeseries.hooks'
-import { selectVGRSection } from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import {
-  selectIsAnyAreaReportLocation,
-  selectIsVesselGroupReportLocation,
-} from 'routes/routes.selectors'
+import { selectReportCategory } from 'features/reports/reports.selectors'
+import { useHasReportTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+import type { MapCoordinates } from 'types'
 
 const mapStyles = {
   width: '100%',
@@ -40,6 +36,7 @@ const DeckGLWrapper = () => {
   const dispatch = useAppDispatch()
   const viewState = useMapViewState()
   const hasReportTimeseries = useHasReportTimeseries()
+
   const onViewStateChange = useCallback(
     (params: any) => {
       // add transitionDuration: 0 to avoid unresponsive zoom
@@ -53,20 +50,19 @@ const DeckGLWrapper = () => {
   const getCursor = useMapCursor()
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   const layers = useMapLayers()
-  const isVGRReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const vesselGroupSection = useSelector(selectVGRSection)
+  const vesselGroupSection = useSelector(selectReportCategory)
 
   const onMapLoad = useCallback(() => {
     dispatch(setMapLoaded(true))
   }, [dispatch])
 
-  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
-
-  const isLoadingReport = useMemo(
-    () =>
-      (isAreaReportLocation || (isVGRReportLocation && vesselGroupSection === 'activity')) &&
-      !hasReportTimeseries,
-    [hasReportTimeseries, isAreaReportLocation, isVGRReportLocation, vesselGroupSection]
+  const isFourwingsReport =
+    vesselGroupSection === 'activity' ||
+    vesselGroupSection === 'detections' ||
+    vesselGroupSection === 'environment'
+  const isWaitingForFourwingsTiles = useMemo(
+    () => isFourwingsReport && !hasReportTimeseries,
+    [hasReportTimeseries, isFourwingsReport]
   )
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
@@ -96,7 +92,7 @@ const DeckGLWrapper = () => {
       layerFilter={layerFilterHandler}
       viewState={viewState}
       // Needs to lock the ui to avoid loading other tiles until report timeseries are loaded
-      onViewStateChange={isLoadingReport ? undefined : onViewStateChange}
+      onViewStateChange={isWaitingForFourwingsTiles ? undefined : onViewStateChange}
       onClick={onMapClick}
       onHover={onMouseMove}
       onDragStart={onMapDragStart}

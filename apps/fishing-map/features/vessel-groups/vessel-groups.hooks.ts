@@ -6,8 +6,9 @@ import type { VesselGroup } from '@globalfishingwatch/api-types'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 
 // import { VesselLastIdentity } from 'features/search/search.slice'
-// import { ReportVesselWithDatasets } from 'features/reports/areas/area-reports.selectors'
+// import { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
   getVesselGroupLabel,
@@ -27,7 +28,10 @@ import {
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
-export type AddVesselGroupVessel = IdentityVesselData | VesselGroupVesselIdentity
+export type AddVesselGroupVessel =
+  | IdentityVesselData
+  | VesselGroupVesselIdentity
+  | ReportTableVessel
 
 export const useVesselGroupsOptions = () => {
   const { t } = useTranslation()

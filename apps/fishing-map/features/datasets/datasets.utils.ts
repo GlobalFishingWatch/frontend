@@ -37,7 +37,7 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 
-import { DEFAULT_TIME_RANGE,FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
+import { DEFAULT_TIME_RANGE, FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
@@ -394,6 +394,25 @@ const checkDatasetDownloadTrackPermission = (datasetId: string, permissions: Use
   )
 }
 
+export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
+  if (!dataview) {
+    return [] as Dataset[]
+  }
+  if (dataview.category === DataviewCategory.User) {
+    return dataview.datasets
+  }
+  return dataview.config?.datasets
+    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+    : dataview?.datasets
+}
+
+export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig) => {
+  return (
+    datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
+    datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value
+  )
+}
+
 export const getActivityDatasetsReportSupported = (
   dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
@@ -410,6 +429,7 @@ export const getActivityDatasetsReportSupported = (
           permissionDatasetsIds.includes(d.id) &&
           (d.category === DatasetCategory.Activity ||
             d.category === DatasetCategory.Detections ||
+            d.category === DatasetCategory.Event ||
             (d.category === DatasetCategory.Environment &&
               dataview.config?.type === DataviewType.HeatmapAnimated))
       )
@@ -437,7 +457,9 @@ export const getDatasetsReportSupported = (
   dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
-  const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
+  const dataviewDatasets = dataviews
+    .flatMap((dataview) => getActiveDatasetsInDataview(dataview) || [])
+    .map((d) => d.id)
   const datasetsDownloadSupported = getActivityDatasetsReportSupported(dataviews, permissions)
   return dataviewDatasets.filter((dataset) => datasetsDownloadSupported.includes(dataset))
 }
@@ -446,7 +468,9 @@ export const getDatasetsReportNotSupported = (
   dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
-  const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
+  const dataviewDatasets = dataviews
+    .flatMap((dataview) => getActiveDatasetsInDataview(dataview) || [])
+    .map((d) => d.id)
   const datasetsDownloadSupported = getActivityDatasetsReportSupported(dataviews, permissions)
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
@@ -507,14 +531,6 @@ const isDataviewSchemaSupported = (
     })
   return schemaSupported
 }
-
-export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig) => {
-  return (
-    datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
-    datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value
-  )
-}
-
 const getSchemaItemByOrigin = (
   dataset: Dataset,
   schema: SupportedDatasetSchema,
@@ -713,18 +729,6 @@ type SchemaFieldSelection = {
 }
 
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
-
-export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
-  if (!dataview) {
-    return [] as Dataset[]
-  }
-  if (dataview.category === DataviewCategory.User) {
-    return dataview.datasets
-  }
-  return dataview.config?.datasets
-    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
-    : dataview?.datasets
-}
 
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,

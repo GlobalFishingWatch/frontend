@@ -1,6 +1,7 @@
-import React, { Fragment,useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
 import { useParams } from 'react-router-dom'
+import { DateTime } from 'luxon'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
@@ -52,7 +53,7 @@ function DatasetPage() {
         ...dataset,
         files: dataset.files.map((file) => ({
           ...file,
-          lastUpdate: formatDate(parseISO(file.lastUpdate), 'M/dd/yyyy'),
+          lastUpdate: DateTime.fromISO(file.lastUpdate).toFormat('M/dd/yyyy'),
         })),
       }
       return formatedDataset
@@ -77,7 +78,7 @@ function DatasetPage() {
             <label>Dataset</label>
             <h2 className={styles.title}>{dataset.name}</h2>
             <label>Last Update</label>
-            <span>{dataset.lastUpdated ? getUTCString(lastUpdated) : '---'}</span>
+            <span>{dataset.lastUpdated ? getUTCString(dataset.lastUpdated) : '---'}</span>
             <label>description</label>
             <div className={styles.description}>
               <Markdown

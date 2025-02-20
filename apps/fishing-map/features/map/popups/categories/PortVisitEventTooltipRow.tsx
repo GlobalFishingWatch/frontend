@@ -5,7 +5,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import PortsReportLink from 'features/reports/ports/PortsReportLink'
+import PortsReportLink from 'features/reports/report-port/PortsReportLink'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectIsPortReportLocation } from 'routes/routes.selectors'
 
@@ -51,8 +51,8 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
         {isGFWUser && event?.port && !isPortReportLocation && (
           <PortsReportLink port={event.port}>
             <Button className={styles.portCTA}>
-              {t('portsReport.seePortReport', 'See all entry events to this port')} (
-              {event.port.name})
+              {t('portsReport.seePortReport', 'See all entry events to this port')}{' '}
+              {event.port.name && `(${event.port.name})`}
             </Button>
           </PortsReportLink>
         )}

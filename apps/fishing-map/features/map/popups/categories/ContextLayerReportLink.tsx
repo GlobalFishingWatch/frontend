@@ -11,21 +11,15 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { selectHasReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  DEFAULT_BUFFER_OPERATION,
-  DEFAULT_POINT_BUFFER_UNIT,
-  DEFAULT_POINT_BUFFER_VALUE,
-} from 'features/reports/areas/area-reports.config'
-import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
+import { DEFAULT_POINT_BUFFER_VALUE } from 'features/reports/report-area/area-reports.config'
+import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/reports.config'
+import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import { WORKSPACE_REPORT } from 'routes/routes'
-import {
-  selectLocationAreaId,
-  selectLocationDatasetId,
-  selectLocationQuery,
-} from 'routes/routes.selectors'
+import { selectLocationQuery } from 'routes/routes.selectors'
 
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
 
@@ -47,8 +41,8 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const isPointFeature = (feature?.geometry as any)?.type === 'Point'
   const query = useSelector(selectLocationQuery)
-  const reportAreaDataset = useSelector(selectLocationDatasetId)
-  const reportAreaId = useSelector(selectLocationAreaId)
+  const reportAreaDataset = useSelector(selectReportDatasetId)
+  const reportAreaId = useSelector(selectReportAreaId)
   const areaId = getAreaIdFromFeature(feature)
   const isSameAreaId = reportAreaId?.toString() === areaId?.toString()
   const isSameDataset = feature.datasetId === reportAreaDataset
@@ -97,7 +91,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
     },
     query: {
       ...query,
-      reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
+      reportBufferUnit: isPointFeature ? DEFAULT_BUFFER_UNIT : undefined,
       reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
       reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
       ...(!isSidebarOpen && { sidebarOpen: true }),

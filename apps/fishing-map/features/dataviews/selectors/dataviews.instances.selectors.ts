@@ -3,22 +3,26 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
-import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { BASEMAP_DATAVIEW_SLUG, CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
 import {
-  selectVGRSection,
-  selectVGRSubsection,
-  selectViewOnlyVesselGroup,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
-import { getReportVesselGroupVisibleDataviews } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+  getReportCategoryFromDataview,
+  getReportSubCategoryFromDataview,
+} from 'features/reports/report-area/area-reports.utils'
+import {
+  getReportVesselGroupVisibleDataviews,
+  isVesselGroupActivityDataview,
+} from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectViewOnlyVesselGroup } from 'features/reports/reports.config.selectors'
+import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
+import { ReportCategory } from 'features/reports/reports.types'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
-  selectIsAnyAreaReportLocation,
+  selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
+  selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
   selectVesselId,
@@ -57,29 +61,29 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
   [
     selectHasDeprecatedDataviewInstances,
     selectDataviewInstancesResolved,
-    selectIsAnyAreaReportLocation,
+    selectIsAnyReportLocation,
     selectReportCategory,
+    selectReportSubCategory,
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
     selectVesselId,
+    selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportVesselGroupId,
-    selectVGRSection,
-    selectVGRSubsection,
     selectViewOnlyVesselGroup,
   ],
   (
     hasDeprecatedDataviewInstances,
     dataviews = [],
-    isAreaReportLocation,
+    isAnyReportLocation,
     reportCategory,
+    reportSubCategory,
     isVesselLocation,
     viewOnlyVessel,
     vesselId,
+    isPortReportLocation,
     isVesselGroupReportLocation,
     reportVesselGroupId,
-    vGRSection,
-    vGRSubsection,
     viewOnlyVesselGroup
   ) => {
     const visibleDataviews = dataviews.filter((dataview) => dataview.config?.visible)
@@ -92,17 +96,6 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           d.slug === BASEMAP_DATAVIEW_SLUG
       )
     }
-    if (isAreaReportLocation) {
-      return visibleDataviews.filter((dataview) => {
-        if (
-          dataview.category === DataviewCategory.Activity ||
-          dataview.category === DataviewCategory.Detections
-        ) {
-          return getReportCategoryFromDataview(dataview) === reportCategory
-        }
-        return true
-      })
-    }
     if (isVesselLocation && viewOnlyVessel && vesselId !== undefined) {
       return visibleDataviews.filter(({ id, config }) => {
         if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
@@ -111,17 +104,51 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         return config?.type === DataviewType.Track && id.includes(vesselId)
       })
     }
-
-    if (isVesselGroupReportLocation && viewOnlyVesselGroup && reportVesselGroupId !== undefined) {
-      const dataviewsVisible = getReportVesselGroupVisibleDataviews({
-        dataviews: visibleDataviews,
-        reportVesselGroupId,
-        vesselGroupReportSection: vGRSection,
-        vesselGroupReportSubSection: vGRSubsection,
+    if (isAnyReportLocation) {
+      let reportDataviews = visibleDataviews
+      if (isVesselGroupReportLocation && viewOnlyVesselGroup && reportVesselGroupId !== undefined) {
+        reportDataviews = getReportVesselGroupVisibleDataviews({
+          dataviews: visibleDataviews,
+          reportVesselGroupId,
+          vesselGroupReportSection: reportCategory,
+          vesselGroupReportSubSection: reportSubCategory,
+        })
+      }
+      return reportDataviews.filter((dataview) => {
+        if (
+          dataview.category === DataviewCategory.Activity ||
+          dataview.category === DataviewCategory.Detections
+        ) {
+          const matchesCategory = getReportCategoryFromDataview(dataview) === reportCategory
+          const matchesSubcategory =
+            getReportSubCategoryFromDataview(dataview) === reportSubCategory
+          return matchesCategory && matchesSubcategory
+        }
+        if (dataview.category === DataviewCategory.VesselGroups) {
+          // For vessel groups we can't match the category as we inject the category in the dataviews
+          if (reportCategory === ReportCategory.Activity) {
+            const matchesGroupActivityDataview = isVesselGroupActivityDataview(dataview.id)
+            const matchesSubcategory =
+              getReportSubCategoryFromDataview(dataview) === reportSubCategory
+            return matchesGroupActivityDataview && matchesSubcategory
+          }
+          return !isVesselGroupActivityDataview(dataview.id)
+        }
+        if (dataview.category === DataviewCategory.Events) {
+          if (isPortReportLocation) {
+            return dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
+          }
+          const matchesSubcategory =
+            getReportSubCategoryFromDataview(dataview) === reportSubCategory
+          return matchesSubcategory
+        }
+        if (dataview.category === DataviewCategory.Environment) {
+          const matchesCategory = getReportCategoryFromDataview(dataview) === reportCategory
+          return matchesCategory
+        }
+        return true
       })
-      return dataviewsVisible
     }
-
     return visibleDataviews
   }
 )

@@ -1,7 +1,5 @@
 # fourwings-aggregate
 
-This library was generated with [Nx](https://nx.dev).
+🗑️ Legacy 🗑️
 
-## Building
-
-Run `nx build fourwings-aggregate` to build the library.
+To be removed once the vessel-viewer is finished

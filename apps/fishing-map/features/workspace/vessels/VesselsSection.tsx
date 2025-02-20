@@ -18,7 +18,7 @@ import {
   selectHasDeprecatedDataviewInstances,
   selectVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
+import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import type { ResourcesState } from 'features/resources/resources.slice'
 import { selectResources } from 'features/resources/resources.slice'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
@@ -35,7 +35,6 @@ import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-g
 import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
@@ -48,6 +47,8 @@ import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
 import VesselTracksLegend from './VesselTracksLegend'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
   return resources[
