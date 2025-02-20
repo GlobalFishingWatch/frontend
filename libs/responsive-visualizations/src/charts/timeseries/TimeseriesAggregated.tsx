@@ -1,5 +1,4 @@
 import { format } from 'd3-format'
-import { getResponsiveVisualizationItemValue } from 'libs/responsive-visualizations/src/lib/density'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import {
@@ -11,6 +10,8 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+
+import { getResponsiveVisualizationItemValue } from '@globalfishingwatch/responsive-visualizations'
 
 import type { ResponsiveVisualizationAggregatedObjectValue } from '../../types'
 import type { TimeseriesByTypeProps } from '../types'

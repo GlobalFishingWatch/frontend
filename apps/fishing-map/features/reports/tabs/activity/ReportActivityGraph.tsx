@@ -9,6 +9,7 @@ import {
 } from 'features/reports/report-area/area-reports.hooks'
 import { selectTimeComparisonValues } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
+import { selectReportCategory } from 'features/reports/reports.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportActivityGraphSelector from 'features/reports/tabs/activity/ReportActivityGraphSelector'
@@ -67,6 +68,7 @@ export default function ReportActivity() {
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const reportCategory = useSelector(selectReportCategory)
 
   const SelectorsComponent = useMemo(
     () => SELECTORS_BY_TYPE[reportActivityGraph],
@@ -92,7 +94,9 @@ export default function ReportActivity() {
     <div className={styles.container}>
       {showSelectors && (
         <div className={styles.titleRow}>
-          <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
+          {reportCategory === 'activity' && (
+            <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
+          )}
           <ReportActivityGraphSelector loading={showPlaceholder} />
         </div>
       )}
