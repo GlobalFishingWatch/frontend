@@ -7,6 +7,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import type { ReportCategory } from 'features/reports/reports.types'
+import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -31,8 +32,14 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
       zoom: 0,
     },
   }
+
+  const handleOnClick = () => {
+    fitAreaInViewport()
+    resetSidebarScroll()
+  }
+
   return (
-    <Link to={reportLinkTo} onClick={fitAreaInViewport}>
+    <Link to={reportLinkTo} onClick={handleOnClick}>
       <IconButton
         icon="analysis"
         type="border"
