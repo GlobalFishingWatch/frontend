@@ -60,14 +60,14 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/fishing-map/public/locales"]
+        "commands": ["rimraf dist/apps/fishing-map/public/locales"]
       }
     },
     "clean-next": {
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/fishing-map", "rm -rf .next"]
+        "commands": ["rimraf dist/apps/fishing-map", "rimraf .next"]
       }
     },
     "i18n": {
@@ -80,7 +80,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "rm -rf server",
+          "rimraf server",
           "mkdir -p ./server && mkdir -p server/apps/fishing-map/public && mkdir -p server/dist/apps/fishing-map/.next/static",
           "cp -rp ./dist/apps/fishing-map/public/* ./server/apps/fishing-map/public/",
           "cp -rp ./dist/apps/fishing-map/.next/standalone/* ./server/",
