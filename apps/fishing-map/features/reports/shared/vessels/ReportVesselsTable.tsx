@@ -17,6 +17,7 @@ import {
   selectReportVesselsOrderDirection,
   selectReportVesselsOrderProperty,
 } from 'features/reports/reports.config.selectors'
+import { selectReportCategory } from 'features/reports/reports.selectors'
 import type {
   ReportVesselOrderDirection,
   ReportVesselOrderProperty,
@@ -59,6 +60,7 @@ export default function ReportVesselsTable({
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const orderProperty = useSelector(selectReportVesselsOrderProperty)
   const isAnyAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const reportCategory = useSelector(selectReportCategory)
   const orderDirection = useSelector(selectReportVesselsOrderDirection)
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
@@ -93,20 +95,22 @@ export default function ReportVesselsTable({
   return (
     <Fragment>
       <div className={styles.tableContainer} data-test="report-vessels-table">
-        {isAnyAreaReportLocation && datasetsDownloadNotSupported.length > 0 && (
-          <p className={styles.error}>
-            {t(
-              'analysis.datasetsNotAllowed',
-              'Vessels are not included from the following sources:'
-            )}{' '}
-            {datasetsDownloadNotSupported.map((dataset, index) => (
-              <Fragment key={dataset}>
-                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
-                {index < datasetsDownloadNotSupported.length - 1 && ', '}
-              </Fragment>
-            ))}
-          </p>
-        )}
+        {isAnyAreaReportLocation &&
+          reportCategory === 'activity' &&
+          datasetsDownloadNotSupported.length > 0 && (
+            <p className={styles.error}>
+              {t(
+                'analysis.datasetsNotAllowed',
+                'Vessels are not included from the following sources:'
+              )}{' '}
+              {datasetsDownloadNotSupported.map((dataset, index) => (
+                <Fragment key={dataset}>
+                  <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+                  {index < datasetsDownloadNotSupported.length - 1 && ', '}
+                </Fragment>
+              ))}
+            </p>
+          )}
         <div className={cx(styles.vesselsTable, { [styles.vesselsTableWithValue]: activityUnit })}>
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
             {t('common.name', 'Name')}
@@ -259,7 +263,7 @@ export default function ReportVesselsTable({
                       values.map((v) =>
                         v.value ? (
                           <Fragment>
-                            {v.color && (
+                            {v.color && values.length > 1 && (
                               <span
                                 className={styles.dot}
                                 style={{ backgroundColor: v.color }}
