@@ -11,6 +11,7 @@ import {
   selectMergedVesselId,
   selectSearchableQueryParams,
   selectUrlAkaVesselQuery,
+  selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
@@ -22,7 +23,7 @@ import {
   selectVesselsStatus,
   upsertVesselDataview,
 } from 'features/vessels/vessels.slice'
-import Map from 'features/map/Map'
+// import Map from 'features/map/Map'
 import {
   getRelatedDatasetByType,
   getRelatedDatasetsByType,
@@ -41,14 +42,15 @@ import { setHighlightedEvent, setVoyageTime } from 'features/map/map.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { countFilteredEventsHighlighted } from 'features/vessels/activity/vessels-activity.selectors'
 import { useApp, useAppDispatch } from 'features/app/app.hooks'
-import RiskSummary from 'features/risk-summary/risk-summary'
+// import RiskSummary from 'features/risk-summary/risk-summary'
 import RiskTitle from 'features/risk-title/risk-title'
 import ActivityByType from 'features/activity-by-type/activity-by-type'
+import TabDeprecated from 'features/profile/TabDeprecated'
+import InfoDeprecated from 'features/profile/InfoDeprecated'
 import Info from './components/Info'
-import Activity from './components/activity/Activity'
+// import Activity from './components/activity/Activity'
 import styles from './Profile.module.css'
 import { selectCurrentUserProfileHasInsurerPermission } from './profile.selectors'
-import TabDeprecated from 'features/profile/TabDeprecated'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useAppDispatch()
@@ -64,6 +66,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
   const akaVesselProfileIds = useSelector(selectUrlAkaVesselQuery)
   const mergedVesselId = useSelector(selectMergedVesselId)
+  const vesselId = useSelector(selectVesselId)
   const vessel = useSelector(selectVesselById(mergedVesselId))
   const datasets = useSelector(selectDatasets)
   const resourceQueries = useSelector(selectDataviewsResources)?.resources
@@ -208,7 +211,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => ({
       id: 'map',
       title: t('common.map', 'MAP').toLocaleUpperCase(),
-      content: <TabDeprecated vessel={vessel} vesselId={vesselId} />,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} action="map" />,
     }),
     [t, vessel, vesselId]
   )
@@ -216,7 +219,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => ({
       id: 'risk',
       title: <RiskTitle />,
-      content: <TabDeprecated vessel={vessel} vesselId={vesselId} />,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} action="risk" />,
     }),
     [vessel, vesselId]
   )
@@ -227,7 +230,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       title: t('common.info', 'INFO').toLocaleUpperCase(),
       content: vessel ? (
         <Fragment>
-          <TabDeprecated vessel={vessel} vesselId={vesselId} fullHeight={false} />
+          <InfoDeprecated vessel={vessel} vesselId={vesselId} fullHeight={false} />
           <Info
             vessel={vessel}
             lastPosition={lastPosition}
@@ -238,7 +241,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       ) : loading ? (
         <Spinner className={styles.spinnerFull} />
       ) : (
-        <TabDeprecated vessel={vessel} vesselId={vesselId} />
+        <InfoDeprecated vessel={vessel} vesselId={vesselId} />
       ),
     }),
     [lastPortVisit, lastPosition, loading, mapTab, t, vessel, vesselId]
@@ -252,7 +255,7 @@ const Profile: React.FC = (props): React.ReactElement => {
           {visibleHighlights > 0 && <span className={styles.tabLabel}>{visibleHighlights}</span>}
         </div>
       ),
-      content: <TabDeprecated vessel={vessel} vesselId={vesselId} />,
+      content: <TabDeprecated vessel={vessel} vesselId={vesselId} action="activity" />,
     }),
     [t, vessel, vesselId, visibleHighlights]
   )

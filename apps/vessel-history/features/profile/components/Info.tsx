@@ -22,7 +22,7 @@ import {
   selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { useUser } from 'features/user/user.hooks'
-import { TMT_CONTACT_US_URL } from 'data/constants'
+import { GFW_CONTACT_US_MAIL, TMT_CONTACT_US_URL } from 'data/constants'
 import { selectUserData } from 'features/user/user.slice'
 import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
 import InfoField from './InfoField'
@@ -129,9 +129,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   )
   const contactUsLink = useMemo(
     () =>
-      `${TMT_CONTACT_US_URL}&email=${encodeURIComponent(
-        email
-      )}&usercontext=${searchContext}&data=${JSON.stringify({
+      `mailto:${GFW_CONTACT_US_MAIL}?subject=${searchContext}&body=${JSON.stringify({
         name: query,
         ...advancedSearch,
         tmtMatchId: vesselTmtId,
@@ -144,7 +142,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         vesselCallsign: vessel?.callsign,
         vesselGeartype: vessel?.geartype,
       })}`,
-    [advancedSearch, email, query, searchContext, vessel, vesselId, vesselTmtId]
+    [advancedSearch, query, searchContext, vessel, vesselId, vesselTmtId]
   )
 
   const onContactUsClick = useCallback(() => {
