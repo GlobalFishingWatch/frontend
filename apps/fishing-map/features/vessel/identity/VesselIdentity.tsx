@@ -296,15 +296,20 @@ const VesselIdentity = () => {
                     alt={registrySourceData?.key}
                     className={styles.registrySourceLogo}
                   />
-                  <div>
-                    <label>{`${registrySourceData?.key} ${t(
-                      `vessel.extraInfo`,
-                      'has more information'
-                    )}`}</label>
-                    <p>{`${t(`vessel.extraInfo`, 'Request additional information at')} ${
-                      registrySourceData?.contact
-                    }`}</p>
-                  </div>
+                  <Tooltip
+                    content={t(
+                      'vessel.extraInfoTooltip',
+                      'TMT has additional insights relating to the vessel’s compliance history and/or IUU listing'
+                    )}
+                  >
+                    <div>
+                      <label>{`${registrySourceData?.key} ${t(
+                        `vessel.extraInfo`,
+                        'has more information'
+                      )}`}</label>
+                      <p>{registrySourceData?.contact}</p>
+                    </div>
+                  </Tooltip>
                 </div>
               )}
           </div>
