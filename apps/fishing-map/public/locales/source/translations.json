@@ -866,6 +866,7 @@
     "depthM": "Depth (m)",
     "donor": "Donor vessel",
     "extraInfo": "Request additional information at",
+    "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "First transmission date",
     "fishingZone": "Fishing zone",
     "flag": "Flag",
