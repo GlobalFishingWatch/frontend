@@ -90,7 +90,7 @@ export default function ReportActivity() {
     layersTimeseriesFiltered.every(({ timeseries }) => timeseries.length === 0) &&
     loading === false
   const showPlaceholder = loading !== false || !isSameTimeseriesMode
-  const debouncedIsEmptyData = useDebounce(isEmptyData, 400)
+  const debouncedIsEmptyData = useDebounce(isEmptyData, 200)
 
   return (
     <div className={styles.container}>
@@ -100,12 +100,12 @@ export default function ReportActivity() {
           <ReportActivityGraphSelector loading={showPlaceholder} />
         </div>
       )}
-      {showPlaceholder || isEmptyData ? (
-        <ReportActivityPlaceholder showHeader={!showSelectors} />
-      ) : debouncedIsEmptyData ? (
+      {debouncedIsEmptyData ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
           {t('analysis.noDataByArea', 'No data available for the selected area')}
         </ReportActivityPlaceholder>
+      ) : showPlaceholder || isEmptyData ? (
+        <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : (
         <GraphComponent
           start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
