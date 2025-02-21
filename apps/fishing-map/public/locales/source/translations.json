@@ -851,6 +851,7 @@
     "activityByVoyages": "By voyages",
     "addToWorkspace": "Add vessel to view",
     "authorization": "authorization",
+    "authorizationDatesDisclaimer": "The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.",
     "beam": "Beam",
     "callsign": "Callsign",
     "capacity": "Capacity",
