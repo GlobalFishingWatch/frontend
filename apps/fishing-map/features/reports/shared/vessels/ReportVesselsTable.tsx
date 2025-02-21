@@ -185,7 +185,7 @@ export default function ReportVesselsTable({
               ? vessel.datasetId !== undefined && vessel.trackDatasetId !== undefined
               : vessel.datasetId !== undefined || vessel.trackDatasetId !== undefined
             const pinTrackDisabled = !workspaceReady || !hasDatasets || isPinningVessels
-            const showVesselColor = values.length && !values.some((v) => v.color)
+            const showVesselColor = values.length > 0 && !values.some((v) => v.color)
             return (
               <Fragment key={id}>
                 <div
@@ -205,10 +205,7 @@ export default function ReportVesselsTable({
                   {workspaceReady ? (
                     <Fragment>
                       {showVesselColor && vessel.color && (
-                        <span
-                          className={styles.dot}
-                          style={{ backgroundColor: vessel.color }}
-                        ></span>
+                        <span className={styles.dot} style={{ backgroundColor: vessel.color }} />
                       )}
                       <VesselLink
                         className={styles.link}
