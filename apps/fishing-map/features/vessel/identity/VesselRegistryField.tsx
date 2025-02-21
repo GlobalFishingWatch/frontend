@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { t } from 'i18next'
 
@@ -7,7 +8,6 @@ import type {
   VesselRegistryOwner,
   VesselRegistryProperty,
 } from '@globalfishingwatch/api-types'
-import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import I18nDate from 'features/i18n/i18nDate'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
@@ -34,9 +34,9 @@ const RegistryOperatorField = ({
   return (
     <div className={cx(styles.fieldGroupContainer)}>
       <label>{t(`vessel.registryOperator`, 'Operators')}</label>
-      {typeof operator === 'string' ? (
+      {typeof operator === 'string' && operator !== '' ? (
         <VesselIdentityField value={operator} />
-      ) : operator ? (
+      ) : operator?.name ? (
         <Fragment>
           <VesselIdentityField value={operator?.name?.replaceAll('"', '').trim()} />{' '}
           {operator.flag && `(${formatInfoField(operator.flag, 'flag')}) `}
@@ -57,6 +57,7 @@ const VesselRegistryField = ({
   registryField: VesselRenderField
   vesselIdentity: VesselLastIdentity
 }) => {
+  const { t } = useTranslation()
   const { key, label, terminologyKey } = registryField
   const { getRegionTranslationsById } = useRegionTranslationsById()
   if (key === 'operator') {
@@ -78,6 +79,8 @@ const VesselRegistryField = ({
 
   if (!filteredRegistryInfo) return null
 
+  const isAuthorizations = key === 'registryPublicAuthorizations'
+
   return (
     <div className={styles.fieldGroupContainer} key={key}>
       <div className={styles.labelContainer}>
@@ -90,58 +93,68 @@ const VesselRegistryField = ({
         )}
       </div>
       {allRegistryInfo?.length > 0 ? (
-        <ul
-          className={cx(styles.fieldGroup, {
-            [styles.twoColumns]: key === 'registryPublicAuthorizations',
-          })}
-          style={
-            key === 'registryPublicAuthorizations'
-              ? {
-                  gridTemplateRows: `repeat(${Math.ceil(filteredRegistryInfo.length / 2)}, 1fr)`,
-                }
-              : undefined
-          }
-        >
-          {allRegistryInfo.map((registry, index) => {
-            const registryOverlapsTimeRange = filteredRegistryInfo.includes(registry)
-            const fieldType = key === 'registryOwners' ? 'owner' : 'authorization'
-            let Component = <VesselIdentityField value="" />
-            if (registryOverlapsTimeRange) {
-              if (fieldType === 'owner') {
-                const value = `${formatInfoField(
-                  (registry as VesselRegistryOwner).name,
-                  'owner'
-                )} (${formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})`
-                Component = <VesselIdentityField value={value} />
-              } else {
-                const sourceTranslations = (registry.sourceCode as any[])
-                  .map(getRegionTranslationsById)
-                  .join(',')
-                Component = (
-                  <VesselIdentityField
-                    tooltip={sourceTranslations}
-                    className={styles.help}
-                    value={formatInfoField(registry.sourceCode.join(','), fieldType) as string}
-                  />
-                )
-              }
+        <Fragment>
+          <ul
+            className={cx(styles.fieldGroup, {
+              [styles.twoColumns]: isAuthorizations,
+            })}
+            style={
+              isAuthorizations
+                ? {
+                    gridTemplateRows: `repeat(${Math.ceil(filteredRegistryInfo.length / 2)}, 1fr)`,
+                  }
+                : undefined
             }
-            return (
-              <li
-                key={`${registry.recordId}-${index}`}
-                className={cx({
-                  [styles.threeCells]: key === 'registryOwners',
-                  [styles.hidden]: !registryOverlapsTimeRange,
-                })}
-              >
-                {Component}{' '}
-                <span className={styles.secondary}>
-                  <I18nDate date={registry.dateFrom} /> - <I18nDate date={registry.dateTo} />
-                </span>
-              </li>
-            )
-          })}
-        </ul>
+          >
+            {allRegistryInfo.map((registry, index) => {
+              const registryOverlapsTimeRange = filteredRegistryInfo.includes(registry)
+              const fieldType = key === 'registryOwners' ? 'owner' : 'authorization'
+              let Component = <VesselIdentityField value="" />
+              if (registryOverlapsTimeRange) {
+                if (fieldType === 'owner') {
+                  const value = `${formatInfoField(
+                    (registry as VesselRegistryOwner).name,
+                    'owner'
+                  )} (${formatInfoField((registry as VesselRegistryOwner).flag, 'flag')})`
+                  Component = <VesselIdentityField value={value} />
+                } else {
+                  const sourceTranslations = (registry.sourceCode as any[])
+                    .map(getRegionTranslationsById)
+                    .join(',')
+                  Component = (
+                    <VesselIdentityField
+                      tooltip={sourceTranslations}
+                      className={styles.help}
+                      value={formatInfoField(registry.sourceCode.join(','), fieldType) as string}
+                    />
+                  )
+                }
+              }
+              return (
+                <li
+                  key={`${registry.recordId}-${index}`}
+                  className={cx({
+                    [styles.threeCells]: key === 'registryOwners',
+                    [styles.hidden]: !registryOverlapsTimeRange,
+                  })}
+                >
+                  {Component}{' '}
+                  <span className={styles.secondary}>
+                    <I18nDate date={registry.dateFrom} /> - <I18nDate date={registry.dateTo} />
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+          {isAuthorizations && (
+            <p className={styles.disclaimer}>
+              {t(
+                'vessel.authorizationDatesDisclaimer',
+                'The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.'
+              )}
+            </p>
+          )}
+        </Fragment>
       ) : (
         EMPTY_FIELD_PLACEHOLDER
       )}

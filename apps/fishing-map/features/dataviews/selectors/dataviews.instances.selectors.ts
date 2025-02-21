@@ -119,6 +119,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           dataview.category === DataviewCategory.Activity ||
           dataview.category === DataviewCategory.Detections
         ) {
+          if (isVesselGroupReportLocation) return false
           const matchesCategory = getReportCategoryFromDataview(dataview) === reportCategory
           const matchesSubcategory =
             getReportSubCategoryFromDataview(dataview) === reportSubCategory
@@ -126,13 +127,18 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         }
         if (dataview.category === DataviewCategory.VesselGroups) {
           // For vessel groups we can't match the category as we inject the category in the dataviews
+          const matchesGroupActivityDataview = isVesselGroupActivityDataview(dataview.id)
           if (reportCategory === ReportCategory.Activity) {
-            const matchesGroupActivityDataview = isVesselGroupActivityDataview(dataview.id)
             const matchesSubcategory =
               getReportSubCategoryFromDataview(dataview) === reportSubCategory
             return matchesGroupActivityDataview && matchesSubcategory
+          } else if (
+            reportCategory === ReportCategory.VesselGroup ||
+            reportCategory === ReportCategory.VesselGroupInsights
+          ) {
+            return !matchesGroupActivityDataview
           }
-          return !isVesselGroupActivityDataview(dataview.id)
+          return false
         }
         if (dataview.category === DataviewCategory.Events) {
           if (isPortReportLocation) {
