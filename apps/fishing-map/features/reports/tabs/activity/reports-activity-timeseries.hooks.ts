@@ -141,6 +141,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const featuresFilteredDirtyRef = useRef<boolean>(true)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
+
   const areaInViewport = useReportAreaInViewport()
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportCategory = useSelector(selectReportCategory)
@@ -160,7 +161,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const timerangeHash = timerange ? JSON.stringify(timerange) : ''
   const reportGraphMode = getReportGraphMode(reportGraph)
 
-  // We need to re calculate the timeseries and the filteredFeatures when any of this params changes
+  // We need to re calculate the timeseries and the filteredFeatures when any of these params changes
   useEffect(() => {
     setTimeseries(undefined)
     setFeaturesFiltered([])
@@ -328,8 +329,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       setTimeseriesStats(timeseriesStats)
     },
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dataviews, setTimeseriesStats, timeseries]
+    [dataviews, setTimeseriesStats]
   )
 
   useEffect(() => {
