@@ -1685,7 +1685,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@deck.gl/core@npm:^9.0.12, @deck.gl/core@npm:^9.0.40":
+"@deck.gl/core@npm:^9.0.12, @deck.gl/core@npm:^9.1.3":
   version: 9.1.3
   resolution: "@deck.gl/core@npm:9.1.3"
   dependencies:
@@ -1710,7 +1710,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@deck.gl/extensions@npm:^9.0.12, @deck.gl/extensions@npm:^9.0.40":
+"@deck.gl/extensions@npm:^9.0.12, @deck.gl/extensions@npm:^9.1.3":
   version: 9.1.3
   resolution: "@deck.gl/extensions@npm:9.1.3"
   dependencies:
@@ -1725,7 +1725,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@deck.gl/geo-layers@npm:^9.0.12, @deck.gl/geo-layers@npm:^9.0.40":
+"@deck.gl/geo-layers@npm:^9.0.12, @deck.gl/geo-layers@npm:^9.1.3":
   version: 9.1.3
   resolution: "@deck.gl/geo-layers@npm:9.1.3"
   dependencies:
@@ -1757,7 +1757,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@deck.gl/layers@npm:^9.0.12, @deck.gl/layers@npm:^9.0.40":
+"@deck.gl/layers@npm:^9.0.12, @deck.gl/layers@npm:^9.1.3":
   version: 9.1.3
   resolution: "@deck.gl/layers@npm:9.1.3"
   dependencies:
@@ -1778,7 +1778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@deck.gl/mesh-layers@npm:^9.0.12, @deck.gl/mesh-layers@npm:^9.0.40":
+"@deck.gl/mesh-layers@npm:^9.0.12, @deck.gl/mesh-layers@npm:^9.1.3":
   version: 9.1.3
   resolution: "@deck.gl/mesh-layers@npm:9.1.3"
   dependencies:
@@ -1793,7 +1793,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@deck.gl/react@npm:^9.0.12, @deck.gl/react@npm:^9.0.40":
+"@deck.gl/react@npm:^9.0.12, @deck.gl/react@npm:^9.1.3":
   version: 9.1.3
   resolution: "@deck.gl/react@npm:9.1.3"
   peerDependencies:
@@ -1802,6 +1802,17 @@ __metadata:
     react: ">=16.3.0"
     react-dom: ">=16.3.0"
   checksum: 10/7983ceaaa6ac54c6af7600eacfdc39ae72e142065bca9204533be2fe3d562c09da22785980930d65c58da6bdd818ad0dbfff9066a4b7f3595561d800f89a8386
+  languageName: node
+  linkType: hard
+
+"@deck.gl/widgets@npm:^9.1.3":
+  version: 9.1.3
+  resolution: "@deck.gl/widgets@npm:9.1.3"
+  dependencies:
+    preact: "npm:^10.17.0"
+  peerDependencies:
+    "@deck.gl/core": ^9.1.0
+  checksum: 10/c6c9cecc70fe532cb8c4f04d38657ad3574a4b5c2352e0b862a4f0556adfe99058475de1af66233ba638e78aa0b4a52c2e7f3565d08c4188360d65443d6d832f
   languageName: node
   linkType: hard
 
@@ -2584,7 +2595,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/compat@npm:1.x, @eslint/compat@npm:^1.2.5":
+"@eslint/compat@npm:1.x":
+  version: 1.2.7
+  resolution: "@eslint/compat@npm:1.2.7"
+  peerDependencies:
+    eslint: ^9.10.0
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 10/fad83a195864d6718ce523acc30fd56c6cb0838394fc5ddb8f7a91031b1669bb5d8627d3e90bb2f86568b3c452ddcc22a90f0d15edd76dcccf4c49617cb567cb
+  languageName: node
+  linkType: hard
+
+"@eslint/compat@npm:^1.2.5":
   version: 1.2.6
   resolution: "@eslint/compat@npm:1.2.6"
   peerDependencies:
@@ -2831,12 +2854,13 @@ __metadata:
   dependencies:
     "@deck.gl-community/editable-layers": "npm:9.0.3"
     "@deck.gl-community/layers": "npm:9.0.3"
-    "@deck.gl/core": "npm:^9.0.40"
-    "@deck.gl/extensions": "npm:^9.0.40"
-    "@deck.gl/geo-layers": "npm:^9.0.40"
-    "@deck.gl/layers": "npm:^9.0.40"
-    "@deck.gl/mesh-layers": "npm:^9.0.40"
-    "@deck.gl/react": "npm:^9.0.40"
+    "@deck.gl/core": "npm:^9.1.3"
+    "@deck.gl/extensions": "npm:^9.1.3"
+    "@deck.gl/geo-layers": "npm:^9.1.3"
+    "@deck.gl/layers": "npm:^9.1.3"
+    "@deck.gl/mesh-layers": "npm:^9.1.3"
+    "@deck.gl/react": "npm:^9.1.3"
+    "@deck.gl/widgets": "npm:^9.1.3"
     "@dnd-kit/core": "npm:6.3.1"
     "@dnd-kit/modifiers": "npm:9.0.0"
     "@dnd-kit/sortable": "npm:10.0.0"
@@ -26086,6 +26110,13 @@ __metadata:
   version: 2.0.0
   resolution: "potpack@npm:2.0.0"
   checksum: 10/6dd41692349936b436c29c28cf9ff1268c03ed6ec96c4384b2d9eb95e58e422fab75d428648f475507dd167934984d1002df2010b83e5747b5c358bea371e8f7
+  languageName: node
+  linkType: hard
+
+"preact@npm:^10.17.0":
+  version: 10.26.2
+  resolution: "preact@npm:10.26.2"
+  checksum: 10/3bcb7bb5018b6098c2f02e39537b9fa60fe47cd606ed1ad11a32560751121a54ed3a3d68638c4845f84cb633133467496cbf198fdf3d7238a41d2c92929b9d63
   languageName: node
   linkType: hard
 
