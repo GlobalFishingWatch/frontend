@@ -73,7 +73,7 @@ function ReportEnvironment() {
                 />
               )
             ) : null}
-            {!isLoading && min && mean && max && (
+            {!isLoading && min !== undefined && mean !== undefined && max !== undefined && (
               <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
                 {isDynamic
                   ? t('analysis.statsDisclaimerDynamic', {

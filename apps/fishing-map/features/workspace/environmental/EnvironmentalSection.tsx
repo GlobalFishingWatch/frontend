@@ -14,9 +14,12 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectEnvironmentReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { ReportCategory } from 'features/reports/reports.types'
 import { selectUserEnvironmentDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { useVisualizationsOptions } from 'features/workspace/activity/activity.hooks'
+import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -31,10 +34,12 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
+  const reportDataviews = useSelector(selectEnvironmentReportLayersVisible)
   const dataviewsMinusBathymetry = dataviews.filter((d) => !isBathymetryDataview(d))
   const bathymetryDataview = dataviews.find((d) => isBathymetryDataview(d))
   const userDatasets = useSelector(selectUserEnvironmentDatasets)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+  const hasVisibleReportDataviews = reportDataviews && reportDataviews?.length > 0
   const locationCategory = useSelector(selectLocationCategory)
   const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
     useVisualizationsOptions(DataviewCategory.Environment)
@@ -82,6 +87,9 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
               onSelect={(option) => onVisualizationModeChange(option.id)}
               className={cx({ [styles.hidden]: !hasVisibleDataviews })}
             />
+            {hasVisibleReportDataviews && (
+              <GlobalReportLink reportCategory={ReportCategory.Environment} />
+            )}
             <IconButton
               icon="plus"
               type="border"

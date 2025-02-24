@@ -75,10 +75,10 @@ const ICON_SIZE: Record<FourwingsClusterEventType, number> = {
 const MIN_CLUSTER_RADIUS = 12
 const MAX_CLUSTER_RADIUS = 30
 const ICON_MAPPING: Record<FourwingsClusterEventType, any> = {
-  encounter: { x: 0, y: 0, width: 36, height: 36 },
+  encounter: { x: 0, y: 0, width: 36, height: 36, mask: true },
   gap: { x: 40, y: 0, width: 36, height: 36, mask: true },
-  port_visit: { x: 80, y: 0, width: 36, height: 36 },
-  loitering: { x: 120, y: 0, width: 36, height: 36 },
+  port_visit: { x: 80, y: 0, width: 36, height: 36, mask: true },
+  loitering: { x: 120, y: 0, width: 36, height: 36, mask: true },
 }
 
 const CLUSTER_LAYER_ID = 'clusters'
@@ -376,6 +376,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         iconAtlas: `${PATH_BASENAME}/events-color-sprite.png`,
         iconMapping: ICON_MAPPING,
         getIcon: () => eventType,
+        getColor: hexToDeckColor(color),
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         pickable: true,
       }),

@@ -125,7 +125,7 @@ export const mergeWorkspaceUrlDataviewInstances = (
   >(
     (acc, urlDataview) => {
       const isInWorkspace = workspaceDataviewInstances?.some(
-        (dataviewInstance) => dataviewInstance.id === urlDataview.id
+        (dataviewInstance) => dataviewInstance.id === urlDataview?.id
       )
       if (isInWorkspace) {
         acc.workspace.push(urlDataview)
@@ -338,17 +338,23 @@ export const resolveDataviewDatasetResource = (
 
 export function getDataviewFilters(dataview: UrlDataviewInstance): DataviewDatasetFilter {
   if (!dataview) return {}
-  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
-    return { ...acc, ...(datasetConfig.filters || {}) }
-  }, {} as Record<string, any>)
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce(
+    (acc, datasetConfig) => {
+      return { ...acc, ...(datasetConfig.filters || {}) }
+    },
+    {} as Record<string, any>
+  )
   const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
   return filters
 }
 
 export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDataviewInstance) {
-  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
-    return { ...acc, ...(datasetConfig.filters || {}) }
-  }, {} as Record<string, any>)
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce(
+    (acc, datasetConfig) => {
+      return { ...acc, ...(datasetConfig.filters || {}) }
+    },
+    {} as Record<string, any>
+  )
   const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
   if (!Object.keys(filters).length) {
     return ''
@@ -429,7 +435,7 @@ export function resolveDataviews(
 ) {
   let dataviewInstancesResolved: UrlDataviewInstance[] = dataviewInstances.flatMap(
     (dataviewInstance) => {
-      if (dataviewInstance?.deleted) {
+      if (!dataviewInstance || dataviewInstance?.deleted) {
         return []
       }
       const dataview = dataviews?.find((dataview) => {

@@ -11,6 +11,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { ReportCategory } from 'features/reports/reports.types'
+import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 
@@ -34,6 +36,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
         <h2 className={styles.sectionTitle}>{t('common.events', 'Events')}</h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons)}>
+            {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Events} />}
             <IconButton
               icon="plus"
               type="border"

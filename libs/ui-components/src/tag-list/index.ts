@@ -8,6 +8,7 @@ export type TagItem = {
   label: string
   tooltip?: TooltipTypes
   tooltipPlacement?: TooltipPlacement
+  interactive?: boolean
 }
 /**
  * Callback on tag removal

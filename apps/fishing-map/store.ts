@@ -2,7 +2,7 @@ import type { Action, AnyAction, Middleware, ThunkAction, ThunkDispatch } from '
 import { configureStore } from '@reduxjs/toolkit'
 import { logoutUserMiddleware } from 'middlewares'
 import { createWrapper } from 'next-redux-wrapper'
-import { queriesApiMiddlewares } from 'queries'
+import { queriesApiMiddlewares, queriesApiReducers } from 'queries'
 
 import connectedRoutes from 'routes/routes'
 import { routerQueryMiddleware, routerWorkspaceMiddleware } from 'routes/routes.middlewares'
@@ -41,6 +41,13 @@ const makeStore = () => {
 
         return {
           ...state,
+          ...Object.keys(queriesApiReducers).reduce(
+            (acc, key) => {
+              acc[key] = 'NOT_SERIALIZED'
+              return acc
+            },
+            {} as Record<string, any>
+          ),
           resources: Object.fromEntries(serializedResources),
         }
       },

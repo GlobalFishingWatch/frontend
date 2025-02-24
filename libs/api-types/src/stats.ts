@@ -19,8 +19,6 @@ export type StatFields = {
 
 export type StatsByVessel = {
   numEvents: number
-  portCountry?: string
-  portName?: string
   totalDuration?: number
   flag: string
   mmsi: string

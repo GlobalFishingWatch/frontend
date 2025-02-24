@@ -23,24 +23,14 @@ export default function ReportSummaryTags({
   availableFields,
 }: LayerPanelProps) {
   const { t } = useTranslation()
-  const hasFilters = dataview.config?.filters && Object.keys(dataview.config.filters).length > 0
+  const hasFilters =
+    dataview.config?.filters && Object.values(dataview.config.filters).filter(Boolean).length > 0
 
   const showDot =
     !hiddenProperties?.includes('dataset') ||
     !hiddenProperties?.includes('source') ||
     !hiddenProperties?.includes('flag') ||
     hasFilters
-
-  const areAllPropertiesHidden =
-    hiddenProperties?.includes('dataset') &&
-    hiddenProperties?.includes('source') &&
-    hiddenProperties?.includes('flag') &&
-    availableFields.every((f) => hiddenProperties?.includes(f[0]))
-
-  if (areAllPropertiesHidden) {
-    // TODO I don't understand that logic
-    return null
-  }
 
   return (
     <div className={cx(styles.row)}>

@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import type { Dataset, Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
@@ -215,11 +215,30 @@ export const selectActiveTemporalgridDataviews: (
   }
 )
 
+export const selectReportLayersVisible = createSelector(
+  [selectAllDataviewInstancesResolved],
+  (allDataviewInstancesResolved) => {
+    return allDataviewInstancesResolved?.filter(
+      ({ config }) =>
+        config?.visible === true &&
+        (config?.type === DataviewType.FourwingsTileCluster ||
+          config?.type === DataviewType.HeatmapAnimated ||
+          config?.type === DataviewType.HeatmapStatic)
+    )
+  }
+)
+
+export const selectEnvironmentReportLayersVisible = createSelector(
+  [selectReportLayersVisible],
+  (reportLayersVisible) => {
+    return reportLayersVisible?.filter(({ category }) => category === DataviewCategory.Environment)
+  }
+)
+
 export const selectHasReportLayersVisible = createSelector(
-  [selectActiveHeatmapDowloadDataviews],
-  (reportDataviews) => {
-    const visibleDataviews = reportDataviews?.filter(({ config }) => config?.visible === true)
-    return visibleDataviews && visibleDataviews.length > 0
+  [selectReportLayersVisible],
+  (reportLayersVisible) => {
+    return reportLayersVisible && reportLayersVisible.length > 0
   }
 )
 

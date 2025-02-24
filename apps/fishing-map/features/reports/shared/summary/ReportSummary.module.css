@@ -1,15 +1,12 @@
 .summaryContainer {
   padding: var(--space-SM) var(--space-M);
   padding-bottom: 0;
-}
-
-.summary {
   font: var(--font-L);
   color: var(--color-secondary-blue);
   min-height: 6rem;
 }
 
-.summary strong {
+.summaryContainer strong {
   font-weight: 400;
   color: var(--color-primary-blue);
 }

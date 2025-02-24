@@ -37,6 +37,7 @@ import {
 } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+import ReportSummary from 'features/reports/shared/summary/ReportSummary'
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import ReportDownload from 'features/reports/tabs/activity/download/ReportDownload'
 import ReportActivityGraph from 'features/reports/tabs/activity/ReportActivityGraph'
@@ -45,7 +46,6 @@ import {
   selectReportVesselsDateRangeHash,
   setDateRangeHash,
 } from 'features/reports/tabs/activity/reports-activity.slice'
-import ReportSummary from 'features/reports/tabs/activity/summary/ReportSummary'
 import { selectHasReportVessels } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
@@ -55,11 +55,11 @@ import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector.tsx'
+import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-function ActivityReport({ reportName }: { reportName?: string }) {
+function ActivityReport() {
   useFetchDataviewResources()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -295,7 +295,7 @@ function ActivityReport({ reportName }: { reportName?: string }) {
               }}
             />
             <Button
-              testId="see-vessel-table-report"
+              testId="see-vessel-table-activity-report"
               onClick={() => {
                 dispatch(setDateRangeHash(''))
                 dispatchFetchReport()

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import Link from 'redux-first-router-link'
@@ -14,6 +14,7 @@ import {
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
 import type { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
+import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { PORT_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -33,6 +34,12 @@ type PortsReportLinkProps = {
 function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
   const workspace = useSelector(selectWorkspace)
   const query = useSelector(selectLocationQuery)
+
+  const { dispatchClickedEvent } = useClickedEventConnect()
+
+  const handleOnClick = useCallback(() => {
+    dispatchClickedEvent(null)
+  }, [dispatchClickedEvent])
 
   if (!workspace || !port) {
     return children
@@ -78,6 +85,7 @@ function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
           dataviewInstances,
         },
       }}
+      onClick={handleOnClick}
     >
       <Tooltip content={tooltip}>{children}</Tooltip>
     </Link>

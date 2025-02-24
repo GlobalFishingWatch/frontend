@@ -99,3 +99,17 @@
 .active {
   visibility: visible;
 }
+
+.dot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  border: var(--border);
+  display: inline-flex;
+  background-color: currentcolor;
+  margin-right: 0.5rem;
+}
+
+.value:not(:last-child) {
+  margin-right: 0.5rem;
+}

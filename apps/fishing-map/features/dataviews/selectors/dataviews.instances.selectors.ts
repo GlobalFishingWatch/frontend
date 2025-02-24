@@ -146,6 +146,9 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           }
           const matchesSubcategory =
             getReportSubCategoryFromDataview(dataview) === reportSubCategory
+          if (isVesselGroupReportLocation) {
+            return matchesSubcategory && dataview.id.includes(VESSEL_DATAVIEW_INSTANCE_PREFIX)
+          }
           return matchesSubcategory
         }
         if (dataview.category === DataviewCategory.Environment) {

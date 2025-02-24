@@ -3,6 +3,7 @@
   padding-left: var(--space-M);
   border-bottom: var(--border);
   min-height: 5.2rem;
+  position: relative;
 }
 
 .placeholder {
@@ -25,6 +26,7 @@
 .title {
   font: var(--font-L);
   font-size: 2.2rem;
+  flex: 1;
 }
 
 .description {

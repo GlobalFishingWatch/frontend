@@ -24,6 +24,27 @@
   justify-content: space-between;
 }
 
+.center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: var(--space-S);
+  padding: var(--space-L);
+  justify-content: center;
+  align-items: center;
+}
+
+.center strong {
+  font-weight: 500;
+}
+
+.top {
+  justify-content: unset;
+  padding-top: 12rem;
+}
+
 .error {
   display: flex;
   align-items: center;
