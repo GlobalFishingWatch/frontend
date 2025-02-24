@@ -104,11 +104,11 @@ export default function VesselGroupReportInsightCoverageGraph({
   data: VesselGroupInsightResponse['coverage']
 }) {
   const vesselGroup = useSelector(selectVGRData)
-  // const getIndividualData = useCallback(async () => {
-  //   if (vesselGroup?.vessels.length) {
-  //     return parseCoverageGraphIndividualData(data, vesselGroup.vessels)
-  //   } else return []
-  // }, [data, vesselGroup?.vessels])
+  const getIndividualData = useCallback(async () => {
+    if (vesselGroup?.vessels.length) {
+      return parseCoverageGraphIndividualData(data, vesselGroup.vessels)
+    } else return []
+  }, [data, vesselGroup?.vessels])
   const getAggregatedData = useCallback(async () => {
     if (vesselGroup?.vessels.length) {
       return parseCoverageGraphAggregatedData(data, vesselGroup.vessels)
@@ -120,7 +120,7 @@ export default function VesselGroupReportInsightCoverageGraph({
     <div className={styles.graph} data-test="insights-report-vessels-graph">
       <ResponsiveBarChart
         color={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
-        // getIndividualData={getIndividualData}
+        getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()

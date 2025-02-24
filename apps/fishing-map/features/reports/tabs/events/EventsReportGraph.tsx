@@ -1,10 +1,17 @@
 import type { ReactElement } from 'react'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { groupBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
-import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
+import { stringify } from 'qs'
+import {
+  type BaseReportEventsVesselsParamsFilters,
+  getEventsStatsQuery,
+} from 'queries/report-events-stats-api'
 
-import type { EventType } from '@globalfishingwatch/api-types'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
+import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
@@ -159,25 +166,26 @@ export default function EventsReportGraph({
   }
 
   const getAggregatedData = useCallback(async () => data, [data])
-  // const getIndividualData = useCallback(async () => {
-  //   const params = {
-  //     ...getEventsStatsQuery({
-  //       start,
-  //       end,
-  //       filters: filtersMemo,
-  //       dataset: datasetId,
-  //     }),
-  //     ...(includesMemo && { includes: includesMemo }),
-  //     limit: 1000,
-  //     offset: 0,
-  //   }
-  //   const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
-  //   const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
 
-  //   return Object.entries(groupedData)
-  //     .map(([date, events]) => ({ date, values: events }))
-  //     .sort((a, b) => a.date.localeCompare(b.date))
-  // }, [start, end, filtersMemo, includesMemo, datasetId, interval])
+  const getIndividualData = useCallback(async () => {
+    const params = {
+      ...getEventsStatsQuery({
+        start,
+        end,
+        filters: filtersMemo || {},
+        dataset: datasetId,
+      }),
+      ...(includesMemo && { includes: includesMemo }),
+      limit: 1000,
+      offset: 0,
+    }
+    const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
+    const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
+
+    return Object.entries(groupedData)
+      .map(([date, events]) => ({ date, values: events }))
+      .sort((a, b) => a.date.localeCompare(b.date))
+  }, [start, end, filtersMemo, includesMemo, datasetId, interval])
 
   if (!data.length) {
     return null
@@ -191,7 +199,7 @@ export default function EventsReportGraph({
         timeseriesInterval={interval}
         aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
-        // getIndividualData={getIndividualData}
+        getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}
         aggregatedTooltip={<AggregatedGraphTooltip />}
         individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
