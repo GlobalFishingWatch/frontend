@@ -50,6 +50,7 @@ import {
   featuresToTimeseries,
   filterTimeseriesByTimerange,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 
 interface EvolutionGraphData {
@@ -156,7 +157,10 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const timeComparisonHash = timeComparison ? JSON.stringify(timeComparison) : undefined
   const instancesChunkHash = instances
-    ?.map((instance) => JSON.stringify(instance?.getChunk?.()))
+    ?.map((instance) => {
+      const { bufferedEnd, bufferedStart, interval } = instance?.getChunk?.() || {}
+      return `${instance.id}-${bufferedEnd}-${bufferedStart}-${interval}`
+    })
     .join(',')
   const timerangeHash = timerange ? JSON.stringify(timerange) : ''
   const reportGraphMode = getReportGraphMode(reportGraph)
@@ -381,7 +385,7 @@ export const useComputeReportTimeSeries = () => {
 const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimerange)
 export const useReportFilteredTimeSeries = () => {
   const timeseries = useAtomValue(mapTimeseriesAtom)
-  const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
+  const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
 
   const layersTimeseriesFiltered = useMemo(() => {

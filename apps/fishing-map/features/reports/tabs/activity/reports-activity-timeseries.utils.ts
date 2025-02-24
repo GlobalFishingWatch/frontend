@@ -1,3 +1,6 @@
+import type { DateTimeUnit, DurationUnit } from 'luxon'
+import { Duration } from 'luxon'
+
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsAggregationOperation,
@@ -171,8 +174,49 @@ export const featuresToTimeseries = (
   })
 }
 
-export const formatEvolutionData = (data: ReportGraphProps) => {
-  return data?.timeseries
+export const formatEvolutionData = (
+  data: ReportGraphProps,
+  { start, end, timeseriesInterval } = {} as {
+    start: string
+    end: string
+    timeseriesInterval: FourwingsInterval
+  }
+) => {
+  if (!data.timeseries) {
+    return []
+  }
+  let timeseries = data?.timeseries
+  if (start && end && timeseriesInterval) {
+    const emptyData = new Array(data.sublayers.length).fill(0)
+    const startMillis = getUTCDateTime(start)
+      .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
+      .toMillis()
+    const endMillis = getUTCDateTime(end)
+      .endOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
+      .toMillis()
+
+    const intervalDiff = Math.floor(
+      Duration.fromMillis(endMillis - startMillis).as(
+        timeseriesInterval.toLowerCase() as DurationUnit
+      )
+    )
+
+    timeseries = Array(intervalDiff)
+      .fill(0)
+      .map((_, i) => {
+        const date = getUTCDateTime(startMillis)
+          .plus({ [timeseriesInterval]: i })
+          .toISO() as string
+        const dataValue = data.timeseries.find((item) => date?.startsWith(item.date))
+        return {
+          date,
+          min: dataValue?.min !== undefined ? dataValue.min : emptyData,
+          max: dataValue?.max !== undefined ? dataValue.max : emptyData,
+        }
+      })
+  }
+
+  return timeseries
     ?.map(({ date, min, max }) => {
       const range = min.map((m, i) => [m, max[i]])
       const avg = min.map((m, i) => (m + max[i]) / 2)
