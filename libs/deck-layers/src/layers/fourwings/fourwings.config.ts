@@ -78,10 +78,14 @@ export const getChunkByInterval = (
   const startDate = getUTCDateTime(start).startOf(intervalUnit as any)
   const bufferedStartDate = startDate.minus({ [intervalUnit]: CHUNKS_BUFFER })
   const now = DateTime.now().toUTC().startOf('day')
-  const endDate = getUTCDateTime(end)
-  if (endDate[interval.toLowerCase() as 'month' | 'day' | 'hour'] > 1) {
-    endDate.endOf(intervalUnit as any).plus({ millisecond: 1 })
-  }
+  const endDateInterval = interval.toLowerCase() as 'month' | 'day' | 'hour'
+  let endDate = getUTCDateTime(end)
+  endDate = endDate
+    .endOf(
+      // eg: when interval day and endDate is more than first day of the month, we move to end of month
+      endDate[endDateInterval] > 1 ? (intervalUnit as typeof endDateInterval) : endDateInterval
+    )
+    .plus({ millisecond: 1 })
   const bufferedEndDate = endDate.plus({ [intervalUnit]: CHUNKS_BUFFER })
   return {
     id: `${intervalUnit}-chunk`,

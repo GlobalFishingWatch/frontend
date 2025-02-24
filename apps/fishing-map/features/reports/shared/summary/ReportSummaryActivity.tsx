@@ -6,7 +6,6 @@ import htmlParser from 'html-react-parser'
 
 import type { Locale } from '@globalfishingwatch/api-types'
 
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -31,6 +30,7 @@ import {
   selectReportVesselsHours,
   selectReportVesselsNumber,
 } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
@@ -45,7 +45,7 @@ export default function ReportSummaryActivity({
   reportStatus?: AsyncReducerStatus
 }) {
   const { t, i18n } = useTranslation()
-  const timerange = useSelector(selectTimeRange)
+  const timerange = useTimerangeConnect()
   const reportCategory = useSelector(selectReportCategory)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const timeseriesLoading = useReportFeaturesLoading()

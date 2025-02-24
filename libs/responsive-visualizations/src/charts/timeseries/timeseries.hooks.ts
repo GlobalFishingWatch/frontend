@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { DurationUnit } from 'luxon'
+import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { Duration } from 'luxon'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
@@ -36,6 +36,7 @@ type UseFullTimeseriesProps = {
   valueKeys: (keyof ResponsiveVisualizationData[0])[]
   aggregated?: boolean
 }
+
 export function useFullTimeseries({
   start,
   end,
@@ -49,8 +50,12 @@ export function useFullTimeseries({
     if (!data || !dateKey || !valueKeys?.length) {
       return []
     }
-    const startMillis = getUTCDateTime(start).toMillis()
-    const endMillis = getUTCDateTime(end).toMillis()
+    const startMillis = getUTCDateTime(start)
+      .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
+      .toMillis()
+    const endMillis = getUTCDateTime(end)
+      .endOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
+      .toMillis()
 
     const intervalDiff = Math.floor(
       Duration.fromMillis(endMillis - startMillis).as(
