@@ -6,6 +6,8 @@ import type { RootState } from 'reducers'
 import type { StatsByVessel, StatsIncludes } from '@globalfishingwatch/api-types'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import type { BufferOperation, BufferUnit } from 'types'
+
 export type BaseReportEventsVesselsParamsFilters = {
   portId?: string
   vesselGroupId?: string
@@ -18,6 +20,9 @@ export type BaseReportEventsVesselsParams = {
   end: string
   regionId?: string
   regionDataset?: string
+  bufferUnit?: BufferUnit
+  bufferValue?: number
+  bufferOperation?: BufferOperation
 }
 
 export type ReportEventsVesselsParams = BaseReportEventsVesselsParams & {
@@ -57,6 +62,9 @@ function getBaseStatsQuery({
   end,
   regionId,
   regionDataset,
+  // bufferValue,
+  // bufferUnit,
+  // bufferOperation,
 }: ReportEventsVesselsParams | ReportEventsStatsParams) {
   const query = {
     'start-date': start,
@@ -64,6 +72,10 @@ function getBaseStatsQuery({
     'time-filter-mode': EVENTS_TIME_FILTER_MODE,
     ...(regionId && { 'region-id': regionId }),
     ...(regionDataset && { 'region-dataset': regionDataset }),
+    // TODO:CVP uncomment once the API takes the parameters
+    // ...(bufferValue && { 'buffer-value': bufferValue }),
+    // ...(bufferUnit && { 'buffer-unit': bufferUnit }),
+    // ...(bufferOperation && { 'buffer-operation': bufferOperation }),
     ...(filters?.portId && { 'port-ids': [filters.portId] }),
     ...(filters?.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
     ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),

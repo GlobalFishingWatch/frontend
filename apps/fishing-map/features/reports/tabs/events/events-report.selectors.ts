@@ -21,6 +21,9 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import {
   type ReportVesselWithDatasets,
   selectReportAreaIds,
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
 import { WORLD_REGION_ID } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
@@ -32,8 +35,20 @@ export const selectFetchEventsVesselsParams = createSelector(
     selectReportVesselGroupId,
     selectReportPortId,
     selectActiveReportDataviews,
+    selectReportBufferValue,
+    selectReportBufferUnit,
+    selectReportBufferOperation,
   ],
-  ({ start, end }, reportAreaIds, reportVesselGroupId, portId, eventsDataviews) => {
+  (
+    { start, end },
+    reportAreaIds,
+    reportVesselGroupId,
+    portId,
+    eventsDataviews,
+    bufferValue,
+    bufferUnit,
+    bufferOperation
+  ) => {
     if (!eventsDataviews?.length) {
       return
     }
@@ -55,6 +70,9 @@ export const selectFetchEventsVesselsParams = createSelector(
       end,
       regionId: reportAreaIds.areaId !== WORLD_REGION_ID ? reportAreaIds.areaId : undefined,
       regionDataset: reportAreaIds.datasetId,
+      bufferValue,
+      bufferUnit,
+      bufferOperation,
       filters,
       datasets,
     } as GetReportEventParams
