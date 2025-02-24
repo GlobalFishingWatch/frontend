@@ -230,16 +230,16 @@ export default function ReportVesselsGraph({
     return data
   }, [data])
 
-  // const getIndividualData = useCallback(async () => {
-  //   return individualData
-  // }, [individualData])
+  const getIndividualData = useCallback(async () => {
+    return individualData
+  }, [individualData])
 
   return (
     <div className={styles.graph} data-test="report-vessels-graph">
       <ResponsiveBarChart
         color={color}
         aggregatedValueKey={aggregatedValueKey}
-        // getIndividualData={getIndividualData}
+        getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         onAggregatedItemClick={onBarClick}
         barValueFormatter={(value: any) => {

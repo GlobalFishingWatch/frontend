@@ -28,7 +28,6 @@ import {
   selectReportVesselResultsPerPage,
   selectReportVesselsOrderDirection,
   selectReportVesselsOrderProperty,
-  selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
@@ -429,7 +428,7 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
 
 export const REPORT_GRAPH_LABEL_KEY = 'name'
 export const selectReportVesselsGraphIndividualData = createSelector(
-  [selectReportVesselsFiltered, selectReportVesselsSubCategory],
+  [selectReportVesselsFiltered, selectReportVesselGraph],
   (vessels, groupBy) => {
     if (!vessels || !groupBy) return []
     return getVesselIndividualGroupedData(vessels, groupBy)
