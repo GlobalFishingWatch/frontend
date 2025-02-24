@@ -13,5 +13,6 @@ export const LEGACY_TO_LATEST_DATAVIEWS: Record<string, string> = {
   'viirs-match': VIIRS_MATCH_DATAVIEW_SLUG,
   sar: SAR_DATAVIEW_SLUG,
   'presence-activity': PRESENCE_DATAVIEW_SLUG,
+  'vessel-presence': PRESENCE_DATAVIEW_SLUG,
   'fishing-map-vessel-track': TEMPLATE_VESSEL_DATAVIEW_SLUG,
 }
