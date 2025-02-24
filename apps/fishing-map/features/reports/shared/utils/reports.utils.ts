@@ -1,4 +1,4 @@
-import { groupBy } from 'lodash'
+import { groupBy } from 'es-toolkit'
 
 import { type ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
@@ -43,20 +43,26 @@ export function getVesselIndividualGroupedData(
     case 'flag': {
       vesselsGrouped = groupBy(
         vesselsSorted,
-        (vessel) => vessel.flagTranslatedClean || vessel.flagTranslated || vessel.flag
+        (vessel) => (vessel.flagTranslatedClean || vessel.flagTranslated || vessel.flag) as string
       )
       break
     }
     case 'vesselType': {
-      vesselsGrouped = groupBy(vesselsSorted, (vessel) => vessel.vesselType?.split(', ')[0])
+      vesselsGrouped = groupBy(
+        vesselsSorted,
+        (vessel) => vessel.vesselType?.split(', ')[0] as string
+      )
       break
     }
     case 'geartype': {
-      vesselsGrouped = groupBy(vesselsSorted, (vessel) => vessel.geartype?.split(', ')[0])
+      vesselsGrouped = groupBy(vesselsSorted, (vessel) => vessel.geartype?.split(', ')[0] as string)
       break
     }
     case 'source': {
-      vesselsGrouped = groupBy(vesselsSorted, (vessel) => (vessel as ReportTableVessel).source)
+      vesselsGrouped = groupBy(
+        vesselsSorted,
+        (vessel) => (vessel as ReportTableVessel).source as string
+      )
       break
     }
   }

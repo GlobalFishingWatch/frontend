@@ -6,6 +6,7 @@
 .summary {
   font: var(--font-L);
   color: var(--color-secondary-blue);
+  min-height: 6rem;
 }
 
 .summary strong {

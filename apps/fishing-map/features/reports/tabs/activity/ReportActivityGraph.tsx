@@ -2,6 +2,8 @@ import React, { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { useDebounce } from '@globalfishingwatch/react-hooks'
+
 import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useFitAreaInViewport,
@@ -79,13 +81,16 @@ export default function ReportActivity() {
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportGraphMode = getReportGraphMode(reportActivityGraph)
-  const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
+  const isSameTimeseriesMode = layersTimeseriesFiltered?.length
+    ? layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
+    : true
   const showSelectors = layersTimeseriesFiltered !== undefined
-  const showPlaceholder = loading || !isSameTimeseriesMode
   const isEmptyData =
     layersTimeseriesFiltered &&
     layersTimeseriesFiltered.every(({ timeseries }) => timeseries.length === 0) &&
-    !loading
+    loading === false
+  const showPlaceholder = loading !== false || !isSameTimeseriesMode
+  const debouncedIsEmptyData = useDebounce(isEmptyData, 200)
 
   return (
     <div className={styles.container}>
@@ -95,12 +100,12 @@ export default function ReportActivity() {
           <ReportActivityGraphSelector loading={showPlaceholder} />
         </div>
       )}
-      {showPlaceholder ? (
-        <ReportActivityPlaceholder showHeader={!showSelectors} />
-      ) : isEmptyData ? (
+      {debouncedIsEmptyData ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
           {t('analysis.noDataByArea', 'No data available for the selected area')}
         </ReportActivityPlaceholder>
+      ) : showPlaceholder || isEmptyData ? (
+        <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : (
         <GraphComponent
           start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}

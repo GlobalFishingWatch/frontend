@@ -93,7 +93,7 @@ export const selectReportCategory = createSelector(
 
 export const selectActiveReportSubCategories = createSelector(
   [
-    selectReportCategorySelector,
+    selectReportCategory,
     selectActiveActivityReportSubCategories,
     selectActiveDetectionsReportSubCategories,
     selectActiveEventsReportSubCategories,

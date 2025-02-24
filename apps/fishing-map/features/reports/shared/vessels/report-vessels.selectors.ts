@@ -161,10 +161,15 @@ export const selectReportVessels = createSelector(
           datasetId: (reportVessel.infoDataset?.id || reportVessel.dataset) as string,
           dataviewId: reportVessel.dataviewId,
           trackDatasetId: reportVessel.trackDataset?.id,
-          shipName: formatInfoField(reportVessel.shipName, 'shipname') || EMPTY_FIELD_PLACEHOLDER,
+          shipName:
+            (formatInfoField(reportVessel.shipName, 'shipname') as string) ||
+            EMPTY_FIELD_PLACEHOLDER,
           vesselType:
-            formatInfoField(reportVessel.vesselType, 'vesselType') || EMPTY_FIELD_PLACEHOLDER,
-          geartype: formatInfoField(reportVessel.geartype, 'geartypes') || EMPTY_FIELD_PLACEHOLDER,
+            (formatInfoField(reportVessel.vesselType, 'vesselType') as string) ||
+            EMPTY_FIELD_PLACEHOLDER,
+          geartype:
+            (formatInfoField(reportVessel.geartype, 'geartypes') as string) ||
+            EMPTY_FIELD_PLACEHOLDER,
           ssvid: reportVessel.mmsi || EMPTY_FIELD_PLACEHOLDER,
           flag: reportVessel.flag || EMPTY_FIELD_PLACEHOLDER,
           value: reportVessel.value as number,
