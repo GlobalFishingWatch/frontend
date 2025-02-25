@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { uniq } from 'es-toolkit'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
@@ -23,8 +24,6 @@ import {
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
 
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import { useReportAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
@@ -32,15 +31,13 @@ import {
   selectReportArea,
   selectReportBufferHash,
   selectShowTimeComparison,
+  selectTimeComparisonHash,
 } from 'features/reports/report-area/area-reports.selectors'
 import {
   selectReportActivityGraph,
   selectReportTimeComparison,
 } from 'features/reports/reports.config.selectors'
-import {
-  selectReportActivitySubCategory,
-  selectReportCategory,
-} from 'features/reports/reports.selectors'
+import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import type {
   ReportActivityGraph,
   ReportActivityTimeComparison,
@@ -116,13 +113,9 @@ const mapTimeseriesStatsAtom = atom({} as ReportGraphStats)
 if (process.env.NODE_ENV !== 'production') {
   mapTimeseriesAtom.debugLabel = 'mapTimeseries'
 }
+
 export function useSetTimeseries() {
   return useSetAtom(mapTimeseriesAtom)
-}
-
-export function useHasReportTimeseries() {
-  const timeseries = useAtomValue(mapTimeseriesAtom)
-  return timeseries !== undefined
 }
 
 export function useTimeseriesStats() {
@@ -147,14 +140,6 @@ const useReportInstances = () => {
 export const useReportFeaturesLoading = () => {
   const { isLoading } = useAtomValue(reportStateAtom)
   return isLoading
-  // const reportInstances = useReportInstances()
-  // const areaInViewport = useReportAreaInViewport()
-
-  // // Using undefined to show the placeholder when the layers are not ready
-  // if (!reportInstances?.length) return undefined
-
-  // const reportLayerInstanceLoaded = reportInstances?.every((layer) => layer.loaded)
-  // return areaInViewport && !reportLayerInstanceLoaded
 }
 
 type GetTimeseriesParams = {
@@ -167,13 +152,13 @@ type GetTimeseriesParams = {
 const getTimeseries = ({
   featuresFiltered,
   instances,
-  timeseries,
   timeComparison,
   reportGraphMode,
 }: GetTimeseriesParams) => {
   const newTimeseries: ReportGraphProps[] = []
   instances.forEach((instance, index) => {
-    if (instance.props.static) {
+    const features = featuresFiltered?.[index]
+    if (instance.props.static || !features) {
       // need to add empty timeseries because they are then used by their index
       newTimeseries.push({
         timeseries: [],
@@ -182,38 +167,23 @@ const getTimeseries = ({
       })
       return
     }
-    const features = featuresFiltered?.[index]
-    if (
-      features &&
-      (!timeseries || !timeseries?.[index] || timeseries?.[index].mode === 'loading')
-    ) {
-      const props = instance.props as FourwingsLayerProps
-      const chunk = instance.getChunk()
-      const sublayers = instance.getFourwingsLayers()
-      const params: FeaturesToTimeseriesParams = {
-        staticHeatmap: props.static,
-        interval: chunk.interval,
-        start: timeComparison ? props.startTime : chunk.bufferedStart,
-        end: timeComparison ? props.endTime : chunk.bufferedEnd,
-        compareStart: props.compareStart,
-        compareEnd: props.compareEnd,
-        aggregationOperation: props.aggregationOperation,
-        minVisibleValue: props.minVisibleValue,
-        maxVisibleValue: props.maxVisibleValue,
-        sublayers,
-        graphMode: reportGraphMode,
-      }
-      newTimeseries.push(featuresToTimeseries(features, params)[0])
-    } else if (timeseries?.[index]) {
-      newTimeseries.push(timeseries[index])
-    } else {
-      newTimeseries.push({
-        timeseries: [],
-        mode: 'loading',
-        interval: 'MONTH',
-        sublayers: [],
-      } as ReportGraphProps)
+    const chunk = instance.getChunk()
+    const sublayers = instance.getFourwingsLayers()
+    const props = instance.props as FourwingsLayerProps
+    const params: FeaturesToTimeseriesParams = {
+      staticHeatmap: props.static,
+      interval: chunk.interval,
+      start: timeComparison ? props.startTime : chunk.bufferedStart,
+      end: timeComparison ? props.endTime : chunk.bufferedEnd,
+      compareStart: props.compareStart,
+      compareEnd: props.compareEnd,
+      aggregationOperation: props.aggregationOperation,
+      minVisibleValue: props.minVisibleValue,
+      maxVisibleValue: props.maxVisibleValue,
+      sublayers,
+      graphMode: reportGraphMode,
     }
+    newTimeseries.push(featuresToTimeseries(features, params)[0])
   })
   return newTimeseries
 }
@@ -224,40 +194,55 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const area = useSelector(selectReportArea)
   const isAreaInViewport = useReportAreaInViewport()
   const dataviews = useSelector(selectActiveReportDataviews)
-  const vGRActivitySubsection = useSelector(selectReportActivitySubCategory)
+  const { start, end } = useTimerangeConnect()
+  const interval = getFourwingsInterval(start, end)
+
   const reportCategory = useSelector(selectReportCategory)
+  const reportSubCategory = useSelector(selectReportSubCategory)
   const timeComparison = useSelector(selectReportTimeComparison)
+  const timeComparisonHash = useSelector(selectTimeComparisonHash)
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportBufferHash = useSelector(selectReportBufferHash)
-
-  const instances = useMemo(() => reportLayers.map((l) => l.instance), [reportLayers])
   const reportGraphMode = getReportGraphMode(reportGraph)
-  const timeComparisonHash = timeComparison ? JSON.stringify(timeComparison) : undefined
-  const instancesChunkHash = instances
-    ?.map((instance) => {
-      const { bufferedEnd, bufferedStart, interval } = instance?.getChunk?.() || {}
-      return `${instance.id}-${bufferedEnd}-${bufferedStart}-${interval}`
+  const reportStateCacheHash = useRef('')
+
+  const instancesChunkHash = reportLayers
+    ?.flatMap(({ instance }) => {
+      if (!instance?.getChunk) return []
+      const { bufferedStart, bufferedEnd, interval } = instance.getChunk()
+      return `${instance.id}-${interval}-${bufferedStart}-${bufferedEnd}`
     })
     .join(',')
 
-  // We need to re calculate the timeseries and the filteredFeatures when any of these params changes
+  const instances = useMemo(
+    () => reportLayers.map((l) => l.instance),
+    // We need to update the instances when the instancesChunkHash or the reportBufferHash changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [reportLayers, instancesChunkHash, reportBufferHash]
+  )
+
+  const isLoaded = instances?.length ? instances.every((i) => i.isLoaded) : false
+
   useEffect(() => {
-    console.log('🚀 ~ resetting')
+    reportStateCacheHash.current = `${reportGraphMode}-${reportCategory}-${reportSubCategory}-${timeComparisonHash}-${instancesChunkHash}-${isLoaded}`
+  }, [
+    reportGraphMode,
+    reportCategory,
+    reportSubCategory,
+    timeComparisonHash,
+    instancesChunkHash,
+    isLoaded,
+  ])
+
+  useEffect(() => {
+    reportStateCacheHash.current = ''
     setReportState({
       isLoading: true,
       timeseries: undefined,
       featuresFiltered: undefined,
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    area?.id,
-    reportCategory,
-    vGRActivitySubsection,
-    timeComparisonHash,
-    instancesChunkHash,
-    reportGraphMode,
-    reportBufferHash,
-  ])
+    // We want to clean the reportState when any of these params changes to avoid using old data until it loads
+  }, [area?.id, interval, reportCategory, reportSubCategory, reportGraphMode, setReportState])
 
   const computeTimeseriesStats = useCallback(
     (
@@ -321,7 +306,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       }
 
       setReportState((prev) => ({ ...prev, isLoading: true }))
-
       try {
         const data = instances.map((l) => l?.getData?.() as FourwingsFeature[])
         if (!data.some((d) => d?.length)) {
@@ -332,17 +316,18 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
           return
         }
 
-        const filteredFeatures = await Promise.all(
-          data.map((features) =>
+        const filteredFeatures: FilteredPolygons[][] = []
+        for (const features of data) {
+          const filteredInstanceFeatures =
             area.id === ENTIRE_WORLD_REPORT_AREA_ID
-              ? [{ contained: features, overlapping: [] }]
-              : filterCellsByPolygon({
+              ? ([{ contained: features, overlapping: [] }] as FilteredPolygons[])
+              : await filterCellsByPolygon({
                   layersCells: [features],
                   polygon: area.geometry!,
                   mode: reportCategory === 'environment' ? 'point' : 'cell',
                 })
-          )
-        )
+          filteredFeatures.push(filteredInstanceFeatures)
+        }
 
         const timeseries = getTimeseries({
           featuresFiltered: filteredFeatures,
@@ -367,21 +352,21 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         }))
       }
     }
-    const isLoaded = instances.every((i) => i.isLoaded)
-    if (isAreaInViewport && isLoaded) {
-      console.log('🚀 ~ processing features')
+
+    if (isAreaInViewport && isLoaded && reportStateCacheHash.current !== '') {
       processFeatures()
     }
   }, [
-    area,
-    isAreaInViewport,
+    area?.geometry,
+    area?.id,
+    isLoaded,
     instances,
-    instancesChunkHash,
-    timeComparison,
-    reportGraphMode,
-    setReportState,
+    isAreaInViewport,
     filterCellsByPolygon,
     reportCategory,
+    reportGraphMode,
+    setReportState,
+    timeComparison,
   ])
 
   return reportState
@@ -397,24 +382,34 @@ const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimeran
 export const useReportFilteredTimeSeries = () => {
   const { timeseries } = useAtomValue(reportStateAtom)
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
-  const interval = getFourwingsInterval(timebarStart, timebarEnd)
-  const startNormalisedByInterval = getUTCDateTime(timebarStart)
-    .startOf(interval.toLowerCase() as DateTimeUnit)
-    .toISO()
-  const endNormalisedByInterval = getUTCDateTime(timebarEnd)
-    .startOf(interval.toLowerCase() as DateTimeUnit)
-    .toISO()
   const showTimeComparison = useSelector(selectShowTimeComparison)
 
   return useMemo(() => {
     if (!timeseries?.length) return []
+    const availableIntervals = uniq((timeseries || []).map((t) => t.interval))
+    const interval = getFourwingsInterval(timebarStart, timebarEnd, availableIntervals)
+
+    const startNormalisedByInterval =
+      timebarStart && interval
+        ? getUTCDateTime(timebarStart)
+            .startOf(interval.toLowerCase() as DateTimeUnit)
+            .toISO()
+        : null
+    const endNormalisedByInterval =
+      timebarEnd && interval
+        ? getUTCDateTime(timebarEnd)
+            .startOf(interval.toLowerCase() as DateTimeUnit)
+            .toISO()
+        : null
+
     if (!showTimeComparison && startNormalisedByInterval && endNormalisedByInterval) {
-      return memoizedFilterTimeseriesByTimerange(
+      const memoizedFilteredTimeseries = memoizedFilterTimeseriesByTimerange(
         timeseries,
         startNormalisedByInterval,
         endNormalisedByInterval
       )
+      return memoizedFilteredTimeseries
     }
     return timeseries
-  }, [timeseries, showTimeComparison, startNormalisedByInterval, endNormalisedByInterval])
+  }, [timeseries, timebarStart, timebarEnd, showTimeComparison])
 }

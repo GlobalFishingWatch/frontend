@@ -20,14 +20,9 @@ import { useMapLayers } from 'features/map/map-layers.hooks'
 import { MAP_VIEW, useMapSetViewState, useMapViewState } from 'features/map/map-viewport.hooks'
 import MapAnnotations from 'features/map/overlays/annotations/Annotations'
 import { selectReportCategory } from 'features/reports/reports.selectors'
-import { useHasReportTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import type { MapCoordinates } from 'types'
-
-const mapStyles = {
-  width: '100%',
-  height: '100%',
-  position: 'relative',
-}
 
 const DeckGLWrapper = () => {
   const deckRef = useRef<DeckGLRef>(null)
@@ -35,7 +30,7 @@ const DeckGLWrapper = () => {
   const setViewState = useMapSetViewState()
   const dispatch = useAppDispatch()
   const viewState = useMapViewState()
-  const hasReportTimeseries = useHasReportTimeseries()
+  const areReportFeaturesLoading = useReportFeaturesLoading()
 
   const onViewStateChange = useCallback(
     (params: any) => {
@@ -50,19 +45,31 @@ const DeckGLWrapper = () => {
   const getCursor = useMapCursor()
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   const layers = useMapLayers()
-  const vesselGroupSection = useSelector(selectReportCategory)
+  const reportCategory = useSelector(selectReportCategory)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
 
   const onMapLoad = useCallback(() => {
     dispatch(setMapLoaded(true))
   }, [dispatch])
 
   const isFourwingsReport =
-    vesselGroupSection === 'activity' ||
-    vesselGroupSection === 'detections' ||
-    vesselGroupSection === 'environment'
+    isAnyReportLocation &&
+    (reportCategory === 'activity' ||
+      reportCategory === 'detections' ||
+      reportCategory === 'environment')
   const isWaitingForFourwingsTiles = useMemo(
-    () => isFourwingsReport && !hasReportTimeseries,
-    [hasReportTimeseries, isFourwingsReport]
+    () => isFourwingsReport && areReportFeaturesLoading,
+    [isFourwingsReport, areReportFeaturesLoading]
+  )
+
+  const mapStyles = useMemo(
+    () => ({
+      width: '100%',
+      height: '100%',
+      position: 'relative',
+      ...(isWaitingForFourwingsTiles && { pointerEvents: 'none' }),
+    }),
+    [isWaitingForFourwingsTiles]
   )
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
