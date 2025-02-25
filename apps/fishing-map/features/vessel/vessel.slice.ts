@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import type { RootState } from 'reducers'
 
@@ -17,7 +17,11 @@ import type {
   VesselRegistryInfo,
   VesselType,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, ResourceStatus , VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  ResourceStatus,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { setResource } from '@globalfishingwatch/dataviews-client'
 
@@ -94,7 +98,7 @@ type VesselSliceState = { vessel: VesselState }
 type FetchVesselThunkParams = {
   vesselId: string
   datasetId: string
-  includeRelatedIdentities: boolean
+  includeRelatedIdentities?: boolean
 }
 export const fetchVesselInfoThunk = createAsyncThunk(
   'vessel/fetchInfo',
