@@ -294,7 +294,7 @@ export const selectReportBufferHash = createSelector(
 export const selectTimeComparisonHash = createSelector(
   [selectReportTimeComparison],
   (timeComparison) => {
-    return timeComparison ? JSON.stringify(timeComparison) : ''
+    return timeComparison ? Object.values(timeComparison).join(',') : ''
   }
 )
 

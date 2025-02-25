@@ -11,10 +11,7 @@ import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/de
 import type { DateTimeSeries } from 'features/reports/report-area/area-reports.hooks'
 import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import type { FilteredPolygons } from 'features/reports/tabs/activity/reports-activity-geo.utils'
-import type {
-  ReportGraphMode,
-  ReportGraphProps,
-} from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+import type { ReportGraphProps } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -74,7 +71,6 @@ export type FeaturesToTimeseriesParams = {
   minVisibleValue?: number
   maxVisibleValue?: number
   sublayers: FourwingsDeckSublayer[]
-  graphMode?: ReportGraphMode
 }
 
 export const featuresToTimeseries = (
@@ -90,13 +86,11 @@ export const featuresToTimeseries = (
     sublayers,
     compareStart,
     compareEnd,
-    graphMode = 'evolution',
   }: FeaturesToTimeseriesParams
 ): ReportGraphProps[] => {
   return filteredFeatures.map(({ contained, overlapping }, sourceIndex) => {
     const featureToTimeseries: ReportGraphProps = {
       interval,
-      mode: graphMode,
       sublayers: sublayers.map((sublayer) => ({
         id: sublayer.id,
         legend: {
@@ -179,7 +173,7 @@ export const formatEvolutionData = (
     timeseriesInterval: FourwingsInterval
   }
 ) => {
-  if (!data.timeseries) {
+  if (!data?.timeseries) {
     return []
   }
   if (start && end && timeseriesInterval) {

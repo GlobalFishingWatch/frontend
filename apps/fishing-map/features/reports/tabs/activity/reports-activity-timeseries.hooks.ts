@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -33,15 +33,9 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonHash,
 } from 'features/reports/report-area/area-reports.selectors'
-import {
-  selectReportActivityGraph,
-  selectReportTimeComparison,
-} from 'features/reports/reports.config.selectors'
+import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
-import type {
-  ReportActivityGraph,
-  ReportActivityTimeComparison,
-} from 'features/reports/reports.types'
+import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
 import type { FilteredPolygons } from 'features/reports/tabs/activity/reports-activity-geo.utils'
 import { useFilterCellsByPolygonWorker } from 'features/reports/tabs/activity/reports-activity-geo.utils.workers.hooks'
@@ -143,22 +137,14 @@ export const useReportFeaturesLoading = () => {
 type GetTimeseriesParams = {
   featuresFiltered: FilteredPolygons[][]
   instances: FourwingsLayer[]
-  timeseries: ReportGraphProps[]
-  timeComparison?: ReportActivityTimeComparison
-  reportGraphMode: ReportGraphMode
 }
-const getTimeseries = ({
-  featuresFiltered,
-  instances,
-  timeComparison,
-  reportGraphMode,
-}: GetTimeseriesParams) => {
-  const newTimeseries: ReportGraphProps[] = []
+const getTimeseries = ({ featuresFiltered, instances }: GetTimeseriesParams) => {
+  const timeseries: ReportGraphProps[] = []
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
     if (instance.props.static || !features) {
       // need to add empty timeseries because they are then used by their index
-      newTimeseries.push({
+      timeseries.push({
         timeseries: [],
         interval: 'MONTH',
         sublayers: [],
@@ -171,26 +157,26 @@ const getTimeseries = ({
     const params: FeaturesToTimeseriesParams = {
       staticHeatmap: props.static,
       interval: chunk.interval,
-      start: timeComparison ? props.startTime : chunk.bufferedStart,
-      end: timeComparison ? props.endTime : chunk.bufferedEnd,
+      start: props.comparisonMode === 'timeCompare' ? props.startTime : chunk.bufferedStart,
+      end: props.comparisonMode === 'timeCompare' ? props.endTime : chunk.bufferedEnd,
       compareStart: props.compareStart,
       compareEnd: props.compareEnd,
       aggregationOperation: props.aggregationOperation,
       minVisibleValue: props.minVisibleValue,
       maxVisibleValue: props.maxVisibleValue,
       sublayers,
-      graphMode: reportGraphMode,
     }
-    newTimeseries.push(featuresToTimeseries(features, params)[0])
+    timeseries.push(featuresToTimeseries(features, params)[0])
   })
-  return newTimeseries
+  return timeseries
 }
 
-const getTimeseriesStats = (
-  instances: FourwingsLayer[],
-  featuresFiltered: FilteredPolygons[][],
-  { start, end }: TimeRange
-) => {
+const getTimeseriesStats = ({
+  featuresFiltered,
+  instances,
+  start,
+  end,
+}: GetTimeseriesParams & TimeRange) => {
   const timeseriesStats = {} as ReportGraphStats
   instances.forEach((instance, index) => {
     const features = featuresFiltered[index]
@@ -246,7 +232,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
-  const timeComparison = useSelector(selectReportTimeComparison)
   const timeComparisonHash = useSelector(selectTimeComparisonHash)
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportBufferHash = useSelector(selectReportBufferHash)
@@ -270,22 +255,33 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const isLoaded = instances?.length ? instances.every((i) => i.isLoaded) : false
 
-  useEffect(() => {
-    reportStateCacheHash.current = `${reportGraphMode}-${reportCategory}-${reportSubCategory}-${timeComparisonHash}-${instancesChunkHash}-${isLoaded}`
+  useLayoutEffect(() => {
+    reportStateCacheHash.current = ''
+    setReportState((prev) => ({ ...prev, ...initialReportState, isLoading: true }))
+    // We want to clean the reportState when any of these params changes to avoid using old data until it loads
   }, [
+    area?.id,
+    interval,
+    reportCategory,
+    reportSubCategory,
     reportGraphMode,
+    reportBufferHash,
+    instancesChunkHash,
+    timeComparisonHash,
+    setReportState,
+  ])
+
+  useEffect(() => {
+    const newHash = `${reportCategory}|${reportSubCategory}|${timeComparisonHash}|${instancesChunkHash}|${isLoaded}|${reportBufferHash}`
+    reportStateCacheHash.current = newHash
+  }, [
+    isLoaded,
     reportCategory,
     reportSubCategory,
     timeComparisonHash,
     instancesChunkHash,
-    isLoaded,
+    reportBufferHash,
   ])
-
-  useEffect(() => {
-    reportStateCacheHash.current = ''
-    setReportState(initialReportState)
-    // We want to clean the reportState when any of these params changes to avoid using old data until it loads
-  }, [area?.id, interval, reportCategory, reportSubCategory, reportGraphMode, setReportState])
 
   useEffect(() => {
     const processFeatures = async () => {
@@ -295,35 +291,27 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
       setReportState((prev) => ({ ...prev, isLoading: true }))
       try {
-        const data = instances.map((l) => l?.getData?.() as FourwingsFeature[])
-        if (!data.some((d) => d?.length)) {
-          setReportState((prev) => ({
-            ...prev,
-            ...initialReportState,
-          }))
-          return
-        }
-
         const featuresFiltered: FilteredPolygons[][] = []
-        for (const features of data) {
-          const filteredInstanceFeatures =
-            area.id === ENTIRE_WORLD_REPORT_AREA_ID
-              ? ([{ contained: features, overlapping: [] }] as FilteredPolygons[])
-              : await filterCellsByPolygon({
-                  layersCells: [features],
-                  polygon: area.geometry!,
-                  mode: reportCategory === 'environment' ? 'point' : 'cell',
-                })
-          featuresFiltered.push(filteredInstanceFeatures)
+        for (const instance of instances) {
+          const features = instance?.getData?.() as FourwingsFeature[]
+          if (features?.length) {
+            const filteredInstanceFeatures =
+              area.id === ENTIRE_WORLD_REPORT_AREA_ID
+                ? ([{ contained: features, overlapping: [] }] as FilteredPolygons[])
+                : await filterCellsByPolygon({
+                    layersCells: [features],
+                    polygon: area.geometry!,
+                    mode: instance.props.category === 'environment' ? 'point' : 'cell',
+                  })
+            featuresFiltered.push(filteredInstanceFeatures)
+          } else {
+            featuresFiltered.push([])
+          }
         }
 
         const timeseries = getTimeseries({
           featuresFiltered,
           instances,
-          // TODO:timeseries remove this if not needed
-          timeseries: [],
-          timeComparison,
-          reportGraphMode,
         })
 
         setReportState((prev) => ({
@@ -340,7 +328,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         }))
       }
     }
-
     if (isLoaded && isAreaInViewport && reportStateCacheHash.current !== '') {
       processFeatures()
     }
@@ -351,15 +338,17 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     instances,
     isAreaInViewport,
     filterCellsByPolygon,
-    reportCategory,
-    reportGraphMode,
     setReportState,
-    timeComparison,
   ])
 
   useEffect(() => {
     const processFeatureStats = () => {
-      const stats = getTimeseriesStats(instances, reportState.featuresFiltered!, { start, end })
+      const stats = getTimeseriesStats({
+        instances,
+        featuresFiltered: reportState.featuresFiltered!,
+        start,
+        end,
+      })
       setReportState((prev) => ({ ...prev, stats }))
     }
 
@@ -372,9 +361,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       processFeatureStats()
     }
   }, [
+    isLoaded,
     instances,
     isAreaInViewport,
-    isLoaded,
     reportState?.featuresFiltered,
     setReportState,
     start,
@@ -398,7 +387,7 @@ export const useReportFilteredTimeSeries = () => {
 
   return useMemo(() => {
     if (!timeseries?.length) return []
-    const availableIntervals = uniq((timeseries || []).map((t) => t.interval))
+    const availableIntervals = uniq((timeseries || []).map((t) => t?.interval))
     const interval = getFourwingsInterval(timebarStart, timebarEnd, availableIntervals)
 
     const startNormalisedByInterval =

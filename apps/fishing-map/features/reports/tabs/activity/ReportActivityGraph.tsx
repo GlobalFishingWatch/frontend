@@ -45,8 +45,6 @@ const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> |
   periodComparison: ReportActivityPeriodComparisonGraph,
 }
 
-const emptyGraphData = {} as ReportGraphProps
-
 export default function ReportActivity() {
   useComputeReportTimeSeries()
 
@@ -78,9 +76,10 @@ export default function ReportActivity() {
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const showSelectors = layersTimeseriesFiltered !== undefined
-  const isEmptyData = !loading
-    ? layersTimeseriesFiltered.every(({ timeseries }) => timeseries.length === 0)
-    : false
+  const isEmptyData =
+    !loading && layersTimeseriesFiltered?.length
+      ? layersTimeseriesFiltered.every((data) => data?.timeseries?.length === 0)
+      : false
 
   return (
     <div className={styles.container}>
