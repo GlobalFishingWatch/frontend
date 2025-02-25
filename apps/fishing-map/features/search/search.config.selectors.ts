@@ -13,6 +13,7 @@ function selectVesselSearchStateProperty<P extends VesselSearchStateProperty>(pr
   })
 }
 
+export const selectSearchId = selectVesselSearchStateProperty('id')
 export const selectSearchQuery = selectVesselSearchStateProperty('query')
 export const selectSearchOption = selectVesselSearchStateProperty('searchOption')
 export const selectSearchInfoSource = selectVesselSearchStateProperty('infoSource')
@@ -35,6 +36,7 @@ export const selectSearchOrigin = selectVesselSearchStateProperty('origin')
 
 export const selectSearchFilters = createSelector(
   [
+    selectSearchId,
     selectSearchFlag,
     selectSearchSources,
     selectSearchTransmissionDateFrom,
@@ -53,6 +55,7 @@ export const selectSearchFilters = createSelector(
     selectSearchInfoSource,
   ],
   (
+    id,
     flag,
     sources,
     transmissionDateFrom,
@@ -71,6 +74,7 @@ export const selectSearchFilters = createSelector(
     infoSource
   ): VesselSearchState => {
     return {
+      id,
       flag,
       sources,
       transmissionDateFrom,
