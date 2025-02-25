@@ -272,13 +272,14 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   ])
 
   useEffect(() => {
-    const newHash = `${area?.id}|${reportCategory}|${reportSubCategory}|${timeComparisonHash}|${instancesChunkHash}|${isLoaded}|${reportBufferHash}`
+    const newHash = `${area?.id}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${instancesChunkHash}|${isLoaded}|${reportBufferHash}`
     reportStateCacheHash.current = newHash
   }, [
     area?.id,
     isLoaded,
     reportCategory,
     reportSubCategory,
+    reportGraphMode,
     timeComparisonHash,
     instancesChunkHash,
     reportBufferHash,
