@@ -316,7 +316,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   useEffect(() => {
     const processFeatures = async () => {
-      if (!area?.geometry || !instances.every((i) => i.isLoaded)) {
+      if (!area?.geometry) {
         return
       }
 
@@ -376,6 +376,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     area,
     isAreaInViewport,
     instances,
+    instancesChunkHash,
     timeComparison,
     reportGraphMode,
     setReportState,
