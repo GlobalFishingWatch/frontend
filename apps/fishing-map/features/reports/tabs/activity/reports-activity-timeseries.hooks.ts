@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -272,12 +272,14 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   ])
 
   useEffect(() => {
-    const newHash = `${reportCategory}|${reportSubCategory}|${timeComparisonHash}|${instancesChunkHash}|${isLoaded}|${reportBufferHash}`
+    const newHash = `${area?.id}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${instancesChunkHash}|${isLoaded}|${reportBufferHash}`
     reportStateCacheHash.current = newHash
   }, [
+    area?.id,
     isLoaded,
     reportCategory,
     reportSubCategory,
+    reportGraphMode,
     timeComparisonHash,
     instancesChunkHash,
     reportBufferHash,
@@ -294,7 +296,10 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of instances) {
           const features = instance?.getData?.() as FourwingsFeature[]
-          if (features?.length) {
+          const error = instance?.getError?.()
+          if (error || !features.length) {
+            featuresFiltered.push([{ contained: [], overlapping: [], error }])
+          } else {
             const filteredInstanceFeatures =
               area.id === ENTIRE_WORLD_REPORT_AREA_ID
                 ? ([{ contained: features, overlapping: [] }] as FilteredPolygons[])
@@ -304,8 +309,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
                     mode: instance.props.category === 'environment' ? 'point' : 'cell',
                   })
             featuresFiltered.push(filteredInstanceFeatures)
-          } else {
-            featuresFiltered.push([])
           }
         }
 
@@ -377,6 +380,11 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 export const useComputeReportTimeSeries = () => {
   const reportLayers = useReportInstances()
   useReportTimeseries(reportLayers)
+}
+
+export const useReportTimeSeriesErrors = () => {
+  const { featuresFiltered } = useAtomValue(reportStateAtom)
+  return featuresFiltered?.map((f) => f.flatMap((ff) => ff.error || []).join(','))
 }
 
 const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimerange)
