@@ -25,3 +25,8 @@
 .disclaimer a {
   text-decoration: underline;
 }
+
+.errorMessage {
+  border-color: var(--color-danger-red);
+  color: var(--color-danger-red);
+}

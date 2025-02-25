@@ -19,6 +19,7 @@ import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
+  useReportTimeSeriesErrors,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
@@ -75,6 +76,8 @@ export default function ReportActivity() {
   )
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const layersTimeseriesErrors = useReportTimeSeriesErrors()
+  const hasError = layersTimeseriesErrors?.[0] !== ''
   const showSelectors = layersTimeseriesFiltered !== undefined
   const isEmptyData =
     !loading && layersTimeseriesFiltered?.length
@@ -91,9 +94,11 @@ export default function ReportActivity() {
       )}
       {loading ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
-      ) : isEmptyData ? (
+      ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
-          {t('analysis.noDataByArea', 'No data available for the selected area')}
+          {hasError
+            ? t('errors.layerLoading', 'There was an error loading the layer')
+            : t('analysis.noDataByArea', 'No data available for the selected area')}
         </ReportActivityPlaceholder>
       ) : (
         <GraphComponent

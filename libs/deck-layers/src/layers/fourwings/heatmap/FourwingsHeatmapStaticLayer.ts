@@ -273,12 +273,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   _getLayerDataInWGS84(layer: any) {
-    // needed to get access to the geometry coordinates
     return layer.props.tile?.dataInWGS84?.map((f: FourwingsStaticFeature) => ({
       ...f,
-      coordinates: {
-        ...f.coordinates,
-      },
+      coordinates: f.geometry.coordinates[0].flat(),
     }))
   }
 
