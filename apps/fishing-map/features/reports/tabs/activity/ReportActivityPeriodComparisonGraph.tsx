@@ -70,13 +70,13 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Fourwin
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
-const ReportActivityPeriodComparisonGraph: React.FC<{
+const ReportActivityPeriodComparisonGraph = (props: {
   data: ComparisonGraphProps
   start: string
   end: string
-}> = (props) => {
-  const { start, end } = props
-  const { interval, timeseries, sublayers } = props.data
+}) => {
+  const { start, end, data = {} as ComparisonGraphProps } = props
+  const { interval, timeseries, sublayers } = data
   const timeComparison = useSelector(selectReportTimeComparison)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
 
