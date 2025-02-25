@@ -42,7 +42,7 @@ function ReportEnvironment() {
     <Fragment>
       {environmentalDataviews.map((dataview, index) => {
         const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
-        const { min, mean, max } = timeseriesStats[dataview.id] || {}
+        const { min, mean, max } = timeseriesStats?.[dataview.id] || {}
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
         const isLoading = loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'

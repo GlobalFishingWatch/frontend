@@ -92,23 +92,22 @@ export type ReportGraphStats = Record<
 >
 
 interface ReportState {
-  // stats: ReportGraphStats
   isLoading: boolean
   timeseries: ReportGraphProps[] | undefined
   featuresFiltered: FilteredPolygons[][] | undefined
+  stats: ReportGraphStats | undefined
 }
 
 const initialReportState: ReportState = {
-  // stats: {},
   isLoading: false,
   timeseries: undefined,
   featuresFiltered: undefined,
+  stats: undefined,
 }
 
 const reportStateAtom = atom(initialReportState)
 
 const mapTimeseriesAtom = atom([] as ReportGraphProps[] | undefined)
-const mapTimeseriesStatsAtom = atom({} as ReportGraphStats)
 
 if (process.env.NODE_ENV !== 'production') {
   mapTimeseriesAtom.debugLabel = 'mapTimeseries'
@@ -119,7 +118,7 @@ export function useSetTimeseries() {
 }
 
 export function useTimeseriesStats() {
-  return useAtomValue(mapTimeseriesStatsAtom)
+  return useAtomValue(reportStateAtom)?.stats
 }
 
 const useReportInstances = () => {
@@ -138,8 +137,7 @@ const useReportInstances = () => {
 }
 
 export const useReportFeaturesLoading = () => {
-  const { isLoading } = useAtomValue(reportStateAtom)
-  return isLoading
+  return useAtomValue(reportStateAtom)?.isLoading
 }
 
 type GetTimeseriesParams = {
@@ -188,12 +186,61 @@ const getTimeseries = ({
   return newTimeseries
 }
 
+const getTimeseriesStats = (
+  instances: FourwingsLayer[],
+  featuresFiltered: FilteredPolygons[][],
+  { start, end }: TimeRange
+) => {
+  const timeseriesStats = {} as ReportGraphStats
+  instances.forEach((instance, index) => {
+    const features = featuresFiltered[index]
+    if (features?.[0]?.contained?.length > 0) {
+      if (instance.props.static) {
+        const allValues = (features[0].contained as FourwingsStaticFeature[]).flatMap((f) => {
+          return f.properties?.[HEATMAP_STATIC_PROPERTY_ID] || []
+        })
+        if (allValues.length > 0) {
+          timeseriesStats[instance.id] = {
+            min: min(allValues),
+            max: max(allValues),
+            mean: mean(allValues),
+          }
+        }
+        return
+      }
+      const chunk = instance.getChunk()
+      const { startFrame, endFrame } = getIntervalFrames({
+        startTime: DateTime.fromISO(start).toUTC().toMillis(),
+        endTime: DateTime.fromISO(end).toUTC().toMillis(),
+        availableIntervals: [chunk.interval],
+        bufferedStart: chunk.bufferedStart,
+      })
+      const allValues = (features[0].contained as FourwingsFeature[]).flatMap((f) => {
+        const values = sliceCellValues({
+          values: f.properties.values[0],
+          startFrame,
+          endFrame,
+          startOffset: f.properties.startOffsets[0],
+        })
+        return values || []
+      })
+      if (allValues.length > 0) {
+        timeseriesStats[instance.id] = {
+          min: min(allValues),
+          max: max(allValues),
+          mean: mean(allValues),
+        }
+      }
+    }
+  })
+  return timeseriesStats
+}
+
 const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const [reportState, setReportState] = useAtom(reportStateAtom)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
   const isAreaInViewport = useReportAreaInViewport()
-  const dataviews = useSelector(selectActiveReportDataviews)
   const { start, end } = useTimerangeConnect()
   const interval = getFourwingsInterval(start, end)
 
@@ -236,68 +283,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   useEffect(() => {
     reportStateCacheHash.current = ''
-    setReportState({
-      isLoading: true,
-      timeseries: undefined,
-      featuresFiltered: undefined,
-    })
+    setReportState(initialReportState)
     // We want to clean the reportState when any of these params changes to avoid using old data until it loads
   }, [area?.id, interval, reportCategory, reportSubCategory, reportGraphMode, setReportState])
-
-  const computeTimeseriesStats = useCallback(
-    (
-      instances: FourwingsLayer[],
-      filteredFeatures: FilteredPolygons[][],
-      { start, end }: TimeRange
-    ) => {
-      const timeseriesStats = {} as ReportGraphStats
-      instances.forEach((instance, index) => {
-        const features = filteredFeatures[index]
-        if (features?.[0]?.contained?.length > 0) {
-          const dataview = dataviews.find((dv) => dv.id === instance.id)
-          if (instance.props.static) {
-            const allValues = (features[0].contained as FourwingsStaticFeature[]).flatMap((f) => {
-              return f.properties?.[HEATMAP_STATIC_PROPERTY_ID] || []
-            })
-            if (dataview?.config && allValues.length > 0) {
-              timeseriesStats[dataview.id] = {
-                min: min(allValues),
-                max: max(allValues),
-                mean: mean(allValues),
-              }
-            }
-            return
-          }
-          const chunk = instance.getChunk()
-          const { startFrame, endFrame } = getIntervalFrames({
-            startTime: DateTime.fromISO(start).toUTC().toMillis(),
-            endTime: DateTime.fromISO(end).toUTC().toMillis(),
-            availableIntervals: [chunk.interval],
-            bufferedStart: chunk.bufferedStart,
-          })
-          const allValues = (features[0].contained as FourwingsFeature[]).flatMap((f) => {
-            const values = sliceCellValues({
-              values: f.properties.values[0],
-              startFrame,
-              endFrame,
-              startOffset: f.properties.startOffsets[0],
-            })
-            return values || []
-          })
-          if (dataview?.config && allValues.length > 0) {
-            timeseriesStats[dataview.id] = {
-              min: min(allValues),
-              max: max(allValues),
-              mean: mean(allValues),
-            }
-          }
-        }
-      })
-      // TODO:timeseries embed stats into state too
-      // setTimeseriesStats(timeseriesStats)
-    },
-    []
-  )
 
   useEffect(() => {
     const processFeatures = async () => {
@@ -316,7 +304,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
           return
         }
 
-        const filteredFeatures: FilteredPolygons[][] = []
+        const featuresFiltered: FilteredPolygons[][] = []
         for (const features of data) {
           const filteredInstanceFeatures =
             area.id === ENTIRE_WORLD_REPORT_AREA_ID
@@ -326,11 +314,11 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
                   polygon: area.geometry!,
                   mode: reportCategory === 'environment' ? 'point' : 'cell',
                 })
-          filteredFeatures.push(filteredInstanceFeatures)
+          featuresFiltered.push(filteredInstanceFeatures)
         }
 
         const timeseries = getTimeseries({
-          featuresFiltered: filteredFeatures,
+          featuresFiltered,
           instances,
           // TODO:timeseries remove this if not needed
           timeseries: [],
@@ -341,7 +329,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         setReportState((prev) => ({
           ...prev,
           isLoading: false,
-          filteredFeatures,
+          featuresFiltered,
           timeseries,
         }))
       } catch (error) {
@@ -353,7 +341,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       }
     }
 
-    if (isAreaInViewport && isLoaded && reportStateCacheHash.current !== '') {
+    if (isLoaded && isAreaInViewport && reportStateCacheHash.current !== '') {
       processFeatures()
     }
   }, [
@@ -367,6 +355,30 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     reportGraphMode,
     setReportState,
     timeComparison,
+  ])
+
+  useEffect(() => {
+    const processFeatureStats = () => {
+      const stats = getTimeseriesStats(instances, reportState.featuresFiltered!, { start, end })
+      setReportState((prev) => ({ ...prev, stats }))
+    }
+
+    if (
+      isLoaded &&
+      isAreaInViewport &&
+      reportState.featuresFiltered &&
+      reportStateCacheHash.current !== ''
+    ) {
+      processFeatureStats()
+    }
+  }, [
+    instances,
+    isAreaInViewport,
+    isLoaded,
+    reportState?.featuresFiltered,
+    setReportState,
+    start,
+    end,
   ])
 
   return reportState
