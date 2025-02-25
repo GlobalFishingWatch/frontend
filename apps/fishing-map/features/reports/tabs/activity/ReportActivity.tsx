@@ -59,7 +59,7 @@ import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-function ActivityReport({ reportName }: { reportName?: string }) {
+function ActivityReport() {
   useFetchDataviewResources()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()

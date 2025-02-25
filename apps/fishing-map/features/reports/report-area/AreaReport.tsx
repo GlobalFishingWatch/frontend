@@ -185,7 +185,7 @@ export default function Report() {
         <ReportEnvironment />
       ) : (
         <div>
-          <ActivityReport reportName={reportArea?.name} />
+          <ActivityReport />
         </div>
       )}
     </Fragment>

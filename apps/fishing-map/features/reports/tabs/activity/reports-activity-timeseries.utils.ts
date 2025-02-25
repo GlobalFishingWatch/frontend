@@ -185,7 +185,6 @@ export const formatEvolutionData = (
   if (!data.timeseries) {
     return []
   }
-  let timeseries = data?.timeseries
   if (start && end && timeseriesInterval) {
     const emptyData = new Array(data.sublayers.length).fill(0)
     const startMillis = getUTCDateTime(start)
@@ -201,22 +200,33 @@ export const formatEvolutionData = (
       )
     )
 
-    timeseries = Array(intervalDiff)
+    return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
-        const date = getUTCDateTime(startMillis)
-          .plus({ [timeseriesInterval]: i })
-          .toISO() as string
-        const dataValue = data.timeseries.find((item) => date?.startsWith(item.date))
-        return {
-          date,
-          min: dataValue?.min !== undefined ? dataValue.min : emptyData,
-          max: dataValue?.max !== undefined ? dataValue.max : emptyData,
+        const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
+        const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
+        if (!dataValue) {
+          return {
+            date: date.toMillis(),
+            range: emptyData,
+            avg: emptyData,
+          }
         }
+        const range = dataValue.min.map((m, i) => [m, dataValue.max[i]])
+        const avg = dataValue.min.map((m, i) => (m + dataValue.max[i] || 0) / 2)
+
+        return {
+          date: date.toMillis(),
+          range,
+          avg,
+        }
+      })
+      .filter((d) => {
+        return !isNaN(d.avg[0])
       })
   }
 
-  return timeseries
+  return data?.timeseries
     ?.map(({ date, min, max }) => {
       const range = min.map((m, i) => [m, max[i]])
       const avg = min.map((m, i) => (m + max[i]) / 2)
