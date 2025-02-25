@@ -1,11 +1,12 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import type { MultiPolygon,Polygon } from 'geojson'
+import type { MultiPolygon, Polygon } from 'geojson'
 
 import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
 
 export type FilteredPolygons = {
   contained: (FourwingsFeature | FourwingsStaticFeature)[]
   overlapping: (FourwingsFeature | FourwingsStaticFeature)[]
+  error?: string
 }
 
 function isCellInPolygon(cellGeometry: FourwingsFeature, polygon: Polygon) {
@@ -34,7 +35,7 @@ export function filterByPolygon({
         if (!cell?.coordinates) {
           return acc
         }
-         
+
         const minX = cell.coordinates[0]
         const minY = cell.coordinates[1]
         const maxX = cell.coordinates[4]

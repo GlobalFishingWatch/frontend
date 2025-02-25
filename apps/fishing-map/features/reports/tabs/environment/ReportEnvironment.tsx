@@ -18,6 +18,7 @@ import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
+  useReportTimeSeriesErrors,
   useTimeseriesStats,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -35,6 +36,7 @@ function ReportEnvironment() {
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
   const allAvailableIntervals = getAvailableIntervalsInDataviews(environmentalDataviews)
   const interval = getFourwingsInterval(start, end, allAvailableIntervals)
+  const layersTimeseriesErrors = useReportTimeSeriesErrors()
 
   if (!environmentalDataviews?.length) return null
 
@@ -45,6 +47,7 @@ function ReportEnvironment() {
         const { min, mean, max } = timeseriesStats?.[dataview.id] || {}
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
+        const error = layersTimeseriesErrors?.[index]
         const isLoading = loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'
         const unit = dataset?.unit
         return (
@@ -62,8 +65,14 @@ function ReportEnvironment() {
               )}
             </p>
             {isDynamic ? (
-              isLoading || !layersTimeseriesFiltered?.[index] ? (
-                <ReportActivityPlaceholder showHeader={false} />
+              isLoading || !layersTimeseriesFiltered?.[index] || error !== '' ? (
+                <ReportActivityPlaceholder showHeader={false}>
+                  {error !== '' && (
+                    <p className={styles.errorMessage}>
+                      {t('errors.layerLoading', 'There was an error loading the layer')}
+                    </p>
+                  )}
+                </ReportActivityPlaceholder>
               ) : (
                 <ReportActivityEvolution
                   start={start}
