@@ -11,10 +11,7 @@ import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/de
 import type { DateTimeSeries } from 'features/reports/report-area/area-reports.hooks'
 import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import type { FilteredPolygons } from 'features/reports/tabs/activity/reports-activity-geo.utils'
-import type {
-  ReportGraphMode,
-  ReportGraphProps,
-} from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+import type { ReportGraphProps } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -37,17 +34,14 @@ export const filterTimeseriesByTimerange = (
   start: string,
   end: string
 ) => {
-  const startDate = getUTCDateTime(start)
-  const endDate = getUTCDateTime(end)
   return timeseries?.map((layerTimeseries) => {
     return {
       ...layerTimeseries,
       timeseries: layerTimeseries?.timeseries.filter((current) => {
-        const currentDate = getUTCDateTime(current.date)
         return (
           (current.max.some((v) => v !== 0) || current.min.some((v) => v !== 0)) &&
-          currentDate >= startDate &&
-          currentDate < endDate
+          current.date >= start &&
+          current.date < end
         )
       }),
     }
@@ -77,7 +71,6 @@ export type FeaturesToTimeseriesParams = {
   minVisibleValue?: number
   maxVisibleValue?: number
   sublayers: FourwingsDeckSublayer[]
-  graphMode?: ReportGraphMode
 }
 
 export const featuresToTimeseries = (
@@ -93,13 +86,11 @@ export const featuresToTimeseries = (
     sublayers,
     compareStart,
     compareEnd,
-    graphMode = 'evolution',
   }: FeaturesToTimeseriesParams
 ): ReportGraphProps[] => {
   return filteredFeatures.map(({ contained, overlapping }, sourceIndex) => {
     const featureToTimeseries: ReportGraphProps = {
       interval,
-      mode: graphMode,
       sublayers: sublayers.map((sublayer) => ({
         id: sublayer.id,
         legend: {
@@ -182,17 +173,16 @@ export const formatEvolutionData = (
     timeseriesInterval: FourwingsInterval
   }
 ) => {
-  if (!data.timeseries) {
+  if (!data?.timeseries) {
     return []
   }
-  let timeseries = data?.timeseries
   if (start && end && timeseriesInterval) {
     const emptyData = new Array(data.sublayers.length).fill(0)
     const startMillis = getUTCDateTime(start)
       .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
       .toMillis()
     const endMillis = getUTCDateTime(end)
-      .endOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
+      .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
       .toMillis()
 
     const intervalDiff = Math.floor(
@@ -201,22 +191,33 @@ export const formatEvolutionData = (
       )
     )
 
-    timeseries = Array(intervalDiff)
+    return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
-        const date = getUTCDateTime(startMillis)
-          .plus({ [timeseriesInterval]: i })
-          .toISO() as string
-        const dataValue = data.timeseries.find((item) => date?.startsWith(item.date))
-        return {
-          date,
-          min: dataValue?.min !== undefined ? dataValue.min : emptyData,
-          max: dataValue?.max !== undefined ? dataValue.max : emptyData,
+        const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
+        const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
+        if (!dataValue) {
+          return {
+            date: date.toMillis(),
+            range: emptyData,
+            avg: emptyData,
+          }
         }
+        const range = dataValue.min.map((m, i) => [m, dataValue.max[i]])
+        const avg = dataValue.min.map((m, i) => (m + dataValue.max[i] || 0) / 2)
+
+        return {
+          date: date.toMillis(),
+          range,
+          avg,
+        }
+      })
+      .filter((d) => {
+        return !isNaN(d.avg[0])
       })
   }
 
-  return timeseries
+  return data?.timeseries
     ?.map(({ date, min, max }) => {
       const range = min.map((m, i) => [m, max[i]])
       const avg = min.map((m, i) => (m + max[i]) / 2)

@@ -74,8 +74,8 @@ const ReportActivityBeforeAfterGraph: React.FC<{
   start: string
   end: string
 }> = (props) => {
-  const { start, end } = props
-  const { timeseries, sublayers, interval } = props.data
+  const { start, end, data = {} as ComparisonGraphProps } = props
+  const { timeseries, sublayers, interval } = data
   const timeComparison = useSelector(selectReportTimeComparison)
 
   const dtStart = useMemo(() => {

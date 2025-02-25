@@ -291,6 +291,13 @@ export const selectReportBufferHash = createSelector(
   }
 )
 
+export const selectTimeComparisonHash = createSelector(
+  [selectReportTimeComparison],
+  (timeComparison) => {
+    return timeComparison ? Object.values(timeComparison).join(',') : ''
+  }
+)
+
 export const selectReportBufferFeature = createSelector(
   [
     selectReportAreaDissolved,

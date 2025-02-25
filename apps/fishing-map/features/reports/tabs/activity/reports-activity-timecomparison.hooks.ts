@@ -59,7 +59,10 @@ export const useSetReportTimeComparison = () => {
       const initialDurationValue =
         initialDurationType === 'days'
           ? Math.max(1, Math.round(initialDuration.days))
-          : Math.min(MAX_MONTHS_TO_COMPARE, Math.round(initialDuration.months))
+          : Math.min(
+              MAX_MONTHS_TO_COMPARE,
+              initialDuration.months ? Math.round(initialDuration.months) : 1
+            )
 
       const baseStartMinusOffset =
         activityType === 'periodComparison'
