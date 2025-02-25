@@ -37,17 +37,14 @@ export const filterTimeseriesByTimerange = (
   start: string,
   end: string
 ) => {
-  const startDate = getUTCDateTime(start)
-  const endDate = getUTCDateTime(end)
   return timeseries?.map((layerTimeseries) => {
     return {
       ...layerTimeseries,
       timeseries: layerTimeseries?.timeseries.filter((current) => {
-        const currentDate = getUTCDateTime(current.date)
         return (
           (current.max.some((v) => v !== 0) || current.min.some((v) => v !== 0)) &&
-          currentDate >= startDate &&
-          currentDate < endDate
+          current.date >= start &&
+          current.date < end
         )
       }),
     }
@@ -191,7 +188,7 @@ export const formatEvolutionData = (
       .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
       .toMillis()
     const endMillis = getUTCDateTime(end)
-      .endOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
+      .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
       .toMillis()
 
     const intervalDiff = Math.floor(

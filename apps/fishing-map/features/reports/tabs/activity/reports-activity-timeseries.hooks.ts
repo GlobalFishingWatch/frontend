@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 import memoizeOne from 'memoize-one'
 import { max, mean, min } from 'simple-statistics'
 
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
@@ -14,10 +16,11 @@ import {
   HEATMAP_STATIC_PROPERTY_ID,
   sliceCellValues,
 } from '@globalfishingwatch/deck-layers'
-import type {
-  FourwingsFeature,
-  FourwingsInterval,
-  FourwingsStaticFeature,
+import {
+  type FourwingsFeature,
+  type FourwingsInterval,
+  type FourwingsStaticFeature,
+  getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -393,13 +396,24 @@ const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimeran
 export const useReportFilteredTimeSeries = () => {
   const { timeseries } = useAtomValue(reportStateAtom)
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
+  const interval = getFourwingsInterval(timebarStart, timebarEnd)
+  const startNormalisedByInterval = getUTCDateTime(timebarStart)
+    .startOf(interval.toLowerCase() as DateTimeUnit)
+    .toISO()
+  const endNormalisedByInterval = getUTCDateTime(timebarEnd)
+    .startOf(interval.toLowerCase() as DateTimeUnit)
+    .toISO()
   const showTimeComparison = useSelector(selectShowTimeComparison)
 
   return useMemo(() => {
     if (!timeseries?.length) return []
-    if (!showTimeComparison && timebarStart && timebarEnd) {
-      return memoizedFilterTimeseriesByTimerange(timeseries, timebarStart, timebarEnd)
+    if (!showTimeComparison && startNormalisedByInterval && endNormalisedByInterval) {
+      return memoizedFilterTimeseriesByTimerange(
+        timeseries,
+        startNormalisedByInterval,
+        endNormalisedByInterval
+      )
     }
     return timeseries
-  }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
+  }, [timeseries, showTimeComparison, startNormalisedByInterval, endNormalisedByInterval])
 }
