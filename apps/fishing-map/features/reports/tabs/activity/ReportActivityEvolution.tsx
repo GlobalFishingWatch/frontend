@@ -48,18 +48,19 @@ const ReportActivityEvolution: React.FC<{
   data: ComparisonGraphProps
   start: string
   end: string
-}> = (props) => {
-  const { data } = props
-  const dataFormated = formatEvolutionData(data)
-
+}> = ({ data, start, end }) => {
+  const dataFormated = useMemo(
+    () => formatEvolutionData(data, { start, end, timeseriesInterval: data?.interval }),
+    [data, end, start]
+  )
   const domain = useMemo(() => {
-    if (props.start && props.end && data?.interval) {
-      const cleanEnd = DateTime.fromISO(props.end, { zone: 'utc' })
+    if (start && end && data?.interval) {
+      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
         .minus({ [data?.interval]: 1 })
         .toISO() as string
-      return [new Date(props.start).getTime(), new Date(cleanEnd).getTime()]
+      return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
     }
-  }, [props.start, props.end, data?.interval])
+  }, [start, end, data?.interval])
 
   if (!dataFormated || !domain) {
     return null

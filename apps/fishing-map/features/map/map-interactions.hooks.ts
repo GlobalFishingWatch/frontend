@@ -322,7 +322,7 @@ export const useMapMouseHover = () => {
 
   const onMouseMove: DeckProps['onHover'] = useMemo(
     () =>
-      throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
+      throttle<any>((info: PickingInfo, event: MjolnirPointerEvent) => {
         setHoveredCoordinates(info.coordinate as [number, number])
         if (
           event.type === 'pointerleave' ||

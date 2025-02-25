@@ -16,7 +16,6 @@ import ReportActivityPeriodComparison from 'features/reports/tabs/activity/Repor
 import ReportActivityPeriodComparisonGraph from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import type { ReportGraphProps } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import {
-  getReportGraphMode,
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
@@ -45,8 +44,6 @@ const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> |
   beforeAfter: ReportActivityBeforeAfterGraph,
   periodComparison: ReportActivityPeriodComparisonGraph,
 }
-
-const emptyGraphData = {} as ReportGraphProps
 
 export default function ReportActivity() {
   useComputeReportTimeSeries()
@@ -78,25 +75,21 @@ export default function ReportActivity() {
   )
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
-  const reportGraphMode = getReportGraphMode(reportActivityGraph)
-  const isSameTimeseriesMode = layersTimeseriesFiltered?.length
-    ? layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
-    : true
   const showSelectors = layersTimeseriesFiltered !== undefined
-  const showPlaceholder = loading !== false || !isSameTimeseriesMode
   const isEmptyData =
-    layersTimeseriesFiltered &&
-    layersTimeseriesFiltered.every(({ timeseries }) => timeseries.length === 0) &&
-    loading === false
+    !loading && layersTimeseriesFiltered?.length
+      ? layersTimeseriesFiltered.every((data) => data?.timeseries?.length === 0)
+      : false
+
   return (
     <div className={styles.container}>
       {showSelectors && (
         <div className={styles.titleRow}>
           <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
-          <ReportActivityGraphSelector loading={showPlaceholder} />
+          <ReportActivityGraphSelector loading={loading} />
         </div>
       )}
-      {showPlaceholder ? (
+      {loading ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
@@ -106,11 +99,11 @@ export default function ReportActivity() {
         <GraphComponent
           start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
           end={reportActivityGraph === 'evolution' ? end : timeComparisonValues?.end}
-          data={isSameTimeseriesMode ? layersTimeseriesFiltered?.[0] : emptyGraphData}
+          data={layersTimeseriesFiltered?.[0]}
         />
       )}
       {showSelectors && SelectorsComponent && <SelectorsComponent />}
-      {!showPlaceholder && (
+      {!loading && (
         <Fragment>
           <div className={styles.disclaimer}>
             <UserGuideLink section="analysis" />

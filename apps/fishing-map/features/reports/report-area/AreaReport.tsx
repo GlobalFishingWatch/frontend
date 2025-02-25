@@ -143,7 +143,7 @@ export default function Report() {
 
   const handleTabClick = (option: Tab<ReportCategory>) => {
     if (option.id !== reportCategory) {
-      setTimeseries([])
+      setTimeseries(undefined)
       dispatch(resetReportData())
       dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
       fitAreaInViewport()
@@ -185,7 +185,7 @@ export default function Report() {
         <ReportEnvironment />
       ) : (
         <div>
-          <ActivityReport reportName={reportArea?.name} />
+          <ActivityReport />
         </div>
       )}
     </Fragment>

@@ -132,7 +132,8 @@ const ReportGraphTick = (props: any) => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
-  const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
+  const isCategoryInteractive =
+    !EMPTY_API_VALUES.includes(payload.value) && payload.value !== OTHERS_CATEGORY_LABEL
 
   const getTickLabel = (label: string) => {
     if (label === EMPTY_FIELD_PLACEHOLDER) {

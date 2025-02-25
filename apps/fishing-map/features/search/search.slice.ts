@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSelector,createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 
 import type { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client'
@@ -102,7 +102,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             .replace(`${VesselIdentitySourceEnum.SelfReported}.`, '')
           const filter = (filters as any)[cleanField]
           if (filter && isInFieldsAllowed) {
-            let value = filter
+            let value = filter.trim()
             // Supports searching by multiple values separated by comma and semicolon
             const regex = /[,;]/
             if (ADVANCED_SEARCH_FIELDS.includes(field as any) && regex.test(value)) {
