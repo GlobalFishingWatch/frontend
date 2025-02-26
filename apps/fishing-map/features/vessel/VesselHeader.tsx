@@ -15,7 +15,6 @@ import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import {
   selectVesselInfoData,
   selectVesselPrintMode,
@@ -52,7 +51,6 @@ const VesselHeader = () => {
   const identitySource = useSelector(selectVesselIdentitySource)
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
-  const isGFWUser = useSelector(selectIsGFWUser)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
@@ -62,14 +60,12 @@ const VesselHeader = () => {
     window.print()
   }, [])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-
   const allVesselImages = uniqBy(
     vessel.identities
       .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img) || [])
       .filter(Boolean),
     (img) => img.url
   )
-  const filteredImages = allVesselImages.filter((img) => isGFWUser || img.copyright === 'TMT')
 
   const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
     trackEvent({
@@ -136,21 +132,21 @@ const VesselHeader = () => {
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={styles.summaryContainer}>
         <div className={styles.summaryWrapper}>
-          {filteredImages.length > 0 && (
+          {allVesselImages.length > 0 && (
             <div className={styles.imageSliderContainer}>
               <img
-                src={filteredImages[currentImageIndex].url}
+                src={allVesselImages[currentImageIndex].url}
                 alt={`${shipname} - ${currentImageIndex + 1}`}
                 title={
-                  filteredImages[currentImageIndex].copyright
-                    ? `copyright: ${filteredImages[currentImageIndex].copyright}`
+                  allVesselImages[currentImageIndex].copyright
+                    ? `copyright: ${allVesselImages[currentImageIndex].copyright}`
                     : undefined
                 }
                 className={styles.vesselImage}
               />
-              {filteredImages.length > 1 && (
+              {allVesselImages.length > 1 && (
                 <div className={styles.navigationButtons}>
-                  {filteredImages.map((_, index) => (
+                  {allVesselImages.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
