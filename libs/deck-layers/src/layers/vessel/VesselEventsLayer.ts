@@ -48,9 +48,26 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   visibleEvents: { type: 'accessor', value: [] },
 }
 
+const uniformBlock = `
+  uniform eventsUniforms {
+    uniform float highlightStartTime;
+    uniform float highlightEndTime;
+  } events;
+`
+
+const eventsLayerUniforms = {
+  name: 'events',
+  vs: uniformBlock,
+  fs: uniformBlock,
+  uniformTypes: {
+    highlightStartTime: 'f32',
+    highlightEndTime: 'f32',
+  },
+}
+
 export class VesselEventsLayer<
   DataT = any,
-  ExtraProps = Record<string, unknown>
+  ExtraProps = Record<string, unknown>,
 > extends ScatterplotLayer<DataT, VesselEventsLayerProps & ExtraProps> {
   static layerName = 'VesselEventsLayer'
   static defaultProps = defaultProps
@@ -83,63 +100,57 @@ export class VesselEventsLayer<
   }
 
   getShaders() {
-    return {
-      ...super.getShaders(),
-      inject: {
-        'vs:#decl': `
-          uniform float highlightStartTime;
-          uniform float highlightEndTime;
+    const shaders = super.getShaders()
+    shaders.modules = [...(shaders.modules || []), eventsLayerUniforms]
+    shaders.inject = {
+      'vs:#decl': `
+        in float instanceShapes;
+        in float instanceId;
+        in float instanceStart;
+        in float instanceEnd;
 
-          in float instanceShapes;
-          in float instanceId;
-          in float instanceStart;
-          in float instanceEnd;
-
-          out float vStart;
-          out float vEnd;
-          out float vShape;
-        `,
-        'vs:#main-end': `
-          vShape = instanceShapes;
-          vStart = instanceStart;
-          vEnd = instanceEnd;
-          if(vStart < highlightEndTime && vEnd > highlightStartTime) {
-            gl_Position.z = 1.0;
+        out float vStart;
+        out float vEnd;
+        out float vShape;
+      `,
+      'vs:#main-end': `
+        vShape = instanceShapes;
+        vStart = instanceStart;
+        vEnd = instanceEnd;
+        if(vStart < events.highlightEndTime && vEnd > events.highlightStartTime) {
+          gl_Position.z = 1.0;
+        }
+      `,
+      'fs:#decl': `
+        in float vShape;
+        in float vStart;
+        in float vEnd;
+        const int SHAPE_SQUARE = ${SHAPES_ORDINALS.square};
+        const int SHAPE_DIAMOND = ${SHAPES_ORDINALS.diamond};
+        const int SHAPE_DIAMOND_STROKE = ${SHAPES_ORDINALS.diamondStroke};
+      `,
+      'fs:DECKGL_FILTER_COLOR': `
+        vec2 uv = abs(geometry.uv);
+        int shape = int(vShape);
+        if(vStart < events.highlightEndTime && vEnd > events.highlightStartTime) {
+          color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
+        }
+        if (shape == SHAPE_SQUARE) {
+          if (uv.x > 0.7 || uv.y > 0.7) {
+            color = vec4(0,0,0,0);
+          };
+        } else if (shape == SHAPE_DIAMOND) {
+          if (uv.x + uv.y > 1.0) {
+            color = vec4(0,0,0,0);
+          };
+        } else if (shape == SHAPE_DIAMOND_STROKE) {
+          if (uv.x + uv.y > 1.0 || uv.x + uv.y < 0.7) {
+            color = vec4(0,0,0,0);
           }
-        `,
-        'fs:#decl': `
-          uniform mat3 hueTransform;
-          uniform float highlightStartTime;
-          uniform float highlightEndTime;
-          in float vShape;
-          in float vStart;
-          in float vEnd;
-          const int SHAPE_SQUARE = ${SHAPES_ORDINALS.square};
-          const int SHAPE_DIAMOND = ${SHAPES_ORDINALS.diamond};
-          const int SHAPE_DIAMOND_STROKE = ${SHAPES_ORDINALS.diamondStroke};
-        `,
-        'fs:DECKGL_FILTER_COLOR': `
-          vec2 uv = abs(geometry.uv);
-          int shape = int(vShape);
-          if(vStart < highlightEndTime && vEnd > highlightStartTime) {
-            color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
-          }
-          if (shape == SHAPE_SQUARE) {
-            if (uv.x > 0.7 || uv.y > 0.7) {
-              color = vec4(0,0,0,0);
-            };
-          } else if (shape == SHAPE_DIAMOND) {
-            if (uv.x + uv.y > 1.0) {
-              color = vec4(0,0,0,0);
-            };
-          } else if (shape == SHAPE_DIAMOND_STROKE) {
-            if (uv.x + uv.y > 1.0 || uv.x + uv.y < 0.7) {
-              color = vec4(0,0,0,0);
-            }
-          }
-        `,
-      },
+        }
+      `,
     }
+    return shaders
   }
 
   // updateState(params: UpdateParameters<any>) {
@@ -153,11 +164,15 @@ export class VesselEventsLayer<
   draw(params: any) {
     const { highlightStartTime, highlightEndTime } = this.props
 
-    params.uniforms = {
-      ...params.uniforms,
-      highlightStartTime: highlightStartTime ? highlightStartTime : 0,
-      highlightEndTime: highlightEndTime ? highlightEndTime : 0,
+    if (this.state.model) {
+      this.state.model.shaderInputs.setProps({
+        events: {
+          highlightStartTime: highlightStartTime ? highlightStartTime : 0,
+          highlightEndTime: highlightEndTime ? highlightEndTime : 0,
+        },
+      })
     }
+
     super.draw(params)
   }
 }

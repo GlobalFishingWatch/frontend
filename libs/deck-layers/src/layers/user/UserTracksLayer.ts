@@ -32,44 +32,60 @@ const defaultProps: DefaultProps<_UserTrackLayerProps> = {
   getTimestamp: { type: 'accessor', value: (d) => d },
 }
 
+const uniformBlock = `
+  uniform trackUniforms {
+    uniform float startTime;
+    uniform float endTime;
+    uniform float highlightStartTime;
+    uniform float highlightEndTime;
+  } track;
+`
+
+const trackLayerUniforms = {
+  name: 'track',
+  vs: uniformBlock,
+  fs: uniformBlock,
+  uniformTypes: {
+    startTime: 'f32',
+    endTime: 'f32',
+    highlightStartTime: 'f32',
+    highlightEndTime: 'f32',
+  },
+}
+
 export class UserTracksPathLayer<
   DataT = any,
-  ExtraProps = Record<string, unknown>
+  ExtraProps = Record<string, unknown>,
 > extends PathLayer<DataT, _UserTrackLayerProps<DataT> & ExtraProps> {
   static layerName = 'UserTracksPathLayer'
   static defaultProps = defaultProps
 
   getShaders() {
     const shaders = super.getShaders()
+    shaders.modules = [...(shaders.modules || []), trackLayerUniforms]
     shaders.inject = {
       'vs:#decl': `
-        uniform float highlightStartTime;
-        uniform float highlightEndTime;
         in float instanceTimestamps;
         out float vTime;
       `,
       // Timestamp of the vertex
       'vs:#main-end': `
         vTime = instanceTimestamps;
-        if(vTime > 0.0 && vTime > highlightStartTime && vTime < highlightEndTime) {
+        if(vTime > 0.0 && vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
           gl_Position.z = 1.0;
         }
       `,
       'fs:#decl': `
-        uniform float startTime;
-        uniform float endTime;
-        uniform float highlightStartTime;
-        uniform float highlightEndTime;
         in float vTime;
       `,
       // Drop the segments outside of the time window
       'fs:#main-start': `
-        if(vTime > 0.0 && (vTime < startTime || vTime > endTime)) {
+        if(vTime > 0.0 && (vTime < track.startTime || vTime > track.endTime)) {
           discard;
         }
       `,
       'fs:DECKGL_FILTER_COLOR': `
-        if (vTime > 0.0 && vTime > highlightStartTime && vTime < highlightEndTime) {
+        if (vTime > 0.0 && vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
           // color = vHighlightColor;
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
@@ -97,13 +113,17 @@ export class UserTracksPathLayer<
   draw(params: any) {
     const { startTime, endTime, highlightStartTime = 0, highlightEndTime = 0 } = this.props
 
-    params.uniforms = {
-      ...params.uniforms,
-      startTime: startTime || -MAX_FILTER_VALUE,
-      endTime: endTime || MAX_FILTER_VALUE,
-      highlightStartTime,
-      highlightEndTime,
+    if (this.state.model) {
+      this.state.model.shaderInputs.setProps({
+        track: {
+          startTime: startTime || -MAX_FILTER_VALUE,
+          endTime: endTime || MAX_FILTER_VALUE,
+          highlightStartTime,
+          highlightEndTime,
+        },
+      })
     }
+
     super.draw(params)
   }
 }
