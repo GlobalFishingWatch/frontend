@@ -234,7 +234,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       'vs:#decl': /*glsl*/ `
         in float instanceTimestamps;
         in float instanceSpeeds;
-        in float instanceElevations
+        in float instanceElevations;
         out float vTime;
         out float vSpeed;
         out float vElevation;
