@@ -8,7 +8,6 @@ import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -19,8 +18,10 @@ import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
+  useReportTimeSeriesErrors,
   useTimeseriesStats,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { upperFirst } from 'utils/info'
 
 import styles from './ReportEnvironment.module.css'
@@ -28,13 +29,14 @@ import styles from './ReportEnvironment.module.css'
 function ReportEnvironment() {
   useComputeReportTimeSeries()
   const { t } = useTranslation()
-  const timerange = useSelector(selectTimeRange)
+  const { start, end } = useTimerangeConnect()
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const timeseriesStats = useTimeseriesStats()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
   const allAvailableIntervals = getAvailableIntervalsInDataviews(environmentalDataviews)
-  const interval = getFourwingsInterval(timerange.start, timerange.end, allAvailableIntervals)
+  const interval = getFourwingsInterval(start, end, allAvailableIntervals)
+  const layersTimeseriesErrors = useReportTimeSeriesErrors()
 
   if (!environmentalDataviews?.length) return null
 
@@ -42,9 +44,10 @@ function ReportEnvironment() {
     <Fragment>
       {environmentalDataviews.map((dataview, index) => {
         const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
-        const { min, mean, max } = timeseriesStats[dataview.id] || {}
+        const { min, mean, max } = timeseriesStats?.[dataview.id] || {}
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
+        const error = layersTimeseriesErrors?.[index]
         const isLoading = loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'
         const unit = dataset?.unit
         return (
@@ -56,19 +59,24 @@ function ReportEnvironment() {
               <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
               {isDynamic && (
                 <Fragment>
-                  {t('common.between', 'betweeen')}{' '}
-                  <strong>{formatI18nDate(timerange.start)}</strong> {t('common.and', 'and')}{' '}
-                  <strong>{formatI18nDate(timerange.end)}</strong>
+                  {t('common.between', 'betweeen')} <strong>{formatI18nDate(start)}</strong>{' '}
+                  {t('common.and', 'and')} <strong>{formatI18nDate(end)}</strong>
                 </Fragment>
               )}
             </p>
             {isDynamic ? (
-              isLoading || !layersTimeseriesFiltered?.[index] ? (
-                <ReportActivityPlaceholder showHeader={false} />
+              isLoading || !layersTimeseriesFiltered?.[index] || error !== '' ? (
+                <ReportActivityPlaceholder showHeader={false}>
+                  {error !== '' && (
+                    <p className={styles.errorMessage}>
+                      {t('errors.layerLoading', 'There was an error loading the layer')}
+                    </p>
+                  )}
+                </ReportActivityPlaceholder>
               ) : (
                 <ReportActivityEvolution
-                  start={timerange.start}
-                  end={timerange.end}
+                  start={start}
+                  end={end}
                   data={layersTimeseriesFiltered?.[index]}
                 />
               )

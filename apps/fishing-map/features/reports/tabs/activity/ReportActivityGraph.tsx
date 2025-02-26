@@ -2,8 +2,6 @@ import React, { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { useDebounce } from '@globalfishingwatch/react-hooks'
-
 import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useFitAreaInViewport,
@@ -19,10 +17,10 @@ import ReportActivityPeriodComparison from 'features/reports/tabs/activity/Repor
 import ReportActivityPeriodComparisonGraph from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import type { ReportGraphProps } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import {
-  getReportGraphMode,
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
+  useReportTimeSeriesErrors,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
@@ -48,8 +46,6 @@ const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> |
   beforeAfter: ReportActivityBeforeAfterGraph,
   periodComparison: ReportActivityPeriodComparisonGraph,
 }
-
-const emptyGraphData = {} as ReportGraphProps
 
 export default function ReportActivity() {
   useComputeReportTimeSeries()
@@ -82,43 +78,39 @@ export default function ReportActivity() {
   )
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
-  const reportGraphMode = getReportGraphMode(reportActivityGraph)
-  const isSameTimeseriesMode = layersTimeseriesFiltered?.length
-    ? layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
-    : true
+  const layersTimeseriesErrors = useReportTimeSeriesErrors()
+  const hasError = layersTimeseriesErrors?.[0] !== ''
   const showSelectors = layersTimeseriesFiltered !== undefined
   const isEmptyData =
-    layersTimeseriesFiltered &&
-    layersTimeseriesFiltered.every(({ timeseries }) => timeseries.length === 0) &&
-    loading === false
-  const showPlaceholder = loading !== false || !isSameTimeseriesMode
-  const debouncedIsEmptyData = useDebounce(isEmptyData, 200)
+    !loading && layersTimeseriesFiltered?.length
+      ? layersTimeseriesFiltered.every((data) => data?.timeseries?.length === 0)
+      : false
 
   return (
     <div className={styles.container}>
       {showSelectors && (
         <div className={styles.titleRow}>
-          {reportCategory === 'activity' && (
-            <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
-          )}
-          <ReportActivityGraphSelector loading={showPlaceholder} />
+          <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
+          <ReportActivityGraphSelector loading={loading} />
         </div>
       )}
-      {debouncedIsEmptyData ? (
-        <ReportActivityPlaceholder showHeader={false} animate={false}>
-          {t('analysis.noDataByArea', 'No data available for the selected area')}
-        </ReportActivityPlaceholder>
-      ) : showPlaceholder || isEmptyData ? (
+      {loading ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
+      ) : isEmptyData || hasError ? (
+        <ReportActivityPlaceholder showHeader={false} animate={false}>
+          {hasError
+            ? t('errors.layerLoading', 'There was an error loading the layer')
+            : t('analysis.noDataByArea', 'No data available for the selected area')}
+        </ReportActivityPlaceholder>
       ) : (
         <GraphComponent
           start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
           end={reportActivityGraph === 'evolution' ? end : timeComparisonValues?.end}
-          data={isSameTimeseriesMode ? layersTimeseriesFiltered?.[0] : emptyGraphData}
+          data={layersTimeseriesFiltered?.[0]}
         />
       )}
       {showSelectors && SelectorsComponent && <SelectorsComponent />}
-      {!showPlaceholder && (
+      {!loading && (
         <Fragment>
           <div className={styles.disclaimer}>
             <UserGuideLink section="analysis" />
