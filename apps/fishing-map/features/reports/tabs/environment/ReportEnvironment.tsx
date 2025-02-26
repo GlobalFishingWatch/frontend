@@ -13,6 +13,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
 import {
   useComputeReportTimeSeries,
@@ -81,7 +82,9 @@ function ReportEnvironment() {
                 />
               )
             ) : null}
-            {!isLoading && min !== undefined && mean !== undefined && max !== undefined && (
+            {isLoading ? (
+              <ReportStatsPlaceholder />
+            ) : min !== undefined && mean !== undefined && max !== undefined ? (
               <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
                 {isDynamic
                   ? t('analysis.statsDisclaimerDynamic', {
@@ -108,7 +111,7 @@ function ReportEnvironment() {
                   </span>
                 )}
               </p>
-            )}
+            ) : null}
           </div>
         )
       })}
