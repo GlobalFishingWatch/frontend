@@ -7,7 +7,10 @@ import {
   useFitAreaInViewport,
   useReportAreaBounds,
 } from 'features/reports/report-area/area-reports.hooks'
-import { selectTimeComparisonValues } from 'features/reports/report-area/area-reports.selectors'
+import {
+  selectReportAreaStatus,
+  selectTimeComparisonValues,
+} from 'features/reports/report-area/area-reports.selectors'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
@@ -22,6 +25,7 @@ import {
   useReportTimeSeriesErrors,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
@@ -75,6 +79,7 @@ export default function ReportActivity() {
     [reportActivityGraph]
   )
   const loading = useReportFeaturesLoading()
+  const reportAreaStatus = useSelector(selectReportAreaStatus)
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
   const hasError = layersTimeseriesErrors?.[0] !== ''
@@ -92,7 +97,7 @@ export default function ReportActivity() {
           <ReportActivityGraphSelector loading={loading} />
         </div>
       )}
-      {loading ? (
+      {loading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
