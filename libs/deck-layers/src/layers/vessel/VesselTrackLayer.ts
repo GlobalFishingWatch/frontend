@@ -231,15 +231,15 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     const shaders = super.getShaders()
     shaders.modules = [...(shaders.modules || []), trackLayerUniforms]
     shaders.inject = {
-      'vs:#decl': `
+      'vs:#decl': /*glsl*/ `
         in float instanceTimestamps;
         in float instanceSpeeds;
-        in float instanceElevations;
+        in float instanceElevations
         out float vTime;
         out float vSpeed;
         out float vElevation;
       `,
-      'vs:#main-end': `
+      'vs:#main-end': /*glsl*/ `
         vTime = instanceTimestamps;
         vSpeed = instanceSpeeds;
         vElevation = instanceElevations;
@@ -247,18 +247,18 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
           gl_Position.z = 1.0;
         }
       `,
-      'fs:#decl': `
+      'fs:#decl': /*glsl*/ `
         in float vTime;
         in float vSpeed;
         in float vElevation;
       `,
       // Drop the segments outside of the time window
-      'fs:#main-start': `
+      'fs:#main-start': /*glsl*/ `
         if (vTime < track.startTime || vTime > track.endTime) {
           discard;
         }
       `,
-      'fs:DECKGL_FILTER_COLOR': `
+      'fs:DECKGL_FILTER_COLOR': /*glsl*/ `
         if(track.colorBy == ${COLOR_BY.speed}.0) {
           ${generateShaderColorSteps({
             property: 'vSpeed',

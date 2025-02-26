@@ -103,7 +103,7 @@ export class VesselEventsLayer<
     const shaders = super.getShaders()
     shaders.modules = [...(shaders.modules || []), eventsLayerUniforms]
     shaders.inject = {
-      'vs:#decl': `
+      'vs:#decl': /*glsl*/ `
         in float instanceShapes;
         in float instanceId;
         in float instanceStart;
@@ -113,7 +113,7 @@ export class VesselEventsLayer<
         out float vEnd;
         out float vShape;
       `,
-      'vs:#main-end': `
+      'vs:#main-end': /*glsl*/ `
         vShape = instanceShapes;
         vStart = instanceStart;
         vEnd = instanceEnd;
@@ -121,7 +121,7 @@ export class VesselEventsLayer<
           gl_Position.z = 1.0;
         }
       `,
-      'fs:#decl': `
+      'fs:#decl': /*glsl*/ `
         in float vShape;
         in float vStart;
         in float vEnd;
@@ -129,7 +129,7 @@ export class VesselEventsLayer<
         const int SHAPE_DIAMOND = ${SHAPES_ORDINALS.diamond};
         const int SHAPE_DIAMOND_STROKE = ${SHAPES_ORDINALS.diamondStroke};
       `,
-      'fs:DECKGL_FILTER_COLOR': `
+      'fs:DECKGL_FILTER_COLOR': /*glsl*/ `
         vec2 uv = abs(geometry.uv);
         int shape = int(vShape);
         if(vStart < events.highlightEndTime && vEnd > events.highlightStartTime) {

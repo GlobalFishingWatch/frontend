@@ -64,27 +64,27 @@ export class UserTracksPathLayer<
     const shaders = super.getShaders()
     shaders.modules = [...(shaders.modules || []), trackLayerUniforms]
     shaders.inject = {
-      'vs:#decl': `
+      'vs:#decl': /*glsl*/ `
         in float instanceTimestamps;
         out float vTime;
       `,
       // Timestamp of the vertex
-      'vs:#main-end': `
+      'vs:#main-end': /*glsl*/ `
         vTime = instanceTimestamps;
         if(vTime > 0.0 && vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
           gl_Position.z = 1.0;
         }
       `,
-      'fs:#decl': `
+      'fs:#decl': /*glsl*/ `
         in float vTime;
       `,
       // Drop the segments outside of the time window
-      'fs:#main-start': `
+      'fs:#main-start': /*glsl*/ `
         if(vTime > 0.0 && (vTime < track.startTime || vTime > track.endTime)) {
           discard;
         }
       `,
-      'fs:DECKGL_FILTER_COLOR': `
+      'fs:DECKGL_FILTER_COLOR': /*glsl*/ `
         if (vTime > 0.0 && vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
           // color = vHighlightColor;
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
