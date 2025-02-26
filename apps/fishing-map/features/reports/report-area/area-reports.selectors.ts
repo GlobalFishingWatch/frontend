@@ -35,6 +35,7 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 import { createDeepEqualSelector } from 'utils/selectors'
 
@@ -221,7 +222,7 @@ const selectReportAreaData = createSelector([selectCurrentReportArea], (reportAr
   return reportArea?.data
 })
 
-export const selectReportAreaStatus = createSelector([selectCurrentReportArea], (reportArea) => {
+const selectReportAreaApiStatus = createSelector([selectCurrentReportArea], (reportArea) => {
   return reportArea?.status
 })
 
@@ -333,5 +334,15 @@ export const selectReportArea = createSelector(
       return bufferedArea
     }
     return area
+  }
+)
+
+export const selectReportAreaStatus = createSelector(
+  [selectReportAreaApiStatus, selectIsVesselGroupReportLocation],
+  (areaApiStatus, isVesselGroupReportLocation) => {
+    if (isVesselGroupReportLocation) {
+      return AsyncReducerStatus.Finished
+    }
+    return areaApiStatus
   }
 )
