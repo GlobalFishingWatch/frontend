@@ -87,7 +87,7 @@ const ReportActivityEvolution: React.FC<{
           <XAxis
             domain={domain}
             dataKey="date"
-            interval="equidistantPreserveStart"
+            minTickGap={10}
             tickFormatter={(tick: string) => formatDateTicks(tick, data?.interval)}
             axisLine={paddedDomain[0] === 0}
           />
