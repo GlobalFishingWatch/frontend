@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next'
-import { DateTime, Duration } from 'luxon'
+import { Duration } from 'luxon'
 
 import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
 

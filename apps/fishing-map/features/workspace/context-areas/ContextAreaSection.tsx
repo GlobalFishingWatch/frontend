@@ -14,12 +14,13 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
-import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 
 import LayerPanel from './ContextAreaLayerPanel'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 function ContextAreaSection(): React.ReactElement<any> {
   const { t } = useTranslation()

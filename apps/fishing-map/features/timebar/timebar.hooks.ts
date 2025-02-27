@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import type { TimebarGraphs } from 'types'
 
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
@@ -16,20 +15,17 @@ import {
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import {
+  selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import {
-  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
-  selectActiveReportActivityDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import { useFitAreaInViewport } from 'features/reports/areas/area-reports.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
 
 import type { TimeRange } from './timebar.slice'
@@ -263,7 +259,7 @@ export const useTimebarGraphConnect = () => {
 // should be instanciated only once to avoid doing it more than needed
 export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
-  const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
+  const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
@@ -316,6 +312,7 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeActivityDataviews,
     activeDetectionsDataviews,

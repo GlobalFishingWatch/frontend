@@ -9,7 +9,7 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   selectReportBufferFeature,
   selectReportPreviewBufferFeature,
-} from 'features/reports/areas/area-reports.selectors'
+} from 'features/reports/report-area/area-reports.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import {
   selectIsAnyAreaReportLocation,

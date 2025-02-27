@@ -38,7 +38,7 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
-} from 'features/reports/areas/area-reports.selectors'
+} from 'features/reports/report-area/area-reports.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { useVesselTracksLayers } from 'features/timebar/timebar-vessel.hooks'

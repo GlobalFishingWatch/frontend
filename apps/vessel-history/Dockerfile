@@ -11,6 +11,7 @@ WORKDIR /app
 
 ARG APP_NAME=vessel-history
 ENV APP_NAME $APP_NAME
+ENV NEXT_PUBLIC_API_VERSION v2
 
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.

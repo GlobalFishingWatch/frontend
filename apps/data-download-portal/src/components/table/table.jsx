@@ -1,6 +1,6 @@
-import React, { Fragment,useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useFlexLayout, useGlobalFilter,useRowSelect, useSortBy, useTable } from 'react-table'
+import { useFlexLayout, useGlobalFilter, useRowSelect, useSortBy, useTable } from 'react-table'
 import { FixedSizeList } from 'react-window'
 import escapeRegExp from 'lodash/escapeRegExp'
 import { matchSorter } from 'match-sorter'
@@ -219,30 +219,27 @@ function Table({ columns, data }) {
         <div>
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(
-                (column) =>
-                  console.log(column) || (
-                    <div
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                      className={styles.th}
-                    >
-                      {column.render('Header')}{' '}
-                      {column.id !== 'selection' && (
-                        <span className={styles.sort}>
-                          {column.isSorted ? (
-                            column.isSortedDesc ? (
-                              <IconArrowDown />
-                            ) : (
-                              <IconArrowUp />
-                            )
-                          ) : (
-                            ''
-                          )}
-                        </span>
+              {headerGroup.headers.map((column) => (
+                <div
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  className={styles.th}
+                >
+                  {column.render('Header')}{' '}
+                  {column.id !== 'selection' && (
+                    <span className={styles.sort}>
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <IconArrowDown />
+                        ) : (
+                          <IconArrowUp />
+                        )
+                      ) : (
+                        ''
                       )}
-                    </div>
-                  )
-              )}
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
           ))}
         </div>

@@ -26,3 +26,7 @@ export const getFlags = (lng = i18n.language): Flag[] =>
       }
     })
     .sort((a, b) => a.label.localeCompare(b.label))
+
+export function cleanFlagState(flagState: string) {
+  return flagState.replace(/,/g, '')
+}

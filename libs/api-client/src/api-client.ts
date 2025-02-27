@@ -495,9 +495,8 @@ export class GFW_API_CLASS {
           console.log(`GFWAPI: Token wasn't valid, trying to refresh`)
         }
         try {
-          const { token, refreshToken: newRefreshToken } = await this.getTokenWithRefreshToken(
-            refreshToken
-          )
+          const { token, refreshToken: newRefreshToken } =
+            await this.getTokenWithRefreshToken(refreshToken)
           this.setToken(token)
           this.setRefreshToken(newRefreshToken)
           if (this.debug) {

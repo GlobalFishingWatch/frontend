@@ -25,7 +25,11 @@ export const gfwBaseQuery =
   > =>
   async ({ url, signal, body }) => {
     try {
-      const data = await GFWAPI.fetch<Response>(baseUrl + url, { signal, method, body })
+      const data = await GFWAPI.fetch<Response>(baseUrl + url, {
+        signal,
+        method,
+        body,
+      })
       return { data }
     } catch (gfwApiError: any) {
       return {

@@ -4,11 +4,10 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import type { MRT_ColumnDef } from 'material-react-table'
 import { MaterialReactTable } from 'material-react-table'
-import type { Locale } from 'types'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
 import { FIRST_YEAR_OF_DATA } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -26,10 +25,8 @@ import {
   selectSelectedVessels,
   setSelectedVessels,
 } from 'features/search/search.slice'
-import type { VesselSearchState } from 'features/search/search.types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
-import type { VesselIdentityProperty } from 'features/vessel/vessel.utils'
 import {
   getBestMatchCriteriaIdentity,
   getOtherVesselNames,
@@ -38,6 +35,7 @@ import {
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import type { Locale, QueryParam } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   EMPTY_FIELD_PLACEHOLDER,
@@ -154,7 +152,11 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'shipname') : EMPTY_FIELD_PLACEHOLDER
           const label = `${name} ${otherNamesLabel || ''}`
-          const vesselQuery = { start: transmissionDateFrom, end: transmissionDateTo }
+          const vesselQuery = {
+            start: transmissionDateFrom,
+            end: transmissionDateTo,
+            includeRelatedIdentities: searchFilters.id ? false : true,
+          } as Record<QueryParam, any>
 
           return (
             <VesselLink
@@ -286,7 +288,15 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t('vessel.transmission_other', 'Transmissions'),
       },
     ]
-  }, [fetchResults, i18n.language, isSearchLocation, onVesselClick, searchFilters?.infoSource, t])
+  }, [
+    fetchResults,
+    i18n.language,
+    isSearchLocation,
+    onVesselClick,
+    searchFilters.id,
+    searchFilters?.infoSource,
+    t,
+  ])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {

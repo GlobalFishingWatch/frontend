@@ -1,0 +1,148 @@
+.placeholder {
+  padding-block: var(--space-XL);
+}
+
+.disclaimer {
+  display: flex;
+  align-items: flex-start;
+  margin: var(--space-L) var(--space-M);
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.nested {
+  margin-left: var(--space-M);
+}
+
+.row {
+  margin-block: var(--space-XS);
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.disclaimer svg {
+  margin-top: 0.2rem;
+}
+
+.container {
+  padding-inline: var(--space-M);
+}
+
+.title {
+  padding-top: var(--space-M);
+}
+
+.vesselName {
+  display: flex;
+  align-items: center;
+}
+
+.insightContainer {
+  padding-block: var(--space-M);
+  border-bottom: var(--border);
+}
+
+.insightContainer:last-child {
+  border-bottom: none;
+  padding-bottom: var(--space-L);
+}
+
+.insightTitle {
+  display: flex;
+  align-items: center;
+}
+
+.coverageBar {
+  margin-top: var(--space-M);
+  position: relative;
+  width: 20rem;
+  height: 0.5rem;
+  border-radius: 0.5rem;
+  background-image: linear-gradient(90deg, rgba(22, 63, 137, 0.2) 0%, rgba(22, 63, 137, 0.8) 100%);
+}
+
+.coverageIndicator {
+  position: absolute;
+  width: 10rem;
+  transform: translate(-50%, -1.9rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.coverageDot {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.6rem;
+  background: var(--color-primary-blue);
+  border: 1px solid var(--color-white);
+}
+
+.coverageLabel {
+  text-align: center;
+  line-height: 1;
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.marginLeft {
+  margin-left: var(--space-XS);
+}
+
+.eventDetailsList li {
+  padding-left: 0;
+  margin-left: var(--space-M);
+}
+
+.eventDetailsList li:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.seeMoreBtn {
+  top: 0.4rem;
+  margin-left: var(--space-XS);
+}
+
+.insightContainer .collapsable {
+  justify-content: flex-start;
+}
+
+.insightContainer .collapsable::before {
+  display: none;
+  content: '';
+}
+
+.insightContainer .collapsableLabel {
+  padding-left: 0;
+  font: var(--font-M);
+  color: var(--color-primary-blue);
+  text-transform: none;
+}
+
+.loadingPlaceholder {
+  height: 1.2rem;
+  border-radius: 0.8rem;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--primary-blue-rgb), 0.1) 0%,
+    rgba(var(--primary-blue-rgb), 0.2) 40%,
+    rgba(var(--primary-blue-rgb), 0.1) 70%
+  );
+  background-size: 1000px 100%;
+  animation: placeHolderShimmer 2s linear forwards infinite;
+  margin-block: var(--space-XS);
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+
+  100% {
+    background-position: 500px 0;
+  }
+}

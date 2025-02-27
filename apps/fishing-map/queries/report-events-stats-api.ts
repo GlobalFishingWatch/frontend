@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import type { RootState } from 'reducers'
 
-import type { StatsIncludes } from '@globalfishingwatch/api-types'
+import type { StatsByVessel, StatsIncludes } from '@globalfishingwatch/api-types'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 export type BaseReportEventsVesselsParamsFilters = {
@@ -36,15 +36,7 @@ export type ReportEventsStatsResponse = {
   groups: ReportEventsStatsResponseGroups
 }
 
-export type ReportEventsVesselsResponseItem = {
-  numEvents: number
-  portCountry: string
-  portName: string
-  totalDuration: number
-  vesselId: string
-}
-
-export type ReportEventsVesselsResponse = ReportEventsVesselsResponseItem[]
+export type ReportEventsVesselsResponse = StatsByVessel[]
 
 export const EVENTS_TIME_FILTER_MODE = 'START-DATE'
 
@@ -75,7 +67,7 @@ export const reportEventsStatsApi = createApi({
   }),
   endpoints: (builder) => ({
     getReportEventsStats: builder.query<ReportEventsStatsResponse, ReportEventsStatsParams>({
-      query: (params) => {
+      queryFn: async (params, { signal }, extraOptions, baseQuery) => {
         const startMillis = DateTime.fromISO(params.start).toMillis()
         const endMillis = DateTime.fromISO(params.end).toMillis()
         const interval = getFourwingsInterval(startMillis, endMillis)
@@ -84,9 +76,8 @@ export const reportEventsStatsApi = createApi({
           includes: params.includes,
           'timeseries-interval': interval,
         }
-        return {
-          url: `${getQueryParamsResolved(query)}`,
-        }
+        const url = getQueryParamsResolved(query)
+        return baseQuery({ url, signal }) as Promise<{ data: ReportEventsStatsResponse }>
       },
     }),
     getReportEventsVessels: builder.query<ReportEventsVesselsResponse, ReportEventsVesselsParams>({

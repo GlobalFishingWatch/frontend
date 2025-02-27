@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import Footer from 'features/footer/Footer'
-import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
+import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
 import {
   selectIsWorkspaceReady,
   selectWorkspaceStatus,

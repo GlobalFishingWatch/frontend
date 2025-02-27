@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Sticky from 'react-sticky-el'
+import { uniqBy } from 'es-toolkit'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -14,7 +15,6 @@ import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import {
   selectVesselInfoData,
   selectVesselPrintMode,
@@ -51,7 +51,6 @@ const VesselHeader = () => {
   const identitySource = useSelector(selectVesselIdentitySource)
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
-  const isGFWUser = useSelector(selectIsGFWUser)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
@@ -61,11 +60,12 @@ const VesselHeader = () => {
     window.print()
   }, [])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const vesselImages = isGFWUser
-    ? vessel.identities
-        .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img.url) || [])
-        .filter(Boolean)
-    : []
+  const allVesselImages = uniqBy(
+    vessel.identities
+      .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img) || [])
+      .filter(Boolean),
+    (img) => img.url
+  )
 
   const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
     trackEvent({
@@ -132,16 +132,21 @@ const VesselHeader = () => {
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={styles.summaryContainer}>
         <div className={styles.summaryWrapper}>
-          {vesselImages.length > 0 && (
+          {allVesselImages.length > 0 && (
             <div className={styles.imageSliderContainer}>
               <img
-                src={vesselImages[currentImageIndex]}
-                alt={`${shipname} - vessel ${currentImageIndex + 1}`}
+                src={allVesselImages[currentImageIndex].url}
+                alt={`${shipname} - ${currentImageIndex + 1}`}
+                title={
+                  allVesselImages[currentImageIndex].copyright
+                    ? `copyright: ${allVesselImages[currentImageIndex].copyright}`
+                    : undefined
+                }
                 className={styles.vesselImage}
               />
-              {vesselImages.length > 1 && (
+              {allVesselImages.length > 1 && (
                 <div className={styles.navigationButtons}>
-                  {vesselImages.map((_, index) => (
+                  {allVesselImages.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
