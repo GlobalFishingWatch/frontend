@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import type { FilterContext } from '@deck.gl/core'
+import { type FilterContext, MapController } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
 
@@ -23,6 +23,23 @@ import { selectReportCategory } from 'features/reports/reports.selectors'
 import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import type { MapCoordinates } from 'types'
+
+// TODO: remove this once this PR https://github.com/visgl/deck.gl-community/pull/220
+// is merged and version 9.1 is released
+export class EditableLayerMapController extends MapController {
+  constructor(props: any) {
+    super(props)
+    // We cannot enable 'anyclick', because this seems to be not known to mjolnir.js anymore.
+    this.events = ['click']
+  }
+  handleEvent(event: any) {
+    if (event.type == 'click') {
+      // @ts-ignore https://github.com/visgl/deck.gl-community/issues/201
+      this.eventManager.manager.emit('anyclick', event)
+    }
+    return super.handleEvent(event)
+  }
+}
 
 const DeckGLWrapper = () => {
   const deckRef = useRef<DeckGLRef>(null)
@@ -92,6 +109,7 @@ const DeckGLWrapper = () => {
       id={MAP_CANVAS_ID}
       ref={deckRef}
       views={MAP_VIEW}
+      controller={{ type: EditableLayerMapController }}
       layers={deckRef ? layers : []}
       onAfterRender={onAfterRenderHandler}
       style={mapStyles}
