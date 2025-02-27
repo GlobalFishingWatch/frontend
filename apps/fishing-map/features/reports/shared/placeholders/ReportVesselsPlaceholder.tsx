@@ -37,7 +37,7 @@ export default function ReportVesselsPlaceholder({
                 />
               </div>
             )}
-            {showGraph && <ReportBarGraphPlaceholder />}
+            {showGraph && <ReportBarGraphPlaceholder animate={animate} />}
             {/* search */}
             {showSearch && (
               <div

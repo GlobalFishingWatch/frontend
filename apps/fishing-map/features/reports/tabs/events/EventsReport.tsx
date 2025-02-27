@@ -171,7 +171,7 @@ function EventsReport() {
             )}
           </div>
           {!timerangeSupported ? (
-            <ReportVesselsPlaceholder>
+            <ReportVesselsPlaceholder animate={false}>
               <div className={cx(styles.cover, styles.error)}>
                 <p>
                   {t(
@@ -182,7 +182,7 @@ function EventsReport() {
               </div>
             </ReportVesselsPlaceholder>
           ) : reportOutdated ? (
-            <ReportVesselsPlaceholder>
+            <ReportVesselsPlaceholder animate={false}>
               <div className={cx(styles.cover, styles.center, styles.top)}>
                 <p
                   dangerouslySetInnerHTML={{

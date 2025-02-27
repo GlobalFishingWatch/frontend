@@ -139,7 +139,7 @@ function ActivityReport() {
             "Your account doesn't have permissions to see the vessels active in this area"
           )
       return (
-        <ReportVesselsPlaceholder>
+        <ReportVesselsPlaceholder animate={false}>
           <div className={styles.cover}>
             <WorkspaceLoginError
               title={errorMsg}
@@ -152,10 +152,10 @@ function ActivityReport() {
     if (statusError) {
       if (concurrentReportError) {
         if (isSameWorkspaceReport) {
-          return <ReportVesselsPlaceholder />
+          return <ReportVesselsPlaceholder animate={false} />
         }
         return (
-          <ReportVesselsPlaceholder>
+          <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
               <p className={styles.error}>
                 {t('analysis.errorConcurrentReport', 'There is already a report running')}
@@ -177,7 +177,7 @@ function ActivityReport() {
         (statusError.status === 422 && statusError.message === 'Geometry too large')
       ) {
         return (
-          <ReportVesselsPlaceholder>
+          <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
               <p className={styles.error}>
                 {t(
@@ -191,7 +191,7 @@ function ActivityReport() {
       }
       if (isTimeoutError) {
         return (
-          <ReportVesselsPlaceholder>
+          <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
               <p className={cx(styles.center, styles.top)}>
                 {t('analysis.timeoutError', 'This is taking more than expected, please wait')}
@@ -201,7 +201,7 @@ function ActivityReport() {
         )
       }
       return (
-        <ReportVesselsPlaceholder>
+        <ReportVesselsPlaceholder animate={false}>
           <div className={styles.cover}>
             <p className={styles.error}>{statusError.message}</p>
           </div>
@@ -248,7 +248,7 @@ function ActivityReport() {
     }
     if (timerangeTooLong) {
       return (
-        <ReportVesselsPlaceholder>
+        <ReportVesselsPlaceholder animate={false}>
           <div className={cx(styles.cover, styles.error)}>
             <p>
               {t(
@@ -267,7 +267,7 @@ function ActivityReport() {
 
     if (timeComparisonValues) {
       return (
-        <ReportVesselsPlaceholder>
+        <ReportVesselsPlaceholder animate={false}>
           <div className={cx(styles.cover, styles.center, styles.top)}>
             <p
               dangerouslySetInnerHTML={{
@@ -288,7 +288,7 @@ function ActivityReport() {
       !hasAuthError
     ) {
       return (
-        <ReportVesselsPlaceholder>
+        <ReportVesselsPlaceholder animate={false}>
           <div className={cx(styles.cover, styles.center, styles.top)}>
             <p
               dangerouslySetInnerHTML={{
@@ -360,7 +360,7 @@ function ActivityReport() {
       )
     }
 
-    return <ReportVesselsPlaceholder />
+    return <ReportVesselsPlaceholder animate={false} />
   }, [
     workspaceStatus,
     timerangeTooLong,
