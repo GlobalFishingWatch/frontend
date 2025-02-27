@@ -33,7 +33,6 @@ import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/Repor
 import ReportSummary from 'features/reports/shared/summary/ReportSummary'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
-import { getDateRangeHash } from 'features/reports/tabs/activity/reports-activity.slice'
 import {
   selectEventsStatsValueKeys,
   selectEventsTimeseries,
@@ -51,7 +50,7 @@ function getReportHash(
   subsection: AnyReportSubCategory | undefined,
   { start, end }: { start: string; end: string }
 ) {
-  return `${subsection || ''}-${getDateRangeHash({ start, end })}`
+  return `${subsection || ''}-(${start}-${end})`
 }
 
 function EventsReport() {

@@ -42,9 +42,9 @@ import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import ReportDownload from 'features/reports/tabs/activity/download/ReportDownload'
 import ReportActivityGraph from 'features/reports/tabs/activity/ReportActivityGraph'
 import {
-  getDateRangeHash,
-  selectReportVesselsDateRangeHash,
-  setDateRangeHash,
+  getReportRequestHash,
+  selectReportRequestHash,
+  setReportRequestHash,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectHasReportVessels } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
@@ -69,7 +69,7 @@ function ActivityReport() {
   const guestUser = useSelector(selectIsGuestUser)
   const datasetId = useSelector(selectReportDatasetId)
   const areaId = useSelector(selectReportAreaId)
-  const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
+  const reportRequestHash = useSelector(selectReportRequestHash)
   const reportCategory = useSelector(selectReportCategory)
   const userData = useSelector(selectUserData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -93,7 +93,13 @@ function ActivityReport() {
   const reportError = reportStatus === AsyncReducerStatus.Error
   const reportLoaded = reportStatus === AsyncReducerStatus.Finished
   const reportOutdated =
-    reportDateRangeHash !== '' && reportDateRangeHash !== getDateRangeHash(timerange)
+    reportRequestHash !== '' &&
+    reportRequestHash !==
+      getReportRequestHash({
+        datasets: reportDataviews.flatMap(({ datasets }) => datasets?.map((d) => d.id) || []),
+        filters: reportDataviews.map((d) => d.filter),
+        dateRange: timerange,
+      })
   const hasAuthError = reportError && isAuthError(statusError)
 
   const { currentReportUrl } = statusError?.metadata || ({} as { currentReportUrl: string })
@@ -297,7 +303,7 @@ function ActivityReport() {
             <Button
               testId="see-vessel-table-activity-report"
               onClick={() => {
-                dispatch(setDateRangeHash(''))
+                dispatch(setReportRequestHash(''))
                 dispatchFetchReport()
                 trackEvent({
                   category: TrackCategory.Analysis,

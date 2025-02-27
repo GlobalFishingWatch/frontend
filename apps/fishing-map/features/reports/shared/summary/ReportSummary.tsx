@@ -28,15 +28,8 @@ export default function ReportSummary({
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveReportDataviews)
 
-  const commonProperties = useMemo(() => {
-    return getCommonProperties(dataviews).filter(
-      (property) =>
-        !dataviews[0].config?.filters?.[property] || !PROPERTIES_EXCLUDED.includes(property)
-    )
-  }, [dataviews])
-
   return (
-    <Fragment>
+    <div className={styles.summaryWrapper}>
       <div className={styles.summaryContainer}>
         {reportCategory === ReportCategory.Activity ||
         reportCategory === ReportCategory.Detections ? (
@@ -48,7 +41,7 @@ export default function ReportSummary({
           <ReportSummaryEvents />
         )}
       </div>
-      {dataviews?.length > 1 && (
+      {dataviews?.length > 0 && (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
           <div className={styles.tagsContainer}>
             {dataviews?.map((dataview, index) => (
@@ -56,13 +49,12 @@ export default function ReportSummary({
                 key={dataview.id}
                 dataview={dataview}
                 index={index}
-                hiddenProperties={commonProperties}
                 availableFields={FIELDS}
               />
             ))}
           </div>
         </Sticky>
       )}
-    </Fragment>
+    </div>
   )
 }

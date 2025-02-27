@@ -1,3 +1,8 @@
+.summaryWrapper {
+  position: relative;
+  z-index: 1;
+}
+
 .summaryContainer {
   padding: var(--space-SM) var(--space-M);
   padding-bottom: 0;
@@ -37,4 +42,8 @@
 
 .sticky .tagsContainer span {
   font: var(--font-S);
+}
+
+.sticky .tagsContainer button {
+  display: none;
 }

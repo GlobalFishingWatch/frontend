@@ -10,13 +10,14 @@ import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { selectReportDataviewsWithPermissions } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
 import { getCommonProperties } from 'features/reports/shared/summary/report-summary.utils'
 import {
-  getDateRangeHash,
-  selectReportVesselsDateRangeHash,
+  getReportRequestHash,
+  selectReportRequestHash,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
 import { useTimeCompareTimeDescription } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
@@ -47,13 +48,20 @@ export default function ReportSummaryActivity({
   const { t, i18n } = useTranslation()
   const timerange = useTimerangeConnect()
   const reportCategory = useSelector(selectReportCategory)
+  const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours) as number
   const dataviews = useSelector(selectActiveReportDataviews)
-  const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
-  const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
+  const reportRequestHash = useSelector(selectReportRequestHash)
+  const reportOutdated =
+    reportRequestHash !==
+    getReportRequestHash({
+      datasets: reportDataviews.flatMap(({ datasets }) => datasets?.map((d) => d.id) || []),
+      filters: reportDataviews.map((d) => d.filter),
+      dateRange: timerange,
+    })
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
 
   const commonProperties = useMemo(() => {
@@ -149,18 +157,12 @@ export default function ReportSummaryActivity({
 
       return t('analysis.summaryNoVessels', {
         defaultValue:
-          '<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+          '<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity,
         activityUnit: activityUnitLabel,
         activityType: datasetTitle,
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
-        sources:
-          commonProperties.includes('source') && reportCategory === ReportCategory.Activity
-            ? `(${listAsSentence(
-                getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
-              )}) `
-            : '',
       })
     }
   }, [
