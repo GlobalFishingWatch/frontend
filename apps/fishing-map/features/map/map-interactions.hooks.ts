@@ -375,6 +375,7 @@ export const useMapMouseHover = () => {
 
 export const useMapMouseClick = () => {
   const getPickingInteraction = useGetPickingInteraction()
+  const { isMapDrawing } = useMapDrawConnect()
   const { dispatchClickedEvent } = useClickedEventConnect()
 
   const onMapClick: DeckProps['onClick'] = useCallback(
@@ -384,12 +385,15 @@ export const useMapMouseClick = () => {
         // this is needed to allow interacting with overlay elements content
         return true
       }
+      if (isMapDrawing) {
+        return false
+      }
       const clickInteraction = getPickingInteraction(info, 'click')
       if (clickInteraction) {
         dispatchClickedEvent(clickInteraction)
       }
     },
-    [getPickingInteraction, dispatchClickedEvent]
+    [dispatchClickedEvent, getPickingInteraction, isMapDrawing]
   )
 
   return onMapClick
