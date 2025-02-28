@@ -7,9 +7,11 @@ import Link from 'redux-first-router-link'
 
 import { Spinner } from '@globalfishingwatch/ui-components'
 
+import type { ReportIndexId } from 'data/reports/reports.index'
+import { REPORT_IDS } from 'data/reports/reports.index'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { HOME, WORKSPACE } from 'routes/routes'
+import { HOME, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -48,10 +50,6 @@ function WorkspacesList() {
       </div>
     )
   }
-  const highlightedWorkspacesSorted =
-    locationCategory === WorkspaceCategory.MarineManager
-      ? [...(highlightedWorkspaces || [])].sort((a, b) => (a.name > b.name ? 1 : -1))
-      : highlightedWorkspaces
 
   return (
     <div className={styles.container}>
@@ -65,18 +63,36 @@ function WorkspacesList() {
         <Spinner size="small" />
       ) : (
         <ul>
-          {highlightedWorkspacesSorted?.map((highlightedWorkspace) => {
-            const { name, description, cta, reportUrl, img } = highlightedWorkspace
+          {highlightedWorkspaces?.map((highlightedWorkspace) => {
+            const { name, description, cta, reportUrl, img, dataviewInstances } =
+              highlightedWorkspace
             const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
             const isExternalLink = highlightedWorkspace.id.includes('http')
+            const isReportLink = REPORT_IDS.includes(highlightedWorkspace.id as ReportIndexId)
             let linkTo: To
-            if (isExternalLink) linkTo = highlightedWorkspace.id
-            else if (highlightedWorkspace.id === DEFAULT_WORKSPACE_ID) {
+            if (isExternalLink) {
+              linkTo = highlightedWorkspace.id
+            } else if (highlightedWorkspace.id === DEFAULT_WORKSPACE_ID) {
               linkTo = {
                 type: HOME,
                 payload: {},
                 query: {},
                 replaceQuery: true,
+              }
+            } else if (isReportLink) {
+              linkTo = {
+                type: WORKSPACE_REPORT,
+                payload: {
+                  category: WorkspaceCategory.Reports,
+                  workspaceId: DEFAULT_WORKSPACE_ID,
+                },
+                query: {
+                  // TODO: debug why this is not working
+                  dataviewInstances,
+                  latitude: 0,
+                  longitude: 0,
+                  zoom: 0,
+                },
               }
             } else {
               linkTo = {
@@ -144,7 +160,17 @@ function WorkspacesList() {
                     ></p>
                   )}
                   <div className={styles.linksContainer}>
-                    {reportUrl && (
+                    {isReportLink && (
+                      <Link
+                        to={linkTo}
+                        target="_self"
+                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                        className={styles.link}
+                      >
+                        {t('analysis.see', 'See report')}
+                      </Link>
+                    )}
+                    {!isReportLink && reportUrl && (
                       <a href={reportUrl as string} className={styles.link}>
                         {t('analysis.see', 'See report')}
                       </a>

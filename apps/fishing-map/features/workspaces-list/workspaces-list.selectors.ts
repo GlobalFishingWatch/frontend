@@ -6,10 +6,11 @@ import type {
   Locale,
   WorkspaceViewport,
 } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import { getHighlightedReports } from 'data/reports/reports.index'
-import type { WorkspaceCategory } from 'data/workspaces'
-import i18n from 'features/i18n/i18n'
+import { REPORTS_INDEX } from 'data/reports/reports.index'
+import { WorkspaceCategory } from 'data/workspaces'
+import { t } from 'features/i18n/i18n'
 import {
   selectUserWorkspaces,
   selectUserWorkspacesPrivate,
@@ -35,6 +36,7 @@ export type HighlightedWorkspace = {
   img?: string
   reportUrl?: string
   visible?: 'visible' | 'hidden'
+  dataviewInstances?: UrlDataviewInstance[]
   viewport?: WorkspaceViewport
   category?: WorkspaceCategory
   viewAccess?: 'public' | 'private' | 'password'
@@ -70,36 +72,47 @@ export const selectHighlightedWorkspaces = createSelector(
   }
 )
 
-export type HighlightedWorkspaceMerged = HighlightedWorkspace & {
-  viewport?: WorkspaceViewport
-  category?: WorkspaceCategory
-}
+export const selectHighlightedReports = createSelector(
+  [selectUserLanguage],
+  (locale): HighlightedWorkspaces => {
+    return {
+      title: 'reports',
+      workspaces: REPORTS_INDEX.map((workspace) => ({
+        ...workspace,
+        name: t(`workspaces:${workspace.id}.name`, { locale }),
+        description: t(`workspaces:${workspace.id}.description`, { locale }),
+      })),
+    }
+  }
+)
+
+const selectAllHighlightedWorkspaces = createSelector(
+  [selectHighlightedWorkspaces, selectHighlightedReports],
+  (highlightedWorkspaces = [], highlightedReports) => {
+    return [...highlightedWorkspaces, highlightedReports]
+  }
+)
+
 const emptyArray: HighlightedWorkspaceTitle[] = []
 export const selectAvailableWorkspacesCategories = createSelector(
-  [selectWorkspaceListStatus, selectHighlightedWorkspaces],
-  (workspaceListStatus, highlightedWorkspaces): HighlightedWorkspaceTitle[] => {
+  [selectWorkspaceListStatus, selectAllHighlightedWorkspaces],
+  (workspaceListStatus, highlightedWorkspaces = []): HighlightedWorkspaceTitle[] => {
     if (workspaceListStatus === AsyncReducerStatus.Finished) {
-      const highlightedWorkspacesWithData = (highlightedWorkspaces || [])?.filter(
-        ({ workspaces }) => {
-          return workspaces.length > 0
-        }
-      )
+      const highlightedWorkspacesWithData = highlightedWorkspaces?.filter(({ workspaces }) => {
+        return workspaces.length > 0
+      })
       const highlightedCategories = highlightedWorkspacesWithData.map(({ title }) => title)
-      return [...highlightedCategories, 'reports']
+      return highlightedCategories
     }
     return emptyArray
   }
 )
 
 export const selectCurrentHighlightedWorkspaces = createSelector(
-  [selectLocationCategory, selectHighlightedWorkspaces, selectWorkspaces],
-  (
-    locationCategory,
-    highlightedWorkspaces,
-    apiWorkspaces
-  ): HighlightedWorkspaceMerged[] | undefined => {
+  [selectLocationCategory, selectAllHighlightedWorkspaces, selectWorkspaces],
+  (locationCategory, highlightedWorkspaces, apiWorkspaces): HighlightedWorkspace[] | undefined => {
     const highlighted = highlightedWorkspaces?.find(({ title }) => title === locationCategory)
-    return highlighted?.workspaces
+    const workspaces = highlighted?.workspaces
       ?.filter((workspace) => workspace.visible !== 'hidden')
       ?.map((workspace) => {
         const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
@@ -111,6 +124,10 @@ export const selectCurrentHighlightedWorkspaces = createSelector(
           }),
         } as HighlightedWorkspace
       })
+    if (locationCategory === WorkspaceCategory.MarineManager) {
+      return workspaces?.sort((a, b) => a.name.localeCompare(b.name))
+    }
+    return workspaces
   }
 )
 

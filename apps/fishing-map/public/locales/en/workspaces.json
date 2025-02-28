@@ -1,0 +1,14 @@
+{
+  "activity-report": {
+    "name": "Global Vessel Activity",
+    "description": "Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries."
+  },
+  "detections-report": {
+    "name": "Global Dark Vessel Detections",
+    "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night."
+  },
+  "events-report": {
+    "name": "Global Vessel Events",
+    "description": "TODO TODO TODO Something something about encounters, loitering, gaps, port visits and all that..."
+  }
+}

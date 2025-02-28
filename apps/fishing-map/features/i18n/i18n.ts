@@ -44,7 +44,7 @@ i18n
         return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`
       },
     },
-    ns: ['translations', 'flags', 'datasets', 'timebar'],
+    ns: ['translations', 'flags', 'datasets', 'timebar', 'workspaces'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
     supportedLngs: [...Object.values(Locale), CROWDIN_IN_CONTEXT_LANG],

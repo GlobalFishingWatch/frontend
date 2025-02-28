@@ -12,7 +12,6 @@ import {
 import type {
   APIPagination,
   HighlightedWorkspaces as ApiHighlightedWorkspaces,
-  HighlightedWorkspaceTitle as ApiHighlightedWorkspaceTitle,
   Workspace,
 } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
