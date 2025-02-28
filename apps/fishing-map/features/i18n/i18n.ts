@@ -64,12 +64,6 @@ i18n
     },
   })
 
-i18n.on('languageChanged', (lng) => {
-  if (process.browser) {
-    document.documentElement.setAttribute('lang', lng)
-  }
-})
-
 const t = i18n.t.bind(i18n)
 
 export { t }
