@@ -24,7 +24,7 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { HOME, SEARCH, USER, WORKSPACE_SEARCH,WORKSPACES_LIST } from 'routes/routes'
+import { HOME, SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
   selectIsWorkspaceLocation,
   selectLocationCategory,
@@ -116,22 +116,22 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
         {availableCategories?.map((category, index) => (
           <li
-            key={category.title}
+            key={category}
             className={cx(styles.tab, {
               [styles.current]:
                 (locationType !== SEARCH &&
                   locationType !== WORKSPACE_SEARCH &&
-                  locationCategory === (category.title as WorkspaceCategory)) ||
+                  locationCategory === (category as WorkspaceCategory)) ||
                 (index === 0 && locationType === HOME),
             })}
           >
             <Link
               className={styles.tabContent}
-              to={getLinkToCategory(category.title as WorkspaceCategory)}
+              to={getLinkToCategory(category as WorkspaceCategory)}
               onClick={onCategoryClick}
-              title={category.title}
+              title={category}
             >
-              <Icon icon={`category-${category.title}` as IconType} />
+              <Icon icon={`category-${category}` as IconType} />
             </Link>
           </li>
         ))}

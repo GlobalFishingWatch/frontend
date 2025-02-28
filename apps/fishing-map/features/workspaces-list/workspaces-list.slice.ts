@@ -9,7 +9,12 @@ import {
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
-import type { APIPagination, Workspace } from '@globalfishingwatch/api-types'
+import type {
+  APIPagination,
+  HighlightedWorkspaces as ApiHighlightedWorkspaces,
+  HighlightedWorkspaceTitle as ApiHighlightedWorkspaceTitle,
+  Workspace,
+} from '@globalfishingwatch/api-types'
 import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
@@ -17,7 +22,7 @@ import type { WorkspaceCategory } from 'data/workspaces'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 import type { WorkspaceState } from 'types'
-import type { AsyncError,AsyncReducer } from 'utils/async-slice'
+import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 
 export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategory>
@@ -72,46 +77,12 @@ const fetchDefaultWorkspaceThunk = createAsyncThunk<Workspace>(
   }
 )
 
-export type HighlightedWorkspace = {
-  id: string
-  name: {
-    en: string
-    es?: string
-    fr?: string
-    id?: string
-    pt?: string
-  }
-  description: {
-    en: string
-    es?: string
-    fr?: string
-    id?: string
-    pt?: string
-  }
-  cta: {
-    en: string
-    es?: string
-    fr?: string
-    id?: string
-    pt?: string
-  }
-  img?: string
-  userGroup?: string
-  reportUrl?: string
-  visible?: 'visible' | 'hidden'
-}
-
-type HighlightedWorkspaces = {
-  title: string
-  workspaces: HighlightedWorkspace[]
-}
-
 const WORKSPACES_APP = 'fishing-map'
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   'workspaces/fetchHighlighted',
   async (_, { dispatch }) => {
-    const workspaces = await GFWAPI.fetch<APIPagination<HighlightedWorkspaces>>(
+    const workspaces = await GFWAPI.fetch<APIPagination<ApiHighlightedWorkspaces>>(
       `/highlighted-workspaces/${WORKSPACES_APP}`
     )
 
@@ -202,7 +173,7 @@ export const deleteWorkspaceThunk = createAsyncThunk<
 interface WorkspacesState extends AsyncReducer<AppWorkspace> {
   highlighted: {
     status: AsyncReducerStatus
-    data: { title: string; workspaces: HighlightedWorkspace[] }[] | undefined
+    data: ApiHighlightedWorkspaces[] | undefined
   }
 }
 
@@ -249,7 +220,7 @@ export function selectWorkspaces(state: WorkspaceSliceState) {
 }
 export const selectWorkspaceListStatus = (state: WorkspaceSliceState) => state.workspaces.status
 export const selectWorkspaceListStatusId = (state: WorkspaceSliceState) => state.workspaces.statusId
-export const selectHighlightedWorkspaces = (state: WorkspaceSliceState) =>
+export const selectHighlightedApiWorkspaces = (state: WorkspaceSliceState) =>
   state.workspaces.highlighted.data
 export const selectHighlightedWorkspacesStatus = (state: WorkspaceSliceState) =>
   state.workspaces.highlighted.status
