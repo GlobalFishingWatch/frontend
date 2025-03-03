@@ -1,3 +1,8 @@
+.colorBarWrapper {
+  display: flex;
+  align-items: center;
+}
+
 .listContainer {
   display: flex;
   align-items: center;
@@ -9,9 +14,9 @@
 }
 
 .color {
-  width: 12px;
-  height: 12px;
-  border-radius: 8px;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.6rem;
   position: relative;
   border: var(--border);
 }
@@ -38,4 +43,26 @@
   pointer-events: none;
   cursor: not-allowed;
   opacity: 0.4;
+}
+
+.hueBarWrapper {
+  flex: 1;
+  padding-right: var(--space-XS);
+  opacity: 0.8;
+}
+
+.hueBar {
+  height: 1.2rem;
+  border-radius: var(--border-radius);
+  border: var(--border);
+}
+
+.colorThumb {
+  top: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 1rem;
+  border: solid 0.2rem var(--color-white);
+  outline: solid 0.1rem var(--color-primary-blue);
+  filter: var(--filter-drop-shadow);
 }

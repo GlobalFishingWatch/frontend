@@ -23,9 +23,9 @@ import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slic
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
-import Color from 'features/workspace/shared/Color'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import LayerProperties from 'features/workspace/shared/LayerProperties'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -219,7 +219,7 @@ function ActivityLayerPanel({
               )}
             >
               {layerActive && (
-                <Color
+                <LayerProperties
                   dataview={dataview}
                   open={colorOpen}
                   onColorClick={changeColor}

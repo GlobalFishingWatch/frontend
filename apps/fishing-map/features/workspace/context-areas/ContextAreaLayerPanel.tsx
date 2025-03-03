@@ -44,12 +44,12 @@ import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
+import LayerProperties from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
@@ -241,12 +241,13 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         >
           {layerActive && !isBasemapLabelsDataview && (
-            <Color
+            <LayerProperties
               dataview={dataview}
               open={colorOpen}
               onColorClick={changeColor}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
+              properties={['color', 'thickness']}
             />
           )}
           {layerActive &&

@@ -34,7 +34,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
-import Color from '../shared/Color'
+import LayerProperties from '../shared/LayerProperties'
 import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
@@ -226,7 +226,7 @@ function VesselGroupLayerPanel({
                   tooltipPlacement="top"
                   loading={fitBoundsClicked}
                 />
-                <Color
+                <LayerProperties
                   dataview={dataview}
                   open={colorOpen}
                   onColorClick={changeInstanceColor}

@@ -39,12 +39,12 @@ import FitBounds from 'features/workspace/shared/FitBounds'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
+import LayerProperties from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
 import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
@@ -213,7 +213,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
           )}
           {layerActive && (
             <Fragment>
-              <Color
+              <LayerProperties
                 dataview={dataview}
                 open={colorOpen}
                 disabled={hasFeaturesColoredByField}
