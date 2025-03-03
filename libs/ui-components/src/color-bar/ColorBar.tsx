@@ -4,7 +4,8 @@ import { ColorSlider, ColorThumb, parseColor, SliderTrack } from 'react-aria-com
 import cx from 'classnames'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+
+import { IconButton } from '../icon-button'
 
 import type { ColorBarOption } from './color-bar-options'
 import { FillColorBarOptions } from './color-bar-options'
