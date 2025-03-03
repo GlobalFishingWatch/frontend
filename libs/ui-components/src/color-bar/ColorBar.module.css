@@ -48,7 +48,7 @@
 .hueBarWrapper {
   flex: 1;
   padding-right: var(--space-XS);
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
 .hueBar {

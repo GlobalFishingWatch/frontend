@@ -1,4 +1,4 @@
-import type { Color, DefaultProps, LayerContext,PickingInfo } from '@deck.gl/core'
+import type { Color, DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
@@ -76,7 +76,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   getLineWidth(d: ContextFeature, filters?: Record<string, any>): number {
-    return getFeatureInFilter(d, filters) ? 1 : 0
+    return getFeatureInFilter(d, filters) ? this.props.thickness : 0
   }
 
   getFillColor(d: ContextFeature, filters?: Record<string, any>): Color {
@@ -165,7 +165,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   renderLayers() {
-    const { color, layers } = this.props
+    const { color, layers, thickness } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     return layers.map((layer) => {
       if (layer.id === ContextLayerId.EEZBoundaries) {
@@ -185,6 +185,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                 getPolygonOffset: (params: { layerIndex: number }) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
                 getLineColor: hexToDeckColor(this.props.color),
+                getLineWidth: thickness,
                 lineWidthUnits: 'pixels',
                 lineJointRounded: true,
                 lineCapRounded: true,
@@ -193,6 +194,9 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                   new PathStyleExtension({ dash: true, highPrecisionDash: true }),
                 ],
                 getDashArray: (d: ContextFeature) => this.getDashArray(d),
+                updateTriggers: {
+                  getLineWidth: thickness,
+                },
               } as any),
             ]
           },
@@ -231,14 +235,13 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                     id: `${props.id}-lines`,
                     lineWidthUnits: 'pixels',
                     lineWidthMinPixels: 0,
-                    lineWidthMaxPixels: 1,
                     filled: false,
                     getPolygonOffset: (params) =>
                       getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
                     getLineWidth: (d) => this.getLineWidth(d as ContextFeature, layer.filters),
                     getLineColor: hexToDeckColor(color),
                     updateTriggers: {
-                      getLineWidth: layer.filters,
+                      getLineWidth: [layer.filters, thickness],
                     },
                   }),
                 ]

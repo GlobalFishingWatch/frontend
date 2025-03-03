@@ -17,6 +17,8 @@ interface ColorBarProps {
   disabledColors?: string[]
   colorBarOptions: ColorBarOption[]
   className?: string
+  swatchesTooltip?: string
+  hueBarTooltip?: string
 }
 
 export function ColorBar(props: ColorBarProps) {
@@ -26,6 +28,8 @@ export function ColorBar(props: ColorBarProps) {
     selectedColor,
     colorBarOptions = FillColorBarOptions,
     disabledColors = [],
+    hueBarTooltip = '',
+    swatchesTooltip = '',
   } = props
   const [currentValue, setCurrentValue] = useState<Color>(
     parseColor(selectedColor || '#ff0000')
@@ -84,7 +88,12 @@ export function ColorBar(props: ColorBarProps) {
           </SliderTrack>
         </ColorSlider>
       )}
-      <IconButton icon="edit" onClick={toggleColorMode} size="small" />
+      <IconButton
+        icon={colorMode === 'hue-bar' ? 'color-picker-swatches' : 'color-picker-precise'}
+        tooltip={colorMode === 'hue-bar' ? swatchesTooltip : hueBarTooltip}
+        onClick={toggleColorMode}
+        size="small"
+      />
     </div>
   )
 }

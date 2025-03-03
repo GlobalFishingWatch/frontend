@@ -10,7 +10,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -87,7 +87,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   })
 
   const contextLayer = useGetDeckLayer<ContextLayer>(dataview.id)
-  const [colorOpen, setColorOpen] = useState(false)
+  const [propertiesOpen, setPropertiesOpen] = useState(false)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
@@ -152,10 +152,19 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         colorRamp: color.id,
       },
     })
-    setColorOpen(false)
+    setPropertiesOpen(false)
+  }
+  const changeThickness = (thickness: ThicknessSelectorOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        thickness: thickness.value,
+      },
+    })
+    setPropertiesOpen(false)
   }
   const onToggleColorOpen = () => {
-    setColorOpen(!colorOpen)
+    setPropertiesOpen(!propertiesOpen)
   }
 
   const onToggleFilterOpen = () => {
@@ -168,7 +177,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
-    setColorOpen(false)
+    setPropertiesOpen(false)
   }
 
   const showSortHandler = items.length > 1
@@ -206,7 +215,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   return (
     <div
       className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: filterOpen || colorOpen,
+        [styles.expandedContainerOpen]: filterOpen || propertiesOpen,
         'print-hidden': !layerActive,
       })}
       ref={setNodeRef}
@@ -243,8 +252,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           {layerActive && !isBasemapLabelsDataview && (
             <LayerProperties
               dataview={dataview}
-              open={colorOpen}
+              open={propertiesOpen}
               onColorClick={changeColor}
+              onThicknessClick={changeThickness}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
               properties={['color', 'thickness']}

@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import {
   ColorBar,
   FillColorBarOptions,
   IconButton,
   LineColorBarOptions,
+  ThicknessSelector,
 } from '@globalfishingwatch/ui-components'
 
 import ExpandedContainer from './ExpandedContainer'
@@ -18,6 +19,7 @@ type LayerPropertiesProps = {
   dataview: UrlDataviewInstance
   colorType?: 'fill' | 'line'
   onColorClick: (color: ColorBarOption) => void
+  onThicknessClick?: (color: ThicknessSelectorOption) => void
   onToggleClick: (e: any) => void
   onClickOutside: () => void
   className?: string
@@ -32,6 +34,7 @@ const LayerProperties = (props: LayerPropertiesProps) => {
     dataview,
     onToggleClick,
     onColorClick,
+    onThicknessClick,
     onClickOutside,
     className,
     disabled,
@@ -39,18 +42,30 @@ const LayerProperties = (props: LayerPropertiesProps) => {
   } = props
   const { t } = useTranslation()
   const isOnlyColor = properties.length === 1 && properties[0] === 'color'
+
   return (
     <ExpandedContainer
       visible={open && !disabled}
       onClickOutside={onClickOutside}
       component={
         <div>
-          {!isOnlyColor && <label>{t('layer.color', 'Color')}</label>}
+          {!isOnlyColor && <label>{t('layer.properties.color', 'Color')}</label>}
           <ColorBar
             colorBarOptions={colorType === 'line' ? LineColorBarOptions : FillColorBarOptions}
             selectedColor={dataview.config?.color}
             onColorClick={onColorClick}
+            swatchesTooltip={t('layer.colorSelectPredefined', 'Select predefined color')}
+            hueBarTooltip={t('layer.colorSelectCustom', 'Select custom color')}
           />
+          {properties.includes('thickness') && (
+            <div>
+              <label>{t('layer.properties.thickness', 'Thickness')}</label>
+              <ThicknessSelector
+                selectedThickness={dataview.config?.thickness}
+                onThicknessClick={onThicknessClick}
+              />
+            </div>
+          )}
         </div>
       }
     >

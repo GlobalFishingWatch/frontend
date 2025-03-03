@@ -2,7 +2,7 @@ import { invert } from 'es-toolkit'
 import isObject from 'lodash/isObject'
 import isString from 'lodash/isString'
 import transform from 'lodash/transform'
-import { parse,stringify } from 'qs'
+import { parse, stringify } from 'qs'
 
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 
@@ -282,6 +282,9 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   }
   if (dataview.config?.minVisibleValue !== undefined) {
     config.minVisibleValue = parseFloat(dataview.config?.minVisibleValue as any)
+  }
+  if (dataview.config?.thickness !== undefined) {
+    config.thickness = parseInt(dataview.config?.thickness as any)
   }
   if (vesselGroup) {
     if (!config.filters) {
