@@ -4,6 +4,7 @@ import Link from 'redux-first-router-link'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { GLOBAL_REPORTS_ENABLED } from 'data/config'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import type { ReportCategory } from 'features/reports/reports.types'
@@ -36,6 +37,10 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
   const handleOnClick = () => {
     fitAreaInViewport()
     resetSidebarScroll()
+  }
+
+  if (!GLOBAL_REPORTS_ENABLED) {
+    return null
   }
 
   return (

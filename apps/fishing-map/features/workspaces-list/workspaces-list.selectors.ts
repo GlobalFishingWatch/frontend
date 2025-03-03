@@ -8,6 +8,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
+import { GLOBAL_REPORTS_ENABLED } from 'data/config'
 import { REPORTS_INDEX } from 'data/reports/reports.index'
 import { WorkspaceCategory } from 'data/workspaces'
 import { t } from 'features/i18n/i18n'
