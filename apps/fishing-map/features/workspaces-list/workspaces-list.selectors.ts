@@ -15,7 +15,7 @@ import {
   selectUserWorkspaces,
   selectUserWorkspacesPrivate,
 } from 'features/user/selectors/user.permissions.selectors'
-import { selectUserLanguage } from 'features/user/selectors/user.selectors'
+import { selectLanguage } from 'features/user/selectors/user.selectors'
 import { USER } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -55,7 +55,7 @@ const geti18nProperty = (
 }
 
 export const selectHighlightedWorkspaces = createSelector(
-  [selectHighlightedApiWorkspaces, selectUserLanguage],
+  [selectHighlightedApiWorkspaces, selectLanguage],
   (spreadsheetWorkspaces = [], locale): HighlightedWorkspaces[] => {
     return spreadsheetWorkspaces.map(({ title, workspaces }) => {
       return {
@@ -73,8 +73,14 @@ export const selectHighlightedWorkspaces = createSelector(
 )
 
 export const selectHighlightedReports = createSelector(
-  [selectUserLanguage],
+  [selectLanguage],
   (locale): HighlightedWorkspaces => {
+    if (!GLOBAL_REPORTS_ENABLED) {
+      return {
+        title: 'reports',
+        workspaces: [],
+      }
+    }
     return {
       title: 'reports',
       workspaces: REPORTS_INDEX.map((workspace) => ({
