@@ -1,36 +1,32 @@
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import {
-  CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
-  CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
-  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
-} from 'data/workspaces'
 import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
 
-export const REPORT_EVENTS_DATAVIEW_INSTANCES: DataviewInstance[] = [
-  {
-    id: ENCOUNTER_EVENTS_SOURCE_ID,
-    dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
-    config: {
-      visible: false,
-    },
-  },
-  {
-    id: LOITERING_EVENTS_SOURCE_ID,
-    dataviewId: CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
-    config: {
-      visible: false,
-    },
-  },
-  {
-    id: PORT_VISITS_EVENTS_SOURCE_ID,
-    dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
-    config: {
-      visible: false,
-    },
-  },
+export const AIS_DATAVIEW_INSTANCE_ID = 'ais'
+export const VMS_DATAVIEW_INSTANCE_ID = 'vms'
+export const PRESENCE_DATAVIEW_INSTANCE_ID = 'presence'
+export const SAR_DATAVIEW_INSTANCE_ID = 'sar'
+export const VIIRS_DATAVIEW_INSTANCE_ID = 'viirs'
+
+const REPORT_EVENTS_DATAVIEW_INSTANCES_IDS: string[] = [
+  AIS_DATAVIEW_INSTANCE_ID,
+  VMS_DATAVIEW_INSTANCE_ID,
+  PRESENCE_DATAVIEW_INSTANCE_ID,
+  SAR_DATAVIEW_INSTANCE_ID,
+  VIIRS_DATAVIEW_INSTANCE_ID,
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  LOITERING_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
 ]
+
+export const REPORT_EVENTS_DATAVIEW_INSTANCES: UrlDataviewInstance[] =
+  REPORT_EVENTS_DATAVIEW_INSTANCES_IDS.map((id) => ({
+    id,
+    config: {
+      visible: true,
+    },
+  }))

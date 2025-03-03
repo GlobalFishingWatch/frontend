@@ -7,10 +7,12 @@ import Link from 'redux-first-router-link'
 
 import { Spinner } from '@globalfishingwatch/ui-components'
 
+import { REPORT_EVENTS_DATAVIEW_INSTANCES } from 'data/reports/report.dataviews'
 import type { ReportIndexId } from 'data/reports/reports.index'
 import { REPORT_IDS } from 'data/reports/reports.index'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { ReportCategory } from 'features/reports/reports.types'
 import { HOME, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -64,8 +66,7 @@ function WorkspacesList() {
       ) : (
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
-            const { name, description, cta, reportUrl, img, dataviewInstances } =
-              highlightedWorkspace
+            const { id, name, description, cta, reportUrl, img } = highlightedWorkspace
             const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
             const isExternalLink = highlightedWorkspace.id.includes('http')
             const isReportLink = REPORT_IDS.includes(highlightedWorkspace.id as ReportIndexId)
@@ -80,6 +81,7 @@ function WorkspacesList() {
                 replaceQuery: true,
               }
             } else if (isReportLink) {
+              const reportCategory = id.split('-')[0] || ReportCategory.Activity
               linkTo = {
                 type: WORKSPACE_REPORT,
                 payload: {
@@ -87,8 +89,8 @@ function WorkspacesList() {
                   workspaceId: DEFAULT_WORKSPACE_ID,
                 },
                 query: {
-                  // TODO: debug why this is not working
-                  dataviewInstances,
+                  dataviewInstances: REPORT_EVENTS_DATAVIEW_INSTANCES,
+                  reportCategory,
                   latitude: 0,
                   longitude: 0,
                   zoom: 0,

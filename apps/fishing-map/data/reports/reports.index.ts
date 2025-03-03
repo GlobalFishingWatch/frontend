@@ -14,6 +14,7 @@ export type ReportIndex = {
 
 export const REPORTS_INDEX: ReportIndex[] = [
   {
+    // id needs to be in format [ReportCategory]-report
     id: 'activity-report',
     img: `${PATH_BASENAME}/images/reports/activity-report.jpg`,
     dataviewInstances: [],

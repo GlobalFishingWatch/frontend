@@ -115,25 +115,27 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           </Link>
         </li>
         {availableCategories?.map((category, index) => (
-          <li
-            key={category}
-            className={cx(styles.tab, {
-              [styles.current]:
-                (locationType !== SEARCH &&
-                  locationType !== WORKSPACE_SEARCH &&
-                  locationCategory === (category as WorkspaceCategory)) ||
-                (index === 0 && locationType === HOME),
-            })}
-          >
-            <Link
-              className={styles.tabContent}
-              to={getLinkToCategory(category as WorkspaceCategory)}
-              onClick={onCategoryClick}
-              title={category}
+          <Tooltip content={category} placement="right">
+            {/* TODO: translate tooltip category */}
+            <li
+              key={category}
+              className={cx(styles.tab, {
+                [styles.current]:
+                  (locationType !== SEARCH &&
+                    locationType !== WORKSPACE_SEARCH &&
+                    locationCategory === (category as WorkspaceCategory)) ||
+                  (index === 0 && locationType === HOME),
+              })}
             >
-              <Icon icon={`category-${category}` as IconType} />
-            </Link>
-          </li>
+              <Link
+                className={styles.tabContent}
+                to={getLinkToCategory(category as WorkspaceCategory)}
+                onClick={onCategoryClick}
+              >
+                <Icon icon={`category-${category}` as IconType} />
+              </Link>
+            </li>
+          </Tooltip>
         ))}
         <li className={styles.separator} aria-hidden></li>
         <li className={cx(styles.tab, styles.secondary)}>
