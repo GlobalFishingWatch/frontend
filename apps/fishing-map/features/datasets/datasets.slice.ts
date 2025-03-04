@@ -29,7 +29,6 @@ import {
   LATEST_CARRIER_DATASET_ID,
   PUBLIC_SUFIX,
 } from 'data/config'
-import { selectDebugOptions } from 'features/debug/debug.slice'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 
@@ -249,62 +248,70 @@ export const fetchAllDatasetsThunk = createAsyncThunk<
   return dispatch(fetchDatasetsByIdsThunk({ ids: [], onlyUserDatasets }))
 })
 
-export type UpsertDataset = { dataset: Partial<Dataset>; file?: File; createAsPublic?: boolean }
+export type UpsertDataset = {
+  dataset: Partial<Dataset>
+  file?: File
+  createAsPublic?: boolean
+  addIdSuffix?: boolean
+}
 export const upsertDatasetThunk = createAsyncThunk<
   Dataset,
   UpsertDataset,
   {
     rejectValue: AsyncError
   }
->('datasets/create', async ({ dataset, file, createAsPublic }, { rejectWithValue, getState }) => {
-  try {
-    let filePath
-    if (file) {
-      const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
-        method: 'POST',
-        body: {
-          contentType: dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
-        } as any,
+>(
+  'datasets/create',
+  async ({ dataset, file, createAsPublic, addIdSuffix = true }, { rejectWithValue }) => {
+    try {
+      let filePath
+      if (file) {
+        const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
+          method: 'POST',
+          body: {
+            contentType:
+              dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
+          } as any,
+        })
+        filePath = path
+        await fetch(url, { method: 'PUT', body: file })
+      }
+
+      // Properties that are to be used as SQL params on the server
+      // need to be lowercase
+      const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
+      const suffix = addIdSuffix ? `-${Date.now()}` : ''
+      const generatedId = dataset.id || `${kebabCase(dataset.name)}${suffix}`
+      const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
+      const { id: originalId, ...rest } = dataset
+      const isPatchDataset = originalId !== undefined
+
+      const datasetWithFilePath = {
+        ...rest,
+        description: dataset.description || dataset.name,
+        source: dataset.source || DATASETS_USER_SOURCE_ID,
+        // Needed to start polling the dataset in useAutoRefreshImportingDataset
+        ...(isPatchDataset && file && { status: 'importing' }),
+        configuration: {
+          ...dataset.configuration,
+          ...(propertyToInclude && { propertyToInclude }),
+          filePath: filePath || dataset.configuration?.filePath,
+        },
+      }
+      delete (datasetWithFilePath as any).public
+
+      const upsertUrl = isPatchDataset ? `/datasets/${dataset.id}` : `/datasets`
+      const createdDataset = await GFWAPI.fetch<Dataset>(upsertUrl, {
+        method: isPatchDataset ? 'PATCH' : 'POST',
+        body: isPatchDataset ? (datasetWithFilePath as any) : { ...datasetWithFilePath, id },
       })
-      filePath = path
-      await fetch(url, { method: 'PUT', body: file })
+      return createdDataset
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
-
-    // Properties that are to be used as SQL params on the server
-    // need to be lowercase
-    const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
-    const debugOptions = selectDebugOptions(getState() as any)
-    const suffix = debugOptions.disableDatasetHash ? '' : `-${Date.now()}`
-    const generatedId = dataset.id || `${kebabCase(dataset.name)}${suffix}`
-    const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
-    const { id: originalId, ...rest } = dataset
-    const isPatchDataset = originalId !== undefined
-
-    const datasetWithFilePath = {
-      ...rest,
-      description: dataset.description || dataset.name,
-      source: dataset.source || DATASETS_USER_SOURCE_ID,
-      // Needed to start polling the dataset in useAutoRefreshImportingDataset
-      ...(isPatchDataset && file && { status: 'importing' }),
-      configuration: {
-        ...dataset.configuration,
-        ...(propertyToInclude && { propertyToInclude }),
-        filePath: filePath || dataset.configuration?.filePath,
-      },
-    }
-    delete (datasetWithFilePath as any).public
-
-    const upsertUrl = isPatchDataset ? `/datasets/${dataset.id}` : `/datasets`
-    const createdDataset = await GFWAPI.fetch<Dataset>(upsertUrl, {
-      method: isPatchDataset ? 'PATCH' : 'POST',
-      body: isPatchDataset ? (datasetWithFilePath as any) : { ...datasetWithFilePath, id },
-    })
-    return createdDataset
-  } catch (e: any) {
-    console.warn(e)
-    return rejectWithValue(parseAPIError(e))
   }
-})
+)
 
 export const updateDatasetThunk = createAsyncThunk<
   Dataset,
