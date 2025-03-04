@@ -14,7 +14,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { DrawFeatureType, UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
@@ -39,12 +39,13 @@ import FitBounds from 'features/workspace/shared/FitBounds'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
+import type { LayerPropertiesOption } from '../shared/LayerProperties'
+import LayerProperties from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
 import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
@@ -59,6 +60,8 @@ type UserPanelProps = {
   onToggle?: () => void
 }
 
+const PROPERTIES: LayerPropertiesOption[] = ['color', 'thickness']
+
 function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -66,7 +69,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
   const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
-  const [colorOpen, setColorOpen] = useState(false)
+  const [propertiesOpen, setPropertiesOpen] = useState(false)
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(selectIsGuestUser)
   const layerActive = dataview?.config?.visible ?? true
@@ -106,7 +109,16 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
         colorRamp: color.id,
       },
     })
-    setColorOpen(false)
+    setPropertiesOpen(false)
+  }
+  const changeThickness = (thickness: ThicknessSelectorOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        thickness: thickness.value,
+      },
+    })
+    setPropertiesOpen(false)
   }
 
   const onEditClick = () => {
@@ -126,7 +138,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
     }
   }
   const onToggleColorOpen = () => {
-    setColorOpen(!colorOpen)
+    setPropertiesOpen(!propertiesOpen)
   }
 
   const onToggleFilterOpen = () => {
@@ -135,7 +147,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
-    setColorOpen(false)
+    setPropertiesOpen(false)
   }
 
   const isUserLayer = !guestUser && dataset?.ownerId === userId
@@ -161,7 +173,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
   return (
     <div
       className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: filterOpen || colorOpen,
+        [styles.expandedContainerOpen]: filterOpen || propertiesOpen,
         'print-hidden': !layerActive,
       })}
       ref={setNodeRef}
@@ -213,11 +225,12 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
           )}
           {layerActive && (
             <Fragment>
-              <Color
+              <LayerProperties
                 dataview={dataview}
-                open={colorOpen}
+                open={propertiesOpen}
                 disabled={hasFeaturesColoredByField}
                 onColorClick={changeColor}
+                onThicknessClick={changeThickness}
                 onToggleClick={onToggleColorOpen}
                 onClickOutside={closeExpandedContainer}
                 colorType={
@@ -226,6 +239,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
                     ? 'fill'
                     : 'line'
                 }
+                properties={PROPERTIES}
               />
             </Fragment>
           )}

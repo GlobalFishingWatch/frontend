@@ -80,13 +80,13 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   _getHighlightLineWidth = (d: Feature<Geometry, GeoJsonProperties>, lineWidth = 2) => {
-    const { idProperty, layers } = this.props
+    const { idProperty, layers, thickness } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
       idProperty,
       datasetId: layers?.[0].datasetId,
     })
-      ? lineWidth
+      ? Math.max(thickness, lineWidth)
       : 0
   }
 
@@ -99,11 +99,11 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   _getLineWidth: AccessorFunction<Feature<Geometry, GeoJsonProperties>, number> = (d) => {
-    const { filters, filterOperators } = this.props
+    const { filters, filterOperators, thickness } = this.props
     if (!getFeatureInFilter(d, filters, filterOperators)) {
       return 0
     }
-    return 1
+    return thickness
   }
 
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
@@ -145,7 +145,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   renderLayers() {
-    const { layers, steps, stepsPickValue, filters, color, pickable } = this.props
+    const { layers, steps, stepsPickValue, filters, color, pickable, thickness } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
@@ -186,7 +186,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
               getLineWidth: this._getLineWidth,
               updateTriggers: {
                 getLineColor: [filters, color],
-                getLineWidth: [filters],
+                getLineWidth: [filters, thickness],
               },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {

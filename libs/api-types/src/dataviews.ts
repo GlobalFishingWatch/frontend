@@ -65,6 +65,7 @@ export interface DataviewConfig<Type = DataviewType> {
   /** Used in activity or detections layers to define which layers are active in all the options available */
   datasets?: string[]
   color?: string
+  thickness?: number
   colorRamp?: string
   colorCyclingType?: ColorCyclingType
   /** Fourwings modes: 'compare' | 'bivariate' */
