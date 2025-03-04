@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { uniq,uniqBy, without } from 'es-toolkit'
+import { uniq, uniqBy, without } from 'es-toolkit'
 import kebabCase from 'lodash/kebabCase'
 import memoize from 'lodash/memoize'
 import { stringify } from 'qs'
@@ -29,8 +29,9 @@ import {
   LATEST_CARRIER_DATASET_ID,
   PUBLIC_SUFIX,
 } from 'data/config'
-import type { AsyncError,AsyncReducer } from 'utils/async-slice'
-import { asyncInitialState, AsyncReducerStatus,createAsyncSlice } from 'utils/async-slice'
+import { selectDebugOptions } from 'features/debug/debug.slice'
+import type { AsyncError, AsyncReducer } from 'utils/async-slice'
+import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
@@ -255,7 +256,7 @@ export const upsertDatasetThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->('datasets/create', async ({ dataset, file, createAsPublic }, { rejectWithValue }) => {
+>('datasets/create', async ({ dataset, file, createAsPublic }, { rejectWithValue, getState }) => {
   try {
     let filePath
     if (file) {
@@ -272,7 +273,9 @@ export const upsertDatasetThunk = createAsyncThunk<
     // Properties that are to be used as SQL params on the server
     // need to be lowercase
     const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
-    const generatedId = dataset.id || `${kebabCase(dataset.name)}-${Date.now()}`
+    const debugOptions = selectDebugOptions(getState() as any)
+    const suffix = debugOptions.disableDatasetHash ? '' : `-${Date.now()}`
+    const generatedId = dataset.id || `${kebabCase(dataset.name)}${suffix}`
     const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
     const { id: originalId, ...rest } = dataset
     const isPatchDataset = originalId !== undefined
