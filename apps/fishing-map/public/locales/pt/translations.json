@@ -631,6 +631,13 @@
     },
     "areasOnScreen": "Áreas na tela",
     "color_change": "Alterar cor",
+    "colorSelectCustom": "Select custom color",
+    "colorSelectPredefined": "Select predefined color",
+    "propertiesChange": "Change properties",
+    "properties": {
+      "color": "Color",
+      "thickness": "Thickness"
+    },
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
