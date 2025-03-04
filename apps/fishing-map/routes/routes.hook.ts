@@ -29,7 +29,9 @@ export const useBeforeUnload = () => {
 
   const beforeUnLoad = useCallback((e: BeforeUnloadEvent) => {
     e.preventDefault()
-    dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
+    setTimeout(() => {
+      dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
+    }, 400)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
