@@ -25,9 +25,6 @@ const MAX_RESULTS_NUMBER = 10
 
 const getItemLabel = (item: OceanArea | null) => {
   if (!item) return ''
-  if (item.properties?.type === 'ocean') {
-    return item.properties?.name
-  }
   return `${item.properties?.name} (${trans(
     `layer.areas.${item.properties?.type}` as any,
     item.properties?.type.toUpperCase()
