@@ -17,6 +17,7 @@ export function getWorkspaceEnv(): WorkspaceEnv {
 export enum WorkspaceCategory {
   FishingActivity = 'fishing-activity',
   MarineManager = 'marine-manager',
+  Reports = 'reports',
 }
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'

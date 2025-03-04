@@ -7,6 +7,7 @@ import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Tabs } from '@globalfishingwatch/ui-components'
 
+import { GLOBAL_REPORTS_ENABLED } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
@@ -78,10 +79,14 @@ export default function Report() {
       id: ReportCategory.Detections,
       title: t('common.detections', 'Detections'),
     },
-    {
-      id: ReportCategory.Events,
-      title: t('common.events', 'Events'),
-    },
+    ...(GLOBAL_REPORTS_ENABLED
+      ? [
+          {
+            id: ReportCategory.Events,
+            title: t('common.events', 'Events'),
+          },
+        ]
+      : []),
     {
       id: ReportCategory.Environment,
       title: t('common.environment', 'Environment'),

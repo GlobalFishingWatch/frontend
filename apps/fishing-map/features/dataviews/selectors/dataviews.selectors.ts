@@ -5,6 +5,7 @@ import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatc
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
+import { GLOBAL_REPORTS_ENABLED } from 'data/config'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -218,13 +219,17 @@ export const selectActiveTemporalgridDataviews: (
 export const selectReportLayersVisible = createSelector(
   [selectAllDataviewInstancesResolved],
   (allDataviewInstancesResolved) => {
-    return allDataviewInstancesResolved?.filter(
-      ({ config }) =>
-        config?.visible === true &&
-        (config?.type === DataviewType.FourwingsTileCluster ||
-          config?.type === DataviewType.HeatmapAnimated ||
-          config?.type === DataviewType.HeatmapStatic)
-    )
+    return allDataviewInstancesResolved?.filter(({ config }) => {
+      const isVisible = config?.visible === true
+      if (!isVisible) {
+        return false
+      }
+      return (
+        config?.type === DataviewType.HeatmapAnimated ||
+        config?.type === DataviewType.HeatmapStatic ||
+        (config?.type === DataviewType.FourwingsTileCluster && GLOBAL_REPORTS_ENABLED)
+      )
+    })
   }
 )
 
