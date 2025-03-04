@@ -51,6 +51,7 @@ export const resolveDeckContextLayerProps: DeckResolverFunction<ContextLayerProp
     layers: layers,
     category: dataview.category!,
     color: dataview.config?.color as string,
+    thickness: dataview.config?.thickness || 1,
     idProperty,
     valueProperties,
     highlightedFeatures: highlightedFeatures as ContextPickingObject[],

@@ -25,6 +25,8 @@ const icons = [
   'close',
   'clusters',
   'color-picker-filled',
+  'color-picker-precise',
+  'color-picker-swatches',
   'color-picker',
   'compare',
   'copernicus-logo',

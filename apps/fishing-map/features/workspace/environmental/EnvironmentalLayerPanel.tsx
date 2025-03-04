@@ -28,9 +28,9 @@ import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import InfoModal from '../shared/InfoModal'
+import LayerProperties from '../shared/LayerProperties'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
 import Remove from '../shared/Remove'
@@ -202,7 +202,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             </ExpandedContainer>
           )}
           {layerActive && !isBathymetryDataview(dataview) && (
-            <Color
+            <LayerProperties
               dataview={dataview}
               open={colorOpen}
               colorType="fill"
