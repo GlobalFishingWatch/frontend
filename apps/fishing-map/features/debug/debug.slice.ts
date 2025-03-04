@@ -7,6 +7,7 @@ export enum DebugOption {
   Debug = 'debug',
   MapStats = 'mapStats',
   Thinning = 'thinning',
+  DisableDatasetHash = 'disableDatasetHash',
 }
 
 type DebugOptions = Record<DebugOption, boolean>
@@ -23,6 +24,7 @@ const initialState: DebugState = {
     debug: false,
     mapStats: false,
     thinning: true,
+    disableDatasetHash: false,
   },
 }
 
