@@ -50,14 +50,6 @@ export type HighlightedWorkspaces = {
   workspaces: HighlightedWorkspace[]
 }
 
-const geti18nProperty = (
-  workspace: ApiHighlightedWorkspace,
-  property: 'name' | 'description' | 'cta',
-  language: Locale
-) => {
-  return (workspace[property][language] as string) || workspace[property].en
-}
-
 export const selectHighlightedWorkspaces = createSelector(
   [selectHighlightedApiWorkspaces, selectLanguage],
   (spreadsheetWorkspaces = [], locale): HighlightedWorkspaces[] => {
@@ -67,9 +59,15 @@ export const selectHighlightedWorkspaces = createSelector(
         workspaces: workspaces.map((workspace) => ({
           ...workspace,
           img: workspace.img || '',
-          name: geti18nProperty(workspace, 'name', locale),
-          description: geti18nProperty(workspace, 'description', locale),
-          cta: geti18nProperty(workspace, 'cta', locale),
+          name: t(`workspaces:${workspace.id}.name`, { locale }),
+          description: t(`workspaces:${workspace.id}.description`, { locale }),
+          cta: t(`workspaces:${workspace.id}.cta`, {
+            locale,
+            defaultValue:
+              title === 'marine-manager'
+                ? t('workspace.marineManagerLink', 'See marine manager portal')
+                : t('common.see', 'See'),
+          }),
         })),
       }
     })

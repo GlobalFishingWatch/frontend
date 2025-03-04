@@ -17,13 +17,6 @@ export type ReportIndex = {
 
 export const REPORTS_INDEX: ReportIndex[] = [
   {
-    id: 'carrier-portal',
-    reportCategory: ReportCategory.Events,
-    workspaceId: 'carrier-portal-public',
-    img: `${PATH_BASENAME}/images/reports/carrier-portal.jpg`,
-  },
-  {
-    // id needs to be in format [ReportCategory]-report
     id: 'activity-report',
     reportCategory: ReportCategory.Activity,
     img: `${PATH_BASENAME}/images/reports/activity-report.jpg`,

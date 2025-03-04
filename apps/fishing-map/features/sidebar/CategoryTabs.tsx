@@ -9,11 +9,8 @@ import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
-import {
-  DEFAULT_WORKSPACE_CATEGORY,
-  DEFAULT_WORKSPACE_ID,
-  WorkspaceCategory,
-} from 'data/workspaces'
+import type { WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import HelpHub from 'features/help/HelpHub'
@@ -27,7 +24,7 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { HOME, SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
+import { SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
   selectIsWorkspaceLocation,
   selectLocationCategory,
@@ -117,37 +114,15 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             </Tooltip>
           </Link>
         </li>
-        <li
-          className={cx(styles.tab, {
-            [styles.current]: locationCategory === WorkspaceCategory.FishingActivity,
-          })}
-        >
-          <Link
-            className={styles.tabContent}
-            to={{
-              type: HOME,
-              payload: {
-                category: DEFAULT_WORKSPACE_CATEGORY,
-                workspaceId: DEFAULT_WORKSPACE_ID,
-              },
-              replaceQuery: true,
-            }}
-            onClick={onSearchClick}
-          >
-            <Tooltip content={t('common.defaultWorkspace', 'Default workspace')} placement="right">
-              <span className={styles.tabContent}>
-                <Icon icon="category-fishing-activity" className={styles.searchIcon} />
-              </span>
-            </Tooltip>
-          </Link>
-        </li>
         {availableCategories?.map((category, index) => (
           <Tooltip content={t(`workspace.categories.${category}`, category)} placement="right">
             {/* TODO: translate tooltip category */}
             <li
               key={category}
               className={cx(styles.tab, {
-                [styles.current]: locationCategory === (category as WorkspaceCategory),
+                [styles.current]:
+                  locationCategory === (category as WorkspaceCategory) ||
+                  (index === 0 && !locationCategory),
               })}
             >
               <Link
