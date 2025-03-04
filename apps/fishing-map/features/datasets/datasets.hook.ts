@@ -16,6 +16,7 @@ import {
   getUserPolygonsDataviewInstance,
   getUserTrackDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import type { DatasetUploadConfig } from 'features/modals/modals.slice'
 import {
   selectDatasetUploadModalConfig,
@@ -126,6 +127,7 @@ export const useDatasetModalConfigConnect = () => {
 
 export const useDatasetsAPI = () => {
   const dispatch = useAppDispatch()
+  const debugOptions = useSelector(selectDebugOptions)
 
   const dispatchFetchDataset = useCallback(
     async (id: string): Promise<{ payload?: Dataset; error?: AsyncError }> => {
@@ -141,14 +143,16 @@ export const useDatasetsAPI = () => {
 
   const dispatchUpsertDataset = useCallback(
     async (createDataset: UpsertDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
-      const action = await dispatch(upsertDatasetThunk(createDataset))
+      const action = await dispatch(
+        upsertDatasetThunk({ ...createDataset, addIdSuffix: debugOptions.addDatasetIdHash })
+      )
       if (upsertDatasetThunk.fulfilled.match(action)) {
         return { payload: action.payload }
       } else {
         return { error: action.payload as AsyncError }
       }
     },
-    [dispatch]
+    [debugOptions?.addDatasetIdHash, dispatch]
   )
 
   const dispatchUpdateDataset = useCallback(
