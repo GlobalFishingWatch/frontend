@@ -1,5 +1,5 @@
-import type { Dispatch,SetStateAction } from 'react'
-import { Fragment,useCallback, useState } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -122,12 +122,15 @@ function NewDataset() {
               if (dataviewInstance) {
                 const supportedFilters = Object.entries(
                   dataviewInstance.config?.filters || {}
-                ).reduce((acc, [key, value]) => {
-                  if (dataset.fieldsAllowed.includes(key)) {
-                    acc[key] = value
-                  }
-                  return acc
-                }, {} as Record<string, string>)
+                ).reduce(
+                  (acc, [key, value]) => {
+                    if (dataset.fieldsAllowed.includes(key)) {
+                      acc[key] = value
+                    }
+                    return acc
+                  },
+                  {} as Record<string, string>
+                )
                 upsertDataviewInstance({
                   id: dataviewId,
                   config: { filters: supportedFilters },

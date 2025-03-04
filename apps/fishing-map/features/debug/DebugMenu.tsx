@@ -27,7 +27,6 @@ const DebugMenu: React.FC = () => {
       debugDatasetsInDataviews(dataviews, datasetId)
       debugRelatedDatasets(datasets, datasetId)
     }
-     
   }, [datasetId])
 
   return (
@@ -80,6 +79,15 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_thinning">Track thinning</label>
         </div>
         <p>Don't send any thinning param to tracks API to debug original resolution</p>
+        <div className={styles.header}>
+          <Switch
+            id="option_disable_dataset_hash"
+            active={debugOptions.addDatasetIdHash}
+            onClick={() => dispatch(toggleOption(DebugOption.DatasetIdHash))}
+          />
+          <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
+        </div>
+        <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
       </section>
       <hr className={styles.separation} />
       <section>

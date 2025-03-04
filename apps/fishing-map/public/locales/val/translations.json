@@ -631,6 +631,13 @@
     },
     "areasOnScreen": "crwdns60265:0crwdne60265:0",
     "color_change": "crwdns60267:0crwdne60267:0",
+    "colorSelectCustom": "crwdns84111:0crwdne84111:0",
+    "colorSelectPredefined": "crwdns84113:0crwdne84113:0",
+    "propertiesChange": "crwdns84115:0crwdne84115:0",
+    "properties": {
+      "color": "crwdns84117:0crwdne84117:0",
+      "thickness": "crwdns84119:0crwdne84119:0"
+    },
     "drawAddPoint": "crwdns84014:0crwdne84014:0",
     "drawAddPolygon": "crwdns84016:0crwdne84016:0",
     "drawDelete": "crwdns84018:0crwdne84018:0",

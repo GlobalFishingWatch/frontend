@@ -43,6 +43,12 @@ type AdvancedSearchQueryFieldParams = {
   transformation?: (field: AdvancedSearchQueryField) => string | string[]
 }
 
+const withQuotationMarks = (field: AdvancedSearchQueryField) => {
+  if (!field.value) return ''
+  const transform = (value: string) => `'${value}'`
+  return Array.isArray(field.value) ? field.value.map(transform) : transform(field.value)
+}
+
 const toUpperCaseWithQuotationMarks = (field: AdvancedSearchQueryField) => {
   if (!field.value) return ''
   const transform = (value: string) => `'${value}'`.toUpperCase()
@@ -91,6 +97,7 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   },
   flag: {
     operator: '=',
+    transformation: withQuotationMarks,
   },
   transmissionDateFrom: {
     operator: '<',
