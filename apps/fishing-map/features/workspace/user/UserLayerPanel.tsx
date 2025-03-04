@@ -293,7 +293,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
         <IconButton
           icon={layerActive ? (error ? 'warning' : 'more') : undefined}
           type={error ? 'warning' : 'default'}
-          loading={layerLoading}
+          loading={layerLoading || dataset?.status === DatasetStatus.Importing}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
