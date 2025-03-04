@@ -49,6 +49,7 @@ import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
+import type { LayerPropertiesOption } from '../shared/LayerProperties'
 import LayerProperties from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
 import LayerSwitch from '../shared/LayerSwitch'
@@ -73,6 +74,8 @@ const LIST_ELEMENT_HEIGHT = 30
 const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
+
+const PROPERTIES: LayerPropertiesOption[] = ['color', 'thickness']
 
 type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
@@ -257,7 +260,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               onThicknessClick={changeThickness}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
-              properties={['color', 'thickness']}
+              properties={PROPERTIES}
             />
           )}
           {layerActive &&

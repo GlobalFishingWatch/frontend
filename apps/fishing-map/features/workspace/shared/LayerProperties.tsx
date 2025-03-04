@@ -12,7 +12,7 @@ import {
 
 import ExpandedContainer from './ExpandedContainer'
 
-type LayerPropertiesOption = 'color' | 'thickness'
+export type LayerPropertiesOption = 'color' | 'thickness'
 
 type LayerPropertiesProps = {
   open: boolean
@@ -76,7 +76,7 @@ const LayerProperties = (props: LayerPropertiesProps) => {
         tooltip={
           isOnlyColor
             ? t('layer.color_change', 'Change color')
-            : t('layer.properties_change', 'Change properties')
+            : t('layer.propertiesChange', 'Change properties')
         }
         tooltipPlacement="top"
         onClick={onToggleClick}

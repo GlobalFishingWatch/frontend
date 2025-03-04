@@ -633,7 +633,7 @@
     "color_change": "Change color",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "properties_change": "Change properties",
+    "propertiesChange": "Change properties",
     "properties": {
       "color": "Color",
       "thickness": "Thickness"
