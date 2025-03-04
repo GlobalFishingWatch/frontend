@@ -10,7 +10,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -44,12 +44,13 @@ import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
+import type { LayerPropertiesOption } from '../shared/LayerProperties'
+import LayerProperties from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
@@ -74,6 +75,8 @@ const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
+const PROPERTIES: LayerPropertiesOption[] = ['color', 'thickness']
+
 type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
@@ -87,7 +90,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   })
 
   const contextLayer = useGetDeckLayer<ContextLayer>(dataview.id)
-  const [colorOpen, setColorOpen] = useState(false)
+  const [propertiesOpen, setPropertiesOpen] = useState(false)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
@@ -152,10 +155,19 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         colorRamp: color.id,
       },
     })
-    setColorOpen(false)
+    setPropertiesOpen(false)
+  }
+  const changeThickness = (thickness: ThicknessSelectorOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        thickness: thickness.value,
+      },
+    })
+    setPropertiesOpen(false)
   }
   const onToggleColorOpen = () => {
-    setColorOpen(!colorOpen)
+    setPropertiesOpen(!propertiesOpen)
   }
 
   const onToggleFilterOpen = () => {
@@ -168,7 +180,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
-    setColorOpen(false)
+    setPropertiesOpen(false)
   }
 
   const showSortHandler = items.length > 1
@@ -206,7 +218,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   return (
     <div
       className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: filterOpen || colorOpen,
+        [styles.expandedContainerOpen]: filterOpen || propertiesOpen,
         'print-hidden': !layerActive,
       })}
       ref={setNodeRef}
@@ -241,12 +253,14 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         >
           {layerActive && !isBasemapLabelsDataview && (
-            <Color
+            <LayerProperties
               dataview={dataview}
-              open={colorOpen}
+              open={propertiesOpen}
               onColorClick={changeColor}
+              onThicknessClick={changeThickness}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
+              properties={PROPERTIES}
             />
           )}
           {layerActive &&
