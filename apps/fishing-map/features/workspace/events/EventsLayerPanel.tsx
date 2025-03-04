@@ -14,7 +14,6 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import Color from 'features/workspace/shared/Color'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -24,6 +23,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
+import LayerProperties from '../shared/LayerProperties'
 import LayerSwitch from '../shared/LayerSwitch'
 import Title from '../shared/Title'
 
@@ -119,7 +119,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
           )}
         >
           {layerActive && (
-            <Color
+            <LayerProperties
               dataview={dataview}
               open={colorOpen}
               onColorClick={changeColor}
