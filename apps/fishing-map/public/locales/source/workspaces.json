@@ -10,5 +10,10 @@
   "events-report": {
     "name": "Global Vessel Events",
     "description": "TODO TODO TODO Something something about encounters, loitering, gaps, port visits and all that..."
+  },
+  "carrier-portal": {
+    "name": "Carrier Vessel Portal",
+    "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
+    "cta": "Explore the carrier vessel portal"
   }
 }

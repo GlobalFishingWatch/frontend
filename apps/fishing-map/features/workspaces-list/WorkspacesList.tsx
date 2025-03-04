@@ -169,7 +169,7 @@ function WorkspacesList() {
                         onClick={() => onWorkspaceClick(highlightedWorkspace)}
                         className={styles.link}
                       >
-                        {t('analysis.see', 'See report')}
+                        {cta}
                       </Link>
                     )}
                     {!isReportLink && reportUrl && (
@@ -178,6 +178,7 @@ function WorkspacesList() {
                       </a>
                     )}
                     {active &&
+                      !isReportLink &&
                       (isExternalLink ? (
                         <a
                           target="_blank"

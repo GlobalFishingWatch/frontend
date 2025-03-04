@@ -88,6 +88,10 @@ export const selectHighlightedReports = createSelector(
         ...workspace,
         name: t(`workspaces:${workspace.id}.name`, { locale }),
         description: t(`workspaces:${workspace.id}.description`, { locale }),
+        cta: t(`workspaces:${workspace.id}.cta`, {
+          locale,
+          defaultValue: t('analysis.see', 'See report'),
+        }),
       })),
     }
   }
@@ -96,7 +100,10 @@ export const selectHighlightedReports = createSelector(
 const selectAllHighlightedWorkspaces = createSelector(
   [selectHighlightedWorkspaces, selectHighlightedReports],
   (highlightedWorkspaces = [], highlightedReports) => {
-    return [...highlightedWorkspaces, highlightedReports]
+    return [...highlightedWorkspaces, highlightedReports].map((highlighted) => ({
+      ...highlighted,
+      workspaces: highlighted.workspaces.filter((workspace) => workspace.visible !== 'hidden'),
+    }))
   }
 )
 
