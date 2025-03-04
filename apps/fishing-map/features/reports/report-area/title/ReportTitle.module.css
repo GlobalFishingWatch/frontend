@@ -4,6 +4,7 @@
   border-bottom: var(--border);
   min-height: 5.2rem;
   position: relative;
+  z-index: 2;
 }
 
 .placeholder {

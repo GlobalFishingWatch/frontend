@@ -1,0 +1,306 @@
+[
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 18, "name": "Arctic Sea" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-180.0, 51.163],
+          [180.0, 51.163],
+          [180.0, 89.99],
+          [-180.0, 89.99],
+          [-180.0, 51.163]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 61, "name": "Pacific, Northwest" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-180.0, 15.0],
+          [180.0, 15.0],
+          [180.0, 66.39],
+          [-180.0, 66.39],
+          [-180.0, 15.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 67, "name": "Pacific, Northeast" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-175.0, 40.0],
+          [-122.226, 40.0],
+          [-122.226, 66.133],
+          [-175.0, 66.133],
+          [-175.0, 40.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 37, "name": "Mediterranean and Black Sea" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-5.61, 30.266],
+          [41.777, 30.266],
+          [41.777, 47.29],
+          [-5.61, 47.29],
+          [-5.61, 30.266]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 27, "name": "Atlantic, Northeast" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-44.0, 36.0],
+          [68.5, 36.0],
+          [68.5, 89.99],
+          [-44.0, 89.99],
+          [-44.0, 36.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 31, "name": "Atlantic, Western Central" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-97.86, 5.0],
+          [-40.0, 5.0],
+          [-40.0, 36.0],
+          [-97.86, 36.0],
+          [-97.86, 5.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 34, "name": "Atlantic, Eastern Central" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-40.0, -6.115],
+          [13.098, -6.115],
+          [13.098, 36.0],
+          [-40.0, 36.0],
+          [-40.0, -6.115]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 51, "name": "Indian Ocean, Western" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [30.0, -45.0],
+          [80.0, -45.0],
+          [80.0, 30.497],
+          [30.0, 30.497],
+          [30.0, -45.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 57, "name": "Indian Ocean, Eastern" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [77.0, -55.0],
+          [150.0, -55.0],
+          [150.0, 23.356],
+          [77.0, 23.356],
+          [77.0, -55.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 71, "name": "Pacific, Western Central" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-180.0, -28.15],
+          [180.0, -28.15],
+          [180.0, 20.0],
+          [-180.0, 20.0],
+          [-180.0, -28.15]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 87, "name": "Pacific, Southeast" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-120.0, -60.0],
+          [-65.72, -60.0],
+          [-65.72, 7.218],
+          [-120.0, 7.218],
+          [-120.0, -60.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 41, "name": "Atlantic, Southwest" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-69.596, -60.0],
+          [-20.0, -60.0],
+          [-20.0, 5.0],
+          [-69.596, 5.0],
+          [-69.596, -60.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 81, "name": "Pacific, Southwest" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-180.0, -60.0],
+          [180.0, -60.0],
+          [180.0, -25.0],
+          [-180.0, -25.0],
+          [-180.0, -60.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 58, "name": "Indian Ocean, Antarctic" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [30.0, -71.442],
+          [150.0, -71.442],
+          [150.0, -45.0],
+          [30.0, -45.0],
+          [30.0, -71.442]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 48, "name": "Atlantic, Antarctic" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-83.216, -83.019],
+          [30.0, -83.019],
+          [30.0, -50.0],
+          [-83.216, -50.0],
+          [-83.216, -83.019]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 88, "name": "Pacific, Antarctic" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-180.0, -85.583],
+          [180.0, -85.583],
+          [180.0, -60.0],
+          [-180.0, -60.0],
+          [-180.0, -85.583]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 77, "name": "Pacific, Eastern Central" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-175.0, -25.0],
+          [-77.761, -25.0],
+          [-77.761, 40.5],
+          [-175.0, 40.5],
+          [-175.0, -25.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 47, "name": "Atlantic, Southeast" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-20.0, -50.0],
+          [30.0, -50.0],
+          [30.0, -6.0],
+          [-20.0, -6.0],
+          [-20.0, -50.0]
+        ]
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": { "type": "fao", "area": 21, "name": "Atlantic, Northwest" },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-82.197, 34.916],
+          [-42.0, 34.916],
+          [-42.0, 78.167],
+          [-82.197, 78.167],
+          [-82.197, 34.916]
+        ]
+      ]
+    }
+  }
+]
