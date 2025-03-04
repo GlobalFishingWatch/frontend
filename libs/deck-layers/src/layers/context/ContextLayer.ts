@@ -65,13 +65,13 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
 
   getHighlightLineWidth(d: ContextFeature, filters?: Record<string, any>, lineWidth = 2): number {
     if (!getFeatureInFilter(d, filters)) return 0
-    const { idProperty, layers } = this.props
+    const { idProperty, layers, thickness } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
       idProperty,
       datasetId: layers?.[0]?.datasetId,
     })
-      ? lineWidth
+      ? Math.max(thickness, lineWidth)
       : 0
   }
 
