@@ -60,7 +60,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
             ? ''
             : t(
                 'common.analysisNotAvailable',
-                'Toggle an activity or environment layer on to analyse in in this area'
+                'Toggle an analyzable layer to create a report for this area'
               )
         }
       />

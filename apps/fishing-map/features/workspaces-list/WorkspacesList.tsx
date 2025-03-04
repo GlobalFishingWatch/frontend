@@ -66,7 +66,16 @@ function WorkspacesList() {
       ) : (
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
-            const { id, name, description, cta, reportUrl, img } = highlightedWorkspace
+            const {
+              name,
+              description,
+              cta,
+              reportCategory,
+              dataviewInstances,
+              workspaceId,
+              reportUrl,
+              img,
+            } = highlightedWorkspace
             const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
             const isExternalLink = highlightedWorkspace.id.includes('http')
             const isReportLink = REPORT_IDS.includes(highlightedWorkspace.id as ReportIndexId)
@@ -81,15 +90,14 @@ function WorkspacesList() {
                 replaceQuery: true,
               }
             } else if (isReportLink) {
-              const reportCategory = id.split('-')[0] || ReportCategory.Activity
               linkTo = {
                 type: WORKSPACE_REPORT,
                 payload: {
                   category: WorkspaceCategory.Reports,
-                  workspaceId: DEFAULT_WORKSPACE_ID,
+                  workspaceId: workspaceId || DEFAULT_WORKSPACE_ID,
                 },
                 query: {
-                  dataviewInstances: REPORT_EVENTS_DATAVIEW_INSTANCES,
+                  dataviewInstances,
                   reportCategory,
                   latitude: 0,
                   longitude: 0,

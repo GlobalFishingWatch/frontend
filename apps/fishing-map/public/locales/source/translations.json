@@ -100,7 +100,7 @@
     "aka": "a.k.a.,",
     "analysis": "Create an analysis for this area",
     "analysisAddArea": "Add area to the analysis",
-    "analysisNotAvailable": "Toggle an activity or environmenet layer on to analyse it in this area",
+    "analysisNotAvailable": "Toggle an analyzable layer to create a report for this area",
     "and": "and",
     "anyoneWithTheLink": "Anyone with the link",
     "anyoneWithThePassword": "Anyone with the password",
