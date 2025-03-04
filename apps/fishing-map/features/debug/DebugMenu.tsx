@@ -82,12 +82,12 @@ const DebugMenu: React.FC = () => {
         <div className={styles.header}>
           <Switch
             id="option_disable_dataset_hash"
-            active={debugOptions.disableDatasetHash}
-            onClick={() => dispatch(toggleOption(DebugOption.DisableDatasetHash))}
+            active={debugOptions.addDatasetIdHash}
+            onClick={() => dispatch(toggleOption(DebugOption.DatasetIdHash))}
           />
-          <label htmlFor="option_disable_dataset_hash">Disable dataset hash</label>
+          <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
         </div>
-        <p>Don't send any dataset id hash in creation, so the id is cleaner</p>
+        <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
       </section>
       <hr className={styles.separation} />
       <section>

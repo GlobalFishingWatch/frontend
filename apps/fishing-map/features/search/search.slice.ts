@@ -102,10 +102,12 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             .replace(`${VesselIdentitySourceEnum.SelfReported}.`, '')
           const filter = (filters as any)[cleanField]
           if (filter && isInFieldsAllowed) {
-            let value = Array.isArray(filter) ? filter.map((f) => f.trim()) : filter.trim()
+            let value = Array.isArray(filter)
+              ? (filter.map((f) => f.trim()) as string[])
+              : (filter.trim() as string)
             // Supports searching by multiple values separated by comma and semicolon
             const regex = /[,;]/
-            if (ADVANCED_SEARCH_FIELDS.includes(field as any) && regex.test(value)) {
+            if (ADVANCED_SEARCH_FIELDS.includes(field as any) && regex.test(value as string)) {
               value = (value as string)
                 .split(regex)
                 .map((v) => v.trim())
