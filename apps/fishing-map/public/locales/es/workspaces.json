@@ -1,0 +1,75 @@
+{
+  "fishing-activity": {
+    "default-public": {
+      "name": "Global fishing activity",
+      "description": "Monitor vessel-based human activity at sea in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.",
+      "cta": "Explore the map"
+    },
+    "carrier-portal-public": {
+      "name": "Carrier Vessel Portal",
+      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
+      "cta": "Explore the carrier vessel portal"
+    },
+    "deep_sea_mining_watch-public": {
+      "name": "Deep sea mining watch",
+      "description": "TODO TODO TODO",
+      "cta": "Explore the portal"
+    }
+  },
+  "reports": {
+    "activity-report": {
+      "name": "Global Vessel Activity",
+      "description": "Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries."
+    },
+    "detections-report": {
+      "name": "Global Dark Vessel Detections",
+      "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night."
+    },
+    "events-report": {
+      "name": "Global Vessel Events",
+      "description": "TODO TODO TODO Something something about encounters, loitering, gaps, port visits and all that..."
+    }
+  },
+  "marine-manager": {
+    "ascension-public": {
+      "name": "Ascension Island",
+      "description": "Ascension Island is located in the middle of the Atlantic Ocean. In 2019,  all 445,000 square kilometers (171,800 square miles) of Ascension’s waters were designated as a marine protected area."
+    },
+    "fiji-public": {
+      "name": "Fiji",
+      "description": "Located in the South Pacific, the Republic of Fiji consists of 322 islands and has an exclusive economic zone of over 1.2 million square kilometers (460,000 square miles)."
+    },
+    "galapagos-public": {
+      "name": "Galápagos",
+      "description": "A UNESCO World Heritage site, Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America."
+    },
+    "guyana-public": {
+      "name": "Guyana",
+      "description": "Guyana’s exclusive economic zone is located off the northeastern coast of South America and covers 137,000 square kilometers (52,800 square miles) of ocean. "
+    },
+    "micronesia-public": {
+      "name": "Federated States of Micronesia",
+      "description": "Composed of 607 islands, the four states of the Federated States of Micronesia (Yap, Chuuk, Pohnpei, and Kosrae) have an exclusive economic zone of over 2.6 million square kilometers (1 million square miles)."
+    },
+    "maldives-public": {
+      "name": "Maldives",
+      "description": "The Republic of Maldives is an archipelago located in the Indian Ocean and has the seventh largest reef system in the world. Maldives has an exclusive economic zone that covers an area of nearly 1 million square kilometers (385,000 square miles)."
+    },
+    "niue-public": {
+      "name": "Niue",
+      "description": "Niue is located in the central Pacific Ocean and the Moana Mahu marine protected area covers 40 percent of Niue’s exclusive economic zone, covering 127,000 square kilometers (49,000 square miles)."
+    },
+    "palau-public": {
+      "name": "Palau",
+      "description": "The Republic of Palau is a group of islands located in the Western Pacific Ocean. In 2020, Palau fully protected 80% of its exclusive economic zone to form the Palau National Marine Sanctuary, representing 475,077 square kilometers (183,000 square miles), by closing these waters to all forms of extractive activities, including fishing. "
+    },
+    "tristan-public": {
+      "name": "Tristan da Cunha",
+      "description": "Tristan da Cunha is a remote island in the South Atlantic Ocean. In 2020, the Tristan da Cunha community designated 90 percent of its 690,000 square kilometer (266,400 square mile) ocean zone for marine protection."
+    },
+    "mediterranean-public": {
+      "name": "Mediterranean and Black Sea",
+      "description": "The Mediterranean and Black Sea cover almost 3 million square kilometers (1.1 million square miles) of ocean between Europe and Africa. "
+    }
+  }
+}
