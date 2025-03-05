@@ -7,7 +7,7 @@ import { uniq } from 'es-toolkit'
 import { saveAs } from 'file-saver'
 
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { Tab, TabsProps } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -248,7 +248,10 @@ const VesselIdentity = () => {
                   const key = field.key as keyof VesselLastIdentity
                   let value = vesselIdentity[key] as string
                   if (key === 'depthM' || key === 'builtYear') {
-                    value = vesselIdentity[key]?.value?.toString()
+                    value =
+                      (vesselIdentity[key] as any) === API_LOGIN_REQUIRED
+                        ? API_LOGIN_REQUIRED
+                        : vesselIdentity[key]?.value?.toString()
                   }
                   return (
                     <div key={field.key}>
