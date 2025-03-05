@@ -1,5 +1,5 @@
 import type { RootState } from 'reducers'
-import type { Dispatch,Middleware } from 'redux'
+import type { Dispatch, Middleware } from 'redux'
 
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 
