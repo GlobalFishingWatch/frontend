@@ -32,44 +32,44 @@
   },
   "marine-manager": {
     "ascension-public": {
-      "name": "Ascension Island",
-      "description": "Ascension Island is located in the middle of the Atlantic Ocean. In 2019,  all 445,000 square kilometers (171,800 square miles) of Ascension’s waters were designated as a marine protected area."
+      "name": "Île d'Ascension",
+      "description": "L'île de l'Ascension est située au milieu de l'océan Atlantique. En 2019, la totalité des 445 000 kilomètres carrés (171 800 miles carrés) des eaux de l'Ascension a été désignée comme une aire marine protégée."
     },
     "fiji-public": {
       "name": "Fiji",
-      "description": "Located in the South Pacific, the Republic of Fiji consists of 322 islands and has an exclusive economic zone of over 1.2 million square kilometers (460,000 square miles)."
+      "description": "Située dans le Pacifique Sud, la République des Fidji se compose de 322 îles et possède une zone économique exclusive de plus de 1,2 million de kilomètres carrés (460 000 miles carrés)."
     },
     "galapagos-public": {
       "name": "Galápagos",
-      "description": "A UNESCO World Heritage site, Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America."
+      "description": "Classée au patrimoine mondial de l'UNESCO, la réserve marine des Galápagos couvre 133 000 kilomètres carrés (51 300 miles carrés) de l'océan Pacifique, au large de l'Amérique du Sud."
     },
     "guyana-public": {
-      "name": "Guyana",
-      "description": "Guyana’s exclusive economic zone is located off the northeastern coast of South America and covers 137,000 square kilometers (52,800 square miles) of ocean. "
+      "name": "Guyane",
+      "description": "La zone économique exclusive de la Guyane est située au large de la côte nord-est de l'Amérique du Sud et couvre 137 000 kilomètres carrés (52 800 miles carrés) d'océan. "
     },
     "micronesia-public": {
-      "name": "Federated States of Micronesia",
-      "description": "Composed of 607 islands, the four states of the Federated States of Micronesia (Yap, Chuuk, Pohnpei, and Kosrae) have an exclusive economic zone of over 2.6 million square kilometers (1 million square miles)."
+      "name": "États fédérés de Micronésie",
+      "description": "Composés de 607 îles, les quatre États fédérés de Micronésie (Yap, Chuuk, Pohnpei et Kosrae) ont une zone économique exclusive de plus de 2,6 millions de kilomètres carrés (1 million de miles carrés)."
     },
     "maldives-public": {
       "name": "Maldives",
-      "description": "The Republic of Maldives is an archipelago located in the Indian Ocean and has the seventh largest reef system in the world. Maldives has an exclusive economic zone that covers an area of nearly 1 million square kilometers (385,000 square miles)."
+      "description": "La République des Maldives est un archipel situé dans l'océan Indien et possède le septième plus grand système de récifs au monde. Les Maldives ont une zone économique exclusive qui couvre une superficie de près d'un million de kilomètres carrés (385 000 miles carrés)."
     },
     "niue-public": {
       "name": "Niue",
-      "description": "Niue is located in the central Pacific Ocean and the Moana Mahu marine protected area covers 40 percent of Niue’s exclusive economic zone, covering 127,000 square kilometers (49,000 square miles)."
+      "description": "Niue est située dans l'océan Pacifique central et l'aire marine protégée de Moana Mahu couvre 40 % de la zone économique exclusive de Niue, soit 127 000 kilomètres carrés (49 000 miles carrés)."
     },
     "palau-public": {
       "name": "Palau",
-      "description": "The Republic of Palau is a group of islands located in the Western Pacific Ocean. In 2020, Palau fully protected 80% of its exclusive economic zone to form the Palau National Marine Sanctuary, representing 475,077 square kilometers (183,000 square miles), by closing these waters to all forms of extractive activities, including fishing. "
+      "description": "La République de Palau est un groupe d'îles situé dans l'océan Pacifique occidental. En 2020, Palau a entièrement protégé 80 % de sa zone économique exclusive pour former le sanctuaire marin national de Palau, représentant 475 077 kilomètres carrés (183 000 miles carrés), en fermant ces eaux à toutes les formes d'activités extractives, y compris la pêche. "
     },
     "tristan-public": {
       "name": "Tristan da Cunha",
-      "description": "Tristan da Cunha is a remote island in the South Atlantic Ocean. In 2020, the Tristan da Cunha community designated 90 percent of its 690,000 square kilometer (266,400 square mile) ocean zone for marine protection."
+      "description": "Tristan da Cunha est une île isolée de l'océan Atlantique Sud. En 2020, la communauté de Tristan da Cunha a désigné 90 % de sa zone océanique de 690 000 kilomètres carrés (266 400 milles carrés) pour la protection marine."
     },
     "mediterranean-public": {
-      "name": "Mediterranean and Black Sea",
-      "description": "The Mediterranean and Black Sea cover almost 3 million square kilometers (1.1 million square miles) of ocean between Europe and Africa. "
+      "name": "Méditerranée et mer Noire",
+      "description": "La Méditerranée et la mer Noire couvrent près de 3 millions de kilomètres carrés (1,1 million de miles carrés) d'océan entre l'Europe et l'Afrique. "
     }
   }
 }
