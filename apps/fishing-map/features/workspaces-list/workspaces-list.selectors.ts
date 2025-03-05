@@ -1,15 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import type {
-  HighlightedWorkspace as ApiHighlightedWorkspace,
-  HighlightedWorkspaceTitle as ApiHighlightedWorkspaceTitle,
-  Locale,
-  WorkspaceViewport,
-} from '@globalfishingwatch/api-types'
+import type { WorkspaceViewport } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { GLOBAL_REPORTS_ENABLED } from 'data/config'
-import { REPORTS_INDEX } from 'data/reports/reports.index'
+import type { FishingMapWorkspace } from 'data/highlighted-workspaces/fishing-activity'
+import { FISHING_MAP_WORKSPACES } from 'data/highlighted-workspaces/fishing-activity'
+import type { MarineManagerWorkspace } from 'data/highlighted-workspaces/marine-manager'
+import { MARINE_MANAGER_WORKSPACES } from 'data/highlighted-workspaces/marine-manager'
+import type { ReportWorkspace } from 'data/highlighted-workspaces/reports'
+import { REPORTS_INDEX } from 'data/highlighted-workspaces/reports'
 import { WorkspaceCategory } from 'data/workspaces'
 import { t } from 'features/i18n/i18n'
 import type { ReportCategory } from 'features/reports/reports.types'
@@ -20,15 +20,21 @@ import {
 import { selectLanguage } from 'features/user/selectors/user.selectors'
 import { USER } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
-import {
-  selectHighlightedApiWorkspaces,
-  selectWorkspaceListStatus,
-  selectWorkspaces,
-} from './workspaces-list.slice'
+import type workspaceTranslations from '../../public/locales/source/workspaces.json'
 
-export type HighlightedWorkspaceTitle = 'reports' | ApiHighlightedWorkspaceTitle
+import { selectWorkspaces } from './workspaces-list.slice'
+
+export type HighlightedWorkspaceCategory = keyof typeof workspaceTranslations
+
+const WORKSPACES_BY_CATEGORY: Record<
+  HighlightedWorkspaceCategory,
+  (MarineManagerWorkspace | FishingMapWorkspace | ReportWorkspace)[]
+> = {
+  'fishing-activity': FISHING_MAP_WORKSPACES,
+  'marine-manager': MARINE_MANAGER_WORKSPACES,
+  reports: REPORTS_INDEX,
+}
 
 export type HighlightedWorkspace = {
   id: string
@@ -46,27 +52,28 @@ export type HighlightedWorkspace = {
   viewAccess?: 'public' | 'private' | 'password'
 }
 export type HighlightedWorkspaces = {
-  title: HighlightedWorkspaceTitle
+  category: HighlightedWorkspaceCategory
   workspaces: HighlightedWorkspace[]
 }
 
 export const selectHighlightedWorkspaces = createSelector(
-  [selectHighlightedApiWorkspaces, selectLanguage],
-  (spreadsheetWorkspaces = [], locale): HighlightedWorkspaces[] => {
-    return spreadsheetWorkspaces.map(({ title, workspaces }) => {
+  [selectLanguage],
+  (locale): HighlightedWorkspaces[] => {
+    return Object.entries(WORKSPACES_BY_CATEGORY).map(([category, workspaces]) => {
       return {
-        title,
+        category: category as HighlightedWorkspaceCategory,
         workspaces: workspaces.map((workspace) => ({
           ...workspace,
-          img: workspace.img || '',
-          name: t(`workspaces:${workspace.id}.name`, { locale }),
-          description: t(`workspaces:${workspace.id}.description`, { locale }),
-          cta: t(`workspaces:${workspace.id}.cta`, {
+          name: t(`workspaces:${category}.${workspace.id}.name`, { locale }),
+          description: t(`workspaces:${category}.${workspace.id}.description`, { locale }),
+          cta: t(`workspaces:${category}.${workspace.id}.cta`, {
             locale,
             defaultValue:
-              title === 'marine-manager'
+              category === 'marine-manager'
                 ? t('workspace.marineManagerLink', 'See marine manager portal')
-                : t('common.see', 'See'),
+                : category === 'reports'
+                  ? t('analysis.see', 'See report')
+                  : t('common.see', 'See'),
           }),
         })),
       }
@@ -74,71 +81,31 @@ export const selectHighlightedWorkspaces = createSelector(
   }
 )
 
-export const selectHighlightedReports = createSelector(
-  [selectLanguage],
-  (locale): HighlightedWorkspaces => {
-    if (!GLOBAL_REPORTS_ENABLED) {
-      return {
-        title: 'reports',
-        workspaces: [],
-      }
-    }
-    return {
-      title: 'reports',
-      workspaces: REPORTS_INDEX.map((workspace) => ({
-        ...workspace,
-        name: t(`workspaces:${workspace.id}.name`, { locale }),
-        description: t(`workspaces:${workspace.id}.description`, { locale }),
-        cta: t(`workspaces:${workspace.id}.cta`, {
-          locale,
-          defaultValue: t('analysis.see', 'See report'),
-        }),
-      })),
-    }
-  }
-)
-
-const selectAllHighlightedWorkspaces = createSelector(
-  [selectHighlightedWorkspaces, selectHighlightedReports],
-  (highlightedWorkspaces = [], highlightedReports) => {
-    return [...highlightedWorkspaces, highlightedReports].map((highlighted) => ({
-      ...highlighted,
-      workspaces: highlighted.workspaces.filter((workspace) => workspace.visible !== 'hidden'),
-    }))
-  }
-)
-
-const emptyArray: HighlightedWorkspaceTitle[] = []
 export const selectAvailableWorkspacesCategories = createSelector(
-  [selectWorkspaceListStatus, selectAllHighlightedWorkspaces],
-  (workspaceListStatus, highlightedWorkspaces = []): HighlightedWorkspaceTitle[] => {
-    if (workspaceListStatus === AsyncReducerStatus.Finished) {
-      const highlightedWorkspacesWithData = highlightedWorkspaces?.filter(({ workspaces }) => {
-        return workspaces.length > 0
-      })
-      const highlightedCategories = highlightedWorkspacesWithData.map(({ title }) => title)
-      return highlightedCategories
-    }
-    return emptyArray
+  [selectHighlightedWorkspaces],
+  (highlightedWorkspaces = []): HighlightedWorkspaceCategory[] => {
+    const highlightedWorkspacesWithData = highlightedWorkspaces?.filter(({ workspaces }) => {
+      return workspaces.length > 0
+    })
+    const highlightedCategories = highlightedWorkspacesWithData.map(({ category }) => category)
+    return highlightedCategories
   }
 )
 
 export const selectCurrentHighlightedWorkspaces = createSelector(
-  [selectLocationCategory, selectAllHighlightedWorkspaces, selectWorkspaces],
+  [selectLocationCategory, selectHighlightedWorkspaces, selectWorkspaces],
   (locationCategory, highlightedWorkspaces, apiWorkspaces): HighlightedWorkspace[] | undefined => {
-    const highlighted = highlightedWorkspaces?.find(({ title }) => title === locationCategory)
-    const workspaces = highlighted?.workspaces
-      ?.filter((workspace) => workspace.visible !== 'hidden')
-      ?.map((workspace) => {
-        const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
-        return {
-          ...workspace,
-          ...(apiWorkspace && {
-            viewport: apiWorkspace.viewport,
-            category: apiWorkspace.category as WorkspaceCategory,
-          }),
-        } as HighlightedWorkspace
-      })
+    const highlighted = highlightedWorkspaces?.find(({ category }) => category === locationCategory)
+    const workspaces = highlighted?.workspaces?.map((workspace) => {
+      const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
+      return {
+        ...workspace,
+        ...(apiWorkspace && {
+          viewport: apiWorkspace.viewport,
+          category: apiWorkspace.category as WorkspaceCategory,
+        }),
+      } as HighlightedWorkspace
+    })
     if (locationCategory === WorkspaceCategory.MarineManager) {
       return workspaces?.sort((a, b) => a.name.localeCompare(b.name))
     }

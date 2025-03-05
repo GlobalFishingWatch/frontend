@@ -4,14 +4,14 @@ import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishin
 
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
-import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
 import {
   AIS_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_INSTANCE_ID,
   SAR_DATAVIEW_INSTANCE_ID,
   VIIRS_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
-} from 'data/reports/report.dataviews'
+} from 'data/highlighted-workspaces/report.dataviews'
+import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
 import {
   BASEMAP_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_SLUG,

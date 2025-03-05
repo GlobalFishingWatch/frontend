@@ -15,7 +15,7 @@ import {
   MARINE_MANAGER_DATAVIEWS,
   MARINE_MANAGER_DATAVIEWS_INSTANCES,
   WIZARD_TEMPLATE_ID,
-} from 'data/default-workspaces/marine-manager'
+} from 'data/highlighted-workspaces/marine-manager.dataviews'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,

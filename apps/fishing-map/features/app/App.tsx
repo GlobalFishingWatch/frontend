@@ -30,7 +30,6 @@ import {
   selectWorkspaceCustomStatus,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import {
   HOME,
   PORT_REPORT,
@@ -175,10 +174,6 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchUserThunk({ guest: false }))
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(fetchHighlightWorkspacesThunk())
   }, [dispatch])
 
   const onToggle = useCallback(() => {

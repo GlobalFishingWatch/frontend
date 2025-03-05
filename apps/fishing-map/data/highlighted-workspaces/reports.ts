@@ -1,37 +1,36 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { PATH_BASENAME } from 'data/config'
-import { REPORT_EVENTS_DATAVIEW_INSTANCES } from 'data/reports/report.dataviews'
+import { REPORT_EVENTS_DATAVIEW_INSTANCES } from 'data/highlighted-workspaces/report.dataviews'
 import { ReportCategory } from 'features/reports/reports.types'
 
 import type workspaceTranslations from '../../public/locales/source/workspaces.json'
 
-export type ReportIndexId = keyof typeof workspaceTranslations
-export type ReportIndex = {
-  id: ReportIndexId
+export type ReportWorkspaceId = keyof (typeof workspaceTranslations)['reports']
+export type ReportWorkspace = {
+  id: ReportWorkspaceId
   img: string
   reportCategory: ReportCategory
-  workspaceId?: string
   dataviewInstances?: UrlDataviewInstance[]
 }
 
-export const REPORTS_INDEX: ReportIndex[] = [
+export const REPORTS_INDEX: ReportWorkspace[] = [
   {
     id: 'activity-report',
     reportCategory: ReportCategory.Activity,
-    img: `${PATH_BASENAME}/images/reports/activity-report.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/report-activity.jpg`,
     dataviewInstances: REPORT_EVENTS_DATAVIEW_INSTANCES,
   },
   {
     id: 'detections-report',
     reportCategory: ReportCategory.Detections,
-    img: `${PATH_BASENAME}/images/reports/detections-report.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/report-detections.jpg`,
     dataviewInstances: REPORT_EVENTS_DATAVIEW_INSTANCES,
   },
   {
     id: 'events-report',
     reportCategory: ReportCategory.Events,
-    img: `${PATH_BASENAME}/images/reports/events-report.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/report-events.jpg`,
     dataviewInstances: REPORT_EVENTS_DATAVIEW_INSTANCES,
   },
 ]
