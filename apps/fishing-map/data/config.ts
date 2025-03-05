@@ -21,18 +21,15 @@ export const SHOW_LEAVE_CONFIRMATION = process.env.NEXT_PUBLIC_SHOW_LEAVE_CONFIR
   : process.env.NODE_ENV !== 'development'
 
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || '/map'
+export const GLOBAL_REPORTS_ENABLED =
+  process.env.NEXT_PUBLIC_GLOBAL_REPORTS_ENABLED === 'true' || false
+export const RESPONSIVE_VISUALIZATION_ENABLED =
+  process.env.NEXT_PUBLIC_RESPONSIVE_VISUALIZATION_ENABLED === 'true' || false
 
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
     ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
     : 366 // 1 year
-
-export const CARRIER_PORTAL_API_URL =
-  process.env.NEXT_PUBLIC_CARRIER_PORTAL_API_URL || 'https://gateway.api.globalfishingwatch.org'
-export const CARRIER_PORTAL_URL =
-  process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.globalfishingwatch.org'
-export const LATEST_CARRIER_DATASET_ID =
-  process.env.NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID || 'carriers:latest'
 
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID

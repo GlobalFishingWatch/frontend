@@ -6,9 +6,6 @@
   position: relative;
   display: flex;
   flex-wrap: wrap;
-}
-
-.contentDot {
   padding-left: var(--space-M);
 }
 
@@ -27,4 +24,17 @@
   display: inline-flex;
   background-color: currentcolor;
   margin-right: 0.5rem;
+}
+
+.filters {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.expandedContainer {
+  width: 34rem;
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+  padding: var(--space-S);
+  border-radius: var(--border-radius);
 }

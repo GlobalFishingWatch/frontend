@@ -294,20 +294,21 @@ function LayerSchemaFilter({
 
   return (
     <div className={cx(styles.relative, styles.multiSelect)}>
-      {filterOperator && (
-        <Choice
-          size="tiny"
-          className={styles.filterOperator}
-          options={getFilterOperatorOptions()}
-          activeOption={filterOperator}
-          onSelect={(option) => onSelectOperation(id, option.id as FilterOperator)}
-        />
-      )}
+      <div className={styles.labelContainer}>
+        <label>{getLabelWithUnit(label, unit)}</label>
+        {filterOperator && (
+          <Choice
+            size="tiny"
+            options={getFilterOperatorOptions()}
+            activeOption={filterOperator}
+            onSelect={(option) => onSelectOperation(id, option.id as FilterOperator)}
+          />
+        )}
+      </div>
       {singleSelection ? (
         <Select
           key={id}
           disabled={disabled}
-          label={getLabelWithUnit(label, unit)}
           placeholder={getPlaceholderBySelections({
             selection: optionsSelected.map(({ id }) => id),
             options,
@@ -326,7 +327,6 @@ function LayerSchemaFilter({
         <MultiSelect
           key={id}
           disabled={disabled}
-          label={getLabelWithUnit(label, unit)}
           placeholder={getPlaceholderBySelections({
             selection: optionsSelected.map(({ id }) => id),
             options,

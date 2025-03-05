@@ -14,6 +14,7 @@ import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
+  RESPONSIVE_VISUALIZATION_ENABLED,
 } from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -231,16 +232,19 @@ export default function ReportVesselsGraph({
     return data
   }, [data])
 
-  // const getIndividualData = useCallback(async () => {
-  //   return individualData
-  // }, [individualData])
+  const getIndividualData = useCallback(async () => {
+    if (!RESPONSIVE_VISUALIZATION_ENABLED) {
+      return undefined
+    }
+    return individualData
+  }, [individualData])
 
   return (
     <div className={styles.graph} data-test="report-vessels-graph">
       <ResponsiveBarChart
         color={color}
         aggregatedValueKey={aggregatedValueKey}
-        // getIndividualData={getIndividualData}
+        getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         onAggregatedItemClick={onBarClick}
         barValueFormatter={(value: any) => {

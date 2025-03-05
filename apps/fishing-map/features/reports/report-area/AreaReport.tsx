@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
-import { DataviewType } from '@globalfishingwatch/api-types'
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Tabs } from '@globalfishingwatch/ui-components'
 
+import { GLOBAL_REPORTS_ENABLED } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   useFetchReportArea,
   useFitAreaInViewport,
@@ -32,6 +32,7 @@ import {
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useSetTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import ReportEnvironment from 'features/reports/tabs/environment/ReportEnvironment'
+import EventsReport from 'features/reports/tabs/events/EventsReport'
 import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
@@ -64,20 +65,10 @@ export default function Report() {
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
 
-  const dataviews = useSelector(selectAllDataviewInstancesResolved)
-  const heatmapDataviews = useMemo(
-    () =>
-      dataviews?.filter(
-        (d) =>
-          d.config?.visible === true &&
-          (d.config?.type === DataviewType.HeatmapAnimated ||
-            d.config?.type === DataviewType.HeatmapStatic)
-      ),
-    [dataviews]
-  )
+  const reportDataviews = useSelector(selectReportLayersVisible)
   const dataviewCategories = useMemo(
-    () => uniq(heatmapDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
-    [heatmapDataviews]
+    () => uniq(reportDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
+    [reportDataviews]
   )
   const categoryTabs: Tab<ReportCategory>[] = [
     {
@@ -88,6 +79,14 @@ export default function Report() {
       id: ReportCategory.Detections,
       title: t('common.detections', 'Detections'),
     },
+    ...(GLOBAL_REPORTS_ENABLED
+      ? [
+          {
+            id: ReportCategory.Events,
+            title: t('common.events', 'Events'),
+          },
+        ]
+      : []),
     {
       id: ReportCategory.Environment,
       title: t('common.environment', 'Environment'),
@@ -123,9 +122,13 @@ export default function Report() {
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {
-      if (category === ReportCategory.Environment && dataviews && dataviews.length > 0) {
+      if (
+        category === ReportCategory.Environment &&
+        reportDataviews &&
+        reportDataviews.length > 0
+      ) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment)
-        dispatchTimebarSelectedEnvId(dataviews[0]?.id)
+        dispatchTimebarSelectedEnvId(reportDataviews[0]?.id)
       } else {
         dispatchTimebarVisualisation(
           category === ReportCategory.Detections
@@ -134,7 +137,7 @@ export default function Report() {
         )
       }
     },
-    [dataviews, dispatchTimebarSelectedEnvId, dispatchTimebarVisualisation]
+    [reportDataviews, dispatchTimebarSelectedEnvId, dispatchTimebarVisualisation]
   )
 
   useEffect(() => {
@@ -183,6 +186,8 @@ export default function Report() {
       )}
       {reportCategory === ReportCategory.Environment ? (
         <ReportEnvironment />
+      ) : reportCategory === ReportCategory.Events ? (
+        <EventsReport />
       ) : (
         <div>
           <ActivityReport />

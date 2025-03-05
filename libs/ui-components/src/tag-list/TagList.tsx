@@ -34,7 +34,7 @@ export function TagList(props: TagListProps) {
           <Tag
             tooltip={tag.tooltip}
             tooltipPlacement={tag.tooltipPlacement}
-            onRemove={onRemove ? () => onRemoveTag(tag) : undefined}
+            onRemove={tag.interactive !== false && onRemove ? () => onRemoveTag(tag) : undefined}
             {...(color && { color })}
           >
             {tag.label}

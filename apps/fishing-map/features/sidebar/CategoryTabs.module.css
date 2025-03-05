@@ -41,7 +41,7 @@
 
 .tab.current .tabContent,
 .tab:hover > .tabContent {
-  background-color: none !important;
+  background-color: transparent !important;
   opacity: var(--opacity-primary);
 }
 

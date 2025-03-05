@@ -24,7 +24,7 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { HOME, SEARCH, USER, WORKSPACE_SEARCH,WORKSPACES_LIST } from 'routes/routes'
+import { SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
   selectIsWorkspaceLocation,
   selectLocationCategory,
@@ -107,7 +107,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             }}
             onClick={onSearchClick}
           >
-            <Tooltip content={t('search.vessels', 'Search vessels')} placement="right">
+            <Tooltip content={t('workspaces.categories.search', 'Vessel search')} placement="right">
               <span className={styles.tabContent}>
                 <Icon icon="category-search" className={styles.searchIcon} />
               </span>
@@ -115,25 +115,28 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           </Link>
         </li>
         {availableCategories?.map((category, index) => (
-          <li
-            key={category.title}
-            className={cx(styles.tab, {
-              [styles.current]:
-                (locationType !== SEARCH &&
-                  locationType !== WORKSPACE_SEARCH &&
-                  locationCategory === (category.title as WorkspaceCategory)) ||
-                (index === 0 && locationType === HOME),
-            })}
+          <Tooltip
+            key={category}
+            content={t(`workspace.categories.${category}`, category)}
+            placement="right"
           >
-            <Link
-              className={styles.tabContent}
-              to={getLinkToCategory(category.title as WorkspaceCategory)}
-              onClick={onCategoryClick}
-              title={category.title}
+            {/* TODO: translate tooltip category */}
+            <li
+              className={cx(styles.tab, {
+                [styles.current]:
+                  locationCategory === (category as WorkspaceCategory) ||
+                  (index === 0 && !locationCategory),
+              })}
             >
-              <Icon icon={`category-${category.title}` as IconType} />
-            </Link>
-          </li>
+              <Link
+                className={styles.tabContent}
+                to={getLinkToCategory(category as WorkspaceCategory)}
+                onClick={onCategoryClick}
+              >
+                <Icon icon={`category-${category}` as IconType} />
+              </Link>
+            </li>
+          </Tooltip>
         ))}
         <li className={styles.separator} aria-hidden></li>
         <li className={cx(styles.tab, styles.secondary)}>

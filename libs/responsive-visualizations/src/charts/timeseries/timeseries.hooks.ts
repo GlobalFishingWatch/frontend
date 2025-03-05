@@ -33,7 +33,7 @@ type UseFullTimeseriesProps = {
   data: ResponsiveVisualizationData
   timeseriesInterval: FourwingsInterval
   dateKey: keyof ResponsiveVisualizationData[0]
-  valueKey: keyof ResponsiveVisualizationData[0]
+  valueKeys: (keyof ResponsiveVisualizationData[0])[]
   aggregated?: boolean
 }
 
@@ -43,11 +43,11 @@ export function useFullTimeseries({
   data,
   timeseriesInterval,
   dateKey,
-  valueKey,
+  valueKeys,
   aggregated = true,
 }: UseFullTimeseriesProps) {
   return useMemo(() => {
-    if (!data || !dateKey || !valueKey) {
+    if (!data || !dateKey || !valueKeys?.length) {
       return []
     }
     const startMillis = getUTCDateTime(start)
@@ -69,13 +69,19 @@ export function useFullTimeseries({
         const d = getUTCDateTime(startMillis)
           .plus({ [timeseriesInterval]: i })
           .toISO()
-        const dataValue = data.find((item) =>
-          d?.startsWith(item[dateKey as keyof typeof item] as any)
-        )?.[valueKey]
+        const values = Object.fromEntries(
+          valueKeys.map((valueKey) => {
+            const dataValue = data.find((item) =>
+              d?.startsWith(item[dateKey as keyof typeof item] as any)
+            )?.[valueKey]
+            const fallbackValue = typeof dataValue === 'number' ? 0 : { value: 0 }
+            return [valueKey, dataValue ? dataValue : aggregated ? fallbackValue : []]
+          })
+        )
         return {
           [dateKey]: d,
-          [valueKey]: dataValue ? dataValue : aggregated ? 0 : [],
+          ...values,
         }
       })
-  }, [aggregated, data, dateKey, end, start, timeseriesInterval, valueKey])
+  }, [aggregated, data, dateKey, end, start, timeseriesInterval, valueKeys])
 }

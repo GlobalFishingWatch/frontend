@@ -31,9 +31,6 @@ import type { UpsertDataset } from './datasets.slice'
 import {
   deleteDatasetThunk,
   fetchDatasetByIdThunk,
-  fetchLastestCarrierDatasetThunk,
-  selectCarrierLatestDataset,
-  selectCarrierLatestDatasetStatus,
   updateDatasetThunk,
   upsertDatasetThunk,
 } from './datasets.slice'
@@ -184,33 +181,6 @@ export const useDatasetsAPI = () => {
       dispatchDeleteDataset,
     }),
     [dispatchDeleteDataset, dispatchFetchDataset, dispatchUpdateDataset, dispatchUpsertDataset]
-  )
-}
-
-export const useCarrierLatestConnect = () => {
-  const dispatch = useAppDispatch()
-  const carrierLatest = useSelector(selectCarrierLatestDataset)
-  const carrierLatestStatus = useSelector(selectCarrierLatestDatasetStatus)
-
-  const dispatchFetchLatestCarrier = useCallback(async (): Promise<{
-    payload?: Dataset
-    error?: AsyncError
-  }> => {
-    const action = await dispatch(fetchLastestCarrierDatasetThunk())
-    if (fetchLastestCarrierDatasetThunk.fulfilled.match(action)) {
-      return { payload: action.payload }
-    } else {
-      return { error: action.payload as AsyncError }
-    }
-  }, [dispatch])
-
-  return useMemo(
-    () => ({
-      carrierLatest,
-      carrierLatestStatus,
-      dispatchFetchLatestCarrier,
-    }),
-    [carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier]
   )
 }
 

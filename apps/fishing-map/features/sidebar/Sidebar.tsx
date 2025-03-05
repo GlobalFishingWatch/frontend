@@ -13,7 +13,6 @@ import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
-import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -23,7 +22,6 @@ import {
   selectIsVesselGroupReportLocation,
   selectIsWorkspacesListLocation,
 } from 'routes/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -74,7 +72,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 
   useEffect(() => {
     if (isUserLogged) {
@@ -114,11 +111,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
 
     if (isWorkspacesListLocation) {
-      return highlightedWorkspacesStatus === AsyncReducerStatus.Loading ? (
-        <Spinner />
-      ) : (
-        <WorkspacesList />
-      )
+      return <WorkspacesList />
     }
 
     if (isAreaReportLocation) {
@@ -139,7 +132,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
     return <Workspace />
   }, [
-    highlightedWorkspacesStatus,
     isAreaReportLocation,
     isPortReportLocation,
     isSearchLocation,

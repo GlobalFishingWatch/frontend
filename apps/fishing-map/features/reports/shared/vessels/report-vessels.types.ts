@@ -1,3 +1,8 @@
+export type ReportVesselValues = {
+  value: number
+  color?: string
+}[]
+
 export type ReportTableVessel = {
   id: string
   color?: string
@@ -19,4 +24,7 @@ export type ReportTableVessel = {
   transmissionDateTo?: string
   // Only available for vessels from a report (not vessel group)
   value?: number
+  // In some cases the vessel can be duplicated,
+  // so we merge the properties and keep the individual values
+  values?: ReportVesselValues
 }

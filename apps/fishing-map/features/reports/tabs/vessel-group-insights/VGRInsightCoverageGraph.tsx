@@ -6,6 +6,7 @@ import { type VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 
+import { RESPONSIVE_VISUALIZATION_ENABLED } from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -104,11 +105,14 @@ export default function VesselGroupReportInsightCoverageGraph({
   data: VesselGroupInsightResponse['coverage']
 }) {
   const vesselGroup = useSelector(selectVGRData)
-  // const getIndividualData = useCallback(async () => {
-  //   if (vesselGroup?.vessels.length) {
-  //     return parseCoverageGraphIndividualData(data, vesselGroup.vessels)
-  //   } else return []
-  // }, [data, vesselGroup?.vessels])
+  const getIndividualData = useCallback(async () => {
+    if (!RESPONSIVE_VISUALIZATION_ENABLED) {
+      return undefined
+    }
+    if (vesselGroup?.vessels.length) {
+      return parseCoverageGraphIndividualData(data, vesselGroup.vessels)
+    } else return []
+  }, [data, vesselGroup?.vessels])
   const getAggregatedData = useCallback(async () => {
     if (vesselGroup?.vessels.length) {
       return parseCoverageGraphAggregatedData(data, vesselGroup.vessels)
@@ -120,7 +124,7 @@ export default function VesselGroupReportInsightCoverageGraph({
     <div className={styles.graph} data-test="insights-report-vessels-graph">
       <ResponsiveBarChart
         color={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
-        // getIndividualData={getIndividualData}
+        getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()

@@ -15,6 +15,7 @@ import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
+import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import AppModals from 'features/modals/Modals'
@@ -29,7 +30,6 @@ import {
   selectWorkspaceCustomStatus,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import {
   HOME,
   PORT_REPORT,
@@ -81,6 +81,7 @@ function App() {
   useDatasetDrag()
   useReplaceLoginUrl()
   useBeforeUnload()
+  useUserLanguageUpdate()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
@@ -173,10 +174,6 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchUserThunk({ guest: false }))
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(fetchHighlightWorkspacesThunk())
   }, [dispatch])
 
   const onToggle = useCallback(() => {

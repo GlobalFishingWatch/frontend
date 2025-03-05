@@ -21,7 +21,7 @@ export default function ReportVesselsPlaceholder({
   const tableRows = Array(11).fill('')
   return (
     <Fragment>
-      <div className={styles.container}>
+      <div className={cx(styles.container, styles.relative)}>
         <div className={cx({ [styles.faint]: children !== undefined })}>
           <div className={cx(styles.flex, styles.column)}>
             {/* header */}
@@ -37,7 +37,7 @@ export default function ReportVesselsPlaceholder({
                 />
               </div>
             )}
-            {showGraph && <ReportBarGraphPlaceholder />}
+            {showGraph && <ReportBarGraphPlaceholder animate={animate} />}
             {/* search */}
             {showSearch && (
               <div

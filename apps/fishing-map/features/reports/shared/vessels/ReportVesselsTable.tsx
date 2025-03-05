@@ -17,6 +17,7 @@ import {
   selectReportVesselsOrderDirection,
   selectReportVesselsOrderProperty,
 } from 'features/reports/reports.config.selectors'
+import { selectReportCategory } from 'features/reports/reports.selectors'
 import type {
   ReportVesselOrderDirection,
   ReportVesselOrderProperty,
@@ -33,7 +34,7 @@ import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
-import type { ReportTableVessel } from './report-vessels.types'
+import type { ReportTableVessel, ReportVesselValues } from './report-vessels.types'
 import ReportVesselsTableFooter from './ReportVesselsTableFooter'
 
 import styles from './ReportVesselsTable.module.css'
@@ -59,6 +60,7 @@ export default function ReportVesselsTable({
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const orderProperty = useSelector(selectReportVesselsOrderProperty)
   const isAnyAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const reportCategory = useSelector(selectReportCategory)
   const orderDirection = useSelector(selectReportVesselsOrderDirection)
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
@@ -93,20 +95,22 @@ export default function ReportVesselsTable({
   return (
     <Fragment>
       <div className={styles.tableContainer} data-test="report-vessels-table">
-        {isAnyAreaReportLocation && datasetsDownloadNotSupported.length > 0 && (
-          <p className={styles.error}>
-            {t(
-              'analysis.datasetsNotAllowed',
-              'Vessels are not included from the following sources:'
-            )}{' '}
-            {datasetsDownloadNotSupported.map((dataset, index) => (
-              <Fragment key={dataset}>
-                <DatasetLabel key={dataset} dataset={{ id: dataset }} />
-                {index < datasetsDownloadNotSupported.length - 1 && ', '}
-              </Fragment>
-            ))}
-          </p>
-        )}
+        {isAnyAreaReportLocation &&
+          reportCategory === 'activity' &&
+          datasetsDownloadNotSupported.length > 0 && (
+            <p className={styles.error}>
+              {t(
+                'analysis.datasetsNotAllowed',
+                'Vessels are not included from the following sources:'
+              )}{' '}
+              {datasetsDownloadNotSupported.map((dataset, index) => (
+                <Fragment key={dataset}>
+                  <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+                  {index < datasetsDownloadNotSupported.length - 1 && ', '}
+                </Fragment>
+              ))}
+            </p>
+          )}
         <div className={cx(styles.vesselsTable, { [styles.vesselsTableWithValue]: activityUnit })}>
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
             {t('common.name', 'Name')}
@@ -172,10 +176,16 @@ export default function ReportVesselsTable({
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             const value = vessel.value || (vessel as any)[activityUnit as any]
+            const values = vessel.values
+              ? vessel.values
+              : value
+                ? ([{ value }] as ReportVesselValues)
+                : []
             const hasDatasets = vessel.datasetId?.includes(GLOBAL_VESSELS_DATASET_ID)
               ? vessel.datasetId !== undefined && vessel.trackDatasetId !== undefined
               : vessel.datasetId !== undefined || vessel.trackDatasetId !== undefined
             const pinTrackDisabled = !workspaceReady || !hasDatasets || isPinningVessels
+            const showVesselColor = values.length > 0 && !values.some((v) => v.color)
             return (
               <Fragment key={id}>
                 <div
@@ -194,11 +204,8 @@ export default function ReportVesselsTable({
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   {workspaceReady ? (
                     <Fragment>
-                      {vessel.color && (
-                        <span
-                          className={styles.dot}
-                          style={{ backgroundColor: vessel.color }}
-                        ></span>
+                      {showVesselColor && vessel.color && (
+                        <span className={styles.dot} style={{ backgroundColor: vessel.color }} />
                       )}
                       <VesselLink
                         className={styles.link}
@@ -249,7 +256,24 @@ export default function ReportVesselsTable({
                 </div>
                 {activityUnit && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                    {value !== undefined ? <I18nNumber number={value} /> : EMPTY_FIELD_PLACEHOLDER}
+                    {values.length &&
+                      values.map((v) =>
+                        v.value ? (
+                          <Fragment>
+                            {v.color && values.length > 1 && (
+                              <span
+                                className={styles.dot}
+                                style={{ backgroundColor: v.color }}
+                              ></span>
+                            )}
+                            <span className={styles.value}>
+                              <I18nNumber number={v.value} />
+                            </span>
+                          </Fragment>
+                        ) : (
+                          EMPTY_FIELD_PLACEHOLDER
+                        )
+                      )}
                   </div>
                 )}
               </Fragment>
