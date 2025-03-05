@@ -21,6 +21,7 @@ import type {
 } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 
+import { RESPONSIVE_VISUALIZATION_ENABLED } from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
 import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
@@ -168,6 +169,9 @@ export default function EventsReportGraph({
   const getAggregatedData = useCallback(async () => data, [data])
 
   const getIndividualData = useCallback(async () => {
+    if (!RESPONSIVE_VISUALIZATION_ENABLED) {
+      return undefined
+    }
     const params = {
       ...getEventsStatsQuery({
         start,

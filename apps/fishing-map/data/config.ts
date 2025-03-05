@@ -23,6 +23,8 @@ export const SHOW_LEAVE_CONFIRMATION = process.env.NEXT_PUBLIC_SHOW_LEAVE_CONFIR
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || '/map'
 export const GLOBAL_REPORTS_ENABLED =
   process.env.NEXT_PUBLIC_GLOBAL_REPORTS_ENABLED === 'true' || false
+export const RESPONSIVE_VISUALIZATION_ENABLED =
+  process.env.NEXT_PUBLIC_RESPONSIVE_VISUALIZATION_ENABLED === 'true' || false
 
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'

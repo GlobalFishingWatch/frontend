@@ -6,6 +6,7 @@ import { type VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 
+import { RESPONSIVE_VISUALIZATION_ENABLED } from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -105,6 +106,9 @@ export default function VesselGroupReportInsightCoverageGraph({
 }) {
   const vesselGroup = useSelector(selectVGRData)
   const getIndividualData = useCallback(async () => {
+    if (!RESPONSIVE_VISUALIZATION_ENABLED) {
+      return undefined
+    }
     if (vesselGroup?.vessels.length) {
       return parseCoverageGraphIndividualData(data, vesselGroup.vessels)
     } else return []

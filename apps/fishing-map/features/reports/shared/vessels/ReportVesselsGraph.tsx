@@ -14,6 +14,7 @@ import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
+  RESPONSIVE_VISUALIZATION_ENABLED,
 } from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -232,6 +233,9 @@ export default function ReportVesselsGraph({
   }, [data])
 
   const getIndividualData = useCallback(async () => {
+    if (!RESPONSIVE_VISUALIZATION_ENABLED) {
+      return undefined
+    }
     return individualData
   }, [individualData])
 
