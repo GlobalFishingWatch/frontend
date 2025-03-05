@@ -46,6 +46,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
   return (
     <div className={styles.filter} data-test="source-tags">
       <label>{t('layer.source', 'Sources')}</label>
+      {/* Rendering both so the unmerged one is visible in printing */}
       <TagList
         testId="source-tag-item"
         tags={sourcesSelected}
