@@ -27,6 +27,9 @@ type LayerPropertiesProps = {
   properties?: LayerPropertiesOption[]
 }
 
+export const POLYGON_PROPERTIES: LayerPropertiesOption[] = ['color', 'thickness']
+export const POINT_PROPERTIES: LayerPropertiesOption[] = ['color']
+
 const LayerProperties = (props: LayerPropertiesProps) => {
   const {
     open,

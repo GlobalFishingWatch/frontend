@@ -187,13 +187,15 @@ export const useTimebarVisualisationConnect = () => {
 
   const { dispatchQueryParams } = useLocationConnect()
   const dispatchTimebarVisualisation = useCallback(
-    (timebarVisualisation: TimebarVisualisations | undefined, automated = false) => {
-      dispatchQueryParams({ timebarVisualisation: timebarVisualisation })
+    (newTimebarVisualisation: TimebarVisualisations | undefined, automated = false) => {
+      if (timebarVisualisation !== newTimebarVisualisation) {
+        dispatchQueryParams({ timebarVisualisation: newTimebarVisualisation })
+      }
       if (!automated) {
         dispatch(changeSettings())
       }
     },
-    [dispatchQueryParams, dispatch]
+    [timebarVisualisation, dispatchQueryParams, dispatch]
   )
 
   return useMemo(
