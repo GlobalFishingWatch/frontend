@@ -44,8 +44,7 @@ import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
-import type { LayerPropertiesOption } from '../shared/LayerProperties'
-import LayerProperties from '../shared/LayerProperties'
+import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
 import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
@@ -59,8 +58,6 @@ type UserPanelProps = {
   dataview: UrlDataviewInstance
   onToggle?: () => void
 }
-
-const PROPERTIES: LayerPropertiesOption[] = ['color', 'thickness']
 
 function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
@@ -239,7 +236,11 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
                     ? 'fill'
                     : 'line'
                 }
-                properties={PROPERTIES}
+                properties={
+                  dataview?.config?.type === DataviewType.UserContext
+                    ? POLYGON_PROPERTIES
+                    : POINT_PROPERTIES
+                }
               />
             </Fragment>
           )}
