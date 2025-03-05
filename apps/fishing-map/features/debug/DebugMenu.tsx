@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -8,6 +8,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
@@ -16,6 +17,7 @@ import styles from './DebugMenu.module.css'
 
 const DebugMenu: React.FC = () => {
   const dispatch = useAppDispatch()
+  const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const debugOptions = useSelector(selectDebugOptions)
   const locationQuery = useSelector(selectLocationQuery)
   const [datasetId, setDatasetId] = useState<string>('')
@@ -32,6 +34,32 @@ const DebugMenu: React.FC = () => {
   return (
     <div className={styles.row}>
       <section className={styles.section}>
+        {isGFWDeveloper && (
+          <Fragment>
+            <div className={styles.header}>
+              <Switch
+                id="option_global_reports"
+                active={debugOptions.globalReports}
+                onClick={() => dispatch(toggleOption(DebugOption.GlobalReports))}
+              />
+              <label htmlFor="option_global_reports">
+                <strong>Feature flag:</strong> Global reports
+              </label>
+            </div>
+            <p>Activates the global reports feature</p>
+            <div className={styles.header}>
+              <Switch
+                id="option_responsive_visualization"
+                active={debugOptions.responsiveVisualization}
+                onClick={() => dispatch(toggleOption(DebugOption.ResponsiveVisualization))}
+              />
+              <label htmlFor="option_responsive_visualization">
+                <strong>Feature flag:</strong> Responsive visualization
+              </label>
+            </div>
+            <p>Activates the responsive visualization feature</p>
+          </Fragment>
+        )}
         <div className={styles.header}>
           <Switch
             id="option_map_stats"

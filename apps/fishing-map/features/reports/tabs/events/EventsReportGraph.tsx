@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
@@ -21,8 +22,8 @@ import type {
 } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 
-import { RESPONSIVE_VISUALIZATION_ENABLED } from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import i18n from 'features/i18n/i18n'
 import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
@@ -156,6 +157,7 @@ export default function EventsReportGraph({
   const interval = getFourwingsInterval(startMillis, endMillis)
   const filtersMemo = useMemoCompare(filters)
   const includesMemo = useMemoCompare(includes)
+  const debugOptions = useSelector(selectDebugOptions)
 
   let icon: ReactElement | undefined
   if (eventType === 'encounter') {
@@ -169,7 +171,7 @@ export default function EventsReportGraph({
   const getAggregatedData = useCallback(async () => data, [data])
 
   const getIndividualData = useCallback(async () => {
-    if (!RESPONSIVE_VISUALIZATION_ENABLED) {
+    if (!debugOptions.responsiveVisualization) {
       return undefined
     }
     const params = {
@@ -189,7 +191,15 @@ export default function EventsReportGraph({
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
-  }, [start, end, filtersMemo, includesMemo, datasetId, interval])
+  }, [
+    debugOptions.responsiveVisualization,
+    start,
+    end,
+    filtersMemo,
+    datasetId,
+    includesMemo,
+    interval,
+  ])
 
   if (!data.length) {
     return null
