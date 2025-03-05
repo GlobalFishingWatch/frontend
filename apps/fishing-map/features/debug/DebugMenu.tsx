@@ -88,6 +88,15 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
         </div>
         <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
+        <div className={styles.header}>
+          <Switch
+            id="option_currents_layer"
+            active={debugOptions.currentsLayer}
+            onClick={() => dispatch(toggleOption(DebugOption.CurrentsLayer))}
+          />
+          <label htmlFor="option_currents_layer">Currents layer</label>
+        </div>
+        <p>Make currents layer available in layer library</p>
       </section>
       <hr className={styles.separation} />
       <section>

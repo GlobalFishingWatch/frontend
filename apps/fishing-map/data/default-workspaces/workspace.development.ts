@@ -29,7 +29,6 @@ import {
   SAR_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { CURRENTS_DATAVIEW_ID } from 'features/dataviews/dataviews.mock'
 import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
@@ -131,13 +130,6 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
       config: {
         visible: false,
-      },
-    },
-    {
-      id: 'currents-instance',
-      dataviewId: CURRENTS_DATAVIEW_ID,
-      config: {
-        visible: true,
       },
     },
     {
