@@ -51,7 +51,7 @@ export const selectIsAnyVesselLocation = createSelector(
   (isVesselLocation, isWorkspaceVesselLocation) => isVesselLocation || isWorkspaceVesselLocation
 )
 
-const selectisAreaReportLocation = createSelector(
+export const selectIsStandaloneReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT
 )
@@ -62,7 +62,7 @@ const selectIsWorkspaceReportLocation = createSelector(
 )
 
 export const selectIsAnyAreaReportLocation = createSelector(
-  [selectisAreaReportLocation, selectIsWorkspaceReportLocation],
+  [selectIsStandaloneReportLocation, selectIsWorkspaceReportLocation],
   (isAreaReportLocation, isWorkspaceReportLocation) =>
     isAreaReportLocation || isWorkspaceReportLocation
 )

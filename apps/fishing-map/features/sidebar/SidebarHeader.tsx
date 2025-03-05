@@ -49,6 +49,7 @@ import {
   selectIsWorkspaceOwner,
   selectLastVisitedWorkspace,
   selectWorkspace,
+  selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import {
@@ -66,6 +67,7 @@ import {
   selectIsAnyReportLocation,
   selectIsAnySearchLocation,
   selectIsAnyVesselLocation,
+  selectIsStandaloneReportLocation,
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectLocationCategory,
@@ -355,7 +357,7 @@ function ShareWorkspaceButton() {
 }
 
 function cleanReportPayload(payload: Record<string, any>) {
-  const { areaId, datasetId, ...rest } = payload || {}
+  const { areaId, datasetId, reportId, ...rest } = payload || {}
   return rest
 }
 
@@ -363,12 +365,17 @@ function CloseReportButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportAreaIds = useSelector(selectReportAreaIds)
+  const reportsStatus = useSelector(selectReportsStatus)
   const locationQuery = useSelector(selectLocationQuery)
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
+  const isStandaloneReportLocation = useSelector(selectIsStandaloneReportLocation)
   const highlightArea = useHighlightReportArea()
+  const isReportLoading =
+    isStandaloneReportLocation && reportsStatus !== AsyncReducerStatus.Finished
 
   const onCloseClick = () => {
     resetSidebarScroll()
@@ -380,13 +387,27 @@ function CloseReportButton() {
   }
 
   const isWorkspaceRoute = workspaceId !== undefined && workspaceId !== DEFAULT_WORKSPACE_ID
+  const isStandaloneReportCustomWorkspace =
+    isStandaloneReportLocation && workspaceId !== DEFAULT_WORKSPACE_ID
   const linkTo = {
-    type: isWorkspaceRoute ? WORKSPACE : HOME,
+    type: isStandaloneReportCustomWorkspace || isWorkspaceRoute ? WORKSPACE : HOME,
     payload: {
       ...cleanReportPayload(locationPayload),
-      ...(isWorkspaceRoute && { category: workspaceCategory, workspaceId }),
+      ...((isStandaloneReportCustomWorkspace || isWorkspaceRoute) && {
+        category: workspaceCategory,
+        workspaceId,
+      }),
     },
-    query: cleanReportQuery(locationQuery),
+    query: {
+      ...cleanReportQuery(locationQuery),
+      ...(isStandaloneReportLocation && {
+        dataviewInstances: workspaceDataviewInstances,
+      }),
+    },
+  }
+
+  if (isReportLoading) {
+    return <IconButton icon="close" type="border" className="print-hidden" />
   }
 
   return (
