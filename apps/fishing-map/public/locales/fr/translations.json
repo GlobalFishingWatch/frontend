@@ -69,7 +69,7 @@
     "summary": "<strong>{{vessels}} navires{{sources}} </strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> d'<strong>{{activityType}}</strong> dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong>dans la zone entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
+    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "Cela prend plus de temps que prévu, merci de patienter",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Analyse",
