@@ -33,7 +33,7 @@ const WORKSPACES_BY_CATEGORY: Record<
 > = {
   'fishing-activity': FISHING_MAP_WORKSPACES,
   'marine-manager': MARINE_MANAGER_WORKSPACES,
-  reports: REPORTS_INDEX,
+  reports: GLOBAL_REPORTS_ENABLED ? REPORTS_INDEX : [],
 }
 
 export type HighlightedWorkspace = {
