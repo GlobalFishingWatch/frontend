@@ -1,0 +1,75 @@
+{
+  "fishing-activity": {
+    "default-public": {
+      "name": "Actividad global de la pesca",
+      "description": "Seguimiento de la pesca comercial casi en tiempo real basada en el sistema de identificación automática (AIS por sus siglas en Inglés) global y el sistema de seguimiento de embarcaciones (VMS) de nuestros países socios.",
+      "cta": "Explora el mapa"
+    },
+    "carrier-portal-public": {
+      "name": "Carrier vessel portal",
+      "description": "Verifica transbordos, rastrea buques e identifica puertos visitados para conseguir el conocimiento sobre la actividad de los buques de carga necesario para fortalecer la transparencia y acelerar la reforma del transbordo.",
+      "cta": "Explora el portal"
+    },
+    "deep_sea_mining_watch-public": {
+      "name": "Deep sea mining watch",
+      "description": "TODO TODO TODO",
+      "cta": "Explore the portal"
+    }
+  },
+  "reports": {
+    "activity-report": {
+      "name": "Global Vessel Activity",
+      "description": "Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries."
+    },
+    "detections-report": {
+      "name": "Global Dark Vessel Detections",
+      "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night."
+    },
+    "events-report": {
+      "name": "Global Vessel Events",
+      "description": "TODO TODO TODO Something something about encounters, loitering, gaps, port visits and all that..."
+    }
+  },
+  "marine-manager": {
+    "ascension-public": {
+      "name": "Ascension",
+      "description": "La Isla Ascensión está situada en medio del Océano Atlántico. En 2019, los 445.000 kilómetros cuadrados (171.800 millas cuadradas) de las aguas de Ascensión fueron designadas como área marina protegida."
+    },
+    "fiji-public": {
+      "name": "Fiji",
+      "description": "Situada en el Pacífico Sur, la República de Fiji consta de 322 islas y tiene una zona económica exclusiva de más de 1,2 millones de kilómetros cuadrados (460.000 millas cuadradas)."
+    },
+    "galapagos-public": {
+      "name": "Galápagos",
+      "description": "La Reserva Marina de Galápagos, declarada por la UNESCO \"Patrimonio Natural de la Humanidad\", cubre 133,000 kilómetros cuadrados (51,300 millas cuadradas) del Océano Pacífico frente a las costas de América del Sur."
+    },
+    "guyana-public": {
+      "name": "Guyana",
+      "description": "La zona económica exclusiva de Guyana esta ubicada frente a la costa noreste de América del Sur y cubre 137.000 kilómetros cuadrados (52.800 millas cuadradas) de océano. "
+    },
+    "micronesia-public": {
+      "name": "Estados Federados de Micronesia",
+      "description": "Compuesto por 607 islas, los cuatro estados de los Estados Federados de Micronesia (Yap, Chuuk, Pohnpei y Kosrae) tienen una zona económica exclusiva de más de 2,6 millones de kilómetros cuadrados (1 millón de millas cuadradas)."
+    },
+    "maldives-public": {
+      "name": "República de Maldivas",
+      "description": "La República de Maldivas es un archipiélago ubicado en el Océano Índico y tiene el séptimo sistema de arrecifes más grande del mundo. Maldivas tiene una zona económica exclusiva que cubre un área de casi 1 millón de kilómetros cuadrados (385.000 millas cuadradas)."
+    },
+    "niue-public": {
+      "name": "Niue",
+      "description": "Niue está situada en el Océano Pacífico central y el área marina protegida de Moana Mahu cubre el 40 por ciento de la zona económica exclusiva de Niue, cubriendo 127.000 kilómetros cuadrados (49.000 millas cuadradas)."
+    },
+    "palau-public": {
+      "name": "Palau",
+      "description": "La República de Palau es un grupo de islas situadas en el océano Pacífico occidental. En 2020, Palau protegió completamente el 80% de su zona económica exclusiva para formar el Santuario Marino Nacional de Palau, que representa 475.077 kilómetros cuadrados (183.000 millas cuadradas), cerrando estas aguas a todas las formas de actividades extractivas, incluida la pesca. "
+    },
+    "tristan-public": {
+      "name": "Tristan da Cunha",
+      "description": "Tristan da Cunha es una isla remota en el Océano Atlántico Sur. En 2020, la comunidad de Tristan da Cunha designó el 90 por ciento de su zona oceánica de 690.000 kilómetros cuadrados (266.400 millas cuadradas) para la protección marina."
+    },
+    "mediterranean-public": {
+      "name": "Mediterráneo y Mar Negro",
+      "description": "El Mediterráneo y el Mar Negro ocupan casi 3 millones de kilómetros cuadrados (1,1 millones de millas cuadradas) de océano entre Europa y África. "
+    }
+  }
+}
