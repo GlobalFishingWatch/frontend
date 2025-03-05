@@ -227,6 +227,7 @@ export const selectReportLayersVisible = createSelector(
       return (
         config?.type === DataviewType.HeatmapAnimated ||
         config?.type === DataviewType.HeatmapStatic ||
+        config?.type === DataviewType.Currents ||
         (config?.type === DataviewType.FourwingsTileCluster && GLOBAL_REPORTS_ENABLED)
       )
     })

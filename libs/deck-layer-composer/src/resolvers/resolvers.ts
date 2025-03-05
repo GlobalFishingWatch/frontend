@@ -1,5 +1,5 @@
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
-import { DataviewCategory,DataviewType } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
   BaseMapLabelsLayer,
@@ -7,6 +7,7 @@ import {
   ClusterLayer,
   ContextLayer,
   FourwingsClustersLayer,
+  FourwingsCurrentsTileLayer,
   FourwingsLayer,
   GraticulesLayer,
   PolygonsLayer,
@@ -20,6 +21,7 @@ import {
 import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckFourwingsClustersLayerProps } from './clusters'
 import { resolveDeckContextLayerProps } from './context'
+import { resolveDeckCurrentsLayerProps } from './currents'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckGraticulesLayerProps } from './graticules'
 import { resolveDeckPolygonsLayerProps } from './polygons'
@@ -64,6 +66,11 @@ export const dataviewToDeckLayer = (
   ) {
     const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, layerConfig)
     const layer = new FourwingsLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.Currents) {
+    const deckLayerProps = resolveDeckCurrentsLayerProps(dataview, layerConfig)
+    const layer = new FourwingsCurrentsTileLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Context) {

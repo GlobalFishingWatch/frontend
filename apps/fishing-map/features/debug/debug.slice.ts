@@ -8,6 +8,7 @@ export enum DebugOption {
   MapStats = 'mapStats',
   Thinning = 'thinning',
   DatasetIdHash = 'addDatasetIdHash',
+  CurrentsLayer = 'currentsLayer',
 }
 
 type DebugOptions = Record<DebugOption, boolean>
@@ -25,6 +26,7 @@ const initialState: DebugState = {
     mapStats: false,
     thinning: true,
     addDatasetIdHash: true,
+    currentsLayer: false,
   },
 }
 
