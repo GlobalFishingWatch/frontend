@@ -1,0 +1,75 @@
+{
+  "fishing-activity": {
+    "default-public": {
+      "name": "crwdns84141:0crwdne84141:0",
+      "description": "crwdns84143:0crwdne84143:0",
+      "cta": "crwdns84145:0crwdne84145:0"
+    },
+    "carrier-portal-public": {
+      "name": "crwdns84147:0crwdne84147:0",
+      "description": "crwdns84149:0crwdne84149:0",
+      "cta": "crwdns84151:0crwdne84151:0"
+    },
+    "deep_sea_mining_watch-public": {
+      "name": "crwdns84153:0crwdne84153:0",
+      "description": "crwdns84155:0crwdne84155:0",
+      "cta": "crwdns84157:0crwdne84157:0"
+    }
+  },
+  "reports": {
+    "activity-report": {
+      "name": "crwdns84159:0crwdne84159:0",
+      "description": "crwdns84161:0crwdne84161:0"
+    },
+    "detections-report": {
+      "name": "crwdns84163:0crwdne84163:0",
+      "description": "crwdns84165:0crwdne84165:0"
+    },
+    "events-report": {
+      "name": "crwdns84167:0crwdne84167:0",
+      "description": "crwdns84169:0crwdne84169:0"
+    }
+  },
+  "marine-manager": {
+    "ascension-public": {
+      "name": "crwdns84171:0crwdne84171:0",
+      "description": "crwdns84173:0crwdne84173:0"
+    },
+    "fiji-public": {
+      "name": "crwdns84175:0crwdne84175:0",
+      "description": "crwdns84177:0crwdne84177:0"
+    },
+    "galapagos-public": {
+      "name": "crwdns84179:0crwdne84179:0",
+      "description": "crwdns84181:0crwdne84181:0"
+    },
+    "guyana-public": {
+      "name": "crwdns84183:0crwdne84183:0",
+      "description": "crwdns84185:0crwdne84185:0"
+    },
+    "micronesia-public": {
+      "name": "crwdns84187:0crwdne84187:0",
+      "description": "crwdns84189:0crwdne84189:0"
+    },
+    "maldives-public": {
+      "name": "crwdns84191:0crwdne84191:0",
+      "description": "crwdns84193:0crwdne84193:0"
+    },
+    "niue-public": {
+      "name": "crwdns84195:0crwdne84195:0",
+      "description": "crwdns84197:0crwdne84197:0"
+    },
+    "palau-public": {
+      "name": "crwdns84199:0crwdne84199:0",
+      "description": "crwdns84201:0crwdne84201:0"
+    },
+    "tristan-public": {
+      "name": "crwdns84203:0crwdne84203:0",
+      "description": "crwdns84205:0crwdne84205:0"
+    },
+    "mediterranean-public": {
+      "name": "crwdns84207:0crwdne84207:0",
+      "description": "crwdns84209:0crwdne84209:0"
+    }
+  }
+}
