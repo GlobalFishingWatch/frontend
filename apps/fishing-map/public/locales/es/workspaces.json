@@ -1,14 +1,14 @@
 {
   "fishing-activity": {
     "default-public": {
-      "name": "Global fishing activity",
-      "description": "Monitor vessel-based human activity at sea in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.",
-      "cta": "Explore the map"
+      "name": "Actividad global de la pesca",
+      "description": "Seguimiento de la pesca comercial casi en tiempo real basada en el sistema de identificación automática (AIS por sus siglas en Inglés) global y el sistema de seguimiento de embarcaciones (VMS) de nuestros países socios.",
+      "cta": "Explora el mapa"
     },
     "carrier-portal-public": {
-      "name": "Carrier Vessel Portal",
-      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
-      "cta": "Explore the carrier vessel portal"
+      "name": "Carrier vessel portal",
+      "description": "Verifica transbordos, rastrea buques e identifica puertos visitados para conseguir el conocimiento sobre la actividad de los buques de carga necesario para fortalecer la transparencia y acelerar la reforma del transbordo.",
+      "cta": "Explora el portal"
     },
     "deep_sea_mining_watch-public": {
       "name": "Deep sea mining watch",
@@ -32,44 +32,44 @@
   },
   "marine-manager": {
     "ascension-public": {
-      "name": "Ascension Island",
-      "description": "Ascension Island is located in the middle of the Atlantic Ocean. In 2019,  all 445,000 square kilometers (171,800 square miles) of Ascension’s waters were designated as a marine protected area."
+      "name": "Ascension",
+      "description": "La Isla Ascensión está situada en medio del Océano Atlántico. En 2019, los 445.000 kilómetros cuadrados (171.800 millas cuadradas) de las aguas de Ascensión fueron designadas como área marina protegida."
     },
     "fiji-public": {
       "name": "Fiji",
-      "description": "Located in the South Pacific, the Republic of Fiji consists of 322 islands and has an exclusive economic zone of over 1.2 million square kilometers (460,000 square miles)."
+      "description": "Situada en el Pacífico Sur, la República de Fiji consta de 322 islas y tiene una zona económica exclusiva de más de 1,2 millones de kilómetros cuadrados (460.000 millas cuadradas)."
     },
     "galapagos-public": {
       "name": "Galápagos",
-      "description": "A UNESCO World Heritage site, Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America."
+      "description": "La Reserva Marina de Galápagos, declarada por la UNESCO \"Patrimonio Natural de la Humanidad\", cubre 133,000 kilómetros cuadrados (51,300 millas cuadradas) del Océano Pacífico frente a las costas de América del Sur."
     },
     "guyana-public": {
       "name": "Guyana",
-      "description": "Guyana’s exclusive economic zone is located off the northeastern coast of South America and covers 137,000 square kilometers (52,800 square miles) of ocean. "
+      "description": "La zona económica exclusiva de Guyana esta ubicada frente a la costa noreste de América del Sur y cubre 137.000 kilómetros cuadrados (52.800 millas cuadradas) de océano. "
     },
     "micronesia-public": {
-      "name": "Federated States of Micronesia",
-      "description": "Composed of 607 islands, the four states of the Federated States of Micronesia (Yap, Chuuk, Pohnpei, and Kosrae) have an exclusive economic zone of over 2.6 million square kilometers (1 million square miles)."
+      "name": "Estados Federados de Micronesia",
+      "description": "Compuesto por 607 islas, los cuatro estados de los Estados Federados de Micronesia (Yap, Chuuk, Pohnpei y Kosrae) tienen una zona económica exclusiva de más de 2,6 millones de kilómetros cuadrados (1 millón de millas cuadradas)."
     },
     "maldives-public": {
-      "name": "Maldives",
-      "description": "The Republic of Maldives is an archipelago located in the Indian Ocean and has the seventh largest reef system in the world. Maldives has an exclusive economic zone that covers an area of nearly 1 million square kilometers (385,000 square miles)."
+      "name": "República de Maldivas",
+      "description": "La República de Maldivas es un archipiélago ubicado en el Océano Índico y tiene el séptimo sistema de arrecifes más grande del mundo. Maldivas tiene una zona económica exclusiva que cubre un área de casi 1 millón de kilómetros cuadrados (385.000 millas cuadradas)."
     },
     "niue-public": {
       "name": "Niue",
-      "description": "Niue is located in the central Pacific Ocean and the Moana Mahu marine protected area covers 40 percent of Niue’s exclusive economic zone, covering 127,000 square kilometers (49,000 square miles)."
+      "description": "Niue está situada en el Océano Pacífico central y el área marina protegida de Moana Mahu cubre el 40 por ciento de la zona económica exclusiva de Niue, cubriendo 127.000 kilómetros cuadrados (49.000 millas cuadradas)."
     },
     "palau-public": {
       "name": "Palau",
-      "description": "The Republic of Palau is a group of islands located in the Western Pacific Ocean. In 2020, Palau fully protected 80% of its exclusive economic zone to form the Palau National Marine Sanctuary, representing 475,077 square kilometers (183,000 square miles), by closing these waters to all forms of extractive activities, including fishing. "
+      "description": "La República de Palau es un grupo de islas situadas en el océano Pacífico occidental. En 2020, Palau protegió completamente el 80% de su zona económica exclusiva para formar el Santuario Marino Nacional de Palau, que representa 475.077 kilómetros cuadrados (183.000 millas cuadradas), cerrando estas aguas a todas las formas de actividades extractivas, incluida la pesca. "
     },
     "tristan-public": {
       "name": "Tristan da Cunha",
-      "description": "Tristan da Cunha is a remote island in the South Atlantic Ocean. In 2020, the Tristan da Cunha community designated 90 percent of its 690,000 square kilometer (266,400 square mile) ocean zone for marine protection."
+      "description": "Tristan da Cunha es una isla remota en el Océano Atlántico Sur. En 2020, la comunidad de Tristan da Cunha designó el 90 por ciento de su zona oceánica de 690.000 kilómetros cuadrados (266.400 millas cuadradas) para la protección marina."
     },
     "mediterranean-public": {
-      "name": "Mediterranean and Black Sea",
-      "description": "The Mediterranean and Black Sea cover almost 3 million square kilometers (1.1 million square miles) of ocean between Europe and Africa. "
+      "name": "Mediterráneo y Mar Negro",
+      "description": "El Mediterráneo y el Mar Negro ocupan casi 3 millones de kilómetros cuadrados (1,1 millones de millas cuadradas) de océano entre Europa y África. "
     }
   }
 }
