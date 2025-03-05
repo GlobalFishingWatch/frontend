@@ -5,7 +5,6 @@ import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatc
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
-import { GLOBAL_REPORTS_ENABLED } from 'data/config'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -34,6 +33,7 @@ import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
@@ -217,8 +217,8 @@ export const selectActiveTemporalgridDataviews: (
 )
 
 export const selectReportLayersVisible = createSelector(
-  [selectAllDataviewInstancesResolved],
-  (allDataviewInstancesResolved) => {
+  [selectAllDataviewInstancesResolved, selectDebugOptions],
+  (allDataviewInstancesResolved, debugOptions) => {
     return allDataviewInstancesResolved?.filter(({ config }) => {
       const isVisible = config?.visible === true
       if (!isVisible) {
@@ -228,7 +228,7 @@ export const selectReportLayersVisible = createSelector(
         config?.type === DataviewType.HeatmapAnimated ||
         config?.type === DataviewType.HeatmapStatic ||
         config?.type === DataviewType.Currents ||
-        (config?.type === DataviewType.FourwingsTileCluster && GLOBAL_REPORTS_ENABLED)
+        (config?.type === DataviewType.FourwingsTileCluster && debugOptions.globalReports)
       )
     })
   }

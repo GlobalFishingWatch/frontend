@@ -1,5 +1,6 @@
 import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type {
@@ -14,9 +15,9 @@ import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
-  RESPONSIVE_VISUALIZATION_ENABLED,
 } from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   EMPTY_API_VALUES,
@@ -217,6 +218,7 @@ export default function ReportVesselsGraph({
   pageQueryParam = 'reportVesselPage',
 }: ReportVesselsGraphProps) {
   const { dispatchQueryParams } = useLocationConnect()
+  const debugOptions = useSelector(selectDebugOptions)
 
   const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
     const propertyParam = FILTER_PROPERTIES[property as ReportVesselsSubCategory]
@@ -233,11 +235,11 @@ export default function ReportVesselsGraph({
   }, [data])
 
   const getIndividualData = useCallback(async () => {
-    if (!RESPONSIVE_VISUALIZATION_ENABLED) {
+    if (!debugOptions.responsiveVisualization) {
       return undefined
     }
     return individualData
-  }, [individualData])
+  }, [individualData, debugOptions.responsiveVisualization])
 
   return (
     <div className={styles.graph} data-test="report-vessels-graph">

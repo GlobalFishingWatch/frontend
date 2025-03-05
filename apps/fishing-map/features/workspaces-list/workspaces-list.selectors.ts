@@ -3,7 +3,6 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { WorkspaceViewport } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import { GLOBAL_REPORTS_ENABLED } from 'data/config'
 import type { FishingMapWorkspace } from 'data/highlighted-workspaces/fishing-activity'
 import { FISHING_MAP_WORKSPACES } from 'data/highlighted-workspaces/fishing-activity'
 import type { MarineManagerWorkspace } from 'data/highlighted-workspaces/marine-manager'
@@ -11,6 +10,7 @@ import { MARINE_MANAGER_WORKSPACES } from 'data/highlighted-workspaces/marine-ma
 import type { ReportWorkspace } from 'data/highlighted-workspaces/reports'
 import { REPORTS_INDEX } from 'data/highlighted-workspaces/reports'
 import { WorkspaceCategory } from 'data/workspaces'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import type { ReportCategory } from 'features/reports/reports.types'
 import {
@@ -26,15 +26,6 @@ import type workspaceTranslations from '../../public/locales/source/workspaces.j
 import { selectWorkspaces } from './workspaces-list.slice'
 
 export type HighlightedWorkspaceCategory = keyof typeof workspaceTranslations
-
-const WORKSPACES_BY_CATEGORY: Record<
-  HighlightedWorkspaceCategory,
-  (MarineManagerWorkspace | FishingMapWorkspace | ReportWorkspace)[]
-> = {
-  'fishing-activity': FISHING_MAP_WORKSPACES,
-  'marine-manager': MARINE_MANAGER_WORKSPACES,
-  reports: GLOBAL_REPORTS_ENABLED ? REPORTS_INDEX : [],
-}
 
 export type HighlightedWorkspace = {
   id: string
@@ -57,8 +48,16 @@ export type HighlightedWorkspaces = {
 }
 
 export const selectHighlightedWorkspaces = createSelector(
-  [selectLanguage],
-  (locale): HighlightedWorkspaces[] => {
+  [selectLanguage, selectDebugOptions],
+  (locale, debugOptions): HighlightedWorkspaces[] => {
+    const WORKSPACES_BY_CATEGORY: Record<
+      HighlightedWorkspaceCategory,
+      (MarineManagerWorkspace | FishingMapWorkspace | ReportWorkspace)[]
+    > = {
+      'fishing-activity': FISHING_MAP_WORKSPACES,
+      'marine-manager': MARINE_MANAGER_WORKSPACES,
+      reports: debugOptions.globalReports ? REPORTS_INDEX : [],
+    }
     return Object.entries(WORKSPACES_BY_CATEGORY).map(([category, workspaces]) => {
       return {
         category: category as HighlightedWorkspaceCategory,

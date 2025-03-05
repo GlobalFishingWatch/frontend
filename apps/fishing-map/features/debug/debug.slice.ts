@@ -9,6 +9,8 @@ export enum DebugOption {
   Thinning = 'thinning',
   DatasetIdHash = 'addDatasetIdHash',
   CurrentsLayer = 'currentsLayer',
+  GlobalReports = 'globalReports',
+  ResponsiveVisualization = 'responsiveVisualization',
 }
 
 type DebugOptions = Record<DebugOption, boolean>
@@ -26,6 +28,8 @@ const initialState: DebugState = {
     mapStats: false,
     thinning: true,
     addDatasetIdHash: true,
+    globalReports: false,
+    responsiveVisualization: false,
     currentsLayer: false,
   },
 }
