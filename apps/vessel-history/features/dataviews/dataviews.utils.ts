@@ -1,4 +1,6 @@
 import { uniq } from 'lodash'
+import type { AppDispatch } from 'store'
+
 import type {
   Dataview,
   DataviewConfig,
@@ -8,17 +10,18 @@ import type {
 import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { AppDispatch } from 'store'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
+
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
-import { fetchDataviewsByIdsThunk } from './dataviews.slice'
+
 import {
   dataviewInstances,
-  vesselDataviewIds,
   DEFAULT_TRACK_COLOR,
   MAP_BACKGROUND_COLOR,
+  vesselDataviewIds,
 } from './dataviews.config'
+import { fetchDataviewsByIdsThunk } from './dataviews.slice'
 
 // used in workspaces with encounter events layers
 export const VESSEL_LAYER_PREFIX = 'vessel-'

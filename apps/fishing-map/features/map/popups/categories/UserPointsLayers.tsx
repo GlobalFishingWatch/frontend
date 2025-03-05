@@ -1,15 +1,19 @@
 import { Fragment } from 'react'
-import { groupBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
-import { Icon } from '@globalfishingwatch/ui-components'
-import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import { groupBy } from 'es-toolkit'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import styles from '../Popup.module.css'
-import ContextLayersRow from './ContextLayersRow'
+
 import { useContextInteractions } from './ContextLayers.hooks'
+import ContextLayersRow from './ContextLayersRow'
 import { getContextLayerId, getUserContextLayerLabel } from './UserContextLayers'
+
+import styles from '../Popup.module.css'
 
 type UserPointsLayersProps = {
   features: (ContextPickingObject | UserLayerPickingObject)[]

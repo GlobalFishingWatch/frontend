@@ -1,5 +1,5 @@
-import partition from 'lodash/partition'
 import type { JSX } from 'react'
+import partition from 'lodash/partition'
 
 // Copied from ui-components to avoid circular dependencies
 export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
@@ -41,6 +41,12 @@ type AdvancedSearchOperator = '=' | '>' | '<' | 'LIKE'
 type AdvancedSearchQueryFieldParams = {
   operator: AdvancedSearchOperator
   transformation?: (field: AdvancedSearchQueryField) => string | string[]
+}
+
+const withQuotationMarks = (field: AdvancedSearchQueryField) => {
+  if (!field.value) return ''
+  const transform = (value: string) => `'${value}'`
+  return Array.isArray(field.value) ? field.value.map(transform) : transform(field.value)
 }
 
 const toUpperCaseWithQuotationMarks = (field: AdvancedSearchQueryField) => {
@@ -91,6 +97,7 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   },
   flag: {
     operator: '=',
+    transformation: withQuotationMarks,
   },
   transmissionDateFrom: {
     operator: '<',
@@ -133,6 +140,9 @@ export const getAdvancedSearchQuery = (
 
     const getFieldValue = (value: string) => {
       const operator = field?.operator || params?.operator || '='
+      if (field.key === 'id') {
+        return `selfReportedInfo.id ${operator} '${value}'`
+      }
       if (field.key === 'owner') {
         return `registryOwners.name ${operator} ${value}`
       }

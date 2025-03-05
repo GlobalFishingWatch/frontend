@@ -1,47 +1,50 @@
 import { Fragment, useMemo, useState } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type { ColorBarOption} from '@globalfishingwatch/ui-components';
-import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  getDatasetConfigByDatasetType
-} from '@globalfishingwatch/dataviews-client'
+import cx from 'classnames'
+
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDatasetConfigByDatasetType } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils';
+import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
-import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
-import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import Color from 'features/workspace/common/Color'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import MapLegend from 'features/workspace/common/MapLegend'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
-import DatasetFilterSource from '../shared/DatasetSourceField'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
+import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import LayerProperties from 'features/workspace/shared/LayerProperties'
+import MapLegend from 'features/workspace/shared/MapLegend'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useLocationConnect } from 'routes/routes.hook'
+import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
-import LayerSwitch from '../common/LayerSwitch'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
-import InfoModal from '../common/InfoModal'
-import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import Filters from '../common/LayerFilters'
+import DatasetFilterSource from '../shared/DatasetSourceField'
+import InfoModal from '../shared/InfoModal'
+import Filters from '../shared/LayerFilters'
+import LayerSwitch from '../shared/LayerSwitch'
+import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
+
 import { isDefaultActivityDataview, isDefaultDetectionsDataview } from './activity.utils'
+
 import activityStyles from './ActivitySection.module.css'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   isOpen: boolean
@@ -55,7 +58,7 @@ function ActivityLayerPanel({
   showBorder,
   isOpen,
   onToggle,
-}: LayerPanelProps): React.ReactElement {
+}: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
@@ -66,6 +69,7 @@ function ActivityLayerPanel({
   const isGFWUser = useSelector(selectIsGFWUser)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
   const dataviewId = useActivityDataviewId(dataview)
@@ -159,15 +163,6 @@ function ActivityLayerPanel({
     getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
-  const TitleComponent = (
-    <Title
-      title={datasetTitle}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onLayerSwitchToggle}
-    />
-  )
 
   const datasetFields = useMemo(() => {
     const fields: { field: SupportedDatasetSchema; label: string }[] = [
@@ -202,15 +197,19 @@ function ActivityLayerPanel({
           <div className={styles.header}>
             <LayerSwitch
               onToggle={onLayerSwitchToggle}
-              active={layerActive}
+              disabled={hasDeprecatedDataviewInstances}
+              active={layerActive && !hasDeprecatedDataviewInstances}
               className={styles.switch}
               dataview={dataview}
             />
-            {datasetTitle.length > 20 ? (
-              <Tooltip content={datasetTitle}>{TitleComponent}</Tooltip>
-            ) : (
-              TitleComponent
-            )}
+            <Title
+              title={datasetTitle}
+              className={styles.name}
+              classNameActive={styles.active}
+              dataview={dataview}
+              toggleVisibility={!hasDeprecatedDataviewInstances}
+              onToggle={onLayerSwitchToggle}
+            />
             <div
               className={cx(
                 'print-hidden',
@@ -220,7 +219,7 @@ function ActivityLayerPanel({
               )}
             >
               {layerActive && (
-                <Color
+                <LayerProperties
                   dataview={dataview}
                   open={colorOpen}
                   onColorClick={changeColor}
@@ -261,7 +260,10 @@ function ActivityLayerPanel({
                 showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
               />
               {!readOnly && (
-                <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
+                <Remove
+                  onClick={onRemoveLayerClick}
+                  loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
+                />
               )}
               {!readOnly && layerActive && layerError && (
                 <IconButton
@@ -282,7 +284,7 @@ function ActivityLayerPanel({
             <IconButton
               icon={layerError ? 'warning' : layerActive ? 'more' : undefined}
               type={layerError ? 'warning' : 'default'}
-              loading={layerActive && !layerLoaded}
+              loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
               className={cx('print-hidden', styles.shownUntilHovered)}
               size="small"
             />

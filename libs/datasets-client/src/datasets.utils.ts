@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon'
-import type { Dataset, Dataview } from '@globalfishingwatch/api-types';
+
+import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+
 import type { UrlDataviewInstance } from './types'
 
 export const removeDatasetVersion = (datasetId: string) => {
@@ -50,6 +52,5 @@ export const getDatasetsExtent = <Format = 'string' | 'number'>(
   if (extentEndDate) {
     extentEnd = format === 'isoString' ? extentEndDate.toISO() : extentEndDate.toMillis()
   }
-
   return { extentStart: extentStart as Format, extentEnd: extentEnd as Format }
 }

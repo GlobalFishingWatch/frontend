@@ -1,4 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
+
 import { gfwBaseQuery } from './base'
 
 export const projectsListApi = createApi({

@@ -1,24 +1,26 @@
-import type { PayloadAction} from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import memoize from 'lodash/memoize'
-import kebabCase from 'lodash/kebabCase'
-import { uniqBy } from 'es-toolkit'
-import type { Polygon, MultiPolygon, FeatureCollection, GeometryCollection } from 'geojson'
-import union from '@turf/union'
-import { featureCollection } from '@turf/helpers'
 import { circle } from '@turf/circle'
 import { flatten } from '@turf/flatten'
-import type { TileContextAreaFeature, Dataset} from '@globalfishingwatch/api-types';
-import { EndpointId } from '@globalfishingwatch/api-types'
+import { featureCollection } from '@turf/helpers'
+import union from '@turf/union'
+import { uniqBy } from 'es-toolkit'
+import type { FeatureCollection, GeometryCollection, MultiPolygon, Polygon } from 'geojson'
+import kebabCase from 'lodash/kebabCase'
+import memoize from 'lodash/memoize'
+
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import type { Dataset, TileContextAreaFeature } from '@globalfishingwatch/api-types'
+import { EndpointId } from '@globalfishingwatch/api-types'
+import { wrapBBoxLongitudes, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import { wrapGeometryBbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
+
+import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
+import { t } from 'features/i18n/i18n'
+import type { RootState } from 'store'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectDatasetById } from 'features/datasets/datasets.slice'
-import type { RootState } from 'store'
 import { listAsSentence } from 'utils/shared'
-import { t } from 'features/i18n/i18n'
 
 export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
@@ -139,15 +141,26 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       areaName,
       simplify,
     }: FetchAreaDetailThunkParam = {} as FetchAreaDetailThunkParam,
-    { signal, getState, rejectWithValue }
+    { signal, getState, rejectWithValue, dispatch }
   ) => {
     try {
       const isMultipleDatasets = datasetId.includes(',')
       if (isMultipleDatasets) {
         const datasetIds = datasetId.split(',')
-        const datasets = datasetIds.flatMap(
-          (id) => selectDatasetById(id)(getState() as RootState) || []
+        const datasetsPromises = await Promise.all(
+          datasetIds.map(async (datasetId) => {
+            let dataset = selectDatasetById(datasetId)(getState() as RootState)
+            if (!dataset) {
+              // It needs to be request when it hasn't been loaded yet
+              const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+              if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+                dataset = action.payload
+              }
+            }
+            return dataset
+          })
         )
+        const datasets = datasetsPromises.flat()
 
         const simplifies = simplify?.split(',')
         const areaIds = areaId.toString().split(',')
@@ -191,7 +204,13 @@ export const fetchAreaDetailThunk = createAsyncThunk(
           console.error('Error merging areas', e)
         }
       }
-      const dataset = selectDatasetById(datasetId)(getState() as RootState)
+      let dataset = selectDatasetById(datasetId)(getState() as RootState)
+      if (!dataset) {
+        const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+        if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+          dataset = action.payload
+        }
+      }
       const area = await fetchAreaDetail({ dataset, areaId, areaName, signal, simplify })
       return area
     } catch (e: any) {

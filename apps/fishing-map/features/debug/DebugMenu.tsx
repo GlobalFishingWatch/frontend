@@ -1,17 +1,23 @@
+import { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
-import { InputText, Switch } from '@globalfishingwatch/ui-components'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { InputText, Switch } from '@globalfishingwatch/ui-components'
+
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import styles from './DebugMenu.module.css'
+import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
+import { selectLocationQuery } from 'routes/routes.selectors'
+
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
+
+import styles from './DebugMenu.module.css'
 
 const DebugMenu: React.FC = () => {
   const dispatch = useAppDispatch()
+  const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const debugOptions = useSelector(selectDebugOptions)
   const locationQuery = useSelector(selectLocationQuery)
   const [datasetId, setDatasetId] = useState<string>('')
@@ -23,12 +29,37 @@ const DebugMenu: React.FC = () => {
       debugDatasetsInDataviews(dataviews, datasetId)
       debugRelatedDatasets(datasets, datasetId)
     }
-     
   }, [datasetId])
 
   return (
     <div className={styles.row}>
       <section className={styles.section}>
+        {isGFWDeveloper && (
+          <Fragment>
+            <div className={styles.header}>
+              <Switch
+                id="option_global_reports"
+                active={debugOptions.globalReports}
+                onClick={() => dispatch(toggleOption(DebugOption.GlobalReports))}
+              />
+              <label htmlFor="option_global_reports">
+                <strong>Feature flag:</strong> Global reports
+              </label>
+            </div>
+            <p>Activates the global reports feature</p>
+            <div className={styles.header}>
+              <Switch
+                id="option_responsive_visualization"
+                active={debugOptions.responsiveVisualization}
+                onClick={() => dispatch(toggleOption(DebugOption.ResponsiveVisualization))}
+              />
+              <label htmlFor="option_responsive_visualization">
+                <strong>Feature flag:</strong> Responsive visualization
+              </label>
+            </div>
+            <p>Activates the responsive visualization feature</p>
+          </Fragment>
+        )}
         <div className={styles.header}>
           <Switch
             id="option_map_stats"
@@ -76,6 +107,24 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_thinning">Track thinning</label>
         </div>
         <p>Don't send any thinning param to tracks API to debug original resolution</p>
+        <div className={styles.header}>
+          <Switch
+            id="option_disable_dataset_hash"
+            active={debugOptions.addDatasetIdHash}
+            onClick={() => dispatch(toggleOption(DebugOption.DatasetIdHash))}
+          />
+          <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
+        </div>
+        <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
+        <div className={styles.header}>
+          <Switch
+            id="option_currents_layer"
+            active={debugOptions.currentsLayer}
+            onClick={() => dispatch(toggleOption(DebugOption.CurrentsLayer))}
+          />
+          <label htmlFor="option_currents_layer">Currents layer</label>
+        </div>
+        <p>Make currents layer available in layer library</p>
       </section>
       <hr className={styles.separation} />
       <section>

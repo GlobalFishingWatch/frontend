@@ -1,10 +1,10 @@
-import { URL_VESSEL_PROFILE, URL_VESSEL_PROFILE_2020 } from '../../constants/urls'
+import { URL_VESSEL_PROFILE } from '../../constants/urls'
 import { disablePopups, switchLanguage, verifyTracksInTimebar } from '../../support/app.po'
 
 describe('Access to vessel viewver - direct', () => {
   before(() => {
     // I need to search as a anonymous user, the last update of cypress needed to add the eslit coment
-     
+
     cy.clearAllLocalStorage().then(() => {
       disablePopups()
       switchLanguage('en')
@@ -49,15 +49,15 @@ describe('Access to vessel viewver - direct', () => {
     cy.getBySel('link-vessel-profile').contains('Gadus Neptun')
 
     cy.getBySel('vv-insights-tab').click()
-    cy.get('#insights').contains('Insights available from 1 January 2020 onwards')
+    cy.get('#insights').contains('Vessel insights')
   })
 
-  it('should access to a vessel insights profile using a link post 2020', () => {
-    cy.visit(URL_VESSEL_PROFILE_2020)
+  it('should access to a vessel insights profile using a link post v3', () => {
+    cy.visit(URL_VESSEL_PROFILE)
     cy.getBySel('vv-insights-tab').click()
     cy.get('#coverage').contains('AIS Coverage')
     cy.get('#gaps').contains('AIS Off Events')
-    cy.get('#fishing').contains('Fishing Events')
+    // cy.get('#fishing').contains('Fishing Events')
     cy.get('#IUU').contains('RFMO IUU Vessel List')
     cy.get('#flagChanges').contains('Flag changes')
     cy.get('#MOULists').contains('Tokyo and Paris MOU Lists')

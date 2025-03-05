@@ -1,7 +1,12 @@
-import { RegionType, SelfReportedSource } from '@globalfishingwatch/api-types'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  RegionType,
+  SelfReportedSource,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
+
 import type { I18nNamespaces } from 'features/i18n/i18n.types'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
+
 import type { VesselProfileState } from './vessel.types'
 
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity'
@@ -27,6 +32,7 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselArea: 'eez',
   vesselRelated: 'encounters',
   viewOnlyVessel: true,
+  includeRelatedIdentities: true,
 }
 
 export type VesselRenderField<Key = string> = {
@@ -63,8 +69,8 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
 }
 
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
-  { key: 'lengthM', label: 'length' },
-  { key: 'depthM', label: 'draft' },
+  { key: 'lengthM', label: 'lengthM' },
+  { key: 'depthM', label: 'depthM' },
   { key: 'tonnageGt', label: 'grossTonnage' },
 ]
 

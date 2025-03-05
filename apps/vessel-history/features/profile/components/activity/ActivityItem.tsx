@@ -1,9 +1,12 @@
 import { Fragment } from 'react'
+
 import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
 import type { RenderedVoyage, Voyage } from 'types/voyage';
 import { EventTypeVoyage } from 'types/voyage'
+
 import ActivityEvent from './ActivityEvent'
 import ActivityVoyage from './ActivityVoyage'
+
 interface EventProps {
   event: RenderedEvent | RenderedVoyage
   highlighted?: boolean
@@ -22,7 +25,7 @@ const ActivityItem: React.FC<EventProps> = ({
   onMapClick = () => {},
   onToggleClick = () => {},
   options = { displayPortVisitsAsOneEvent: false },
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   return (
     <Fragment>
       {event.type === EventTypeVoyage.Voyage && (

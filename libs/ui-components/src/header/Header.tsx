@@ -1,6 +1,8 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, type JSX } from 'react'
 import cx from 'classnames'
+
 import { Icon } from '../icon'
+
 import styles from './Header.module.css'
 
 const navigation = [

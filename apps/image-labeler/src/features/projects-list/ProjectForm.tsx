@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import cx from 'classnames'
-import { InputText } from '@globalfishingwatch/ui-components/input-text'
+
 import { Button } from '@globalfishingwatch/ui-components/button'
-import type { LabellingProject } from '../../types'
+import { InputText } from '@globalfishingwatch/ui-components/input-text'
+
 import { useCreateProjectMutation, useEditProjectMutation } from '../../api'
+import type { LabellingProject } from '../../types'
+
 import styles from './ProjectsList.module.css'
 
 export function ProjectForm({

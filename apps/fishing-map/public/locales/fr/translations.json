@@ -33,6 +33,7 @@
     "evolution": "Évolution",
     "groupByFlag": "par pavillon",
     "groupByGeartype": "par type d'engin",
+    "groupBySource": "by source",
     "groupByVesseltype": "par type de navire",
     "kilometers": "kilomètres",
     "linkToReport": "Consultez le rapport dynamique ici",
@@ -48,7 +49,10 @@
     "periodComparison2nd": "début comparaison",
     "periodComparisonDuration": "durée",
     "periodComparisonRange": "durant {{duration}} suivant {{compareStart}} comparé à la référence durant {{duration}} suivant {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "print ": "imprimer",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Afficher {{results}} par page",
     "save": "Enregistrer ce rapport",
     "savePublic": "Autoriser d'autres utilisateurs à voir ce rapport",
@@ -63,6 +67,8 @@
     "statsDisclaimerDynamic": "Au cours de cette plage de temps, les valeurs minimales et maximales par {{interval}} et lieu à l'intérieur de votre zone étaient {{min}} {{unit}} et {{max}} {{unit}}.",
     "statsDisclaimerStatic": "La valeur moyenne pour votre zone est {{mean}} {{unit}}. Le minimum et le maximum sont {{min}} {{unit}} et {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} navires{{sources}} </strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> d'<strong>{{activityType}}</strong> dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong>dans la zone entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "timeoutError": "Cela prend plus de temps que prévu, merci de patienter",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
@@ -94,7 +100,7 @@
     "aka": "également appelé",
     "analysis": "Créer une analyse pour cette zone",
     "analysisAddArea": "Ajouter la zone à l'analyse",
-    "analysisNotAvailable": "Activer/désactiver un calque d'activité ou d'environnement pour l'analyser dans cette zone",
+    "analysisNotAvailable": "Toggle an analyzable layer to create a report for this area",
     "and": "et",
     "anyoneWithTheLink": "N'importe qui disposant du lien",
     "anyoneWithThePassword": "N'importe qui disposant du mot de passe",
@@ -136,13 +142,13 @@
     "edit": "Modifier",
     "edit ": "modifier",
     "environment": "Environnement",
-    "eventLabels": {
-      "loitering": "dérive",
-      "encounter": "rencontre",
-      "port_visit": "visite de port"
-    },
     "event_one": "événement",
     "event_other": "évènements",
+    "eventLabels": {
+      "encounter": "rencontre",
+      "loitering": "dérive",
+      "port_visit": "visite de port"
+    },
     "events": "Évènements",
     "Events": "Évènements",
     "exclude": "Exclure",
@@ -153,6 +159,8 @@
     "flag": "Pavillon",
     "from": "de",
     "geartype": "Type d’engin",
+    "global": "Global",
+    "globalReport": "Global report",
     "globally": "globalement",
     "help": "Aide",
     "hideAllHelpHints": "Tout ignorer",
@@ -164,6 +172,7 @@
     "in": "dans",
     "include": "Inclure",
     "insights": "Indicateurs",
+    "knots": "nœuds",
     "latestDays_one": "Dernier {{count}} jour",
     "latestDays_other": "Derniers {{count}} jours",
     "latitude": "Latitude",
@@ -171,6 +180,7 @@
     "layerList": "Liste des calques",
     "learnMore": "En savoir plus",
     "less": "moins",
+    "loading": "Loading",
     "loggedAs": "Connecté en tant que",
     "login": "Se connecter",
     "logout": "Déconnexion",
@@ -178,6 +188,7 @@
     "map": "Carte",
     "matchedVessels": "Navires correspondants",
     "max": "Max.",
+    "meters": "mètres",
     "min": "Min.",
     "minus": "moins",
     "minute": "minute",
@@ -237,6 +248,7 @@
     "unionOf": "Union de",
     "unit": "unité",
     "unknown": "Inconnu",
+    "unknownProperty": "Unknown",
     "unknownVessel": "Navire inconnu",
     "update": "Mise à jour",
     "user": "Utilisateur",
@@ -479,7 +491,6 @@
     "privateView": "Ceci est une vue privée",
     "profileEvents": "Une erreur s'est produite lors de la demande de visualisation des événements du navire.",
     "profileLogin": "Connectez-vous pour voir ce navire",
-    "vesselGroupReportLogin": "Connectez-vous pour voir les navires actifs",
     "reportLogin": "Connectez-vous pour voir les navires actifs dans la zone",
     "requestAccess": "Demander l'accès",
     "searchLogin": "Connectez-vous pour rechercher des navires",
@@ -495,6 +506,7 @@
     "uploadKML": "Erreur de lecture du fichier KML : {{error}}",
     "uploadShapefile": "Erreur de lecture du shapefile : {{error}}",
     "uploadShapefileComponents": "Erreur lors de la lecture du shapefile : doit contenir des fichiers avec des extensions *.shp, *.shx, *.dbf et *.prj.",
+    "vesselGroupReportLogin": "Connectez-vous pour voir les navires actifs",
     "vesselLoading": "Une erreur s'est produite lors du chargement des détails du vaisseau",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer.",
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
@@ -548,6 +560,7 @@
   "eventInfo": {
     "authorization": "autorisation",
     "averageSpeedKnots": "vitesse moyenne (nœuds)",
+    "depth": "depth",
     "distanceFromPortKm": "distanceFromPortKm",
     "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "durée",
@@ -621,6 +634,13 @@
     },
     "areasOnScreen": "Zones à l'écran",
     "color_change": "Modifier la couleur",
+    "colorSelectCustom": "Select custom color",
+    "colorSelectPredefined": "Select predefined color",
+    "propertiesChange": "Change properties",
+    "properties": {
+      "color": "Color",
+      "thickness": "Thickness"
+    },
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -701,14 +721,21 @@
     "rulersDelete": "Supprimer toutes les mesures",
     "rulersHover": "Faites glisser pour vous déplacer ou cliquez pour en voir plus",
     "rulersStop": "Arrêter les mesures",
+    "screenshotArea": {
+      "map": "Carte uniquement",
+      "withTimebar": "Avec barre de temps",
+      "withTimebarAndLegend": "Avec barre de temps et légende"
+    },
+    "screenshotDownload": "Télécharger l'image",
+    "screenshotPreview": "Aperçu de la capture d'écran",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
   "portsReport": {
+    "maxVessels": "Des rapports de navires sont disponibles pour {{vessels}} navires",
     "newTimeRange": "Cliquez sur le bouton pour voir les navires qui sont entrés dans le port <br/>entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "seePortReport": "Voir tous les événements d'entrée dans ce port",
-    "maxVessels": "Des rapports de navires sont disponibles pour {{vessels}} navires",
     "summaryEvents": "<strong>{{vessels}} navires</strong> battant pavillon du/de<strong>{{flags}} </strong> sont entrés dans ce port <strong>{{activityQuantity}}</strong> fois entre <strong>{{start}}</strong> et <strong>{{end}}</strong>"
   },
   "search": {
@@ -757,6 +784,7 @@
     "selected": "sélectionné"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajuster la plage de temps à ces dates",
     "focusOnThisDay": "Focus sur la plage de ce jour",
     "maxTracksNumber": "Détail des trajectoires non disponible pour plus de 10 navires"
@@ -765,8 +793,9 @@
     "activityDisabled": "Sélectionnez au moins une couche d'activité",
     "detectionsDisabled": "Sélectionnez au moins une couche de détection.",
     "graphDepth": "Profondeur du navire",
-    "graphDisabled": "Non disponible avec plus d'un navire sélectionné",
+    "graphDisabled": "Graph is not available with more than 2 vessels selected",
     "graphSpeed": "Vitesse du navire",
+    "graphVesselOnly": "{{graph}} is only available for vessel tracks",
     "settings_close": "Fermer les paramètres de la barre de temps",
     "settings_open": "Ouvrir les paramètres de la barre de temps",
     "showActivity": "Afficher le graphique d'activité",
@@ -782,7 +811,26 @@
     "maxPointsVisualizationExceeded": "Le nombre maximal de points pouvant être visualisés est dépassé, passage en mode « carte thermique »."
   },
   "user": {
+    "badges": {
+      "ambassador": {
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications.",
+        "title": "Ambassador"
+      },
+      "fixer": {
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support.",
+        "title": "Fixer"
+      },
+      "presenter": {
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest.",
+        "title": "Presenter"
+      },
+      "teacher": {
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow.",
+        "title": "Teacher"
+      }
+    },
     "datasets": "Jeux de données utilisateur",
+    "gfwBadges": "GFW Badges",
     "groupMissing": "Appartenez-vous à un groupe d’utilisateurs qui n’apparaît pas ici ? <2>Demander l'accès</2>",
     "groups": "Groupes",
     "info": "Informations utilisateur",
@@ -813,18 +861,22 @@
     "activityByVoyages": "Par voyages",
     "addToWorkspace": "Ajouter un navire à la vue",
     "authorization": "autorisation",
+    "authorizationDatesDisclaimer": "The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.",
     "beam": "Largeur",
     "callsign": "Indicatif",
     "capacity": "Capacité",
     "carrier": "Transporteur",
     "casco": "Casco",
-    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Centrer la carte sur les événements",
     "clickToSeeMore": "Cliquez ici pour afficher plus d'informations",
     "close": "Fermer",
     "codMarinha": "Cod Marinha",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "dataset": "Source",
+    "depthM": "Depth (m)",
     "donor": "Navire donneur",
+    "extraInfo": "Request additional information at",
+    "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "Première date de transmission",
     "fishingZone": "Zone de pêche",
     "flag": "Pavillon",
@@ -894,6 +946,7 @@
     },
     "gfw_geartypes": "Type d'engin GFW",
     "gfw_shiptypes": "Type de navire GFW",
+    "goToImage": "Go to image {{number}}",
     "grossTonnage": "Jauge brute",
     "grossTonnageRange": "Plage de tonnage brut",
     "hideOtherLayers": "Masquer les autres calques",
@@ -986,6 +1039,7 @@
     "owners": "Propriétaires",
     "registeredGearType": "Type d’engin enregistré",
     "registryGeartype": "Type d’engin selon registre",
+    "registryOperator": "Operators",
     "registrySources": "sources de registres",
     "removeAllVessels": "Supprimer tous les navires",
     "sectionActivity": "Activité",
@@ -1077,7 +1131,6 @@
     "searchNotFound": "Aucun navire trouvé",
     "searchVesselsRequired": "Recherchez des navires pour créer un groupe de navires",
     "summary": "Ce groupe contient <strong>{{vessels}} navires</strong> battant pavillon du/de <strong>{{flags}}</strong> actifs entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
-    "summaryEvents": "<strong>{{vessels}} navires</strong> battant pavillon du./de <strong>{{flags}} </strong> ont effectué <strong>{{activityQuantity}} {{activityUnit}}</strong> globalement entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "tooManyVessels_one": "Le nombre maximum de navires est de {{count}}",
     "tooManyVessels_other": "Le nombre maximum de navires est {{count}}",
     "updateRequired": "Mise à jour requise",
@@ -1089,7 +1142,6 @@
   "vesselGroupReport": {
     "clickToSee": "Cliquez pour analyser le groupe de navires et voir le rapport",
     "insights": {
-      "title": "Indicateurs du groupe de navires",
       "fishingEventsError": "Une erreur s'est produite lors du chargement des événements de pêche",
       "fishingInNoTakeMpas_one": "{{count}} événement de pêche par le navire {{vessels}} détecté dans une AMP interdite à la pêche de capture",
       "fishingInNoTakeMpas_other": "{{count}} événements de pêche par les navires {{vessels}} détectés dans des AMP interdites à la pêche de capture",
@@ -1109,7 +1161,8 @@
       "MOUListsCount": "Les navires {{vessels}} ont été exploités sous un pavillon inscrit sur la liste {{list}}",
       "MOUListsCount_one": "Le navire {{vessels}} a été exploité sous un pavillon inscrit sur la liste {{list}}",
       "MOUListsCount_other": "Les navires {{vessels}} ont été exploités sous un pavillon inscrit sur la liste {{list}}",
-      "MOUListsEmpty": "Aucun des navire be bat un pavillon inscrit sur la liste noire ou grise du MOU de {{country}}"
+      "MOUListsEmpty": "Aucun des navire be bat un pavillon inscrit sur la liste noire ou grise du MOU de {{country}}",
+      "title": "Indicateurs du groupe de navires"
     },
     "linkDisabled": "Ce groupe de navires doit être mis à jour avec les dernières données disponibles",
     "linkToReport": "Consultez le rapport de groupe de navires ici",
@@ -1132,6 +1185,12 @@
   "workspace": {
     "add": "Ajouter à l’espace de travail",
     "addLayer": "Ajouter à l’espace de travail",
+    "categories": {
+      "search": "Vessel search",
+      "fishing-activity": "Highlighted workspaces",
+      "marine-manager": "Marine Manager workspaces",
+      "reports": "Highlighted reports"
+    },
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
     "create": "Créer comme nouveau",
     "createNeeded": "Changer la visibilité de l'espace de travail nécessite d'en créer un nouveau",
@@ -1143,6 +1202,7 @@
     "emptyStateUser": "Téléchargez des jeux de données personnalisés en cliquant sur l'icône +.",
     "emptyStateVesselGroups": "Ajouter des groupes de navires pour voir la présence et l'empreinte de l'opération du groupe.",
     "emptyStateVessels": "Les navires sélectionnés dans la recherche ou en cliquant sur la carte de chaleur apparaîtront ici.",
+    "marineManagerLink": "Voir le portail",
     "migrationDisclaimer": "Mettez à jour votre espace de travail pour afficher les dernières données et fonctionnalités.",
     "migrationDisclaimerNote": "Remarque : certaines informations d'identité et d'activité du navire peuvent changer. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> En savoir plus.</a>",
     "migrationMaintain": "Suivant",

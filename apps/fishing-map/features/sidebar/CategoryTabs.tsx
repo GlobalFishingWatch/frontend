@@ -1,33 +1,36 @@
 import { Fragment, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import dynamic from 'next/dynamic'
 import Link from 'redux-first-router-link'
-import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
+
 import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+
+import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
 import type { WorkspaceCategory } from 'data/workspaces'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, SEARCH, USER, WORKSPACES_LIST, WORKSPACE_SEARCH } from 'routes/routes'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import HelpHub from 'features/help/HelpHub'
+// import HelpModal from 'features/help/HelpModal'
+import LanguageToggle from 'features/i18n/LanguageToggle'
+import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import WhatsNew from 'features/sidebar/WhatsNew'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import UserButton from 'features/user/UserButton'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
+import { SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
   selectIsWorkspaceLocation,
   selectLocationCategory,
   selectLocationType,
 } from 'routes/routes.selectors'
-import { selectUserData } from 'features/user/selectors/user.selectors'
-import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
-import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-// import HelpModal from 'features/help/HelpModal'
-import LanguageToggle from 'features/i18n/LanguageToggle'
-import WhatsNew from 'features/sidebar/WhatsNew'
-import HelpHub from 'features/help/HelpHub'
-import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import UserButton from 'features/user/UserButton'
-import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
+
 import styles from './CategoryTabs.module.css'
 
 const FeedbackModal = dynamic(
@@ -104,7 +107,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             }}
             onClick={onSearchClick}
           >
-            <Tooltip content={t('search.vessels', 'Search vessels')} placement="right">
+            <Tooltip content={t('workspaces.categories.search', 'Vessel search')} placement="right">
               <span className={styles.tabContent}>
                 <Icon icon="category-search" className={styles.searchIcon} />
               </span>
@@ -112,25 +115,28 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           </Link>
         </li>
         {availableCategories?.map((category, index) => (
-          <li
-            key={category.title}
-            className={cx(styles.tab, {
-              [styles.current]:
-                (locationType !== SEARCH &&
-                  locationType !== WORKSPACE_SEARCH &&
-                  locationCategory === (category.title as WorkspaceCategory)) ||
-                (index === 0 && locationType === HOME),
-            })}
+          <Tooltip
+            key={category}
+            content={t(`workspace.categories.${category}`, category)}
+            placement="right"
           >
-            <Link
-              className={styles.tabContent}
-              to={getLinkToCategory(category.title as WorkspaceCategory)}
-              onClick={onCategoryClick}
-              title={category.title}
+            {/* TODO: translate tooltip category */}
+            <li
+              className={cx(styles.tab, {
+                [styles.current]:
+                  locationCategory === (category as WorkspaceCategory) ||
+                  (index === 0 && !locationCategory),
+              })}
             >
-              <Icon icon={`category-${category.title}` as IconType} />
-            </Link>
-          </li>
+              <Link
+                className={styles.tabContent}
+                to={getLinkToCategory(category as WorkspaceCategory)}
+                onClick={onCategoryClick}
+              >
+                <Icon icon={`category-${category}` as IconType} />
+              </Link>
+            </li>
+          </Tooltip>
         ))}
         <li className={styles.separator} aria-hidden></li>
         <li className={cx(styles.tab, styles.secondary)}>

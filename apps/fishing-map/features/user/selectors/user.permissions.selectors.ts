@@ -1,15 +1,19 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { orderBy } from 'es-toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import type { UserPermission } from '@globalfishingwatch/api-types';
-import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
+import { orderBy } from 'es-toolkit'
+
+import type { UserPermission } from '@globalfishingwatch/api-types'
+import { BADGES_GROUP_PREFIX, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
+
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
-import { selectAllReports } from 'features/reports/areas/area-reports.slice'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectAllReports } from 'features/reports/reports.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { DEFAULT_GROUP_ID } from 'features/user/user.config'
+import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
+
 import { USER_GROUP_WORKSPACE } from '../user.slice'
+
 import { selectPrivateUserGroups } from './user.groups.selectors'
 
 const hasUserPermission = (permission: UserPermission) =>
@@ -30,6 +34,27 @@ export const selectHasEditTranslationsPermissions = hasUserPermission({
   action: 'edit-translations',
 })
 
+export const selectHasAmbassadorBadge = hasUserPermission({
+  type: 'user-property',
+  value: 'gfw-ambassador-badge',
+  action: 'read',
+})
+export const selectHasFeedbackProviderBadge = hasUserPermission({
+  type: 'user-property',
+  value: 'gfw-feedback-provider-badge',
+  action: 'read',
+})
+export const selectHasPresenterBadge = hasUserPermission({
+  type: 'user-property',
+  value: 'gfw-presenter-badge',
+  action: 'read',
+})
+export const selectHasTeacherBadge = hasUserPermission({
+  type: 'user-property',
+  value: 'gfw-teacher-badge',
+  action: 'read',
+})
+
 export const selectUserId = createSelector([selectUserData], (userData) => {
   return userData?.id
 })
@@ -39,7 +64,7 @@ const selectUserGroups = createSelector([selectUserData], (userData) => {
 })
 
 export const selectUserGroupsClean = createSelector([selectUserGroups], (userGroups) => {
-  return userGroups?.filter((g) => g !== DEFAULT_GROUP_ID)
+  return userGroups?.filter((g) => g !== DEFAULT_GROUP_ID && !g.startsWith(BADGES_GROUP_PREFIX))
 })
 
 export const selectUserWorkspaces = createSelector(

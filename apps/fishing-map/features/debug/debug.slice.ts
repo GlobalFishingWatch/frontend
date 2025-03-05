@@ -1,4 +1,4 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
 
@@ -7,6 +7,10 @@ export enum DebugOption {
   Debug = 'debug',
   MapStats = 'mapStats',
   Thinning = 'thinning',
+  DatasetIdHash = 'addDatasetIdHash',
+  CurrentsLayer = 'currentsLayer',
+  GlobalReports = 'globalReports',
+  ResponsiveVisualization = 'responsiveVisualization',
 }
 
 type DebugOptions = Record<DebugOption, boolean>
@@ -23,6 +27,10 @@ const initialState: DebugState = {
     debug: false,
     mapStats: false,
     thinning: true,
+    addDatasetIdHash: true,
+    globalReports: false,
+    responsiveVisualization: false,
+    currentsLayer: false,
   },
 }
 

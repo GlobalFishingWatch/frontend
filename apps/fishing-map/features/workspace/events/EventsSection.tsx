@@ -1,19 +1,26 @@
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import { SortableContext } from '@dnd-kit/sortable'
 import { useCallback } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { SortableContext } from '@dnd-kit/sortable'
+import cx from 'classnames'
+
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import styles from 'features/workspace/shared/Sections.module.css'
-import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setModalOpen } from 'features/modals/modals.slice'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { ReportCategory } from 'features/reports/reports.types'
+import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
+
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+
 import LayerPanel from './EventsLayerPanel'
 
-function EventsLayerSection(): React.ReactElement | null {
+import styles from 'features/workspace/shared/Sections.module.css'
+
+function EventsLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEventsDataviews)
@@ -29,6 +36,7 @@ function EventsLayerSection(): React.ReactElement | null {
         <h2 className={styles.sectionTitle}>{t('common.events', 'Events')}</h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons)}>
+            {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Events} />}
             <IconButton
               icon="plus"
               type="border"

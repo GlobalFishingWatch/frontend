@@ -1,8 +1,11 @@
-import type { DateTimeUnit } from 'luxon';
+import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
+
 import { DEFAULT_DATE_FORMAT, DEFAULT_FULL_DATE_FORMAT } from '../constants'
 
-export const getTime = (dateISO: string) => new Date(dateISO).getTime()
+export const getTime = (dateISO: string) => getUTCDate(dateISO).getTime()
 
 export const clampToAbsoluteBoundaries = (
   start: string,
@@ -22,12 +25,12 @@ export const clampToAbsoluteBoundaries = (
   // newStart is before absolute start: use abs start as new start and keep the existing duration to get to new end
   if (startMs < absoluteStartMs) {
     newStartClamped = absoluteStart
-    newEndClamped = new Date(absoluteStartMs + desiredDeltaMs).toISOString()
+    newEndClamped = getUTCDate(absoluteStartMs + desiredDeltaMs).toISOString()
     clamped = 'start'
     // newEnd is after absolute end: use abs end as new end and keep the existing duration to get back to new start
   } else if (endMs > absoluteEndMs) {
     newEndClamped = absoluteEnd
-    newStartClamped = new Date(absoluteEndMs - desiredDeltaMs).toISOString()
+    newStartClamped = getUTCDate(absoluteEndMs - desiredDeltaMs).toISOString()
     clamped = 'end'
   }
   return { newStartClamped, newEndClamped, clamped }

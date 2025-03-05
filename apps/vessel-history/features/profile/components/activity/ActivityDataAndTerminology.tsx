@@ -1,14 +1,16 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import TerminologyAisDisabling from 'features/terminology/terminology-ais-disabling'
 import TerminologyEncounterEvents from 'features/terminology/terminology-encounter-events'
 import TerminologyFishingEvents from 'features/terminology/terminology-fishing-events'
 import TerminologyLoiteringEvents from 'features/terminology/terminology-loitering-events'
 import TerminologyPortVisitEvents from 'features/terminology/terminology-port-visit-events'
-import TerminologyAisDisabling from 'features/terminology/terminology-ais-disabling'
-import GuideAndVideo from '../GuideAndVideo'
-import Faq from '../Faq'
 
-const ActivityDataAndTerminology = (): React.ReactElement => {
+import Faq from '../Faq'
+import GuideAndVideo from '../GuideAndVideo'
+
+const ActivityDataAndTerminology = (): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   return (

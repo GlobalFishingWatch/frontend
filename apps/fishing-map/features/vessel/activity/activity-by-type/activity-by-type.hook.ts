@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+
 import type { EventType } from '@globalfishingwatch/api-types'
 
 export const useActivityByType = (): [EventType | null, (eventType: EventType) => void] => {
@@ -6,7 +7,11 @@ export const useActivityByType = (): [EventType | null, (eventType: EventType) =
 
   const toggleEventType = useCallback(
     (type: EventType) => {
-      expandedGroup === type ? setExpandedGroup(null) : setExpandedGroup(type)
+      if (expandedGroup === type) {
+        setExpandedGroup(null)
+      } else {
+        setExpandedGroup(type)
+      }
     },
     [expandedGroup]
   )

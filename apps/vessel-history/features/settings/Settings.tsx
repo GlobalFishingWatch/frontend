@@ -1,20 +1,24 @@
 import React, { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { back } from 'redux-first-router'
-import { useTranslation } from 'react-i18next'
+
 import type { SwitchEvent} from '@globalfishingwatch/ui-components';
 import { IconButton, Switch, SwitchRow } from '@globalfishingwatch/ui-components'
+
 import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
+
+import ActivityEventDataAndTerminology from './components/ActivityEventDataAndTerminology'
+import EncounterEvents from './components/EncounterEvents'
+import FishingEvents from './components/FishingEvents'
+import GapEvents from './components/GapEvents'
+import LoiteringEvents from './components/LoiteringEvents'
+import PortVisits from './components/PortVisits'
+import { useSettingsConnect } from './settings.hooks'
 import type { SettingEventSectionName } from './settings.slice';
 import { selectSettings } from './settings.slice'
-import FishingEvents from './components/FishingEvents'
-import LoiteringEvents from './components/LoiteringEvents'
-import EncounterEvents from './components/EncounterEvents'
-import PortVisits from './components/PortVisits'
-import ActivityEventDataAndTerminology from './components/ActivityEventDataAndTerminology'
+
 import styles from './Settings.module.css'
-import { useSettingsConnect } from './settings.hooks'
-import GapEvents from './components/GapEvents'
 
 interface SettingsOption {
   title: string
@@ -24,7 +28,7 @@ interface SettingsOptions {
   [key: string]: SettingsOption
 }
 
-const Settings: React.FC = (): React.ReactElement => {
+const Settings: React.FC = (): React.ReactElement<any> => {
   const settings = useSelector(selectSettings)
   const { t } = useTranslation()
   const { setFiltersStatus } = useSettingsConnect()

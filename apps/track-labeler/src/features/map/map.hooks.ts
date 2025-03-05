@@ -1,18 +1,21 @@
-import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import type { MapMouseEvent } from 'maplibre-gl'
+
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
-import { selectViewport } from '../../routes/routes.selectors'
-import { updateQueryParams } from '../../routes/routes.actions'
-import type { CoordinatePosition, MapCoordinates } from '../../types'
+
 import { selectEditing } from '../../features/rulers/rulers.selectors'
 import { editRuler, moveCurrentRuler } from '../../features/rulers/rulers.slice'
+import { updateQueryParams } from '../../routes/routes.actions'
+import { selectHiddenLabels, selectViewport } from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
+import type { CoordinatePosition, Label,MapCoordinates } from '../../types'
 import { useSegmentsLabeledConnect } from '../timebar/timebar.hooks'
 import { selectedtracks } from '../vessels/selectedTracks.slice'
+
 import type { UpdateGeneratorPayload } from './map.slice'
-import { selectGeneratorsConfig, updateGenerator, selectGlobalGeneratorsConfig } from './map.slice'
+import { selectGeneratorsConfig, selectGlobalGeneratorsConfig,updateGenerator } from './map.slice'
 
 export const useMapMove = () => {
   const dispatch = useAppDispatch()
@@ -49,7 +52,7 @@ export const useMapClick = () => {
   )
   const layerMapClickHandlers: any = useMemo(
     () => ({
-      trackDirections: onEventClick,
+      'vessel-positions': onEventClick,
     }),
     [onEventClick]
   )
@@ -179,4 +182,23 @@ export const useMapBounds = (mapRef: any) => {
     }
   }, [zoom, latitude, longitude, mapRef])
   return bounds
+}
+
+export const useHiddenLabelsConnect = () => {
+  const dispatch = useAppDispatch()
+  const hiddenLabels = useSelector(selectHiddenLabels)
+
+  const dispatchHiddenLabels = (labelName: Label['name']) => {
+    const newLabels = hiddenLabels.includes(labelName)
+      ? hiddenLabels.filter((label: Label['name']) => label !== labelName)
+      : [...hiddenLabels, labelName]
+
+    dispatch(
+      updateQueryParams({
+        hiddenLabels: newLabels.length ? newLabels.join(',') : undefined,
+      })
+    )
+  }
+
+  return { dispatchHiddenLabels, hiddenLabels }
 }

@@ -1,22 +1,26 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback, useEffect,useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { parse as parseCSV } from 'papaparse'
 import { useSelector } from 'react-redux'
+import { parse as parseCSV } from 'papaparse'
+
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { TextArea } from '@globalfishingwatch/ui-components'
-import FileDropzone from 'features/datasets/upload/FileDropzone'
-import { readBlobAs } from 'utils/files'
+
 import { useAppDispatch } from 'features/app/app.hooks'
+import FileDropzone from 'features/datasets/upload/FileDropzone'
 import { ID_COLUMN_LOOKUP } from 'features/vessel-groups/vessel-groups.config'
+import { readBlobAs } from 'utils/files'
+
+import { selectVesselGroupsModalSearchIds } from './vessel-groups.selectors'
+import type { IdField } from './vessel-groups.slice'
 import {
   selectVesselGroupModalSearchIdField,
   selectVesselGroupsModalSearchText,
   setVesselGroupModalSearchText,
   setVesselGroupSearchIdField,
 } from './vessel-groups-modal.slice'
+
 import styles from './VesselGroupModal.module.css'
-import type { IdField } from './vessel-groups.slice'
-import { selectVesselGroupsModalSearchIds } from './vessel-groups.selectors'
 
 function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const { t } = useTranslation()

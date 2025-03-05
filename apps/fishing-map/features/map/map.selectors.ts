@@ -1,6 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
+import { BUFFER_PREVIEW_COLOR } from 'data/config'
+import { WorkspaceCategory } from 'data/workspaces'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import {
+  selectReportBufferFeature,
+  selectReportPreviewBufferFeature,
+} from 'features/reports/report-area/area-reports.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import {
   selectIsAnyAreaReportLocation,
@@ -8,18 +17,12 @@ import {
   selectIsWorkspaceVesselLocation,
   selectMapDrawingEditId,
 } from 'routes/routes.selectors'
-import {
-  selectReportPreviewBufferFeature,
-  selectReportBufferFeature,
-} from 'features/reports/areas/area-reports.selectors'
-import { WorkspaceCategory } from 'data/workspaces'
-import { BUFFER_PREVIEW_COLOR } from 'data/config'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
+
 import {
   PREVIEW_BUFFER_GENERATOR_ID,
   REPORT_BUFFER_GENERATOR_ID,
-  WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
+  WORKSPACES_POINTS_TYPE,
 } from './map.config'
 
 const EMPTY_ARRAY: [] = []

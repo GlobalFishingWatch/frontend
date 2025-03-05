@@ -1,18 +1,19 @@
-import type { FeatureCollection, EditAction } from '@deck.gl-community/editable-layers'
-import {
-  EditableGeoJsonLayer,
-  CompositeMode,
-  TranslateMode,
-  ImmutableFeatureCollection,
-} from '@deck.gl-community/editable-layers'
-import { PathStyleExtension } from '@deck.gl/extensions'
 import type { LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
+import { PathStyleExtension } from '@deck.gl/extensions'
+import type { EditAction,FeatureCollection } from '@deck.gl-community/editable-layers'
+import {
+  CompositeMode,
+  EditableGeoJsonLayer,
+  ImmutableFeatureCollection,
+  TranslateMode,
+} from '@deck.gl-community/editable-layers'
 import kinks from '@turf/kinks'
 import type { Feature, Point, Polygon, Position } from 'geojson'
-import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
+
 import type { DeckLayerCategory } from '../../types'
-import type { DrawPickingInfo, DrawPickingObject } from './draw.types'
+import { COLOR_HIGHLIGHT_LINE, getLayerGroupOffset,LayerGroup } from '../../utils'
+
 import type { DrawLayerMode } from './draw.modes'
 import {
   CustomDrawPointMode,
@@ -20,6 +21,7 @@ import {
   CustomModifyMode,
   CustomViewMode,
 } from './draw.modes'
+import type { DrawPickingInfo, DrawPickingObject } from './draw.types'
 
 type Color = [number, number, number, number]
 const FILL_COLOR: Color = [189, 189, 189, 25]

@@ -78,3 +78,33 @@
   width: 98px;
   height: 26px;
 }
+
+.externalToolLinks {
+  display: flex;
+  gap: var(--space-M);
+}
+
+.externalToolLinks a {
+  display: flex;
+  align-self: center;
+  height: 3rem;
+  text-decoration: underline;
+}
+
+.externalToolLinks a:not(:hover) {
+  /* filter: brightness(0) saturate(100%) invert(19%) sepia(25%) saturate(4893%) hue-rotate(206deg)
+    brightness(94%) contrast(98%); */
+  opacity: var(--opacity-secondary);
+  mix-blend-mode: multiply;
+}
+
+.externalToolLinks a img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.disclaimer {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}

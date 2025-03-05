@@ -1,12 +1,16 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
 import { InputDate, Modal, Switch } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+
 import { useApplyFiltersConnect } from './filters.hooks'
 import type { availableEventFilters} from './filters.slice';
 import { selectEnd, selectFilter, selectStart } from './filters.slice'
+
 import styles from './EventFilters.module.css'
 
 interface ModalProps {
@@ -15,7 +19,7 @@ interface ModalProps {
   onCloseModal: (close: boolean) => void
 }
 
-const EventFilters: React.FC<ModalProps> = (props): React.ReactElement => {
+const EventFilters: React.FC<ModalProps> = (props): React.ReactElement<any> => {
   const { t } = useTranslation()
   const tab = props.tab
   const { setFilter, setDate } = useApplyFiltersConnect()

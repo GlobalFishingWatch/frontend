@@ -1,39 +1,39 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
+
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { TimebarVisualisations } from 'types'
-import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
+
+import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
+import {
+  selectActivityVisualizationMode,
+  selectDetectionsVisualizationMode,
+} from 'features/app/selectors/app.selectors'
 import {
   selectTimebarSelectedEnvId,
   selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
-import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import {
-  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
-  selectActiveReportActivityDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  selectActivityVisualizationMode,
-  selectDetectionsVisualizationMode,
-} from 'features/app/selectors/app.selectors'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
-import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
+import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
+import { selectReportCategory } from 'features/reports/reports.selectors'
+import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import { TimebarVisualisations } from 'types'
+import { getUTCDateTime } from 'utils/dates'
 
 export const selectActiveActivityDataviewsByVisualisation = (
   timebarVisualisation: TimebarVisualisations
 ) =>
   createSelector(
     [
-      selectActiveReportActivityDataviews,
+      selectActiveActivityDataviews,
       selectActiveDetectionsDataviews,
       selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
       selectActiveVesselGroupDataviews,
@@ -70,30 +70,35 @@ export const selectActiveActivityDataviewsByVisualisation = (
     }
   )
 
-const selectDatasetsExtent = createSelector(
+const selectActiveDatasets = createSelector(
   [selectDataviewInstancesResolved, selectAllDatasets],
   (dataviews, datasets) => {
     const activeDataviewDatasets = getDatasetsInDataviews(dataviews)
-    const activeDatasets = datasets.filter((d) => activeDataviewDatasets.includes(d.id))
-    return getDatasetsExtent<number>(activeDatasets, {
-      format: 'timestamp',
-    })
+    return datasets.filter((d) => activeDataviewDatasets.includes(d.id))
   }
 )
 
+const selectDatasetsExtent = createSelector([selectActiveDatasets], (activeDatasets) => {
+  return getDatasetsExtent<number>(activeDatasets, {
+    format: 'timestamp',
+  })
+})
+
 export const selectAvailableStart = createSelector([selectDatasetsExtent], (datasetsExtent) => {
-  const defaultAvailableStartMs = new Date(AVAILABLE_START).getTime()
-  const availableStart = new Date(
+  const defaultAvailableStartMs = getUTCDateTime(AVAILABLE_START).toMillis()
+  const availableStart = getUTCDateTime(
     Math.min(defaultAvailableStartMs, datasetsExtent.extentStart || Infinity)
-  ).toISOString()
+  ).toISO() as string
   return availableStart
 })
 
 export const selectAvailableEnd = createSelector([selectDatasetsExtent], (datasetsExtent) => {
-  const defaultAvailableEndMs = new Date(AVAILABLE_END).getTime()
-  const availableEndMs = new Date(
+  const defaultAvailableEndMs = getUTCDateTime(AVAILABLE_END).toMillis()
+  const availableEndMs = getUTCDateTime(
     Math.max(defaultAvailableEndMs, datasetsExtent.extentEnd || -Infinity)
-  ).toISOString()
+  )
+    .endOf('day')
+    .toISO() as string
   return availableEndMs
 })
 

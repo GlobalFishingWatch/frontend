@@ -1,22 +1,19 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { stringify } from 'qs'
 import { uniqBy } from 'es-toolkit'
 import memoize from 'lodash/memoize'
-import type { APIPagination, VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
-import type { FetchOptions, ParsedAPIError } from '@globalfishingwatch/api-client';
+import { stringify } from 'qs'
+
+import type { FetchOptions, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
-import type {
-  AsyncError,
-  AsyncReducer} from 'utils/async-slice';
-import {
-  asyncInitialState,
-  AsyncReducerStatus,
-  createAsyncSlice,
-} from 'utils/async-slice'
+import type { APIPagination, VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
+
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import type { RootState } from 'store'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import type { RootState } from 'store'
+import type { AsyncError, AsyncReducer } from 'utils/async-slice'
+import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
+
 import { prepareVesselGroupVesselsUpdate } from './vessel-groups.utils'
 
 export type IdField = 'vesselId' | 'mmsi' | 'imo'

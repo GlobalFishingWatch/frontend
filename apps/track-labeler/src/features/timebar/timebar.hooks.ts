@@ -1,22 +1,25 @@
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import {
-  selectTimebarMode,
-  getDateRange,
-  selectFilterMode,
-  selectColorMode,
-} from '../../routes/routes.selectors'
-import { updateQueryParams } from '../../routes/routes.actions'
-import type { CoordinatePosition } from '../../types'
-import type {
-  SelectedTrackType} from '../../features/vessels/selectedTracks.slice';
-import {
-  addSelectedTrack,
-  setSelectedTrack,
-  updateSelectedTrack,
-} from '../../features/vessels/selectedTracks.slice'
+
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
+import { addSelectedTrack, setSelectedTrack } from '../../features/vessels/selectedTracks.slice'
 import { selectTimestamps } from '../../features/vessels/vessels.slice'
-import { findNextTimestamp, findPreviousTimestamp } from '../../utils/shared'
+import { updateQueryParams } from '../../routes/routes.actions'
+import {
+  getDateRange,
+  selectColorMode,
+  selectFilterMode,
+  selectTimebarMode,
+} from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
+import type { CoordinatePosition } from '../../types'
+import {
+  findNextPosition,
+  findNextTimestamp,
+  findPreviousPosition,
+  findPreviousTimestamp,
+} from '../../utils/shared'
+import { getVesselTrackData } from '../tracks/tracks.selectors'
 
 export const useTimerangeConnect = () => {
   const dispatch = useAppDispatch()
@@ -87,148 +90,179 @@ export const useTimebarModeConnect = () => {
 export const useSegmentsLabeledConnect = () => {
   const dispatch = useAppDispatch()
   const timestamps = useSelector(selectTimestamps)
+  const positions = useSelector(getVesselTrackData)
+  // Add internal state to track segment being created
+  const [pendingSegment, setPendingSegment] = useState<{
+    firstClick: {
+      timestamp: number
+      position: CoordinatePosition
+    } | null
+  }>({ firstClick: null })
+
+  const createNewSegment = (
+    timestamp1: number,
+    position1: CoordinatePosition,
+    timestamp2: number,
+    position2: CoordinatePosition
+  ): SelectedTrackType => {
+    // If both timestamps are the same, create a single-point segment
+    if (timestamp1 === timestamp2) {
+      return {
+        start: timestamp1,
+        startLatitude: position1.latitude,
+        startLongitude: position1.longitude,
+        end: timestamp1,
+        endLatitude: position1.latitude,
+        endLongitude: position1.longitude,
+      }
+    }
+
+    // Otherwise handle normal case where timestamps differ
+    if (timestamp1 < timestamp2) {
+      return {
+        start: timestamp1,
+        startLatitude: position1.latitude,
+        startLongitude: position1.longitude,
+        end: timestamp2,
+        endLatitude: position2.latitude,
+        endLongitude: position2.longitude,
+      }
+    } else {
+      return {
+        start: timestamp2,
+        startLatitude: position2.latitude,
+        startLongitude: position2.longitude,
+        end: timestamp1,
+        endLatitude: position1.latitude,
+        endLongitude: position1.longitude,
+      }
+    }
+  }
+
+  const handleSegmentOverlap = (
+    segment: SelectedTrackType,
+    newSegment: SelectedTrackType,
+    timestamps: number[]
+  ): SelectedTrackType[] => {
+    if (!segment.start || !segment.end || !newSegment.start || !newSegment.end) {
+      return [segment]
+    }
+
+    // Case 1: Segment completely contains new segment
+    if (segment.start < newSegment.start && segment.end > newSegment.end) {
+      const endLatitude = findPreviousPosition(timestamps, positions, newSegment.start, 'latitude')
+      const endLongitude = findPreviousPosition(
+        timestamps,
+        positions,
+        newSegment.start,
+        'longitude'
+      )
+      const startLatitude = findNextPosition(timestamps, positions, newSegment.end, 'latitude')
+      const startLongitude = findNextPosition(timestamps, positions, newSegment.end, 'longitude')
+      return [
+        {
+          ...segment,
+          end: findPreviousTimestamp(timestamps, newSegment.start),
+          endLatitude,
+          endLongitude,
+        },
+        {
+          ...segment,
+          start: findNextTimestamp(timestamps, newSegment.end),
+          startLatitude,
+          startLongitude,
+        },
+      ]
+    }
+
+    // Case 2: New segment completely contains this segment
+    if (segment.start >= newSegment.start && segment.end <= newSegment.end) {
+      return [] // Remove this segment
+    }
+
+    // Case 3: Overlap at start
+    if (newSegment.start <= segment.start && newSegment.end >= segment.start) {
+      const startLatitude = findNextPosition(timestamps, positions, newSegment.end, 'latitude')
+      const startLongitude = findNextPosition(timestamps, positions, newSegment.end, 'longitude')
+      return [
+        {
+          ...segment,
+          start: findNextTimestamp(timestamps, newSegment.end),
+          startLatitude,
+          startLongitude,
+        },
+      ]
+    }
+
+    // Case 4: Overlap at end
+    if (newSegment.end >= segment.end && newSegment.start <= segment.end) {
+      const endLatitude = findPreviousPosition(timestamps, positions, newSegment.start, 'latitude')
+      const endLongitude = findPreviousPosition(
+        timestamps,
+        positions,
+        newSegment.start,
+        'longitude'
+      )
+      return [
+        {
+          ...segment,
+          end: findPreviousTimestamp(timestamps, newSegment.start),
+          endLatitude,
+          endLongitude,
+        },
+      ]
+    }
+
+    // No overlap
+    return [segment]
+  }
+
   const onEventPointClick = (
     segments: SelectedTrackType[],
     timestamp: number,
     position?: CoordinatePosition
   ) => {
-    const lastPosition: number = segments.length - 1
-    let rebuildSegments = false
-    const lastSegment: SelectedTrackType = segments[lastPosition]
-    let lastSegmentAdded: SelectedTrackType = lastSegment
-    if (
-      lastPosition >= 0 &&
-      segments[lastPosition].start !== null &&
-      segments[lastPosition].end === null
-    ) {
-      const start = lastSegment.start ?? 0
-      const startLatitude = lastSegment.startLatitude ?? 0
-      const startLongitude = lastSegment.startLongitude ?? 0
-      if (start < timestamp) {
-        lastSegmentAdded = {
-          start: start,
-          startLatitude: startLatitude,
-          startLongitude: startLongitude,
-          end: timestamp,
-          endLatitude: position?.latitude ?? null,
-          endLongitude: position?.longitude,
-        }
-        dispatch(
-          updateSelectedTrack({
-            index: lastPosition,
-            segment: lastSegmentAdded,
-          })
-        )
-        rebuildSegments = true
-      } else {
-        lastSegmentAdded = {
-          start: timestamp,
-          startLatitude: position?.latitude ?? null,
-          startLongitude: position?.longitude ?? null,
-          end: start,
-          endLatitude: startLatitude,
-          endLongitude: startLongitude,
-        }
-        dispatch(
-          updateSelectedTrack({
-            index: lastPosition,
-            segment: lastSegmentAdded,
-          })
-        )
-        rebuildSegments = true
-      }
-    } else {
-      dispatch(
-        addSelectedTrack({
-          start: timestamp,
-          startLatitude: position?.latitude ?? null,
-          startLongitude: position?.longitude ?? null,
-          end: null,
-        })
-      )
+    if (!position) return
+
+    // If there's no pending segment, store this as the first click
+    if (!pendingSegment.firstClick) {
+      setPendingSegment({
+        firstClick: {
+          timestamp,
+          position,
+        },
+      })
+      return
     }
-    if (rebuildSegments && segments.length > 1) {
-      const newSegments: SelectedTrackType[] = []
-      //let previousSegment: SelectedTrackType|null = null;
-      segments.forEach((segment1: SelectedTrackType) => {
-        if (segment1.start && segment1.end && lastSegmentAdded.start && lastSegmentAdded.end) {
-          // This case segment 1 cover all lastSegmentAdded
-          if (segment1.start <= lastSegmentAdded.start && segment1.end >= lastSegmentAdded.end) {
-            newSegments.push(
-              {
-                ...segment1,
-                end: findPreviousTimestamp(timestamps, lastSegmentAdded.start),
-                endLatitude: lastSegmentAdded.startLatitude,
-                endLongitude: lastSegmentAdded.startLongitude,
-              },
-              /*{
-                ...lastSegmentAdded,
-              },*/
-              {
-                ...segment1,
-                start: findNextTimestamp(timestamps, lastSegmentAdded.end),
-                startLatitude: lastSegmentAdded.endLatitude,
-                startLongitude: lastSegmentAdded.endLongitude,
-              }
-            )
-          }
-          // This case segment 1 is inside lastSegmentAdded
-          else if (
-            segment1.start >= lastSegmentAdded.start &&
-            segment1.end <= lastSegmentAdded.end
-          ) {
-            //the segment 1 is removed
-            //newSegments.push({ ...lastSegmentAdded })
-          }
-          // This case lastSegmentAdded take the first part of a saved segment
-          else if (
-            lastSegmentAdded.start <= segment1.start &&
-            lastSegmentAdded.end >= segment1.start &&
-            lastSegmentAdded.end <= segment1.end
-          ) {
-            newSegments.push({
-              ...segment1,
-              start: findNextTimestamp(timestamps, lastSegmentAdded.end),
-              startLatitude: lastSegmentAdded.endLatitude,
-              startLongitude: lastSegmentAdded.endLongitude,
-            })
-          }
-          // This case lastSegmentAdded takes the last part of a segment
-          else if (
-            lastSegmentAdded.end >= segment1.end &&
-            lastSegmentAdded.start >= segment1.start &&
-            lastSegmentAdded.start <= segment1.end
-          ) {
-            newSegments.push({
-              ...segment1,
-              end: findPreviousTimestamp(timestamps, lastSegmentAdded.start),
-              endLatitude: lastSegmentAdded.startLatitude,
-              endLongitude: lastSegmentAdded.startLongitude,
-            })
-          } else {
-            newSegments.push({
-              ...segment1,
-            })
-          }
-        }
-      })
-      newSegments.push({
-        ...lastSegmentAdded,
-      })
-      const filteredNewSegments: SelectedTrackType[] = newSegments?.filter((s) => s)
-      const sortedNewSegments = filteredNewSegments.sort(
-        (n1: SelectedTrackType, n2: SelectedTrackType) => {
-          if (n1.start && n2.start) {
-            return n1.start - n2.start
-          }
-          return 1
-        }
-      )
-      dispatch(setSelectedTrack(sortedNewSegments))
+
+    const newSegment = createNewSegment(
+      pendingSegment.firstClick.timestamp,
+      pendingSegment.firstClick.position,
+      timestamp,
+      position
+    )
+
+    // Reset pending segment
+    setPendingSegment({ firstClick: null })
+
+    // Handle overlaps with existing segments
+    if (segments.length > 0) {
+      const newSegments = segments
+        .flatMap((segment) => handleSegmentOverlap(segment, newSegment, timestamps))
+        .concat(newSegment)
+        .filter(Boolean)
+        .sort((a, b) => (a.start && b.start ? a.start - b.start : 1))
+
+      dispatch(setSelectedTrack(newSegments))
+    } else {
+      // If no existing segments, just add the new one
+      dispatch(addSelectedTrack(newSegment))
     }
   }
 
   return {
     onEventPointClick,
+    // Expose whether we're in the middle of creating a segment
+    isCreatingSegment: pendingSegment.firstClick !== null,
   }
 }

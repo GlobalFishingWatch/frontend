@@ -34,6 +34,7 @@
 .option {
   flex: 1;
   min-width: max-content;
+  line-height: 1;
 }
 
 .optionButton {

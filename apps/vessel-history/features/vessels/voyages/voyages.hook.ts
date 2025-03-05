@@ -1,18 +1,20 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
+import { selectMergedVesselId } from 'routes/routes.selectors'
 import type { RenderedVoyage, Voyage } from 'types/voyage';
 import { EventTypeVoyage } from 'types/voyage'
-import { selectMergedVesselId } from 'routes/routes.selectors'
+
 import type { RenderedEvent } from '../activity/vessels-activity.selectors'
+import { selectCurrentVesselVoyagesState } from '../vessels.selectors'
 import type {
   VoyagesState} from '../vessels.slice';
 import {
-  upsertVesselVoyagesExpanded,
-  setVesselVoyagesInitialized
-} from '../vessels.slice'
-import { selectCurrentVesselVoyagesState } from '../vessels.selectors'
+  setVesselVoyagesInitialized,
+  upsertVesselVoyagesExpanded} from '../vessels.slice'
+
 import { selectFilteredEventsByVoyages } from './voyages.selectors'
 
 function useVoyagesConnect() {

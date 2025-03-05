@@ -1,6 +1,8 @@
 import type { Middleware } from 'redux'
-import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import type { RootState } from 'store'
+
+import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
+
 import { routesMap } from './routes'
 import type { UpdateQueryParamsAction } from './routes.actions'
 

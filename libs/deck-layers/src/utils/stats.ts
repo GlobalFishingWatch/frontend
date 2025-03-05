@@ -1,4 +1,7 @@
 import { ckmeans, mean, standardDeviation } from 'simple-statistics'
+
+import type { FourwingsAggregationOperation } from '../layers/fourwings'
+
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from './colorRamps'
 
 export function getSteps(values: number[], numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS) {
@@ -22,8 +25,7 @@ export function removeOutliers({
   aggregationOperation,
 }: {
   allValues: number[]
-  /* FourwingsAggregationOperation */
-  aggregationOperation?: 'avg' | 'sum'
+  aggregationOperation?: FourwingsAggregationOperation
 }) {
   const allValuesCleaned = allValues.filter(Boolean)
   if (!allValuesCleaned.length) return []

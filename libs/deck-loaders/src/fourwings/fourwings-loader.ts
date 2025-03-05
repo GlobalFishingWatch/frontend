@@ -1,8 +1,10 @@
 import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
+
 import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
-import type { FourwingsLoaderOptions, ParseFourwingsOptions } from './lib/types'
+
 import { parseFourwings } from './lib/parse-fourwings'
+import type { FourwingsLoaderOptions, ParseFourwingsOptions } from './lib/types'
 
 /**
  * Worker loader for the 4wings tile format

@@ -1,42 +1,45 @@
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+
 import { EventTypes } from '@globalfishingwatch/api-types'
+
+import { IS_STANDALONE_APP } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectEventsInsideMPAByType } from 'features/risk/risk.selectors'
 import type { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import type { AISCoverage, FlagOnMOU} from 'types/risk-indicator';
-import { IndicatorType } from 'types/risk-indicator'
-import { selectMergedVesselId } from 'routes/routes.selectors'
-import { selectVesselById } from 'features/vessels/vessels.slice'
-import type { ValueItem, VesselWithHistory } from 'types'
 import { getUniqueHistoryValues } from 'features/vessels/activity/vessels-activity.utils'
-import { IS_STANDALONE_APP } from 'data/config'
+import { selectVesselById } from 'features/vessels/vessels.slice'
+import { selectMergedVesselId } from 'routes/routes.selectors'
+import type { ValueItem, VesselWithHistory } from 'types'
+import type { AISCoverage, FlagOnMOU } from 'types/risk-indicator'
+import { IndicatorType } from 'types/risk-indicator'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import {
+  selectCoverage,
+  selectCurrentMergedVesselsId,
+  selectCurrentMergedVesselsIndicators,
+  selectEncountersInForeignEEZ,
+  selectEncountersInMPA,
+  selectEncountersInRFMOWithoutAuthorization,
+  selectEncountersRFMOsAreasWithoutAuthorization,
+  selectFishingInMPA,
+  selectFishingInRFMOWithoutAuthorization,
+  selectFishingRFMOsAreasWithoutAuthorization,
+  selectGapsIntentionalDisabling,
+  selectPortVisitsToNonPSMAPortState,
+  selectRiskVesselIndentityFlagsHistory,
+  selectRiskVesselIndentityNamesHistory,
+  selectRiskVesselIndentityOperatorsHistory,
+  selectRiskVesselIndentityOwnersHistory,
+  selectVesselIdentityMouIndicators,
+} from './risk-indicator.selectors'
 import {
   fetchIndicatorsByIdThunk,
   selectIndicatorsRequests,
   selectIndicatorsStatus,
 } from './risk-indicator.slice'
-import {
-  selectEncountersInMPA,
-  selectFishingInMPA,
-  selectEncountersInForeignEEZ,
-  selectCurrentMergedVesselsId,
-  selectPortVisitsToNonPSMAPortState,
-  selectVesselIdentityMouIndicators,
-  selectRiskVesselIndentityFlagsHistory,
-  selectEncountersInRFMOWithoutAuthorization,
-  selectEncountersRFMOsAreasWithoutAuthorization,
-  selectFishingInRFMOWithoutAuthorization,
-  selectFishingRFMOsAreasWithoutAuthorization,
-  selectRiskVesselIndentityNamesHistory,
-  selectRiskVesselIndentityOwnersHistory,
-  selectCurrentMergedVesselsIndicators,
-  selectRiskVesselIndentityOperatorsHistory,
-  selectCoverage,
-  selectGapsIntentionalDisabling,
-} from './risk-indicator.selectors'
 
 export interface UseRiskIndicator {
   coverage: AISCoverage
@@ -88,15 +91,15 @@ export function useRiskIndicator(showIdentityIndicators: boolean): UseRiskIndica
     ],
     []
   )
-
-  useEffect(() => {
-    if (!IS_STANDALONE_APP) {
-      // Avoid multiple requests without permission
-      indicatorsKeys.forEach((indicator) =>
-        dispatch(fetchIndicatorsByIdThunk({ idData, indicator }))
-      )
-    }
-  }, [dispatch, idData, indicatorsKeys])
+  // deprecated
+  // useEffect(() => {
+  //   if (!IS_STANDALONE_APP) {
+  //     // Avoid multiple requests without permission
+  //     indicatorsKeys.forEach((indicator) =>
+  //       dispatch(fetchIndicatorsByIdThunk({ idData, indicator }))
+  //     )
+  //   }
+  // }, [dispatch, idData, indicatorsKeys])
 
   const encountersInMPA = useSelector(selectEncountersInMPA)
   const fishingInMPA = useSelector(selectFishingInMPA)

@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import {
   selectDownloadActivityModalOpen,
@@ -13,9 +14,9 @@ import {
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import type { WelcomeContentKey } from 'features/welcome/welcome.content'
 import {
-  selectLocationCategory,
   selectIsAnyVesselLocation,
   selectIsStandaloneSearchLocation,
+  selectLocationCategory,
 } from 'routes/routes.selectors'
 
 const selectAppModals = createSelector(

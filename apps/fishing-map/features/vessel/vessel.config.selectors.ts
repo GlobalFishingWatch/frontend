@@ -1,8 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
+
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { selectLocationQuery } from 'routes/routes.selectors'
+
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
-import type { VesselProfileStateProperty, VesselProfileState } from './vessel.types'
+import { selectLocationQuery } from 'routes/routes.selectors'
+
+import type { VesselProfileState,VesselProfileStateProperty } from './vessel.types'
 
 type VesselProfileProperty<P extends VesselProfileStateProperty> = Required<VesselProfileState>[P]
 export function selectVesselProfileStateProperty<P extends VesselProfileStateProperty>(
@@ -23,6 +26,9 @@ export const selectVesselRelatedSubsection = selectVesselProfileStateProperty('v
 export const selectViewOnlyVessel = selectVesselProfileStateProperty('viewOnlyVessel')
 export const selectVesselRegistryId = selectVesselProfileStateProperty('vesselRegistryId')
 export const selectVesselSelfReportedId = selectVesselProfileStateProperty('vesselSelfReportedId')
+export const selectIncludeRelatedIdentities = selectVesselProfileStateProperty(
+  'includeRelatedIdentities'
+)
 
 export const selectVesselIdentityId = createSelector(
   [selectVesselIdentitySource, selectVesselRegistryId, selectVesselSelfReportedId],

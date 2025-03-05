@@ -1,16 +1,18 @@
 import { useCallback, useMemo, useState } from 'react'
+
+import type { MultiSelectOption } from '@globalfishingwatch/api-client'
 import type {
   DatasetConfiguration,
   DatasetConfigurationUI,
   DatasetSchemaItem,
   DatasetSchemaType,
 } from '@globalfishingwatch/api-types'
-import type { SelectOption } from '@globalfishingwatch/ui-components'
-import type { MultiSelectOption } from '@globalfishingwatch/api-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import { sortFields } from 'utils/shared'
-import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+
 import DatasetFieldLabel from 'features/datasets/upload/DatasetFieldLabel'
+import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import { sortFields } from 'utils/shared'
 
 export function useDatasetMetadata() {
   const [datasetMetadata, setDatasetMetadataState] = useState({} as DatasetMetadata)

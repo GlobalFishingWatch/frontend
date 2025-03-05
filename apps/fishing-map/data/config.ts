@@ -1,14 +1,9 @@
 import { DateTime } from 'luxon'
+
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import type {
-  AppState,
-  WorkspaceState} from '../types';
-import {
-  QueryParam,
-  TimebarGraphs,
-  TimebarVisualisations,
-  UserTab
-} from '../types'
+
+import type { AppState, WorkspaceState } from '../types'
+import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
@@ -20,32 +15,29 @@ export const IS_PRODUCTION_BUILD = process.env.NODE_ENV === 'production'
 export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
 export const IS_PRODUCTION_WORKSPACE_ENV =
   PUBLIC_WORKSPACE_ENV === 'production' || PUBLIC_WORKSPACE_ENV === 'staging'
-const IS_PRODUCTION = IS_PRODUCTION_WORKSPACE_ENV || IS_PRODUCTION_BUILD
-export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
+
+export const SHOW_LEAVE_CONFIRMATION = process.env.NEXT_PUBLIC_SHOW_LEAVE_CONFIRMATION
+  ? process.env.NEXT_PUBLIC_SHOW_LEAVE_CONFIRMATION === 'true'
+  : process.env.NODE_ENV !== 'development'
+
+export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || '/map'
 
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
     ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
     : 366 // 1 year
 
-export const CARRIER_PORTAL_API_URL =
-  process.env.NEXT_PUBLIC_CARRIER_PORTAL_API_URL || 'https://gateway.api.globalfishingwatch.org'
-export const CARRIER_PORTAL_URL =
-  process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.globalfishingwatch.org'
-export const LATEST_CARRIER_DATASET_ID =
-  process.env.NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID || 'carriers:latest'
-
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
 
 export const REPORT_VESSELS_PER_PAGE = 10
 export const REPORT_SHOW_MORE_VESSELS_PER_PAGE = REPORT_VESSELS_PER_PAGE * 5
-export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype'
-export const REPORT_VESSELS_GRAPH_VESSELTYPE = 'vesselType'
-export const REPORT_VESSELS_GRAPH_FLAG = 'flag'
-export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution'
-export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter'
-export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison'
+export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype' as const
+export const REPORT_VESSELS_GRAPH_VESSELTYPE = 'vesselType' as const
+export const REPORT_VESSELS_GRAPH_FLAG = 'flag' as const
+export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution' as const
+export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter' as const
+export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison' as const
 
 // Local storage keys
 export const HINTS = 'hints'
@@ -98,10 +90,18 @@ export const DEFAULT_PAGINATION_PARAMS = {
 export const BUFFER_PREVIEW_COLOR = '#F95E5E'
 
 export const FIRST_YEAR_OF_DATA = 2012
-const CURRENT_YEAR = new Date().getFullYear()
 
-export const AVAILABLE_START = new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString() as string
-export const AVAILABLE_END = new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString() as string
+export const AVAILABLE_START = DateTime.fromObject(
+  { year: FIRST_YEAR_OF_DATA },
+  { zone: 'utc' }
+).toISO() as string
+
+export const AVAILABLE_END = DateTime.fromObject(
+  { year: new Date().getUTCFullYear() + 1 },
+  { zone: 'utc' }
+)
+  .minus({ millisecond: 1 })
+  .toISO() as string
 
 export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
@@ -149,4 +149,5 @@ export const REPORT_ONLY_VISIBLE_LAYERS = [
   DataviewType.Context,
   DataviewType.UserContext,
   DataviewType.UserPoints,
+  DataviewType.BasemapLabels,
 ]

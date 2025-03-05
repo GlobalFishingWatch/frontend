@@ -1,47 +1,50 @@
-import lowerCase from 'lodash/lowerCase'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { uniq } from 'es-toolkit'
 import intersection from 'lodash/intersection'
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+import lowerCase from 'lodash/lowerCase'
+
 import type {
   Dataset,
+  DatasetSchema,
+  DatasetSchemaItem,
+  DatasetSchemaItemEnum,
   DatasetSchemaType,
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
-  UserPermission,
   FilterOperator,
-  VesselType,
-  DatasetSchema,
-  DatasetSchemaItem,
   IdentityVessel,
-  DatasetSchemaItemEnum,
+  UserPermission,
   VesselIdentitySourceEnum,
+  VesselType,
 } from '@globalfishingwatch/api-types'
 import {
   DatasetCategory,
+  DatasetSubCategory,
   DatasetTypes,
+  DataviewCategory,
   DataviewType,
   EndpointId,
   EventTypes,
   INCLUDE_FILTER_ID,
-  DatasetSubCategory,
-  DataviewCategory,
 } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getEnvironmentalDatasetRange,
   removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
-import { capitalize, sortFields } from 'utils/shared'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
+
+import { DEFAULT_TIME_RANGE, FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
 import { t } from 'features/i18n/i18n'
-import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { capitalize, sortFields } from 'utils/shared'
+
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 // Datasets ids for vessel instances
@@ -343,7 +346,7 @@ export const getRelatedDatasetsByType = (
       (relatedDataset) =>
         relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
     )
-    if (fullDataset?.length && fullDataset?.length > 0) {
+    if (fullDataset && fullDataset.length > 0) {
       return fullDataset
     }
   }
@@ -391,6 +394,25 @@ const checkDatasetDownloadTrackPermission = (datasetId: string, permissions: Use
   )
 }
 
+export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
+  if (!dataview) {
+    return [] as Dataset[]
+  }
+  if (dataview.category === DataviewCategory.User) {
+    return dataview.datasets
+  }
+  return dataview.config?.datasets
+    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+    : dataview?.datasets
+}
+
+export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig) => {
+  return (
+    datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
+    datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value
+  )
+}
+
 export const getActivityDatasetsReportSupported = (
   dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
@@ -407,6 +429,7 @@ export const getActivityDatasetsReportSupported = (
           permissionDatasetsIds.includes(d.id) &&
           (d.category === DatasetCategory.Activity ||
             d.category === DatasetCategory.Detections ||
+            d.category === DatasetCategory.Event ||
             (d.category === DatasetCategory.Environment &&
               dataview.config?.type === DataviewType.HeatmapAnimated))
       )
@@ -434,7 +457,9 @@ export const getDatasetsReportSupported = (
   dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
-  const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
+  const dataviewDatasets = dataviews
+    .flatMap((dataview) => getActiveDatasetsInDataview(dataview) || [])
+    .map((d) => d.id)
   const datasetsDownloadSupported = getActivityDatasetsReportSupported(dataviews, permissions)
   return dataviewDatasets.filter((dataset) => datasetsDownloadSupported.includes(dataset))
 }
@@ -443,7 +468,9 @@ export const getDatasetsReportNotSupported = (
   dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
-  const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
+  const dataviewDatasets = dataviews
+    .flatMap((dataview) => getActiveDatasetsInDataview(dataview) || [])
+    .map((d) => d.id)
   const datasetsDownloadSupported = getActivityDatasetsReportSupported(dataviews, permissions)
   return dataviewDatasets.filter((dataset) => !datasetsDownloadSupported.includes(dataset))
 }
@@ -504,14 +531,6 @@ const isDataviewSchemaSupported = (
     })
   return schemaSupported
 }
-
-export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig) => {
-  return (
-    datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
-    datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value
-  )
-}
-
 const getSchemaItemByOrigin = (
   dataset: Dataset,
   schema: SupportedDatasetSchema,
@@ -710,18 +729,6 @@ type SchemaFieldSelection = {
 }
 
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
-
-export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
-  if (!dataview) {
-    return [] as Dataset[]
-  }
-  if (dataview.category === DataviewCategory.User) {
-    return dataview.datasets
-  }
-  return dataview.config?.datasets
-    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
-    : dataview?.datasets
-}
 
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,

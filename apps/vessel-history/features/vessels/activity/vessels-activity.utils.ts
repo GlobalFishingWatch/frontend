@@ -1,4 +1,5 @@
 import type { ValueItem } from 'types'
+
 import type { ActivityEvent } from 'types/activity'
 
 export const groupEvents = (events: ActivityEvent[]) => {

@@ -1,8 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import type { InsightResponse } from '@globalfishingwatch/api-types'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import type { InsightResponse } from '@globalfishingwatch/api-types'
+
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
+
 import styles from './Insights.module.css'
 
 const InsightIUU = ({
@@ -21,8 +24,6 @@ const InsightIUU = ({
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.IUU', 'RFMO IUU Vessel List')}</label>
         <DataTerminology
-          size="tiny"
-          type="default"
           title={t('vessel.insights.IUU', 'RFMO IUU Vessel List')}
           terminologyKey="insightsIUU"
         />

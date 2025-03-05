@@ -1,4 +1,5 @@
 import { HINTS } from 'apps/fishing-map/data/config'
+
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from '../../../fishing-map/features/workspace/highlight-panel/highlight-panel.content'
 import { API_URL_4WINGS_TILES } from '../constants/urls'
 
@@ -13,12 +14,15 @@ export const getTimebar = () => cy.getByClass('Timebar_timebarWrapper', getDOMTi
 
 export const getTimeline = () => cy.getBySel('timeline-graph')
 
-export const getMapCanvas = () => cy.get('#map canvas')
+export const getMapCanvas = () => cy.get('#map-wrapper canvas')
 
 export const getSidebar = () => cy.getBySel('sidebar-container', getDOMTimeout(10000))
 
 export const waitForSidebarLoaded = () =>
-  getSidebar().findByClass('Sections_container', getDOMTimeout(10000)).should('exist')
+  getSidebar().find(`[data-test*="activity-section"]`, getDOMTimeout(10000)).should('exist')
+
+export const waitForVesselViewerLoaded = () =>
+  getSidebar().find(`[data-test*="vessel-profile-info"]`, getDOMTimeout(10000)).should('exist')
 
 export const waitForMapLoadTiles = (extraDelay?: number) => {
   cy.intercept(API_URL_4WINGS_TILES).as('loadTiles')

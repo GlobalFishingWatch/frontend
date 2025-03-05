@@ -1,48 +1,49 @@
-import { useState, useMemo, useTransition } from 'react'
-import cx from 'classnames'
+import { useMemo, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
-import type { ColorBarOption} from '@globalfishingwatch/ui-components';
-import { Tooltip, IconButton } from '@globalfishingwatch/ui-components'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import type { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
+import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
+import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
+import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
+import { useActivityDataviewId } from 'features/map/map-layers.hooks'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import ActivityFilters, {
   isHistogramDataviewSupported,
-} from 'features/workspace/common/LayerFilters'
-import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
-import type {
-  SupportedEnvDatasetSchema} from 'features/datasets/datasets.utils';
-import {
-  getSchemaFiltersInDataview,
-} from 'features/datasets/datasets.utils'
-import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
-import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
-import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
-import MapLegend from 'features/workspace/common/MapLegend'
-import { useActivityDataviewId } from 'features/map/map-layers.hooks'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+} from 'features/workspace/shared/LayerFilters'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import MapLegend from 'features/workspace/shared/MapLegend'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+
 import DatasetNotFound from '../shared/DatasetNotFound'
-import Color from '../common/Color'
-import LayerSwitch from '../common/LayerSwitch'
-import InfoModal from '../common/InfoModal'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
-import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
+import InfoModal from '../shared/InfoModal'
+import LayerProperties from '../shared/LayerProperties'
+import LayerSwitch from '../shared/LayerSwitch'
+import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
   onToggle?: () => void
 }
 
-function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const [isPending, startTransition] = useTransition()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()
@@ -130,16 +131,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     isHistogramDataviewSupported(dataview) ||
     getSchemaFiltersInDataview(dataview)?.filtersAllowed?.some(showSchemaFilter)
 
-  const TitleComponent = (
-    <Title
-      title={title}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onToggle}
-    />
-  )
-
   const layerRange = getEnvironmentalDatasetRange(dataset)
   const showMinVisibleFilter =
     dataview.config?.minVisibleValue !== undefined
@@ -171,11 +162,13 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           dataview={dataview}
           onToggle={onToggle}
         />
-        {title && title.length > 30 ? (
-          <Tooltip content={title}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={title}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onToggle}
+        />
         <div
           className={cx(
             'print-hidden',
@@ -209,7 +202,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             </ExpandedContainer>
           )}
           {layerActive && !isBathymetryDataview(dataview) && (
-            <Color
+            <LayerProperties
               dataview={dataview}
               open={colorOpen}
               colorType="fill"

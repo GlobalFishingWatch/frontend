@@ -1,14 +1,16 @@
 import type {
-  FeatureCollection,
   Feature,
-  Geometry,
+  FeatureCollection,
   GeoJsonProperties,
+  Geometry,
   LineString,
-  Position,
   MultiLineString,
+  Position,
 } from 'geojson'
 import isEqual from 'lodash/isEqual'
+
 import { COORDINATE_PROPERTY_TIMESTAMP } from '../segments/segments-to-geojson'
+
 import { isNumeric } from './utils'
 
 export { isNumeric }

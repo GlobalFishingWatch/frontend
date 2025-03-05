@@ -1,11 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
+
+import { DEFAULT_WORKSPACE } from '../data/config'
+import type { Project} from '../data/projects';
+import { PROJECTS } from '../data/projects'
+import { selectedProject } from '../features/projects/projects.slice'
 import type { RootState } from '../store'
 import type { TrackColor, WorkspaceParam } from '../types';
 import { TRACK_COLORS } from '../types'
-import { DEFAULT_WORKSPACE } from '../data/config'
-import { selectedProject } from '../features/projects/projects.slice'
-import type { Project} from '../data/projects';
-import { PROJECTS } from '../data/projects'
 
 const selectLocation = (state: RootState) => {
   return state.location
@@ -96,30 +97,32 @@ export const selectProject = createSelector(
  * defined at project level (projects.ts).
  * When defined on both, colors defined at project level takes precedence.
  */
-export const selectProjectColors = createSelector(
-  [selectProject],
-  (project): TrackColor => {
-    if (!project || !project.labels) {
-      return TRACK_COLORS
-    }
-    const projectColors = project.labels.reduce(
-      (previous, current) => ({
-        ...previous,
-        [current.id]: current.color,
-      }),
-      {}
-    )
-
-    return { ...TRACK_COLORS, ...projectColors }
+export const selectProjectColors = createSelector([selectProject], (project): TrackColor => {
+  if (!project || !project.labels) {
+    return TRACK_COLORS
   }
-)
+  const projectColors = project.labels.reduce(
+    (previous, current) => ({
+      ...previous,
+      [current.id]: current.color,
+    }),
+    {}
+  )
+
+  return { ...TRACK_COLORS, ...projectColors }
+})
 
 /**
  * Get the hidden layers in the map
  */
 export const selectHiddenLayers = createSelector(
   [selectQueryParam('hiddenLayers')],
-  (hiddenLayers) => hiddenLayers.split(',')
+  (hiddenLayers) => hiddenLayers?.split(',') || []
+)
+
+export const selectHiddenLabels = createSelector(
+  [selectQueryParam('hiddenLabels')],
+  (hiddenLabels) => hiddenLabels?.split(',') || []
 )
 
 export const selectFilteredHours = createSelector(

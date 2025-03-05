@@ -1,19 +1,16 @@
-import { Fragment, useCallback, useEffect, useState } from 'react'
-import htmlParse from 'html-react-parser'
-import cx from 'classnames'
+import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import type {
-  IconButtonSize,
-  IconButtonType} from '@globalfishingwatch/ui-components';
-import {
-  IconButton,
-  Modal,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
-import type { I18nNamespaces } from 'features/i18n/i18n.types'
+import cx from 'classnames'
+
+import type { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components'
+import { Icon, Modal, Spinner } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import type { I18nNamespaces } from 'features/i18n/i18n.types'
+
 import { selectVesselSection } from '../vessel.config.selectors'
+
 import styles from './DataTerminology.module.css'
 
 interface ModalProps {
@@ -30,9 +27,7 @@ const DataTerminology: React.FC<ModalProps> = ({
   className,
   containerClassName,
   title,
-  size = 'default',
-  type = 'border',
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation(['translations', 'data-terminology'])
   const [showModal, setShowModal] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -51,13 +46,9 @@ const DataTerminology: React.FC<ModalProps> = ({
 
   return (
     <Fragment>
-      <IconButton
-        icon="info"
-        size={size}
-        type={type}
-        className={cx(styles.infoButton, className)}
-        onClick={onClick}
-      />
+      <span role="button" onClick={onClick} tabIndex={0}>
+        <Icon icon="info" className={cx(styles.infoButton, className)} />
+      </span>
       <Modal
         appSelector="__next"
         isOpen={showModal}

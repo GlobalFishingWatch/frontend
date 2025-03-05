@@ -1,71 +1,71 @@
-import { useMemo, useState, Fragment } from 'react'
-import parse from 'html-react-parser'
-import cx from 'classnames'
+import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import area from '@turf/area'
-import type { Placement } from 'tippy.js'
-import type { ChoiceOption } from '@globalfishingwatch/ui-components';
-import { Icon, Button, Choice, Tag } from '@globalfishingwatch/ui-components'
-import {
-  selectUrlBufferOperationQuery,
-  selectUrlBufferUnitQuery,
-  selectUrlBufferValueQuery,
-} from 'routes/routes.selectors'
-import type {
-  DownloadActivityParams,
-  DateRange} from 'features/download/downloadActivity.slice';
-import {
-  downloadActivityThunk,
-  selectIsDownloadActivityLoading,
-  selectIsDownloadActivityFinished,
-  selectIsDownloadActivityError,
-  selectDownloadActivityAreaKey,
-  selectIsDownloadActivityTimeoutError,
-} from 'features/download/downloadActivity.slice'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { TimelineDatesRange } from 'features/map/controls/MapInfo'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import {
-  selectActiveHeatmapVesselDatasets,
-  selectActiveHeatmapDowloadDataviewsByTab,
-} from 'features/dataviews/selectors/dataviews.selectors'
-import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { selectUserData } from 'features/user/selectors/user.selectors'
+import cx from 'classnames'
+import parse from 'html-react-parser'
+
+import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
+import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import type { AreaKeyId } from 'features/areas/areas.slice'
+import DatasetLabel from 'features/datasets/DatasetLabel'
 import {
   checkDatasetReportPermission,
   getActiveDatasetsInDataview,
   getDatasetsReportNotSupported,
 } from 'features/datasets/datasets.utils'
-import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectActiveHeatmapDowloadDataviewsByTab,
+  selectActiveHeatmapVesselDatasets,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectDownloadActivityArea,
   selectIsDownloadActivityAreaLoading,
 } from 'features/download/download.selectors'
-import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
-import DatasetLabel from 'features/datasets/DatasetLabel'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import UserGuideLink from 'features/help/UserGuideLink'
-import type { AreaKeyId } from 'features/areas/areas.slice'
-import styles from './DownloadModal.module.css'
-import type {
-  TemporalResolution} from './downloadActivity.config';
+import type { DateRange, DownloadActivityParams } from 'features/download/downloadActivity.slice'
 import {
-  HeatmapDownloadFormat,
-  SpatialResolution,
-  MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
-  SPATIAL_RESOLUTION_OPTIONS,
-  GRIDDED_FORMAT_OPTIONS,
-  GroupBy,
-  getGriddedGroupOptions,
-} from './downloadActivity.config'
+  downloadActivityThunk,
+  selectDownloadActivityAreaKey,
+  selectIsDownloadActivityError,
+  selectIsDownloadActivityFinished,
+  selectIsDownloadActivityLoading,
+  selectIsDownloadActivityTimeoutError,
+} from 'features/download/downloadActivity.slice'
+import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
+import UserGuideLink from 'features/help/UserGuideLink'
+import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import {
+  selectUrlBufferOperationQuery,
+  selectUrlBufferUnitQuery,
+  selectUrlBufferValueQuery,
+} from 'routes/routes.selectors'
+import { getActivityFilters, getEventLabel } from 'utils/analytics'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
 import {
   getDownloadReportSupported,
   getSupportedGroupByOptions,
   getSupportedTemporalResolutions,
 } from './download.utils'
+import type { TemporalResolution } from './downloadActivity.config'
+import {
+  getGriddedGroupOptions,
+  GRIDDED_FORMAT_OPTIONS,
+  GroupBy,
+  HeatmapDownloadFormat,
+  MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
+  SPATIAL_RESOLUTION_OPTIONS,
+  SpatialResolution,
+} from './downloadActivity.config'
 import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
+
+import styles from './DownloadModal.module.css'
 
 function DownloadActivityGridded() {
   const { t } = useTranslation()
@@ -114,7 +114,7 @@ function DownloadActivityGridded() {
         ...option,
         disabled: true,
         tooltip: t('download.highResNotAvailable', 'Your area is too big'),
-        tooltipPlacement: 'top' as Placement,
+        tooltipPlacement: 'top' as TooltipPlacement,
       }
     }
     return option

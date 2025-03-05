@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+
 import { CONTEXT_LAYERS } from '../../../data/config'
 import { selectHiddenLayers } from '../../../routes/routes.selectors'
 import { selectMapLayers } from '../map.selectors'

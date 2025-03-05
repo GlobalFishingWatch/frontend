@@ -8,6 +8,7 @@ import {
   EndpointId
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+
 import type {
   UrlDataviewInstance} from '../resolve-dataviews';
 import {

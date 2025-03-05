@@ -1,9 +1,12 @@
-import type { DateTimeUnit} from 'luxon';
+import type { DateTimeUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
-import type { FourwingsInterval} from '@globalfishingwatch/deck-loaders';
-import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
+
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
+
 import { getUTCDateTime } from '../../utils/dates'
+
 import type { FourwingsChunk } from './fourwings.types'
 
 const BASE_API_TILES_URL =
@@ -35,8 +38,6 @@ export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12
 export const MAX_RAMP_VALUES = 10000
 
 export const DYNAMIC_RAMP_CHANGE_THRESHOLD = 50
-
-export const MATCHED_POSITIONS_FILTER = "matched IN ('true')"
 
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
 
@@ -74,14 +75,17 @@ export const getChunkByInterval = (
   if (!intervalUnit) {
     return { id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }
   }
-  const startDate = getUTCDateTime(start)
-    .startOf(intervalUnit as any)
-    .minus({ [intervalUnit]: CHUNKS_BUFFER })
+  const startDate = getUTCDateTime(start).startOf(intervalUnit as any)
   const bufferedStartDate = startDate.minus({ [intervalUnit]: CHUNKS_BUFFER })
   const now = DateTime.now().toUTC().startOf('day')
-  const endDate = getUTCDateTime(end)
-    .endOf(intervalUnit as any)
-    .plus({ [intervalUnit]: CHUNKS_BUFFER, millisecond: 1 })
+  const endDateInterval = interval.toLowerCase() as 'month' | 'day' | 'hour'
+  let endDate = getUTCDateTime(end)
+  endDate = endDate
+    .endOf(
+      // eg: when interval day and endDate is more than first day of the month, we move to end of month
+      endDate[endDateInterval] > 1 ? (intervalUnit as typeof endDateInterval) : endDateInterval
+    )
+    .plus({ millisecond: 1 })
   const bufferedEndDate = endDate.plus({ [intervalUnit]: CHUNKS_BUFFER })
   return {
     id: `${intervalUnit}-chunk`,

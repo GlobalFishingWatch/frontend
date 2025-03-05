@@ -4,8 +4,11 @@ import {
   ENCOUNTERS_MIN_DISTANCE,
   ENCOUNTERS_MIN_DURATION,
 } from 'data/constants'
+
 import type { SettingEventSectionName, SettingsEvents } from '../settings.slice'
+
 import ActivityEvents from './ActivityEvents'
+
 import styles from './SettingsComponents.module.css'
 
 interface SettingsProps {
@@ -13,7 +16,7 @@ interface SettingsProps {
   section: SettingEventSectionName
 }
 
-const EncounterEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
+const EncounterEvents: React.FC<SettingsProps> = (props): React.ReactElement<any> => {
   const { settings, section } = props
 
   return (

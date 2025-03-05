@@ -1,13 +1,16 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { Position } from '@deck.gl/core'
-import { useLocationConnect } from 'routes/routes.hook'
+
 import {
   selectAreMapAnnotationsVisible,
   selectMapAnnotations,
 } from 'features/app/selectors/app.selectors'
-import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
+import { MAP_CONTROL_ANNOTATIONS } from 'features/map/controls/map-controls.slice'
+import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
+import { useLocationConnect } from 'routes/routes.hook'
+
 import type { MapAnnotation } from './annotations.types'
 
 /**
@@ -21,7 +24,7 @@ export const useMapAnnotation = () => {
     setMapControl,
     setMapControlValue,
     resetMapControlValue,
-  } = useMapControl('annotations')
+  } = useMapControl(MAP_CONTROL_ANNOTATIONS)
 
   const addMapAnnotation = useCallback(
     (coords: Position) => {
@@ -34,15 +37,26 @@ export const useMapAnnotation = () => {
     [setMapControlValue]
   )
 
-  return {
-    addMapAnnotation,
-    mapAnnotation: value as MapAnnotation,
-    isMapAnnotating: isEditing,
-    setMapAnnotation: setMapControlValue,
-    resetMapAnnotation: resetMapControlValue,
-    setMapAnnotationEdit: setMapControl,
-    toggleMapAnnotationEdit: toggleMapControl,
-  }
+  return useMemo(
+    () => ({
+      addMapAnnotation,
+      mapAnnotation: value as MapAnnotation,
+      isMapAnnotating: isEditing,
+      setMapAnnotation: setMapControlValue,
+      resetMapAnnotation: resetMapControlValue,
+      setMapAnnotationEdit: setMapControl,
+      toggleMapAnnotationEdit: toggleMapControl,
+    }),
+    [
+      addMapAnnotation,
+      isEditing,
+      resetMapControlValue,
+      setMapControl,
+      setMapControlValue,
+      toggleMapControl,
+      value,
+    ]
+  )
 }
 
 /**
@@ -85,12 +99,22 @@ export const useMapAnnotations = () => {
     [dispatchQueryParams, mapAnnotations]
   )
 
-  return {
-    mapAnnotations,
-    areMapAnnotationsVisible,
-    upsertMapAnnotations,
-    deleteMapAnnotation,
-    cleanMapAnnotations,
-    toggleMapAnnotationsVisibility,
-  }
+  return useMemo(
+    () => ({
+      mapAnnotations,
+      areMapAnnotationsVisible,
+      upsertMapAnnotations,
+      deleteMapAnnotation,
+      cleanMapAnnotations,
+      toggleMapAnnotationsVisibility,
+    }),
+    [
+      areMapAnnotationsVisible,
+      cleanMapAnnotations,
+      deleteMapAnnotation,
+      mapAnnotations,
+      toggleMapAnnotationsVisibility,
+      upsertMapAnnotations,
+    ]
+  )
 }

@@ -1,7 +1,18 @@
-# api-types
+# @globalfishingwatch/api-types
 
-This library was generated with [Nx](https://nx.dev).
+TypeScript type definitions for Global Fishing Watch API responses and data structures.
 
-## Building
+## Usage example
 
-Run `nx build api-types` to build the library.
+Import types as needed:
+
+```ts
+import { Dataset } from '@globalfishingwatch/api-types'
+```
+
+## Build and publish
+
+```bash
+nx build api-types
+nx publish api-types
+```

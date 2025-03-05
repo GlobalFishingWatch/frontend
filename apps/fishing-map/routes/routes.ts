@@ -1,17 +1,12 @@
-import type {
-  RoutesMap,
-  Options,
-  StateGetter,
-  Bag} from 'redux-first-router';
-import {
-  NOT_FOUND,
-  redirect,
-  connectRoutes
-} from 'redux-first-router'
 import type { Dispatch } from '@reduxjs/toolkit'
+import type { Bag, Options, RoutesMap, StateGetter } from 'redux-first-router'
+import { connectRoutes, NOT_FOUND, redirect } from 'redux-first-router'
+
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
+
 import { PATH_BASENAME } from 'data/config'
 import { t } from 'features/i18n/i18n'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
@@ -25,6 +20,7 @@ export const REPORT = 'REPORT'
 export const VESSEL_GROUP_REPORT = 'VESSEL_GROUP_REPORT'
 export const PORT_REPORT = 'PORT_REPORT'
 export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
+export const REPORTS_LIST = 'REPORTS_LIST'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
 export const REPORT_ROUTES = [REPORT, WORKSPACE_REPORT]
 
@@ -38,6 +34,7 @@ export type ROUTE_TYPES =
   | typeof WORKSPACE_VESSEL
   | typeof REPORT
   | typeof WORKSPACE_REPORT
+  | typeof REPORTS_LIST
   | typeof SEARCH
   | typeof WORKSPACE_SEARCH
   | typeof REPORT
@@ -45,9 +42,25 @@ export type ROUTE_TYPES =
 
 export const SAVE_WORKSPACE_BEFORE_LEAVE_KEY = 'SAVE_WORKSPACE_BEFORE_LEAVE'
 
+export const ROUTES_WITH_WORKSPACES = [
+  HOME,
+  WORKSPACE,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACE_REPORT,
+  VESSEL_GROUP_REPORT,
+  PORT_REPORT,
+]
+
 const confirmLeave = (state: any, action: any) => {
   const suggestWorkspaceSave = state.workspace?.suggestSave === true
-  if (state.location?.type !== action.type && suggestWorkspaceSave) {
+  const isGuestUser = selectIsGuestUser(state)
+  if (
+    !isGuestUser &&
+    !ROUTES_WITH_WORKSPACES.includes(action.type) &&
+    state.location?.type !== action.type &&
+    suggestWorkspaceSave
+  ) {
     return t('common.confirmLeave', 'Are you sure you want to leave without saving your workspace?')
   }
 }
@@ -81,15 +94,19 @@ export const routesMap: RoutesMap = {
   },
   [WORKSPACE_VESSEL]: {
     path: '/:category/:workspaceId/vessel/:vesselId',
+    confirmLeave,
   },
   [WORKSPACE_REPORT]: {
     path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
+    confirmLeave,
   },
   [VESSEL_GROUP_REPORT]: {
     path: '/:category/:workspaceId/vessel-group-report/:vesselGroupId',
+    confirmLeave,
   },
   [PORT_REPORT]: {
     path: '/:category/:workspaceId/ports-report/:portId',
+    confirmLeave,
   },
   [NOT_FOUND]: {
     path: '',

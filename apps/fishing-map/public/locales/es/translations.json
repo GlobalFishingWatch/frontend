@@ -33,6 +33,7 @@
     "evolution": "evolución",
     "groupByFlag": "por bandera",
     "groupByGeartype": "por arte de pesca",
+    "groupBySource": "by source",
     "groupByVesseltype": "por tipo de embarcación",
     "kilometers": "kilómetros",
     "linkToReport": "Verifique el informe dinámico aquí",
@@ -48,7 +49,10 @@
     "periodComparison2nd": "inicio de comparación",
     "periodComparisonDuration": "duración",
     "periodComparisonRange": "{{duration}} siguiente {{compareStart}} comparado con la línea de referencia {{duration}} siguiente {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "print ": "imprimir",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Mostrar {{results}} por página",
     "save": "Guardar este informe",
     "savePublic": "Permitir que otros usuarios vean este informe",
@@ -63,6 +67,8 @@
     "statsDisclaimerDynamic": "Durante este tiempo, los valores mínimos y máximos de cualquier {{interval}} y lugar dados dentro de su área fueron {{min}} {{unit}} y {{max}} {{unit}}.",
     "statsDisclaimerStatic": "El valor promedio de su área es {{mean}} {{unit}}. El mínimo y el máximo son {{min}} {{unit}} y {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} embarcaciones{{sources}} </strong> tuvieron <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "Esto está demorando más de lo esperado, agradecemos su espera",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
@@ -94,7 +100,7 @@
     "aka": "también conocido como",
     "analysis": "Crear un análisis para esta área",
     "analysisAddArea": "Añadir área al análisis",
-    "analysisNotAvailable": "Activa una actividad o capa de referencia para analizarla en este área",
+    "analysisNotAvailable": "Toggle an analyzable layer to create a report for this area",
     "and": "y",
     "anyoneWithTheLink": "Cualquier persona con el enlace",
     "anyoneWithThePassword": "Cualquier persona con la contraseña",
@@ -136,13 +142,13 @@
     "edit": "Edit",
     "edit ": "edit",
     "environment": "Datos ambientales",
-    "eventLabels": {
-      "loitering": "loitering",
-      "encounter": "encounter",
-      "port_visit": "port visit"
-    },
     "event_one": "evento",
     "event_other": "eventos",
+    "eventLabels": {
+      "encounter": "encounter",
+      "loitering": "loitering",
+      "port_visit": "port visit"
+    },
     "events": "Eventos",
     "Events": "Events",
     "exclude": "Excluir",
@@ -153,6 +159,8 @@
     "flag": "Flag",
     "from": "desde",
     "geartype": "Gear type",
+    "global": "Global",
+    "globalReport": "Global report",
     "globally": "globalmente",
     "help": "Ayuda",
     "hideAllHelpHints": "Ocultar todos",
@@ -164,6 +172,7 @@
     "in": "en",
     "include": "Incluir",
     "insights": "Insights",
+    "knots": "nudos",
     "latestDays_one": "Último {{count}} día",
     "latestDays_other": "Últimos {{count}} días",
     "latitude": "Latitud",
@@ -171,6 +180,7 @@
     "layerList": "Lista de capas",
     "learnMore": "Ver más",
     "less": "menos",
+    "loading": "Loading",
     "loggedAs": "Registrado como",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
@@ -178,6 +188,7 @@
     "map": "Mapa",
     "matchedVessels": "Embarcaciones coincidentes",
     "max": "Máximo",
+    "meters": "metros",
     "min": "Mínimo",
     "minus": "menos",
     "minute": "minuto",
@@ -237,6 +248,7 @@
     "unionOf": "Unión de",
     "unit": "unidad",
     "unknown": "Desconocido",
+    "unknownProperty": "Unknown",
     "unknownVessel": "Buque desconocido",
     "update": "Actualizar",
     "user": "Usuario",
@@ -479,7 +491,6 @@
     "privateView": "Esta es una vista privada",
     "profileEvents": "Se ha producido un error al cargar los eventos de la embarcación.",
     "profileLogin": "Inicia sesión para ver este buque",
-    "vesselGroupReportLogin": "Login to see the vessels active",
     "reportLogin": "Inicia sesión para ver las embarcaciones activas en el área (gratis, 2 minutos)",
     "requestAccess": "Solicitar acceso",
     "searchLogin": "Login para buscar embarcaciones",
@@ -495,6 +506,7 @@
     "uploadKML": "Error al leer el archivo KML: {{error}}",
     "uploadShapefile": "Error leyendo el shapefile: {{error}}",
     "uploadShapefileComponents": "Error leyendo shapefile: debe contener archivos con las extensiones *.shp, *.shx, *.dbf y *.prj.",
+    "vesselGroupReportLogin": "Login to see the vessels active",
     "vesselLoading": "Se ha producido un error al cargar los detalles de la embarcación",
     "workspaceLoad": "Hubo un error cargando tu espacio de trabajo, inténtalo de nuevo.",
     "workspaceNotFound": "La vista que solicitó no se encontró"
@@ -548,6 +560,7 @@
   "eventInfo": {
     "authorization": "autorización",
     "averageSpeedKnots": "velocidad media (nudos)",
+    "depth": "profundidad",
     "distanceFromPortKm": "distancia desde el puerto (km)",
     "distanceFromShoreKm": "distancia desde costa (km)",
     "duration": "duración",
@@ -621,6 +634,13 @@
     },
     "areasOnScreen": "Áreas en pantalla",
     "color_change": "Cambiar el color",
+    "colorSelectCustom": "Select custom color",
+    "colorSelectPredefined": "Select predefined color",
+    "propertiesChange": "Change properties",
+    "properties": {
+      "color": "Color",
+      "thickness": "Thickness"
+    },
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -701,14 +721,21 @@
     "rulersDelete": "Eliminar todas las medidas",
     "rulersHover": "Arrastre para mover o haga clic para ver más",
     "rulersStop": "Detener medidas",
+    "screenshotArea": {
+      "map": "Solo mapa",
+      "withTimebar": "Con barra temporal",
+      "withTimebarAndLegend": "Con barra temporal y leyenda"
+    },
+    "screenshotDownload": "Descargar imagen",
+    "screenshotPreview": "Vista previa de captura de pantalla",
     "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
   "portsReport": {
+    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "seePortReport": "See all entry events to this port",
-    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
   },
   "search": {
@@ -757,6 +784,7 @@
     "selected": "seleccionado"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajustar rango de tiempo a estas fechas",
     "focusOnThisDay": "Ajustar rango de tiempo a este día",
     "maxTracksNumber": "Detalles de trayectorias no disponibles para más de 10 embarcaciones"
@@ -764,9 +792,10 @@
   "timebarSettings": {
     "activityDisabled": "Selecciona al menos una capa de actividad",
     "detectionsDisabled": "Selecciona al menos una capa de detecciones.",
-    "graphDepth": "Profundidad de la embarcacion",
-    "graphDisabled": "No disponible con más de 2 embarcaciones seleccionadas",
+    "graphDepth": "Profundidad de la embarcación",
+    "graphDisabled": "Graph is not available with more than 2 vessels selected",
     "graphSpeed": "Velocidad embarcación",
+    "graphVesselOnly": "{{graph}} is only available for vessel tracks",
     "settings_close": "Cerrar ajustes de la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
     "showActivity": "Mostrar gráfico de actividad",
@@ -782,7 +811,26 @@
     "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor."
   },
   "user": {
+    "badges": {
+      "ambassador": {
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications.",
+        "title": "Ambassador"
+      },
+      "fixer": {
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support.",
+        "title": "Fixer"
+      },
+      "presenter": {
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest.",
+        "title": "Presenter"
+      },
+      "teacher": {
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow.",
+        "title": "Teacher"
+      }
+    },
     "datasets": "Conjuntos de datos del usuario",
+    "gfwBadges": "GFW Badges",
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",
     "info": "Información de usuario",
@@ -813,18 +861,22 @@
     "activityByVoyages": "Por viajes",
     "addToWorkspace": "Añadir embarcación a la vista",
     "authorization": "autorización",
+    "authorizationDatesDisclaimer": "The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.",
     "beam": "Manga",
     "callsign": "Señal distintiva de llamada",
     "capacity": "Capacidad",
     "carrier": "Embarcación de transporte",
     "casco": "Casco",
-    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Centrar mapa en los eventos",
     "clickToSeeMore": "Haga clic para ver más información",
     "close": "Cerrar",
     "codMarinha": "Cod Marinha",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "dataset": "Fuente",
+    "depthM": "Depth (m)",
     "donor": "Embarcación donante",
+    "extraInfo": "Request additional information at",
+    "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "Fecha primera transmisión",
     "fishingZone": "Zona de pesca",
     "flag": "Bandera",
@@ -894,6 +946,7 @@
     },
     "gfw_geartypes": "GFW Gear type",
     "gfw_shiptypes": "GFW Vessel type",
+    "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
     "hideOtherLayers": "Ocultar otras capas",
@@ -986,6 +1039,7 @@
     "owners": "Propietarios",
     "registeredGearType": "Arte de pesca registrado",
     "registryGeartype": "Registry Gear Type",
+    "registryOperator": "Operators",
     "registrySources": "Fuentes",
     "removeAllVessels": "Eliminar toda embarcación",
     "sectionActivity": "Actividad",
@@ -1077,7 +1131,6 @@
     "searchNotFound": "No vessels found",
     "searchVesselsRequired": "Search for vessels to create a vessel group",
     "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "tooManyVessels_one": "El número máximo de embarcaciones es {{count}}",
     "tooManyVessels_other": "El número máximo de embarcaciones es {{count}}",
     "updateRequired": "Update required",
@@ -1089,7 +1142,6 @@
   "vesselGroupReport": {
     "clickToSee": "Click to analyse vessel group and see report",
     "insights": {
-      "title": "Vessel group insights",
       "fishingEventsError": "There was an error loading the fishing events",
       "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
       "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
@@ -1109,7 +1161,8 @@
       "MOUListsCount": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsCount_one": "{{vessels}} vessel operated under a flag present on the {{list}} list",
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
-      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
+      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists",
+      "title": "Vessel group insights"
     },
     "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",
@@ -1132,6 +1185,12 @@
   "workspace": {
     "add": "Agregar al espacio de trabajo",
     "addLayer": "Agregar al área de trabajo",
+    "categories": {
+      "search": "Vessel search",
+      "fishing-activity": "Highlighted workspaces",
+      "marine-manager": "Marine Manager workspaces",
+      "reports": "Highlighted reports"
+    },
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "create": "Crear nuevo",
     "createNeeded": "Cambiar la visibilidad del espacio de trabajo requiere crear uno nuevo",
@@ -1143,6 +1202,7 @@
     "emptyStateUser": "Cargar conjuntos de datos personalizados haciendo clic en el icono de más.",
     "emptyStateVesselGroups": "Add vessel groups to see group presence and operation footprint.",
     "emptyStateVessels": "Las embarcaciones seleccionadas en la búsqueda o haciendo clic en el mapa de calor aparecerán aquí.",
+    "marineManagerLink": "Ver el portal",
     "migrationDisclaimer": "Actualice su área de trabajo para ver los últimos datos y características.",
     "migrationDisclaimerNote": "Nota: algunos datos sobre la actividad y la identidad de los barcos pueden variar. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Más información.</a>",
     "migrationMaintain": "Omitir",

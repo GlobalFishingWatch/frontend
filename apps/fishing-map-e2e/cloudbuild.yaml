@@ -22,6 +22,9 @@ steps:
         --key=node_modules-$( checksum yarn.lock )
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
+        --key=cypress-cache-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
         --key=yarn-$( checksum yarn.lock )
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
@@ -31,7 +34,7 @@ steps:
     waitFor: ['restore_cache']
     name: node:21
     script: |
-      yarn set version 4.5.3
+      yarn set version 4.6.0
       yarn -v
       yarn install --immutable
 
@@ -44,6 +47,11 @@ steps:
         --bucket=gs://frontend-cache-dependencies \
         --key=node_modules-$( checksum yarn.lock ) \
         --path=./node_modules \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=cypress-cache-$( checksum yarn.lock ) \
+        --path=/builder/home/.cache \
         --no-clobber
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
@@ -62,6 +70,7 @@ steps:
     allowFailure: true
     entrypoint: 'bash'
     env:
+      - 'CYPRESS_CACHE_FOLDER=/builder/home/.cache/Cypress'
       - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
       - 'CYPRESS_basicAuth=$_BASIC_AUTH'
       - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'

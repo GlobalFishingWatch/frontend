@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { Icon } from '@globalfishingwatch/ui-components'
 import type { Locale } from 'types'
-import { LocaleLabels } from 'features/i18n/i18n'
+
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { LocaleLabels } from 'features/i18n/i18n'
+
 import styles from './LanguageToggle.module.css'
 
 type LanguageToggleProps = {

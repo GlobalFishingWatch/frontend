@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react'
 import type { DateTimeUnit } from 'luxon'
+
 import { getUnitsPositions } from '../layouts'
-import { clampToAbsoluteBoundaries, getDeltaMs, getDeltaDays } from '../utils/internal-utils'
 import type { TimelineScale } from '../timelineContext'
+import { clampToAbsoluteBoundaries, getDeltaDays, getDeltaMs } from '../utils/internal-utils'
+
 import styles from './timeline-units.module.css'
 
 type TimelineUnitsProps = {
@@ -83,34 +85,39 @@ class TimelineUnits extends PureComponent<TimelineUnitsProps> {
 
     return (
       <div>
-        {units.map((d) => (
-          <div
-            key={d.id}
-            style={{
-              left: d.x,
-              width: d.width,
-              transition: 'none',
-              // transition: immediate
-              //   ? 'none'
-              //   : `width ${DEFAULT_CSS_TRANSITION}, left ${DEFAULT_CSS_TRANSITION}`,
-            }}
-            className={styles.unit}
-          >
-            {baseUnit === 'hour' ? (
-              <div>{d.label}</div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  this.zoomToUnit(d)
-                }}
-                title={d.hoverLabel}
-              >
-                {d.label}
-              </button>
-            )}
-          </div>
-        ))}
+        {units.map((d) => {
+          if (!d.x || !d.width) {
+            return null
+          }
+          return (
+            <div
+              key={d.id}
+              style={{
+                left: d.x,
+                width: d.width,
+                transition: 'none',
+                // transition: immediate
+                //   ? 'none'
+                //   : `width ${DEFAULT_CSS_TRANSITION}, left ${DEFAULT_CSS_TRANSITION}`,
+              }}
+              className={styles.unit}
+            >
+              {baseUnit === 'hour' ? (
+                <div>{d.label}</div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    this.zoomToUnit(d)
+                  }}
+                  title={d.hoverLabel}
+                >
+                  {d.label}
+                </button>
+              )}
+            </div>
+          )
+        })}
       </div>
     )
   }

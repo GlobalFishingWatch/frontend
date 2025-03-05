@@ -1,15 +1,18 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeRaw from 'rehype-raw'
 import { useParams } from 'react-router-dom'
-import formatDate from 'date-fns/format'
-import parseISO from 'date-fns/parseISO'
+import { DateTime } from 'luxon'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import Table from '../../components/table/table'
+
 import ApiBanner from '../../components/api-banner/api-banner'
 import Loader from '../../components/loader/loader'
+import Table from '../../components/table/table'
 import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config.js'
+import { getUTCString } from '../../utils/dates.js'
+
 import styles from './dataset.module.scss'
 
 function formatBytes(bytes, decimals = 2) {
@@ -50,7 +53,7 @@ function DatasetPage() {
         ...dataset,
         files: dataset.files.map((file) => ({
           ...file,
-          lastUpdate: formatDate(parseISO(file.lastUpdate), 'M/dd/yyyy'),
+          lastUpdate: DateTime.fromISO(file.lastUpdate).toFormat('M/dd/yyyy'),
         })),
       }
       return formatedDataset
@@ -75,11 +78,7 @@ function DatasetPage() {
             <label>Dataset</label>
             <h2 className={styles.title}>{dataset.name}</h2>
             <label>Last Update</label>
-            <span>
-              {dataset.lastUpdated
-                ? formatDate(parseISO(dataset.lastUpdated), 'MM/dd/yyyy')
-                : '---'}
-            </span>
+            <span>{dataset.lastUpdated ? getUTCString(dataset.lastUpdated) : '---'}</span>
             <label>description</label>
             <div className={styles.description}>
               <Markdown

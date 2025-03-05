@@ -1,9 +1,12 @@
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { Tooltip } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { Tooltip } from '@globalfishingwatch/ui-components'
+
+import Remove from '../shared/Remove'
+
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import Remove from '../common/Remove'
 
 function VesselGroupNotFound({ dataview }: { dataview: UrlDataviewInstance }) {
   const { t } = useTranslation()

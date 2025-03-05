@@ -1,27 +1,28 @@
-import { parse } from '@loaders.gl/core'
 import type {
   Color,
+  DefaultProps,
   Layer,
   LayerContext,
   LayersList,
-  DefaultProps,
-  UpdateParameters,
   PickingInfo,
+  UpdateParameters,
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { MVTLayerProps } from '@deck.gl/geo-layers'
 import { MVTLayer } from '@deck.gl/geo-layers'
-import { IconLayer, TextLayer } from '@deck.gl/layers'
-import { sample, mean, standardDeviation } from 'simple-statistics'
-import { groupBy, orderBy } from 'es-toolkit'
-import { stringify } from 'qs'
 import type { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { IconLayer, TextLayer } from '@deck.gl/layers'
+import { parse } from '@loaders.gl/core'
+import { groupBy, orderBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
+import { stringify } from 'qs'
+import { mean, sample, standardDeviation } from 'simple-statistics'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
-import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
+
 import {
   BLEND_BACKGROUND,
   COLOR_HIGHLIGHT_LINE,
@@ -35,8 +36,10 @@ import {
   LayerGroup,
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../../utils'
+import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
+import { DECK_FONT, loadDeckFont } from '../../../utils/fonts'
+import { PATH_BASENAME } from '../../layers.config'
 import {
-  MATCHED_POSITIONS_FILTER,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_API_TILES_URL,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
@@ -44,18 +47,18 @@ import {
 } from '../fourwings.config'
 import type { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
-import { PATH_BASENAME } from '../../layers.config'
+
+import type {
+  FourwingsPositionsPickingInfo,
+  FourwingsPositionsPickingObject,
+  FourwingsPositionsTileLayerProps,
+} from './fourwings-positions.types'
 import {
   cleanVesselShipname,
   filteredPositionsByViewport,
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
 } from './fourwings-positions.utils'
-import type {
-  FourwingsPositionsPickingInfo,
-  FourwingsPositionsPickingObject,
-  FourwingsPositionsTileLayerProps,
-} from './fourwings-positions.types'
 
 type FourwingsPositionsTileLayerState = {
   error: string
@@ -83,7 +86,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   static defaultProps = defaultProps
   state!: FourwingsPositionsTileLayerState
   viewportDirtyTimeout!: NodeJS.Timeout
-  hideUnmatchedPositions = false
 
   get isLoaded(): boolean {
     return (
@@ -106,21 +108,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
-    let fontLoaded = true
-    if (typeof document !== 'undefined') {
-      fontLoaded = false
-      const font = new FontFace(
-        'Roboto Deck',
-        "url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2')"
-      )
-      font
-        .load()
-        .then(() => {
-          ;(document.fonts as any).add(font)
-        })
-        .finally(() => {
-          this.setState({ fontLoaded: true })
-        })
+    const isSSR = typeof document === 'undefined'
+    const fontLoaded = isSSR
+    if (!isSSR) {
+      loadDeckFont().then((loaded) => {
+        this.setState({ fontLoaded: loaded })
+      })
     }
     this.state = {
       error: '',
@@ -282,9 +275,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     if (this.getIsPositionMatched(d)) {
       return this._getIsHighlightedVessel(d) ? 22 : 15
     } else {
-      if (this.hideUnmatchedPositions) {
-        return 0
-      }
       return this._getIsHighlightedVessel(d) ? 13 : 10
     }
   }
@@ -422,9 +412,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const { sublayers } = this.props
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
-      this.hideUnmatchedPositions = sublayers.some((sublayer) =>
-        sublayer.filter?.includes(MATCHED_POSITIONS_FILTER)
-      )
 
       return [
         new MVTLayer(this.props, {
@@ -467,7 +454,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getSize: this._getIconSize,
           getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
-          getPickingInfo: this.getPickingInfo,
           updateTriggers: {
             getColor: [highlightedFeatureIds, highlightedVesselIds],
             getSize: [highlightedFeatureIds, highlightedVesselIds],
@@ -485,7 +471,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                 getSize: 14,
                 outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.5),
                 getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
-                fontFamily: 'Roboto Deck',
+                fontFamily: DECK_FONT,
                 characterSet:
                   'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
                 outlineWidth: 200,

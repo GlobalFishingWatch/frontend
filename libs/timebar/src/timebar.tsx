@@ -1,25 +1,29 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
-import memoize from 'memoize-one'
+import type { NumberValue } from 'd3-scale'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
-import type { NumberValue } from 'd3-scale'
+import memoize from 'memoize-one'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { getTime } from './utils/internal-utils'
-import styles from './timebar.module.css'
-import TimeRangeSelector from './components/timerange-selector'
+
 import IntervalSelector from './components/interval-selector'
-import Timeline from './components/timeline'
 import Playback from './components/playback'
+import Timeline from './components/timeline'
+import TimeRangeSelector from './components/timerange-selector'
+import { getTime } from './utils/internal-utils'
 import {
-  EVENT_SOURCE,
   EVENT_INTERVAL_SOURCE,
-  MINIMUM_TIMEBAR_HEIGHT,
+  EVENT_SOURCE,
   MAXIMUM_TIMEBAR_HEIGHT,
+  MINIMUM_TIMEBAR_HEIGHT,
 } from './constants'
 import type { TrackGraphOrientation } from './timelineContext'
+
+import styles from './timebar.module.css'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
 const MINIMUM_RANGE = ONE_HOUR_MS
@@ -38,20 +42,20 @@ const clampToMinAndMax = (
   maxMs: number,
   clampToEnd: boolean
 ) => {
-  const delta = new Date(end).getTime() - new Date(start).getTime()
+  const delta = getUTCDate(end).getTime() - getUTCDate(start).getTime()
   let clampedEnd = end
   let clampedStart = start
   if (delta > maxMs) {
     if (clampToEnd === true) {
-      clampedEnd = new Date(new Date(start).getTime() + maxMs).toISOString()
+      clampedEnd = getUTCDate(getUTCDate(start).getTime() + maxMs).toISOString()
     } else {
-      clampedStart = new Date(new Date(end).getTime() - maxMs).toISOString()
+      clampedStart = getUTCDate(getUTCDate(end).getTime() - maxMs).toISOString()
     }
   } else if (delta < minMs) {
     if (clampToEnd === true) {
-      clampedEnd = new Date(new Date(start).getTime() + minMs).toISOString()
+      clampedEnd = getUTCDate(getUTCDate(start).getTime() + minMs).toISOString()
     } else {
-      clampedStart = new Date(new Date(end).getTime() - minMs).toISOString()
+      clampedStart = getUTCDate(getUTCDate(end).getTime() - minMs).toISOString()
     }
   }
   return { clampedStart, clampedEnd }
@@ -109,7 +113,9 @@ export type TimebarProps = {
   absoluteStart: string
   absoluteEnd: string
   latestAvailableDataDate?: string
-  enablePlayback?: boolean
+  showPlayback?: boolean
+  disablePlayback?: boolean
+  disabledPlaybackTooltip?: string
   onTogglePlay?: (isPlaying: boolean) => void
   minimumRange?: number
   minimumRangeUnit?: string
@@ -121,7 +127,7 @@ export type TimebarProps = {
   intervals?: FourwingsInterval[]
   getCurrentInterval?: typeof getFourwingsInterval
   displayWarningWhenInFuture?: boolean
-  trackGraphOrientation: TrackGraphOrientation
+  trackGraphOrientation?: TrackGraphOrientation
   isResizable?: boolean
   defaultHeight?: number
 }
@@ -178,7 +184,9 @@ export class Timebar extends Component<TimebarProps> {
     },
     bookmarkStart: null,
     bookmarkEnd: null,
-    enablePlayback: false,
+    disablePlayback: false,
+    disabledPlaybackTooltip: '',
+    showPlayback: false,
     onTogglePlay: () => {
       // do nothing
     },
@@ -234,14 +242,6 @@ export class Timebar extends Component<TimebarProps> {
 
     // TODO stick to day/hour here too
     this.notifyChange(start, end, EVENT_SOURCE.MOUNT)
-  }
-
-  static getDerivedStateFromProps(props: TimebarProps) {
-    // let absolute end run through the end of the day
-    const absoluteEnd = DateTime.fromISO(props.absoluteEnd, { zone: 'utc' }).endOf('day').toISO()
-    return {
-      absoluteEnd,
-    }
   }
 
   toggleTimeRangeSelector = () => {
@@ -378,10 +378,13 @@ export class Timebar extends Component<TimebarProps> {
       start,
       end,
       absoluteStart,
+      absoluteEnd,
       bookmarkStart,
       bookmarkEnd,
       bookmarkPlacement,
-      enablePlayback,
+      disablePlayback,
+      disabledPlaybackTooltip,
+      showPlayback,
       locale,
       minimumRange,
       minimumRangeUnit,
@@ -395,9 +398,6 @@ export class Timebar extends Component<TimebarProps> {
     } = this.props as TimebarProps
 
     // this.setLocale(locale)
-
-    // state.absoluteEnd overrides the value set in props.absoluteEnd - see getDerivedStateFromProps
-    const { showTimeRangeSelector, absoluteEnd } = this.state
 
     this.maximumRangeMs = this.getMaximumRangeMs(maximumRange, maximumRangeUnit)
     this.minimumRangeMs = this.getMinimumRangeMs(minimumRange, minimumRangeUnit)
@@ -425,28 +425,30 @@ export class Timebar extends Component<TimebarProps> {
             onMouseDown={this.handleMouseDown}
           />
         )}
-        {enablePlayback && (
+        {showPlayback && (
           <Playback
             labels={labels.playback}
             start={start}
             end={end}
             absoluteStart={absoluteStart}
-            absoluteEnd={absoluteEnd as string}
+            absoluteEnd={this.state.absoluteEnd as string}
             onTick={this.onPlaybackTick}
             onTogglePlay={this.onTogglePlay}
             intervals={intervals}
             getCurrentInterval={getCurrentInterval}
+            disabled={disablePlayback}
+            disabledPlaybackTooltip={disabledPlaybackTooltip}
           />
         )}
 
         <div className={cx('print-hidden', styles.timeActions)}>
-          {showTimeRangeSelector && (
+          {this.state.showTimeRangeSelector && (
             <TimeRangeSelector
               labels={labels.timerange}
               start={start}
               end={end}
               absoluteStart={absoluteStart}
-              absoluteEnd={absoluteEnd as string}
+              absoluteEnd={this.state.absoluteEnd as string}
               onSubmit={this.onTimeRangeSelectorSubmit}
               onDiscard={this.toggleTimeRangeSelector}
               latestAvailableDataDate={this.props.latestAvailableDataDate}
@@ -494,7 +496,7 @@ export class Timebar extends Component<TimebarProps> {
           onMouseLeave={this.props.onMouseLeave}
           onMouseMove={this.props.onMouseMove}
           absoluteStart={absoluteStart}
-          absoluteEnd={absoluteEnd as string}
+          absoluteEnd={absoluteEnd}
           onBookmarkChange={this.props.onBookmarkChange}
           bookmarkStart={bookmarkStart}
           bookmarkEnd={bookmarkEnd}

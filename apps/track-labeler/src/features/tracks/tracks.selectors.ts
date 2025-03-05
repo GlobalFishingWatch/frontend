@@ -1,26 +1,28 @@
-import { createSelector } from 'reselect'
 import createTree from 'functional-red-black-tree'
 import { DateTime } from 'luxon'
+import { createSelector } from 'reselect'
+
 import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
-import {
-  selectQueryParam,
-  selectFilteredSpeed,
-  selectFilteredHours,
-  selectFilteredElevation,
-  selectVessel,
-  selectFilteredDistanceFromPort,
-  selectFilterMode,
-} from '../../routes/routes.selectors'
-import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
+
+import { Field } from '../../data/models'
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import {
   selectOriginalTracks,
   selectTracks,
   selectVessels,
 } from '../../features/vessels/vessels.slice'
-import type { LayersData } from '../../types';
+import {
+  selectFilteredDistanceFromPort,
+  selectFilteredElevation,
+  selectFilteredHours,
+  selectFilteredSpeed,
+  selectFilterMode,
+  selectQueryParam,
+  selectVessel,
+} from '../../routes/routes.selectors'
+import type { LayersData } from '../../types'
 import { ActionType } from '../../types'
-import { Field } from '../../data/models'
 
 export const getVesselTrack = createSelector(
   [selectTracks, selectQueryParam('vessel')],
@@ -231,7 +233,6 @@ export const getVesselParsedTrack = createSelector(
       .filter((segment: TrackSegment) => segment.length)
       .forEach((segment: any) => {
         let trackPoints: TrackPoint[] = []
-        let previousPoint: TrackPoint = segment[0]
         let actionFlag: ActionType | string = getCurrentVesselAction(segment[0], selectedTracksTree)
         segment.forEach((point: TrackPoint) => {
           const currentAction: ActionType | string | null = getCurrentVesselAction(
@@ -247,7 +248,7 @@ export const getVesselParsedTrack = createSelector(
               })
             }
             if (currentAction !== ActionType.untracked) {
-              trackPoints = previousPoint ? [previousPoint, point] : [point]
+              trackPoints = [point]
             } else {
               trackPoints = []
             }
@@ -257,7 +258,6 @@ export const getVesselParsedTrack = createSelector(
             }
           }
           actionFlag = currentAction ?? ''
-          previousPoint = point
         })
         layersData.push({
           trackPoints: trackPoints,

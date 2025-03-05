@@ -1,5 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { flags } from '@globalfishingwatch/i18n-labels'
 import type {
   SelectOption} from '@globalfishingwatch/ui-components';
 import {
@@ -9,11 +11,13 @@ import {
   Select,
   SubBrands,
 } from '@globalfishingwatch/ui-components'
-import { flags } from '@globalfishingwatch/i18n-labels'
+
 import { selectCountries, selectCountry, sortOptions } from 'features/labeler/labeler.slice'
 import Search from 'features/search/Search'
-import styles from './SidebarHeader.module.css'
+
 import { useSelectedTracksConnect } from './sidebar.hooks'
+
+import styles from './SidebarHeader.module.css'
 
 interface HeaderProps {
   onCountryChange?: (country: string) => void

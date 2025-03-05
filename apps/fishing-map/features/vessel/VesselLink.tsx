@@ -1,57 +1,59 @@
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
-import { useTranslation } from 'react-i18next'
-import type { DataviewInstance} from '@globalfishingwatch/api-types';
+
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
+
+import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
+import { resetVesselState, setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
+import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
-import type {
-  VesselDataIdentity} from 'features/vessel/vessel.slice';
-import {
-  resetVesselState,
-  setVesselFitBoundsOnLoad,
-} from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import {
   selectIsStandaloneSearchLocation,
   selectIsVesselLocation,
   selectLocationQuery,
 } from 'routes/routes.selectors'
-import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import type { QueryParams } from 'types'
-import { getVesselIdentityId } from 'features/vessel/vessel.utils'
-import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
-import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+
+import styles from './Vessel.module.css'
 
 type VesselLinkProps = {
   datasetId?: string
   dataviewId?: string
   vesselId?: string
   identity?: VesselDataIdentity
-  children: any
+  children?: any
   onClick?: (e: MouseEvent, vesselId?: string) => void
   tooltip?: React.ReactNode
   fitBounds?: boolean
   className?: string
   query?: Partial<Record<keyof QueryParams, string | number>>
   testId?: string
+  showTooltip?: boolean
 }
 const VesselLink = ({
   vesselId: vesselIdProp,
   datasetId,
   dataviewId,
   identity,
-  children,
+  children = '',
   onClick,
   tooltip,
   fitBounds = false,
   className = '',
   query,
   testId = 'link-vessel-profile',
+  showTooltip = true,
 }: VesselLinkProps) => {
   const { t } = useTranslation()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
@@ -133,12 +135,16 @@ const VesselLink = ({
       }}
       onClick={onLinkClick}
     >
-      <Tooltip
-        maxWidth="none"
-        content={tooltip || t('vessel.clickToSeeMore', 'Click to see more information')}
-      >
-        <span>{children}</span>
-      </Tooltip>
+      {showTooltip ? (
+        <Tooltip
+          className={styles.linkTooltip}
+          content={tooltip || t('vessel.clickToSeeMore', 'Click to see more information')}
+        >
+          <span>{children}</span>
+        </Tooltip>
+      ) : (
+        children
+      )}
     </Link>
   )
 }

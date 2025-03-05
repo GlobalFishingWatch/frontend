@@ -1,18 +1,21 @@
-import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useSelector } from 'react-redux'
+import type { WorkspaceProfileViewParam } from 'types'
+
 import type { ColorCyclingType } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   ColorBarOption} from '@globalfishingwatch/ui-components';
 import {
   FillColorBarOptions,
   LineColorBarOptions
 } from '@globalfishingwatch/ui-components'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
+
 import { useAppDispatch } from 'features/app/app.hooks'
-import type { WorkspaceProfileViewParam } from 'types'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+
 import { selectWorkspace, selectWorkspaceDataviewInstances } from './workspace.selectors'
 import { setProfileView } from './workspace.slice'
 

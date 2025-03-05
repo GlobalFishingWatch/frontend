@@ -1,15 +1,18 @@
-import React, { useCallback, useState, Fragment } from 'react'
-import { matchSorter } from 'match-sorter'
-import escapeRegExp from 'lodash/escapeRegExp'
-import { useTable, useSortBy, useRowSelect, useFlexLayout, useGlobalFilter } from 'react-table'
+import React, { Fragment, useCallback, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useFlexLayout, useGlobalFilter, useRowSelect, useSortBy, useTable } from 'react-table'
 import { FixedSizeList } from 'react-window'
+import escapeRegExp from 'lodash/escapeRegExp'
+import { matchSorter } from 'match-sorter'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
+
+import IconArrowDown from '../../assets/icons/arrow-down.svg'
+import IconArrowUp from '../../assets/icons/arrow-up.svg'
+import IconClose from '../../assets/icons/close.svg'
+import IconSearch from '../../assets/icons/search.svg'
 import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config.js'
-import IconSearch from '../../assets/icons/search.svg?react'
-import IconClose from '../../assets/icons/close.svg?react'
-import IconArrowDown from '../../assets/icons/arrow-down.svg?react'
-import IconArrowUp from '../../assets/icons/arrow-up.svg?react'
+
 import styles from './table.module.scss'
 
 const IndeterminateCheckbox = React.forwardRef(({ indeterminate, title, ...rest }, ref) => {
@@ -216,30 +219,27 @@ function Table({ columns, data }) {
         <div>
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(
-                (column) =>
-                  console.log(column) || (
-                    <div
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                      className={styles.th}
-                    >
-                      {column.render('Header')}{' '}
-                      {column.id !== 'selection' && (
-                        <span className={styles.sort}>
-                          {column.isSorted ? (
-                            column.isSortedDesc ? (
-                              <IconArrowDown />
-                            ) : (
-                              <IconArrowUp />
-                            )
-                          ) : (
-                            ''
-                          )}
-                        </span>
+              {headerGroup.headers.map((column) => (
+                <div
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  className={styles.th}
+                >
+                  {column.render('Header')}{' '}
+                  {column.id !== 'selection' && (
+                    <span className={styles.sort}>
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <IconArrowDown />
+                        ) : (
+                          <IconArrowUp />
+                        )
+                      ) : (
+                        ''
                       )}
-                    </div>
-                  )
-              )}
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
           ))}
         </div>

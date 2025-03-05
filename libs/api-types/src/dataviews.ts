@@ -1,7 +1,7 @@
-import type { Locale } from './i18n'
-import type { ApiAppName } from './workspaces'
 import type { Dataset } from './datasets'
+import type { Locale } from './i18n'
 import type { VesselGroup } from './vesselGroups'
+import type { ApiAppName } from './workspaces'
 
 export type ColorCyclingType = 'fill' | 'line'
 export const INCLUDE_FILTER_ID = 'include'
@@ -20,6 +20,7 @@ export enum DataviewType {
   BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
+  Currents = 'CURRENTS',
   GL = 'GL',
   Graticules = 'GRATICULES',
   Heatmap = 'HEATMAP',
@@ -34,6 +35,7 @@ export enum DataviewType {
   UserPoints = 'USER_POINTS',
   VesselEvents = 'VESSEL_EVENTS',
   VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
+  VesselPositions = 'VESSEL_POSITIONS',
   Workspaces = 'WORKSPACES',
 }
 
@@ -64,6 +66,7 @@ export interface DataviewConfig<Type = DataviewType> {
   /** Used in activity or detections layers to define which layers are active in all the options available */
   datasets?: string[]
   color?: string
+  thickness?: number
   colorRamp?: string
   colorCyclingType?: ColorCyclingType
   /** Fourwings modes: 'compare' | 'bivariate' */

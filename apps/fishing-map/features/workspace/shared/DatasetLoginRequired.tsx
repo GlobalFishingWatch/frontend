@@ -1,9 +1,12 @@
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 function DatasetLoginRequired({ dataview }: { dataview: UrlDataviewInstance }) {
   const { t } = useTranslation()

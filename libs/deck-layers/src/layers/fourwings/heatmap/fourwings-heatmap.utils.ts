@@ -1,33 +1,34 @@
-import { stringify } from 'qs'
-import type { Feature } from 'geojson'
 import type { Color } from '@deck.gl/core'
 import type { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
+import type { Feature } from 'geojson'
 import { DateTime } from 'luxon'
+import { stringify } from 'qs'
+
 import type {
   FourwingsFeature,
   FourwingsInterval,
-  TileCell} from '@globalfishingwatch/deck-loaders';
-import {
-  CONFIG_BY_INTERVAL,
-  getFourwingsInterval
+  TileCell,
 } from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import { getUTCDateTime } from '../../../utils'
-import type { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
 import {
+  getChunkByInterval,
   HEATMAP_API_TILES_URL,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
-  getChunkByInterval,
 } from '../fourwings.config'
+import type { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
+
 import type {
   AggregateCellParams,
   CompareCellParams,
   FourwingsChunk,
-  FourwingsHeatmapResolution} from './fourwings-heatmap.types';
-import {
-  FourwingsAggregationOperation
+  FourwingsHeatmapResolution,
+  FourwingsHeatmapTilesCache,
 } from './fourwings-heatmap.types'
+import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
 
 export function aggregateSublayerValues(
   values: number[],
@@ -41,6 +42,14 @@ export function aggregateSublayerValues(
         return acc + value
       }, 0) / (nonEmptyValuesLength || 1)
     )
+  }
+  if (aggregationOperation === FourwingsAggregationOperation.AvgDegrees) {
+    const radians = values.map((degree) => degree * (Math.PI / 180))
+    const sinSum = radians.reduce((acc, rad) => acc + Math.sin(rad), 0)
+    const cosSum = radians.reduce((acc, rad) => acc + Math.cos(rad), 0)
+
+    const avgRad = Math.atan2(sinSum, cosSum)
+    return avgRad * (180 / Math.PI)
   }
   return values.reduce((acc: number, value = 0) => {
     return acc + value
@@ -287,16 +296,19 @@ export const aggregatePositionsTimeseries = (positions: Feature[]) => {
   if (!positions) {
     return []
   }
-  const timeseries = positions.reduce((acc, position) => {
-    const { htime, value } = position.properties as any
-    const activityStart = getMillisFromHtime(htime)
-    if (acc[activityStart]) {
-      acc[activityStart] += value
-    } else {
-      acc[activityStart] = value
-    }
-    return acc
-  }, {} as Record<number, number>)
+  const timeseries = positions.reduce(
+    (acc, position) => {
+      const { htime, value } = position.properties as any
+      const activityStart = getMillisFromHtime(htime)
+      if (acc[activityStart]) {
+        acc[activityStart] += value
+      } else {
+        acc[activityStart] = value
+      }
+      return acc
+    },
+    {} as Record<number, number>
+  )
   return timeseries
 }
 
@@ -330,7 +342,7 @@ export function getIntervalFrames({
   availableIntervals?: FourwingsInterval[]
   bufferedStart: number
 }): FourwingsIntervalFrames {
-  const cacheKey = `${startTime}-${endTime}-${availableIntervals?.join(',')}`
+  const cacheKey = `${startTime}-${endTime}-${bufferedStart}-${availableIntervals?.join(',')}`
 
   if (intervalFramesCache.has(cacheKey)) {
     return intervalFramesCache.get(cacheKey)!
@@ -384,4 +396,32 @@ export const getZoomOffsetByResolution = (resolution: FourwingsHeatmapResolution
     return zoom > 0.5 ? -1 : 0
   }
   return 0
+}
+
+export const getTileDataCache = ({
+  zoom,
+  startTime,
+  endTime,
+  availableIntervals,
+  compareStart,
+  compareEnd,
+}: {
+  zoom: number
+  startTime: number
+  endTime: number
+  availableIntervals?: FourwingsInterval[]
+  compareStart?: number
+  compareEnd?: number
+}): FourwingsHeatmapTilesCache => {
+  const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
+  const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
+  return {
+    zoom,
+    start,
+    end,
+    bufferedStart,
+    interval,
+    compareStart,
+    compareEnd,
+  }
 }

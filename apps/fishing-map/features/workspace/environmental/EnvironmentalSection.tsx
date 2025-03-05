@@ -1,35 +1,45 @@
 import { useCallback } from 'react'
-import cx from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
-import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
+
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectUserEnvironmentDatasets } from 'features/user/selectors/user.permissions.selectors'
-import styles from 'features/workspace/shared/Sections.module.css'
-import { getEventLabel } from 'utils/analytics'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectLocationCategory } from 'routes/routes.selectors'
+
 import { WorkspaceCategory } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setModalOpen } from 'features/modals/modals.slice'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
+import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectEnvironmentReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { ReportCategory } from 'features/reports/reports.types'
+import { selectUserEnvironmentDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { useVisualizationsOptions } from 'features/workspace/activity/activity.hooks'
-import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
+import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
+import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
+import { selectLocationCategory } from 'routes/routes.selectors'
+import { getEventLabel } from 'utils/analytics'
+
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 
-function EnvironmentalLayerSection(): React.ReactElement | null {
+import styles from 'features/workspace/shared/Sections.module.css'
+
+function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
+  const reportDataviews = useSelector(selectEnvironmentReportLayersVisible)
   const dataviewsMinusBathymetry = dataviews.filter((d) => !isBathymetryDataview(d))
   const bathymetryDataview = dataviews.find((d) => isBathymetryDataview(d))
   const userDatasets = useSelector(selectUserEnvironmentDatasets)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+  const hasVisibleReportDataviews = reportDataviews && reportDataviews?.length > 0
   const locationCategory = useSelector(selectLocationCategory)
   const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
     useVisualizationsOptions(DataviewCategory.Environment)
@@ -77,6 +87,9 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
               onSelect={(option) => onVisualizationModeChange(option.id)}
               className={cx({ [styles.hidden]: !hasVisibleDataviews })}
             />
+            {hasVisibleReportDataviews && (
+              <GlobalReportLink reportCategory={ReportCategory.Environment} />
+            )}
             <IconButton
               icon="plus"
               type="border"
@@ -106,7 +119,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
         </LayerPanelContainer>
       )}
       {locationCategory === WorkspaceCategory.MarineManager && (
-        <div className={styles.surveyLink}>
+        <div className={cx(styles.surveyLink, 'print-hidden')}>
           <a
             href={
               t(

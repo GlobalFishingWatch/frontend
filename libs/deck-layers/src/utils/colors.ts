@@ -8,6 +8,9 @@ export const DEFAULT_BACKGROUND_COLOR: Color = [0, 36, 87]
 export const DEFAULT_LINE_COLOR: Color = [...DEFAULT_BACKGROUND_COLOR, 0.5]
 
 export const hexToRgb = (hex: string) => {
+  if (!hex) {
+    return { r: 0, g: 0, b: 0 }
+  }
   const cleanHex = hex.replace('#', '')
   const color = {
     r: parseInt(cleanHex.slice(0, 2), 16),
@@ -18,6 +21,9 @@ export const hexToRgb = (hex: string) => {
 }
 
 export const hexToDeckColor = (hex: string, opacity = 1): Color => {
+  if (!hex) {
+    return COLOR_TRANSPARENT
+  }
   const cleanHex = hex.replace('#', '')
   const color = {
     r: parseInt(cleanHex.slice(0, 2), 16),
@@ -43,6 +49,13 @@ export const deckToHexColor = ([r, g, b]: Color) => {
 
 export const deckToRgbaColor = ([r, g, b, a]: Color) => {
   return `rgba(${r},${g}, ${b}, ${a ? a : 1})`
+}
+
+export function colorToVec(c: number) {
+  return parseFloat((c / 255).toFixed(2))
+}
+export const deckToVecColor = ([r, g, b, a]: Color) => {
+  return `vec4(${colorToVec(r)}, ${colorToVec(g)}, ${colorToVec(b)}, ${a ? colorToVec(a) : 1})`
 }
 
 export const EMPTY_RGBA_COLOR = { r: 0, g: 0, b: 0, a: 0 }

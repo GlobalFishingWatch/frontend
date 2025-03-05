@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
+
 import type {
-  ExtendedStyle,
-  StyleTransformation,
   AnyGeneratorConfig,
-  GlobalGeneratorConfig} from '@globalfishingwatch/layer-composer';
+  ExtendedStyle,
+  GlobalGeneratorConfig,  StyleTransformation} from '@globalfishingwatch/layer-composer';
 import {
-  sort,
-  getInteractiveLayerIds
-} from '@globalfishingwatch/layer-composer'
-import { useDebounce } from '../use-debounce'
+  getInteractiveLayerIds,
+  sort} from '@globalfishingwatch/layer-composer'
+
 import { LayerComposer } from '../../layer-composer'
+import { useDebounce } from '../use-debounce'
 
 const applyStyleTransformations = (
   style: ExtendedStyle,

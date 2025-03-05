@@ -1,12 +1,17 @@
 import { Fragment, useCallback } from 'react'
 import { useSelector } from 'react-redux'
+
 import { useMapHoverInteraction } from '@globalfishingwatch/deck-layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
+
 import PopupWrapper from 'features/map/popups/PopupWrapper'
+
 import { selectClickedEvent } from '../map.slice'
 import { useClickedEventConnect } from '../map-interactions.hooks'
-import styles from './Popup.module.css'
+
 import PopupByCategory from './PopupByCategory'
+
+import styles from './Popup.module.css'
 
 const DEBOUNCED_TOOLTIP_DELAY = 300
 

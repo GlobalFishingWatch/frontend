@@ -1,4 +1,5 @@
 import type { Feature, LineString } from 'geojson'
+
 import type { DeckLayerProps } from '../../types'
 
 export type GraticuleLineGroup = 1 | 5 | 10 | 30 | 90

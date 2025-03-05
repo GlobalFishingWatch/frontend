@@ -1,37 +1,36 @@
-import cx from 'classnames'
-import { useState, useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import type { GetItemPropsOptions } from 'downshift'
-import type { FeatureCollection } from 'geojson'
 import { uniq } from 'es-toolkit'
+import type { FeatureCollection } from 'geojson'
+
 import type { Locale } from '@globalfishingwatch/api-types'
-import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import {
-  YearlyTransmissionsTimeline,
-  FIRST_YEAR_OF_DATA,
-  IconButton,
-} from '@globalfishingwatch/ui-components'
+import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import {
+  FIRST_YEAR_OF_DATA,
+  IconButton,
+  YearlyTransmissionsTimeline,
+} from '@globalfishingwatch/ui-components'
+
+import { useAppDispatch } from 'features/app/app.hooks'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import TrackFootprint from 'features/search/basic/TrackFootprint'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
-import VesselLink from 'features/vessel/VesselLink'
-import {
-  formatInfoField,
-  EMPTY_FIELD_PLACEHOLDER,
-  getVesselGearTypeLabel,
-  getVesselShipTypeLabel,
-  getVesselOtherNamesLabel,
-} from 'utils/info'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
   getBestMatchCriteriaIdentity,
   getOtherVesselNames,
@@ -39,13 +38,16 @@ import {
   getVesselIdentities,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
-import type { IdentityVesselData } from 'features/vessel/vessel.slice'
-import { useDeckMap } from 'features/map/map-context.hooks'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
-import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
+import VesselLink from 'features/vessel/VesselLink'
+import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getVesselGearTypeLabel,
+  getVesselOtherNamesLabel,
+  getVesselShipTypeLabel,
+} from 'utils/info'
+
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
@@ -145,11 +147,11 @@ function SearchBasicResult({
   const vesselQuery = useMemo(() => {
     const query = { start: transmissionDateFrom, end: transmissionDateTo }
     if (trackBbox) {
-      const coordinates = getMapCoordinatesFromBounds(map, trackBbox)
+      const coordinates = getMapCoordinatesFromBounds(trackBbox)
       return { ...query, ...coordinates }
     }
     return query
-  }, [map, trackBbox, transmissionDateFrom, transmissionDateTo])
+  }, [trackBbox, transmissionDateFrom, transmissionDateTo])
 
   const onVesselClick = useCallback(
     (e: MouseEvent) => {
@@ -300,8 +302,6 @@ function SearchBasicResult({
                 <label>
                   {t('vessel.infoSource', 'Info Source')}
                   <DataTerminology
-                    size="tiny"
-                    type="default"
                     title={t('vessel.infoSource', 'Info Source')}
                     terminologyKey="registryInfo"
                   />

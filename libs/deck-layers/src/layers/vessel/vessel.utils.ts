@@ -1,9 +1,20 @@
-import { DateTime } from 'luxon'
+import { scaleLinear } from 'd3-scale'
+import { uniqBy } from 'es-toolkit'
 import memoize from 'lodash/memoize'
-import type { UserTrackBinaryData, VesselTrackData } from '@globalfishingwatch/deck-loaders'
+import { DateTime } from 'luxon'
+
 import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
+import type {
+  UserTrackBinaryData,
+  VesselTrackData,
+  VesselTrackGraphExtent,
+} from '@globalfishingwatch/deck-loaders'
+
 import { getUTCDateTime } from '../../utils'
+
+import { VESSEL_GRAPH_COLORS } from './vessel.config'
 import type { VesselEventsLayer } from './VesselEventsLayer'
+import type { VesselsColorByProperty } from './VesselTrackLayer'
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = DateTime.now().year
@@ -121,7 +132,14 @@ export const getSegmentsFromData = memoize(
     return segments
   },
   (data, params) => {
-    return `${data?.startIndices?.join(',')}-${JSON.stringify(params || {})}`
+    const lengths = [
+      data?.attributes?.getPath?.value.length,
+      (data as VesselTrackData)?.attributes?.getSpeed?.value.length,
+      (data as VesselTrackData)?.attributes?.getElevation?.value.length,
+      data?.attributes?.getTimestamp?.value.length,
+    ]
+
+    return `${data?.startIndices?.join(',')}-${lengths.join(',')}-${JSON.stringify(params || {})}`
   }
 )
 
@@ -130,8 +148,8 @@ export const getEvents = memoize(
     layers: VesselEventsLayer[],
     { types } = {} as { types?: EventTypes[]; startTime?: number; endTime?: number }
   ) => {
-    return layers
-      .flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
+    return uniqBy(
+      layers.flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
         const events =
           types && types.length
             ? types.includes(layer.props.type)
@@ -139,8 +157,9 @@ export const getEvents = memoize(
               : []
             : layer.props.data || []
         return events as ApiEvent[]
-      }, [])
-      .sort((a, b) => (a.start as number) - (b.start as number))
+      }, []),
+      (e) => e.id
+    ).sort((a, b) => (a.start as number) - (b.start as number))
   },
   (layers, { types, startTime, endTime }) => {
     const typesHash = types?.join(',')
@@ -151,3 +170,24 @@ export const getEvents = memoize(
     return `${layersLength}-${layersLoaded}-${layersIdsHash}-${typesHash}-${chunksHash}`
   }
 )
+
+export const VESSEL_GRAPH_STEPS = VESSEL_GRAPH_COLORS.length
+
+function generateVesselGraphStepValues(extent: VesselTrackGraphExtent) {
+  const scale = scaleLinear([0, VESSEL_GRAPH_STEPS], extent).clamp(true)
+  const steps = [...Array(VESSEL_GRAPH_STEPS)].map((_, i) => scale(i))
+  return steps
+}
+
+export function generateVesselGraphSteps(
+  extent: VesselTrackGraphExtent,
+  colorBy: VesselsColorByProperty
+) {
+  return generateVesselGraphStepValues(extent).map((value, index) => {
+    const colorIndex = colorBy === 'speed' ? index : VESSEL_GRAPH_COLORS.length - 1 - index
+    return {
+      value,
+      color: VESSEL_GRAPH_COLORS[colorIndex],
+    }
+  })
+}

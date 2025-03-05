@@ -1,47 +1,11 @@
-import { DateTime, Duration } from 'luxon'
 import type { TFunction } from 'i18next'
+import { Duration } from 'luxon'
+
 import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
-export type SupportedDateType = string | number
-export const getUTCDateTime = (d: SupportedDateType) => {
-  if (!d || (typeof d !== 'string' && typeof d !== 'number' && typeof d !== 'object')) {
-    console.warn('Not a valid date', typeof d, d)
-    return DateTime.utc()
-  }
-  if (typeof d === 'object') {
-    try {
-      return DateTime.fromJSDate(d, { zone: 'utc' })
-    } catch (error) {
-      console.warn('Not a valid date', typeof d, d)
-      return DateTime.utc()
-    }
-  }
-  if (typeof d === 'string') {
-    return DateTime.fromISO(d, { zone: 'utc' })
-  }
-  return DateTime.fromMillis(d, { zone: 'utc' })
-}
-
-export const formatDateForInterval = (date: DateTime, timeChunkInterval: FourwingsInterval) => {
-  let formattedTick = ''
-  switch (timeChunkInterval) {
-    case 'YEAR':
-      formattedTick = date.year.toString()
-      break
-    case 'MONTH':
-      formattedTick = date.toFormat('LLL y')
-      break
-    case 'HOUR':
-      formattedTick = date.toLocaleString(DateTime.DATETIME_MED)
-      break
-    default:
-      formattedTick = date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
-      break
-  }
-  return formattedTick
-}
+export { getUTCDateTime, formatDateForInterval } from '@globalfishingwatch/data-transforms'
 
 type UserCreatedEntities = Dataset | AppWorkspace | VesselGroup | Report
 

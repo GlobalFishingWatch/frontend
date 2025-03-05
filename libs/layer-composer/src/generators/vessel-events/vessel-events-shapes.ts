@@ -1,27 +1,30 @@
-import memoizeOne from 'memoize-one'
 import type { FeatureCollection } from 'geojson'
+import memoizeOne from 'memoize-one'
+
 import type {
+  CircleLayerSpecification,
   LineLayerSpecification,
   SymbolLayerSpecification,
-  CircleLayerSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+
 import { Group } from '../../types'
+import { memoizeByLayerId, memoizeCache } from '../../utils'
 import type {
-  VesselEventsShapesGeneratorConfig,
   MergedGeneratorConfig,
+  VesselEventsShapesGeneratorConfig,
   VesselsEventsSource} from '../types';
 import {
   GeneratorType
 } from '../types'
-import { memoizeByLayerId, memoizeCache } from '../../utils'
+
 import {
-  getVesselEventsGeojson,
-  getVesselEventsSegmentsGeojson,
-  filterGeojsonByTimerange,
   filterFeaturesByTimerange,
-  groupFeaturesByType,
-  getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
+  filterGeojsonByTimerange,
+  getVesselEventsGeojson,
   getVesselEventsGeojsonMemoizeEqualityCheck,
+  getVesselEventsSegmentsGeojson,
+  getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
+  groupFeaturesByType,
 } from './vessel-events.utils'
 
 export type GlobalVesselEventsShapesGeneratorConfig =

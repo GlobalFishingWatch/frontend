@@ -1,30 +1,27 @@
-import { useState, useEffect, Fragment } from 'react'
+import { Fragment,useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-components'
+
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { DataviewType } from '@globalfishingwatch/api-types'
-import type {
-  Workspace} from '@globalfishingwatch/api-types';
-import {
-  WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS
-} from '@globalfishingwatch/api-types'
-import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { loadSpreadsheetDoc } from 'utils/spreadsheet'
-import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import type { Workspace } from '@globalfishingwatch/api-types'
+import { DataviewType , WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
+
 import {
   AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX,
   PATH_BASENAME,
   ROOT_DOM_ELEMENT,
 } from 'data/config'
-import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
-import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
+import { selectIsGuestUser,selectUserData } from 'features/user/selectors/user.selectors'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
+import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
+
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {
@@ -47,9 +44,6 @@ type FeedbackData = {
   issue?: string
   description?: string
 }
-
-const FEEDBACK_SHEET_TITLE = 'new feedback'
-const FEEDBACK_SPREADSHEET_ID = process.env.NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID || ''
 
 const FEEDBACK_ROLE_IDS = [
   'analyst',
@@ -110,7 +104,6 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   useEffect(() => {
     setInitialFeedbackStateWithUserData()
-     
   }, [userData])
 
   useEffect(() => {
@@ -163,15 +156,14 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     })
   }
 
-  const sendFeedback = async () => {
+  const sendFeedback = async (e: any) => {
+    e.preventDefault()
+    e.stopPropagation()
     setLoading(true)
     try {
-      const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(FEEDBACK_SPREADSHEET_ID)
-      // loads document properties and worksheets
-
       let url = window.location.href
 
-      if (!guestUser) {
+      if (guestUser) {
         const createWorkspaceAction = await dispatch(
           createWorkspaceThunk({
             ...parseUpsertWorkspace(currentWorkspace),
@@ -188,14 +180,25 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
           console.error('Error creating feedback workspace, using default url to feedback sheet.')
         }
       }
-
-      const sheet = feedbackSpreadsheetDoc.sheetsByTitle[FEEDBACK_SHEET_TITLE]
       const finalFeedbackData = {
         ...feedbackData,
         url,
         userId: feedbackData.userId || GUEST_USER_TYPE,
       }
-      await sheet.addRow(finalFeedbackData)
+
+      const response = await fetch(`${PATH_BASENAME}/api/feedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ type: 'feedback', data: finalFeedbackData }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong')
+      }
       setLoading(false)
       setInitialFeedbackStateWithUserData()
       onClose()

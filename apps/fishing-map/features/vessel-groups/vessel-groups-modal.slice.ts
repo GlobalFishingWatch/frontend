@@ -1,6 +1,10 @@
-import type { PayloadAction} from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { difference, uniq } from 'es-toolkit'
+import type { RootState } from 'reducers'
+
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
   APIPagination,
   APIVesselSearchPagination,
@@ -8,20 +12,19 @@ import type {
   DataviewDatasetConfig,
   IdentityVessel,
   VesselGroup,
-  VesselGroupVessel} from '@globalfishingwatch/api-types';
-import {
-  EndpointId
+  VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
-import type { ParsedAPIError } from '@globalfishingwatch/api-client';
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import { EndpointId } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
-import type { RootState } from 'reducers'
+
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { getDatasetByIdsThunk } from '../datasets/datasets.slice'
+
 import {
   flatVesselGroupSearchVessels,
   mergeVesselGroupVesselIdentities,
@@ -73,6 +76,25 @@ const fetchSearchVessels = async ({
 }
 
 export const SEARCH_PAGINATION = 50
+export const getAllSearchVesselsUrl = (dataset: Dataset) => {
+  const datasetConfig: DataviewDatasetConfig = {
+    endpoint: EndpointId.VesselSearch,
+    datasetId: '',
+    params: [],
+    query: [
+      { id: 'cache', value: false },
+      {
+        id: 'includes',
+        value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+      },
+      {
+        id: 'limit',
+        value: SEARCH_PAGINATION,
+      },
+    ],
+  }
+  return resolveEndpoint(dataset, datasetConfig)
+}
 export const fetchAllSearchVessels = async (params: FetchSearchVessels) => {
   let searchResults = [] as IdentityVessel[]
   let pendingResults = true
@@ -107,23 +129,7 @@ const searchVesselsInVesselGroup = async ({
 
   const datasetIds = datasets.map((d) => d.id)
   const dataset = datasets[0]
-  const datasetConfig: DataviewDatasetConfig = {
-    endpoint: EndpointId.VesselSearch,
-    datasetId: '',
-    params: [],
-    query: [
-      { id: 'cache', value: false },
-      {
-        id: 'includes',
-        value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
-      },
-      {
-        id: 'limit',
-        value: SEARCH_PAGINATION,
-      },
-    ],
-  }
-  const url = resolveEndpoint(dataset, datasetConfig)
+  const url = getAllSearchVesselsUrl(dataset)
   if (!url) {
     throw new Error('Missing search url')
   }
@@ -301,7 +307,7 @@ export const vesselGroupModalSlice = createSlice({
     setVesselGroupConfirmationMode: (state, action: PayloadAction<VesselGroupConfirmationMode>) => {
       state.confirmationMode = action.payload
     },
-    resetVesselGroupModal: (state) => {
+    resetVesselGroupModal: () => {
       return { ...initialState }
     },
   },

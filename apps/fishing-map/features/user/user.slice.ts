@@ -1,20 +1,23 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+
 import {
-  GFWAPI,
   getAccessTokenFromUrl,
+  GFWAPI,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
-import { redirectToLogin } from '@globalfishingwatch/react-hooks'
+import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { redirectToLogin } from '@globalfishingwatch/react-hooks'
+
+import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
+import { USER_SETTINGS } from 'data/config'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
-import type { PREFERRED_FOURWINGS_VISUALISATION_MODE} from 'data/config';
-import { USER_SETTINGS } from 'data/config'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
@@ -23,6 +26,7 @@ export interface UserSettings {
 interface UserState {
   logged: boolean
   expired: boolean
+  language: Locale
   status: AsyncReducerStatus
   data: UserData | null
   settings: UserSettings
@@ -31,6 +35,7 @@ interface UserState {
 const initialState: UserState = {
   logged: false,
   expired: false,
+  language: Locale.en,
   status: AsyncReducerStatus.Idle,
   data: null,
   settings: {},
@@ -112,6 +117,9 @@ const userSlice = createSlice({
     setLoginExpired: (state, action: PayloadAction<boolean>) => {
       state.expired = action.payload
     },
+    setUserLanguage: (state, action: PayloadAction<Locale>) => {
+      state.language = action.payload
+    },
     setUserSetting: (state, action: PayloadAction<Partial<UserSettings>>) => {
       state.settings = { ...state.settings, ...action.payload }
       localStorage.setItem(USER_SETTINGS, JSON.stringify(state.settings))
@@ -136,6 +144,6 @@ const userSlice = createSlice({
   },
 })
 
-export const { setUserSetting, setLoginExpired } = userSlice.actions
+export const { setUserSetting, setLoginExpired, setUserLanguage } = userSlice.actions
 
 export default userSlice.reducer

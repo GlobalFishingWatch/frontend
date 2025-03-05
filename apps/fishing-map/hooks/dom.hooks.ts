@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
 
-export const useRootElement = () => {
-  const domElement = useRef<HTMLElement>()
+export const useDOMElement = (id = ROOT_DOM_ELEMENT) => {
+  const domElement = useRef<HTMLElement>(undefined)
+
   useEffect(() => {
-    if (!domElement.current) {
-      domElement.current = document.getElementById(ROOT_DOM_ELEMENT) as HTMLElement
-    }
-  }, [])
+    domElement.current = document.getElementById(id) as HTMLElement
+  }, [id])
 
   return domElement.current
 }

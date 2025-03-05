@@ -1,0 +1,79 @@
+.inputContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.input input,
+.input input:placeholder-shown {
+  border-radius: var(--border-radius);
+  padding-inline: 1.5rem;
+  padding-right: var(--size-M);
+}
+
+.input label {
+  margin-bottom: 0;
+}
+
+.open .input {
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+}
+
+.open .input input {
+  border-bottom: 1px solid var(--color-primary-blue);
+  border-radius: 0;
+}
+
+.error {
+  font: var(--font-S);
+  color: var(--color-danger-red);
+}
+
+.highlighted {
+  background-color: var(--color-terthiary-blue);
+}
+
+.comboContainer {
+  position: relative;
+}
+
+.inputContainer:focus-within {
+  z-index: 1;
+  background-color: var(--color-white);
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.inputContainer:focus-within .comboContainer,
+.inputContainer:focus-within .comboContainer div,
+.inputContainer:focus-within .comboContainer div input {
+  height: 100%;
+}
+
+.inputContainer:focus-within .comboContainer div svg {
+  margin-bottom: 0;
+  bottom: 50%;
+  transform: translateY(50%);
+}
+
+.results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+  z-index: 1;
+  overflow: hidden;
+}
+
+.result {
+  cursor: pointer;
+  padding: 0.8rem;
+}
+
+.result:not(:last-child) {
+  border-bottom: var(--border);
+}

@@ -15,6 +15,7 @@
   "main": "./index.cjs",
   "module": "./index.js",
   "dependencies": {
+    "@floating-ui/react": "0.x",
     "@globalfishingwatch/api-types": "^8.0.3",
     "countryflag": "5.x",
     "d3-format": "3.x",
@@ -27,9 +28,6 @@
     "react": "18.x",
     "react-range": "1.x",
     "react-modal": "3.x",
-    "tippy.js": "6.3",
-    "@tippyjs/react": "4.x",
-    "@popperjs/core": "2.x",
     "topojson-client": "3.x",
     "luxon": "3.x"
   }

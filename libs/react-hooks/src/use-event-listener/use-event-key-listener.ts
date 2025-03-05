@@ -1,7 +1,7 @@
-import { useRef, useEffect } from 'react'
+import { useEffect,useRef } from 'react'
 
 export function useEventKeyListener(keys: string[], callback?: (e: KeyboardEvent) => void) {
-  const parentNode = useRef<HTMLDivElement>()
+  const parentNode = useRef<HTMLDivElement>(undefined)
 
   useEffect(() => {
     const eventHandler = (event: KeyboardEvent) => {
@@ -12,7 +12,6 @@ export function useEventKeyListener(keys: string[], callback?: (e: KeyboardEvent
     }
     document.addEventListener('keydown', eventHandler)
     return () => document.removeEventListener('keydown', eventHandler)
-     
   }, [callback])
 
   return parentNode as React.MutableRefObject<HTMLDivElement>

@@ -1,13 +1,16 @@
 import { useCallback, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
 import { capitalize } from 'lodash'
+
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
+
+import flags from 'data/flags'
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
 import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import type { Region} from 'features/regions/regions.slice';
 import { anyRegion } from 'features/regions/regions.slice'
-import flags from 'data/flags'
+
 import type {
   SettingEventSectionName,
   Settings,

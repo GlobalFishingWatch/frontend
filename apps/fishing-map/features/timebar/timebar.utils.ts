@@ -1,16 +1,17 @@
 import { DateTime } from 'luxon'
-import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+
+import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
 import type {
-  FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
-  FourwingsPositionFeature} from '@globalfishingwatch/deck-loaders';
-import {
-  CONFIG_BY_INTERVAL
+  FourwingsPositionFeature,
+  FourwingsValuesAndDatesFeature,
 } from '@globalfishingwatch/deck-loaders'
-import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
+import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
+import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+
+import type { FeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
-import type { FeaturesToTimeseriesParams } from 'features/reports/shared/activity/reports-activity-timeseries.utils'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
   FeaturesToTimeseriesParams,
@@ -210,10 +211,10 @@ export function getGraphDataFromFourwingsHeatmap(
   // Inserts a middle point for every sublayer at the start and end of the dataset
   const extentStarts = sublayers
     .map((sublayer, index) => ({ extent: sublayer.extentStart, index }))
-    .sort((a, b) => a?.extent! - b?.extent!)
+    .sort((a, b) => (a?.extent ?? 0) - (b?.extent ?? 0))
   const extentEnds = sublayers
     .map((sublayer, index) => ({ extent: sublayer.extentEnd, index }))
-    .sort((a, b) => a?.extent! - b?.extent!)
+    .sort((a, b) => (a?.extent ?? 0) - (b?.extent ?? 0))
 
   extentStarts.forEach(({ extent, index }) => {
     if (extent) {

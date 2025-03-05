@@ -1,54 +1,57 @@
-import type { ReactNode} from 'react';
+import type { ReactNode } from 'react'
 import { Fragment, useState } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
+
 import type {
   DataviewDatasetConfigParam,
+  IdentityVessel,
   Resource,
-  IdentityVessel} from '@globalfishingwatch/api-types';
+} from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
   ResourceStatus,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components';
-import { IconButton } from '@globalfishingwatch/ui-components'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
-import {
-  resolveDataviewDatasetResource
-} from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
-import { formatInfoField, getVesselShipNameLabel, getVesselOtherNamesLabel } from 'utils/info'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectResourceByUrl } from 'features/resources/resources.slice'
-import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import {
   getSchemaFiltersInDataview,
   isGFWOnlyDataset,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import GFWOnly from 'features/user/GFWOnly'
-import VesselDownload from 'features/workspace/vessels/VesselDownload'
-import VesselLink from 'features/vessel/VesselLink'
-import { getOtherVesselNames } from 'features/vessel/vessel.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { t } from 'features/i18n/i18n'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
-import Filters from '../common/LayerFilters'
-import Color from '../common/Color'
-import LayerSwitch from '../common/LayerSwitch'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
-import FitBounds from '../common/FitBounds'
+import { selectResourceByUrl } from 'features/resources/resources.slice'
+import GFWOnly from 'features/user/GFWOnly'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { getOtherVesselNames } from 'features/vessel/vessel.utils'
+import VesselLink from 'features/vessel/VesselLink'
+import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { formatInfoField, getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
+
+import FitBounds from '../shared/FitBounds'
+import Filters from '../shared/LayerFilters'
+import LayerProperties from '../shared/LayerProperties'
+import LayerSwitch from '../shared/LayerSwitch'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -89,7 +92,7 @@ export const getVesselIdentityTooltipSummary = (
           {info}
           <br />
           {selfReportedInfo.map((s, index) => (
-            <Fragment key={s.id}>
+            <Fragment key={s.id || index}>
               <GFWOnly type="only-icon" /> {s.id}
               {index < selfReportedInfo.length - 1 && <br />}
             </Fragment>
@@ -107,10 +110,14 @@ export const getVesselIdentityTooltipSummary = (
   return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
 }
 
-function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): React.ReactElement {
+function VesselLayerPanel({
+  dataview,
+  showApplyToAll,
+}: VesselLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const vesselLayer = useGetDeckLayer<VesselLayer>(dataview.id)
   // const vesselInstance = useMapVesselLayer(dataview.id)
@@ -214,20 +221,24 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
   const TitleComponentContent = () => (
     <Fragment>
       <span className={cx({ [styles.faded]: infoLoading || infoError })}>
-        <VesselLink
-          className={styles.link}
-          vesselId={vesselId}
-          datasetId={dataset?.id}
-          tooltip={identitiesSummary}
-          query={{
-            vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-            vesselSelfReportedId: vesselId,
-          }}
-          testId="vessel-layer-vessel-name"
-          dataviewId={dataview.id}
-        >
-          {getVesselTitle()}
-        </VesselLink>
+        {hasDeprecatedDataviewInstances ? (
+          getVesselTitle()
+        ) : (
+          <VesselLink
+            className={styles.link}
+            vesselId={vesselId}
+            datasetId={dataset?.id}
+            tooltip={<div>{identitiesSummary}</div>}
+            query={{
+              vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+              vesselSelfReportedId: vesselId,
+            }}
+            testId="vessel-layer-vessel-name"
+            dataviewId={dataview.id}
+          >
+            {getVesselTitle()}
+          </VesselLink>
+        )}
       </span>
     </Fragment>
   )
@@ -246,9 +257,15 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
       {...attributes}
     >
       <div className={styles.header}>
-        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
+        <LayerSwitch
+          active={layerActive && !hasDeprecatedDataviewInstances}
+          className={styles.switch}
+          dataview={dataview}
+          disabled={hasDeprecatedDataviewInstances}
+        />
         <Title
           title={<TitleComponentContent />}
+          showTooltip={false}
           className={styles.name}
           classNameActive={styles.active}
           dataview={dataview}
@@ -269,7 +286,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
               />
             )}
             {layerActive && (
-              <Color
+              <LayerProperties
                 dataview={dataview}
                 open={colorOpen}
                 onColorClick={changeTrackColor}

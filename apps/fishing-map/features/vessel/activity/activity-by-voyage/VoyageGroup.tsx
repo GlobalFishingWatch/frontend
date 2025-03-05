@@ -1,17 +1,20 @@
 import { useCallback, useMemo } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { saveAs } from 'file-saver'
 import { DateTime } from 'luxon'
-import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { getVoyageTimeRange } from 'features/vessel/vessel.utils'
-import { parseEventsToCSV } from 'features/vessel/vessel.download'
-import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
+import { parseEventsToCSV } from 'features/vessel/vessel.download'
+import { getVoyageTimeRange } from 'features/vessel/vessel.utils'
+
 import styles from '../ActivityGroupedList.module.css'
 
 interface EventProps {
@@ -28,7 +31,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   onMapClick = () => {},
   onMapHover = () => {},
   onToggleClick = () => {},
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
   const vesselId = useSelector(selectVesselInfoDataId)
   const { start, end } = useTimerangeConnect()

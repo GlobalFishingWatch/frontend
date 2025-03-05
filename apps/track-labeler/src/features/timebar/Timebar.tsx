@@ -1,9 +1,11 @@
-import React, { memo, Fragment, useEffect, createRef, useContext } from 'react'
+import React, { createRef, Fragment, memo, useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { createSliderWithTooltip, Range as SliderRange } from 'rc-slider'
-import './range.css'
 import type { NumberValue } from 'd3-scale'
-import { Timebar, TimelineContext, TimebarHighlighter } from '@globalfishingwatch/timebar'
+import Slider from 'rc-slider'
+
+import { Timebar, TimebarHighlighter, TimelineContext } from '@globalfishingwatch/timebar'
+
+import { Field } from '../../data/models'
 import { useTimebarModeConnect, useTimerangeConnect } from '../../features/timebar/timebar.hooks'
 import {
   selectFilteredDistanceFromPort,
@@ -11,19 +13,21 @@ import {
   selectFilteredHours,
   selectFilteredSpeed,
 } from '../../routes/routes.selectors'
-import { Field } from '../../data/models'
 import { useAppDispatch } from '../../store.hooks'
+
+import TimebarSelector from './selector/Selector'
+import { selectNightLayer, selectRangeFilterLimits } from './timebar.selectors'
 import {
-  setHighlightedTime,
   disableHighlightedTime,
+  selectHighlightedEvent,
   selectHighlightedTime,
   selectTooltip,
-  selectHighlightedEvent,
+  setHighlightedTime,
 } from './timebar.slice'
-import styles from './Timebar.module.css'
-import { selectNightLayer, selectRangeFilterLimits } from './timebar.selectors'
-import TimebarSelector from './selector/Selector'
 import { VesselEventsPointsGraphDeckGL } from './VesselEventsPointsGraphDeckGL'
+
+import './range.css'
+import styles from './Timebar.module.css'
 
 const TIMEBAR_DEFAULT_HEIGHT = 300
 
@@ -88,17 +92,17 @@ const TimebarWrapper = () => {
   // const tracksEvents = useSelector(getEventsForTracks)
   const rangeLimits = useSelector(selectRangeFilterLimits)
   //Those three handlers update the filters when we modify the Range
-  const handleSpeedChange = (values: number[]) => {
-    dispatchSpeed(values)
+  const handleSpeedChange = (values: number[] | number) => {
+    dispatchSpeed(values as number[])
   }
-  const handleElevationChange = (values: number[]) => {
-    dispachElevation(values)
+  const handleElevationChange = (values: number[] | number) => {
+    dispachElevation(values as number[])
   }
-  const handleDistanceFromPortChange = (values: number[]) => {
-    dispachDistanceFromPort(values)
+  const handleDistanceFromPortChange = (values: number[] | number) => {
+    dispachDistanceFromPort(values as number[])
   }
-  const handleTimeChange = (values: number[]) => {
-    dispachHours(values)
+  const handleTimeChange = (values: number[] | number) => {
+    dispachHours(values as number[])
   }
 
   // Transform the range slider for filter the timebar to vertical style
@@ -108,8 +112,6 @@ const TimebarWrapper = () => {
       myRef.current.setAttribute('orientation', 'vertical')
     }
   }, [myRef])
-
-  const Range = createSliderWithTooltip(SliderRange)
 
   const tooltip = useSelector(selectTooltip)
   const absoluteStart = new Date('2012-01-01')
@@ -122,7 +124,7 @@ const TimebarWrapper = () => {
         <Timebar
           start={start}
           end={end}
-          enablePlayback={false}
+          showPlayback={false}
           absoluteStart={absoluteStart.toISOString()}
           absoluteEnd={absoluteEnd.toISOString()}
           onChange={dispatchTimerange}
@@ -185,56 +187,76 @@ const TimebarWrapper = () => {
       </div>
       <div className={styles.filtersContainer}>
         {filterMode === Field.speed && (
-          <Range
-            min={rangeLimits.speed.min}
-            max={rangeLimits.speed.max}
-            step={0.1}
-            vertical
-            onAfterChange={handleSpeedChange}
-            allowCross={false}
-            tipFormatter={(value) => `${value} kt`}
-            tipProps={{ placement: 'right' }}
-            defaultValue={[minSpeed, maxSpeed]}
-          />
+          <div className={styles.rangeSliderContainer}>
+            <Slider
+              range
+              min={rangeLimits.speed.min}
+              max={rangeLimits.speed.max}
+              step={0.1}
+              vertical
+              onChangeComplete={handleSpeedChange}
+              allowCross={false}
+              defaultValue={[minSpeed, maxSpeed]}
+            />
+            <div className={styles.rangeSliderValuesContainer}>
+              <p>{`${maxSpeed} kt`}</p>
+              <p>{`${minSpeed} kt`}</p>
+            </div>
+          </div>
         )}
         {filterMode === Field.timestamp && (
-          <Range
-            min={rangeLimits.hours.min}
-            max={rangeLimits.hours.max}
-            step={1}
-            vertical
-            onAfterChange={handleTimeChange}
-            allowCross={false}
-            tipFormatter={(value) => `${value} hs`}
-            tipProps={{ placement: 'right' }}
-            defaultValue={[fromHour, toHour]}
-          />
+          <div className={styles.rangeSliderContainer}>
+            <Slider
+              range
+              min={rangeLimits.hours.min}
+              max={rangeLimits.hours.max}
+              step={1}
+              vertical
+              onChangeComplete={handleTimeChange}
+              allowCross={false}
+              defaultValue={[fromHour, toHour]}
+            />
+            <div className={styles.rangeSliderValuesContainer}>
+              <p>{`${toHour} hs`}</p>
+              <p>{`${fromHour} hs`}</p>
+            </div>
+          </div>
         )}
         {filterMode === Field.elevation && (
-          <Range
-            min={rangeLimits.elevation.min}
-            max={rangeLimits.elevation.max}
-            step={1}
-            vertical
-            onAfterChange={handleElevationChange}
-            allowCross={false}
-            tipFormatter={(value) => `${value} mt`}
-            tipProps={{ placement: 'right' }}
-            defaultValue={[minElevation, maxElevation]}
-          />
+          <div className={styles.rangeSliderContainer}>
+            <Slider
+              range
+              min={rangeLimits.elevation.min}
+              max={rangeLimits.elevation.max}
+              step={1}
+              vertical
+              onChangeComplete={handleElevationChange}
+              allowCross={false}
+              defaultValue={[minElevation, maxElevation]}
+            />
+            <div className={styles.rangeSliderValuesContainer}>
+              <p>{`${maxElevation} m`}</p>
+              <p>{`${minElevation} m`}</p>
+            </div>
+          </div>
         )}
         {filterMode === Field.distanceFromPort && (
-          <Range
-            min={rangeLimits.distanceFromPort.min}
-            max={rangeLimits.distanceFromPort.max}
-            step={1}
-            vertical
-            onAfterChange={handleDistanceFromPortChange}
-            allowCross={false}
-            tipFormatter={(value) => `${value} mt`}
-            tipProps={{ placement: 'right' }}
-            defaultValue={[minDistanceFromPort, maxDistanceFromPort]}
-          />
+          <div className={styles.rangeSliderContainer}>
+            <Slider
+              range
+              min={rangeLimits.distanceFromPort.min}
+              max={rangeLimits.distanceFromPort.max}
+              step={1}
+              vertical
+              onChangeComplete={handleDistanceFromPortChange}
+              allowCross={false}
+              defaultValue={[minDistanceFromPort, maxDistanceFromPort]}
+            />
+            <div className={styles.rangeSliderValuesContainer}>
+              <p>{`${minDistanceFromPort} mt`}</p>
+              <p>{`${maxDistanceFromPort} mt`}</p>
+            </div>
+          </div>
         )}
         <TimebarSelector />
       </div>

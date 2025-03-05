@@ -18,7 +18,7 @@ steps:
     waitFor: ['restore_cache']
     name: node:21
     script: |
-      yarn set version 4.5.3
+      yarn set version 4.6.0
       yarn -v
       yarn install --immutable
 
@@ -51,6 +51,7 @@ steps:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
+      - 'NEXT_PUBLIC_API_VERSION=$_NEXT_PUBLIC_API_VERSION'
       - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
       - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID'
       - 'NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE=$_NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE'

@@ -1,24 +1,27 @@
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Fragment, useCallback, useEffect, useState } from 'react'
 import Link from 'redux-first-router-link'
-import { Spinner, IconButton, InputText } from '@globalfishingwatch/ui-components'
-import type { Report } from '@globalfishingwatch/api-types';
+
+import type { Report } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
+
 import { useAppDispatch } from 'features/app/app.hooks'
-import { sortByCreationDate } from 'utils/dates'
 import {
   deleteReportThunk,
   fetchReportsThunk,
   selectReportsStatus,
   selectReportsStatusId,
-} from 'features/reports/areas/area-reports.slice'
-import { REPORT } from 'routes/routes'
+} from 'features/reports/reports.slice'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
-import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
+import { REPORT } from 'routes/routes'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
+
 import styles from './User.module.css'
 
 function getUserGuideReportLinkByLocale(locale: Locale) {
@@ -71,6 +74,7 @@ function UserReports() {
   )
   const loading = reportsStatus === AsyncReducerStatus.Loading
 
+  // TODO:CVP2 group reports by type when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged
   return (
     <Fragment>
       <div className={styles.search}>

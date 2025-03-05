@@ -1,6 +1,7 @@
-import { getAreasByDistance } from '@globalfishingwatch/ocean-areas'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
+import { getAreasByDistance } from '@globalfishingwatch/ocean-areas'
+
 import type { MapCoordinates } from 'types'
 
 export const CONTEXT_FEATURES_LIMIT = 5

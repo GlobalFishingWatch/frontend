@@ -1,5 +1,6 @@
 import type { BasemapGeneratorConfig} from '../types';
-import { GeneratorType, BasemapType } from '../types'
+import { BasemapType,GeneratorType } from '../types'
+
 import { layers, sources } from './basemap-layers'
 
 const DEFAULT_CONFIG: Partial<BasemapGeneratorConfig> = {

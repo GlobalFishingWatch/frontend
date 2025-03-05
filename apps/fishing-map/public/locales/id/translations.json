@@ -33,6 +33,7 @@
     "evolution": "evolusi",
     "groupByFlag": "berdasarkan bendera",
     "groupByGeartype": "berdasarkan jenis penangkap",
+    "groupBySource": "by source",
     "groupByVesseltype": "berdasarkan jenis kapal",
     "kilometers": "kilometer",
     "linkToReport": "Periksa laporan dinamis di sini",
@@ -48,7 +49,10 @@
     "periodComparison2nd": "awal perbandingan",
     "periodComparisonDuration": "durasi",
     "periodComparisonRange": "dalam {{duration}} setelah {{compareStart}} dibandingkan dengan acuan dasar dalam {{duration}} setelah {{start}}",
+    "pinVessels": "Add to workspace",
+    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "print ": "cetak",
+    "removeVessels": "Remove from workspace",
     "resultsPerPage": "Tampilkan {{results}} per halaman",
     "save": "Simpan laporan ini",
     "savePublic": "Izinkan pengguna lain untuk melihat laporan ini",
@@ -63,6 +67,8 @@
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} kapal{{sources}} </strong> selama <strong>{{activityQuantity}} {{activityUnit}}</strong> melakukan <strong>{{activityType}}</strong> di area ini antara <strong>{{start}}</strong> dan <strong>{{end}}</strong>",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
@@ -94,7 +100,7 @@
     "aka": "juga bernama",
     "analysis": "Buat analisis untuk area ini",
     "analysisAddArea": "Add area to the analysis",
-    "analysisNotAvailable": "Alihkan aktivitas atau lapisan lingkungan untuk menganalisisnya di area ini",
+    "analysisNotAvailable": "Toggle an analyzable layer to create a report for this area",
     "and": "dan",
     "anyoneWithTheLink": "Anyone with the link",
     "anyoneWithThePassword": "Anyone with the password",
@@ -136,13 +142,13 @@
     "edit": "Edit",
     "edit ": "edit",
     "environment": "Lingkungan",
-    "eventLabels": {
-      "loitering": "loitering",
-      "encounter": "encounter",
-      "port_visit": "port visit"
-    },
     "event_one": "peristiwa",
     "event_other": "peristiwa",
+    "eventLabels": {
+      "encounter": "encounter",
+      "loitering": "loitering",
+      "port_visit": "port visit"
+    },
     "events": "Acara",
     "Events": "Events",
     "exclude": "Kecualikan",
@@ -153,6 +159,8 @@
     "flag": "Flag",
     "from": "dari",
     "geartype": "Gear type",
+    "global": "Global",
+    "globalReport": "Global report",
     "globally": "secara global",
     "help": "Tolong",
     "hideAllHelpHints": "Abaikan Semua",
@@ -164,6 +172,7 @@
     "in": "di",
     "include": "Memasukkan",
     "insights": "Insights",
+    "knots": "knots",
     "latestDays_one": "Latest {{count}} day",
     "latestDays_other": "Latest {{count}} days",
     "latitude": "Lintang",
@@ -171,6 +180,7 @@
     "layerList": "Layer tabel",
     "learnMore": "Pelajari lebih lanjut",
     "less": "lebih sedikit",
+    "loading": "Loading",
     "loggedAs": "Masuk sebagai",
     "login": "Masuk",
     "logout": "Keluar",
@@ -178,6 +188,7 @@
     "map": "Peta",
     "matchedVessels": "Kapal yang cocok",
     "max": "Maks",
+    "meters": "meters",
     "min": "Min",
     "minus": "minus",
     "minute": "menit",
@@ -237,6 +248,7 @@
     "unionOf": "Union of",
     "unit": "unit",
     "unknown": "Tidak diketahui",
+    "unknownProperty": "Unknown",
     "unknownVessel": "Kapal tidak dikenal",
     "update": "Memperbarui",
     "user": "Pengguna",
@@ -479,7 +491,6 @@
     "privateView": "Ini adalah tampilan pribadi",
     "profileEvents": "Terjadi kesalahan saat meminta info peristiwa kapal.",
     "profileLogin": "Masuk untuk melihat kapal ini",
-    "vesselGroupReportLogin": "Login to see the vessels active",
     "reportLogin": "Masuk untuk melihat kapal yang aktif di area ini",
     "requestAccess": "Meminta akses",
     "searchLogin": "Masuk untuk mencari kapal",
@@ -495,6 +506,7 @@
     "uploadKML": "Terjadi kesalahan saat membaca file KLM: {{error}}",
     "uploadShapefile": "Terjadi kesalahan saat membaca shapefile: {{error}}",
     "uploadShapefileComponents": "Terjadi kesalahan saat membaca shapefile: harus berisi file dengan ekstensi *.shp, *.shx, *.dbf dan *.prj.",
+    "vesselGroupReportLogin": "Login to see the vessels active",
     "vesselLoading": "Terjadi kesalahan saat memuat detail trek kapal",
     "workspaceLoad": "Terjadi kesalahan saat memuat ruang kerja, silahkan coba lagi",
     "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
@@ -548,6 +560,7 @@
   "eventInfo": {
     "authorization": "otorisasi",
     "averageSpeedKnots": "kecepatan rata-rata (knot)",
+    "depth": "depth",
     "distanceFromPortKm": "distanceFromPortKm",
     "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "durasi",
@@ -621,6 +634,13 @@
     },
     "areasOnScreen": "Area pada layar",
     "color_change": "Ganti warna",
+    "colorSelectCustom": "Select custom color",
+    "colorSelectPredefined": "Select predefined color",
+    "propertiesChange": "Change properties",
+    "properties": {
+      "color": "Color",
+      "thickness": "Thickness"
+    },
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -701,14 +721,21 @@
     "rulersDelete": "Hapus semua anontasi",
     "rulersHover": "Seret untuk memindahkan atau klik untuk melihat lebih banyak",
     "rulersStop": "Berhenti mengukur",
+    "screenshotArea": {
+      "map": "Only map",
+      "withTimebar": "With timebar",
+      "withTimebarAndLegend": "With timebar and legend"
+    },
+    "screenshotDownload": "Download image",
+    "screenshotPreview": "Screenshot preview",
     "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
   "portsReport": {
+    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "seePortReport": "See all entry events to this port",
-    "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
   },
   "search": {
@@ -757,6 +784,7 @@
     "selected": "terpilih"
   },
   "timebar": {
+    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Sesuaikan rentang waktu dengan tanggal ini",
     "focusOnThisDay": "Rentang waktu fokus pada hari ini",
     "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari 10 kapal"
@@ -765,8 +793,9 @@
     "activityDisabled": "Pilih setidaknya satu lapisan aktivitas",
     "detectionsDisabled": "Pilih setidaknya satu lapisan pendeteksian.",
     "graphDepth": "Kedalaman kapal",
-    "graphDisabled": "Tidak tersedia untuk lebih dari 2 kapal yang dipilih",
+    "graphDisabled": "Graph is not available with more than 2 vessels selected",
     "graphSpeed": "Kecepatan kapal",
+    "graphVesselOnly": "{{graph}} is only available for vessel tracks",
     "settings_close": "Tutup pengaturan timebar",
     "settings_open": "Buka pengaturan timebar",
     "showActivity": "Tampilkan grafik aktivitas",
@@ -782,7 +811,26 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
   },
   "user": {
+    "badges": {
+      "ambassador": {
+        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications.",
+        "title": "Ambassador"
+      },
+      "fixer": {
+        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support.",
+        "title": "Fixer"
+      },
+      "presenter": {
+        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest.",
+        "title": "Presenter"
+      },
+      "teacher": {
+        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow.",
+        "title": "Teacher"
+      }
+    },
     "datasets": "Dataset pengguna",
+    "gfwBadges": "GFW Badges",
     "groupMissing": "Apakah Anda termasuk dalam grup pengguna yang tidak muncul di sini? <2>Meminta akses</2>",
     "groups": "Grup Pengguna",
     "info": "Info Pengguna",
@@ -813,18 +861,22 @@
     "activityByVoyages": "Berdasarkan pelayaran",
     "addToWorkspace": "Tambahkan kapal untuk melihat",
     "authorization": "otorisasi",
+    "authorizationDatesDisclaimer": "The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.",
     "beam": "Beam",
     "callsign": "Callsign",
     "capacity": "Kapasitas",
     "carrier": "Pembawa",
     "casco": "Casco",
-    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "clickToFitMapToEvents": "Peta di tengah dengan peristiwa di dalam",
     "clickToSeeMore": "Klik untuk informasi lebih lanjut",
     "close": "Tutup",
     "codMarinha": "Cod Marinha",
+    "confirmationClose": "Do you want to keep this vessel in your workspace?",
     "dataset": "Sumber",
+    "depthM": "Depth (m)",
     "donor": "Kapal donor",
+    "extraInfo": "Request additional information at",
+    "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "Tanggal transmisi pertama",
     "fishingZone": "Zona penangkapan ikan",
     "flag": "Bendera",
@@ -894,6 +946,7 @@
     },
     "gfw_geartypes": "GFW Gear type",
     "gfw_shiptypes": "GFW Vessel type",
+    "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonase Kotor",
     "grossTonnageRange": "Rentang Gross Tonnage",
     "hideOtherLayers": "Sembunyikan lapisan lain",
@@ -986,6 +1039,7 @@
     "owners": "Owners",
     "registeredGearType": "Jenis Peralatan Terdaftar",
     "registryGeartype": "Registry Gear Type",
+    "registryOperator": "Operators",
     "registrySources": "sumber registri",
     "removeAllVessels": "Remove all vessels",
     "sectionActivity": "Aktivitas",
@@ -1077,7 +1131,6 @@
     "searchNotFound": "No vessels found",
     "searchVesselsRequired": "Search for vessels to create a vessel group",
     "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "tooManyVessels_one": "Jumlah maksimum kapal adalah {{count}}",
     "tooManyVessels_other": "Jumlah maksimum kapal adalah {{count}}",
     "updateRequired": "Update required",
@@ -1089,7 +1142,6 @@
   "vesselGroupReport": {
     "clickToSee": "Click to analyse vessel group and see report",
     "insights": {
-      "title": "Vessel group insights",
       "fishingEventsError": "There was an error loading the fishing events",
       "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
       "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
@@ -1109,7 +1161,8 @@
       "MOUListsCount": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsCount_one": "{{vessels}} vessel operated under a flag present on the {{list}} list",
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
-      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
+      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists",
+      "title": "Vessel group insights"
     },
     "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",
@@ -1132,6 +1185,12 @@
   "workspace": {
     "add": "Tambahkan ke ruang kerja",
     "addLayer": "Add to workspace",
+    "categories": {
+      "search": "Vessel search",
+      "fishing-activity": "Highlighted workspaces",
+      "marine-manager": "Marine Manager workspaces",
+      "reports": "Highlighted reports"
+    },
     "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
     "create": "Buat sebagai baru",
     "createNeeded": "Mengganti visibilitas ruang kerja membutuhkan pembuatan ruang kerja baru",
@@ -1143,6 +1202,7 @@
     "emptyStateUser": "Upload custom datasets clicking on the plus icon.",
     "emptyStateVesselGroups": "Add vessel groups to see group presence and operation footprint.",
     "emptyStateVessels": "Kapal-kapal yang dipilih dalam pencarian atau dengan mengklik sel grid aktivitas akan muncul di sini.",
+    "marineManagerLink": "Lihat portal",
     "migrationDisclaimer": "Update your workspace to view the latest data and features.",
     "migrationDisclaimerNote": "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>",
     "migrationMaintain": "Skip",

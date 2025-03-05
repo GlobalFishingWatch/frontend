@@ -1,10 +1,12 @@
 import { Fragment, useCallback, useMemo } from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import { camelCase, lowerCase, startCase, upperFirst } from 'lodash'
-import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+
 import type { EventType} from '@globalfishingwatch/api-types';
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+
 import styles from './Activity.module.css'
 
 interface ActivityGroupProps {
@@ -36,7 +38,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
   onToggleClick = () => {},
   quantity,
   status,
-}): React.ReactElement => {
+}): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   const label = useMemo(

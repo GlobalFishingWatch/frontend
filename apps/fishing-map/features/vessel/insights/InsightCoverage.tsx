@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import type { InsightResponse } from '@globalfishingwatch/api-types'
+
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import type { InsightResponse } from '@globalfishingwatch/api-types'
+
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
 import styles from './Insights.module.css'
 
 const InsightCoverage = ({
@@ -21,8 +24,6 @@ const InsightCoverage = ({
       <div className={styles.insightTitle}>
         <label className="experimental">{t('vessel.insights.coverage', 'AIS Coverage')}</label>
         <DataTerminology
-          size="tiny"
-          type="default"
           title={t('vessel.insights.coverage', 'AIS Coverage')}
           terminologyKey="insightsCoverage"
         />

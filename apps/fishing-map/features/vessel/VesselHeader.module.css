@@ -34,8 +34,7 @@
 }
 
 .vesselImage {
-  width: 20%;
-  min-width: 200px;
+  width: 100%;
 }
 
 .vesselIcon {
@@ -59,4 +58,53 @@
   .reportLink {
     display: block;
   }
+}
+
+.imageSliderContainer {
+  position: relative;
+  width: 20%;
+  min-width: 200px;
+}
+
+.sticky .imageSliderContainer {
+  display: none;
+}
+
+.navigationButtons {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.dot::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: transparent;
+  position: absolute;
+  top: -4px;
+  left: -4px;
+}
+
+.activeDot,
+.dot:hover {
+  background: var(--color-white);
 }

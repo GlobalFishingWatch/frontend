@@ -1,6 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
-import {} from '@globalfishingwatch/dataviews-client'
+
 import { ThinningLevels } from '@globalfishingwatch/api-client'
+import {} from '@globalfishingwatch/dataviews-client'
+
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 

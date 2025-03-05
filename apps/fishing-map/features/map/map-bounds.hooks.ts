@@ -1,12 +1,15 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useAtom } from 'jotai'
-import type { Deck } from '@deck.gl/core'
+
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import type { Bbox } from 'types'
+
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
-import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
+import type { Bbox } from 'types'
+
+import { MAP_CANVAS_ID } from './map.config'
 
 const boundsAtom = atom<MiniglobeBounds>({
   north: 90,
@@ -32,25 +35,23 @@ export const useMapBounds = (): { bounds: MiniglobeBounds } => {
     }
   }, [setBounds, viewport])
 
-  return { bounds }
+  return useMemo(() => ({ bounds }), [bounds])
 }
 
 export type FitBoundsParams = {
+  mapDOMId?: string
   mapWidth?: number
   mapHeight?: number
   padding?: number
   fitZoom?: boolean
 }
 
-export const getMapCoordinatesFromBounds = (
-  map: Deck,
-  bounds: Bbox,
-  params: FitBoundsParams = {}
-) => {
-  const { mapWidth, mapHeight, padding = 60 } = params
-  const width = mapWidth || (map?.width ? map.width : window.innerWidth / 2)
-  const height =
-    mapHeight || (map ? map.height : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
+export const getMapCoordinatesFromBounds = (bounds: Bbox, params: FitBoundsParams = {}) => {
+  const { mapDOMId = MAP_CANVAS_ID, mapWidth, mapHeight, padding = 60 } = params
+  const map = document.getElementById(mapDOMId)
+  const mapRect = map?.getBoundingClientRect()
+  const width = mapWidth || mapRect?.width || window.innerWidth / 2
+  const height = mapHeight || mapRect?.height || window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT
   const { latitude, longitude, zoom } = fitBounds({
     bounds: [
       [bounds[0], bounds[1]],
@@ -63,33 +64,20 @@ export const getMapCoordinatesFromBounds = (
   return { latitude, longitude, zoom }
 }
 
-function convertToTupleBoundingBox(flatBoundingBox: Bbox): [[number, number], [number, number]] {
-  if (flatBoundingBox.length !== 4) {
-    throw new Error('Invalid flat bounding box')
-  }
-
-  const topLeft: [number, number] = [flatBoundingBox[0], flatBoundingBox[1]]
-  const bottomRight: [number, number] = [flatBoundingBox[2], flatBoundingBox[3]]
-
-  return [topLeft, bottomRight]
-}
-
 export function useMapFitBounds() {
-  const viewport = useMapViewport()
   const setMapCoordinates = useSetMapCoordinates()
   const fitBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {
-      if (viewport) {
-        const newViewport = viewport.fitBounds(convertToTupleBoundingBox(bounds), params)
-        setMapCoordinates({
-          latitude: newViewport.latitude,
-          longitude: newViewport.longitude,
-          zoom: params.fitZoom ? newViewport.zoom : viewport.zoom,
-        })
-      }
+      const newViewport = getMapCoordinatesFromBounds(bounds, params)
+      setMapCoordinates({
+        latitude: newViewport.latitude,
+        longitude: newViewport.longitude,
+        ...(params.fitZoom && {
+          zoom: newViewport.zoom,
+        }),
+      })
     },
-     
-    [viewport]
+    [setMapCoordinates]
   )
   return fitBounds
 }

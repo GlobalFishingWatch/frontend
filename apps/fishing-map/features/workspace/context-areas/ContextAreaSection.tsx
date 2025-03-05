@@ -1,23 +1,28 @@
 import { useCallback } from 'react'
-import cx from 'classnames'
-import { SortableContext } from '@dnd-kit/sortable'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import { SortableContext } from '@dnd-kit/sortable'
+import cx from 'classnames'
+
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import styles from 'features/workspace/shared/Sections.module.css'
-import { getEventLabel } from 'utils/analytics'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
+import { getEventLabel } from 'utils/analytics'
+
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+
 import LayerPanel from './ContextAreaLayerPanel'
 
-function ContextAreaSection(): React.ReactElement {
+import styles from 'features/workspace/shared/Sections.module.css'
+
+function ContextAreaSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
 

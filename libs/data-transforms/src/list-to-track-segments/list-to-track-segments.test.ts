@@ -1,10 +1,13 @@
 import fs from 'fs'
 import path from 'path'
+
 import { parse } from 'papaparse'
+
+import { getUTCDate } from '../dates'
 import { guessColumn } from '../schema/guess-columns'
-import { getUTCDate } from '../schema'
-import { listToTrackSegments } from './list-to-track-segments'
+
 import { checkRecordValidity } from './check-record-validity'
+import { listToTrackSegments } from './list-to-track-segments'
 
 export const LINE_COLOR_BAR_OPTIONS = [
   { id: 'carnation', value: '#F95E5E' },

@@ -1,7 +1,11 @@
-import type { Atom} from 'jotai';
+import { useMemo } from 'react'
+import type { Atom } from 'jotai'
 import { atom, useAtomValue } from 'jotai'
+
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
+
 import { DECK_LAYER_LIFECYCLE } from '../types'
+
 import { deckLayerInstancesAtom } from './deck-layers-composer.hooks'
 import { deckLayersStateAtom } from './deck-layers-state.hooks'
 
@@ -39,7 +43,13 @@ export const useGetDeckLayer = <L = AnyDeckLayer>(id: string) => {
 export const useGetDeckLayers = <L = AnyDeckLayer>(ids: string[]) => {
   const deckLayers = useDeckLayers()
   const uniqIds = Array.from(new Set(ids))
-  return uniqIds.flatMap(
-    (id) => deckLayers.find((layer) => id === layer.id) || []
-  ) as DeckLayerAtom<L>[]
+  const uniqIdsHash = (uniqIds || []).join(',')
+  return useMemo(
+    () =>
+      uniqIds.flatMap(
+        (id) => deckLayers.find((layer) => id === layer.id) || []
+      ) as DeckLayerAtom<L>[],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [deckLayers, uniqIdsHash]
+  )
 }

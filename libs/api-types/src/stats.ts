@@ -16,3 +16,13 @@ export type StatField =
 export type StatFields = {
   [key in StatField]: number
 } & { type: StatType }
+
+export type StatsByVessel = {
+  numEvents: number
+  totalDuration?: number
+  flag: string
+  mmsi: string
+  vesselId: string
+  shipName: string
+  vesselType: string
+}

@@ -1,20 +1,23 @@
 import { atom, useAtomValue } from 'jotai'
+
 import type {
-  FourwingsPickingObject,
   ColorRampId,
   FourwingsColorObject,
+  FourwingsPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import {
-  FourwingsLayer,
   FourwingsComparisonMode,
+  FourwingsLayer,
   getBivariateRampLegend,
   POSITIONS_ID,
   rgbaToString,
 } from '@globalfishingwatch/deck-layers'
+
 import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
+import { deckHoverInteractionAtom } from '../interactions'
 import type { DeckLegend } from '../types'
 import { LegendType } from '../types'
-import { deckHoverInteractionAtom } from '../interactions'
+
 import { deckLayersAtom } from './deck-layers.hooks'
 
 export type DeckLegendAtom = Omit<DeckLegend, 'ranges'> & { ranges: string[] | string[][] }

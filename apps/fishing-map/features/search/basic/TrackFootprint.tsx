@@ -1,18 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import area from '@turf/area'
+import bbox from '@turf/bbox'
+import bboxPolygon from '@turf/bbox-polygon'
 import cx from 'classnames'
 import { geoEqualEarth, geoPath } from 'd3'
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry, Point } from 'geojson'
 import { DateTime } from 'luxon'
 import qs from 'qs'
-import area from '@turf/area'
-import bbox from '@turf/bbox'
-import bboxPolygon from '@turf/bbox-polygon'
-import { useTranslation } from 'react-i18next'
+
 import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
-import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import { TrackField } from '@globalfishingwatch/api-types'
+import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
+import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+
 import { useOnScreen, useScreenDPI } from 'hooks/screen.hooks'
+
 import styles from './TrackFootprint.module.css'
 
 type TrackFootprintProps = {

@@ -1,32 +1,28 @@
 import kebabCase from 'lodash/kebabCase'
+
 import type {
   ColorCyclingType,
   Dataset,
   Dataview,
-  DataviewType,
   DataviewDatasetConfig,
-  DataviewInstance} from '@globalfishingwatch/api-types';
-import {
-  DataviewCategory,
-  EndpointId,
+  DataviewInstance,
+  DataviewType,
 } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
+
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
-  TEMPLATE_CONTEXT_DATAVIEW_SLUG,
-  TEMPLATE_USER_TRACK_SLUG,
-  TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
+  TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+  TEMPLATE_POINTS_DATAVIEW_SLUG,
+  TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import type {
-  VesselInstanceDatasets} from 'features/datasets/datasets.utils';
-import {
-  getActiveDatasetsInDataview,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
+import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 
 // used in workspaces with encounter events layers
@@ -51,16 +47,20 @@ export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGr
 
 export const getVesselInfoDataviewInstanceDatasetConfig = (
   vesselId: string,
-  { info }: VesselInstanceDatasets
+  { info }: VesselInstanceDatasets,
+  includeRelatedIdentities = true
 ) => {
   return {
     datasetId: info,
     params: [{ id: 'vesselId', value: vesselId }],
     query: [
       { id: 'dataset', value: info },
+      ...(includeRelatedIdentities
+        ? [{ id: 'includes', value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID] }]
+        : []),
       {
-        id: 'includes',
-        value: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+        id: 'registries-info-data',
+        value: 'ALL',
       },
     ],
     endpoint: EndpointId.Vessel,

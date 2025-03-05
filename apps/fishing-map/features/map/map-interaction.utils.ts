@@ -1,13 +1,15 @@
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type {
-  FourwingsClusterFeature,
   ContextPickingObject,
   DeckLayerPickingObject,
+  FourwingsClusterFeature,
+  FourwingsClusterPickingObject,
   FourwingsPositionsPickingObject,
   VesselEventPickingObject,
-  FourwingsClusterPickingObject,
 } from '@globalfishingwatch/deck-layers'
+
 import { TrackCategory } from 'features/app/analytics.hooks'
+
 import type { SliceExtendedFourwingsPickingObject } from './map.slice'
 
 export const isTilesClusterLayer = (pickingObject: DeckLayerPickingObject) =>
@@ -57,8 +59,8 @@ export const getAnalyticsEvent = (feature: DeckLayerPickingObject) => {
       break
   }
   return {
-    category: TrackCategory.MapInteraction,
-    action: `Map click on ${feature.category}-${feature.layerId} layer.`,
+    category: `Map click on ${feature.category}`,
+    action: TrackCategory.MapInteraction,
     label: eventLabel,
   }
 }

@@ -1,33 +1,35 @@
 import type {
+  AccessorFunction,
   Color,
   DefaultProps,
-  AccessorFunction,
-  UpdateParameters,
   LayerContext,
+  UpdateParameters,
 } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import type { Feature, GeoJsonProperties, Geometry } from 'geojson'
 import type { ScaleLinear } from 'd3-scale'
 import { scaleLinear } from 'd3-scale'
+import type { Feature, GeoJsonProperties, Geometry } from 'geojson'
+
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
-  hexToDeckColor,
-  LayerGroup,
+  DEFAULT_BACKGROUND_COLOR,
+  getColorRampByOpacitySteps,
+  getFeatureInFilter,
+  getFetchLoadOptions,
   getLayerGroupOffset,
+  getMVTSublayerProps,
   getPickedFeatureToHighlight,
   GFWMVTLoader,
-  getMVTSublayerProps,
+  hexToDeckColor,
+  LayerGroup,
   rgbaStringToComponents,
-  getColorRampByOpacitySteps,
-  getFetchLoadOptions,
-  DEFAULT_BACKGROUND_COLOR,
-  getFeatureInFilter,
 } from '../../utils'
-import type { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
+
+import type { UserLayerFeature, UserPolygonsLayerProps } from './user.types'
 import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
 
@@ -78,27 +80,35 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   _getHighlightLineWidth = (d: Feature<Geometry, GeoJsonProperties>, lineWidth = 2) => {
-    const { idProperty, layers } = this.props
+    const { idProperty, layers, thickness } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
       idProperty,
       datasetId: layers?.[0].datasetId,
     })
-      ? lineWidth
+      ? Math.max(thickness, lineWidth)
       : 0
   }
 
   _getLineColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { color, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { color, filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return COLOR_TRANSPARENT
     }
     return hexToDeckColor(color)
   }
 
+  _getLineWidth: AccessorFunction<Feature<Geometry, GeoJsonProperties>, number> = (d) => {
+    const { filters, filterOperators, thickness } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
+      return 0
+    }
+    return thickness
+  }
+
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty, layers, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { idProperty, layers, filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return COLOR_TRANSPARENT
     }
     const highlightedFeatures = this._getHighlightedFeatures()
@@ -111,8 +121,8 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   _getFillStepsColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty, layers, filters } = this.props
-    if (!getFeatureInFilter(d, filters)) {
+    const { idProperty, layers, filters, filterOperators } = this.props
+    if (!getFeatureInFilter(d, filters, filterOperators)) {
       return COLOR_TRANSPARENT
     }
     const highlightedFeatures = this._getHighlightedFeatures()
@@ -135,7 +145,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   renderLayers() {
-    const { layers, steps, stepsPickValue, filters, color } = this.props
+    const { layers, steps, stepsPickValue, filters, color, pickable, thickness } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
@@ -158,7 +168,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
               id: `${props.id}-highlight-fills`,
               stroked: false,
-              pickable: true,
+              pickable: pickable,
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
               getFillColor: hasColorSteps ? this._getFillStepsColor : this._getFillColor,
@@ -168,12 +178,15 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
               id: `${props.id}-lines`,
-              lineWidthMinPixels: 1,
+              lineWidthMinPixels: 0,
+              lineWidthUnits: 'pixels',
               filled: false,
               getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
               getLineColor: this._getLineColor,
+              getLineWidth: this._getLineWidth,
               updateTriggers: {
                 getLineColor: [filters, color],
+                getLineWidth: [filters, thickness],
               },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {

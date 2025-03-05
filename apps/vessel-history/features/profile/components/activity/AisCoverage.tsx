@@ -1,13 +1,15 @@
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+
 import { ProgressBar } from '@globalfishingwatch/ui-components'
+
 import styles from './Activity.module.css'
 
 interface AisCoverageProps {
   className?: string
   value?: number
 }
-const AisCoverage: React.FC<AisCoverageProps> = ({ className, value }): React.ReactElement => {
+const AisCoverage: React.FC<AisCoverageProps> = ({ className, value }): React.ReactElement<any> => {
   const { t } = useTranslation()
 
   return (

@@ -1,46 +1,54 @@
 import { useCallback, useRef } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
-import { useTranslation, Trans } from 'react-i18next'
-import { IconButton, Switch } from '@globalfishingwatch/ui-components'
+
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import { useLocationConnect } from 'routes/routes.hook'
-import styles from 'features/workspace/shared/Sections.module.css'
-import { isBasicSearchAllowed } from 'features/search/search.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { WORKSPACE_SEARCH } from 'routes/routes'
+import { IconButton, Switch } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import {
+  selectHasDeprecatedDataviewInstances,
+  selectVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import type { ResourcesState } from 'features/resources/resources.slice'
+import { selectResources } from 'features/resources/resources.slice'
+import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import {
   hasTracksWithNoData,
   useTimebarVesselTracksData,
 } from 'features/timebar/timebar-vessel.hooks'
-import { getVesselShipNameLabel } from 'utils/info'
-import type { ResourcesState } from 'features/resources/resources.slice';
-import { selectResources } from 'features/resources/resources.slice'
-import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
-import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
-import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { getVesselGroupDataviewInstance } from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
+import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
+import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
+import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
+import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
+import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import LocalStorageLoginLink from 'routes/LoginLink'
+import { WORKSPACE_SEARCH } from 'routes/routes'
+import { useLocationConnect } from 'routes/routes.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { getVesselShipNameLabel } from 'utils/info'
+
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
+import VesselTracksLegend from './VesselTracksLegend'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
   return resources[
@@ -50,7 +58,7 @@ const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: st
   ]
 }
 
-function VesselsSection(): React.ReactElement {
+function VesselsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchLocation } = useLocationConnect()
@@ -59,6 +67,7 @@ function VesselsSection(): React.ReactElement {
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
+  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
@@ -153,7 +162,10 @@ function VesselsSection(): React.ReactElement {
   )
   const vesselsToVesselGroup = areVesselsLoading
     ? []
-    : vesselResources.map(({ data }) => {
+    : vesselResources.flatMap(({ data }) => {
+        if (!data) {
+          return []
+        }
         return {
           id: getVesselId(data),
           identities: getVesselIdentities(data),
@@ -163,10 +175,12 @@ function VesselsSection(): React.ReactElement {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx('print-hidden', styles.header)}>
+      <div className={cx(styles.header)}>
         {dataviews.length > 1 && (
           <Switch
+            className="print-hidden"
             active={someVesselsVisible}
+            disabled={hasDeprecatedDataviewInstances}
             onClick={onToggleAllVessels}
             tooltip={t('vessel.toggleAllVessels', 'Toggle all vessels visibility')}
             tooltipPlacement="top"
@@ -174,10 +188,15 @@ function VesselsSection(): React.ReactElement {
         )}
         <h2 className={styles.sectionTitle}>
           {t('common.vessel_other', 'Vessels')}
-          {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
+          <span className="print-hidden">
+            {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
+          </span>
         </h2>
+
         {!readOnly && (
-          <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
+          <div
+            className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
+          >
             {activeDataviews.length > 0 && (
               <VesselGroupAddButton
                 vessels={vesselsToVesselGroup}
@@ -225,7 +244,8 @@ function VesselsSection(): React.ReactElement {
           type="border"
           size="medium"
           testId="search-vessels-open"
-          disabled={!searchAllowed}
+          disabled={!searchAllowed || hasDeprecatedDataviewInstances}
+          className="print-hidden"
           tooltip={
             searchAllowed
               ? t('search.vessels', 'Search vessels')
@@ -235,6 +255,7 @@ function VesselsSection(): React.ReactElement {
           onClick={onSearchClick}
         />
       </div>
+      {hasVisibleDataviews && <VesselTracksLegend />}
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
           dataviews?.map((dataview) => (
@@ -253,8 +274,8 @@ function VesselsSection(): React.ReactElement {
           </div>
         )}
       </SortableContext>
-      {activeDataviews.length > 0 && guestUser && (
-        <p className={styles.disclaimer}>
+      {activeDataviews.length > 0 && guestUser && !hasDeprecatedDataviewInstances && (
+        <p className={cx(styles.disclaimer, 'print-hidden')}>
           {hasVesselsWithNoTrack ? (
             <Trans i18nKey="vessel.trackLogin">
               One of your selected sources requires you to
@@ -269,7 +290,7 @@ function VesselsSection(): React.ReactElement {
           )}
         </p>
       )}
-      <VesselEventsLegend dataviews={dataviews} />
+      {!hasDeprecatedDataviewInstances && <VesselEventsLegend dataviews={dataviews} />}
       <VesselsFromPositions />
     </div>
   )

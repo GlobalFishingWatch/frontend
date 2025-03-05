@@ -1,10 +1,12 @@
 import { uniqBy } from 'es-toolkit'
+
 import type {
   Dataset,
   DatasetSchema,
   DatasetSchemaItem,
   Dataview,
   DataviewDatasetConfig,
+  DataviewDatasetFilter,
   DataviewInstance,
   FilterOperator,
   Resource,
@@ -18,8 +20,8 @@ import {
   EXCLUDE_FILTER_ID,
   INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
-import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
+import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 export function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
@@ -61,6 +63,10 @@ export function isUserTrackDataview(dataview: UrlDataviewInstance) {
 
 export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
   return dataview?.config?.type === DataviewType.HeatmapStatic
+}
+
+export function isHeatmapCurrentsDataview(dataview: UrlDataviewInstance) {
+  return dataview?.config?.type === DataviewType.Currents
 }
 
 export function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
@@ -123,7 +129,7 @@ export const mergeWorkspaceUrlDataviewInstances = (
   >(
     (acc, urlDataview) => {
       const isInWorkspace = workspaceDataviewInstances?.some(
-        (dataviewInstance) => dataviewInstance.id === urlDataview.id
+        (dataviewInstance) => dataviewInstance.id === urlDataview?.id
       )
       if (isInWorkspace) {
         acc.workspace.push(urlDataview)
@@ -334,18 +340,25 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
-export function getDataviewFilters(dataview: UrlDataviewInstance) {
-  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
-    return { ...acc, ...(datasetConfig.filters || {}) }
-  }, {} as Record<string, any>)
+export function getDataviewFilters(dataview: UrlDataviewInstance): DataviewDatasetFilter {
+  if (!dataview) return {}
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce(
+    (acc, datasetConfig) => {
+      return { ...acc, ...(datasetConfig.filters || {}) }
+    },
+    {} as Record<string, any>
+  )
   const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
   return filters
 }
 
 export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDataviewInstance) {
-  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
-    return { ...acc, ...(datasetConfig.filters || {}) }
-  }, {} as Record<string, any>)
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce(
+    (acc, datasetConfig) => {
+      return { ...acc, ...(datasetConfig.filters || {}) }
+    },
+    {} as Record<string, any>
+  )
   const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
   if (!Object.keys(filters).length) {
     return ''
@@ -426,7 +439,7 @@ export function resolveDataviews(
 ) {
   let dataviewInstancesResolved: UrlDataviewInstance[] = dataviewInstances.flatMap(
     (dataviewInstance) => {
-      if (dataviewInstance?.deleted) {
+      if (!dataviewInstance || dataviewInstance?.deleted) {
         return []
       }
       const dataview = dataviews?.find((dataview) => {

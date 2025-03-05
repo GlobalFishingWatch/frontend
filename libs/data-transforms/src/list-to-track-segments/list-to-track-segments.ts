@@ -1,8 +1,11 @@
 import { groupBy } from 'es-toolkit'
+
 import type { TrackSegment } from '@globalfishingwatch/api-types'
-import type { SegmentColumns } from '../types'
+
 import { parseCoords } from '../coordinates'
-import { getUTCDate, normalizePropertiesKeys } from '../schema'
+import { getUTCDate } from '../dates'
+import { normalizePropertiesKeys } from '../schema'
+import type { SegmentColumns } from '../types'
 
 type Args = SegmentColumns & {
   records: Record<string, any>[]
@@ -41,9 +44,9 @@ export const listToTrackSegments = ({
   const sortedRecords = startTime
     ? sortRecordsByTimestamp({ recordsArray, timestampProperty: startTime })
     : recordsArray
-  const groupedLines = hasIdGroup
-    ? groupBy(sortedRecords, (r) => r[lineId])
-    : { no_id: sortedRecords }
+  const groupedLines = groupBy(sortedRecords, (record) => {
+    return `${hasIdGroup ? record[lineId] : 'no_id'}-${record.longitud > 0}`
+  })
   const segments = Object.values(groupedLines).map((line, index) => {
     const groupedSegments = hasSegmentId
       ? groupBy(line, (s) => s[segmentId])

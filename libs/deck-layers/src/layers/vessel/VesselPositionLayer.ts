@@ -7,7 +7,7 @@ export class VesselPositionLayer extends IconLayer {
   getShaders() {
     const shaders = super.getShaders()
     shaders.inject = {
-      'vs:#main-end': `
+      'vs:#main-end': /*glsl*/ `
         gl_Position.z = 1.0;
       `,
     }

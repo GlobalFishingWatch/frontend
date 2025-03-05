@@ -1,29 +1,32 @@
 import type { Color, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
+import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { screen } from 'color-blend'
+
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
+
 import {
   COLOR_HIGHLIGHT_LINE,
   EMPTY_RGBA_COLOR,
-  LayerGroup,
   getLayerGroupOffset,
+  LayerGroup,
 } from '../../../utils'
-import {
-  EMPTY_CELL_COLOR,
-  aggregateCell,
-  compareCell,
-  getIntervalFrames,
-  getVisualizationModeByResolution,
-} from './fourwings-heatmap.utils'
+
 import type {
   FourwingsHeatmapLayerProps,
   FourwingsHeatmapPickingInfo,
   FourwingsHeatmapPickingObject,
 } from './fourwings-heatmap.types'
 import { FourwingsComparisonMode } from './fourwings-heatmap.types'
+import {
+  aggregateCell,
+  compareCell,
+  EMPTY_CELL_COLOR,
+  getIntervalFrames,
+  getVisualizationModeByResolution,
+} from './fourwings-heatmap.utils'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
@@ -132,8 +135,14 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       minVisibleValue,
       maxVisibleValue,
       scales,
+      // zoomOffset = 0,
     } = this.props
-    if (!colorDomain?.length || !colorRanges?.length) {
+    if (
+      !colorDomain?.length ||
+      !colorRanges?.length
+      // TODO research if we can restore this to avoid rendering two zoom levels at the same time
+      // || Math.round(this.context.viewport.zoom) + zoomOffset !== this.props.tile.index.z
+    ) {
       target = EMPTY_CELL_COLOR
       return target
     }
@@ -148,6 +157,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       })
     let chosenValueIndex = 0
     let chosenValue: number | undefined
+
     feature.aggregatedValues = aggregatedCellValues
     aggregatedCellValues.forEach((value, index) => {
       if (value && (!chosenValue || value > chosenValue)) {
@@ -179,7 +189,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         return target
       }
     }
-    return EMPTY_CELL_COLOR
+    target = EMPTY_CELL_COLOR
+    return target
   }
 
   getBivariateFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
@@ -232,7 +243,6 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
     }
-
     const { startFrame, endFrame } = getIntervalFrames({
       startTime,
       endTime,

@@ -1,24 +1,28 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { uniq } from 'es-toolkit'
+
 import type {
   DataviewDatasetConfig,
-  DataviewInstance} from '@globalfishingwatch/api-types';
-import {
-  DatasetTypes,
-  DataviewCategory,
-  DataviewType,
+  DataviewInstance,
+  IdentityVessel,
+  Resource,
 } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import type {
   GetDatasetConfigsCallbacks,
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import {
   extendDataviewDatasetConfig,
   getResources,
   mergeWorkspaceUrlDataviewInstances,
-  resolveDataviews
+  resolveDataviewDatasetResource,
+  resolveDataviews,
+  selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
+
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
+import { PORTS_FOOTPRINT_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -28,72 +32,54 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
+import {
+  getVesselGroupActivityDataviewInstance,
+  getVesselGroupDataviewInstance,
+  getVesselGroupEventsDataviewInstances,
+} from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectReportCategorySelector } from 'features/reports/reports.config.selectors'
+import type {
+  ReportActivitySubCategory,
+  ReportEventsSubCategory,
+} from 'features/reports/reports.types'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
-import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
+import { getRelatedIdentityVesselIds, getVesselProperty } from 'features/vessel/vessel.utils'
+import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
 import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import {
-  selectIsWorkspaceLocation,
-  selectUrlDataviewInstances,
   selectIsAnyVesselLocation,
-  selectIsVesselLocation,
-  selectVesselId,
-  selectUrlDataviewInstancesOrder,
+  selectIsPortReportLocation,
+  selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
+  selectIsVesselLocation,
+  selectReportPortId,
   selectReportVesselGroupId,
+  selectUrlDataviewInstances,
+  selectUrlDataviewInstancesOrder,
+  selectVesselId,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
-import {
-  getVesselGroupActivityDataviewInstance,
-  getVesselGroupDataviewInstance,
-  getVesselGroupEventsDataviewInstances,
-} from 'features/reports/vessel-groups/vessel-group-report.dataviews'
-import type { ReportCategory } from 'features/reports/areas/area-reports.types'
-import { getReportCategoryFromDataview } from 'features/reports/areas/area-reports.utils'
-import {
-  selectVGRActivitySubsection,
-  selectVGREventsSubsection,
-  selectVGRSection,
-} from 'features/reports/vessel-groups/vessel-group.config.selectors'
+import { formatInfoField } from 'utils/info'
 
 const EMPTY_ARRAY: [] = []
-
-export const selectDataviewInstancesMerged = createSelector(
+export const selectWorkspaceDataviewInstancesMerged = createSelector(
   [
-    selectIsWorkspaceLocation,
+    selectIsRouteWithWorkspace,
     selectWorkspaceStatus,
     selectWorkspaceDataviewInstances,
     selectUrlDataviewInstances,
-    selectIsAnyVesselLocation,
-    selectIsVesselLocation,
-    selectIsVesselGroupReportLocation,
-    selectVGRSection,
-    selectVGRActivitySubsection,
-    selectVGREventsSubsection,
-    selectReportVesselGroupId,
-    selectVesselId,
-    selectVesselInfoData,
   ],
   (
     isWorkspaceLocation,
     workspaceStatus,
     workspaceDataviewInstances,
-    urlDataviewInstances = EMPTY_ARRAY,
-    isAnyVesselLocation,
-    isVesselLocation,
-    isVesselGroupReportLocation,
-    vGRSection,
-    vGRActivitySubsection,
-    vGREventsSubsection,
-    reportVesselGroupId,
-    urlVesselId,
-    vessel
+    urlDataviewInstances = EMPTY_ARRAY
   ): UrlDataviewInstance[] | undefined => {
     if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
       return
@@ -104,8 +90,39 @@ export const selectDataviewInstancesMerged = createSelector(
         urlDataviewInstances
       ) || []
 
+    return mergedDataviewInstances
+  }
+)
+
+// Inject dataviews on the fly for reports and vessel profile
+export const selectDataviewInstancesInjected = createSelector(
+  [
+    selectWorkspaceDataviewInstancesMerged,
+    selectIsAnyVesselLocation,
+    selectIsVesselLocation,
+    selectIsPortReportLocation,
+    selectIsVesselGroupReportLocation,
+    selectReportCategorySelector,
+    selectReportVesselGroupId,
+    selectReportPortId,
+    selectVesselId,
+    selectVesselInfoData,
+  ],
+  (
+    dataviewInstances,
+    isAnyVesselLocation,
+    isVesselLocation,
+    isPortReportLocation,
+    isVesselGroupReportLocation,
+    reportCategory,
+    reportVesselGroupId,
+    reportPortId,
+    urlVesselId,
+    vessel
+  ): UrlDataviewInstance[] | undefined => {
+    const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     if (isAnyVesselLocation) {
-      const existingDataviewInstance = mergedDataviewInstances?.find(
+      const existingDataviewInstance = dataviewInstancesInjected?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
       )
       if (!existingDataviewInstance && vessel?.identities) {
@@ -123,44 +140,92 @@ export const selectDataviewInstancesMerged = createSelector(
           urlVesselId,
           vesselDatasets
         )
-        mergedDataviewInstances.push({ ...dataviewInstance, datasetsConfig })
+        dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
       }
       if (isVesselLocation) {
         VESSEL_PROFILE_DATAVIEWS_INSTANCES.forEach((dataviewInstance) => {
-          if (!mergedDataviewInstances.find(({ id }) => id === dataviewInstance.id)) {
-            mergedDataviewInstances.push({ ...dataviewInstance })
+          if (!dataviewInstancesInjected.find(({ id }) => id === dataviewInstance.id)) {
+            dataviewInstancesInjected.push({ ...dataviewInstance })
           }
         })
       }
     }
     if (isVesselGroupReportLocation) {
-      let vesselGroupDataviewInstance = mergedDataviewInstances?.find((dataview) =>
+      let vesselGroupDataviewInstance = dataviewInstances?.find((dataview) =>
         dataviewHasVesselGroupId(dataview, reportVesselGroupId)
       )
       if (!vesselGroupDataviewInstance) {
         vesselGroupDataviewInstance = getVesselGroupDataviewInstance(reportVesselGroupId)
         if (vesselGroupDataviewInstance) {
-          mergedDataviewInstances.push(vesselGroupDataviewInstance)
+          dataviewInstancesInjected.push(vesselGroupDataviewInstance)
         }
       }
-      if (vGRSection === 'activity') {
-        const activityVGRInstance = getVesselGroupActivityDataviewInstance({
-          vesselGroupId: reportVesselGroupId,
-          color: vesselGroupDataviewInstance?.config?.color,
-          colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
-          activityType: vGRActivitySubsection,
+      if (reportCategory === 'activity') {
+        const activityReportSubCategories: ReportActivitySubCategory[] = ['fishing', 'presence']
+        activityReportSubCategories.forEach((category) => {
+          const activitySubcategoryInstance = getVesselGroupActivityDataviewInstance({
+            vesselGroupId: reportVesselGroupId,
+            color: vesselGroupDataviewInstance?.config?.color,
+            colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
+            activityType: category,
+          })
+          if (activitySubcategoryInstance) {
+            dataviewInstancesInjected.push(activitySubcategoryInstance)
+          }
         })
-        if (activityVGRInstance) {
-          mergedDataviewInstances.push(activityVGRInstance)
-        }
       }
-      if (vGRSection === 'events') {
-        mergedDataviewInstances.push(
-          ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, vGREventsSubsection)
-        )
+      if (reportCategory === 'events') {
+        const eventsReportSubCategories: ReportEventsSubCategory[] = [
+          'encounter',
+          'loitering',
+          'gap',
+          'port_visit',
+        ]
+        eventsReportSubCategories.forEach((category) => {
+          dataviewInstancesInjected.push(
+            ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, category)
+          )
+        })
       }
     }
-    return mergedDataviewInstances
+    if (isPortReportLocation) {
+      let footprintDataviewInstance = dataviewInstancesInjected?.find(
+        (dataview) => dataview.id === PORTS_FOOTPRINT_DATAVIEW_SLUG
+      )
+      if (footprintDataviewInstance) {
+        footprintDataviewInstance.config = {
+          ...footprintDataviewInstance.config,
+          filters: {
+            ...footprintDataviewInstance.config?.filters,
+            gfw_id: [reportPortId],
+          },
+        }
+      } else {
+        footprintDataviewInstance = {
+          id: `${PORTS_FOOTPRINT_DATAVIEW_SLUG}-${Date.now()}`,
+          dataviewId: PORTS_FOOTPRINT_DATAVIEW_SLUG,
+          config: {
+            pickable: false,
+            visible: true,
+            filters: {
+              gfw_id: [reportPortId],
+            },
+          },
+        }
+      }
+      dataviewInstancesInjected.push(footprintDataviewInstance)
+    }
+    return dataviewInstancesInjected
+  }
+)
+
+export const selectDataviewInstancesMerged = createSelector(
+  [selectWorkspaceDataviewInstancesMerged, selectDataviewInstancesInjected],
+  (
+    dataviewInstances = EMPTY_ARRAY,
+    injectedDataviewInstances = EMPTY_ARRAY
+  ): UrlDataviewInstance[] | undefined => {
+    return [...dataviewInstances, ...injectedDataviewInstances]
   }
 )
 
@@ -201,6 +266,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     }
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
+        dataviewInstance &&
         dataviewInstance.id?.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
         !dataviewInstance.datasetsConfig?.length &&
         dataviewInstance.config?.info
@@ -262,35 +328,31 @@ export const selectDataviewsResources = createSelector(
 
 const defaultDataviewResolved: UrlDataviewInstance[] = []
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsResources],
-  (dataviewsResources) => {
-    return dataviewsResources.dataviews || defaultDataviewResolved
-  }
-)
-
-const SUPPORTED_REPORT_CATEGORIES = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Environment,
-]
-const SUPPORTED_REPORT_TYPES = [DataviewType.HeatmapAnimated, DataviewType.HeatmapStatic]
-export const selectActiveSupportedReportDataviews = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviews) => {
-    return dataviews.filter(
-      (d) =>
-        d.config?.visible &&
-        d.category &&
-        d.config?.type &&
-        SUPPORTED_REPORT_CATEGORIES.includes(d.category) &&
-        SUPPORTED_REPORT_TYPES.includes(d.config?.type)
-    )
-  }
-)
-
-export const selectActiveReportCategories = createSelector(
-  [selectActiveSupportedReportDataviews],
-  (dataviews): ReportCategory[] => {
-    return uniq(dataviews.flatMap((d) => getReportCategoryFromDataview(d) || []))
+  [selectDataviewsResources, selectResources],
+  (dataviewsResources, resources) => {
+    if (!dataviewsResources?.dataviews) {
+      return defaultDataviewResolved
+    }
+    const dataviews = dataviewsResources.dataviews.map((dataview) => {
+      if (dataview.category !== DataviewCategory.Vessels) {
+        return dataview
+      }
+      const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+      const infoResource: Resource<IdentityVessel> = resources[url]
+      if (!infoResource || !infoResource.data) {
+        return dataview
+      }
+      return {
+        ...dataview,
+        config: {
+          ...dataview.config,
+          name: formatInfoField(
+            getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),
+            'shipname'
+          ),
+        },
+      } as UrlDataviewInstance
+    })
+    return dataviews
   }
 )

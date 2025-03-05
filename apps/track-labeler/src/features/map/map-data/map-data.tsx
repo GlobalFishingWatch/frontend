@@ -1,10 +1,12 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo,useState } from 'react'
 import cx from 'classnames'
 import formatCoords from 'formatcoords'
 import { DateTime } from 'luxon'
+
 // import { ScaleControl } from '@globalfishingwatch/react-map-gl'
 import type { CoordinatePosition } from '../../../types'
 import { useTimerangeConnect } from '../../timebar/timebar.hooks'
+
 // import { useViewport } from '../map.hooks'
 import styles from './map-data.module.css'
 

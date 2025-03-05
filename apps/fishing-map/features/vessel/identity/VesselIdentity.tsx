@@ -1,51 +1,56 @@
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import { saveAs } from 'file-saver'
+/* eslint-disable @next/next/no-img-element */
 import { Fragment, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import type { Tab, TabsProps } from '@globalfishingwatch/ui-components'
-import { IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
+import { saveAs } from 'file-saver'
+
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { Tab, TabsProps } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import type { VesselLastIdentity } from 'features/search/search.slice'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
+import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   CUSTOM_VMS_IDENTITY_FIELD_GROUPS,
   IDENTITY_FIELD_GROUPS,
   REGISTRY_FIELD_GROUPS,
   REGISTRY_SOURCES,
 } from 'features/vessel/vessel.config'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
+import {
+  selectVesselIdentityId,
+  selectVesselIdentitySource,
+} from 'features/vessel/vessel.config.selectors'
+import { parseVesselToCSV } from 'features/vessel/vessel.download'
+import {
+  filterRegistryInfoByDateAndSSVID,
+  getCurrentIdentityVessel,
+} from 'features/vessel/vessel.utils'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsVesselLocation } from 'routes/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
   getVesselGearTypeLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
-import {
-  filterRegistryInfoByDateAndSSVID,
-  getCurrentIdentityVessel,
-} from 'features/vessel/vessel.utils'
-import { parseVesselToCSV } from 'features/vessel/vessel.download'
-import {
-  selectVesselIdentityId,
-  selectVesselIdentitySource,
-} from 'features/vessel/vessel.config.selectors'
-import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
-import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
-import { useLocationConnect } from 'routes/routes.hook'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectIsVesselLocation } from 'routes/routes.selectors'
-import type { VesselLastIdentity } from 'features/search/search.slice'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
-import styles from './VesselIdentity.module.css'
+
 import VesselRegistryField from './VesselRegistryField'
 import VesselTypesField from './VesselTypesField'
 
+import styles from './VesselIdentity.module.css'
+
 const VesselIdentity = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
@@ -133,8 +138,6 @@ const VesselIdentity = () => {
             {t('vessel.infoSources.registry', 'Registry')}
             {identitySource === VesselIdentitySourceEnum.Registry && (
               <DataTerminology
-                size="tiny"
-                type="default"
                 title={t('vessel.infoSources.registry', 'Registry')}
                 terminologyKey="registryInfo"
               />
@@ -150,8 +153,6 @@ const VesselIdentity = () => {
             {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS'}
             {identitySource === VesselIdentitySourceEnum.SelfReported && (
               <DataTerminology
-                size="tiny"
-                type="default"
                 title={t('vessel.infoSources.selfReported', 'Self Reported')}
                 terminologyKey="selfReported"
               />
@@ -184,14 +185,13 @@ const VesselIdentity = () => {
             <div>
               <label>{t('vessel.registrySources', 'Registry Sources')}</label>
               {vesselIdentity?.sourceCode ? (
-                <Tooltip content={vesselIdentity?.sourceCode?.join(', ')}>
-                  <VesselIdentityField
-                    className={styles.help}
-                    value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
-                      vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
-                    }`}
-                  />
-                </Tooltip>
+                <VesselIdentityField
+                  tooltip={vesselIdentity?.sourceCode?.filter(Boolean)?.join(', ')}
+                  className={styles.help}
+                  value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
+                    vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
+                  }`}
+                />
               ) : (
                 EMPTY_FIELD_PLACEHOLDER
               )}
@@ -248,7 +248,10 @@ const VesselIdentity = () => {
                   const key = field.key as keyof VesselLastIdentity
                   let value = vesselIdentity[key] as string
                   if (key === 'depthM' || key === 'builtYear') {
-                    value = vesselIdentity[key]?.value?.toString()
+                    value =
+                      (vesselIdentity[key] as any) === API_LOGIN_REQUIRED
+                        ? API_LOGIN_REQUIRED
+                        : vesselIdentity[key]?.value?.toString()
                   }
                   return (
                     <div key={field.key}>
@@ -256,8 +259,6 @@ const VesselIdentity = () => {
                         <label>{t(`vessel.${label}` as any, label)}</label>
                         {field.terminologyKey && (
                           <DataTerminology
-                            size="tiny"
-                            type="default"
                             title={t(`vessel.${label}`, label) as string}
                             terminologyKey={field.terminologyKey}
                           />
@@ -298,21 +299,58 @@ const VesselIdentity = () => {
                     alt={registrySourceData?.key}
                     className={styles.registrySourceLogo}
                   />
-                  <div>
-                    <label>{`${registrySourceData?.key} ${t(
-                      `vessel.extraInfo`,
-                      'has more information'
-                    )}`}</label>
-                    <p>{`${t(`vessel.extraInfo`, 'Request additional information at')} ${
-                      registrySourceData?.contact
-                    }`}</p>
-                  </div>
+                  <Tooltip
+                    content={t(
+                      'vessel.extraInfoTooltip',
+                      'TMT has additional insights relating to the vessel’s compliance history and/or IUU listing'
+                    )}
+                  >
+                    <div>
+                      <label>{`${registrySourceData?.key} ${t(
+                        `vessel.extraInfo`,
+                        'has more information'
+                      )}`}</label>
+                      <p>{registrySourceData?.contact}</p>
+                    </div>
+                  </Tooltip>
                 </div>
               )}
           </div>
         )}
         <VesselIdentitySelector />
       </div>
+      {vesselIdentity?.ssvid && (
+        <div className={styles.container}>
+          <label>View in</label>
+          <div className={styles.externalToolLinks}>
+            <a
+              href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Marine Traffic
+              <Icon icon="external-link" type="default" />
+            </a>
+            <a
+              href={`https://app.triton.fish/search?name=${vesselIdentity?.ssvid}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Triton
+              <Icon icon="external-link" type="default" />
+            </a>
+            {/* TODO this Skylight link is broken */}
+            {/* <a
+            href={`https://sc-production.skylight.earth/vesseldetails/B:${vesselIdentity?.ssvid}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Skylight
+            <Icon icon="external-link" type="default" />
+          </a> */}
+          </div>
+        </div>
+      )}
     </Fragment>
   )
 }

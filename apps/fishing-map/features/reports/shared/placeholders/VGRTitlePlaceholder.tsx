@@ -1,5 +1,6 @@
-import cx from 'classnames'
 import { Fragment } from 'react'
+import cx from 'classnames'
+
 import styles from './placeholders.module.css'
 
 export default function VGRTitlePlaceholder() {
@@ -33,10 +34,6 @@ export default function VGRTitlePlaceholder() {
           <div style={{ width: '20rem' }} className={cx(styles.block, styles.animate, styles.S)} />
           <div style={{ width: '15rem' }} className={cx(styles.block, styles.animate, styles.S)} />
           <div style={{ width: '20rem' }} className={cx(styles.block, styles.animate, styles.S)} />
-        </div>
-        <div className={styles.sentence}>
-          <div style={{ width: '12rem' }} className={cx(styles.block, styles.animate, styles.S)} />
-          <div style={{ width: '6rem' }} className={cx(styles.block, styles.animate, styles.S)} />
         </div>
       </div>
     </Fragment>

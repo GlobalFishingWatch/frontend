@@ -1,18 +1,20 @@
 import React, { Fragment, useMemo } from 'react'
-import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import type { RiskOutput, VesselWithHistory } from 'types';
+
+import { FIRST_YEAR_OF_DATA, LAST_YEAR_FORCED_LABOR } from 'data/config'
+import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
 import { RiskLevel } from 'types'
 import { VesselFieldLabel } from 'types/vessel'
-import DataAndTerminology from 'features/data-and-terminology/DataAndTerminology'
-import { FIRST_YEAR_OF_DATA, LAST_YEAR_FORCED_LABOR } from 'data/config'
+
 import styles from './ForcedLabor.module.css'
 
 interface ForcedLaborProps {
   vessel: VesselWithHistory | null
 }
 
-const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement => {
+const ForcedLabor: React.FC<ForcedLaborProps> = (props): React.ReactElement<any> => {
   const vessel = props.vessel
   const { t } = useTranslation()
 

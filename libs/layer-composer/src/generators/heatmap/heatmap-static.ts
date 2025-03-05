@@ -1,22 +1,23 @@
 import { VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import type { FilterSpecification } from '@globalfishingwatch/maplibre-gl'
-import type {
-  MergedGeneratorConfig,
-  HeatmapStaticGeneratorConfig,
-  ColorRampsIds} from '../types';
-import {
-  GeneratorType
-} from '../types'
-import { isUrlAbsolute } from '../../utils'
+
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
 import type { ExtendedLayerMeta} from '../../types';
 import { Group } from '../../types'
-import { addURLSearchParams } from '../utils'
+import { isUrlAbsolute } from '../../utils'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
+import type {
+  ColorRampsIds,  HeatmapStaticGeneratorConfig,
+  MergedGeneratorConfig} from '../types';
+import {
+  GeneratorType
+} from '../types'
+import { addURLSearchParams } from '../utils'
+
+import { hoverInteractionPaint } from './util/get-base-layers'
+import { getLegendsCompare } from './util/get-legends'
 import { HEATMAP_COLOR_RAMPS } from './colors'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM } from './config'
-import { getLegendsCompare } from './util/get-legends'
-import { hoverInteractionPaint } from './util/get-base-layers'
 
 export type GlobalHeatmapStaticGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapStaticGeneratorConfig>

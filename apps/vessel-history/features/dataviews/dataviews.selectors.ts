@@ -1,15 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
+import type { WorkspaceProfileViewParam } from 'types'
+
 import type { DataviewInstance } from '@globalfishingwatch/api-types';
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import type {
-  UrlDataviewInstance,
-  GetDatasetConfigsCallbacks} from '@globalfishingwatch/dataviews-client';
+  GetDatasetConfigsCallbacks,  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
 import {
-  resolveDataviews,
-  mergeWorkspaceUrlDataviewInstances,
+  _getLegacyResources,
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
-  _getLegacyResources,
+  mergeWorkspaceUrlDataviewInstances,
+  resolveDataviews,
 } from '@globalfishingwatch/dataviews-client'
 import type {
   BasemapGeneratorConfig} from '@globalfishingwatch/layer-composer';
@@ -18,25 +19,26 @@ import {
   GeneratorType,
   getGeneratorConfig,
 } from '@globalfishingwatch/layer-composer'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
-import { selectVesselDataview } from 'features/vessels/vessels.slice'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import {
-  selectWorkspaceDataviewInstances,
-  selectWorkspaceProfileView,
-  selectWorkspaceStateProperty,
-} from 'features/workspace/workspace.selectors'
-import { createDeepEqualSelector } from 'utils/selectors'
+
 import { APP_PROFILE_VIEWS } from 'data/config'
+import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import {
   selectTrackChunksConfig,
   selectTrackThinningConfig,
 } from 'features/resources/resources.slice'
 import { trackDatasetConfigsCallback } from 'features/resources/resources.utils'
-import type { WorkspaceProfileViewParam } from 'types'
+import { selectVesselDataview } from 'features/vessels/vessels.slice'
+import {
+  selectWorkspaceDataviewInstances,
+  selectWorkspaceProfileView,
+  selectWorkspaceStateProperty,
+} from 'features/workspace/workspace.selectors'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { createDeepEqualSelector } from 'utils/selectors'
+
+import { BACKGROUND_LAYER, DEFAULT_VESSEL_DATAVIEWS,OFFLINE_LAYERS } from './dataviews.config'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
-import { BACKGROUND_LAYER, OFFLINE_LAYERS, DEFAULT_VESSEL_DATAVIEWS } from './dataviews.config'
 import { getVesselDataviewInstanceFactory } from './dataviews.utils'
 
 const defaultBasemapDataview = {

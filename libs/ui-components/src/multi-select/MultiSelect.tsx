@@ -1,19 +1,19 @@
-import React, { useCallback, useState, useMemo, Fragment, useRef } from 'react'
-import { matchSorter } from 'match-sorter'
+import React, { Fragment, type JSX,useCallback, useMemo, useRef, useState } from 'react'
+import cx from 'classnames'
 import type {
   UseComboboxState,
+  UseComboboxStateChange,
   UseComboboxStateChangeTypes,
-  UseComboboxStateChange} from 'downshift';
-import {
-  useMultipleSelection,
-  useCombobox
 } from 'downshift'
-import cx from 'classnames'
-import type { IconType } from '../icon';
+import { useCombobox,useMultipleSelection } from 'downshift'
+import { matchSorter } from 'match-sorter'
+
+import type { IconType } from '../icon'
 import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
-import { Tooltip } from '../tooltip'
 import { InputText } from '../input-text'
+import { Tooltip } from '../tooltip'
+
 import styles from '../select/Select.module.css'
 import multiSelectStyles from './MultiSelect.module.css'
 
@@ -85,8 +85,8 @@ const getPlaceholderBySelections = (
         })
         .join(', ')
     : selections.length > 1
-      ? `${selections.length} selected`
-      : selections[0]?.label.toString()
+    ? `${selections.length} selected`
+    : selections[0]?.label.toString()
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
@@ -317,8 +317,8 @@ export function MultiSelect(props: MultiSelectProps) {
                 highlight && isSelected
                   ? 'close'
                   : (highlight || isSelected) && !item.disableSelection
-                    ? 'tick'
-                    : ('' as IconType)
+                  ? 'tick'
+                  : ('' as IconType)
               return (
                 <Tooltip key={item.id} content={item.tooltip} placement="top-start">
                   <li

@@ -1,24 +1,19 @@
-import type { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { EventType } from '@globalfishingwatch/api-types'
+import type { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   DrawFeatureType,
   FourwingsVisualizationMode,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
   RulerData,
+  VesselsColorByProperty,
 } from '@globalfishingwatch/deck-layers'
+
 import type { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
-import type { AreaReportState, AreaReportStateProperty } from 'features/reports/areas/area-reports.types'
-import type { VesselProfileState, VesselProfileStateProperty } from 'features/vessel/vessel.types'
-import type {
-  VesselGroupReportState,
-  VesselGroupReportStateProperty,
-} from 'features/vessel-groups/vessel-groups.types'
+import type { ReportState, ReportStateProperty } from 'features/reports/reports.types'
 import type { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
-import type {
-  PortsReportState,
-  PortsReportStateProperty,
-} from 'features/reports/ports/ports-report.types'
+import type { VesselProfileState, VesselProfileStateProperty } from 'features/vessel/vessel.types'
+
 export { Locale } from '@globalfishingwatch/api-types'
 
 type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -35,10 +30,8 @@ export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
   | AnyStateProperty
-  | AreaReportStateProperty
+  | ReportStateProperty
   | VesselProfileStateProperty
-  | VesselGroupReportStateProperty
-  | PortsReportStateProperty
   | VesselSearchStateProperty
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
@@ -64,11 +57,10 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisations
   visibleEvents?: VisibleEvents
+  vesselsColorBy?: VesselsColorByProperty
 }
 
-export type AnyWorkspaceState = Partial<
-  WorkspaceState & AreaReportState & VesselProfileState & VesselGroupReportState & PortsReportState
->
+export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>
 
 type RedirectParam = {
   'access-token'?: string
@@ -92,9 +84,7 @@ export type QueryParams = Partial<WorkspaceViewport> &
   WorkspaceState &
   Partial<WorkspaceTimeRange> &
   Partial<VesselProfileState> &
-  Partial<AreaReportState> &
-  Partial<VesselGroupReportState> &
-  Partial<PortsReportState> &
+  Partial<ReportState> &
   AppState &
   RedirectParam &
   VesselSearchState

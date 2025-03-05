@@ -1,22 +1,24 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { Query } from 'redux-first-router'
 import type { RootState } from 'reducers'
-import type { WorkspaceParam, QueryParams } from 'types'
+import type { Query } from 'redux-first-router'
+
 import { WorkspaceCategory } from 'data/workspaces'
-import type {
-  ROUTE_TYPES} from './routes';
+import type { QueryParams, WorkspaceParam } from 'types'
+
+import type { ROUTE_TYPES } from './routes'
 import {
+  PORT_REPORT,
   REPORT,
-  WORKSPACE_REPORT,
-  VESSEL,
-  WORKSPACE_ROUTES,
-  WORKSPACE_VESSEL,
+  ROUTES_WITH_WORKSPACES,
   SEARCH,
   USER,
-  WORKSPACES_LIST,
-  WORKSPACE_SEARCH,
+  VESSEL,
   VESSEL_GROUP_REPORT,
-  PORT_REPORT,
+  WORKSPACE_REPORT,
+  WORKSPACE_ROUTES,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -28,6 +30,10 @@ export const selectLocationType = createSelector(
 
 export const selectIsWorkspaceLocation = createSelector([selectLocationType], (locationType) =>
   WORKSPACE_ROUTES.includes(locationType)
+)
+
+export const selectIsRouteWithWorkspace = createSelector([selectLocationType], (locationType) =>
+  ROUTES_WITH_WORKSPACES.includes(locationType)
 )
 
 export const selectIsVesselLocation = createSelector(
@@ -45,7 +51,7 @@ export const selectIsAnyVesselLocation = createSelector(
   (isVesselLocation, isWorkspaceVesselLocation) => isVesselLocation || isWorkspaceVesselLocation
 )
 
-const selectisAreaReportLocation = createSelector(
+export const selectIsStandaloneReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT
 )
@@ -56,7 +62,7 @@ const selectIsWorkspaceReportLocation = createSelector(
 )
 
 export const selectIsAnyAreaReportLocation = createSelector(
-  [selectisAreaReportLocation, selectIsWorkspaceReportLocation],
+  [selectIsStandaloneReportLocation, selectIsWorkspaceReportLocation],
   (isAreaReportLocation, isWorkspaceReportLocation) =>
     isAreaReportLocation || isWorkspaceReportLocation
 )

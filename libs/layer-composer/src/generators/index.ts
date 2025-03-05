@@ -1,4 +1,5 @@
 import { DataviewType } from '@globalfishingwatch/api-types'
+
 import AnnotationsGenerator from './annotations/annotations'
 import BackgroundGenerator from './background/background'
 import BaseMapGenerator from './basemap/basemap'
@@ -7,8 +8,8 @@ import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-po
 import ContextGenerator from './context/context'
 import GLStyleGenerator from './gl/gl'
 import HeatmapGenerator from './heatmap/heatmap'
-import HeatmapStaticGenerator from './heatmap/heatmap-static'
 import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
+import HeatmapStaticGenerator from './heatmap/heatmap-static'
 import PolygonsGenerator from './polygons/polygons'
 import RulersGenerator from './rulers/rulers'
 import TileClusterGenerator from './tile-cluster/tile-cluster'
@@ -17,6 +18,7 @@ import UserContextGenerator from './user-context/user-context'
 import UserPointsGenerator from './user-points/user-points'
 import VesselEventsGenerator from './vessel-events/vessel-events'
 import VesselsEventsShapesGenerator from './vessel-events/vessel-events-shapes'
+import VesselPositionsGenerator from './vessel-positions/vessel-positions'
 
 export * from './heatmap/types'
 export * from './heatmap/util'
@@ -60,6 +62,7 @@ export type AnyGeneratorClass =
   | UserPointsGenerator
   | VesselEventsGenerator
   | VesselsEventsShapesGenerator
+  | VesselPositionsGenerator
 
 export type GeneratorsRecord = Record<any, AnyGeneratorClass>
 
@@ -82,6 +85,7 @@ const GeneratorConfig: GeneratorsRecord = {
   [DataviewType.UserPoints]: new UserPointsGenerator(),
   [DataviewType.VesselEvents]: new VesselEventsGenerator(),
   [DataviewType.VesselEventsShapes]: new VesselsEventsShapesGenerator(),
+  [DataviewType.VesselPositions]: new VesselPositionsGenerator(),
 }
 
 export default GeneratorConfig

@@ -1,33 +1,31 @@
-import type { PayloadAction} from '@reduxjs/toolkit';
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
-import type {
-  AdvancedSearchQueryFieldKey} from '@globalfishingwatch/api-client';
+
+import type { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client'
 import {
-  GFWAPI,
-  getAdvancedSearchQuery,
   ADVANCED_SEARCH_QUERY_FIELDS,
-  parseAPIError
+  getAdvancedSearchQuery,
+  GFWAPI,
+  parseAPIError,
 } from '@globalfishingwatch/api-client'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
-  Dataset,
   APIVesselSearchPagination,
+  Dataset,
   IdentityVessel,
-  RegistryExtraFields} from '@globalfishingwatch/api-types';
-import {
-  DatasetTypes,
-  EndpointId,
-  VesselIdentitySourceEnum
+  RegistryExtraFields,
 } from '@globalfishingwatch/api-types'
-import type { AsyncError} from 'utils/async-slice';
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { DatasetTypes, EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
+import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
+import type { VesselSearchState } from 'features/search/search.types'
 import type { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
-import type { VesselSearchState } from 'features/search/search.types'
-import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
+import type { AsyncError } from 'utils/async-slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type VesselLastIdentity = Omit<IdentityVesselData, 'identities' | 'dataset'> & {
   dataset: Dataset | string
@@ -104,10 +102,12 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             .replace(`${VesselIdentitySourceEnum.SelfReported}.`, '')
           const filter = (filters as any)[cleanField]
           if (filter && isInFieldsAllowed) {
-            let value = filter
+            let value = Array.isArray(filter)
+              ? (filter.map((f) => f.trim()) as string[])
+              : (filter.trim() as string)
             // Supports searching by multiple values separated by comma and semicolon
             const regex = /[,;]/
-            if (ADVANCED_SEARCH_FIELDS.includes(field as any) && regex.test(value)) {
+            if (ADVANCED_SEARCH_FIELDS.includes(field as any) && regex.test(value as string)) {
               value = (value as string)
                 .split(regex)
                 .map((v) => v.trim())

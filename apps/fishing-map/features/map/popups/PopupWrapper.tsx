@@ -1,33 +1,35 @@
 import { useRef } from 'react'
-import cx from 'classnames'
-import type {
-  Middleware} from '@floating-ui/react';
+import type { Middleware } from '@floating-ui/react'
 import {
-  offset,
+  arrow,
   autoPlacement,
   autoUpdate,
-  useFloating,
   detectOverflow,
-  arrow,
   FloatingArrow,
+  offset,
+  useFloating,
 } from '@floating-ui/react'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import useClickedOutside from 'hooks/use-clicked-outside'
+
 import { MAP_WRAPPER_ID } from '../map.config'
+
 import styles from './Popup.module.css'
 
 const overflowMiddlware: Middleware = {
   name: 'overflow',
   async fn(state) {
-    if (!state) {
+    const boundary = document.getElementById(MAP_WRAPPER_ID)
+    if (!state || !boundary) {
       return {}
     }
 
-    const overflow = await detectOverflow(state, {
-      boundary: document.getElementById(MAP_WRAPPER_ID)!,
-    })
+    const overflow = await detectOverflow(state, { boundary })
     Object.entries(overflow).forEach(([key, value]) => {
       if (value > 0) {
         const property = key === 'top' || key === 'bottom' ? 'y' : 'x'

@@ -1,9 +1,11 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
+
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { selectAdvancedSearchFields, selectUrlQuery } from 'routes/routes.selectors'
-import { useAppDispatch } from 'features/app/app.hooks'
+
 import { fetchData, fetchVesselSearchThunk } from './search.thunk'
 
 // Maximum number of vessels that can be merged, I set 300 to not change the code in the case we need to rollback
@@ -53,7 +55,7 @@ export const useSearchConnect = (params: useSearchConnectParams = defaultParams)
   const query = useSelector(selectUrlQuery)
   const advancedSearch = useSelector(selectAdvancedSearchFields)
 
-  const promiseRef = useRef<any>()
+  const promiseRef = useRef<any>(undefined)
 
   const fetchResults = useCallback(
     (offset = 0) => {

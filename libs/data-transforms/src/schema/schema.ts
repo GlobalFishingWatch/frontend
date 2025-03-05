@@ -1,18 +1,18 @@
 import { uniq } from 'es-toolkit'
-import snakeCase from 'lodash/snakeCase'
-import toNumber from 'lodash/toNumber'
+import type { FeatureCollection } from 'geojson'
 import max from 'lodash/max'
 import min from 'lodash/min'
-import type { FeatureCollection } from 'geojson'
-import type { DateTimeOptions } from 'luxon';
-import { DateTime } from 'luxon'
+import snakeCase from 'lodash/snakeCase'
+
 import type {
   Dataset,
   DatasetConfigurationUI,
   DatasetSchemaItem,
   DatasetSchemaType,
 } from '@globalfishingwatch/api-types'
+
 import { parseCoords } from '../coordinates'
+
 import { GUESS_COLUMN_DICT } from './guess-columns'
 
 type GetFieldSchemaParams = {
@@ -21,39 +21,14 @@ type GetFieldSchemaParams = {
 }
 const MAX_SCHEMA_ENUM_VALUES = 100
 
-type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
-
-export const getUTCDate = (timestamp: string | number) => {
-  // it could receive a timestamp as a string
-  const millis = toNumber(timestamp)
-  if (typeof timestamp === 'number' || !isNaN(millis))
-    return DateTime.fromMillis(millis, { zone: 'UTC' }).toJSDate()
-
-  const tryParseMethods: DateTimeParseFunction[] = [
-    DateTime.fromISO,
-    DateTime.fromSQL,
-    DateTime.fromRFC2822,
-  ]
-  let result
-  for (let index = 0; index < tryParseMethods.length; index++) {
-    const parse = tryParseMethods[index]
-    try {
-      result = parse(timestamp, { zone: 'UTC' })
-      if (result.isValid) {
-        return result.toJSDate()
-      }
-    } catch (e) {
-      return new Date('Invalid Date')
-    }
-  }
-  return new Date('Invalid Date')
-}
-
 export const normalizePropertiesKeys = (object: Record<string, any> | null) => {
-  return Object.entries(object || {}).reduce((acc, [key, value]) => {
-    acc[snakeCase(key)] = value
-    return acc
-  }, {} as Record<string, any>)
+  return Object.entries(object || {}).reduce(
+    (acc, [key, value]) => {
+      acc[snakeCase(key)] = value
+      return acc
+    },
+    {} as Record<string, any>
+  )
 }
 
 export const getFieldSchema = (
@@ -64,7 +39,10 @@ export const getFieldSchema = (
   // As soon as we find a string, there are no compatibility with others
   // this is needed because there are cases where are mixed types in the same column
   const isStringType = values.some((d) => typeof d === 'string')
-  const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType)
+  const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType | 'object')
+  if (type === 'object') {
+    return null
+  }
 
   if (values?.length) {
     const schema: DatasetSchemaItem = {
@@ -73,8 +51,8 @@ export const getFieldSchema = (
         GUESS_COLUMN_DICT.longitude.some((t) => t === field)
           ? 'coordinate'
           : type === 'number'
-          ? 'range'
-          : type,
+            ? 'range'
+            : type,
     }
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {

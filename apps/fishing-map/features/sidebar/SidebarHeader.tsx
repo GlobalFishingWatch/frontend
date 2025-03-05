@@ -1,12 +1,14 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
-import dynamic from 'next/dynamic'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import Sticky from 'react-sticky-el'
+import cx from 'classnames'
+import dynamic from 'next/dynamic'
 import Link from 'redux-first-router-link'
-import type {
-  ChoiceOption} from '@globalfishingwatch/ui-components';
+
+import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import {
   Choice,
   IconButton,
@@ -15,8 +17,31 @@ import {
   SubBrands,
   Tooltip,
 } from '@globalfishingwatch/ui-components'
-import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { resetAreaDetail } from 'features/areas/areas.slice'
+import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
+import LanguageToggle from 'features/i18n/LanguageToggle'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { useHighlightReportArea } from 'features/reports/report-area/area-reports.hooks'
+import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
+import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { selectCurrentReport } from 'features/reports/reports.selectors'
+import { selectReportsStatus } from 'features/reports/reports.slice'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
+import type { SearchType } from 'features/search/search.config'
+import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
+import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
+import { useSearchFiltersConnect } from 'features/search/search.hook'
+import { cleanVesselSearchResults } from 'features/search/search.slice'
+import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
+import UserButton from 'features/user/UserButton'
+import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
+import { resetVesselState } from 'features/vessel/vessel.slice'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
@@ -24,63 +49,44 @@ import {
   selectIsWorkspaceOwner,
   selectLastVisitedWorkspace,
   selectWorkspace,
+  selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
   cleanReportQuery,
 } from 'features/workspace/workspace.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import type { ROUTE_TYPES } from 'routes/routes'
+import { HOME, REPORT, WORKSPACE } from 'routes/routes'
+import { updateLocation } from 'routes/routes.actions'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
-  selectIsAnySearchLocation,
   selectIsAnyAreaReportLocation,
+  selectIsAnyReportLocation,
+  selectIsAnySearchLocation,
+  selectIsAnyVesselLocation,
+  selectIsStandaloneReportLocation,
   selectIsWorkspaceLocation,
+  selectIsWorkspaceVesselLocation,
   selectLocationCategory,
   selectLocationPayload,
   selectLocationQuery,
   selectLocationType,
-  selectIsWorkspaceVesselLocation,
-  selectIsAnyVesselLocation,
-  selectIsAnyReportLocation,
 } from 'routes/routes.selectors'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { resetReportData } from 'features/reports/shared/activity/reports-activity.slice'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportsStatus } from 'features/reports/areas/area-reports.slice'
-import { selectCurrentReport } from 'features/app/selectors/app.reports.selector'
-import { useLocationConnect } from 'routes/routes.hook'
-import type { ROUTE_TYPES} from 'routes/routes';
-import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import type { SearchType } from 'features/search/search.config';
-import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
-import { resetAreaDetail } from 'features/areas/areas.slice'
-import { selectReportAreaIds } from 'features/reports/areas/area-reports.selectors'
-import { useSearchFiltersConnect } from 'features/search/search.hook'
-import { resetVesselState } from 'features/vessel/vessel.slice'
-import { cleanVesselSearchResults } from 'features/search/search.slice'
-import UserButton from 'features/user/UserButton'
-import LanguageToggle from 'features/i18n/LanguageToggle'
-import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
-import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
-import { setModalOpen } from 'features/modals/modals.slice'
-import { useHighlightReportArea } from 'features/reports/areas/area-reports.hooks'
-import { resetVesselGroupReportData } from 'features/reports/vessel-groups/vessel-group-report.slice'
-import { resetPortsReportData } from 'features/reports/ports/ports-report.slice'
-import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
-import { updateLocation } from 'routes/routes.actions'
-import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import type { QueryParams } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { useClipboardNotification } from './sidebar.hooks'
+
 import styles from './SidebarHeader.module.css'
 
 const NewReportModal = dynamic(
   () =>
-    import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/areas/NewAreaReportModal')
+    import(
+      /* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/shared/new-report-modal/NewAreaReportModal'
+    )
 )
 
 function SaveReportButton() {
@@ -203,6 +209,7 @@ function SaveWorkspaceButton() {
           size="medium"
           className="print-hidden"
           onClick={onSaveAsClick}
+          testId="save-workspace-button"
           tooltip={t('analysis.save', 'Save this report')}
           tooltipPlacement="bottom"
         />
@@ -226,16 +233,19 @@ function SaveWorkspaceButton() {
                   : t('workspace.saveOwnerOnly', 'This workspace can only be edited by its creator')
               }
             >
-              <li
-                className={cx(styles.groupOption, { [styles.disabled]: !canEditWorkspace })}
-                onClick={onSaveClick}
-                key="workspace-save"
-              >
-                {t('workspace.save', 'Save this report')}
+              <li key="workspace-save">
+                <button
+                  className={cx(styles.groupOption, { [styles.disabled]: !canEditWorkspace })}
+                  onClick={onSaveClick}
+                >
+                  {t('workspace.save', 'Save this report')}
+                </button>
               </li>
             </Tooltip>
-            <li className={styles.groupOption} onClick={onSaveAsClick} key="workspace-save-as">
-              {t('workspace.saveAs', 'Save this as a new workspace')}
+            <li key="workspace-save-as">
+              <button className={styles.groupOption} onClick={onSaveAsClick}>
+                {t('workspace.saveAs', 'Save this as a new workspace')}
+              </button>
             </li>
           </ul>
         }
@@ -347,7 +357,7 @@ function ShareWorkspaceButton() {
 }
 
 function cleanReportPayload(payload: Record<string, any>) {
-  const { areaId, datasetId, ...rest } = payload || {}
+  const { areaId, datasetId, reportId, ...rest } = payload || {}
   return rest
 }
 
@@ -355,12 +365,17 @@ function CloseReportButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportAreaIds = useSelector(selectReportAreaIds)
+  const reportsStatus = useSelector(selectReportsStatus)
   const locationQuery = useSelector(selectLocationQuery)
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
+  const isStandaloneReportLocation = useSelector(selectIsStandaloneReportLocation)
   const highlightArea = useHighlightReportArea()
+  const isReportLoading =
+    isStandaloneReportLocation && reportsStatus !== AsyncReducerStatus.Finished
 
   const onCloseClick = () => {
     resetSidebarScroll()
@@ -369,17 +384,30 @@ function CloseReportButton() {
     dispatch(resetVesselGroupReportData())
     dispatch(resetAreaDetail(reportAreaIds))
     dispatch(cleanCurrentWorkspaceReportState())
-    dispatch(resetPortsReportData())
   }
 
   const isWorkspaceRoute = workspaceId !== undefined && workspaceId !== DEFAULT_WORKSPACE_ID
+  const isStandaloneReportCustomWorkspace =
+    isStandaloneReportLocation && workspaceId !== DEFAULT_WORKSPACE_ID
   const linkTo = {
-    type: isWorkspaceRoute ? WORKSPACE : HOME,
+    type: isStandaloneReportCustomWorkspace || isWorkspaceRoute ? WORKSPACE : HOME,
     payload: {
       ...cleanReportPayload(locationPayload),
-      ...(isWorkspaceRoute && { category: workspaceCategory, workspaceId }),
+      ...((isStandaloneReportCustomWorkspace || isWorkspaceRoute) && {
+        category: workspaceCategory,
+        workspaceId,
+      }),
     },
-    query: cleanReportQuery(locationQuery),
+    query: {
+      ...cleanReportQuery(locationQuery),
+      ...(isStandaloneReportLocation && {
+        dataviewInstances: workspaceDataviewInstances,
+      }),
+    },
+  }
+
+  if (isReportLoading) {
+    return <IconButton icon="close" type="border" className="print-hidden" />
   }
 
   return (
@@ -577,6 +605,7 @@ function SidebarHeader() {
         </a>
         {!readOnly && (
           <Fragment>
+            {/* TODO:CVP2 add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && <SaveWorkspaceButton />}
             {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) && (

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
+
 import type {
   SelectOnChange,
   SelectOption} from '@globalfishingwatch/ui-components';
@@ -10,6 +11,7 @@ import {
   InputText,
   Tooltip,
 } from '@globalfishingwatch/ui-components'
+
 import styles from './SubareaSelector.module.css'
 
 export interface SubareaSelectOption<T = any> extends SelectOption {

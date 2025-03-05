@@ -1,6 +1,7 @@
-import type { DataviewInstance } from '@globalfishingwatch/api-types';
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
+
 import { PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
@@ -16,6 +17,7 @@ export function getWorkspaceEnv(): WorkspaceEnv {
 export enum WorkspaceCategory {
   FishingActivity = 'fishing-activity',
   MarineManager = 'marine-manager',
+  Reports = 'reports',
 }
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
@@ -46,6 +48,8 @@ export const GRATICULES_DATAVIEW_SLUG = 'graticules'
 export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure'
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas'
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas'
+export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint'
+export const CURRENTS_DATAVIEW_SLUG = 'currents'
 
 // Workspaces dataviews
 export const FISHING_DATAVIEW_SLUG = 'apparent-fishing-effort-v-3'
@@ -104,6 +108,7 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   FAO_AREAS_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   FIXED_SAR_INFRASTRUCTURE,
+  PORTS_FOOTPRINT_DATAVIEW_SLUG,
 ]
 
 // Global environmental dataviews

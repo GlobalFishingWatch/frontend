@@ -1,17 +1,22 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { useMemo } from 'react'
-import { Icon } from '@globalfishingwatch/ui-components'
+
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { Icon } from '@globalfishingwatch/ui-components'
+
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+
 import { selectVesselInfoData } from '../selectors/vessel.selectors'
+
+import { INSIGHTS_FISHING, INSIGHTS_NON_FISHING, MIN_INSIGHTS_YEAR } from './insights.config'
 import InsightWrapper from './InsightWrapper'
-import { INSIGHTS_NON_FISHING, INSIGHTS_FISHING, MIN_INSIGHTS_YEAR } from './insights.config'
+
 import styles from './Insights.module.css'
 
 const Insights = () => {
@@ -54,8 +59,6 @@ const Insights = () => {
           end: formatI18nDate(end),
         })}
         <DataTerminology
-          size="tiny"
-          type="default"
           title={t('vessel.sectionInsights', 'Insights')}
           terminologyKey="insights"
         />

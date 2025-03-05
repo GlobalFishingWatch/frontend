@@ -1,19 +1,21 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import cx from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { DateTime, Interval } from 'luxon'
-import { Button, IconButton } from '@globalfishingwatch/ui-components'
+
 import type { VesselTypeV2 } from '@globalfishingwatch/api-types'
+import { Button, IconButton } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_EMPTY_VALUE } from 'data/config'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import type { VesselWithHistory } from 'types'
+import { GFW_CONTACT_US_MAIL, TMT_CONTACT_US_URL } from 'data/constants'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import I18nDate, { formatI18nSpecialDate } from 'features/i18n/i18nDate'
-import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
+import { useUser } from 'features/user/user.hooks'
+import { selectUserData } from 'features/user/user.slice'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
-import type { OfflineVessel} from 'types/vessel';
-import { VesselFieldLabel } from 'types/vessel'
+import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import {
   selectAdvancedSearchFields,
   selectDataset,
@@ -22,18 +24,21 @@ import {
   selectUrlQuery,
   selectVesselId,
 } from 'routes/routes.selectors'
-import { useUser } from 'features/user/user.hooks'
-import { TMT_CONTACT_US_URL } from 'data/constants'
-import { selectUserData } from 'features/user/user.slice'
+import type { VesselWithHistory } from 'types'
+import type { OfflineVessel } from 'types/vessel'
+import { VesselFieldLabel } from 'types/vessel'
+import { getUTCDateTime } from 'utils/dates'
+
 import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
-import InfoField from './InfoField'
-import styles from './Info.module.css'
-import 'react-image-gallery/styles/css/image-gallery.css'
-import Highlights from './Highlights'
+
 import AuthorizationsField from './AuthorizationsField'
 import ForcedLabor from './ForcedLabor'
+// import Highlights from './Highlights'
 import HistoryDate from './HistoryDate'
-import { getUTCDateTime } from 'utils/dates'
+import InfoField from './InfoField'
+
+import 'react-image-gallery/styles/css/image-gallery.css'
+import styles from './Info.module.css'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -42,7 +47,7 @@ interface InfoProps {
   onMoveToMap: () => void
 }
 
-const Info: React.FC<InfoProps> = (props): React.ReactElement => {
+const Info: React.FC<InfoProps> = (props): React.ReactElement<any> => {
   const vessel = props.vessel
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
@@ -131,9 +136,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   )
   const contactUsLink = useMemo(
     () =>
-      `${TMT_CONTACT_US_URL}&email=${encodeURIComponent(
-        email
-      )}&usercontext=${searchContext}&data=${JSON.stringify({
+      `mailto:${GFW_CONTACT_US_MAIL}?subject=${searchContext}&body=${JSON.stringify({
         name: query,
         ...advancedSearch,
         tmtMatchId: vesselTmtId,
@@ -146,7 +149,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         vesselCallsign: vessel?.callsign,
         vesselGeartype: vessel?.geartype,
       })}`,
-    [advancedSearch, email, query, searchContext, vessel, vesselId, vesselTmtId]
+    [advancedSearch, query, searchContext, vessel, vesselId, vesselTmtId]
   )
 
   const onContactUsClick = useCallback(() => {
@@ -419,7 +422,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             if you have questions or would like more information about this vessel.
           </Trans>
         </div>
-        <Highlights onMoveToMap={props.onMoveToMap}></Highlights>
+        {/* <Highlights onMoveToMap={props.onMoveToMap}></Highlights> */}
       </div>
     </Fragment>
   )

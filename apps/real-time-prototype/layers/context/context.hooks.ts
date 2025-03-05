@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from 'react'
 import type { PickingInfo } from '@deck.gl/core'
-import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { useAtomValue } from 'jotai'
 import { ContextsLayer } from 'layers/context/ContextsLayer'
-import { hoveredFeaturesAtom, clickedFeaturesAtom } from 'features/map/map-picking.hooks'
+import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+
+import { clickedFeaturesAtom,hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
 
 type ContextsAtom = {
   ids: string[]

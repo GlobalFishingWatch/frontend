@@ -1,27 +1,20 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
-import type { Dataset } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
+
 import { isAuthError } from '@globalfishingwatch/api-client'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { Spinner } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import SearchBasic from 'features/search/basic/SearchBasic'
-import SearchAdvanced from 'features/search/advanced/SearchAdvanced'
-import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlaceholders'
-import I18nNumber from 'features/i18n/i18nNumber'
-import { selectWorkspaceId } from 'routes/routes.selectors'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { selectDatasetsError, selectDatasetsStatus } from 'features/datasets/datasets.slice'
-import { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import I18nNumber from 'features/i18n/i18nNumber'
+import SearchAdvanced from 'features/search/advanced/SearchAdvanced'
+import SearchBasic from 'features/search/basic/SearchBasic'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
-import SearchDownload from 'features/search/SearchDownload'
-import SearchActions from 'features/search/SearchActions'
 import {
   useFetchSearchResults,
   useSearchConnect,
@@ -29,20 +22,30 @@ import {
   useSearchFiltersErrors,
 } from 'features/search/search.hook'
 import {
+  isAdvancedSearchAllowed,
+  isBasicSearchAllowed,
+  selectAdvancedSearchDatasets,
+  selectBasicSearchDatasets,
+} from 'features/search/search.selectors'
+import {
   cleanVesselSearchResults,
-  setSuggestionClicked,
   selectSearchPagination,
   selectSearchResults,
   selectSelectedVessels,
+  setSuggestionClicked,
 } from 'features/search/search.slice'
-import {
-  selectBasicSearchDatasets,
-  selectAdvancedSearchDatasets,
-  isBasicSearchAllowed,
-  isAdvancedSearchAllowed,
-} from 'features/search/search.selectors'
 import type { VesselSearchState } from 'features/search/search.types'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import SearchActions from 'features/search/SearchActions'
+import SearchDownload from 'features/search/SearchDownload'
+import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlaceholders'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectWorkspaceId } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import styles from './Search.module.css'
 
 function Search() {
@@ -114,7 +117,7 @@ function Search() {
         filters: searchFilters,
       })
     }
-     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchDatasets])
 
   useEffect(() => {
@@ -122,7 +125,7 @@ function Search() {
       dispatch(cleanVesselSearchResults())
     }
     dispatchQueryParams({ query: debouncedQuery })
-     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
   useEffect(() => {

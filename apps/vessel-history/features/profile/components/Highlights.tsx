@@ -1,13 +1,17 @@
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import cx from 'classnames'
+
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
-import { SETTINGS } from 'routes/routes'
+import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
+import { TrackCategory,trackEvent } from 'features/app/analytics.hooks'
+import useMapEvents from 'features/map/map-events.hooks'
+import useViewport from 'features/map/map-viewport.hooks'
 import type {
   RenderedEvent} from 'features/vessels/activity/vessels-activity.selectors';
 import {
@@ -15,21 +19,21 @@ import {
   selectFilteredActivityHighlightEvents,
 } from 'features/vessels/activity/vessels-activity.selectors'
 import { selectAnyHighlightsSettingDefined } from 'features/vessels/activity/vessels-highlight.selectors'
+import { SETTINGS } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
-import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
-import useMapEvents from 'features/map/map-events.hooks'
-import useViewport from 'features/map/map-viewport.hooks'
 import type { Voyage } from 'types/voyage';
 import { EventTypeVoyage } from 'types/voyage'
-import ActivityModalContent from './activity/ActivityModalContent'
+
 import ActivityItem from './activity/ActivityItem'
+import ActivityModalContent from './activity/ActivityModalContent'
+
 import styles from './activity/Activity.module.css'
 
 interface HighlightsProps {
   onMoveToMap: () => void
 }
 
-const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement => {
+const Highlights: React.FC<HighlightsProps> = (props): React.ReactElement<any> => {
   const { t } = useTranslation()
   const anyHighlightsSettingDefined = useSelector(selectAnyHighlightsSettingDefined)
   const events = useSelector(selectFilteredActivityHighlightEvents)

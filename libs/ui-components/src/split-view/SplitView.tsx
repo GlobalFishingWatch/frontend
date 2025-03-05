@@ -1,9 +1,15 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo,useState } from 'react'
 import cx from 'classnames'
-import { Icon } from '../icon'
+
 import { Choice } from '../choice'
+import { Icon } from '../icon'
+
 import useSmallScreen from './use-small-screen'
+
 import styles from './SplitView.module.css'
+
+export const MAIN_DOM_ID = 'app-main'
+export const SIDEBAR_DOM_ID = 'app-sidebar'
 
 interface SplitViewProps {
   isOpen?: boolean
@@ -91,7 +97,11 @@ export function SplitView(props: SplitViewProps) {
         )}
         {aside}
       </aside>
-      <main style={{ left: isOpen ? asideWidth : 0 }} className={cx(styles.main, mainClassName)}>
+      <main
+        id={MAIN_DOM_ID}
+        style={{ left: isOpen ? asideWidth : 0 }}
+        className={cx(styles.main, mainClassName)}
+      >
         {main}
       </main>
     </div>

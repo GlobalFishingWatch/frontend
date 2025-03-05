@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+
 import {
   APP_PROFILE_VIEWS,
   DOWNLOAD_ACTIVITY_PERMISSION,

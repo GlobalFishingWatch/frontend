@@ -1,30 +1,35 @@
 import { Fragment, useCallback } from 'react'
-import cx from 'classnames'
-import { SortableContext } from '@dnd-kit/sortable'
-import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import { SortableContext } from '@dnd-kit/sortable'
+import cx from 'classnames'
+
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
-import styles from 'features/workspace/shared/Sections.module.css'
-import { getEventLabel } from 'utils/analytics'
-import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { useAddDataset } from 'features/datasets/datasets.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setModalOpen } from 'features/modals/modals.slice'
-import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
-import Hint from 'features/help/Hint'
+import { useAddDataset } from 'features/datasets/datasets.hook'
 import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import Hint from 'features/help/Hint'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import LocalStorageLoginLink from 'routes/LoginLink'
+import { getEventLabel } from 'utils/analytics'
+
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+
 import LayerPanel from './UserLayerPanel'
+
+import styles from 'features/workspace/shared/Sections.module.css'
 
 export function RegisterOrLoginToUpload() {
   return (
@@ -44,7 +49,7 @@ export function RegisterOrLoginToUpload() {
   )
 }
 
-function UserSection(): React.ReactElement {
+function UserSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
   const guestUser = useSelector(selectIsGuestUser)

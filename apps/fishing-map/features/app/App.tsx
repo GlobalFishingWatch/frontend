@@ -1,124 +1,74 @@
-import { useState, useCallback, useEffect, useLayoutEffect, Fragment } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
-import dynamic from 'next/dynamic'
-import { useTranslation } from 'react-i18next'
-import MemoryStatsComponent from 'next-react-memory-stats'
-import { ToastContainer } from 'react-toastify'
+import { Fragment, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { FpsView } from 'react-fps'
-import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { ToastContainer } from 'react-toastify'
+import MemoryStatsComponent from 'next-react-memory-stats'
+
 import type { Workspace } from '@globalfishingwatch/api-types'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import {
-  selectIsAnySearchLocation,
-  selectIsVesselLocation,
-  selectIsAnyAreaReportLocation,
-  selectIsWorkspaceLocation,
-  selectLocationType,
-  selectWorkspaceId,
-  selectIsMapDrawing,
-  selectIsVesselGroupReportLocation,
-  selectIsAnyVesselLocation,
-  selectIsPortReportLocation,
-} from 'routes/routes.selectors'
+import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
+
 import menuBgImage from 'assets/images/menubg.jpg'
-import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
+import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
+import ErrorBoundary from 'features/app/ErrorBoundary'
+import { selectDebugOptions } from 'features/debug/debug.slice'
+import { t } from 'features/i18n/i18n'
+import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import AppModals from 'features/modals/Modals'
+import { selectReportAreaBounds } from 'features/reports/reports.config.selectors'
 import Sidebar from 'features/sidebar/Sidebar'
-import Footer from 'features/footer/Footer'
+import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
+import { fetchUserThunk } from 'features/user/user.slice'
+import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
 import {
   isWorkspacePasswordProtected,
   selectCurrentWorkspaceId,
-  selectIsWorkspaceMapReady,
   selectWorkspaceCustomStatus,
-  selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk } from 'features/user/user.slice'
-import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectShowTimeComparison } from 'features/reports/areas/area-reports.selectors'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   HOME,
-  WORKSPACE,
-  USER,
-  WORKSPACES_LIST,
-  VESSEL,
-  WORKSPACE_VESSEL,
-  REPORT,
-  WORKSPACE_REPORT,
-  SEARCH,
-  WORKSPACE_SEARCH,
-  VESSEL_GROUP_REPORT,
   PORT_REPORT,
+  REPORT,
+  SEARCH,
+  USER,
+  VESSEL,
+  VESSEL_GROUP_REPORT,
+  WORKSPACE,
+  WORKSPACE_REPORT,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
 } from 'routes/routes'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { t } from 'features/i18n/i18n'
-import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
-import AppModals from 'features/modals/Modals'
-import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
-import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
-import ErrorBoundary from 'features/app/ErrorBoundary'
-import { selectDebugOptions } from 'features/debug/debug.slice'
-import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
-import { selectReportAreaBounds } from 'features/reports/areas/area-reports.config.selectors'
-import { useAppDispatch } from './app.hooks'
+import { useBeforeUnload, useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
+import {
+  selectIsAnyAreaReportLocation,
+  selectIsAnySearchLocation,
+  selectIsAnyVesselLocation,
+  selectIsMapDrawing,
+  selectIsVesselGroupReportLocation,
+  selectIsVesselLocation,
+  selectIsWorkspaceLocation,
+  selectLocationType,
+  selectWorkspaceId,
+} from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
-import styles from './App.module.css'
-import 'react-toastify/dist/ReactToastify.min.css'
+import { useAppDispatch } from './app.hooks'
+import Main from './Main'
 
-const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
-const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+import styles from './App.module.css'
 
 declare global {
   interface Window {
     gtag: any
   }
-}
-
-const Main = () => {
-  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const isPortReportLocation = useSelector(selectIsPortReportLocation)
-  const locationType = useSelector(selectLocationType)
-  const reportLocation = useSelector(selectIsAnyAreaReportLocation)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
-  const isSmallScreen = useSmallScreen()
-
-  const isRouteWithTimebar = locationType === VESSEL
-  const isRouteWithMap = locationType !== SEARCH
-  const isWorkspacesRouteWithTimebar =
-    isWorkspaceLocation ||
-    locationType === WORKSPACE_VESSEL ||
-    isPortReportLocation ||
-    (isVesselGroupReportLocation && !isTimeComparisonReport) ||
-    (reportLocation && !isTimeComparisonReport)
-  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
-  const showTimebar =
-    isRouteWithTimebar ||
-    (isWorkspacesRouteWithTimebar && workspaceStatus === AsyncReducerStatus.Finished)
-
-  return (
-    <Fragment>
-      {isRouteWithMap && (
-        <div
-          className={cx(styles.mapContainer, {
-            [styles.withTimebar]: showTimebar && isWorkspaceMapReady,
-            [styles.withSmallScreenSwitch]: isSmallScreen,
-            [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
-          })}
-        >
-          {isWorkspaceMapReady && <Map />}
-        </div>
-      )}
-      {showTimebar && isWorkspaceMapReady && <Timebar />}
-
-      <Footer />
-    </Fragment>
-  )
 }
 
 const setMobileSafeVH = () => {
@@ -130,6 +80,8 @@ function App() {
   useAnalytics()
   useDatasetDrag()
   useReplaceLoginUrl()
+  useBeforeUnload()
+  useUserLanguageUpdate()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
@@ -206,7 +158,7 @@ function App() {
         action.abort()
       }
     }
-     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
@@ -217,15 +169,11 @@ function App() {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
-     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     dispatch(fetchUserThunk({ guest: false }))
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(fetchHighlightWorkspacesThunk())
   }, [dispatch])
 
   const onToggle = useCallback(() => {

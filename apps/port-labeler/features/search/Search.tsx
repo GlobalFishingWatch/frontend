@@ -1,11 +1,15 @@
-import { Fragment, useState, useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useMemo,useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
+
 import type { SelectOption } from '@globalfishingwatch/ui-components';
 import { Button, IconButton, InputText, Select } from '@globalfishingwatch/ui-components'
+
 import { setSelectedPoints } from 'features/labeler/labeler.slice'
-import styles from './Search.module.css'
+
 import { useSearchConnect } from './search.hooks'
+
+import styles from './Search.module.css'
 
 interface SearchOptions { }
 

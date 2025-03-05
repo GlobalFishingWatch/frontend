@@ -1,25 +1,28 @@
-import { useSelector } from 'react-redux'
 import { useCallback, useMemo, useRef } from 'react'
+import { useSelector } from 'react-redux'
+
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { useLocationConnect } from 'routes/routes.hook'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  ADVANCED_SEARCH_FIELDS,
+  isDatasetSearchFieldNeededSupported,
+} from 'features/search/advanced/advanced-search.utils'
+import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
 import {
   selectSearchFilters,
   selectSearchOption,
   selectSearchQuery,
 } from 'features/search/search.config.selectors'
-import type { VesselSearchState } from 'features/search/search.types'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
-  selectBasicSearchDatasets,
   selectAdvancedSearchDatasets,
+  selectBasicSearchDatasets,
 } from 'features/search/search.selectors'
-import {
-  ADVANCED_SEARCH_FIELDS,
-  isDatasetSearchFieldNeededSupported,
-} from 'features/search/advanced/advanced-search.utils'
+import type { VesselSearchState } from 'features/search/search.types'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+
 import {
   cleanVesselSearchResults,
   fetchVesselSearchThunk,
@@ -33,7 +36,10 @@ export const useSearchConnect = () => {
   const searchPagination = useSelector(selectSearchPagination)
   const searchSuggestion = useSelector(selectSearchSuggestion)
   const searchSuggestionClicked = useSelector(selectSearchSuggestionClicked)
-  return { searchPagination, searchSuggestion, searchSuggestionClicked }
+  return useMemo(
+    () => ({ searchPagination, searchSuggestion, searchSuggestionClicked }),
+    [searchPagination, searchSuggestion, searchSuggestionClicked]
+  )
 }
 
 const FIRST_FETCH_FILTERS_TO_IGNORE = [
@@ -112,11 +118,14 @@ export const useSearchFiltersConnect = () => {
 
   const hasFilters = hasFiltersActive(searchFilters)
 
-  return {
-    hasFilters,
-    searchFilters,
-    setSearchFilters,
-  }
+  return useMemo(
+    () => ({
+      hasFilters,
+      searchFilters,
+      setSearchFilters,
+    }),
+    [hasFilters, searchFilters, setSearchFilters]
+  )
 }
 
 type FetchSearchResultsParams = {
@@ -127,7 +136,7 @@ type FetchSearchResultsParams = {
 }
 
 export const useFetchSearchResults = () => {
-  const promiseRef = useRef<any>()
+  const promiseRef = useRef<any>(undefined)
   const query = useSelector(selectSearchQuery)
   const activeSearchOption = useSelector(selectSearchOption)
   const { searchPagination } = useSearchConnect()

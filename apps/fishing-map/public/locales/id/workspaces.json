@@ -1,0 +1,75 @@
+{
+  "fishing-activity": {
+    "default-public": {
+      "name": "Global fishing activity",
+      "description": "Monitor vessel-based human activity at sea in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.",
+      "cta": "Explore the map"
+    },
+    "carrier-portal-public": {
+      "name": "Carrier Vessel Portal",
+      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
+      "cta": "Explore the carrier vessel portal"
+    },
+    "deep_sea_mining_watch-public": {
+      "name": "Deep sea mining watch",
+      "description": "TODO TODO TODO",
+      "cta": "Explore the portal"
+    }
+  },
+  "reports": {
+    "activity-report": {
+      "name": "Global Vessel Activity",
+      "description": "Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries."
+    },
+    "detections-report": {
+      "name": "Global Dark Vessel Detections",
+      "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night."
+    },
+    "events-report": {
+      "name": "Global Vessel Events",
+      "description": "TODO TODO TODO Something something about encounters, loitering, gaps, port visits and all that..."
+    }
+  },
+  "marine-manager": {
+    "ascension-public": {
+      "name": "Pulau Ascension",
+      "description": "Pulau Ascension terletak di tengah Samudra Atlantik. Pada 2019, seluruh 445.000 kilometer persegi (171.800 mil persegi) perairan Ascension ditetapkan sebagai kawasan perlindungan laut."
+    },
+    "fiji-public": {
+      "name": "Fiji",
+      "description": "Terletak di Pasifik Selatan, Republik Fiji terdiri dari 322 pulau dan memiliki zona ekonomi eksklusif lebih dari 1,2 juta kilometer persegi (460.000 mil persegi)."
+    },
+    "galapagos-public": {
+      "name": "Galápagos",
+      "description": "Cagar Alam Laut Galapagos merupakan situs Warisan Dunia UNESCO, mencakup 133.000 kilometer persegi (51.300 mil persegi) Samudra Pasifik di lepas pantai Amerika Selatan."
+    },
+    "guyana-public": {
+      "name": "Guyana",
+      "description": "Zona ekonomi eksklusif Guyana terletak di lepas pantai timur laut Amerika Selatan dan mencakup lautan seluas 137.000 kilometer persegi (52.800 mil persegi). "
+    },
+    "micronesia-public": {
+      "name": "Federasi Mikronesia",
+      "description": "Terdiri dari 607 pulau, empat negara bagian Federasi Mikronesia (Yap, Chuuk, Pohnpei, dan Kosrae) memiliki zona ekonomi eksklusif lebih dari 2,6 juta kilometer persegi (1 juta mil persegi)."
+    },
+    "maldives-public": {
+      "name": "Maladewa",
+      "description": "Republik Maladewa adalah negara kepulauan yang terletak di Samudra Hindia dan memiliki tatanan terumbu karang terbesar ketujuh di dunia. Maladewa memiliki zona ekonomi eksklusif yang mencakup area seluas hampir 1 juta kilometer persegi (385.000 mil persegi)."
+    },
+    "niue-public": {
+      "name": "Niue",
+      "description": "Niue terletak Samudra Pasifik bagian tengah dan kawasan lindung laut Moana Mahu mencakup 40 persen dari zona ekonomi eksklusif Niue, yang mencakup 127.000 kilometer persegi (49.000 mil persegi)."
+    },
+    "palau-public": {
+      "name": "Palau",
+      "description": "Republik Palau adalah sekumpulan pulau yang terletak di Samudra Pasifik Barat. Pada tahun 2020, Palau sepenuhnya melindungi 80% zona ekonomi eksklusifnya untuk membentuk Suaka Laut Nasional Palau, yang mewakili 475.077 kilometer persegi (183.000 mil persegi), dengan menutup perairan ini untuk semua bentuk kegiatan ekstraktif, termasuk penangkapan ikan. "
+    },
+    "tristan-public": {
+      "name": "Tristan da Cunha",
+      "description": "Tristan da Cunha adalah pulau terpencil di Samudra Atlantik Selatan. Pada tahun 2020, komunitas Tristan da Cunha menetapkan 90 persen dari 690.000 kilometer persegi (266.400 mil persegi) zona lautnya untuk perlindungan laut."
+    },
+    "mediterranean-public": {
+      "name": "Mediterania dan Laut Hitam",
+      "description": "Mediterania dan Laut Hitam mencakup hampir 3 juta kilometer persegi (1,1 juta mil persegi) lautan antara Eropa dan Afrika. "
+    }
+  }
+}

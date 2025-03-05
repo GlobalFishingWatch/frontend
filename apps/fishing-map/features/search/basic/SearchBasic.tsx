@@ -1,35 +1,39 @@
+import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
 import Downshift from 'downshift'
-import { useTranslation } from 'react-i18next'
-import { useCallback } from 'react'
-import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
+
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
-import { AsyncReducerStatus } from 'utils/async-slice'
+
 import { useAppDispatch } from 'features/app/app.hooks'
 import SearchBasicResultList from 'features/search/basic/SearchBasicResultList'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
-import type { IdentityVesselData } from 'features/vessel/vessel.slice'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { selectSearchQuery } from 'features/search/search.config.selectors'
+import { useSearchConnect } from 'features/search/search.hook'
+import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import {
+  selectSearchResults,
   selectSearchStatus,
-  setSuggestionClicked,
   selectSelectedVessels,
   setSelectedVessels,
-  selectSearchResults,
+  setSuggestionClicked,
 } from 'features/search/search.slice'
-import { useSearchConnect } from 'features/search/search.hook'
 import {
-  SearchNotAllowed,
-  SearchNoResultsState,
   SearchEmptyState,
+  SearchNoResultsState,
+  SearchNotAllowed,
 } from 'features/search/SearchPlaceholders'
-import { isBasicSearchAllowed } from 'features/search/search.selectors'
+import type { IdentityVesselData } from 'features/vessel/vessel.slice'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
-import styles from './SearchBasic.module.css'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import SearchError from './SearchError'
+
+import styles from './SearchBasic.module.css'
 
 export type SearchComponentProps = {
   onSuggestionClick?: () => void
@@ -60,12 +64,21 @@ function SearchBasic({
     searchPagination.since &&
     searchResults?.length < searchPagination.total
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchQueryParams({ query: e.target.value }, isStandaloneSearchLocation)
-    if (e.target.value !== searchQuery && searchSuggestionClicked) {
-      dispatch(setSuggestionClicked(false))
-    }
-  }
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatchQueryParams({ query: e.target.value }, isStandaloneSearchLocation)
+      if (e.target.value !== searchQuery && searchSuggestionClicked) {
+        dispatch(setSuggestionClicked(false))
+      }
+    },
+    [
+      dispatch,
+      dispatchQueryParams,
+      isStandaloneSearchLocation,
+      searchQuery,
+      searchSuggestionClicked,
+    ]
+  )
 
   const handleIntersection = useCallback(
     (entry: IntersectionObserverEntry) => {

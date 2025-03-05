@@ -1,21 +1,22 @@
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect } from 'react'
+
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
-import type { AsyncError } from 'utils/async-slice'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
-  getContextDataviewInstance,
-  getUserPolygonsDataviewInstance,
-  getUserPointsDataviewInstance,
-  getUserTrackDataviewInstance,
   getBigQuery4WingsDataviewInstance,
   getBigQueryEventsDataviewInstance,
+  getContextDataviewInstance,
+  getUserPointsDataviewInstance,
+  getUserPolygonsDataviewInstance,
+  getUserTrackDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import type { DatasetUploadConfig } from 'features/modals/modals.slice'
 import {
   selectDatasetUploadModalConfig,
@@ -23,15 +24,15 @@ import {
   setDatasetUploadConfig,
   setModalOpen,
 } from 'features/modals/modals.slice'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import type { AsyncError } from 'utils/async-slice'
+
 import type { UpsertDataset } from './datasets.slice'
 import {
-  upsertDatasetThunk,
   deleteDatasetThunk,
   fetchDatasetByIdThunk,
-  fetchLastestCarrierDatasetThunk,
-  selectCarrierLatestDataset,
-  selectCarrierLatestDatasetStatus,
   updateDatasetThunk,
+  upsertDatasetThunk,
 } from './datasets.slice'
 import { getIsBQEditorDataset } from './datasets.utils'
 
@@ -78,7 +79,7 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
     [upsertDataviewInstance]
   )
 
-  return { addDataviewFromDatasetToWorkspace }
+  return useMemo(() => ({ addDataviewFromDatasetToWorkspace }), [addDataviewFromDatasetToWorkspace])
 }
 
 export const useDatasetModalOpenConnect = () => {
@@ -92,10 +93,13 @@ export const useDatasetModalOpenConnect = () => {
     [dispatch]
   )
 
-  return {
-    datasetModalOpen,
-    dispatchDatasetModalOpen,
-  }
+  return useMemo(
+    () => ({
+      datasetModalOpen,
+      dispatchDatasetModalOpen,
+    }),
+    [datasetModalOpen, dispatchDatasetModalOpen]
+  )
 }
 
 export const useDatasetModalConfigConnect = () => {
@@ -109,14 +113,18 @@ export const useDatasetModalConfigConnect = () => {
     [dispatch]
   )
 
-  return {
-    ...datasetModal,
-    dispatchDatasetModalConfig,
-  }
+  return useMemo(
+    () => ({
+      ...datasetModal,
+      dispatchDatasetModalConfig,
+    }),
+    [datasetModal, dispatchDatasetModalConfig]
+  )
 }
 
 export const useDatasetsAPI = () => {
   const dispatch = useAppDispatch()
+  const debugOptions = useSelector(selectDebugOptions)
 
   const dispatchFetchDataset = useCallback(
     async (id: string): Promise<{ payload?: Dataset; error?: AsyncError }> => {
@@ -132,14 +140,16 @@ export const useDatasetsAPI = () => {
 
   const dispatchUpsertDataset = useCallback(
     async (createDataset: UpsertDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
-      const action = await dispatch(upsertDatasetThunk(createDataset))
+      const action = await dispatch(
+        upsertDatasetThunk({ ...createDataset, addIdSuffix: debugOptions.addDatasetIdHash })
+      )
       if (upsertDatasetThunk.fulfilled.match(action)) {
         return { payload: action.payload }
       } else {
         return { error: action.payload as AsyncError }
       }
     },
-    [dispatch]
+    [debugOptions?.addDatasetIdHash, dispatch]
   )
 
   const dispatchUpdateDataset = useCallback(
@@ -163,36 +173,15 @@ export const useDatasetsAPI = () => {
     [dispatch]
   )
 
-  return {
-    dispatchFetchDataset,
-    dispatchUpsertDataset,
-    dispatchUpdateDataset,
-    dispatchDeleteDataset,
-  }
-}
-
-export const useCarrierLatestConnect = () => {
-  const dispatch = useAppDispatch()
-  const carrierLatest = useSelector(selectCarrierLatestDataset)
-  const carrierLatestStatus = useSelector(selectCarrierLatestDatasetStatus)
-
-  const dispatchFetchLatestCarrier = useCallback(async (): Promise<{
-    payload?: Dataset
-    error?: AsyncError
-  }> => {
-    const action = await dispatch(fetchLastestCarrierDatasetThunk())
-    if (fetchLastestCarrierDatasetThunk.fulfilled.match(action)) {
-      return { payload: action.payload }
-    } else {
-      return { error: action.payload as AsyncError }
-    }
-  }, [dispatch])
-
-  return {
-    carrierLatest,
-    carrierLatestStatus,
-    dispatchFetchLatestCarrier,
-  }
+  return useMemo(
+    () => ({
+      dispatchFetchDataset,
+      dispatchUpsertDataset,
+      dispatchUpdateDataset,
+      dispatchDeleteDataset,
+    }),
+    [dispatchDeleteDataset, dispatchFetchDataset, dispatchUpdateDataset, dispatchUpsertDataset]
+  )
 }
 
 export const useAutoRefreshImportingDataset = (

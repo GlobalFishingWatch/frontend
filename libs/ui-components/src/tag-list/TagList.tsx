@@ -1,8 +1,11 @@
 import React, { useCallback } from 'react'
 import cx from 'classnames'
+
 import { Tag } from '../tag'
-import styles from './TagList.module.css'
+
 import type { TagItem, TagListOnRemove } from './index'
+
+import styles from './TagList.module.css'
 
 interface TagListProps {
   className?: string
@@ -31,7 +34,7 @@ export function TagList(props: TagListProps) {
           <Tag
             tooltip={tag.tooltip}
             tooltipPlacement={tag.tooltipPlacement}
-            onRemove={onRemove ? () => onRemoveTag(tag) : undefined}
+            onRemove={tag.interactive !== false && onRemove ? () => onRemoveTag(tag) : undefined}
             {...(color && { color })}
           >
             {tag.label}

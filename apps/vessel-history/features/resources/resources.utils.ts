@@ -1,13 +1,10 @@
-import type {
-  DataviewDatasetConfigParam,
-  ThinningConfig} from '@globalfishingwatch/api-types';
-import {
-  EndpointId
-} from '@globalfishingwatch/api-types'
+import type { DataviewDatasetConfigParam, ThinningConfig } from '@globalfishingwatch/api-types'
+import { EndpointId } from '@globalfishingwatch/api-types'
 import { getTracksChunkSetId } from '@globalfishingwatch/dataviews-client'
+
+import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.util'
 import { TimebarGraphs } from 'types'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
 type ThinningConfigParam = { zoom: number; config: ThinningConfig }
 
@@ -17,7 +14,7 @@ export const trackDatasetConfigsCallback = (
   timebarGraph: TimebarGraphs
 ) => {
   return ([info, track, ...events]) => {
-    if (track.endpoint === EndpointId.Tracks) {
+    if (track?.endpoint === EndpointId.Tracks) {
       const query = [...(track.query || [])]
       const fieldsQueryIndex = query.findIndex((q) => q.id === 'fields')
       let trackGraph
@@ -85,7 +82,7 @@ export const trackDatasetConfigsCallback = (
             id,
             value,
           })) as DataviewDatasetConfigParam[]),
-          ...event?.query,
+          ...(event.query || []),
         ],
       }))
       // Clean resources when mandatory vesselId is missing

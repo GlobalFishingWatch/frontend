@@ -1,11 +1,15 @@
 import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
-import { IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+
 import type { Locale, VesselSearch as Vessel, VesselSearch } from '@globalfishingwatch/api-types'
+import { IconButton, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+
 import { DEFAULT_EMPTY_VALUE, FIRST_YEAR_OF_DATA } from 'data/config'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+
 import styles from '../VesselListItem.module.css'
+
 interface RelatedVesselListItem {
   saved?: string
   vessel: VesselSearch
@@ -15,7 +19,7 @@ interface RelatedVesselListItem {
   onVesselClick?: (vessel: Vessel) => void
 }
 
-const RelatedVesselListItem: React.FC<RelatedVesselListItem> = (props): React.ReactElement => {
+const RelatedVesselListItem: React.FC<RelatedVesselListItem> = (props): React.ReactElement<any> => {
   const { t, i18n } = useTranslation()
   const { vessel, onDeleteClick, onVesselClick = () => {}, selected = false } = props
   const onClick = useCallback(() => onVesselClick(vessel), [onVesselClick, vessel])

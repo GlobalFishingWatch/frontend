@@ -1,12 +1,11 @@
 import type {
+  ActionReducerMapBuilder,
+  IdSelector,
   SliceCaseReducers,
   ValidateSliceCaseReducers,
-  ActionReducerMapBuilder,
-  IdSelector} from '@reduxjs/toolkit';
-import {
-  createSlice,
-  createEntityAdapter
 } from '@reduxjs/toolkit'
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit'
+
 import type { ResponseError } from '@globalfishingwatch/api-client'
 
 export enum AsyncReducerStatus {
@@ -48,6 +47,7 @@ const getRequestIdsOnStart = (currentRequestIds: string[], action: any) => {
   const currentRequests = currentRequestIds || []
   return action.meta?.requestId ? [...currentRequests, action.meta?.requestId] : currentRequests
 }
+
 const getRequestIdsOnFinish = (currentRequestIds: string[], action: any) => {
   return currentRequestIds.filter((id: string) => id !== action.meta?.requestId)
 }
@@ -55,7 +55,7 @@ const getRequestIdsOnFinish = (currentRequestIds: string[], action: any) => {
 export const createAsyncSlice = <
   T,
   U extends { id: AsyncReducerId },
-  Reducers extends SliceCaseReducers<T> = SliceCaseReducers<T>
+  Reducers extends SliceCaseReducers<T> = SliceCaseReducers<T>,
 >({
   name = '',
   initialState = {} as T,

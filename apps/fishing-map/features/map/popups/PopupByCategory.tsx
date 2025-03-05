@@ -1,10 +1,11 @@
 import { Fragment } from 'react'
-import { groupBy, uniqBy } from 'es-toolkit'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import type { DatasetSubCategory} from '@globalfishingwatch/api-types';
+import { useSelector } from 'react-redux'
+import { groupBy, uniqBy } from 'es-toolkit'
+
+import type { DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextPickingObject,
@@ -13,42 +14,49 @@ import type {
   PolygonPickingObject,
   RulerPickingObject,
   UserLayerPickingObject,
-  VesselEventPickingObject} from '@globalfishingwatch/deck-layers';
+  VesselEventPickingObject,
+} from '@globalfishingwatch/deck-layers'
 import {
   FOOTPRINT_ID,
   FourwingsComparisonMode,
-  POSITIONS_ID
+  POSITIONS_ID,
 } from '@globalfishingwatch/deck-layers'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { Spinner } from '@globalfishingwatch/ui-components'
+
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
-import WorkspacePointsTooltipSection from 'features/map/popups/categories/WorkspacePointsLayers'
-import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
-import UserPointsTooltipSection from 'features/map/popups/categories/UserPointsLayers'
+import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
-import TileClusterTooltipRow from 'features/map/popups/categories/TileClusterTooltipRow'
+import ClusterTooltipRow from 'features/map/popups/categories/ClusterTooltipRow'
+import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
-import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayers'
+import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
 import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
+import UserPointsTooltipSection from 'features/map/popups/categories/UserPointsLayers'
+import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayers'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
+import WorkspacePointsTooltipSection from 'features/map/popups/categories/WorkspacePointsLayers'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
 import type {
   SliceExtendedClusterPickingObject,
-  SliceExtendedFourwingsPickingObject} from '../map.slice';
+  SliceExtendedFourwingsPickingObject,
+} from '../map.slice'
 import {
-  selectApiEventStatus,
+  selectActivityInteractionError,
   selectActivityInteractionStatus,
   selectApiEventError,
-  selectActivityInteractionError,
+  selectApiEventStatus,
 } from '../map.slice'
-import styles from './Popup.module.css'
-import UserContextTooltipSection from './categories/UserContextLayers'
+
+import CurrentsTooltipRow from './categories/CurrentsLayers'
 import ReportBufferTooltip from './categories/ReportBufferLayers'
+import UserContextTooltipSection from './categories/UserContextLayers'
+
+import styles from './Popup.module.css'
 
 type PopupByCategoryProps = {
   interaction: InteractionEvent | null
@@ -181,7 +189,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               )
             }
             return (
-              <TileClusterTooltipRow
+              <ClusterTooltipRow
                 key={featureCategory}
                 features={features as SliceExtendedClusterPickingObject[]}
                 showFeaturesDetails={type === 'click'}
@@ -197,11 +205,29 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const contextFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.UserContext
             )
+            const currentsFeatures = (features as FourwingsHeatmapPickingObject[])
+              .filter((feature) => feature.subcategory === DataviewType.Currents)
+              .map((feature) => ({
+                ...feature,
+                // TODO translate this
+                title: 'Currents',
+              }))
             const environmentalFeatures = (
               features as SliceExtendedFourwingsPickingObject[]
-            ).filter((feature) => feature.subcategory !== DataviewType.UserContext)
+            ).filter(
+              (feature) =>
+                feature.subcategory !== DataviewType.UserContext &&
+                feature.subcategory !== DataviewType.Currents
+            )
             return (
               <Fragment key={featureCategory}>
+                {currentsFeatures.map((currentsFeature) => (
+                  <CurrentsTooltipRow
+                    key={currentsFeature.id}
+                    feature={currentsFeature}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                ))}
                 <UserContextTooltipSection
                   features={contextFeatures}
                   showFeaturesDetails={type === 'click'}
@@ -244,7 +270,12 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
           }
           case DataviewCategory.Buffer: {
-            return <ReportBufferTooltip features={features as PolygonPickingObject[]} />
+            return (
+              <ReportBufferTooltip
+                key={featureCategory}
+                features={features as PolygonPickingObject[]}
+              />
+            )
           }
           case DataviewCategory.User: {
             const userPointFeatures = (features as UserLayerPickingObject[]).filter(

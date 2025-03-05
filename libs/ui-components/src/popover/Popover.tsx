@@ -1,23 +1,21 @@
-import { Fragment, useRef, useState } from 'react'
-import cx from 'classnames'
-import type {
-  Placement,
-  UseFloatingOptions} from '@floating-ui/react';
+import React, { Fragment, useRef, useState } from 'react'
+import type { Placement, UseFloatingOptions } from '@floating-ui/react'
 import {
-  useFloating,
-  autoUpdate,
-  offset,
-  flip,
-  shift,
-  useDismiss,
-  useRole,
-  useClick,
-  useInteractions,
-  FloatingFocusManager,
   arrow,
+  autoUpdate,
+  flip,
   FloatingArrow,
+  FloatingFocusManager,
+  offset,
+  shift,
+  useClick,
+  useDismiss,
+  useFloating,
+  useInteractions,
+  useRole,
 } from '@floating-ui/react'
-import React from 'react'
+import cx from 'classnames'
+
 import styles from './Popover.module.css'
 
 export type PopoverProps = {
@@ -31,6 +29,7 @@ export type PopoverProps = {
   initialOpen?: boolean
   strategy?: UseFloatingOptions['strategy']
   onOpenChange?: (open: boolean, event?: MouseEvent, reason?: string) => void
+  onClickOutside?: () => void
 }
 
 export function Popover({
@@ -44,6 +43,7 @@ export function Popover({
   strategy = 'fixed',
   open: controlledOpen = false,
   onOpenChange: setControlledOpen,
+  onClickOutside,
 }: PopoverProps) {
   const arrowRef = useRef<SVGSVGElement>(null)
   const [uncontrolledOpen, setUncontrolledOpen] = useState(initialOpen)
@@ -52,7 +52,12 @@ export function Popover({
   const setOpen = setControlledOpen ?? setUncontrolledOpen
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
-    onOpenChange: setOpen,
+    onOpenChange: (nextOpen, event, reason) => {
+      setOpen(nextOpen)
+      if (reason === 'escape-key' || reason === 'outside-press') {
+        onClickOutside?.()
+      }
+    },
     placement,
     strategy,
     middleware: [

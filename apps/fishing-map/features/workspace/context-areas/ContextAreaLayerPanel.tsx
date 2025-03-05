@@ -1,65 +1,62 @@
-import { useState, useCallback, Fragment, useEffect, use } from 'react'
-import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import parse from 'html-react-parser'
-import type { Dataset} from '@globalfishingwatch/api-types';
-import { DatasetTypes, DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
-import type {
-  ColorBarOption} from '@globalfishingwatch/ui-components';
-import {
-  Tooltip,
-  Modal,
-  IconButton,
-  Collapsable,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
+
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAddDataset } from 'features/datasets/datasets.hook'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
-import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import GFWOnly from 'features/user/GFWOnly'
+import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
+import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
 import {
   BASEMAP_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE_ID,
+  HIDDEN_DATAVIEW_FILTERS,
   MPA_DATAVIEW_INSTANCE_ID,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-  HIDDEN_DATAVIEW_FILTERS,
 } from 'data/workspaces'
-import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  CONTEXT_FEATURES_LIMIT,
-  filterFeaturesByDistance,
-  parseContextFeatures,
-} from 'features/workspace/context-areas/context.utils'
-import { ReportPopupLink } from 'features/map/popups/categories/ContextLayersRow'
-import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
+import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
+import { useAddDataset } from 'features/datasets/datasets.hook'
 import {
   getDatasetLabel,
   getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
+import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
+import ContextLayerReportLink from 'features/map/popups/categories/ContextLayerReportLink'
+import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
+import GFWOnly from 'features/user/GFWOnly'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import {
+  CONTEXT_FEATURES_LIMIT,
+  filterFeaturesByDistance,
+  parseContextFeatures,
+} from 'features/workspace/context-areas/context.utils'
+import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
+import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+
 import DatasetNotFound from '../shared/DatasetNotFound'
-import Color from '../common/Color'
-import LayerSwitch from '../common/LayerSwitch'
-import Remove from '../common/Remove'
-import Title from '../common/Title'
-import Filters from '../common/LayerFilters'
-import InfoModal from '../common/InfoModal'
-import ExpandedContainer from '../shared/ExpandedContainer'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
-import { showSchemaFilter } from '../common/LayerSchemaFilter'
-import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
+import ExpandedContainer from '../shared/ExpandedContainer'
+import InfoModal from '../shared/InfoModal'
+import Filters from '../shared/LayerFilters'
+import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
+import { showSchemaFilter } from '../shared/LayerSchemaFilter'
+import LayerSwitch from '../shared/LayerSwitch'
+import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
+
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -78,7 +75,7 @@ const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
 type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
-function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
+function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
@@ -90,7 +87,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   })
 
   const contextLayer = useGetDeckLayer<ContextLayer>(dataview.id)
-  const [colorOpen, setColorOpen] = useState(false)
+  const [propertiesOpen, setPropertiesOpen] = useState(false)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
@@ -127,7 +124,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     ) {
       updateFeaturesOnScreen()
     }
-     
   }, [dataset, layerActive, layerLoaded, viewport, areasOnScreenOpen])
 
   const listHeight = Math.min(featuresOnScreen?.total, CONTEXT_FEATURES_LIMIT) * LIST_ELEMENT_HEIGHT
@@ -156,10 +152,19 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         colorRamp: color.id,
       },
     })
-    setColorOpen(false)
+    setPropertiesOpen(false)
+  }
+  const changeThickness = (thickness: ThicknessSelectorOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        thickness: thickness.value,
+      },
+    })
+    setPropertiesOpen(false)
   }
   const onToggleColorOpen = () => {
-    setColorOpen(!colorOpen)
+    setPropertiesOpen(!propertiesOpen)
   }
 
   const onToggleFilterOpen = () => {
@@ -172,7 +177,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
-    setColorOpen(false)
+    setPropertiesOpen(false)
   }
 
   const showSortHandler = items.length > 1
@@ -193,16 +198,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     ? getDatasetLabel(dataset)
     : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
 
-  const TitleComponent = (
-    <Title
-      title={title}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      onToggle={onToggle}
-    />
-  )
-
   const isBasemapLabelsDataview = dataview.config?.type === DataviewType.BasemapLabels
   const isContextAreaDataview =
     dataview.config?.type === DataviewType.Context ||
@@ -220,7 +215,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   return (
     <div
       className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: filterOpen || colorOpen,
+        [styles.expandedContainerOpen]: filterOpen || propertiesOpen,
         'print-hidden': !layerActive,
       })}
       ref={setNodeRef}
@@ -239,11 +234,13 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
           <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
         )}
-        {title && title.length > 30 ? (
-          <Tooltip content={title}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={title}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onToggle}
+        />
         <div
           className={cx(
             'print-hidden',
@@ -253,12 +250,18 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         >
           {layerActive && !isBasemapLabelsDataview && (
-            <Color
+            <LayerProperties
               dataview={dataview}
-              open={colorOpen}
+              open={propertiesOpen}
               onColorClick={changeColor}
+              onThicknessClick={changeThickness}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
+              properties={
+                dataview?.config?.type === DataviewType.Context
+                  ? POLYGON_PROPERTIES
+                  : POINT_PROPERTIES
+              }
             />
           )}
           {layerActive &&
@@ -407,7 +410,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                       >
                         {title}
                       </span>
-                      <ReportPopupLink feature={feature} onClick={onReportClick}></ReportPopupLink>
+                      <ContextLayerReportLink feature={feature} onClick={onReportClick} />
                     </li>
                   )
                 })}
