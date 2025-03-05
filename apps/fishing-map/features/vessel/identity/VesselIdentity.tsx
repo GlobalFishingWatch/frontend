@@ -186,7 +186,7 @@ const VesselIdentity = () => {
               <label>{t('vessel.registrySources', 'Registry Sources')}</label>
               {vesselIdentity?.sourceCode ? (
                 <VesselIdentityField
-                  tooltip={vesselIdentity?.sourceCode?.join(', ')}
+                  tooltip={vesselIdentity?.sourceCode?.filter(Boolean)?.join(', ')}
                   className={styles.help}
                   value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
                     vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
