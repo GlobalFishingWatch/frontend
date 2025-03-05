@@ -11,8 +11,7 @@ import {
   YAxis,
 } from 'recharts'
 
-import { getResponsiveVisualizationItemValue } from '@globalfishingwatch/responsive-visualizations'
-
+import { getResponsiveVisualizationItemValue } from '../../lib/density'
 import type { ResponsiveVisualizationAggregatedObjectValue } from '../../types'
 import type { TimeseriesByTypeProps } from '../types'
 
