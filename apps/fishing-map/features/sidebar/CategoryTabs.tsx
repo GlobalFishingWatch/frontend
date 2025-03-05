@@ -115,10 +115,13 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           </Link>
         </li>
         {availableCategories?.map((category, index) => (
-          <Tooltip content={t(`workspace.categories.${category}`, category)} placement="right">
+          <Tooltip
+            key={category}
+            content={t(`workspace.categories.${category}`, category)}
+            placement="right"
+          >
             {/* TODO: translate tooltip category */}
             <li
-              key={category}
               className={cx(styles.tab, {
                 [styles.current]:
                   locationCategory === (category as WorkspaceCategory) ||
