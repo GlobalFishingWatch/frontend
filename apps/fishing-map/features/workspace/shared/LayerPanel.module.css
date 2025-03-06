@@ -142,7 +142,7 @@
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-M);
+  column-gap: var(--space-M);
 }
 
 .tagList {
