@@ -10,6 +10,7 @@ export enum DebugOption {
   DatasetIdHash = 'addDatasetIdHash',
   CurrentsLayer = 'currentsLayer',
   GlobalReports = 'globalReports',
+  AreasOnScreen = 'areasOnScreen',
   ResponsiveVisualization = 'responsiveVisualization',
   DataTerminologyIframe = 'dataTerminologyIframe',
 }
@@ -33,6 +34,7 @@ const initialState: DebugState = {
     responsiveVisualization: false,
     dataTerminologyIframe: false,
     currentsLayer: false,
+    areasOnScreen: false,
   },
 }
 

@@ -31,6 +31,7 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import ContextLayerReportLink from 'features/map/popups/categories/ContextLayerReportLink'
 import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
 import GFWOnly from 'features/user/GFWOnly'
@@ -80,6 +81,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const debugOptions = useSelector(selectDebugOptions)
   const [areasOnScreenOpen, setAreasOnScreenOpen] = useState(false)
   const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
     total: 0,
@@ -365,7 +367,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       )}
-      {layerActive && isContextAreaDataview && (
+      {debugOptions.areasOnScreen && layerActive && isContextAreaDataview && (
         <div
           className={cx(styles.closestAreas, styles.properties, 'print-hidden')}
           style={{ maxHeight: closestAreasHeight }}
