@@ -257,7 +257,11 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   useLayoutEffect(() => {
     reportStateCacheHash.current = ''
-    setReportState((prev) => ({ ...prev, ...initialReportState, isLoading: true }))
+    setReportState((prev) => ({
+      ...prev,
+      ...initialReportState,
+      isLoading: reportCategory && reportCategory !== 'events',
+    }))
     // We want to clean the reportState when any of these params changes to avoid using old data until it loads
   }, [
     area?.id,
