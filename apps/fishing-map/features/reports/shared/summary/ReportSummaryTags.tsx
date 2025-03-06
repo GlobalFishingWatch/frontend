@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -53,6 +54,7 @@ export default function ReportSummaryTags({ dataview, availableFields }: LayerPa
               icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
               size="small"
               onClick={onToggleFiltersUIOpen}
+              className="print-hidden"
               tooltip={
                 filtersUIOpen
                   ? t('layer.filterClose', 'Close filters UI')

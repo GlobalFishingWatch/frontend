@@ -1,11 +1,10 @@
-import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import Sticky from 'react-sticky-el'
 
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
-import { FIELDS, getCommonProperties } from 'features/reports/shared/summary/report-summary.utils'
+import { FIELDS } from 'features/reports/shared/summary/report-summary.utils'
 import ReportSummaryActivity from 'features/reports/shared/summary/ReportSummaryActivity'
 import ReportSummaryEvents from 'features/reports/shared/summary/ReportSummaryEvents'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'

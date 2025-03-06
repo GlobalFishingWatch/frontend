@@ -244,11 +244,11 @@ function ActivityReport() {
 
   const ReportComponent = useMemo(() => {
     if (workspaceStatus === AsyncReducerStatus.Loading) {
-      return <ReportVesselsPlaceholder />
+      return <ReportVesselsPlaceholder className="print-hidden" />
     }
     if (timerangeTooLong) {
       return (
-        <ReportVesselsPlaceholder animate={false}>
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.error)}>
             <p>
               {t(
@@ -267,7 +267,7 @@ function ActivityReport() {
 
     if (timeComparisonValues) {
       return (
-        <ReportVesselsPlaceholder animate={false}>
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.center, styles.top)}>
             <p
               dangerouslySetInnerHTML={{
@@ -288,7 +288,7 @@ function ActivityReport() {
       !hasAuthError
     ) {
       return (
-        <ReportVesselsPlaceholder animate={false}>
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.center, styles.top)}>
             <p
               dangerouslySetInnerHTML={{
@@ -360,7 +360,7 @@ function ActivityReport() {
       )
     }
 
-    return <ReportVesselsPlaceholder animate={false} />
+    return <ReportVesselsPlaceholder animate={false} className="print-hidden" />
   }, [
     workspaceStatus,
     timerangeTooLong,
