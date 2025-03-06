@@ -12,8 +12,3 @@
 .tooltipArrow {
   fill: var(--color-off-white);
 }
-
-.trigger {
-  width: 100%;
-  height: 100%;
-}
