@@ -117,7 +117,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
-  bivariateDataviews: undefined,
+  bivariateDataviews: null,
   userTab: UserTab.Info,
 }
 

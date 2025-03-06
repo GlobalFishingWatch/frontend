@@ -37,7 +37,7 @@ export type WorkspaceParam =
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 
-type BivariateDataviews = [string, string]
+type BivariateDataviews = [string, string] | null
 
 export interface WorkspaceState extends BaseUrlWorkspace {
   activityVisualizationMode?: FourwingsVisualizationMode
