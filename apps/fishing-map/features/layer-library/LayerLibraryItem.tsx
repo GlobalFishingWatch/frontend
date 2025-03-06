@@ -40,6 +40,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const { layer, highlightedText = '' } = props
   const {
     id,
+    category,
     dataviewId,
     config,
     previewImageUrl,
@@ -86,6 +87,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
     }
     upsertDataviewInstance({
       id: `${id}${LAYER_LIBRARY_ID_SEPARATOR}${Date.now()}`,
+      category,
       dataviewId,
       datasetsConfig,
       config: {

@@ -1,3 +1,5 @@
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+
 import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
@@ -9,6 +11,7 @@ import {
   MPA_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
+  TEMPLATE_CONTEXT_DATAVIEW_SLUG,
 } from 'data/workspaces'
 
 export const OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID = 'offshore-fixed-infrastructure'
@@ -80,10 +83,18 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   },
   {
     id: 'dsm-isa-leasing-areas',
-    dataviewId: FIXED_SAR_INFRASTRUCTURE,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/offshore-fixed-infrastructure.png`,
+    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/deep-sea-mining.jpeg`,
+    category: DataviewCategory.Context,
     config: {
       color: '#8E24A9',
     },
+    datasetsConfig: [
+      {
+        datasetId: 'public-isa-layers',
+        params: [],
+        endpoint: 'context-tiles',
+      },
+    ],
   },
 ]

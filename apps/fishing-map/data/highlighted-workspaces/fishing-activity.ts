@@ -19,6 +19,6 @@ export const FISHING_MAP_WORKSPACES: FishingMapWorkspace[] = [
   },
   {
     id: 'deep-sea-mining-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/deep-sea-mining.jpeg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/deep-sea-mining.jpg`,
   },
 ]

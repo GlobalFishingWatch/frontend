@@ -43,7 +43,7 @@ const LayerLibrary: FC = () => {
         name: t(`layer-library:${layer.id}.name`),
         description: t(`layer-library:${layer.id}.description`),
         moreInfoLink: t(`layer-library:${layer.id}.moreInfoLink`),
-        category: dataview.category as DataviewCategory,
+        category: (layer.category || dataview.category) as DataviewCategory,
         dataview: {
           ...dataview,
           datasetsConfig: [...(dataview.datasetsConfig || []), ...(layer.datasetsConfig || [])],
