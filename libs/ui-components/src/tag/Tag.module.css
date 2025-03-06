@@ -12,10 +12,6 @@
   border-radius: var(--border-radius);
 }
 
-.withRemove {
-  padding-right: 0;
-}
-
 .tag::after {
   pointer-events: none;
   position: absolute;
@@ -34,16 +30,30 @@
 .removeBtn {
   width: 0;
   opacity: 0;
-  transform: scale(0);
-  margin-right: var(--space-XS);
-  transition: transform 150ms ease-out;
+  transition: all 150ms linear;
+  position: absolute;
+  background: var(--color-secondary-blue);
+  right: 0.2rem;
+  border-radius: 0.2rem;
 }
 
-.removeBtn:focus,
+.removeBtn svg {
+  color: var(--color-white);
+  opacity: var(--opacity-secondary);
+}
+
 .tag:hover .removeBtn {
   width: auto;
-  opacity: 1;
-  margin: 0 0.1rem;
-  transform: scale(1);
-  border-radius: 0.2rem;
+  opacity: var(--opacity-primary);
+  background-color: var(--color-secondary-blue);
+}
+
+.tag:hover .removeBtn:focus,
+.tag:hover .removeBtn:hover {
+  background-color: var(--color-primary-blue);
+}
+
+.tag:hover .removeBtn:focus svg,
+.tag:hover .removeBtn:hover svg {
+  opacity: var(--opacity-primary);
 }
