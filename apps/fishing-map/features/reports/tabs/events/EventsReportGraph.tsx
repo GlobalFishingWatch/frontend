@@ -171,9 +171,6 @@ export default function EventsReportGraph({
   const getAggregatedData = useCallback(async () => data, [data])
 
   const getIndividualData = useCallback(async () => {
-    if (!debugOptions.responsiveVisualization) {
-      return undefined
-    }
     const params = {
       ...getEventsStatsQuery({
         start,
@@ -191,15 +188,7 @@ export default function EventsReportGraph({
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
-  }, [
-    debugOptions.responsiveVisualization,
-    start,
-    end,
-    filtersMemo,
-    datasetId,
-    includesMemo,
-    interval,
-  ])
+  }, [start, end, filtersMemo, datasetId, includesMemo, interval])
 
   if (!data.length) {
     return null
@@ -213,7 +202,7 @@ export default function EventsReportGraph({
         timeseriesInterval={interval}
         aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
-        getIndividualData={getIndividualData}
+        getIndividualData={debugOptions.responsiveVisualization ? getIndividualData : undefined}
         tickLabelFormatter={formatDateTicks}
         aggregatedTooltip={<AggregatedGraphTooltip />}
         individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
