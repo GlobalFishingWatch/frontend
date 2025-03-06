@@ -26,6 +26,7 @@ import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import i18n from 'features/i18n/i18n'
 import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
+import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { getTimeLabels } from 'utils/events'
 import { formatInfoField, upperFirst } from 'utils/info'
@@ -158,6 +159,8 @@ export default function EventsReportGraph({
   const filtersMemo = useMemoCompare(filters)
   const includesMemo = useMemoCompare(includes)
   const debugOptions = useSelector(selectDebugOptions)
+  const reportAreaDataset = useSelector(selectReportDatasetId)
+  const reportAreaId = useSelector(selectReportAreaId)
 
   let icon: ReactElement | undefined
   if (eventType === 'encounter') {
@@ -177,6 +180,9 @@ export default function EventsReportGraph({
         end,
         filters: filtersMemo || {},
         dataset: datasetId,
+        // TODO:CVP uncomment once the API takes the parameters
+        // regionDataset: reportAreaDataset,
+        // regionId: reportAreaId,
       }),
       ...(includesMemo && { includes: includesMemo }),
       limit: 1000,
@@ -188,7 +194,7 @@ export default function EventsReportGraph({
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
-  }, [start, end, filtersMemo, datasetId, includesMemo, interval])
+  }, [start, end, filtersMemo, datasetId, reportAreaDataset, reportAreaId, includesMemo, interval])
 
   if (!data.length) {
     return null
