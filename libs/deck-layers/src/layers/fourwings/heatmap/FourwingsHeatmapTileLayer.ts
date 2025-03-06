@@ -181,14 +181,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         return this.getColorDomain()
       }
 
-      const steps = allValues
-        .filter((sublayer) => sublayer.length)
-        .map((sublayerValues) =>
-          getSteps(
-            removeOutliers({ allValues: sublayerValues, aggregationOperation }),
-            COLOR_RAMP_BIVARIATE_NUM_STEPS
-          )
-        )
+      const steps = allValues.map((sublayerValues) =>
+        sublayerValues.length
+          ? getSteps(
+              removeOutliers({ allValues: sublayerValues, aggregationOperation }),
+              COLOR_RAMP_BIVARIATE_NUM_STEPS
+            )
+          : []
+      )
       return steps
     }
 
