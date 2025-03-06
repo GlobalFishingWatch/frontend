@@ -11,6 +11,7 @@ export enum DebugOption {
   CurrentsLayer = 'currentsLayer',
   GlobalReports = 'globalReports',
   ResponsiveVisualization = 'responsiveVisualization',
+  DataTerminologyIframe = 'dataTerminologyIframe',
 }
 
 type DebugOptions = Record<DebugOption, boolean>
@@ -30,6 +31,7 @@ const initialState: DebugState = {
     addDatasetIdHash: true,
     globalReports: false,
     responsiveVisualization: false,
+    dataTerminologyIframe: false,
     currentsLayer: false,
   },
 }
