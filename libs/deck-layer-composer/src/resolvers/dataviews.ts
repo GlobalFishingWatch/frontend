@@ -215,7 +215,7 @@ type ResolverGlobalConfig = {
   end?: string
   zoom?: number
   token?: string
-  bivariateDataviews?: [string, string]
+  bivariateDataviews?: [string, string] | null
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID

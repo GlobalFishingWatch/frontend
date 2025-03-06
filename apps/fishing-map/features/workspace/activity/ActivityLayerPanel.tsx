@@ -98,23 +98,24 @@ function ActivityLayerPanel({
   // )
   // const statsValue = stats && (stats.vesselIds || stats.id)
   const disableBivariate = () => {
-    dispatchQueryParams({ bivariateDataviews: undefined })
+    dispatchQueryParams({ bivariateDataviews: null })
   }
 
   const onSplitLayers = () => {
+    if (bivariateDataviews) {
+      trackEvent({
+        category: TrackCategory.ActivityData,
+        action: 'Click on bivariate option',
+        label: getEventLabel([
+          'split',
+          dataview.name ?? dataview.id ?? bivariateDataviews[0],
+          getActivitySources(dataview),
+          ...getActivityFilters(dataview.config?.filters),
+          bivariateDataviews[1],
+        ]),
+      })
+    }
     disableBivariate()
-
-    trackEvent({
-      category: TrackCategory.ActivityData,
-      action: 'Click on bivariate option',
-      label: getEventLabel([
-        'split',
-        dataview.name ?? dataview.id ?? bivariateDataviews[0],
-        getActivitySources(dataview),
-        ...getActivityFilters(dataview.config?.filters),
-        bivariateDataviews[1],
-      ]),
-    })
   }
 
   const onLayerSwitchToggle = () => {
