@@ -1,21 +1,26 @@
-.container {
+.iFrameContainer {
   width: calc(100vw - 10rem);
   height: calc(100vh - 10rem);
   padding: 0;
   overflow: hidden;
 }
 
-.spinnerContainer {
+.iFrameSpinnerContainer {
   width: 100%;
   height: calc(100vh - 10rem);
 }
 
-.content {
+.iFramecontent {
   padding: 0;
   width: 100%;
   height: calc(100vh - 10rem);
   max-width: 110rem;
   overflow: hidden;
+}
+
+.content {
+  padding: var(--space-L);
+  font: var(--font-S);
 }
 
 .content strong {

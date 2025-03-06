@@ -58,6 +58,17 @@ const DebugMenu: React.FC = () => {
               </label>
             </div>
             <p>Activates the responsive visualization feature</p>
+            <div className={styles.header}>
+              <Switch
+                id="option_data_terminology_iframe"
+                active={debugOptions.dataTerminologyIframe}
+                onClick={() => dispatch(toggleOption(DebugOption.DataTerminologyIframe))}
+              />
+              <label htmlFor="option_data_terminology_iframe">
+                <strong>Feature flag:</strong> Data terminology iframe
+              </label>
+            </div>
+            <p>Activates the data terminology iframe feature</p>
           </Fragment>
         )}
         <div className={styles.header}>
