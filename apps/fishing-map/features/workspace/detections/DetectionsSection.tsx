@@ -138,7 +138,7 @@ function DetectionsSection(): React.ReactElement<any> {
         const isVisible = dataview?.config?.visible ?? false
         const isNextVisible = dataviews[index + 1]?.config?.visible ?? false
         const showBivariateIcon =
-          bivariateDataviews === undefined && isVisible && isNextVisible && !isLastElement
+          bivariateDataviews === null && isVisible && isNextVisible && !isLastElement
         return (
           <Fragment key={dataview.id}>
             <LayerPanelContainer key={dataview.id} dataview={dataview}>
