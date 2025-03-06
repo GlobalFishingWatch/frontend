@@ -18,7 +18,7 @@ export const FISHING_MAP_WORKSPACES: FishingMapWorkspace[] = [
     img: `${PATH_BASENAME}/images/highlighted-workspaces/carrier-portal.jpg`,
   },
   {
-    id: 'deep_sea_mining_watch-public',
+    id: 'deep-sea-mining-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/deep-sea-mining.jpeg`,
   },
 ]

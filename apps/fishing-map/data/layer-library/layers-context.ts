@@ -78,4 +78,12 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
       color: '#8E24A9',
     },
   },
+  {
+    id: 'dsm-isa-leasing-areas',
+    dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/offshore-fixed-infrastructure.png`,
+    config: {
+      color: '#8E24A9',
+    },
+  },
 ]
