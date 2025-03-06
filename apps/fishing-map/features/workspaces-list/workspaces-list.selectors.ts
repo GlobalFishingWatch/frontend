@@ -34,8 +34,8 @@ export type HighlightedWorkspace = {
   cta?: string
   img?: string
   reportUrl?: string
-  visible?: 'visible' | 'hidden'
-  workspaceId?: string
+  visible?: boolean
+  reportId?: string
   dataviewInstances?: UrlDataviewInstance[]
   viewport?: WorkspaceViewport
   category?: WorkspaceCategory
@@ -65,6 +65,7 @@ export const selectHighlightedWorkspaces = createSelector(
           ...workspace,
           name: t(`workspaces:${category}.${workspace.id}.name`, { locale }),
           description: t(`workspaces:${category}.${workspace.id}.description`, { locale }),
+          visible: workspace.visible !== false,
           cta: t(`workspaces:${category}.${workspace.id}.cta`, {
             locale,
             defaultValue:

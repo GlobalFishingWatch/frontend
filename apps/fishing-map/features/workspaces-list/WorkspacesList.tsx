@@ -9,7 +9,7 @@ import type { ReportWorkspaceId } from 'data/highlighted-workspaces/reports'
 import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { HOME, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
+import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 
 import type { HighlightedWorkspace } from './workspaces-list.selectors'
@@ -56,35 +56,27 @@ function WorkspacesList() {
       )}
       <ul>
         {highlightedWorkspaces?.map((highlightedWorkspace) => {
-          const {
-            name,
-            description,
-            cta,
-            reportCategory,
-            dataviewInstances,
-            workspaceId,
-            reportUrl,
-            img,
-          } = highlightedWorkspace
-          const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
-          const isExternalLink = highlightedWorkspace.id.includes('http')
-          const isReportLink = REPORT_IDS.includes(highlightedWorkspace.id as ReportWorkspaceId)
+          const { name, description, cta, reportCategory, dataviewInstances, reportId, img } =
+            highlightedWorkspace
+
+          if (!highlightedWorkspace.visible) {
+            return null
+          }
+
           let linkTo: To
-          if (isExternalLink) {
-            linkTo = highlightedWorkspace.id
-          } else if (highlightedWorkspace.id === DEFAULT_WORKSPACE_ID) {
+          if (highlightedWorkspace.id === DEFAULT_WORKSPACE_ID) {
             linkTo = {
               type: HOME,
               payload: {},
               query: {},
               replaceQuery: true,
             }
-          } else if (isReportLink) {
+          } else if (REPORT_IDS.includes(highlightedWorkspace.id as ReportWorkspaceId)) {
             linkTo = {
               type: WORKSPACE_REPORT,
               payload: {
                 category: WorkspaceCategory.Reports,
-                workspaceId: workspaceId || DEFAULT_WORKSPACE_ID,
+                workspaceId: DEFAULT_WORKSPACE_ID,
               },
               query: {
                 dataviewInstances,
@@ -105,52 +97,32 @@ function WorkspacesList() {
               replaceQuery: true,
             }
           }
+          const reportLink = reportId
+            ? {
+                type: REPORT,
+                payload: {
+                  reportId,
+                },
+              }
+            : undefined
           return (
-            <li
-              key={highlightedWorkspace.id || name}
-              className={cx(styles.workspace, { [styles.disabled]: !active })}
-            >
-              {active ? (
-                isExternalLink ? (
-                  <a
-                    className={styles.imageLink}
-                    target="_blank"
-                    href={linkTo as string}
-                    rel="noreferrer"
-                  >
-                    <img className={styles.image} alt={name} src={img} />
-                  </a>
-                ) : (
-                  <Link
-                    to={linkTo}
-                    target="_self"
-                    onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                    className={styles.imageLink}
-                  >
-                    <img className={styles.image} alt={name} src={img} />
-                  </Link>
-                )
-              ) : (
+            <li key={highlightedWorkspace.id || name} className={cx(styles.workspace)}>
+              <Link
+                to={linkTo}
+                target="_self"
+                onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                className={styles.imageLink}
+              >
                 <img className={styles.image} alt={name} src={img} />
-              )}
+              </Link>
               <div className={styles.info}>
-                {active ? (
-                  isExternalLink ? (
-                    <a target="_blank" href={linkTo as string} rel="noreferrer">
-                      <h3 className={styles.title}>{name}</h3>
-                    </a>
-                  ) : (
-                    <Link
-                      to={linkTo}
-                      target="_self"
-                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                    >
-                      <h3 className={styles.title}>{name}</h3>
-                    </Link>
-                  )
-                ) : (
+                <Link
+                  to={linkTo}
+                  target="_self"
+                  onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                >
                   <h3 className={styles.title}>{name}</h3>
-                )}
+                </Link>
                 {description && (
                   <p
                     className={styles.description}
@@ -160,42 +132,24 @@ function WorkspacesList() {
                   ></p>
                 )}
                 <div className={styles.linksContainer}>
-                  {isReportLink && (
+                  <Link
+                    to={linkTo}
+                    target="_self"
+                    onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                    className={styles.link}
+                  >
+                    {cta}
+                  </Link>
+                  {reportLink && (
                     <Link
-                      to={linkTo}
+                      to={reportLink}
                       target="_self"
-                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
                       className={styles.link}
+                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
                     >
-                      {cta}
+                      {t('analysis.see', 'See report')}
                     </Link>
                   )}
-                  {!isReportLink && reportUrl && (
-                    <a href={reportUrl as string} className={styles.link}>
-                      {t('analysis.see', 'See report')}
-                    </a>
-                  )}
-                  {active &&
-                    !isReportLink &&
-                    (isExternalLink ? (
-                      <a
-                        target="_blank"
-                        href={linkTo as string}
-                        className={styles.link}
-                        rel="noreferrer"
-                      >
-                        {cta}
-                      </a>
-                    ) : (
-                      <Link
-                        to={linkTo}
-                        target="_self"
-                        className={styles.link}
-                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                      >
-                        {cta}
-                      </Link>
-                    ))}
                 </div>
               </div>
             </li>

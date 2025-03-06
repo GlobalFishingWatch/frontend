@@ -6,6 +6,8 @@ export type MarineManagerWorkspaceId = keyof (typeof workspaceTranslations)['mar
 export type MarineManagerWorkspace = {
   id: MarineManagerWorkspaceId
   img: string
+  reportId?: string
+  visible?: boolean
 }
 
 export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [

@@ -12,6 +12,7 @@ export type ReportWorkspace = {
   img: string
   reportCategory: ReportCategory
   dataviewInstances?: UrlDataviewInstance[]
+  visible?: boolean
 }
 
 export const REPORTS_INDEX: ReportWorkspace[] = [
