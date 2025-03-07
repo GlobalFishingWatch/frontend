@@ -40,9 +40,11 @@ const RegistryOperatorField = ({
         <Fragment>
           <VesselIdentityField value={operator?.name?.replaceAll('"', '').trim()} />{' '}
           {operator.flag && `(${formatInfoField(operator.flag, 'flag')}) `}
-          <span className={styles.secondary}>
-            <I18nDate date={operator.dateFrom} /> - <I18nDate date={operator.dateTo} />
-          </span>
+          {operator.dateFrom && operator.dateTo && (
+            <span className={styles.secondary}>
+              <I18nDate date={operator.dateFrom} /> - <I18nDate date={operator.dateTo} />
+            </span>
+          )}
         </Fragment>
       ) : (
         <VesselIdentityField value={EMPTY_FIELD_PLACEHOLDER} />

@@ -186,22 +186,29 @@ export const selectIsWorkspaceIndexLocation = createSelector(
   }
 )
 
+// App state
 export const selectUserTab = selectQueryParam('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam('zoom')
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
 const selectUrlMapLongitudeQuery = selectQueryParam('longitude')
 export const selectUrlStartQuery = selectQueryParam('start')
 export const selectUrlEndQuery = selectQueryParam('end')
-export const selectUrlBufferValueQuery = selectQueryParam('reportBufferValue')
-export const selectUrlBufferUnitQuery = selectQueryParam('reportBufferUnit')
-export const selectUrlBufferOperationQuery = selectQueryParam('reportBufferOperation')
-export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
-
-export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
-
 export const selectMapDrawingMode = selectQueryParam('mapDrawing')
 export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
 export const selectFeatureFlags = selectQueryParam('featureFlags')
+
+// Reports
+export const selectUrlBufferValueQuery = selectQueryParam('reportBufferValue')
+export const selectUrlBufferUnitQuery = selectQueryParam('reportBufferUnit')
+export const selectUrlBufferOperationQuery = selectQueryParam('reportBufferOperation')
+
+// Dataviews
+export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
+export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
+
+// Vessel
+export const selectVesselEventId = selectQueryParam('vesselEventId')
+export const selectVesselEventType = selectQueryParam('vesselEventType')
 
 export const selectIsMapDrawing = createSelector([selectMapDrawingMode], (mapDrawingMode) => {
   return mapDrawingMode === 'polygons' || mapDrawingMode === 'points'
