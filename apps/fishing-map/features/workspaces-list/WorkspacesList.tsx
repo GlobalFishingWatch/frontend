@@ -10,7 +10,11 @@ import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
-import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
+import {
+  isValidLocationCategory,
+  selectFeatureFlags,
+  selectLocationCategory,
+} from 'routes/routes.selectors'
 
 import type { HighlightedWorkspace } from './workspaces-list.selectors'
 import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'
@@ -24,6 +28,7 @@ function WorkspacesList() {
   const locationCategory = useSelector(selectLocationCategory)
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const validCategory = useSelector(isValidLocationCategory)
+  const featureFlags = useSelector(selectFeatureFlags)
 
   const onWorkspaceClick = useCallback(
     (workspace: HighlightedWorkspace) => {
@@ -39,7 +44,10 @@ function WorkspacesList() {
       <div className={styles.placeholder}>
         <h2>{t('errors.pageNotFound', 'Page not found')}</h2>
         <p>🙈</p>
-        <Link className={styles.linkButton} to={{ type: HOME, replaceQuery: true }}>
+        <Link
+          className={styles.linkButton}
+          to={{ type: HOME, replaceQuery: true, query: { featureFlags } }}
+        >
           {t('common.seeDefault', 'See default view')}
         </Link>
       </div>
@@ -68,7 +76,7 @@ function WorkspacesList() {
             linkTo = {
               type: HOME,
               payload: {},
-              query: {},
+              query: { featureFlags },
               replaceQuery: true,
             }
           } else if (REPORT_IDS.includes(highlightedWorkspace.id as ReportWorkspaceId)) {
@@ -79,6 +87,7 @@ function WorkspacesList() {
                 workspaceId: DEFAULT_WORKSPACE_ID,
               },
               query: {
+                featureFlags,
                 dataviewInstances,
                 reportCategory,
                 latitude: 0,
@@ -93,7 +102,7 @@ function WorkspacesList() {
                 category: locationCategory,
                 workspaceId: highlightedWorkspace.id,
               },
-              query: { ...(highlightedWorkspace.viewport || {}) },
+              query: { featureFlags, ...(highlightedWorkspace.viewport || {}) },
               replaceQuery: true,
             }
           }
@@ -103,6 +112,7 @@ function WorkspacesList() {
                 payload: {
                   reportId,
                 },
+                query: { featureFlags },
               }
             : undefined
           return (

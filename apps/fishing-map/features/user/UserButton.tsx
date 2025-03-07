@@ -12,6 +12,7 @@ import {
 } from 'features/user/selectors/user.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { USER } from 'routes/routes'
+import { selectFeatureFlags } from 'routes/routes.selectors'
 
 const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
   const { t } = useTranslation()
@@ -21,7 +22,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
-
+  const featureFlags = useSelector(selectFeatureFlags)
   return (
     <div className={className}>
       {guestUser || isUserExpired ? (
@@ -35,7 +36,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
           to={{
             type: USER,
             payload: {},
-            query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
+            query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT, featureFlags },
             replaceQuery: true,
           }}
           data-test={testId}

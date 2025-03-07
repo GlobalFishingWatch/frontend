@@ -33,6 +33,14 @@ export const routerQueryMiddleware: Middleware =
         if (newAction?.query?.[ACCESS_TOKEN_STRING]) {
           delete newAction.query[ACCESS_TOKEN_STRING]
         }
+      } else {
+        newAction.query = {
+          ...newAction.query,
+          featureFlags: [
+            ...(prevQuery.featureFlags || []),
+            ...(newAction.query?.featureFlags || []),
+          ],
+        }
       }
       const { query, replaceUrl } = routerAction
       if (query || replaceUrl) {
