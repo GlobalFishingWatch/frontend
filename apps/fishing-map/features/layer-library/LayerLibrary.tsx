@@ -8,9 +8,12 @@ import { uniq } from 'es-toolkit'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { InputText } from '@globalfishingwatch/ui-components'
 
+import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
+import { CURRENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
 import { selectLayerLibraryModal } from 'features/modals/modals.slice'
@@ -24,31 +27,43 @@ const LayerLibrary: FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const initialCategory = useSelector(selectLayerLibraryModal)
+  const debugOptions = useSelector(selectDebugOptions)
   const isGFWUser = useSelector(selectIsGFWUser)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
     initialCategory || DataviewCategory.Activity
   )
   const dataviews = useSelector(selectAllDataviews)
 
-  const layersResolved: LibraryLayer[] = useMemo(
-    () =>
-      LIBRARY_LAYERS.flatMap((layer) => {
-        const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
-        if (!dataview) return []
-        return {
-          ...layer,
-          name: t(`layer-library:${layer.id}.name`),
-          description: t(`layer-library:${layer.id}.description`),
-          moreInfoLink: t(`layer-library:${layer.id}.moreInfoLink`),
-          category: dataview.category as DataviewCategory,
-          dataview: {
-            ...dataview,
-            datasetsConfig: [...(dataview.datasetsConfig || []), ...(layer.datasetsConfig || [])],
-          },
-        }
-      }),
-    [dataviews, t]
-  )
+  const layersResolved: LibraryLayer[] = useMemo(() => {
+    const layers = LIBRARY_LAYERS.flatMap((layer) => {
+      const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
+      if (!dataview) return []
+      return {
+        ...layer,
+        name: t(`layer-library:${layer.id}.name`),
+        description: t(`layer-library:${layer.id}.description`),
+        moreInfoLink: t(`layer-library:${layer.id}.moreInfoLink`),
+        category: (layer.category || dataview.category) as DataviewCategory,
+        dataview: {
+          ...dataview,
+          datasetsConfig: [...(dataview.datasetsConfig || []), ...(layer.datasetsConfig || [])],
+        },
+      }
+    })
+    if (debugOptions.currentsLayer) {
+      layers.push({
+        id: 'currents',
+        dataviewId: CURRENTS_DATAVIEW_SLUG,
+        category: DataviewCategory.Environment,
+        name: 'Currents prototype',
+        description: 'Prototype for currents layer',
+        moreInfoLink: '',
+        previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
+        dataview: {} as any,
+      })
+    }
+    return layers
+  }, [dataviews, debugOptions.currentsLayer, t])
 
   const uniqCategories = useMemo(
     () => uniq(layersResolved.map(({ category }) => category)),
@@ -109,13 +124,18 @@ const LayerLibrary: FC = () => {
 
   const layersByCategory = useMemo(
     () =>
-      filteredLayers.reduce((acc, layer) => {
-        if (!acc[layer.category]) {
-          acc[layer.category] = []
-        }
-        acc[layer.category].push(layer)
-        return acc
-      }, Object.fromEntries(uniqCategories.map((category) => [category, []] as [DataviewCategory, LibraryLayer[]]))),
+      filteredLayers.reduce(
+        (acc, layer) => {
+          if (!acc[layer.category]) {
+            acc[layer.category] = []
+          }
+          acc[layer.category].push(layer)
+          return acc
+        },
+        Object.fromEntries(
+          uniqCategories.map((category) => [category, []] as [DataviewCategory, LibraryLayer[]])
+        )
+      ),
     [filteredLayers, uniqCategories]
   )
 

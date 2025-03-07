@@ -15,9 +15,11 @@ import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
+import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
+  useReportFilteredFeatures,
   useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
   useTimeseriesStats,
@@ -33,6 +35,7 @@ function ReportEnvironment() {
   const { start, end } = useTimerangeConnect()
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const layersFilteredFeatures = useReportFilteredFeatures()
   const timeseriesStats = useTimeseriesStats()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
   const allAvailableIntervals = getAvailableIntervalsInDataviews(environmentalDataviews)
@@ -46,6 +49,7 @@ function ReportEnvironment() {
       {environmentalDataviews.map((dataview, index) => {
         const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
         const { min, mean, max } = timeseriesStats?.[dataview.id] || {}
+        const isCurrents = dataview.config?.type === DataviewType.Currents
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
         const error = layersTimeseriesErrors?.[index]
@@ -58,14 +62,14 @@ function ReportEnvironment() {
                 <span>{upperFirst(t('common.average', 'Average'))} </span>
               )}
               <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-              {isDynamic && (
+              {(isDynamic || isCurrents) && (
                 <Fragment>
                   {t('common.between', 'betweeen')} <strong>{formatI18nDate(start)}</strong>{' '}
                   {t('common.and', 'and')} <strong>{formatI18nDate(end)}</strong>
                 </Fragment>
               )}
             </p>
-            {isDynamic ? (
+            {isDynamic || isCurrents ? (
               isLoading || !layersTimeseriesFiltered?.[index] || error !== '' ? (
                 <ReportActivityPlaceholder showHeader={false}>
                   {error !== '' && (
@@ -74,6 +78,19 @@ function ReportEnvironment() {
                     </p>
                   )}
                 </ReportActivityPlaceholder>
+              ) : isCurrents && layersFilteredFeatures?.[index] ? (
+                <Fragment>
+                  <ReportCurrentsGraph
+                    color={dataview.config?.color}
+                    data={layersFilteredFeatures?.[index]}
+                  />
+                  {/* TODO: add this graph when we calculate the currents timeseries properly */}
+                  {/* <ReportActivityEvolution
+                    start={timerange.start}
+                    end={timerange.end}
+                    data={layersTimeseriesFiltered?.[index]}
+                  /> */}
+                </Fragment>
               ) : (
                 <ReportActivityEvolution
                   start={start}
@@ -84,7 +101,7 @@ function ReportEnvironment() {
             ) : null}
             {isLoading ? (
               <ReportStatsPlaceholder />
-            ) : min && mean && max ? (
+            ) : min !== undefined && mean !== undefined && max !== undefined ? (
               <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
                 {isDynamic
                   ? t('analysis.statsDisclaimerDynamic', {

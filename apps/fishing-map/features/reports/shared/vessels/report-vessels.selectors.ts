@@ -28,7 +28,6 @@ import {
   selectReportVesselResultsPerPage,
   selectReportVesselsOrderDirection,
   selectReportVesselsOrderProperty,
-  selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
@@ -49,7 +48,7 @@ import {
 import { selectVGRVessels } from '../../report-vessel-group/vessel-group-report.slice'
 import { selectEventsVessels } from '../../tabs/events/events-report.selectors'
 
-import type { ReportTableVessel } from './report-vessels.types'
+import type { ReportTableVessel, ReportVesselValues } from './report-vessels.types'
 
 const getVesselSource = (vessel: IdentityVessel) => {
   let source = ''
@@ -173,6 +172,7 @@ export const selectReportVessels = createSelector(
           ssvid: reportVessel.mmsi || EMPTY_FIELD_PLACEHOLDER,
           flag: reportVessel.flag || EMPTY_FIELD_PLACEHOLDER,
           value: reportVessel.value as number,
+          values: reportVessel.values as ReportVesselValues,
           color: reportVessel.color,
           flagTranslated: reportVessel.flag
             ? t(`flags:${reportVessel.flag}` as any)
@@ -341,6 +341,7 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
   [selectReportVesselsFiltered, selectReportVesselGraph, selectReportDataviewsWithPermissions],
   (vessels, subsection, dataviews) => {
     if (!vessels) return []
+
     const reportData = groupBy(vessels, (v) => v.dataviewId || '')
 
     const dataByDataview = dataviews.map((dataview) => {
@@ -427,7 +428,7 @@ export const selectReportVesselsGraphAggregatedData = createSelector(
 
 export const REPORT_GRAPH_LABEL_KEY = 'name'
 export const selectReportVesselsGraphIndividualData = createSelector(
-  [selectReportVesselsFiltered, selectReportVesselsSubCategory],
+  [selectReportVesselsFiltered, selectReportVesselGraph],
   (vessels, groupBy) => {
     if (!vessels || !groupBy) return []
     return getVesselIndividualGroupedData(vessels, groupBy)

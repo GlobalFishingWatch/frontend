@@ -4,6 +4,13 @@ import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishin
 
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
+import {
+  AIS_DATAVIEW_INSTANCE_ID,
+  PRESENCE_DATAVIEW_INSTANCE_ID,
+  SAR_DATAVIEW_INSTANCE_ID,
+  VIIRS_DATAVIEW_INSTANCE_ID,
+  VMS_DATAVIEW_INSTANCE_ID,
+} from 'data/highlighted-workspaces/report.dataviews'
 import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
 import {
   BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -45,14 +52,15 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
     {
-      id: 'ais',
+      id: AIS_DATAVIEW_INSTANCE_ID,
       config: {
+        visible: true,
         datasets: ['public-global-fishing-effort:v3.0'],
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
     {
-      id: 'vms',
+      id: VMS_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
@@ -72,7 +80,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
     {
-      id: 'presence',
+      id: PRESENCE_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FF64CE',
         colorRamp: 'magenta',
@@ -81,7 +89,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: PRESENCE_DATAVIEW_SLUG,
     },
     {
-      id: 'viirs',
+      id: VIIRS_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFEA00',
         colorRamp: 'yellow',
@@ -91,7 +99,7 @@ const workspace: Workspace<WorkspaceState> = {
       datasetsConfig: [],
     },
     {
-      id: 'sar',
+      id: SAR_DATAVIEW_INSTANCE_ID,
       dataviewId: SAR_DATAVIEW_SLUG,
       config: {
         visible: false,

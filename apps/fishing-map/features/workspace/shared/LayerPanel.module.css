@@ -142,10 +142,7 @@
 .filters {
   display: flex;
   flex-wrap: wrap;
-}
-
-.filter:not(:last-of-type) {
-  margin-right: var(--space-M);
+  column-gap: var(--space-M);
 }
 
 .tagList {

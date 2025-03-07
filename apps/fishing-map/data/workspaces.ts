@@ -17,6 +17,7 @@ export function getWorkspaceEnv(): WorkspaceEnv {
 export enum WorkspaceCategory {
   FishingActivity = 'fishing-activity',
   MarineManager = 'marine-manager',
+  Reports = 'reports',
 }
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
@@ -48,6 +49,7 @@ export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure'
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas'
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas'
 export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint'
+export const CURRENTS_DATAVIEW_SLUG = 'currents'
 
 // Workspaces dataviews
 export const FISHING_DATAVIEW_SLUG = 'apparent-fishing-effort-v-3'

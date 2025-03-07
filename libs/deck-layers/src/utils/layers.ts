@@ -41,7 +41,13 @@ export function getFeatureInFilter(
   if (!filters || !Object.keys(filters).length) return true
   return Object.entries(filters).every(([id, values]) => {
     if (!values) return true
-    if (values.length === 2 && isNumeric(values[0]) && isNumeric(values[1])) {
+    if (
+      values.length === 2 &&
+      isNumeric(values[0]) &&
+      isNumeric(values[1]) &&
+      // this is needed because protected_seas layer has a numeric filter that comes as a string
+      id !== 'removal_of'
+    ) {
       const min = parseFloat(values[0] as string)
       const max = parseFloat(values[1] as string)
       const value = Number(feature?.properties?.[id])
@@ -50,7 +56,14 @@ export function getFeatureInFilter(
       if (filterOperators?.[id] === 'exclude') {
         return !values.includes(feature?.properties?.[id])
       }
-      return values.includes(feature?.properties?.[id])
+      return (
+        feature?.properties?.[id] &&
+        values.includes(
+          typeof feature?.properties?.[id] === 'string'
+            ? feature?.properties?.[id]
+            : feature?.properties?.[id].toString()
+        )
+      )
     }
   })
 }

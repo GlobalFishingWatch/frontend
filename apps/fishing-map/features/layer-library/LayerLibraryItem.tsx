@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import {
   Button,
@@ -15,8 +17,13 @@ import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
 import { LAYER_LIBRARY_EVENTS_IDS } from 'data/layer-library/layers-events'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+import { fetchDatasetsByIdsThunk, selectDatasetById } from 'features/datasets/datasets.slice'
+import {
+  getDatasetsInDataviews,
+  getDatasetSourceIcon,
+  getDatasetTypeIcon,
+} from 'features/datasets/datasets.utils'
+import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -33,6 +40,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const { layer, highlightedText = '' } = props
   const {
     id,
+    category,
     dataviewId,
     config,
     previewImageUrl,
@@ -42,6 +50,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
     moreInfoLink,
     datasetsConfig,
   } = layer
+  const [loading, setLoading] = useState(false)
   const dataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const datasetId = dataview.datasetsConfig?.[0].datasetId || ''
   const dataset = useSelector(selectDatasetById(datasetId))
@@ -50,6 +59,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const dispatch = useAppDispatch()
   const datasetTypeIcon = getDatasetTypeIcon(dataset)
   const datasetSourceIcon = getDatasetSourceIcon(dataset)
+  const allDataviews = useSelector(selectAllDataviews)
 
   const onAddToWorkspaceClick = async () => {
     const palette = FILL_DATAVIEWS.includes(dataview.config?.type)
@@ -63,8 +73,21 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
         ? palette.find((c) => !usedColors.includes(c.value))
         : palette[Math.floor(Math.random() * palette.length + 1)]
     const supportsColorChange = !LAYER_LIBRARY_EVENTS_IDS.includes(id)
+    const apiDataview = allDataviews.find((d) => d.id === dataviewId)
+    if (!apiDataview) {
+      setLoading(true)
+      const action = dispatch(fetchDataviewsByIdsThunk([dataviewId]))
+      const resolvedAction = await action
+      if (fetchDataviewsByIdsThunk.fulfilled.match(resolvedAction)) {
+        const dataviews = resolvedAction.payload as Dataview[]
+        const datasets = getDatasetsInDataviews(dataviews)
+        await dispatch(fetchDatasetsByIdsThunk({ ids: datasets }))
+      }
+      setLoading(false)
+    }
     upsertDataviewInstance({
       id: `${id}${LAYER_LIBRARY_ID_SEPARATOR}${Date.now()}`,
+      category,
       dataviewId,
       datasetsConfig,
       config: {
@@ -103,7 +126,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
                 <Icon icon={datasetSourceIcon} type="original-colors" />
               )
             ) : null}
-            <Button className={styles.cta} onClick={onAddToWorkspaceClick}>
+            <Button className={styles.cta} onClick={onAddToWorkspaceClick} loading={loading}>
               {t('workspace.addLayer', 'Add to workspace')}
             </Button>
           </div>

@@ -1,9 +1,8 @@
-import { Fragment, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Sticky from 'react-sticky-el'
 import { sum } from 'es-toolkit'
-import parse from 'html-react-parser'
+import htmlParser from 'html-react-parser'
 
 import type { Locale } from '@globalfishingwatch/api-types'
 
@@ -11,15 +10,14 @@ import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { FIELDS, getCommonProperties } from 'features/reports/report-area/area-reports.utils'
-import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
+import { selectReportDataviewsWithPermissions } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
-import ReportSummaryTagsPlaceholder from 'features/reports/shared/placeholders/ReportSummaryTagsPlaceholder'
+import { getCommonProperties } from 'features/reports/shared/summary/report-summary.utils'
 import {
-  getDateRangeHash,
-  selectReportVesselsDateRangeHash,
+  getReportRequestHash,
+  selectReportRequestHash,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
 import { useTimeCompareTimeDescription } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
@@ -29,44 +27,41 @@ import {
   useReportFilteredTimeSeries,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import ReportSummaryTags from 'features/reports/tabs/activity/summary/ReportSummaryTags'
 import {
   selectReportVesselsHours,
   selectReportVesselsNumber,
 } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
 
-import styles from './ReportSummary.module.css'
-
-type ReportSummaryProps = {
-  activityUnit: ReportActivityUnit
-  reportStatus?: AsyncReducerStatus
-  showTags?: boolean
-}
-
 export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 
-export default function ReportSummary({
+export default function ReportSummaryActivity({
   activityUnit,
   reportStatus = AsyncReducerStatus.Finished,
-  showTags = true,
-}: ReportSummaryProps) {
+}: {
+  activityUnit: ReportActivityUnit
+  reportStatus?: AsyncReducerStatus
+}) {
   const { t, i18n } = useTranslation()
   const timerange = useTimerangeConnect()
-  const category = useSelector(selectReportCategory)
+  const reportCategory = useSelector(selectReportCategory)
+  const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
   const reportVessels = useSelector(selectReportVesselsNumber)
-  const reportTimeComparison = useSelector(selectReportTimeComparison)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours) as number
   const dataviews = useSelector(selectActiveReportDataviews)
-  const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
-  const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
+  const reportRequestHash = useSelector(selectReportRequestHash)
+  const reportOutdated =
+    reportRequestHash !==
+    getReportRequestHash({
+      datasets: reportDataviews.flatMap(({ datasets }) => datasets?.map((d) => d.id) || []),
+      filters: reportDataviews.map((d) => d.filter),
+      dateRange: timerange,
+    })
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
 
   const commonProperties = useMemo(() => {
@@ -76,8 +71,9 @@ export default function ReportSummary({
     )
   }, [dataviews])
 
-  const summary = useMemo(() => {
-    if (!dataviews.length) return
+  const activitySummary = useMemo(() => {
+    if (!dataviews.length || !layersTimeseriesFiltered?.length) return
+
     if (timeCompareTimeDescription) {
       return timeCompareTimeDescription
     }
@@ -87,14 +83,14 @@ export default function ReportSummary({
     const sameTitleDataviews = datasetTitles.every((d) => d === datasetTitles?.[0])
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
-      : category === ReportCategory.Activity
+      : reportCategory === ReportCategory.Activity
         ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
         : undefined
 
     if (
       reportHours &&
       reportStatus === AsyncReducerStatus.Finished &&
-      category !== ReportCategory.Detections &&
+      reportCategory !== ReportCategory.Detections &&
       !reportOutdated
     ) {
       return t('analysis.summary', {
@@ -122,7 +118,7 @@ export default function ReportSummary({
     }
     if (
       (!timeseriesLoading && layersTimeseriesFiltered !== undefined) ||
-      (category === ReportCategory.Detections &&
+      (reportCategory === ReportCategory.Detections &&
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours)
     ) {
@@ -141,7 +137,7 @@ export default function ReportSummary({
             })}</span>`
           : 0
       if (
-        category === ReportCategory.Detections &&
+        reportCategory === ReportCategory.Detections &&
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours
       ) {
@@ -150,33 +146,29 @@ export default function ReportSummary({
         }) as string
       }
       const activityUnitLabel =
-        category === ReportCategory.Detections
-          ? t('common.detection', { defaultValue: 'detections', count: Math.floor(reportHours) })
-          : `<strong>${t(`common.${activityUnit}`, {
+        reportCategory === ReportCategory.Activity
+          ? `<strong>${t(`common.${activityUnit}`, {
               defaultValue: 'hours',
               count: Math.floor(reportHours),
             })}</strong> ${
               Math.round(timeseriesImprecision) ? `± ${Math.round(timeseriesImprecision)}% ` : ''
             }${t('common.of', 'of')}`
+          : ''
 
       return t('analysis.summaryNoVessels', {
         defaultValue:
-          '<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+          '<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity,
         activityUnit: activityUnitLabel,
         activityType: datasetTitle,
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
-        sources: commonProperties.includes('source')
-          ? `(${listAsSentence(
-              getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
-            )}) `
-          : '',
       })
     }
   }, [
     dataviews,
-    category,
+    timeCompareTimeDescription,
+    reportCategory,
     t,
     reportHours,
     reportStatus,
@@ -189,41 +181,7 @@ export default function ReportSummary({
     timerange?.start,
     timerange?.end,
     commonProperties,
-    timeCompareTimeDescription,
   ])
 
-  return (
-    <Fragment>
-      <div className={styles.summaryContainer}>
-        {summary ? (
-          <p className={styles.summary}>{parse(summary)}</p>
-        ) : (
-          <ReportSummaryPlaceholder />
-        )}
-      </div>
-      {!isVesselGroupReportLocation ? (
-        summary && showTags ? (
-          <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-            {dataviews?.length > 0 && (
-              <div className={styles.tagsContainer}>
-                {dataviews?.map((dataview, index) => (
-                  <ReportSummaryTags
-                    key={dataview.id}
-                    dataview={dataview}
-                    index={index}
-                    hiddenProperties={commonProperties}
-                    availableFields={FIELDS}
-                  />
-                ))}
-              </div>
-            )}
-          </Sticky>
-        ) : reportTimeComparison || !showTags ? null : (
-          <div className={styles.tagsContainer}>
-            <ReportSummaryTagsPlaceholder />
-          </div>
-        )
-      ) : null}
-    </Fragment>
-  )
+  return activitySummary ? htmlParser(activitySummary) : <ReportSummaryPlaceholder />
 }

@@ -11,6 +11,7 @@ import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { WORKSPACE } from 'routes/routes'
+import { selectFeatureFlags } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -23,7 +24,7 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   const { t } = useTranslation()
   const workspaces = useSelector(selectUserWorkspacesPrivate)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
-
+  const featureFlags = useSelector(selectFeatureFlags)
   const setMapCoordinates = useSetMapCoordinates()
   const onWorkspaceClick = useCallback(
     (workspace: Workspace) => {
@@ -63,7 +64,7 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
                     category: workspace.category || DEFAULT_WORKSPACE_CATEGORY,
                     workspaceId: workspace.id,
                   },
-                  query: {},
+                  query: { featureFlags },
                 }}
                 onClick={() => onWorkspaceClick(workspace)}
               >

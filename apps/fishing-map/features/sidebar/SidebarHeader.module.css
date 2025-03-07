@@ -34,7 +34,7 @@
 .sticky {
   background-color: var(--color-white);
   box-shadow: var(--box-shadow);
-  z-index: 2;
+  z-index: 3;
 }
 
 :global(.printing) .logo {

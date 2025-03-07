@@ -22,15 +22,9 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 
-import {
-  CARRIER_PORTAL_API_URL,
-  DEFAULT_PAGINATION_PARAMS,
-  IS_DEVELOPMENT_ENV,
-  LATEST_CARRIER_DATASET_ID,
-  PUBLIC_SUFIX,
-} from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/config'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
-import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
+import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
@@ -363,45 +357,13 @@ export const deleteDatasetThunk = createAsyncThunk<
   }
 })
 
-export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
-  Dataset,
-  undefined,
-  {
-    rejectValue: AsyncError
-  }
->('datasets/fetchLatestCarrier', async (_, { rejectWithValue }) => {
-  try {
-    const dataset = await GFWAPI.fetch<Dataset>(
-      `${CARRIER_PORTAL_API_URL}/datasets/${LATEST_CARRIER_DATASET_ID}`,
-      {
-        version: '',
-      }
-    )
-    return dataset
-  } catch (e: any) {
-    console.warn(e)
-    return rejectWithValue({
-      status: parseAPIErrorStatus(e),
-      message: `${LATEST_CARRIER_DATASET_ID} - ${parseAPIErrorMessage(e)}`,
-    })
-  }
-})
-
 export interface DatasetsState extends AsyncReducer<Dataset> {
   deprecatedDatasets: DatasetsMigration
-  carrierLatest: {
-    status: AsyncReducerStatus
-    dataset: Dataset | undefined
-  }
 }
 
 const initialState: DatasetsState = {
   ...asyncInitialState,
   deprecatedDatasets: {},
-  carrierLatest: {
-    status: AsyncReducerStatus.Idle,
-    dataset: undefined,
-  },
 }
 
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
@@ -412,20 +374,7 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
       state.deprecatedDatasets = { ...state.deprecatedDatasets, ...(action.payload || {}) }
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchLastestCarrierDatasetThunk.pending, (state) => {
-      state.carrierLatest.status = AsyncReducerStatus.Loading
-    })
-    builder.addCase(fetchLastestCarrierDatasetThunk.fulfilled, (state, action) => {
-      state.carrierLatest.status = AsyncReducerStatus.Finished
-      if (action.payload) {
-        state.carrierLatest.dataset = action.payload
-      }
-    })
-    builder.addCase(fetchLastestCarrierDatasetThunk.rejected, (state) => {
-      state.carrierLatest.status = AsyncReducerStatus.Error
-    })
-  },
+  // extraReducers: (builder) => {},
   thunks: {
     fetchThunk: fetchDatasetsByIdsThunk,
     fetchByIdThunk: fetchDatasetByIdThunk,
@@ -451,10 +400,6 @@ export const selectDatasetById = memoize((id: string) =>
 export const selectDatasetsStatus = (state: DatasetsSliceState) => state.datasets.status
 export const selectDatasetsStatusId = (state: DatasetsSliceState) => state.datasets.statusId
 export const selectDatasetsError = (state: DatasetsSliceState) => state.datasets.error
-export const selectCarrierLatestDataset = (state: DatasetsSliceState) =>
-  state.datasets.carrierLatest.dataset
-export const selectCarrierLatestDatasetStatus = (state: DatasetsSliceState) =>
-  state.datasets.carrierLatest.status
 export const selectDeprecatedDatasets = (state: DatasetsSliceState) =>
   state.datasets.deprecatedDatasets
 

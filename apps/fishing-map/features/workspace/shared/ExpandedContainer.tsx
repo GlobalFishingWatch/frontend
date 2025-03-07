@@ -86,7 +86,7 @@ function ExpandedContainer({
 
   return (
     <Fragment>
-      <div className={styles.trigger} ref={refs.setReference} {...getReferenceProps()}>
+      <div ref={refs.setReference} {...getReferenceProps()}>
         {children}
       </div>
       {isOpen && (

@@ -12,7 +12,6 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsFeature,
-  FourwingsInterval,
   FourwingsValuesAndDatesFeature,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
@@ -50,7 +49,6 @@ import type {
 import type {
   FourwingsChunk,
   FourwingsHeatmapTileLayerProps,
-  FourwingsHeatmapTilesCache,
   FourwingsTileLayerState,
   FourwinsTileLayerScale,
 } from './fourwings-heatmap.types'
@@ -63,6 +61,7 @@ import {
   getDataUrlBySublayer,
   getFourwingsChunk,
   getIntervalFrames,
+  getTileDataCache,
   getZoomOffsetByResolution,
 } from './fourwings-heatmap.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
@@ -87,7 +86,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     this.state = {
       error: '',
       scales: [],
-      tilesCache: this._getTileDataCache({
+      tilesCache: getTileDataCache({
         zoom: Math.round(this.context.viewport.zoom),
         startTime: this.props.startTime,
         endTime: this.props.endTime,
@@ -149,7 +148,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       endTime,
       availableIntervals,
       bufferedStart:
-        this._getTileDataCache({
+        getTileDataCache({
           zoom: Math.round(this.context.viewport.zoom),
           startTime: this.props.startTime,
           endTime: this.props.endTime,
@@ -182,14 +181,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         return this.getColorDomain()
       }
 
-      const steps = allValues
-        .filter((sublayer) => sublayer.length)
-        .map((sublayerValues) =>
-          getSteps(
-            removeOutliers({ allValues: sublayerValues, aggregationOperation }),
-            COLOR_RAMP_BIVARIATE_NUM_STEPS
-          )
-        )
+      const steps = allValues.map((sublayerValues) =>
+        sublayerValues.length
+          ? getSteps(
+              removeOutliers({ allValues: sublayerValues, aggregationOperation }),
+              COLOR_RAMP_BIVARIATE_NUM_STEPS
+            )
+          : []
+      )
       return steps
     }
 
@@ -589,34 +588,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       : this._fetchTimeseriesTileData(tile)
   }
 
-  _getTileDataCache = ({
-    zoom,
-    startTime,
-    endTime,
-    availableIntervals,
-    compareStart,
-    compareEnd,
-  }: {
-    zoom: number
-    startTime: number
-    endTime: number
-    availableIntervals?: FourwingsInterval[]
-    compareStart?: number
-    compareEnd?: number
-  }): FourwingsHeatmapTilesCache => {
-    const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
-    return {
-      zoom,
-      start,
-      end,
-      bufferedStart,
-      interval,
-      compareStart,
-      compareEnd,
-    }
-  }
-
   _getTileDataCacheKey = (): string => {
     // Needs to remove zoom to avoid double loading tiles as deck.gl internally trigger the funcion on zoom changes
     const { zoom, ...tilesCache } = this.state.tilesCache
@@ -681,7 +652,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (needsCacheKeyUpdate) {
       requestAnimationFrame(() => {
         this.setState({
-          tilesCache: this._getTileDataCache({
+          tilesCache: getTileDataCache({
             zoom,
             startTime,
             endTime,

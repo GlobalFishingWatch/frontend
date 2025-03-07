@@ -16,6 +16,8 @@ import {
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { ReportCategory } from 'features/reports/reports.types'
+import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -119,6 +121,7 @@ function DetectionsSection(): React.ReactElement<any> {
                 className={cx({ [styles.hidden]: !hasVisibleDataviews })}
               />
             )}
+            {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Detections} />}
             <IconButton
               icon="plus"
               type="border"
@@ -135,7 +138,7 @@ function DetectionsSection(): React.ReactElement<any> {
         const isVisible = dataview?.config?.visible ?? false
         const isNextVisible = dataviews[index + 1]?.config?.visible ?? false
         const showBivariateIcon =
-          bivariateDataviews === undefined && isVisible && isNextVisible && !isLastElement
+          bivariateDataviews === null && isVisible && isNextVisible && !isLastElement
         return (
           <Fragment key={dataview.id}>
             <LayerPanelContainer key={dataview.id} dataview={dataview}>

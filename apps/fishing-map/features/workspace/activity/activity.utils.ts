@@ -11,31 +11,35 @@ export const isDefaultActivityDataview = (dataview: UrlDataviewInstance) =>
 export const isDefaultDetectionsDataview = (dataview: UrlDataviewInstance) =>
   dataview.dataviewId === PRESENCE_DATAVIEW_SLUG || isDetectionsDataview(dataview)
 
+const DEFAULT_SOURCES_DATASET_TYPES = [DatasetTypes.Fourwings, DatasetTypes.Events]
+
 export const getSourcesOptionsInDataview = (
   dataview: UrlDataviewInstance,
-  datasetType = DatasetTypes.Fourwings
+  datasetTypes = DEFAULT_SOURCES_DATASET_TYPES
 ) => {
-  const datasets = dataview?.datasets?.filter((d) => d.type === datasetType)
+  const datasets = dataview?.datasets?.filter((d) => datasetTypes.includes(d.type))
   const sourceOptions = datasets?.map((d) => ({ id: d.id, label: getDatasetLabel(d) })) || []
   return sourceOptions.sort((a, b) => a.label.localeCompare(b.label))
 }
 
 export const getSourcesSelectedInDataview = (
   dataview: UrlDataviewInstance,
-  datasetType = DatasetTypes.Fourwings
+  datasetTypes = DEFAULT_SOURCES_DATASET_TYPES
 ) => {
-  const sourceOptions = getSourcesOptionsInDataview(dataview, datasetType)
-  const sourcesSelected = sourceOptions.filter((sourceOption) =>
-    dataview.config?.datasets?.includes(sourceOption.id)
+  const sourceOptions = getSourcesOptionsInDataview(dataview, datasetTypes)
+
+  const sourcesSelected = sourceOptions.filter(
+    (sourceOption) =>
+      !dataview.config?.datasets || dataview.config?.datasets?.includes(sourceOption.id)
   )
   return sourcesSelected
 }
 
 export const areAllSourcesSelectedInDataview = (
   dataview: UrlDataviewInstance,
-  datasetType = DatasetTypes.Fourwings
+  datasetTypes = DEFAULT_SOURCES_DATASET_TYPES
 ) => {
-  const sourceOptions = getSourcesOptionsInDataview(dataview, datasetType)
+  const sourceOptions = getSourcesOptionsInDataview(dataview, datasetTypes)
   const allSelected = sourceOptions.every((sourceOption) =>
     dataview.config?.datasets?.includes(sourceOption.id)
   )

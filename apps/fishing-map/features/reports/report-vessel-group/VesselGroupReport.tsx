@@ -100,7 +100,7 @@ function VesselGroupReport() {
         label: getEventLabel([vesselGroup?.id, timeRange?.start || '', timeRange?.end || '']),
         value: `number of vessels: ${vesselGroup?.vessels?.length}`,
       })
-      if (tab.id === 'activity') {
+      if (tab.id === 'activity' || tab.id === 'events') {
         fitAreaInViewport()
       }
     },

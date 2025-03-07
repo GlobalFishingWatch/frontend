@@ -11,17 +11,19 @@ export default function ReportVesselsPlaceholder({
   showGraphHeader = true,
   showSearch = true,
   animate = true,
+  className,
 }: {
   children?: React.ReactNode
   showGraph?: boolean
   showGraphHeader?: boolean
   showSearch?: boolean
   animate?: boolean
+  className?: string
 }) {
   const tableRows = Array(11).fill('')
   return (
     <Fragment>
-      <div className={styles.container}>
+      <div className={cx(styles.container, styles.relative, className)}>
         <div className={cx({ [styles.faint]: children !== undefined })}>
           <div className={cx(styles.flex, styles.column)}>
             {/* header */}
@@ -37,7 +39,7 @@ export default function ReportVesselsPlaceholder({
                 />
               </div>
             )}
-            {showGraph && <ReportBarGraphPlaceholder />}
+            {showGraph && <ReportBarGraphPlaceholder animate={animate} />}
             {/* search */}
             {showSearch && (
               <div

@@ -10,9 +10,7 @@
           "echo $NEXT_PUBLIC_REPORT_DAYS_LIMIT",
           "echo $NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID",
           "echo $NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY",
-          "echo $NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE",
-          "echo $NEXT_PUBLIC_CARRIER_PORTAL_URL",
-          "echo $NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID"
+          "echo $NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE"
         ],
         "canTrackAnalytics": false,
         "showUsageWarnings": true

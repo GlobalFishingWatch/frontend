@@ -27,7 +27,10 @@
 }
 
 .labelContainer {
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .actions {
@@ -77,12 +80,6 @@
 
 .range {
   width: 100%;
-}
-
-.filterOperator {
-  position: absolute;
-  right: 0;
-  top: -0.6rem;
 }
 
 .filtersDisabled {

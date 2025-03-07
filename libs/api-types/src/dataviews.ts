@@ -20,6 +20,7 @@ export enum DataviewType {
   BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
+  Currents = 'CURRENTS',
   GL = 'GL',
   Graticules = 'GRATICULES',
   Heatmap = 'HEATMAP',

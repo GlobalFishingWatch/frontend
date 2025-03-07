@@ -32,7 +32,7 @@ export const getResponsiveVisualizationItemValue = (
   if (typeof value === 'number') {
     return value
   }
-  return value.value
+  return value?.value
 }
 
 export const getBarProps = (

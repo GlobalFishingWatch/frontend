@@ -1,17 +1,11 @@
-import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { stringify } from 'qs'
 
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components'
 
-import { CARRIER_PORTAL_URL } from 'data/config'
-import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
 import type {
@@ -19,7 +13,6 @@ import type {
   ExtendedFeatureSingleEvent,
   SliceExtendedClusterPickingObject,
 } from '../../map.slice'
-import { useMapViewState } from '../../map-viewport.hooks'
 
 import styles from '../Popup.module.css'
 
@@ -47,46 +40,9 @@ type EncounterTooltipRowProps = {
 
 function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterTooltipRowProps) {
   const { t } = useTranslation()
-  const { start, end } = useTimerangeConnect()
-  const viewState = useMapViewState()
-  const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
-    useCarrierLatestConnect()
-
-  useEffect(() => {
-    if (!carrierLatest) {
-      dispatchFetchLatestCarrier()
-    }
-  }, [carrierLatest, dispatchFetchLatestCarrier])
 
   const event = parseEncounterEvent(feature.event)
-  const linkParams = {
-    ...viewState,
-    dataset: carrierLatest?.id,
-    ...(event && {
-      vessel: event.vessel.id,
-      timestamp: new Date(event.start).getTime(),
-    }),
-    start,
-    end,
-  }
-  const isEventInDatasetRange =
-    event !== undefined &&
-    carrierLatest?.endDate !== undefined &&
-    carrierLatest?.startDate !== undefined &&
-    event.start >= carrierLatest.startDate &&
-    event.end <= carrierLatest.endDate
 
-  const urlLink = `${CARRIER_PORTAL_URL}/?${stringify(linkParams)}`
-  let linkTooltip = ''
-  if (carrierLatestStatus === AsyncReducerStatus.Error) {
-    linkTooltip = t('errors.latestCarrierNotFound', 'Latest carrier dataset not found')
-  }
-  if (carrierLatestStatus === AsyncReducerStatus.Finished && !isEventInDatasetRange) {
-    linkTooltip = t(
-      'event.notInCVP',
-      'This event happened outside the timerange of the Carrier Vessel Portal data'
-    )
-  }
   const title = getDatasetLabel({ id: feature.datasetId! })
 
   return (
@@ -154,19 +110,12 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                   )}
                 </div>
                 <div className={styles.row}>
-                  <Button
-                    href={urlLink}
-                    target="_blank"
-                    size="small"
-                    className={styles.btnLarge}
-                    disabled={
-                      carrierLatestStatus === AsyncReducerStatus.Loading || !isEventInDatasetRange
-                    }
-                    tooltip={linkTooltip}
-                    loading={carrierLatestStatus === AsyncReducerStatus.Loading}
-                  >
-                    {t('event.seeInCVP', 'See in Carrier Vessel Portal')}
-                  </Button>
+                  {/* TODO: Add link to vessel portal in case we support it */}
+                  {/* <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
+                    <Button target="_blank" size="small" className={styles.btnLarge}>
+                      {t('common.seeMore', 'See more')}
+                    </Button>
+                  </VesselLink> */}
                 </div>
               </div>
             ) : (
