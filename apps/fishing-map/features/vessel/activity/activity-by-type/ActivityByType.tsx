@@ -112,6 +112,21 @@ function ActivityByType() {
     }
   }, [activityGroups, expandedType])
 
+  useEffect(() => {
+    if (selectedVesselEventId && virtuosoRef.current) {
+      const selectedIndex = events.findIndex((event) => event.id.includes(selectedVesselEventId))
+      if (selectedIndex !== -1) {
+        setTimeout(() => {
+          virtuosoRef.current?.scrollToIndex({
+            index: selectedIndex,
+            align: 'center',
+            behavior: 'smooth',
+          })
+        }, 100)
+      }
+    }
+  }, [selectedVesselEventId, events])
+
   const renderedComponent = useMemo(() => {
     if (vesselPrintMode) {
       return (
