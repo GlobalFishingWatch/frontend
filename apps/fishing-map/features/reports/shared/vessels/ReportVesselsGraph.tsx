@@ -17,7 +17,7 @@ import {
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { selectDebugOptions } from 'features/debug/debug.slice'
+import { selectIsResponsiveVisualizationEnabled } from 'features/debug/debug.selectors'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   EMPTY_API_VALUES,
@@ -218,7 +218,7 @@ export default function ReportVesselsGraph({
   pageQueryParam = 'reportVesselPage',
 }: ReportVesselsGraphProps) {
   const { dispatchQueryParams } = useLocationConnect()
-  const debugOptions = useSelector(selectDebugOptions)
+  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
 
   const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
     const propertyParam = FILTER_PROPERTIES[property as ReportVesselsSubCategory]
@@ -243,7 +243,7 @@ export default function ReportVesselsGraph({
       <ResponsiveBarChart
         color={color}
         aggregatedValueKey={aggregatedValueKey}
-        getIndividualData={debugOptions.responsiveVisualization ? getIndividualData : undefined}
+        getIndividualData={isResponsiveVisualizationEnabled ? getIndividualData : undefined}
         getAggregatedData={getAggregatedData}
         onAggregatedItemClick={onBarClick}
         barValueFormatter={(value: any) => {

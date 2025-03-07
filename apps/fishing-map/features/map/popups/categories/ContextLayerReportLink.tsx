@@ -19,7 +19,7 @@ import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import { WORKSPACE_REPORT } from 'routes/routes'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectFeatureFlags, selectLocationQuery } from 'routes/routes.selectors'
 
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
 
@@ -38,6 +38,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const dispatch = useAppDispatch()
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const workspace = useSelector(selectWorkspace)
+  const featureFlags = useSelector(selectFeatureFlags)
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const isPointFeature = (feature?.geometry as any)?.type === 'Point'
   const query = useSelector(selectLocationQuery)
@@ -105,6 +106,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
       datasetId: [reportAreaDataset, (feature as any).datasetId].join(','),
       areaId: [reportAreaId, areaId].join(','),
     },
+    query: { featureFlags },
   }
 
   return (

@@ -31,6 +31,7 @@ import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-b
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
 import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
+import { selectFeatureFlags } from 'routes/routes.selectors'
 import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
 
@@ -51,6 +52,7 @@ function WorkspaceWizard() {
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
   const map = useDeckMap()
+  const featureFlags = useSelector(selectFeatureFlags)
   const viewState = useMapViewState()
   const dataviews = useSelector(selectAllDataviews)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -146,6 +148,7 @@ function WorkspaceWizard() {
       },
       query: {
         ...linkViewport,
+        featureFlags,
         daysFromLatest: 90,
         dataviewInstances: [
           {

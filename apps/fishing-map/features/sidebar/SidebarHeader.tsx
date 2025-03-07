@@ -63,6 +63,7 @@ import { HOME, REPORT, WORKSPACE } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
+  selectFeatureFlags,
   selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
   selectIsAnySearchLocation,
@@ -364,6 +365,7 @@ function cleanReportPayload(payload: Record<string, any>) {
 function CloseReportButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const featureFlags = useSelector(selectFeatureFlags)
   const reportAreaIds = useSelector(selectReportAreaIds)
   const reportsStatus = useSelector(selectReportsStatus)
   const locationQuery = useSelector(selectLocationQuery)
@@ -403,6 +405,7 @@ function CloseReportButton() {
       ...(isStandaloneReportLocation && {
         dataviewInstances: workspaceDataviewInstances,
       }),
+      featureFlags,
     },
   }
 
@@ -429,6 +432,7 @@ function CloseReportButton() {
 function CloseVesselButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const featureFlags = useSelector(selectFeatureFlags)
   const locationQuery = useSelector(selectLocationQuery)
   const locationPayload = useSelector(selectLocationPayload)
   const vesselDataviewInstance = useSelector(selectVesselProfileDataviewIntance)
@@ -440,6 +444,7 @@ function CloseVesselButton() {
     query: {
       ...locationQuery,
       ...DEFAULT_VESSEL_STATE,
+      featureFlags,
     } as QueryParams,
   }
 
