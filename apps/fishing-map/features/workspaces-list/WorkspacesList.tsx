@@ -119,18 +119,13 @@ function WorkspacesList() {
             <li key={highlightedWorkspace.id || name} className={cx(styles.workspace)}>
               <Link
                 to={linkTo}
-                target="_self"
                 onClick={() => onWorkspaceClick(highlightedWorkspace)}
                 className={styles.imageLink}
               >
                 <img className={styles.image} alt={name} src={img} />
               </Link>
               <div className={styles.info}>
-                <Link
-                  to={linkTo}
-                  target="_self"
-                  onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                >
+                <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
                   <h3 className={styles.title}>{name}</h3>
                 </Link>
                 {description && (
@@ -144,7 +139,6 @@ function WorkspacesList() {
                 <div className={styles.linksContainer}>
                   <Link
                     to={linkTo}
-                    target="_self"
                     onClick={() => onWorkspaceClick(highlightedWorkspace)}
                     className={styles.link}
                   >
@@ -153,7 +147,6 @@ function WorkspacesList() {
                   {reportLink && (
                     <Link
                       to={reportLink}
-                      target="_self"
                       className={styles.link}
                       onClick={() => onWorkspaceClick(highlightedWorkspace)}
                     >
