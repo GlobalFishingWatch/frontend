@@ -9,9 +9,7 @@ export enum DebugOption {
   Thinning = 'thinning',
   DatasetIdHash = 'addDatasetIdHash',
   CurrentsLayer = 'currentsLayer',
-  GlobalReports = 'globalReports',
   AreasOnScreen = 'areasOnScreen',
-  ResponsiveVisualization = 'responsiveVisualization',
   DataTerminologyIframe = 'dataTerminologyIframe',
 }
 
@@ -30,8 +28,6 @@ const initialState: DebugState = {
     mapStats: false,
     thinning: true,
     addDatasetIdHash: true,
-    globalReports: false,
-    responsiveVisualization: false,
     dataTerminologyIframe: false,
     currentsLayer: false,
     areasOnScreen: false,

@@ -5,7 +5,7 @@ import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { selectDebugOptions } from 'features/debug/debug.slice'
+import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import type { ReportCategory } from 'features/reports/reports.types'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
@@ -18,7 +18,7 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
   const workspace = useSelector(selectWorkspace)
   const query = useSelector(selectLocationQuery)
   const fitAreaInViewport = useFitAreaInViewport()
-  const debugOptions = useSelector(selectDebugOptions)
+  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
 
   const reportLinkTo = {
     type: WORKSPACE_REPORT,
@@ -40,7 +40,7 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
     resetSidebarScroll()
   }
 
-  if (!debugOptions.globalReports) {
+  if (!isGlobalReportsEnabled) {
     return null
   }
 

@@ -119,6 +119,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: null,
   userTab: UserTab.Info,
+  featureFlags: [],
 }
 
 export const EVENTS_COLORS: Record<string, string> = {
