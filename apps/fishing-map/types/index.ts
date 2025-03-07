@@ -41,25 +41,27 @@ type BivariateDataviews = [string, string] | null
 
 export type FeatureFlag = 'globalReports' | 'responsiveVisualization'
 export interface WorkspaceState extends BaseUrlWorkspace {
-  featureFlags?: FeatureFlag[]
   activityVisualizationMode?: FourwingsVisualizationMode
+  bivariateDataviews?: BivariateDataviews
+  dataviewInstances?: UrlDataviewInstance[]
+  daysFromLatest?: number // use latest day as endAt minus the number of days set here
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
-  dataviewInstances?: UrlDataviewInstance[]
-  bivariateDataviews?: BivariateDataviews
+  featureFlags?: FeatureFlag[]
   mapAnnotations?: MapAnnotation[]
   mapAnnotationsVisible?: boolean
   mapRulers?: RulerData[]
   mapRulersVisible?: boolean
-  daysFromLatest?: number // use latest day as endAt minus the number of days set here
   readOnly?: boolean
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisations
-  visibleEvents?: VisibleEvents
+  vesselEventId?: string
+  vesselEventType?: EventType
   vesselsColorBy?: VesselsColorByProperty
+  visibleEvents?: VisibleEvents
 }
 
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>
