@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import type { DataviewInstance, EventType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -28,32 +28,36 @@ import type { QueryParams } from 'types'
 import styles from './Vessel.module.css'
 
 type VesselLinkProps = {
+  children?: any
+  className?: string
   datasetId?: string
   dataviewId?: string
-  vesselId?: string
-  identity?: VesselDataIdentity
-  children?: any
-  onClick?: (e: MouseEvent, vesselId?: string) => void
-  tooltip?: React.ReactNode
+  eventId?: string
+  eventType?: EventType
   fitBounds?: boolean
-  className?: string
+  identity?: VesselDataIdentity
+  onClick?: (e: MouseEvent, vesselId?: string) => void
   query?: Partial<Record<keyof QueryParams, string | number>>
-  testId?: string
   showTooltip?: boolean
+  testId?: string
+  tooltip?: React.ReactNode
+  vesselId?: string
 }
 const VesselLink = ({
-  vesselId: vesselIdProp,
+  children = '',
+  className = '',
   datasetId,
   dataviewId,
-  identity,
-  children = '',
-  onClick,
-  tooltip,
+  eventId,
+  eventType,
   fitBounds = false,
-  className = '',
+  identity,
+  onClick,
   query,
-  testId = 'link-vessel-profile',
   showTooltip = true,
+  testId = 'link-vessel-profile',
+  tooltip,
+  vesselId: vesselIdProp,
 }: VesselLinkProps) => {
   const { t } = useTranslation()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
@@ -103,6 +107,8 @@ const VesselLink = ({
           ...locationQuery,
           // Clean search url when clicking on vessel link
           query: undefined,
+          vesselEventId: eventId,
+          vesselEventType: eventType,
           vesselDatasetId,
           ...(identity && {
             vesselIdentitySource: identity.identitySource,
