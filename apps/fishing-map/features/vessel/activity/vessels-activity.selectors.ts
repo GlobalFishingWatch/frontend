@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, uniqBy } from 'es-toolkit'
 
-import type { ApiEvent,EventType, Regions, Vessel  } from '@globalfishingwatch/api-types'
+import type { ApiEvent, EventType, Regions, Vessel } from '@globalfishingwatch/api-types'
 import { EventTypes, RegionType } from '@globalfishingwatch/api-types'
 
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
@@ -99,27 +99,30 @@ export const selectEventsGroupedByArea = createSelector(
     const regionCounts: Record<
       string,
       Record<typeof UNKNOWN_AREA | 'total' | EventTypes, number>
-    > = eventsList.reduce((acc, event) => {
-      let eventAreas = event.regions?.[area]
-      if (!eventAreas?.length) eventAreas = [UNKNOWN_AREA]
-      if (area === 'fao') {
-        eventAreas = eventAreas?.filter((area) => area.split('.').length === 1)
-      }
-      const eventType = event.type
-      eventAreas?.forEach((eventArea) => {
-        if (!acc[eventArea]) {
-          acc[eventArea] = { total: 1 }
-        } else {
-          acc[eventArea].total++
+    > = eventsList.reduce(
+      (acc, event) => {
+        let eventAreas = event.regions?.[area]
+        if (!eventAreas?.length) eventAreas = [UNKNOWN_AREA]
+        if (area === 'fao') {
+          eventAreas = eventAreas?.filter((area) => area.split('.').length === 1)
         }
-        if (!acc[eventArea][eventType]) {
-          acc[eventArea][eventType] = 1
-        } else {
-          acc[eventArea][eventType]++
-        }
-      })
-      return acc
-    }, {} as Record<string, any>)
+        const eventType = event.type
+        eventAreas?.forEach((eventArea) => {
+          if (!acc[eventArea]) {
+            acc[eventArea] = { total: 1 }
+          } else {
+            acc[eventArea].total++
+          }
+          if (!acc[eventArea][eventType]) {
+            acc[eventArea][eventType] = 1
+          } else {
+            acc[eventArea][eventType]++
+          }
+        })
+        return acc
+      },
+      {} as Record<string, any>
+    )
     return Object.entries(regionCounts)
       .map(([region, counts]) => ({ region, ...(counts || {}) }))
       .sort((a, b) => b.total - a.total)

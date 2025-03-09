@@ -11,7 +11,7 @@ import type {
 import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
+import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
@@ -125,6 +125,35 @@ export const getVesselDataviewInstance = (
     deleted: false,
   }
   return vesselDataviewInstance
+}
+
+export const getVesselEncounterTrackDataviewInstance = ({
+  vesselId,
+  track,
+  start,
+  end,
+}: {
+  vesselId: string
+  track: string
+  start: number
+  end: number
+}): DataviewInstance => {
+  const vesselDataviewInstance: DataviewInstance = {
+    id: getVesselDataviewInstanceId(vesselId),
+    dataviewId: 1111111111,
+    config: {
+      startDate: getUTCDateTime(start).toISO()!,
+      endDate: getUTCDateTime(end).toISO()!,
+    },
+  }
+  const datasetsConfig: DataviewDatasetConfig[] = [
+    {
+      datasetId: track,
+      params: [{ id: 'vesselId', value: vesselId }],
+      endpoint: EndpointId.Tracks,
+    },
+  ]
+  return { ...vesselDataviewInstance, datasetsConfig }
 }
 
 export const getUserPolygonsDataviewInstance = (

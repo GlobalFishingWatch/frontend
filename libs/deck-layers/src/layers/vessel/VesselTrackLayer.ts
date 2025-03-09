@@ -38,6 +38,11 @@ export type _VesselTrackLayerProps<DataT = any> = {
    */
   endTime: number
   /**
+   * Uses the startDate and endDate to define the start and end time of the track without any chunk
+   * @default false
+   */
+  strictTimeRange?: boolean
+  /**
    * The start time to highlight the track in milliseconds
    * @default 0
    */
