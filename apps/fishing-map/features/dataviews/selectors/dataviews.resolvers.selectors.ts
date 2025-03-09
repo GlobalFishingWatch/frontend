@@ -6,7 +6,8 @@ import type {
   IdentityVessel,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type {
   GetDatasetConfigsCallbacks,
   UrlDataviewInstance,
@@ -30,6 +31,7 @@ import {
   dataviewHasVesselGroupId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
+  getVesselEncounterTrackDataviewInstance,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import {
@@ -45,7 +47,10 @@ import type {
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
+import {
+  selectCurrentVesselEvent,
+  selectVesselInfoData,
+} from 'features/vessel/selectors/vessel.selectors'
 import { getRelatedIdentityVesselIds, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
 import {
@@ -95,11 +100,13 @@ export const selectWorkspaceDataviewInstancesMerged = createSelector(
 )
 
 // Inject dataviews on the fly for reports and vessel profile
+// Also for the vessel profile encounter events to see encountered vessel track
 export const selectDataviewInstancesInjected = createSelector(
   [
     selectWorkspaceDataviewInstancesMerged,
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
+    selectCurrentVesselEvent,
     selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportCategorySelector,
@@ -112,6 +119,7 @@ export const selectDataviewInstancesInjected = createSelector(
     dataviewInstances,
     isAnyVesselLocation,
     isVesselLocation,
+    currentVesselEvent,
     isPortReportLocation,
     isVesselGroupReportLocation,
     reportCategory,
@@ -142,6 +150,20 @@ export const selectDataviewInstancesInjected = createSelector(
         )
         dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
       }
+      if (currentVesselEvent && currentVesselEvent.type === EventTypes.Encounter) {
+        const encounterVesselId = currentVesselEvent.encounter?.vessel.id
+        if (encounterVesselId && vessel.track) {
+          const encounterTrackDataviewInstance = getVesselEncounterTrackDataviewInstance({
+            vesselId: encounterVesselId,
+            track: vessel.track,
+            // TODO: make a decision on how much buffer to add
+            start: getUTCDateTime(currentVesselEvent.start).minus({ day: 1 }).toMillis(),
+            end: getUTCDateTime(currentVesselEvent.end).plus({ day: 1 }).toMillis(),
+          })
+          dataviewInstancesInjected.push(encounterTrackDataviewInstance)
+        }
+      }
+
       if (isVesselLocation) {
         VESSEL_PROFILE_DATAVIEWS_INSTANCES.forEach((dataviewInstance) => {
           if (!dataviewInstancesInjected.find(({ id }) => id === dataviewInstance.id)) {
@@ -298,6 +320,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       }
       return dataviewInstance
     })
+
     const dataviewInstancesResolved = resolveDataviews(
       dataviewInstancesWithDatasetConfig,
       dataviews,
