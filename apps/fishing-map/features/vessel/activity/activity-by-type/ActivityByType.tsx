@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
 import { GroupedVirtuoso } from 'react-virtuoso'
+import { debounce } from 'lodash'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
@@ -112,20 +113,24 @@ function ActivityByType() {
     }
   }, [activityGroups, expandedType])
 
+  const debouncedScroll = debounce((index: number) => {
+    requestAnimationFrame(() => {
+      virtuosoRef.current?.scrollToIndex({
+        index,
+        align: 'center',
+        behavior: 'smooth',
+      })
+    })
+  }, 150)
+
   useEffect(() => {
     if (selectedVesselEventId && virtuosoRef.current) {
       const selectedIndex = events.findIndex((event) => event.id.includes(selectedVesselEventId))
       if (selectedIndex !== -1) {
-        setTimeout(() => {
-          virtuosoRef.current?.scrollToIndex({
-            index: selectedIndex,
-            align: 'center',
-            behavior: 'smooth',
-          })
-        }, 100)
+        debouncedScroll(selectedIndex)
       }
     }
-  }, [selectedVesselEventId, events])
+  }, [selectedVesselEventId, events, debouncedScroll])
 
   const renderedComponent = useMemo(() => {
     if (vesselPrintMode) {
