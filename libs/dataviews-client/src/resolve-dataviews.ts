@@ -455,7 +455,6 @@ export function resolveDataviews(
         )
         return []
       }
-
       const config = {
         ...dataview.config,
         ...dataviewInstance.config,

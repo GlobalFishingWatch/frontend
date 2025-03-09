@@ -2,12 +2,12 @@ import { useEffect, useMemo } from 'react'
 import { atom, useAtom, useSetAtom } from 'jotai'
 
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
-import type { AnyDeckLayer} from '@globalfishingwatch/deck-layers';
+import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { TilesBoundariesLayer } from '@globalfishingwatch/deck-layers'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 
-import type { ResolverGlobalConfig } from '../resolvers';
-import { dataviewToDeckLayer,getDataviewsResolved, getDataviewsSorted  } from '../resolvers'
+import type { ResolverGlobalConfig } from '../resolvers'
+import { dataviewToDeckLayer, getDataviewsResolved, getDataviewsSorted } from '../resolvers'
 
 // Atom used to have all deck instances available
 export const deckLayerInstancesAtom = atom<AnyDeckLayer[]>([])
