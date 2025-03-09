@@ -40,6 +40,7 @@
 
 .description ul {
   margin-left: 2rem;
+  list-style: disc;
 }
 
 .description code {
@@ -51,6 +52,10 @@
 
 .description a {
   text-decoration: underline;
+}
+
+.description strong {
+  font-weight: var(--GFW-font-bold);
 }
 
 .description img {
