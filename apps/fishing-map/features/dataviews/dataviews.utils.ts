@@ -20,6 +20,7 @@ import {
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
 import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -140,7 +141,7 @@ export const getVesselEncounterTrackDataviewInstance = ({
 }): DataviewInstance => {
   const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vesselId),
-    dataviewId: 1111111111,
+    dataviewId: TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
     config: {
       startDate: getUTCDateTime(start).toISO()!,
       endDate: getUTCDateTime(end).toISO()!,
