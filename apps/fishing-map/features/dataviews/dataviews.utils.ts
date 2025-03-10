@@ -38,6 +38,7 @@ const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
+export const VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX = `${VESSEL_DATAVIEW_INSTANCE_PREFIX}encounter-`
 export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
@@ -140,7 +141,7 @@ export const getVesselEncounterTrackDataviewInstance = ({
   end: number
 }): DataviewInstance => {
   const vesselDataviewInstance: DataviewInstance = {
-    id: getVesselDataviewInstanceId(vesselId),
+    id: `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}`,
     dataviewId: TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
     config: {
       startDate: getUTCDateTime(start).toISO()!,

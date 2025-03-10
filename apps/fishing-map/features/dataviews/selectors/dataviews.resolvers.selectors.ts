@@ -150,9 +150,10 @@ export const selectDataviewInstancesInjected = createSelector(
         )
         dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
       }
+
       if (currentVesselEvent && currentVesselEvent.type === EventTypes.Encounter) {
         const encounterVesselId = currentVesselEvent.encounter?.vessel.id
-        if (encounterVesselId && vessel.track) {
+        if (encounterVesselId && vessel?.track) {
           const encounterTrackDataviewInstance = getVesselEncounterTrackDataviewInstance({
             vesselId: encounterVesselId,
             track: vessel.track,
