@@ -8,7 +8,7 @@ import { arrayMove } from '@dnd-kit/sortable'
 import { Button, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
-import { WIZARD_TEMPLATE_ID } from 'data/default-workspaces/marine-manager'
+import { WIZARD_TEMPLATE_ID } from 'data/highlighted-workspaces/marine-manager.dataviews'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'

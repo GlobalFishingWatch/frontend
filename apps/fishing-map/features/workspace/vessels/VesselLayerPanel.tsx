@@ -44,9 +44,9 @@ import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { formatInfoField, getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
 
-import Color from '../shared/Color'
 import FitBounds from '../shared/FitBounds'
 import Filters from '../shared/LayerFilters'
+import LayerProperties from '../shared/LayerProperties'
 import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
@@ -286,7 +286,7 @@ function VesselLayerPanel({
               />
             )}
             {layerActive && (
-              <Color
+              <LayerProperties
                 dataview={dataview}
                 open={colorOpen}
                 onColorClick={changeTrackColor}

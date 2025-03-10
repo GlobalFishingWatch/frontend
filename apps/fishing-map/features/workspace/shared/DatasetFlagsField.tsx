@@ -21,7 +21,7 @@ function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldP
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const filterOperation = getSchemaFilterOperationInDataview(dataview, 'flag')
-  let fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
+  let fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || []) as TagItem[]
 
   const onRemoveClick = (tag: TagItem, tags: TagItem[]) => {
     upsertDataviewInstance({
@@ -41,6 +41,7 @@ function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldP
         {
           id: 'all',
           label: 'All',
+          interactive: false,
         },
       ]
     } else return null

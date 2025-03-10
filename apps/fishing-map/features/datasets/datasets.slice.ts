@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { uniq,uniqBy, without } from 'es-toolkit'
+import { uniq, uniqBy, without } from 'es-toolkit'
 import kebabCase from 'lodash/kebabCase'
 import memoize from 'lodash/memoize'
 import { stringify } from 'qs'
@@ -22,15 +22,9 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 
-import {
-  CARRIER_PORTAL_API_URL,
-  DEFAULT_PAGINATION_PARAMS,
-  IS_DEVELOPMENT_ENV,
-  LATEST_CARRIER_DATASET_ID,
-  PUBLIC_SUFIX,
-} from 'data/config'
-import type { AsyncError,AsyncReducer } from 'utils/async-slice'
-import { asyncInitialState, AsyncReducerStatus,createAsyncSlice } from 'utils/async-slice'
+import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/config'
+import type { AsyncError, AsyncReducer } from 'utils/async-slice'
+import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
@@ -248,60 +242,70 @@ export const fetchAllDatasetsThunk = createAsyncThunk<
   return dispatch(fetchDatasetsByIdsThunk({ ids: [], onlyUserDatasets }))
 })
 
-export type UpsertDataset = { dataset: Partial<Dataset>; file?: File; createAsPublic?: boolean }
+export type UpsertDataset = {
+  dataset: Partial<Dataset>
+  file?: File
+  createAsPublic?: boolean
+  addIdSuffix?: boolean
+}
 export const upsertDatasetThunk = createAsyncThunk<
   Dataset,
   UpsertDataset,
   {
     rejectValue: AsyncError
   }
->('datasets/create', async ({ dataset, file, createAsPublic }, { rejectWithValue }) => {
-  try {
-    let filePath
-    if (file) {
-      const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
-        method: 'POST',
-        body: {
-          contentType: dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
-        } as any,
+>(
+  'datasets/create',
+  async ({ dataset, file, createAsPublic, addIdSuffix = true }, { rejectWithValue }) => {
+    try {
+      let filePath
+      if (file) {
+        const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
+          method: 'POST',
+          body: {
+            contentType:
+              dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
+          } as any,
+        })
+        filePath = path
+        await fetch(url, { method: 'PUT', body: file })
+      }
+
+      // Properties that are to be used as SQL params on the server
+      // need to be lowercase
+      const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
+      const suffix = addIdSuffix ? `-${Date.now()}` : ''
+      const generatedId = dataset.id || `${kebabCase(dataset.name)}${suffix}`
+      const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
+      const { id: originalId, ...rest } = dataset
+      const isPatchDataset = originalId !== undefined
+
+      const datasetWithFilePath = {
+        ...rest,
+        description: dataset.description || dataset.name,
+        source: dataset.source || DATASETS_USER_SOURCE_ID,
+        // Needed to start polling the dataset in useAutoRefreshImportingDataset
+        ...(isPatchDataset && file && { status: 'importing' }),
+        configuration: {
+          ...dataset.configuration,
+          ...(propertyToInclude && { propertyToInclude }),
+          filePath: filePath || dataset.configuration?.filePath,
+        },
+      }
+      delete (datasetWithFilePath as any).public
+
+      const upsertUrl = isPatchDataset ? `/datasets/${dataset.id}` : `/datasets`
+      const createdDataset = await GFWAPI.fetch<Dataset>(upsertUrl, {
+        method: isPatchDataset ? 'PATCH' : 'POST',
+        body: isPatchDataset ? (datasetWithFilePath as any) : { ...datasetWithFilePath, id },
       })
-      filePath = path
-      await fetch(url, { method: 'PUT', body: file })
+      return createdDataset
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
     }
-
-    // Properties that are to be used as SQL params on the server
-    // need to be lowercase
-    const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
-    const generatedId = dataset.id || `${kebabCase(dataset.name)}-${Date.now()}`
-    const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
-    const { id: originalId, ...rest } = dataset
-    const isPatchDataset = originalId !== undefined
-
-    const datasetWithFilePath = {
-      ...rest,
-      description: dataset.description || dataset.name,
-      source: dataset.source || DATASETS_USER_SOURCE_ID,
-      // Needed to start polling the dataset in useAutoRefreshImportingDataset
-      ...(isPatchDataset && file && { status: 'importing' }),
-      configuration: {
-        ...dataset.configuration,
-        ...(propertyToInclude && { propertyToInclude }),
-        filePath: filePath || dataset.configuration?.filePath,
-      },
-    }
-    delete (datasetWithFilePath as any).public
-
-    const upsertUrl = isPatchDataset ? `/datasets/${dataset.id}` : `/datasets`
-    const createdDataset = await GFWAPI.fetch<Dataset>(upsertUrl, {
-      method: isPatchDataset ? 'PATCH' : 'POST',
-      body: isPatchDataset ? (datasetWithFilePath as any) : { ...datasetWithFilePath, id },
-    })
-    return createdDataset
-  } catch (e: any) {
-    console.warn(e)
-    return rejectWithValue(parseAPIError(e))
   }
-})
+)
 
 export const updateDatasetThunk = createAsyncThunk<
   Dataset,
@@ -353,45 +357,13 @@ export const deleteDatasetThunk = createAsyncThunk<
   }
 })
 
-export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
-  Dataset,
-  undefined,
-  {
-    rejectValue: AsyncError
-  }
->('datasets/fetchLatestCarrier', async (_, { rejectWithValue }) => {
-  try {
-    const dataset = await GFWAPI.fetch<Dataset>(
-      `${CARRIER_PORTAL_API_URL}/datasets/${LATEST_CARRIER_DATASET_ID}`,
-      {
-        version: '',
-      }
-    )
-    return dataset
-  } catch (e: any) {
-    console.warn(e)
-    return rejectWithValue({
-      status: parseAPIErrorStatus(e),
-      message: `${LATEST_CARRIER_DATASET_ID} - ${parseAPIErrorMessage(e)}`,
-    })
-  }
-})
-
 export interface DatasetsState extends AsyncReducer<Dataset> {
   deprecatedDatasets: DatasetsMigration
-  carrierLatest: {
-    status: AsyncReducerStatus
-    dataset: Dataset | undefined
-  }
 }
 
 const initialState: DatasetsState = {
   ...asyncInitialState,
   deprecatedDatasets: {},
-  carrierLatest: {
-    status: AsyncReducerStatus.Idle,
-    dataset: undefined,
-  },
 }
 
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
@@ -402,20 +374,7 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
       state.deprecatedDatasets = { ...state.deprecatedDatasets, ...(action.payload || {}) }
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchLastestCarrierDatasetThunk.pending, (state) => {
-      state.carrierLatest.status = AsyncReducerStatus.Loading
-    })
-    builder.addCase(fetchLastestCarrierDatasetThunk.fulfilled, (state, action) => {
-      state.carrierLatest.status = AsyncReducerStatus.Finished
-      if (action.payload) {
-        state.carrierLatest.dataset = action.payload
-      }
-    })
-    builder.addCase(fetchLastestCarrierDatasetThunk.rejected, (state) => {
-      state.carrierLatest.status = AsyncReducerStatus.Error
-    })
-  },
+  // extraReducers: (builder) => {},
   thunks: {
     fetchThunk: fetchDatasetsByIdsThunk,
     fetchByIdThunk: fetchDatasetByIdThunk,
@@ -441,10 +400,6 @@ export const selectDatasetById = memoize((id: string) =>
 export const selectDatasetsStatus = (state: DatasetsSliceState) => state.datasets.status
 export const selectDatasetsStatusId = (state: DatasetsSliceState) => state.datasets.statusId
 export const selectDatasetsError = (state: DatasetsSliceState) => state.datasets.error
-export const selectCarrierLatestDataset = (state: DatasetsSliceState) =>
-  state.datasets.carrierLatest.dataset
-export const selectCarrierLatestDatasetStatus = (state: DatasetsSliceState) =>
-  state.datasets.carrierLatest.status
 export const selectDeprecatedDatasets = (state: DatasetsSliceState) =>
   state.datasets.deprecatedDatasets
 

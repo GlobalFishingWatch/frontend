@@ -1,3 +1,4 @@
+import type { KeyboardEventHandler } from 'react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -8,7 +9,7 @@ import { useCombobox } from 'downshift'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
-import { IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { InputText } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -24,9 +25,6 @@ const MAX_RESULTS_NUMBER = 10
 
 const getItemLabel = (item: OceanArea | null) => {
   if (!item) return ''
-  if (item.properties?.type === 'ocean') {
-    return item.properties?.name
-  }
   return `${item.properties?.name} (${trans(
     `layer.areas.${item.properties?.type}` as any,
     item.properties?.type.toUpperCase()
@@ -79,6 +77,7 @@ function AreaReportSearch() {
                   },
                 }
               }
+              return d
             })
           : [...(query.dataviewInstances || []), { id: dataview.id, config: { visible: true } }]
         dispatchLocation(WORKSPACE_REPORT, {
@@ -126,21 +125,32 @@ function AreaReportSearch() {
       setAreasMatching([])
     }
   }
+  const inputProps = getInputProps({ ref: inputRef })
+
+  const handleKeyDown: KeyboardEventHandler = (e) => {
+    if (e.key === 'Escape') {
+      setSelectedItem(null)
+      setInputSearch('')
+      setAreasMatching([])
+      inputRef.current?.blur()
+    }
+    inputProps.onKeyDown?.(e)
+  }
+
   return (
     <div
       className={cx(styles.inputContainer, { [styles.open]: isOpen && areasMatching.length > 0 })}
     >
       <div className={styles.comboContainer}>
         <InputText
-          {...getInputProps({ ref: inputRef })}
+          {...inputProps}
           className={styles.input}
           placeholder={t('map.search', 'Search areas')}
           onBlur={onInputBlur}
+          onKeyDown={handleKeyDown}
+          inputSize="small"
+          type="search"
         />
-        <IconButton
-          icon="search"
-          className={cx(styles.search, { [styles.disabled]: isOpen })}
-        ></IconButton>
         <ul {...getMenuProps()} className={styles.results}>
           {isOpen &&
             areasMatching?.map((item, index) => (

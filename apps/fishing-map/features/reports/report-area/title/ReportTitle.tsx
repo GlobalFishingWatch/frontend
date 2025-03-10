@@ -18,6 +18,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   DEFAULT_BUFFER_VALUE,
+  ENTIRE_WORLD_REPORT_AREA_ID,
   NAUTICAL_MILES,
 } from 'features/reports/report-area/area-reports.config'
 import {
@@ -29,7 +30,8 @@ import {
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
 import { DEFAULT_BUFFER_OPERATION } from 'features/reports/reports.config'
-import { selectCurrentReport } from 'features/reports/reports.selectors'
+import { selectCurrentReport, selectReportCategory } from 'features/reports/reports.selectors'
+import AreaReportSearch from 'features/reports/shared/area-search/AreaReportSearch'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import {
   resetReportData,
@@ -61,6 +63,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
   const highlightArea = useHighlightReportArea()
+  const reportCategory = useSelector(selectReportCategory)
   const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
@@ -180,6 +183,9 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
   const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {
+    if (area?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
+      return t('common.globalReport', 'Global report')
+    }
     const propertyToInclude = getDatasetConfigurationProperty({
       dataset,
       property: 'propertyToInclude',
@@ -241,15 +247,16 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     }
     return ''
   }, [
+    area?.id,
+    area?.name,
     dataset,
     report?.name,
     urlBufferValue,
     urlBufferOperation,
+    t,
     areaDataview?.config?.type,
     reportAreaStatus,
     reportArea,
-    area?.name,
-    t,
     urlBufferUnit,
   ])
 
@@ -258,9 +265,10 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       ? parse(report?.description)
       : report?.description || ''
 
-  const reportAreaSpace = reportArea?.geometry
-    ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
-    : null
+  const reportAreaSpace =
+    area?.id !== ENTIRE_WORLD_REPORT_AREA_ID && reportArea?.geometry
+      ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
+      : null
 
   if (!reportTitle) {
     return (
@@ -283,42 +291,46 @@ export default function ReportTitle({ area }: ReportTitleProps) {
         <a className={styles.reportLink} href={window.location.href}>
           {t('analysis.linkToReport', 'Check the dynamic report here')}
         </a>
-
+        {reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID && <AreaReportSearch />}
         <div className={styles.actions}>
-          <Popover
-            open={showBufferTooltip}
-            onClickOutside={handleTooltipHide}
-            className={cx(styles.highlightPanel, 'print-hidden')}
-            placement="bottom"
-            content={
-              <div className={styles.filterButtonWrapper}>
-                <BufferButtonTooltip
-                  areaType={area?.properties?.originalGeometryType}
-                  activeUnit={previewBuffer.unit || NAUTICAL_MILES}
-                  defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                  activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
-                  handleRemoveBuffer={handleRemoveBuffer}
-                  handleConfirmBuffer={handleConfirmBuffer}
-                  handleBufferUnitChange={handleBufferUnitChange}
-                  handleBufferValueChange={handleBufferValueChange}
-                  handleBufferOperationChange={handleBufferOperationChange}
-                />
+          {reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && (
+            <Popover
+              open={showBufferTooltip}
+              onClickOutside={handleTooltipHide}
+              className={cx(styles.highlightPanel, 'print-hidden')}
+              placement="bottom"
+              content={
+                <div className={styles.filterButtonWrapper}>
+                  <BufferButtonTooltip
+                    areaType={area?.properties?.originalGeometryType}
+                    activeUnit={previewBuffer.unit || NAUTICAL_MILES}
+                    defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
+                    activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
+                    handleRemoveBuffer={handleRemoveBuffer}
+                    handleConfirmBuffer={handleConfirmBuffer}
+                    handleBufferUnitChange={handleBufferUnitChange}
+                    handleBufferValueChange={handleBufferValueChange}
+                    handleBufferOperationChange={handleBufferOperationChange}
+                  />
+                </div>
+              }
+            >
+              <div>
+                <Button
+                  onClick={handleTooltipShow}
+                  // onHide: handleTooltipHide,
+                  type="border-secondary"
+                  tooltip={reportCategory === 'events' ? t('common.comingSoon', 'Coming soon') : ''}
+                  disabled={reportCategory === 'events'}
+                  size="small"
+                  className={styles.actionButton}
+                >
+                  {t('analysis.buffer', 'Buffer Area')}
+                  <Icon icon="expand" type="default" />
+                </Button>
               </div>
-            }
-          >
-            <div>
-              <Button
-                onClick={handleTooltipShow}
-                // onHide: handleTooltipHide,
-                type="border-secondary"
-                size="small"
-                className={styles.actionButton}
-              >
-                {t('analysis.buffer', 'Buffer Area')}
-                <Icon icon="expand" type="default" />
-              </Button>
-            </div>
-          </Popover>
+            </Popover>
+          )}
           <Button
             type="border-secondary"
             size="small"

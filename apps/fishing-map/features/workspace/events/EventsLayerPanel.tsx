@@ -7,6 +7,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsClustersLayer } from '@globalfishingwatch/deck-layers'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
@@ -17,10 +18,12 @@ import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Remove from 'features/workspace/shared/Remove'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
+import LayerProperties from '../shared/LayerProperties'
 import LayerSwitch from '../shared/LayerSwitch'
 import Title from '../shared/Title'
 
@@ -34,7 +37,9 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
   const { t } = useTranslation()
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const [colorOpen, setColorOpen] = useState(false)
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
@@ -54,10 +59,25 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
+    setColorOpen(false)
   }
 
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
+  }
+
+  const changeColor = (color: ColorBarOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        color: color.value,
+        colorRamp: color.id,
+      },
+    })
+    setColorOpen(false)
+  }
+  const onToggleColorOpen = () => {
+    setColorOpen(!colorOpen)
   }
 
   if (!dataset || dataset.status === 'deleted') {
@@ -69,7 +89,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
   return (
     <div
       className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: filterOpen,
+        [styles.expandedContainerOpen]: filterOpen || colorOpen,
         'print-hidden': !layerActive,
       })}
       ref={setNodeRef}
@@ -98,6 +118,15 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
             styles.hideUntilHovered
           )}
         >
+          {layerActive && (
+            <LayerProperties
+              dataview={dataview}
+              open={colorOpen}
+              onColorClick={changeColor}
+              onToggleClick={onToggleColorOpen}
+              onClickOutside={closeExpandedContainer}
+            />
+          )}
           {layerActive && showSchemaFilters && (
             <ExpandedContainer
               visible={filterOpen}

@@ -51,7 +51,7 @@ export const selectIsAnyVesselLocation = createSelector(
   (isVesselLocation, isWorkspaceVesselLocation) => isVesselLocation || isWorkspaceVesselLocation
 )
 
-const selectisAreaReportLocation = createSelector(
+export const selectIsStandaloneReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT
 )
@@ -62,7 +62,7 @@ const selectIsWorkspaceReportLocation = createSelector(
 )
 
 export const selectIsAnyAreaReportLocation = createSelector(
-  [selectisAreaReportLocation, selectIsWorkspaceReportLocation],
+  [selectIsStandaloneReportLocation, selectIsWorkspaceReportLocation],
   (isAreaReportLocation, isWorkspaceReportLocation) =>
     isAreaReportLocation || isWorkspaceReportLocation
 )
@@ -201,6 +201,7 @@ export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstanc
 
 export const selectMapDrawingMode = selectQueryParam('mapDrawing')
 export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
+export const selectFeatureFlags = selectQueryParam('featureFlags')
 
 export const selectIsMapDrawing = createSelector([selectMapDrawingMode], (mapDrawingMode) => {
   return mapDrawingMode === 'polygons' || mapDrawingMode === 'points'

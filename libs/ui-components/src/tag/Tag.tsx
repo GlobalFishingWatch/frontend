@@ -31,7 +31,7 @@ export function Tag(props: TagProps) {
   return (
     <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       <div
-        className={cx(styles.tag, { [styles.withRemove]: onRemove !== undefined }, className)}
+        className={cx(styles.tag, className)}
         {...(color && { style: { color } })}
         {...(testId && { 'data-test': `${testId}` })}
       >

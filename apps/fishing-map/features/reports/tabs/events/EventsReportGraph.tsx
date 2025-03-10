@@ -1,11 +1,14 @@
 import type { ReactElement } from 'react'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
-import type { BaseReportEventsVesselsParamsFilters } from 'queries/report-events-stats-api'
-import { getEventsStatsQuery } from 'queries/report-events-stats-api'
+import {
+  type BaseReportEventsVesselsParamsFilters,
+  getEventsStatsQuery,
+} from 'queries/report-events-stats-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
@@ -13,12 +16,17 @@ import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
-import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
+import type {
+  BaseResponsiveTimeseriesProps,
+  ResponsiveVisualizationData,
+} from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectIsResponsiveVisualizationEnabled } from 'features/debug/debug.selectors'
 import i18n from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
+import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { getTimeLabels } from 'utils/events'
 import { formatInfoField, upperFirst } from 'utils/info'
@@ -54,9 +62,18 @@ const AggregatedGraphTooltip = (props: any) => {
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
-        <p className={styles.tooltipValue}>
-          {formatI18nNumber(payload[0].payload.value)} {t('common.events', 'Events').toLowerCase()}
-        </p>
+        <ul>
+          {payload
+            .sort((a: any, b: any) => b.value - a.value)
+            .map(({ value, color }: any, index: number) => {
+              return (
+                <li key={index} className={styles.tooltipValue}>
+                  <span className={styles.tooltipValueDot} style={{ color }}></span>
+                  {formatTooltipValue(value, t('common.events', 'Events').toLowerCase())}
+                </li>
+              )
+            })}
+        </ul>
       </div>
     )
   }
@@ -73,7 +90,7 @@ const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: E
 
   return (
     <div className={styles.event}>
-      {eventType && upperFirst(t(`common.eventLabels.${eventType}`, eventType))}
+      {eventType && upperFirst(t(`event.${eventType}`, eventType))}
       <div className={styles.properties}>
         <div className={styles.property}>
           <label>
@@ -120,7 +137,8 @@ export default function EventsReportGraph({
   color = COLOR_PRIMARY_BLUE,
   end,
   start,
-  timeseries,
+  data,
+  valueKeys,
   eventType,
 }: {
   datasetId: string
@@ -129,7 +147,8 @@ export default function EventsReportGraph({
   color?: string
   end: string
   start: string
-  timeseries: { date: string; value: number }[]
+  data: ResponsiveVisualizationData<'aggregated'>
+  valueKeys: string[]
   eventType?: EventType
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
@@ -139,6 +158,9 @@ export default function EventsReportGraph({
   const interval = getFourwingsInterval(startMillis, endMillis)
   const filtersMemo = useMemoCompare(filters)
   const includesMemo = useMemoCompare(includes)
+  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
+  const reportAreaDataset = useSelector(selectReportDatasetId)
+  const reportAreaId = useSelector(selectReportAreaId)
 
   let icon: ReactElement | undefined
   if (eventType === 'encounter') {
@@ -149,28 +171,32 @@ export default function EventsReportGraph({
     icon = <PortVisitIcon />
   }
 
-  const getAggregatedData = useCallback(async () => timeseries, [timeseries])
-  // const getIndividualData = useCallback(async () => {
-  //   const params = {
-  //     ...getEventsStatsQuery({
-  //       start,
-  //       end,
-  //       filters: filtersMemo,
-  //       dataset: datasetId,
-  //     }),
-  //     ...(includesMemo && { includes: includesMemo }),
-  //     limit: 1000,
-  //     offset: 0,
-  //   }
-  //   const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
-  //   const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
+  const getAggregatedData = useCallback(async () => data, [data])
 
-  //   return Object.entries(groupedData)
-  //     .map(([date, events]) => ({ date, values: events }))
-  //     .sort((a, b) => a.date.localeCompare(b.date))
-  // }, [start, end, filtersMemo, includesMemo, datasetId, interval])
+  const getIndividualData = useCallback(async () => {
+    const params = {
+      ...getEventsStatsQuery({
+        start,
+        end,
+        filters: filtersMemo || {},
+        dataset: datasetId,
+        // TODO:CVP uncomment once the API takes the parameters
+        // regionDataset: reportAreaDataset,
+        // regionId: reportAreaId,
+      }),
+      ...(includesMemo && { includes: includesMemo }),
+      limit: 1000,
+      offset: 0,
+    }
+    const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
+    const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
 
-  if (!timeseries.length) {
+    return Object.entries(groupedData)
+      .map(([date, events]) => ({ date, values: events }))
+      .sort((a, b) => a.date.localeCompare(b.date))
+  }, [start, end, filtersMemo, datasetId, reportAreaDataset, reportAreaId, includesMemo, interval])
+
+  if (!data.length) {
     return null
   }
 
@@ -180,8 +206,9 @@ export default function EventsReportGraph({
         start={start}
         end={end}
         timeseriesInterval={interval}
+        aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
-        // getIndividualData={getIndividualData}
+        getIndividualData={isResponsiveVisualizationEnabled ? getIndividualData : undefined}
         tickLabelFormatter={formatDateTicks}
         aggregatedTooltip={<AggregatedGraphTooltip />}
         individualTooltip={<IndividualGraphTooltip eventType={eventType} />}

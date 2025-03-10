@@ -1,5 +1,6 @@
 import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type {
@@ -16,6 +17,7 @@ import {
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectIsResponsiveVisualizationEnabled } from 'features/debug/debug.selectors'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   EMPTY_API_VALUES,
@@ -216,6 +218,7 @@ export default function ReportVesselsGraph({
   pageQueryParam = 'reportVesselPage',
 }: ReportVesselsGraphProps) {
   const { dispatchQueryParams } = useLocationConnect()
+  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
 
   const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
     const propertyParam = FILTER_PROPERTIES[property as ReportVesselsSubCategory]
@@ -231,16 +234,16 @@ export default function ReportVesselsGraph({
     return data
   }, [data])
 
-  // const getIndividualData = useCallback(async () => {
-  //   return individualData
-  // }, [individualData])
+  const getIndividualData = useCallback(async () => {
+    return individualData
+  }, [individualData])
 
   return (
     <div className={styles.graph} data-test="report-vessels-graph">
       <ResponsiveBarChart
         color={color}
         aggregatedValueKey={aggregatedValueKey}
-        // getIndividualData={getIndividualData}
+        getIndividualData={isResponsiveVisualizationEnabled ? getIndividualData : undefined}
         getAggregatedData={getAggregatedData}
         onAggregatedItemClick={onBarClick}
         barValueFormatter={(value: any) => {

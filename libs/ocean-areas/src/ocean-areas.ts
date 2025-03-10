@@ -21,13 +21,12 @@ const importOceanAreasData = async () => {
 }
 
 export type OceanAreaLocaleKey = string
-export type OceanAreaType = 'ocean' | 'eez' | 'mpa'
+export type OceanAreaType = 'eez' | 'mpa' | 'fao' | 'rfmo'
 export type OceanAreaBBox = [number, number, number, number]
 
 export interface OceanAreaProperties {
   type: OceanAreaType
   name: string
-  /* Extension of the area in kilometers */
   area?: number
   mrgid?: string
   bounds?: OceanAreaBBox

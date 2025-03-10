@@ -126,6 +126,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
     subcategory: dataview.config?.type as DeckLayerSubcategory,
     singleTrack: dataview.config?.singleTrack,
     color: dataview.config?.color as string,
+    thickness: dataview.config?.thickness || 1,
     ...(highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
     }),

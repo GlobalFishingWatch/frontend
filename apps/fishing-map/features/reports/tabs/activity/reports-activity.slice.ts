@@ -26,7 +26,7 @@ interface ReportState {
   error: ReportStateError | null
   data: ReportVesselsByDataset[] | null
   isPinningVessels: boolean
-  dateRangeHash: string
+  reportRequestHash: string
   previewBuffer: PreviewBuffer
 }
 
@@ -41,7 +41,7 @@ const initialState: ReportState = {
   error: null,
   data: null,
   isPinningVessels: false,
-  dateRangeHash: '',
+  reportRequestHash: '',
   previewBuffer: { value: null, unit: null, operation: null },
 }
 type ReportRegion = {
@@ -138,7 +138,12 @@ export const fetchReportVesselsThunk = createAsyncThunk(
       const vessels = await GFWAPI.fetch<APIPagination<ReportVesselsByDataset>>(
         `/4wings/report?${query}`
       )
-      return vessels.entries
+
+      return vessels.entries.sort((a, b) => {
+        const aLength = Object.values(a).reduce((sum, arr) => sum + arr?.length || 0, 0)
+        const bLength = Object.values(b).reduce((sum, arr) => sum + arr?.length || 0, 0)
+        return bLength - aLength
+      })
     } catch (e) {
       console.warn(e)
       return rejectWithValue(e)
@@ -155,8 +160,17 @@ export const fetchReportVesselsThunk = createAsyncThunk(
   }
 )
 
-export function getDateRangeHash(dateRange: DateRange) {
-  return [dateRange.start, dateRange.end].join('-')
+export function getReportRequestHash({
+  datasets,
+  filters,
+  dateRange,
+}: {
+  datasets: string[]
+  filters: string[]
+  dateRange: DateRange
+}) {
+  const datasetsHash = datasets.join(',')
+  return [datasetsHash, ...filters, dateRange.start, dateRange.end].join('-')
 }
 
 const reportSlice = createSlice({
@@ -167,11 +181,11 @@ const reportSlice = createSlice({
       state.status = AsyncReducerStatus.Idle
       state.data = null
       state.error = null
-      state.dateRangeHash = ''
+      state.reportRequestHash = ''
       state.previewBuffer = { value: null, unit: null, operation: null }
     },
-    setDateRangeHash: (state, action: PayloadAction<string>) => {
-      state.dateRangeHash = action.payload
+    setReportRequestHash: (state, action: PayloadAction<string>) => {
+      state.reportRequestHash = action.payload
     },
     setPreviewBuffer: (state, action: PayloadAction<PreviewBuffer>) => {
       state.previewBuffer = action.payload
@@ -187,7 +201,12 @@ const reportSlice = createSlice({
     builder.addCase(fetchReportVesselsThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       state.data = action.payload
-      state.dateRangeHash = getDateRangeHash(action.meta.arg.dateRange)
+      const { datasets, filters, dateRange } = action.meta.arg
+      state.reportRequestHash = getReportRequestHash({
+        datasets,
+        filters,
+        dateRange,
+      })
     })
     builder.addCase(fetchReportVesselsThunk.rejected, (state, action) => {
       state.status = AsyncReducerStatus.Error
@@ -196,7 +215,7 @@ const reportSlice = createSlice({
   },
 })
 
-export const { resetReportData, setDateRangeHash, setPreviewBuffer, setPinningVessels } =
+export const { resetReportData, setReportRequestHash, setPreviewBuffer, setPinningVessels } =
   reportSlice.actions
 
 export const selectReportVesselsStatus = (state: ReportSliceState) => state.report.status
@@ -206,7 +225,6 @@ export const selectReportVesselsData = (state: ReportSliceState) => state.report
 export const selectReportPreviewBuffer = (state: ReportSliceState) => state.report.previewBuffer
 export const selectReportIsPinningVessels = (state: ReportSliceState) =>
   state.report.isPinningVessels
-export const selectReportVesselsDateRangeHash = (state: ReportSliceState) =>
-  state.report.dateRangeHash
+export const selectReportRequestHash = (state: ReportSliceState) => state.report.reportRequestHash
 
 export default reportSlice.reducer

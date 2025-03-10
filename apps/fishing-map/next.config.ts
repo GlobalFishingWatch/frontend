@@ -131,6 +131,9 @@ const nextConfig: NextConfig = {
   // to deploy on a node server
   output: 'standalone',
   outputFileTracingRoot: join(__dirname, '../../'),
+  devIndicators: {
+    position: 'top-left',
+  },
   experimental: {
     turbo: {
       rules: {

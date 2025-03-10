@@ -217,11 +217,12 @@ function Table({ columns, data }) {
         </div>
 
         <div>
-          {headerGroups.map((headerGroup) => (
-            <div {...headerGroup.getHeaderGroupProps()}>
+          {headerGroups.map((headerGroup, index) => (
+            <div {...headerGroup.getHeaderGroupProps()} key={`${headerGroup.id}-${index}`}>
               {headerGroup.headers.map((column) => (
                 <div
                   {...column.getHeaderProps(column.getSortByToggleProps())}
+                  key={column.id}
                   className={styles.th}
                 >
                   {column.render('Header')}{' '}
@@ -248,10 +249,15 @@ function Table({ columns, data }) {
             const row = rows[index]
             prepareRow(row)
             return (
-              <div {...row.getRowProps({ style })} className={styles.tr}>
+              <div {...row.getRowProps({ style })} key={row.id} className={styles.tr}>
                 {row.cells.map((cell) => {
                   return (
-                    <div {...cell.getCellProps()} className={styles.td} title={cell.value}>
+                    <div
+                      {...cell.getCellProps()}
+                      key={cell.column.id}
+                      className={styles.td}
+                      title={cell.value}
+                    >
                       {cell.column.id === 'name' ? (
                         <button onClick={() => downloadSingleFile(cell.row.original.path)}>
                           {cell.render('Cell')}

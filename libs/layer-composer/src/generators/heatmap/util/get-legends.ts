@@ -1,13 +1,13 @@
-import type { LayerMetadataLegend} from '../../../types';
+import type { LayerMetadataLegend } from '../../../types'
 import { LegendType } from '../../../types'
-import type { ColorRampId, ColorRampsIds} from '../../types';
+import type { ColorRampId, ColorRampsIds } from '../../types'
 import { HeatmapAnimatedMode } from '../../types'
 import { HEATMAP_COLOR_RAMPS, HEATMAP_COLORS_BY_ID, TIME_COMPARE_COLOR_RAMP } from '../colors'
-import { GRID_AREA_BY_ZOOM_LEVEL,HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
+import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import type { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 
 import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToString } from './colors'
-import type { Breaks, FetchBreaksParams} from './fetch-breaks';
+import type { Breaks, FetchBreaksParams } from './fetch-breaks'
 import { isDirectAPIBreaks } from './fetch-breaks'
 import { getCleanBreaks } from './get-breaks'
 import { toDT } from './time-chunks'
@@ -162,12 +162,14 @@ export const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, 
 const white = { r: 255, g: 255, b: 255, a: 1 }
 
 const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
-  const ramp1 = getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[colorRampsIds[0]], 4).map((rgba) =>
-    rgbaStringToObject(rgba)
-  )
-  const ramp2 = getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[colorRampsIds[1]], 4).map((rgba) =>
-    rgbaStringToObject(rgba)
-  )
+  const ramp1 = getColorRampByOpacitySteps(
+    HEATMAP_COLORS_BY_ID[colorRampsIds[0]] || colorRampsIds[0],
+    4
+  ).map((rgba) => rgbaStringToObject(rgba))
+  const ramp2 = getColorRampByOpacitySteps(
+    HEATMAP_COLORS_BY_ID[colorRampsIds[1]] || colorRampsIds[1],
+    4
+  ).map((rgba) => rgbaStringToObject(rgba))
   return [
     'transparent',
     rgbaToString({ ...getBlend(ramp1[0], ramp2[0]), a: 0.5 }),

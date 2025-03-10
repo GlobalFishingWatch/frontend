@@ -13,6 +13,7 @@ export type BaseUserLayerProps = {
   id: string
   layers: ContextLayerConfig<string>[]
   color: string
+  thickness: number
   idProperty?: string
   valueProperties?: string[]
   highlightedFeatures?: UserLayerPickingObject[]

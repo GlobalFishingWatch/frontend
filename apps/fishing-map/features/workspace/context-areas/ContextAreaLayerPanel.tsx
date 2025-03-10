@@ -10,7 +10,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -31,6 +31,7 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import ContextLayerReportLink from 'features/map/popups/categories/ContextLayerReportLink'
 import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
 import GFWOnly from 'features/user/GFWOnly'
@@ -44,12 +45,12 @@ import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
-import Color from '../shared/Color'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
+import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
@@ -80,6 +81,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const debugOptions = useSelector(selectDebugOptions)
   const [areasOnScreenOpen, setAreasOnScreenOpen] = useState(false)
   const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
     total: 0,
@@ -87,7 +89,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   })
 
   const contextLayer = useGetDeckLayer<ContextLayer>(dataview.id)
-  const [colorOpen, setColorOpen] = useState(false)
+  const [propertiesOpen, setPropertiesOpen] = useState(false)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
@@ -152,10 +154,19 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         colorRamp: color.id,
       },
     })
-    setColorOpen(false)
+    setPropertiesOpen(false)
+  }
+  const changeThickness = (thickness: ThicknessSelectorOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        thickness: thickness.value,
+      },
+    })
+    setPropertiesOpen(false)
   }
   const onToggleColorOpen = () => {
-    setColorOpen(!colorOpen)
+    setPropertiesOpen(!propertiesOpen)
   }
 
   const onToggleFilterOpen = () => {
@@ -168,7 +179,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
-    setColorOpen(false)
+    setPropertiesOpen(false)
   }
 
   const showSortHandler = items.length > 1
@@ -206,7 +217,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   return (
     <div
       className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: filterOpen || colorOpen,
+        [styles.expandedContainerOpen]: filterOpen || propertiesOpen,
         'print-hidden': !layerActive,
       })}
       ref={setNodeRef}
@@ -241,12 +252,18 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         >
           {layerActive && !isBasemapLabelsDataview && (
-            <Color
+            <LayerProperties
               dataview={dataview}
-              open={colorOpen}
+              open={propertiesOpen}
               onColorClick={changeColor}
+              onThicknessClick={changeThickness}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
+              properties={
+                dataview?.config?.type === DataviewType.Context
+                  ? POLYGON_PROPERTIES
+                  : POINT_PROPERTIES
+              }
             />
           )}
           {layerActive &&
@@ -350,7 +367,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       )}
-      {layerActive && isContextAreaDataview && (
+      {debugOptions.areasOnScreen && layerActive && isContextAreaDataview && (
         <div
           className={cx(styles.closestAreas, styles.properties, 'print-hidden')}
           style={{ maxHeight: closestAreasHeight }}

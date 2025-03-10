@@ -1,0 +1,75 @@
+{
+  "fishing-activity": {
+    "default-public": {
+      "name": "Global fishing activity",
+      "description": "Monitor vessel-based human activity at sea in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.",
+      "cta": "Explore the map"
+    },
+    "carrier-portal-public": {
+      "name": "Carrier Vessel Portal",
+      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
+      "cta": "Explore the carrier vessel portal"
+    },
+    "deep-sea-mining-public": {
+      "name": "Deep Sea Mining Watch",
+      "description": "Deep Sea Mining Watch aims to increase transparency in the nascent industry of seabed mining for critical minerals by highlighting historical and ongoing vessel activity in high seas areas that are currently slated for mineral exploration. ",
+      "cta": "Explore the portal"
+    }
+  },
+  "reports": {
+    "activity-report": {
+      "name": "Global Vessel Activity",
+      "description": "Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries."
+    },
+    "detections-report": {
+      "name": "Global Dark Vessel Detections",
+      "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night."
+    },
+    "events-report": {
+      "name": "Global Vessel Events",
+      "description": "TODO TODO TODO Something something about encounters, loitering, gaps, port visits and all that..."
+    }
+  },
+  "marine-manager": {
+    "ascension-public": {
+      "name": "Île d'Ascension",
+      "description": "L'île de l'Ascension est située au milieu de l'océan Atlantique. En 2019, la totalité des 445 000 kilomètres carrés (171 800 miles carrés) des eaux de l'Ascension a été désignée comme une aire marine protégée."
+    },
+    "fiji-public": {
+      "name": "Fiji",
+      "description": "Située dans le Pacifique Sud, la République des Fidji se compose de 322 îles et possède une zone économique exclusive de plus de 1,2 million de kilomètres carrés (460 000 miles carrés)."
+    },
+    "galapagos-public": {
+      "name": "Galápagos",
+      "description": "Classée au patrimoine mondial de l'UNESCO, la réserve marine des Galápagos couvre 133 000 kilomètres carrés (51 300 miles carrés) de l'océan Pacifique, au large de l'Amérique du Sud."
+    },
+    "guyana-public": {
+      "name": "Guyane",
+      "description": "La zone économique exclusive de la Guyane est située au large de la côte nord-est de l'Amérique du Sud et couvre 137 000 kilomètres carrés (52 800 miles carrés) d'océan. "
+    },
+    "micronesia-public": {
+      "name": "États fédérés de Micronésie",
+      "description": "Composés de 607 îles, les quatre États fédérés de Micronésie (Yap, Chuuk, Pohnpei et Kosrae) ont une zone économique exclusive de plus de 2,6 millions de kilomètres carrés (1 million de miles carrés)."
+    },
+    "maldives-public": {
+      "name": "Maldives",
+      "description": "La République des Maldives est un archipel situé dans l'océan Indien et possède le septième plus grand système de récifs au monde. Les Maldives ont une zone économique exclusive qui couvre une superficie de près d'un million de kilomètres carrés (385 000 miles carrés)."
+    },
+    "niue-public": {
+      "name": "Niue",
+      "description": "Niue est située dans l'océan Pacifique central et l'aire marine protégée de Moana Mahu couvre 40 % de la zone économique exclusive de Niue, soit 127 000 kilomètres carrés (49 000 miles carrés)."
+    },
+    "palau-public": {
+      "name": "Palau",
+      "description": "La République de Palau est un groupe d'îles situé dans l'océan Pacifique occidental. En 2020, Palau a entièrement protégé 80 % de sa zone économique exclusive pour former le sanctuaire marin national de Palau, représentant 475 077 kilomètres carrés (183 000 miles carrés), en fermant ces eaux à toutes les formes d'activités extractives, y compris la pêche. "
+    },
+    "tristan-public": {
+      "name": "Tristan da Cunha",
+      "description": "Tristan da Cunha est une île isolée de l'océan Atlantique Sud. En 2020, la communauté de Tristan da Cunha a désigné 90 % de sa zone océanique de 690 000 kilomètres carrés (266 400 milles carrés) pour la protection marine."
+    },
+    "mediterranean-public": {
+      "name": "Méditerranée et mer Noire",
+      "description": "La Méditerranée et la mer Noire couvrent près de 3 millions de kilomètres carrés (1,1 million de miles carrés) d'océan entre l'Europe et l'Afrique. "
+    }
+  }
+}

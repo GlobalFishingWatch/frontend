@@ -37,9 +37,11 @@ export type WorkspaceParam =
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 
-type BivariateDataviews = [string, string]
+type BivariateDataviews = [string, string] | null
 
+export type FeatureFlag = 'globalReports' | 'responsiveVisualization'
 export interface WorkspaceState extends BaseUrlWorkspace {
+  featureFlags?: FeatureFlag[]
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID

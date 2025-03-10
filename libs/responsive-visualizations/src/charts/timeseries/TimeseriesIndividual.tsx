@@ -31,13 +31,14 @@ export function IndividualTimeseries({
   icon,
 }: IndividualTimeseriesProps) {
   const domain = useTimeseriesDomain({ start, end, timeseriesInterval })
+  const valueKeysArray = Array.isArray(valueKeys) ? valueKeys : [valueKeys]
   const fullTimeseries = useFullTimeseries({
     start,
     end,
     data,
     timeseriesInterval,
     dateKey,
-    valueKey: valueKeys as string,
+    valueKeys: valueKeysArray,
     aggregated: false,
   })
 

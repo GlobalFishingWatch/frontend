@@ -252,19 +252,15 @@ export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
   const [_, setLastReportUrl] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
   const timerange = useSelector(selectTimeRange)
-  // const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
-  // const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
   const status = useSelector(selectReportVesselsStatus)
   const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
-  // const workspaceStatus = useSelector(selectWorkspaceStatus)
   const reportBufferUnit = useSelector(selectReportBufferUnit)
   const reportBufferValue = useSelector(selectReportBufferValue)
   const reportBufferOperation = useSelector(selectReportBufferOperation)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
-  // const reportBufferHash = useSelector(selectReportBufferHash)
 
   const updateWorkspaceReportUrls = useCallback(
     (reportUrl: any) => {

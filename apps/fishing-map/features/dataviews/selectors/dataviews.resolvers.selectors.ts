@@ -55,9 +55,9 @@ import {
 import {
   selectIsAnyVesselLocation,
   selectIsPortReportLocation,
+  selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
   selectIsVesselLocation,
-  selectIsWorkspaceLocation,
   selectReportPortId,
   selectReportVesselGroupId,
   selectUrlDataviewInstances,
@@ -70,7 +70,7 @@ import { formatInfoField } from 'utils/info'
 const EMPTY_ARRAY: [] = []
 export const selectWorkspaceDataviewInstancesMerged = createSelector(
   [
-    selectIsWorkspaceLocation,
+    selectIsRouteWithWorkspace,
     selectWorkspaceStatus,
     selectWorkspaceDataviewInstances,
     selectUrlDataviewInstances,
@@ -266,6 +266,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     }
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
+        dataviewInstance &&
         dataviewInstance.id?.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
         !dataviewInstance.datasetsConfig?.length &&
         dataviewInstance.config?.info

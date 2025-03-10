@@ -32,6 +32,7 @@ const SUPPORTED_REPORT_TYPES = [
   DataviewType.HeatmapAnimated,
   DataviewType.HeatmapStatic,
   DataviewType.FourwingsTileCluster,
+  DataviewType.Currents,
 ]
 export const selectActiveSupportedReportDataviews = createSelector(
   [selectDataviewInstancesResolved],

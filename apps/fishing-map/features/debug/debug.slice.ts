@@ -7,6 +7,10 @@ export enum DebugOption {
   Debug = 'debug',
   MapStats = 'mapStats',
   Thinning = 'thinning',
+  DatasetIdHash = 'addDatasetIdHash',
+  CurrentsLayer = 'currentsLayer',
+  AreasOnScreen = 'areasOnScreen',
+  DataTerminologyIframe = 'dataTerminologyIframe',
 }
 
 type DebugOptions = Record<DebugOption, boolean>
@@ -23,6 +27,10 @@ const initialState: DebugState = {
     debug: false,
     mapStats: false,
     thinning: true,
+    addDatasetIdHash: true,
+    dataTerminologyIframe: false,
+    currentsLayer: false,
+    areasOnScreen: false,
   },
 }
 
