@@ -5,7 +5,10 @@ import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatc
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import { BASEMAP_DATAVIEW_SLUG, CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import {
+  VESSEL_DATAVIEW_INSTANCE_PREFIX,
+  VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
@@ -175,9 +178,11 @@ const selectDataviewInstancesByType = (type: DataviewType) => {
 
 export const selectTrackDataviews = selectDataviewInstancesByType(DataviewType.Track)
 
-export const selectAllActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
-)
+export const selectTimebarTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+  return dataviews?.filter(
+    (d) => d.config?.visible && !d.id.includes(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+  )
+})
 
 export const selectUserTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
