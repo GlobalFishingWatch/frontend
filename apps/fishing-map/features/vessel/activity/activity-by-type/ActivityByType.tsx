@@ -12,6 +12,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
@@ -19,8 +20,10 @@ import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { selectEventsGroupedByType } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
+import { useVesselProfileLayer } from 'features/vessel/vessel-bounds.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselEventId } from 'routes/routes.selectors'
+import type { Bbox } from 'types'
 
 import type VesselEvent from '../event/Event'
 import Event, { EVENT_HEIGHT } from '../event/Event'
@@ -47,6 +50,8 @@ function ActivityByType() {
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [expandedType, toggleExpandedType] = useActivityByType()
   const viewport = useMapViewport()
+  const vesselLayer = useVesselProfileLayer()
+  const fitMapBounds = useMapFitBounds()
   const setMapCoordinates = useSetMapCoordinates()
   const selectedVesselEventId = useSelector(selectVesselEventId)
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
@@ -86,18 +91,34 @@ function ActivityByType() {
 
   const selectEventOnMap = useCallback(
     (event: VesselEvent) => {
-      if (viewport?.zoom) {
-        const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
-        // TODO
+      if (vesselLayer?.instance) {
+        const bbox = vesselLayer.instance.getVesselTrackBounds({
+          startDate: event.start,
+          endDate: event.end,
+        })
+        if (bbox) {
+          fitMapBounds(bbox as Bbox, { padding: 60, fitZoom: true })
+        }
+      } else {
+        const zoom = viewport?.zoom ?? DEFAULT_VIEWPORT.zoom
         setMapCoordinates({
           latitude: event.coordinates?.[1],
           longitude: event.coordinates?.[0],
           zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
         })
-        if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      }
+      if (isSmallScreen) {
+        dispatchQueryParams({ sidebarOpen: false })
       }
     },
-    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport?.zoom]
+    [
+      dispatchQueryParams,
+      fitMapBounds,
+      isSmallScreen,
+      setMapCoordinates,
+      vesselLayer.instance,
+      viewport?.zoom,
+    ]
   )
 
   const { events, groupCounts, groups } = useMemo(() => {
@@ -194,16 +215,22 @@ function ActivityByType() {
         }}
         itemContent={(index) => {
           const event = events[index]
+          const expanded = event?.id.includes(selectedVesselEventId)
           return (
             <Event
               event={event}
               onMapHover={onMapHover}
-              onMapClick={selectEventOnMap}
+              onMapClick={(event, e) => {
+                if (expanded) {
+                  e.stopPropagation()
+                }
+                selectEventOnMap(event)
+              }}
               onInfoClick={onInfoClick}
               className={styles.event}
               testId={`vv-${event.type}-event-${index}`}
             >
-              {event?.id.includes(selectedVesselEventId) && <EventDetail event={event} />}
+              {expanded && <EventDetail event={event} />}
             </Event>
           )
         }}

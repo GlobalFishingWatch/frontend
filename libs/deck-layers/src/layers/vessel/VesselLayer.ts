@@ -490,12 +490,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return getVesselGraphExtentClamped(extent(extents), graph)
   }
 
-  getVesselTrackBounds() {
+  getVesselTrackBounds(params = {} as { startDate?: number | string; endDate?: number | string }) {
     const trackLayerBboxes = this.getTrackLayers()
-      .map((l) => l.getBbox())
+      .map((l) => l.getBbox(params))
       .filter(Boolean)
     if (!trackLayerBboxes.length) return null
     if (trackLayerBboxes.length === 1) return trackLayerBboxes[0]
+
     return bbox(featureCollection([...trackLayerBboxes.map((l) => bboxPolygon(l as BBox))])) as Bbox
   }
 
