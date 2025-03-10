@@ -19,7 +19,7 @@ import { extent } from 'simple-statistics'
 import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
-import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { type Bbox, getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
 import {
   getVesselGraphExtentClamped,
@@ -177,6 +177,15 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return trackUrlObject.toString()
   }
 
+  _getVesselChunks = () => {
+    const { startTime, endTime, strictTimeRange } = this.props
+
+    const chunks = strictTimeRange
+      ? [{ start: getUTCDateTime(startTime).toISO()!, end: getUTCDateTime(endTime).toISO()! }]
+      : getVesselResourceChunks(startTime, endTime)
+    return chunks
+  }
+
   _getVesselTrackLayers() {
     const {
       trackUrl,
@@ -200,7 +209,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       return []
     }
     const { zoom } = this.context.viewport
-    const chunks = getVesselResourceChunks(startTime, endTime)
+    const chunks = this._getVesselChunks()
     return chunks.flatMap(({ start, end }) => {
       if (!start || !end) {
         return []
@@ -263,7 +272,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     if (!visible) {
       return []
     }
-    const chunks = getVesselResourceChunks(startTime, endTime)
+    const chunks = this._getVesselChunks()
     // return one layer with all events if we are consuming the data object from app resources
     return events?.flatMap(({ url, type }) => {
       const visible = visibleEvents?.includes(type)
