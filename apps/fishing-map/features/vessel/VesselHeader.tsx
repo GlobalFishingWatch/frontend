@@ -26,7 +26,6 @@ import {
 } from 'features/vessel/vessel.config.selectors'
 import { setVesselPrintMode } from 'features/vessel/vessel.slice'
 import {
-  getCurrentIdentityVessel,
   getOtherVesselNames,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
@@ -35,6 +34,7 @@ import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
@@ -111,7 +111,7 @@ const VesselHeader = () => {
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
-
+  
   const onVesselFitBoundsClick = () => {
     if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
     setVesselBounds()
@@ -179,6 +179,8 @@ const VesselHeader = () => {
               </div>
             </h1>
             <div className={styles.actionsContainer}>
+              <VesselInfoCorrection />
+
               {vesselProfileDataview && (
                 <VesselDownload
                   dataview={vesselProfileDataview}

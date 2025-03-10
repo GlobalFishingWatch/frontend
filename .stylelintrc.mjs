@@ -1,3 +1,3 @@
-import config from '@globalfishingwatch/linting/stylelint'
+import config from './linting/stylelint.js'
 
 export default config
