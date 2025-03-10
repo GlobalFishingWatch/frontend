@@ -19,7 +19,7 @@ interface EventProps {
   event: VesselEvent
   children?: React.ReactNode
   onInfoClick?: (event: VesselEvent) => void
-  onMapClick?: (event: VesselEvent) => void
+  onMapClick?: (event: VesselEvent, e: React.MouseEvent) => void
   onMapHover?: (event?: VesselEvent) => void
   regionsPriority?: RegionType[]
   testId?: string
@@ -61,7 +61,13 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
         <div className={cx(styles.actions, 'print-hidden')}>
           {onInfoClick && <IconButton icon="info" size="small"></IconButton>}
           {onMapClick && (
-            <IconButton icon="target" size="small" onClick={() => onMapClick(event)}></IconButton>
+            <IconButton
+              icon="target"
+              size="small"
+              onClick={(e) => {
+                onMapClick(event, e)
+              }}
+            ></IconButton>
           )}
         </div>
       </div>

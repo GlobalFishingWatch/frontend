@@ -2,6 +2,7 @@ import type { AccessorFunction, ChangeFlags, DefaultProps } from '@deck.gl/core'
 import type { PathLayerProps } from '@deck.gl/layers'
 import { PathLayer } from '@deck.gl/layers'
 import type { NumericArray } from '@math.gl/core'
+import { getUTCDateTime } from 'libs/deck-layers/src/utils'
 
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
@@ -394,17 +395,27 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     return extent
   }
 
-  getBbox() {
+  getBbox(params = {} as { startDate?: number | string; endDate?: number | string }) {
     const data = this.props.data as VesselTrackData
     const positions = data.attributes?.getPath?.value
     const positionsSize = data.attributes?.getPath?.size
     const timestamps = data.attributes?.getTimestamp?.value
     if (!timestamps?.length) return null
 
-    const firstPointIndex = timestamps.findIndex((t) => t > this.props.startTime)
-    const lastPointIndex = timestamps.findLastIndex((t) => t < this.props.endTime)
-    if (firstPointIndex === -1 || lastPointIndex === -1 || firstPointIndex >= lastPointIndex) {
+    const startDate = params?.startDate
+      ? getUTCDateTime(params.startDate).toMillis()
+      : this.props.startTime
+    const endDate = params?.endDate ? getUTCDateTime(params.endDate).toMillis() : this.props.endTime
+    const firstPointIndex = timestamps.findIndex((t) => t >= startDate)
+    const lastPointIndex = timestamps.findLastIndex((t) => t <= endDate)
+    if (firstPointIndex === -1 || lastPointIndex === -1 || firstPointIndex > lastPointIndex) {
       return null
+    }
+    if (firstPointIndex === lastPointIndex) {
+      const index = firstPointIndex
+      const longitude = positions[index * positionsSize]
+      const latitude = positions[index * positionsSize + 1]
+      return wrapBBoxLongitudes([longitude, latitude, longitude, latitude])
     }
 
     const bounds = [Infinity, Infinity, -Infinity, -Infinity] as Bbox
