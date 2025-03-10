@@ -8,6 +8,7 @@ import {
 import {
   selectDatasetUploadModalOpen,
   selectFeedbackModalOpen,
+  selectInfoCorrectionModalOpen,
   selectLayerLibraryModalOpen,
   selectScreenshotModalOpen,
 } from 'features/modals/modals.slice'
@@ -25,6 +26,7 @@ const selectAppModals = createSelector(
     selectLayerLibraryModalOpen,
     selectDatasetUploadModalOpen,
     selectScreenshotModalOpen,
+    selectInfoCorrectionModalOpen,
     selectVesselGroupModalOpen,
     selectDownloadTrackModalOpen,
     selectDownloadActivityModalOpen,
@@ -34,6 +36,7 @@ const selectAppModals = createSelector(
     layerLibraryModalOpen,
     datasetUploadModalOpen,
     screenshotModalOpen,
+    infoCorrectionModalOpen,
     vesselGroupsModalOpen,
     downloadTrackModalOpen,
     downloadActivityModalOpen
@@ -43,6 +46,7 @@ const selectAppModals = createSelector(
       layerLibrary: layerLibraryModalOpen,
       datataset: datasetUploadModalOpen,
       screenshot: screenshotModalOpen,
+      infoCorrection:  infoCorrectionModalOpen,
       vesselGroups: vesselGroupsModalOpen,
       downloadTrack: downloadTrackModalOpen,
       downloadActivity: downloadActivityModalOpen,
