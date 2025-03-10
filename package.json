@@ -40,6 +40,7 @@
     "@loaders.gl/mvt": "4.3.3",
     "@loaders.gl/schema": "4.3.3",
     "@loaders.gl/worker-utils": "4.3.3",
+    "@luma.gl/engine": "^9.1.5",
     "@mapbox/geojson-area": "0.2.2",
     "@mapbox/tilebelt": "^2.0.2",
     "@mapbox/vector-tile": "2.0.3",
