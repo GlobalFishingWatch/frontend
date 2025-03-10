@@ -50,7 +50,7 @@
       "options": {
         "commands": [
           "nx dist:workers deck-loaders",
-          "mkdir -p apps/fishing-map/public/workers",
+          "shx mkdir -p apps/fishing-map/public/workers",
           "shx cp -R dist/libs/deck-loaders/workers/**/*.js apps/fishing-map/public/workers/"
         ],
         "parallel": false
