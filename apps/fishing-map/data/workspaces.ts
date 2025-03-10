@@ -61,6 +61,7 @@ export const SAR_DATAVIEW_SLUG = 'sar-v-3'
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-3'
 export const TEMPLATE_USER_TRACK_SLUG = 'user-track'
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3'
+export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = 'vessel-track-only-v-3'
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer'
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer'
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = 'gfw-environmental-layer'
@@ -73,6 +74,7 @@ const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer'
 export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
   TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
