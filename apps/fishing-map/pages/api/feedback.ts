@@ -30,7 +30,7 @@ export const loadSpreadsheetDoc = async (id: string) => {
   return spreadsheetDoc
 }
 
-export type FeedbackDataType = 'feedback' | 'error'
+export type FeedbackDataType = 'feedback' | 'error' | 'corrections'
 export type FeedbackForm = {
   type: FeedbackDataType
   data: {
@@ -72,11 +72,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         message: 'Feedback data is required',
       })
     }
-    const spreadsheetId = type === 'error' ? ERRORS_SPREADSHEET_ID : FEEDBACK_SPREADSHEET_ID
-    const spreadsheetTitle = type === 'error' ? ERRORS_SHEET_TITLE : FEEDBACK_SHEET_TITLE
+
+    let spreadsheetId = FEEDBACK_SPREADSHEET_ID
+    let sheetTitle = FEEDBACK_SHEET_TITLE
+
+    if (type === 'error') {
+      spreadsheetId = ERRORS_SPREADSHEET_ID
+      sheetTitle = ERRORS_SHEET_TITLE
+    } else if (type === 'corrections') {
+      sheetTitle = 'vessels corrections'
+    }
     const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
 
-    const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
+    let sheet = feedbackSpreadsheetDoc.sheetsByTitle[sheetTitle]
+    if (!sheet) {
+      sheet = await feedbackSpreadsheetDoc.addSheet({ title: sheetTitle })
+    }
+
     await sheet.addRow(data)
 
     return res.status(200).json({

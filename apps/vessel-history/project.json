@@ -37,7 +37,7 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/vessel-history/public/locales"]
+        "commands": ["rimraf dist/apps/vessel-history/public/locales"]
       }
     },
     "serve": {
