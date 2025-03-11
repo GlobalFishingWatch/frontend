@@ -15,6 +15,7 @@ import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import type { WorkspaceCategory } from 'data/workspaces'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import type { UpdateWorkspaceThunkRejectError } from 'features/workspace/workspace.slice'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 import type { WorkspaceState } from 'types'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
@@ -99,7 +100,7 @@ export const updateWorkspaceThunk = createAsyncThunk<
   AppWorkspace,
   Partial<AppWorkspace> & { id: string; password?: string; newPassword?: string },
   {
-    rejectValue: AsyncError
+    rejectValue: UpdateWorkspaceThunkRejectError
   }
 >(
   'workspaces/update',
@@ -117,7 +118,8 @@ export const updateWorkspaceThunk = createAsyncThunk<
       })
       return updatedWorkspace
     } catch (e: any) {
-      return rejectWithValue(parseAPIError(e))
+      const error = parseAPIError(e)
+      return rejectWithValue({ ...error, isWorkspaceWrongPassword: error.status === 401 })
     }
   },
   {
