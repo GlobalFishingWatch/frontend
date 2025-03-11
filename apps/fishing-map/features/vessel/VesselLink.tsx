@@ -11,7 +11,12 @@ import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
-import { resetVesselState, setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
+import {
+  resetVesselState,
+  setVesselEventId,
+  setVesselEventType,
+  setVesselFitBoundsOnLoad,
+} from 'features/vessel/vessel.slice'
 import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 import {
   selectCurrentWorkspaceCategory,
@@ -77,6 +82,12 @@ const VesselLink = ({
         if (vesselId !== vesselInfoDataId) {
           dispatch(resetVesselState())
         }
+        if (eventId) {
+          dispatch(setVesselEventId(eventId))
+        }
+        if (eventType) {
+          dispatch(setVesselEventType(eventType))
+        }
         // This needs to happen after dispatch resetVesselState so there is no override
         dispatch(setVesselFitBoundsOnLoad(fitBounds))
       }
@@ -84,7 +95,7 @@ const VesselLink = ({
         onClick(e, vesselId)
       }
     },
-    [dispatch, fitBounds, onClick, vesselId, vesselInfoDataId]
+    [dispatch, eventId, eventType, fitBounds, onClick, vesselId, vesselInfoDataId]
   )
 
   if (!vesselId) return children
@@ -107,8 +118,6 @@ const VesselLink = ({
           ...locationQuery,
           // Clean search url when clicking on vessel link
           query: undefined,
-          vesselEventId: eventId,
-          vesselEventType: eventType,
           vesselDatasetId,
           ...(identity && {
             vesselIdentitySource: identity.identitySource,

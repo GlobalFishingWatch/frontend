@@ -3,22 +3,22 @@ import { useSelector } from 'react-redux'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselEventType } from 'routes/routes.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectVesselEventType, setVesselEventType } from 'features/vessel/vessel.slice'
 
 export const useActivityByType = (): [EventType | null, (eventType: EventType) => void] => {
+  const dispatch = useAppDispatch()
   const vesselEventType = useSelector(selectVesselEventType)
-  const { dispatchQueryParams } = useLocationConnect()
 
   const toggleEventType = useCallback(
     (type: EventType) => {
       if (vesselEventType === type) {
-        dispatchQueryParams({ vesselEventType: undefined })
+        dispatch(setVesselEventType(null))
       } else {
-        dispatchQueryParams({ vesselEventType: type })
+        dispatch(setVesselEventType(type))
       }
     },
-    [dispatchQueryParams, vesselEventType]
+    [dispatch, vesselEventType]
   )
 
   return useMemo(() => [vesselEventType, toggleEventType], [vesselEventType, toggleEventType])

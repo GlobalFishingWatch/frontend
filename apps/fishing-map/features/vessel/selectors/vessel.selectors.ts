@@ -3,8 +3,12 @@ import { createSelector } from '@reduxjs/toolkit'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
-import { selectVesselSlice } from 'features/vessel/vessel.slice'
-import { selectVesselEventId, selectVesselEventType, selectVesselId } from 'routes/routes.selectors'
+import {
+  selectVesselEventId,
+  selectVesselEventType,
+  selectVesselSlice,
+} from 'features/vessel/vessel.slice'
+import { selectVesselId } from 'routes/routes.selectors'
 import type { RootState } from 'store'
 
 export const selectVessel = createSelector(
@@ -33,6 +37,6 @@ export const selectVesselFitBoundsOnLoad = (state: RootState) =>
 export const selectCurrentVesselEvent = createSelector(
   [selectVesselEventsData, selectVesselEventId, selectVesselEventType],
   (eventsList, eventId, eventType) => {
-    return eventsList?.find((e) => e.id.includes(eventId) && e.type === eventType)
+    return eventsList?.find((e) => eventId && e.id.includes(eventId) && e.type === eventType)
   }
 )
