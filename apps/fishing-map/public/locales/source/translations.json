@@ -1034,6 +1034,7 @@
     "noVoyagesinTimeRange": "There are no voyages fully contained in your timerange.",
     "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "onScreen": "Vessels on screen",
+    "operator": "Operator",
     "origin": "Origin",
     "owner": "Owner",
     "owners": "Owners",
