@@ -1,9 +1,8 @@
 import type { ChangeEvent } from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { WorkspaceEditAccessType } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -12,6 +11,7 @@ import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
+import type { UpdateWorkspaceThunkRejectError } from 'features/workspace/workspace.slice'
 import { updateCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
@@ -61,7 +61,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
       const updateParams = {
         ...workspace,
         name,
-        editAccess,
+        editAccess: isOwnerWorkspace ? editAccess : undefined,
         state: {
           ...workspace.state,
           daysFromLatest,
@@ -69,6 +69,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
         password: editPassword,
         newPassword,
       }
+
       const dispatchedAction = isWorkspaceList
         ? await dispatch(updateWorkspaceThunk(updateParams))
         : await dispatch(updateCurrentWorkspaceThunk(updateParams))
@@ -90,8 +91,8 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
           onFinish(dispatchedAction.payload)
         }
       } else {
-        const error = (dispatchedAction.payload as any)?.error as ParsedAPIError
-        if (error?.status === 401) {
+        const error = dispatchedAction.payload as UpdateWorkspaceThunkRejectError
+        if (error?.isWorkspaceWrongPassword) {
           setError(t('workspace.passwordIncorrect', 'Invalid password'))
         } else {
           setError('Error updating workspace')
