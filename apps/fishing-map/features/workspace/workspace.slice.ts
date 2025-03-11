@@ -408,7 +408,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
   }
 )
 
-export const updatedCurrentWorkspaceThunk = createAsyncThunk<
+export const updateCurrentWorkspaceThunk = createAsyncThunk<
   AppWorkspace,
   AppWorkspace & { password?: string; newPassword?: string },
   {
@@ -545,16 +545,16 @@ const workspaceSlice = createSlice({
     builder.addCase(saveWorkspaceThunk.rejected, (state) => {
       state.customStatus = AsyncReducerStatus.Error
     })
-    builder.addCase(updatedCurrentWorkspaceThunk.pending, (state) => {
+    builder.addCase(updateCurrentWorkspaceThunk.pending, (state) => {
       state.customStatus = AsyncReducerStatus.Loading
     })
-    builder.addCase(updatedCurrentWorkspaceThunk.fulfilled, (state, action) => {
+    builder.addCase(updateCurrentWorkspaceThunk.fulfilled, (state, action) => {
       state.customStatus = AsyncReducerStatus.Finished
       if (action.payload) {
         state.data = action.payload
       }
     })
-    builder.addCase(updatedCurrentWorkspaceThunk.rejected, (state) => {
+    builder.addCase(updateCurrentWorkspaceThunk.rejected, (state) => {
       state.customStatus = AsyncReducerStatus.Error
     })
   },
