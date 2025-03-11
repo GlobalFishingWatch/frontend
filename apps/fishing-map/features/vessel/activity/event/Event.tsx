@@ -17,6 +17,7 @@ type VesselEvent = ActivityEvent | ApiEvent
 interface EventProps {
   className?: string
   event: VesselEvent
+  eventsRef?: Map<string, HTMLElement>
   children?: React.ReactNode
   onInfoClick?: (event: VesselEvent) => void
   onMapClick?: (event: VesselEvent, e: React.MouseEvent) => void
@@ -37,12 +38,24 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
     onMapClick,
     testId,
     regionsPriority,
+    eventsRef,
   } = props
   const { getEventDescription } = useActivityEventTranslations()
   const hasInteraction =
     onInfoClick !== undefined || onMapClick !== undefined || onMapHover !== undefined
   return (
-    <li className={cx(styles.event, className)} {...(testId && { 'data-test': testId })}>
+    <li
+      ref={(inst) => {
+        if (!eventsRef) return
+        if (inst === null) {
+          eventsRef.delete(event.id)
+        } else {
+          eventsRef.set(event.id, inst)
+        }
+      }}
+      className={cx(styles.event, className)}
+      {...(testId && { 'data-test': testId })}
+    >
       <div
         className={cx(styles.header, { [styles.pointer]: hasInteraction })}
         onMouseEnter={() => onMapHover && onMapHover(event)}
