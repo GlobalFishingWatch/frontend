@@ -34,7 +34,7 @@ import {
 
 import { useDataviewInstancesConnect } from './workspace.hook'
 import { selectIsWorkspaceOwner } from './workspace.selectors'
-import { updatedCurrentWorkspaceThunk } from './workspace.slice'
+import { updateCurrentWorkspaceThunk } from './workspace.slice'
 
 import styles from './Workspace.module.css'
 
@@ -209,7 +209,7 @@ export const useMigrateWorkspaceToast = () => {
         await dispatch(updateReportThunk({ ...report, workspace: workspaceReport }))
       }
     } else if (workspace && isWorkspaceOwner) {
-      await dispatch(updatedCurrentWorkspaceThunk(workspace))
+      await dispatch(updateCurrentWorkspaceThunk(workspace))
     }
     closeToast()
   }

@@ -284,10 +284,11 @@ export const getDatasetsInDataviews = (
   dataviewInstances: (DataviewInstance | UrlDataviewInstance)[] = [],
   guestUser = false
 ) => {
-  if (!dataviews?.length) {
+  const allDataviews = [...(dataviews || []), ...(dataviewInstances || [])]
+  if (!allDataviews?.length) {
     return []
   }
-  const datasets = [...dataviews, ...dataviewInstances].flatMap((dataview) => {
+  const datasets = allDataviews.flatMap((dataview) => {
     return getDatasetsInDataview(dataview, guestUser)
   })
   return uniq(datasets)
