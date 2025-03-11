@@ -183,7 +183,13 @@ const VesselIdentity = () => {
         <div className={cx(styles.fieldGroup)}>
           {identitySource === VesselIdentitySourceEnum.Registry && (
             <div>
-              <label>{t('vessel.registrySources', 'Registry Sources')}</label>
+              <div className={styles.labelContainer}>
+                <label>{t('vessel.registrySources', 'Registry Sources')}</label>
+                <DataTerminology
+                  title={t('vessel.registrySources', 'Registry Sources')}
+                  terminologyKey="registrySources"
+                />
+              </div>
               {vesselIdentity?.sourceCode ? (
                 <VesselIdentityField
                   tooltip={vesselIdentity?.sourceCode?.filter(Boolean)?.join(', ')}

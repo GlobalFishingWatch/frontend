@@ -58,6 +58,7 @@ const DataTerminology: React.FC<ModalProps> = ({
         appSelector="__next"
         isOpen={showModal}
         onClose={closeModal}
+        shouldCloseOnEsc
         title={title ?? t('common.dataTerminology', 'Data and Terminology')}
         className={cx(containerClassName, {
           [styles.iFrameContainer]: debugOptions.dataTerminologyIframe,
