@@ -7,6 +7,7 @@ import { isUnauthorized } from '@globalfishingwatch/api-client'
 
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { setLoginExpired } from 'features/user/user.slice'
+import type { UpdateWorkspaceThunkRejectError } from 'features/workspace/workspace.slice'
 import type { AsyncError } from 'utils/async-slice'
 
 export const logoutUserMiddleware: Middleware =
@@ -22,7 +23,8 @@ export const logoutUserMiddleware: Middleware =
     if (isRejectedWithValue(action)) {
       const state = getState()
       const isGuestUser = selectIsGuestUser(state)
-      if (!isGuestUser && isUnauthorized(action.payload as AsyncError)) {
+      const payload = action.payload as AsyncError & UpdateWorkspaceThunkRejectError
+      if (!isGuestUser && isUnauthorized(payload) && !payload.isWorkspaceWrongPassword) {
         dispatch(setLoginExpired(true))
       }
     }
