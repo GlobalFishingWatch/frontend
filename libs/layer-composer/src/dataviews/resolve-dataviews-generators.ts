@@ -5,7 +5,8 @@ import type {
   Dataset,
   EnviromentalDatasetConfiguration,
   Resource,
-  TrackResourceData} from '@globalfishingwatch/api-types';
+  TrackResourceData,
+} from '@globalfishingwatch/api-types'
 import {
   DatasetCategory,
   DatasetStatus,
@@ -21,15 +22,14 @@ import {
   getDatasetRangeSteps,
   getDatasetsExtent,
 } from '@globalfishingwatch/datasets-client'
-import type {
-  UrlDataviewInstance} from '@globalfishingwatch/dataviews-client';
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   isActivityDataview,
   isDetectionsDataview,
   isTrackDataview,
   pickTrackResource,
   resolveDataviewDatasetResource,
-  resolveDataviewDatasetResources
+  resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import type {
@@ -37,12 +37,13 @@ import type {
   HeatmapAnimatedGeneratorConfig,
   HeatmapAnimatedGeneratorSublayer,
   HeatmapAnimatedInteractionType,
-  Interval} from '@globalfishingwatch/layer-composer'
+  Interval,
+} from '@globalfishingwatch/layer-composer'
 import {
   DEFAULT_ENVIRONMENT_INTERVALS,
   DEFAULT_HEATMAP_INTERVALS,
   Group,
-  HeatmapAnimatedMode
+  HeatmapAnimatedMode,
 } from '@globalfishingwatch/layer-composer'
 
 const MULTILAYER_SEPARATOR = '__'
@@ -386,7 +387,7 @@ export function getGeneratorConfig(
           DatasetTypes.Context,
           DatasetTypes.UserContext,
         ])
-        if (dataset?.status !== DatasetStatus.Done) {
+        if (!dataset || dataset?.status !== DatasetStatus.Done) {
           return []
         }
         generator.datasetId = dataset.id

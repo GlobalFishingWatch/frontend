@@ -81,6 +81,9 @@ export const getUserCircleProps = ({
 }: {
   dataset: Dataset
 }): Partial<UserPointsLayerProps> => {
+  if (!dataset) {
+    return {}
+  }
   if (dataset.source === DRAW_DATASET_SOURCE) {
     return { staticPointRadius: 8 }
   }
