@@ -206,10 +206,6 @@ export const selectUrlBufferOperationQuery = selectQueryParam('reportBufferOpera
 export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
 export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
 
-// Vessel
-export const selectVesselEventId = selectQueryParam('vesselEventId')
-export const selectVesselEventType = selectQueryParam('vesselEventType')
-
 export const selectIsMapDrawing = createSelector([selectMapDrawingMode], (mapDrawingMode) => {
   return mapDrawingMode === 'polygons' || mapDrawingMode === 'points'
 })
