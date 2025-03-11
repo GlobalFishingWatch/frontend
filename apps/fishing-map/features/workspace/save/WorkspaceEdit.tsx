@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -12,7 +12,7 @@ import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { updatedCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { updateCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 
@@ -56,7 +56,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
     timeRangeOption === 'dynamic' ? isValidDaysFromLatest(daysFromLatest) : true
 
   const updateWorkspace = async () => {
-    if (workspace) {
+    if (workspace && !loading) {
       setLoading(true)
       const updateParams = {
         ...workspace,
@@ -71,10 +71,10 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
       }
       const dispatchedAction = isWorkspaceList
         ? await dispatch(updateWorkspaceThunk(updateParams))
-        : await dispatch(updatedCurrentWorkspaceThunk(updateParams))
+        : await dispatch(updateCurrentWorkspaceThunk(updateParams))
       if (
         updateWorkspaceThunk.fulfilled.match(dispatchedAction) ||
-        updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)
+        updateCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)
       ) {
         const workspace = dispatchedAction.payload as AppWorkspace
         if (!workspace?.dataviewInstances.length) {
@@ -212,7 +212,6 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
               : ''
           }
           disabled={!name || passwordDisabled || !validDaysFromLatestValue}
-          onClick={updateWorkspace}
           htmlType="submit"
           testId="create-workspace-button"
         >

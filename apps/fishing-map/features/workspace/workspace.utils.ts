@@ -8,7 +8,7 @@ import type { WorkspaceState } from 'types'
 export const MIN_WORKSPACE_PASSWORD_LENGTH = 5
 
 export const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<WorkspaceState> => {
-  const { id, ownerId, createdAt, ownerType, viewAccess, editAccess, ...restWorkspace } = workspace
+  const { id, ownerId, createdAt, ownerType, viewAccess, ...restWorkspace } = workspace
   return restWorkspace
 }
 

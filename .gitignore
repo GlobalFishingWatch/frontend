@@ -6,6 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Editor files
+.cursor/mcp.json
+
 # Env
 .env
 affected-apps.txt
