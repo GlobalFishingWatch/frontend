@@ -25,9 +25,9 @@ export type DatasetUploadConfig = {
 
 type ModalsOpenState = {
   feedback: boolean
+  infoCorrection: boolean
   screenshot: boolean
   layerLibrary: LayerLibraryMode
-  infoCorrection:boolean
   editWorkspace: boolean
   createWorkspace: boolean
   datasetUpload: { open: boolean } & DatasetUploadConfig
@@ -35,11 +35,11 @@ type ModalsOpenState = {
 
 const initialState: ModalsOpenState = {
   feedback: false,
+  infoCorrection: false,
   screenshot: false,
   layerLibrary: false,
   editWorkspace: false,
   createWorkspace: false,
-  infoCorrection:false,
   datasetUpload: {
     open: false,
     id: undefined,
@@ -81,5 +81,6 @@ export const selectDatasetUploadModalOpen = (state: RootState) => state.modals.d
 export const selectEditWorkspaceModalOpen = (state: RootState) => state.modals.editWorkspace
 export const selectCreateWorkspaceModalOpen = (state: RootState) => state.modals.createWorkspace
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
+export const selectInfoCorrectionModalOpen = (state: RootState) => state.modals.infoCorrection
 
 export default modals.reducer

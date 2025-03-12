@@ -76,15 +76,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     let spreadsheetId = FEEDBACK_SPREADSHEET_ID
     let sheetTitle = FEEDBACK_SHEET_TITLE
 
-    if (type === 'error' ||type === 'corrections') {
+    if (type === 'error') {
       spreadsheetId = ERRORS_SPREADSHEET_ID
       sheetTitle = ERRORS_SHEET_TITLE
-   if (type === 'corrections') {
-      sheetTitle = 'vessels corrections' 
-    }}
+    } else if (type === 'corrections') {
+      sheetTitle = 'vessels corrections'
+    }
     const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
 
-    const sheet = feedbackSpreadsheetDoc.sheetsByTitle[sheetTitle]
+    let sheet = feedbackSpreadsheetDoc.sheetsByTitle[sheetTitle]
+    if (!sheet) {
+      sheet = await feedbackSpreadsheetDoc.addSheet({ title: sheetTitle })
+    }
+
     await sheet.addRow(data)
 
     return res.status(200).json({

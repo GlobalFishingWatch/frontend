@@ -32,6 +32,7 @@ import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'

@@ -148,12 +148,10 @@ const VesselRegistryField = ({
                     [styles.hidden]: !registryOverlapsTimeRange,
                   })}
                 >
-                  {Component}{' '}
-                  {registry.dateFrom && registry.dateTo && (
-                    <span className={styles.secondary}>
-                      <I18nDate date={registry.dateFrom} /> - <I18nDate date={registry.dateTo} />
-                    </span>
-                  )}
+                  {Component}
+                  <span className={styles.secondary}>
+                    <I18nDate date={registry.dateFrom} /> - <I18nDate date={registry.dateTo} />
+                  </span>
                 </li>
               )
             })}
