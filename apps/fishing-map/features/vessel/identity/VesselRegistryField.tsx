@@ -31,6 +31,7 @@ const RegistryOperatorField = ({
 }) => {
   const { key } = registryField
   const operator = vesselIdentity[key as keyof VesselLastIdentity] as VesselRegistryOperator
+
   return (
     <div className={cx(styles.fieldGroupContainer)}>
       <div className={styles.labelContainer}>
@@ -38,7 +39,7 @@ const RegistryOperatorField = ({
         <DataTerminology title={t('vessel.operator', 'Operator')} terminologyKey="operator" />
       </div>
       {typeof operator === 'string' && operator !== '' ? (
-        <VesselIdentityField value={formatInfoField(operator, 'operator') as string} />
+        <VesselIdentityField value={operator} />
       ) : operator?.name ? (
         <Fragment>
           <VesselIdentityField
