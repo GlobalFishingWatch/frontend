@@ -25,7 +25,6 @@ type LayerPanelProps = {
 export default function ReportSummaryTags({ dataview, availableFields }: LayerPanelProps) {
   const { t } = useTranslation()
   const featureFlags = useSelector(selectFeatureFlags)
-  console.log(' featureFlags:', featureFlags)
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
 
