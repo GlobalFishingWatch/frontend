@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -11,6 +12,7 @@ import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import Filters from 'features/workspace/shared/LayerFilters'
+import { selectFeatureFlags } from 'routes/routes.selectors'
 
 import styles from './ReportSummaryTags.module.css'
 
@@ -22,6 +24,8 @@ type LayerPanelProps = {
 
 export default function ReportSummaryTags({ dataview, availableFields }: LayerPanelProps) {
   const { t } = useTranslation()
+  const featureFlags = useSelector(selectFeatureFlags)
+  console.log(' featureFlags:', featureFlags)
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
 
@@ -44,25 +48,27 @@ export default function ReportSummaryTags({ dataview, availableFields }: LayerPa
               label={t(field[1] as any, field[2])}
             />
           ))}
-          <ExpandedContainer
-            onClickOutside={onToggleFiltersUIOpen}
-            visible={filtersUIOpen}
-            className={styles.expandedContainer}
-            component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
-          >
-            <IconButton
-              icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
-              size="small"
-              onClick={onToggleFiltersUIOpen}
-              className="print-hidden"
-              tooltip={
-                filtersUIOpen
-                  ? t('layer.filterClose', 'Close filters UI')
-                  : t('layer.filterOpen', 'Open filters UI')
-              }
-              tooltipPlacement="top"
-            />
-          </ExpandedContainer>
+          {featureFlags?.includes('globalReports') && (
+            <ExpandedContainer
+              onClickOutside={onToggleFiltersUIOpen}
+              visible={filtersUIOpen}
+              className={styles.expandedContainer}
+              component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
+            >
+              <IconButton
+                icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
+                size="small"
+                onClick={onToggleFiltersUIOpen}
+                className="print-hidden"
+                tooltip={
+                  filtersUIOpen
+                    ? t('layer.filterClose', 'Close filters UI')
+                    : t('layer.filterOpen', 'Open filters UI')
+                }
+                tooltipPlacement="top"
+              />
+            </ExpandedContainer>
+          )}
         </div>
       </div>
     </div>
