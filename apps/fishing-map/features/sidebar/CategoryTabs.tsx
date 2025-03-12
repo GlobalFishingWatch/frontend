@@ -60,6 +60,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const featureFlags = useSelector(selectFeatureFlags)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectLocationCategory)
+  const isSearch = locationType === SEARCH || locationType === WORKSPACE_SEARCH
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
 
@@ -94,7 +95,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
         <li
           className={cx(styles.tab, {
-            [styles.current]: locationType === SEARCH || locationType === WORKSPACE_SEARCH,
+            [styles.current]: isSearch,
           })}
         >
           <Link
@@ -127,8 +128,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <li
               className={cx(styles.tab, {
                 [styles.current]:
-                  locationCategory === (category as WorkspaceCategory) ||
-                  (index === 0 && !locationCategory),
+                  !isSearch &&
+                  (locationCategory === (category as WorkspaceCategory) ||
+                    (index === 0 && !locationCategory)),
               })}
             >
               <Link
