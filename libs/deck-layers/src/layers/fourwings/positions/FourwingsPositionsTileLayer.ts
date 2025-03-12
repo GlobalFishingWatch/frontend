@@ -15,7 +15,6 @@ import type { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tile
 import { IconLayer } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
 import { groupBy, orderBy } from 'es-toolkit'
-import { LabelLayer } from 'libs/deck-layers/src/layers/vessel/LabelLayer'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { mean, sample, standardDeviation } from 'simple-statistics'
@@ -38,6 +37,7 @@ import {
 } from '../../../utils'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
 import { PATH_BASENAME } from '../../layers.config'
+import { LabelLayer } from '../../vessel/LabelLayer'
 import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_API_TILES_URL,

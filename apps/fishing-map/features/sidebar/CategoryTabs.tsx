@@ -112,7 +112,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             }}
             onClick={onSearchClick}
           >
-            <Tooltip content={t('workspaces.categories.search', 'Vessel search')} placement="right">
+            <Tooltip content={t('workspace.categories.search', 'Vessel search')} placement="right">
               <span className={styles.tabContent}>
                 <Icon icon="category-search" className={styles.searchIcon} />
               </span>
