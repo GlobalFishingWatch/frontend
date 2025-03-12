@@ -102,7 +102,9 @@ export const getVesselDataviewInstanceDatasetConfig = (
 
 const vesselDataviewInstanceTemplate = (
   dataviewSlug: Dataview['slug'],
-  datasets: VesselInstanceDatasets
+  datasets: VesselInstanceDatasets,
+  highlightEventStartTime?: number,
+  highlightEventEndTime?: number
 ) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
@@ -111,19 +113,37 @@ const vesselDataviewInstanceTemplate = (
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
       ...datasets,
+      ...(highlightEventStartTime && {
+        highlightEventStartTime: getUTCDateTime(highlightEventStartTime).toISO()!,
+      }),
+      ...(highlightEventEndTime && {
+        highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
+      }),
     },
   }
 }
 const getVesselDataviewInstanceId = (vesselId: string) =>
   `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
 
-export const getVesselDataviewInstance = (
-  vessel: { id: string },
+export const getVesselDataviewInstance = ({
+  vessel,
+  datasets,
+  highlightEventStartTime,
+  highlightEventEndTime,
+}: {
+  vessel: { id: string }
   datasets: VesselInstanceDatasets
-): DataviewInstance => {
+  highlightEventStartTime?: number
+  highlightEventEndTime?: number
+}): DataviewInstance => {
   const vesselDataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
-    ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG, datasets),
+    ...vesselDataviewInstanceTemplate(
+      TEMPLATE_VESSEL_DATAVIEW_SLUG,
+      datasets,
+      highlightEventStartTime,
+      highlightEventEndTime
+    ),
     deleted: false,
   }
   return vesselDataviewInstance
@@ -134,11 +154,15 @@ export const getVesselEncounterTrackDataviewInstance = ({
   track,
   start,
   end,
+  highlightEventStartTime,
+  highlightEventEndTime,
 }: {
   vesselId: string
   track: string
   start: number
   end: number
+  highlightEventStartTime?: number
+  highlightEventEndTime?: number
 }): DataviewInstance => {
   const vesselDataviewInstance: DataviewInstance = {
     id: `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}`,
@@ -146,6 +170,12 @@ export const getVesselEncounterTrackDataviewInstance = ({
     config: {
       startDate: getUTCDateTime(start).toISO()!,
       endDate: getUTCDateTime(end).toISO()!,
+      ...(highlightEventStartTime && {
+        highlightEventStartTime: getUTCDateTime(highlightEventStartTime).toISO()!,
+      }),
+      ...(highlightEventEndTime && {
+        highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
+      }),
     },
   }
   const datasetsConfig: DataviewDatasetConfig[] = [

@@ -144,6 +144,10 @@ export interface DataviewConfig<Type = DataviewType> {
   startDate?: string
   endDate?: string
 
+  /** Vessels to override the globalconfig start and end */
+  highlightEventStartTime?: string
+  highlightEventEndTime?: string
+
   pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>
   /** Fourwings layers merged, needed for Activity or Detections */

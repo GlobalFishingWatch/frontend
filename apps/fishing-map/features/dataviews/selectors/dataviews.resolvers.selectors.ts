@@ -129,6 +129,11 @@ export const selectDataviewInstancesInjected = createSelector(
     vessel
   ): UrlDataviewInstance[] | undefined => {
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
+    const hasCurrentEvent = isAnyVesselLocation && currentVesselEvent
+    const eventStartDateTime = hasCurrentEvent
+      ? getUTCDateTime(currentVesselEvent.start)
+      : undefined
+    const eventEndDateTime = hasCurrentEvent ? getUTCDateTime(currentVesselEvent.end) : undefined
     if (isAnyVesselLocation) {
       const existingDataviewInstance = dataviewInstancesInjected?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
@@ -143,7 +148,12 @@ export const selectDataviewInstancesInjected = createSelector(
           relatedVesselIds: getRelatedIdentityVesselIds(vessel),
         }
 
-        const dataviewInstance = getVesselDataviewInstance({ id: urlVesselId }, vesselDatasets)
+        const dataviewInstance = getVesselDataviewInstance({
+          vessel: { id: urlVesselId },
+          datasets: vesselDatasets,
+          highlightEventStartTime: eventStartDateTime?.toMillis(),
+          highlightEventEndTime: eventEndDateTime?.toMillis(),
+        })
         const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
           urlVesselId,
           vesselDatasets
@@ -151,15 +161,17 @@ export const selectDataviewInstancesInjected = createSelector(
         dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
       }
 
-      if (currentVesselEvent && currentVesselEvent.type === EventTypes.Encounter) {
+      if (hasCurrentEvent && currentVesselEvent.type === EventTypes.Encounter) {
         const encounterVesselId = currentVesselEvent.encounter?.vessel.id
         if (encounterVesselId && vessel?.track) {
           const encounterTrackDataviewInstance = getVesselEncounterTrackDataviewInstance({
             vesselId: encounterVesselId,
             track: vessel.track,
             // TODO: make a decision on how much buffer to add
-            start: getUTCDateTime(currentVesselEvent.start).minus({ day: 1 }).toMillis(),
-            end: getUTCDateTime(currentVesselEvent.end).plus({ day: 1 }).toMillis(),
+            start: eventStartDateTime!.minus({ day: 5 }).toMillis(),
+            end: eventEndDateTime!.plus({ day: 5 }).toMillis(),
+            highlightEventStartTime: eventStartDateTime!.toMillis(),
+            highlightEventEndTime: eventEndDateTime!.toMillis(),
           })
           dataviewInstancesInjected.push(encounterTrackDataviewInstance)
         }

@@ -162,7 +162,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           url: resolveEndpoint(dataset, datasetConfig) as string,
           dataset: dataset,
           datasetConfig,
-          dataviewId: getVesselDataviewInstance({ id: vesselId }, {})?.id,
+          dataviewId: getVesselDataviewInstance({ vessel: { id: vesselId }, datasets: {} })?.id,
           data: vessel,
           status: ResourceStatus.Finished,
         }

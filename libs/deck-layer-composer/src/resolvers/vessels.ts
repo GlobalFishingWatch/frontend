@@ -35,6 +35,12 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     name: dataview.config?.name,
     endTime: endTime,
     startTime: startTime,
+    ...(dataview.config?.highlightEventStartTime && {
+      highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),
+    }),
+    ...(dataview.config?.highlightEventEndTime && {
+      highlightEventEndTime: getUTCDateTime(dataview.config.highlightEventEndTime).toMillis(),
+    }),
     ...(trackUrl && {
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),

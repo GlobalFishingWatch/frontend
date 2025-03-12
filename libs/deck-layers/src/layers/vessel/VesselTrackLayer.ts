@@ -54,6 +54,16 @@ export type _VesselTrackLayerProps<DataT = any> = {
    */
   highlightEndTime?: number
   /**
+   * The start time of an event to thicken the track in milliseconds
+   * @default 0
+   */
+  highlightEventStartTime?: number
+  /**
+   * The end time of an event to thicken the track in milliseconds
+   * @default 0
+   */
+  highlightEventEndTime?: number
+  /**
    * The low speed filter
    * @default 0
    */
@@ -137,6 +147,8 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   startTime: { type: 'number', value: 0, min: 0 },
   highlightStartTime: { type: 'number', value: 0, min: 0 },
   highlightEndTime: { type: 'number', value: 0, min: 0 },
+  highlightEventStartTime: { type: 'number', value: 0, min: 0 },
+  highlightEventEndTime: { type: 'number', value: 0, min: 0 },
   minSpeedFilter: { type: 'number', value: -MAX_FILTER_VALUE, min: 0 },
   maxSpeedFilter: { type: 'number', value: MAX_FILTER_VALUE, min: 0 },
   minElevationFilter: { type: 'number', value: -MAX_FILTER_VALUE, min: 0 },
@@ -161,6 +173,8 @@ const uniformBlock = `
     uniform float endTime;
     uniform float highlightStartTime;
     uniform float highlightEndTime;
+    uniform float highlightEventStartTime;
+    uniform float highlightEventEndTime;
     uniform float minSpeedFilter;
     uniform float maxSpeedFilter;
     uniform float minElevationFilter;
@@ -198,6 +212,8 @@ const trackLayerUniforms = {
     endTime: 'f32',
     highlightStartTime: 'f32',
     highlightEndTime: 'f32',
+    highlightEventStartTime: 'f32',
+    highlightEventEndTime: 'f32',
     minSpeedFilter: 'f32',
     maxSpeedFilter: 'f32',
     minElevationFilter: 'f32',
@@ -244,11 +260,16 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         out float vTime;
         out float vSpeed;
         out float vElevation;
-      `,
-      'vs:#main-end': /*glsl*/ `
+        `,
+      'vs:DECKGL_FILTER_SIZE': /*glsl*/ `
         vTime = instanceTimestamps;
         vSpeed = instanceSpeeds;
         vElevation = instanceElevations;
+        if (vTime > track.highlightEventStartTime && vTime < track.highlightEventEndTime) {
+          size *= 4.0;
+        }
+        `,
+      'vs:#main-end': /*glsl*/ `
         if(vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
           gl_Position.z = 1.0;
         }
@@ -334,6 +355,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       trackGraphExtent,
       highlightStartTime = 0,
       highlightEndTime = 0,
+      highlightEventStartTime = 0,
+      highlightEventEndTime = 0,
       minSpeedFilter = -MAX_FILTER_VALUE,
       maxSpeedFilter = MAX_FILTER_VALUE,
       minElevationFilter = -MAX_FILTER_VALUE,
@@ -341,6 +364,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       colorBy,
     } = this.props
 
+    console.log(' highlightEventStartTime:', highlightEventStartTime)
     const steps =
       trackGraphExtent && colorBy ? generateVesselGraphSteps(trackGraphExtent, colorBy) : []
 
@@ -367,6 +391,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
           endTime,
           highlightStartTime,
           highlightEndTime,
+          highlightEventStartTime,
+          highlightEventEndTime,
           minSpeedFilter,
           maxSpeedFilter,
           minElevationFilter,
