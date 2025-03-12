@@ -13,7 +13,6 @@ import bboxPolygon from '@turf/bbox-polygon'
 import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
 import { rhumbBearing } from '@turf/turf'
 import type { BBox, Position } from 'geojson'
-import { LabelLayer } from 'libs/deck-layers/src/layers/vessel/LabelLayer'
 import { extent } from 'simple-statistics'
 
 import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
@@ -37,6 +36,7 @@ import {
 } from '../../utils'
 import { deckToHexColor, hexToDeckColor } from '../../utils/colors'
 import { PATH_BASENAME } from '../layers.config'
+import { LabelLayer } from '../vessel/LabelLayer'
 
 import {
   DEFAULT_FISHING_EVENT_COLOR,
