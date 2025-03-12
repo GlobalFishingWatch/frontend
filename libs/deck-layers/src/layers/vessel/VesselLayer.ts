@@ -8,12 +8,12 @@ import type {
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { TextLayer } from '@deck.gl/layers'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
 import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
 import { rhumbBearing } from '@turf/turf'
 import type { BBox, Position } from 'geojson'
+import { LabelLayer } from 'libs/deck-layers/src/layers/vessel/LabelLayer'
 import { extent } from 'simple-statistics'
 
 import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
@@ -36,7 +36,6 @@ import {
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../utils'
 import { deckToHexColor, hexToDeckColor } from '../../utils/colors'
-import { DECK_FONT, loadDeckFont } from '../../utils/fonts'
 import { PATH_BASENAME } from '../layers.config'
 
 import {
@@ -72,7 +71,6 @@ export type VesselLayerProps = DeckLayerProps<
 >
 
 type VesselLayerState = {
-  fontLoaded: boolean
   colorDirty: boolean
   errors: {
     [key in EventTypes | 'track']?: string
@@ -84,16 +82,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   state!: VesselLayerState
   initializeState() {
     super.initializeState(this.context)
-    const isSSR = typeof document === 'undefined'
-    const fontLoaded = isSSR
-    if (!isSSR) {
-      loadDeckFont().then((loaded) => {
-        this.setState({ fontLoaded: loaded })
-      })
-    }
     this.state = {
       colorDirty: false,
-      fontLoaded,
       errors: {},
     }
   }
@@ -417,28 +407,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       ),
       ...(name
         ? [
-            new TextLayer({
-              id: `${this.props.id}-lastPositionsNames`,
+            new LabelLayer({
+              id: `${this.props.id}-vessel-position-label`,
               data: [centerPoint],
               getText: () => name,
-              getPosition: (d) => d.geometry.coordinates,
-              getPixelOffset: [0, -15],
-              getColor: [255, 255, 255, 255],
-              getSize: 14,
-              outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.5),
-              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
-              fontFamily: DECK_FONT,
-              characterSet:
-                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
-              outlineWidth: 20,
-              fontSettings: { sdf: true, smoothing: 0.2, buffer: 15 },
-              sizeUnits: 'pixels',
-              getTextAnchor: 'middle',
-              getAlignmentBaseline: 'center',
-              pickable: false,
-              transitions: {
-                getPosition: 50,
-              },
             }),
           ]
         : []),
