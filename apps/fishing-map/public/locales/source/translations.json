@@ -73,7 +73,8 @@
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "unknownProperty": "Unknown"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
@@ -160,8 +161,8 @@
     "from": "from",
     "geartype": "Gear type",
     "global": "Global",
-    "globalReport": "Global report",
     "globally": "globally",
+    "globalReport": "Global report",
     "help": "Help",
     "hideAllHelpHints": "Dismiss all",
     "hideHelpHint": "Dismiss",
@@ -636,11 +637,6 @@
     "color_change": "Change color",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "propertiesChange": "Change properties",
-    "properties": {
-      "color": "Color",
-      "thickness": "Thickness"
-    },
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -668,6 +664,11 @@
     "nameLengthError_other": "Layer name requires at least {{count}} characters",
     "nameRequired": "Layer name is required",
     "period": "Period",
+    "properties": {
+      "color": "Color",
+      "thickness": "Thickness"
+    },
+    "propertiesChange": "Change properties",
     "radiance": "Radiance",
     "REALM": "REALM",
     "remove": "Remove layer",
@@ -1187,10 +1188,10 @@
     "add": "Add to workspace",
     "addLayer": "Add to workspace",
     "categories": {
-      "search": "Vessel search",
       "fishing-activity": "Highlighted workspaces",
       "marine-manager": "Marine Manager workspaces",
-      "reports": "Highlighted reports"
+      "reports": "Highlighted reports",
+      "search": "Vessel search"
     },
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
     "create": "Create as new",
