@@ -32,6 +32,7 @@ export const formatInfoField = (
     | 'shiptypes'
     | 'geartypes'
     | 'owner'
+    | 'operator'
     | 'authorization'
     | 'vesselType'
     | 'port'
@@ -57,7 +58,7 @@ export const formatInfoField = (
     if (type === 'geartypes') {
       return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn }) || fallbackValue
     }
-    if (type === 'shipname' || type === 'owner' || type === 'port') {
+    if (type === 'shipname' || type === 'owner' || type === 'operator' || type === 'port') {
       return fieldValue
         .replace('_', ' ')
         .replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ,0-9]+)\b/g, upperFirst)
