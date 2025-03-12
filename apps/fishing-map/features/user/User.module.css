@@ -148,3 +148,7 @@ div.modal {
   display: inline-block;
   background: var(--color-highlight-blue);
 }
+
+.loginLinkButton {
+  line-height: 1;
+}
