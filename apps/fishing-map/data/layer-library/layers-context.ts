@@ -1,6 +1,6 @@
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 
-import { PATH_BASENAME } from 'data/config'
+import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   EEZ_DATAVIEW_SLUG,
@@ -81,20 +81,24 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
       color: '#8E24A9',
     },
   },
-  {
-    id: 'dsm-isa-leasing-areas',
-    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/deep-sea-mining.jpeg`,
-    category: DataviewCategory.Context,
-    config: {
-      color: '#8E24A9',
-    },
-    datasetsConfig: [
-      {
-        datasetId: 'public-isa-layers',
-        params: [],
-        endpoint: 'context-tiles',
-      },
-    ],
-  },
+  ...(IS_DEVELOPMENT_ENV
+    ? [
+        {
+          id: 'dsm-isa-leasing-areas',
+          dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/deep-sea-mining.jpeg`,
+          category: DataviewCategory.Context,
+          config: {
+            color: '#8E24A9',
+          },
+          datasetsConfig: [
+            {
+              datasetId: 'public-isa-layers',
+              params: [],
+              endpoint: 'context-tiles',
+            },
+          ],
+        } as LibraryLayerConfig,
+      ]
+    : []),
 ]

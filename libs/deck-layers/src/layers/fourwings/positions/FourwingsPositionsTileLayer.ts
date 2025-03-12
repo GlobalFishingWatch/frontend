@@ -5,15 +5,17 @@ import type {
   LayerContext,
   LayersList,
   PickingInfo,
+  Position,
   UpdateParameters,
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { MVTLayerProps } from '@deck.gl/geo-layers'
 import { MVTLayer } from '@deck.gl/geo-layers'
 import type { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { IconLayer, TextLayer } from '@deck.gl/layers'
+import { IconLayer } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
 import { groupBy, orderBy } from 'es-toolkit'
+import { LabelLayer } from 'libs/deck-layers/src/layers/vessel/LabelLayer'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { mean, sample, standardDeviation } from 'simple-statistics'
@@ -24,7 +26,6 @@ import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 
 import {
-  BLEND_BACKGROUND,
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   getColorRamp,
@@ -32,12 +33,10 @@ import {
   getSteps,
   getUTCDateTime,
   GFWMVTLoader,
-  hexToDeckColor,
   LayerGroup,
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../../utils'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
-import { DECK_FONT, loadDeckFont } from '../../../utils/fonts'
 import { PATH_BASENAME } from '../../layers.config'
 import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
@@ -62,7 +61,6 @@ import {
 
 type FourwingsPositionsTileLayerState = {
   error: string
-  fontLoaded: boolean
   viewportDirty: boolean
   viewportLoaded: boolean
   lastViewport: string
@@ -88,12 +86,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   viewportDirtyTimeout!: NodeJS.Timeout
 
   get isLoaded(): boolean {
-    return (
-      super.isLoaded &&
-      this.state.fontLoaded &&
-      !this.state.viewportDirty &&
-      this.state.viewportLoaded
-    )
+    return super.isLoaded && !this.state.viewportDirty && this.state.viewportLoaded
   }
 
   getError(): string {
@@ -108,16 +101,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
-    const isSSR = typeof document === 'undefined'
-    const fontLoaded = isSSR
-    if (!isSSR) {
-      loadDeckFont().then((loaded) => {
-        this.setState({ fontLoaded: loaded })
-      })
-    }
     this.state = {
       error: '',
-      fontLoaded,
       viewportDirty: false,
       viewportLoaded: false,
       lastViewport: '',
@@ -408,88 +393,73 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
-    if (this.state.fontLoaded) {
-      const { sublayers } = this.props
-      const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
-      const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
+    const { sublayers } = this.props
+    const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
+    const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
 
-      return [
-        new MVTLayer(this.props, {
-          id: `${this.props.id}-tiles`,
-          data: this._getDataUrl(),
-          maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
-          binary: false,
-          loaders: [GFWMVTLoader],
-          fetch: this._fetch,
-          onTileError: this._onLayerError,
-          onViewportLoad: this._onViewportLoad,
-          renderSubLayers: () => null,
-        }),
-        new IconLayerClass(this.props, {
-          id: `${this.props.id}-allPositions`,
-          data: positions,
-          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: (d: any) => (this.getIsPositionMatched(d) ? 'vessel' : 'circle'),
-          getPosition: (d: any) => d.geometry.coordinates,
-          getColor: this._getFillColor,
-          getSize: this._getIconSize,
-          getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
-          pickable: true,
-          getPickingInfo: this.getPickingInfo,
-          updateTriggers: {
-            getColor: [sublayers],
-            getSize: [highlightedFeatureIds, highlightedVesselIds],
-          },
-        }),
-        new IconLayerClass(this.props, {
-          id: `${this.props.id}-allPositionsHighlight`,
-          data: positions,
-          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: (d: any) => (this.getIsPositionMatched(d) ? 'vesselHighlight' : 'circle'),
-          getPosition: (d: any) => d.geometry.coordinates,
-          getColor: this._getHighlightColor,
-          getSize: this._getIconSize,
-          getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
-          updateTriggers: {
-            getColor: [highlightedFeatureIds, highlightedVesselIds],
-            getSize: [highlightedFeatureIds, highlightedVesselIds],
-          },
-        }),
-        ...(lastPositions?.length < 100
-          ? [
-              new TextLayer({
-                id: `${this.props.id}-lastPositionsNames`,
-                data: lastPositions,
-                getText: this._getVesselLabel,
-                getPosition: (d) => d.geometry.coordinates,
-                getPixelOffset: [15, 0],
-                getColor: this._getLabelColor,
-                getSize: 14,
-                outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.5),
-                getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
-                fontFamily: DECK_FONT,
-                characterSet:
-                  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
-                outlineWidth: 200,
-                fontSettings: { sdf: true, smoothing: 0.2, buffer: 15 },
-                sizeUnits: 'pixels',
-                getTextAnchor: 'start',
-                getAlignmentBaseline: 'center',
-                pickable: true,
-                getPickingInfo: this.getPickingInfo,
-                updateTriggers: {
-                  getColor: [highlightedFeatureIds, highlightedVesselIds],
-                },
-              }),
-            ]
-          : []),
-      ]
-    }
-    return null
+    return [
+      new MVTLayer(this.props, {
+        id: `${this.props.id}-tiles`,
+        data: this._getDataUrl(),
+        maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
+        binary: false,
+        loaders: [GFWMVTLoader],
+        fetch: this._fetch,
+        onTileError: this._onLayerError,
+        onViewportLoad: this._onViewportLoad,
+        renderSubLayers: () => null,
+      }),
+      new IconLayerClass(this.props, {
+        id: `${this.props.id}-allPositions`,
+        data: positions,
+        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+        iconMapping: VESSEL_SPRITE_ICON_MAPPING,
+        getIcon: (d: any) => (this.getIsPositionMatched(d) ? 'vessel' : 'circle'),
+        getPosition: (d: any) => d.geometry.coordinates,
+        getColor: this._getFillColor,
+        getSize: this._getIconSize,
+        getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
+        pickable: true,
+        getPickingInfo: this.getPickingInfo,
+        updateTriggers: {
+          getColor: [sublayers],
+          getSize: [highlightedFeatureIds, highlightedVesselIds],
+        },
+      }),
+      new IconLayerClass(this.props, {
+        id: `${this.props.id}-allPositionsHighlight`,
+        data: positions,
+        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+        iconMapping: VESSEL_SPRITE_ICON_MAPPING,
+        getIcon: (d: any) => (this.getIsPositionMatched(d) ? 'vesselHighlight' : 'circle'),
+        getPosition: (d: any) => d.geometry.coordinates,
+        getColor: this._getHighlightColor,
+        getSize: this._getIconSize,
+        getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
+        updateTriggers: {
+          getColor: [highlightedFeatureIds, highlightedVesselIds],
+          getSize: [highlightedFeatureIds, highlightedVesselIds],
+        },
+      }),
+      ...(lastPositions?.length < 100
+        ? [
+            new LabelLayer<FourwingsPositionFeature>({
+              id: `${this.props.id}-lastPositionsNames`,
+              data: lastPositions,
+              getText: this._getVesselLabel,
+              getPosition: (d) => d.geometry.coordinates as Position,
+              getColor: this._getLabelColor,
+              pickable: true,
+              getPickingInfo: this.getPickingInfo,
+              updateTriggers: {
+                getColor: [highlightedFeatureIds, highlightedVesselIds],
+              },
+            }),
+          ]
+        : []),
+    ]
   }
 
   getViewportData = () => {

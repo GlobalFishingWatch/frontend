@@ -3,7 +3,6 @@ import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import MemoryStatsComponent from 'next-react-memory-stats'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -216,7 +215,8 @@ function App() {
       </a>
       <div style={{ position: 'fixed', zIndex: 1 }}>
         {showStats && <FpsView top="0" right="8rem" bottom="auto" left="auto" />}
-        {showStats && <MemoryStatsComponent corner="topRight" />}
+        {/* If we need a memory plot we need to find a new one, this one no longer works  */}
+        {/* {showStats && <MemoryStatsComponent corner="topRight" />} */}
       </div>
       <ErrorBoundary>
         <SplitView

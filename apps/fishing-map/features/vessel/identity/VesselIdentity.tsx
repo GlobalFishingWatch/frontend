@@ -92,16 +92,20 @@ const VesselIdentity = () => {
         flag: t(`flags:${flag}`, flag) as string,
         shiptypes: getVesselShipTypeLabel(vesselIdentity, { joinCharacter: ' -' }), // Can't be commas as it would break the csv format
         geartypes: getVesselGearTypeLabel(vesselIdentity, { joinCharacter: ' -' }),
-        registryPublicAuthorizations:
-          registryPublicAuthorizations &&
-          filterRegistryInfoByDateAndSSVID(registryPublicAuthorizations, timerange, ssvid),
-        registryOwners:
-          registryOwners &&
-          (filterRegistryInfoByDateAndSSVID(
-            registryOwners,
-            timerange,
-            ssvid
-          ) as VesselRegistryOwner[]),
+        ...(identitySource === VesselIdentitySourceEnum.Registry
+          ? {
+              registryPublicAuthorizations:
+                registryPublicAuthorizations &&
+                filterRegistryInfoByDateAndSSVID(registryPublicAuthorizations, timerange, ssvid),
+              registryOwners:
+                registryOwners &&
+                (filterRegistryInfoByDateAndSSVID(
+                  registryOwners,
+                  timerange,
+                  ssvid
+                ) as VesselRegistryOwner[]),
+            }
+          : { registryPublicAuthorizations: undefined, registryOwners: undefined }),
       }
       const data = parseVesselToCSV(filteredVesselIdentity)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
@@ -183,7 +187,13 @@ const VesselIdentity = () => {
         <div className={cx(styles.fieldGroup)}>
           {identitySource === VesselIdentitySourceEnum.Registry && (
             <div>
-              <label>{t('vessel.registrySources', 'Registry Sources')}</label>
+              <div className={styles.labelContainer}>
+                <label>{t('vessel.registrySources', 'Registry Sources')}</label>
+                <DataTerminology
+                  title={t('vessel.registrySources', 'Registry Sources')}
+                  terminologyKey="registrySources"
+                />
+              </div>
               {vesselIdentity?.sourceCode ? (
                 <VesselIdentityField
                   tooltip={vesselIdentity?.sourceCode?.filter(Boolean)?.join(', ')}

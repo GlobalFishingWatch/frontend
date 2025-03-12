@@ -15,7 +15,9 @@ import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import type { WorkspaceCategory } from 'data/workspaces'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import type { UpdateWorkspaceThunkRejectError } from 'features/workspace/workspace.slice'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
+import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import type { WorkspaceState } from 'types'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
@@ -99,16 +101,17 @@ export const updateWorkspaceThunk = createAsyncThunk<
   AppWorkspace,
   Partial<AppWorkspace> & { id: string; password?: string; newPassword?: string },
   {
-    rejectValue: AsyncError
+    rejectValue: UpdateWorkspaceThunkRejectError
   }
 >(
   'workspaces/update',
   async (workspace, { rejectWithValue }) => {
     try {
-      const { id, password, newPassword, ...rest } = workspace
+      const { id, password: prevPassword, newPassword, ...rest } = workspace
+      const password = newPassword || prevPassword || 'default'
       const updatedWorkspace = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${id}`, {
         method: 'PATCH',
-        body: newPassword ? { ...rest, editAccess: workspace.editAccess, newPassword } : rest,
+        body: { ...parseUpsertWorkspace(rest), password },
         ...(password && {
           headers: {
             'x-workspace-password': password,
@@ -117,7 +120,8 @@ export const updateWorkspaceThunk = createAsyncThunk<
       })
       return updatedWorkspace
     } catch (e: any) {
-      return rejectWithValue(parseAPIError(e))
+      const error = parseAPIError(e)
+      return rejectWithValue({ ...error, isWorkspaceWrongPassword: error.status === 401 })
     }
   },
   {

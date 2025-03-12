@@ -31,14 +31,22 @@ const RegistryOperatorField = ({
 }) => {
   const { key } = registryField
   const operator = vesselIdentity[key as keyof VesselLastIdentity] as VesselRegistryOperator
+
   return (
     <div className={cx(styles.fieldGroupContainer)}>
-      <label>{t(`vessel.registryOperator`, 'Operators')}</label>
+      <div className={styles.labelContainer}>
+        <label>{t(`vessel.registryOperator`, 'Operators')}</label>
+        <DataTerminology title={t('vessel.operator', 'Operator')} terminologyKey="operator" />
+      </div>
       {typeof operator === 'string' && operator !== '' ? (
         <VesselIdentityField value={operator} />
       ) : operator?.name ? (
         <Fragment>
-          <VesselIdentityField value={operator?.name?.replaceAll('"', '').trim()} />{' '}
+          <VesselIdentityField
+            value={
+              formatInfoField(operator?.name?.replaceAll('"', '').trim(), 'operator') as string
+            }
+          />{' '}
           {operator.flag && `(${formatInfoField(operator.flag, 'flag')}) `}
           {operator.dateFrom && operator.dateTo && (
             <span className={styles.secondary}>
@@ -141,9 +149,11 @@ const VesselRegistryField = ({
                   })}
                 >
                   {Component}{' '}
-                  <span className={styles.secondary}>
-                    <I18nDate date={registry.dateFrom} /> - <I18nDate date={registry.dateTo} />
-                  </span>
+                  {registry.dateFrom && registry.dateTo && (
+                    <span className={styles.secondary}>
+                      <I18nDate date={registry.dateFrom} /> - <I18nDate date={registry.dateTo} />
+                    </span>
+                  )}
                 </li>
               )
             })}
