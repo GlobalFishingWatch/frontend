@@ -1,18 +1,17 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import Filters from 'features/workspace/shared/LayerFilters'
-import { selectFeatureFlags } from 'routes/routes.selectors'
 
 import styles from './ReportSummaryTags.module.css'
 
@@ -24,7 +23,7 @@ type LayerPanelProps = {
 
 export default function ReportSummaryTags({ dataview, availableFields }: LayerPanelProps) {
   const { t } = useTranslation()
-  const featureFlags = useSelector(selectFeatureFlags)
+  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
 
@@ -47,7 +46,7 @@ export default function ReportSummaryTags({ dataview, availableFields }: LayerPa
               label={t(field[1] as any, field[2])}
             />
           ))}
-          {featureFlags?.includes('globalReports') && (
+          {isGlobalReportsEnabled && (
             <ExpandedContainer
               onClickOutside={onToggleFiltersUIOpen}
               visible={filtersUIOpen}
