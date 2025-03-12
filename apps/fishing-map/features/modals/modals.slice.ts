@@ -5,9 +5,9 @@ import type { RootState } from 'reducers'
 import type { DatasetGeometryType, DataviewCategory } from '@globalfishingwatch/api-types'
 
 type ModalId =
-| 'feedback'
-| 'infoCorrection'
-| 'screenshot'
+  | 'feedback'
+  | 'infoCorrection'
+  | 'screenshot'
   | 'layerLibrary'
   | 'datasetUpload'
   | 'editWorkspace'
@@ -28,6 +28,7 @@ type ModalsOpenState = {
   infoCorrection: boolean
   screenshot: boolean
   layerLibrary: LayerLibraryMode
+  infoCorrection: boolean
   editWorkspace: boolean
   createWorkspace: boolean
   datasetUpload: { open: boolean } & DatasetUploadConfig
@@ -40,6 +41,7 @@ const initialState: ModalsOpenState = {
   layerLibrary: false,
   editWorkspace: false,
   createWorkspace: false,
+  infoCorrection: false,
   datasetUpload: {
     open: false,
     id: undefined,

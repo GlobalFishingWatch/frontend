@@ -11,6 +11,7 @@ const FEEDBACK_SPREADSHEET_ID = process.env.NEXT_FEEDBACK_SPREADSHEET_ID || ''
 const ERRORS_SPREADSHEET_ID = process.env.NEXT_MAP_ERRORS_SPREADSHEET_ID || ''
 const FEEDBACK_SHEET_TITLE = 'new feedback'
 const ERRORS_SHEET_TITLE = 'errors'
+const CORRECTIONS_SHEET_TITLE = 'vessels corrections'
 
 export const loadSpreadsheetDoc = async (id: string) => {
   if (!id) {
@@ -76,19 +77,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     let spreadsheetId = FEEDBACK_SPREADSHEET_ID
     let sheetTitle = FEEDBACK_SHEET_TITLE
 
-    if (type === 'error') {
+    if (type === 'error' || type === 'corrections') {
       spreadsheetId = ERRORS_SPREADSHEET_ID
-      sheetTitle = ERRORS_SHEET_TITLE
-    } else if (type === 'corrections') {
-      sheetTitle = 'vessels corrections'
+      sheetTitle = type === 'corrections' ? CORRECTIONS_SHEET_TITLE : ERRORS_SHEET_TITLE
     }
+
     const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
 
-    let sheet = feedbackSpreadsheetDoc.sheetsByTitle[sheetTitle]
-    if (!sheet) {
-      sheet = await feedbackSpreadsheetDoc.addSheet({ title: sheetTitle })
-    }
-
+    const sheet = feedbackSpreadsheetDoc.sheetsByTitle[sheetTitle]
     await sheet.addRow(data)
 
     return res.status(200).json({

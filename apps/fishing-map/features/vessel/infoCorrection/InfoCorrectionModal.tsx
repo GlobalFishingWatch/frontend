@@ -196,7 +196,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
               setCorrectedVesselData({
                 ...correctedVesselData,
                 field: option.id as ValidField,
-                originalValue: (vesselIdentity[option.id as keyof typeof vesselIdentity]) as string,
+                originalValue: vesselIdentity[option.id as keyof typeof vesselIdentity] as string,
               })
             }
           />
@@ -216,7 +216,8 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
             />
           ) : (
             <VesselIdentityField
-              value={ formatInfoField(
+              value={
+                formatInfoField(
                   correctedVesselData.originalValue,
                   correctedVesselData.field as Exclude<ValidField, 'registryOwners'>
                 ) as string
