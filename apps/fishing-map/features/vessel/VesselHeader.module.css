@@ -2,9 +2,6 @@
   padding: var(--space-S) var(--space-S) var(--space-S) var(--space-M);
   border-bottom: var(--border);
   min-height: 5.2rem;
-}
-
-.summaryWrapper {
   display: flex;
   gap: var(--space-S);
 }
@@ -33,10 +30,6 @@
   color: var(--color-secondary-blue);
 }
 
-.vesselImage {
-  width: 100%;
-}
-
 .vesselIcon {
   margin-right: var(--space-XS);
 }
@@ -46,6 +39,7 @@
   justify-content: flex-end;
   align-self: end;
   gap: var(--space-S);
+  flex-wrap: wrap;
 }
 
 .reportLink {
@@ -63,7 +57,13 @@
 .imageSliderContainer {
   position: relative;
   width: 20%;
-  min-width: 200px;
+  min-width: 10rem;
+}
+
+.vesselImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .sticky .imageSliderContainer {

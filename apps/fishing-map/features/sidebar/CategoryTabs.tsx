@@ -27,6 +27,7 @@ import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/wo
 import { SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
   selectFeatureFlags,
+  selectIsAnySearchLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
   selectLocationType,
@@ -60,6 +61,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const featureFlags = useSelector(selectFeatureFlags)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectLocationCategory)
+  const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
 
@@ -94,7 +96,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
         <li
           className={cx(styles.tab, {
-            [styles.current]: locationType === SEARCH || locationType === WORKSPACE_SEARCH,
+            [styles.current]: isAnySearchLocation,
           })}
         >
           <Link
@@ -123,12 +125,12 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             content={t(`workspace.categories.${category}`, category)}
             placement="right"
           >
-            {/* TODO: translate tooltip category */}
             <li
               className={cx(styles.tab, {
                 [styles.current]:
-                  locationCategory === (category as WorkspaceCategory) ||
-                  (index === 0 && !locationCategory),
+                  !isAnySearchLocation &&
+                  (locationCategory === (category as WorkspaceCategory) ||
+                    (index === 0 && !locationCategory)),
               })}
             >
               <Link

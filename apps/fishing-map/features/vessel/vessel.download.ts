@@ -1,10 +1,16 @@
 import get from 'lodash/get'
 
-import type { VesselRegistryAuthorization, VesselRegistryOwner } from '@globalfishingwatch/api-types'
+import type {
+  RegistryExtraFieldValue,
+  VesselRegistryAuthorization,
+  VesselRegistryOperator,
+  VesselRegistryOwner,
+} from '@globalfishingwatch/api-types'
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 type CsvConfig = {
   label: string
@@ -24,6 +30,14 @@ const parseRegistryOwners = (owners: VesselRegistryOwner[]) => {
       return `${owner.name}-${owner.flag} (${owner.dateFrom}-${owner.dateTo})`
     })
   )
+}
+
+const parseRegistryExtraField = (extraField: RegistryExtraFieldValue) => {
+  return extraField?.value || EMPTY_FIELD_PLACEHOLDER
+}
+
+const parseRegistryOperator = (operator: VesselRegistryOperator) => {
+  return operator ? `${operator.name}-${operator.flag}` : EMPTY_FIELD_PLACEHOLDER
 }
 
 const parseRegistryAuthorizations = (authorizations: VesselRegistryAuthorization[]) => {
@@ -64,11 +78,13 @@ const VESSEL_CSV_CONFIG: CsvConfig[] = [
   { label: 'callsign', accessor: 'callsign' },
   { label: 'lengthM', accessor: 'lengthM' },
   { label: 'tonnageGt', accessor: 'tonnageGt' },
+  { label: 'builtYear', accessor: 'builtYear', transform: parseRegistryExtraField },
   { label: 'transmissionStart', accessor: 'transmissionDateFrom', transform: parseCSVDate },
   { label: 'transmissionEnd', accessor: 'transmissionDateTo', transform: parseCSVDate },
   { label: 'identitySource', accessor: 'identitySource' },
   { label: 'sourceCode', accessor: 'sourceCode', transform: parseCSVList },
   { label: 'owner', accessor: 'registryOwners', transform: parseRegistryOwners },
+  { label: 'operator', accessor: 'operator', transform: parseRegistryOperator },
   {
     label: 'authorization',
     accessor: 'registryPublicAuthorizations',

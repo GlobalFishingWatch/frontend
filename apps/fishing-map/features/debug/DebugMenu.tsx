@@ -79,11 +79,11 @@ const DebugMenu: React.FC = () => {
             <p>Activates the data terminology iframe feature</p>
             <div className={styles.header}>
               <Switch
-                id="option_data_terminology_iframe"
+                id="option_areas_on_screen"
                 active={debugOptions.areasOnScreen}
                 onClick={() => dispatch(toggleOption(DebugOption.AreasOnScreen))}
               />
-              <label htmlFor="option_data_terminology_iframe">
+              <label htmlFor="option_areas_on_screen">
                 <strong>Feature flag:</strong> Areas on screen
               </label>
             </div>
