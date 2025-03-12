@@ -73,7 +73,8 @@
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
-    "unknown": "Tidak diketahui"
+    "unknown": "Tidak diketahui",
+    "unknownProperty": "Unknown"
   },
   "bigQuery": {
     "aggregateAvg": "Rata-rata",
@@ -160,8 +161,8 @@
     "from": "dari",
     "geartype": "Gear type",
     "global": "Global",
-    "globalReport": "Global report",
     "globally": "secara global",
+    "globalReport": "Global report",
     "help": "Tolong",
     "hideAllHelpHints": "Abaikan Semua",
     "hideHelpHint": "Abaikan",
@@ -636,11 +637,6 @@
     "color_change": "Ganti warna",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "propertiesChange": "Change properties",
-    "properties": {
-      "color": "Color",
-      "thickness": "Thickness"
-    },
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -668,6 +664,11 @@
     "nameLengthError_other": "Nama lapisan membutuhkan setidaknya {{count}} karakter",
     "nameRequired": "Nama lapisan diperlukan",
     "period": "Period",
+    "properties": {
+      "color": "Color",
+      "thickness": "Thickness"
+    },
+    "propertiesChange": "Change properties",
     "radiance": "Pancaran",
     "REALM": "REALM",
     "remove": "Hapus lapisan",
@@ -1187,10 +1188,10 @@
     "add": "Tambahkan ke ruang kerja",
     "addLayer": "Add to workspace",
     "categories": {
-      "search": "Vessel search",
       "fishing-activity": "Highlighted workspaces",
       "marine-manager": "Marine Manager workspaces",
-      "reports": "Highlighted reports"
+      "reports": "Highlighted reports",
+      "search": "Vessel search"
     },
     "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
     "create": "Buat sebagai baru",

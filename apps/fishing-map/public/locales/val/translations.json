@@ -73,7 +73,8 @@
     "timeoutError": "crwdns83504:0crwdne83504:0",
     "timeRangeTooLong": "crwdns59653:0crwdne59653:0",
     "title": "crwdns59655:0crwdne59655:0",
-    "unknown": "crwdns59657:0crwdne59657:0"
+    "unknown": "crwdns59657:0crwdne59657:0",
+    "unknownProperty": "crwdns84250:0crwdne84250:0"
   },
   "bigQuery": {
     "aggregateAvg": "crwdns59659:0crwdne59659:0",
@@ -160,8 +161,8 @@
     "from": "crwdns59767:0crwdne59767:0",
     "geartype": "crwdns83816:0crwdne83816:0",
     "global": "crwdns84092:0crwdne84092:0",
-    "globalReport": "crwdns84129:0crwdne84129:0",
     "globally": "crwdns59769:0crwdne59769:0",
+    "globalReport": "crwdns84129:0crwdne84129:0",
     "help": "crwdns59771:0crwdne59771:0",
     "hideAllHelpHints": "crwdns59773:0crwdne59773:0",
     "hideHelpHint": "crwdns59775:0crwdne59775:0",
@@ -636,11 +637,6 @@
     "color_change": "crwdns60267:0crwdne60267:0",
     "colorSelectCustom": "crwdns84111:0crwdne84111:0",
     "colorSelectPredefined": "crwdns84113:0crwdne84113:0",
-    "propertiesChange": "crwdns84115:0crwdne84115:0",
-    "properties": {
-      "color": "crwdns84117:0crwdne84117:0",
-      "thickness": "crwdns84119:0crwdne84119:0"
-    },
     "drawAddPoint": "crwdns84014:0crwdne84014:0",
     "drawAddPolygon": "crwdns84016:0crwdne84016:0",
     "drawDelete": "crwdns84018:0crwdne84018:0",
@@ -668,6 +664,11 @@
     "nameLengthError_other": "crwdns60303:0{{count}}crwdne60303:0",
     "nameRequired": "crwdns60305:0crwdne60305:0",
     "period": "crwdns83180:0crwdne83180:0",
+    "properties": {
+      "color": "crwdns84117:0crwdne84117:0",
+      "thickness": "crwdns84119:0crwdne84119:0"
+    },
+    "propertiesChange": "crwdns84115:0crwdne84115:0",
     "radiance": "crwdns60307:0crwdne60307:0",
     "REALM": "crwdns83182:0crwdne83182:0",
     "remove": "crwdns60309:0crwdne60309:0",
@@ -1187,10 +1188,10 @@
     "add": "crwdns82802:0crwdne82802:0",
     "addLayer": "crwdns83210:0crwdne83210:0",
     "categories": {
-      "search": "crwdns84131:0crwdne84131:0",
       "fishing-activity": "crwdns84133:0crwdne84133:0",
       "marine-manager": "crwdns84135:0crwdne84135:0",
-      "reports": "crwdns84137:0crwdne84137:0"
+      "reports": "crwdns84137:0crwdne84137:0",
+      "search": "crwdns84131:0crwdne84131:0"
     },
     "confirmRemove": "crwdns60703:0crwdne60703:0",
     "create": "crwdns60705:0crwdne60705:0",

@@ -73,7 +73,8 @@
     "timeoutError": "Cela prend plus de temps que prévu, merci de patienter",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Analyse",
-    "unknown": "Inconnu"
+    "unknown": "Inconnu",
+    "unknownProperty": "Unknown"
   },
   "bigQuery": {
     "aggregateAvg": "Moyenne",
@@ -160,8 +161,8 @@
     "from": "de",
     "geartype": "Type d’engin",
     "global": "Global",
-    "globalReport": "Global report",
     "globally": "globalement",
+    "globalReport": "Global report",
     "help": "Aide",
     "hideAllHelpHints": "Tout ignorer",
     "hideHelpHint": "Ignorer",
@@ -636,11 +637,6 @@
     "color_change": "Modifier la couleur",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "propertiesChange": "Change properties",
-    "properties": {
-      "color": "Color",
-      "thickness": "Thickness"
-    },
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -668,6 +664,11 @@
     "nameLengthError_other": "Le nom du calque nécessite au moins {{count}} caractères",
     "nameRequired": "Le nom du calque est requis",
     "period": "Période",
+    "properties": {
+      "color": "Color",
+      "thickness": "Thickness"
+    },
+    "propertiesChange": "Change properties",
     "radiance": "Rayonnement",
     "REALM": "REALM",
     "remove": "Supprimer le calque",
@@ -1187,10 +1188,10 @@
     "add": "Ajouter à l’espace de travail",
     "addLayer": "Ajouter à l’espace de travail",
     "categories": {
-      "search": "Vessel search",
       "fishing-activity": "Highlighted workspaces",
       "marine-manager": "Marine Manager workspaces",
-      "reports": "Highlighted reports"
+      "reports": "Highlighted reports",
+      "search": "Vessel search"
     },
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
     "create": "Créer comme nouveau",
