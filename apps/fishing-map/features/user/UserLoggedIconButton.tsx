@@ -13,9 +13,11 @@ import styles from './User.module.css'
 type UserLoggedIconButton = IconButtonProps & {
   loginTooltip?: string
   disabled?: boolean
+  // Needed to avoid react warnings when cloning the component and used in a parent
+  onToggleClick?: () => void
 }
 
-const UserLoggedIconButton = ({ loginTooltip, ...props }: UserLoggedIconButton) => {
+const UserLoggedIconButton = ({ loginTooltip, onToggleClick, ...props }: UserLoggedIconButton) => {
   const { t } = useTranslation()
   const [isLoginHover, setIsLoginHover] = useState(false)
   const guestUser = useSelector(selectIsGuestUser)
