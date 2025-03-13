@@ -5,16 +5,14 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import cx from 'classnames'
 import { DateTime } from 'luxon'
-import { fitBounds } from 'viewport-mercator-project'
 
 import { filterSegmentsByTimerange, segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import type { SelectOption } from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, IconButton, Select } from '@globalfishingwatch/ui-components'
 
 import brand from '../../assets/images/brand.png'
 import { LABEL_HOTKEYS, SUPPORT_EMAIL, UNDO_HOTKEYS } from '../../data/constants'
 import ErrorPlaceHolder from '../../features/error/ErrorPlaceholder'
-import { useMapboxInstance } from '../../features/map/map.context'
 import { useViewport } from '../../features/map/map.hooks'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
@@ -27,14 +25,14 @@ import {
   getVesselTrackGeojsonByDateRange,
 } from '../../features/tracks/tracks.selectors'
 import { useUser } from '../../features/user/user.hooks'
-import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { selectTimestamps } from '../../features/vessels/vessels.slice'
 import { updateQueryParams } from '../../routes/routes.actions'
 import { selectProject } from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
 import { ActionType } from '../../types'
-import { findPreviousTimestamp, isFiniteBbox } from '../../utils/shared'
+import { findPreviousTimestamp } from '../../utils/shared'
 
 import { useSelectedTracksConnect } from './sidebar.hooks'
 
@@ -68,37 +66,12 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
   }
 
   const { setMapCoordinates } = useViewport()
-  const mapInstance = useMapboxInstance()
+  // const mapInstance = useMapboxInstance()
   const onFitBoundsClick = useCallback(() => {
     if (track) {
-      const bbox = track?.length ? segmentsToBbox(track) : undefined
-      const { width, height } = mapInstance?._canvas || {}
-      if (width && height && bbox && isFiniteBbox(bbox)) {
-        const [minLng, minLat, maxLng, maxLat] = bbox
-        const padding = 60
-        const targetSize = [width - padding - padding, height - padding - padding]
-        const { latitude, longitude, zoom } = fitBounds({
-          bounds: [
-            [minLng, minLat],
-            [maxLng, maxLat],
-          ],
-          width,
-          height,
-          padding: {
-            // Adjust padding to not exceed width and height
-            top: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-            bottom: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-            left: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-            right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-          },
-        })
-        setMapCoordinates({ latitude, longitude, zoom })
-      } else {
-        // TODO use prompt to ask user if wants to update the timerange to fit the track
-        alert('The vessel has no activity in your selected timerange')
-      }
+      // TODO implement fit bounds
     }
-  }, [mapInstance, setMapCoordinates, track])
+  }, [setMapCoordinates, track])
 
   const onFitSelectedSegmentBoundsClick = useCallback(
     (selection: SelectedTrackType) => {
@@ -116,31 +89,31 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
           })
           return
         }
-        const { width, height } = mapInstance?._canvas || {}
-        if (width && height && bbox && isFiniteBbox(bbox)) {
-          const [minLng, minLat, maxLng, maxLat] = bbox
-          const padding = 60
-          const targetSize = [width - padding - padding, height - padding - padding]
-          const { latitude, longitude, zoom } = fitBounds({
-            bounds: [
-              [minLng, minLat],
-              [maxLng, maxLat],
-            ],
-            width,
-            height,
-            padding: {
-              // Adjust padding to not exceed width and height
-              top: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-              bottom: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-              left: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-              right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-            },
-          })
-          setMapCoordinates({ latitude, longitude, zoom })
-        }
+        // const { width, height } = mapInstance?._canvas || {}
+        // if (width && height && bbox && isFiniteBbox(bbox)) {
+        //   const [minLng, minLat, maxLng, maxLat] = bbox
+        //   const padding = 60
+        //   const targetSize = [width - padding - padding, height - padding - padding]
+        //   const { latitude, longitude, zoom } = fitBounds({
+        //     bounds: [
+        //       [minLng, minLat],
+        //       [maxLng, maxLat],
+        //     ],
+        //     width,
+        //     height,
+        //     padding: {
+        //       // Adjust padding to not exceed width and height
+        //       top: targetSize[1] > 0 ? padding : targetSize[1] + padding,
+        //       bottom: targetSize[1] > 0 ? padding : targetSize[1] + padding,
+        //       left: targetSize[0] > 0 ? padding : targetSize[0] + padding,
+        //       right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
+        //     },
+        //   })
+        //   setMapCoordinates({ latitude, longitude, zoom })
+        // }
       }
     },
-    [mapInstance, setMapCoordinates, track]
+    [setMapCoordinates, track]
   )
   const timestamps = useSelector(selectTimestamps)
   const onSegmentOver = useCallback(
