@@ -24,7 +24,7 @@ import {
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { selectEventsGroupedByType } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
-import { useVesselProfileLayer } from 'features/vessel/vessel-bounds.hooks'
+import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import type { Bbox } from 'types'
 
@@ -77,7 +77,7 @@ function ActivityByType() {
 
   const handleEventClick = useCallback(
     (event: VesselEvent) => {
-      setSelectedEvent(event)
+      setSelectedEvent(event.id)
       scrollToEvent(event.id)
     },
     [scrollToEvent, setSelectedEvent]

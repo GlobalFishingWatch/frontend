@@ -1,16 +1,18 @@
 import type { ReactElement } from 'react'
-import React, { useMemo } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import get from 'lodash/get'
 import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import type { VesselRenderField } from 'features/vessel/vessel.config'
+import { useVesselProfileEncounterLayer } from 'features/vessel/vessel.hooks'
 import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField } from 'utils/info'
 
@@ -62,6 +64,7 @@ const FIELDS_BY_TYPE: Record<EventType, VesselRenderField[]> = {
 const ActivityContent = ({ event }: ActivityContentProps) => {
   const { t } = useTranslation()
   const { getEventDurationDescription } = useActivityEventTranslations()
+  const encounterLayer = useVesselProfileEncounterLayer()
   const fields = useMemo(() => {
     return FIELDS_BY_TYPE[event.type] || []
   }, [event])
@@ -91,9 +94,20 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
     } else if (field.key.includes('name')) {
       const { name, id, dataset } = event.encounter?.vessel || {}
       return (
-        <VesselLink vesselId={id} datasetId={dataset}>
-          {formatInfoField(name, 'shipname')}
-        </VesselLink>
+        <Fragment>
+          {event.type === 'encounter' && (
+            <IconButton
+              disableHover
+              className={styles.encounterIcon}
+              loading={!encounterLayer?.instance?.getVesselTracksLayersLoaded()}
+              icon="vessel"
+              size="small"
+            />
+          )}
+          <VesselLink vesselId={id} datasetId={dataset}>
+            {formatInfoField(name, 'shipname')}
+          </VesselLink>
+        </Fragment>
       )
     } else if (field.key.includes('flag')) {
       return formatInfoField(value, 'flag') as string
