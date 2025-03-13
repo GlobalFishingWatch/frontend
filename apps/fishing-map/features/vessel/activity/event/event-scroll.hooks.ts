@@ -97,7 +97,7 @@ export function useScrollToEvent(
           virtuosoRef?.current?.scrollToIndex({
             index,
             align: 'center',
-            behavior: 'smooth',
+            // behavior: 'smooth',
           })
         })
         if (scrollTimeoutRef.current) {
