@@ -1,17 +1,24 @@
 import { useCallback, useState } from 'react'
+import { useDispatch } from 'react-redux'
+
+import { setVesselEventId } from 'features/vessel/vessel.slice'
 
 // TODO move this to url
-function useExpandedVoyages(): [number[], (voyage: any) => void] {
-  const [expandedVoyages, setExpandedVoyages] = useState<number[]>([])
+function useExpandedVoyages(): [number | undefined, (voyage: any) => void] {
+  const [expandedVoyage, setExpandedVoyage] = useState<number>()
 
-  const toggleVoyage = useCallback((voyage: number) => {
-    setExpandedVoyages((voyages) => {
-      const index = voyages.indexOf(voyage)
-      return index === -1 ? [...voyages, voyage] : voyages.filter((v) => v !== voyage)
-    })
-  }, [])
+  const dispatch = useDispatch()
 
-  return [expandedVoyages, toggleVoyage]
+  const toggleVoyage = useCallback(
+    (voyage: number) => {
+      const isCurrentVoyage = expandedVoyage === voyage
+      setExpandedVoyage(isCurrentVoyage ? undefined : voyage)
+      dispatch(setVesselEventId(null))
+    },
+    [dispatch, expandedVoyage]
+  )
+
+  return [expandedVoyage, toggleVoyage]
 }
 
 export default useExpandedVoyages
