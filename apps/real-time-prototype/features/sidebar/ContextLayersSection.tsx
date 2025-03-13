@@ -16,8 +16,12 @@ function ContextLayersSection() {
   const addContextId = useAddContextInLayer()
   const contextIds = useContextsLayerIds()
 
-  const handleContextLayerToggle = (layerId) => {
-    contextIds.includes(layerId) ? removeContextId(layerId) : addContextId(layerId)
+  const handleContextLayerToggle = (layerId: string) => {
+    if (contextIds.includes(layerId)) {
+      removeContextId(layerId)
+    } else {
+      addContextId(layerId)
+    }
   }
 
   return (

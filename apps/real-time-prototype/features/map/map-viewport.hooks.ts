@@ -1,69 +1,49 @@
-import { useCallback, useEffect } from 'react'
-import type { ViewStateChangeParameters } from '@deck.gl/core/dist/controllers/controller'
-import { number,object } from '@recoiljs/refine'
-import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { urlSyncEffect } from 'recoil-sync'
-import type { MapCoordinates } from 'types'
+import { useCallback, useMemo } from 'react'
+import type { ViewStateChangeEvent } from 'react-map-gl'
+import { useAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
-import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { DEFAULT_VIEWPORT } from 'data/config'
 
-import { DEFAULT_URL_DEBOUNCE, DEFAULT_VIEWPORT } from 'data/config'
-
-type ViewportKeys = 'latitude' | 'longitude' | 'zoom'
-type ViewportProps = Record<ViewportKeys, number>
-type UseViewport = {
-  viewState: MapCoordinates
-  onViewportStateChange: (e: ViewStateChangeParameters) => void
-  setMapCoordinates: (viewport: ViewportProps) => void
+export type MapViewport = {
+  latitude: number
+  longitude: number
+  zoom: number
+  pitch?: number
+  bearing?: number
 }
 
-const viewportChecker = object({
-  latitude: number(),
-  longitude: number(),
-  zoom: number(),
-})
-
-const URLViewportAtom = atom<MapCoordinates>({
-  key: 'viewport',
-  default: DEFAULT_VIEWPORT as MapCoordinates,
-  effects: [urlSyncEffect({ refine: viewportChecker, history: 'replace' })],
-})
-
-const viewportAtom = atom<MapCoordinates>({
-  key: 'localViewport',
-  default: URLViewportAtom,
-  effects: [],
-})
-
-export function useViewport(): UseViewport {
-  const [viewState, setViewportState] = useRecoilState(viewportAtom)
-
-  const setMapCoordinates = useCallback((coordinates: ViewportProps) => {
-    setViewportState((viewport) => ({ ...viewport, ...coordinates }))
-     
-  }, [])
-
-  const onViewportStateChange = useCallback((ev: ViewStateChangeParameters) => {
-    const { latitude, longitude, zoom } = ev.viewState
-    if (latitude && longitude && zoom) {
-      setViewportState({ zoom, latitude, longitude })
-    }
-     
-  }, [])
-
-  return { viewState, onViewportStateChange, setMapCoordinates }
+export const getUrlViewstateNumericParam = (key: string) => {
+  if (typeof window === 'undefined') return null
+  const urlParam = new URLSearchParams(window.location.search).get(key)
+  return urlParam ? parseFloat(urlParam) : null
 }
 
-/**
- * It sets the URLViewportAtom to the debounced viewport in the URL
- * USE IT ONLY ONCE!
- */
-export const useURLViewport = () => {
-  const viewport = useRecoilValue(viewportAtom)
-  const setURLViewport = useSetRecoilState(URLViewportAtom)
-  const debouncedViewport = useDebounce(viewport, DEFAULT_URL_DEBOUNCE)
+const viewportAtom = atomWithStorage<MapViewport>('map-viewport', {
+  longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
+  latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
+  zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
+})
 
-  useEffect(() => {
-    setURLViewport(debouncedViewport)
-  }, [debouncedViewport, setURLViewport])
+export function useViewport() {
+  const [viewport, setViewport] = useAtom(viewportAtom)
+
+  const onViewportChange = useCallback(
+    (ev: ViewStateChangeEvent) => {
+      const { latitude, longitude, zoom } = ev.viewState
+      if (latitude && longitude && zoom) {
+        setViewport({ latitude, longitude, zoom })
+
+        // Update URL params
+        const params = new URLSearchParams(window.location.search)
+        params.set('latitude', latitude.toString())
+        params.set('longitude', longitude.toString())
+        params.set('zoom', zoom.toString())
+        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`)
+      }
+    },
+    [setViewport]
+  )
+
+  return useMemo(() => [viewport, onViewportChange] as const, [viewport, onViewportChange])
 }

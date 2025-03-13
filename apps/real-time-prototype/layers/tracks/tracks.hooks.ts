@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import { TracksLayer } from 'layers/tracks/TracksLayer'
-import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 
@@ -23,16 +23,12 @@ type TracksAtom = {
 }
 
 export const tracksLayerAtom = atom<TracksAtom>({
-  key: 'tracksLayer',
-  dangerouslyAllowMutability: true,
-  default: {
-    sublayers: [],
-    loaded: false,
-  },
+  sublayers: [],
+  loaded: false,
 })
 
 export function useTracksLayer({ token, lastUpdate }) {
-  const [atom, updateAtom] = useRecoilState(tracksLayerAtom)
+  const [atom, updateAtom] = useAtom(tracksLayerAtom)
 
   const setAtomProperty = useCallback(
     (property) => updateAtom((state) => ({ ...state, ...property })),
@@ -69,39 +65,15 @@ export function useTracksLayer({ token, lastUpdate }) {
   return atom.instance
 }
 
-const tracksInstanceAtomSelector = selector({
-  key: 'tracksInstanceAtomSelector',
-  dangerouslyAllowMutability: true,
-  get: ({ get }) => {
-    return get(tracksLayerAtom)?.instance
-  },
-})
-
 export function useTracksLayerInstance() {
-  const instance = useRecoilValue(tracksInstanceAtomSelector)
+  const instance = useAtomValue(tracksLayerAtom).instance
   return instance
 }
 
-const tracksLayerSublayersAtomSelector = selector({
-  key: 'tracksLayerSublayersAtomSelector',
-  dangerouslyAllowMutability: true,
-  get: ({ get }) => {
-    return get(tracksLayerAtom)?.sublayers
-  },
-})
-
-const tracksLayerLoadedAtomSelector = selector({
-  key: 'tracksLayerLoadedAtomSelector',
-  dangerouslyAllowMutability: true,
-  get: ({ get }) => {
-    return get(tracksLayerAtom)?.loaded
-  },
-})
-
 export function useTracksSublayers() {
-  const sublayers = useRecoilValue(tracksLayerSublayersAtomSelector)
-  const allLoaded = useRecoilValue(tracksLayerLoadedAtomSelector)
-  const [atom, setTrackLayer] = useRecoilState(tracksLayerAtom)
+  const sublayers = useAtomValue(tracksLayerAtom).sublayers
+  const allLoaded = useAtomValue(tracksLayerAtom).loaded
+  const [atom, setTrackLayer] = useAtom(tracksLayerAtom)
 
   const toggleTrackSublayer = useCallback(
     (id: string) => {

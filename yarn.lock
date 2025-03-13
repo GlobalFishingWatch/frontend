@@ -2618,7 +2618,6 @@ __metadata:
     "@nx/vite": "npm:20.5.0"
     "@nx/web": "npm:20.5.0"
     "@nx/workspace": "npm:20.5.0"
-    "@recoiljs/refine": "npm:0.1.1"
     "@reduxjs/toolkit": "npm:2.6.1"
     "@researchgate/react-intersection-observer": "npm:1.3.5"
     "@rollup/plugin-dynamic-import-vars": "npm:^2.1.5"
@@ -2789,9 +2788,6 @@ __metadata:
     react-virtuoso: "npm:4.12.5"
     react-window: "npm:1.8.11"
     recharts: "npm:2.15.1"
-    recoil: "npm:0.7.7"
-    recoil-sync: "npm:0.2.0"
-    recoil-sync-next: "npm:0.0.6"
     redux-first-router: "npm:2.1.5"
     redux-first-router-link: "npm:2.1.1"
     redux-undo: "npm:^1.1.1"
@@ -7980,13 +7976,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
   checksum: 10/258b51b89c4f6c23d34be735518cbd911c250d790f110429ea0558b46cc136ea74f40b5dc47812ae8838ecb338e22e08abe4b6b7e6c74bd5aeffd828c681018e
-  languageName: node
-  linkType: hard
-
-"@recoiljs/refine@npm:0.1.1, @recoiljs/refine@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@recoiljs/refine@npm:0.1.1"
-  checksum: 10/7c322fb452c760027f5e582c33beb92b8bf9fa2f1035ad12106ac3abf7e68e06eef3145807ad56c6e9d9fc70e7a0f022b17b4634e4f81ca3dbaaf3b14db8f371
   languageName: node
   linkType: hard
 
@@ -20010,13 +19999,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hamt_plus@npm:1.0.2":
-  version: 1.0.2
-  resolution: "hamt_plus@npm:1.0.2"
-  checksum: 10/3680a1820b8e03c79e5977edb7e1ccb48b9db853f5a1fbee2d3b3615f8dded7fa276e158f52d3eea8cb6192a27b2622ae2112e197be7602a8f99814793dc096f
-  languageName: node
-  linkType: hard
-
 "handle-thing@npm:^2.0.0":
   version: 2.0.1
   resolution: "handle-thing@npm:2.0.1"
@@ -28148,49 +28130,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recoil-sync-next@npm:0.0.6":
-  version: 0.0.6
-  resolution: "recoil-sync-next@npm:0.0.6"
-  peerDependencies:
-    "@recoiljs/refine": ^0.1.0
-    next: ^12.2.0 || ^13.0.0 || ^14.0.0
-    react: ^18.0.0
-    react-dom: ^18.0.0
-    recoil: ^0.7.4
-    recoil-sync: ^0.1.0 || ^0.2.0
-    transit-js: ^0.8.874
-  checksum: 10/7e2987daa7101efaf09b295e8fb4a037c66af811eaf3cc4310b2aaf3139b792234ed73c72a5f9744231d1e0932dc7a9d8575183a65a7588bf9998d5221aab875
-  languageName: node
-  linkType: hard
-
-"recoil-sync@npm:0.2.0":
-  version: 0.2.0
-  resolution: "recoil-sync@npm:0.2.0"
-  dependencies:
-    "@recoiljs/refine": "npm:^0.1.1"
-    transit-js: "npm:^0.8.874"
-  peerDependencies:
-    recoil: ">=0.7.3"
-  checksum: 10/ecc19c0b37e8e3e493876b0c62a58733326fdb0ea96cb65d8127122a258011b3a81dc7d2350abfd603903b5ba278b6c6ea2f0ec5bd0a160922f39cc22abb34f0
-  languageName: node
-  linkType: hard
-
-"recoil@npm:0.7.7":
-  version: 0.7.7
-  resolution: "recoil@npm:0.7.7"
-  dependencies:
-    hamt_plus: "npm:1.0.2"
-  peerDependencies:
-    react: ">=16.13.1"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 10/4ac9dfeddda2795f213b14290de09767b04fb98f1a760bcabe796c53830229f51de63a02cf54c18991c557f25cfeb9571a129ae0a19d734bd98cfc45eebbc82d
-  languageName: node
-  linkType: hard
-
 "redent@npm:^3.0.0":
   version: 3.0.0
   resolution: "redent@npm:3.0.0"
@@ -31745,13 +31684,6 @@ __metadata:
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
   checksum: 10/8f1f5aa6cb232f9e1bdc86f485f916b7aa38caee8a778b378ffec0b70d9307873f253f5cbadbe2955ece2ac5c83d0dc14a77513166ccd0a0c7fe197e21396695
-  languageName: node
-  linkType: hard
-
-"transit-js@npm:^0.8.874":
-  version: 0.8.874
-  resolution: "transit-js@npm:0.8.874"
-  checksum: 10/8d796c960acc9b06d9816103d9a0da1640d81437d9e055556bf9cbedb976134f51edeb970d87f58ad1361feb5355822cc43a9fa2890cb9a37c089e4dd6bb54c1
   languageName: node
   linkType: hard
 
