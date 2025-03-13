@@ -5,7 +5,7 @@
   "module": "./index.js",
   "scripts": {
     "decoders": "yarn build:prepare && yarn build:pb:vessels:js && yarn build:pb:vessels:ts && yarn build:pb:4wings-tile:js && yarn build:pb:4wings-tile:ts",
-    "build:prepare": "mkdir -p decoders",
+    "build:prepare": "make-dir -p decoders",
     "build:pb:vessels:js": "yarn pbjs proto/vessels.proto -t static-module -w commonjs -o decoders/vessels.js",
     "build:pb:vessels:ts": "yarn pbts decoders/vessels.js -o decoders/vessels.d.ts",
     "build:pb:4wings-tile:js": "yarn pbjs proto/4wings-tile.proto -t static-module -w commonjs -o decoders/4wings-tile.js",

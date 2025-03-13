@@ -50,7 +50,7 @@
       "options": {
         "commands": [
           "nx dist:workers deck-loaders",
-          "mkdir -p apps/fishing-map/public/workers",
+          "make-dir apps/fishing-map/public/workers",
           "shx cp -R dist/libs/deck-loaders/workers/**/*.js apps/fishing-map/public/workers/"
         ],
         "parallel": false
@@ -60,14 +60,14 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/fishing-map/public/locales"]
+        "commands": ["rimraf dist/apps/fishing-map/public/locales"]
       }
     },
     "clean-next": {
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/fishing-map", "rm -rf .next"]
+        "commands": ["rimraf dist/apps/fishing-map", "rimraf .next"]
       }
     },
     "i18n": {
@@ -80,8 +80,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "rm -rf server",
-          "mkdir -p ./server && mkdir -p server/apps/fishing-map/public && mkdir -p server/dist/apps/fishing-map/.next/static",
+          "rimraf server",
+          "make-dir ./server && make-dir server/apps/fishing-map/public && make-dir server/dist/apps/fishing-map/.next/static",
           "cp -rp ./dist/apps/fishing-map/public/* ./server/apps/fishing-map/public/",
           "cp -rp ./dist/apps/fishing-map/.next/standalone/* ./server/",
           "cp -rp ./dist/apps/fishing-map/.next/static/* ./server/dist/apps/fishing-map/.next/static/"
