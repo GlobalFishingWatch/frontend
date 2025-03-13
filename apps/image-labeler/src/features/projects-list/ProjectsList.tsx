@@ -1,9 +1,7 @@
 import { useState } from 'react'
 
-import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks/use-login'
-import { Button } from '@globalfishingwatch/ui-components/button'
-import { Modal } from '@globalfishingwatch/ui-components/modal'
-import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks'
+import { Button, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useGetLabellingProjectsListQuery } from '../../api/projects-list'
 import type { LabellingProject } from '../../types'

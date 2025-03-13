@@ -1,8 +1,7 @@
-import { Component, useCallback, useEffect,useState } from 'react'
+import { Component, useCallback, useEffect, useState } from 'react'
+import { Provider } from 'jotai'
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
-import { RecoilRoot } from 'recoil'
-import { RecoilURLSyncJSONNext } from 'recoil-sync-next'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { redirectToLogin, useGFWLogin } from '@globalfishingwatch/react-hooks'
@@ -75,39 +74,37 @@ function CustomApp({ Component, pageProps }: AppProps) {
 
   const asideWidth = '32rem'
   return (
-    <RecoilRoot>
-      <RecoilURLSyncJSONNext location={{ part: 'queryParams' }}>
-        <ErrorBoundary>
-          <SplitView
-            showToggle
-            isOpen={sidebarOpen}
-            onToggle={onToggle}
-            aside={
-              login.logged ? (
-                <Component
-                  {...pageProps}
-                  lastUpdate={lastUpdate}
-                  showLatestPositions={showLatestPositions}
-                  setShowLatestPositions={setShowLatestPositions}
-                />
-              ) : null
-            }
-            main={
-              login.logged && (
-                <div className={styles.main}>
-                  <div className={styles.mapContainer}>
-                    <Map lastUpdate={lastUpdate} showLatestPositions={showLatestPositions} />
-                  </div>
+    <Provider>
+      <ErrorBoundary>
+        <SplitView
+          showToggle
+          isOpen={sidebarOpen}
+          onToggle={onToggle}
+          aside={
+            login.logged ? (
+              <Component
+                {...pageProps}
+                lastUpdate={lastUpdate}
+                showLatestPositions={showLatestPositions}
+                setShowLatestPositions={setShowLatestPositions}
+              />
+            ) : null
+          }
+          main={
+            login.logged && (
+              <div className={styles.main}>
+                <div className={styles.mapContainer}>
+                  <Map lastUpdate={lastUpdate} showLatestPositions={showLatestPositions} />
                 </div>
-              )
-            }
-            asideWidth={asideWidth}
-            showMainLabel="Map"
-            className="split-container"
-          />
-        </ErrorBoundary>
-      </RecoilURLSyncJSONNext>
-    </RecoilRoot>
+              </div>
+            )
+          }
+          asideWidth={asideWidth}
+          showMainLabel="Map"
+          className="split-container"
+        />
+      </ErrorBoundary>
+    </Provider>
   )
 }
 

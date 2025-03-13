@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import { BaseMap } from 'layers/basemap/BasemapLayer'
-import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 
 type BasemapAtom = {
   loaded: boolean
@@ -8,15 +8,11 @@ type BasemapAtom = {
 }
 
 export const basemapLayerAtom = atom<BasemapAtom>({
-  key: 'basemapLayer',
-  dangerouslyAllowMutability: true,
-  default: {
-    loaded: false,
-  },
+  loaded: false,
 })
 
 export function useBasemapLayer() {
-  const [{ instance }, updateAtom] = useRecoilState(basemapLayerAtom)
+  const [{ instance }, updateAtom] = useAtom(basemapLayerAtom)
 
   const setAtomProperty = useCallback(
     (property) => updateAtom((state) => ({ ...state, ...property })),
@@ -36,15 +32,7 @@ export function useBasemapLayer() {
   return instance
 }
 
-const basemapInstanceAtomSelector = selector({
-  key: 'basemapInstanceAtomSelector',
-  dangerouslyAllowMutability: true,
-  get: ({ get }) => {
-    return get(basemapLayerAtom)?.instance
-  },
-})
-
 export function useBasemapLayerInstance() {
-  const instance = useRecoilValue(basemapInstanceAtomSelector)
+  const instance = useAtomValue(basemapLayerAtom).instance
   return instance
 }

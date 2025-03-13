@@ -4,10 +4,8 @@ import cx from 'classnames'
 import formatcoords from 'formatcoords'
 
 import * as Generators from '@globalfishingwatch/layer-composer'
-import { Icon } from '@globalfishingwatch/ui-components/icon'
-import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
-import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
-import { MiniGlobe } from '@globalfishingwatch/ui-components/miniglobe'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, MiniGlobe } from '@globalfishingwatch/ui-components'
 
 import { CONTEXT_LAYERS } from '../../../data/config'
 import Rulers from '../../../features/rulers/Rulers'

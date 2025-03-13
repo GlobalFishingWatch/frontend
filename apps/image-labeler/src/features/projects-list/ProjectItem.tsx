@@ -1,8 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 
-import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
-import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 
 import type { LabellingProject } from '../../types'
 

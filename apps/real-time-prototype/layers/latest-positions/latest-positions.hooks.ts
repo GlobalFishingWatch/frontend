@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import { LatestPositions } from 'layers/latest-positions/LatestPositions'
-import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 
 type LatestPositionsAtom = {
   loaded: boolean
@@ -8,15 +8,11 @@ type LatestPositionsAtom = {
 }
 
 export const latestPositionsAtom = atom<LatestPositionsAtom>({
-  key: 'latestPositions',
-  dangerouslyAllowMutability: true,
-  default: {
-    loaded: false,
-  },
+  loaded: false,
 })
 
 export function useLatestPositionsLayer({ token, lastUpdate, vessels, showLatestPositions }) {
-  const [{ instance }, updateAtom] = useRecoilState(latestPositionsAtom)
+  const [{ instance }, updateAtom] = useAtom(latestPositionsAtom)
 
   const setAtomProperty = useCallback(
     (property) => updateAtom((state) => ({ ...state, ...property })),
@@ -45,15 +41,7 @@ export function useLatestPositionsLayer({ token, lastUpdate, vessels, showLatest
   return instance
 }
 
-const latestPositionsInstanceAtomSelector = selector({
-  key: 'latestPositionsInstanceAtomSelector',
-  dangerouslyAllowMutability: true,
-  get: ({ get }) => {
-    return get(latestPositionsAtom)?.instance
-  },
-})
-
 export function useLatestPositionsLayerInstance() {
-  const instance = useRecoilValue(latestPositionsInstanceAtomSelector)
+  const instance = useAtomValue(latestPositionsAtom).instance
   return instance
 }

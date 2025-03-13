@@ -2,7 +2,6 @@
 import { MapProvider } from 'react-map-gl'
 import { Provider } from 'react-redux'
 import type { AppProps } from 'next/app'
-import { RecoilRoot } from 'recoil'
 
 import 'features/i18n/i18n'
 
@@ -19,13 +18,11 @@ import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
-    <RecoilRoot>
-      <Provider store={store}>
-        <MapProvider>
-          <Component {...pageProps} />
-        </MapProvider>
-      </Provider>
-    </RecoilRoot>
+    <Provider store={store}>
+      <MapProvider>
+        <Component {...pageProps} />
+      </MapProvider>
+    </Provider>
   )
 }
 

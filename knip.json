@@ -1,3 +1,21 @@
 {
-  "project": ["apps/fishing-map/**/*.{js,ts}"]
+  "entry": [
+    "apps/**/src/main.{ts,tsx,js,jsx}",
+    "apps/**/src/index.{ts,tsx,js,jsx}",
+    "apps/**/_app.{ts,tsx,js,jsx}",
+    "libs/**/src/index.{ts,tsx,js,jsx}"
+  ],
+  "project": ["apps/**/*.{ts,tsx,js,jsx}", "libs/**/src/**/*.{ts,tsx,js,jsx}"],
+  "ignoreDependencies": ["nx", "@nx/*", "typescript", "prettier", "eslint", "@eslint/*"],
+  "jest": false,
+  "eslint": {
+    "config": ["**/.eslintrc.{js,json}", "eslint.config.js"]
+  },
+  "cypress": {
+    "entry": ["apps/**/cypress.config.ts", "apps/**/cypress/e2e/*.{cy,spec}.{ts,js}"]
+  },
+  "vitest": {
+    "config": ["**/vitest.config.{mts,ts,js}"],
+    "entry": ["**/*.{spec,test}.{mts,ts,tsx,js,jsx}"]
+  }
 }

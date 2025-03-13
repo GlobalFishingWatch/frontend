@@ -1,10 +1,9 @@
 import { useCallback, useEffect } from 'react'
 import type { PickingInfo } from '@deck.gl/core'
-import { useAtomValue } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { ContextsLayer } from 'layers/context/ContextsLayer'
-import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
-import { clickedFeaturesAtom,hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
+import { clickedFeaturesAtom, hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
 
 type ContextsAtom = {
   ids: string[]
@@ -13,16 +12,12 @@ type ContextsAtom = {
 }
 
 export const contextsLayerAtom = atom<ContextsAtom>({
-  key: 'contextsLayer',
-  dangerouslyAllowMutability: true,
-  default: {
-    ids: [],
-    loaded: false,
-  },
+  ids: [],
+  loaded: false,
 })
 
 export function useContextsLayer() {
-  const [{ instance, ids }, updateAtom] = useRecoilState(contextsLayerAtom)
+  const [{ instance, ids }, updateAtom] = useAtom(contextsLayerAtom)
   const hoveredFeatures: PickingInfo[] = useAtomValue(hoveredFeaturesAtom)
   const clickedFeatures: PickingInfo[] = useAtomValue(clickedFeaturesAtom)
 
@@ -48,34 +43,18 @@ export function useContextsLayer() {
   return instance
 }
 
-const contextsInstanceAtomSelector = selector({
-  key: 'contextsInstanceAtomSelector',
-  dangerouslyAllowMutability: true,
-  get: ({ get }) => {
-    return get(contextsLayerAtom)?.instance
-  },
-})
-
 export function useContextsLayerInstance() {
-  const instance = useRecoilValue(contextsInstanceAtomSelector)
+  const instance = useAtomValue(contextsLayerAtom).instance
   return instance
 }
 
-const contextsLayerIdsAtomSelector = selector({
-  key: 'contextsLayerIdsAtomSelector',
-  dangerouslyAllowMutability: true,
-  get: ({ get }) => {
-    return get(contextsLayerAtom)?.ids
-  },
-})
-
 export function useContextsLayerIds() {
-  const instance = useRecoilValue(contextsLayerIdsAtomSelector)
+  const instance = useAtomValue(contextsLayerAtom).ids
   return instance
 }
 
 export function useAddContextInLayer() {
-  const setContextLayer = useSetRecoilState(contextsLayerAtom)
+  const setContextLayer = useSetAtom(contextsLayerAtom)
   const addContextLayer = useCallback(
     (id: string) => {
       setContextLayer((atom) => {
@@ -88,7 +67,7 @@ export function useAddContextInLayer() {
 }
 
 export function useRemoveContextInLayer() {
-  const setContextLayer = useSetRecoilState(contextsLayerAtom)
+  const setContextLayer = useSetAtom(contextsLayerAtom)
   const addContextLayer = useCallback(
     (id: string) => {
       setContextLayer((atom) => {
