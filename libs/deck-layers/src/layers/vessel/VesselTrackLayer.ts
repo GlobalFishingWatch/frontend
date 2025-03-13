@@ -364,7 +364,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       colorBy,
     } = this.props
 
-    console.log(' highlightEventStartTime:', highlightEventStartTime)
     const steps =
       trackGraphExtent && colorBy ? generateVesselGraphSteps(trackGraphExtent, colorBy) : []
 

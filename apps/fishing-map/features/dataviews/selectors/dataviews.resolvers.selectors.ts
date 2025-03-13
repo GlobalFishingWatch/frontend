@@ -364,11 +364,13 @@ export const selectDataviewsResources = createSelector(
 
 const defaultDataviewResolved: UrlDataviewInstance[] = []
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsResources, selectResources],
-  (dataviewsResources, resources) => {
+  [selectDataviewsResources, selectResources, selectIsAnyVesselLocation, selectCurrentVesselEvent],
+  (dataviewsResources, resources, isAnyVesselLocation, currentVesselEvent) => {
     if (!dataviewsResources?.dataviews) {
       return defaultDataviewResolved
     }
+    const hasCurrentEvent = isAnyVesselLocation && currentVesselEvent
+
     const dataviews = dataviewsResources.dataviews.map((dataview) => {
       if (dataview.category !== DataviewCategory.Vessels) {
         return dataview
@@ -386,6 +388,10 @@ export const selectDataviewInstancesResolved = createSelector(
             getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),
             'shipname'
           ),
+          ...(hasCurrentEvent && {
+            highlightEventStartTime: getUTCDateTime(currentVesselEvent.start).toISO()!,
+            highlightEventEndTime: getUTCDateTime(currentVesselEvent.end).toISO()!,
+          }),
         },
       } as UrlDataviewInstance
     })
