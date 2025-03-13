@@ -306,6 +306,11 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
           color.a = 0.25;
         }
 
+        // TODO how can we fade the rest of the track?
+        // if(vTime <= track.highlightEventStartTime || vTime >= track.highlightEventEndTime) {
+        //   color.a = 0.25;
+        // }
+
         if (vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
@@ -444,7 +449,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     }
 
     const bounds = [Infinity, Infinity, -Infinity, -Infinity] as Bbox
-    for (let index = firstPointIndex; index <= lastPointIndex; index++) {
+    for (let index = firstPointIndex; index <= lastPointIndex + 1; index++) {
       const longitude = positions[index * positionsSize]
       const latitude = positions[index * positionsSize + 1]
       if (longitude < bounds[0]) bounds[0] = longitude

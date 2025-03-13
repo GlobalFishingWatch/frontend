@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import get from 'lodash/get'
 import { DateTime } from 'luxon'
 
@@ -18,6 +19,7 @@ import styles from './Event.module.css'
 
 interface ActivityContentProps {
   event: VesselEvent
+  expanded?: boolean
 }
 
 const BASE_FIELDS = [
@@ -57,7 +59,7 @@ const FIELDS_BY_TYPE: Record<EventType, VesselRenderField[]> = {
   [EventTypes.Gap]: BASE_FIELDS,
 }
 
-const ActivityContent = ({ event }: ActivityContentProps) => {
+const ActivityContent = ({ event, expanded }: ActivityContentProps) => {
   const { t } = useTranslation()
   const { getEventDurationDescription } = useActivityEventTranslations()
   const fields = useMemo(() => {
@@ -92,18 +94,20 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
   }
 
   return (
-    <ul className={styles.detailContainer}>
-      {fields.map((field) => {
-        const value = getEventFieldValue(event as ActivityEvent, field)
-        if (!value) return null
-        return (
-          <li key={field.key} className={styles.detail}>
-            <label>{t(`eventInfo.${field.label}`, field.label || '')}</label>
-            <span>{value}</span>
-          </li>
-        )
-      })}
-    </ul>
+    <div className={cx(styles.detailContainer, { [styles.detailContainerShown]: expanded })}>
+      <ul className={styles.detailContent}>
+        {fields.map((field) => {
+          const value = getEventFieldValue(event as ActivityEvent, field)
+          if (!value) return null
+          return (
+            <li key={field.key} className={styles.detail}>
+              <label>{t(`eventInfo.${field.label}`, field.label || '')}</label>
+              <span>{value}</span>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
   )
 }
 

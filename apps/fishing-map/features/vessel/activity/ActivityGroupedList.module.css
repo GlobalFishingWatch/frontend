@@ -13,6 +13,11 @@
   z-index: 0 !important;
 }
 
+.eventExpanded {
+  background-color: var(--color-white);
+  color: var(--color-primary-blue);
+}
+
 .event::after {
   content: '';
   position: absolute;

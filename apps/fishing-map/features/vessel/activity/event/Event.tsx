@@ -72,7 +72,6 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
           </p>
         </div>
         <div className={cx(styles.actions, 'print-hidden')}>
-          {onInfoClick && <IconButton icon="info" size="small"></IconButton>}
           {onMapClick && (
             <IconButton
               icon="target"

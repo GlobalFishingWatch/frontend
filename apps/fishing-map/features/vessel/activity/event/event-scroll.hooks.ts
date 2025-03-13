@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
-import { debounce } from 'es-toolkit'
+import { debounce, throttle } from 'es-toolkit'
 
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import type VesselEvent from 'features/vessel/activity/event/Event'
@@ -15,64 +15,67 @@ export function useUpdateSelectedEventByScroll(
 ) {
   const dispatch = useDispatch()
   const selectedEventIdRef = useRef<string | null>(null)
-  const selectedVesselEventId = useSelector(selectVesselEventId)
+  const [selectedEvent, setSelectedEvent] = useState<VesselEvent | undefined>()
 
-  const setSelectedEvent = useCallback(
-    (event: VesselEvent | null) => {
-      dispatch(setVesselEventId(!event || selectedVesselEventId === event?.id ? null : event?.id))
-    },
-    [dispatch, selectedVesselEventId]
+  const commitSelectedEvent = useMemo(
+    () =>
+      debounce((eventId?: string) => {
+        dispatch(setVesselEventId(eventId || null))
+      }, 1000),
+    [dispatch]
   )
 
-  const checkScroll = useCallback(() => {
-    const scrollContainerRef = getScrollElement()
-    const cH = document.documentElement.clientHeight
-    const wH = window.innerHeight || 0
-    const middle = Math.max(cH, wH) / 2
-    let minDelta = Number.POSITIVE_INFINITY
-    let selectedEventId: string | null = null
-    if (scrollContainerRef && scrollContainerRef.scrollTop !== 0) {
-      eventsRef.current.forEach((el, key) => {
-        const { top } = el.getBoundingClientRect()
-        const delta = Math.abs(middle - top)
-        if (delta < minDelta) {
-          selectedEventId = key
-          minDelta = delta
-        }
-      })
-      if (selectedEventIdRef.current !== selectedEventId) {
-        selectedEventIdRef.current = selectedEventId
-        const selectedEvent = events.find((event) => event.id === selectedEventId) as VesselEvent
-        if (selectedEvent) {
-          setSelectedEvent(selectedEvent)
-        }
-      }
-    } else {
-      // TODO:review this
-      // setSelectedEvent(null)
-    }
-  }, [events, eventsRef, setSelectedEvent])
+  useEffect(() => {
+    commitSelectedEvent(selectedEvent?.id)
+  }, [commitSelectedEvent, selectedEvent?.id])
 
-  const onScroll = useCallback(() => {
-    if (!isScrolling) {
-      // avoid scroll jank by throttling to frame
-      window.requestAnimationFrame(checkScroll)
-    }
-  }, [checkScroll])
+  const checkScroll = useMemo(
+    () =>
+      throttle(() => {
+        if (isScrolling) return
+        const scrollContainerRef = getScrollElement()
+        if (scrollContainerRef && scrollContainerRef.scrollTop !== 0) {
+          const cH = document.documentElement.clientHeight
+          const wH = window.innerHeight || 0
+          const middle = Math.max(cH, wH) / 2
+          let selectedEventId: string | null = null
+          eventsRef.current.forEach((el, key) => {
+            if (selectedEventId) return
+            const { top, height } = el.getBoundingClientRect()
+            if (middle > top && middle < top + height) {
+              selectedEventId = key
+            }
+          })
+          if (selectedEventIdRef.current !== selectedEventId) {
+            selectedEventIdRef.current = selectedEventId
+            const selectedEvent = events.find(
+              (event) => event.id === selectedEventId
+            ) as VesselEvent
+            if (selectedEvent) {
+              setSelectedEvent(selectedEvent)
+            }
+          }
+        } else {
+          // TODO:review this
+          // setSelectedEvent(null)
+        }
+      }, 16),
+    [events, eventsRef]
+  )
 
   useEffect(() => {
     const ref = getScrollElement()
     if (ref !== null) {
-      ref.addEventListener('scroll', onScroll, { passive: true })
+      ref.addEventListener('scroll', checkScroll, { passive: true })
     }
     return () => {
       if (ref) {
-        ref.removeEventListener('scroll', onScroll)
+        ref.removeEventListener('scroll', checkScroll)
       }
     }
-  }, [onScroll])
+  }, [checkScroll])
 
-  return setSelectedEvent
+  return [selectedEvent, setSelectedEvent] as const
 }
 
 export function useScrollToEvent(
@@ -85,6 +88,7 @@ export function useScrollToEvent(
   const debouncedScroll = useMemo(
     () =>
       debounce((index: number) => {
+        console.log(' index:', index)
         requestAnimationFrame(() => {
           virtuosoRef?.current?.scrollToIndex({
             index,

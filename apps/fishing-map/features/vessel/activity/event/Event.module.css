@@ -1,5 +1,5 @@
 .event {
-  padding: var(--space-XS) 1.5rem var(--space-XS) var(--space-M);
+  padding: var(--space-L) 1.5rem var(--space-L) var(--space-M);
   position: relative;
   color: var(--color-secondary-blue);
   transition: color 200ms ease-in;
@@ -43,16 +43,22 @@
   flex: 1;
 }
 
-.description a {
-  text-decoration: underline;
+.detailContainer {
+  height: 0;
+  padding-left: var(--space-L);
+  padding-block: 0;
+  overflow: hidden;
 }
 
-.detailContainer {
+.detailContainerShown {
+  height: auto;
+  padding-block: var(--space-S);
+}
+
+.detailContent {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-S) var(--space-M);
-  padding-left: var(--space-L);
-  padding-block: var(--space-S);
 }
 
 .region {

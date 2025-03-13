@@ -1,8 +1,9 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
 import { GroupedVirtuoso } from 'react-virtuoso'
+import cx from 'classnames'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
@@ -23,7 +24,6 @@ import {
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { selectEventsGroupedByType } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
-import { selectVesselEventId } from 'features/vessel/vessel.slice'
 import { useVesselProfileLayer } from 'features/vessel/vessel-bounds.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import type { Bbox } from 'types'
@@ -56,7 +56,6 @@ function ActivityByType() {
   const vesselLayer = useVesselProfileLayer()
   const fitMapBounds = useMapFitBounds()
   const setMapCoordinates = useSetMapCoordinates()
-  const selectedVesselEventId = useSelector(selectVesselEventId)
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const eventsRef = useRef(new Map<string, HTMLElement>())
 
@@ -74,12 +73,20 @@ function ActivityByType() {
   }, [activityGroups, expandedType])
 
   const scrollToEvent = useScrollToEvent(events, virtuosoRef)
-  const setSelectedEvent = useUpdateSelectedEventByScroll(events, eventsRef)
+  const [selectedVesselEvent, setSelectedEvent] = useUpdateSelectedEventByScroll(events, eventsRef)
+
+  const handleEventClick = useCallback(
+    (event: VesselEvent) => {
+      setSelectedEvent(event)
+      scrollToEvent(event.id)
+    },
+    [scrollToEvent, setSelectedEvent]
+  )
 
   const onToggleExpandedType = useCallback(
     (event: EventType) => {
       toggleExpandedType(event)
-      setSelectedEvent(null)
+      setSelectedEvent(undefined)
       trackEvent({
         category: TrackCategory.VesselProfile,
         action: 'View list of events by activity type',
@@ -192,8 +199,8 @@ function ActivityByType() {
           }}
           itemContent={(index) => {
             const event = events[index]
-            const expanded = selectedVesselEventId
-              ? event?.id.includes(selectedVesselEventId)
+            const expanded = selectedVesselEvent?.id
+              ? event?.id.includes(selectedVesselEvent.id)
               : false
             return (
               <Event
@@ -206,11 +213,11 @@ function ActivityByType() {
                   }
                   selectEventOnMap(event)
                 }}
-                onInfoClick={setSelectedEvent}
-                className={styles.event}
+                onInfoClick={handleEventClick}
+                className={cx(styles.event, { [styles.eventExpanded]: expanded })}
                 testId={`vv-${event.type}-event-${index}`}
               >
-                {expanded && <EventDetail event={event} />}
+                <EventDetail event={event} expanded={expanded} />
               </Event>
             )
           }}
@@ -220,17 +227,17 @@ function ActivityByType() {
       </Fragment>
     )
   }, [
-    activityGroups,
-    events,
-    expandedType,
-    groupCounts,
-    groups,
-    setSelectedEvent,
-    onMapHover,
-    onToggleExpandedType,
-    selectEventOnMap,
-    selectedVesselEventId,
     vesselPrintMode,
+    groupCounts,
+    activityGroups,
+    expandedType,
+    onToggleExpandedType,
+    groups,
+    events,
+    selectedVesselEvent?.id,
+    onMapHover,
+    handleEventClick,
+    selectEventOnMap,
   ])
 
   return (
