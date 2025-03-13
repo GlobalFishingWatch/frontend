@@ -232,7 +232,7 @@
     "@types/topojson-client": "3.1.5",
     "@vitejs/plugin-react": "4.3.4",
     "@vitest/coverage-v8": "2.1.9",
-    "@vitest/ui": "2.1.9",
+    "@vitest/ui": "^3.0.8",
     "babel-jest": "29.7.0",
     "circular-dependency-plugin": "5.2.2",
     "cypress": "13.17.0",
@@ -276,7 +276,7 @@
     "typescript-eslint": "^8.26.1",
     "vite": "6.2.1",
     "vite-plugin-static-copy": "2.3.0",
-    "vitest": "2.1.9"
+    "vitest": "^3.0.8"
   },
   "resolutions": {
     "@types/react": "19.0.10",

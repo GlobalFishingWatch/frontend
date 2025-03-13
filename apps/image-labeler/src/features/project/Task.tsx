@@ -1,10 +1,8 @@
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 
-import { Button } from '@globalfishingwatch/ui-components/button'
-import type { ChoiceOption } from '@globalfishingwatch/ui-components/choice';
-import { Choice } from '@globalfishingwatch/ui-components/choice'
-import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button, Choice, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useSetTaskMutation } from '../../api/task'
 import type { LabellingTask } from '../../types'

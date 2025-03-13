@@ -1,7 +1,7 @@
-import React, { Fragment, lazy, Suspense,useState } from 'react'
+import React, { Fragment, lazy, Suspense, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { SplitView } from '@globalfishingwatch/ui-components/split-view'
+import { SplitView } from '@globalfishingwatch/ui-components'
 
 import Loader from '././features/loader/loader'
 import Login from '././features/login/Login'

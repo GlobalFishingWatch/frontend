@@ -2,9 +2,8 @@ import React, { Fragment, useState } from 'react'
 import Head from 'next/head'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { useGFWLogin } from '@globalfishingwatch/react-hooks/use-login'
-import { getLoginUrl, redirectToLogin } from '@globalfishingwatch/react-hooks/use-login-redirect'
-import { Button } from '@globalfishingwatch/ui-components/button'
+import { getLoginUrl, redirectToLogin, useGFWLogin } from '@globalfishingwatch/react-hooks'
+import { Button } from '@globalfishingwatch/ui-components'
 
 import { APPLICATION_NAME } from '../../data/config'
 import Header from '../header/header'
