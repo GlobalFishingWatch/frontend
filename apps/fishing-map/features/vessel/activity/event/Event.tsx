@@ -53,17 +53,16 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
           eventsRef.set(event.id, inst)
         }
       }}
-      className={cx(styles.event, className)}
+      className={cx(styles.event, className, { [styles.pointer]: hasInteraction })}
       {...(testId && { 'data-test': testId })}
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+      role="button"
+      onClick={() => onInfoClick?.(event)}
+      onMouseEnter={() => onMapHover?.(event)}
+      onMouseLeave={() => onMapHover?.(undefined)}
+      tabIndex={0}
     >
-      <div
-        className={cx(styles.header, { [styles.pointer]: hasInteraction })}
-        onMouseEnter={() => onMapHover && onMapHover(event)}
-        onMouseLeave={() => onMapHover && onMapHover(undefined)}
-        onClick={() => onInfoClick && onInfoClick(event)}
-        role="button"
-        tabIndex={0}
-      >
+      <div className={cx(styles.header)}>
         <EventIcon type={event.type} />
         <div className={styles.eventData}>
           <ActivityDate event={event as ActivityEvent} />

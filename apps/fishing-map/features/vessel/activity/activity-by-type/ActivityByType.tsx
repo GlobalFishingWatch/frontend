@@ -217,7 +217,7 @@ function ActivityByType() {
                 className={cx(styles.event, { [styles.eventExpanded]: expanded })}
                 testId={`vv-${event.type}-event-${index}`}
               >
-                <EventDetail event={event} expanded={expanded} />
+                {expanded && <EventDetail event={event} />}
               </Event>
             )
           }}

@@ -46,6 +46,9 @@ export function useUpdateSelectedEventByScroll(
               selectedEventId = key
             }
           })
+          if (!selectedEventId) {
+            setSelectedEvent(undefined)
+          }
           if (selectedEventIdRef.current !== selectedEventId) {
             selectedEventIdRef.current = selectedEventId
             const selectedEvent = events.find(
@@ -88,7 +91,6 @@ export function useScrollToEvent(
   const debouncedScroll = useMemo(
     () =>
       debounce((index: number) => {
-        console.log(' index:', index)
         requestAnimationFrame(() => {
           virtuosoRef?.current?.scrollToIndex({
             index,
@@ -101,7 +103,7 @@ export function useScrollToEvent(
         }
         scrollTimeoutRef.current = setTimeout(() => {
           isScrolling = false
-        }, 1000)
+        }, 500)
       }, 150),
     [virtuosoRef]
   )

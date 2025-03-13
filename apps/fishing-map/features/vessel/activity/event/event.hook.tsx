@@ -12,7 +12,6 @@ import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
-import VesselLink from 'features/vessel/VesselLink'
 import { getUTCDateTime } from 'utils/dates'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
@@ -61,9 +60,13 @@ export function useActivityEventTranslations() {
       }
       return {
         mainRegionDescription,
-        allRegionsDescription: allRegionsDescriptionBlocks.map((block, index) => (
-          <div key={index}>{block}</div>
-        )),
+        allRegionsDescription: (
+          <div>
+            {allRegionsDescriptionBlocks.map((block, index) => (
+              <div key={index}>{block}</div>
+            ))}
+          </div>
+        ),
       }
     },
     [getRegionNamesByType, t]
@@ -79,14 +82,12 @@ export function useActivityEventTranslations() {
       switch (event.type) {
         case EventTypes.Encounter:
           if (event.encounter?.vessel) {
-            const { flag, id, name, dataset } = event.encounter.vessel
+            const { flag, name } = event.encounter.vessel
             return (
               // TODO check if we can get the dataset of the vessel encountered, using Identity for now
               <span>
                 {t('event.encounterAction', 'had an encounter with')}{' '}
-                <VesselLink vesselId={id} datasetId={dataset}>
-                  {formatInfoField(name, 'shipname')} ({formatInfoField(flag, 'flag')})
-                </VesselLink>{' '}
+                {formatInfoField(name, 'shipname')} ({formatInfoField(flag, 'flag')}){' '}
                 {mainRegionDescription && (
                   <Tooltip content={allRegionsDescription}>
                     <span className={styles.region}>

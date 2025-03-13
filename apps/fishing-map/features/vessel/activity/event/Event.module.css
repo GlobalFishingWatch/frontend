@@ -44,21 +44,15 @@
 }
 
 .detailContainer {
-  height: 0;
   padding-left: var(--space-L);
-  padding-block: 0;
-  overflow: hidden;
-}
-
-.detailContainerShown {
-  height: auto;
   padding-block: var(--space-S);
-}
-
-.detailContent {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-S) var(--space-M);
+}
+
+.detail a {
+  text-decoration: underline;
 }
 
 .region {
