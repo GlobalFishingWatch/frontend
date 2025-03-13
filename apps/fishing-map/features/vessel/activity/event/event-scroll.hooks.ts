@@ -15,7 +15,7 @@ export function useUpdateSelectedEventByScroll(
 ) {
   const dispatch = useDispatch()
   const selectedEventIdRef = useRef<string | null>(null)
-  const [selectedEvent, setSelectedEvent] = useState<VesselEvent | undefined>()
+  const [selectedEventId, setSelectedEventId] = useState<string | undefined>()
 
   const commitSelectedEvent = useMemo(
     () =>
@@ -26,8 +26,8 @@ export function useUpdateSelectedEventByScroll(
   )
 
   useEffect(() => {
-    commitSelectedEvent(selectedEvent?.id)
-  }, [commitSelectedEvent, selectedEvent?.id])
+    commitSelectedEvent(selectedEventId)
+  }, [commitSelectedEvent, selectedEventId])
 
   const checkScroll = useMemo(
     () =>
@@ -47,15 +47,12 @@ export function useUpdateSelectedEventByScroll(
             }
           })
           if (!selectedEventId) {
-            setSelectedEvent(undefined)
+            setSelectedEventId(undefined)
           }
           if (selectedEventIdRef.current !== selectedEventId) {
             selectedEventIdRef.current = selectedEventId
-            const selectedEvent = events.find(
-              (event) => event.id === selectedEventId
-            ) as VesselEvent
-            if (selectedEvent) {
-              setSelectedEvent(selectedEvent)
+            if (selectedEventId) {
+              setSelectedEventId(selectedEventId)
             }
           }
         } else {
@@ -63,7 +60,7 @@ export function useUpdateSelectedEventByScroll(
           // setSelectedEvent(null)
         }
       }, 16),
-    [events, eventsRef]
+    [eventsRef]
   )
 
   useEffect(() => {
@@ -78,7 +75,12 @@ export function useUpdateSelectedEventByScroll(
     }
   }, [checkScroll])
 
-  return [selectedEvent, setSelectedEvent] as const
+  const selectedEvent = useMemo(
+    () => events.find((event) => event.id === selectedEventId) as VesselEvent,
+    [events, selectedEventId]
+  )
+
+  return useMemo(() => [selectedEvent, setSelectedEventId] as const, [selectedEvent])
 }
 
 export function useScrollToEvent(

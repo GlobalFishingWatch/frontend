@@ -67,14 +67,17 @@ const ActivityByVoyage = () => {
   }, [expandedVoyage, voyages])
 
   const scrollToEvent = useScrollToEvent(events, virtuosoRef)
-  const [selectedVesselEvent, setSelectedEvent] = useUpdateSelectedEventByScroll(events, eventsRef)
+  const [selectedVesselEvent, setSelectedEventId] = useUpdateSelectedEventByScroll(
+    events,
+    eventsRef
+  )
 
   const handleEventClick = useCallback(
     (event: VesselEvent) => {
-      setSelectedEvent(event)
+      setSelectedEventId(event?.id)
       scrollToEvent(event.id)
     },
-    [scrollToEvent, setSelectedEvent]
+    [scrollToEvent, setSelectedEventId]
   )
 
   const selectVoyageOnMap = useCallback(
@@ -87,28 +90,28 @@ const ActivityByVoyage = () => {
     [dispatchQueryParams, fitBounds, isSmallScreen, voyages]
   )
 
-  const dispatchSetHighlightedEvents = useDebouncedDispatchHighlightedEvent()
-
-  const onVoyageMapHover = useCallback(
-    (voyageId?: ActivityEvent['voyage']) => {
-      const events = voyages[voyageId as number]
-      const { start, end } = getVoyageTimeRange(events)
-      if (start && end) {
-        dispatch(
-          setHighlightedTime({
-            start: getUTCDateTime(start).toISO() as string,
-            end: getUTCDateTime(end).toISO() as string,
-          })
-        )
-        const eventIds = events.map((event) => event.id)
-        dispatchSetHighlightedEvents(eventIds)
-      } else {
-        dispatch(disableHighlightedTime())
-        dispatchSetHighlightedEvents(undefined)
-      }
-    },
-    [dispatchSetHighlightedEvents, dispatch, voyages]
-  )
+  // TODO: do we want to keep this?
+  // const dispatchSetHighlightedEvents = useDebouncedDispatchHighlightedEvent()
+  // const onVoyageMapHover = useCallback(
+  //   (voyageId?: ActivityEvent['voyage']) => {
+  //     const events = voyages[voyageId as number]
+  //     const { start, end } = getVoyageTimeRange(events)
+  //     if (start && end) {
+  //       dispatch(
+  //         setHighlightedTime({
+  //           start: getUTCDateTime(start).toISO() as string,
+  //           end: getUTCDateTime(end).toISO() as string,
+  //         })
+  //       )
+  //       const eventIds = events.map((event) => event.id)
+  //       dispatchSetHighlightedEvents(eventIds)
+  //     } else {
+  //       dispatch(disableHighlightedTime())
+  //       dispatchSetHighlightedEvents(undefined)
+  //     }
+  //   },
+  //   [dispatchSetHighlightedEvents, dispatch, voyages]
+  // )
 
   const onEventMapHover = useCallback(
     (event?: VesselEvent) => {
@@ -190,7 +193,7 @@ const ActivityByVoyage = () => {
                 events={events}
                 onToggleClick={toggleExpandedVoyage}
                 onMapClick={selectVoyageOnMap}
-                onMapHover={onVoyageMapHover}
+                // onMapHover={onVoyageMapHover}
               />
             )
           }}
@@ -231,7 +234,6 @@ const ActivityByVoyage = () => {
     groups,
     handleEventClick,
     onEventMapHover,
-    onVoyageMapHover,
     selectEventOnMap,
     selectVoyageOnMap,
     selectedVesselEvent?.id,
