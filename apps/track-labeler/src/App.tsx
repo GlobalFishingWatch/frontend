@@ -1,11 +1,10 @@
-import React, { Fragment, lazy, Suspense,useState } from 'react'
+import React, { Fragment, lazy, Suspense, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { SplitView } from '@globalfishingwatch/ui-components/split-view'
 
 import Loader from '././features/loader/loader'
 import Login from '././features/login/Login'
-import { MapboxRefProvider } from '././features/map/map.context'
 import { LOGIN } from './routes/routes'
 import { getLocationType } from './routes/routes.selectors'
 
@@ -50,17 +49,15 @@ function App(): React.ReactElement<any> {
     )
   }
   return (
-    <MapboxRefProvider>
-      <SplitView
-        isOpen={sidebarOpen}
-        onToggle={onToggle}
-        showToggle={false}
-        aside={sidebarContent}
-        main={mainContent}
-        asideWidth="44rem"
-        className="split-container"
-      />
-    </MapboxRefProvider>
+    <SplitView
+      isOpen={sidebarOpen}
+      onToggle={onToggle}
+      showToggle={false}
+      aside={sidebarContent}
+      main={mainContent}
+      asideWidth="44rem"
+      className="split-container"
+    />
   )
 }
 

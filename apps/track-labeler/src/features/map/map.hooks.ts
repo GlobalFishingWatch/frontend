@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { ScatterplotLayer } from '@deck.gl/layers'
 import type { MapMouseEvent } from 'maplibre-gl'
 
-import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { selectEditing } from '../../features/rulers/rulers.selectors'
@@ -10,12 +10,12 @@ import { editRuler, moveCurrentRuler } from '../../features/rulers/rulers.slice'
 import { updateQueryParams } from '../../routes/routes.actions'
 import { selectHiddenLabels, selectViewport } from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
-import type { CoordinatePosition, Label,MapCoordinates } from '../../types'
+import type { CoordinatePosition, Label, MapCoordinates } from '../../types'
 import { useSegmentsLabeledConnect } from '../timebar/timebar.hooks'
 import { selectedtracks } from '../vessels/selectedTracks.slice'
 
 import type { UpdateGeneratorPayload } from './map.slice'
-import { selectGeneratorsConfig, selectGlobalGeneratorsConfig,updateGenerator } from './map.slice'
+import { selectGeneratorsConfig, selectGlobalGeneratorsConfig, updateGenerator } from './map.slice'
 
 export const useMapMove = () => {
   const dispatch = useAppDispatch()
@@ -122,51 +122,169 @@ export function useDebouncedViewport(
   urlViewport: MapCoordinates,
   callback: (viewport: MapCoordinates) => void
 ): UseViewport {
+  // Keep a local reference of the viewport that we're controlling
   const [viewport, setViewport] = useState<MapCoordinates>(urlViewport)
-  const debouncedViewport = useDebounce<MapCoordinates>(viewport, 400)
 
-  const setMapCoordinates = useCallback((viewport: SetMapCoordinatesArgs) => {
-    setViewport({ ...viewport })
+  // Use a ref to track state without causing re-renders
+  const stateRef = useRef({
+    isUserInteraction: false,
+    lastViewport: { ...urlViewport },
+    pendingUpdate: false,
+  })
+
+  // Use a more robust debounce approach
+  const debouncedViewportRef = useRef<MapCoordinates | null>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const setMapCoordinates = useCallback((newViewport: SetMapCoordinatesArgs) => {
+    setViewport({ ...newViewport })
   }, [])
 
-  const onViewportChange = useCallback(({ viewState }: { viewState: Viewport }) => {
-    const { latitude, longitude, zoom } = viewState
-    setViewport({ latitude, longitude, zoom })
-  }, [])
+  const onViewportChange = useCallback(
+    ({ viewState }: { viewState: Viewport }) => {
+      // Mark that this came from user interaction
+      stateRef.current.isUserInteraction = true
 
-  // Updates local state when url changes
+      const { latitude, longitude, zoom } = viewState
+
+      // Update local state immediately for responsive UI
+      setViewport({ latitude, longitude, zoom })
+
+      // Store for debounced update
+      debouncedViewportRef.current = { latitude, longitude, zoom }
+
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+
+      // Set a new timeout
+      timeoutRef.current = setTimeout(() => {
+        if (debouncedViewportRef.current && callback) {
+          callback(debouncedViewportRef.current)
+        }
+        timeoutRef.current = null
+      }, 300) // 300ms debounce
+    },
+    [callback]
+  )
+
+  // Updates local state when url changes, but only if it's not from user interaction
   useEffect(() => {
-    const { latitude, longitude, zoom } = viewport
-    if (
-      urlViewport &&
-      (urlViewport?.latitude !== latitude ||
-        urlViewport?.longitude !== longitude ||
-        urlViewport?.zoom !== zoom)
-    ) {
-      setViewport({ ...urlViewport })
+    // Only sync from URL to local state if it wasn't a user interaction
+    if (!stateRef.current.isUserInteraction && urlViewport) {
+      // Check if the change is significant enough to warrant an update
+      const threshold = 0.0001
+      const zoomThreshold = 0.01
+      const lastVP = stateRef.current.lastViewport
+
+      const hasSignificantChange =
+        Math.abs(urlViewport.longitude - lastVP.longitude) > threshold ||
+        Math.abs(urlViewport.latitude - lastVP.latitude) > threshold ||
+        Math.abs(urlViewport.zoom - lastVP.zoom) > zoomThreshold
+
+      if (hasSignificantChange) {
+        // Update both state and the ref tracker
+        setViewport({ ...urlViewport })
+        stateRef.current.lastViewport = { ...urlViewport }
+      }
     }
+
+    // Reset the flag after we handle the URL update
+    stateRef.current.isUserInteraction = false
   }, [urlViewport])
 
-  // Sync the url with the local state debounced
+  // Clean up on unmount
   useEffect(() => {
-    if (debouncedViewport && callback) {
-      callback(debouncedViewport)
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
     }
-  }, [debouncedViewport])
+  }, [])
 
   return { viewport, onViewportChange, setMapCoordinates }
 }
 
-export function useViewport(): UseViewport {
+export const useViewport = (): UseViewport => {
   const dispatch = useAppDispatch()
   const urlViewport = useSelector(selectViewport)
-  const callback = useCallback((viewport: any) => dispatch(updateQueryParams(viewport)), [dispatch])
+
+  // Use ref to track state without causing re-renders
+  const stateRef = useRef({
+    lastViewport: { ...urlViewport },
+    pendingUpdate: false,
+    updateCount: 0,
+  })
+
+  const callback = useCallback(
+    (viewportInfo: any) => {
+      // Skip Redux updates if we're processing too many updates in quick succession
+      if (stateRef.current.updateCount > 5) {
+        console.warn('[DEBUG] Throttling viewport updates to prevent update loops')
+        // Reset counter after a delay
+        setTimeout(() => {
+          stateRef.current.updateCount = 0
+        }, 1000)
+        return
+      }
+
+      // Skip redux updates for tiny movements to avoid loops
+      const threshold = 0.0001 // Small threshold for lat/lng changes
+      const zoomThreshold = 0.01 // Small threshold for zoom changes
+
+      const lastViewport = stateRef.current.lastViewport
+
+      let latitude = viewportInfo.latitude
+      let longitude = viewportInfo.longitude
+      let zoom = viewportInfo.zoom
+
+      // If coming from viewState (deck.gl format), extract values
+      if (viewportInfo.viewState) {
+        latitude = viewportInfo.viewState.latitude
+        longitude = viewportInfo.viewState.longitude
+        zoom = viewportInfo.viewState.zoom
+      }
+
+      // Round values to reduce precision-based updates
+      latitude = Math.round(latitude * 100000) / 100000
+      longitude = Math.round(longitude * 100000) / 100000
+      zoom = Math.round(zoom * 100) / 100
+
+      const isLatLngChange =
+        Math.abs(latitude - lastViewport.latitude) > threshold ||
+        Math.abs(longitude - lastViewport.longitude) > threshold
+      const isZoomChange = Math.abs(zoom - lastViewport.zoom) > zoomThreshold
+
+      const isSignificantChange = isLatLngChange || isZoomChange
+
+      if (isSignificantChange && !stateRef.current.pendingUpdate) {
+        // Set a temporary flag to prevent multiple updates in quick succession
+        stateRef.current.pendingUpdate = true
+        stateRef.current.updateCount++
+
+        // Update our reference
+        stateRef.current.lastViewport = { latitude, longitude, zoom }
+
+        // Dispatch with slight delay to prevent storm of updates
+        setTimeout(() => {
+          dispatch(updateQueryParams({ latitude, longitude, zoom }))
+          // Clear the flag after a short delay
+          setTimeout(() => {
+            stateRef.current.pendingUpdate = false
+          }, 50)
+        }, 10)
+      }
+    },
+    [dispatch]
+  )
+
   return useDebouncedViewport(urlViewport, callback)
 }
 
 export const useMapBounds = (mapRef: any) => {
   const { zoom, latitude, longitude } = useViewportConnect()
-  const [bounds, setBounds] = useState<MiniglobeBounds | any>(null)
+  const [bounds, setBounds] = useState<MiniglobeBounds | null>(null)
   useEffect(() => {
     const mapboxRef = mapRef?.current?.getMap()
     if (mapboxRef) {
@@ -201,4 +319,104 @@ export const useHiddenLabelsConnect = () => {
   }
 
   return { dispatchHiddenLabels, hiddenLabels }
+}
+
+export const useDeckGLMap = (pointsData: any[], highlightedTime: number | null, onClick: any) => {
+  // Convert hex color to RGB
+  const hexToRgb = (hex: string, withAlpha = false) => {
+    try {
+      const cleanHex = hex.replace('#', '')
+      const r = parseInt(cleanHex.substring(0, 2), 16)
+      const g = parseInt(cleanHex.substring(2, 4), 16)
+      const b = parseInt(cleanHex.substring(4, 6), 16)
+
+      if (isNaN(r) || isNaN(g) || isNaN(b)) {
+        return withAlpha ? [255, 0, 0, 200] : [255, 0, 0] // Fallback to red
+      }
+
+      return withAlpha ? [r, g, b, 200] : [r, g, b]
+    } catch (e) {
+      return withAlpha ? [255, 0, 0, 200] : [255, 0, 0] // Fallback to red
+    }
+  }
+
+  // Track the data size
+  const dataSize = useMemo(() => pointsData.length, [pointsData])
+
+  // Create deck.gl layers
+  const layers = useMemo(() => {
+    if (!pointsData.length) {
+      return []
+    }
+
+    // Create a ScatterplotLayer with the point data
+    const scatterplotLayer = new ScatterplotLayer({
+      id: 'track-points',
+      data: pointsData,
+      pickable: true,
+      opacity: 1.0,
+      stroked: true,
+      filled: true,
+      radiusScale: 20, // Increased for better visibility
+      radiusMinPixels: 10, // Increased for better visibility
+      radiusMaxPixels: 30,
+      lineWidthMinPixels: 2,
+      getPosition: (d) => {
+        // Ensure position is in the correct format
+        if (!d.position || !Array.isArray(d.position)) {
+          console.warn('[INFO] Point missing position:', d)
+          return [0, 0] // Default to [0,0] to avoid crashes
+        }
+        return d.position
+      },
+      getFillColor: (d) => {
+        // Make color handling more robust
+        if (d.color) {
+          return hexToRgb(d.color, true)
+        }
+        // Use a distinct color to make points very visible for debugging
+        return [255, 0, 0, 255] // Bright red and fully opaque
+      },
+      getLineColor: (d) => [0, 0, 0, 255], // Black border
+      getRadius: (d) => (d.timestamp === highlightedTime ? 20 : 12), // Increased size for visibility
+      parameters: {
+        depthTest: false,
+        blend: true,
+      },
+      onClick: (info) => {
+        if (info.object) {
+          const feature = {
+            properties: {
+              timestamp: info.object.timestamp,
+            },
+          }
+          const position = {
+            latitude: info.object.position[1],
+            longitude: info.object.position[0],
+          }
+          onClick({
+            target: {
+              queryRenderedFeatures: () => [
+                {
+                  source: 'vessel-positions',
+                  properties: feature.properties,
+                },
+              ],
+            },
+            lngLat: {
+              lat: position.latitude,
+              lng: position.longitude,
+            },
+            point: [info.x, info.y],
+          } as any)
+          return true
+        }
+        return false
+      },
+    })
+
+    return [scatterplotLayer]
+  }, [pointsData, highlightedTime, onClick])
+
+  return { layers, pointCount: dataSize }
 }
