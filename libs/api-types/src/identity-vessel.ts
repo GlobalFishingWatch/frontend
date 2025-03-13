@@ -9,6 +9,17 @@ export type VesselType =
   | 'SUPPORT'
   | 'OTHER'
 
+export const VESSEL_TYPES = [
+  'SEISMIC_VESSEL',
+  'CARRIER',
+  'CARGO',
+  'PASSENGER',
+  'FISHING',
+  'OTHER_NON_FISHING',
+  'BUNKER_OR_TANKER',
+  'SUPPORT',
+]
+
 export type GearType =
   | 'BUNKER'
   | 'CARGO'
@@ -40,6 +51,38 @@ export type GearType =
   | 'PURSE_SEINES'
   | 'TUNA_PURSE_SEINES'
   | 'TUG'
+
+export const GEAR_TYPES = [
+  'BUNKER',
+  'CARGO',
+  'FISHING',
+  'OTHER_PURSE_SEINES',
+  'SET_GILLNETS',
+  'DRIFTING_LONGLINES',
+  'CARRIER',
+  'GEAR',
+  'TRAWLERS',
+  'POTS_AND_TRAPS',
+  'PURSE_SEINE_SUPPORT',
+  'PASSENGER',
+  'SEINERS',
+  'NON_FISHING',
+  'SET_LONGLINES',
+  'DREDGE_FISHING',
+  'INCONCLUSIVE',
+  'POLE_AND_LINE',
+  'FIXED_GEAR',
+  'CARGO_OR_TANKER',
+  'SQUID_JIGGER',
+  'SEISMIC_VESSEL',
+  'TROLLERS',
+  'SPECIALIZED_REEFER',
+  'PATROL_VESSEL',
+  'PURSE_SEINES',
+  'TUNA_PURSE_SEINES',
+  'TUG',
+  'OTHER_SEINES',
+]
 
 export enum VesselIdentitySourceEnum {
   SelfReported = 'selfReportedInfo',

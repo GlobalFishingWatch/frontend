@@ -9,7 +9,6 @@ import { selectInfoCorrectionModalOpen, setModalOpen } from 'features/modals/mod
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import InfoCorrectionModal from 'features/vessel/infoCorrection/InfoCorrectionModal'
 
-
 function VesselInfoCorrection() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
