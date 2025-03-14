@@ -25,11 +25,7 @@ import {
   selectViewOnlyVessel,
 } from 'features/vessel/vessel.config.selectors'
 import { setVesselPrintMode } from 'features/vessel/vessel.slice'
-import {
-  getCurrentIdentityVessel,
-  getOtherVesselNames,
-  getVesselProperty,
-} from 'features/vessel/vessel.utils'
+import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
 import { useVesselProfileBounds } from 'features/vessel/vessel-bounds.hooks'
 import VesselGroupAddButton, {
   VesselGroupAddActionButton,

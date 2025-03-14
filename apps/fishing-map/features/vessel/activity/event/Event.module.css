@@ -59,6 +59,10 @@
   cursor: help;
 }
 
+.encounterIcon {
+  margin-right: 0.5rem;
+}
+
 @media print {
   .event {
     margin-left: var(--space-M);
