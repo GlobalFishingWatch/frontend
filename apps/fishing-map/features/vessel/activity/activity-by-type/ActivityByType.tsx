@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
@@ -55,7 +55,6 @@ function ActivityByType() {
   const setMapCoordinates = useSetMapCoordinates()
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const eventsRef = useRef(new Map<string, HTMLElement>())
-  const [isScrolling, setIsScrolling] = useState(false)
 
   const { events, groupCounts, groups } = useMemo(() => {
     const eventTypesWithData = EVENTS_ORDER.filter((eventType) => activityGroups[eventType])
@@ -70,11 +69,10 @@ function ActivityByType() {
     }
   }, [activityGroups, expandedType])
 
-  const { selectedEventId, setSelectedEventId, scrollToEvent } = useEventsScroll(
+  const { selectedEventId, setSelectedEventId, scrollToEvent, onRangeChanged } = useEventsScroll(
     events,
     eventsRef,
-    virtuosoRef,
-    isScrolling
+    virtuosoRef
   )
 
   const handleEventClick = useCallback(
@@ -178,12 +176,11 @@ function ActivityByType() {
         <GroupedVirtuoso
           ref={virtuosoRef}
           useWindowScroll
-          context={{ isScrolling }}
-          isScrolling={setIsScrolling}
           defaultItemHeight={EVENT_HEIGHT}
           groupCounts={groupCounts}
           increaseViewportBy={EVENT_HEIGHT * 4}
           customScrollParent={getScrollElement()}
+          rangeChanged={onRangeChanged}
           groupContent={(index) => {
             const eventType = groups[index]
             const events = activityGroups[eventType]
@@ -230,8 +227,8 @@ function ActivityByType() {
     )
   }, [
     vesselPrintMode,
-    isScrolling,
     groupCounts,
+    onRangeChanged,
     activityGroups,
     expandedType,
     onToggleExpandedType,

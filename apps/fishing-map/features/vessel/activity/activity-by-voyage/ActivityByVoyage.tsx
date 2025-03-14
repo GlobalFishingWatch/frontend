@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
@@ -27,6 +27,7 @@ import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.se
 import { selectEventsGroupedByVoyages } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
+import { selectVesselEventId } from 'features/vessel/vessel.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import styles from '../ActivityGroupedList.module.css'
@@ -46,7 +47,6 @@ const ActivityByVoyage = () => {
   const fitMapBounds = useMapFitBounds()
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const eventsRef = useRef(new Map<string, HTMLElement>())
-  const [isScrolling, setIsScrolling] = useState(false)
 
   const viewport = useMapViewport()
   const setMapCoordinates = useSetMapCoordinates()
@@ -61,11 +61,10 @@ const ActivityByVoyage = () => {
     }
   }, [expandedVoyage, voyages])
 
-  const { selectedEventId, setSelectedEventId, scrollToEvent } = useEventsScroll(
+  const { selectedEventId, setSelectedEventId, scrollToEvent, onRangeChanged } = useEventsScroll(
     events,
     eventsRef,
-    virtuosoRef,
-    isScrolling
+    virtuosoRef
   )
 
   const handleEventClick = useCallback(
@@ -188,12 +187,11 @@ const ActivityByVoyage = () => {
         <GroupedVirtuoso
           ref={virtuosoRef}
           useWindowScroll
-          context={{ isScrolling }}
-          isScrolling={setIsScrolling}
           defaultItemHeight={EVENT_HEIGHT}
           groupCounts={groupCounts}
           increaseViewportBy={EVENT_HEIGHT * 4}
           customScrollParent={getScrollElement()}
+          rangeChanged={onRangeChanged}
           groupContent={(index) => {
             const events = voyages[groups[index] as any]
             if (!events) {
@@ -246,8 +244,8 @@ const ActivityByVoyage = () => {
     groupCounts,
     groups,
     handleEventClick,
-    isScrolling,
     onEventMapHover,
+    onRangeChanged,
     selectEventOnMap,
     selectVoyageOnMap,
     selectedEventId,
