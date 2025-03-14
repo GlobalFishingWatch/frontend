@@ -176,10 +176,9 @@ const VesselHeader = () => {
               </a>
             </span>
           </h1>
-          {isGFWUser && <VesselInfoCorrection />}
 
           <div className={styles.actionsContainer}>
-            <VesselInfoCorrection />
+            {isGFWUser && <VesselInfoCorrection />}
             {vesselProfileDataview && (
               <VesselDownload
                 dataview={vesselProfileDataview}
