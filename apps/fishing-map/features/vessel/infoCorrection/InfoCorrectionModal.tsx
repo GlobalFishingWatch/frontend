@@ -1,11 +1,10 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { uniq } from 'es-toolkit'
-import { DateTime } from 'luxon'
 
 import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { GEAR_TYPES, VESSEL_TYPES, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
@@ -20,8 +19,9 @@ import {
 import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
-import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import type { VesselLastIdentity } from 'features/search/search.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import { useVesselIdentityChoice } from 'features/vessel/identity/vessel-identity.hooks'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
@@ -41,7 +41,6 @@ type InfoCorrectionSendFormat = {
   userId?: number | typeof GUEST_USER_TYPE
   name?: string
   email?: string
-  groups?: string
   vesselId: string
   source: string
   transmissionDate: string
@@ -90,6 +89,14 @@ const VALID_AIS_FIELDS = [
   'other',
 ]
 
+function formatTransmissionDate(vesselIdentity: VesselLastIdentity, format: boolean = false) {
+  if (!vesselIdentity) return ''
+  if (format) {
+    return `${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(vesselIdentity.transmissionDateTo)}`
+  }
+  return `${vesselIdentity.transmissionDateFrom} - ${vesselIdentity.transmissionDateTo}`
+}
+
 function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalProps) {
   const { t } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
@@ -98,8 +105,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
   const [loading, setLoading] = useState(false)
   const [suficientData, setSuficientData] = useState(false)
   const userData = useSelector(selectUserData)
-  const userGroups = useSelector(selectUserGroupsClean)
-  const guestUser = useSelector(selectIsGuestUser)
+  const identitySources = useVesselIdentityChoice()
 
   const vesselIdentity = getCurrentIdentityVessel(vesselData, {
     identityId,
@@ -107,23 +113,15 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
   })
 
   const [correctedVesselData, setCorrectedVesselData] = useState<InfoCorrectionSendFormat>({
-    date: formatI18nDate(new Date().toISOString(), {
-      format: DateTime.DATETIME_MED,
+    date: getUTCDate().toISOString(),
+    ...(userData && {
+      userId: userData.id,
+      email: userData.email,
+      name: `${userData.firstName} ${userData.lastName}`,
     }),
-    ...(!guestUser &&
-      userData && {
-        userId: userData.id,
-        email: userData.email,
-        name: `${userData.firstName} ${userData.lastName}`,
-        groups: (userGroups || []).join(', '),
-      }),
     vesselId: vesselIdentity.id,
-    source: (vesselIdentity.sourceCode || []).join(', '),
-    transmissionDate: String(
-      formatI18nDate(vesselIdentity.transmissionDateFrom) +
-        ' - ' +
-        formatI18nDate(vesselIdentity.transmissionDateTo)
-    ),
+    source: identitySource,
+    transmissionDate: formatTransmissionDate(vesselIdentity),
     field: null,
     originalValue: '',
     proposedValue: '',
@@ -149,46 +147,19 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
   }
 
   useEffect(() => {
-    setCorrectedVesselData({
-      ...correctedVesselData,
-      source: (vesselIdentity.sourceCode || []).join(', '),
-      field: null,
-      originalValue: '',
-      proposedValue: '',
-      description: '',
-    })
-  }, [identitySource])
-
-  const registryDisabled = !vesselData.identities.some(
-    (i) => i.identitySource === VesselIdentitySourceEnum.Registry
-  )
-  const selfReportedIdentities = vesselData.identities.filter(
-    (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
-  )
-
-  useEffect(() => {
-    if (identitySource === VesselIdentitySourceEnum.Registry && registryDisabled) {
-      dispatchQueryParams({
-        vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-      })
+    if (vesselIdentity?.id !== correctedVesselData.vesselId) {
+      setCorrectedVesselData((currentVesselData) => ({
+        ...currentVesselData,
+        vesselId: vesselIdentity.id,
+        transmissionDate: formatTransmissionDate(vesselIdentity),
+        source: vesselIdentity.identitySource,
+        field: null,
+        originalValue: '',
+        proposedValue: '',
+        description: '',
+      }))
     }
-  }, [dispatchQueryParams, identitySource, registryDisabled])
-
-  const identitySources: ChoiceOption<VesselIdentitySourceEnum>[] = useMemo(
-    () => [
-      {
-        id: VesselIdentitySourceEnum.Registry,
-        label: t('vessel.infoSources.registry', 'Registry'),
-        disabled: registryDisabled,
-      },
-      {
-        id: VesselIdentitySourceEnum.SelfReported,
-        label: uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS',
-        disabled: selfReportedIdentities.length === 0,
-      },
-    ],
-    [registryDisabled, selfReportedIdentities, t]
-  )
+  }, [correctedVesselData.vesselId, vesselIdentity])
 
   const sendCorrection = async (e: any) => {
     e.preventDefault()
@@ -239,12 +210,12 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
   }, [identitySource, t])
 
   const gearSelectOptions = GEAR_TYPES.map((key) => ({
-    label: getVesselGearTypeLabel({ geartypes: key }, { translationFn: t }) || key,
+    label: getVesselGearTypeLabel({ geartypes: key }) || key,
     id: key,
   }))
 
   const shipSelectOptions = VESSEL_TYPES.map((key) => ({
-    label: getVesselShipTypeLabel({ shiptypes: key }, { translationFn: t }) || key,
+    label: getVesselShipTypeLabel({ shiptypes: key }) || key,
     id: key,
   }))
 
@@ -260,13 +231,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
         <div className={styles.info}>
           <label>{t('common.vessel', 'Vessel')}</label>
           <Tag>{vesselIdentity.shipname || vesselIdentity.nShipname} </Tag>
-          <Tag>
-            {String(
-              formatI18nDate(vesselIdentity.transmissionDateFrom) +
-                ' - ' +
-                formatI18nDate(vesselIdentity.transmissionDateTo)
-            )}
-          </Tag>
+          <Tag>{formatTransmissionDate(vesselIdentity, true)}</Tag>
         </div>
         <div>
           <label>{t('infoCorrection.source', 'Source')}</label>
@@ -285,13 +250,13 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
             selectedOption={identityFields.find(
               (option) => option.id === correctedVesselData.field
             )}
-            onSelect={(option) =>
+            onSelect={(option) => {
               setCorrectedVesselData({
                 ...correctedVesselData,
                 field: option.id,
                 originalValue: vesselIdentity[option.id as keyof typeof vesselIdentity] as string,
               })
-            }
+            }}
           />
         </div>
 
