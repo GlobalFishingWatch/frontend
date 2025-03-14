@@ -200,42 +200,47 @@ const ActivityByVoyage = () => {
             const expanded = expandedVoyage === index + 1
 
             return (
-              <VoyageGroup
-                key={index}
-                expanded={expanded}
-                events={events}
-                onToggleClick={toggleExpandedVoyage}
-                onMapClick={selectVoyageOnMap}
-                // onMapHover={onVoyageMapHover}
-              />
+              <Fragment>
+                <VoyageGroup
+                  key={index}
+                  expanded={expanded}
+                  events={events}
+                  onToggleClick={toggleExpandedVoyage}
+                  onMapClick={selectVoyageOnMap}
+                  // onMapHover={onVoyageMapHover}
+                />
+                {!expanded && index === groups.length - 1 && <div style={{ height: '48vh' }}></div>}
+              </Fragment>
             )
           }}
-          itemContent={(index) => {
+          itemContent={(index, groupIndex) => {
             const event = events[index]
             const expanded = selectedEventId ? event?.id.includes(selectedEventId) : false
             return (
-              <Event
-                key={event.id}
-                event={event}
-                onMapHover={onEventMapHover}
-                eventsRef={eventsRef.current}
-                onMapClick={(event, e) => {
-                  if (expanded) {
-                    e.stopPropagation()
-                  }
-                  selectEventOnMap(event)
-                }}
-                onInfoClick={handleEventClick}
-                className={cx(styles.event, { [styles.eventExpanded]: expanded })}
-              >
-                {expanded && <EventDetail event={event} />}
-              </Event>
+              <Fragment>
+                <Event
+                  key={event.id}
+                  event={event}
+                  onMapHover={onEventMapHover}
+                  eventsRef={eventsRef.current}
+                  onMapClick={(event, e) => {
+                    if (expanded) {
+                      e.stopPropagation()
+                    }
+                    selectEventOnMap(event)
+                  }}
+                  onInfoClick={handleEventClick}
+                  className={cx(styles.event, { [styles.eventExpanded]: expanded })}
+                >
+                  {expanded && <EventDetail event={event} />}
+                </Event>
+                {index === events.length - 1 && groupIndex === groups.length - 1 && (
+                  <div style={{ height: '48vh' }}></div>
+                )}
+              </Fragment>
             )
           }}
         />
-
-        {/* TODO: add this height needed to the end dynamic and add content if needed */}
-        <div style={{ height: '50vh' }}></div>
       </Fragment>
     )
   }, [
