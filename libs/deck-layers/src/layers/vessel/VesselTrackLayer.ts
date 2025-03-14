@@ -436,8 +436,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       ? getUTCDateTime(params.startDate).toMillis()
       : this.props.startTime
     const endDate = params?.endDate ? getUTCDateTime(params.endDate).toMillis() : this.props.endTime
-    const firstPointIndex = timestamps.findIndex((t) => t >= startDate)
-    const lastPointIndex = timestamps.findLastIndex((t) => t <= endDate)
+    const firstPointIndex = timestamps.findIndex((t) => t > startDate)
+    const lastPointIndex = timestamps.findLastIndex((t) => t < endDate)
     if (firstPointIndex === -1 || lastPointIndex === -1 || firstPointIndex > lastPointIndex) {
       return null
     }

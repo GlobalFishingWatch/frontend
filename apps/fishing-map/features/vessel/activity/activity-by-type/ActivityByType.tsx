@@ -70,7 +70,6 @@ function ActivityByType() {
     }
   }, [activityGroups, expandedType])
 
-  // const scrollToEvent = useScrollToEvent(events, virtuosoRef)
   const { selectedEventId, setSelectedEventId, scrollToEvent } = useEventsScroll(
     events,
     eventsRef,

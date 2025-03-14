@@ -5,6 +5,7 @@ import type { GroupedVirtuosoHandle } from 'react-virtuoso'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import cx from 'classnames'
 
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
@@ -25,6 +26,7 @@ import EventDetail from 'features/vessel/activity/event/EventDetail'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectEventsGroupedByVoyages } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
+import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import styles from '../ActivityGroupedList.module.css'
@@ -40,6 +42,8 @@ const ActivityByVoyage = () => {
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [expandedVoyage, toggleExpandedVoyage] = useExpandedVoyages()
   const fitBounds = useMapFitBounds()
+  const vesselLayer = useVesselProfileLayer()
+  const fitMapBounds = useMapFitBounds()
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const eventsRef = useRef(new Map<string, HTMLElement>())
   const [isScrolling, setIsScrolling] = useState(false)
@@ -118,17 +122,34 @@ const ActivityByVoyage = () => {
 
   const selectEventOnMap = useCallback(
     (event: VesselEvent) => {
-      if (viewport?.zoom) {
-        const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
+      if (vesselLayer?.instance) {
+        const bbox = vesselLayer.instance.getVesselTrackBounds({
+          startDate: event.start,
+          endDate: event.end,
+        })
+        if (bbox) {
+          fitMapBounds(bbox as Bbox, { padding: 60, fitZoom: true })
+        }
+      } else {
+        const zoom = viewport?.zoom ?? DEFAULT_VIEWPORT.zoom
         setMapCoordinates({
           latitude: event.coordinates?.[1],
           longitude: event.coordinates?.[0],
           zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
         })
-        if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      }
+      if (isSmallScreen) {
+        dispatchQueryParams({ sidebarOpen: false })
       }
     },
-    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport?.zoom]
+    [
+      dispatchQueryParams,
+      fitMapBounds,
+      isSmallScreen,
+      setMapCoordinates,
+      vesselLayer.instance,
+      viewport?.zoom,
+    ]
   )
 
   const renderedComponent = useMemo(() => {
