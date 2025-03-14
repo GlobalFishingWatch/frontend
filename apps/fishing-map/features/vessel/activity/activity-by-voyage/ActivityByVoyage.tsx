@@ -27,7 +27,6 @@ import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.se
 import { selectEventsGroupedByVoyages } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
-import { selectVesselEventId } from 'features/vessel/vessel.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import styles from '../ActivityGroupedList.module.css'
@@ -61,7 +60,7 @@ const ActivityByVoyage = () => {
     }
   }, [expandedVoyage, voyages])
 
-  const { selectedEventId, setSelectedEventId, scrollToEvent, onRangeChanged } = useEventsScroll(
+  const { selectedEventId, setSelectedEventId, scrollToEvent, handleScroll } = useEventsScroll(
     events,
     eventsRef,
     virtuosoRef
@@ -191,7 +190,8 @@ const ActivityByVoyage = () => {
           groupCounts={groupCounts}
           increaseViewportBy={EVENT_HEIGHT * 4}
           customScrollParent={getScrollElement()}
-          rangeChanged={onRangeChanged}
+          onWheel={handleScroll}
+          rangeChanged={handleScroll}
           groupContent={(index) => {
             const events = voyages[groups[index] as any]
             if (!events) {
@@ -245,7 +245,7 @@ const ActivityByVoyage = () => {
     groups,
     handleEventClick,
     onEventMapHover,
-    onRangeChanged,
+    handleScroll,
     selectEventOnMap,
     selectVoyageOnMap,
     selectedEventId,

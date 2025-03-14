@@ -69,7 +69,7 @@ export function useEventsScroll(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events])
 
-  const onRangeChanged = useCallback(() => {
+  const handleScroll = useCallback(() => {
     virtuosoRef.current?.getState((state) => {
       setScrollTop(Math.round(state.scrollTop / 10) * 10)
     })
@@ -107,7 +107,7 @@ export function useEventsScroll(
   }, [selectEventInCenter, scrollTop])
 
   return useMemo(
-    () => ({ selectedEventId, setSelectedEventId, scrollToEvent, onRangeChanged }) as const,
-    [selectedEventId, setSelectedEventId, scrollToEvent, onRangeChanged]
+    () => ({ selectedEventId, setSelectedEventId, scrollToEvent, handleScroll }) as const,
+    [selectedEventId, setSelectedEventId, scrollToEvent, handleScroll]
   )
 }

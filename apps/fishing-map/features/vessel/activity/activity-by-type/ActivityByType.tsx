@@ -70,7 +70,7 @@ function ActivityByType() {
     }
   }, [activityGroups, expandedType])
 
-  const { selectedEventId, setSelectedEventId, scrollToEvent, onRangeChanged } = useEventsScroll(
+  const { selectedEventId, setSelectedEventId, scrollToEvent, handleScroll } = useEventsScroll(
     events,
     eventsRef,
     virtuosoRef
@@ -200,7 +200,8 @@ function ActivityByType() {
           groupCounts={groupCounts}
           increaseViewportBy={EVENT_HEIGHT * 4}
           customScrollParent={getScrollElement()}
-          rangeChanged={onRangeChanged}
+          onWheel={handleScroll}
+          rangeChanged={handleScroll}
           groupContent={(index) => {
             const eventType = groups[index]
             const events = activityGroups[eventType]
@@ -248,7 +249,7 @@ function ActivityByType() {
   }, [
     vesselPrintMode,
     groupCounts,
-    onRangeChanged,
+    handleScroll,
     activityGroups,
     expandedType,
     onToggleExpandedType,
