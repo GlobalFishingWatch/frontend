@@ -18,39 +18,29 @@ export function useEventsScroll(
   const selectedVesselEventId = useSelector(selectVesselEventId)
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>()
   const [isScrollToIndex, setIsScrollToIndex] = useState(false)
-  // const debouncedIsScrolling = useDebounce(isScrolling, 100)
-  console.log('🚀 ~ isScrollToIndex:', isScrollToIndex)
+  const [scrollToIndexInitialized, setScrollToIndexInitialized] = useState(false)
 
-  // const commitSelectedEvent = useMemo(
-  //   () =>
-  //     debounce((eventId?: string) => {
-  //       dispatch(setVesselEventId(eventId || null))
-  //     }, 1000),
-  //   [dispatch]
-  // )
-
-  // useEffect(() => {
-  //   commitSelectedEvent(selectedEventId)
-  // }, [commitSelectedEvent, selectedEventId])
+  const commitSelectedEvent = useMemo(
+    () =>
+      debounce((eventId?: string) => {
+        dispatch(setVesselEventId(eventId || null))
+      }, 1000),
+    [dispatch]
+  )
 
   useEffect(() => {
-    if (isScrollToIndex && !isScrolling) {
-      console.log('resetting isScrollToIndex')
-      setIsScrollToIndex(false)
-    }
-  }, [isScrollToIndex, isScrolling])
+    commitSelectedEvent(selectedEventId)
+  }, [commitSelectedEvent, selectedEventId])
 
-  const scrollToIndex = useCallback(
-    (index: number) => {
-      virtuosoRef?.current?.scrollToIndex({
-        index,
-        align: 'center',
-        behavior: 'smooth',
-      })
-      setIsScrollToIndex(true)
-    },
-    [virtuosoRef]
-  )
+  useEffect(() => {
+    if (isScrollToIndex && isScrolling) {
+      setScrollToIndexInitialized(true)
+    }
+    if (isScrollToIndex && scrollToIndexInitialized && !isScrolling) {
+      setIsScrollToIndex(false)
+      setScrollToIndexInitialized(false)
+    }
+  }, [scrollToIndexInitialized, isScrollToIndex, isScrolling])
 
   const debouncedScrollToIndex = useMemo(
     () =>
@@ -70,11 +60,11 @@ export function useEventsScroll(
       if (eventId && virtuosoRef?.current) {
         const selectedIndex = events.findIndex((event) => event.id.includes(eventId))
         if (selectedIndex !== -1) {
-          scrollToIndex(selectedIndex)
+          debouncedScrollToIndex(selectedIndex)
         }
       }
     },
-    [scrollToIndex, events, virtuosoRef]
+    [debouncedScrollToIndex, events, virtuosoRef]
   )
 
   useEffect(() => {
@@ -110,9 +100,6 @@ export function useEventsScroll(
               setSelectedEventId(selectedEventId)
             }
           }
-        } else {
-          // TODO:review this
-          // setSelectedEvent(null)
         }
       }, 16),
     [eventsRef]
@@ -121,21 +108,14 @@ export function useEventsScroll(
   useEffect(() => {
     const ref = getScrollElement()
     if (ref !== null && !isScrollToIndex) {
-      console.log('adding scroll listener')
       ref.addEventListener('scroll', checkScroll, { passive: true })
     }
     return () => {
       if (ref) {
-        console.log('removing scroll listener')
         ref.removeEventListener('scroll', checkScroll)
       }
     }
   }, [checkScroll, isScrollToIndex])
-
-  // const selectedEvent = useMemo(
-  //   () => events.find((event) => event.id === selectedEventId) as VesselEvent,
-  //   [events, selectedEventId]
-  // )
 
   return useMemo(
     () => ({ selectedEventId, setSelectedEventId, scrollToEvent }) as const,
