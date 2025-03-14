@@ -6,6 +6,7 @@ import type { DatasetGeometryType, DataviewCategory } from '@globalfishingwatch/
 
 type ModalId =
   | 'feedback'
+  | 'infoCorrection'
   | 'screenshot'
   | 'layerLibrary'
   | 'datasetUpload'
@@ -24,6 +25,7 @@ export type DatasetUploadConfig = {
 
 type ModalsOpenState = {
   feedback: boolean
+  infoCorrection: boolean
   screenshot: boolean
   layerLibrary: LayerLibraryMode
   editWorkspace: boolean
@@ -33,6 +35,7 @@ type ModalsOpenState = {
 
 const initialState: ModalsOpenState = {
   feedback: false,
+  infoCorrection: false,
   screenshot: false,
   layerLibrary: false,
   editWorkspace: false,
@@ -78,5 +81,6 @@ export const selectDatasetUploadModalOpen = (state: RootState) => state.modals.d
 export const selectEditWorkspaceModalOpen = (state: RootState) => state.modals.editWorkspace
 export const selectCreateWorkspaceModalOpen = (state: RootState) => state.modals.createWorkspace
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
+export const selectInfoCorrectionModalOpen = (state: RootState) => state.modals.infoCorrection
 
 export default modals.reducer
