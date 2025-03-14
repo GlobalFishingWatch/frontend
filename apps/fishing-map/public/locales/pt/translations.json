@@ -73,7 +73,8 @@
     "timeoutError": "Isso está demorando mais do que o esperado. Por favor, aguarde.",
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
     "title": "Análise",
-    "unknown": "Desconhecido"
+    "unknown": "Desconhecido",
+    "unknownProperty": "Unknown"
   },
   "bigQuery": {
     "aggregateAvg": "Média",
@@ -160,8 +161,8 @@
     "from": "de",
     "geartype": "Tipo de petrecho",
     "global": "Global",
-    "globalReport": "Global report",
     "globally": "globalmente",
+    "globalReport": "Global report",
     "help": "Ajuda",
     "hideAllHelpHints": "Ignorar Todos",
     "hideHelpHint": "Ignorar",
@@ -636,11 +637,6 @@
     "color_change": "Alterar cor",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "propertiesChange": "Change properties",
-    "properties": {
-      "color": "Color",
-      "thickness": "Thickness"
-    },
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -668,6 +664,11 @@
     "nameLengthError_other": "O nome da camada requer pelo menos {{count}} caracteres",
     "nameRequired": "É necessário informar o nome da camada",
     "period": "Período",
+    "properties": {
+      "color": "Color",
+      "thickness": "Thickness"
+    },
+    "propertiesChange": "Change properties",
     "radiance": "Radiância",
     "REALM": "ÂMBITO",
     "remove": "Remover camada",
@@ -1187,10 +1188,10 @@
     "add": "Adicionar ao espaço de trabalho",
     "addLayer": "Adicionar ao espaço de trabalho",
     "categories": {
-      "search": "Vessel search",
       "fishing-activity": "Highlighted workspaces",
       "marine-manager": "Marine Manager workspaces",
-      "reports": "Highlighted reports"
+      "reports": "Highlighted reports",
+      "search": "Vessel search"
     },
     "confirmRemove": "Tem certeza de que deseja excluir permanentemente este espaço de trabalho?",
     "create": "Criar como novo",
