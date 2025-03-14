@@ -43,6 +43,7 @@ type InfoCorrectionSendFormat = {
   email?: string
   vesselId: string
   source: string
+  sourceCode: string
   transmissionDate: string
   field: string | null
   originalValue: string
@@ -120,7 +121,8 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
       name: `${userData.firstName} ${userData.lastName}`,
     }),
     vesselId: vesselIdentity.id,
-    source: identitySource,
+    source: vesselIdentity.identitySource,
+    sourceCode: (vesselIdentity.sourceCode || []).join(', ') || '',
     transmissionDate: formatTransmissionDate(vesselIdentity),
     field: null,
     originalValue: '',
@@ -152,7 +154,8 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
         ...currentVesselData,
         vesselId: vesselIdentity.id,
         transmissionDate: formatTransmissionDate(vesselIdentity),
-        source: vesselIdentity.identitySource,
+        source: identitySource,
+        sourceCode: vesselIdentity.identitySource,
         field: null,
         originalValue: '',
         proposedValue: '',
