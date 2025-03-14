@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - var(--header-height) - var(--tabs-height));
-  margin-bottom: var(--space-XL);
 }
 
 .activityContainer div[data-virtuoso-scroller='true'] > div:first-child {

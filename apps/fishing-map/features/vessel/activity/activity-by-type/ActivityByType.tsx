@@ -210,40 +210,46 @@ function ActivityByType() {
             }
             const expanded = expandedType === eventType
             return (
-              <ActivityGroup
-                key={eventType}
-                eventType={eventType}
-                onToggleClick={onToggleExpandedType}
-                quantity={events.length}
-                expanded={expanded}
-              />
+              <Fragment>
+                <ActivityGroup
+                  key={eventType}
+                  eventType={eventType}
+                  onToggleClick={onToggleExpandedType}
+                  quantity={events.length}
+                  expanded={expanded}
+                />
+                {!expanded && index === groups.length - 1 && <div style={{ height: '48vh' }}></div>}
+              </Fragment>
             )
           }}
-          itemContent={(index) => {
+          itemContent={(index, groupIndex) => {
             const event = events[index]
             const expanded = selectedEventId ? event?.id.includes(selectedEventId) : false
             return (
-              <Event
-                event={event}
-                onMapHover={onMapHover}
-                eventsRef={eventsRef.current}
-                onMapClick={(event, e) => {
-                  if (expanded) {
-                    e.stopPropagation()
-                  }
-                  selectEventOnMap(event)
-                }}
-                onInfoClick={handleEventClick}
-                className={cx(styles.event, { [styles.eventExpanded]: expanded })}
-                testId={`vv-${event.type}-event-${index}`}
-              >
-                {expanded && <EventDetail event={event} />}
-              </Event>
+              <Fragment>
+                <Event
+                  event={event}
+                  onMapHover={onMapHover}
+                  eventsRef={eventsRef.current}
+                  onMapClick={(event, e) => {
+                    if (expanded) {
+                      e.stopPropagation()
+                    }
+                    selectEventOnMap(event)
+                  }}
+                  onInfoClick={handleEventClick}
+                  className={cx(styles.event, { [styles.eventExpanded]: expanded })}
+                  testId={`vv-${event.type}-event-${index}`}
+                >
+                  {expanded && <EventDetail event={event} />}
+                </Event>
+                {index === events.length - 1 && groupIndex === groups.length - 1 && (
+                  <div style={{ height: '48vh' }}></div>
+                )}
+              </Fragment>
             )
           }}
         />
-        {/* TODO: add this height needed to the end dynamic and add content if needed */}
-        <div style={{ height: '50vh' }}></div>
       </Fragment>
     )
   }, [
