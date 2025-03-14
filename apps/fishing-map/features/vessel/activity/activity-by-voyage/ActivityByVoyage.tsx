@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
@@ -12,30 +12,20 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
 import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
-import {
-  disableHighlightedTime,
-  setHighlightedEvents,
-  setHighlightedTime,
-} from 'features/timebar/timebar.slice'
+import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
 import type VesselEvent from 'features/vessel/activity/event/Event'
 import Event, { EVENT_HEIGHT } from 'features/vessel/activity/event/Event'
-import {
-  useScrollToEvent,
-  useUpdateSelectedEventByScroll,
-} from 'features/vessel/activity/event/event-scroll.hooks'
+import { useEventsScroll } from 'features/vessel/activity/event/event-scroll.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectEventsGroupedByVoyages } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
-import { getVoyageTimeRange } from 'features/vessel/vessel.utils'
 import { useLocationConnect } from 'routes/routes.hook'
-import { getUTCDateTime } from 'utils/dates'
 
 import styles from '../ActivityGroupedList.module.css'
 
@@ -52,6 +42,7 @@ const ActivityByVoyage = () => {
   const fitBounds = useMapFitBounds()
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const eventsRef = useRef(new Map<string, HTMLElement>())
+  const [isScrolling, setIsScrolling] = useState(false)
 
   const viewport = useMapViewport()
   const setMapCoordinates = useSetMapCoordinates()
@@ -66,10 +57,11 @@ const ActivityByVoyage = () => {
     }
   }, [expandedVoyage, voyages])
 
-  const scrollToEvent = useScrollToEvent(events, virtuosoRef)
-  const [selectedVesselEvent, setSelectedEventId] = useUpdateSelectedEventByScroll(
+  const { selectedEventId, setSelectedEventId, scrollToEvent } = useEventsScroll(
     events,
-    eventsRef
+    eventsRef,
+    virtuosoRef,
+    isScrolling
   )
 
   const handleEventClick = useCallback(
@@ -175,6 +167,8 @@ const ActivityByVoyage = () => {
         <GroupedVirtuoso
           ref={virtuosoRef}
           useWindowScroll
+          context={{ isScrolling }}
+          isScrolling={setIsScrolling}
           defaultItemHeight={EVENT_HEIGHT}
           groupCounts={groupCounts}
           increaseViewportBy={EVENT_HEIGHT * 4}
@@ -199,9 +193,7 @@ const ActivityByVoyage = () => {
           }}
           itemContent={(index) => {
             const event = events[index]
-            const expanded = selectedVesselEvent?.id
-              ? event?.id.includes(selectedVesselEvent.id)
-              : false
+            const expanded = selectedEventId ? event?.id.includes(selectedEventId) : false
             return (
               <Event
                 key={event.id}
@@ -233,10 +225,11 @@ const ActivityByVoyage = () => {
     groupCounts,
     groups,
     handleEventClick,
+    isScrolling,
     onEventMapHover,
     selectEventOnMap,
     selectVoyageOnMap,
-    selectedVesselEvent?.id,
+    selectedEventId,
     t,
     toggleExpandedVoyage,
     vesselPrintMode,

@@ -7,32 +7,87 @@ import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import type VesselEvent from 'features/vessel/activity/event/Event'
 import { selectVesselEventId, setVesselEventId } from 'features/vessel/vessel.slice'
 
-let isScrolling = false
-
-export function useUpdateSelectedEventByScroll(
+export function useEventsScroll(
   events: VesselEvent[],
-  eventsRef: React.RefObject<Map<string, HTMLElement>>
+  eventsRef: React.RefObject<Map<string, HTMLElement>>,
+  virtuosoRef: React.RefObject<GroupedVirtuosoHandle | null>,
+  isScrolling: boolean
 ) {
   const dispatch = useDispatch()
   const selectedEventIdRef = useRef<string | null>(null)
+  const selectedVesselEventId = useSelector(selectVesselEventId)
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>()
+  const [isScrollToIndex, setIsScrollToIndex] = useState(false)
+  // const debouncedIsScrolling = useDebounce(isScrolling, 100)
+  console.log('🚀 ~ isScrollToIndex:', isScrollToIndex)
 
-  const commitSelectedEvent = useMemo(
+  // const commitSelectedEvent = useMemo(
+  //   () =>
+  //     debounce((eventId?: string) => {
+  //       dispatch(setVesselEventId(eventId || null))
+  //     }, 1000),
+  //   [dispatch]
+  // )
+
+  // useEffect(() => {
+  //   commitSelectedEvent(selectedEventId)
+  // }, [commitSelectedEvent, selectedEventId])
+
+  useEffect(() => {
+    if (isScrollToIndex && !isScrolling) {
+      console.log('resetting isScrollToIndex')
+      setIsScrollToIndex(false)
+    }
+  }, [isScrollToIndex, isScrolling])
+
+  const scrollToIndex = useCallback(
+    (index: number) => {
+      virtuosoRef?.current?.scrollToIndex({
+        index,
+        align: 'center',
+        behavior: 'smooth',
+      })
+      setIsScrollToIndex(true)
+    },
+    [virtuosoRef]
+  )
+
+  const debouncedScrollToIndex = useMemo(
     () =>
-      debounce((eventId?: string) => {
-        dispatch(setVesselEventId(eventId || null))
-      }, 1000),
-    [dispatch]
+      debounce((index: number) => {
+        setIsScrollToIndex(true)
+        virtuosoRef?.current?.scrollToIndex({
+          index,
+          align: 'center',
+          behavior: 'smooth',
+        })
+      }, 150),
+    [virtuosoRef]
+  )
+
+  const scrollToEvent = useCallback(
+    (eventId: string) => {
+      if (eventId && virtuosoRef?.current) {
+        const selectedIndex = events.findIndex((event) => event.id.includes(eventId))
+        if (selectedIndex !== -1) {
+          scrollToIndex(selectedIndex)
+        }
+      }
+    },
+    [scrollToIndex, events, virtuosoRef]
   )
 
   useEffect(() => {
-    commitSelectedEvent(selectedEventId)
-  }, [commitSelectedEvent, selectedEventId])
+    if (selectedVesselEventId && events?.length) {
+      scrollToEvent(selectedVesselEventId)
+    }
+    // Only run once if selectedVesselEventId is in the url when loaded
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events])
 
   const checkScroll = useMemo(
     () =>
       throttle(() => {
-        if (isScrolling) return
         const scrollContainerRef = getScrollElement()
         if (scrollContainerRef && scrollContainerRef.scrollTop !== 0) {
           const cH = document.documentElement.clientHeight
@@ -65,71 +120,25 @@ export function useUpdateSelectedEventByScroll(
 
   useEffect(() => {
     const ref = getScrollElement()
-    if (ref !== null) {
+    if (ref !== null && !isScrollToIndex) {
+      console.log('adding scroll listener')
       ref.addEventListener('scroll', checkScroll, { passive: true })
     }
     return () => {
       if (ref) {
+        console.log('removing scroll listener')
         ref.removeEventListener('scroll', checkScroll)
       }
     }
-  }, [checkScroll])
+  }, [checkScroll, isScrollToIndex])
 
-  const selectedEvent = useMemo(
-    () => events.find((event) => event.id === selectedEventId) as VesselEvent,
-    [events, selectedEventId]
+  // const selectedEvent = useMemo(
+  //   () => events.find((event) => event.id === selectedEventId) as VesselEvent,
+  //   [events, selectedEventId]
+  // )
+
+  return useMemo(
+    () => ({ selectedEventId, setSelectedEventId, scrollToEvent }) as const,
+    [selectedEventId, setSelectedEventId, scrollToEvent]
   )
-
-  return useMemo(() => [selectedEvent, setSelectedEventId] as const, [selectedEvent])
-}
-
-export function useScrollToEvent(
-  events: VesselEvent[],
-  virtuosoRef: React.RefObject<GroupedVirtuosoHandle | null>
-) {
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const selectedVesselEventId = useSelector(selectVesselEventId)
-
-  const debouncedScroll = useMemo(
-    () =>
-      debounce((index: number) => {
-        requestAnimationFrame(() => {
-          virtuosoRef?.current?.scrollToIndex({
-            index,
-            align: 'center',
-            // behavior: 'smooth',
-          })
-        })
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current)
-        }
-        scrollTimeoutRef.current = setTimeout(() => {
-          isScrolling = false
-        }, 500)
-      }, 150),
-    [virtuosoRef]
-  )
-
-  const scrollToEvent = useCallback(
-    (eventId: string) => {
-      if (eventId && virtuosoRef?.current) {
-        const selectedIndex = events.findIndex((event) => event.id.includes(eventId))
-        if (selectedIndex !== -1) {
-          isScrolling = true
-          debouncedScroll(selectedIndex)
-        }
-      }
-    },
-    [debouncedScroll, events, virtuosoRef]
-  )
-
-  useEffect(() => {
-    if (selectedVesselEventId && events?.length) {
-      scrollToEvent(selectedVesselEventId)
-    }
-    // Only run once if selectedVesselEventId is in the url when loaded
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events])
-
-  return scrollToEvent
 }
