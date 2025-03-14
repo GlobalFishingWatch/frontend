@@ -1,9 +1,10 @@
-import { Fragment, useCallback, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import cx from 'classnames'
+import { debounce } from 'es-toolkit'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
@@ -108,23 +109,27 @@ function ActivityByType() {
   )
 
   const selectEventOnMap = useCallback(
-    (event: VesselEvent) => {
-      if (vesselLayer?.instance) {
+    (event: VesselEvent, mode: 'fit' | 'coordinates' = 'fit') => {
+      if (!event) {
+        return
+      }
+      if (mode === 'fit' && vesselLayer?.instance) {
         const bbox = vesselLayer.instance.getVesselTrackBounds({
           startDate: event.start,
           endDate: event.end,
         })
         if (bbox) {
           fitMapBounds(bbox as Bbox, { padding: 60, fitZoom: true })
+          return
         }
-      } else {
-        const zoom = viewport?.zoom ?? DEFAULT_VIEWPORT.zoom
-        setMapCoordinates({
-          latitude: event.coordinates?.[1],
-          longitude: event.coordinates?.[0],
-          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-        })
       }
+      const zoom = viewport?.zoom ?? DEFAULT_VIEWPORT.zoom
+      setMapCoordinates({
+        latitude: event.coordinates?.[1],
+        longitude: event.coordinates?.[0],
+        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
+        transitionDuration: 300,
+      })
       if (isSmallScreen) {
         dispatchQueryParams({ sidebarOpen: false })
       }
@@ -134,10 +139,25 @@ function ActivityByType() {
       fitMapBounds,
       isSmallScreen,
       setMapCoordinates,
-      vesselLayer.instance,
+      vesselLayer?.instance,
       viewport?.zoom,
     ]
   )
+
+  const debouncedSelectEventOnMap = useMemo(
+    () => debounce((event: VesselEvent) => selectEventOnMap(event, 'coordinates'), 600),
+    [selectEventOnMap]
+  )
+
+  useEffect(() => {
+    if (selectedEventId) {
+      const event = events.find((event) => event.id.includes(selectedEventId))
+      if (event) {
+        debouncedSelectEventOnMap(event)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events, selectedEventId])
 
   const renderedComponent = useMemo(() => {
     if (vesselPrintMode) {
