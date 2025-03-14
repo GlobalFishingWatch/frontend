@@ -29,7 +29,6 @@ export interface IconButtonProps {
   size?: IconButtonSize
   className?: string
   disabled?: boolean
-  disableHover?: boolean
   loading?: boolean
   onClick?: (e: React.MouseEvent) => void
   onMouseEnter?: (e: React.MouseEvent) => void
@@ -53,7 +52,6 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
     type = 'default',
     size = 'default',
     disabled = false,
-    disableHover = false,
     loading = false,
     className,
     icon,
@@ -82,7 +80,6 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
           styles[type],
           styles[`${size}Size`],
           { [styles.disabled]: disabled },
-          { [styles.disableHover]: disableHover },
           className
         )}
         onClick={disabled ? undefined : onClick}

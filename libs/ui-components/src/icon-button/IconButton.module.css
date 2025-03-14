@@ -46,18 +46,6 @@
   background-color: var(--color-terthiary-blue);
 }
 
-.default.disableHover:hover,
-.default.disableHover:focus,
-.warning.disableHover:hover,
-.warning.disableHover:focus,
-.warning-border.disableHover:focus,
-.border.disableHover:hover,
-.border.disableHover:focus {
-  opacity: var(--opacity-secondary);
-  background-color: transparent;
-  cursor: default;
-}
-
 .invert {
   color: rgba(var(--white-rgb), var(--opacity-secondary));
   background-color: rgba(var(--white-rgb), var(--opacity-terthiary));
