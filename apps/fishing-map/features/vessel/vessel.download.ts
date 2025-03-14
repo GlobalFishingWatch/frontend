@@ -114,18 +114,18 @@ const EVENTS_CSV_CONFIG: CsvConfig[] = [
     transform: parseCSVDate,
   },
   { label: 'voyage', accessor: 'voyage' },
-  { label: 'latitude', accessor: 'position.lat' },
-  { label: 'longitude', accessor: 'position.lon' },
+  { label: 'latitude', accessor: 'coordinates[1]' },
+  { label: 'longitude', accessor: 'coordinates[0]' },
   { label: 'portVisitName', accessor: 'port_visit.intermediateAnchorage.name' },
   { label: 'portVisitFlag', accessor: 'port_visit.intermediateAnchorage.flag' },
-  { label: 'encounterAuthorization', accessor: 'encounter.mainVesselAuthorizationStatus' },
+  // { label: 'encounterAuthorization', accessor: 'encounter.mainVesselAuthorizationStatus' },
   { label: 'encounteredVesselId', accessor: 'encounter.vessel.id' },
   { label: 'encounteredVesselName', accessor: 'encounter.vessel.name' },
   { label: 'encounteredVesselFlag', accessor: 'encounter.vessel.flag' },
-  {
-    label: 'encounteredVesselAuthorization',
-    accessor: 'encounter.encounteredVesselAuthorizationStatus',
-  },
+  // {
+  //   label: 'encounteredVesselAuthorization',
+  //   accessor: 'encounter.encounteredVesselAuthorizationStatus',
+  // },
 ]
 
 export const parseEventsToCSV = (events: ActivityEvent[]) => {
