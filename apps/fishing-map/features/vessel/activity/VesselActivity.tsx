@@ -16,10 +16,10 @@ import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/Activi
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
+import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import type { VesselProfileActivityMode } from '../vessel.types'
-import { useVesselProfileLayer } from '../vessel-bounds.hooks'
 import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
 import styles from './VesselActivity.module.css'

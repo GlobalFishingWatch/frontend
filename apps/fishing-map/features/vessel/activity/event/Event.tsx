@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 
 import type { ApiEvent, RegionType } from '@globalfishingwatch/api-types'
@@ -17,9 +17,10 @@ type VesselEvent = ActivityEvent | ApiEvent
 interface EventProps {
   className?: string
   event: VesselEvent
+  eventsRef?: Map<string, HTMLElement>
   children?: React.ReactNode
   onInfoClick?: (event: VesselEvent) => void
-  onMapClick?: (event: VesselEvent) => void
+  onMapClick?: (event: VesselEvent, e: React.MouseEvent) => void
   onMapHover?: (event?: VesselEvent) => void
   regionsPriority?: RegionType[]
   testId?: string
@@ -37,20 +38,44 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
     onMapClick,
     testId,
     regionsPriority,
+    eventsRef,
   } = props
   const { getEventDescription } = useActivityEventTranslations()
   const hasInteraction =
     onInfoClick !== undefined || onMapClick !== undefined || onMapHover !== undefined
+
+  const handleClick = useCallback(() => {
+    onInfoClick?.(event)
+  }, [onInfoClick, event])
+
+  const handleMouseEnter = useCallback(() => {
+    onMapHover?.(event)
+  }, [onMapHover, event])
+
+  const handleMouseLeave = useCallback(() => {
+    onMapHover?.(undefined)
+  }, [onMapHover])
+
   return (
-    <li className={cx(styles.event, className)} {...(testId && { 'data-test': testId })}>
-      <div
-        className={cx(styles.header, { [styles.pointer]: hasInteraction })}
-        onMouseEnter={() => onMapHover && onMapHover(event)}
-        onMouseLeave={() => onMapHover && onMapHover(undefined)}
-        onClick={() => onInfoClick && onInfoClick(event)}
-        role="button"
-        tabIndex={0}
-      >
+    <li
+      ref={(inst) => {
+        if (!eventsRef) return
+        if (inst === null) {
+          eventsRef.delete(event.id)
+        } else {
+          eventsRef.set(event.id, inst)
+        }
+      }}
+      className={cx(styles.event, className, { [styles.pointer]: hasInteraction })}
+      {...(testId && { 'data-test': testId })}
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+      role="button"
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      tabIndex={0}
+    >
+      <div className={cx(styles.header)}>
         <EventIcon type={event.type} />
         <div className={styles.eventData}>
           <ActivityDate event={event as ActivityEvent} />
@@ -59,9 +84,14 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
           </p>
         </div>
         <div className={cx(styles.actions, 'print-hidden')}>
-          {onInfoClick && <IconButton icon="info" size="small"></IconButton>}
           {onMapClick && (
-            <IconButton icon="target" size="small" onClick={() => onMapClick(event)}></IconButton>
+            <IconButton
+              icon="target"
+              size="small"
+              onClick={(e) => {
+                onMapClick(event, e)
+              }}
+            ></IconButton>
           )}
         </div>
       </div>

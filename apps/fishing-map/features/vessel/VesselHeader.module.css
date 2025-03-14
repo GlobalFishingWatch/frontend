@@ -42,6 +42,10 @@
   flex-wrap: wrap;
 }
 
+.sticky .actionsContainer {
+  display: none;
+}
+
 .reportLink {
   font: var(--font-M);
   text-decoration: underline;

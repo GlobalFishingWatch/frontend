@@ -131,15 +131,15 @@ function VesselPin({
           vesselEventsDatasets && vesselEventsDatasets?.length
             ? vesselEventsDatasets.map((d) => d.id)
             : []
-        const vesselDataviewInstance = getVesselDataviewInstance(
-          { id: getVesselId(vesselWithIdentity) },
-          {
+        const vesselDataviewInstance = getVesselDataviewInstance({
+          vessel: { id: getVesselId(vesselWithIdentity) },
+          datasets: {
             info: infoDatasetResolved?.id,
             track: trackDataset?.id,
             ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
             relatedVesselIds: getRelatedIdentityVesselIds(vesselWithIdentity),
-          }
-        )
+          },
+        })
 
         if (vesselDataviewInstance) {
           upsertDataviewInstance(vesselDataviewInstance)

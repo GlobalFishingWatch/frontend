@@ -5,7 +5,10 @@ import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatc
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import { BASEMAP_DATAVIEW_SLUG, CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import {
+  VESSEL_DATAVIEW_INSTANCE_PREFIX,
+  VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
@@ -17,6 +20,7 @@ import {
 import { selectViewOnlyVesselGroup } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
+import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
@@ -67,6 +71,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
     selectVesselId,
+    selectCurrentVesselEvent,
     selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportVesselGroupId,
@@ -81,6 +86,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     isVesselLocation,
     viewOnlyVessel,
     vesselId,
+    currentVesselEvent,
     isPortReportLocation,
     isVesselGroupReportLocation,
     reportVesselGroupId,
@@ -101,7 +107,9 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
           return true
         }
-        return config?.type === DataviewType.Track && id.includes(vesselId)
+        const isSameVessel = id.includes(vesselId)
+        const isEncounterVesselTrack = id.includes(currentVesselEvent?.encounter?.vessel?.id || '')
+        return config?.type === DataviewType.Track && (isSameVessel || isEncounterVesselTrack)
       })
     }
     if (isAnyReportLocation) {
@@ -170,9 +178,11 @@ const selectDataviewInstancesByType = (type: DataviewType) => {
 
 export const selectTrackDataviews = selectDataviewInstancesByType(DataviewType.Track)
 
-export const selectAllActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
-)
+export const selectTimebarTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+  return dataviews?.filter(
+    (d) => d.config?.visible && !d.id.includes(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+  )
+})
 
 export const selectUserTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(

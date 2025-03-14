@@ -1,20 +1,25 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectVesselEventType, setVesselEventType } from 'features/vessel/vessel.slice'
+
 export const useActivityByType = (): [EventType | null, (eventType: EventType) => void] => {
-  const [expandedGroup, setExpandedGroup] = useState<EventType | null>(null)
+  const dispatch = useAppDispatch()
+  const vesselEventType = useSelector(selectVesselEventType)
 
   const toggleEventType = useCallback(
     (type: EventType) => {
-      if (expandedGroup === type) {
-        setExpandedGroup(null)
+      if (vesselEventType === type) {
+        dispatch(setVesselEventType(null))
       } else {
-        setExpandedGroup(type)
+        dispatch(setVesselEventType(type))
       }
     },
-    [expandedGroup]
+    [dispatch, vesselEventType]
   )
 
-  return useMemo(() => [expandedGroup, toggleEventType], [expandedGroup, toggleEventType])
+  return useMemo(() => [vesselEventType, toggleEventType], [vesselEventType, toggleEventType])
 }

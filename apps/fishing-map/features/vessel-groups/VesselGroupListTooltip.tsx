@@ -29,8 +29,8 @@ type VesselGroupListTooltipProps = {
   disabled?: boolean
 }
 
-function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
-  const { onAddToVesselGroup, children, keepOpenWhileAdding = false, disabled = false } = props
+function VesselGroupListTooltip({ onAddToVesselGroup, ...props }: VesselGroupListTooltipProps) {
+  const { children, keepOpenWhileAdding = false, disabled = false } = props
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselGroupOptions = useVesselGroupsOptions()

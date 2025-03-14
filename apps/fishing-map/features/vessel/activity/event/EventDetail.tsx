@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react'
+import type { ReactElement } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import get from 'lodash/get'
 import { DateTime } from 'luxon'
@@ -8,8 +9,10 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
+import EventEncounterIcon from 'features/vessel/activity/event/EventEncounterIcon'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import type { VesselRenderField } from 'features/vessel/vessel.config'
+import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField } from 'utils/info'
 
 import type VesselEvent from './Event'
@@ -63,11 +66,15 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
   const fields = useMemo(() => {
     return FIELDS_BY_TYPE[event.type] || []
   }, [event])
+
   if (!fields?.length) {
     return null
   }
 
-  const getEventFieldValue = (event: ActivityEvent, field: VesselRenderField): string | null => {
+  const getEventFieldValue = (
+    event: ActivityEvent,
+    field: VesselRenderField
+  ): string | ReactElement | null => {
     const value = get(event, field.key, '')
     if (!value) {
       return value
@@ -84,7 +91,17 @@ const ActivityContent = ({ event }: ActivityContentProps) => {
     } else if (field.key.includes('vessel.type')) {
       return t(`vessel.vesselTypes.${value}` as string, value as string)
     } else if (field.key.includes('name')) {
-      return formatInfoField(value, 'shipname') as string
+      const { name, id, dataset } = event.encounter?.vessel || {}
+      return (
+        <Fragment>
+          {event.type === EventTypes.Encounter && (
+            <EventEncounterIcon event={event} className={styles.encounterIcon} />
+          )}
+          <VesselLink vesselId={id} datasetId={dataset}>
+            {formatInfoField(name, 'shipname')}
+          </VesselLink>
+        </Fragment>
+      )
     } else if (field.key.includes('flag')) {
       return formatInfoField(value, 'flag') as string
     }

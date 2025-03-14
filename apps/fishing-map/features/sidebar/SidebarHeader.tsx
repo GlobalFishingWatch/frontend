@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic'
 import Link from 'redux-first-router-link'
 
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import {
@@ -41,7 +42,7 @@ import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import UserButton from 'features/user/UserButton'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
-import { resetVesselState } from 'features/vessel/vessel.slice'
+import { resetVesselState, setVesselEventId } from 'features/vessel/vessel.slice'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
@@ -77,6 +78,7 @@ import {
   selectLocationType,
 } from 'routes/routes.selectors'
 import type { QueryParams } from 'types'
+import { config } from 'typescript-eslint'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useClipboardNotification } from './sidebar.hooks'
@@ -386,6 +388,7 @@ function CloseReportButton() {
     dispatch(resetVesselGroupReportData())
     dispatch(resetAreaDetail(reportAreaIds))
     dispatch(cleanCurrentWorkspaceReportState())
+    dispatch(setVesselEventId(null))
   }
 
   const isWorkspaceRoute = workspaceId !== undefined && workspaceId !== DEFAULT_WORKSPACE_ID
@@ -437,7 +440,17 @@ function CloseVesselButton() {
   const locationPayload = useSelector(selectLocationPayload)
   const vesselDataviewInstance = useSelector(selectVesselProfileDataviewIntance)
   const hasVesselProfileInstancePinned = useSelector(selectHasVesselProfileInstancePinned)
-
+  //TODO: is this needed if workspace dataviews are updated properly?
+  const cleanVesselDataviewInstance: UrlDataviewInstance | undefined = vesselDataviewInstance
+    ? {
+        ...vesselDataviewInstance,
+        config: {
+          ...vesselDataviewInstance?.config,
+          highlightEventStartTime: undefined,
+          highlightEventEndTime: undefined,
+        },
+      }
+    : undefined
   const linkTo = {
     type: WORKSPACE as ROUTE_TYPES,
     payload: locationPayload,
@@ -470,7 +483,10 @@ function CloseVesselButton() {
             payload,
             query: {
               ...query,
-              dataviewInstances: [...(query.dataviewInstances || []), vesselDataviewInstance],
+              dataviewInstances: [
+                ...(query.dataviewInstances || []),
+                ...(cleanVesselDataviewInstance ? [cleanVesselDataviewInstance] : []),
+              ],
             },
           })
         )

@@ -8,6 +8,7 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
   ApiEvent,
   Dataset,
+  EventType,
   GearType,
   IdentityVessel,
   RegistryExtraFields,
@@ -85,12 +86,16 @@ type VesselState = {
   fitBoundsOnLoad: boolean
   printMode: boolean
   data: VesselInfoState
+  eventId: string | null
+  eventType: EventType | null
 }
 
 const initialState: VesselState = {
   fitBoundsOnLoad: true,
   printMode: false,
   data: {},
+  eventId: null,
+  eventType: null,
 }
 
 type VesselSliceState = { vessel: VesselState }
@@ -157,7 +162,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           url: resolveEndpoint(dataset, datasetConfig) as string,
           dataset: dataset,
           datasetConfig,
-          dataviewId: getVesselDataviewInstance({ id: vesselId }, {})?.id,
+          dataviewId: getVesselDataviewInstance({ vessel: { id: vesselId }, datasets: {} })?.id,
           data: vessel,
           status: ResourceStatus.Finished,
         }
@@ -206,6 +211,12 @@ const vesselSlice = createSlice({
   reducers: {
     setVesselFitBoundsOnLoad: (state, action: PayloadAction<boolean>) => {
       state.fitBoundsOnLoad = action.payload
+    },
+    setVesselEventId: (state, action: PayloadAction<string | null>) => {
+      state.eventId = action.payload
+    },
+    setVesselEventType: (state, action: PayloadAction<EventType | null>) => {
+      state.eventType = action.payload
     },
     setVesselEvents: (state, action: PayloadAction<{ vesselId: string; events: ApiEvent[] }>) => {
       const { vesselId, events } = action.payload || {}
@@ -259,9 +270,17 @@ const vesselSlice = createSlice({
   },
 })
 
-export const { setVesselFitBoundsOnLoad, setVesselPrintMode, resetVesselState, setVesselEvents } =
-  vesselSlice.actions
+export const {
+  setVesselFitBoundsOnLoad,
+  setVesselPrintMode,
+  resetVesselState,
+  setVesselEvents,
+  setVesselEventId,
+  setVesselEventType,
+} = vesselSlice.actions
 
 export const selectVesselSlice = (state: RootState) => state.vessel
+export const selectVesselEventId = (state: RootState) => state.vessel.eventId
+export const selectVesselEventType = (state: RootState) => state.vessel.eventType
 
 export default vesselSlice.reducer
