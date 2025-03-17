@@ -1,5 +1,7 @@
+import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/Sidebar'
+
 export function getScrollElement() {
-  return document.querySelector('.scrollContainer') as HTMLElement
+  return document.getElementById(SCROLL_CONTAINER_DOM_ID) as HTMLElement
 }
 
 export function resetSidebarScroll() {

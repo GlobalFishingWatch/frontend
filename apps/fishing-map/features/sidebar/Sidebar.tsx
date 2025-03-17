@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import dynamic from 'next/dynamic'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -141,19 +142,20 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     isWorkspacesListLocation,
     isUserLogged,
   ])
-
+  const showTabs = !readOnly && !isSmallScreen
   return (
     <div className={styles.container}>
-      {!readOnly && !isSmallScreen && <CategoryTabs onMenuClick={onMenuClick} />}
-      {/* New dataset modal is used in user and workspace pages*/}
-      <div
-        id={SCROLL_CONTAINER_DOM_ID}
-        className="scrollContainer"
-        data-test="sidebar-container"
-        style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
-      >
+      {showTabs && <CategoryTabs onMenuClick={onMenuClick} />}
+      <div className={cx(styles.content, { [styles.withoutTabs]: !showTabs })}>
         <SidebarHeader />
-        {sidebarComponent}
+        <div
+          id={SCROLL_CONTAINER_DOM_ID}
+          className={cx('scrollContainer', styles.scrollContainer)}
+          data-test="sidebar-container"
+          style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+        >
+          {sidebarComponent}
+        </div>
       </div>
     </div>
   )

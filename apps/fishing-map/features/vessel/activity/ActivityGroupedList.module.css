@@ -4,14 +4,6 @@
   height: calc(100vh - var(--header-height) - var(--tabs-height));
 }
 
-.activityContainer div[data-virtuoso-scroller='true'] > div:first-child {
-  top: 104px !important;
-}
-
-.activityContainer div[data-test-id='virtuoso-item-list'] > div:first-child {
-  z-index: 0 !important;
-}
-
 .eventExpanded {
   background-color: var(--color-white);
   color: var(--color-primary-blue);

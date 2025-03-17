@@ -4,6 +4,8 @@
   min-height: 5.2rem;
   display: flex;
   gap: var(--space-S);
+  position: relative;
+  z-index: 2;
 }
 
 .titleContainer {

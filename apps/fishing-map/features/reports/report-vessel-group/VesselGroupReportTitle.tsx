@@ -28,21 +28,19 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectViewOnlyVesselGroup } from '../reports.config.selectors'
 
-import type { VesselGroupReport } from './vessel-group-report.slice'
+import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 
 import styles from './VesselGroupReportTitle.module.css'
 
-type ReportTitleProps = {
-  loading?: boolean
-  vesselGroup: VesselGroupReport
-}
-
-export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportTitleProps) {
+export default function VesselGroupReportTitle() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const vesselGroup = useSelector(selectVGRData)!
+  const reportStatus = useSelector(selectVGRStatus)
   const { dispatchQueryParams } = useLocationConnect()
   const isSmallScreen = useSmallScreen()
   const viewOnlyVesselGroup = useSelector(selectViewOnlyVesselGroup)
@@ -51,6 +49,7 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   const flags = useSelector(selectReportVesselGroupFlags)
   const userData = useSelector(selectUserData)
   const userIsVesselGroupOwner = userData?.id === vesselGroup?.ownerId
+  const loading = reportStatus === AsyncReducerStatus.Loading
 
   const onEditClick = useCallback(() => {
     if (vesselGroup?.id || !vesselGroup?.vessels?.length) {
