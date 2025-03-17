@@ -6,7 +6,11 @@ import { EventTypes, RegionType } from '@globalfishingwatch/api-types'
 
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
+import {
+  selectVesselActivityMode,
+  selectVesselAreaSubsection,
+} from 'features/vessel/vessel.config.selectors'
+import { selectVesselEventType, selectVesselVoyage } from 'features/vessel/vessel.slice'
 import { getUTCDateTime } from 'utils/dates'
 
 import {
@@ -27,6 +31,76 @@ export const selectEventsGroupedByType = createSelector(
   [selectVesselEventsFilteredByTimerange],
   (eventsList) => {
     return groupBy(eventsList, (e) => e.type)
+  }
+)
+
+export const selectEventsGroupedByVoyages = createSelector(
+  [selectVesselEventsFilteredByTimerange],
+  (eventsList) => {
+    const eventsListWithEntryExitEvents = eventsList.flatMap((event, index) => {
+      if (event.type === EventTypes.Port) {
+        const voyage = eventsList[index + 1]?.voyage
+        if (!voyage) {
+          return { ...event, subType: ActivityEventSubType.Exit }
+        }
+        return [
+          { ...event, subType: ActivityEventSubType.Exit },
+          { ...event, voyage, subType: ActivityEventSubType.Entry },
+        ]
+      }
+      return event
+    })
+    return groupBy(eventsListWithEntryExitEvents, (e) => e.voyage)
+  }
+)
+
+export const selectVoyagesNumber = createSelector([selectEventsGroupedByVoyages], (voyages) => {
+  return Object.keys(voyages).length
+})
+
+export const EVENTS_ORDER = [
+  EventTypes.Port,
+  EventTypes.Fishing,
+  EventTypes.Encounter,
+  EventTypes.Loitering,
+  // EventTypes.Gap,
+]
+export const selectVirtuosoVesselProfileEventsByType = createSelector(
+  [selectVesselEventType, selectEventsGroupedByType],
+  (expandedType, activityGroups) => {
+    const eventTypesWithData = EVENTS_ORDER.filter((eventType) => activityGroups[eventType])
+    const eventsExpanded = eventTypesWithData.map((eventType) => {
+      const expanded = expandedType === eventType
+      return expanded ? activityGroups[eventType] : []
+    })
+    return {
+      events: eventsExpanded.flat(),
+      groupCounts: eventsExpanded.map((events) => events.length),
+      groups: eventTypesWithData,
+    }
+  }
+)
+export const selectVirtuosoVesselProfileEventsByVoyage = createSelector(
+  [selectVesselVoyage, selectEventsGroupedByVoyages],
+  (expandedVoyage, voyages) => {
+    const eventsExpanded = Object.entries(voyages).map(([voyage, events]) => {
+      return expandedVoyage === parseInt(voyage) ? events : ([] as ActivityEvent[])
+    })
+    return {
+      events: eventsExpanded.flat(),
+      groupCounts: eventsExpanded.map((events) => events.length),
+      groups: Object.keys(voyages),
+    }
+  }
+)
+export const selectVirtuosoVesselProfileEventsEvents = createSelector(
+  [
+    selectVesselActivityMode,
+    selectVirtuosoVesselProfileEventsByType,
+    selectVirtuosoVesselProfileEventsByVoyage,
+  ],
+  (activityMode, eventsByType, eventsByVoyage) => {
+    return activityMode === 'voyage' ? eventsByVoyage : eventsByType
   }
 )
 
@@ -149,27 +223,3 @@ export const selectEventsGroupedByEncounteredVessel = createSelector(
     return Object.values(vesselCounts).sort((a, b) => b.encounters - a.encounters)
   }
 )
-
-export const selectEventsGroupedByVoyages = createSelector(
-  [selectVesselEventsFilteredByTimerange],
-  (eventsList) => {
-    const eventsListWithEntryExitEvents = eventsList.flatMap((event, index) => {
-      if (event.type === EventTypes.Port) {
-        const voyage = eventsList[index + 1]?.voyage
-        if (!voyage) {
-          return { ...event, subType: ActivityEventSubType.Exit }
-        }
-        return [
-          { ...event, subType: ActivityEventSubType.Exit },
-          { ...event, voyage, subType: ActivityEventSubType.Entry },
-        ]
-      }
-      return event
-    })
-    return groupBy(eventsListWithEntryExitEvents, (e) => e.voyage)
-  }
-)
-
-export const selectVoyagesNumber = createSelector([selectEventsGroupedByVoyages], (voyages) => {
-  return Object.keys(voyages).length
-})

@@ -34,7 +34,6 @@ export function useVesselEventBounds(vesselLayer: DeckLayerAtom<VesselLayer>) {
             ...(event.coordinates ? [point(event.coordinates as Position)] : []),
           ])
         ) as Bbox
-        console.log('🚀 ~ ActivityByType ~ bounds:', bounds)
         if (bounds) {
           fitMapBounds(bounds, { padding: 60, fitZoom: true, flyTo: true, maxZoom: 18 })
         }

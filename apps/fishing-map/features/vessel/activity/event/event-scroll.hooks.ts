@@ -1,27 +1,31 @@
+import type { RefObject } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
 import { debounce } from 'es-toolkit'
+import { atom, useAtomValue } from 'jotai'
 
-import type VesselEvent from 'features/vessel/activity/event/Event'
-import { selectVesselEventId, setVesselEventId } from 'features/vessel/vessel.slice'
+import { selectVirtuosoVesselProfileEventsEvents } from 'features/vessel/activity/vessels-activity.selectors'
+import { setVesselEventId } from 'features/vessel/vessel.slice'
 
-export function useEventsScroll(
-  events: VesselEvent[],
-  eventsRef: React.RefObject<Map<string, HTMLElement>>,
-  virtuosoRef: React.RefObject<GroupedVirtuosoHandle | null>
-) {
-  const dispatch = useDispatch()
-  const selectedEventIdRef = useRef<string | null>(null)
-  const selectedVesselEventId = useSelector(selectVesselEventId)
-  const [selectedEventId, setSelectedEventId] = useState<string | undefined>()
-  const isScrolling = useRef(false)
-  const [scrollTop, setScrollTop] = useState(0)
+const virtuosoScrollAtom = atom<{
+  virtuosoRef: RefObject<GroupedVirtuosoHandle | null>
+  isScrollingRef: RefObject<boolean>
+}>({
+  virtuosoRef: { current: null },
+  isScrollingRef: { current: false },
+})
 
-  const debouncedScrollToIndex = useMemo(
+export function useVirtuosoScroll(debouncedTime = 150) {
+  const { isScrollingRef, virtuosoRef } = useAtomValue(virtuosoScrollAtom)
+
+  const scrollToIndex = useMemo(
     () =>
       debounce((index: number) => {
-        isScrolling.current = true
+        isScrollingRef.current = true
+        if (!virtuosoRef?.current) {
+          return
+        }
         virtuosoRef?.current?.scrollIntoView({
           index,
           align: 'center',
@@ -30,24 +34,46 @@ export function useEventsScroll(
             return { ...rest, behavior, align }
           },
           done: () => {
-            isScrolling.current = false
+            isScrollingRef.current = false
           },
         })
-      }, 150),
-    [virtuosoRef]
+      }, debouncedTime),
+    [debouncedTime, isScrollingRef, virtuosoRef]
   )
+
+  return { isScrollingRef, virtuosoRef, scrollToIndex }
+}
+
+export function useVirtuosoScrollToEvent() {
+  const { scrollToIndex } = useVirtuosoScroll()
+  const events = useSelector(selectVirtuosoVesselProfileEventsEvents)?.events
 
   const scrollToEvent = useCallback(
     (eventId: string) => {
-      if (eventId && virtuosoRef?.current) {
-        const selectedIndex = events.findIndex((event) => event.id.includes(eventId))
-        if (selectedIndex !== -1) {
-          debouncedScrollToIndex(selectedIndex)
+      if (eventId) {
+        const selectedIndex = events?.findIndex((event) => event.id.includes(eventId))
+        if (selectedIndex !== undefined && selectedIndex !== -1) {
+          scrollToIndex(selectedIndex)
         }
       }
     },
-    [debouncedScrollToIndex, events, virtuosoRef]
+    [scrollToIndex, events]
   )
+
+  return scrollToEvent
+}
+
+export function useEventsScroll(
+  eventsRef: React.RefObject<Map<string, HTMLElement>>,
+  virtuosoRef: React.RefObject<GroupedVirtuosoHandle | null>
+) {
+  const dispatch = useDispatch()
+  const selectedEventIdRef = useRef<string | null>(null)
+  const [selectedEventId, setSelectedEventId] = useState<string | undefined>()
+  const isScrolling = useRef(false)
+  const [scrollTop, setScrollTop] = useState(0)
+
+  const scrollToEvent = useVirtuosoScrollToEvent()
 
   const commitSelectedEvent = useMemo(
     () =>
@@ -60,14 +86,6 @@ export function useEventsScroll(
   useEffect(() => {
     commitSelectedEvent(selectedEventId)
   }, [commitSelectedEvent, selectedEventId])
-
-  useEffect(() => {
-    if (selectedVesselEventId && events?.length) {
-      scrollToEvent(selectedVesselEventId)
-    }
-    // Only run once if selectedVesselEventId is in the url when loaded
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events])
 
   const handleScroll = useCallback(() => {
     virtuosoRef.current?.getState((state) => {

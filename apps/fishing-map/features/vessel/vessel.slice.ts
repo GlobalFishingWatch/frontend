@@ -88,6 +88,7 @@ type VesselState = {
   data: VesselInfoState
   eventId: string | null
   eventType: EventType | null
+  voyage: number | null
 }
 
 const initialState: VesselState = {
@@ -96,6 +97,7 @@ const initialState: VesselState = {
   data: {},
   eventId: null,
   eventType: null,
+  voyage: null,
 }
 
 type VesselSliceState = { vessel: VesselState }
@@ -215,6 +217,9 @@ const vesselSlice = createSlice({
     setVesselEventId: (state, action: PayloadAction<string | null>) => {
       state.eventId = action.payload
     },
+    setVesselVoyage: (state, action: PayloadAction<number | null>) => {
+      state.voyage = action.payload
+    },
     setVesselEventType: (state, action: PayloadAction<EventType | null>) => {
       state.eventType = action.payload
     },
@@ -277,10 +282,12 @@ export const {
   setVesselEvents,
   setVesselEventId,
   setVesselEventType,
+  setVesselVoyage,
 } = vesselSlice.actions
 
 export const selectVesselSlice = (state: RootState) => state.vessel
 export const selectVesselEventId = (state: RootState) => state.vessel.eventId
 export const selectVesselEventType = (state: RootState) => state.vessel.eventType
+export const selectVesselVoyage = (state: RootState) => state.vessel.voyage
 
 export default vesselSlice.reducer

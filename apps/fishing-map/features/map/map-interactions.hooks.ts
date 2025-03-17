@@ -21,6 +21,7 @@ import type {
   DeckLayerPickingObject,
   FourwingsClusterPickingObject,
   FourwingsHeatmapPickingObject,
+  VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { FOURWINGS_MAX_ZOOM } from '@globalfishingwatch/deck-layers'
 
@@ -35,6 +36,9 @@ import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
+import { useEventActivityToggle } from 'features/vessel/activity/event/event-activity.hooks'
+import { useVirtuosoScrollToEvent } from 'features/vessel/activity/event/event-scroll.hooks'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
 import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
@@ -111,6 +115,8 @@ export const useClickedEventConnect = () => {
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
   const areTilesClusterLoading = useMapClusterTilesLoading()
+  const scrollToEvent = useVirtuosoScrollToEvent()
+  const [_, setEventGroup] = useEventActivityToggle()
   // const fishingPromiseRef = useRef<any>()
   // const eventsPromiseRef = useRef<any>()
 
@@ -231,6 +237,18 @@ export const useClickedEventConnect = () => {
         const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
         setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
       }
+
+      const vesselEventFeature = event.features.find(
+        (f) =>
+          f.category === DataviewCategory.Vessels && f.subcategory === DataviewType.VesselEvents
+      ) as VesselEventPickingObject
+
+      if (vesselEventFeature) {
+        setEventGroup({ id: vesselEventFeature.id, type: vesselEventFeature.type } as ActivityEvent)
+        setTimeout(() => {
+          scrollToEvent(vesselEventFeature.id)
+        }, 16)
+      }
     },
     [
       addErrorNotification,
@@ -243,8 +261,10 @@ export const useClickedEventConnect = () => {
       isMapAnnotating,
       onRulerMapClick,
       rulersEditing,
+      scrollToEvent,
       setInteractionPromises,
       setMapCoordinates,
+      setEventGroup,
     ]
   )
 

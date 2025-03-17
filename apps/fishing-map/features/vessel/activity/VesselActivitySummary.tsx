@@ -14,9 +14,9 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
-import { EVENTS_ORDER } from 'features/vessel/activity/activity-by-type/ActivityByType'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import {
+  EVENTS_ORDER,
   selectActivitySummary,
   selectEventsGroupedByType,
   selectVoyagesNumber,
