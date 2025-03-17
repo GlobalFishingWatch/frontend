@@ -3,6 +3,21 @@
   height: 100%;
 }
 
+.content {
+  width: calc(100% - var(--sidebar-tabs-width));
+  display: flex;
+  flex-direction: column;
+}
+
+.withoutTabs {
+  width: 100%;
+}
+
+.scrollContainer {
+  flex: 1;
+  overflow: hidden auto;
+}
+
 .placeholder {
   height: calc(100% - var(--header-height));
   flex: 1;

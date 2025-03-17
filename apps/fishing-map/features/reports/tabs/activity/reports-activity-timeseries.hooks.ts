@@ -142,7 +142,7 @@ const getTimeseries = ({ featuresFiltered, instances }: GetTimeseriesParams) => 
   const timeseries: ReportGraphProps[] = []
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
-    if (instance.props.static || !features) {
+    if (instance.props.static || !features || !instance.getChunk) {
       // need to add empty timeseries because they are then used by their index
       timeseries.push({
         timeseries: [],
@@ -303,7 +303,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         for (const instance of instances) {
           const features = instance?.getData?.() as FourwingsFeature[]
           const error = instance?.getError?.()
-          if (error || !features.length) {
+          if (error || !features?.length) {
             featuresFiltered.push([{ contained: [], overlapping: [], error }])
           } else {
             const filteredInstanceFeatures =

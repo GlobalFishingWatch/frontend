@@ -22,7 +22,6 @@ import {
   selectReportAreaStatus,
 } from 'features/reports/report-area/area-reports.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
-import ReportTitle from 'features/reports/report-area/title/ReportTitle'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ActivityReport from 'features/reports/tabs/activity/ReportActivity'
@@ -175,7 +174,6 @@ export default function Report() {
 
   return (
     <Fragment>
-      {reportArea && <ReportTitle area={reportArea} />}
       {filteredCategoryTabs.length > 1 && (
         <div className={styles.tabContainer}>
           <Tabs

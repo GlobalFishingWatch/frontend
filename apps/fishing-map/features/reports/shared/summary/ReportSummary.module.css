@@ -25,14 +25,12 @@
 }
 
 .sticky {
-  margin-top: 51px;
   background-color: var(--color-white);
-  border-top: var(--border);
   z-index: 2;
 }
 
 .sticky .tagsContainer {
-  padding: var(--space-XS);
+  padding: var(--space-XS) var(--space-M);
   gap: var(--space-XS);
 }
 
