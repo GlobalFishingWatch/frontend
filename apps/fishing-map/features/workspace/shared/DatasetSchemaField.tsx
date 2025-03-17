@@ -79,7 +79,6 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
   }
 
   const onRemoveClick = (tag: TagItem, tags: TagItem[]) => {
-    console.log(tags)
     upsertDataviewInstance({
       id: dataview.id,
       config: {
