@@ -1,9 +1,9 @@
 import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
-import type { PickingInfo} from '@deck.gl/core';
+import type { PickingInfo } from '@deck.gl/core'
 import { MapView, WebMercatorViewport } from '@deck.gl/core'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { BitmapLayer } from '@deck.gl/layers'
-import type { DeckGLRef } from '@deck.gl/react';
+import type { DeckGLRef } from '@deck.gl/react'
 import { DeckGL } from '@deck.gl/react'
 import cx from 'classnames'
 import { useAtom } from 'jotai'
@@ -15,11 +15,11 @@ import uniqBy from 'lodash/uniqBy'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { BasemapType } from '@globalfishingwatch/layer-composer'
-import type { MiniglobeBounds} from '@globalfishingwatch/ui-components';
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
-import { useURLViewport, useViewport } from 'features/map/map-viewport.hooks'
+import { useViewport } from 'features/map/map-viewport.hooks'
 import { getCoordinatesLabel } from 'utils/coordinates'
 import { getDateLabel } from 'utils/dates'
 
@@ -37,8 +37,7 @@ export type GFWLayerProps = {
 }
 
 const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any> => {
-  useURLViewport()
-  const { viewState, onViewportStateChange } = useViewport()
+  const [viewState, onViewportStateChange] = useViewport()
   const deckRef = useRef<DeckGLRef>(null)
   const basemapLayer = useBasemapLayer()
   const contextLayer = useContextsLayer()
@@ -264,7 +263,7 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
       <div className={styles.controls}>
         <MiniGlobe
           size={70}
-          center={{ latitude: viewState.latitude, longitude: viewState.longitude }}
+          center={{ latitude: viewState?.latitude, longitude: viewState?.longitude }}
           bounds={bounds}
         />
         <Tooltip

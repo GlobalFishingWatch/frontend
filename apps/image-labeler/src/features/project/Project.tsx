@@ -2,12 +2,8 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import uniqBy from 'lodash/uniqBy'
 
-import { useLocalStorage } from '@globalfishingwatch/react-hooks/use-local-storage'
-import { Button } from '@globalfishingwatch/ui-components/button'
-import { Choice } from '@globalfishingwatch/ui-components/choice'
-import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
-import { Slider } from '@globalfishingwatch/ui-components/slider'
-import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { Button, Choice, IconButton, Slider, Spinner } from '@globalfishingwatch/ui-components'
 
 import {
   useGetLabellingProjectTasksByIdQuery,
@@ -31,7 +27,6 @@ export function Project() {
   const [imageStyleContrast, setImageStyleContrast] = useLocalStorage('contrast', 1)
   const [showEnhancedImage, setShowEnhancedImage] = useLocalStorage('showEnhancedImage', true)
 
-   
   const initialActiveTaskId = useMemo(() => activeTaskId as string | undefined, [])
 
   const { data: taskData, isLoading: areTasksLoading } = useGetLabellingProjectTasksQuery({

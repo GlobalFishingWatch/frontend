@@ -1,6 +1,5 @@
-import type { GFWLoginHook } from '@globalfishingwatch/react-hooks/use-login'
-import { Button } from '@globalfishingwatch/ui-components/button'
-import { Logo } from '@globalfishingwatch/ui-components/logo'
+import type { GFWLoginHook } from '@globalfishingwatch/react-hooks'
+import { Button, Logo } from '@globalfishingwatch/ui-components'
 
 import styles from './header.module.css'
 

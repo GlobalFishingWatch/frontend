@@ -15,6 +15,7 @@ import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import {
   selectVesselInfoData,
   selectVesselPrintMode,
@@ -31,6 +32,7 @@ import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
@@ -47,6 +49,7 @@ const VesselHeader = () => {
   const identitySource = useSelector(selectVesselIdentitySource)
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
@@ -173,7 +176,9 @@ const VesselHeader = () => {
               </a>
             </span>
           </h1>
+
           <div className={styles.actionsContainer}>
+            {isGFWUser && <VesselInfoCorrection />}
             {vesselProfileDataview && (
               <VesselDownload
                 dataview={vesselProfileDataview}

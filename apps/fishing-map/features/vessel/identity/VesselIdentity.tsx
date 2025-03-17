@@ -1,14 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
-import { Fragment, useEffect, useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { uniq } from 'es-toolkit'
 import { saveAs } from 'file-saver'
 
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import type { Tab, TabsProps } from '@globalfishingwatch/ui-components'
+import type { TabsProps } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -17,6 +16,7 @@ import type { VesselLastIdentity } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import { useVesselIdentityTabs } from 'features/vessel/identity/vessel-identity.hooks'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
@@ -57,6 +57,7 @@ const VesselIdentity = () => {
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const { dispatchQueryParams } = useLocationConnect()
   const { setTimerange } = useTimerangeConnect()
+  const { identityTabs } = useVesselIdentityTabs()
 
   const vesselIdentity = getCurrentIdentityVessel(vesselData, {
     identityId,
@@ -117,57 +118,6 @@ const VesselIdentity = () => {
       })
     }
   }
-
-  const registryDisabled = !vesselData.identities.some(
-    (i) => i.identitySource === VesselIdentitySourceEnum.Registry
-  )
-  const selfReportedIdentities = vesselData.identities.filter(
-    (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
-  )
-
-  useEffect(() => {
-    if (identitySource === VesselIdentitySourceEnum.Registry && registryDisabled) {
-      dispatchQueryParams({
-        vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-      })
-    }
-  }, [dispatchQueryParams, identitySource, registryDisabled])
-
-  const identityTabs: Tab<VesselIdentitySourceEnum>[] = useMemo(
-    () => [
-      {
-        id: VesselIdentitySourceEnum.Registry,
-        title: (
-          <span className={styles.tabTitle}>
-            {t('vessel.infoSources.registry', 'Registry')}
-            {identitySource === VesselIdentitySourceEnum.Registry && (
-              <DataTerminology
-                title={t('vessel.infoSources.registry', 'Registry')}
-                terminologyKey="registryInfo"
-              />
-            )}
-          </span>
-        ),
-        disabled: registryDisabled,
-      },
-      {
-        id: VesselIdentitySourceEnum.SelfReported,
-        title: (
-          <span className={styles.tabTitle}>
-            {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS'}
-            {identitySource === VesselIdentitySourceEnum.SelfReported && (
-              <DataTerminology
-                title={t('vessel.infoSources.selfReported', 'Self Reported')}
-                terminologyKey="selfReported"
-              />
-            )}
-          </span>
-        ),
-        disabled: selfReportedIdentities.length === 0,
-      },
-    ],
-    [identitySource, registryDisabled, selfReportedIdentities, t]
-  )
 
   const identityFields = useMemo(() => {
     const source = vesselIdentity.sourceCode?.[0]
