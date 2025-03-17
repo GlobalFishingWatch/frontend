@@ -10,6 +10,11 @@
   opacity: var(--opacity-secondary);
   transition: opacity 200ms ease-in;
   margin-left: auto;
+  display: none;
+}
+
+.event.expanded .actions,
+.event:hover .actions {
   display: flex;
 }
 

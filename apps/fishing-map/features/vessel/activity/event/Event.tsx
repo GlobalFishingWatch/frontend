@@ -68,7 +68,12 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
           eventsRef.set(event.id, inst)
         }
       }}
-      className={cx(styles.event, className, { [styles.pointer]: hasInteraction })}
+      className={cx(
+        styles.event,
+        className,
+        { [styles.pointer]: hasInteraction },
+        { [styles.expanded]: expanded }
+      )}
       {...(testId && { 'data-test': testId })}
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
       role="button"
