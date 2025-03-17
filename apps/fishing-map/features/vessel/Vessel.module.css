@@ -7,11 +7,6 @@
   color: var(--color-secondary-blue);
 }
 
-.headerContainer {
-  position: relative;
-  z-index: 1;
-}
-
 .fullProfileMessage {
   color: var(--color-secondary-blue);
   padding: var(--space-S) var(--space-S) var(--space-S) var(--space-M);

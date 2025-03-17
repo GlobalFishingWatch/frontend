@@ -1,7 +1,6 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Sticky from 'react-sticky-el'
 import cx from 'classnames'
 import dynamic from 'next/dynamic'
 import Link from 'redux-first-router-link'
@@ -30,7 +29,10 @@ import LanguageToggle from 'features/i18n/LanguageToggle'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { useHighlightReportArea } from 'features/reports/report-area/area-reports.hooks'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
+import ReportTitle from 'features/reports/report-area/title/ReportTitle'
+import PortReportHeader from 'features/reports/report-port/PortReportHeader'
 import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import VesselGroupReportTitle from 'features/reports/report-vessel-group/VesselGroupReportTitle'
 import { selectCurrentReport } from 'features/reports/reports.selectors'
 import { selectReportsStatus } from 'features/reports/reports.slice'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
@@ -43,6 +45,7 @@ import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import UserButton from 'features/user/UserButton'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { resetVesselState, setVesselEventId } from 'features/vessel/vessel.slice'
+import VesselHeader from 'features/vessel/VesselHeader'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
@@ -69,7 +72,9 @@ import {
   selectIsAnyReportLocation,
   selectIsAnySearchLocation,
   selectIsAnyVesselLocation,
+  selectIsPortReportLocation,
   selectIsStandaloneReportLocation,
+  selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectLocationCategory,
@@ -556,6 +561,8 @@ function SidebarHeader() {
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
@@ -614,12 +621,23 @@ function SidebarHeader() {
 
   const showCloseReportButton = isAnyReportLocation
 
+  const sectionHeaderComponent = useMemo(() => {
+    if (isVesselLocation) {
+      return <VesselHeader />
+    }
+    if (isAreaReportLocation) {
+      return <ReportTitle />
+    }
+    if (isPortReportLocation) {
+      return <PortReportHeader />
+    }
+    if (isVesselGroupReportLocation) {
+      return <VesselGroupReportTitle />
+    }
+  }, [isVesselLocation, isAreaReportLocation, isPortReportLocation, isVesselGroupReportLocation])
+
   return (
-    <Sticky
-      scrollElement=".scrollContainer"
-      wrapperClassName={styles.sidebarHeaderContainer}
-      stickyClassName={styles.sticky}
-    >
+    <Fragment>
       <div className={styles.sidebarHeader}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
@@ -652,7 +670,8 @@ function SidebarHeader() {
           </Fragment>
         )}
       </div>
-    </Sticky>
+      {sectionHeaderComponent}
+    </Fragment>
   )
 }
 
