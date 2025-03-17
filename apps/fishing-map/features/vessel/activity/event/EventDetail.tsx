@@ -97,27 +97,33 @@ const EventDetail = ({ event }: ActivityContentProps) => {
         </li>
         <div className={styles.divider} />
         <table className={styles.authTable}>
-          <th>
-            <label>{t(`eventInfo.authorization`, 'authorization')}</label>
-          </th>
-          <th>{formatInfoField(event.vessel.name, 'shipname')}</th>
-          <th>{formatInfoField(name, 'shipname')}</th>
-          {event.regions?.rfmo
-            ?.slice()
-            .sort()
-            .map((rfmo) => {
-              return (
-                <tr>
-                  <td>{rfmo}</td>
-                  <td>
-                    <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                  </td>
-                  <td>
-                    <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                  </td>
-                </tr>
-              )
-            })}
+          <thead>
+            <tr>
+              <th>
+                <label>{t(`eventInfo.authorization`, 'authorization')}</label>
+              </th>
+              <th>{formatInfoField(event.vessel.name, 'shipname')}</th>
+              <th>{formatInfoField(name, 'shipname')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {event.regions?.rfmo
+              ?.slice()
+              .sort()
+              .map((rfmo) => {
+                return (
+                  <tr>
+                    <td>{rfmo}</td>
+                    <td>
+                      <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
+                    </td>
+                    <td>
+                      <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
+                    </td>
+                  </tr>
+                )
+              })}
+          </tbody>
         </table>
       </ul>
     )
