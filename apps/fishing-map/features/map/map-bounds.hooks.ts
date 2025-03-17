@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { FlyToInterpolator } from '@deck.gl/core'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useAtom } from 'jotai'
 
@@ -6,17 +7,20 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
-import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { useMapSetViewState, useMapViewport } from 'features/map/map-viewport.hooks'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import type { Bbox } from 'types'
 
 import { MAP_CANVAS_ID } from './map.config'
 
-const boundsAtom = atom<MiniglobeBounds>({
+type BoundsAtom = MiniglobeBounds & { isTransitioning?: boolean }
+
+export const boundsAtom = atom<BoundsAtom>({
   north: 90,
   south: -90,
   west: -180,
   east: 180,
+  isTransitioning: false,
 })
 
 export const useMapBounds = (): { bounds: MiniglobeBounds } => {
@@ -44,8 +48,10 @@ export type FitBoundsParams = {
   mapDOMId?: string
   mapWidth?: number
   mapHeight?: number
+  maxZoom?: number
   padding?: number
   fitZoom?: boolean
+  flyTo?: boolean
 }
 
 export const getMapCoordinatesFromBounds = (bounds: Bbox, params: FitBoundsParams = {}) => {
@@ -66,20 +72,39 @@ export const getMapCoordinatesFromBounds = (bounds: Bbox, params: FitBoundsParam
   return { latitude, longitude, zoom }
 }
 
+export const FLY_TO_TRANSITION = 2000
+const transitionInterpolator = new FlyToInterpolator({
+  speed: 2,
+  maxDuration: FLY_TO_TRANSITION,
+})
 export function useMapFitBounds() {
-  const setMapCoordinates = useSetMapCoordinates()
+  const setMapViewState = useMapSetViewState()
+  const [{ isTransitioning }, setIsTransitioning] = useAtom(boundsAtom)
   const fitBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {
       const newViewport = getMapCoordinatesFromBounds(bounds, params)
-      setMapCoordinates({
+      setMapViewState({
         latitude: newViewport.latitude,
         longitude: newViewport.longitude,
         ...(params.fitZoom && {
-          zoom: newViewport.zoom,
+          zoom: params.maxZoom ? Math.min(newViewport.zoom, params.maxZoom) : newViewport.zoom,
         }),
+        ...(params.flyTo &&
+          !isTransitioning && {
+            transitionInterpolator,
+            transitionDuration: 'auto',
+            onTransitionEnd: () => {
+              setMapViewState({
+                transitionInterpolator: undefined,
+                transitionDuration: 0,
+                onTransitionEnd: undefined,
+              })
+              setIsTransitioning((prev) => ({ ...prev, isTransitioning: false }))
+            },
+          }),
       })
     },
-    [setMapCoordinates]
+    [isTransitioning, setIsTransitioning, setMapViewState]
   )
   return fitBounds
 }

@@ -1,22 +1,22 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
 import { GroupedVirtuoso } from 'react-virtuoso'
+import bbox from '@turf/bbox'
+import { featureCollection, point } from '@turf/helpers'
+import { bboxPolygon } from '@turf/turf'
 import cx from 'classnames'
-import { debounce } from 'es-toolkit'
+import type { Point, Polygon, Position } from 'geojson'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
-import { DEFAULT_VIEWPORT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
-import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useEventsScroll } from 'features/vessel/activity/event/event-scroll.hooks'
 import { selectEventsGroupedByType } from 'features/vessel/activity/vessels-activity.selectors'
@@ -49,10 +49,8 @@ function ActivityByType() {
   const dispatch = useAppDispatch()
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [expandedType, toggleExpandedType] = useActivityByType()
-  const viewport = useMapViewport()
   const vesselLayer = useVesselProfileLayer()
   const fitMapBounds = useMapFitBounds()
-  const setMapCoordinates = useSetMapCoordinates()
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const eventsRef = useRef(new Map<string, HTMLElement>())
 
@@ -73,14 +71,6 @@ function ActivityByType() {
     events,
     eventsRef,
     virtuosoRef
-  )
-
-  const handleEventClick = useCallback(
-    (event: VesselEvent) => {
-      setSelectedEventId(event.id)
-      scrollToEvent(event.id)
-    },
-    [scrollToEvent, setSelectedEventId]
   )
 
   const onToggleExpandedType = useCallback(
@@ -108,55 +98,41 @@ function ActivityByType() {
   )
 
   const selectEventOnMap = useCallback(
-    (event: VesselEvent, mode: 'fit' | 'coordinates' = 'fit') => {
+    (event: VesselEvent) => {
       if (!event) {
         return
       }
-      if (mode === 'fit' && vesselLayer?.instance) {
-        const bbox = vesselLayer.instance.getVesselTrackBounds({
+      if (vesselLayer?.instance) {
+        const trackBounds = vesselLayer.instance.getVesselTrackBounds({
           startDate: event.start,
           endDate: event.end,
         })
-        if (bbox) {
-          fitMapBounds(bbox as Bbox, { padding: 60, fitZoom: true })
-          return
+        const bounds = bbox(
+          featureCollection<Polygon | Point, any>([
+            ...(trackBounds ? [bboxPolygon(trackBounds)] : []),
+            ...(event.coordinates ? [point(event.coordinates as Position)] : []),
+          ])
+        ) as Bbox
+        console.log('🚀 ~ ActivityByType ~ bounds:', bounds)
+        if (bounds) {
+          fitMapBounds(bounds, { padding: 60, fitZoom: true, flyTo: true, maxZoom: 18 })
         }
       }
-      const zoom = viewport?.zoom ?? DEFAULT_VIEWPORT.zoom
-      setMapCoordinates({
-        latitude: event.coordinates?.[1],
-        longitude: event.coordinates?.[0],
-        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-        transitionDuration: 300,
-      })
       if (isSmallScreen) {
         dispatchQueryParams({ sidebarOpen: false })
       }
     },
-    [
-      dispatchQueryParams,
-      fitMapBounds,
-      isSmallScreen,
-      setMapCoordinates,
-      vesselLayer?.instance,
-      viewport?.zoom,
-    ]
+    [dispatchQueryParams, fitMapBounds, isSmallScreen, vesselLayer.instance]
   )
 
-  const debouncedSelectEventOnMap = useMemo(
-    () => debounce((event: VesselEvent) => selectEventOnMap(event, 'coordinates'), 600),
-    [selectEventOnMap]
+  const handleEventClick = useCallback(
+    (event: VesselEvent) => {
+      setSelectedEventId(event.id)
+      scrollToEvent(event.id)
+      selectEventOnMap(event)
+    },
+    [scrollToEvent, selectEventOnMap, setSelectedEventId]
   )
-
-  useEffect(() => {
-    if (selectedEventId) {
-      const event = events.find((event) => event.id.includes(selectedEventId))
-      if (event) {
-        debouncedSelectEventOnMap(event)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events, selectedEventId])
 
   const renderedComponent = useMemo(() => {
     if (vesselPrintMode) {
