@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useAtom } from 'jotai'
 
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
@@ -21,11 +22,12 @@ const boundsAtom = atom<MiniglobeBounds>({
 export const useMapBounds = (): { bounds: MiniglobeBounds } => {
   const [bounds, setBounds] = useAtom(boundsAtom)
   const viewport = useMapViewport()
+  const debouncedViewport = useDebounce(viewport, 16)
 
   useEffect(() => {
-    if (viewport) {
-      const wn = viewport.unproject([0, 0])
-      const es = viewport.unproject([viewport.width, viewport.height])
+    if (debouncedViewport) {
+      const wn = debouncedViewport.unproject([0, 0])
+      const es = debouncedViewport.unproject([debouncedViewport.width, debouncedViewport.height])
       setBounds({
         north: wn[1],
         south: es[1],
@@ -33,7 +35,7 @@ export const useMapBounds = (): { bounds: MiniglobeBounds } => {
         east: es[0],
       })
     }
-  }, [setBounds, viewport])
+  }, [setBounds, debouncedViewport])
 
   return useMemo(() => ({ bounds }), [bounds])
 }

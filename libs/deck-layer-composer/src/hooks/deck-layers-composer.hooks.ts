@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { debounce } from 'es-toolkit'
 import { atom, useAtom, useSetAtom } from 'jotai'
 
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
@@ -23,6 +24,8 @@ export function useDeckLayerComposer({
   const memoDataviews = useMemoCompare(dataviews)
   const memoGlobalConfig = useMemoCompare(globalConfig)
 
+  const debouncedSetDeckLayers = useMemo(() => debounce(setDeckLayers, 1), [setDeckLayers])
+
   const layerInstances = useMemo(() => {
     const dataviewsMerged = getDataviewsResolved(
       memoDataviews,
@@ -45,8 +48,8 @@ export function useDeckLayerComposer({
   }, [memoDataviews, memoGlobalConfig])
 
   useEffect(() => {
-    setDeckLayers(layerInstances)
-  }, [layerInstances, setDeckLayers])
+    debouncedSetDeckLayers(layerInstances)
+  }, [layerInstances, debouncedSetDeckLayers])
 
   return deckLayers
 }

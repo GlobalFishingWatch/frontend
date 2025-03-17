@@ -116,5 +116,4 @@ export type MapCoordinates = {
   latitude: number
   longitude: number
   zoom: number
-  transitionDuration?: number
 }
