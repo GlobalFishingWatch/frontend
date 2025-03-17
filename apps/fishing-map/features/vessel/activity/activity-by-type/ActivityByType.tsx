@@ -3,27 +3,20 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
 import { GroupedVirtuoso } from 'react-virtuoso'
-import bbox from '@turf/bbox'
-import { featureCollection, point } from '@turf/helpers'
-import { bboxPolygon } from '@turf/turf'
 import cx from 'classnames'
-import type { Point, Polygon, Position } from 'geojson'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
+import { useVesselEventBounds } from 'features/vessel/activity/event/event.bounds'
 import { useEventsScroll } from 'features/vessel/activity/event/event-scroll.hooks'
 import { selectEventsGroupedByType } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
-import type { Bbox } from 'types'
 
 import type VesselEvent from '../event/Event'
 import Event, { EVENT_HEIGHT } from '../event/Event'
@@ -43,14 +36,12 @@ export const EVENTS_ORDER = [
 
 function ActivityByType() {
   const { t } = useTranslation()
-  const isSmallScreen = useSmallScreen()
   const activityGroups = useSelector(selectEventsGroupedByType)
-  const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [expandedType, toggleExpandedType] = useActivityByType()
   const vesselLayer = useVesselProfileLayer()
-  const fitMapBounds = useMapFitBounds()
+  const fitEventBounds = useVesselEventBounds(vesselLayer)
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const eventsRef = useRef(new Map<string, HTMLElement>())
 
@@ -97,41 +88,13 @@ function ActivityByType() {
     [dispatch]
   )
 
-  const selectEventOnMap = useCallback(
-    (event: VesselEvent) => {
-      if (!event) {
-        return
-      }
-      if (vesselLayer?.instance) {
-        const trackBounds = vesselLayer.instance.getVesselTrackBounds({
-          startDate: event.start,
-          endDate: event.end,
-        })
-        const bounds = bbox(
-          featureCollection<Polygon | Point, any>([
-            ...(trackBounds ? [bboxPolygon(trackBounds)] : []),
-            ...(event.coordinates ? [point(event.coordinates as Position)] : []),
-          ])
-        ) as Bbox
-        console.log('🚀 ~ ActivityByType ~ bounds:', bounds)
-        if (bounds) {
-          fitMapBounds(bounds, { padding: 60, fitZoom: true, flyTo: true, maxZoom: 18 })
-        }
-      }
-      if (isSmallScreen) {
-        dispatchQueryParams({ sidebarOpen: false })
-      }
-    },
-    [dispatchQueryParams, fitMapBounds, isSmallScreen, vesselLayer.instance]
-  )
-
   const handleEventClick = useCallback(
     (event: VesselEvent) => {
       setSelectedEventId(event.id)
       scrollToEvent(event.id)
-      selectEventOnMap(event)
+      fitEventBounds(event)
     },
-    [scrollToEvent, selectEventOnMap, setSelectedEventId]
+    [scrollToEvent, fitEventBounds, setSelectedEventId]
   )
 
   const renderedComponent = useMemo(() => {
@@ -211,7 +174,7 @@ function ActivityByType() {
                     if (expanded) {
                       e.stopPropagation()
                     }
-                    selectEventOnMap(event)
+                    fitEventBounds(event)
                   }}
                   onInfoClick={handleEventClick}
                   className={cx(styles.event, { [styles.eventExpanded]: expanded })}
@@ -238,7 +201,7 @@ function ActivityByType() {
     selectedEventId,
     onMapHover,
     handleEventClick,
-    selectEventOnMap,
+    fitEventBounds,
   ])
 
   return (

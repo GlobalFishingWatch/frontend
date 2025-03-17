@@ -5,22 +5,19 @@ import type { GroupedVirtuosoHandle } from 'react-virtuoso'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import cx from 'classnames'
 
-import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
-import { DEFAULT_VIEWPORT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
-import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
 import type VesselEvent from 'features/vessel/activity/event/Event'
 import Event, { EVENT_HEIGHT } from 'features/vessel/activity/event/Event'
+import { useVesselEventBounds } from 'features/vessel/activity/event/event.bounds'
 import { useEventsScroll } from 'features/vessel/activity/event/event-scroll.hooks'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectEventsGroupedByVoyages } from 'features/vessel/activity/vessels-activity.selectors'
@@ -42,12 +39,10 @@ const ActivityByVoyage = () => {
   const [expandedVoyage, toggleExpandedVoyage] = useExpandedVoyages()
   const fitBounds = useMapFitBounds()
   const vesselLayer = useVesselProfileLayer()
-  const fitMapBounds = useMapFitBounds()
+  const fitEventBounds = useVesselEventBounds(vesselLayer)
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const eventsRef = useRef(new Map<string, HTMLElement>())
 
-  const viewport = useMapViewport()
-  const setMapCoordinates = useSetMapCoordinates()
   const { events, groupCounts, groups } = useMemo(() => {
     const eventsExpanded = Object.entries(voyages).map(([voyage, events]) => {
       return expandedVoyage === parseInt(voyage) ? events : ([] as ActivityEvent[])
@@ -69,8 +64,9 @@ const ActivityByVoyage = () => {
     (event: VesselEvent) => {
       setSelectedEventId(event?.id)
       scrollToEvent(event.id)
+      fitEventBounds(event)
     },
-    [scrollToEvent, setSelectedEventId]
+    [scrollToEvent, setSelectedEventId, fitEventBounds]
   )
 
   const selectVoyageOnMap = useCallback(
@@ -83,29 +79,6 @@ const ActivityByVoyage = () => {
     [dispatchQueryParams, fitBounds, isSmallScreen, voyages]
   )
 
-  // TODO: do we want to keep this?
-  // const dispatchSetHighlightedEvents = useDebouncedDispatchHighlightedEvent()
-  // const onVoyageMapHover = useCallback(
-  //   (voyageId?: ActivityEvent['voyage']) => {
-  //     const events = voyages[voyageId as number]
-  //     const { start, end } = getVoyageTimeRange(events)
-  //     if (start && end) {
-  //       dispatch(
-  //         setHighlightedTime({
-  //           start: getUTCDateTime(start).toISO() as string,
-  //           end: getUTCDateTime(end).toISO() as string,
-  //         })
-  //       )
-  //       const eventIds = events.map((event) => event.id)
-  //       dispatchSetHighlightedEvents(eventIds)
-  //     } else {
-  //       dispatch(disableHighlightedTime())
-  //       dispatchSetHighlightedEvents(undefined)
-  //     }
-  //   },
-  //   [dispatchSetHighlightedEvents, dispatch, voyages]
-  // )
-
   const onEventMapHover = useCallback(
     (event?: VesselEvent) => {
       if (event?.id) {
@@ -115,38 +88,6 @@ const ActivityByVoyage = () => {
       }
     },
     [dispatch]
-  )
-
-  const selectEventOnMap = useCallback(
-    (event: VesselEvent) => {
-      if (vesselLayer?.instance) {
-        const bbox = vesselLayer.instance.getVesselTrackBounds({
-          startDate: event.start,
-          endDate: event.end,
-        })
-        if (bbox) {
-          fitMapBounds(bbox as Bbox, { padding: 60, fitZoom: true })
-        }
-      } else {
-        const zoom = viewport?.zoom ?? DEFAULT_VIEWPORT.zoom
-        setMapCoordinates({
-          latitude: event.coordinates?.[1],
-          longitude: event.coordinates?.[0],
-          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-        })
-      }
-      if (isSmallScreen) {
-        dispatchQueryParams({ sidebarOpen: false })
-      }
-    },
-    [
-      dispatchQueryParams,
-      fitMapBounds,
-      isSmallScreen,
-      setMapCoordinates,
-      vesselLayer.instance,
-      viewport?.zoom,
-    ]
   )
 
   const renderedComponent = useMemo(() => {
@@ -227,7 +168,7 @@ const ActivityByVoyage = () => {
                     if (expanded) {
                       e.stopPropagation()
                     }
-                    selectEventOnMap(event)
+                    fitEventBounds(event)
                   }}
                   onInfoClick={handleEventClick}
                   className={cx(styles.event, { [styles.eventExpanded]: expanded })}
@@ -249,7 +190,7 @@ const ActivityByVoyage = () => {
     handleEventClick,
     onEventMapHover,
     handleScroll,
-    selectEventOnMap,
+    fitEventBounds,
     selectVoyageOnMap,
     selectedEventId,
     t,
