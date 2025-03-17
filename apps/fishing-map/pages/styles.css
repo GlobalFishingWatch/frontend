@@ -67,12 +67,6 @@ body:has(.printing) {
   }
 }
 
-.scrollContainer {
-  height: 100%;
-  overflow: hidden auto;
-  width: 100%;
-}
-
 .recharts-cartesian-axis-tick-value {
   fill: var(--color-secondary-blue);
   font: var(--font-XS);
