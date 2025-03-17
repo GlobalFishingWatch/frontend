@@ -37,7 +37,6 @@ import ReportActivity from '../tabs/activity/ReportActivity'
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportError from './VesselGroupReportError'
-import VesselGroupReportTitle from './VesselGroupReportTitle'
 
 import styles from './VesselGroupReport.module.css'
 
@@ -162,7 +161,6 @@ function VesselGroupReport() {
 
   return (
     <div>
-      <VesselGroupReportTitle vesselGroup={vesselGroup} loading={loading} />
       <Tabs
         tabs={sectionTabs}
         activeTab={reportCategory}
