@@ -10,6 +10,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import type VesselEvent from 'features/vessel/activity/event/Event'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import { getUTCDateTime } from 'utils/dates'
@@ -33,7 +34,7 @@ export function useActivityEventTranslations() {
   const { getRegionNamesByType } = useRegionNamesByType()
 
   const getEventRegionDescription = useCallback(
-    (event: ActivityEvent | GapPosition, regionsPriority = REGIONS_PRIORITY) => {
+    (event: VesselEvent | GapPosition, regionsPriority = REGIONS_PRIORITY) => {
       const mainRegionDescription = regionsPriority.reduce((acc, regionType) => {
         // We already have the most prioritized region, so we don't need to look for more
         if (!acc && event?.regions?.[regionType]?.length) {
@@ -156,7 +157,7 @@ export function useActivityEventTranslations() {
   )
 
   const getEventDurationDescription = useCallback(
-    (event: ActivityEvent) => {
+    (event: VesselEvent) => {
       const durationDiff = getUTCDateTime(event.end as number).diff(
         getUTCDateTime(event.start as number),
         ['days', 'hours', 'minutes']

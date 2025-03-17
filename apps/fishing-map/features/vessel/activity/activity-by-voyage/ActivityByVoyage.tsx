@@ -22,7 +22,6 @@ import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup
 import type VesselEvent from 'features/vessel/activity/event/Event'
 import Event, { EVENT_HEIGHT } from 'features/vessel/activity/event/Event'
 import { useEventsScroll } from 'features/vessel/activity/event/event-scroll.hooks'
-import EventDetail from 'features/vessel/activity/event/EventDetail'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectEventsGroupedByVoyages } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
@@ -173,7 +172,7 @@ const ActivityByVoyage = () => {
                     key={`${voyage}-${index}-${event.id}`}
                     event={event}
                     className={styles.event}
-                  ></Event>
+                  />
                 ))}
               </Fragment>
             )
@@ -221,6 +220,7 @@ const ActivityByVoyage = () => {
                 <Event
                   key={event.id}
                   event={event}
+                  expanded={expanded}
                   onMapHover={onEventMapHover}
                   eventsRef={eventsRef.current}
                   onMapClick={(event, e) => {
@@ -231,9 +231,7 @@ const ActivityByVoyage = () => {
                   }}
                   onInfoClick={handleEventClick}
                   className={cx(styles.event, { [styles.eventExpanded]: expanded })}
-                >
-                  {expanded && <EventDetail event={event} />}
-                </Event>
+                />
                 {index === events.length - 1 && groupIndex === groups.length - 1 && (
                   <div style={{ height: '48vh' }}></div>
                 )}

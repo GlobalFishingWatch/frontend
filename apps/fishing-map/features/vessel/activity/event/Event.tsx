@@ -4,6 +4,7 @@ import cx from 'classnames'
 import type { ApiEvent, RegionType } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import EventDetail from 'features/vessel/activity/event/EventDetail'
 import EventIcon from 'features/vessel/activity/event/EventIcon'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
@@ -24,6 +25,7 @@ interface EventProps {
   onMapHover?: (event?: VesselEvent) => void
   regionsPriority?: RegionType[]
   testId?: string
+  expanded?: boolean
 }
 
 export const EVENT_HEIGHT = 56
@@ -31,7 +33,6 @@ export const EVENT_HEIGHT = 56
 const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
   const {
     event,
-    children,
     className = '',
     onInfoClick,
     onMapHover,
@@ -39,6 +40,7 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
     testId,
     regionsPriority,
     eventsRef,
+    expanded,
   } = props
   const { getEventDescription } = useActivityEventTranslations()
   const hasInteraction =
@@ -95,7 +97,7 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
           )}
         </div>
       </div>
-      {children && <div className={styles.content}>{children}</div>}
+      {expanded && <EventDetail event={event} />}
     </li>
   )
 }

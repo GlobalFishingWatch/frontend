@@ -19,7 +19,6 @@ import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useEventsScroll } from 'features/vessel/activity/event/event-scroll.hooks'
-import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { selectEventsGroupedByType } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
@@ -229,6 +228,7 @@ function ActivityByType() {
               <Fragment>
                 <Event
                   event={event}
+                  expanded={expanded}
                   onMapHover={onMapHover}
                   eventsRef={eventsRef.current}
                   onMapClick={(event, e) => {
@@ -240,9 +240,7 @@ function ActivityByType() {
                   onInfoClick={handleEventClick}
                   className={cx(styles.event, { [styles.eventExpanded]: expanded })}
                   testId={`vv-${event.type}-event-${index}`}
-                >
-                  {expanded && <EventDetail event={event} />}
-                </Event>
+                />
                 {index === events.length - 1 && groupIndex === groups.length - 1 && (
                   <div style={{ height: '48vh' }}></div>
                 )}

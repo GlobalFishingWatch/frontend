@@ -567,6 +567,7 @@
     "duration": "duration",
     "encounteredVesselName": "encountered vessel",
     "end": "end",
+    "eventInfo": "Event info",
     "flag": "flag",
     "medianSpeedKnots": "median speed (knots)",
     "mmsi": "MMSI",
