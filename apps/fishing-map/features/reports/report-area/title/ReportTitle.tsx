@@ -212,7 +212,7 @@ export default function ReportTitle() {
           }
         }
       } else {
-        areaName = reportArea?.name
+        areaName = reportArea?.name || ''
       }
     }
 
