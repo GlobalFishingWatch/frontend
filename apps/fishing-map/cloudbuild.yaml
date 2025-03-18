@@ -13,6 +13,9 @@ steps:
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
         --key=yarn-install-state-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=cypress-cache-$( checksum yarn.lock )
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
@@ -41,6 +44,11 @@ steps:
         --bucket=gs://frontend-cache-dependencies \
         --key=yarn-install-state-$( checksum yarn.lock ) \
         --path=.yarn/install-state.gz \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=cypress-cache-$( checksum yarn.lock ) \
+        --path=/root/.cache/Cypress \
         --no-clobber
 
   - id: 'build-app'
@@ -170,6 +178,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
+        yarn cypress install
         CYPRESS_BASE_URL=`cat app_url` \
         yarn nx run fishing-map-e2e:test-pr --parallel
 
