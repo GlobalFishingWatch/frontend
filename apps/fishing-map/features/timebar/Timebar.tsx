@@ -273,17 +273,10 @@ const TimebarWrapper = () => {
 
   const onMouseLeave = useCallback(() => {
     setMouseInside(false)
-  }, [])
-
-  useEffect(() => {
-    if (!isMouseInside && highlightedEventIds) {
-      requestAnimationFrame(() => {
-        dispatchHighlightedEvents(undefined)
-      })
-    }
-    // Need to not listen to changes in highlightedEventIds so it doesn't remove other highlights
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatchHighlightedEvents, isMouseInside])
+    requestAnimationFrame(() => {
+      dispatchHighlightedEvents(undefined)
+    })
+  }, [dispatchHighlightedEvents])
 
   const onMouseDown = useCallback(() => {
     rootElement?.classList.add('dragging')
