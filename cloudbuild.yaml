@@ -1,58 +1,55 @@
 steps:
   - name: gcr.io/cloud-builders/git
     args: ['fetch', '--unshallow', '--no-tags']
+    waitFor: ['-']
 
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
     script: |
       #!/usr/bin/env bash
+      CACHE_KEY=$( checksum yarn.lock )
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=node_modules-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-cache-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-install-state-$( checksum yarn.lock )
+        --key=node_modules-${CACHE_KEY} \
+        --key=cypress-cache-${CACHE_KEY} \
+        --key=yarn-${CACHE_KEY} \
+        --key=yarn-install-state-${CACHE_KEY}
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
     name: node:21
     script: |
       yarn set version 4.6.0
-      yarn -v
-      yarn install --immutable
+      yarn install --immutable --inline-builds
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/restore_cache'
     script: |
       #!/usr/bin/env bash
+      CACHE_KEY=$( checksum yarn.lock )
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=node_modules-$( checksum yarn.lock ) \
+        --key=node_modules-${CACHE_KEY} \
         --path=./node_modules \
-        --no-clobber
+        --no-clobber &
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-cache-$( checksum yarn.lock ) \
+        --key=cypress-cache-${CACHE_KEY} \
         --path=/builder/home/.cache \
-        --no-clobber
+        --no-clobber &
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock ) \
+        --key=yarn-${CACHE_KEY} \
         --path=.yarn/cache \
-        --no-clobber
+        --no-clobber &
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-install-state-$( checksum yarn.lock ) \
+        --key=yarn-install-state-${CACHE_KEY} \
         --path=.yarn/install-state.gz \
-        --no-clobber
+        --no-clobber &
+      wait
 
   - id: get-affected
     name: 'node:21'
@@ -87,3 +84,6 @@ steps:
         if [ ${#FAILED_APPS[@]} -ne 0 ]; then
           exit 1
         fi
+
+options:
+  machineType: 'E2_HIGHCPU_8'
