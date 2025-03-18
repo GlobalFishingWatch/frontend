@@ -98,12 +98,13 @@ export function useEventsScroll(
     const wH = window.innerHeight || 0
     const middle = Math.max(cH, wH) / 2
     let selectedEventId: string | null = null
+    let minDelta = Infinity
     eventsRef.current.forEach((el, key) => {
-      if (selectedEventId) {
-        return
-      }
       const { top, height } = el.getBoundingClientRect()
-      if (middle > top && middle < top + height) {
+      const center = top + height / 2
+      const elementDelta = Math.abs(center - middle)
+      if (elementDelta < minDelta) {
+        minDelta = elementDelta
         selectedEventId = key
       }
     })
