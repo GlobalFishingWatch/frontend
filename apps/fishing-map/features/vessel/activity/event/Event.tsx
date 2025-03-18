@@ -28,7 +28,7 @@ interface EventProps {
   expanded?: boolean
 }
 
-export const EVENT_HEIGHT = 56
+export const EVENT_HEIGHT = 126
 
 const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
   const {
