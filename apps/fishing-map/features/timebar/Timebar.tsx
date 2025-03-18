@@ -281,7 +281,9 @@ const TimebarWrapper = () => {
         dispatchHighlightedEvents(undefined)
       })
     }
-  }, [dispatchHighlightedEvents, highlightedEventIds, isMouseInside])
+    // Need to not listen to changes in highlightedEventIds so it doesn't remove other highlights
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatchHighlightedEvents, isMouseInside])
 
   const onMouseDown = useCallback(() => {
     rootElement?.classList.add('dragging')
