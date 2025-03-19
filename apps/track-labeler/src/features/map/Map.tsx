@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { BaseMapLayer, BasemapType } from '@globalfishingwatch/deck-layers'
 import type { ExtendedLayer, StyleTransformation } from '@globalfishingwatch/layer-composer'
 import { getInteractiveLayerIds, Group } from '@globalfishingwatch/layer-composer'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import { selectRulers } from '../../features/rulers/rulers.selectors'
@@ -86,9 +87,6 @@ const MapComponent = (): React.ReactElement<any> => {
   const { hoverCenter } = useMapMove()
   const { onMapClick } = useMapClick()
   const { dispatchHiddenLabels, hiddenLabels } = useHiddenLabelsConnect()
-
-  // Track whether DeckGL has been initialized
-  const [initialized, setInitialized] = useState(false)
 
   // State to store the current cursor type
   const [cursor, setCursor] = useState('default')
@@ -243,11 +241,6 @@ const MapComponent = (): React.ReactElement<any> => {
 
     return isHovering
   }, [])
-
-  // Track if we actually have trackPoints data to show
-  const hasTrackPointsData = useMemo(() => {
-    return Boolean(trackArrowsLayer.data?.length)
-  }, [trackArrowsLayer.data])
 
   // Format points data for DeckGL
   const pointsData = useMemo(() => {
@@ -443,6 +436,7 @@ const MapComponent = (): React.ReactElement<any> => {
 
   // Combine all layers for rendering
   const allLayers = useMemo(() => {
+    console.log('🚀 ~ allLayers ~ dataLayers:', dataLayers)
     return [basemapLayer, ...dataLayers]
   }, [basemapLayer, dataLayers])
 
@@ -465,7 +459,7 @@ const MapComponent = (): React.ReactElement<any> => {
   )
 
   // Get current bounds
-  const getBoundsFromViewState = useCallback((vs) => {
+  const getBoundsFromViewState = useCallback(() => {
     if (!deckRef.current) return null
 
     try {
@@ -484,15 +478,15 @@ const MapComponent = (): React.ReactElement<any> => {
     }
   }, [])
 
-  const [mapBounds, setMapBounds] = useState(null)
+  const [mapBounds, setMapBounds] = useState<MiniglobeBounds | null>(null)
 
   // Update bounds when viewState changes
   useEffect(() => {
-    if (initialized && deckRef.current) {
-      const bounds = getBoundsFromViewState(viewState)
+    if (deckRef.current) {
+      const bounds = getBoundsFromViewState()
       setMapBounds(bounds)
     }
-  }, [initialized, viewState, getBoundsFromViewState])
+  }, [viewState, getBoundsFromViewState])
 
   return (
     <div className={styles.container}>
@@ -539,7 +533,7 @@ const MapComponent = (): React.ReactElement<any> => {
             </div>
           ))}
       </div>
-      {mapBounds && <MapControls bounds={mapBounds} />}
+      <MapControls bounds={mapBounds} />
     </div>
   )
 }

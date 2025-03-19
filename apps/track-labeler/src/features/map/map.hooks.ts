@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import type { LayerProps } from '@deck.gl/core'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import type { MapMouseEvent } from 'maplibre-gl'
 
+import { SimplifiedVesselLayer } from '@globalfishingwatch/deck-layers'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { selectEditing } from '../../features/rulers/rulers.selectors'
@@ -348,40 +350,16 @@ export const useDeckGLMap = (pointsData: any[], highlightedTime: number | null, 
     if (!pointsData.length) {
       return []
     }
-
-    // Create a ScatterplotLayer with the point data
-    const scatterplotLayer = new ScatterplotLayer({
+    const scatterplotLayer = new SimplifiedVesselLayer({
       id: 'track-points',
       data: pointsData,
       pickable: true,
-      opacity: 1.0,
-      stroked: true,
-      filled: true,
-      radiusScale: 20, // Increased for better visibility
-      radiusMinPixels: 10, // Increased for better visibility
-      radiusMaxPixels: 30,
-      lineWidthMinPixels: 2,
-      getPosition: (d) => {
-        // Ensure position is in the correct format
-        if (!d.position || !Array.isArray(d.position)) {
-          console.warn('[INFO] Point missing position:', d)
-          return [0, 0] // Default to [0,0] to avoid crashes
-        }
-        return d.position
-      },
-      getFillColor: (d) => {
-        // Make color handling more robust
+      iconAtlasUrl: 'src/assets/images/vessel-sprite.png',
+      getColor: (d: LayerProps['data']): [number, number, number, number] => {
         if (d.color) {
-          return hexToRgb(d.color, true)
+          return hexToRgb(d.color, true) as [number, number, number, number]
         }
-        // Use a distinct color to make points very visible for debugging
         return [255, 0, 0, 255] // Bright red and fully opaque
-      },
-      getLineColor: (d) => [0, 0, 0, 255], // Black border
-      getRadius: (d) => (d.timestamp === highlightedTime ? 20 : 12), // Increased size for visibility
-      parameters: {
-        depthTest: false,
-        blend: true,
       },
       onClick: (info) => {
         if (info.object) {
