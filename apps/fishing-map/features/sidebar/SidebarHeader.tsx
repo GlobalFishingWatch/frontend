@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -41,7 +41,7 @@ import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
-import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
+import { getScrollElement, resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import UserButton from 'features/user/UserButton'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { resetVesselState, setVesselEventId } from 'features/vessel/vessel.slice'
@@ -556,6 +556,7 @@ function SidebarHeader() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
+  const [isSticky, setIsSticky] = useState(false)
   const locationCategory = useSelector(selectLocationCategory)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
@@ -571,6 +572,26 @@ function SidebarHeader() {
   const searchQuery = useSelector(selectSearchQuery)
   const { searchFilters } = useSearchFiltersConnect()
   const showBackToWorkspaceButton = !isWorkspaceLocation
+  const scrollElement = getScrollElement()
+
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement
+      if (target?.scrollTop > 0) {
+        setIsSticky(true)
+      } else {
+        setIsSticky(false)
+      }
+    }
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', handleScroll, { passive: true })
+    }
+    return () => {
+      if (scrollElement) {
+        scrollElement.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [scrollElement])
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
@@ -637,8 +658,8 @@ function SidebarHeader() {
   }, [isVesselLocation, isAreaReportLocation, isPortReportLocation, isVesselGroupReportLocation])
 
   return (
-    <Fragment>
-      <div className={styles.sidebarHeader}>
+    <div className={cx({ [styles.sticky]: isSticky })}>
+      <div className={cx(styles.sidebarHeader)}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
@@ -671,7 +692,7 @@ function SidebarHeader() {
         )}
       </div>
       {sectionHeaderComponent}
-    </Fragment>
+    </div>
   )
 }
 

@@ -1,4 +1,4 @@
-import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/Sidebar'
+export const SCROLL_CONTAINER_DOM_ID = 'scroll-container'
 
 export function getScrollElement() {
   return document.getElementById(SCROLL_CONTAINER_DOM_ID) as HTMLElement

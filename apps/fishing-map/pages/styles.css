@@ -87,3 +87,7 @@ body:has(.printing) {
 .recharts-cartesian-grid-horizontal line {
   stroke: var(--color-terthiary-blue);
 }
+
+.MuiTooltip-popper {
+  font-size: 16px !important;
+}
