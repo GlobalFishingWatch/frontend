@@ -238,7 +238,9 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
       <div className={styles.container}>
         <div className={styles.info}>
           <label>{t('common.vessel', 'Vessel')}</label>
-          <Tag>{vesselIdentity.shipname || vesselIdentity.nShipname} </Tag>
+          <Tag>
+            {formatInfoField(vesselIdentity.shipname || vesselIdentity.nShipname, 'shipname')}{' '}
+          </Tag>
           <Tag>{formatTransmissionDate(vesselIdentity, true)}</Tag>
         </div>
         <div>
