@@ -68,7 +68,3 @@
     width: calc(100%);
   }
 }
-
-:global(.MuiTooltip-popper) {
-  font-size: 16px !important;
-}
