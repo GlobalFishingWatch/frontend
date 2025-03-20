@@ -100,7 +100,7 @@ function SearchBasic({
       itemToString={(item) => (item ? getVesselProperty(item, 'shipname') : '')}
     >
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (
-        <div className={styles.scrollContainer}>
+        <div>
           <div className={styles.form}>
             <InputText
               {...getInputProps()}
@@ -121,60 +121,62 @@ function SearchBasic({
               )})`}
             />
           </div>
-          {searchStatus === AsyncReducerStatus.Aborted &&
-          searchPagination.loading === false ? null : basicSearchAllowed ? (
-            <ul
-              {...getMenuProps()}
-              className={styles.searchResults}
-              data-test="search-vessels-list"
-            >
-              {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
-                <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
-                  {t('search.minCharacters', {
-                    defaultValue: 'Please type at least {{count}} characters',
-                    count: MIN_SEARCH_CHARACTERS,
-                  })}
-                </li>
-              )}
-              {searchQuery &&
-                searchSuggestion &&
-                searchSuggestion !== searchQuery &&
-                !searchSuggestionClicked && (
-                  <li key="suggestion" className={cx(styles.searchSuggestion)}>
-                    {t('search.suggestion', 'Did you mean')}{' '}
-                    <button onClick={onSuggestionClick} className={styles.suggestion}>
-                      {' '}
-                      {searchSuggestion}{' '}
-                    </button>{' '}
-                    ?
+          <div className={styles.scrollContainer}>
+            {searchStatus === AsyncReducerStatus.Aborted &&
+            searchPagination.loading === false ? null : basicSearchAllowed ? (
+              <ul
+                {...getMenuProps()}
+                className={styles.searchResults}
+                data-test="search-vessels-list"
+              >
+                {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
+                  <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
+                    {t('search.minCharacters', {
+                      defaultValue: 'Please type at least {{count}} characters',
+                      count: MIN_SEARCH_CHARACTERS,
+                    })}
                   </li>
                 )}
-              <SearchBasicResultList
-                searchResults={searchResults}
-                highlightedIndex={highlightedIndex as number}
-                setHighlightedIndex={setHighlightedIndex}
-                getItemProps={getItemProps}
-                vesselsSelected={vesselsSelected}
-              />
-              {hasMoreResults && (
-                <li key="spinner" className={styles.spinner} ref={spinnerRef}>
-                  <Spinner inline size="small" />
-                </li>
-              )}
+                {searchQuery &&
+                  searchSuggestion &&
+                  searchSuggestion !== searchQuery &&
+                  !searchSuggestionClicked && (
+                    <li key="suggestion" className={cx(styles.searchSuggestion)}>
+                      {t('search.suggestion', 'Did you mean')}{' '}
+                      <button onClick={onSuggestionClick} className={styles.suggestion}>
+                        {' '}
+                        {searchSuggestion}{' '}
+                      </button>{' '}
+                      ?
+                    </li>
+                  )}
+                <SearchBasicResultList
+                  searchResults={searchResults}
+                  highlightedIndex={highlightedIndex as number}
+                  setHighlightedIndex={setHighlightedIndex}
+                  getItemProps={getItemProps}
+                  vesselsSelected={vesselsSelected}
+                />
+                {hasMoreResults && (
+                  <li key="spinner" className={styles.spinner} ref={spinnerRef}>
+                    <Spinner inline size="small" />
+                  </li>
+                )}
 
-              {(searchStatus === AsyncReducerStatus.Loading ||
-                (!hasMoreResults && searchStatus === AsyncReducerStatus.Idle)) && (
-                <SearchEmptyState />
-              )}
+                {(searchStatus === AsyncReducerStatus.Loading ||
+                  (!hasMoreResults && searchStatus === AsyncReducerStatus.Idle)) && (
+                  <SearchEmptyState />
+                )}
 
-              {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
-                <SearchNoResultsState />
-              )}
-              {searchStatus === AsyncReducerStatus.Error && <SearchError />}
-            </ul>
-          ) : (
-            <SearchNotAllowed />
-          )}
+                {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
+                  <SearchNoResultsState />
+                )}
+                {searchStatus === AsyncReducerStatus.Error && <SearchError />}
+              </ul>
+            ) : (
+              <SearchNotAllowed />
+            )}
+          </div>
         </div>
       )}
     </Downshift>
