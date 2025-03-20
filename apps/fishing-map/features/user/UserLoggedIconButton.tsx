@@ -17,6 +17,7 @@ type UserLoggedIconButton = IconButtonProps & {
   onToggleClick?: () => void
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const UserLoggedIconButton = ({ loginTooltip, onToggleClick, ...props }: UserLoggedIconButton) => {
   const { t } = useTranslation()
   const [isLoginHover, setIsLoginHover] = useState(false)

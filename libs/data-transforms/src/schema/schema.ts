@@ -31,6 +31,14 @@ export const normalizePropertiesKeys = (object: Record<string, any> | null) => {
   )
 }
 
+function getTimestampEnum(values: any[]): DatasetSchemaItem['enum'] {
+  const valuesOrdered = values.sort((a, b) => a - b)
+  return [
+    new Date(valuesOrdered[0]).getTime(),
+    new Date(valuesOrdered[valuesOrdered.length - 1]).getTime(),
+  ]
+}
+
 export const getFieldSchema = (
   field: string,
   values: any[],
@@ -41,6 +49,15 @@ export const getFieldSchema = (
   const isStringType = values.some((d) => typeof d === 'string')
   const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType | 'object')
   if (type === 'object') {
+    if (values[0] instanceof Date) {
+      const schema: DatasetSchemaItem = {
+        type: 'timestamp',
+      }
+      if (includeEnum && values.length > 1) {
+        schema.enum = getTimestampEnum(values)
+      }
+      return schema
+    }
     return null
   }
 
@@ -59,12 +76,8 @@ export const getFieldSchema = (
         const isDates = values.every((d) => !isNaN(Date.parse(d)))
         const isNumeric = values.every((d) => parseCoords(d, d))
         if (isDates) {
-          const valuesOrdered = values.sort((a, b) => a - b)
           schema.type = 'timestamp'
-          schema.enum = [
-            new Date(valuesOrdered[0]).getTime(),
-            new Date(valuesOrdered[valuesOrdered.length - 1]).getTime(),
-          ]
+          schema.enum = getTimestampEnum(values)
         } else if (isNumeric) {
           const numericalValues = values.filter((v) => !isNaN(Number(v)))
           if (!numericalValues.length) return schema
