@@ -1,5 +1,7 @@
 import { Fragment } from 'react'
 
+import { DataviewType } from '@globalfishingwatch/api-types'
+
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import {
   ENCOUNTER_EVENTS_SOURCES,
@@ -25,6 +27,7 @@ type ClusterTooltipRowProps = {
 }
 
 const GFW_CLUSTER_LAYERS = [
+  'encounter', // Used in VMS workspaaces
   ...ENCOUNTER_EVENTS_SOURCES,
   PORT_VISITS_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
@@ -35,14 +38,14 @@ function ClusterTooltipRow({ features, showFeaturesDetails, error }: ClusterTool
   return (
     <Fragment>
       {features.map((feature, index) => {
+        const isGFWCluster = GFW_CLUSTER_LAYERS.some((source) => {
+          const id = feature.layerId.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
+          return feature.subcategory === DataviewType.FourwingsTileCluster && id.includes(source)
+        })
         const key = `${feature.title}-${index}`
         const eventFeature =
           feature as SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
-        if (
-          GFW_CLUSTER_LAYERS.some(
-            (source) => feature.layerId.split(LAYER_LIBRARY_ID_SEPARATOR)[0] === source
-          )
-        ) {
+        if (isGFWCluster) {
           if (feature.layerId.includes('port')) {
             return (
               <PortVisitEventTooltipRow
@@ -53,7 +56,7 @@ function ClusterTooltipRow({ features, showFeaturesDetails, error }: ClusterTool
               />
             )
           }
-          if (feature.layerId.includes('encounter')) {
+          if (feature.layerId.includes('encounter') || feature.layerId.includes('encounters')) {
             return (
               <EncounterTooltipRow
                 key={key}
