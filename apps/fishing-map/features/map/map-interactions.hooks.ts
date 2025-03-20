@@ -204,9 +204,14 @@ export const useClickedEventConnect = () => {
           ) {
             return false
           }
-          return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+          const hasVesselInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
             feature.category as DataviewCategory
           )
+          const isHeatmap =
+            feature.subcategory === DataviewType.Heatmap ||
+            feature.subcategory === DataviewType.HeatmapAnimated ||
+            feature.subcategory === DataviewType.HeatmapStatic
+          return hasVesselInteraction && isHeatmap
         }
       )
 
