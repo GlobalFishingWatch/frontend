@@ -1,7 +1,7 @@
 .search {
   display: flex;
   flex-direction: column;
-  height: calc(100% - var(--header-height));
+  height: 100%;
   z-index: 0;
   position: relative;
 }
@@ -67,4 +67,8 @@
   .footer {
     width: calc(100%);
   }
+}
+
+:global(.MuiTooltip-popper) {
+  font-size: 16px !important;
 }
