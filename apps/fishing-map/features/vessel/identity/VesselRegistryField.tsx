@@ -33,11 +33,7 @@ const RegistryOperatorField = ({
   const operator = vesselIdentity[key as keyof VesselLastIdentity] as VesselRegistryOperator
 
   return (
-    <div className={cx(styles.fieldGroupContainer)}>
-      <div className={styles.labelContainer}>
-        <label>{t(`vessel.registryOperator`, 'Operators')}</label>
-        <DataTerminology title={t('vessel.operator', 'Operator')} terminologyKey="operator" />
-      </div>
+    <div>
       {typeof operator === 'string' && operator !== '' ? (
         <VesselIdentityField value={operator} />
       ) : operator?.name ? (
@@ -63,15 +59,27 @@ const RegistryOperatorField = ({
 const VesselRegistryField = ({
   registryField,
   vesselIdentity,
+  showLabel = true,
 }: {
   registryField: VesselRenderField
   vesselIdentity: VesselLastIdentity
+  showLabel?: boolean
 }) => {
   const { t } = useTranslation()
   const { key, label, terminologyKey } = registryField
   const { getRegionTranslationsById } = useRegionTranslationsById()
   if (key === 'operator') {
-    return <RegistryOperatorField registryField={registryField} vesselIdentity={vesselIdentity} />
+    return (
+      <div className={styles.fieldGroupContainer} key={key}>
+        {showLabel && (
+          <div className={styles.labelContainer}>
+            <label>{t(`vessel.registryOperator`, 'Operators')}</label>
+            <DataTerminology title={t('vessel.operator', 'Operator')} terminologyKey="operator" />
+          </div>
+        )}
+        <RegistryOperatorField registryField={registryField} vesselIdentity={vesselIdentity} />
+      </div>
+    )
   }
   const allRegistryInfo = vesselIdentity[
     key as keyof VesselLastIdentity
@@ -93,15 +101,17 @@ const VesselRegistryField = ({
 
   return (
     <div className={styles.fieldGroupContainer} key={key}>
-      <div className={styles.labelContainer}>
-        <label className={styles.twoCells}>{t(`vessel.${label}`, label || '')}</label>
-        {terminologyKey && (
-          <DataTerminology
-            title={t(`vessel.${label}`, label || '')}
-            terminologyKey={terminologyKey}
-          />
-        )}
-      </div>
+      {showLabel && (
+        <div className={styles.labelContainer}>
+          <label className={styles.twoCells}>{t(`vessel.${label}`, label || '')}</label>
+          {terminologyKey && (
+            <DataTerminology
+              title={t(`vessel.${label}`, label || '')}
+              terminologyKey={terminologyKey}
+            />
+          )}
+        </div>
+      )}
       {allRegistryInfo?.length > 0 ? (
         <Fragment>
           <ul
@@ -158,7 +168,7 @@ const VesselRegistryField = ({
               )
             })}
           </ul>
-          {isAuthorizations && (
+          {isAuthorizations && showLabel && (
             <p className={styles.disclaimer}>
               {t(
                 'vessel.authorizationDatesDisclaimer',

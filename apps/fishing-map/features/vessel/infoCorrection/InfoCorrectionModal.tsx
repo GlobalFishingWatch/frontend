@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -20,6 +20,7 @@ import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { VesselLastIdentity } from 'features/search/search.slice'
+import GFWOnly from 'features/user/GFWOnly'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useVesselIdentityChoice } from 'features/vessel/identity/vessel-identity.hooks'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
@@ -58,8 +59,6 @@ type InfoCorrectionModalProps = {
 }
 
 const VALID_REGISTRY_FIELDS = [
-  'transmissionDateFrom',
-  'transmissionDateTo',
   'shipname',
   'flag',
   'ssvid',
@@ -78,8 +77,6 @@ const VALID_REGISTRY_FIELDS = [
 ]
 
 const VALID_AIS_FIELDS = [
-  'transmissionDateFrom',
-  'transmissionDateTo',
   'shipname',
   'flag',
   'ssvid',
@@ -139,14 +136,12 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
 
   const { dispatchQueryParams } = useLocationConnect()
 
-  const onSourceClick = (choice: ChoiceOption<any>) => {
-    dispatchQueryParams({ vesselIdentitySource: choice.id })
-    trackEvent({
-      category: TrackCategory.VesselProfile,
-      action: 'click_info_correction_source',
-      label: String(choice.label),
-    })
-  }
+  const onSourceClick = useCallback(
+    (choice: ChoiceOption<VesselIdentitySourceEnum>) => {
+      dispatchQueryParams({ vesselIdentitySource: choice.id })
+    },
+    [dispatchQueryParams]
+  )
 
   useEffect(() => {
     if (vesselIdentity?.id !== correctedVesselData.vesselId) {
@@ -192,6 +187,11 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
       }
       setLoading(false)
       onClose()
+
+      trackEvent({
+        category: TrackCategory.VesselProfile,
+        action: 'send_vessel_info_correction',
+      })
     } catch (e: any) {
       setLoading(false)
       console.error('Error: ', e)
@@ -225,7 +225,12 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={<Fragment>{t('infoCorrection.title', 'Vessel Info Correction')}</Fragment>}
+      title={
+        <Fragment>
+          {t('vessel.infoCorrection.title', 'Vessel Info Correction')}
+          <GFWOnly />
+        </Fragment>
+      }
       isOpen={isOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
@@ -237,7 +242,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
           <Tag>{formatTransmissionDate(vesselIdentity, true)}</Tag>
         </div>
         <div>
-          <label>{t('infoCorrection.source', 'Source')}</label>
+          <label>{t('layer.source', 'Source')}</label>
           <Choice
             options={identitySources}
             size="small"
@@ -246,7 +251,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
           />
         </div>
         <div>
-          <label>{t('infoCorrection.field', 'Field')}</label>
+          <label>{t('vessel.infoCorrection.field', 'Field')}</label>
           <Select
             placeholder={t('selects.placeholder', 'Select an option')}
             options={identityFields}
@@ -264,19 +269,26 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
         </div>
 
         <div>
-          <label>{t('infoCorrection.format', 'Current value')}</label>
-
+          <label>{t('vessel.infoCorrection.currentValue', 'Current value')}</label>
           {identitySource === VesselIdentitySourceEnum.Registry &&
-          correctedVesselData.field === 'registryOwners' ? (
+          (correctedVesselData.field === 'registryOwners' ||
+            correctedVesselData.field === 'operator' ||
+            correctedVesselData.field === 'registryPublicAuthorizations') ? (
             <VesselRegistryField
               key={'registryOwners'}
               registryField={{
-                key: 'registryOwners',
+                key: correctedVesselData.field,
               }}
               vesselIdentity={vesselIdentity}
+              showLabel={false}
             />
           ) : correctedVesselData.field === null ? (
-            'Please select a field to view its current value'
+            <span className={styles.secondary}>
+              {t(
+                'vessel.infoCorrection.selectAField',
+                'Please select a field to view its current value'
+              )}
+            </span>
           ) : (
             <VesselIdentityField
               value={
@@ -289,8 +301,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
           )}
         </div>
         <div>
-          <label>{t('infoCorrection.format', 'Proposed value')}</label>
-
+          <label>{t('vessel.infoCorrection.proposedValue', 'Proposed value')}</label>
           {correctedVesselData.field === 'transmissionDateFrom' ||
           correctedVesselData.field === 'transmissionDateTo' ? (
             <InputDate
@@ -348,10 +359,10 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
         </div>
 
         <div>
-          <label>{t('infoCorrection.description', 'Description (optional)')}</label>
+          <label>{t('vessel.infoCorrection.description', 'Description (optional)')}</label>
           <InputText
             placeholder={t(
-              'infoCorrection.descriptionPlaceholder',
+              'vessel.infoCorrection.descriptionPlaceholder',
               'Please describe the source of the correction and the time range it is relevant for.'
             )}
             value={correctedVesselData.description}
@@ -370,7 +381,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
           <Button
             tooltip={
               !suficientData
-                ? t('infoCorrection.insuficientData', 'Please fill in all mandatory fields')
+                ? t('vessel.infoCorrection.insuficientData', 'Please fill in all mandatory fields')
                 : ''
             }
             disabled={loading || !suficientData}
@@ -378,7 +389,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
             loading={loading}
             className={styles.cta}
           >
-            {t('infoCorrection.send', 'Send correction')}
+            {t('vessel.infoCorrection.send', 'Send correction')}
           </Button>
         </div>
       </div>
