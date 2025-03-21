@@ -11,7 +11,7 @@ import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/VesselActivity'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import {
-  selectVesselProfileEventsEvents,
+  selectVesselProfileEvents,
   selectVesselProfileGroup,
   selectVirtuosoVesselProfileEventsEvents,
 } from 'features/vessel/activity/vessels-activity.selectors'
@@ -96,7 +96,7 @@ export function useVirtuosoScrollToEvent() {
 }
 
 export function useVesselProfileScrollToEvent() {
-  const vesselProfileEvents = useSelector(selectVesselProfileEventsEvents)
+  const vesselProfileEvents = useSelector(selectVesselProfileEvents)
   const vesselProfileGroup = useSelector(selectVesselProfileGroup)
   const scrollToEvent = useVirtuosoScrollToEvent()
 

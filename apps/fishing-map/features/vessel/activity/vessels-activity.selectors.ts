@@ -54,7 +54,7 @@ export const selectEventsGroupedByVoyages = createSelector(
   }
 )
 
-export const selectVesselProfileEventsEvents = createSelector(
+export const selectVesselProfileEvents = createSelector(
   [selectVesselActivityMode, selectEventsGroupedByType, selectEventsGroupedByVoyages],
   (activityMode, eventsByType, eventsByVoyage) => {
     return activityMode === 'voyage' ? eventsByVoyage : eventsByType

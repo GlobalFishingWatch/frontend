@@ -112,7 +112,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
               .sort()
               .map((rfmo) => {
                 return (
-                  <tr>
+                  <tr key={rfmo}>
                     <td>{rfmo}</td>
                     <td>
                       <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
