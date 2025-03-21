@@ -29,7 +29,7 @@ export const useEventActivityToggle = () => {
           ? event.voyage ||
             Object.values(eventsGroupedByVoyages).findIndex((events) =>
               events.some((e) => e.id === event.id)
-            ) + 1
+            ) + parseInt(Object.keys(eventsGroupedByVoyages)[0])
           : null
         if (voyage === 0) {
           voyage = null
