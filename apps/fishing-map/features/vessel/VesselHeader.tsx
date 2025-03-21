@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -59,6 +60,8 @@ const VesselHeader = () => {
     window.print()
   }, [])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isHovering, setIsHovering] = useState(false)
 
   const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
     trackEvent({
@@ -130,20 +133,44 @@ const VesselHeader = () => {
     dispatchQueryParams({ viewOnlyVessel: !viewOnlyVessel })
   }
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - left) / width) * 100
+    const y = ((e.clientY - top) / height) * 100
+    setMousePosition({ x, y })
+  }
+
   return (
     <div className={styles.summaryContainer}>
       {allVesselImages.length > 0 && (
-        <div className={styles.imageSliderContainer}>
+        <div
+          className={styles.imageSliderContainer}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          onMouseMove={handleMouseMove}
+        >
           <img
             src={allVesselImages[currentImageIndex].url}
             alt={`${shipname} - ${currentImageIndex + 1}`}
             title={
               allVesselImages[currentImageIndex].copyright
-                ? `copyright: ${allVesselImages[currentImageIndex].copyright}`
+                ? `© ${allVesselImages[currentImageIndex].copyright}`
                 : undefined
             }
             className={styles.vesselImage}
           />
+          {isHovering && (
+            <div className={styles.zoomedContainer}>
+              <img
+                src={allVesselImages[currentImageIndex].url}
+                alt=""
+                className={styles.zoomedImage}
+                style={{
+                  transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`,
+                }}
+              />
+            </div>
+          )}
           {allVesselImages.length > 1 && (
             <div className={styles.navigationButtons}>
               {allVesselImages.map((_, index) => (

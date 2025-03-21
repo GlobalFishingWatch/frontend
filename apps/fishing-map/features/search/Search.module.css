@@ -1,7 +1,7 @@
 .search {
   display: flex;
   flex-direction: column;
-  height: calc(100% - var(--header-height));
+  height: 100%;
   z-index: 0;
   position: relative;
 }

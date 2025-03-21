@@ -58,6 +58,11 @@
   cursor: not-allowed;
 }
 
+.sticky {
+  background-color: var(--color-white);
+  z-index: 2;
+}
+
 @media print {
   .logo {
     margin-left: 0;
