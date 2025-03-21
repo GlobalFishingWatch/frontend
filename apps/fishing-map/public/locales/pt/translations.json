@@ -883,6 +883,16 @@
     "flag": "Bandeira",
     "flag_other": "Estados de Bandeira",
     "fleet": "Frota",
+    "infoCorrection": {
+      "currentValue": "Current value",
+      "descriptionPlaceholder": "Please describe the source of the correction and the time range it is relevant for.",
+      "field": "Field",
+      "insuficientData": "Please fill in all mandatory fields",
+      "proposedValue": "Proposed value",
+      "send": "Send correction",
+      "selectAField": "Please select a field to view its current value",
+      "title": "Vessel Info Correction"
+    },
     "transmissionDateFrom": "Timeframe Date Start",
     "transmissionDateTo": "Timeframe Date End",
     "builtYear": "Year built",
