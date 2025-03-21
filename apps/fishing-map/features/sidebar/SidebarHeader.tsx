@@ -545,7 +545,7 @@ function SidebarHeader() {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
-  const isVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
@@ -627,7 +627,7 @@ function SidebarHeader() {
   const showCloseReportButton = isAnyReportLocation
 
   const sectionHeaderComponent = useMemo(() => {
-    if (isVesselLocation) {
+    if (isAnyVesselLocation) {
       return <VesselHeader />
     }
     if (isAreaReportLocation) {
@@ -639,7 +639,7 @@ function SidebarHeader() {
     if (isVesselGroupReportLocation) {
       return <VesselGroupReportTitle />
     }
-  }, [isVesselLocation, isAreaReportLocation, isPortReportLocation, isVesselGroupReportLocation])
+  }, [isAnyVesselLocation, isAreaReportLocation, isPortReportLocation, isVesselGroupReportLocation])
 
   return (
     <div className={cx({ [styles.sticky]: isSticky })}>
@@ -658,7 +658,7 @@ function SidebarHeader() {
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}
             {showCloseReportButton && <CloseReportButton />}
-            {isVesselLocation && <CloseVesselButton />}
+            {isWorkspaceVesselLocation && <CloseVesselButton />}
             {isSearchLocation && !readOnly && !isSmallScreen && (
               <Choice
                 options={searchOptions}
@@ -669,7 +669,7 @@ function SidebarHeader() {
               />
             )}
             {!isAreaReportLocation &&
-              !isVesselLocation &&
+              !isWorkspaceVesselLocation &&
               !showCloseReportButton &&
               showBackToWorkspaceButton && <CloseSectionButton />}
           </Fragment>
