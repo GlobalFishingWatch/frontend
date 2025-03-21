@@ -7,9 +7,12 @@ import { atom, useAtom, useAtomValue } from 'jotai'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 
+import { getScrollElement } from 'features/sidebar/sidebar.utils'
+import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/VesselActivity'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import {
   selectVesselProfileEventsEvents,
+  selectVesselProfileGroup,
   selectVirtuosoVesselProfileEventsEvents,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
@@ -94,10 +97,17 @@ export function useVirtuosoScrollToEvent() {
 
 export function useVesselProfileScrollToEvent() {
   const vesselProfileEvents = useSelector(selectVesselProfileEventsEvents)
+  const vesselProfileGroup = useSelector(selectVesselProfileGroup)
   const scrollToEvent = useVirtuosoScrollToEvent()
 
   const scrollToEventProfile = useCallback(
     ({ eventId, eventType }: { eventId?: string; eventType?: EventType | number | null }) => {
+      const activityContainer = getScrollElement(ACTIVITY_CONTAINER_ID)
+      const scrollElement = getScrollElement()
+      // Needs to scroll to the virtuoso container so elements are rendered
+      if (!vesselProfileGroup && scrollElement && activityContainer?.offsetTop) {
+        scrollElement.scrollTop = activityContainer?.offsetTop
+      }
       if (eventId && eventType) {
         const eventIndex = (vesselProfileEvents as Record<EventType | number, ActivityEvent[]>)[
           eventType
@@ -105,7 +115,7 @@ export function useVesselProfileScrollToEvent() {
         scrollToEvent({ eventIndex, eventId, behavior: 'auto' })
       }
     },
-    [vesselProfileEvents, scrollToEvent]
+    [vesselProfileGroup, vesselProfileEvents, scrollToEvent]
   )
 
   return scrollToEventProfile

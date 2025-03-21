@@ -24,6 +24,8 @@ import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../v
 
 import styles from './VesselActivity.module.css'
 
+export const ACTIVITY_CONTAINER_ID = 'vessel-activity-container'
+
 const VesselActivity = () => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
@@ -107,8 +109,10 @@ const VesselActivity = () => {
           <Spinner />
         </div>
       )}
-      {!eventsLoadingDebounce && activityMode === 'type' && <ActivityByType />}
-      {!eventsLoadingDebounce && activityMode === 'voyage' && <ActivityByVoyage />}
+      <div id={ACTIVITY_CONTAINER_ID}>
+        {!eventsLoadingDebounce && activityMode === 'type' && <ActivityByType />}
+        {!eventsLoadingDebounce && activityMode === 'voyage' && <ActivityByVoyage />}
+      </div>
     </Fragment>
   )
 }

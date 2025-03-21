@@ -102,6 +102,14 @@ export const selectVirtuosoVesselProfileEventsByVoyage = createSelector(
     }
   }
 )
+
+export const selectVesselProfileGroup = createSelector(
+  [selectVesselActivityMode, selectVesselEventType, selectVesselVoyage],
+  (activityMode, eventType, voyage) => {
+    return activityMode === 'voyage' ? voyage : eventType
+  }
+)
+
 export const selectVirtuosoVesselProfileEventsEvents = createSelector(
   [
     selectVesselActivityMode,
