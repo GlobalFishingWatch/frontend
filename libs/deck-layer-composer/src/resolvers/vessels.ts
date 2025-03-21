@@ -20,17 +20,32 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     ...(globalConfig.highlightEventIds || []),
     ...(highlightedFeatures || []).map((feature) => feature.id),
   ]
+  const strictTimeRange =
+    dataview.config?.startDate !== undefined && dataview.config?.endDate !== undefined
+  const startTime = getUTCDateTime(
+    strictTimeRange ? (dataview.config?.startDate as string) : start
+  ).toMillis()
+  const endTime = getUTCDateTime(
+    strictTimeRange ? (dataview.config?.endDate as string) : end
+  ).toMillis()
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
     category: dataview.category!,
     name: dataview.config?.name,
-    endTime: getUTCDateTime(end!).toMillis(),
-    startTime: getUTCDateTime(start!).toMillis(),
+    endTime: endTime,
+    startTime: startTime,
+    ...(dataview.config?.highlightEventStartTime && {
+      highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),
+    }),
+    ...(dataview.config?.highlightEventEndTime && {
+      highlightEventEndTime: getUTCDateTime(dataview.config.highlightEventEndTime).toMillis(),
+    }),
     ...(trackUrl && {
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),
     singleTrack: dataview.config?.singleTrack,
+    strictTimeRange,
     trackThinningZoomConfig: dataview.config?.trackThinningZoomConfig,
     trackGraphExtent: globalConfig.trackGraphExtent,
     color: hexToDeckColor(dataview.config?.color as string),

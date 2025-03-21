@@ -403,7 +403,6 @@ export function getDataviewsResolved(
   })
 
   const userHeatmapDataviewsParsed = getFourwingsDataviewsResolved(userHeatmapDataviews)
-
   const vesselTrackDataviewsParsed = uniqBy<UrlDataviewInstance, string>(
     vesselTrackDataviews.flatMap((d) => ({
       ...d,

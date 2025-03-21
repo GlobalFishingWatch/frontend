@@ -51,7 +51,6 @@ function WorkspaceWizard() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
-  const map = useDeckMap()
   const featureFlags = useSelector(selectFeatureFlags)
   const viewState = useMapViewState()
   const dataviews = useSelector(selectAllDataviews)
@@ -71,7 +70,7 @@ function WorkspaceWizard() {
     if (inputValue === '') {
       setSelectedItem(null)
       setAreasMatching([])
-      fitBounds([-90, -180, 90, 180])
+      fitBounds([-90, -180, 90, 180], { fitZoom: true })
     } else {
       updateMatchingAreas(inputValue as string)
     }
@@ -92,7 +91,7 @@ function WorkspaceWizard() {
     if (selectedItem) {
       const bounds = selectedItem?.properties.bounds
       if (bounds) {
-        fitBounds(bounds)
+        fitBounds(bounds, { fitZoom: true })
       }
     }
   }

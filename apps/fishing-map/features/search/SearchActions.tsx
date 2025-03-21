@@ -45,11 +45,14 @@ function SearchActions() {
           ? eventsRelatedDatasets.map((d) => d.id)
           : []
       const trackDatasetId = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)?.id
-      const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        track: trackDatasetId,
-        info: vessel.dataset.id,
-        ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
-        relatedVesselIds: getRelatedIdentityVesselIds(vessel),
+      const vesselDataviewInstance = getVesselDataviewInstance({
+        vessel,
+        datasets: {
+          track: trackDatasetId,
+          info: vessel.dataset.id,
+          ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
+          relatedVesselIds: getRelatedIdentityVesselIds(vessel),
+        },
       })
       return vesselDataviewInstance
     })
