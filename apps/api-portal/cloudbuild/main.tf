@@ -28,7 +28,7 @@ module "develop" {
     "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
   ]
   set_env_vars = [
-    "BASIC_AUTH=on",
+    "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw"
   ]
   set_secrets = [

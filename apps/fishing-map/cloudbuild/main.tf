@@ -34,7 +34,7 @@ module "develop" {
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
   ]
   set_env_vars = [
-    "BASIC_AUTH=on",
+    "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw",
   ]
   set_secrets = [
@@ -42,8 +42,7 @@ module "develop" {
     "NEXT_MAP_ERRORS_SPREADSHEET_ID=${local.secrets_path}/FISHING_MAP_ERRORS_SPREADSHEET_ID",
     "NEXT_FEEDBACK_SPREADSHEET_ID=${local.secrets_path}/FISHING_MAP_FEEDBACK_SPREADSHEET_ID",
     "NEXT_SPREADSHEET_CLIENT_EMAIL=${local.secrets_path}/FISHING_MAP_SPREADSHEET_CLIENT_EMAIL",
-    // TODO: get this secret from actual secret manager value
-    "NEXT_SPREADSHEET_PRIVATE_KEY=${local.secrets_path}/FISHING_MAP_NEXT_SPREADSHEET_PRIVATE_KEY",
+    "NEXT_SPREADSHEET_PRIVATE_KEY=${local.secrets_path}/FISHING_MAP_SPREADSHEET_PRIVATE_KEY",
   ]
 }
 

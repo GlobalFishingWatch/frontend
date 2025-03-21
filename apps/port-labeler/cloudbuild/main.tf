@@ -26,7 +26,7 @@ module "develop" {
     "API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
   ]
   set_env_vars = [
-    "BASIC_AUTH=on",
+    "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw",
   ]
   set_secrets = [
