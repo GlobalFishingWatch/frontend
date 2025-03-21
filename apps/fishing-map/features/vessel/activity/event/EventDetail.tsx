@@ -113,12 +113,9 @@ const EventDetail = ({ event }: ActivityContentProps) => {
                   />
                 </label>
               </th>
-              {authAreas
-                ?.slice()
-                .sort()
-                .map((rfmo) => {
-                  return <th>{rfmo}</th>
-                })}
+              {authAreas?.map((rfmo) => {
+                return <th key={rfmo}>{rfmo}</th>
+              })}
             </tr>
           </thead>
           <tbody>
