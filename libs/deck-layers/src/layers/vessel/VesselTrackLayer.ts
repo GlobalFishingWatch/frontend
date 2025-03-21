@@ -2,7 +2,6 @@ import type { AccessorFunction, ChangeFlags, DefaultProps } from '@deck.gl/core'
 import type { PathLayerProps } from '@deck.gl/layers'
 import { PathLayer } from '@deck.gl/layers'
 import type { NumericArray } from '@math.gl/core'
-import { getUTCDateTime } from 'libs/deck-layers/src/utils'
 
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
@@ -10,6 +9,7 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 
+import { getUTCDateTime } from '../../utils'
 import { colorToVec, hexToDeckColor } from '../../utils/colors'
 import { MAX_FILTER_VALUE } from '../layers.config'
 
