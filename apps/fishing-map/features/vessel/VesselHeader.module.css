@@ -58,8 +58,9 @@
 
 .imageSliderContainer {
   position: relative;
-  width: 20%;
-  min-width: 10rem;
+  width: 30%;
+  min-width: 15rem;
+  overflow: hidden;
 }
 
 .vesselImage {
@@ -70,6 +71,26 @@
 
 .sticky .imageSliderContainer {
   display: none;
+}
+
+.zoomedContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.zoomedImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(3);
 }
 
 .navigationButtons {
