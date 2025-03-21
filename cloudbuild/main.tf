@@ -1,14 +1,15 @@
 resource "google_cloudbuild_trigger" "ui-trigger-affected-dev" {
-  name     = "ui-trigger-affected-dev"
-  location = "us-central1"
-
+  name        = "ui-trigger-affected-dev"
+  description = "Install and cache dependencies, then deploy affected apps"
+  tags        = ["frontend"]
+  project     = "gfw-int-infrastructure"
+  location    = "us-central1"
 
   github {
-    name  = "frontend"
     owner = "GlobalFishingWatch"
+    name  = "frontend"
     push {
-      tag          = "^develop$"
-      invert_regex = false
+      branch = "^develop$"
     }
   }
 
@@ -16,18 +17,16 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected-dev" {
   build {
 
     step {
-      id   = "fetch"
-      name = "gcr.io/cloud-builders/git"
-      args = [
-        "fetch", "--unshallow", "--no-tags"
-      ]
+      id       = "fetch"
+      name     = "gcr.io/cloud-builders/git"
+      args     = ["fetch", "--unshallow", "--no-tags"]
       wait_for = ["-"]
     }
 
     step {
       id       = "restore_cache"
-      name     = "gcr.io/gfw-int-infrastructure/restore_cache" # Todo: This image is not yet in the registry
-      script   = file("./scripts/restore_cache.sh")
+      name     = "gcr.io/gfw-int-infrastructure/restore_cache" # TODO: This image is not yet in the registry
+      script   = file("../cloudbuild-template/scripts/restore_cache.sh")
       wait_for = ["-"]
     }
 
@@ -35,14 +34,14 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected-dev" {
     step {
       id       = "install-yarn"
       name     = "node:21"
-      script   = file("./scripts/install_yarn.sh")
+      script   = file("../cloudbuild-template/scripts/install_yarn.sh")
       wait_for = ["restore_cache"]
     }
 
     step {
       id       = "save_cache"
-      name     = "gcr.io/gfw-int-infrastructure/restore_cache" # Todo: This image is not yet in the registry
-      script   = file("./scripts/save_cache.sh")
+      name     = "gcr.io/gfw-int-infrastructure/restore_cache" # TODO: This image is not yet in the registry
+      script   = file("../cloudbuild-template/scripts/save_cache.sh")
       wait_for = ["install-yarn"]
     }
 
@@ -64,6 +63,7 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected-dev" {
       logging      = "CLOUD_LOGGING_ONLY"
       machine_type = "E2_HIGHCPU_8"
     }
+
     timeout = "1200s"
   }
 }

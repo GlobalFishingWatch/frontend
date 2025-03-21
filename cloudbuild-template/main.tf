@@ -16,7 +16,6 @@ resource "google_cloudbuild_trigger" "trigger" {
       push {
         tag          = github.value.tag
         invert_regex = github.value.invert_regex
-
       }
     }
   }
@@ -38,19 +37,21 @@ resource "google_cloudbuild_trigger" "trigger" {
       id       = "restore_cache"
       name     = "gcr.io/gfw-int-infrastructure/restore_cache" # Todo: This image is not yet in the registry
       wait_for = ["-"]
-      script   = file("./scripts/restore_cache.sh")
+      script   = file("${path.module}/scripts/restore_cache.sh")
     }
+
     step {
       id       = "install-yarn"
       wait_for = ["restore_cache"]
       name     = "node:21"
-      script   = file("./scripts/install_yarn.sh")
+      script   = file("${path.module}/scripts/install_yarn.sh")
     }
+
     step {
       id       = "save_cache"
       wait_for = ["install-yarn"]
       name     = "gcr.io/gfw-int-infrastructure/restore_cache" # Todo: This image is not yet in the registry
-      script   = file("./scripts/install_yarn.sh")
+      script   = file("${path.module}/scripts/save_cache.sh")
     }
 
     step {
@@ -120,6 +121,7 @@ resource "google_cloudbuild_trigger" "trigger" {
     options {
       logging = "CLOUD_LOGGING_ONLY"
     }
+
     timeout = "1200s"
   }
 }
