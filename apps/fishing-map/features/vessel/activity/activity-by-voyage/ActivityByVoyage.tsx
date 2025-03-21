@@ -85,7 +85,7 @@ const ActivityByVoyage = () => {
     (voyageId: ActivityEvent['voyage']) => {
       const events = voyages[voyageId]
       const bounds = eventsToBbox(events)
-      fitBounds(bounds)
+      fitBounds(bounds, { fitZoom: true })
       if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
     },
     [dispatchQueryParams, fitBounds, isSmallScreen, voyages]
