@@ -81,12 +81,18 @@
   width: 100%;
 }
 
-.authTable td {
-  width: 33.3%;
+.tick {
+  position: relative;
+  top: 0.4rem;
+  left: -0.4rem;
 }
 
 .secondary {
   color: var(--color-secondary-blue);
+}
+
+.disabled {
+  pointer-events: none;
 }
 
 .divider {

@@ -4,10 +4,12 @@ import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import EventEncounterIcon from 'features/vessel/activity/event/EventEncounterIcon'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import VesselLink from 'features/vessel/VesselLink'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
@@ -64,6 +66,9 @@ const EventDetail = ({ event }: ActivityContentProps) => {
   //   </Fragment>
   // )
 
+  // Needed to remove sub-regions (e.g. CCSBT-Primary-Area)
+  const authAreas = event.regions?.rfmo.filter((rfmo) => !rfmo.includes('-')).sort()
+
   if (event.type === EventTypes.Encounter) {
     const { name, id, dataset, flag, ssvid, type } = event.encounter?.vessel || {}
     return (
@@ -100,29 +105,71 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           <thead>
             <tr>
               <th>
-                <label>{t(`eventInfo.authorization`, 'authorization')}</label>
+                <label>
+                  {t('eventInfo.authorization', 'authorization')}
+                  <DataTerminology
+                    title={t('eventInfo.authorization', 'authorization')}
+                    terminologyKey="authorization"
+                  />
+                </label>
               </th>
-              <th>{formatInfoField(event.vessel.name, 'shipname')}</th>
-              <th>{formatInfoField(name, 'shipname')}</th>
+              {authAreas
+                ?.slice()
+                .sort()
+                .map((rfmo) => {
+                  return <th>{rfmo}</th>
+                })}
             </tr>
           </thead>
           <tbody>
-            {event.regions?.rfmo
-              ?.slice()
-              .sort()
-              .map((rfmo) => {
+            <tr>
+              <td>{formatInfoField(event.vessel.name, 'shipname')}</td>
+              {authAreas?.map((rfmo) => {
+                const mainVesselAuth = event.vessel.publicAuthorizations?.find(
+                  (auth) => auth.rfmo === rfmo
+                )
                 return (
-                  <tr key={rfmo}>
-                    <td>{rfmo}</td>
-                    <td>
+                  <td key={rfmo}>
+                    {mainVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
+                      <span className={styles.tick}>
+                        <IconButton
+                          icon="tick"
+                          size="tiny"
+                          type="solid"
+                          className={styles.disabled}
+                        />
+                      </span>
+                    ) : (
                       <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                    </td>
-                    <td>
-                      <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                    </td>
-                  </tr>
+                    )}
+                  </td>
                 )
               })}
+            </tr>
+            <tr>
+              <td>{formatInfoField(name, 'shipname')}</td>
+              {authAreas?.map((rfmo) => {
+                const secondaryVesselAuth = event.encounter?.vessel?.publicAuthorizations?.find(
+                  (auth) => auth.rfmo === rfmo
+                )
+                return (
+                  <td key={rfmo}>
+                    {secondaryVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
+                      <span className={styles.tick}>
+                        <IconButton
+                          icon="tick"
+                          size="tiny"
+                          type="solid"
+                          className={styles.disabled}
+                        />
+                      </span>
+                    ) : (
+                      <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
+                    )}
+                  </td>
+                )
+              })}
+            </tr>
           </tbody>
         </table>
       </ul>
