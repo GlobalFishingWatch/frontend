@@ -59,7 +59,7 @@ const ActivityByVoyage = () => {
 
   useEffect(() => {
     if (selectedVesselEventId && events?.length) {
-      scrollToEvent(selectedVesselEventId)
+      scrollToEvent({ eventId: selectedVesselEventId })
     }
     // Only run once if selectedVesselEventId is in the url when loaded
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,7 +75,7 @@ const ActivityByVoyage = () => {
   const handleEventClick = useCallback(
     (event: VesselEvent) => {
       setSelectedEventId(event?.id)
-      scrollToEvent(event.id)
+      scrollToEvent({ eventId: event.id })
       fitEventBounds(event)
     },
     [scrollToEvent, setSelectedEventId, fitEventBounds]

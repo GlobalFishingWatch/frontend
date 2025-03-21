@@ -54,6 +54,13 @@ export const selectEventsGroupedByVoyages = createSelector(
   }
 )
 
+export const selectVesselProfileEventsEvents = createSelector(
+  [selectVesselActivityMode, selectEventsGroupedByType, selectEventsGroupedByVoyages],
+  (activityMode, eventsByType, eventsByVoyage) => {
+    return activityMode === 'voyage' ? eventsByVoyage : eventsByType
+  }
+)
+
 export const selectVoyagesNumber = createSelector([selectEventsGroupedByVoyages], (voyages) => {
   return Object.keys(voyages).length
 })
@@ -65,6 +72,7 @@ export const EVENTS_ORDER = [
   EventTypes.Loitering,
   // EventTypes.Gap,
 ]
+
 export const selectVirtuosoVesselProfileEventsByType = createSelector(
   [selectVesselEventType, selectEventsGroupedByType],
   (expandedType, activityGroups) => {
@@ -80,6 +88,7 @@ export const selectVirtuosoVesselProfileEventsByType = createSelector(
     }
   }
 )
+
 export const selectVirtuosoVesselProfileEventsByVoyage = createSelector(
   [selectVesselVoyage, selectEventsGroupedByVoyages],
   (expandedVoyage, voyages) => {

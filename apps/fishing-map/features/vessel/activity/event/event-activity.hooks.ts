@@ -36,9 +36,12 @@ export const useEventActivityToggle = () => {
         }
         dispatch(setVesselVoyage(voyage))
         dispatch(setVesselEventId(null))
+        return voyage
       } else {
-        dispatch(setVesselEventType(event ? event.type : null))
+        const eventType = event ? event.type : null
+        dispatch(setVesselEventType(eventType))
         dispatch(setVesselEventId(null))
+        return eventType
       }
     },
     [activityMode, dispatch, eventsGroupedByVoyages]

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { startTransition, useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { ThunkDispatch } from '@reduxjs/toolkit'
@@ -37,7 +37,7 @@ import { useMapErrorNotification } from 'features/map/overlays/error-notificatio
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useEventActivityToggle } from 'features/vessel/activity/event/event-activity.hooks'
-import { useVirtuosoScrollToEvent } from 'features/vessel/activity/event/event-scroll.hooks'
+import { useVesselProfileScrollToEvent } from 'features/vessel/activity/event/event-scroll.hooks'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
 import { annotationsCursorAtom } from './overlays/annotations/Annotations'
@@ -115,7 +115,7 @@ export const useClickedEventConnect = () => {
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
   const areTilesClusterLoading = useMapClusterTilesLoading()
-  const scrollToEvent = useVirtuosoScrollToEvent()
+  const scrollToEvent = useVesselProfileScrollToEvent()
   const [_, setEventGroup] = useEventActivityToggle()
   // const fishingPromiseRef = useRef<any>()
   // const eventsPromiseRef = useRef<any>()
@@ -249,27 +249,30 @@ export const useClickedEventConnect = () => {
       ) as VesselEventPickingObject
 
       if (vesselEventFeature) {
-        setEventGroup({ id: vesselEventFeature.id, type: vesselEventFeature.type } as ActivityEvent)
-        setTimeout(() => {
-          scrollToEvent(vesselEventFeature.id)
-        }, 16)
+        const eventType = setEventGroup({
+          id: vesselEventFeature.id,
+          type: vesselEventFeature.type,
+        } as ActivityEvent)
+        startTransition(() => {
+          scrollToEvent({ eventId: vesselEventFeature.id, eventType })
+        })
       }
     },
     [
-      addErrorNotification,
-      addMapAnnotation,
-      areTilesClusterLoading,
       cancelPendingInteractionRequests,
-      clickedEvent,
-      dispatch,
-      isErrorNotificationEditing,
       isMapAnnotating,
-      onRulerMapClick,
+      isErrorNotificationEditing,
       rulersEditing,
-      scrollToEvent,
-      setInteractionPromises,
+      dispatch,
+      addMapAnnotation,
+      addErrorNotification,
+      onRulerMapClick,
+      areTilesClusterLoading,
       setMapCoordinates,
+      clickedEvent,
+      setInteractionPromises,
       setEventGroup,
+      scrollToEvent,
     ]
   )
 

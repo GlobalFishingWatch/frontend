@@ -3,17 +3,25 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { GroupedVirtuosoHandle } from 'react-virtuoso'
 import { debounce } from 'es-toolkit'
-import { atom, useAtomValue } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 
-import { selectVirtuosoVesselProfileEventsEvents } from 'features/vessel/activity/vessels-activity.selectors'
+import type { EventType } from '@globalfishingwatch/api-types'
+
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import {
+  selectVesselProfileEventsEvents,
+  selectVirtuosoVesselProfileEventsEvents,
+} from 'features/vessel/activity/vessels-activity.selectors'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
 
 const virtuosoScrollAtom = atom<{
   virtuosoRef: RefObject<GroupedVirtuosoHandle | null>
   isScrollingRef: RefObject<boolean>
+  selectedEventId: string | undefined
 }>({
   virtuosoRef: { current: null },
   isScrollingRef: { current: false },
+  selectedEventId: undefined,
 })
 
 export function useVirtuosoScroll(debouncedTime = 150) {
@@ -21,23 +29,26 @@ export function useVirtuosoScroll(debouncedTime = 150) {
 
   const scrollToIndex = useMemo(
     () =>
-      debounce((index: number) => {
-        isScrollingRef.current = true
-        if (!virtuosoRef?.current) {
-          return
-        }
-        virtuosoRef?.current?.scrollIntoView({
-          index,
-          align: 'center',
-          behavior: 'smooth',
-          calculateViewLocation: ({ locationParams: { behavior, align, ...rest } }) => {
-            return { ...rest, behavior, align }
-          },
-          done: () => {
-            isScrollingRef.current = false
-          },
-        })
-      }, debouncedTime),
+      debounce(
+        ({ index, behavior = 'smooth' }: { index: number; behavior?: 'auto' | 'smooth' }) => {
+          if (!virtuosoRef?.current) {
+            return
+          }
+          isScrollingRef.current = true
+          virtuosoRef?.current?.scrollIntoView({
+            index,
+            align: 'center',
+            behavior,
+            calculateViewLocation: ({ locationParams: { behavior, align, ...rest } }) => {
+              return { ...rest, behavior, align }
+            },
+            done: () => {
+              isScrollingRef.current = false
+            },
+          })
+        },
+        debouncedTime
+      ),
     [debouncedTime, isScrollingRef, virtuosoRef]
   )
 
@@ -46,21 +57,58 @@ export function useVirtuosoScroll(debouncedTime = 150) {
 
 export function useVirtuosoScrollToEvent() {
   const { scrollToIndex } = useVirtuosoScroll()
+  const [{ isScrollingRef }, setVirtuosoScrollAtom] = useAtom(virtuosoScrollAtom)
   const events = useSelector(selectVirtuosoVesselProfileEventsEvents)?.events
 
   const scrollToEvent = useCallback(
-    (eventId: string) => {
-      if (eventId) {
-        const selectedIndex = events?.findIndex((event) => event.id.includes(eventId))
+    ({
+      eventId,
+      eventIndex,
+      behavior = 'smooth',
+    }: {
+      eventId?: string
+      eventIndex?: number
+      behavior?: 'auto' | 'smooth'
+    }) => {
+      if (eventId || eventIndex !== undefined) {
+        const selectedIndex =
+          eventIndex !== undefined
+            ? eventIndex
+            : eventId
+              ? events?.findIndex((event) => event?.id.includes(eventId))
+              : undefined
+
         if (selectedIndex !== undefined && selectedIndex !== -1) {
-          scrollToIndex(selectedIndex)
+          const selectedEventId = eventId || events?.[selectedIndex]?.id
+          isScrollingRef.current = true
+          setVirtuosoScrollAtom((prev) => ({ ...prev, selectedEventId }))
+          scrollToIndex({ index: selectedIndex, behavior })
         }
       }
     },
-    [scrollToIndex, events]
+    [events, isScrollingRef, scrollToIndex, setVirtuosoScrollAtom]
   )
 
   return scrollToEvent
+}
+
+export function useVesselProfileScrollToEvent() {
+  const vesselProfileEvents = useSelector(selectVesselProfileEventsEvents)
+  const scrollToEvent = useVirtuosoScrollToEvent()
+
+  const scrollToEventProfile = useCallback(
+    ({ eventId, eventType }: { eventId?: string; eventType?: EventType | number | null }) => {
+      if (eventId && eventType) {
+        const eventIndex = (vesselProfileEvents as Record<EventType | number, ActivityEvent[]>)[
+          eventType
+        ]?.findIndex((e) => e.id === eventId)
+        scrollToEvent({ eventIndex, eventId, behavior: 'auto' })
+      }
+    },
+    [vesselProfileEvents, scrollToEvent]
+  )
+
+  return scrollToEventProfile
 }
 
 export function useEventsScroll(
@@ -68,9 +116,8 @@ export function useEventsScroll(
   virtuosoRef: React.RefObject<GroupedVirtuosoHandle | null>
 ) {
   const dispatch = useDispatch()
-  const selectedEventIdRef = useRef<string | null>(null)
-  const [selectedEventId, setSelectedEventId] = useState<string | undefined>()
-  const isScrolling = useRef(false)
+  const selectedEventIdRef = useRef<string | undefined>(undefined)
+  const [{ selectedEventId, isScrollingRef }, setVirtuosoScrollAtom] = useAtom(virtuosoScrollAtom)
   const [scrollTop, setScrollTop] = useState(0)
 
   const scrollToEvent = useVirtuosoScrollToEvent()
@@ -93,11 +140,18 @@ export function useEventsScroll(
     })
   }, [virtuosoRef])
 
+  const setSelectedEventId = useCallback(
+    (eventId: string | undefined) => {
+      setVirtuosoScrollAtom((prev) => ({ ...prev, selectedEventId: eventId }))
+    },
+    [setVirtuosoScrollAtom]
+  )
+
   const selectEventInCenter = useCallback(() => {
     const cH = document.documentElement.clientHeight
     const wH = window.innerHeight || 0
     const middle = Math.max(cH, wH) / 2
-    let selectedEventId: string | null = null
+    let selectedEventId: string | undefined = undefined
     let minDelta = Infinity
     eventsRef.current.forEach((el, key) => {
       const { top, height } = el.getBoundingClientRect()
@@ -109,7 +163,7 @@ export function useEventsScroll(
       }
     })
     if (!selectedEventId) {
-      setSelectedEventId(undefined)
+      setSelectedEventId(selectedEventId)
     }
     if (selectedEventIdRef.current !== selectedEventId) {
       selectedEventIdRef.current = selectedEventId
@@ -117,16 +171,22 @@ export function useEventsScroll(
         setSelectedEventId(selectedEventId)
       }
     }
-  }, [eventsRef])
+  }, [eventsRef, setSelectedEventId])
 
   useEffect(() => {
-    if (!isScrolling.current && scrollTop !== undefined) {
+    if (!isScrollingRef.current && scrollTop !== undefined) {
       selectEventInCenter()
     }
-  }, [selectEventInCenter, scrollTop])
+  }, [isScrollingRef, selectEventInCenter, scrollTop])
 
   return useMemo(
-    () => ({ selectedEventId, setSelectedEventId, scrollToEvent, handleScroll }) as const,
+    () =>
+      ({
+        selectedEventId,
+        setSelectedEventId,
+        scrollToEvent,
+        handleScroll,
+      }) as const,
     [selectedEventId, setSelectedEventId, scrollToEvent, handleScroll]
   )
 }
