@@ -1,10 +1,10 @@
 variable "project_id" {
-  description = "The project ID to deploy to"
+  description = "The ID of the project to deploy to"
   type        = string
 }
 
 variable "docker_image" {
-  description = "The docker image to deploy"
+  description = "The full path to the docker image to deploy"
   type        = string
 }
 
@@ -14,17 +14,17 @@ variable "service_account" {
 }
 
 variable "app_name" {
-  description = "The name of the app"
+  description = "The name of the application to build and deploy"
   type        = string
 }
 
 variable "short_environment" {
-  description = "The short environment (dev, staging)"
+  description = "The short name of the environment (dev, sta, pro)"
   type        = string
 }
 
 variable "set_env_vars" {
-  description = "The environment variables to set in the cloud run revision"
+  description = "The environment variables to set on the Cloud Run service"
   type        = list(string)
   default     = []
 }
@@ -47,11 +47,10 @@ variable "labels" {
 }
 
 variable "push_config" {
-  description = "The push config"
+  description = "The configuration for the push trigger"
   type = object({
     branch       = optional(string)
-    invert_regex = bool
     tag          = optional(string)
+    invert_regex = optional(bool, false)
   })
 }
-

@@ -35,7 +35,7 @@ resource "google_cloudbuild_trigger" "trigger" {
 
     step {
       id       = "restore_cache"
-      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod" # Todo: This image is not yet in the registry
+      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod"
       wait_for = ["-"]
       script   = file("${path.module}/scripts/restore_cache.sh")
     }
@@ -50,7 +50,7 @@ resource "google_cloudbuild_trigger" "trigger" {
     step {
       id       = "save_cache"
       wait_for = ["install-yarn"]
-      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod" # Todo: This image is not yet in the registry
+      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod"
       script   = file("${path.module}/scripts/save_cache.sh")
     }
 
