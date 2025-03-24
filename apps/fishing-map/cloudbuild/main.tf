@@ -13,7 +13,7 @@ module "develop" {
   short_environment = "dev"
   app_name          = local.app_name
   docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-dev"
-  service_account   = "frontend@gfw-development.iam.gserviceaccount.com"
+  service_account   = "frontend-dev@gfw-development.iam.gserviceaccount.com"
   labels = {
     environment      = "develop"
     resource_creator = "engineering"
@@ -24,7 +24,7 @@ module "develop" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev-v2.globalfishingwatch.org",
     "NEXT_PUBLIC_API_VERSION=v3",
     "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
     "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",

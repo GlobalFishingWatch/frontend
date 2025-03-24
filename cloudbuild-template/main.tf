@@ -35,7 +35,7 @@ resource "google_cloudbuild_trigger" "trigger" {
 
     step {
       id       = "restore_cache"
-      name     = "gcr.io/gfw-int-infrastructure/restore_cache" # Todo: This image is not yet in the registry
+      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod" # Todo: This image is not yet in the registry
       wait_for = ["-"]
       script   = file("${path.module}/scripts/restore_cache.sh")
     }
@@ -50,7 +50,7 @@ resource "google_cloudbuild_trigger" "trigger" {
     step {
       id       = "save_cache"
       wait_for = ["install-yarn"]
-      name     = "gcr.io/gfw-int-infrastructure/restore_cache" # Todo: This image is not yet in the registry
+      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod" # Todo: This image is not yet in the registry
       script   = file("${path.module}/scripts/save_cache.sh")
     }
 
@@ -68,10 +68,10 @@ resource "google_cloudbuild_trigger" "trigger" {
       name     = "gcr.io/kaniko-project/executor:debug"
       args = [
         "--destination=${var.docker_image}",
-        "--build-arg APP_NAME=${var.app_name}",
-        "--target production",
-        "-f ./apps/${var.app_name}/Dockerfile",
-        "-c ./dist/apps/${var.app_name}/Dockerfile",
+        "--build-arg", "APP_NAME=${var.app_name}",
+        "--target", "production",
+        "-f", "./apps/${var.app_name}/Dockerfile",
+        "-c", "./dist/apps/${var.app_name}",
       ]
     }
 
