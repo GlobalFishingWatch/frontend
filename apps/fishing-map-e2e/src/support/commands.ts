@@ -13,6 +13,7 @@ declare namespace Cypress {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     login(email: string, password: string): void
+    registrationPage(): Chainable<void>
     store(reducerName: string): void
     forceClick(
       options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
@@ -69,7 +70,7 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.reload()
   // @TODO: Remove thw wait when the bug in login is fixed "/index bug"
 
-  cy.wait(5000)
+  cy.wait(15000)
   // Close dialog popup
   cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
 
@@ -114,6 +115,20 @@ Cypress.Commands.add('login', (username: string, password: string) => {
 
   log.snapshot('after')
   log.end()
+})
+
+Cypress.Commands.add('registrationPage', () => {
+  cy.log('Ejecutando registrationPage...')
+  cy.visit('/')
+  Cypress.Cookies.debug(true)
+  cy.clearLocalStorage()
+  cy.reload()
+  cy.wait(15000)
+  // Close dialog popup
+  cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
+
+  cy.getBySel('sidebar-login-icon', { timeout: 20000 }).click()
+  cy.get('p.center > a').click()
 })
 
 Cypress.Commands.add('store', (reducerName = '') => {

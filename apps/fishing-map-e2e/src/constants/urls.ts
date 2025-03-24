@@ -28,3 +28,6 @@ export const API_URL_GALAPAGOS_INFO = '/v3/datasets/public-eez-areas/context-lay
 export const API_URL_WORKSPACES_LIST =
   '/v3/workspaces?app=fishing-map&logged-user-or-gfw=true&limit=999999&offset=0'
 export const API_URL_WORKSPACES_DELETE = '/v3/workspaces/%WORKSPACE_ID%'
+
+// REGISTRATION USER URL
+export const API_URL_REGISTRATION = 'v3/auth/registration'
