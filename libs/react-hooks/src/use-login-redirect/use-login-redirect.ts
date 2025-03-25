@@ -38,7 +38,11 @@ export const useLoginRedirect = (
   const [localStorageRedirectUrl, setLocalStorageRedirectUrl] = useLocalStorage(callbackUrlKey, '')
 
   const saveRedirectUrl = useCallback(() => {
-    setLocalStorageRedirectUrl(window.location.toString())
+    try {
+      setLocalStorageRedirectUrl(window.location.toString())
+    } catch (error) {
+      console.error(error)
+    }
   }, [setLocalStorageRedirectUrl])
 
   const onLoginClick = useCallback(() => {
