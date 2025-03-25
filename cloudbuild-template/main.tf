@@ -4,7 +4,7 @@ locals {
 }
 
 resource "google_cloudbuild_trigger" "trigger" {
-  name     = "${local.ui_name}-${lookup(var.push_config, "branch", "tag")}"
+  name     = "${local.ui_name}-${var.short_environment}"
   location = "us-central1"
 
 
@@ -98,7 +98,6 @@ resource "google_cloudbuild_trigger" "trigger" {
         "--service-account", "${var.service_account}",
         "--labels", "${join(",", [for k, v in var.labels : "${k}=${v}"])}",
       ]
-
     }
 
     step {

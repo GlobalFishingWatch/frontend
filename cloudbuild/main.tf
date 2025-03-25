@@ -57,6 +57,9 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected-dev" {
       name     = "gcr.io/cloud-builders/gcloud"
       script   = file("./scripts/deploy-cloud-run.sh")
       wait_for = ["get-affected"]
+      env = [
+        "SHORT_ENV=dev"
+      ]
     }
 
     options {
