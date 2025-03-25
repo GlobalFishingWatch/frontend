@@ -17,7 +17,11 @@ import { selectDownloadTrackModalOpen } from 'features/download/download.selecto
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectEditorActive, toggleEditorMenu } from 'features/editor/editor.slice'
 import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/modals.selectors'
-import { selectDatasetUploadModalOpen, selectLayerLibraryModalOpen,setModalOpen  } from 'features/modals/modals.slice'
+import {
+  selectDatasetUploadModalOpen,
+  selectLayerLibraryModalOpen,
+  setModalOpen,
+} from 'features/modals/modals.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -186,6 +190,7 @@ const AppModals = () => {
         <Fragment>
           {/* Please don't judge this piece of code, it is needed to avoid race-conditions in the useLocalStorage internal hook */}
           {welcomePopupContentKey === 'vessel-profile' && <Welcome contentKey="vessel-profile" />}
+          {welcomePopupContentKey === 'deep-sea-mining' && <Welcome contentKey="deep-sea-mining" />}
           {welcomePopupContentKey === WorkspaceCategory.FishingActivity && (
             <Welcome contentKey={WorkspaceCategory.FishingActivity} />
           )}
