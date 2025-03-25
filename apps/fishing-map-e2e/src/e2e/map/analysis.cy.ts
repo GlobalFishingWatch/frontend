@@ -39,7 +39,7 @@ describe('See the creation of analysis for an area', () => {
     cy.getBySel('report-title', { timeout: 10000 })
       .should('exist')
       .and('be.visible')
-      .and('include.text', 'Ecuadorian Exclusive Economic Zone')
+      .contains(SEARCH_EEZ_FULL_NAME)
 
     cy.getBySel('source-tags', getDOMTimeout(10000))
       .findBySelLike('source-tag-item')
