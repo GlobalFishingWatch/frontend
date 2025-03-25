@@ -10,11 +10,6 @@ export const deleteUserWorkspaces = () => {
         bearer: result[Cypress.config('baseUrl').replace('/map', '')].GFW_API_USER_TOKEN,
       },
     }).then((response) => {
-      /* const workspaces = response.body.entries
-      cy.log(workspaces)
-      workspaces
-        .filter((workspace) => workspace.ownerType === 'user') */
-
       const workspaces = response.body.entries || []
       cy.log(workspaces)
       const userWorkspaces = workspaces
