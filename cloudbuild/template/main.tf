@@ -60,19 +60,10 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
     }
 
     step {
-      id         = "get-affected-0"
-      name       = "node:23"
-      entrypoint = "yarn"
-      args       = ["affected"]
-      wait_for   = ["install-yarn"]
-    }
-
-    step {
-      id         = "get-affected"
-      name       = "node:23"
-      entrypoint = "yarn"
-      args       = ["affected"]
-      wait_for   = ["get-affected-0"]
+      id       = "get-affected"
+      name     = "node:23"
+      script   = file("${path.module}/scripts/affected-apps.sh")
+      wait_for = ["install-yarn"]
     }
 
     step {
