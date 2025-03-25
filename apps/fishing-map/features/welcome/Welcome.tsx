@@ -31,7 +31,6 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
     DISABLE_WELCOME_POPUP_DICT[contentKey],
     { visible: true, showAgain: false }
   )
-  console.log('🚀 ~ Welcome ~ welcomePopup:', welcomePopup)
   const { t, i18n } = useTranslation()
 
   const welcomeModalContent = WELCOME_POPUP_CONTENT[contentKey]
