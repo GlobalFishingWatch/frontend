@@ -15,7 +15,7 @@ index b9fc1c0978857f2dcb954ce154049b74858e5dcd..336387bf7b8c9d4f87113a5e545babbf
          }
      }
      return true;
--}, _Gaxios_applyRequestInterceptors = 
+-}, _Gaxios_applyRequestInterceptors =
 +}, _Gaxios_applyRequestInterceptors =
  /**
   * Applies the request interceptors. The request interceptors are applied after the
@@ -24,7 +24,7 @@ index b9fc1c0978857f2dcb954ce154049b74858e5dcd..336387bf7b8c9d4f87113a5e545babbf
          }
      }
      return promiseChain;
--}, _Gaxios_applyResponseInterceptors = 
+-}, _Gaxios_applyResponseInterceptors =
 +}, _Gaxios_applyResponseInterceptors =
  /**
   * Applies the response interceptors. The response interceptors are applied after the
@@ -33,7 +33,7 @@ index b9fc1c0978857f2dcb954ce154049b74858e5dcd..336387bf7b8c9d4f87113a5e545babbf
          }
      }
      return promiseChain;
--}, _Gaxios_prepareRequest = 
+-}, _Gaxios_prepareRequest =
 +}, _Gaxios_prepareRequest =
  /**
   * Validates the options, merges them with defaults, and prepare request.
