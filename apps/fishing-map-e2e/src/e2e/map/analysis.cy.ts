@@ -36,7 +36,11 @@ describe('See the creation of analysis for an area', () => {
 
   //MAP-1218
   it('Should create an analysis for an EEZ area', () => {
-    getSidebar().findBySelLike('report-title').contains(SEARCH_EEZ_FULL_NAME)
+    cy.getBySel('report-title', { timeout: 10000 })
+      .should('exist')
+      .and('be.visible')
+      .and('include.text', 'Ecuadorian Exclusive Economic Zone')
+
     cy.getBySel('source-tags', getDOMTimeout(10000))
       .findBySelLike('source-tag-item')
       .contains('AIS')

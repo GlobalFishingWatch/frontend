@@ -10,16 +10,22 @@ export const deleteUserWorkspaces = () => {
         bearer: result[Cypress.config('baseUrl').replace('/map', '')].GFW_API_USER_TOKEN,
       },
     }).then((response) => {
-      const workspaces = response.body.entries
+      /* const workspaces = response.body.entries
+      cy.log(workspaces)
       workspaces
+        .filter((workspace) => workspace.ownerType === 'user') */
+
+      const workspaces = response.body.entries || []
+      cy.log(workspaces)
+      const userWorkspaces = workspaces
         .filter((workspace) => workspace.ownerType === 'user')
-        .forEach((workspace) => {
-          console.log(workspace)
+        .forEach((userWorkspaces) => {
+          console.log(userWorkspaces)
           cy.request({
             method: 'DELETE',
             url:
               Cypress.env('publicApiGateway') +
-              API_URL_WORKSPACES_DELETE.replace('%WORKSPACE_ID%', workspace.id),
+              API_URL_WORKSPACES_DELETE.replace('%WORKSPACE_ID%', userWorkspaces.id),
             auth: {
               bearer: result[Cypress.config('baseUrl').replace('/map', '')].GFW_API_USER_TOKEN,
             },

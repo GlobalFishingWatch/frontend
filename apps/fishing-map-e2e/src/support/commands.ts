@@ -86,7 +86,7 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.url().should('include', Cypress.config('baseUrl')).should('include', 'access-token=')
 
   // Validate that we request a token and is saved in the local storage
-  cy.wait('@requestToken', { requestTimeout: 20000 }).then((interception) => {
+  cy.wait('@requestToken').then((interception) => {
     const token = interception.response.body.token
 
     cy.wait(1000) // After request the token give a second so it can be added to the localstorage after the resquest is completed
