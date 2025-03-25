@@ -1,11 +1,19 @@
 locals {
-  ui_name       = "ui-${var.app_name}"
-  cloudrun_name = "${var.short_environment != "pro" ? "${var.short_environment}-" : ""}${local.ui_name}"
+  location         = "us-central1"
+  project          = "gfw-int-infrastructure"
+  ui_name          = "ui-${var.app_name}"
+  cloudrun_name    = "${var.short_environment != "pro" ? "${var.short_environment}-" : ""}${local.ui_name}"
+  cache_repository = "frontend-dependencies-cache"
+  cache_env = [
+    "PROJECT=${local.project}",
+    "REPOSITORY=${local.cache_repository}",
+    "LOCATION=${local.location}"
+  ]
 }
 
 resource "google_cloudbuild_trigger" "trigger" {
   name     = "${local.ui_name}-${var.short_environment}"
-  location = "us-central1"
+  location = local.location
 
 
   dynamic "github" {
@@ -30,42 +38,47 @@ resource "google_cloudbuild_trigger" "trigger" {
   }
 
 
-  service_account = "projects/gfw-int-infrastructure/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
+  service_account = "projects/${local.project}/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
   build {
 
     step {
-      id       = "restore_cache"
-      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod"
+      id         = "compute-cache-key"
+      name       = "gcr.io/cloud-builders/gcloud"
+      entrypoint = "bash"
+      args = [
+        "-c",
+        "echo $(sha256sum yarn.lock | cut -d' ' -f1) > /workspace/cache-key"
+      ]
       wait_for = ["-"]
-      script   = file("${path.module}/scripts/restore_cache.sh")
+    }
+
+    step {
+      id       = "restore-cache"
+      name     = "gcr.io/cloud-builders/gcloud"
+      script   = file("${path.module}/scripts/restore-cache.sh")
+      wait_for = ["compute-cache-key"]
+      env      = local.cache_env
     }
 
     step {
       id       = "install-yarn"
-      wait_for = ["restore_cache"]
-      name     = "node:21"
-      script   = file("${path.module}/scripts/install_yarn.sh")
-    }
-
-    step {
-      id       = "save_cache"
-      wait_for = ["install-yarn"]
-      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod"
-      script   = file("${path.module}/scripts/save_cache.sh")
+      name     = "node:23"
+      script   = file("${path.module}/scripts/install-yarn.sh")
+      wait_for = ["restore-cache"]
     }
 
     step {
       id       = "build-app"
-      wait_for = ["install-yarn"]
-      name     = "node:21"
+      name     = "node:23"
       script   = "yarn nx run ${var.app_name}:build --parallel"
+      wait_for = ["install-yarn"]
       env      = var.set_env_vars_build
     }
 
     step {
       id       = "build-image"
-      wait_for = ["build-app"]
       name     = "gcr.io/kaniko-project/executor:debug"
+      wait_for = ["build-app"]
       args = [
         "--destination=${var.docker_image}",
         "--build-arg", "APP_NAME=${var.app_name}",
@@ -98,6 +111,14 @@ resource "google_cloudbuild_trigger" "trigger" {
         "--service-account", "${var.service_account}",
         "--labels", "${join(",", [for k, v in var.labels : "${k}=${v}"])}",
       ]
+    }
+
+    step {
+      id       = "save-cache"
+      name     = "gcr.io/cloud-builders/gcloud"
+      script   = file("${path.module}/scripts/save-cache.sh")
+      wait_for = ["install-yarn"]
+      env      = local.cache_env
     }
 
     step {

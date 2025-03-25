@@ -1,9 +1,20 @@
+locals {
+  repository = "frontend-dependencies-cache"
+  location   = "us-central1"
+  project    = "gfw-int-infrastructure"
+  cache_env = [
+    "PROJECT=${local.project}",
+    "REPOSITORY=${local.repository}",
+    "LOCATION=${local.location}"
+  ]
+}
+
 resource "google_cloudbuild_trigger" "ui-trigger-affected" {
   name        = "ui-trigger-affected-${var.short_environment}"
   description = "Install and cache dependencies, then deploy affected apps"
   tags        = ["frontend"]
-  project     = "gfw-int-infrastructure"
-  location    = "us-central1"
+  project     = local.project
+  location    = local.location
 
   github {
     owner = "GlobalFishingWatch"
@@ -13,9 +24,8 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
     }
   }
 
-  service_account = "projects/gfw-int-infrastructure/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
+  service_account = "projects/${local.project}/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
   build {
-
     step {
       id       = "fetch"
       name     = "gcr.io/cloud-builders/git"
@@ -24,42 +34,63 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
     }
 
     step {
-      id       = "restore_cache"
-      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod"
-      script   = file("../cloudbuild-template/scripts/restore_cache.sh")
+      id         = "compute-cache-key"
+      name       = "gcr.io/cloud-builders/gcloud"
+      entrypoint = "bash"
+      args = [
+        "-c",
+        "echo $(sha256sum yarn.lock | cut -d' ' -f1) > /workspace/cache-key"
+      ]
       wait_for = ["-"]
     }
 
-
     step {
-      id       = "install-yarn"
-      name     = "node:21"
-      script   = file("../cloudbuild-template/scripts/install_yarn.sh")
-      wait_for = ["restore_cache"]
+      id       = "restore-cache"
+      name     = "gcr.io/cloud-builders/gcloud"
+      script   = file("../cloudbuild-template/scripts/restore-cache.sh")
+      wait_for = ["compute-cache-key"]
+      env      = local.cache_env
     }
 
     step {
-      id       = "save_cache"
-      name     = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/restore_cache:latest-prod"
-      script   = file("../cloudbuild-template/scripts/save_cache.sh")
-      wait_for = ["install-yarn"]
+      id       = "install-yarn"
+      name     = "node:23"
+      script   = file("../cloudbuild-template/scripts/install-yarn.sh")
+      wait_for = ["restore-cache"]
+    }
+
+    step {
+      id         = "get-affected-0"
+      name       = "node:23"
+      entrypoint = "yarn"
+      args       = ["affected"]
+      wait_for   = ["install-yarn"]
     }
 
     step {
       id         = "get-affected"
-      name       = "node:21"
+      name       = "node:23"
       entrypoint = "yarn"
       args       = ["affected"]
+      wait_for   = ["get-affected-0"]
     }
 
     step {
       id       = "deploy-cloud-run"
       name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("./scripts/deploy-cloud-run.sh")
+      script   = file("${path.module}/scripts/deploy-cloud-run.sh")
       wait_for = ["get-affected"]
       env = [
         "SHORT_ENV=${var.short_environment}"
       ]
+    }
+
+    step {
+      id       = "save-cache"
+      name     = "gcr.io/cloud-builders/gcloud"
+      script   = file("../cloudbuild-template/scripts/save-cache.sh")
+      wait_for = ["install-yarn"]
+      env      = local.cache_env
     }
 
     options {

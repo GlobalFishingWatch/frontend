@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 SHORT_ENV=${SHORT_ENV:-"dev"}
-cat affected-apps.txt
 AFFECTED_APPS=(`cat affected-apps.txt`)
 echo "Going to trigger builds for the following apps in environment: ${SHORT_ENV}"
 printf '%s\n' "${AFFECTED_APPS[@]//,/}"
