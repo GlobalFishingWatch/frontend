@@ -7,11 +7,10 @@ import cx from 'classnames'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
-import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
-import { setHighlightedEvents } from 'features/timebar/timebar.slice'
+import { useHighlightedEventsConnect } from 'features/timebar/timebar.hooks'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
 import type VesselEvent from 'features/vessel/activity/event/Event'
 import Event, { EVENT_HEIGHT } from 'features/vessel/activity/event/Event'
@@ -36,10 +35,10 @@ import styles from '../ActivityGroupedList.module.css'
 const ActivityByVoyage = () => {
   const { t } = useTranslation()
   const voyages = useSelector(selectEventsGroupedByVoyages)
-  const dispatch = useAppDispatch()
 
   const isSmallScreen = useSmallScreen()
   const { dispatchQueryParams } = useLocationConnect()
+  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const visibleEvents = useSelector(selectVisibleEvents)
   const selectedVesselEventId = useSelector(selectVesselEventId)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
@@ -94,12 +93,12 @@ const ActivityByVoyage = () => {
   const onEventMapHover = useCallback(
     (event?: VesselEvent) => {
       if (event?.id) {
-        dispatch(setHighlightedEvents([event.id]))
+        dispatchHighlightedEvents([event.id])
       } else {
-        dispatch(setHighlightedEvents([]))
+        dispatchHighlightedEvents([])
       }
     },
-    [dispatch]
+    [dispatchHighlightedEvents]
   )
 
   const renderedComponent = useMemo(() => {

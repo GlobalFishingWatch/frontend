@@ -7,7 +7,9 @@ import { atom, useAtom, useAtomValue } from 'jotai'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 
+import { useAppDispatch } from 'features/app/app.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
+import { setSelectedHighlightedEvent } from 'features/timebar/timebar.slice'
 import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/VesselActivity'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import {
@@ -61,7 +63,16 @@ export function useVirtuosoScroll(debouncedTime = 150) {
 export function useVirtuosoScrollToEvent() {
   const { scrollToIndex } = useVirtuosoScroll()
   const [{ isScrollingRef }, setVirtuosoScrollAtom] = useAtom(virtuosoScrollAtom)
+  const dispatch = useAppDispatch()
   const events = useSelector(selectVirtuosoVesselProfileEventsEvents)?.events
+
+  const setSelectedEventId = useCallback(
+    (eventId: string) => {
+      setVirtuosoScrollAtom((prev) => ({ ...prev, selectedEventId: eventId }))
+      dispatch(setSelectedHighlightedEvent(eventId))
+    },
+    [setVirtuosoScrollAtom, dispatch]
+  )
 
   const scrollToEvent = useCallback(
     ({
@@ -84,12 +95,12 @@ export function useVirtuosoScrollToEvent() {
         if (selectedIndex !== undefined && selectedIndex !== -1) {
           const selectedEventId = eventId || events?.[selectedIndex]?.id
           isScrollingRef.current = true
-          setVirtuosoScrollAtom((prev) => ({ ...prev, selectedEventId }))
+          setSelectedEventId(selectedEventId)
           scrollToIndex({ index: selectedIndex, behavior })
         }
       }
     },
-    [events, isScrollingRef, scrollToIndex, setVirtuosoScrollAtom]
+    [events, isScrollingRef, scrollToIndex, setSelectedEventId]
   )
 
   return scrollToEvent
@@ -153,8 +164,9 @@ export function useEventsScroll(
   const setSelectedEventId = useCallback(
     (eventId: string | undefined) => {
       setVirtuosoScrollAtom((prev) => ({ ...prev, selectedEventId: eventId }))
+      dispatch(setSelectedHighlightedEvent(eventId))
     },
-    [setVirtuosoScrollAtom]
+    [setVirtuosoScrollAtom, dispatch]
   )
 
   const selectEventInCenter = useCallback(() => {

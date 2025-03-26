@@ -7,9 +7,8 @@ import cx from 'classnames'
 import type { EventType } from '@globalfishingwatch/api-types'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
-import { setHighlightedEvents } from 'features/timebar/timebar.slice'
+import { useHighlightedEventsConnect } from 'features/timebar/timebar.hooks'
 import { useVesselEventBounds } from 'features/vessel/activity/event/event.bounds'
 import { useEventActivityToggle } from 'features/vessel/activity/event/event-activity.hooks'
 import {
@@ -36,10 +35,10 @@ import styles from '../ActivityGroupedList.module.css'
 function ActivityByType() {
   const { t } = useTranslation()
   const activityGroups = useSelector(selectEventsGroupedByType)
-  const dispatch = useAppDispatch()
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [selectedEventGroup, setSelectedEventGroup] = useEventActivityToggle()
   const selectedVesselEventId = useSelector(selectVesselEventId)
+  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const vesselLayer = useVesselProfileLayer()
   const fitEventBounds = useVesselEventBounds(vesselLayer)
   const { virtuosoRef } = useVirtuosoScroll()
@@ -76,12 +75,12 @@ function ActivityByType() {
   const onMapHover = useCallback(
     (event?: VesselEvent) => {
       if (event?.id) {
-        dispatch(setHighlightedEvents([event.id]))
+        dispatchHighlightedEvents([event.id])
       } else {
-        dispatch(setHighlightedEvents([]))
+        dispatchHighlightedEvents([])
       }
     },
-    [dispatch]
+    [dispatchHighlightedEvents]
   )
 
   const handleEventClick = useCallback(
