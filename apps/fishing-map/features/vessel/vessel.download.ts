@@ -14,7 +14,7 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 type CsvConfig = {
   label: string
-  accessor: string
+  accessor: string | string[]
   transform?: (value: any) => any
 }
 
@@ -57,7 +57,9 @@ const objectArrayToCSV = (
   const values = data.map((d) => {
     return csvConfig
       .map(({ accessor, transform }) => {
-        const value = getter(d, accessor)
+        const value = Array.isArray(accessor)
+          ? accessor.find((a) => getter(d, a))
+          : getter(d, accessor)
         const transformedValue = transform ? transform(value) : value
         return transformedValue ? parseCSVString(transformedValue) : ''
       })
@@ -116,7 +118,10 @@ const EVENTS_CSV_CONFIG: CsvConfig[] = [
   { label: 'voyage', accessor: 'voyage' },
   { label: 'latitude', accessor: 'coordinates[1]' },
   { label: 'longitude', accessor: 'coordinates[0]' },
-  { label: 'portVisitName', accessor: 'port_visit.intermediateAnchorage.name' },
+  {
+    label: 'portVisitName',
+    accessor: ['port_visit.intermediateAnchorage.name', 'port_visit.intermediateAnchorage.id'],
+  },
   { label: 'portVisitFlag', accessor: 'port_visit.intermediateAnchorage.flag' },
   // { label: 'encounterAuthorization', accessor: 'encounter.mainVesselAuthorizationStatus' },
   { label: 'encounteredVesselId', accessor: 'encounter.vessel.id' },

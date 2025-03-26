@@ -41,8 +41,12 @@ const VoyageGroup: React.FC<EventProps> = ({
     const parts: string[] = []
     const firstVoyageEvent = events[events.length - 1]
     const latestVoyageEvent = events[0]
-    const voyageStart = firstVoyageEvent.port_visit?.intermediateAnchorage?.name
-    const voyageEnd = latestVoyageEvent.port_visit?.intermediateAnchorage?.name
+    const voyageStart =
+      firstVoyageEvent.port_visit?.intermediateAnchorage?.name ||
+      firstVoyageEvent.port_visit?.intermediateAnchorage?.id
+    const voyageEnd =
+      latestVoyageEvent.port_visit?.intermediateAnchorage?.name ||
+      latestVoyageEvent.port_visit?.intermediateAnchorage?.id
     const startDate = voyageStart ? firstVoyageEvent.end : start
     const endDate = voyageEnd ? latestVoyageEvent.start : end
     const eventCount = events.filter((e) => e.type !== EventTypes.Port).length

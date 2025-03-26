@@ -101,10 +101,11 @@ export function useActivityEventTranslations() {
             )
           } else return ''
         case EventTypes.Port: {
-          const { name, flag } = event.port_visit?.intermediateAnchorage ?? {}
+          const { id, name, flag } = event.port_visit?.intermediateAnchorage ?? {}
+          const portName = name || id
           const portType = event.subType || event.type
-          const portLabel = name
-            ? [name, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
+          const portLabel = portName
+            ? [portName, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
           return t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
             port: formatInfoField(portLabel, 'port'),
