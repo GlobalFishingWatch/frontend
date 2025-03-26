@@ -172,63 +172,6 @@ const MapComponent = (): React.ReactElement<any> => {
     [syncViewStateToRedux]
   )
 
-  // Handle click events
-  const handleDeckClick = useCallback(
-    (info: any, event: any) => {
-      if (info.object) {
-        // Format the event in the way the original click handler expects
-        const feature = {
-          properties: {
-            timestamp: info.object.timestamp,
-          },
-        }
-
-        const position = {
-          latitude: info.object.position ? info.object.position[1] : info.coordinate[1],
-          longitude: info.object.position ? info.object.position[0] : info.coordinate[0],
-        }
-
-        onMapClick({
-          target: {
-            queryRenderedFeatures: () => [
-              {
-                source: 'vessel-positions',
-                properties: feature.properties,
-              },
-            ],
-          },
-          lngLat: {
-            lat: position.latitude,
-            lng: position.longitude,
-          },
-          point: [info.x, info.y],
-        } as any)
-
-        return true
-      } else {
-        // Handle clicks on empty areas - pass to original click handler
-        const position = {
-          latitude: info.coordinate[1],
-          longitude: info.coordinate[0],
-        }
-
-        onMapClick({
-          target: {
-            queryRenderedFeatures: () => [],
-          },
-          lngLat: {
-            lat: position.latitude,
-            lng: position.longitude,
-          },
-          point: [info.x, info.y],
-        } as any)
-      }
-
-      return false
-    },
-    [onMapClick]
-  )
-
   // Handle hover events
   const handleDeckHover = useCallback((info: any) => {
     const isHovering = Boolean(info.object)
@@ -436,7 +379,6 @@ const MapComponent = (): React.ReactElement<any> => {
 
   // Combine all layers for rendering
   const allLayers = useMemo(() => {
-    console.log('🚀 ~ allLayers ~ dataLayers:', dataLayers)
     return [basemapLayer, ...dataLayers]
   }, [basemapLayer, dataLayers])
 
@@ -497,7 +439,7 @@ const MapComponent = (): React.ReactElement<any> => {
         controller={true}
         getCursor={() => cursor}
         onViewStateChange={handleViewStateChange}
-        onClick={handleDeckClick}
+        onClick={onMapClick}
         onHover={handleDeckHover}
         getTooltip={getTooltip}
         pickingRadius={1}

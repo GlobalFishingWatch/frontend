@@ -4,6 +4,7 @@ import { OrthographicView } from '@deck.gl/core'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import DeckGL from '@deck.gl/react'
 
+import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import { TimelineContext } from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'
@@ -38,39 +39,16 @@ function getGradientColor(position: number): [number, number, number] {
     return colors[0].map((start, i) => Math.round(start + (colors[1][i] - start) * t)) as [
       number,
       number,
-      number
+      number,
     ]
   } else {
     const t = (p - 0.5) * 2
     return colors[1].map((start, i) => Math.round(start + (colors[2][i] - start) * t)) as [
       number,
       number,
-      number
+      number,
     ]
   }
-}
-
-// Helper function to convert hex colors to RGB array
-function hexToRgb(
-  hex: string,
-  handleOpacity: boolean = false
-): [number, number, number] | [number, number, number, number] {
-  // Handle 8-digit hex (#RRGGBBAA)
-  const result8 = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  if (result8 && handleOpacity) {
-    return [
-      parseInt(result8[1], 16),
-      parseInt(result8[2], 16),
-      parseInt(result8[3], 16),
-      parseInt(result8[4], 16),
-    ]
-  }
-
-  // Handle 6-digit hex (#RRGGBB)
-  const result6 = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return result6
-    ? [parseInt(result6[1], 16), parseInt(result6[2], 16), parseInt(result6[3], 16)]
-    : [128, 128, 128]
 }
 
 export const VesselEventsPointsGraphDeckGL = () => {
@@ -110,10 +88,10 @@ export const VesselEventsPointsGraphDeckGL = () => {
         timebarMode === Field.speed
           ? vesselPoint.speed
           : timebarMode === Field.distanceFromPort
-          ? vesselPoint.distanceFromPort
-          : timebarMode === Field.elevation
-          ? vesselPoint.elevation
-          : 1
+            ? vesselPoint.distanceFromPort
+            : timebarMode === Field.elevation
+              ? vesselPoint.elevation
+              : 1
 
       const bottom =
         outerHeight -
@@ -130,8 +108,8 @@ export const VesselEventsPointsGraphDeckGL = () => {
         color: vesselPoint.outOfRange
           ? '#000'
           : colorMode === 'all' || colorMode === 'labels'
-          ? getActionColor(vesselPoint.action as ActionType)
-          : '#8091AB',
+            ? getActionColor(vesselPoint.action as ActionType)
+            : '#8091AB',
         gradient: vesselPoint.outOfRange ? false : colorMode === 'all' || colorMode === 'content',
         yPosition:
           Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale),
@@ -152,8 +130,8 @@ export const VesselEventsPointsGraphDeckGL = () => {
         lineWidthMinPixels: 1,
         getPosition: (d) => d.position,
         getFillColor: (d) =>
-          d.gradient ? getGradientColor(d.yPosition / outerHeight) : hexToRgb(d.color, true),
-        getLineColor: (d) => hexToRgb(d.color),
+          d.gradient ? getGradientColor(d.yPosition / outerHeight) : hexToDeckColor(d.color),
+        getLineColor: (d) => hexToDeckColor(d.color),
         onClick: handleEventClick,
       }),
     ]
