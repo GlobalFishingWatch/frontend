@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import type { PickingInfo } from '@deck.gl/core'
 import { DateTime } from 'luxon'
 import type { MapMouseEvent } from 'maplibre-gl'
 
 import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
-import { TrackLabelerVesselLayer } from '@globalfishingwatch/deck-layers'
+import { hexToDeckColor, TrackLabelerVesselLayer } from '@globalfishingwatch/deck-layers'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { selectEditing } from '../../features/rulers/rulers.selectors'
@@ -45,43 +46,30 @@ export const useMapClick = () => {
   const { onEventPointClick } = useSegmentsLabeledConnect()
   const segments = useSelector(selectedtracks)
   const onEventClick = useCallback(
-    (feature: any, position: CoordinatePosition) => {
-      const event = feature.properties
-      onEventPointClick(segments, event.timestamp, position)
-      return true
+    (feature: TrackLabelerPoint) => {
+      onEventPointClick(segments, feature.timestamp, {
+        latitude: feature.position[0],
+        longitude: feature.position[1],
+      })
     },
     [onEventPointClick, segments]
   )
-  const layerMapClickHandlers: any = useMemo(
-    () => ({
-      'vessel-positions': onEventClick,
-    }),
-    [onEventClick]
-  )
   const onMapClick = useCallback(
-    (e: MapMouseEvent) => {
-      const features = e.target.queryRenderedFeatures(e.point)
-      if (!rulersEditing && features && features.length) {
-        const position = { latitude: e.lngLat.lat, longitude: e.lngLat.lng }
-        // .some() returns true as soon as any of the callbacks return true, short-circuiting the execution of the rest
-        features.some((feature: any) => {
-          const eventHandler = layerMapClickHandlers[feature.source]
-          // returns true when is a single event so won't run the following ones
-          return eventHandler ? eventHandler(feature, position) : false
-        })
+    (info: PickingInfo) => {
+      if (!rulersEditing && info.object) {
+        onEventClick(info.object)
       } else {
-        if (rulersEditing === true) {
+        if (rulersEditing === true && info.coordinate) {
           dispatch(
             editRuler({
-              longitude: e.lngLat.lng,
-              latitude: e.lngLat.lat,
+              longitude: info.coordinate[0],
+              latitude: info.coordinate[1],
             })
           )
-          return
         }
       }
     },
-    [rulersEditing, layerMapClickHandlers, dispatch]
+    [rulersEditing, onEventClick, dispatch]
   )
   return { onMapClick }
 }
@@ -328,7 +316,7 @@ export const useHiddenLabelsConnect = () => {
 export const useDeckGLMap = (
   pointsData: TrackLabelerPoint[],
   highlightedTime: HighlightedTime | undefined,
-  onClick: any
+  onClick: (info: PickingInfo) => void
 ) => {
   const formattedTime: { start: number; end: number } | null = useMemo(() => {
     if (highlightedTime?.start && highlightedTime?.end) {
@@ -339,25 +327,7 @@ export const useDeckGLMap = (
     }
     return null
   }, [highlightedTime])
-  // Convert hex color to RGB
-  const hexToRgb = (hex: string, alpha: number): [number, number, number, number] => {
-    try {
-      const cleanHex = hex.replace('#', '')
-      const r = parseInt(cleanHex.substring(0, 2), 16)
-      const g = parseInt(cleanHex.substring(2, 4), 16)
-      const b = parseInt(cleanHex.substring(4, 6), 16)
 
-      if (isNaN(r) || isNaN(g) || isNaN(b)) {
-        return [255, 0, 0, alpha] as [number, number, number, number] // Fallback to red
-      }
-
-      return [r, g, b, alpha] as [number, number, number, number]
-    } catch (e) {
-      return [255, 0, 0, alpha] as [number, number, number, number] // Fallback to red
-    }
-  }
-
-  // Create deck.gl layers
   const layers = useMemo(() => {
     if (!pointsData.length) {
       return []
@@ -369,7 +339,8 @@ export const useDeckGLMap = (
       pickable: true,
       iconAtlasUrl: 'src/assets/images/vessel-sprite.png',
       highlightedTime,
-      getColor: (d): [number, number, number, number] => {
+      getColor: (d) => hexToDeckColor(d.color, 0.8),
+      getHighlightColor: (d) => {
         if (
           formattedTime &&
           d.timestamp >= formattedTime.start &&
@@ -377,42 +348,9 @@ export const useDeckGLMap = (
         ) {
           return [255, 255, 255, 200]
         }
-        if (d.color) {
-          return hexToRgb(d.color, 200)
-        }
-        return [255, 0, 0, 255]
+        return [0, 0, 0, 0]
       },
-      onClick: (info) => {
-        console.log('🚀 ~ layers ~ info:', info)
-        if (info.object) {
-          const feature = {
-            properties: {
-              timestamp: info.object.timestamp,
-            },
-          }
-          const position = {
-            longitude: info.object.position[0],
-            latitude: info.object.position[1],
-          }
-          onClick({
-            target: {
-              queryRenderedFeatures: () => [
-                {
-                  source: 'vessel-positions',
-                  properties: feature.properties,
-                },
-              ],
-            },
-            lngLat: {
-              lat: position.latitude,
-              lng: position.longitude,
-            },
-            point: [info.x, info.y],
-          } as any)
-          return true
-        }
-        return false
-      },
+      onClick,
     })
 
     return [vesselLayer]
