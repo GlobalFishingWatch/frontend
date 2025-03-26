@@ -268,6 +268,7 @@ const WELCOME_POPUP_CONTENT: {
           <li>Rabone, M., Wiethase, J. H., Simon-Lledó, E., Emery, A. M., Jones, D. O., Dahlgren, T. G., ... & Glover, A. G. (2023). How many metazoan species live in the world’s largest mineral exploration region?. Current biology, 33(12), 2383-2396. https://doi.org/10.1016/j.cub.2023.04.052</li>
           <li>Niner, H. J., Ardron, J. A., Escobar, E. G., Gianni, M., Jaeckel, A., Jones, D. O., ... & Gjerde, K. M. (2018). Deep-sea mining with no net loss of biodiversity—an impossible aim. Frontiers in Marine Science, 5, 53. https://doi.org/10.3389/fmars.2018.00053</li>
         </ul>
+        <img src="${PATH_BASENAME}/images/welcome-popup/deep-sea-mining.jpg" alt="Deep Sea Mining Watch" />
         <p>For inquiries, please contact <a href="mailto:bosl-contact@ucsb.edu">bosl-contact@ucsb.edu</a></p>
       `,
     },
