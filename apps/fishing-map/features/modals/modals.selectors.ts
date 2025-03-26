@@ -1,6 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import { DEFAULT_WORKSPACE_CATEGORY, WorkspaceCategory } from 'data/workspaces'
+import {
+  DEEP_SEA_MINING_WORKSPACE_ID,
+  DEFAULT_WORKSPACE_CATEGORY,
+  WorkspaceCategory,
+} from 'data/workspaces'
 import {
   selectDownloadActivityModalOpen,
   selectDownloadTrackModalOpen,
@@ -70,7 +74,7 @@ export const selectWelcomeModalKey = createSelector(
   ): WelcomeContentKey => {
     if (
       locationCategory === WorkspaceCategory.FishingActivity &&
-      workspaceId === 'deep-sea-mining-public'
+      workspaceId === DEEP_SEA_MINING_WORKSPACE_ID
     ) {
       return 'deep-sea-mining'
     }
