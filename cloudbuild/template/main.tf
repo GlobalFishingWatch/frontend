@@ -72,7 +72,8 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
       script   = file("${path.module}/scripts/deploy-cloud-run.sh")
       wait_for = ["get-affected"]
       env = [
-        "SHORT_ENV=${var.short_environment}"
+        "SHORT_ENV=${var.short_environment}",
+        "LOCATION=${local.location}"
       ]
     }
 
