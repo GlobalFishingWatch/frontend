@@ -1,29 +1,24 @@
-import type { Layer, LayerProps, LayersList } from '@deck.gl/core'
+import type { Color, Layer, LayerProps, LayersList } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { IconLayer, PathLayer } from '@deck.gl/layers'
-import type { Position } from 'geojson'
 
 import { VESSEL_SPRITE_ICON_MAPPING } from '../../utils'
 import { PATH_BASENAME } from '../layers.config'
 
-type SimplifiedVesselLayerProps = LayerProps & {
-  data: {
-    position: Position[]
-    course?: number
-    speed?: number
-    depth?: number
-    timestamp: number
-    action: string
-  }[]
+import type { TrackLabelerPoint } from './vessel.types'
+
+type TrackLabelerVesselLayerProps = LayerProps & {
+  data: TrackLabelerPoint[]
   iconAtlasUrl?: string
-  getColor: (d: LayerProps['data']) => [number, number, number, number]
+  getColor: (d: TrackLabelerPoint) => Color
+  highlightedTime: { start: string; end: string } | null
 }
 
-export class SimplifiedVesselLayer extends CompositeLayer<SimplifiedVesselLayerProps> {
-  static layerName = 'SimplifiedVesselLayer'
+export class TrackLabelerVesselLayer extends CompositeLayer<TrackLabelerVesselLayerProps> {
+  static layerName = 'TrackLabelerVesselLayer'
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
-    const { data, getColor, iconAtlasUrl } = this.props
+    const { data, getColor, iconAtlasUrl, highlightedTime } = this.props
 
     return [
       new PathLayer({
@@ -43,8 +38,11 @@ export class SimplifiedVesselLayer extends CompositeLayer<SimplifiedVesselLayerP
         getAngle: (d: any) => d.course,
         getPosition: (d) => d.position,
         getColor,
-        getSize: 20,
+        getSize: 15,
         sizeUnits: 'pixels',
+        updateTriggers: {
+          getColor: [highlightedTime],
+        },
       }),
     ]
   }

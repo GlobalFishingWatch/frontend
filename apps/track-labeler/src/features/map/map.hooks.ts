@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import type { LayerProps } from '@deck.gl/core'
-import { ScatterplotLayer } from '@deck.gl/layers'
+import { DateTime } from 'luxon'
 import type { MapMouseEvent } from 'maplibre-gl'
 
-import { SimplifiedVesselLayer } from '@globalfishingwatch/deck-layers'
+import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
+import { TrackLabelerVesselLayer } from '@globalfishingwatch/deck-layers'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { selectEditing } from '../../features/rulers/rulers.selectors'
@@ -112,6 +112,8 @@ export interface Viewport extends LatLon {
   longitude: number
   zoom: number
 }
+
+export type HighlightedTime = { start: string; end: string }
 export const useViewportConnect = () => {
   const dispatch = useAppDispatch()
   const { zoom, latitude, longitude } = useSelector(selectViewport)
@@ -323,9 +325,22 @@ export const useHiddenLabelsConnect = () => {
   return { dispatchHiddenLabels, hiddenLabels }
 }
 
-export const useDeckGLMap = (pointsData: any[], highlightedTime: number | null, onClick: any) => {
+export const useDeckGLMap = (
+  pointsData: TrackLabelerPoint[],
+  highlightedTime: HighlightedTime | undefined,
+  onClick: any
+) => {
+  const formattedTime: { start: number; end: number } | null = useMemo(() => {
+    if (highlightedTime?.start && highlightedTime?.end) {
+      return {
+        start: DateTime.fromISO(highlightedTime.start).toMillis(),
+        end: DateTime.fromISO(highlightedTime.end).toMillis(),
+      }
+    }
+    return null
+  }, [highlightedTime])
   // Convert hex color to RGB
-  const hexToRgb = (hex: string, withAlpha = false) => {
+  const hexToRgb = (hex: string, alpha: number): [number, number, number, number] => {
     try {
       const cleanHex = hex.replace('#', '')
       const r = parseInt(cleanHex.substring(0, 2), 16)
@@ -333,35 +348,42 @@ export const useDeckGLMap = (pointsData: any[], highlightedTime: number | null, 
       const b = parseInt(cleanHex.substring(4, 6), 16)
 
       if (isNaN(r) || isNaN(g) || isNaN(b)) {
-        return withAlpha ? [255, 0, 0, 200] : [255, 0, 0] // Fallback to red
+        return [255, 0, 0, alpha] as [number, number, number, number] // Fallback to red
       }
 
-      return withAlpha ? [r, g, b, 200] : [r, g, b]
+      return [r, g, b, alpha] as [number, number, number, number]
     } catch (e) {
-      return withAlpha ? [255, 0, 0, 200] : [255, 0, 0] // Fallback to red
+      return [255, 0, 0, alpha] as [number, number, number, number] // Fallback to red
     }
   }
-
-  // Track the data size
-  const dataSize = useMemo(() => pointsData.length, [pointsData])
 
   // Create deck.gl layers
   const layers = useMemo(() => {
     if (!pointsData.length) {
       return []
     }
-    const scatterplotLayer = new SimplifiedVesselLayer({
+
+    const vesselLayer = new TrackLabelerVesselLayer({
       id: 'track-points',
       data: pointsData,
       pickable: true,
       iconAtlasUrl: 'src/assets/images/vessel-sprite.png',
-      getColor: (d: LayerProps['data']): [number, number, number, number] => {
-        if (d.color) {
-          return hexToRgb(d.color, true) as [number, number, number, number]
+      highlightedTime,
+      getColor: (d): [number, number, number, number] => {
+        if (
+          formattedTime &&
+          d.timestamp >= formattedTime.start &&
+          d.timestamp <= formattedTime.end
+        ) {
+          return [255, 255, 255, 200]
         }
-        return [255, 0, 0, 255] // Bright red and fully opaque
+        if (d.color) {
+          return hexToRgb(d.color, 200)
+        }
+        return [255, 0, 0, 255]
       },
       onClick: (info) => {
+        console.log('🚀 ~ layers ~ info:', info)
         if (info.object) {
           const feature = {
             properties: {
@@ -369,8 +391,8 @@ export const useDeckGLMap = (pointsData: any[], highlightedTime: number | null, 
             },
           }
           const position = {
-            latitude: info.object.position[1],
             longitude: info.object.position[0],
+            latitude: info.object.position[1],
           }
           onClick({
             target: {
@@ -393,8 +415,8 @@ export const useDeckGLMap = (pointsData: any[], highlightedTime: number | null, 
       },
     })
 
-    return [scatterplotLayer]
-  }, [pointsData, highlightedTime, onClick])
+    return [vesselLayer]
+  }, [pointsData, highlightedTime, formattedTime, onClick])
 
-  return { layers, pointCount: dataSize }
+  return { layers }
 }

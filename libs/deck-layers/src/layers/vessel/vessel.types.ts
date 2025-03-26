@@ -1,5 +1,6 @@
 import type { Color, PickingInfo } from '@deck.gl/core'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Position } from 'geojson'
 
 import type { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 
@@ -31,6 +32,16 @@ export type VesselEventProperties = ApiEvent & {
   color: string
   title: string
   vesselId: string
+}
+
+export type TrackLabelerPoint = {
+  position: Position[]
+  course?: number
+  speed?: number
+  depth?: number
+  timestamp: number
+  action: string
+  color: string
 }
 
 export type VesselEventPickingObject = VesselEventProperties &
