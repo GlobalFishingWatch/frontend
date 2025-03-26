@@ -28,8 +28,10 @@ export default defineConfig({
     }),
     nxViteTsPaths(),
     TanStackRouterVite({
-      routesDirectory: './apps/image-labeler/src/routes',
-      generatedRouteTree: './apps/image-labeler/src/routeTree.gen.ts',
+      target: 'react',
+      autoCodeSplitting: true,
+      // routesDirectory: './apps/image-labeler/src/routes',
+      // generatedRouteTree: './apps/image-labeler/src/routeTree.gen.ts',
     }),
     viteStaticCopy({
       targets: [

@@ -54,3 +54,7 @@
   min-width: 15rem;
   padding: 0 5rem;
 }
+
+.secondary {
+  color: var(--color-secondary-blue);
+}

@@ -9,7 +9,11 @@ import { Button, InputText, Modal, Spinner } from '@globalfishingwatch/ui-compon
 
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { WIZARD_TEMPLATE_ID } from 'data/highlighted-workspaces/marine-manager.dataviews'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import {
+  DEEP_SEA_MINING_WORKSPACE_ID,
+  DEFAULT_WORKSPACE_ID,
+  WorkspaceCategory,
+} from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -169,6 +173,9 @@ function Workspace() {
                 />
               )} */}
             </h2>
+            {workspace?.id === DEEP_SEA_MINING_WORKSPACE_ID && (
+              <h3 className={styles.subTitle}>{workspace.description}</h3>
+            )}
             <Modal
               appSelector={ROOT_DOM_ELEMENT}
               title={t('workspace.edit', 'Edit workspace')}

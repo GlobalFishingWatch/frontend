@@ -1,4 +1,5 @@
 import { IS_PRODUCTION_WORKSPACE_ENV, PATH_BASENAME } from 'data/config'
+import { DEEP_SEA_MINING_WORKSPACE_ID } from 'data/workspaces'
 
 import type workspaceTranslations from '../../public/locales/source/workspaces.json'
 
@@ -20,7 +21,7 @@ export const FISHING_MAP_WORKSPACES: FishingMapWorkspace[] = [
     img: `${PATH_BASENAME}/images/highlighted-workspaces/carrier-portal.jpg`,
   },
   {
-    id: 'deep-sea-mining-public',
+    id: DEEP_SEA_MINING_WORKSPACE_ID,
     img: `${PATH_BASENAME}/images/highlighted-workspaces/deep-sea-mining.jpg`,
     reportId: 'deep_sea_mining-public',
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
