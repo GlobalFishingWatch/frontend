@@ -195,7 +195,6 @@ export const selectUrlStartQuery = selectQueryParam('start')
 export const selectUrlEndQuery = selectQueryParam('end')
 export const selectMapDrawingMode = selectQueryParam('mapDrawing')
 export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
-export const selectFeatureFlags = selectQueryParam('featureFlags')
 
 // Reports
 export const selectUrlBufferValueQuery = selectQueryParam('reportBufferValue')

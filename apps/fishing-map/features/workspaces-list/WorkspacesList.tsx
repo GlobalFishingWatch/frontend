@@ -9,12 +9,9 @@ import type { ReportWorkspaceId } from 'data/highlighted-workspaces/reports'
 import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
-import {
-  isValidLocationCategory,
-  selectFeatureFlags,
-  selectLocationCategory,
-} from 'routes/routes.selectors'
+import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 
 import type { HighlightedWorkspace } from './workspaces-list.selectors'
 import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'

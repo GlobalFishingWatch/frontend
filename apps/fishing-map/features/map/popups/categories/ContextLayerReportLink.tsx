@@ -16,10 +16,10 @@ import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { selectFeatureFlags, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import { WORKSPACE_REPORT } from 'routes/routes'
-import { selectFeatureFlags, selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'routes/routes.selectors'
 
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
 
