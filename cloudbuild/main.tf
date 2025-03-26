@@ -8,9 +8,9 @@ module "develop" {
   branch_name       = "develop"
 }
 
-# module "staging" {
-#   source            = "./template"
-#   short_environment = "sta"
-#   branch_name       = "main"
-# }
+module "staging" {
+  source            = "./template"
+  short_environment = "sta"
+  branch_name       = "main"
+}
 
