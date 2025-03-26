@@ -7,6 +7,7 @@ import type { QueryParams, WorkspaceParam } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
 import {
+  HOME,
   PORT_REPORT,
   REPORT,
   ROUTES_WITH_WORKSPACES,
@@ -34,6 +35,11 @@ export const selectIsWorkspaceLocation = createSelector([selectLocationType], (l
 
 export const selectIsRouteWithWorkspace = createSelector([selectLocationType], (locationType) =>
   ROUTES_WITH_WORKSPACES.includes(locationType)
+)
+
+export const selectIsDefaultWorkspaceLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === HOME
 )
 
 export const selectIsVesselLocation = createSelector(

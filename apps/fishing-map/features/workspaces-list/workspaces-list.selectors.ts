@@ -3,8 +3,6 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { WorkspaceViewport } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { FishingMapWorkspace } from 'data/highlighted-workspaces/fishing-activity'
-import { FISHING_MAP_WORKSPACES } from 'data/highlighted-workspaces/fishing-activity'
 import type { MarineManagerWorkspace } from 'data/highlighted-workspaces/marine-manager'
 import { MARINE_MANAGER_WORKSPACES } from 'data/highlighted-workspaces/marine-manager'
 import type { ReportWorkspace } from 'data/highlighted-workspaces/reports'
@@ -52,9 +50,9 @@ export const selectHighlightedWorkspaces = createSelector(
   (locale, isGlobalReportsEnabled): HighlightedWorkspaces[] => {
     const WORKSPACES_BY_CATEGORY: Record<
       HighlightedWorkspaceCategory,
-      (MarineManagerWorkspace | FishingMapWorkspace | ReportWorkspace)[]
+      (MarineManagerWorkspace | ReportWorkspace)[]
     > = {
-      'fishing-activity': FISHING_MAP_WORKSPACES,
+      'fishing-activity': [],
       'marine-manager': MARINE_MANAGER_WORKSPACES,
       reports: isGlobalReportsEnabled ? REPORTS_INDEX : [],
     }
