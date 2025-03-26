@@ -11,6 +11,7 @@ type TrackLabelerVesselLayerProps = LayerProps & {
   data: TrackLabelerPoint[]
   iconAtlasUrl?: string
   getColor: (d: TrackLabelerPoint) => Color
+  getHighlightColor?: (d: TrackLabelerPoint) => Color
   highlightedTime: { start: string; end: string } | null
 }
 
@@ -18,15 +19,16 @@ export class TrackLabelerVesselLayer extends CompositeLayer<TrackLabelerVesselLa
   static layerName = 'TrackLabelerVesselLayer'
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
-    const { data, getColor, iconAtlasUrl, highlightedTime } = this.props
-
+    const { data, getColor, iconAtlasUrl, highlightedTime, getHighlightColor } = this.props
+    const path = data.map((d) => d.position)
     return [
       new PathLayer({
         id: `${this.props.id}-track`,
-        data,
-        getPath: (d) => d.position,
+        data: [{ path }],
+        getPath: (d) => d.path,
         getColor: [255, 255, 255, 255],
-        getWidth: 20,
+        getWidth: 2,
+        widthUnits: 'pixels',
       }),
       new IconLayer({
         id: `${this.props.id}-vessel-icons`,
@@ -38,6 +40,19 @@ export class TrackLabelerVesselLayer extends CompositeLayer<TrackLabelerVesselLa
         getAngle: (d: any) => d.course,
         getPosition: (d) => d.position,
         getColor,
+        getSize: 15,
+        sizeUnits: 'pixels',
+      }),
+      new IconLayer({
+        id: `${this.props.id}-vessel-icons-highlight`,
+        data,
+        pickable: true,
+        iconAtlas: iconAtlasUrl || `${PATH_BASENAME} /vessel-sprite.png`,
+        iconMapping: VESSEL_SPRITE_ICON_MAPPING,
+        getIcon: () => 'vessel',
+        getAngle: (d: any) => d.course,
+        getPosition: (d) => d.position,
+        getColor: getHighlightColor,
         getSize: 15,
         sizeUnits: 'pixels',
         updateTriggers: {
