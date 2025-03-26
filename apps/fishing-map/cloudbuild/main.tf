@@ -52,7 +52,7 @@ module "staging" {
   project_id        = "gfw-development"
   short_environment = "sta"
   app_name          = local.app_name
-  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-dev"
+  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-sta"
   service_account   = "frontend-sta@gfw-development.iam.gserviceaccount.com"
   labels = {
     environment      = "staging"
@@ -70,7 +70,7 @@ module "staging" {
     "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
     "NEXT_PUBLIC_USE_LOCAL_DATASETS=true",
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=true",
-    "NEXT_PUBLIC_WORKSPACE_ENV=development",
+    "NEXT_PUBLIC_WORKSPACE_ENV=staging",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
   ]
   set_env_vars = [
