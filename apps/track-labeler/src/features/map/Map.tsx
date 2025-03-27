@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import DeckGL from '@deck.gl/react'
 import cx from 'classnames'
+import { DateTime } from 'luxon'
 
 import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
 import { BaseMapLayer, BasemapType } from '@globalfishingwatch/deck-layers'
@@ -206,7 +207,23 @@ const MapComponent = (): React.ReactElement<any> => {
   // Custom tooltip function for deck.gl
   const getTooltip = useCallback((info: any) => {
     if (!info.object) return null
-    return `Speed: ${info.object?.speed || 0} knots`
+    if (info.layer.id === 'track-points') {
+      const mandatoryProps = ['timestamp', 'position', 'color', 'action']
+      const projectProps = Object.keys(info.object).filter((key) => !mandatoryProps.includes(key))
+      return {
+        html: `
+          <div>Date: ${DateTime.fromMillis(info.object.timestamp).toFormat('ff')}</div>
+          ${projectProps
+            .map(
+              (prop) =>
+                `<div key={prop}>
+              ${prop}: ${info.object[prop]}
+            </div>`
+            )
+            .join('')}`,
+      }
+    }
+    return null
   }, [])
 
   const handleLegendClick = (legendLabelId: Label['id']) => {
