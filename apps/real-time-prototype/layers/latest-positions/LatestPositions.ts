@@ -6,16 +6,30 @@ import { IconLayer } from '@deck.gl/layers'
 import type { TrackSublayer } from 'layers/tracks/tracks.hooks'
 import { ckmeans, mean, sample, standardDeviation } from 'simple-statistics'
 
-import {
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
-  getColorRamp,
-  hexToComponents,
-} from '@globalfishingwatch/deck-layers'
-
 import { API_BASE, BASE_PATH } from 'data/config'
 import type { GFWLayerProps } from 'features/map/Map'
 
 import { GFWAPI } from '../../../../libs/api-client/src/api-client'
+
+export const hexToRgb = (hex: string) => {
+  if (!hex) {
+    return { r: 0, g: 0, b: 0 }
+  }
+  const cleanHex = hex.replace('#', '')
+  const color = {
+    r: parseInt(cleanHex.slice(0, 2), 16),
+    g: parseInt(cleanHex.slice(2, 4), 16),
+    b: parseInt(cleanHex.slice(4, 6), 16),
+  }
+  return color
+}
+
+export const hexToComponents = (hex: string): [number, number, number] => {
+  const { r, g, b } = hexToRgb(hex)
+  return [r, g, b]
+}
+
+export const COLOR_RAMP_DEFAULT_NUM_STEPS = 10
 
 const ICON_MAPPING = {
   vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
@@ -38,7 +52,19 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
       },
     },
   }
-  colorRange = getColorRamp({ rampId: 'magenta', whiteEnd: true, format: 'array' }) as Color[]
+  // colorRange = getColorRamp({ rampId: 'magenta', whiteEnd: true, format: 'array' }) as Color[]
+  colorRange = [
+    [255, 100, 206, 58],
+    [255, 100, 206, 91],
+    [255, 100, 206, 124],
+    [255, 100, 206, 157],
+    [255, 100, 206, 189],
+    [255, 100, 206, 222],
+    [255, 100, 206, 255],
+    [255, 151, 222, 255],
+    [255, 203, 238, 255],
+    [255, 255, 255, 255],
+  ] as Color[]
 
   initializeState() {
     super.initializeState(this.context)
