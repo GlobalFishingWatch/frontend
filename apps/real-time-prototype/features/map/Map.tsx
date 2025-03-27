@@ -14,7 +14,7 @@ import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import uniqBy from 'lodash/uniqBy'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { BasemapType } from '@globalfishingwatch/layer-composer'
+import { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
 

@@ -1,6 +1,6 @@
-import type { Color} from '@deck.gl/core';
+import type { Color } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import type { MVTLayerProps } from '@deck.gl/geo-layers';
+import type { MVTLayerProps } from '@deck.gl/geo-layers'
 import { MVTLayer } from '@deck.gl/geo-layers'
 import { IconLayer } from '@deck.gl/layers'
 import type { TrackSublayer } from 'layers/tracks/tracks.hooks'
@@ -8,10 +8,9 @@ import { ckmeans, mean, sample, standardDeviation } from 'simple-statistics'
 
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
-  HEATMAP_COLOR_RAMPS,
+  getColorRamp,
   hexToComponents,
-  rgbaStringToComponents,
-} from '@globalfishingwatch/layer-composer'
+} from '@globalfishingwatch/deck-layers'
 
 import { API_BASE, BASE_PATH } from 'data/config'
 import type { GFWLayerProps } from 'features/map/Map'
@@ -39,7 +38,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
       },
     },
   }
-  colorRange = HEATMAP_COLOR_RAMPS.magenta.map((c) => rgbaStringToComponents(c)).slice(1) as Color[]
+  colorRange = getColorRamp({ rampId: 'magenta', whiteEnd: true, format: 'array' }) as Color[]
 
   initializeState() {
     super.initializeState(this.context)
