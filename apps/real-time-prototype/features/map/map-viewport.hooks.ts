@@ -19,7 +19,7 @@ export const getUrlViewstateNumericParam = (key: string) => {
   return urlParam ? parseFloat(urlParam) : null
 }
 
-const viewportAtom = atomWithStorage<MapViewport>('map-viewport', {
+export const viewportAtom = atomWithStorage<MapViewport>('map-viewport', {
   longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
   latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
   zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
