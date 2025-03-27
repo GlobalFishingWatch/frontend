@@ -1,5 +1,6 @@
 import type { Color, Layer, LayerProps, LayersList } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
+import { DataFilterExtension } from '@deck.gl/extensions'
 import { IconLayer, PathLayer } from '@deck.gl/layers'
 
 import { VESSEL_SPRITE_ICON_MAPPING } from '../../utils'
@@ -13,13 +14,15 @@ type TrackLabelerVesselLayerProps = LayerProps & {
   getColor: (d: TrackLabelerPoint) => Color
   getHighlightColor?: (d: TrackLabelerPoint) => Color
   highlightedTime: { start: string; end: string } | null
+  visibleLabels: string[]
 }
 
 export class TrackLabelerVesselLayer extends CompositeLayer<TrackLabelerVesselLayerProps> {
   static layerName = 'TrackLabelerVesselLayer'
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
-    const { data, getColor, iconAtlasUrl, highlightedTime, getHighlightColor } = this.props
+    const { data, getColor, iconAtlasUrl, highlightedTime, getHighlightColor, visibleLabels } =
+      this.props
     const path = data.map((d) => d.position)
     return [
       new PathLayer({
@@ -42,6 +45,9 @@ export class TrackLabelerVesselLayer extends CompositeLayer<TrackLabelerVesselLa
         getColor,
         getSize: 15,
         sizeUnits: 'pixels',
+        getFilterCategory: (d: TrackLabelerPoint) => d.action,
+        filterCategories: visibleLabels,
+        extensions: [new DataFilterExtension({ categorySize: 1 })],
       }),
       new IconLayer({
         id: `${this.props.id}-vessel-icons-highlight`,
@@ -58,6 +64,9 @@ export class TrackLabelerVesselLayer extends CompositeLayer<TrackLabelerVesselLa
         updateTriggers: {
           getColor: [highlightedTime],
         },
+        getFilterCategory: (d: TrackLabelerPoint) => d.action,
+        filterCategories: visibleLabels,
+        extensions: [new DataFilterExtension({ categorySize: 1 })],
       }),
     ]
   }

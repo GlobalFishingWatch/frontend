@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux'
 import DeckGL from '@deck.gl/react'
 import cx from 'classnames'
 
+import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
 import { BaseMapLayer, BasemapType } from '@globalfishingwatch/deck-layers'
-import type { ExtendedLayer, StyleTransformation } from '@globalfishingwatch/layer-composer'
-import { getInteractiveLayerIds, Group } from '@globalfishingwatch/layer-composer'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
@@ -30,47 +29,6 @@ import {
 } from './map.selectors'
 
 import styles from './Map.module.css'
-
-const GROUP_ORDER = [
-  Group.Background,
-  Group.Basemap,
-  Group.Heatmap,
-  Group.OutlinePolygonsBackground,
-  Group.OutlinePolygons,
-  Group.OutlinePolygonsHighlighted,
-  Group.Default,
-  Group.BasemapFill,
-  Group.Track,
-  Group.TrackHighlightedEvent,
-  Group.TrackHighlighted,
-  Group.Point,
-  Group.BasemapForeground,
-  Group.Tool,
-  Group.Label,
-  Group.Overlay,
-]
-
-const sort: StyleTransformation = (style) => {
-  const layers = style.layers ? [...style.layers] : []
-  const orderedLayers = layers.sort((a: ExtendedLayer, b: ExtendedLayer) => {
-    const aGroup = a.metadata?.group || Group.Default
-    const bGroup = b.metadata?.group || Group.Default
-    const aPos = GROUP_ORDER.indexOf(aGroup)
-    const bPos = GROUP_ORDER.indexOf(bGroup)
-    return aPos - bPos
-  })
-  return { ...style, layers: orderedLayers }
-}
-
-const filterConflictingLayers: StyleTransformation = (style) => {
-  return style
-}
-
-const defaultTransformations: StyleTransformation[] = [
-  sort,
-  filterConflictingLayers,
-  getInteractiveLayerIds as any,
-]
 
 const MapComponent = (): React.ReactElement<any> => {
   const deckRef = useRef<any>(null)
@@ -123,6 +81,7 @@ const MapComponent = (): React.ReactElement<any> => {
         transitionDuration: 0, // No animation when updating from Redux
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewport.longitude, viewport.latitude, viewport.zoom])
 
   // Function to synchronize the view state back to Redux
@@ -187,9 +146,6 @@ const MapComponent = (): React.ReactElement<any> => {
 
   // Format points data for DeckGL
   const pointsData = useMemo(() => {
-    // Check for the most common data structures and try to extract points
-
-    // Structure 1: GeoJSON FeatureCollection directly in trackArrowsLayer.data as an object
     if (
       trackArrowsLayer.data &&
       typeof trackArrowsLayer.data === 'object' &&
@@ -199,7 +155,7 @@ const MapComponent = (): React.ReactElement<any> => {
     ) {
       const features = trackArrowsLayer.data.features
 
-      const extractedPoints = []
+      const extractedPoints: TrackLabelerPoint[] = []
       features.forEach((feature) => {
         if (feature.geometry?.type === 'Point' && Array.isArray(feature.geometry.coordinates)) {
           const coords = feature.geometry.coordinates
@@ -220,153 +176,18 @@ const MapComponent = (): React.ReactElement<any> => {
         return extractedPoints
       }
     }
-
-    // Structure 2: FeatureCollection in trackArrowsLayer directly
-    if (trackArrowsLayer.type === 'FeatureCollection' && Array.isArray(trackArrowsLayer.features)) {
-      const features = trackArrowsLayer.features
-
-      const extractedPoints = []
-      features.forEach((feature) => {
-        if (feature.geometry?.type === 'Point' && Array.isArray(feature.geometry.coordinates)) {
-          const coords = feature.geometry.coordinates
-          const props = feature.properties || {}
-
-          extractedPoints.push({
-            position: coords,
-            timestamp: props.timestamp,
-            speed: props.speed || 0,
-            course: props.course || 0,
-            action: props.action || 'unknown',
-            color: projectColors[props.action] || '#ff0000',
-          })
-        }
-      })
-
-      if (extractedPoints.length > 0) {
-        return extractedPoints
-      }
-    }
-
-    // Structure 3: GeoJSON Features array in trackArrowsLayer.data
-    if (Array.isArray(trackArrowsLayer.data) && trackArrowsLayer.data.length > 0) {
-      // Check if it's an array of GeoJSON features
-      if (trackArrowsLayer.data[0].type === 'Feature') {
-        const features = trackArrowsLayer.data
-
-        const extractedPoints = []
-        features.forEach((feature) => {
-          if (feature.geometry?.type === 'Point' && Array.isArray(feature.geometry.coordinates)) {
-            const coords = feature.geometry.coordinates
-            const props = feature.properties || {}
-
-            extractedPoints.push({
-              position: coords,
-              timestamp: props.timestamp,
-              speed: props.speed || 0,
-              course: props.course || 0,
-              action: props.action || 'unknown',
-              color: projectColors[props.action] || '#ff0000',
-            })
-          }
-        })
-
-        if (extractedPoints.length > 0) {
-          return extractedPoints
-        }
-      }
-
-      // Check if the data has direct position information (embedded in features)
-      const extractedPoints = trackArrowsLayer.data
-        .map((item) => {
-          // Check for several possible coordinate formats
-          let position
-          if (item.geometry?.coordinates && Array.isArray(item.geometry.coordinates)) {
-            position = item.geometry.coordinates
-          } else if (item.position && Array.isArray(item.position)) {
-            position = item.position
-          } else if (item.position?.lon !== undefined && item.position?.lat !== undefined) {
-            position = [Number(item.position.lon), Number(item.position.lat)]
-          } else if (item.longitude !== undefined && item.latitude !== undefined) {
-            position = [Number(item.longitude), Number(item.latitude)]
-          } else {
-            return null
-          }
-
-          // Verify the position is valid
-          if (
-            (!position[0] && position[0] !== 0) ||
-            (!position[1] && position[1] !== 0) ||
-            isNaN(position[0]) ||
-            isNaN(position[1])
-          ) {
-            return null
-          }
-
-          return {
-            position,
-            timestamp: item.timestamp || item.properties?.timestamp || Date.now(),
-            speed: item.speed || item.properties?.speed || 0,
-            course: item.course || item.properties?.course || 0,
-            action: item.action || item.properties?.action || 'unknown',
-            color: projectColors[item.action || item.properties?.action] || '#ff0000',
-          }
-        })
-        .filter(Boolean)
-
-      if (extractedPoints.length > 0) {
-        return extractedPoints
-      }
-    }
-
-    // Standard track processing as before
-    if (!trackArrowsLayer.data || !trackArrowsLayer.data.length) {
-      console.warn('[INFO] No track data available for creating points')
-      return []
-    }
-
-    // Check if each track has trackPoints
-    const tracksWithPoints = trackArrowsLayer.data.filter((track) => {
-      return track.trackPoints && Array.isArray(track.trackPoints) && track.trackPoints.length > 0
-    })
-
-    if (tracksWithPoints.length === 0) {
-      return []
-    }
-
-    // Create array to store all points
-    const points = []
-
-    // Flatten all track points into a single array
-    tracksWithPoints.forEach((track) => {
-      if (!track.trackPoints) return
-
-      const trackColor = projectColors[track.action] || '#ff0000' // Fallback to red
-
-      track.trackPoints.forEach((point) => {
-        // Basic validation for coordinates
-        if (!point.longitude || !point.latitude) return
-
-        // Create a properly formatted point for DeckGL
-        points.push({
-          position: [Number(point.longitude), Number(point.latitude)],
-          timestamp: point.timestamp,
-          speed: point.speed || 0,
-          course: point.course || 0,
-          action: track.action,
-          color: trackColor,
-        })
-      })
-    })
-
-    return points
+    return []
   }, [trackArrowsLayer, projectColors])
 
+  const visibleLabels = useMemo(() => {
+    return legengLabels.flatMap((label) => (!hiddenLabels.includes(label.id) ? label.id : []))
+  }, [legengLabels, hiddenLabels])
   // Create layers for visualization
-  const { layers: dataLayers } = useDeckGLMap(
+  const { layers: dataLayers } = useDeckGLMap({
     pointsData,
-    trackArrowsLayer.highlightedTime,
-    onMapClick
-  )
+    highlightedTime: trackArrowsLayer.highlightedTime,
+    visibleLabels,
+  })
 
   // Create the basemap layer using deck-layers' BaseMapLayer
   const basemapLayer = useMemo(() => {

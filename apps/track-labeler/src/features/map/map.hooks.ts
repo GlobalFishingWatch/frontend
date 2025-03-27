@@ -313,11 +313,15 @@ export const useHiddenLabelsConnect = () => {
   return { dispatchHiddenLabels, hiddenLabels }
 }
 
-export const useDeckGLMap = (
-  pointsData: TrackLabelerPoint[],
-  highlightedTime: HighlightedTime | undefined,
-  onClick: (info: PickingInfo) => void
-) => {
+export const useDeckGLMap = ({
+  pointsData,
+  highlightedTime,
+  visibleLabels,
+}: {
+  pointsData: TrackLabelerPoint[]
+  highlightedTime: HighlightedTime | undefined
+  visibleLabels: string[]
+}) => {
   const formattedTime: { start: number; end: number } | null = useMemo(() => {
     if (highlightedTime?.start && highlightedTime?.end) {
       return {
@@ -339,6 +343,7 @@ export const useDeckGLMap = (
       pickable: true,
       iconAtlasUrl: 'src/assets/images/vessel-sprite.png',
       highlightedTime,
+      visibleLabels,
       getColor: (d) => hexToDeckColor(d.color, 0.8),
       getHighlightColor: (d) => {
         if (
@@ -350,11 +355,10 @@ export const useDeckGLMap = (
         }
         return [0, 0, 0, 0]
       },
-      onClick,
     })
 
     return [vesselLayer]
-  }, [pointsData, highlightedTime, formattedTime, onClick])
+  }, [pointsData, highlightedTime, formattedTime, visibleLabels])
 
   return { layers }
 }
