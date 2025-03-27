@@ -15,38 +15,12 @@
       "cwd": "${workspaceFolder}/apps/fishing-map"
     },
     {
-      "name": "Debug CRA Tests - Fishing Map",
+      "name": "Debug Tests - Fishing Map",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/jest",
       "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
       "cwd": "${workspaceRoot}/apps/fishing-map",
-      "protocol": "inspector",
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    },
-    {
-      "name": "Debug CRA Tests - Vessel History",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/jest",
-      "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
-      "cwd": "${workspaceRoot}/apps/vessel-history",
-      "protocol": "inspector",
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    },
-    {
-      "name": "4wings - Debug Tests",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "${workspaceRoot}/libs/fourwings-aggregate/node_modules/.bin/tap",
-      "args": ["test/*.test.mjs", "-T"],
-      "cwd": "${workspaceRoot}/libs/fourwings-aggregate",
-      "env": {
-        // "NODE_DEBUG": "1",
-        // "TAP_DEBUG": "1"
-      },
       "protocol": "inspector",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"

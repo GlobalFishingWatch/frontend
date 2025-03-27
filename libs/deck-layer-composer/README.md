@@ -54,7 +54,6 @@ nx publish deck-layer-composer
 - @globalfishingwatch/api-types
 - @globalfishingwatch/deck-layers
 - @globalfishingwatch/dataviews-client
-- @globalfishingwatch/layer-composer
 - jotai
 - lodash
 - luxon

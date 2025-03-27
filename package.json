@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "release:fishing-map": "nx release --projects='fishing-map' --skip-publish",
-    "affected": "nx show projects --affected --base=origin/develop~1 --exclude='linting,vessel-history,port-labeler,real-time-prototype,*-e2e,libs/*' --plain > affected-apps.txt",
+    "affected": "nx show projects --affected --base=origin/develop~1 --exclude='linting,port-labeler,real-time-prototype,*-e2e,libs/*' --plain > affected-apps.txt",
     "affected:libs": "nx show projects --affected --base=origin/develop~1 --exclude='apps/*' --plain > affected-libs.txt",
     "postinstall": "husky",
     "knip": "NX_DAEMON=false knip",

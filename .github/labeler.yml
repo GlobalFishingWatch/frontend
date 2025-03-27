@@ -27,8 +27,6 @@ deck-layers:
   - libs/deck-layers/**/*
 deck-loaders:
   - libs/deck-loaders/**/*
-fourwings-aggregate:
-  - libs/fourwings-aggregate/**/*
 i18n-labels:
   - libs/i18n-labels/**/*
 layer-composer:

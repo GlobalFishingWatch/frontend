@@ -63,7 +63,6 @@ const navigation = [
             label: 'Carrier Vessels',
             href: 'https://globalfishingwatch.org/carrier-vessels-portal',
           },
-          { label: 'Vessel Viewer', href: 'https://globalfishingwatch.org/vessel-viewer-tool' },
         ],
       },
       {
