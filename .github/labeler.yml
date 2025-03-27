@@ -10,8 +10,6 @@ track-labeler:
   - apps/track-labeler/**/*
 user-groups-admin:
   - apps/user-groups-admin/**/*
-vessel-history:
-  - apps/vessel-history/**/*
 
 api-client:
   - libs/api-client/**/*
@@ -19,6 +17,8 @@ api-types:
   - libs/api-types/**/*
 data-transforms:
   - libs/data-transforms/**/*
+datasets-client:
+  - libs/datasets-client/**/*
 dataviews-client:
   - libs/dataviews-client/**/*
 deck-layer-composer:
@@ -39,6 +39,8 @@ pbf-decoders:
   - libs/pbf-decoders/**/*
 react-hooks:
   - libs/react-hooks/**/*
+responsive-visualizations:
+  - libs/responsive-visualizations/**/*
 timebar:
   - libs/timebar/**/*
 ui-components:
