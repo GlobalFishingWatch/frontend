@@ -27,6 +27,8 @@ export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
 export const DEFAULT_WORKSPACE_CATEGORY = WorkspaceCategory.FishingActivity
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap'
 
+export const DEEP_SEA_MINING_WORKSPACE_ID = 'deep-sea-mining-public'
+
 // IMPORTANT: When updating this list, also update it's corresponding
 // values in:
 //      apps/vessel-history/src/features/dataviews/dataviews.config.ts

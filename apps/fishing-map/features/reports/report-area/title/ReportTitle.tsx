@@ -13,7 +13,6 @@ import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import type { Area } from 'features/areas/areas.slice'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
@@ -50,13 +49,7 @@ import { BufferButtonTooltip } from './BufferButonTooltip'
 
 import styles from './ReportTitle.module.css'
 
-type ReportTitleProps = {
-  area: Area
-  description?: string
-  infoLink?: string
-}
-
-export default function ReportTitle({ area }: ReportTitleProps) {
+export default function ReportTitle() {
   const { t } = useTranslation()
   const [showBufferTooltip, setShowBufferTooltip] = useState(false)
   const { dispatchQueryParams } = useLocationConnect()
@@ -183,7 +176,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
   const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {
-    if (area?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
+    if (reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
       return t('common.globalReport', 'Global report')
     }
     const propertyToInclude = getDatasetConfigurationProperty({
@@ -219,7 +212,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
           }
         }
       } else {
-        areaName = area?.name
+        areaName = reportArea?.name || ''
       }
     }
 
@@ -247,8 +240,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     }
     return ''
   }, [
-    area?.id,
-    area?.name,
     dataset,
     report?.name,
     urlBufferValue,
@@ -266,7 +257,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       : report?.description || ''
 
   const reportAreaSpace =
-    area?.id !== ENTIRE_WORLD_REPORT_AREA_ID && reportArea?.geometry
+    reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && reportArea?.geometry
       ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
       : null
 
@@ -302,7 +293,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
               content={
                 <div className={styles.filterButtonWrapper}>
                   <BufferButtonTooltip
-                    areaType={area?.properties?.originalGeometryType}
+                    areaType={reportArea?.properties?.originalGeometryType}
                     activeUnit={previewBuffer.unit || NAUTICAL_MILES}
                     defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
                     activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}

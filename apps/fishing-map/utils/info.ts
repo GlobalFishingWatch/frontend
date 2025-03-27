@@ -10,6 +10,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
 
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
@@ -36,7 +37,9 @@ export const formatInfoField = (
     | 'authorization'
     | 'vesselType'
     | 'port'
-    | 'fleet',
+    | 'fleet'
+    | 'transmissionDateFrom'
+    | 'transmissionDateTo',
   {
     translationFn = t,
     fallbackValue,
@@ -66,6 +69,9 @@ export const formatInfoField = (
     if (type === 'fleet') {
       const fleetClean = fieldValue.replaceAll('_', ' ')
       return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
+    }
+    if (type === 'transmissionDateFrom' || type === 'transmissionDateTo') {
+      return formatI18nDate(fieldValue)
     }
   } else if (Array.isArray(fieldValue)) {
     if (type === 'geartypes') {

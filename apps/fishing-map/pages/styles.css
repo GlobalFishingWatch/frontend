@@ -67,12 +67,6 @@ body:has(.printing) {
   }
 }
 
-.scrollContainer {
-  height: 100%;
-  overflow: hidden auto;
-  width: 100%;
-}
-
 .recharts-cartesian-axis-tick-value {
   fill: var(--color-secondary-blue);
   font: var(--font-XS);
@@ -92,4 +86,8 @@ body:has(.printing) {
 
 .recharts-cartesian-grid-horizontal line {
   stroke: var(--color-terthiary-blue);
+}
+
+.MuiTooltip-popper {
+  font-size: 16px !important;
 }

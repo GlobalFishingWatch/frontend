@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Point from '@mapbox/point-geometry'
 import { fitBounds } from '@math.gl/web-mercator'
-import type { PortPosition } from 'types'
 
 import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import type { LngLat, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
@@ -12,8 +11,10 @@ import {
   setHoverPoint,
   setSelectedPoints,
 } from 'features/labeler/labeler.slice'
+import type { PortPosition } from 'types'
 
 import useMapInstance from './map-context.hooks'
+import type { ViewportProps } from './map-viewport.hooks'
 import { useViewport } from './map-viewport.hooks'
 
 interface BoxSelection {
@@ -53,7 +54,7 @@ export function useSelectorConnect(): UseSelector {
 
   const onMouseDown = useCallback(
     (e: MapLayerMouseEvent) => {
-      if (!(e.originalEvent.shiftKey && e.originalEvent.button === 0)) return;
+      if (!(e.originalEvent.shiftKey && e.originalEvent.button === 0)) return
       // Disable default drag zooming when the shift key is held down.
       if (map) {
         map.dragPan?.disable()
@@ -62,7 +63,7 @@ export function useSelectorConnect(): UseSelector {
       // Capture the first xy coordinates
       setBox({
         startCoords: e.lngLat,
-        startPosition: mousePos(e)
+        startPosition: mousePos(e),
       })
     },
     [map, mousePos]
@@ -209,11 +210,11 @@ export function useMapConnect(): UseMap {
       if (points) {
         const bbox = points?.length
           ? segmentsToBbox([
-            points.map((point) => ({
-              latitude: point.lon,
-              longitude: point.lat,
-            })),
-          ])
+              points.map((point) => ({
+                latitude: point.lon,
+                longitude: point.lat,
+              })),
+            ])
           : undefined
         const { width, height } = map?.transform || {}
         if (width && height && bbox) {
@@ -227,7 +228,7 @@ export function useMapConnect(): UseMap {
             height,
             padding: 60,
           })
-          setMapCoordinates({ latitude, longitude, zoom })
+          setMapCoordinates({ latitude, longitude, zoom } as ViewportProps)
         }
       }
     },

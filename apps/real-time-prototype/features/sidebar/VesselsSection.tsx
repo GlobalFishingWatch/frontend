@@ -1,8 +1,9 @@
-import type { ChangeEvent} from 'react';
+import type { ChangeEvent } from 'react'
 import { Fragment, useCallback, useEffect, useState } from 'react'
+import type { ViewStateChangeEvent } from 'react-map-gl'
 import { WebMercatorViewport } from '@deck.gl/core'
 import { saveAs } from 'file-saver'
-import type { TrackPoint} from 'layers/tracks/tracks.hooks';
+import type { TrackPoint } from 'layers/tracks/tracks.hooks'
 import { useTracksSublayers } from 'layers/tracks/tracks.hooks'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -18,7 +19,7 @@ function VesselsSection({ lastUpdate }) {
   const [query, setQuery] = useState('')
   const [showDownloadOptions, setShowDownloadOptions] = useState('')
   const [sublayerWaitingToLoad, setSublayerWaitingToLoad] = useState('')
-  const { setMapCoordinates } = useViewport()
+  const [viewport, onViewportChange] = useViewport()
   const { allLoaded, sublayers, toggleTrackSublayer, addTrackSublayer, removeTrackSublayer } =
     useTracksSublayers()
 
@@ -48,10 +49,10 @@ function VesselsSection({ lastUpdate }) {
           ],
           { padding: 40, maxZoom: 20 }
         )
-        setMapCoordinates({ latitude, longitude, zoom })
+        onViewportChange({ viewState: { latitude, longitude, zoom } } as ViewStateChangeEvent)
       }
     },
-    [setMapCoordinates, sublayers]
+    [onViewportChange, sublayers]
   )
 
   useEffect(() => {

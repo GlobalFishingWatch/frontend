@@ -1,9 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Sticky from 'react-sticky-el'
 import { uniqBy } from 'es-toolkit'
 
+import type { RegistryImage } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
@@ -15,6 +16,7 @@ import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectIsJACUser } from 'features/user/selectors/user.selectors'
 import {
   selectVesselInfoData,
   selectVesselPrintMode,
@@ -25,16 +27,13 @@ import {
   selectViewOnlyVessel,
 } from 'features/vessel/vessel.config.selectors'
 import { setVesselPrintMode } from 'features/vessel/vessel.slice'
-import {
-  getCurrentIdentityVessel,
-  getOtherVesselNames,
-  getVesselProperty,
-} from 'features/vessel/vessel.utils'
+import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
 import { useVesselProfileBounds } from 'features/vessel/vessel-bounds.hooks'
 import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
@@ -51,6 +50,7 @@ const VesselHeader = () => {
   const identitySource = useSelector(selectVesselIdentitySource)
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
+  const isJACUser = useSelector(selectIsJACUser)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
@@ -60,12 +60,8 @@ const VesselHeader = () => {
     window.print()
   }, [])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const allVesselImages = uniqBy(
-    vessel.identities
-      .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img) || [])
-      .filter(Boolean),
-    (img) => img.url
-  )
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isHovering, setIsHovering] = useState(false)
 
   const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
     trackEvent({
@@ -108,6 +104,15 @@ const VesselHeader = () => {
     enabled: vesselPrintMode,
   })
 
+  if (!vessel) return null
+
+  const allVesselImages: RegistryImage[] = uniqBy(
+    vessel.identities
+      .flatMap((identity) => identity.extraFields?.[0]?.images?.map((img) => img) || [])
+      .filter(Boolean),
+    (img: RegistryImage) => img.url
+  )
+
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
@@ -128,111 +133,135 @@ const VesselHeader = () => {
     dispatchQueryParams({ viewOnlyVessel: !viewOnlyVessel })
   }
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - left) / width) * 100
+    const y = ((e.clientY - top) / height) * 100
+    setMousePosition({ x, y })
+  }
+
   return (
-    <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-      <div className={styles.summaryContainer}>
-        {allVesselImages.length > 0 && (
-          <div className={styles.imageSliderContainer}>
-            <img
-              src={allVesselImages[currentImageIndex].url}
-              alt={`${shipname} - ${currentImageIndex + 1}`}
-              title={
-                allVesselImages[currentImageIndex].copyright
-                  ? `copyright: ${allVesselImages[currentImageIndex].copyright}`
-                  : undefined
-              }
-              className={styles.vesselImage}
+    <div className={styles.summaryContainer}>
+      {allVesselImages.length > 0 && (
+        <div
+          className={styles.imageSliderContainer}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          onMouseMove={handleMouseMove}
+        >
+          <img
+            src={allVesselImages[currentImageIndex].url}
+            alt={`${shipname} - ${currentImageIndex + 1}`}
+            title={
+              allVesselImages[currentImageIndex].copyright
+                ? `© ${allVesselImages[currentImageIndex].copyright}`
+                : undefined
+            }
+            className={styles.vesselImage}
+          />
+          {isHovering && (
+            <div className={styles.zoomedContainer}>
+              <img
+                src={allVesselImages[currentImageIndex].url}
+                alt=""
+                className={styles.zoomedImage}
+                style={{
+                  transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`,
+                }}
+              />
+            </div>
+          )}
+          {allVesselImages.length > 1 && (
+            <div className={styles.navigationButtons}>
+              {allVesselImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`${styles.dot} ${index === currentImageIndex ? styles.activeDot : ''}`}
+                  aria-label={t('vessel.goToImage', 'Go to image {{number}}', {
+                    number: index + 1,
+                  })}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      <div className={styles.titleContainer}>
+        <h1 data-test="vv-vessel-name" className={styles.title}>
+          <svg className={styles.vesselIcon} width="16" height="16">
+            <path
+              fill={vesselColor || COLOR_PRIMARY_BLUE}
+              stroke={COLOR_PRIMARY_BLUE}
+              strokeOpacity=".5"
+              d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
             />
-            {allVesselImages.length > 1 && (
-              <div className={styles.navigationButtons}>
-                {allVesselImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`${styles.dot} ${index === currentImageIndex ? styles.activeDot : ''}`}
-                    aria-label={t('vessel.goToImage', 'Go to image {{number}}', {
-                      number: index + 1,
-                    })}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-        <div className={styles.titleContainer}>
-          <h1 data-test="vv-vessel-name" className={styles.title}>
-            <svg className={styles.vesselIcon} width="16" height="16">
-              <path
-                fill={vesselColor || COLOR_PRIMARY_BLUE}
-                stroke={COLOR_PRIMARY_BLUE}
-                strokeOpacity=".5"
-                d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
-              />
-            </svg>
-            {formatInfoField(shipname, 'shipname')}
-            <span className={styles.secondary}>{otherNamesLabel}</span>
-            <span className={styles.reportLink}>
-              <a href={window.location.href}>
-                {t('vessel.linkToVessel', 'Check the vessel profile here')}
-              </a>
-            </span>
-          </h1>
-          <div className={styles.actionsContainer}>
-            {vesselProfileDataview && (
-              <VesselDownload
-                dataview={vesselProfileDataview}
-                vesselIds={vessel.identities
-                  .filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
-                  .map((i) => i.id)}
-                vesselTitle={shipname}
-                datasetId={vessel.track as string}
-                iconType="border"
-              />
-            )}
-            {isWorkspaceVesselLocation && (
-              <IconButton
-                className="print-hidden"
-                type="border"
-                icon={viewOnlyVessel ? 'layers-on' : 'layers-off'}
-                tooltip={
-                  viewOnlyVessel
-                    ? t('vessel.showOtherLayers', 'Show other layers')
-                    : t('vessel.hideOtherLayers', 'Hide other layers')
-                }
-                tooltipPlacement="bottom"
-                size="small"
-                onClick={setViewOnlyVessel}
-              />
-            )}
+          </svg>
+          {formatInfoField(shipname, 'shipname')}
+          <span className={styles.secondary}>{otherNamesLabel}</span>
+          <span className={styles.reportLink}>
+            <a href={window.location.href}>
+              {t('vessel.linkToVessel', 'Check the vessel profile here')}
+            </a>
+          </span>
+        </h1>
+
+        <div className={styles.actionsContainer}>
+          {isJACUser && <VesselInfoCorrection />}
+          {vesselProfileDataview && (
+            <VesselDownload
+              dataview={vesselProfileDataview}
+              vesselIds={vessel.identities
+                .filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
+                .map((i) => i.id)}
+              vesselTitle={shipname}
+              datasetId={vessel.track as string}
+              iconType="border"
+            />
+          )}
+          {isWorkspaceVesselLocation && (
             <IconButton
               className="print-hidden"
               type="border"
-              icon="target"
-              tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
+              icon={viewOnlyVessel ? 'layers-on' : 'layers-off'}
+              tooltip={
+                viewOnlyVessel
+                  ? t('vessel.showOtherLayers', 'Show other layers')
+                  : t('vessel.hideOtherLayers', 'Hide other layers')
+              }
               tooltipPlacement="bottom"
               size="small"
-              disabled={!boundsReady}
-              onClick={onVesselFitBoundsClick}
+              onClick={setViewOnlyVessel}
             />
-            <Button
-              className="print-hidden"
-              type="border-secondary"
-              size="small"
-              onClick={onPrintClick}
-            >
-              <p>{t('analysis.print ', 'print')}</p>
-              <Icon icon="print" type="default" />
-            </Button>
-            <VesselGroupAddButton
-              vessels={vessel ? [vessel] : []}
-              onAddToVesselGroup={onAddToVesselGroup}
-            >
-              <VesselGroupAddActionButton buttonSize="small" buttonType="border-secondary" />
-            </VesselGroupAddButton>
-          </div>
+          )}
+          <IconButton
+            className="print-hidden"
+            type="border"
+            icon="target"
+            tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
+            tooltipPlacement="bottom"
+            size="small"
+            disabled={!boundsReady}
+            onClick={onVesselFitBoundsClick}
+          />
+          <Button
+            className="print-hidden"
+            type="border-secondary"
+            size="small"
+            onClick={onPrintClick}
+          >
+            <p>{t('analysis.print ', 'print')}</p>
+            <Icon icon="print" type="default" />
+          </Button>
+          <VesselGroupAddButton
+            vessels={vessel ? [vessel] : []}
+            onAddToVesselGroup={onAddToVesselGroup}
+          >
+            <VesselGroupAddActionButton buttonSize="small" buttonType="border-secondary" />
+          </VesselGroupAddButton>
         </div>
       </div>
-    </Sticky>
+    </div>
   )
 }
 

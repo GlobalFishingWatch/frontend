@@ -32,6 +32,22 @@
   margin-bottom: var(--space-S);
 }
 
+.contentContainer > ul {
+  list-style: disc;
+  margin-bottom: var(--space-M);
+}
+
+.contentContainer > ul > li {
+  margin-left: var(--space-M);
+}
+
+.contentContainer img {
+  max-width: 100%;
+  height: auto;
+  margin-top: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
 .contentContainer h2 img {
   width: 4rem;
 }

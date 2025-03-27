@@ -17,6 +17,7 @@ const DISABLE_WELCOME_POPUP_DICT: Record<WelcomeContentKey, string> = {
   'fishing-activity': 'WelcomePopup',
   'marine-manager': 'MarineManagerPopup',
   'vessel-profile': 'VesselProfilePopup',
+  'deep-sea-mining': 'DeepSeaMiningPopup',
   reports: 'WelcomePopup',
 }
 

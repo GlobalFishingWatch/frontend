@@ -1,58 +1,55 @@
 steps:
   - name: gcr.io/cloud-builders/git
     args: ['fetch', '--unshallow', '--no-tags']
+    waitFor: ['-']
 
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
     script: |
       #!/usr/bin/env bash
+      CACHE_KEY=$( checksum yarn.lock )
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=node_modules-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-cache-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-install-state-$( checksum yarn.lock )
+        --key=node_modules-${CACHE_KEY} \
+        --key=cypress-cache-${CACHE_KEY} \
+        --key=yarn-${CACHE_KEY} \
+        --key=yarn-install-state-${CACHE_KEY}
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
     name: node:21
     script: |
-      yarn set version 4.6.0
-      yarn -v
-      yarn install --immutable
+      yarn set version 4.7.0
+      yarn install --immutable --inline-builds
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/restore_cache'
     script: |
       #!/usr/bin/env bash
+      CACHE_KEY=$( checksum yarn.lock )
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=node_modules-$( checksum yarn.lock ) \
+        --key=node_modules-${CACHE_KEY} \
         --path=./node_modules \
-        --no-clobber
+        --no-clobber &
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-cache-$( checksum yarn.lock ) \
+        --key=cypress-cache-${CACHE_KEY} \
         --path=/builder/home/.cache \
-        --no-clobber
+        --no-clobber &
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock ) \
+        --key=yarn-${CACHE_KEY} \
         --path=.yarn/cache \
-        --no-clobber
+        --no-clobber &
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-install-state-$( checksum yarn.lock ) \
+        --key=yarn-install-state-${CACHE_KEY} \
         --path=.yarn/install-state.gz \
-        --no-clobber
+        --no-clobber &
+      wait
 
   - id: get-affected
     name: 'node:21'
@@ -70,7 +67,23 @@ steps:
       - '-c'
       - |-
         AFFECTED_APPS=(`cat affected-apps.txt`)
-        echo `cat affected-apps.txt`
+        echo "Going to trigger builds for the following apps:"
+        printf '%s\n' "${AFFECTED_APPS[@]//,/}"
+        FAILED_APPS=()
         for i in ${AFFECTED_APPS[@]//,/}; do
-          [ ! -z "$i" ] && gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
+          if [ ! -z "$i" ]; then
+            if gcloud -q beta builds triggers run --branch=develop ui-${i}-develop 2>/dev/null; then
+              echo "✅ Successfully triggered build for ui-${i}-develop"
+            else
+              echo "❌ Failed to trigger build for ui-${i}-develop (trigger might not exist)"
+              FAILED_APPS+=("$i")
+            fi
+          fi
         done
+
+        if [ ${#FAILED_APPS[@]} -ne 0 ]; then
+          exit 1
+        fi
+
+options:
+  machineType: 'E2_HIGHCPU_8'

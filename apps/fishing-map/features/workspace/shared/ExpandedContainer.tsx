@@ -12,7 +12,7 @@ import {
 } from '@floating-ui/react'
 import cx from 'classnames'
 
-import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/Sidebar'
+import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
 
 import styles from './ExpandedContainer.module.css'
 

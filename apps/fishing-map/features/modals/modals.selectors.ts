@@ -1,6 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import {
+  DEEP_SEA_MINING_WORKSPACE_ID,
+  DEFAULT_WORKSPACE_CATEGORY,
+  WorkspaceCategory,
+} from 'data/workspaces'
 import {
   selectDownloadActivityModalOpen,
   selectDownloadTrackModalOpen,
@@ -8,6 +12,7 @@ import {
 import {
   selectDatasetUploadModalOpen,
   selectFeedbackModalOpen,
+  selectInfoCorrectionModalOpen,
   selectLayerLibraryModalOpen,
   selectScreenshotModalOpen,
 } from 'features/modals/modals.slice'
@@ -17,6 +22,7 @@ import {
   selectIsAnyVesselLocation,
   selectIsStandaloneSearchLocation,
   selectLocationCategory,
+  selectWorkspaceId,
 } from 'routes/routes.selectors'
 
 const selectAppModals = createSelector(
@@ -25,6 +31,7 @@ const selectAppModals = createSelector(
     selectLayerLibraryModalOpen,
     selectDatasetUploadModalOpen,
     selectScreenshotModalOpen,
+    selectInfoCorrectionModalOpen,
     selectVesselGroupModalOpen,
     selectDownloadTrackModalOpen,
     selectDownloadActivityModalOpen,
@@ -34,6 +41,7 @@ const selectAppModals = createSelector(
     layerLibraryModalOpen,
     datasetUploadModalOpen,
     screenshotModalOpen,
+    infoCorrectionModalOpen,
     vesselGroupsModalOpen,
     downloadTrackModalOpen,
     downloadActivityModalOpen
@@ -43,6 +51,7 @@ const selectAppModals = createSelector(
       layerLibrary: layerLibraryModalOpen,
       datataset: datasetUploadModalOpen,
       screenshot: screenshotModalOpen,
+      infoCorrection: infoCorrectionModalOpen,
       vesselGroups: vesselGroupsModalOpen,
       downloadTrack: downloadTrackModalOpen,
       downloadActivity: downloadActivityModalOpen,
@@ -51,8 +60,24 @@ const selectAppModals = createSelector(
 )
 
 export const selectWelcomeModalKey = createSelector(
-  [selectLocationCategory, selectIsAnyVesselLocation, selectIsStandaloneSearchLocation],
-  (locationCategory, isAnyVesselLocation, isStandaloneSearchLocation): WelcomeContentKey => {
+  [
+    selectLocationCategory,
+    selectWorkspaceId,
+    selectIsAnyVesselLocation,
+    selectIsStandaloneSearchLocation,
+  ],
+  (
+    locationCategory,
+    workspaceId,
+    isAnyVesselLocation,
+    isStandaloneSearchLocation
+  ): WelcomeContentKey => {
+    if (
+      locationCategory === WorkspaceCategory.FishingActivity &&
+      workspaceId === DEEP_SEA_MINING_WORKSPACE_ID
+    ) {
+      return 'deep-sea-mining'
+    }
     return isAnyVesselLocation || isStandaloneSearchLocation
       ? 'vessel-profile'
       : locationCategory || DEFAULT_WORKSPACE_CATEGORY

@@ -39,7 +39,6 @@ import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
-import VesselHeader from 'features/vessel/VesselHeader'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
@@ -233,9 +232,6 @@ const Vessel = () => {
               </Button>
             </div>
           )}
-          <div className={styles.headerContainer}>
-            <VesselHeader />
-          </div>
           <VesselIdentity />
         </Fragment>
       )}

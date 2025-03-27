@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import cx from 'classnames'
 
-import { Button } from '@globalfishingwatch/ui-components/button'
-import { InputText } from '@globalfishingwatch/ui-components/input-text'
+import { Button, InputText } from '@globalfishingwatch/ui-components'
 
 import { useCreateProjectMutation, useEditProjectMutation } from '../../api'
 import type { LabellingProject } from '../../types'

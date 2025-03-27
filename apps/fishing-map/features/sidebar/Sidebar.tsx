@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import dynamic from 'next/dynamic'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -11,6 +12,7 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
+import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import {
@@ -27,8 +29,6 @@ import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
 import styles from './Sidebar.module.css'
-
-export const SCROLL_CONTAINER_DOM_ID = 'scroll-container'
 
 const AreaReport = dynamic(
   () => import(/* webpackChunkName: "Report" */ 'features/reports/report-area/AreaReport')
@@ -141,19 +141,20 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     isWorkspacesListLocation,
     isUserLogged,
   ])
-
+  const showTabs = !readOnly && !isSmallScreen
   return (
     <div className={styles.container}>
-      {!readOnly && !isSmallScreen && <CategoryTabs onMenuClick={onMenuClick} />}
-      {/* New dataset modal is used in user and workspace pages*/}
-      <div
-        id={SCROLL_CONTAINER_DOM_ID}
-        className="scrollContainer"
-        data-test="sidebar-container"
-        style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
-      >
+      {showTabs && <CategoryTabs onMenuClick={onMenuClick} />}
+      <div className={cx(styles.content, { [styles.withoutTabs]: !showTabs })}>
         <SidebarHeader />
-        {sidebarComponent}
+        <div
+          id={SCROLL_CONTAINER_DOM_ID}
+          className={cx('scrollContainer', styles.scrollContainer)}
+          data-test="sidebar-container"
+          style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+        >
+          {sidebarComponent}
+        </div>
       </div>
     </div>
   )

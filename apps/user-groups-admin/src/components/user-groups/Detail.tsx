@@ -3,10 +3,7 @@ import sortBy from 'lodash/sortBy'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { FutureUserData, UserData, UserGroup } from '@globalfishingwatch/api-types'
-import { Button } from '@globalfishingwatch/ui-components/button'
-import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
-import { InputText } from '@globalfishingwatch/ui-components/input-text'
-import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+import { Button, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import styles from './user-groups.module.css'
 

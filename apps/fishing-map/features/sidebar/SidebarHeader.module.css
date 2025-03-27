@@ -1,8 +1,3 @@
-.sidebarHeaderContainer {
-  position: relative;
-  z-index: 1;
-}
-
 .sidebarHeader {
   display: flex;
   align-items: center;
@@ -29,12 +24,6 @@
 .logo {
   width: 18rem;
   height: auto;
-}
-
-.sticky {
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow);
-  z-index: 3;
 }
 
 :global(.printing) .logo {
@@ -67,6 +56,11 @@
 .disabled {
   color: var(--color-secondary-blue);
   cursor: not-allowed;
+}
+
+.sticky {
+  background-color: var(--color-white);
+  z-index: 2;
 }
 
 @media print {
