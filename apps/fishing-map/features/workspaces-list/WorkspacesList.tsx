@@ -97,9 +97,13 @@ function WorkspacesList() {
               type: WORKSPACE,
               payload: {
                 category: locationCategory,
-                workspaceId: highlightedWorkspace.id,
+                workspaceId: highlightedWorkspace.workspaceId || highlightedWorkspace.id,
               },
-              query: { featureFlags, ...(highlightedWorkspace.viewport || {}) },
+              query: {
+                featureFlags,
+                ...(dataviewInstances?.length && { dataviewInstances }),
+                ...(highlightedWorkspace.viewport || {}),
+              },
               replaceQuery: true,
             }
           }
