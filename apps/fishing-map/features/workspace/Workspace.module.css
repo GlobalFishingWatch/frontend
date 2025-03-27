@@ -33,6 +33,10 @@
   font: var(--font-L);
 }
 
+.subTitle a {
+  text-decoration: underline;
+}
+
 .errorTitle {
   font: var(--font-L);
   line-height: 1;
