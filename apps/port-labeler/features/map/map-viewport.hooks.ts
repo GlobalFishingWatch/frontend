@@ -6,7 +6,7 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import type { MapCoordinates } from 'types'
 
 type ViewportKeys = 'latitude' | 'longitude' | 'zoom' | 'pitch' | 'bearing'
-type ViewportProps = Record<ViewportKeys, number>
+export type ViewportProps = Record<ViewportKeys, number>
 type UseViewport = {
   viewport: MapCoordinates
   onViewportChange: (e: ViewStateChangeEvent) => void
@@ -28,7 +28,7 @@ const viewportAtom = atom<MapCoordinates>({
 export function useViewport(): UseViewport {
   const [viewport, setViewport] = useAtom(viewportAtom)
 
-  const setMapCoordinates = useCallback((coordinates: ViewportProps) => {
+  const setMapCoordinates = useCallback((coordinates: Partial<ViewportProps>) => {
     setViewport((viewport) => ({ ...viewport, ...coordinates }))
   }, [])
 
