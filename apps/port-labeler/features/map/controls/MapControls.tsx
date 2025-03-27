@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 
-import type { MiniglobeBounds} from '@globalfishingwatch/ui-components';
-import { IconButton,MiniGlobe } from '@globalfishingwatch/ui-components'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import { IconButton, MiniGlobe } from '@globalfishingwatch/ui-components'
 
+import type { ViewportProps } from '../map-viewport.hooks'
 import { useViewport } from '../map-viewport.hooks'
 
 import styles from './MapControls.module.css'
@@ -38,7 +39,7 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         data-tip-pos="left"
         tooltip={t('common.zoom_more', 'Increase zoom')}
         onClick={() => {
-          setMapCoordinates({ ...viewport, zoom: viewport.zoom + 1 })
+          setMapCoordinates({ ...viewport, zoom: viewport.zoom + 1 } as ViewportProps)
         }}
       />
       <IconButton
@@ -47,7 +48,7 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
         data-tip-pos="left"
         tooltip={t('common.zoom_less', 'Decrease zoom')}
         onClick={() => {
-          setMapCoordinates({ ...viewport, zoom: viewport.zoom - 1 })
+          setMapCoordinates({ ...viewport, zoom: viewport.zoom - 1 } as ViewportProps)
         }}
       />
 
