@@ -1,11 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import { DEFAULT_WORKSPACE } from '../data/config'
-import type { Project} from '../data/projects';
+import type { Project } from '../data/projects'
 import { PROJECTS } from '../data/projects'
 import { selectedProject } from '../features/projects/projects.slice'
 import type { RootState } from '../store'
-import type { TrackColor, WorkspaceParam } from '../types';
+import type { TrackColor, WorkspaceParam } from '../types'
 import { TRACK_COLORS } from '../types'
 
 const selectLocation = (state: RootState) => {
@@ -158,11 +158,10 @@ export const selectFilteredDistanceFromPort = createSelector(
 )
 
 export const selectViewport = createSelector(
-  [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectColorMode],
-  (zoom, latitude, longitude, colorMode) => ({
+  [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery],
+  (zoom, latitude, longitude) => ({
     zoom,
     latitude,
     longitude,
-    colorMode,
   })
 )
