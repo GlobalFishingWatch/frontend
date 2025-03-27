@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
+import htmlParser from 'html-react-parser'
 
 import { Button, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -174,7 +175,7 @@ function Workspace() {
               )} */}
             </h2>
             {workspace?.id === DEEP_SEA_MINING_WORKSPACE_ID && (
-              <h3 className={styles.subTitle}>{workspace.description}</h3>
+              <h3 className={styles.subTitle}>{htmlParser(workspace.description)}</h3>
             )}
             <Modal
               appSelector={ROOT_DOM_ELEMENT}
