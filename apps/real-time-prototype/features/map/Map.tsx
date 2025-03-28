@@ -14,7 +14,6 @@ import { useTracksLayer, useTracksSublayers } from 'layers/tracks/tracks.hooks'
 import uniqBy from 'lodash/uniqBy'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { BasemapType } from '@globalfishingwatch/layer-composer'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -29,6 +28,12 @@ const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
 const API_GATEWAY_VERSION = 'v2'
 
 const mapView = new MapView({ repeat: true })
+
+export enum BasemapType {
+  Satellite = 'satellite',
+  Default = 'basemap_default',
+  Labels = 'basemap_labels',
+}
 
 export type GFWLayerProps = {
   token: string

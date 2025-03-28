@@ -4,6 +4,7 @@ import type { RGBA } from 'color-blend/dist/types'
 import {
   hexToRgb,
   hexToRgbString,
+  rgbaStringToComponents,
   rgbaStringToObject,
   rgbaToString,
   rgbToRgbString,
@@ -145,16 +146,27 @@ export const getBivariateRampLegend = (colorRampsIds: ColorRampId[]) => {
   ]
 }
 
-export const getColorRamp = ({
+type GetColorRampReturn<T extends 'rgba' | 'object' | 'array'> = {
+  rgba: string[]
+  object: RGBA[]
+  array: [number, number, number, number][]
+}[T]
+
+export function getColorRamp<T extends 'rgba' | 'object' | 'array' = 'object'>({
   rampId,
   whiteEnd = false,
+  format = 'object' as T,
 }: {
   rampId: ColorRampId
   whiteEnd?: boolean
-}) => {
+  format?: T
+}): GetColorRampReturn<T> {
   const ramp = whiteEnd
     ? getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID[rampId] || rampId)
     : getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[rampId] || rampId)
   if (rampId === 'bathymetry') ramp.reverse()
-  return ramp.map((rgba) => rgbaStringToObject(rgba))
+  if (format === 'rgba') return ramp as GetColorRampReturn<T>
+  if (format === 'array')
+    return ramp.map((rgba) => rgbaStringToComponents(rgba)) as GetColorRampReturn<T>
+  return ramp.map((rgba) => rgbaStringToObject(rgba)) as GetColorRampReturn<T>
 }
