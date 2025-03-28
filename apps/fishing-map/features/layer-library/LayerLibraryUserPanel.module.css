@@ -29,6 +29,11 @@
   justify-content: space-between;
 }
 
+.datasetLabel {
+  display: flex;
+  gap: var(--space-S);
+}
+
 .dataset:not(:last-child) {
   border-bottom: var(--border);
 }

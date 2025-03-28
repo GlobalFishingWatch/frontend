@@ -101,13 +101,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     [dispatchSetMapDrawing]
   )
 
-  const SectionComponent = ({
-    geometryType,
-    id,
-  }: {
-    geometryType: DatasetGeometryType
-    id: DataviewCategory
-  }) => {
+  const SectionComponent = () => {
     if (guestUser) {
       return (
         <div className={styles.emptyState}>
@@ -134,14 +128,12 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
         </div>
       )
     }
-    console.log(groupDatasetsByGeometryType(filteredDatasets)[geometryType])
-    return (
-      <Fragment>
-        <ul className={styles.userDatasetList}>
-          {filteredDatasets && filteredDatasets.length > 0 ? (
-            sortByCreationDate<Dataset>(
-              groupDatasetsByGeometryType(filteredDatasets)[geometryType]
-            ).map((dataset) => {
+
+    return filteredDatasets && filteredDatasets.length > 0 ? (
+      <div className={styles.userDatasetList}>
+        {Object.values(groupDatasetsByGeometryType(filteredDatasets)).map((layer) => (
+          <ul className={styles.list}>
+            {sortByCreationDate<Dataset>(layer).map((dataset) => {
               const datasetError = dataset.status === DatasetStatus.Error
               const datasetImporting = dataset.status === DatasetStatus.Importing
               const datasetDescription = dataset.description !== dataset.name
@@ -187,22 +179,14 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                   </div>
                 </li>
               )
-            })
-          ) : (
-            <div className={styles.placeholder}>
-              {t('dataset.emptyState', 'Your datasets will appear here')}
-            </div>
-          )}
-        </ul>
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={<DatasetLabel dataset={infoDataset} />}
-          isOpen={infoDataset !== undefined}
-          onClose={() => setInfoDataset(undefined)}
-        >
-          {infoDataset && <InfoModalContent dataset={infoDataset} />}
-        </Modal>
-      </Fragment>
+            })}
+          </ul>
+        ))}
+      </div>
+    ) : (
+      <div className={styles.placeholder}>
+        {t('dataset.emptyState', 'Your datasets will appear here')}
+      </div>
     )
   }
 
@@ -262,7 +246,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
         </LoginButtonWrapper>
       </div>
 
-      <SectionComponent geometryType="points" id={DataviewCategory.UserPoints} />
+      <SectionComponent />
     </Fragment>
   )
 }
