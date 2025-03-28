@@ -33,6 +33,16 @@
 .description {
   font: var(--font-M);
   color: var(--color-secondary-blue);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.description.expanded {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
 }
 
 .description strong {
@@ -41,6 +51,10 @@
 
 .description a {
   text-decoration: underline;
+}
+
+.descriptionToggle {
+  cursor: pointer;
 }
 
 .secondary {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
@@ -53,6 +53,9 @@ import styles from './ReportTitle.module.css'
 export default function ReportTitle() {
   const { t } = useTranslation()
   const [showBufferTooltip, setShowBufferTooltip] = useState(false)
+  const [longDescription, setLongDescription] = useState(false)
+  const [expandedDescription, setExpandedDescription] = useState(false)
+  const descriptionRef = useRef<HTMLSpanElement>(null)
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
@@ -267,6 +270,16 @@ export default function ReportTitle() {
       ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
       : null
 
+  useLayoutEffect(() => {
+    if (descriptionRef.current) {
+      setLongDescription(descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight)
+    }
+  }, [descriptionRef, reportDescription])
+
+  const toggleExpandedDescription = useCallback(() => {
+    setExpandedDescription(!expandedDescription)
+  }, [expandedDescription])
+
   if (!reportTitle) {
     return (
       <div className={cx(styles.container, styles.placeholder)}>
@@ -341,9 +354,26 @@ export default function ReportTitle() {
         </div>
       </div>
       {reportDescription && (
-        <div className={styles.row}>
-          <h2 className={styles.description}>{reportDescription}</h2>
-        </div>
+        <p>
+          <span
+            className={cx(styles.description, { [styles.expanded]: expandedDescription })}
+            ref={descriptionRef}
+          >
+            {reportDescription}{' '}
+          </span>
+          {longDescription && (
+            <span
+              className={styles.descriptionToggle}
+              onClick={toggleExpandedDescription}
+              role="button"
+              tabIndex={0}
+            >
+              {expandedDescription
+                ? t('vessel.insights.gapsSeeLess', 'See less')
+                : t('common.seeMore', 'See more')}
+            </span>
+          )}
+        </p>
       )}
     </div>
   )
