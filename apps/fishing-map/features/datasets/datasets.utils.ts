@@ -179,13 +179,21 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   return 'polygons'
 }
 
-export const sortDatasetsByGeometryType = (datasets: Dataset[]): Dataset[] => {
-  const geometryOrder = ['points', 'tracks', 'polygons']
-  return [...datasets].sort((a, b) => {
-    const geometryA = getDatasetGeometryType(a)
-    const geometryB = getDatasetGeometryType(b)
-    return geometryOrder.indexOf(geometryA) - geometryOrder.indexOf(geometryB)
-  })
+export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string, Dataset[]> => {
+  return datasets.reduce(
+    (acc, dataset) => {
+      const geometryType = getDatasetConfigurationProperty({
+        dataset,
+        property: 'geometryType',
+      })
+      if (!acc[geometryType]) {
+        acc[geometryType] = []
+      }
+      acc[geometryType].push(dataset)
+      return acc
+    },
+    {} as Record<string, Dataset[]>
+  )
 }
 
 export const getIsBQEditorDataset = (dataset: Dataset): boolean => {

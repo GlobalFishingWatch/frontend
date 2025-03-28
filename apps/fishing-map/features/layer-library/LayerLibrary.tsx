@@ -214,6 +214,7 @@ const LayerLibrary: FC = () => {
         <div className={styles.categories}>
           {extendedCategories.map(({ category, subcategories }) => (
             <>
+              {console.log(subcategories)}
               <button
                 className={cx(styles.category, {
                   [styles.currentCategory]: currentCategory === category,
@@ -229,19 +230,20 @@ const LayerLibrary: FC = () => {
               >
                 {t(`common.${category as DataviewCategory}`, upperFirst(category))}
               </button>
-              {currentCategory === category && subcategories.length > 0 && (
-                <button
-                  className={cx(styles.subcategory, {
-                    [styles.currentCategory]: currentCategory === category,
-                  })}
-                  disabled={layersByCategory[category].length === 0}
-                  data-category={category}
-                  onClick={onCategoryClick}
-                  key={category}
-                >
-                  {t(`common.${category as DataviewCategory}`, upperFirst(category))}
-                </button>
-              )}
+              {currentCategory === category &&
+                subcategories.length > 0 &&
+                subcategories.map((subcategory) => (
+                  <button
+                    key={subcategory}
+                    className={cx(styles.subcategory, {
+                      [styles.currentCategory]: currentCategory === subcategory,
+                    })}
+                    data-category={subcategory}
+                    onClick={onCategoryClick}
+                  >
+                    {t(`common.${subcategory}`, upperFirst(subcategory))}
+                  </button>
+                ))}
             </>
           ))}
         </div>
