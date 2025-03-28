@@ -50,7 +50,7 @@ import { BufferButtonTooltip } from './BufferButonTooltip'
 
 import styles from './ReportTitle.module.css'
 
-export default function ReportTitle() {
+export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const { t } = useTranslation()
   const [showBufferTooltip, setShowBufferTooltip] = useState(false)
   const [longDescription, setLongDescription] = useState(false)
@@ -353,7 +353,7 @@ export default function ReportTitle() {
           </Button>
         </div>
       </div>
-      {reportDescription && (
+      {reportDescription && !isSticky && (
         <p>
           <span
             className={cx(styles.description, { [styles.expanded]: expandedDescription })}
