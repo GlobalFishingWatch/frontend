@@ -108,3 +108,19 @@
   font: var(--font-S);
   color: var(--color-secondary-blue);
 }
+
+.expandable {
+  cursor: pointer;
+  position: relative;
+}
+
+.expandIcon {
+  position: absolute;
+  color: var(--color-secondary-blue);
+  bottom: 0.3rem;
+  margin-left: var(--space-XS);
+}
+
+.extendedInfo {
+  font: var(--font-S);
+}
