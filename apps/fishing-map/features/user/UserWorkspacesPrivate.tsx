@@ -7,10 +7,12 @@ import type { Workspace } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { WORKSPACE } from 'routes/routes'
+import { updateUrlViewport } from 'routes/routes.actions'
 import { selectFeatureFlags } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
@@ -26,14 +28,15 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const featureFlags = useSelector(selectFeatureFlags)
   const setMapCoordinates = useSetMapCoordinates()
-  const onWorkspaceClick = useCallback(
-    (workspace: Workspace) => {
-      if (workspace.viewport) {
-        setMapCoordinates(workspace.viewport)
-      }
-    },
-    [setMapCoordinates]
-  )
+  const dispatch = useAppDispatch()
+
+  const onWorkspaceClick = (workspace: Workspace) => {
+    console.log(workspace.viewport)
+    if (workspace.viewport) {
+      setMapCoordinates(workspace.viewport)
+      dispatch(updateUrlViewport)(workspace.viewport)
+    }
+  }
 
   const loading =
     workspacesStatus === AsyncReducerStatus.Loading ||
@@ -64,7 +67,10 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
                     category: workspace.category || DEFAULT_WORKSPACE_CATEGORY,
                     workspaceId: workspace.id,
                   },
-                  query: { featureFlags },
+                  query: {
+                    featureFlags,
+                  },
+                  replaceQuery: true,
                 }}
                 onClick={() => onWorkspaceClick(workspace)}
               >

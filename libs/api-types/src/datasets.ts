@@ -60,6 +60,7 @@ export interface Endpoint {
 
 export enum DatasetTypes {
   Vessels = 'vessels:v1',
+  VesselGroups = 'vessel-group:v1',
   Events = 'events:v1',
   Ports = 'ports:v1',
   Tracks = 'tracks:v1',

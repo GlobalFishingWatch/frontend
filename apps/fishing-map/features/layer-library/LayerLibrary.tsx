@@ -13,12 +13,16 @@ import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import { CURRENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
 import { selectLayerLibraryModal } from 'features/modals/modals.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import VesselGroupLayerPanel from 'features/workspace/vessel-groups/VesselGroupsLayerPanel'
 import { upperFirst } from 'utils/info'
+
+import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
 
 import styles from './LayerLibrary.module.css'
 
@@ -70,8 +74,19 @@ const LayerLibrary: FC = () => {
     [layersResolved]
   )
 
-  const uniqCategoriesPlusUser = useMemo(
-    () => [...uniqCategories, DataviewCategory.User],
+  const extendedCategories = useMemo(
+    () => [
+      ...uniqCategories.map((category) => ({ category, subcategories: [] })),
+      { category: DataviewCategory.VesselGroups, subcategories: [] },
+      {
+        category: DataviewCategory.User,
+        subcategories: [
+          DataviewCategory.UserPoints,
+          DataviewCategory.UserPolygons,
+          DataviewCategory.UserTracks,
+        ],
+      },
+    ],
     [uniqCategories]
   )
 
@@ -98,8 +113,8 @@ const LayerLibrary: FC = () => {
   )
 
   useEffect(() => {
-    const categoryElements = uniqCategoriesPlusUser.flatMap((category) => {
-      const element = document.getElementById(category)
+    const categoryElements = extendedCategories.flatMap((category) => {
+      const element = document.getElementById(category.category)
       return element || []
     })
     setCategoryElements(categoryElements)
@@ -107,7 +122,7 @@ const LayerLibrary: FC = () => {
       scrollToCategory({ categoryElements, category: currentCategory, smooth: false })
     }
     // Running only when categoryElements changes as listening to currentCategory blocks the scroll
-  }, [uniqCategoriesPlusUser])
+  }, [extendedCategories])
 
   const filteredLayers = useMemo(
     () =>
@@ -197,20 +212,37 @@ const LayerLibrary: FC = () => {
           />
         </div>
         <div className={styles.categories}>
-          {uniqCategoriesPlusUser.map((category) => (
-            <button
-              className={cx(styles.category, {
-                [styles.currentCategory]: currentCategory === category,
-              })}
-              disabled={
-                category !== DataviewCategory.User && layersByCategory[category].length === 0
-              }
-              data-category={category}
-              onClick={onCategoryClick}
-              key={category}
-            >
-              {t(`common.${category as DataviewCategory}`, upperFirst(category))}
-            </button>
+          {extendedCategories.map(({ category, subcategories }) => (
+            <>
+              <button
+                className={cx(styles.category, {
+                  [styles.currentCategory]: currentCategory === category,
+                })}
+                disabled={
+                  category !== DataviewCategory.User &&
+                  category !== DataviewCategory.VesselGroups &&
+                  layersByCategory[category].length === 0
+                }
+                data-category={category}
+                onClick={onCategoryClick}
+                key={category}
+              >
+                {t(`common.${category as DataviewCategory}`, upperFirst(category))}
+              </button>
+              {currentCategory === category && subcategories.length > 0 && (
+                <button
+                  className={cx(styles.subcategory, {
+                    [styles.currentCategory]: currentCategory === category,
+                  })}
+                  disabled={layersByCategory[category].length === 0}
+                  data-category={category}
+                  onClick={onCategoryClick}
+                  key={category}
+                >
+                  {t(`common.${category as DataviewCategory}`, upperFirst(category))}
+                </button>
+              )}
+            </>
           ))}
         </div>
       </div>
@@ -233,6 +265,7 @@ const LayerLibrary: FC = () => {
             })}
           </Fragment>
         ))}
+        <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
         <LayerLibraryUserPanel searchQuery={searchQuery} />
       </ul>
     </div>

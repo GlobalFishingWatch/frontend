@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import { Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -14,7 +15,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDataviewInstanceByDataset, useAddDataset } from 'features/datasets/datasets.hook'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
-import { getDatasetLabel, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+import {
+  getDatasetLabel,
+  getDatasetTypeIcon,
+  sortDatasetsByGeometryType,
+} from 'features/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
@@ -84,14 +89,17 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
   }, [datasets.length, onAddNewClick, dispatch])
 
-  const onDrawClick = useCallback(() => {
-    dispatchSetMapDrawing('polygons')
-    dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
-    trackEvent({
-      category: TrackCategory.ReferenceLayer,
-      action: `Draw a custom reference layer - Start`,
-    })
-  }, [dispatch, dispatchSetMapDrawing])
+  const onDrawClick = useCallback(
+    (drawFeatureType: DrawFeatureType) => {
+      dispatchSetMapDrawing(drawFeatureType)
+      dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+      trackEvent({
+        category: TrackCategory.ReferenceLayer,
+        action: `Draw a custom reference layer - Start`,
+      })
+    },
+    [dispatchSetMapDrawing]
+  )
 
   const SectionComponent = () => {
     if (guestUser) {
@@ -125,53 +133,55 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
       <Fragment>
         <ul className={styles.userDatasetList}>
           {filteredDatasets && filteredDatasets.length > 0 ? (
-            sortByCreationDate<Dataset>(filteredDatasets).map((dataset) => {
-              const datasetError = dataset.status === DatasetStatus.Error
-              const datasetImporting = dataset.status === DatasetStatus.Importing
-              const datasetDescription = dataset.description !== dataset.name
-              let infoTooltip = t(
-                `layer.seeDescription`,
-                'Click to see layer description'
-              ) as string
-              if (datasetImporting) {
-                infoTooltip = t('dataset.importing', 'Dataset is being imported')
+            sortDatasetsByGeometryType(sortByCreationDate<Dataset>(filteredDatasets)).map(
+              (dataset) => {
+                const datasetError = dataset.status === DatasetStatus.Error
+                const datasetImporting = dataset.status === DatasetStatus.Importing
+                const datasetDescription = dataset.description !== dataset.name
+                let infoTooltip = t(
+                  `layer.seeDescription`,
+                  'Click to see layer description'
+                ) as string
+                if (datasetImporting) {
+                  infoTooltip = t('dataset.importing', 'Dataset is being imported')
+                }
+                if (datasetError) {
+                  infoTooltip = `${t(
+                    'errors.uploadError',
+                    'There was an error uploading your dataset'
+                  )} - ${dataset.importLogs}`
+                }
+                const datasetIcon = getDatasetTypeIcon(dataset)
+                return (
+                  <li className={styles.dataset} key={dataset.id}>
+                    <span>
+                      {datasetIcon && (
+                        <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
+                      )}
+                      {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
+                    </span>
+                    <div>
+                      {(datasetError || datasetDescription) && (
+                        <InfoError
+                          error={datasetError}
+                          loading={datasetImporting}
+                          tooltip={infoTooltip}
+                          size="default"
+                          onClick={() => !datasetError && onInfoClick(dataset)}
+                        />
+                      )}
+                      {!datasetError && (
+                        <IconButton
+                          icon="view-on-map"
+                          onClick={() => onAddToWorkspaceClick(dataset)}
+                          tooltip={t('user.seeDataset', 'See on map')}
+                        />
+                      )}
+                    </div>
+                  </li>
+                )
               }
-              if (datasetError) {
-                infoTooltip = `${t(
-                  'errors.uploadError',
-                  'There was an error uploading your dataset'
-                )} - ${dataset.importLogs}`
-              }
-              const datasetIcon = getDatasetTypeIcon(dataset)
-              return (
-                <li className={styles.dataset} key={dataset.id}>
-                  <span>
-                    {datasetIcon && (
-                      <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
-                    )}
-                    {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
-                  </span>
-                  <div>
-                    {(datasetError || datasetDescription) && (
-                      <InfoError
-                        error={datasetError}
-                        loading={datasetImporting}
-                        tooltip={infoTooltip}
-                        size="default"
-                        onClick={() => !datasetError && onInfoClick(dataset)}
-                      />
-                    )}
-                    {!datasetError && (
-                      <IconButton
-                        icon="view-on-map"
-                        onClick={() => onAddToWorkspaceClick(dataset)}
-                        tooltip={t('user.seeDataset', 'See on map')}
-                      />
-                    )}
-                  </div>
-                </li>
-              )
-            })
+            )
           ) : (
             <div className={styles.placeholder}>
               {t('dataset.emptyState', 'Your datasets will appear here')}
@@ -225,7 +235,23 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             tooltip={t('layer.drawPolygon', 'Draw a layer')}
             tooltipPlacement="top"
             className="print-hidden"
-            onClick={onDrawClick}
+            onClick={() => onDrawClick('polygons')}
+          />
+        </LoginButtonWrapper>
+        <LoginButtonWrapper
+          tooltip={t(
+            'layer.drawPointsLogin',
+            'Register and login to draw a layer (free, 2 minutes)'
+          )}
+        >
+          <IconButton
+            icon="draw-points"
+            type="border"
+            size="medium"
+            tooltip={t('layer.drawPoints', 'Draw points')}
+            tooltipPlacement="top"
+            className="print-hidden"
+            onClick={() => onDrawClick('points')}
           />
         </LoginButtonWrapper>
       </div>
