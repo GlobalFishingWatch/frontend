@@ -7,6 +7,7 @@ export type FishingMapWorkspaceId = keyof (typeof workspaceTranslations)['fishin
 export type FishingMapWorkspace = {
   id: FishingMapWorkspaceId
   img: string
+  href?: string
   visible?: boolean
   reportId?: string
 }
@@ -18,6 +19,7 @@ export const FISHING_MAP_WORKSPACES: FishingMapWorkspace[] = [
   },
   {
     id: 'carrier-portal-public',
+    href: 'https://globalfishingwatch.org/carrier-portal',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/carrier-portal.jpg`,
   },
   {

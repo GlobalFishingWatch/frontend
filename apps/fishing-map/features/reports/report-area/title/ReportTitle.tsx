@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
@@ -40,6 +40,7 @@ import {
 import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectReportId } from 'routes/routes.selectors'
 import type { BufferOperation, BufferUnit } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -49,13 +50,17 @@ import { BufferButtonTooltip } from './BufferButonTooltip'
 
 import styles from './ReportTitle.module.css'
 
-export default function ReportTitle() {
+export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const { t } = useTranslation()
   const [showBufferTooltip, setShowBufferTooltip] = useState(false)
+  const [longDescription, setLongDescription] = useState(false)
+  const [expandedDescription, setExpandedDescription] = useState(false)
+  const descriptionRef = useRef<HTMLSpanElement>(null)
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
   const highlightArea = useHighlightReportArea()
+  const reportId = useSelector(selectReportId)
   const reportCategory = useSelector(selectReportCategory)
   const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
   const report = useSelector(selectCurrentReport)
@@ -176,7 +181,11 @@ export default function ReportTitle() {
 
   const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {
-    if (reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
+    if (reportId && !report) {
+      return ''
+    }
+    let areaName = report?.name
+    if (!areaName && reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
       return t('common.globalReport', 'Global report')
     }
     const propertyToInclude = getDatasetConfigurationProperty({
@@ -189,7 +198,6 @@ export default function ReportTitle() {
     })
     const valueProperty = Array.isArray(valueProperties) ? valueProperties[0] : valueProperties
 
-    let areaName = report?.name
     if (!areaName) {
       if (
         areaDataview?.config?.type === DataviewType.Context ||
@@ -240,14 +248,15 @@ export default function ReportTitle() {
     }
     return ''
   }, [
+    reportId,
+    report,
+    reportArea,
     dataset,
-    report?.name,
     urlBufferValue,
     urlBufferOperation,
     t,
     areaDataview?.config?.type,
     reportAreaStatus,
-    reportArea,
     urlBufferUnit,
   ])
 
@@ -260,6 +269,16 @@ export default function ReportTitle() {
     reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && reportArea?.geometry
       ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
       : null
+
+  useLayoutEffect(() => {
+    if (descriptionRef.current) {
+      setLongDescription(descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight)
+    }
+  }, [descriptionRef, reportDescription])
+
+  const toggleExpandedDescription = useCallback(() => {
+    setExpandedDescription(!expandedDescription)
+  }, [expandedDescription])
 
   if (!reportTitle) {
     return (
@@ -334,10 +353,27 @@ export default function ReportTitle() {
           </Button>
         </div>
       </div>
-      {reportDescription && (
-        <div className={styles.row}>
-          <h2 className={styles.description}>{reportDescription}</h2>
-        </div>
+      {reportDescription && !isSticky && (
+        <p>
+          <span
+            className={cx(styles.description, { [styles.expanded]: expandedDescription })}
+            ref={descriptionRef}
+          >
+            {reportDescription}{' '}
+          </span>
+          {longDescription && (
+            <span
+              className={styles.descriptionToggle}
+              onClick={toggleExpandedDescription}
+              role="button"
+              tabIndex={0}
+            >
+              {expandedDescription
+                ? t('vessel.insights.gapsSeeLess', 'See less')
+                : t('common.seeMore', 'See more')}
+            </span>
+          )}
+        </p>
       )}
     </div>
   )

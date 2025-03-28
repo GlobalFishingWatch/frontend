@@ -29,8 +29,24 @@
   padding: var(--space-S) var(--space-S) 0 var(--space-S);
 }
 
+.sticky {
+  background-color: var(--color-white);
+  z-index: 2;
+  padding-bottom: var(--space-S);
+  border-bottom: var(--border);
+}
+
 .title {
   font: var(--font-L);
+}
+
+.subTitle a {
+  text-decoration: underline;
+}
+
+.subTitleBtn {
+  margin-left: var(--space-XS);
+  top: 0.3rem;
 }
 
 .errorTitle {
