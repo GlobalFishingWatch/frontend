@@ -40,6 +40,7 @@ import {
 import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectReportId } from 'routes/routes.selectors'
 import type { BufferOperation, BufferUnit } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -56,6 +57,7 @@ export default function ReportTitle() {
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
   const highlightArea = useHighlightReportArea()
+  const reportId = useSelector(selectReportId)
   const reportCategory = useSelector(selectReportCategory)
   const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
   const report = useSelector(selectCurrentReport)
@@ -176,7 +178,11 @@ export default function ReportTitle() {
 
   const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {
-    if (reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
+    if (reportId && !report) {
+      return ''
+    }
+    let areaName = report?.name
+    if (!areaName && reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
       return t('common.globalReport', 'Global report')
     }
     const propertyToInclude = getDatasetConfigurationProperty({
@@ -189,7 +195,6 @@ export default function ReportTitle() {
     })
     const valueProperty = Array.isArray(valueProperties) ? valueProperties[0] : valueProperties
 
-    let areaName = report?.name
     if (!areaName) {
       if (
         areaDataview?.config?.type === DataviewType.Context ||
@@ -240,14 +245,15 @@ export default function ReportTitle() {
     }
     return ''
   }, [
+    reportId,
+    report,
+    reportArea,
     dataset,
-    report?.name,
     urlBufferValue,
     urlBufferOperation,
     t,
     areaDataview?.config?.type,
     reportAreaStatus,
-    reportArea,
     urlBufferUnit,
   ])
 
