@@ -1,3 +1,4 @@
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import {
@@ -5,6 +6,7 @@ import {
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
+import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 
 export const AIS_DATAVIEW_INSTANCE_ID = 'ais'
 export const VMS_DATAVIEW_INSTANCE_ID = 'vms'
@@ -22,6 +24,14 @@ const REPORT_EVENTS_DATAVIEW_INSTANCES_IDS: string[] = [
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 ]
+
+export const CARRIER_PORTAL_DATAVIEW_INSTANCES: UrlDataviewInstance[] =
+  REPORT_EVENTS_DATAVIEW_INSTANCES_IDS.map((id) => ({
+    id,
+    config: {
+      visible: id === ENCOUNTER_EVENTS_SOURCE_ID,
+    },
+  }))
 
 export const REPORT_EVENTS_DATAVIEW_INSTANCES: UrlDataviewInstance[] =
   REPORT_EVENTS_DATAVIEW_INSTANCES_IDS.map((id) => ({
