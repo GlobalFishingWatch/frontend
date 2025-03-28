@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit'
 import type { RootState } from 'reducers'
 import type { Dispatch, Middleware } from 'redux'
 
@@ -36,10 +37,10 @@ export const routerQueryMiddleware: Middleware =
       } else {
         newAction.query = {
           ...newAction.query,
-          featureFlags: [
+          featureFlags: uniq([
             ...(prevQuery.featureFlags || []),
             ...(newAction.query?.featureFlags || []),
-          ],
+          ]),
         }
       }
       const { query, replaceUrl } = routerAction

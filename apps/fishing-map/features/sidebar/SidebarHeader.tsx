@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -647,7 +647,7 @@ function SidebarHeader() {
       return <VesselHeader />
     }
     if (isAreaReportLocation) {
-      return <ReportTitle />
+      return <ReportTitle isSticky={isSticky} />
     }
     if (isPortReportLocation) {
       return <PortReportHeader />
@@ -655,7 +655,13 @@ function SidebarHeader() {
     if (isVesselGroupReportLocation) {
       return <VesselGroupReportTitle />
     }
-  }, [isAnyVesselLocation, isAreaReportLocation, isPortReportLocation, isVesselGroupReportLocation])
+  }, [
+    isAnyVesselLocation,
+    isAreaReportLocation,
+    isPortReportLocation,
+    isSticky,
+    isVesselGroupReportLocation,
+  ])
 
   return (
     <div className={cx({ [styles.sticky]: isSticky })}>

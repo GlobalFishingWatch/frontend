@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import Sticky from 'react-sticky-el'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
+import htmlParser from 'html-react-parser'
 
-import { Button, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { Button, IconButton, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { WIZARD_TEMPLATE_ID } from 'data/highlighted-workspaces/marine-manager.dataviews'
@@ -24,6 +27,8 @@ import {
   fetchWorkspaceVesselGroupsThunk,
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
+import type { WelcomeLocalStorageKey } from 'features/welcome/Welcome'
+import { DEEP_SEA_MINING_POPUP } from 'features/welcome/Welcome'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
 import UserSection from 'features/workspace/user/UserSection'
@@ -73,6 +78,10 @@ function Workspace() {
   const [workspaceEditDescription, setWorkspaceEditDescription] = useState(workspace?.description)
   const [workspaceEditModalOpen, setWorkspaceEditModalOpen] = useState(false)
   const [editWorkspaceLoading, setEditWorkspaceLoading] = useState(false)
+  const [dsmWelcomePopup, setDsmWelcomePopup] = useLocalStorage<WelcomeLocalStorageKey>(
+    DEEP_SEA_MINING_POPUP,
+    { visible: false, showAgain: false }
+  )
 
   useEffect(() => {
     if (workspace) {
@@ -150,6 +159,10 @@ function Workspace() {
     return <WorkspaceError />
   }
 
+  const openDSMPopup = () => {
+    setDsmWelcomePopup({ ...dsmWelcomePopup, visible: true })
+  }
+
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
       {(locationCategory === WorkspaceCategory.MarineManager ||
@@ -158,13 +171,14 @@ function Workspace() {
         workspace?.id !== WIZARD_TEMPLATE_ID &&
         workspace?.id !== DEFAULT_WORKSPACE_ID &&
         !readOnly && (
-          <div className={styles.header}>
-            {isUserWorkspace && (
-              <label className={styles.subTitle}>{t('workspace.user', 'User workspace')}</label>
-            )}
-            <h2 className={styles.title} data-test="user-workspace-title">
-              {getWorkspaceLabel(workspace)}
-              {/* {gfwUser && (
+          <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
+            <div className={styles.header}>
+              {isUserWorkspace && (
+                <label className={styles.subTitle}>{t('workspace.user', 'User workspace')}</label>
+              )}
+              <h2 className={styles.title} data-test="user-workspace-title">
+                {getWorkspaceLabel(workspace)}
+                {/* {gfwUser && (
                 <IconButton
                   className="print-hidden"
                   size="small"
@@ -172,42 +186,51 @@ function Workspace() {
                   onClick={() => setWorkspaceEditModalOpen(true)}
                 />
               )} */}
-            </h2>
-            {workspace?.id === DEEP_SEA_MINING_WORKSPACE_ID && (
-              <h3 className={styles.subTitle}>{workspace.description}</h3>
-            )}
-            <Modal
-              appSelector={ROOT_DOM_ELEMENT}
-              title={t('workspace.edit', 'Edit workspace')}
-              isOpen={workspaceEditModalOpen}
-              contentClassName={styles.modalContainer}
-              onClose={onWorkspaceUpdateClose}
-            >
-              <div className={styles.content}>
-                <InputText
-                  value={workspaceEditName}
-                  className={styles.input}
-                  label={t('common.name', 'Name')}
-                  onChange={(e) => setWorkspaceEditName(e.target.value)}
-                />
-                <InputText
-                  value={workspaceEditDescription}
-                  className={styles.input}
-                  label={t('common.description', 'Description')}
-                  onChange={(e) => setWorkspaceEditDescription(e.target.value)}
-                />
-              </div>
-              <div className={styles.modalFooter}>
-                <Button
-                  className={styles.saveBtn}
-                  loading={editWorkspaceLoading}
-                  onClick={() => onWorkspaceUpdateClick(workspace?.id)}
-                >
-                  {t('common.update', 'Update') as string}
-                </Button>
-              </div>
-            </Modal>
-          </div>
+              </h2>
+              {workspace?.id === DEEP_SEA_MINING_WORKSPACE_ID && (
+                <h3 className={styles.subTitle}>
+                  {htmlParser(workspace.description)}
+                  <IconButton
+                    className={styles.subTitleBtn}
+                    icon="info"
+                    size="tiny"
+                    onClick={openDSMPopup}
+                  />
+                </h3>
+              )}
+              <Modal
+                appSelector={ROOT_DOM_ELEMENT}
+                title={t('workspace.edit', 'Edit workspace')}
+                isOpen={workspaceEditModalOpen}
+                contentClassName={styles.modalContainer}
+                onClose={onWorkspaceUpdateClose}
+              >
+                <div className={styles.content}>
+                  <InputText
+                    value={workspaceEditName}
+                    className={styles.input}
+                    label={t('common.name', 'Name')}
+                    onChange={(e) => setWorkspaceEditName(e.target.value)}
+                  />
+                  <InputText
+                    value={workspaceEditDescription}
+                    className={styles.input}
+                    label={t('common.description', 'Description')}
+                    onChange={(e) => setWorkspaceEditDescription(e.target.value)}
+                  />
+                </div>
+                <div className={styles.modalFooter}>
+                  <Button
+                    className={styles.saveBtn}
+                    loading={editWorkspaceLoading}
+                    onClick={() => onWorkspaceUpdateClick(workspace?.id)}
+                  >
+                    {t('common.update', 'Update') as string}
+                  </Button>
+                </div>
+              </Modal>
+            </div>
+          </Sticky>
         )}
       <ActivitySection />
       <DetectionsSection />

@@ -68,6 +68,44 @@ function WorkspacesList() {
             return null
           }
 
+          if (highlightedWorkspace.href) {
+            // TODO: remove all the links and when CVP is migrated to the map
+            return (
+              <li key={highlightedWorkspace.id || name} className={cx(styles.workspace)}>
+                <a
+                  href={highlightedWorkspace.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  className={styles.imageLink}
+                >
+                  <img className={styles.image} alt={name} src={img} />
+                </a>
+                <div className={styles.info}>
+                  <a href={highlightedWorkspace.href} rel="noopener noreferrer" target="_blank">
+                    <h3 className={styles.title}>{name}</h3>
+                  </a>
+                  {description && (
+                    <p
+                      className={styles.description}
+                      dangerouslySetInnerHTML={{
+                        __html: description,
+                      }}
+                    ></p>
+                  )}
+                  <div className={styles.linksContainer}>
+                    <a
+                      href={highlightedWorkspace.href}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      className={styles.link}
+                    >
+                      {cta}
+                    </a>
+                  </div>
+                </div>
+              </li>
+            )
+          }
           let linkTo: To
           if (highlightedWorkspace.id === DEFAULT_WORKSPACE_ID) {
             linkTo = {

@@ -34,6 +34,7 @@ export type HighlightedWorkspace = {
   description: string
   cta?: string
   img?: string
+  href?: string
   reportUrl?: string
   visible?: boolean
   reportId?: string

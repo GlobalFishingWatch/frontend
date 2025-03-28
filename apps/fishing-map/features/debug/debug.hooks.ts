@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import { uniq } from 'es-toolkit'
 
 import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -12,9 +13,9 @@ export const useToggleFeatureFlag = () => {
   const toggleFeatureFlag = useCallback(
     (flag: FeatureFlag) => {
       if (featureFlags?.includes(flag)) {
-        dispatchQueryParams({ featureFlags: featureFlags.filter((f) => f !== flag) })
+        dispatchQueryParams({ featureFlags: uniq(featureFlags.filter((f) => f !== flag)) })
       } else {
-        dispatchQueryParams({ featureFlags: [...(featureFlags || []), flag] })
+        dispatchQueryParams({ featureFlags: uniq([...(featureFlags || []), flag]) })
       }
     },
     [dispatchQueryParams, featureFlags]
