@@ -1,7 +1,16 @@
-import type { VesselInfo } from '@globalfishingwatch/api-types'
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+import { Fragment, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import { VesselIdentitySourceEnum, type VesselInfo } from '@globalfishingwatch/api-types'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { Icon } from '@globalfishingwatch/ui-components'
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
+import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { formatInfoField } from 'utils/info'
 
 import styles from './VesselIdentity.module.css'
@@ -14,7 +23,17 @@ const VesselIdentityCombinedSourceField = ({
   identity,
   property,
 }: VesselIdentityCombinedSourceFieldProps) => {
+  const { t } = useTranslation()
+  const vesselInfo = useSelector(selectVesselInfoData)
+  // const isGFWUser = useSelector(selectIsGFWUser)
+  const isJACUser = useSelector(selectIsJACUser)
+  const [geartypesExpanded, setGeartypesExpanded] = useState(false)
   const combinedSource = identity?.combinedSourcesInfo?.[property]
+
+  const toggleGearTypesExpanded = () => {
+    setGeartypesExpanded(!geartypesExpanded)
+  }
+
   if (!combinedSource) {
     return identity[property] ? (
       <VesselIdentityField value={formatInfoField(identity[property], property) as string} />
@@ -28,7 +47,53 @@ const VesselIdentityCombinedSourceField = ({
         .map((source, index) => {
           const { name, yearTo, yearFrom } = source
           const dates = yearTo === yearFrom ? yearTo : `${yearFrom} - ${yearTo}`
-          return (
+          const selfReportedGearType = identity?.combinedSourcesInfo?.onFishingListSr?.[index]
+            ?.value
+            ? t('vessel.gearTypes.fishing', 'Fishing')
+            : t('vessel.gearTypes.other', 'Other')
+          const neuralNetGearType = identity?.combinedSourcesInfo?.inferredVesselClassAg?.[index]
+            ?.value as string
+          const registryGearType = vesselInfo?.identities.find((identity) => {
+            const identityYearFrom = getUTCDateTime(identity.transmissionDateFrom).year
+            const identityYearTo = getUTCDateTime(identity.transmissionDateTo).year
+            return (
+              identity.identitySource === VesselIdentitySourceEnum.Registry &&
+              identityYearFrom <= yearTo &&
+              identityYearTo >= yearFrom
+            )
+          })?.geartypes
+          return isJACUser && property === 'geartypes' ? (
+            <Fragment>
+              <li key={index} onClick={toggleGearTypesExpanded} className={styles.expandable}>
+                <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
+                {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
+                <Icon
+                  className={styles.expandIcon}
+                  icon={geartypesExpanded ? 'arrow-top' : 'arrow-down'}
+                />
+              </li>
+              {geartypesExpanded && (
+                <ul className={styles.extendedInfo}>
+                  <li>
+                    <span className={styles.secondary}>
+                      {t('vessel.infoSources.selfReported', 'Self Reported')}:{' '}
+                    </span>
+                    {selfReportedGearType}
+                  </li>
+                  <li>
+                    <span className={styles.secondary}>Neural Net: </span>
+                    {formatInfoField(neuralNetGearType, property) as string}
+                  </li>
+                  <li>
+                    <span className={styles.secondary}>
+                      {t('vessel.infoSources.registry', 'Registry')}:{' '}
+                    </span>
+                    {formatInfoField(registryGearType, property) as string}
+                  </li>
+                </ul>
+              )}
+            </Fragment>
+          ) : (
             <li key={index}>
               <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
               {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
