@@ -6,10 +6,13 @@ import {
   useRemoveContextInLayer,
 } from 'layers/context/context.hooks'
 
-import { rgbaToString } from '@globalfishingwatch/layer-composer'
 import { Switch } from '@globalfishingwatch/ui-components'
 
 import styles from './Sidebar.module.css'
+
+export const rgbaToString = ({ r, g, b, a = 1 }: RGBA) => {
+  return `rgba(${r}, ${g}, ${b}, ${a})`
+}
 
 function ContextLayersSection() {
   const removeContextId = useRemoveContextInLayer()

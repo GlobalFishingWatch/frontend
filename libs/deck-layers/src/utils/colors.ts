@@ -101,3 +101,8 @@ export const hexToRgbString = (hex: string) => {
 export const rgbToRgbString = ({ r, g, b }: { r: number; g: number; b: number }) => {
   return `${r}, ${g}, ${b}`
 }
+
+export const hexToComponents = (hex: string): [number, number, number] => {
+  const { r, g, b } = hexToRgb(hex)
+  return [r, g, b]
+}
