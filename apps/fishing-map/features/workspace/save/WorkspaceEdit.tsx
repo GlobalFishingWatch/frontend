@@ -20,7 +20,12 @@ import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 
 import { useSaveWorkspaceTimerange } from './workspace-save.hooks'
 import type { WorkspaceTimeRangeMode } from './workspace-save.utils'
-import { getEditAccessOptionsByViewAccess, isValidDaysFromLatest } from './workspace-save.utils'
+import {
+  DAYS_FROM_LATEST_MAX,
+  DAYS_FROM_LATEST_MIN,
+  getEditAccessOptionsByViewAccess,
+  isValidDaysFromLatest,
+} from './workspace-save.utils'
 
 import styles from './WorkspaceSaveModal.module.css'
 
@@ -155,8 +160,8 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
             className={styles.select}
             label={t('common.timerangeDaysFromLatest', 'Days from latest data update (1-100)')}
             onChange={onDaysFromLatestChange}
-            min={1}
-            max={100}
+            min={DAYS_FROM_LATEST_MIN}
+            max={DAYS_FROM_LATEST_MAX}
           />
         )}
       </div>
