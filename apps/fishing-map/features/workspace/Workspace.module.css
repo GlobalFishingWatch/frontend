@@ -37,6 +37,11 @@
   text-decoration: underline;
 }
 
+.subTitleBtn {
+  margin-left: var(--space-XS);
+  top: 0.3rem;
+}
+
 .errorTitle {
   font: var(--font-L);
   line-height: 1;

@@ -6,7 +6,8 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 import htmlParser from 'html-react-parser'
 
-import { Button, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { Button, IconButton, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { WIZARD_TEMPLATE_ID } from 'data/highlighted-workspaces/marine-manager.dataviews'
@@ -25,6 +26,8 @@ import {
   fetchWorkspaceVesselGroupsThunk,
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
+import type { WelcomeLocalStorageKey } from 'features/welcome/Welcome'
+import { DEEP_SEA_MINING_POPUP } from 'features/welcome/Welcome'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
 import UserSection from 'features/workspace/user/UserSection'
@@ -74,6 +77,10 @@ function Workspace() {
   const [workspaceEditDescription, setWorkspaceEditDescription] = useState(workspace?.description)
   const [workspaceEditModalOpen, setWorkspaceEditModalOpen] = useState(false)
   const [editWorkspaceLoading, setEditWorkspaceLoading] = useState(false)
+  const [dsmWelcomePopup, setDsmWelcomePopup] = useLocalStorage<WelcomeLocalStorageKey>(
+    DEEP_SEA_MINING_POPUP,
+    { visible: false, showAgain: false }
+  )
 
   useEffect(() => {
     if (workspace) {
@@ -151,6 +158,10 @@ function Workspace() {
     return <WorkspaceError />
   }
 
+  const openDSMPopup = () => {
+    setDsmWelcomePopup({ ...dsmWelcomePopup, visible: true })
+  }
+
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
       {(locationCategory === WorkspaceCategory.MarineManager ||
@@ -175,7 +186,15 @@ function Workspace() {
               )} */}
             </h2>
             {workspace?.id === DEEP_SEA_MINING_WORKSPACE_ID && (
-              <h3 className={styles.subTitle}>{htmlParser(workspace.description)}</h3>
+              <h3 className={styles.subTitle}>
+                {htmlParser(workspace.description)}
+                <IconButton
+                  className={styles.subTitleBtn}
+                  icon="info"
+                  size="tiny"
+                  onClick={openDSMPopup}
+                />
+              </h3>
             )}
             <Modal
               appSelector={ROOT_DOM_ELEMENT}
