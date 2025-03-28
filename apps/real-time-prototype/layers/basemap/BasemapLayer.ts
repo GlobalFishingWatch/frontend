@@ -1,10 +1,8 @@
-import type { LayersList } from '@deck.gl/core';
+import type { LayersList } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import type { GeoBoundingBox, MVTLayerProps,TileLayerProps } from '@deck.gl/geo-layers';
-import { MVTLayer,TileLayer  } from '@deck.gl/geo-layers'
+import type { GeoBoundingBox, MVTLayerProps, TileLayerProps } from '@deck.gl/geo-layers'
+import { MVTLayer, TileLayer } from '@deck.gl/geo-layers'
 import { BitmapLayer } from '@deck.gl/layers'
-
-import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
 export type BaseMapLayerProps = TileLayerProps & MVTLayerProps & { onDataLoad: () => void }
 export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
@@ -41,7 +39,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       minZoom: 0,
       maxZoom: 8,
       onDataLoad: this.props.onDataLoad,
-      zIndex: GROUP_ORDER.indexOf(Group.BasemapFill),
+      zIndex: 10,
       getFillColor: [39, 70, 119],
       data: 'https://storage.googleapis.com/public-tiles/basemap/default/{z}/{x}/{y}.pbf',
     })

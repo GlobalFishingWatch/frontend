@@ -1,18 +1,32 @@
-import type { Color, LayersList } from '@deck.gl/core';
+import type { Color, LayersList } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import type { TripsLayerProps } from '@deck.gl/geo-layers';
+import type { TripsLayerProps } from '@deck.gl/geo-layers'
 import { TripsLayer } from '@deck.gl/geo-layers'
 import type { ScatterplotLayerProps } from '@deck.gl/layers'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import type { TrackPoint } from 'layers/tracks/tracks.hooks'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { hexToComponents } from '@globalfishingwatch/layer-composer'
 
 import { API_BASE } from 'data/config'
 import type { GFWLayerProps } from 'features/map/Map'
 
 import { trackLoader } from './track.loader'
+
+const hexToRgb = (hex: string) => {
+  const cleanHex = hex?.replace?.('#', '')
+  const color = {
+    r: parseInt(cleanHex.slice(0, 2), 16),
+    g: parseInt(cleanHex.slice(2, 4), 16),
+    b: parseInt(cleanHex.slice(4, 6), 16),
+  }
+  return color
+}
+
+const hexToComponents = (hex: string): [number, number, number] => {
+  const { r, g, b } = hexToRgb(hex)
+  return [r, g, b]
+}
 
 type TrackLayerProps = TripsLayerProps &
   ScatterplotLayerProps &

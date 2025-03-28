@@ -1,7 +1,7 @@
-import { API_GATEWAY, API_GATEWAY_VERSION } from "@globalfishingwatch/layer-composer"
-import type { LayerSpecification } from "@globalfishingwatch/maplibre-gl"
+import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
+import type { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 
-import { NSLABELS_ENDOPOINT } from "data/config"
+import { NSLABELS_ENDOPOINT } from 'data/config'
 
 const style = {
   version: 8,
@@ -17,7 +17,7 @@ const style = {
         '<a href="https://www.naturalearthdata.com" target="_blank" rel="noopener noreferrer">Natural Earth</a> | <a href="https://gadm.org/" target="_blank" rel="noopener noreferrer">GADM</a>',
     },
     satellite: {
-      tiles: [`${API_GATEWAY}/${API_GATEWAY_VERSION}/tileset/sat/tile?x={x}&y={y}&z={z}`],
+      tiles: [`${API_GATEWAY}/${API_VERSION}/tileset/sat/tile?x={x}&y={y}&z={z}`],
       type: 'raster',
       tileSize: 256,
       attribution: 'Google',
@@ -25,7 +25,7 @@ const style = {
     location_labels: {
       type: 'raster',
       tiles: [NSLABELS_ENDOPOINT],
-      tileSize: 256
+      tileSize: 256,
     },
     bathymetry: {
       type: 'raster',
@@ -72,7 +72,6 @@ const style = {
       id: 'satellite',
       type: 'raster',
       source: 'satellite',
-
     },
     {
       id: 'location_labels',
@@ -144,8 +143,8 @@ const style = {
       layout: {},
       paint: {
         'fill-color': ['get', 'color'],
-        'fill-opacity': 0.4
-      }
+        'fill-opacity': 0.4,
+      },
     },
     {
       id: 'portPoints',
@@ -156,12 +155,7 @@ const style = {
       },
       paint: {
         'circle-color': ['get', 'color'],
-        'circle-stroke-width': [
-          'case',
-          ['boolean', ['feature-state', 'hover'], false],
-          5,
-          1
-        ],
+        'circle-stroke-width': ['case', ['boolean', ['feature-state', 'hover'], false], 5, 1],
         'circle-stroke-color': [
           'case',
           ['boolean', ['get', 'selected'], false],
@@ -172,7 +166,6 @@ const style = {
         ],
       },
     } as LayerSpecification,
-
   ],
 }
 export default style

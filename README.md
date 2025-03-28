@@ -34,7 +34,6 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | [image-labeler](apps/image-labeler)                 | Labeling tool for satellite images     |
 | [port-labeler](apps/port-labeler)                   | Labeling tool for ports                |
 | [user-groups-admin](applications/user-groups-admin) | Tool to manage user groups with ease   |
-| [vessel-history](apps/vessel-history)               | 🗑️ Legacy 🗑️ Vessel history app        |
 
 To create a new application using a template with sidebar + map + timebar just run:
 
