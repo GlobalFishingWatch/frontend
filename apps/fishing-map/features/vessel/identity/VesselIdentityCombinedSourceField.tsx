@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { Fragment, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -25,14 +25,17 @@ const VesselIdentityCombinedSourceField = ({
 }: VesselIdentityCombinedSourceFieldProps) => {
   const { t } = useTranslation()
   const vesselInfo = useSelector(selectVesselInfoData)
-  // const isGFWUser = useSelector(selectIsGFWUser)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
-  const [geartypesExpanded, setGeartypesExpanded] = useState(false)
+  const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
   const combinedSource = identity?.combinedSourcesInfo?.[property]
 
-  const toggleGearTypesExpanded = () => {
-    setGeartypesExpanded(!geartypesExpanded)
-  }
+  const toggleGearTypesExpanded = useCallback(
+    (index: number) => {
+      setGeartypesExpanded(geartypesExpanded === index ? null : index)
+    },
+    [geartypesExpanded]
+  )
 
   if (!combinedSource) {
     return identity[property] ? (
@@ -53,6 +56,8 @@ const VesselIdentityCombinedSourceField = ({
             : t('vessel.gearTypes.other', 'Other')
           const neuralNetGearType = identity?.combinedSourcesInfo?.inferredVesselClassAg?.[index]
             ?.value as string
+          const bqSource = identity?.combinedSourcesInfo?.prodGeartypeSource?.[index]
+            ?.value as string
           const registryGearType = vesselInfo?.identities.find((identity) => {
             const identityYearFrom = getUTCDateTime(identity.transmissionDateFrom).year
             const identityYearTo = getUTCDateTime(identity.transmissionDateTo).year
@@ -63,16 +68,16 @@ const VesselIdentityCombinedSourceField = ({
             )
           })?.geartypes
           return isJACUser && property === 'geartypes' ? (
-            <Fragment>
-              <li key={index} onClick={toggleGearTypesExpanded} className={styles.expandable}>
+            <Fragment key={index}>
+              <li onClick={() => toggleGearTypesExpanded(index)} className={styles.expandable}>
                 <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
                 {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
                 <Icon
                   className={styles.expandIcon}
-                  icon={geartypesExpanded ? 'arrow-top' : 'arrow-down'}
+                  icon={geartypesExpanded === index ? 'arrow-top' : 'arrow-down'}
                 />
               </li>
-              {geartypesExpanded && (
+              {geartypesExpanded === index && (
                 <ul className={styles.extendedInfo}>
                   <li>
                     <span className={styles.secondary}>
@@ -90,6 +95,12 @@ const VesselIdentityCombinedSourceField = ({
                     </span>
                     {formatInfoField(registryGearType, property) as string}
                   </li>
+                  {isGFWUser && (
+                    <li>
+                      <span className={styles.secondary}>BQ Source: </span>
+                      {bqSource.toLowerCase()}
+                    </li>
+                  )}
                 </ul>
               )}
             </Fragment>
