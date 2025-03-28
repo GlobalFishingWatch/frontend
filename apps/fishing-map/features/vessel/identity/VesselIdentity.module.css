@@ -117,7 +117,7 @@
 .expandIcon {
   position: absolute;
   color: var(--color-secondary-blue);
-  top: 0.3rem;
+  bottom: 0.3rem;
   margin-left: var(--space-XS);
 }
 
