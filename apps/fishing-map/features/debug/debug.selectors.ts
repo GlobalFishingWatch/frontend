@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import { selectFeatureFlags } from 'routes/routes.selectors'
+import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import type { FeatureFlag } from 'types'
 
 export const selectIsFeatureFlagEnabled = (flag: FeatureFlag) =>

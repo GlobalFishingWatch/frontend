@@ -1,21 +1,21 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core'
+import type { MapViewProps, ViewStateMap, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
 import { debounce, throttle } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { boundsAtom } from 'features/map/map-bounds.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { updateUrlViewport } from 'routes/routes.actions'
-import type { MapCoordinates } from 'types'
 import { getUrlViewstateNumericParam } from 'utils/url'
 
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
-const viewStateAtom = atom<MapCoordinates>({
+const viewStateAtom = atom<ViewStateMap<MapView>>({
   longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
   latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
   zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
@@ -28,7 +28,7 @@ export const useMapSetViewState = () => {
   const setViewState = useSetAtom(viewStateAtom)
   return useMemo(
     () =>
-      throttle((coordinates: Partial<MapCoordinates>) => {
+      throttle((coordinates: Partial<ViewStateMap<MapView>>) => {
         setViewState((prev) => ({ ...prev, ...coordinates }))
       }, 1),
     [setViewState]
@@ -39,16 +39,19 @@ export const useMapSetViewState = () => {
 // this doesn't update any of the deckgl view state properties
 export function useSetMapCoordinates() {
   const setMapViewState = useMapSetViewState()
+  const { isTransitioning } = useAtomValue(boundsAtom)
   const deckMap = useDeckMap()
   return useCallback(
-    (coordinates: Partial<MapCoordinates>) => {
-      setMapViewState(coordinates)
-      if (deckMap) {
-        // Can't find why this is needed to properly update the view state
-        deckMap.setProps({ viewState: coordinates as any })
+    (coordinates: Partial<ViewStateMap<MapView>>) => {
+      if (!isTransitioning) {
+        setMapViewState(coordinates)
+        if (deckMap) {
+          // Can't find why this is needed to properly update the view state
+          deckMap.setProps({ viewState: coordinates as ViewStateMap<MapView> })
+        }
       }
     },
-    [deckMap, setMapViewState]
+    [deckMap, isTransitioning, setMapViewState]
   )
 }
 

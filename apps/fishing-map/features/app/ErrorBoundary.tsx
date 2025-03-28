@@ -13,7 +13,7 @@ export default class ErrorBoundary extends Component<any, { error: Error | null 
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    console.log(error, errorInfo)
+    console.error(error, errorInfo)
   }
 
   render() {
