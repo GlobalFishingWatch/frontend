@@ -4,15 +4,13 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
-import { Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDataviewInstanceByDataset, useAddDataset } from 'features/datasets/datasets.hook'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import {
@@ -25,12 +23,12 @@ import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import InfoError from 'features/workspace/shared/InfoError'
-import InfoModalContent from 'features/workspace/shared/InfoModalContent'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
+import { upperFirst } from 'utils/info'
 import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryUserPanel.module.css'
@@ -130,59 +128,57 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     }
 
     return filteredDatasets && filteredDatasets.length > 0 ? (
-      <div className={styles.userDatasetList}>
-        {Object.values(groupDatasetsByGeometryType(filteredDatasets)).map((layer) => (
-          <ul className={styles.list}>
-            {sortByCreationDate<Dataset>(layer).map((dataset) => {
-              const datasetError = dataset.status === DatasetStatus.Error
-              const datasetImporting = dataset.status === DatasetStatus.Importing
-              const datasetDescription = dataset.description !== dataset.name
-              let infoTooltip = t(
-                `layer.seeDescription`,
-                'Click to see layer description'
-              ) as string
-              if (datasetImporting) {
-                infoTooltip = t('dataset.importing', 'Dataset is being imported')
-              }
-              if (datasetError) {
-                infoTooltip = `${t(
-                  'errors.uploadError',
-                  'There was an error uploading your dataset'
-                )} - ${dataset.importLogs}`
-              }
-              const datasetIcon = getDatasetTypeIcon(dataset)
-              return (
-                <li className={styles.dataset} key={dataset.id}>
-                  <span>
-                    {datasetIcon && (
-                      <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
-                    )}
-                    {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
-                  </span>
-                  <div>
-                    {(datasetError || datasetDescription) && (
-                      <InfoError
-                        error={datasetError}
-                        loading={datasetImporting}
-                        tooltip={infoTooltip}
-                        size="default"
-                        onClick={() => !datasetError && onInfoClick(dataset)}
-                      />
-                    )}
-                    {!datasetError && (
-                      <IconButton
-                        icon="view-on-map"
-                        onClick={() => onAddToWorkspaceClick(dataset)}
-                        tooltip={t('user.seeDataset', 'See on map')}
-                      />
-                    )}
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        ))}
-      </div>
+      Object.entries(groupDatasetsByGeometryType(filteredDatasets)).map(([geometryType, layer]) => (
+        <ul className={styles.userDatasetList} key={geometryType}>
+          <label id={geometryType} className={styles.categoryLabel}>
+            {t(`common.${geometryType}`, upperFirst(geometryType))}
+          </label>
+          {sortByCreationDate<Dataset>(layer).map((dataset) => {
+            const datasetError = dataset.status === DatasetStatus.Error
+            const datasetImporting = dataset.status === DatasetStatus.Importing
+            const datasetDescription = dataset.description !== dataset.name
+            let infoTooltip = t(`layer.seeDescription`, 'Click to see layer description') as string
+            if (datasetImporting) {
+              infoTooltip = t('dataset.importing', 'Dataset is being imported')
+            }
+            if (datasetError) {
+              infoTooltip = `${t(
+                'errors.uploadError',
+                'There was an error uploading your dataset'
+              )} - ${dataset.importLogs}`
+            }
+            const datasetIcon = getDatasetTypeIcon(dataset)
+            return (
+              <li className={styles.dataset} key={dataset.id}>
+                <span>
+                  {datasetIcon && (
+                    <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
+                  )}
+                  {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
+                </span>
+                <div>
+                  {(datasetError || datasetDescription) && (
+                    <InfoError
+                      error={datasetError}
+                      loading={datasetImporting}
+                      tooltip={infoTooltip}
+                      size="default"
+                      onClick={() => !datasetError && onInfoClick(dataset)}
+                    />
+                  )}
+                  {!datasetError && (
+                    <IconButton
+                      icon="view-on-map"
+                      onClick={() => onAddToWorkspaceClick(dataset)}
+                      tooltip={t('user.seeDataset', 'See on map')}
+                    />
+                  )}
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      ))
     ) : (
       <div className={styles.placeholder}>
         {t('dataset.emptyState', 'Your datasets will appear here')}
