@@ -1,13 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { featureCollection } from '@turf/helpers'
-import type { Feature, GeoJsonProperties, LineString, Point,Position } from 'geojson'
+import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
 import { DataviewType, type TrackPoint } from '@globalfishingwatch/api-types'
-import * as Generators from '@globalfishingwatch/layer-composer'
 
 import { BACKGROUND_LAYER } from '../../data/config'
 import type { Project } from '../../data/projects'
-import { selectHighlightedEvent, selectHighlightedTime } from '../../features/timebar/timebar.slice'
+import { selectHighlightedTime } from '../../features/timebar/timebar.slice'
 import {
   getVesselParsedTrack,
   getVesselTrackGeojsonByDateRange,
@@ -24,79 +22,11 @@ import {
   selectSatellite,
   selectVessel,
 } from '../../routes/routes.selectors'
-import type { LayersData, TrackColor,VesselPoint } from '../../types'
+import type { LayersData, TrackColor, VesselPoint } from '../../types'
 import { ActionType } from '../../types'
 import { getFixedColorForUnknownLabel } from '../../utils/colors'
 
-/**
- * For each vessel segment filtered by the user, we return the layer config based on the actions
- */
-export const getVesselParsedTrackLayer = createSelector(
-  [
-    getVesselTrackGeojsonByDateRange,
-    getVesselParsedTrack,
-    selectHighlightedTime,
-    selectHighlightedEvent,
-    selectProjectColors,
-  ],
-  (
-    originalVesselTrack,
-    vesselTrack,
-    highlightedTime,
-    highlightedEvent,
-    projectColors
-  ): Generators.TrackGeneratorConfig[] => {
-    const features = vesselTrack.map((data: LayersData) => {
-      return data.trackPoints.reduce(
-        (feature, trackPoint) => {
-          const coords = [trackPoint.longitude, trackPoint.latitude] as Position
-          feature.geometry.coordinates.push(coords)
-          feature.properties?.coordinateProperties?.times?.push(trackPoint.timestamp)
-          feature.properties?.coordinateProperties?.speed?.push(trackPoint.speed)
-          feature.properties?.coordinateProperties?.course?.push(trackPoint.course)
-          feature.properties?.coordinateProperties?.elevation?.push(trackPoint.elevation)
-          return feature
-        },
-        {
-          geometry: {
-            type: 'LineString',
-            coordinates: [],
-          },
-          type: 'Feature',
-          properties: {
-            action: data.action,
-            coordinateProperties: {
-              times: [],
-              speed: [],
-              course: [],
-              elevation: [],
-            },
-          },
-        } as Feature<LineString, GeoJsonProperties>
-      )
-    })
-    const tracked = {
-      id: 'vesselTrack',
-      visible: true,
-      data: featureCollection(features),
-      type: Generators.GeneratorType.Track,
-      simplify: false,
-      highlightedEvent,
-      highlightedTime,
-      opacity: 1,
-    } as Generators.TrackGeneratorConfig
-    const untracked = {
-      id: 'vesselTrack-untracked',
-      visible: true,
-      data: originalVesselTrack,
-      type: Generators.GeneratorType.Track,
-      simplify: false,
-      highlightedTime,
-      color: projectColors[ActionType.untracked],
-    } as Generators.TrackGeneratorConfig
-    return [tracked, untracked]
-  }
-)
+import { BasemapType } from './map.types'
 
 // The selection of the colors is based in the following order
 // 1. Colors defined in the code by label name
@@ -272,7 +202,7 @@ export const selectVesselDirectionPointsLayer = createSelector(
  */
 export const selectDirectionPointsLayers = createSelector(
   [selectVesselDirectionPointsLayer, selectHighlightedTime, selectHiddenLabels],
-  (vesselEvents, highlightedTime, hiddenLabels): Generators.VesselPositionsGeneratorConfig => {
+  (vesselEvents, highlightedTime, hiddenLabels) => {
     return {
       id: 'vessel-positions',
       type: DataviewType.VesselPositions,
@@ -296,24 +226,14 @@ export const selectMapLayers = createSelector(
       return {
         ...dataview,
         basemap:
-          dataview.type !== Generators.GeneratorType.Basemap
+          dataview.type !== DataviewType.Basemap
             ? dataview.type
             : satellite
-            ? Generators.BasemapType.Satellite
-            : Generators.BasemapType.Default,
+              ? BasemapType.Satellite
+              : BasemapType.Default,
         visible: !hiddenLayers.includes(dataview.id),
       }
     })
     return dataviews
-  }
-)
-
-/**
- * Merge all the layers needed to render the map, except the direction arrows
- */
-export const getLayerComposerLayers = createSelector(
-  [selectMapLayers, getVesselParsedTrackLayer],
-  (mapLayers, trackLayers) => {
-    return [...mapLayers, ...trackLayers]
   }
 )

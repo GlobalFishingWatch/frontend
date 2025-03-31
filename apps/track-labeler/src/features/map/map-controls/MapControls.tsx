@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 
-import * as Generators from '@globalfishingwatch/layer-composer'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, MiniGlobe } from '@globalfishingwatch/ui-components'
 
@@ -14,6 +13,7 @@ import { selectHiddenLayers, selectSatellite } from '../../../routes/routes.sele
 import { useAppDispatch } from '../../../store.hooks'
 import type { ContextLayer } from '../../../types'
 import { useViewportConnect } from '../map.hooks'
+import { BasemapType } from '../map.types'
 
 import styles from './MapControls.module.css'
 
@@ -50,9 +50,7 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
   const [pinned, setPinned] = useState(false)
   const [showDMS, setShowDMS] = useState(false)
   const isSatellite = useSelector(selectSatellite)
-  const currentBasemap = isSatellite
-    ? Generators.BasemapType.Satellite
-    : Generators.BasemapType.Default
+  const currentBasemap = isSatellite ? BasemapType.Satellite : BasemapType.Default
   const switchBasemap = () => {
     dispatch(updateQueryParams({ satellite: !isSatellite }))
   }

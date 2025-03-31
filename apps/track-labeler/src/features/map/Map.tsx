@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
 import cx from 'classnames'
 import { DateTime } from 'luxon'
@@ -15,15 +16,14 @@ import type { ActionType, Label } from '../../types'
 
 import MapControls from './map-controls/MapControls'
 import {
-  useDeckGLMap,
-  useGeneratorsConnect,
+  useDeckLayers,
   useHiddenLabelsConnect,
   useMapClick,
   useMapMove,
+  useSetMapInstance,
   useViewport,
 } from './map.hooks'
 import {
-  getLayerComposerLayers,
   getMapboxPaintIcon,
   selectDirectionPointsLayers,
   selectLegendLabels,
@@ -32,10 +32,9 @@ import {
 import styles from './Map.module.css'
 
 const MapComponent = (): React.ReactElement<any> => {
-  const deckRef = useRef<any>(null)
+  const deckRef = useRef<DeckGLRef>(null)
+  useSetMapInstance(deckRef)
   const { viewport, onViewportChange } = useViewport()
-  const { globalConfig } = useGeneratorsConnect()
-  const generatorConfigs = useSelector(getLayerComposerLayers)
   const projectColors = useSelector(selectProjectColors)
   const actionShortcuts = useSelector(getActionShortcuts)
   const rulers = useSelector(selectRulers)
@@ -184,7 +183,7 @@ const MapComponent = (): React.ReactElement<any> => {
     return legengLabels.flatMap((label) => (!hiddenLabels.includes(label.id) ? label.id : []))
   }, [legengLabels, hiddenLabels])
   // Create layers for visualization
-  const { layers: dataLayers } = useDeckGLMap({
+  const { layers: dataLayers } = useDeckLayers({
     pointsData,
     highlightedTime: trackArrowsLayer.highlightedTime,
     visibleLabels,
@@ -240,11 +239,11 @@ const MapComponent = (): React.ReactElement<any> => {
 
   // Get current bounds
   const getBoundsFromViewState = useCallback(() => {
-    if (!deckRef.current) return null
+    if (!deckRef?.current?.deck) return null
 
     try {
       // const { width, height } = deckRef.current.deck
-      const bounds = deckRef.current.deck.getViewports()[0].getBounds()
+      const bounds = deckRef?.current?.deck?.getViewports()[0].getBounds()
 
       return {
         north: bounds[3],
@@ -281,7 +280,7 @@ const MapComponent = (): React.ReactElement<any> => {
         onHover={handleDeckHover}
         getTooltip={getTooltip}
         pickingRadius={1}
-      ></DeckGL>
+      />
 
       <div className={styles.legendContainer}>
         {legengLabels &&

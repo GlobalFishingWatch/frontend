@@ -80,7 +80,6 @@ const TimebarWrapper = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const { filterMode } = useTimebarModeConnect()
-  // const tracks = useSelector(getTracksData)
 
   const dispatch = useAppDispatch()
 
@@ -89,7 +88,6 @@ const TimebarWrapper = () => {
   const { minElevation, maxElevation } = useSelector(selectFilteredElevation)
   const { minDistanceFromPort, maxDistanceFromPort } = useSelector(selectFilteredDistanceFromPort)
   const { fromHour, toHour } = useSelector(selectFilteredHours)
-  // const tracksEvents = useSelector(getEventsForTracks)
   const rangeLimits = useSelector(selectRangeFilterLimits)
   //Those three handlers update the filters when we modify the Range
   const handleSpeedChange = (values: number[] | number) => {
