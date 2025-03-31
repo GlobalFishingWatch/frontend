@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { type FilterContext, MapController } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
@@ -103,7 +103,31 @@ const DeckGLWrapper = () => {
     }
     return true
   }, [])
+  const handleBeforePrint = () => {
+    const deckCanvas = document.querySelector('canvas')
+    if (deckCanvas) {
+      deckCanvas.style.width = `${deckCanvas.width}px`
+      deckCanvas.style.height = `${deckCanvas.height}px`
+    }
+  }
 
+  const handleAfterPrint = () => {
+    const deckCanvas = document.querySelector('canvas')
+    if (deckCanvas) {
+      deckCanvas.style.width = ''
+      deckCanvas.style.height = ''
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('beforeprint', handleBeforePrint)
+    window.addEventListener('afterprint', handleAfterPrint)
+
+    return () => {
+      window.removeEventListener('beforeprint', handleBeforePrint)
+      window.removeEventListener('afterprint', handleAfterPrint)
+    }
+  }, [])
   return (
     <DeckGL
       id={MAP_CANVAS_ID}
@@ -124,6 +148,7 @@ const DeckGLWrapper = () => {
       onDrag={onMapDrag}
       onDragEnd={onMapDragEnd}
       onLoad={onMapLoad}
+      useDevicePixels={false}
     >
       <MapAnnotations />
     </DeckGL>
