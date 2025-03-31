@@ -1,9 +1,6 @@
-import type {
-  BasemapGeneratorConfig,
-  // CartoPolygonsGeneratorConfig,
-} from '@globalfishingwatch/layer-composer'
-import * as Generators from '@globalfishingwatch/layer-composer'
+import { DataviewType } from '@globalfishingwatch/api-types'
 
+import { BasemapType } from '../features/map/map.types'
 import type { ContextLayer } from '../types'
 import type { AppState } from '../types/redux.types'
 
@@ -29,18 +26,18 @@ export const BACKGROUND_LAYER = [
     id: 'bathymetry',
     tileset: 'bathymetry',
     description: 'bathymetry',
-    type: Generators.GeneratorType.Basemap,
-    basemap: Generators.BasemapType.Bathymetry,
-  } as BasemapGeneratorConfig,
+    type: DataviewType.Basemap,
+    basemap: BasemapType.Bathymetry,
+  },
 ]
 export const DEFAULT_DATAVIEWS = [
   {
     id: 'landmass',
     tileset: 'landmass',
     description: 'landmass',
-    type: Generators.GeneratorType.Basemap,
-    basemap: Generators.BasemapType.Default,
-  } as BasemapGeneratorConfig,
+    type: DataviewType.Basemap,
+    basemap: BasemapType.Default,
+  },
 
   // {
   //   id: 'cp_rfmo',
