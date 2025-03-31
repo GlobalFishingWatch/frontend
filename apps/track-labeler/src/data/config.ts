@@ -1,3 +1,4 @@
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 
 import { BasemapType } from '../features/map/map.types'
@@ -6,6 +7,17 @@ import type { AppState } from '../types/redux.types'
 
 import { Field } from './models'
 
+export const BASEMAP_DATAVIEW_SLUG = 'basemap'
+
+export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap'
+export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE: DataviewInstance = {
+  dataviewId: BASEMAP_DATAVIEW_SLUG,
+  id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  config: {
+    type: DataviewType.Basemap,
+    basemap: BasemapType.Default,
+  },
+}
 export const TRACK_FIELDS = [
   Field.lonlat,
   Field.timestamp,

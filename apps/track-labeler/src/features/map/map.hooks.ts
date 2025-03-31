@@ -7,10 +7,13 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { DateTime } from 'luxon'
 
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import { useDeckLayerComposer } from '@globalfishingwatch/deck-layer-composer'
 import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
 import { hexToDeckColor, TrackLabelerVesselLayer } from '@globalfishingwatch/deck-layers'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from '../../data/config'
 import { selectEditing } from '../../features/rulers/rulers.selectors'
 import { editRuler, moveCurrentRuler } from '../../features/rulers/rulers.slice'
 import { updateQueryParams } from '../../routes/routes.actions'
@@ -350,6 +353,45 @@ export const useDeckLayers = ({
   }, [pointsData, highlightedTime, formattedTime, visibleLabels])
 
   return { layers }
+}
+
+export const useMapLayers = () => {
+  const dataviews = useMemo(
+    () => {
+      // if (isWorkspaceIndexLocation || isUserLocation) {
+      //   const dataviews = [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
+      //   if (workspacesListDataview) {
+      //     dataviews.push(workspacesListDataview as DataviewInstance)
+      //   }
+      //   return dataviews
+      // }
+      // if (workspaceLoading) {
+      //   return [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
+      // }
+      return [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
+    },
+    [
+      // bufferDataviews,
+      // isWorkspaceIndexLocation,
+      // isUserLocation,
+      // workspaceDataviews,
+      // workspaceLoading,
+      // workspacesListDataview,
+    ]
+  )
+
+  const layers = useDeckLayerComposer({
+    dataviews: dataviews as DataviewInstance[],
+    globalConfig: {
+      start: '2019-07-01T00:00:00.000Z',
+      end: '2019-07-01T00:00:00.000Z',
+      bivariateDataviews: null,
+      visibleEvents: [],
+      vesselsColorBy: 'track',
+    },
+  })
+
+  return layers
 }
 
 const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)

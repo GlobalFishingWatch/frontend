@@ -6,7 +6,6 @@ import cx from 'classnames'
 import { DateTime } from 'luxon'
 
 import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
-import { BaseMapLayer, BasemapType } from '@globalfishingwatch/deck-layers'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
@@ -19,6 +18,7 @@ import {
   useDeckLayers,
   useHiddenLabelsConnect,
   useMapClick,
+  useMapLayers,
   useMapMove,
   useSetMapInstance,
   useViewport,
@@ -60,6 +60,7 @@ const MapComponent = (): React.ReactElement<any> => {
     pitch: 0,
     bearing: 0,
     transitionDuration: 0,
+    repeat: true,
   })
 
   useEffect(() => {
@@ -75,6 +76,7 @@ const MapComponent = (): React.ReactElement<any> => {
     if (hasSignificantChange) {
       setViewState({
         ...viewState,
+        repeat: true,
         longitude: viewport.longitude,
         latitude: viewport.latitude,
         zoom: viewport.zoom,
@@ -189,19 +191,10 @@ const MapComponent = (): React.ReactElement<any> => {
     visibleLabels,
   })
 
-  // Create the basemap layer using deck-layers' BaseMapLayer
-  const basemapLayer = useMemo(() => {
-    return new BaseMapLayer({
-      id: 'basemap',
-      basemap: BasemapType.Default,
-      category: 'environment' as any,
-    })
-  }, [])
-
-  // Combine all layers for rendering
+  const layers = useMapLayers()
   const allLayers = useMemo(() => {
-    return [basemapLayer, ...dataLayers]
-  }, [basemapLayer, dataLayers])
+    return [...layers, ...dataLayers]
+  }, [layers, dataLayers])
 
   // Custom tooltip function for deck.gl
   const getTooltip = useCallback((info: any) => {
