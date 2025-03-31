@@ -235,6 +235,7 @@ export enum DatasetCategory {
   Environment = 'environment',
   Activity = 'activity',
   Vessel = 'vessel',
+  VesselGroups = 'vessel groups',
 }
 
 export enum DatasetSubCategory {

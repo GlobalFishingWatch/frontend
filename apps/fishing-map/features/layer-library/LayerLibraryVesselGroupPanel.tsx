@@ -9,12 +9,18 @@ import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import {
+  selectActiveVesselGroupDataviews,
+  selectVesselGroupDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
+import { selectAllVisibleVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
@@ -22,10 +28,13 @@ import styles from './LayerLibraryUserPanel.module.css'
 
 const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) => {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const dispatch = useAppDispatch()
 
-  const dataviews = useSelector(selectVesselGroupDataviews)
+  const dataviews = useSelector(selectAllVisibleVesselGroups)
+
+  const activeDataviews = useSelector(selectActiveVesselGroupDataviews)
+  console.log('activeDataviews', activeDataviews)
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
 
   const filteredDataview = useMemo(
@@ -37,16 +46,16 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
   )
 
   const toggleAddToWorkspace = useCallback(
-    (dataview: UrlDataviewInstance) => {
-      upsertDataviewInstance({
-        id: String(dataview.id),
-        config: {
-          visible: !dataview?.config?.visible,
-        },
-      })
+    (vesselGroupId: string, action: 'remove' | 'add') => {
+      const dataviewInstance = getVesselGroupDataviewInstance(vesselGroupId)
+      if (dataviewInstance && action === 'add') {
+        upsertDataviewInstance(dataviewInstance)
+      } else if (dataviewInstance && action === 'remove') {
+        deleteDataviewInstance(dataviewInstance.id)
+      }
       dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
     },
-    [dispatch, upsertDataviewInstance]
+    [dispatch, deleteDataviewInstance, upsertDataviewInstance]
   )
 
   const SectionComponent = () => {
@@ -63,17 +72,15 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
         {filteredDataview.length > 0 ? (
           filteredDataview?.map((vesselGroup) => {
             return (
-              <li className={styles.dataset} key={vesselGroup.id}>
+              <li className={styles.dataset} key={vesselGroup?.id}>
                 <span className={styles.datasetLabel}>
                   <Icon icon="vessel-group" />
-                  {formatInfoField(vesselGroup?.vesselGroup?.name, 'shipname')} (
-                  {vesselGroup.vesselGroup?.vessels?.length &&
-                    getVesselGroupVesselsCount(vesselGroup.vesselGroup)}
-                  )
+                  {formatInfoField(vesselGroup?.name, 'shipname')} (
+                  {vesselGroup?.vessels?.length && getVesselGroupVesselsCount(vesselGroup)})
                 </span>
 
                 <div>
-                  <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
+                  <VesselGroupReportLink vesselGroupId={vesselGroup?.id ?? ''}>
                     <IconButton
                       tooltip={t(
                         'vesselGroupReport.clickToSee',
@@ -82,19 +89,12 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                       icon="analysis"
                     />
                   </VesselGroupReportLink>
-                  {!vesselGroup?.config?.visible ? (
-                    <IconButton
-                      tooltip={t('workspace.addLayer', 'Add to workspace')}
-                      icon="plus"
-                      onClick={() => toggleAddToWorkspace(vesselGroup)}
-                    />
-                  ) : (
-                    <IconButton
-                      tooltip={t('workspace.remove', 'Remove workspace')}
-                      icon="remove-from-map"
-                      onClick={() => toggleAddToWorkspace(vesselGroup)}
-                    />
-                  )}
+                  <IconButton
+                    tooltip={t('workspace.addLayer', 'Add to workspace')}
+                    icon="plus"
+                    onClick={() => toggleAddToWorkspace(vesselGroup.id, 'add')}
+                    disabled={!!activeDataviews.find((d) => d.vesselGroup?.id === vesselGroup.id)}
+                  />
                 </div>
               </li>
             )

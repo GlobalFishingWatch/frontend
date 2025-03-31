@@ -4,12 +4,17 @@ import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { setModalOpen } from 'features/modals/modals.slice'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectUserVesselGroups } from 'features/user/selectors/user.permissions.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import {
@@ -43,6 +48,7 @@ function VesselGroupSection(): React.ReactElement<any> {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const readOnly = useSelector(selectReadOnly)
+  const userDatasets = useSelector(selectUserVesselGroups)
 
   const onAddVesselGroupClick = useCallback(
     (vesselGroupId: string) => {
@@ -53,7 +59,7 @@ function VesselGroupSection(): React.ReactElement<any> {
           category: TrackCategory.VesselGroups,
           action: 'Click to add vessel group to workspace',
         })
-
+        console.log('vesselGroupId', vesselGroupId)
         const dataviewInstance = getVesselGroupDataviewInstance(vesselGroupId)
         if (dataviewInstance) {
           upsertDataviewInstance(dataviewInstance)
@@ -64,6 +70,15 @@ function VesselGroupSection(): React.ReactElement<any> {
     [dispatch, upsertDataviewInstance]
   )
 
+  const onAddClick = useCallback(() => {
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
+      action: `Open panel to add a reference layer`,
+      value: userDatasets.length,
+    })
+    dispatch(setModalOpen({ id: 'layerLibrary', open: DataviewCategory.VesselGroups }))
+  }, [dispatch, userDatasets.length])
+
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={cx('print-hidden', styles.header)}>
@@ -73,13 +88,23 @@ function VesselGroupSection(): React.ReactElement<any> {
             disabled={hasDeprecatedDataviewInstances}
             onAddToVesselGroup={onAddVesselGroupClick}
           >
-            <UserLoggedIconButton
-              type="border"
-              icon="vessel-group"
-              size="medium"
-              tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
-              tooltipPlacement="top"
-            />
+            <div className={styles.sectionButtons}>
+              <UserLoggedIconButton
+                type="border"
+                icon="vessel-group"
+                size="medium"
+                tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
+                tooltipPlacement="top"
+              />
+              <IconButton
+                icon="plus"
+                type="border"
+                size="medium"
+                tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
+                tooltipPlacement="top"
+                onClick={onAddClick}
+              />
+            </div>
           </VesselGroupListTooltip>
         )}
         <LayerPanelContainer dataview={MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION}>
