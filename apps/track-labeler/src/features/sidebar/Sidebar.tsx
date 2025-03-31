@@ -23,6 +23,7 @@ import {
 import {
   getVesselInfo,
   getVesselTrackGeojsonByDateRange,
+  selectTracksBounds,
 } from '../../features/tracks/tracks.selectors'
 import { useUser } from '../../features/user/user.hooks'
 import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
@@ -52,6 +53,7 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
   const segments = useSelector(selectedtracks)
   const project = useSelector(selectProject)
   const vessel = useSelector(getVesselInfo)
+  const dataBbox = useSelector(selectTracksBounds)
   const actionShortcuts = useSelector(getActionShortcuts)
   const dispatch = useAppDispatch()
   const track = useSelector(getVesselTrackGeojsonByDateRange)
@@ -69,7 +71,8 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
   // const mapInstance = useMapboxInstance()
   const onFitBoundsClick = useCallback(() => {
     if (track) {
-      // TODO implement fit bounds
+      console.log('🚀 ~ onFitBoundsClick ~ track:', track)
+      console.log('🚀 ~ onFitBoundsClick ~ dataBbox:', dataBbox)
     }
   }, [setMapCoordinates, track])
 
