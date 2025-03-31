@@ -1,6 +1,10 @@
+import type { RefObject } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import type { PickingInfo } from '@deck.gl/core'
+import type { Deck, PickingInfo } from '@deck.gl/core'
+import type { DeckGLRef } from '@deck.gl/react'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { selectAtom } from 'jotai/utils'
 import { DateTime } from 'luxon'
 
 import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
@@ -15,9 +19,6 @@ import { useAppDispatch } from '../../store.hooks'
 import type { Label, MapCoordinates } from '../../types'
 import { useSegmentsLabeledConnect } from '../timebar/timebar.hooks'
 import { selectedtracks } from '../vessels/selectedTracks.slice'
-
-import type { UpdateGeneratorPayload } from './map.slice'
-import { selectGeneratorsConfig, selectGlobalGeneratorsConfig, updateGenerator } from './map.slice'
 
 export const useMapMove = () => {
   const dispatch = useAppDispatch()
@@ -71,16 +72,6 @@ export const useMapClick = () => {
     [rulersEditing, onEventClick, dispatch]
   )
   return { onMapClick }
-}
-// This is a convenience hook that returns at the same time the portions of the store we interested in
-// as well as the functions we need to update the same portions
-export const useGeneratorsConnect = () => {
-  const dispatch = useAppDispatch()
-  return {
-    globalConfig: useSelector(selectGlobalGeneratorsConfig),
-    generatorsConfig: useSelector(selectGeneratorsConfig),
-    updateGenerator: (payload: UpdateGeneratorPayload) => dispatch(updateGenerator(payload)),
-  }
 }
 
 type SetMapCoordinatesArgs = Pick<any, 'latitude' | 'longitude' | 'zoom'>
@@ -205,72 +196,71 @@ export const useViewport = (): UseViewport => {
   const stateRef = useRef({
     lastViewport: { ...urlViewport },
     pendingUpdate: false,
-    updateCount: 0,
   })
 
-  const callback = useCallback(
-    (viewportInfo: any) => {
-      // Skip Redux updates if we're processing too many updates in quick succession
-      if (stateRef.current.updateCount > 5) {
-        console.warn('[DEBUG] Throttling viewport updates to prevent update loops')
-        // Reset counter after a delay
-        setTimeout(() => {
-          stateRef.current.updateCount = 0
-        }, 1000)
-        return
+  // Use a more robust debounce approach
+  const debouncedViewportRef = useRef<MapCoordinates | null>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const setMapCoordinates = useCallback(
+    (newViewport: SetMapCoordinatesArgs) => {
+      // Store for debounced update
+      debouncedViewportRef.current = { ...newViewport }
+
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
       }
 
-      // Skip redux updates for tiny movements to avoid loops
-      const threshold = 0.0001 // Small threshold for lat/lng changes
-      const zoomThreshold = 0.01 // Small threshold for zoom changes
+      // Set a new timeout
+      timeoutRef.current = setTimeout(() => {
+        if (debouncedViewportRef.current) {
+          dispatch(updateQueryParams(debouncedViewportRef.current))
+        }
+        timeoutRef.current = null
+      }, 300) // 300ms debounce
+    },
+    [dispatch]
+  )
 
-      const lastViewport = stateRef.current.lastViewport
+  const onViewportChange = useCallback(
+    ({ viewState }: { viewState: Viewport }) => {
+      const { latitude, longitude, zoom } = viewState
+      if (latitude && longitude && zoom) {
+        // Store for debounced update
+        debouncedViewportRef.current = { latitude, longitude, zoom }
 
-      let latitude = viewportInfo.latitude
-      let longitude = viewportInfo.longitude
-      let zoom = viewportInfo.zoom
+        // Clear any existing timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current)
+        }
 
-      // If coming from viewState (deck.gl format), extract values
-      if (viewportInfo.viewState) {
-        latitude = viewportInfo.viewState.latitude
-        longitude = viewportInfo.viewState.longitude
-        zoom = viewportInfo.viewState.zoom
-      }
-
-      // Round values to reduce precision-based updates
-      latitude = Math.round(latitude * 100000) / 100000
-      longitude = Math.round(longitude * 100000) / 100000
-      zoom = Math.round(zoom * 100) / 100
-
-      const isLatLngChange =
-        Math.abs(latitude - lastViewport.latitude) > threshold ||
-        Math.abs(longitude - lastViewport.longitude) > threshold
-      const isZoomChange = Math.abs(zoom - lastViewport.zoom) > zoomThreshold
-
-      const isSignificantChange = isLatLngChange || isZoomChange
-
-      if (isSignificantChange && !stateRef.current.pendingUpdate) {
-        // Set a temporary flag to prevent multiple updates in quick succession
-        stateRef.current.pendingUpdate = true
-        stateRef.current.updateCount++
-
-        // Update our reference
-        stateRef.current.lastViewport = { latitude, longitude, zoom }
-
-        // Dispatch with slight delay to prevent storm of updates
-        setTimeout(() => {
-          dispatch(updateQueryParams({ latitude, longitude, zoom }))
-          // Clear the flag after a short delay
-          setTimeout(() => {
-            stateRef.current.pendingUpdate = false
-          }, 50)
-        }, 10)
+        // Set a new timeout
+        timeoutRef.current = setTimeout(() => {
+          if (debouncedViewportRef.current) {
+            dispatch(updateQueryParams(debouncedViewportRef.current))
+          }
+          timeoutRef.current = null
+        }, 300) // 300ms debounce
       }
     },
     [dispatch]
   )
 
-  return useDebouncedViewport(urlViewport, callback)
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
+  return {
+    viewport: urlViewport,
+    onViewportChange,
+    setMapCoordinates,
+  }
 }
 
 export const useMapBounds = (mapRef: any) => {
@@ -312,7 +302,7 @@ export const useHiddenLabelsConnect = () => {
   return { dispatchHiddenLabels, hiddenLabels }
 }
 
-export const useDeckGLMap = ({
+export const useDeckLayers = ({
   pointsData,
   highlightedTime,
   visibleLabels,
@@ -360,4 +350,21 @@ export const useDeckGLMap = ({
   }, [pointsData, highlightedTime, formattedTime, visibleLabels])
 
   return { layers }
+}
+
+const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)
+const mapInstanceAtomSelector = (map: Deck | undefined) => map
+const selectMapInstance = selectAtom(mapInstanceAtom, mapInstanceAtomSelector as any)
+
+export function useSetMapInstance(mapRef: RefObject<DeckGLRef | null> | undefined) {
+  const setMapInstance = useSetAtom(mapInstanceAtom)
+  useEffect(() => {
+    if (mapRef?.current?.deck) {
+      setMapInstance(mapRef?.current?.deck)
+    }
+  }, [mapRef?.current])
+}
+
+export function useDeckMap(): Deck {
+  return useAtomValue(selectMapInstance) as Deck
 }
