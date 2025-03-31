@@ -3,6 +3,7 @@ import Hotkeys from 'react-hot-keys'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
+import { fitBounds } from '@math.gl/web-mercator'
 import cx from 'classnames'
 import { DateTime } from 'luxon'
 
@@ -13,7 +14,7 @@ import { Button, IconButton, Select } from '@globalfishingwatch/ui-components'
 import brand from '../../assets/images/brand.png'
 import { LABEL_HOTKEYS, SUPPORT_EMAIL, UNDO_HOTKEYS } from '../../data/constants'
 import ErrorPlaceHolder from '../../features/error/ErrorPlaceholder'
-import { useViewport } from '../../features/map/map.hooks'
+import { useDeckMap, useViewportConnect } from '../../features/map/map.hooks'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
   disableHighlightedEvent,
@@ -23,7 +24,6 @@ import {
 import {
   getVesselInfo,
   getVesselTrackGeojsonByDateRange,
-  selectTracksBounds,
 } from '../../features/tracks/tracks.selectors'
 import { useUser } from '../../features/user/user.hooks'
 import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
@@ -51,9 +51,9 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
     dispatchRedo,
   } = useSelectedTracksConnect()
   const segments = useSelector(selectedtracks)
+  const { dispatchViewport } = useViewportConnect()
   const project = useSelector(selectProject)
   const vessel = useSelector(getVesselInfo)
-  const dataBbox = useSelector(selectTracksBounds)
   const actionShortcuts = useSelector(getActionShortcuts)
   const dispatch = useAppDispatch()
   const track = useSelector(getVesselTrackGeojsonByDateRange)
@@ -67,14 +67,36 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
     return ''
   }
 
-  const { setMapCoordinates } = useViewport()
-  // const mapInstance = useMapboxInstance()
+  const deckMap = useDeckMap()
   const onFitBoundsClick = useCallback(() => {
-    if (track) {
-      console.log('🚀 ~ onFitBoundsClick ~ track:', track)
-      console.log('🚀 ~ onFitBoundsClick ~ dataBbox:', dataBbox)
+    if (track && deckMap) {
+      const bbox = track?.length ? segmentsToBbox(track) : undefined
+      if (!bbox) return
+
+      const { width, height } = deckMap || {}
+      if (!width || !height) return
+
+      const padding = 60
+      const targetSize = [width - padding - padding, height - padding - padding]
+      const { latitude, longitude, zoom } = fitBounds({
+        bounds: [
+          [bbox[0], bbox[1]],
+          [bbox[2], bbox[3]],
+        ],
+        width,
+        height,
+        padding: {
+          // Adjust padding to not exceed width and height
+          top: targetSize[1] > 0 ? padding : targetSize[1] + padding,
+          bottom: targetSize[1] > 0 ? padding : targetSize[1] + padding,
+          left: targetSize[0] > 0 ? padding : targetSize[0] + padding,
+          right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
+        },
+      })
+
+      dispatchViewport({ latitude, longitude, zoom })
     }
-  }, [setMapCoordinates, track])
+  }, [dispatchViewport, track, deckMap])
 
   const onFitSelectedSegmentBoundsClick = useCallback(
     (selection: SelectedTrackType) => {
@@ -85,38 +107,16 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
         })
         const bbox = track?.length ? segmentsToBbox(trackFragment) : undefined
         if (!trackFragment || !trackFragment.length) {
-          setMapCoordinates({
+          dispatchViewport({
             latitude: selection.startLatitude ?? 0,
             longitude: selection.startLongitude ?? 0,
             zoom: 11,
           })
           return
         }
-        // const { width, height } = mapInstance?._canvas || {}
-        // if (width && height && bbox && isFiniteBbox(bbox)) {
-        //   const [minLng, minLat, maxLng, maxLat] = bbox
-        //   const padding = 60
-        //   const targetSize = [width - padding - padding, height - padding - padding]
-        //   const { latitude, longitude, zoom } = fitBounds({
-        //     bounds: [
-        //       [minLng, minLat],
-        //       [maxLng, maxLat],
-        //     ],
-        //     width,
-        //     height,
-        //     padding: {
-        //       // Adjust padding to not exceed width and height
-        //       top: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-        //       bottom: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-        //       left: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-        //       right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-        //     },
-        //   })
-        //   setMapCoordinates({ latitude, longitude, zoom })
-        // }
       }
     },
-    [setMapCoordinates, track]
+    [dispatchViewport, track]
   )
   const timestamps = useSelector(selectTimestamps)
   const onSegmentOver = useCallback(
