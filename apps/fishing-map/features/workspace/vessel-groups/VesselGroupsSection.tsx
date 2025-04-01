@@ -59,7 +59,6 @@ function VesselGroupSection(): React.ReactElement<any> {
           category: TrackCategory.VesselGroups,
           action: 'Click to add vessel group to workspace',
         })
-        console.log('vesselGroupId', vesselGroupId)
         const dataviewInstance = getVesselGroupDataviewInstance(vesselGroupId)
         if (dataviewInstance) {
           upsertDataviewInstance(dataviewInstance)

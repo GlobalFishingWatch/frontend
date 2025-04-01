@@ -34,7 +34,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
   const dataviews = useSelector(selectAllVisibleVesselGroups)
 
   const activeDataviews = useSelector(selectActiveVesselGroupDataviews)
-  console.log('activeDataviews', activeDataviews)
+
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
 
   const filteredDataview = useMemo(

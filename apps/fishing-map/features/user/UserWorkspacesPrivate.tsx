@@ -31,7 +31,6 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   const dispatch = useAppDispatch()
 
   const onWorkspaceClick = (workspace: Workspace) => {
-    console.log(workspace.viewport)
     if (workspace.viewport) {
       setMapCoordinates(workspace.viewport)
       dispatch(updateUrlViewport)(workspace.viewport)
