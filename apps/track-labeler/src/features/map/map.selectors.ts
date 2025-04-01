@@ -1,61 +1,19 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
-import { DataviewType, type TrackPoint } from '@globalfishingwatch/api-types'
+import { type TrackPoint } from '@globalfishingwatch/api-types'
+import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
 
-import { BACKGROUND_LAYER } from '../../data/config'
 import type { Project } from '../../data/projects'
-import { selectHighlightedTime } from '../../features/timebar/timebar.slice'
 import {
   getVesselParsedTrack,
   getVesselTrackGeojsonByDateRange,
 } from '../../features/tracks/tracks.selectors'
 import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
-import {
-  getDateRangeTS,
-  selectHiddenLabels,
-  selectHiddenLayers,
-  selectImportView,
-  selectProject,
-  selectProjectColors,
-  selectSatellite,
-  selectVessel,
-} from '../../routes/routes.selectors'
-import type { LayersData, TrackColor, VesselPoint } from '../../types'
+import { getDateRangeTS, selectProject, selectProjectColors } from '../../routes/routes.selectors'
+import type { LayersData, VesselPoint } from '../../types'
 import { ActionType } from '../../types'
-import { getFixedColorForUnknownLabel } from '../../utils/colors'
-
-import { BasemapType } from './map.types'
-
-// The selection of the colors is based in the following order
-// 1. Colors defined in the code by label name
-// 2. A list of defined colors taken by index
-// 3. A random color
-export const selectActionColors = createSelector(
-  [selectProject, selectProjectColors],
-  (project, colors): TrackColor => {
-    project?.labels.forEach((label, index) => {
-      if (!colors[label.id]) {
-        colors[label.id] = getFixedColorForUnknownLabel(index)
-      }
-    })
-    return colors
-  }
-)
-
-export const getMapboxPaintIcon = createSelector(
-  [selectActionColors, selectImportView, selectVessel],
-  (colors: TrackColor): any[] => {
-    const rules: any[] = []
-    Object.keys(colors).forEach((key, index) => {
-      rules.push(['==', ['get', 'action'], key])
-      rules.push(colors[key])
-    })
-
-    return rules
-  }
-)
 
 export const extractVesselDirectionPoints = (
   vesselTrack: LayersData[] | null,
@@ -197,43 +155,29 @@ export const selectVesselDirectionPointsLayer = createSelector(
   }
 )
 
-/**
- * Using the custom Mapbox GL features, it return the layer needed to render arrows based on track points
- */
-export const selectDirectionPointsLayers = createSelector(
-  [selectVesselDirectionPointsLayer, selectHighlightedTime, selectHiddenLabels],
-  (vesselEvents, highlightedTime, hiddenLabels) => {
-    return {
-      id: 'vessel-positions',
-      type: DataviewType.VesselPositions,
-      data: {
-        features: vesselEvents,
-        type: 'FeatureCollection',
-      },
-      highlightedTime,
-      hiddenLabels,
+const emptyValue: TrackLabelerPoint[] = []
+export const selectDirectionPointsData = createSelector(
+  [selectVesselDirectionPointsLayer, selectProjectColors],
+  (vesselEvents, projectColors) => {
+    if (!vesselEvents || vesselEvents.length === 0) {
+      return emptyValue
     }
-  }
-)
+    const extractedPoints: TrackLabelerPoint[] = []
+    vesselEvents.forEach((feature) => {
+      if (feature.geometry?.type === 'Point' && Array.isArray(feature.geometry.coordinates)) {
+        const coords = feature.geometry.coordinates
+        const props = feature.properties || {}
 
-/**
- * Select the base layers that are not hidden by the user
- */
-export const selectMapLayers = createSelector(
-  [selectHiddenLayers, selectSatellite],
-  (hiddenLayers, satellite) => {
-    const dataviews: any = BACKGROUND_LAYER.map((dataview) => {
-      return {
-        ...dataview,
-        basemap:
-          dataview.type !== DataviewType.Basemap
-            ? dataview.type
-            : satellite
-              ? BasemapType.Satellite
-              : BasemapType.Default,
-        visible: !hiddenLayers.includes(dataview.id),
+        extractedPoints.push({
+          position: coords,
+          timestamp: props.timestamp,
+          speed: props.speed || 0,
+          course: props.course || 0,
+          action: props.action || 'unknown',
+          color: projectColors[props.action] || '#ff0000',
+        })
       }
     })
-    return dataviews
+    return extractedPoints
   }
 )

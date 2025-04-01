@@ -1,8 +1,9 @@
 import type { RefObject } from 'react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import type { Deck, PickingInfo } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
+import { throttle } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { DateTime } from 'luxon'
@@ -11,17 +12,19 @@ import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { useDeckLayerComposer } from '@globalfishingwatch/deck-layer-composer'
 import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
 import { hexToDeckColor, TrackLabelerVesselLayer } from '@globalfishingwatch/deck-layers'
-import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from '../../data/config'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_VIEWPORT } from '../../data/config'
 import { selectEditing } from '../../features/rulers/rulers.selectors'
 import { editRuler, moveCurrentRuler } from '../../features/rulers/rulers.slice'
 import { updateQueryParams } from '../../routes/routes.actions'
-import { selectHiddenLabels, selectViewport } from '../../routes/routes.selectors'
+import { selectHiddenLabels } from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
 import type { Label, MapCoordinates } from '../../types'
 import { useSegmentsLabeledConnect } from '../timebar/timebar.hooks'
+import { selectHighlightedTime } from '../timebar/timebar.slice'
 import { selectedtracks } from '../vessels/selectedTracks.slice'
+
+import { selectDirectionPointsData, selectLegendLabels } from './map.selectors'
 
 export const useMapMove = () => {
   const dispatch = useAppDispatch()
@@ -77,213 +80,30 @@ export const useMapClick = () => {
   return { onMapClick }
 }
 
-type SetMapCoordinatesArgs = Pick<any, 'latitude' | 'longitude' | 'zoom'>
-type UseViewport = {
-  viewport: MapCoordinates
-  onViewportChange: (viewport: any) => void
-  setMapCoordinates: (viewport: SetMapCoordinatesArgs) => void
-}
-
 export type LatLon = {
   latitude: number
   longitude: number
 }
-export interface Viewport extends LatLon {
-  latitude: number
-  longitude: number
-  zoom: number
-}
-
 export type HighlightedTime = { start: string; end: string }
-export const useViewportConnect = () => {
-  const dispatch = useAppDispatch()
-  const { zoom, latitude, longitude } = useSelector(selectViewport)
-  const dispatchViewport = (newViewport: Partial<Viewport>) =>
-    dispatch(updateQueryParams(newViewport))
-  return { zoom, latitude, longitude, dispatchViewport }
+
+const viewStateAtom = atom<MapCoordinates>({
+  longitude: DEFAULT_VIEWPORT.longitude,
+  latitude: DEFAULT_VIEWPORT.latitude,
+  zoom: DEFAULT_VIEWPORT.zoom,
+})
+
+export const useMapViewState = () => {
+  return useAtomValue(viewStateAtom)
 }
-
-export function useDebouncedViewport(
-  urlViewport: MapCoordinates,
-  callback: (viewport: MapCoordinates) => void
-): UseViewport {
-  // Keep a local reference of the viewport that we're controlling
-  const [viewport, setViewport] = useState<MapCoordinates>(urlViewport)
-
-  // Use a ref to track state without causing re-renders
-  const stateRef = useRef({
-    isUserInteraction: false,
-    lastViewport: { ...urlViewport },
-    pendingUpdate: false,
-  })
-
-  // Use a more robust debounce approach
-  const debouncedViewportRef = useRef<MapCoordinates | null>(null)
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const setMapCoordinates = useCallback((newViewport: SetMapCoordinatesArgs) => {
-    setViewport({ ...newViewport })
-  }, [])
-
-  const onViewportChange = useCallback(
-    ({ viewState }: { viewState: Viewport }) => {
-      // Mark that this came from user interaction
-      stateRef.current.isUserInteraction = true
-
-      const { latitude, longitude, zoom } = viewState
-
-      // Update local state immediately for responsive UI
-      setViewport({ latitude, longitude, zoom })
-
-      // Store for debounced update
-      debouncedViewportRef.current = { latitude, longitude, zoom }
-
-      // Clear any existing timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-
-      // Set a new timeout
-      timeoutRef.current = setTimeout(() => {
-        if (debouncedViewportRef.current && callback) {
-          callback(debouncedViewportRef.current)
-        }
-        timeoutRef.current = null
-      }, 300) // 300ms debounce
-    },
-    [callback]
+export const useMapSetViewState = () => {
+  const setViewState = useSetAtom(viewStateAtom)
+  return useMemo(
+    () =>
+      throttle((coordinates: Partial<MapCoordinates>) => {
+        setViewState((prev) => ({ ...prev, ...coordinates }))
+      }, 1),
+    [setViewState]
   )
-
-  // Updates local state when url changes, but only if it's not from user interaction
-  useEffect(() => {
-    // Only sync from URL to local state if it wasn't a user interaction
-    if (!stateRef.current.isUserInteraction && urlViewport) {
-      // Check if the change is significant enough to warrant an update
-      const threshold = 0.0001
-      const zoomThreshold = 0.01
-      const lastVP = stateRef.current.lastViewport
-
-      const hasSignificantChange =
-        Math.abs(urlViewport.longitude - lastVP.longitude) > threshold ||
-        Math.abs(urlViewport.latitude - lastVP.latitude) > threshold ||
-        Math.abs(urlViewport.zoom - lastVP.zoom) > zoomThreshold
-
-      if (hasSignificantChange) {
-        // Update both state and the ref tracker
-        setViewport({ ...urlViewport })
-        stateRef.current.lastViewport = { ...urlViewport }
-      }
-    }
-
-    // Reset the flag after we handle the URL update
-    stateRef.current.isUserInteraction = false
-  }, [urlViewport])
-
-  // Clean up on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-    }
-  }, [])
-
-  return { viewport, onViewportChange, setMapCoordinates }
-}
-
-export const useViewport = (): UseViewport => {
-  const dispatch = useAppDispatch()
-  const urlViewport = useSelector(selectViewport)
-
-  // Use ref to track state without causing re-renders
-  const stateRef = useRef({
-    lastViewport: { ...urlViewport },
-    pendingUpdate: false,
-  })
-
-  // Use a more robust debounce approach
-  const debouncedViewportRef = useRef<MapCoordinates | null>(null)
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const setMapCoordinates = useCallback(
-    (newViewport: SetMapCoordinatesArgs) => {
-      // Store for debounced update
-      debouncedViewportRef.current = { ...newViewport }
-
-      // Clear any existing timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-
-      // Set a new timeout
-      timeoutRef.current = setTimeout(() => {
-        if (debouncedViewportRef.current) {
-          dispatch(updateQueryParams(debouncedViewportRef.current))
-        }
-        timeoutRef.current = null
-      }, 300) // 300ms debounce
-    },
-    [dispatch]
-  )
-
-  const onViewportChange = useCallback(
-    ({ viewState }: { viewState: Viewport }) => {
-      const { latitude, longitude, zoom } = viewState
-      if (latitude && longitude && zoom) {
-        // Store for debounced update
-        debouncedViewportRef.current = { latitude, longitude, zoom }
-
-        // Clear any existing timeout
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current)
-        }
-
-        // Set a new timeout
-        timeoutRef.current = setTimeout(() => {
-          if (debouncedViewportRef.current) {
-            dispatch(updateQueryParams(debouncedViewportRef.current))
-          }
-          timeoutRef.current = null
-        }, 300) // 300ms debounce
-      }
-    },
-    [dispatch]
-  )
-
-  // Clean up on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-    }
-  }, [])
-
-  return {
-    viewport: urlViewport,
-    onViewportChange,
-    setMapCoordinates,
-  }
-}
-
-export const useMapBounds = (mapRef: any) => {
-  const { zoom, latitude, longitude } = useViewportConnect()
-  const [bounds, setBounds] = useState<MiniglobeBounds | null>(null)
-  useEffect(() => {
-    const mapboxRef = mapRef?.current?.getMap()
-    if (mapboxRef) {
-      const rawBounds = mapboxRef.getBounds()
-      if (rawBounds) {
-        setBounds({
-          north: rawBounds.getNorth() as number,
-          south: rawBounds.getSouth() as number,
-          west: rawBounds.getWest() as number,
-          east: rawBounds.getEast() as number,
-        })
-      }
-    }
-  }, [zoom, latitude, longitude, mapRef])
-  return bounds
 }
 
 export const useHiddenLabelsConnect = () => {
@@ -305,15 +125,16 @@ export const useHiddenLabelsConnect = () => {
   return { dispatchHiddenLabels, hiddenLabels }
 }
 
-export const useDeckLayers = ({
-  pointsData,
-  highlightedTime,
-  visibleLabels,
-}: {
-  pointsData: TrackLabelerPoint[]
-  highlightedTime: HighlightedTime | undefined
-  visibleLabels: string[]
-}) => {
+export const useTrackLabelerDeckLayer = () => {
+  const legengLabels = useSelector(selectLegendLabels)
+  const highlightedTime = useSelector(selectHighlightedTime)
+  const pointsData = useSelector(selectDirectionPointsData)
+  const { hiddenLabels } = useHiddenLabelsConnect()
+
+  const visibleLabels = useMemo(() => {
+    return legengLabels.flatMap((label) => (!hiddenLabels.includes(label.id) ? label.id : []))
+  }, [legengLabels, hiddenLabels])
+
   const formattedTime: { start: number; end: number } | null = useMemo(() => {
     if (highlightedTime?.start && highlightedTime?.end) {
       return {
@@ -324,14 +145,14 @@ export const useDeckLayers = ({
     return null
   }, [highlightedTime])
 
-  const layers = useMemo(() => {
-    if (!pointsData.length) {
-      return []
+  const layer = useMemo(() => {
+    if (!pointsData || !pointsData.length) {
+      return null
     }
 
     const vesselLayer = new TrackLabelerVesselLayer({
       id: 'track-points',
-      data: pointsData,
+      data: pointsData || [],
       pickable: true,
       iconAtlasUrl: 'src/assets/images/vessel-sprite.png',
       highlightedTime,
@@ -349,13 +170,13 @@ export const useDeckLayers = ({
       },
     })
 
-    return [vesselLayer]
+    return vesselLayer
   }, [pointsData, highlightedTime, formattedTime, visibleLabels])
 
-  return { layers }
+  return layer
 }
 
-export const useMapLayers = () => {
+export const useMapDataviewLayers = () => {
   const dataviews = useMemo(
     () => {
       // if (isWorkspaceIndexLocation || isUserLocation) {
@@ -394,9 +215,21 @@ export const useMapLayers = () => {
   return layers
 }
 
+export const useMapDeckLayers = () => {
+  const labelerLayer = useTrackLabelerDeckLayer()
+  const layers = useMapDataviewLayers()
+
+  const allLayers = useMemo(() => {
+    if (labelerLayer) {
+      return [...layers, labelerLayer]
+    }
+    return layers
+  }, [layers, labelerLayer])
+
+  return allLayers
+}
+
 const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)
-const mapInstanceAtomSelector = (map: Deck | undefined) => map
-const selectMapInstance = selectAtom(mapInstanceAtom, mapInstanceAtomSelector as any)
 
 export function useSetMapInstance(mapRef: RefObject<DeckGLRef | null> | undefined) {
   const setMapInstance = useSetAtom(mapInstanceAtom)
@@ -408,5 +241,5 @@ export function useSetMapInstance(mapRef: RefObject<DeckGLRef | null> | undefine
 }
 
 export function useDeckMap(): Deck {
-  return useAtomValue(selectMapInstance) as Deck
+  return useAtomValue(mapInstanceAtom) as Deck
 }

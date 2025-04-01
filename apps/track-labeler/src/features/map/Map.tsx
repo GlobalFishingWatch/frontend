@@ -1,46 +1,50 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import type { MapViewProps } from '@deck.gl/core'
+import { MapView } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
 import cx from 'classnames'
+import { throttle } from 'es-toolkit'
 import { DateTime } from 'luxon'
 
-import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import { selectRulers } from '../../features/rulers/rulers.selectors'
-import { selectColorMode, selectProjectColors } from '../../routes/routes.selectors'
-import type { ActionType, Label } from '../../types'
+import type { ActionType, Label, MapCoordinates } from '../../types'
 
 import MapControls from './map-controls/MapControls'
 import {
-  useDeckLayers,
   useHiddenLabelsConnect,
   useMapClick,
-  useMapLayers,
+  useMapDeckLayers,
   useMapMove,
+  useMapSetViewState,
+  useMapViewState,
   useSetMapInstance,
-  useViewport,
 } from './map.hooks'
-import {
-  getMapboxPaintIcon,
-  selectDirectionPointsLayers,
-  selectLegendLabels,
-} from './map.selectors'
+import { selectLegendLabels } from './map.selectors'
 
 import styles from './Map.module.css'
+
+const MAP_VIEW_ID = 'map'
+const MAP_VIEW = new MapView({
+  id: MAP_VIEW_ID,
+  repeat: true,
+  controller: true,
+  bearing: 0,
+  pitch: 0,
+  transitionDuration: 0,
+} as MapViewProps)
 
 const MapComponent = (): React.ReactElement<any> => {
   const deckRef = useRef<DeckGLRef>(null)
   useSetMapInstance(deckRef)
-  const { viewport, onViewportChange } = useViewport()
-  const projectColors = useSelector(selectProjectColors)
+  const setViewState = useMapSetViewState()
+  const viewState = useMapViewState()
   const actionShortcuts = useSelector(getActionShortcuts)
   const rulers = useSelector(selectRulers)
-  const ruleColors = useSelector(getMapboxPaintIcon)
-  const colorMode = useSelector(selectColorMode)
-  const trackArrowsLayer = useSelector(selectDirectionPointsLayers)
   const legengLabels = useSelector(selectLegendLabels)
   const { hoverCenter } = useMapMove()
   const { onMapClick } = useMapClick()
@@ -52,149 +56,24 @@ const MapComponent = (): React.ReactElement<any> => {
   // Track which object is being hovered
   const [hoverInfo, setHoverInfo] = useState<any>(null)
 
-  // Track the viewState internally to avoid Redux roundtrips
-  const [viewState, setViewState] = useState({
-    longitude: viewport.longitude,
-    latitude: viewport.latitude,
-    zoom: viewport.zoom,
-    pitch: 0,
-    bearing: 0,
-    transitionDuration: 0,
-    repeat: true,
-  })
-
-  useEffect(() => {
-    // Only update from Redux when the values are significantly different
-    const threshold = 0.0001
-    const zoomThreshold = 0.01
-
-    const hasSignificantChange =
-      Math.abs(viewport.longitude - viewState.longitude) > threshold ||
-      Math.abs(viewport.latitude - viewState.latitude) > threshold ||
-      Math.abs(viewport.zoom - viewState.zoom) > zoomThreshold
-
-    if (hasSignificantChange) {
-      setViewState({
-        ...viewState,
-        repeat: true,
-        longitude: viewport.longitude,
-        latitude: viewport.latitude,
-        zoom: viewport.zoom,
-        transitionDuration: 0, // No animation when updating from Redux
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewport.longitude, viewport.latitude, viewport.zoom])
-
-  // Function to synchronize the view state back to Redux
-  const syncViewStateToRedux = useCallback(
-    (newViewState: any) => {
-      // Only update Redux for significant changes, using a debounce pattern
-      const threshold = 0.0001
-      const zoomThreshold = 0.01
-
-      const hasSignificantChange =
-        Math.abs(newViewState.longitude - viewport.longitude) > threshold ||
-        Math.abs(newViewState.latitude - viewport.latitude) > threshold ||
-        Math.abs(newViewState.zoom - viewport.zoom) > zoomThreshold
-
-      if (hasSignificantChange) {
-        onViewportChange({
-          viewState: {
-            longitude: newViewState.longitude,
-            latitude: newViewState.latitude,
-            zoom: newViewState.zoom,
-          },
-        })
-      }
+  const onViewStateChange = useCallback(
+    (params: any) => {
+      // add transitionDuration: 0 to avoid unresponsive zoom
+      // https://github.com/visgl/deck.gl/issues/7158#issuecomment-1329722960
+      setViewState({ ...(params.viewState as MapCoordinates), transitionDuration: 0 })
     },
-    [viewport, onViewportChange]
+    [setViewState]
   )
 
-  // Use a debounce for syncing to Redux to avoid too many updates
-  const debounceSyncRef = useRef<any>(null)
-
-  // Handle view state changes from DeckGL
-  const handleViewStateChange = useCallback(
-    ({ viewState: newViewState }: any) => {
-      // Update local view state immediately
-      setViewState(newViewState)
-
-      // Debounce the update to Redux
-      if (debounceSyncRef.current) {
-        clearTimeout(debounceSyncRef.current)
-      }
-
-      debounceSyncRef.current = setTimeout(() => {
-        syncViewStateToRedux(newViewState)
-        debounceSyncRef.current = null
-      }, 300) // 300ms debounce
-    },
-    [syncViewStateToRedux]
-  )
-
-  // Handle hover events
   const handleDeckHover = useCallback((info: any) => {
     const isHovering = Boolean(info.object)
-
-    // Update cursor based on whether we're hovering over something interactive
     setCursor(isHovering ? 'pointer' : 'default')
-
-    // Update hover info
     setHoverInfo(isHovering ? info : null)
 
     return isHovering
   }, [])
 
-  // Format points data for DeckGL
-  const pointsData = useMemo(() => {
-    if (
-      trackArrowsLayer.data &&
-      typeof trackArrowsLayer.data === 'object' &&
-      !Array.isArray(trackArrowsLayer.data) &&
-      trackArrowsLayer.data.type === 'FeatureCollection' &&
-      Array.isArray(trackArrowsLayer.data.features)
-    ) {
-      const features = trackArrowsLayer.data.features
-
-      const extractedPoints: TrackLabelerPoint[] = []
-      features.forEach((feature) => {
-        if (feature.geometry?.type === 'Point' && Array.isArray(feature.geometry.coordinates)) {
-          const coords = feature.geometry.coordinates
-          const props = feature.properties || {}
-
-          extractedPoints.push({
-            position: coords,
-            timestamp: props.timestamp,
-            speed: props.speed || 0,
-            course: props.course || 0,
-            action: props.action || 'unknown',
-            color: projectColors[props.action] || '#ff0000',
-          })
-        }
-      })
-
-      if (extractedPoints.length > 0) {
-        return extractedPoints
-      }
-    }
-    return []
-  }, [trackArrowsLayer, projectColors])
-
-  const visibleLabels = useMemo(() => {
-    return legengLabels.flatMap((label) => (!hiddenLabels.includes(label.id) ? label.id : []))
-  }, [legengLabels, hiddenLabels])
-  // Create layers for visualization
-  const { layers: dataLayers } = useDeckLayers({
-    pointsData,
-    highlightedTime: trackArrowsLayer.highlightedTime,
-    visibleLabels,
-  })
-
-  const layers = useMapLayers()
-  const allLayers = useMemo(() => {
-    return [...layers, ...dataLayers]
-  }, [layers, dataLayers])
+  const layers = useMapDeckLayers()
 
   // Custom tooltip function for deck.gl
   const getTooltip = useCallback((info: any) => {
@@ -230,45 +109,54 @@ const MapComponent = (): React.ReactElement<any> => {
     [actionShortcuts]
   )
 
-  // Get current bounds
-  const getBoundsFromViewState = useCallback(() => {
-    if (!deckRef?.current?.deck) return null
+  const [mapBounds, setMapBounds] = useState<MiniglobeBounds | null>(null)
+  const setBoundsFromViewState = useCallback(() => {
+    if (!deckRef?.current?.deck) {
+      setMapBounds(null)
+      return
+    }
 
     try {
-      // const { width, height } = deckRef.current.deck
-      const bounds = deckRef?.current?.deck?.getViewports()[0].getBounds()
-
-      return {
-        north: bounds[3],
-        south: bounds[1],
-        west: bounds[0],
-        east: bounds[2],
+      const bounds = deckRef?.current?.deck
+        ?.getViewports?.()
+        .find((v: any) => v.id === MAP_VIEW_ID)
+        ?.getBounds()
+      if (bounds && bounds?.length) {
+        setMapBounds({
+          north: bounds[3],
+          south: bounds[1],
+          west: bounds[0],
+          east: bounds[2],
+        })
+      } else {
+        setMapBounds(null)
       }
     } catch (e) {
       console.warn('[DEBUG] Error calculating bounds:', e)
-      return null
+      setMapBounds(null)
     }
   }, [])
 
-  const [mapBounds, setMapBounds] = useState<MiniglobeBounds | null>(null)
+  const throttledSetBoundsFromViewState = useMemo(
+    () => throttle(setBoundsFromViewState, 100),
+    [setBoundsFromViewState]
+  )
 
   // Update bounds when viewState changes
   useEffect(() => {
-    if (deckRef.current) {
-      const bounds = getBoundsFromViewState()
-      setMapBounds(bounds)
-    }
-  }, [viewState, getBoundsFromViewState])
+    throttledSetBoundsFromViewState()
+  }, [viewState, throttledSetBoundsFromViewState])
 
   return (
     <div className={styles.container}>
       <DeckGL
         ref={deckRef}
-        layers={allLayers}
+        views={MAP_VIEW}
+        layers={layers}
         viewState={viewState}
         controller={true}
         getCursor={() => cursor}
-        onViewStateChange={handleViewStateChange}
+        onViewStateChange={onViewStateChange}
         onClick={onMapClick}
         onHover={handleDeckHover}
         getTooltip={getTooltip}

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import formatcoords from 'formatcoords'
 
+import { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, MiniGlobe } from '@globalfishingwatch/ui-components'
 
@@ -12,13 +13,13 @@ import { updateQueryParams } from '../../../routes/routes.actions'
 import { selectHiddenLayers, selectSatellite } from '../../../routes/routes.selectors'
 import { useAppDispatch } from '../../../store.hooks'
 import type { ContextLayer } from '../../../types'
-import { useViewportConnect } from '../map.hooks'
-import { BasemapType } from '../map.types'
+import { useMapSetViewState, useMapViewState } from '../map.hooks'
 
 import styles from './MapControls.module.css'
 
 const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
-  const { zoom, latitude, longitude, dispatchViewport } = useViewportConnect()
+  const setViewState = useMapSetViewState()
+  const { zoom, latitude, longitude } = useMapViewState()
   const dispatch = useAppDispatch()
   const [showContextLayers, setShowContextLayers] = useState<boolean>(false)
 
@@ -77,7 +78,7 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
       <button
         className={styles.mapControl}
         onClick={() => {
-          dispatchViewport({ zoom: zoom + 1 })
+          setViewState({ zoom: zoom + 1 })
         }}
         aria-label="Increase zoom"
       >
@@ -86,7 +87,7 @@ const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
       <button
         className={styles.mapControl}
         onClick={() => {
-          dispatchViewport({ zoom: zoom - 1 })
+          setViewState({ zoom: zoom - 1 })
         }}
         aria-label="Decrease zoom"
       >

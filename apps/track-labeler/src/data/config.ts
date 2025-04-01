@@ -1,7 +1,7 @@
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
+import { BasemapType } from '@globalfishingwatch/deck-layers'
 
-import { BasemapType } from '../features/map/map.types'
 import type { ContextLayer } from '../types'
 import type { AppState } from '../types/redux.types'
 
@@ -33,15 +33,12 @@ export const TRACK_END = new Date()
 export const MAP_BACKGROUND_COLOR = '#000000'
 export const LABELER_VERSION = 1
 
-export const BACKGROUND_LAYER = [
-  {
-    id: 'bathymetry',
-    tileset: 'bathymetry',
-    description: 'bathymetry',
-    type: DataviewType.Basemap,
-    basemap: BasemapType.Bathymetry,
-  },
-]
+export const DEFAULT_VIEWPORT = {
+  zoom: 1.49,
+  latitude: 19,
+  longitude: 26,
+}
+
 export const DEFAULT_DATAVIEWS = [
   {
     id: 'landmass',

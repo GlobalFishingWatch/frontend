@@ -29,11 +29,8 @@ export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
 
 export const selectDataviewsQuery = selectQueryParam<any[]>('workspaceDataviews')
 
-export const selectMapZoomQuery = selectQueryParam('zoom')
 export const selectProjectId = selectQueryParam('project')
 export const selectSatellite = selectQueryParam('satellite')
-export const selectMapLatitudeQuery = selectQueryParam('latitude')
-export const selectMapLongitudeQuery = selectQueryParam('longitude')
 export const selectStartQuery = selectQueryParam('start')
 export const selectEndQuery = selectQueryParam('end')
 export const selectVessel = selectQueryParam('vessel')
@@ -154,14 +151,5 @@ export const selectFilteredDistanceFromPort = createSelector(
   (min, max) => ({
     minDistanceFromPort: parseInt(min),
     maxDistanceFromPort: parseInt(max),
-  })
-)
-
-export const selectViewport = createSelector(
-  [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery],
-  (zoom, latitude, longitude) => ({
-    zoom,
-    latitude,
-    longitude,
   })
 )

@@ -14,7 +14,7 @@ import { Button, IconButton, Select } from '@globalfishingwatch/ui-components'
 import brand from '../../assets/images/brand.png'
 import { LABEL_HOTKEYS, SUPPORT_EMAIL, UNDO_HOTKEYS } from '../../data/constants'
 import ErrorPlaceHolder from '../../features/error/ErrorPlaceholder'
-import { useDeckMap, useViewportConnect } from '../../features/map/map.hooks'
+import { useDeckMap, useMapSetViewState } from '../../features/map/map.hooks'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
   disableHighlightedEvent,
@@ -51,7 +51,7 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
     dispatchRedo,
   } = useSelectedTracksConnect()
   const segments = useSelector(selectedtracks)
-  const { dispatchViewport } = useViewportConnect()
+  const setViewState = useMapSetViewState()
   const project = useSelector(selectProject)
   const vessel = useSelector(getVesselInfo)
   const actionShortcuts = useSelector(getActionShortcuts)
@@ -94,9 +94,9 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
         },
       })
 
-      dispatchViewport({ latitude, longitude, zoom })
+      setViewState({ latitude, longitude, zoom })
     }
-  }, [dispatchViewport, track, deckMap])
+  }, [setViewState, track, deckMap])
 
   const onFitSelectedSegmentBoundsClick = useCallback(
     (selection: SelectedTrackType) => {
@@ -107,7 +107,7 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
         })
         const bbox = track?.length ? segmentsToBbox(trackFragment) : undefined
         if (!trackFragment || !trackFragment.length) {
-          dispatchViewport({
+          setViewState({
             latitude: selection.startLatitude ?? 0,
             longitude: selection.startLongitude ?? 0,
             zoom: 11,
@@ -116,7 +116,7 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
         }
       }
     },
-    [dispatchViewport, track]
+    [setViewState, track]
   )
   const timestamps = useSelector(selectTimestamps)
   const onSegmentOver = useCallback(
