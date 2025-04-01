@@ -17,7 +17,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
   const fetchGroup = useCallback(async (groupId: number) => {
     setLoading(true)
     try {
-      const group = await GFWAPI.fetch<UserGroup>(`/auth/user-groups/${groupId}`)
+      const group = await GFWAPI.fetch<UserGroup>(`/auth/user-groups/${groupId}?include-users=true`)
       setGroup({ ...group, users: sortBy(group.users, 'email') })
     } catch (e) {
       console.warn(e)
