@@ -7,6 +7,7 @@ export type FishingMapWorkspaceId = keyof (typeof workspaceTranslations)['fishin
 export type FishingMapWorkspace = {
   id: FishingMapWorkspaceId
   img: string
+  href?: string
   visible?: boolean
   reportId?: string
 }
@@ -18,12 +19,13 @@ export const FISHING_MAP_WORKSPACES: FishingMapWorkspace[] = [
   },
   {
     id: 'carrier-portal-public',
+    href: 'https://globalfishingwatch.org/carrier-portal',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/carrier-portal.jpg`,
   },
   {
     id: DEEP_SEA_MINING_WORKSPACE_ID,
     img: `${PATH_BASENAME}/images/highlighted-workspaces/deep-sea-mining.jpg`,
-    reportId: 'deep_sea_mining-public',
+    reportId: 'deep_sea_mining_watch-public',
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
 ]

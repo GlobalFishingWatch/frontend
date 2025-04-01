@@ -8,7 +8,6 @@
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/deck-layers": "^0.1.7",
     "@globalfishingwatch/dataviews-client": "^16.x",
-    "@globalfishingwatch/layer-composer": "^12.0.3",
     "jotai": "2.x",
     "lodash": "4.x",
     "luxon": "3.x",

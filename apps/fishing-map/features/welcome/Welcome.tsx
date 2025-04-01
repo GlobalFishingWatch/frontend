@@ -13,11 +13,13 @@ import WELCOME_POPUP_CONTENT from './welcome.content'
 
 import styles from './Welcome.module.css'
 
+export const DEEP_SEA_MINING_POPUP = 'DeepSeaMiningPopup'
+
 const DISABLE_WELCOME_POPUP_DICT: Record<WelcomeContentKey, string> = {
   'fishing-activity': 'WelcomePopup',
   'marine-manager': 'MarineManagerPopup',
   'vessel-profile': 'VesselProfilePopup',
-  'deep-sea-mining': 'DeepSeaMiningPopup',
+  'deep-sea-mining': DEEP_SEA_MINING_POPUP,
   reports: 'WelcomePopup',
 }
 
@@ -25,7 +27,8 @@ type WelcomeProps = {
   contentKey: WelcomeContentKey
 }
 
-type WelcomeLocalStorageKey = { visible: boolean; showAgain: boolean; version?: number }
+export type WelcomeLocalStorageKey = { visible: boolean; showAgain: boolean; version?: number }
+
 const Welcome = ({ contentKey }: WelcomeProps) => {
   const [welcomePopup, setWelcomePopup] = useLocalStorage<WelcomeLocalStorageKey>(
     DISABLE_WELCOME_POPUP_DICT[contentKey],

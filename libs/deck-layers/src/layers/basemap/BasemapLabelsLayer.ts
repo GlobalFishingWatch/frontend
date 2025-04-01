@@ -6,7 +6,7 @@ import { BitmapLayer } from '@deck.gl/layers'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { Locale } from '@globalfishingwatch/api-types'
 
-import { getFetchLoadOptions, getLayerGroupOffset,LayerGroup } from '../../utils'
+import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../utils'
 
 import type { _BasemapLabelsLayerProps } from './basemap.types'
 

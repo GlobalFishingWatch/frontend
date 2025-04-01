@@ -220,11 +220,20 @@ export type VesselIdentitySearchMatchCriteria = {
   source: VesselIdentitySourceEnum
 }
 
-export type CombinedSourceInfo = { name: string; source: string; yearFrom: number; yearTo: number }
+export type CombinedSourceInfo = {
+  name: string
+  source: string
+  yearFrom: number
+  yearTo: number
+  value?: string | boolean
+}
 export type VesselCombinedSourcesInfo = {
   vesselId: string
   geartypes: CombinedSourceInfo[]
   shiptypes: CombinedSourceInfo[]
+  onFishingListSr?: CombinedSourceInfo[]
+  inferredVesselClassAg?: CombinedSourceInfo[]
+  prodGeartypeSource?: CombinedSourceInfo[]
 }
 
 export interface IdentityVessel {

@@ -292,6 +292,14 @@ const VesselIdentity = () => {
               <Icon icon="external-link" type="default" />
             </a>
             <a
+              href={`https://sc-production.skylight.earth/vesselsearch?mmsi=${vesselIdentity?.ssvid}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Skylight
+              <Icon icon="external-link" type="default" />
+            </a>
+            <a
               href={`https://app.triton.fish/search?name=${vesselIdentity?.ssvid}`}
               target="_blank"
               rel="noreferrer"
@@ -299,15 +307,6 @@ const VesselIdentity = () => {
               Triton
               <Icon icon="external-link" type="default" />
             </a>
-            {/* TODO this Skylight link is broken */}
-            {/* <a
-            href={`https://sc-production.skylight.earth/vesseldetails/B:${vesselIdentity?.ssvid}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Skylight
-            <Icon icon="external-link" type="default" />
-          </a> */}
           </div>
         </div>
       )}

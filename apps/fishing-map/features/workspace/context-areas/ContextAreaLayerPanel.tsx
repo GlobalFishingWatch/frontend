@@ -6,6 +6,7 @@ import parse from 'html-react-parser'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
@@ -210,6 +211,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     (schema) => schema.optionsSelected?.length > 0
   )
 
+  const geometryType =
+    getDatasetConfigurationProperty({ dataset, property: 'geometryType' }) || 'polygons'
+
   const highlightArea = (feature?: ContextPickingObject) => {
     contextLayer?.instance?.setHighlightedFeatures(feature ? [feature] : [])
   }
@@ -259,11 +263,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               onThicknessClick={changeThickness}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
-              properties={
-                dataview?.config?.type === DataviewType.Context
-                  ? POLYGON_PROPERTIES
-                  : POINT_PROPERTIES
-              }
+              properties={geometryType === 'polygons' ? POLYGON_PROPERTIES : POINT_PROPERTIES}
             />
           )}
           {layerActive &&

@@ -19,25 +19,6 @@ services:
     networks:
       - frontend-network
 
-  vessel-viewer:
-    build:
-      context: ./dist/apps/vessel-history
-      dockerfile: ../../../apps/vessel-history/Dockerfile
-    container_name: vessel-viewer
-    expose:
-      - '80'
-    volumes:
-      - ./dist/apps/vessel-history/exported:/usr/share/nginx/www
-    env_file:
-      - apps/vessel-history/.build.env
-    environment:
-      - NEXT_PUBLIC_WORKSPACE_ENV=development
-      - NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org/
-      - PORT=80
-      - BASIC_AUTH=off
-    networks:
-      - frontend-network
-
   api-portal:
     build:
       context: ./dist/apps/api-portal
@@ -66,15 +47,11 @@ services:
       - 80:80
       - 443:443
     links:
-      - vessel-viewer
       - api-portal
       - map
-      - data-explorer
     depends_on:
       - api-portal
-      - vessel-viewer
       - map
-      - data-explorer
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf
       - ./config/ssl:/etc/nginx/ssl

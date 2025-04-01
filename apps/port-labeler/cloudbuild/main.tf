@@ -12,7 +12,7 @@ module "develop" {
   short_environment = "dev"
   app_name          = local.app_name
   docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-dev"
-  service_account   = "frontend@gfw-development.iam.gserviceaccount.com"
+  service_account   = "frontend-dev@gfw-development.iam.gserviceaccount.com"
   labels = {
     environment      = "develop"
     resource_creator = "engineering"
