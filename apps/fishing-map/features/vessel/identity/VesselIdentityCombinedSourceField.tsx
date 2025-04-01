@@ -50,66 +50,71 @@ const VesselIdentityCombinedSourceField = ({
         .map((source, index) => {
           const { name, yearTo, yearFrom } = source
           const dates = yearTo === yearFrom ? yearTo : `${yearFrom} - ${yearTo}`
-          const selfReportedGearType = identity?.combinedSourcesInfo?.onFishingListSr?.[index]
-            ?.value
-            ? t('vessel.gearTypes.fishing', 'Fishing')
-            : t('vessel.gearTypes.other', 'Other')
-          const neuralNetGearType = identity?.combinedSourcesInfo?.inferredVesselClassAg?.[index]
-            ?.value as string
-          const bqSource = identity?.combinedSourcesInfo?.prodGeartypeSource?.[index]
-            ?.value as string
-          const registryGearType = vesselInfo?.identities.find((identity) => {
-            const identityYearFrom = getUTCDateTime(identity.transmissionDateFrom).year
-            const identityYearTo = getUTCDateTime(identity.transmissionDateTo).year
-            return (
-              identity.identitySource === VesselIdentitySourceEnum.Registry &&
-              identityYearFrom <= yearTo &&
-              identityYearTo >= yearFrom
-            )
-          })?.geartypes
-          return isJACUser && property === 'geartypes' ? (
-            <Fragment key={index}>
-              <li onClick={() => toggleGearTypesExpanded(index)} className={styles.expandable}>
-                <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
-                {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
-                <Icon
-                  className={styles.expandIcon}
-                  icon={geartypesExpanded === index ? 'arrow-top' : 'arrow-down'}
-                />
-              </li>
-              {geartypesExpanded === index && (
-                <ul className={styles.extendedInfo}>
-                  <li>
-                    <span className={styles.secondary}>
-                      {t('vessel.infoSources.selfReported', 'Self Reported')}:{' '}
-                    </span>
-                    {selfReportedGearType}
-                  </li>
-                  <li>
-                    <span className={styles.secondary}>Neural Net: </span>
-                    {formatInfoField(neuralNetGearType, property) as string}
-                  </li>
-                  <li>
-                    <span className={styles.secondary}>
-                      {t('vessel.infoSources.registry', 'Registry')}:{' '}
-                    </span>
-                    {formatInfoField(registryGearType, property) as string}
-                  </li>
-                  {isGFWUser && (
-                    <li>
-                      <span className={styles.secondary}>BQ Source: </span>
-                      {bqSource.toLowerCase()}
-                    </li>
-                  )}
-                </ul>
-              )}
-            </Fragment>
-          ) : (
-            <li key={index}>
+          const Component = (
+            <Fragment>
               <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
               {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
-            </li>
+            </Fragment>
           )
+
+          if (isJACUser && property === 'geartypes') {
+            const selfReportedGearType = identity?.combinedSourcesInfo?.onFishingListSr?.[index]
+              ?.value
+              ? t('vessel.gearTypes.fishing', 'Fishing')
+              : t('vessel.gearTypes.other', 'Other')
+            const neuralNetGearType = identity?.combinedSourcesInfo?.inferredVesselClassAg?.[index]
+              ?.value as string
+            const bqSource = identity?.combinedSourcesInfo?.prodGeartypeSource?.[index]
+              ?.value as string
+            const registryGearType = vesselInfo?.identities.find((identity) => {
+              const identityYearFrom = getUTCDateTime(identity.transmissionDateFrom).year
+              const identityYearTo = getUTCDateTime(identity.transmissionDateTo).year
+              return (
+                identity.identitySource === VesselIdentitySourceEnum.Registry &&
+                identityYearFrom <= yearTo &&
+                identityYearTo >= yearFrom
+              )
+            })?.geartypes
+            return (
+              <Fragment key={index}>
+                <li onClick={() => toggleGearTypesExpanded(index)} className={styles.expandable}>
+                  {Component}
+                  <Icon
+                    className={styles.expandIcon}
+                    icon={geartypesExpanded === index ? 'arrow-top' : 'arrow-down'}
+                  />
+                </li>
+                {geartypesExpanded === index && (
+                  <ul className={styles.extendedInfo}>
+                    <li>
+                      <span className={styles.secondary}>
+                        {t('vessel.infoSources.selfReported', 'Self Reported')}:{' '}
+                      </span>
+                      {selfReportedGearType}
+                    </li>
+                    <li>
+                      <span className={styles.secondary}>Neural Net: </span>
+                      {formatInfoField(neuralNetGearType, property) as string}
+                    </li>
+                    <li>
+                      <span className={styles.secondary}>
+                        {t('vessel.infoSources.registry', 'Registry')}:{' '}
+                      </span>
+                      {formatInfoField(registryGearType, property) as string}
+                    </li>
+                    {isGFWUser && (
+                      <li>
+                        <span className={styles.secondary}>BQ Source: </span>
+                        {bqSource.toLowerCase()}
+                      </li>
+                    )}
+                  </ul>
+                )}
+              </Fragment>
+            )
+          }
+
+          return <li key={index}>{Component}</li>
         })}
     </ul>
   )
