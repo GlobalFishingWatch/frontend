@@ -323,6 +323,7 @@
     "typeTracksDescription": "Display the movement of one or more tracks",
     "upload": "Upload dataset",
     "uploadLogin": "Register or login to upload datasets (free, 2 minutes)",
+    "uploadVesselGroups": "Login to access your vessel groups",
     "uploadNew": "Upload new dataset",
     "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",

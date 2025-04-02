@@ -17,7 +17,7 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
 import { selectLayerLibraryModal } from 'features/modals/modals.slice'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { upperFirst } from 'utils/info'
 
 import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
@@ -31,6 +31,7 @@ const LayerLibrary: FC = () => {
   const initialCategory = useSelector(selectLayerLibraryModal)
   const debugOptions = useSelector(selectDebugOptions)
   const isGFWUser = useSelector(selectIsGFWUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
     initialCategory || DataviewCategory.Activity
   )
@@ -83,7 +84,7 @@ const LayerLibrary: FC = () => {
         subcategories: [
           DataviewCategory.UserPolygons,
           DataviewCategory.UserPoints,
-          // DataviewCategory.UserTracks,
+          DataviewCategory.UserTracks,
         ],
       },
     ],
@@ -108,9 +109,6 @@ const LayerLibrary: FC = () => {
           behavior: smooth ? 'smooth' : 'instant',
         })
       }
-
-      // setCurrentCategory(category)
-      // setCurrentSubcategory(subcategory)
     },
     []
   )
@@ -254,6 +252,7 @@ const LayerLibrary: FC = () => {
               </button>
               {currentCategory === category &&
                 subcategories.length > 0 &&
+                !guestUser &&
                 subcategories.map((subcategory) => (
                   <button
                     key={subcategory}

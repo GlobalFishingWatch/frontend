@@ -83,28 +83,16 @@ function VesselGroupSection(): React.ReactElement<any> {
       <div className={cx('print-hidden', styles.header)}>
         <h2 className={styles.sectionTitle}>{t('vesselGroup.vesselGroups', 'Vessel groups')}</h2>
         {!readOnly && (
-          <VesselGroupListTooltip
-            disabled={hasDeprecatedDataviewInstances}
-            onAddToVesselGroup={onAddVesselGroupClick}
-          >
-            <div className={styles.sectionButtons}>
-              <UserLoggedIconButton
-                type="border"
-                icon="vessel-group"
-                size="medium"
-                tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
-                tooltipPlacement="top"
-              />
-              <IconButton
-                icon="plus"
-                type="border"
-                size="medium"
-                tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
-                tooltipPlacement="top"
-                onClick={onAddClick}
-              />
-            </div>
-          </VesselGroupListTooltip>
+          <div className={styles.sectionButtons}>
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('layer.add', 'Add layer')}
+              tooltipPlacement="top"
+              onClick={onAddClick}
+            />
+          </div>
         )}
         <LayerPanelContainer dataview={MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION}>
           <span className={styles.highlightSpan}></span>
