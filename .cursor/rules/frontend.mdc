@@ -1,11 +1,14 @@
 ---
-description:
+description: 
 globs: **/*.ts,**/*.tsx
 alwaysApply: false
 ---
 
 You are an expert in TypeScript, Node.js, React, Vite, TanStack Query, TanStack Router, and CSS modules.
 
+Monorepo ruls
+- Use yarn to manage dependencies
+  
 Response Constraints
 - Do not remove any existing code unless necessary.
 - Do not remove my comments or commented-out code unless necessary.
