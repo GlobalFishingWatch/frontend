@@ -9,7 +9,7 @@ import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-compo
 import { useAppDispatch } from 'features/app/app.hooks'
 import { MAP_CANVAS_ID } from 'features/map/map.config'
 import { setMapLoaded } from 'features/map/map.slice'
-import { useSetMapInstance } from 'features/map/map-context.hooks'
+import { useDeckMap, useSetMapInstance } from 'features/map/map-context.hooks'
 import {
   useMapCursor,
   useMapDrag,
@@ -103,31 +103,7 @@ const DeckGLWrapper = () => {
     }
     return true
   }, [])
-  const handleBeforePrint = () => {
-    const deckCanvas = document.querySelector('canvas')
-    if (deckCanvas) {
-      deckCanvas.style.width = `${deckCanvas.width}px`
-      deckCanvas.style.height = `${deckCanvas.height}px`
-    }
-  }
 
-  const handleAfterPrint = () => {
-    const deckCanvas = document.querySelector('canvas')
-    if (deckCanvas) {
-      deckCanvas.style.width = ''
-      deckCanvas.style.height = ''
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('beforeprint', handleBeforePrint)
-    window.addEventListener('afterprint', handleAfterPrint)
-
-    return () => {
-      window.removeEventListener('beforeprint', handleBeforePrint)
-      window.removeEventListener('afterprint', handleAfterPrint)
-    }
-  }, [])
   return (
     <DeckGL
       id={MAP_CANVAS_ID}
@@ -148,7 +124,6 @@ const DeckGLWrapper = () => {
       onDrag={onMapDrag}
       onDragEnd={onMapDragEnd}
       onLoad={onMapLoad}
-      useDevicePixels={false}
     >
       <MapAnnotations />
     </DeckGL>
