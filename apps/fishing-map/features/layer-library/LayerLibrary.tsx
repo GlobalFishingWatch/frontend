@@ -106,12 +106,11 @@ const LayerLibrary: FC = () => {
       if (targetElement) {
         targetElement.scrollIntoView({
           behavior: smooth ? 'smooth' : 'instant',
-          block: 'start',
         })
       }
 
-      setCurrentCategory(category)
-      setCurrentSubcategory(subcategory)
+      // setCurrentCategory(category)
+      // setCurrentSubcategory(subcategory)
     },
     []
   )
@@ -207,7 +206,7 @@ const LayerLibrary: FC = () => {
       setCurrentCategory(newCategory)
       setCurrentSubcategory(newSubcategory)
     },
-    [currentCategory, extendedCategories]
+    [categoryElements, currentCategory]
   )
 
   const onCategoryClick = useCallback(
