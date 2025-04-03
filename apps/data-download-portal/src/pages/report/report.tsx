@@ -1,5 +1,5 @@
-import React, { Fragment,useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { Fragment, useEffect, useState } from 'react'
+import { useParams } from '@tanstack/react-router'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
@@ -8,14 +8,14 @@ import Loader from '../../components/loader/loader'
 import styles from './report.module.scss'
 
 function ReportPage() {
-  const { reportId } = useParams()
-  const [reportUrl, setReportUrl] = useState(null)
+  const { reportId } = useParams({ from: '/report/$reportId' })
+  const [reportUrl, setReportUrl] = useState<string | null>(null)
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setLoading(true)
-    GFWAPI.fetch(`/reports/${reportId}/url`)
+    GFWAPI.fetch<{ url: string }>(`/reports/${reportId}/url`)
       .then(({ url }) => {
         setReportUrl(url)
         window.location.href = url

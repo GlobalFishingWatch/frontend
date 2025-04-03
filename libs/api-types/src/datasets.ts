@@ -245,12 +245,19 @@ export enum DatasetSubCategory {
   Sar = 'sar',
 }
 
+export interface DatasetFile {
+  name: string
+  size: number
+  lastUpdate: string
+}
+
 export interface Dataset {
   id: string
   type: DatasetTypes
   alias: string[] | null
   name: string
   description: string
+  readme?: string
   schema?: Record<string, DatasetSchema | DatasetSchemaItem>
   category?: DatasetCategory
   subcategory?: DatasetSubCategory | EventTypes | string
@@ -262,7 +269,9 @@ export interface Dataset {
   ownerId: number
   startDate?: string
   endDate?: string
+  lastUpdated?: string
   createdAt: string
+  files?: DatasetFile[]
   endpoints?: Endpoint[]
   configuration: AnyDatasetConfiguration | null
   relatedDatasets: RelatedDataset[] | null
