@@ -1,7 +1,21 @@
-import React, { Fragment, useCallback, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import type {
+  Column,
+  HeaderGroup,
+  Hooks,
+  Row,
+  TableInstance,
+  TableOptions,
+  TableState,
+  UseGlobalFiltersInstanceProps,
+  UseGlobalFiltersState,
+  UseRowSelectInstanceProps,
+  UseSortByColumnProps,
+  UseSortByInstanceProps,
+} from 'react-table'
 import { useFlexLayout, useGlobalFilter, useRowSelect, useSortBy, useTable } from 'react-table'
 import { FixedSizeList } from 'react-window'
+import { useParams } from '@tanstack/react-router'
 import escapeRegExp from 'lodash/escapeRegExp'
 import { matchSorter } from 'match-sorter'
 
@@ -11,40 +25,74 @@ import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
 import IconClose from '../../assets/icons/close.svg'
 import IconSearch from '../../assets/icons/search.svg'
-import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config.js'
+import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config'
 
 import styles from './table.module.scss'
 
-const IndeterminateCheckbox = React.forwardRef(({ indeterminate, title, ...rest }, ref) => {
-  const defaultRef = React.useRef()
-  const resolvedRef = ref || defaultRef
-  const inputID = Math.random()
+type TableData = {
+  name: string
+  path: string
+  date: string
+  size: string
+  [key: string]: any
+}
 
-  React.useEffect(() => {
-    resolvedRef.current.indeterminate = indeterminate
-  }, [resolvedRef, indeterminate])
+type ExtendedTableState = TableState<TableData> & UseGlobalFiltersState<TableData>
 
-  return (
-    <div className={styles.checkbox}>
-      <input id={inputID} type="checkbox" ref={resolvedRef} {...rest} />
-      <label htmlFor={inputID} title={title}>
-        {title}
-      </label>
-    </div>
-  )
-})
+type TableInstanceWithHooks = TableInstance<TableData> &
+  UseGlobalFiltersInstanceProps<TableData> &
+  UseSortByInstanceProps<TableData> &
+  UseRowSelectInstanceProps<TableData>
 
-function fuzzyTextFilterFn(rows, id, filterValue) {
+type ExtendedHeaderGroup = HeaderGroup<TableData> & UseSortByColumnProps<TableData>
+
+type IndeterminateCheckboxProps = {
+  indeterminate?: boolean
+  title?: string
+} & React.InputHTMLAttributes<HTMLInputElement>
+
+const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, IndeterminateCheckboxProps>(
+  ({ indeterminate, title, ...rest }, ref) => {
+    const defaultRef = useRef<HTMLInputElement>(null)
+    const resolvedRef = (ref || defaultRef) as React.RefObject<HTMLInputElement>
+    const inputID = Math.random().toString()
+
+    useEffect(() => {
+      if (resolvedRef.current) {
+        resolvedRef.current.indeterminate = indeterminate || false
+      }
+    }, [resolvedRef, indeterminate])
+
+    return (
+      <div className={styles.checkbox}>
+        <input id={inputID} type="checkbox" ref={resolvedRef} {...rest} />
+        <label htmlFor={inputID} title={title}>
+          {title}
+        </label>
+      </div>
+    )
+  }
+)
+
+IndeterminateCheckbox.displayName = 'IndeterminateCheckbox'
+
+function fuzzyTextFilterFn(rows: Row<TableData>[], id: string[], filterValue: string) {
   return matchSorter(rows, filterValue, {
     keys: id.map((i) => `values.${i}`),
     threshold: matchSorter.rankings.CONTAINS,
   })
 }
 
-// Let the table remove the filter if the string is empty
-fuzzyTextFilterFn.autoRemove = (val) => !val
+fuzzyTextFilterFn.autoRemove = (val: string | undefined) => !val
 
-function HighlightedCell({ cell, state }) {
+type HighlightedCellProps = {
+  cell: {
+    value: string
+  }
+  state: ExtendedTableState
+}
+
+function HighlightedCell({ cell, state }: HighlightedCellProps) {
   if (!state.globalFilter || !state.globalFilter.trim()) {
     return <span>{cell.value}</span>
   }
@@ -61,38 +109,57 @@ function HighlightedCell({ cell, state }) {
   )
 }
 
-// TODO: migrate to typescript and remove this deprected prop-types
-// Table.propTypes = {
-//   columns: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       Header: PropTypes.string.isRequired,
-//       accessor: PropTypes.func.isRequired,
-//     }).isRequired
-//   ).isRequired,
-//   data: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       name: PropTypes.string.isRequired,
-//       lastUpdate: PropTypes.string.isRequired,
-//     }).isRequired
-//   ).isRequired,
-// }
-function Table({ columns, data }) {
+type TableProps = {
+  columns: Column<TableData>[]
+  data: TableData[]
+}
+
+function Table({ columns, data }: TableProps) {
   const [searchInput, setSearchInput] = useState(false)
   const [downloadLoading, setDownloadLoading] = useState(false)
-  const { datasetId } = useParams()
-  const initialState = React.useMemo(
-    () => ({
-      sortBy: [{ id: 'date', desc: true }],
-    }),
-    []
-  )
-  const defaultColumn = React.useMemo(
-    () => ({
-      // And also our default editable cell
-      Cell: HighlightedCell,
-    }),
-    []
-  )
+  const { datasetId } = useParams({ from: '/datasets/$datasetId' })
+
+  const initialState = {
+    sortBy: [{ id: 'date', desc: true }],
+  }
+
+  const defaultColumn = {
+    Cell: HighlightedCell,
+  }
+
+  const tableInstance = useTable(
+    {
+      columns,
+      data,
+      defaultColumn,
+      initialState,
+      globalFilter: fuzzyTextFilterFn,
+    } as TableOptions<TableData>,
+    useGlobalFilter,
+    useSortBy,
+    useFlexLayout,
+    useRowSelect,
+    (hooks: Hooks<TableData>) => {
+      hooks.visibleColumns.push((columns: Column<TableData>[]) => [
+        {
+          id: 'selection',
+          width: 25,
+          Header: () => '',
+          Cell: ({ row, selectedFlatRows }: any) => {
+            const disabled = selectedFlatRows.length >= MAX_DOWNLOAD_FILES_LIMIT && !row.isSelected
+            return (
+              <IndeterminateCheckbox
+                {...row.getToggleRowSelectedProps()}
+                disabled={disabled}
+                title={disabled ? 'Maximum file download limit reached' : ''}
+              />
+            )
+          },
+        },
+        ...columns,
+      ])
+    }
+  ) as TableInstanceWithHooks
 
   const {
     rows,
@@ -103,55 +170,22 @@ function Table({ columns, data }) {
     getTableBodyProps,
     selectedFlatRows,
     setGlobalFilter,
-  } = useTable(
-    {
-      columns,
-      data,
-      defaultColumn,
-      initialState,
-      globalFilter: fuzzyTextFilterFn,
-    },
-    useGlobalFilter,
-    useSortBy,
-    useFlexLayout,
-    useRowSelect,
-    (hooks) => {
-      if (hooks.visibleColumns) {
-        hooks.visibleColumns.push((columns) => [
-          {
-            id: 'selection',
-            width: 25,
-            Header: () => '',
-            Cell: ({ row, selectedFlatRows }) => {
-              const disabled =
-                selectedFlatRows.length >= MAX_DOWNLOAD_FILES_LIMIT && !row.isSelected
-              return (
-                <IndeterminateCheckbox
-                  {...row.getToggleRowSelectedProps()}
-                  disabled={disabled}
-                  title={disabled ? 'Maximum file download limit reached' : ''}
-                />
-              )
-            },
-          },
-          ...columns,
-        ])
-      }
-    }
-  )
+  } = tableInstance
 
   const downloadSingleFile = useCallback(
-    (path) => {
+    (path: string) => {
       if (path) {
         setDownloadLoading(true)
-        GFWAPI.fetch(`/download/datasets/${datasetId}/download/${path}`)
+        GFWAPI.fetch<{ url: string }>(`/download/datasets/${datasetId}/download/${path}`)
           .then(({ url }) => {
             const downloadWindow = window.open(url, '_blank')
-            downloadWindow.focus()
+            if (downloadWindow) {
+              downloadWindow.focus()
+            }
             setDownloadLoading(false)
           })
           .catch((e) => {
-            console.log(e)
+            console.error(e)
             setDownloadLoading(false)
           })
       }
@@ -169,8 +203,8 @@ function Table({ columns, data }) {
       const files = selectedFlatRows.map((row) => row.original.path)
       setDownloadLoading(true)
       const params = {
-        method: 'POST',
-        responseType: 'text',
+        method: 'POST' as const,
+        responseType: 'text' as const,
         headers: { 'Content-Type': 'application/json' },
         body: { files },
       }
@@ -179,7 +213,7 @@ function Table({ columns, data }) {
           setDownloadLoading(false)
         })
         .catch((e) => {
-          console.log(e)
+          console.error(e)
           setDownloadLoading(false)
         })
       alert(
@@ -195,14 +229,13 @@ function Table({ columns, data }) {
           {searchInput ? (
             <Fragment>
               <input
-                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
                 className={styles.input}
-                value={state.globalFilter || ''}
-                placeholder={`Type to filter files`}
+                value={(state as ExtendedTableState).globalFilter || ''}
+                placeholder="Type to filter files"
                 onBlur={() => setSearchInput(false)}
                 onChange={(e) => {
-                  setGlobalFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
+                  setGlobalFilter(e.target.value || undefined)
                 }}
               />
               <button className={styles.button} onClick={() => setSearchInput(false)}>
@@ -219,32 +252,42 @@ function Table({ columns, data }) {
         <div>
           {headerGroups.map((headerGroup, index) => (
             <div {...headerGroup.getHeaderGroupProps()} key={`${headerGroup.id}-${index}`}>
-              {headerGroup.headers.map((column) => (
-                <div
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  key={column.id}
-                  className={styles.th}
-                >
-                  {column.render('Header')}{' '}
-                  {column.id !== 'selection' && (
-                    <span className={styles.sort}>
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <IconArrowDown />
+              {headerGroup.headers.map((column) => {
+                const extendedColumn = column as ExtendedHeaderGroup
+                const sortByProps = extendedColumn.getSortByToggleProps?.() || {}
+                return (
+                  <div
+                    {...column.getHeaderProps(sortByProps)}
+                    key={column.id}
+                    className={styles.th}
+                  >
+                    {column.render('Header')}{' '}
+                    {column.id !== 'selection' && (
+                      <span className={styles.sort}>
+                        {extendedColumn.isSorted ? (
+                          extendedColumn.isSortedDesc ? (
+                            <IconArrowDown />
+                          ) : (
+                            <IconArrowUp />
+                          )
                         ) : (
-                          <IconArrowUp />
-                        )
-                      ) : (
-                        ''
-                      )}
-                    </span>
-                  )}
-                </div>
-              ))}
+                          ''
+                        )}
+                      </span>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           ))}
         </div>
-        <FixedSizeList height={420} itemSize={40} itemCount={rows.length} {...getTableBodyProps()}>
+        <FixedSizeList
+          height={420}
+          width="100%"
+          itemSize={40}
+          itemCount={rows.length}
+          {...getTableBodyProps()}
+        >
           {({ index, style }) => {
             const row = rows[index]
             prepareRow(row)
