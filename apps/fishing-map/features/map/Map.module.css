@@ -12,11 +12,6 @@
   height: 100%;
 }
 
-/* Ensure this id matches the id in the DeckGLWrapper.tsx */
-:global(#map) {
-  object-fit: contain;
-}
-
 :global(.printing) .screenshot {
   display: block !important;
 }
