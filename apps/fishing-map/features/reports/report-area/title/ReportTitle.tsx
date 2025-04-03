@@ -44,7 +44,7 @@ import { selectReportId } from 'routes/routes.selectors'
 import type { BufferOperation, BufferUnit } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { useHighlightReportArea } from '../area-reports.hooks'
+import { useFitAreaInViewport, useHighlightReportArea } from '../area-reports.hooks'
 
 import { BufferButtonTooltip } from './BufferButonTooltip'
 
@@ -60,6 +60,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
   const highlightArea = useHighlightReportArea()
+  const fitAreaInViewport = useFitAreaInViewport()
   const reportId = useSelector(selectReportId)
   const reportCategory = useSelector(selectReportCategory)
   const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
@@ -112,11 +113,14 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   )
 
   const onPrintClick = () => {
+    fitAreaInViewport()
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Click print/save as pdf`,
     })
-    window.print()
+    setTimeout(() => {
+      window.print()
+    }, 100)
   }
 
   const handleTooltipHide = useCallback(() => {
