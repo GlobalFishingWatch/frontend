@@ -86,6 +86,14 @@
     "reserva_de_la_biosfera_cmar-public": {
       "name": "CMAR AMPs",
       "description": "Initiated in 2004, the Eastern Tropical Pacific Marine Corridor is a voluntary regional cooperative effort to protect one of the most productive and biodiverse ecosystems."
+    },
+    "galapagos_y_hermandad-public": {
+      "name": "Galapagos y Hermandad",
+      "description": "Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America. The Galápagos Marine Reserve was expanded with the creation of the Hermandad Marine Reserve to cover an additional 60,000 square kilometers (23,000 square miles)."
+    },
+    "revillagigedo-public": {
+      "name": "Revillagigedo",
+      "description": "Centered on four volcanic islands south of Mexico’s Baja California peninsula, Revillagigedo National Park was created in 2017 and spans 148,000 square kilometers."
     }
   }
 }
