@@ -107,8 +107,7 @@ resource "google_cloudbuild_trigger" "trigger" {
         "managed",
         "--set-env-vars",
         "${join(",", var.set_env_vars)}",
-        "--set-secrets",
-        "${length(var.set_secrets) > 0 ? join(",", var.set_secrets) : "--clear-secrets"}",
+        "${length(var.set_secrets) > 0 ? "--set-secrets=${join(",", var.set_secrets)}" : "--clear-secrets"}",
         "--service-account", "${var.service_account}",
         "--labels", "${join(",", [for k, v in var.labels : "${k}=${v}"])}",
       ]
