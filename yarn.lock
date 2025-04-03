@@ -2813,6 +2813,7 @@ __metadata:
     "@types/react-image-gallery": "npm:1.2.4"
     "@types/react-map-gl": "npm:^6.1.7"
     "@types/react-modal": "npm:3.16.3"
+    "@types/react-table": "npm:^7.7.20"
     "@types/react-window": "npm:^1.8.8"
     "@types/redux-first-router": "npm:2.1.12"
     "@types/redux-first-router-link": "npm:1.4.9"
@@ -2916,7 +2917,6 @@ __metadata:
     react-query: "npm:3.39.3"
     react-range: "npm:1.10.0"
     react-redux: "npm:9.2.0"
-    react-router-dom: "npm:6.30.0"
     react-sticky-el: "npm:2.1.1"
     react-table: "npm:7.8.0"
     react-toastify: "npm:11.0.5"
@@ -8210,13 +8210,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.23.0":
-  version: 1.23.0
-  resolution: "@remix-run/router@npm:1.23.0"
-  checksum: 10/0a9f02c26c150d8210b05927c43d2f57ee8b7f812c81abb76df1721c7367ef692e54f4044981e756ce13d0619fb3c6a9b1514524d69aea9b32bfaf565299a8c7
-  languageName: node
-  linkType: hard
-
 "@researchgate/react-intersection-observer@npm:1.3.5":
   version: 1.3.5
   resolution: "@researchgate/react-intersection-observer@npm:1.3.5"
@@ -12374,6 +12367,15 @@ __metadata:
   dependencies:
     "@types/react": "npm:*"
   checksum: 10/9622d1983ade28864a85baffcf068722b24f02ac3ec1485dab6a9005a2e0b2f8af78f860be494523d90ba5e182744d1151461a4cc42120a32ed57ec3b7a4cab9
+  languageName: node
+  linkType: hard
+
+"@types/react-table@npm:^7.7.20":
+  version: 7.7.20
+  resolution: "@types/react-table@npm:7.7.20"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10/adf86958dd5b2e044d23fc7896f758b5ec59987891b41e9b02d935d666e999a518b0bdd8ba5bd60d644f20147de0ec3cf5f6a12b75516f1fad43fb3b4fd8361f
   languageName: node
   linkType: hard
 
@@ -27997,30 +27999,6 @@ __metadata:
   version: 0.14.2
   resolution: "react-refresh@npm:0.14.2"
   checksum: 10/512abf97271ab8623486061be04b608c39d932e3709f9af1720b41573415fa4993d0009fa5138b6705b60a98f4102f744d4e26c952b14f41a0e455521c6be4cc
-  languageName: node
-  linkType: hard
-
-"react-router-dom@npm:6.30.0":
-  version: 6.30.0
-  resolution: "react-router-dom@npm:6.30.0"
-  dependencies:
-    "@remix-run/router": "npm:1.23.0"
-    react-router: "npm:6.30.0"
-  peerDependencies:
-    react: ">=16.8"
-    react-dom: ">=16.8"
-  checksum: 10/e161e39d56ee799553d0bc6c8f19c901ee8cdbae218094f41cbc18f3262cb4d5e9f8381bd47a7e59d30e55c0cdd0a6803aa98537f2f9122efbce5c66a3041a35
-  languageName: node
-  linkType: hard
-
-"react-router@npm:6.30.0":
-  version: 6.30.0
-  resolution: "react-router@npm:6.30.0"
-  dependencies:
-    "@remix-run/router": "npm:1.23.0"
-  peerDependencies:
-    react: ">=16.8"
-  checksum: 10/2a449f2769b7b001f9ea16108b83cd014b50c621a378ef2a99bb823a418833bc1b213f5f1665c97ecbdfa9391f9593693ace09a292969aa7259a45070b5e066a
   languageName: node
   linkType: hard
 

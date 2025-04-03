@@ -138,16 +138,21 @@ export type MenuItem = {
 interface HeaderProps {
   children?: React.ReactNode
   inverted?: boolean
+  className?: string
 }
 interface HeaderMenuItemProps {
   index: number
   item: MenuItem
 }
 
-export function Header({ children, inverted = false }: HeaderProps) {
+export function Header({ children, inverted = false, className = '' }: HeaderProps) {
   return (
     <div
-      className={cx(styles.gfwHeaderContainer, { [styles.gfwHeaderContainerInverted]: inverted })}
+      className={cx(
+        styles.gfwHeaderContainer,
+        { [styles.gfwHeaderContainerInverted]: inverted },
+        className
+      )}
     >
       <header className={styles.gfwHeader}>
         <div className={styles.whiteBg}></div>
