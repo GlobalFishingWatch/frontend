@@ -76,6 +76,7 @@ module "production" {
   source            = "../../../cloudbuild-template"
   project_id        = "gfw-production"
   short_environment = "pro"
+  description       = "Deploy to production when pushing new tag @gfw/track-labeler@x.x.x"
   app_name          = local.app_name
   docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-pro"
   service_account   = local.service_account.pro
@@ -85,7 +86,7 @@ module "production" {
     project          = "frontend"
   }
   push_config = {
-    branch       = "main"
+    tag          = "^@gfw/track-labeler@\\d+\\.\\d+\\.\\d+(\\.\\d+)?$"
     invert_regex = false
   }
   set_env_vars_build = [
