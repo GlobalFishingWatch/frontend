@@ -126,6 +126,7 @@ const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
   )
 
 export const selectUserContextDatasets = selectUserDatasetsByCategory(DatasetCategory.Context)
+export const selectUserVesselGroups = selectUserDatasetsByCategory(DatasetCategory.VesselGroups)
 export const selectUserEnvironmentDatasets = selectUserDatasetsByCategory(
   DatasetCategory.Environment
 )

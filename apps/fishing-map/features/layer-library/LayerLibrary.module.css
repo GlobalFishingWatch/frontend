@@ -30,6 +30,16 @@
   transition: var(--transition);
 }
 
+.subcategory {
+  display: block;
+  cursor: pointer;
+  color: var(--color-secondary-blue);
+  padding: var(--space-S);
+  margin-left: var(--space-M);
+  border-left: 0.4rem solid transparent;
+  transition: var(--transition);
+}
+
 .category:disabled {
   cursor: not-allowed;
 }

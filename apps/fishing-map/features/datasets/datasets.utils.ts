@@ -164,6 +164,7 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   }
   if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
   if (dataset.type === DatasetTypes.Events) return 'clusters'
+  if (dataset.type === DatasetTypes.VesselGroups) return 'vessel-group'
   const geometryType = getDatasetGeometryType(dataset)
   if (geometryType === 'draw') {
     const geometryType = getDatasetConfigurationProperty({ dataset, property: 'geometryType' })
@@ -176,6 +177,23 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
     return 'track'
   }
   return 'polygons'
+}
+
+export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string, Dataset[]> => {
+  return datasets.reduce(
+    (acc, dataset) => {
+      const geometryType = getDatasetConfigurationProperty({
+        dataset,
+        property: 'geometryType',
+      })
+      if (!acc[geometryType]) {
+        acc[geometryType] = []
+      }
+      acc[geometryType].push(dataset)
+      return acc
+    },
+    {} as Record<string, Dataset[]>
+  )
 }
 
 export const getIsBQEditorDataset = (dataset: Dataset): boolean => {

@@ -140,7 +140,7 @@ function VesselGroupLayerPanel({
                   )}
                 >
                   <span>
-                    {formatInfoField(vesselGroup?.name, 'shipname')}{' '}
+                    {formatInfoField(vesselGroup?.name, 'shipname')}
                     <span className={styles.secondary}>
                       ({getVesselGroupVesselsCount(vesselGroup)})
                     </span>
