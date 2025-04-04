@@ -21,6 +21,7 @@ import {
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import { setResource } from 'features/resources/resources.slice'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
@@ -67,6 +68,7 @@ export default function usePinReportVessels() {
   const dispatch = useAppDispatch()
   const datasets = useSelector(selectAllDatasets)
   const allVesselsInWorkspace = useSelector(selectTrackDataviews)
+  const vesselTemplateDataviews = useSelector(selectVesselTemplateDataviews)
   const populateVesselInfoResource = usePopulateVesselResource()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
 
@@ -100,7 +102,8 @@ export default function usePinReportVessels() {
               track: trackDataset?.id,
               ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
               relatedVesselIds: getRelatedIdentityVesselIds(vessel),
-            }
+            },
+            vesselTemplateDataviews
           )
           if (!vesselDataviewInstance?.config) {
             return []

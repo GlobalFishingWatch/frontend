@@ -21,6 +21,7 @@ import {
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { usePopulateVesselResource } from 'features/reports/shared/vessels/report-vessels.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
@@ -66,6 +67,7 @@ function VesselPin({
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const populateVesselInfoResource = usePopulateVesselResource()
   const vesselsInWorkspace = useSelector(selectTrackDataviews)
+  const vesselTemplateDataviews = useSelector(selectVesselTemplateDataviews)
   const infoDatasetId =
     typeof vessel?.dataset === 'string'
       ? vessel?.dataset
@@ -138,7 +140,8 @@ function VesselPin({
             track: trackDataset?.id,
             ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
             relatedVesselIds: getRelatedIdentityVesselIds(vesselWithIdentity),
-          }
+          },
+          vesselTemplateDataviews
         )
 
         if (vesselDataviewInstance) {
