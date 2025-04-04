@@ -10,6 +10,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
@@ -32,25 +33,33 @@ function SearchActions() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const vesselTemplateDataviews = useSelector(selectVesselTemplateDataviews)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const { dispatchQueryParams, dispatchLocation } = useLocationConnect()
   const vesselsSelected = useSelector(selectSelectedVessels)
   const activeSearchOption = useSelector(selectSearchOption)
 
   const onSeeVesselsInMapClick = () => {
-    const instances = vesselsSelected.map((vessel) => {
+    const instances = vesselsSelected.flatMap((vessel) => {
       const eventsRelatedDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
       const eventsDatasetsId =
         eventsRelatedDatasets && eventsRelatedDatasets?.length
           ? eventsRelatedDatasets.map((d) => d.id)
           : []
       const trackDatasetId = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)?.id
-      const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        track: trackDatasetId,
-        info: vessel.dataset.id,
-        ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
-        relatedVesselIds: getRelatedIdentityVesselIds(vessel),
-      })
+      const vesselDataviewInstance = getVesselDataviewInstance(
+        vessel,
+        {
+          track: trackDatasetId,
+          info: vessel.dataset.id,
+          ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
+          relatedVesselIds: getRelatedIdentityVesselIds(vessel),
+        },
+        vesselTemplateDataviews
+      )
+      if (!vesselDataviewInstance) {
+        return []
+      }
       return vesselDataviewInstance
     })
     addNewDataviewInstances(instances)
