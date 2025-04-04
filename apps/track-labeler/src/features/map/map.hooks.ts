@@ -18,24 +18,29 @@ import type { Label, MapCoordinates } from '../../types'
 import { useSegmentsLabeledConnect } from '../timebar/timebar.hooks'
 import { selectedtracks } from '../vessels/selectedTracks.slice'
 
-export const useMapMove = () => {
+export const useMapHover = () => {
   const dispatch = useAppDispatch()
   const rulersEditing = useSelector(selectEditing)
-  const [hoverCenter, setHoverCenter] = useState<LatLon | null>(null)
-  const onMapMove = useCallback(
-    (event: any) => {
-      const center = {
-        longitude: event.lngLat.lng,
-        latitude: event.lngLat.lat,
+  const [cursor, setCursor] = useState('default')
+
+  const handleDeckHover = useCallback(
+    (info: PickingInfo) => {
+      const isHovering = Boolean(info.object)
+      setCursor(isHovering ? 'pointer' : 'default')
+      if (rulersEditing === true && info.coordinate) {
+        dispatch(
+          moveCurrentRuler({
+            latitude: info.coordinate[1],
+            longitude: info.coordinate[0],
+          })
+        )
       }
-      setHoverCenter(center)
-      if (rulersEditing === true) {
-        dispatch(moveCurrentRuler(center))
-      }
+
+      return isHovering
     },
     [dispatch, rulersEditing]
   )
-  return { onMapMove, hoverCenter }
+  return { cursor, handleDeckHover }
 }
 
 export const useMapClick = () => {

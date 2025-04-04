@@ -11,14 +11,13 @@ import { DateTime } from 'luxon'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
-import { selectRulers } from '../../features/rulers/rulers.selectors'
 import type { ActionType, Label, MapCoordinates } from '../../types'
 
 import MapControls from './map-controls/MapControls'
 import {
   useHiddenLabelsConnect,
   useMapClick,
-  useMapMove,
+  useMapHover,
   useMapSetViewState,
   useMapViewState,
   useSetMapInstance,
@@ -44,17 +43,9 @@ const MapComponent = (): React.ReactElement<any> => {
   const setViewState = useMapSetViewState()
   const viewState = useMapViewState()
   const actionShortcuts = useSelector(getActionShortcuts)
-  const rulers = useSelector(selectRulers)
   const legengLabels = useSelector(selectLegendLabels)
-  const { hoverCenter } = useMapMove()
   const { onMapClick } = useMapClick()
   const { dispatchHiddenLabels, hiddenLabels } = useHiddenLabelsConnect()
-
-  // State to store the current cursor type
-  const [cursor, setCursor] = useState('default')
-
-  // Track which object is being hovered
-  const [hoverInfo, setHoverInfo] = useState<any>(null)
 
   const onViewStateChange = useCallback(
     (params: any) => {
@@ -65,14 +56,7 @@ const MapComponent = (): React.ReactElement<any> => {
     [setViewState]
   )
 
-  const handleDeckHover = useCallback((info: any) => {
-    const isHovering = Boolean(info.object)
-    setCursor(isHovering ? 'pointer' : 'default')
-    setHoverInfo(isHovering ? info : null)
-
-    return isHovering
-  }, [])
-
+  const { cursor, handleDeckHover } = useMapHover()
   const layers = useMapDeckLayers()
 
   // Custom tooltip function for deck.gl

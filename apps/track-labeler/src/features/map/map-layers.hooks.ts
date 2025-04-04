@@ -4,8 +4,13 @@ import { DateTime } from 'luxon'
 
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { useDeckLayerComposer } from '@globalfishingwatch/deck-layer-composer'
-import { hexToDeckColor, TrackLabelerVesselLayer } from '@globalfishingwatch/deck-layers'
+import {
+  hexToDeckColor,
+  RulersLayer,
+  TrackLabelerVesselLayer,
+} from '@globalfishingwatch/deck-layers'
 
+import { selectRulers } from '../rulers/rulers.selectors'
 import { selectHighlightedTime } from '../timebar/timebar.slice'
 
 import { useHiddenLabelsConnect } from './map.hooks'
@@ -63,6 +68,18 @@ export const useTrackLabelerDeckLayer = () => {
   return layer
 }
 
+export const useMapRulerInstance = () => {
+  const rulers = useSelector(selectRulers)
+  return useMemo(() => {
+    if (rulers?.length) {
+      return new RulersLayer({
+        rulers,
+        visible: true,
+      })
+    }
+  }, [rulers])
+}
+
 export const useMapDataviewLayers = () => {
   const dataviews = useSelector(getContextualLayersDataviews)
 
@@ -82,14 +99,12 @@ export const useMapDataviewLayers = () => {
 
 export const useMapDeckLayers = () => {
   const labelerLayer = useTrackLabelerDeckLayer()
+  const rulersLayer = useMapRulerInstance()
   const layers = useMapDataviewLayers()
 
   const allLayers = useMemo(() => {
-    if (labelerLayer) {
-      return [...layers, labelerLayer]
-    }
-    return layers
-  }, [layers, labelerLayer])
+    return [...layers, labelerLayer, rulersLayer].filter(Boolean)
+  }, [layers, labelerLayer, rulersLayer])
 
   return allLayers
 }
