@@ -18,13 +18,13 @@ import MapControls from './map-controls/MapControls'
 import {
   useHiddenLabelsConnect,
   useMapClick,
-  useMapDeckLayers,
   useMapMove,
   useMapSetViewState,
   useMapViewState,
   useSetMapInstance,
 } from './map.hooks'
 import { selectLegendLabels } from './map.selectors'
+import { useMapDeckLayers } from './map-layers.hooks'
 
 import styles from './Map.module.css'
 

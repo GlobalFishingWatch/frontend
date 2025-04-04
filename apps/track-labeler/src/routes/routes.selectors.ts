@@ -30,7 +30,7 @@ export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
 export const selectDataviewsQuery = selectQueryParam<any[]>('workspaceDataviews')
 
 export const selectProjectId = selectQueryParam('project')
-export const selectSatellite = selectQueryParam('satellite')
+export const selectIsSatelliteBasemap = selectQueryParam('satellite')
 export const selectStartQuery = selectQueryParam('start')
 export const selectEndQuery = selectQueryParam('end')
 export const selectVessel = selectQueryParam('vessel')

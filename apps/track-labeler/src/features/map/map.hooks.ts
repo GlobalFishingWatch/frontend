@@ -5,15 +5,10 @@ import type { Deck, PickingInfo } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
 import { throttle } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { selectAtom } from 'jotai/utils'
-import { DateTime } from 'luxon'
 
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
-import { useDeckLayerComposer } from '@globalfishingwatch/deck-layer-composer'
 import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
-import { hexToDeckColor, TrackLabelerVesselLayer } from '@globalfishingwatch/deck-layers'
 
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_VIEWPORT } from '../../data/config'
+import { DEFAULT_VIEWPORT } from '../../data/config'
 import { selectEditing } from '../../features/rulers/rulers.selectors'
 import { editRuler, moveCurrentRuler } from '../../features/rulers/rulers.slice'
 import { updateQueryParams } from '../../routes/routes.actions'
@@ -21,10 +16,7 @@ import { selectHiddenLabels } from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
 import type { Label, MapCoordinates } from '../../types'
 import { useSegmentsLabeledConnect } from '../timebar/timebar.hooks'
-import { selectHighlightedTime } from '../timebar/timebar.slice'
 import { selectedtracks } from '../vessels/selectedTracks.slice'
-
-import { selectDirectionPointsData, selectLegendLabels } from './map.selectors'
 
 export const useMapMove = () => {
   const dispatch = useAppDispatch()
@@ -123,110 +115,6 @@ export const useHiddenLabelsConnect = () => {
   }
 
   return { dispatchHiddenLabels, hiddenLabels }
-}
-
-export const useTrackLabelerDeckLayer = () => {
-  const legengLabels = useSelector(selectLegendLabels)
-  const highlightedTime = useSelector(selectHighlightedTime)
-  const pointsData = useSelector(selectDirectionPointsData)
-  const { hiddenLabels } = useHiddenLabelsConnect()
-
-  const visibleLabels = useMemo(() => {
-    return legengLabels.flatMap((label) => (!hiddenLabels.includes(label.id) ? label.id : []))
-  }, [legengLabels, hiddenLabels])
-
-  const formattedTime: { start: number; end: number } | null = useMemo(() => {
-    if (highlightedTime?.start && highlightedTime?.end) {
-      return {
-        start: DateTime.fromISO(highlightedTime.start).toMillis(),
-        end: DateTime.fromISO(highlightedTime.end).toMillis(),
-      }
-    }
-    return null
-  }, [highlightedTime])
-
-  const layer = useMemo(() => {
-    if (!pointsData || !pointsData.length) {
-      return null
-    }
-
-    const vesselLayer = new TrackLabelerVesselLayer({
-      id: 'track-points',
-      data: pointsData || [],
-      pickable: true,
-      iconAtlasUrl: 'src/assets/images/vessel-sprite.png',
-      highlightedTime,
-      visibleLabels,
-      getColor: (d) => hexToDeckColor(d.color, 0.8),
-      getHighlightColor: (d) => {
-        if (
-          formattedTime &&
-          d.timestamp >= formattedTime.start &&
-          d.timestamp <= formattedTime.end
-        ) {
-          return [255, 255, 255, 200]
-        }
-        return [0, 0, 0, 0]
-      },
-    })
-
-    return vesselLayer
-  }, [pointsData, highlightedTime, formattedTime, visibleLabels])
-
-  return layer
-}
-
-export const useMapDataviewLayers = () => {
-  const dataviews = useMemo(
-    () => {
-      // if (isWorkspaceIndexLocation || isUserLocation) {
-      //   const dataviews = [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
-      //   if (workspacesListDataview) {
-      //     dataviews.push(workspacesListDataview as DataviewInstance)
-      //   }
-      //   return dataviews
-      // }
-      // if (workspaceLoading) {
-      //   return [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
-      // }
-      return [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
-    },
-    [
-      // bufferDataviews,
-      // isWorkspaceIndexLocation,
-      // isUserLocation,
-      // workspaceDataviews,
-      // workspaceLoading,
-      // workspacesListDataview,
-    ]
-  )
-
-  const layers = useDeckLayerComposer({
-    dataviews: dataviews as DataviewInstance[],
-    globalConfig: {
-      start: '2019-07-01T00:00:00.000Z',
-      end: '2019-07-01T00:00:00.000Z',
-      bivariateDataviews: null,
-      visibleEvents: [],
-      vesselsColorBy: 'track',
-    },
-  })
-
-  return layers
-}
-
-export const useMapDeckLayers = () => {
-  const labelerLayer = useTrackLabelerDeckLayer()
-  const layers = useMapDataviewLayers()
-
-  const allLayers = useMemo(() => {
-    if (labelerLayer) {
-      return [...layers, labelerLayer]
-    }
-    return layers
-  }, [layers, labelerLayer])
-
-  return allLayers
 }
 
 const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)
