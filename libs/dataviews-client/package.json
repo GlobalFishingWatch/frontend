@@ -15,7 +15,6 @@
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/data-transforms": "^3.0.5",
     "@globalfishingwatch/datasets-client": "^3.0.3",
-    "@globalfishingwatch/fourwings-aggregate": "^6.0.3",
     "@reduxjs/toolkit": "*",
     "geojson": "0.x",
     "lodash": "4.x",
