@@ -12,7 +12,10 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { ENTIRE_WORLD_REPORT_AREA } from 'features/reports/report-area/area-reports.config'
+import {
+  ENTIRE_WORLD_REPORT_AREA,
+  ENTIRE_WORLD_REPORT_AREA_ID,
+} from 'features/reports/report-area/area-reports.config'
 import {
   getBufferedArea,
   getBufferedFeature,
@@ -332,9 +335,9 @@ export const selectReportArea = createSelector(
 )
 
 export const selectReportAreaStatus = createSelector(
-  [selectReportAreaApiStatus, selectIsVesselGroupReportLocation],
-  (areaApiStatus, isVesselGroupReportLocation) => {
-    if (isVesselGroupReportLocation) {
+  [selectReportArea, selectReportAreaApiStatus, selectIsVesselGroupReportLocation],
+  (area, areaApiStatus, isVesselGroupReportLocation) => {
+    if (area?.id === ENTIRE_WORLD_REPORT_AREA_ID || isVesselGroupReportLocation) {
       return AsyncReducerStatus.Finished
     }
     return areaApiStatus

@@ -91,3 +91,8 @@ body:has(.printing) {
 .MuiTooltip-popper {
   font-size: 16px !important;
 }
+
+/* Ensure this id matches the id in the DeckGLWrapper.tsx */
+#map {
+  object-fit: contain;
+}

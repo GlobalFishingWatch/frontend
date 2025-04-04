@@ -54,21 +54,37 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   {
     id: 'costa_rica_amps-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    reportId: 'costa_rica_amps-public',
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
   {
     id: 'colombia-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    reportId: 'colombias_amps-public',
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
   {
     id: 'panama-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    reportId: 'panama-public',
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
   {
     id: 'reserva_de_la_biosfera_cmar-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    reportId: 'reserva_de_la_biosfera_cmar-public',
+    visible: !IS_PRODUCTION_WORKSPACE_ENV,
+  },
+  {
+    id: 'galapagos_y_hermandad-public',
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    reportId: 'galapagos_y_hermandad-public',
+    visible: !IS_PRODUCTION_WORKSPACE_ENV,
+  },
+  {
+    id: 'revillagigedo-public',
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    reportId: 'revillagigedo-public',
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
 ]

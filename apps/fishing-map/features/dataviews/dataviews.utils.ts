@@ -130,16 +130,27 @@ export const getVesselDataviewInstance = ({
   datasets,
   highlightEventStartTime,
   highlightEventEndTime,
+  vesselTemplateDataviews,
 }: {
   vessel: { id: string }
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
   highlightEventEndTime?: number
+  vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
 }): DataviewInstance => {
+  let dataviewTemplate = vesselTemplateDataviews.find((dataview) => {
+    return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
+  })?.slug
+  if (!dataviewTemplate) {
+    console.error(
+      `No dataview template found for vessel ${vessel.id} using default: ${TEMPLATE_VESSEL_DATAVIEW_SLUG}`
+    )
+    dataviewTemplate = TEMPLATE_VESSEL_DATAVIEW_SLUG
+  }
   const vesselDataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate(
-      TEMPLATE_VESSEL_DATAVIEW_SLUG,
+      dataviewTemplate,
       datasets,
       highlightEventStartTime,
       highlightEventEndTime

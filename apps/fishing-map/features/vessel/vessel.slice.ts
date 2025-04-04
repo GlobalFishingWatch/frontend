@@ -39,6 +39,7 @@ import {
   getVesselDataviewInstance,
   getVesselInfoDataviewInstanceDatasetConfig,
 } from 'features/dataviews/dataviews.utils'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
@@ -124,6 +125,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       const action = await dispatch(fetchDatasetByIdThunk(datasetId))
       const guestUser = selectIsGuestUser(state)
       const resources = selectResources(state)
+      const vesselTemplateDataviews = selectVesselTemplateDataviews(state)
       if (fetchDatasetByIdThunk.fulfilled.match(action)) {
         const dataset = action.payload as Dataset
         // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
@@ -160,11 +162,19 @@ export const fetchVesselInfoThunk = createAsyncThunk(
               cache: 'reload',
             })
 
+        const dataviewId = getVesselDataviewInstance({
+          vessel: { id: vesselId },
+          datasets: {},
+          vesselTemplateDataviews,
+        })?.id
+        if (!dataviewId) {
+          return rejectWithValue({ message: 'Error getting dataview id' })
+        }
         const resource: Resource = {
           url: resolveEndpoint(dataset, datasetConfig) as string,
           dataset: dataset,
           datasetConfig,
-          dataviewId: getVesselDataviewInstance({ vessel: { id: vesselId }, datasets: {} })?.id,
+          dataviewId,
           data: vessel,
           status: ResourceStatus.Finished,
         }
