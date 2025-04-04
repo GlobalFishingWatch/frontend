@@ -312,3 +312,46 @@ export const getVesselParsedFilteredTrack = createSelector(
     return layersData
   }
 )
+
+/**
+ * Get the bounding box of all track points in the format [[minLon, minLat], [maxLon, maxLat]]
+ */
+export const selectTracksBounds = createSelector(
+  [getVesselTrackData],
+  (track): [[number, number], [number, number]] | null => {
+    if (!track?.data) return null
+
+    let minLon = Infinity
+    let maxLon = -Infinity
+    let minLat = Infinity
+    let maxLat = -Infinity
+
+    track.data.forEach((segment: TrackSegment) => {
+      segment.forEach((point: TrackPoint) => {
+        if (point.longitude !== undefined && point.longitude !== null) {
+          minLon = Math.min(minLon, point.longitude)
+          maxLon = Math.max(maxLon, point.longitude)
+        }
+        if (point.latitude !== undefined && point.latitude !== null) {
+          minLat = Math.min(minLat, point.latitude)
+          maxLat = Math.max(maxLat, point.latitude)
+        }
+      })
+    })
+
+    // If no valid points were found, return null
+    if (
+      minLon === Infinity ||
+      maxLon === -Infinity ||
+      minLat === Infinity ||
+      maxLat === -Infinity
+    ) {
+      return null
+    }
+
+    return [
+      [minLon, minLat],
+      [maxLon, maxLat],
+    ]
+  }
+)

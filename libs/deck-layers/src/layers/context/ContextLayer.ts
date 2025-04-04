@@ -165,7 +165,10 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   renderLayers() {
-    const { color, layers, thickness } = this.props
+    const { visible, color, layers, thickness } = this.props
+
+    if (!visible) return []
+
     const highlightedFeatures = this._getHighlightedFeatures()
     return layers.map((layer) => {
       if (layer.id === ContextLayerId.EEZBoundaries) {

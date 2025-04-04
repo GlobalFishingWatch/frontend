@@ -1,7 +1,18 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
-import type { Ruler } from '@globalfishingwatch/layer-composer'
+type Ruler = {
+  id: number
+  start: {
+    latitude: number
+    longitude: number
+  }
+  end: {
+    latitude: number
+    longitude: number
+  }
+  isNew: boolean
+}
 
 type RulersSlice = {
   visible: boolean

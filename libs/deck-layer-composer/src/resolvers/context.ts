@@ -49,6 +49,7 @@ export const resolveDeckContextLayerProps: DeckResolverFunction<ContextLayerProp
   return {
     id: dataview.id,
     layers: layers,
+    visible: dataview.config?.visible ?? true,
     category: dataview.category!,
     color: dataview.config?.color as string,
     thickness: dataview.config?.thickness || 1,

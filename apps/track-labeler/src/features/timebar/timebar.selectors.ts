@@ -1,16 +1,13 @@
 import { createSelector } from 'reselect'
 
-import type { Dataview , TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
-import * as Generators from '@globalfishingwatch/layer-composer'
+import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
 
 import { TimebarMode } from '../../data/config'
-import { selectDataviews } from '../../features/dataviews/dataviews.slice'
 import {
   getVesselFilteredTrackGeojsonByDateRange,
   getVesselParsedTrack,
   getVesselTrackData,
 } from '../../features/tracks/tracks.selectors'
-import { selectEvents } from '../../features/vessels/vessels.slice'
 import {
   getDateRangeTS,
   selectFilterMode,
@@ -25,46 +22,6 @@ import {
 import type { DayNightLayer, VesselPoint } from '../../types'
 
 import { getTimebarPoints } from './timebar.utils'
-
-type TimebarTrackSegment = {
-  start: number
-  end: number
-}
-type TimebarTrack = {
-  segments: TimebarTrackSegment[]
-  color?: string
-}
-
-const selectTracksDataviews = createSelector([selectDataviews], (dataviewWorkspaces) => {
-  const dataviews: Dataview[] = dataviewWorkspaces.filter((dataviewWorkspace: Dataview) => {
-    return (
-      dataviewWorkspace.config.type === Generators.GeneratorType.Track &&
-      dataviewWorkspace.config.visible !== false
-    )
-  })
-  return dataviews
-})
-
-export const getTracksData = createSelector(
-  [getVesselFilteredTrackGeojsonByDateRange],
-  (tracks) => {
-    if (tracks?.flat().length) {
-      const tracksSegments: TimebarTrack[] = [
-        {
-          segments: tracks.map((segment: TrackSegment) => {
-            return {
-              start: segment[0].timestamp || 0,
-              end: segment[segment.length - 1].timestamp || 0,
-            }
-          }),
-          color: '#ffffff',
-        },
-      ]
-      return tracksSegments
-    }
-    return []
-  }
-)
 
 export const selectNightLayer = createSelector([getVesselTrackData], (tracks) => {
   if (tracks) {
@@ -95,18 +52,6 @@ export const selectNightLayer = createSelector([getVesselTrackData], (tracks) =>
   }
   return []
 })
-
-export const getEventsForTracks = createSelector(
-  [selectTracksDataviews, selectEvents],
-  (trackDataviews, events) => {
-    const vesselsEvents = trackDataviews.map((dataviewWorkspace: Dataview) => {
-      const id = dataviewWorkspace.id
-      const vesselEvents = events[id] || []
-      return vesselEvents
-    })
-    return vesselsEvents
-  }
-)
 
 const maxTimebarValues: any = {
   speed: 12,
@@ -235,4 +180,3 @@ export const selectRangeFilterLimits = createSelector(
     return limits
   }
 )
-
