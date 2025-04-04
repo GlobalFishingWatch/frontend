@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import type { RootState } from 'reducers'
 
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
   ApiEvent,
@@ -431,16 +432,16 @@ export const fetchClusterEventThunk = createAsyncThunk(
       let interactionId = eventFeature.id
       let interactionResponse: FourwingsEventsInteraction[] | undefined
       let eventId: string | undefined = eventFeature.eventId
-      if (!eventId && interactionId && eventsDataset) {
+      if (!eventId && interactionId && eventsDataset && eventFeature.properties.tile) {
         const start = getUTCDate(eventFeature?.startTime).toISOString()
         const end = getUTCDate(eventFeature?.endTime).toISOString()
         const datasetConfig: DataviewDatasetConfig = {
           datasetId: eventsDataset?.id,
           endpoint: EndpointId.ClusterTilesInteraction,
           params: [
-            { id: 'z', value: eventFeature.properties.tile.z },
-            { id: 'x', value: eventFeature.properties.tile.x },
-            { id: 'y', value: eventFeature.properties.tile.y },
+            { id: 'z', value: eventFeature.properties.tile?.z },
+            { id: 'x', value: eventFeature.properties.tile?.x },
+            { id: 'y', value: eventFeature.properties.tile?.y },
             { id: 'rows', value: eventFeature.properties.row as number },
             { id: 'cols', value: eventFeature.properties.col as number },
           ],
@@ -845,7 +846,7 @@ const slice = createSlice({
       } else {
         state.apiEventStatus = AsyncReducerStatus.Error
         if (action.payload) {
-          state.apiEventError = action.payload as string
+          state.apiEventError = (action.payload as ParsedAPIError).message
         }
       }
     })

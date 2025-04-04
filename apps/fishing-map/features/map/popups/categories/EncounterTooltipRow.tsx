@@ -61,9 +61,11 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                 <div className={styles.flex}>
                   {event.vessel && (
                     <div className={styles.rowColum}>
-                      <p className={styles.rowTitle}>
-                        {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
-                      </p>
+                      {event.vessel.type && (
+                        <p className={styles.rowTitle}>
+                          {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
+                        </p>
+                      )}
                       <div className={styles.centered}>
                         <span className={styles.rowText}>
                           <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
