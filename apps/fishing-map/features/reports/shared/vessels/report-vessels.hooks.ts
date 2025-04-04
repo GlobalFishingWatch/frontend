@@ -95,16 +95,16 @@ export default function usePinReportVessels() {
             vesselEventsDatasets && vesselEventsDatasets?.length
               ? vesselEventsDatasets.map((d) => d.id)
               : []
-          const vesselDataviewInstance = getVesselDataviewInstance(
-            { id: getVesselId(vessel) },
-            {
+          const vesselDataviewInstance = getVesselDataviewInstance({
+            vessel: { id: getVesselId(vessel) },
+            datasets: {
               info: vessel.dataset,
               track: trackDataset?.id,
               ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
               relatedVesselIds: getRelatedIdentityVesselIds(vessel),
             },
-            vesselTemplateDataviews
-          )
+            vesselTemplateDataviews,
+          })
           if (!vesselDataviewInstance?.config) {
             return []
           }

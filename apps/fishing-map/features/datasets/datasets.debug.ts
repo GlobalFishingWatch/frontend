@@ -19,7 +19,7 @@ export const debugDatasetsInDataviews = (
         const dataview = dataviews.find((dv) => {
           return dv.datasetsConfig?.some((dc) => dc.datasetId.includes(d))
         })
-        console.log(`${d} loaded because of is included in dataview: ${dataview?.id}`)
+        console.warn(`${d} loaded because of is included in dataview: ${dataview?.id}`)
       })
     }
   }
@@ -36,7 +36,7 @@ export const debugRelatedDatasets = (datasets: Dataset[], datasetId: string) => 
         d.relatedDatasets?.some((d) => d.id.includes(datasetId))
       )
       if (originalDataset) {
-        console.log(
+        console.warn(
           `${datasetId} loaded because of is included as related dataset in: ${originalDataset.id}`
         )
       }

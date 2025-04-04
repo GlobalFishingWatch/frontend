@@ -113,7 +113,8 @@ export const getEventDescription = ({
       break
     }
     case EventTypes.Port: {
-      const portName = port_visit?.intermediateAnchorage.name
+      const portName =
+        port_visit?.intermediateAnchorage?.name || port_visit?.intermediateAnchorage?.id
       const portFlag = port_visit?.intermediateAnchorage.flag
       if (portName && portFlag) {
         const portLabel = [

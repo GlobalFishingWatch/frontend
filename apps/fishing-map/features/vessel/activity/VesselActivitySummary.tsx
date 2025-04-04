@@ -9,14 +9,15 @@ import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
 import type { IconType, SwitchEvent } from '@globalfishingwatch/ui-components'
 import { Icon, Switch, Tooltip } from '@globalfishingwatch/ui-components'
 
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
-import { EVENTS_ORDER } from 'features/vessel/activity/activity-by-type/ActivityByType'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import {
+  EVENTS_ORDER,
   selectActivitySummary,
   selectEventsGroupedByType,
   selectVoyagesNumber,
@@ -24,6 +25,7 @@ import {
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
+import { setVesselEventId } from 'features/vessel/vessel.slice'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { formatInfoField } from 'utils/info'
 
@@ -33,6 +35,7 @@ const MAX_PORTS = 3
 
 export const VesselActivitySummary = () => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const voyages = useSelector(selectVoyagesNumber)
   const timerange = useSelector(selectTimeRange)
@@ -91,8 +94,9 @@ export const VesselActivitySummary = () => {
     (event: SwitchEvent) => {
       const eventTypeChanged = event.currentTarget.id as EventType
       setVesselEventVisibility({ event: eventTypeChanged, visible: !event.active })
+      dispatch(setVesselEventId(null))
     },
-    [setVesselEventVisibility]
+    [dispatch, setVesselEventVisibility]
   )
 
   return (

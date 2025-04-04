@@ -5,11 +5,6 @@
       "description": "Monitor vessel-based human activity at sea in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.",
       "cta": "Explore the map"
     },
-    "carrier-portal-public": {
-      "name": "Carrier Vessel Portal",
-      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
-      "cta": "Explore the carrier vessel portal"
-    },
     "deep-sea-mining-public": {
       "name": "Deep Sea Mining Watch",
       "description": "Deep Sea Mining Watch aims to increase transparency in the nascent industry of seabed mining for critical minerals by highlighting historical and ongoing vessel activity in high seas areas that are currently slated for mineral exploration. ",
@@ -17,6 +12,11 @@
     }
   },
   "reports": {
+    "carrier-portal-report": {
+      "name": "Carrier Vessel Portal",
+      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
+      "cta": "Explore the carrier vessel portal"
+    },
     "activity-report": {
       "name": "Global Vessel Activity",
       "description": "Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries."

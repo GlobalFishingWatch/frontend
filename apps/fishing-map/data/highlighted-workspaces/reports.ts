@@ -1,7 +1,10 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { PATH_BASENAME } from 'data/config'
-import { REPORT_EVENTS_DATAVIEW_INSTANCES } from 'data/highlighted-workspaces/report.dataviews'
+import {
+  CARRIER_PORTAL_DATAVIEW_INSTANCES,
+  REPORT_EVENTS_DATAVIEW_INSTANCES,
+} from 'data/highlighted-workspaces/report.dataviews'
 import { ReportCategory } from 'features/reports/reports.types'
 
 import type workspaceTranslations from '../../public/locales/source/workspaces.json'
@@ -16,6 +19,12 @@ export type ReportWorkspace = {
 }
 
 export const REPORTS_INDEX: ReportWorkspace[] = [
+  {
+    id: 'carrier-portal-report',
+    reportCategory: ReportCategory.Events,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/carrier-portal.jpg`,
+    dataviewInstances: CARRIER_PORTAL_DATAVIEW_INSTANCES,
+  },
   {
     id: 'activity-report',
     reportCategory: ReportCategory.Activity,

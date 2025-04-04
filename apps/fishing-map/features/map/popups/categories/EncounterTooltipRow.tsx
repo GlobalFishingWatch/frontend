@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
@@ -61,9 +61,11 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                 <div className={styles.flex}>
                   {event.vessel && (
                     <div className={styles.rowColum}>
-                      <p className={styles.rowTitle}>
-                        {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
-                      </p>
+                      {event.vessel.type && (
+                        <p className={styles.rowTitle}>
+                          {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
+                        </p>
+                      )}
                       <div className={styles.centered}>
                         <span className={styles.rowText}>
                           <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
@@ -110,12 +112,18 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                   )}
                 </div>
                 <div className={styles.row}>
-                  {/* TODO: Add link to vessel portal in case we support it */}
-                  {/* <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
+                  <VesselLink
+                    vesselId={event.vessel.id}
+                    datasetId={event.vessel.dataset}
+                    eventId={event.id ? event.id.split('.')[0] : undefined}
+                    eventType={'encounter'}
+                    showTooltip={false}
+                    className={styles.btnLarge}
+                  >
                     <Button target="_blank" size="small" className={styles.btnLarge}>
                       {t('common.seeMore', 'See more')}
                     </Button>
-                  </VesselLink> */}
+                  </VesselLink>
                 </div>
               </div>
             ) : (

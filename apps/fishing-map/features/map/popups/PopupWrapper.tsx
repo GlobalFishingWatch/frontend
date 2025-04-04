@@ -30,14 +30,13 @@ const overflowMiddlware: Middleware = {
     }
 
     const overflow = await detectOverflow(state, { boundary })
-    Object.entries(overflow).forEach(([key, value]) => {
-      if (value > 0) {
-        const property = key === 'top' || key === 'bottom' ? 'y' : 'x'
-        state[property] =
-          key === 'bottom' || key === 'right' ? state[property] - value : state[property] + value
-      }
-    })
-    return state
+    const { x, y } = state
+
+    return {
+      ...state,
+      x: overflow.left > 0 ? x + overflow.left : overflow.right > 0 ? x - overflow.right : x,
+      y: overflow.top > 0 ? y + overflow.top : overflow.bottom > 0 ? y - overflow.bottom : y,
+    }
   },
 }
 
@@ -67,9 +66,13 @@ function PopupWrapper({
   const clickOutsideRef = useClickedOutside(onClose)
   const { refs, floatingStyles, context } = useFloating({
     whileElementsMounted: autoUpdate,
+    placement: 'top',
     middleware: [
       offset(15),
-      autoPlacement({ padding: 10 }),
+      autoPlacement({
+        allowedPlacements: ['top', 'bottom'],
+        padding: 10,
+      }),
       overflowMiddlware,
       arrow({
         element: arrowRef,

@@ -70,8 +70,8 @@ function getBaseStatsQuery({
     'start-date': start,
     'end-date': end,
     'time-filter-mode': EVENTS_TIME_FILTER_MODE,
-    ...(regionId && { 'region-id': regionId }),
-    ...(regionDataset && { 'region-dataset': regionDataset }),
+    ...(regionId && { 'region-ids': [regionId] }),
+    ...(regionDataset && { 'region-datasets': [regionDataset] }),
     // TODO:CVP uncomment once the API takes the parameters
     // ...(bufferValue && { 'buffer-value': bufferValue }),
     // ...(bufferUnit && { 'buffer-unit': bufferUnit }),

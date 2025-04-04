@@ -10,9 +10,9 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import type VesselEvent from 'features/vessel/activity/event/Event'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
-import VesselLink from 'features/vessel/VesselLink'
 import { getUTCDateTime } from 'utils/dates'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
@@ -34,7 +34,7 @@ export function useActivityEventTranslations() {
   const { getRegionNamesByType } = useRegionNamesByType()
 
   const getEventRegionDescription = useCallback(
-    (event: ActivityEvent | GapPosition, regionsPriority = REGIONS_PRIORITY) => {
+    (event: VesselEvent | GapPosition, regionsPriority = REGIONS_PRIORITY) => {
       const mainRegionDescription = regionsPriority.reduce((acc, regionType) => {
         // We already have the most prioritized region, so we don't need to look for more
         if (!acc && event?.regions?.[regionType]?.length) {
@@ -61,9 +61,13 @@ export function useActivityEventTranslations() {
       }
       return {
         mainRegionDescription,
-        allRegionsDescription: allRegionsDescriptionBlocks.map((block, index) => (
-          <div key={index}>{block}</div>
-        )),
+        allRegionsDescription: (
+          <div>
+            {allRegionsDescriptionBlocks.map((block, index) => (
+              <div key={index}>{block}</div>
+            ))}
+          </div>
+        ),
       }
     },
     [getRegionNamesByType, t]
@@ -79,14 +83,12 @@ export function useActivityEventTranslations() {
       switch (event.type) {
         case EventTypes.Encounter:
           if (event.encounter?.vessel) {
-            const { flag, id, name, dataset } = event.encounter.vessel
+            const { flag, name } = event.encounter.vessel
             return (
               // TODO check if we can get the dataset of the vessel encountered, using Identity for now
               <span>
                 {t('event.encounterAction', 'had an encounter with')}{' '}
-                <VesselLink vesselId={id} datasetId={dataset}>
-                  {formatInfoField(name, 'shipname')} ({formatInfoField(flag, 'flag')})
-                </VesselLink>{' '}
+                {formatInfoField(name, 'shipname')} ({formatInfoField(flag, 'flag')}){' '}
                 {mainRegionDescription && (
                   <Tooltip content={allRegionsDescription}>
                     <span className={styles.region}>
@@ -99,10 +101,11 @@ export function useActivityEventTranslations() {
             )
           } else return ''
         case EventTypes.Port: {
-          const { name, flag } = event.port_visit?.intermediateAnchorage ?? {}
+          const { id, name, flag } = event.port_visit?.intermediateAnchorage ?? {}
+          const portName = name || id
           const portType = event.subType || event.type
-          const portLabel = name
-            ? [name, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
+          const portLabel = portName
+            ? [portName, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
           return t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
             port: formatInfoField(portLabel, 'port'),
@@ -155,7 +158,7 @@ export function useActivityEventTranslations() {
   )
 
   const getEventDurationDescription = useCallback(
-    (event: ActivityEvent) => {
+    (event: VesselEvent) => {
       const durationDiff = getUTCDateTime(event.end as number).diff(
         getUTCDateTime(event.start as number),
         ['days', 'hours', 'minutes']

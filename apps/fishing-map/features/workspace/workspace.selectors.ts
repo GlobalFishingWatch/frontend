@@ -127,8 +127,9 @@ export const selectWorkspaceVisibleEventsArray = createSelector(
       ? visibleEvents === 'all'
         ? Object.values(EventTypes)
         : []
-      : (visibleEvents as EventTypes[])
+      : [...(visibleEvents as EventTypes[])]
   }
 )
 
 export const selectDaysFromLatest = selectWorkspaceStateProperty('daysFromLatest')
+export const selectFeatureFlags = selectWorkspaceStateProperty('featureFlags')

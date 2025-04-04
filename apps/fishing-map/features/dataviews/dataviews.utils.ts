@@ -11,7 +11,7 @@ import type {
 import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
+import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
@@ -20,6 +20,7 @@ import {
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
 import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -37,6 +38,7 @@ const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
+export const VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX = `${VESSEL_DATAVIEW_INSTANCE_PREFIX}encounter-`
 export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
@@ -100,7 +102,9 @@ export const getVesselDataviewInstanceDatasetConfig = (
 
 const vesselDataviewInstanceTemplate = (
   dataviewSlug: Dataview['slug'],
-  datasets: VesselInstanceDatasets
+  datasets: VesselInstanceDatasets,
+  highlightEventStartTime?: number,
+  highlightEventEndTime?: number
 ) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
@@ -109,18 +113,32 @@ const vesselDataviewInstanceTemplate = (
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
       ...datasets,
+      ...(highlightEventStartTime && {
+        highlightEventStartTime: getUTCDateTime(highlightEventStartTime).toISO()!,
+      }),
+      ...(highlightEventEndTime && {
+        highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
+      }),
     },
   }
 }
 const getVesselDataviewInstanceId = (vesselId: string) =>
   `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
 
-export const getVesselDataviewInstance = (
-  vessel: { id: string },
-  datasets: VesselInstanceDatasets,
-  vesselDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
-): DataviewInstance | null => {
-  let dataviewTemplate = vesselDataviews.find((dataview) => {
+export const getVesselDataviewInstance = ({
+  vessel,
+  datasets,
+  highlightEventStartTime,
+  highlightEventEndTime,
+  vesselTemplateDataviews,
+}: {
+  vessel: { id: string }
+  datasets: VesselInstanceDatasets
+  highlightEventStartTime?: number
+  highlightEventEndTime?: number
+  vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+}): DataviewInstance => {
+  let dataviewTemplate = vesselTemplateDataviews.find((dataview) => {
     return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
   })?.slug
   if (!dataviewTemplate) {
@@ -129,13 +147,56 @@ export const getVesselDataviewInstance = (
     )
     dataviewTemplate = TEMPLATE_VESSEL_DATAVIEW_SLUG
   }
-
   const vesselDataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
-    ...vesselDataviewInstanceTemplate(dataviewTemplate, datasets),
+    ...vesselDataviewInstanceTemplate(
+      dataviewTemplate,
+      datasets,
+      highlightEventStartTime,
+      highlightEventEndTime
+    ),
     deleted: false,
   }
   return vesselDataviewInstance
+}
+
+export const getVesselEncounterTrackDataviewInstance = ({
+  vesselId,
+  track,
+  start,
+  end,
+  highlightEventStartTime,
+  highlightEventEndTime,
+}: {
+  vesselId: string
+  track: string
+  start: number
+  end: number
+  highlightEventStartTime?: number
+  highlightEventEndTime?: number
+}): DataviewInstance => {
+  const vesselDataviewInstance: DataviewInstance = {
+    id: `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}`,
+    dataviewId: TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
+    config: {
+      startDate: getUTCDateTime(start).toISO()!,
+      endDate: getUTCDateTime(end).toISO()!,
+      ...(highlightEventStartTime && {
+        highlightEventStartTime: getUTCDateTime(highlightEventStartTime).toISO()!,
+      }),
+      ...(highlightEventEndTime && {
+        highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
+      }),
+    },
+  }
+  const datasetsConfig: DataviewDatasetConfig[] = [
+    {
+      datasetId: track,
+      params: [{ id: 'vesselId', value: vesselId }],
+      endpoint: EndpointId.Tracks,
+    },
+  ]
+  return { ...vesselDataviewInstance, datasetsConfig }
 }
 
 export const getUserPolygonsDataviewInstance = (

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { startTransition, useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { ThunkDispatch } from '@reduxjs/toolkit'
@@ -21,6 +21,7 @@ import type {
   DeckLayerPickingObject,
   FourwingsClusterPickingObject,
   FourwingsHeatmapPickingObject,
+  VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { FOURWINGS_MAX_ZOOM } from '@globalfishingwatch/deck-layers'
 
@@ -35,6 +36,9 @@ import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
+import { useEventActivityToggle } from 'features/vessel/activity/event/event-activity.hooks'
+import { useVesselProfileScrollToEvent } from 'features/vessel/activity/event/event-scroll.hooks'
+import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
 import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
@@ -111,6 +115,8 @@ export const useClickedEventConnect = () => {
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
   const areTilesClusterLoading = useMapClusterTilesLoading()
+  const scrollToEvent = useVesselProfileScrollToEvent()
+  const [_, setEventGroup] = useEventActivityToggle()
   // const fishingPromiseRef = useRef<any>()
   // const eventsPromiseRef = useRef<any>()
 
@@ -198,9 +204,14 @@ export const useClickedEventConnect = () => {
           ) {
             return false
           }
-          return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+          const hasVesselInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
             feature.category as DataviewCategory
           )
+          const isHeatmap =
+            feature.subcategory === DataviewType.Heatmap ||
+            feature.subcategory === DataviewType.HeatmapAnimated ||
+            feature.subcategory === DataviewType.HeatmapStatic
+          return hasVesselInteraction && isHeatmap
         }
       )
 
@@ -231,20 +242,37 @@ export const useClickedEventConnect = () => {
         const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
         setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
       }
+
+      const vesselEventFeature = event.features.find(
+        (f) =>
+          f.category === DataviewCategory.Vessels && f.subcategory === DataviewType.VesselEvents
+      ) as VesselEventPickingObject
+
+      if (vesselEventFeature) {
+        const eventType = setEventGroup({
+          id: vesselEventFeature.id,
+          type: vesselEventFeature.type,
+        } as ActivityEvent)
+        startTransition(() => {
+          scrollToEvent({ eventId: vesselEventFeature.id, eventType })
+        })
+      }
     },
     [
-      addErrorNotification,
-      addMapAnnotation,
-      areTilesClusterLoading,
       cancelPendingInteractionRequests,
-      clickedEvent,
-      dispatch,
-      isErrorNotificationEditing,
       isMapAnnotating,
-      onRulerMapClick,
+      isErrorNotificationEditing,
       rulersEditing,
-      setInteractionPromises,
+      dispatch,
+      addMapAnnotation,
+      addErrorNotification,
+      onRulerMapClick,
+      areTilesClusterLoading,
       setMapCoordinates,
+      clickedEvent,
+      setInteractionPromises,
+      setEventGroup,
+      scrollToEvent,
     ]
   )
 

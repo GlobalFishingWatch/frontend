@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
+import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectFeatureFlags } from 'routes/routes.selectors'
 import type { FeatureFlag } from 'types'
 
 export const useToggleFeatureFlag = () => {
