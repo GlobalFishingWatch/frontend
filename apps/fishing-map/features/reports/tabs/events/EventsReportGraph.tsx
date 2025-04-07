@@ -101,10 +101,10 @@ const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: E
             {data.vessel?.flag && <span>({formatInfoField(data.vessel?.flag, 'flag')})</span>}
           </span>
         </div>
-        {eventType === 'encounter' && data.encounter?.vessel?.flag && (
+        {eventType === 'encounter' && data.encounter?.vessel && (
           <div className={styles.property}>
-            <label>{`${formatInfoField(data.encounter?.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}</label>
-            <span>{`${formatInfoField(data.encounter?.vessel?.name, 'shipname')} (${formatInfoField(data.encounter?.vessel?.flag, 'flag')})`}</span>
+            <label>{`${formatInfoField(data.encounter.vessel.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}</label>
+            <span>{`${formatInfoField(data.encounter.vessel.name, 'shipname')} ${data.encounter.vessel.flag ? `(${formatInfoField(data.encounter.vessel.flag, 'flag')}` : ''}`}</span>
           </div>
         )}
       </div>
