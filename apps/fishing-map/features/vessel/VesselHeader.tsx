@@ -115,7 +115,9 @@ const VesselHeader = () => {
 
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
-  const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
+  const otherNamesLabel = getVesselOtherNamesLabel(
+    getOtherVesselNames(vessel, nShipname).filter(Boolean)
+  )
 
   const onVesselFitBoundsClick = () => {
     if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
