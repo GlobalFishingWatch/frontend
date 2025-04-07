@@ -4,7 +4,7 @@ import type { DataviewCategory, DataviewType } from '@globalfishingwatch/api-typ
 import type { PolygonPickingObject } from '@globalfishingwatch/deck-layers'
 
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
-import type { ContextPickingInfo,ContextPickingObject } from './layers/context'
+import type { ContextPickingInfo, ContextPickingObject } from './layers/context'
 import type { ContextLayer } from './layers/context/ContextLayer'
 import type { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
 import type {
@@ -15,10 +15,10 @@ import type {
   FourwingsPickingObject,
 } from './layers/fourwings'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
-import type { RulerPickingInfo,RulerPickingObject } from './layers/rulers'
+import type { RulerPickingInfo, RulerPickingObject } from './layers/rulers'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
 import type { UserLayerPickingObject } from './layers/user'
-import type { VesselEventPickingInfo,VesselEventPickingObject } from './layers/vessel'
+import type { VesselEventPickingInfo, VesselEventPickingObject } from './layers/vessel'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
@@ -38,6 +38,7 @@ export type DeckPickingObject<G> = {
   category: DeckLayerCategory
   subcategory?: DeckLayerSubcategory
   uniqueFeatureInteraction?: boolean
+  groupFeatureInteraction?: boolean
 } & G
 
 export type AnyDeckLayer<D extends object = object> =

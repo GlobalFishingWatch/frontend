@@ -21,9 +21,13 @@ import type {
 } from '../../map.slice'
 
 type ClusterTooltipRowProps = {
-  features: SliceExtendedClusterPickingObject[]
+  feature: SliceExtendedClusterPickingObject
   showFeaturesDetails: boolean
   error?: string
+}
+
+type ClusterTooltipRowsProps = Omit<ClusterTooltipRowProps, 'feature'> & {
+  features: SliceExtendedClusterPickingObject[]
 }
 
 const GFW_CLUSTER_LAYERS = [
@@ -34,53 +38,63 @@ const GFW_CLUSTER_LAYERS = [
   ...VESSEL_GROUP_EVENTS_DATAVIEW_IDS,
 ]
 
-function ClusterTooltipRow({ features, showFeaturesDetails, error }: ClusterTooltipRowProps) {
+export function ClusterTooltipRow({ feature, showFeaturesDetails, error }: ClusterTooltipRowProps) {
+  const isGFWCluster = GFW_CLUSTER_LAYERS.some((source) => {
+    const id = feature.layerId.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
+    return feature.subcategory === DataviewType.FourwingsTileCluster && id.includes(source)
+  })
+  const key = `${feature.title}-${feature.eventId}`
+  const eventFeature = feature as SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
+  if (isGFWCluster) {
+    if (feature.layerId.includes('port')) {
+      return (
+        <PortVisitEventTooltipRow
+          key={key}
+          error={error}
+          feature={feature as SliceExtendedClusterPickingObject<ExtendedFeatureByVesselEvent>}
+          showFeaturesDetails={showFeaturesDetails}
+        />
+      )
+    }
+    if (feature.layerId.includes('encounter') || feature.layerId.includes('encounters')) {
+      return (
+        <EncounterTooltipRow
+          key={key}
+          error={error}
+          feature={eventFeature}
+          showFeaturesDetails={showFeaturesDetails}
+        />
+      )
+    }
+    return (
+      <ClusterEventTooltipRow
+        key={key}
+        error={error}
+        feature={eventFeature}
+        showFeaturesDetails={showFeaturesDetails}
+      />
+    )
+  }
+  return (
+    <GenericClusterTooltipRow
+      key={key}
+      error={error}
+      feature={eventFeature}
+      showFeaturesDetails={showFeaturesDetails}
+    />
+  )
+}
+
+function ClusterTooltipRows({ features, showFeaturesDetails, error }: ClusterTooltipRowsProps) {
   return (
     <Fragment>
       {features.map((feature, index) => {
-        const isGFWCluster = GFW_CLUSTER_LAYERS.some((source) => {
-          const id = feature.layerId.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
-          return feature.subcategory === DataviewType.FourwingsTileCluster && id.includes(source)
-        })
-        const key = `${feature.title}-${index}`
-        const eventFeature =
-          feature as SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
-        if (isGFWCluster) {
-          if (feature.layerId.includes('port')) {
-            return (
-              <PortVisitEventTooltipRow
-                key={key}
-                error={error}
-                feature={feature as SliceExtendedClusterPickingObject<ExtendedFeatureByVesselEvent>}
-                showFeaturesDetails={showFeaturesDetails}
-              />
-            )
-          }
-          if (feature.layerId.includes('encounter') || feature.layerId.includes('encounters')) {
-            return (
-              <EncounterTooltipRow
-                key={key}
-                error={error}
-                feature={eventFeature}
-                showFeaturesDetails={showFeaturesDetails}
-              />
-            )
-          }
-          return (
-            <ClusterEventTooltipRow
-              key={key}
-              error={error}
-              feature={eventFeature}
-              showFeaturesDetails={showFeaturesDetails}
-            />
-          )
-        }
         return (
-          <GenericClusterTooltipRow
-            key={key}
-            error={error}
-            feature={eventFeature}
+          <ClusterTooltipRow
+            key={`${feature.title}-${index}`}
+            feature={feature}
             showFeaturesDetails={showFeaturesDetails}
+            error={error}
           />
         )
       })}
@@ -88,4 +102,4 @@ function ClusterTooltipRow({ features, showFeaturesDetails, error }: ClusterTool
   )
 }
 
-export default ClusterTooltipRow
+export default ClusterTooltipRows

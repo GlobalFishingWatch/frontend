@@ -24,11 +24,13 @@ import {
 import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { getDatasetLabel, getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
-import ClusterTooltipRow from 'features/map/popups/categories/ClusterTooltipRow'
+import ClusterTooltipRows, {
+  ClusterTooltipRow,
+} from 'features/map/popups/categories/ClusterTooltipRow'
 import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
@@ -188,17 +190,54 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 </div>
               )
             }
-            return (
-              <ClusterTooltipRow
-                key={featureCategory}
-                features={features as SliceExtendedClusterPickingObject[]}
-                showFeaturesDetails={type === 'click'}
-                error={
-                  apiEventStatus === AsyncReducerStatus.Error
-                    ? apiEventError || t('errors.genericShort', 'Something went wrong')
-                    : undefined
+            const { groupedEventFeatures, notGroupedEventFeatures } = features.reduce(
+              (acc, feature) => {
+                if (feature.groupFeatureInteraction) {
+                  acc.groupedEventFeatures.push(feature as SliceExtendedClusterPickingObject)
+                } else {
+                  acc.notGroupedEventFeatures.push(feature as SliceExtendedClusterPickingObject)
                 }
-              />
+                return acc
+              },
+              {
+                groupedEventFeatures: [] as SliceExtendedClusterPickingObject[],
+                notGroupedEventFeatures: [] as SliceExtendedClusterPickingObject[],
+              }
+            )
+            const categoryGroups = groupBy(groupedEventFeatures, (f) => f.eventType || '')
+            return (
+              <Fragment>
+                {Object.keys(categoryGroups).length > 0 &&
+                  Object.entries(categoryGroups).map(([eventType, group]) => {
+                    const feature = {
+                      ...group[0],
+                      eventType,
+                      title: `${getDatasetLabel({ id: group[0].datasetId! })} (${group.length})`,
+                    } as SliceExtendedClusterPickingObject
+                    return (
+                      <ClusterTooltipRow
+                        key={eventType}
+                        feature={feature}
+                        showFeaturesDetails={type === 'click'}
+                        error={
+                          apiEventStatus === AsyncReducerStatus.Error
+                            ? apiEventError || t('errors.genericShort', 'Something went wrong')
+                            : undefined
+                        }
+                      />
+                    )
+                  })}
+                <ClusterTooltipRows
+                  key={featureCategory}
+                  features={notGroupedEventFeatures}
+                  showFeaturesDetails={type === 'click'}
+                  error={
+                    apiEventStatus === AsyncReducerStatus.Error
+                      ? apiEventError || t('errors.genericShort', 'Something went wrong')
+                      : undefined
+                  }
+                />
+              </Fragment>
             )
           }
           case DataviewCategory.Environment: {

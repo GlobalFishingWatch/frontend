@@ -43,7 +43,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
 
   const event = parseEncounterEvent(feature.event)
 
-  const title = getDatasetLabel({ id: feature.datasetId! })
+  const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
 
   return (
     <div className={styles.popupSection}>
