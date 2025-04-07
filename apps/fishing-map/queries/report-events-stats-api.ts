@@ -62,9 +62,9 @@ function getBaseStatsQuery({
   end,
   regionId,
   regionDataset,
-  // bufferValue,
-  // bufferUnit,
-  // bufferOperation,
+  bufferValue,
+  bufferUnit,
+  bufferOperation,
 }: ReportEventsVesselsParams | ReportEventsStatsParams) {
   const query = {
     'start-date': start,
@@ -72,10 +72,9 @@ function getBaseStatsQuery({
     'time-filter-mode': EVENTS_TIME_FILTER_MODE,
     ...(regionId && { 'region-ids': regionId.split(',') }),
     ...(regionDataset && { 'region-datasets': regionDataset.split(',') }),
-    // TODO:CVP uncomment once the API takes the parameters
-    // ...(bufferValue && { 'buffer-value': bufferValue }),
-    // ...(bufferUnit && { 'buffer-unit': bufferUnit }),
-    // ...(bufferOperation && { 'buffer-operation': bufferOperation }),
+    ...(bufferValue && { 'buffer-value': bufferValue }),
+    ...(bufferUnit && { 'buffer-unit': bufferUnit.toUpperCase() }),
+    ...(bufferOperation && { 'buffer-operation': bufferOperation.toUpperCase() }),
     ...(filters?.portId && { 'port-ids': [filters.portId] }),
     ...(filters?.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
     ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),
