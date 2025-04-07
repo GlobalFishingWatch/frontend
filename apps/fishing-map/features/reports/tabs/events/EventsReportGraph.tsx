@@ -180,9 +180,8 @@ export default function EventsReportGraph({
         end,
         filters: filtersMemo || {},
         dataset: datasetId,
-        // TODO:CVP uncomment once the API takes the parameters
-        // regionDataset: reportAreaDataset,
-        // regionId: reportAreaId,
+        regionDataset: reportAreaDataset,
+        regionId: reportAreaId,
       }),
       ...(includesMemo && { includes: includesMemo }),
       limit: 1000,
