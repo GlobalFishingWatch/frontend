@@ -2,10 +2,10 @@ import React, { useMemo } from 'react'
 import type { MapboxStyle } from 'react-map-gl'
 import { Map } from 'react-map-gl'
 import { useSelector } from 'react-redux'
+import type { RequestParameters } from 'maplibre-gl'
+import maplibregl from 'maplibre-gl'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
-import maplibregl from '@globalfishingwatch/maplibre-gl'
 
 import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
 import { selectCountry } from 'features/labeler/labeler.slice'

@@ -2,9 +2,9 @@ import { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Point from '@mapbox/point-geometry'
 import { fitBounds } from '@math.gl/web-mercator'
+import type { LngLat, MapLayerMouseEvent } from 'maplibre-gl'
 
 import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import type { LngLat, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 
 import {
   selectSelectedPoints,
