@@ -46,13 +46,13 @@ const VesselGroupReportInsightVesselEvents = ({
         )}
       </p>
     )
-  } else if (!data?.entries) {
+  } else if (!data) {
     return null
   }
 
   return (
     <ul className={styles.eventDetailsList}>
-      {data.entries.map((event) => (
+      {data.map((event) => (
         <VesselEvent
           key={event.id}
           event={event}

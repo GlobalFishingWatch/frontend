@@ -1,11 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
-import { useParams } from 'react-router-dom'
+import { useParams } from '@tanstack/react-router'
 import { DateTime } from 'luxon'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { Dataset } from '@globalfishingwatch/api-types'
 
 import ApiBanner from '../../components/api-banner/api-banner'
 import Loader from '../../components/loader/loader'
@@ -15,7 +16,7 @@ import { getUTCString } from '../../utils/dates.js'
 
 import styles from './dataset.module.scss'
 
-function formatBytes(bytes, decimals = 2) {
+function formatBytes(bytes: number, decimals = 2) {
   if (bytes === 0) return '0 Bytes'
 
   const k = 1024
@@ -31,27 +32,27 @@ const columns = [
   {
     id: 'name',
     Header: 'Name',
-    accessor: (row) => `${row.name} (${formatBytes(row.size)})`,
+    accessor: (row: any) => `${row.name} (${formatBytes(row.size)})`,
   },
   {
     id: 'date',
     Header: 'Date',
-    accessor: (row) => row.lastUpdate,
+    accessor: (row: any) => row.lastUpdate,
   },
 ]
 
 function DatasetPage() {
-  const { datasetId } = useParams()
-  const [dataset, setDataset] = useState(null)
+  const { datasetId } = useParams({ from: '/datasets/$datasetId' })
+  const [dataset, setDataset] = useState<Dataset | null>(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setLoading(true)
 
-    const formatDataset = (dataset) => {
+    const formatDataset = (dataset: Dataset) => {
       const formatedDataset = {
         ...dataset,
-        files: dataset.files.map((file) => ({
+        files: dataset.files?.map((file) => ({
           ...file,
           lastUpdate: DateTime.fromISO(file.lastUpdate).toFormat('M/dd/yyyy'),
         })),
@@ -59,7 +60,7 @@ function DatasetPage() {
       return formatedDataset
     }
 
-    GFWAPI.fetch(`/download/datasets/${datasetId}`)
+    GFWAPI.fetch<Dataset>(`/download/datasets/${datasetId}`)
       .then((data) => {
         setDataset(formatDataset(data))
         setLoading(false)
@@ -101,7 +102,7 @@ function DatasetPage() {
               </a>
               <br /> */}
             <label>Individual Files (Select up to {MAX_DOWNLOAD_FILES_LIMIT})</label>
-            {dataset && dataset.files && <Table columns={columns} data={dataset.files} />}
+            {dataset && dataset.files && <Table columns={columns} data={dataset.files as any} />}
             <ApiBanner />
           </div>
         </div>

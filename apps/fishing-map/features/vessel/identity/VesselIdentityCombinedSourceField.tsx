@@ -8,7 +8,7 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
-import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { formatInfoField } from 'utils/info'
@@ -26,7 +26,6 @@ const VesselIdentityCombinedSourceField = ({
   const { t } = useTranslation()
   const vesselInfo = useSelector(selectVesselInfoData)
   const isGFWUser = useSelector(selectIsGFWUser)
-  const isJACUser = useSelector(selectIsJACUser)
   const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
   const combinedSource = identity?.combinedSourcesInfo?.[property]
 
@@ -57,7 +56,7 @@ const VesselIdentityCombinedSourceField = ({
             </Fragment>
           )
 
-          if (isJACUser && property === 'geartypes') {
+          if (isGFWUser && property === 'geartypes') {
             const selfReportedGearType = identity?.combinedSourcesInfo?.onFishingListSr?.[index]
               ?.value
               ? t('vessel.gearTypes.fishing', 'Fishing')
@@ -102,12 +101,10 @@ const VesselIdentityCombinedSourceField = ({
                       </span>
                       {formatInfoField(registryGearType, property) as string}
                     </li>
-                    {isGFWUser && (
-                      <li>
-                        <span className={styles.secondary}>BQ Source: </span>
-                        {bqSource.toLowerCase()}
-                      </li>
-                    )}
+                    <li>
+                      <span className={styles.secondary}>BQ Source: </span>
+                      {bqSource.toLowerCase()}
+                    </li>
                   </ul>
                 )}
               </Fragment>

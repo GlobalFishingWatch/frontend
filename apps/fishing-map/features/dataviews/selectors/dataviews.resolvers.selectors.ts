@@ -22,7 +22,7 @@ import {
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { PORTS_FOOTPRINT_DATAVIEW_SLUG } from 'data/workspaces'
+import { PORTS_FOOTPRINT_DATAVIEW_SLUG, VESSEL_TRACK_DATAVIEW_TEMPLATES } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -67,6 +67,15 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
+export const selectVesselTemplateDataviews = createSelector(
+  [selectAllDataviews],
+  (vesselDataviews) => {
+    return vesselDataviews?.filter((dataview) =>
+      VESSEL_TRACK_DATAVIEW_TEMPLATES.includes(dataview.slug)
+    )
+  }
+)
+
 const EMPTY_ARRAY: [] = []
 export const selectWorkspaceDataviewInstancesMerged = createSelector(
   [
@@ -98,6 +107,7 @@ export const selectWorkspaceDataviewInstancesMerged = createSelector(
 export const selectDataviewInstancesInjected = createSelector(
   [
     selectWorkspaceDataviewInstancesMerged,
+    selectVesselTemplateDataviews,
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
     selectIsPortReportLocation,
@@ -110,6 +120,7 @@ export const selectDataviewInstancesInjected = createSelector(
   ],
   (
     dataviewInstances,
+    vesselTemplateDataviews,
     isAnyVesselLocation,
     isVesselLocation,
     isPortReportLocation,
@@ -135,12 +146,18 @@ export const selectDataviewInstancesInjected = createSelector(
           relatedVesselIds: getRelatedIdentityVesselIds(vessel),
         }
 
-        const dataviewInstance = getVesselDataviewInstance({ id: urlVesselId }, vesselDatasets)
-        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-          urlVesselId,
-          vesselDatasets
+        const dataviewInstance = getVesselDataviewInstance(
+          { id: urlVesselId },
+          vesselDatasets,
+          vesselTemplateDataviews
         )
-        dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
+        if (dataviewInstance) {
+          const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+            urlVesselId,
+            vesselDatasets
+          )
+          dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
+        }
       }
       if (isVesselLocation) {
         VESSEL_PROFILE_DATAVIEWS_INSTANCES.forEach((dataviewInstance) => {

@@ -1,20 +1,21 @@
-import React, { Fragment,useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Fragment, useEffect, useState } from 'react'
+import { Link } from '@tanstack/react-router'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { Dataset } from '@globalfishingwatch/api-types'
 
-import Loader from '../../components/loader/loader.jsx'
-import { getUTCString } from '../../utils/dates.js'
+import Loader from '../../components/loader/loader'
+import { getUTCString } from '../../utils/dates'
 
 import styles from './home.module.css'
 
 function HomePage() {
-  const [datasets, setDatasets] = useState(null)
+  const [datasets, setDatasets] = useState<Dataset[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setLoading(true)
-    GFWAPI.fetch(`/download/datasets`)
+    GFWAPI.fetch<Dataset[]>(`/download/datasets`)
       .then((data) => {
         setDatasets(data)
         setLoading(false)
@@ -33,8 +34,13 @@ function HomePage() {
           datasets.map((dataset) => {
             const { id, name, description, lastUpdated } = dataset
             return (
-              <Link key={name} to={`/datasets/${id}`}>
-                <div className={styles.card} key={name}>
+              <Link
+                key={name}
+                to="/datasets/$datasetId"
+                params={{ datasetId: id }}
+                className={styles.card}
+              >
+                <div key={name}>
                   <h2 className={styles.title}>{name}</h2>
                   <p className={styles.description}>{description}</p>
                   <div className={styles.cardFooter}>

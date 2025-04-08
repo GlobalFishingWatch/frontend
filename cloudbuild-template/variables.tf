@@ -3,6 +3,12 @@ variable "project_id" {
   type        = string
 }
 
+variable "description" {
+  description = "The description of the trigger"
+  type        = string
+  default     = ""
+}
+
 variable "docker_image" {
   description = "The full path to the docker image to deploy"
   type        = string

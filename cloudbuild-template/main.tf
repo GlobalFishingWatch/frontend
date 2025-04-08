@@ -12,8 +12,9 @@ locals {
 }
 
 resource "google_cloudbuild_trigger" "trigger" {
-  name     = "${local.ui_name}-${var.short_environment}"
-  location = local.location
+  name        = "${local.ui_name}-${var.short_environment}"
+  location    = local.location
+  description = var.description
 
 
   dynamic "github" {
@@ -106,8 +107,7 @@ resource "google_cloudbuild_trigger" "trigger" {
         "managed",
         "--set-env-vars",
         "${join(",", var.set_env_vars)}",
-        "--set-secrets",
-        "${join(",", var.set_secrets)}",
+        "${length(var.set_secrets) > 0 ? "--set-secrets=${join(",", var.set_secrets)}" : "--clear-secrets"}",
         "--service-account", "${var.service_account}",
         "--labels", "${join(",", [for k, v in var.labels : "${k}=${v}"])}",
       ]

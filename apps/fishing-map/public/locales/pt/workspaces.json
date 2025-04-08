@@ -70,6 +70,30 @@
     "mediterranean-public": {
       "name": "Mar Mediterrâneo e Mar Negro",
       "description": "O Mediterrâneo e o Mar Negro cobrem quase 3 milhões de quilômetros quadrados (1,1 milhão de milhas quadradas) de oceano entre a Europa e a África. "
+    },
+    "costa_rica_amps-public": {
+      "name": "Costa Rica",
+      "description": "Cocos Island National Park is a fully protected area spanning nearly 55,000 square kilometers. Bicentennial Marine Managed Area which surrounds Cocos Island National Park is 106,000 square kilometers."
+    },
+    "colombia-public": {
+      "name": "Colombia",
+      "description": "Colombia has created and managed MPAs along its Pacific and Caribbean coasts, promoting the participation of various stakeholders to conserve the country's biological and cultural diversity."
+    },
+    "panama-public": {
+      "name": "Panama",
+      "description": "Marine protected areas in Panama total just over 98,000 square kilometers (approximately 38,000 square miles), which include Coiba National Park, a UNESCO World Heritage Site that is a coastal marine protected area off the southwest coast, and the Coiba Ridge Managed Resource Area."
+    },
+    "reserva_de_la_biosfera_cmar-public": {
+      "name": "CMAR AMPs",
+      "description": "Initiated in 2004, the Eastern Tropical Pacific Marine Corridor is a voluntary regional cooperative effort to protect one of the most productive and biodiverse ecosystems."
+    },
+    "galapagos_y_hermandad-public": {
+      "name": "Galapagos y Hermandad",
+      "description": "Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America. The Galápagos Marine Reserve was expanded with the creation of the Hermandad Marine Reserve to cover an additional 60,000 square kilometers (23,000 square miles)."
+    },
+    "revillagigedo-public": {
+      "name": "Revillagigedo",
+      "description": "Centered on four volcanic islands south of Mexico’s Baja California peninsula, Revillagigedo National Park was created in 2017 and spans 148,000 square kilometers."
     }
   }
 }
