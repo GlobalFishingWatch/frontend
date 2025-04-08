@@ -63,6 +63,7 @@ type TimelineProps = {
   absoluteStart: string
   absoluteEnd: string
   latestAvailableDataDate: string
+  showLast30DaysBtn?: boolean
   onBookmarkChange?: (start: string, end: string) => void
   bookmarkStart?: string
   bookmarkEnd?: string
@@ -121,6 +122,7 @@ class Timeline extends PureComponent<TimelineProps> {
         done: 'Done',
       },
     },
+    showLast30DaysBtn: true,
     bookmarkStart: null,
     bookmarkEnd: null,
     bookmarkPlacement: 'top',
@@ -473,6 +475,7 @@ class Timeline extends PureComponent<TimelineProps> {
       trackGraphOrientation,
       latestAvailableDataDate,
       displayWarningWhenInFuture,
+      showLast30DaysBtn = true,
       locale,
     } = this.props
     const {
@@ -628,7 +631,7 @@ class Timeline extends PureComponent<TimelineProps> {
               width: dragging === DRAG_END ? outerWidth - handlerMouseX : outerWidth - innerEndPx,
             }}
           />
-          {isInTheFuture && (
+          {isInTheFuture && showLast30DaysBtn && (
             <div className={styles.last30Days}>
               <button
                 onClick={() => {

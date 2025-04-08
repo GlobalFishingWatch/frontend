@@ -127,6 +127,7 @@ const TimebarWrapper = () => {
           absoluteEnd={absoluteEnd.toISOString()}
           onChange={dispatchTimerange}
           isResizable={true}
+          showLast30DaysBtn={false}
           defaultHeight={TIMEBAR_DEFAULT_HEIGHT}
           trackGraphOrientation={'up'}
           //bookmarkStart={bookmarkStart}
