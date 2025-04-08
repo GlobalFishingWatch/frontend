@@ -18,7 +18,7 @@ export const vesselEventsApi = createApi({
     baseUrl: '/events',
   }),
   endpoints: (builder) => ({
-    getVesselEvents: builder.query<ApiEvents, VesselEventsApiParams>({
+    getVesselEvents: builder.query<ApiEvents['entries'], VesselEventsApiParams>({
       serializeQueryArgs: ({ queryArgs }: { queryArgs: VesselEventsApiParams }) => {
         return [
           queryArgs.ids?.join('-'),
@@ -37,6 +37,11 @@ export const vesselEventsApi = createApi({
         return {
           url: getQueryParamsResolved(params),
         }
+      },
+      transformResponse: (response: ApiEvents) => {
+        return [...response.entries].sort((a, b) =>
+          (a.start as string) < (b.start as string) ? 1 : -1
+        )
       },
     }),
   }),

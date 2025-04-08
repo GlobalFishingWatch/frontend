@@ -15,6 +15,7 @@ import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFie
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField } from 'utils/info'
+import { listAsSentence } from 'utils/shared'
 
 import { selectFetchVesselGroupReportFlagChangeParams } from '../../report-vessel-group/vessel-group-report.selectors'
 import { selectVGRData } from '../../report-vessel-group/vessel-group-report.slice'
@@ -109,9 +110,13 @@ const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
                   >
                     {formatInfoField(vessel.identity.shipname, 'shipname')} (
                   </VesselLink>
-                  {vessel.flagsChanges?.valuesInThePeriod.map((v) =>
-                    formatInfoField(v.value, 'flag')
-                  )}
+                  {vessel.flagsChanges &&
+                    vessel.flagsChanges.valuesInThePeriod.length > 0 &&
+                    listAsSentence(
+                      vessel.flagsChanges?.valuesInThePeriod.map(
+                        (v) => formatInfoField(v.value, 'flag') as string
+                      ) || []
+                    )}
                   )
                 </li>
               ))}
