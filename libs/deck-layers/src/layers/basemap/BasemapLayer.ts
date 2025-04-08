@@ -82,6 +82,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   }
 
   _getBasemap() {
+    if (!this.props.visible) return []
     return !this.props.basemap || this.props.basemap === BasemapType.Default
       ? [this._getBathimetryLayer(), this._getLandMassLayer()]
       : [this._getSatelliteLayer()]

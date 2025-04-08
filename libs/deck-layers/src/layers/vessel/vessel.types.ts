@@ -33,6 +33,16 @@ export type VesselEventProperties = ApiEvent & {
   vesselId: string
 }
 
+export type TrackLabelerPoint = {
+  position: number[]
+  course?: number
+  speed?: number
+  depth?: number
+  timestamp: number
+  action: string
+  color: string
+}
+
 export type VesselEventPickingObject = VesselEventProperties &
   DeckPickingObject<Record<string, unknown>>
 export type VesselEventPickingInfo = PickingInfo<VesselEventPickingObject, { tile?: Tile2DHeader }>

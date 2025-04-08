@@ -41,6 +41,7 @@ type ContextLayerState = {
 const defaultProps: DefaultProps<_ContextLayerProps> = {
   idProperty: 'gfw_id',
   valueProperties: [],
+  pickable: true,
   maxRequests: 100,
   debounceTime: 500,
 }
@@ -165,7 +166,10 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   renderLayers() {
-    const { color, layers, thickness } = this.props
+    const { visible, color, layers, thickness, pickable } = this.props
+
+    if (!visible) return []
+
     const highlightedFeatures = this._getHighlightedFeatures()
     return layers.map((layer) => {
       if (layer.id === ContextLayerId.EEZBoundaries) {
@@ -221,7 +225,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
               id: `${props.id}-highlight-fills`,
               stroked: false,
-              pickable: true,
+              pickable,
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
               getFillColor: (d) => this.getFillColor(d as ContextFeature, layer.filters),

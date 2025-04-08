@@ -3,22 +3,22 @@ import Hotkeys from 'react-hot-keys'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
+import { fitBounds } from '@math.gl/web-mercator'
 import cx from 'classnames'
 import { DateTime } from 'luxon'
-import { fitBounds } from 'viewport-mercator-project'
 
 import { filterSegmentsByTimerange, segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import type { SelectOption } from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, IconButton, Select } from '@globalfishingwatch/ui-components'
 
 import brand from '../../assets/images/brand.png'
 import { LABEL_HOTKEYS, SUPPORT_EMAIL, UNDO_HOTKEYS } from '../../data/constants'
 import ErrorPlaceHolder from '../../features/error/ErrorPlaceholder'
-import { useMapboxInstance } from '../../features/map/map.context'
-import { useViewport } from '../../features/map/map.hooks'
+import { useDeckMap, useMapSetViewState } from '../../features/map/map.hooks'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
   disableHighlightedEvent,
+  disableHighlightedTime,
   setHighlightedEvent,
   setHighlightedTime,
 } from '../../features/timebar/timebar.slice'
@@ -27,14 +27,14 @@ import {
   getVesselTrackGeojsonByDateRange,
 } from '../../features/tracks/tracks.selectors'
 import { useUser } from '../../features/user/user.hooks'
-import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice';
+import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
 import { selectedtracks } from '../../features/vessels/selectedTracks.slice'
 import { selectTimestamps } from '../../features/vessels/vessels.slice'
 import { updateQueryParams } from '../../routes/routes.actions'
 import { selectProject } from '../../routes/routes.selectors'
 import { useAppDispatch } from '../../store.hooks'
 import { ActionType } from '../../types'
-import { findPreviousTimestamp, isFiniteBbox } from '../../utils/shared'
+import { findPreviousTimestamp } from '../../utils/shared'
 
 import { useSelectedTracksConnect } from './sidebar.hooks'
 
@@ -52,6 +52,7 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
     dispatchRedo,
   } = useSelectedTracksConnect()
   const segments = useSelector(selectedtracks)
+  const setViewState = useMapSetViewState()
   const project = useSelector(selectProject)
   const vessel = useSelector(getVesselInfo)
   const actionShortcuts = useSelector(getActionShortcuts)
@@ -67,38 +68,36 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
     return ''
   }
 
-  const { setMapCoordinates } = useViewport()
-  const mapInstance = useMapboxInstance()
+  const deckMap = useDeckMap()
   const onFitBoundsClick = useCallback(() => {
-    if (track) {
+    if (track && deckMap) {
       const bbox = track?.length ? segmentsToBbox(track) : undefined
-      const { width, height } = mapInstance?._canvas || {}
-      if (width && height && bbox && isFiniteBbox(bbox)) {
-        const [minLng, minLat, maxLng, maxLat] = bbox
-        const padding = 60
-        const targetSize = [width - padding - padding, height - padding - padding]
-        const { latitude, longitude, zoom } = fitBounds({
-          bounds: [
-            [minLng, minLat],
-            [maxLng, maxLat],
-          ],
-          width,
-          height,
-          padding: {
-            // Adjust padding to not exceed width and height
-            top: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-            bottom: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-            left: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-            right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-          },
-        })
-        setMapCoordinates({ latitude, longitude, zoom })
-      } else {
-        // TODO use prompt to ask user if wants to update the timerange to fit the track
-        alert('The vessel has no activity in your selected timerange')
-      }
+      if (!bbox) return
+
+      const { width, height } = deckMap || {}
+      if (!width || !height) return
+
+      const padding = 60
+      const targetSize = [width - padding - padding, height - padding - padding]
+      const { latitude, longitude, zoom } = fitBounds({
+        bounds: [
+          [bbox[0], bbox[1]],
+          [bbox[2], bbox[3]],
+        ],
+        width,
+        height,
+        padding: {
+          // Adjust padding to not exceed width and height
+          top: targetSize[1] > 0 ? padding : targetSize[1] + padding,
+          bottom: targetSize[1] > 0 ? padding : targetSize[1] + padding,
+          left: targetSize[0] > 0 ? padding : targetSize[0] + padding,
+          right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
+        },
+      })
+
+      setViewState({ latitude, longitude, zoom })
     }
-  }, [mapInstance, setMapCoordinates, track])
+  }, [setViewState, track, deckMap])
 
   const onFitSelectedSegmentBoundsClick = useCallback(
     (selection: SelectedTrackType) => {
@@ -109,38 +108,16 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
         })
         const bbox = track?.length ? segmentsToBbox(trackFragment) : undefined
         if (!trackFragment || !trackFragment.length) {
-          setMapCoordinates({
+          setViewState({
             latitude: selection.startLatitude ?? 0,
             longitude: selection.startLongitude ?? 0,
             zoom: 11,
           })
           return
         }
-        const { width, height } = mapInstance?._canvas || {}
-        if (width && height && bbox && isFiniteBbox(bbox)) {
-          const [minLng, minLat, maxLng, maxLat] = bbox
-          const padding = 60
-          const targetSize = [width - padding - padding, height - padding - padding]
-          const { latitude, longitude, zoom } = fitBounds({
-            bounds: [
-              [minLng, minLat],
-              [maxLng, maxLat],
-            ],
-            width,
-            height,
-            padding: {
-              // Adjust padding to not exceed width and height
-              top: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-              bottom: targetSize[1] > 0 ? padding : targetSize[1] + padding,
-              left: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-              right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
-            },
-          })
-          setMapCoordinates({ latitude, longitude, zoom })
-        }
       }
     },
-    [mapInstance, setMapCoordinates, track]
+    [setViewState, track]
   )
   const timestamps = useSelector(selectTimestamps)
   const onSegmentOver = useCallback(
@@ -171,6 +148,11 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
     },
     [dispatchRedo, dispatchUndo]
   )
+
+  const resetHighlight = useCallback(() => {
+    dispatch(disableHighlightedEvent())
+    dispatch(disableHighlightedTime())
+  }, [dispatch])
 
   const onLabelShortcutPress = useCallback(
     (keyName: string) => {
@@ -317,9 +299,7 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
                       style={style}
                       className={cx(styles.segment, !selectedAction && styles.segmentActivityEmpty)}
                       onMouseEnter={() => onSegmentOver(segment)}
-                      onMouseLeave={() => {
-                        dispatch(disableHighlightedEvent())
-                      }}
+                      onMouseLeave={resetHighlight}
                     >
                       <div className={cx(styles.segmentField, styles.segmentTimestamp)}>
                         <button
@@ -342,10 +322,12 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
                           selectedOption={selectedAction}
                           onRemove={() => {
                             dispatchUpdateActionSelectedTrack(index, '')
+                            resetHighlight()
                             return
                           }}
                           onSelect={(selected: SelectOption) => {
                             dispatchUpdateActionSelectedTrack(index, selected.id as string)
+                            resetHighlight()
                             return
                           }}
                         />
@@ -354,7 +336,10 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
                         <IconButton
                           icon="delete"
                           type="warning"
-                          onClick={() => dispatchDeleteSelectedTrack(index)}
+                          onClick={() => {
+                            dispatchDeleteSelectedTrack(index)
+                            resetHighlight()
+                          }}
                         />
                       </div>
                     </div>

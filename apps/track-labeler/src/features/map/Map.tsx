@@ -1,157 +1,89 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import type { MapRef } from 'react-map-gl/maplibre'
-import MapComponent from 'react-map-gl/maplibre'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import type { MapViewProps } from '@deck.gl/core'
+import { MapView } from '@deck.gl/core'
+import type { DeckGLRef } from '@deck.gl/react'
+import DeckGL from '@deck.gl/react'
 import cx from 'classnames'
+import { throttle } from 'es-toolkit'
+import { DateTime } from 'luxon'
 
-import { DataviewType } from '@globalfishingwatch/api-types'
-import type { ExtendedLayer, StyleTransformation } from '@globalfishingwatch/layer-composer'
-import { getInteractiveLayerIds, Group,useLayerComposer  } from '@globalfishingwatch/layer-composer'
-import * as Generators from '@globalfishingwatch/layer-composer'
+import type { MiniglobeBounds } from '@globalfishingwatch/ui-components/miniglobe'
 
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
-import { selectRulers } from '../../features/rulers/rulers.selectors'
-import { selectColorMode, selectProjectColors } from '../../routes/routes.selectors'
-import type { ActionType, Label } from '../../types'
+import type { ActionType, Label, MapCoordinates } from '../../types'
 
 import MapControls from './map-controls/MapControls'
-import MapData from './map-data/map-data'
-import { useMapboxRef, useMapboxRefCallback } from './map.context'
 import {
-  useGeneratorsConnect,
   useHiddenLabelsConnect,
-  useMapBounds,
   useMapClick,
-  useMapMove,
-  useViewport,
+  useMapHover,
+  useMapSetViewState,
+  useMapViewState,
+  useSetMapInstance,
 } from './map.hooks'
-import {
-  getLayerComposerLayers,
-  getMapboxPaintIcon,
-  selectDirectionPointsLayers,
-  selectLegendLabels,
-} from './map.selectors'
+import { selectLegendLabels } from './map.selectors'
+import { useMapDeckLayers } from './map-layers.hooks'
 
-import 'maplibre-gl/dist/maplibre-gl.css'
 import styles from './Map.module.css'
 
-const GROUP_ORDER = [
-  Group.Background,
-  Group.Basemap,
-  Group.Heatmap,
-  Group.OutlinePolygonsBackground,
-  Group.OutlinePolygons,
-  Group.OutlinePolygonsHighlighted,
-  Group.Default,
-  Group.BasemapFill,
-  Group.Track,
-  Group.TrackHighlightedEvent,
-  Group.TrackHighlighted,
-  Group.Point,
-  Group.BasemapForeground,
-  Group.Tool,
-  Group.Label,
-  Group.Overlay,
-]
+const MAP_VIEW_ID = 'map'
+const MAP_VIEW = new MapView({
+  id: MAP_VIEW_ID,
+  repeat: true,
+  controller: true,
+  bearing: 0,
+  pitch: 0,
+  transitionDuration: 0,
+} as MapViewProps)
 
-const sort: StyleTransformation = (style) => {
-  const layers = style.layers ? [...style.layers] : []
-  const orderedLayers = layers.sort((a: ExtendedLayer, b: ExtendedLayer) => {
-    const aGroup = a.metadata?.group || Group.Default
-    const bGroup = b.metadata?.group || Group.Default
-    const aPos = GROUP_ORDER.indexOf(aGroup)
-    const bPos = GROUP_ORDER.indexOf(bGroup)
-    return aPos - bPos
-  })
-  return { ...style, layers: orderedLayers }
-}
-
-const defaultTransformations: StyleTransformation[] = [sort, getInteractiveLayerIds as any]
-
-const Map = (): React.ReactElement<any> => {
-  const mapRef: React.RefObject<MapRef | null> = useMapboxRef()
-  const onRefReady = useMapboxRefCallback()
-  const { viewport, onViewportChange } = useViewport()
-  const { globalConfig } = useGeneratorsConnect()
-  const generatorConfigs = useSelector(getLayerComposerLayers)
-  const projectColors = useSelector(selectProjectColors)
+const MapComponent = (): React.ReactElement<any> => {
+  const deckRef = useRef<DeckGLRef>(null)
+  useSetMapInstance(deckRef)
+  const setViewState = useMapSetViewState()
+  const viewState = useMapViewState()
   const actionShortcuts = useSelector(getActionShortcuts)
-  const rulers = useSelector(selectRulers)
-  const ruleColors = useSelector(getMapboxPaintIcon)
-  const colorMode = useSelector(selectColorMode)
-  const trackArrowsLayer = useSelector(selectDirectionPointsLayers)
   const legengLabels = useSelector(selectLegendLabels)
-  const { onMapMove, hoverCenter } = useMapMove()
   const { onMapClick } = useMapClick()
   const { dispatchHiddenLabels, hiddenLabels } = useHiddenLabelsConnect()
+
+  const onViewStateChange = useCallback(
+    (params: any) => {
+      // add transitionDuration: 0 to avoid unresponsive zoom
+      // https://github.com/visgl/deck.gl/issues/7158#issuecomment-1329722960
+      setViewState({ ...(params.viewState as MapCoordinates), transitionDuration: 0 })
+    },
+    [setViewState]
+  )
+
+  const { cursor, handleDeckHover } = useMapHover()
+  const layers = useMapDeckLayers()
+
+  // Custom tooltip function for deck.gl
+  const getTooltip = useCallback((info: any) => {
+    if (!info.object) return null
+    if (info.layer.id === 'track-points') {
+      const mandatoryProps = ['timestamp', 'position', 'color', 'action']
+      const projectProps = Object.keys(info.object).filter((key) => !mandatoryProps.includes(key))
+      return {
+        html: `
+          <div>Date: ${DateTime.fromMillis(info.object.timestamp).toFormat('ff')}</div>
+          ${projectProps
+            .map(
+              (prop) =>
+                `<div key={prop}>
+              ${prop}: ${info.object[prop]}
+            </div>`
+            )
+            .join('')}`,
+      }
+    }
+    return null
+  }, [])
+
   const handleLegendClick = (legendLabelId: Label['id']) => {
     dispatchHiddenLabels(legendLabelId)
   }
-  // added load state to improve the view of the globe
-  const [loaded, setLoaded] = useState(false)
-  const onLoadCallback = useCallback(() => {
-    setLoaded(true)
-    onRefReady()
-  }, [onRefReady])
-  const mapBounds = useMapBounds(loaded ? mapRef : null)
-
-  const generatorConfigsWithRulers = useMemo(() => {
-    const rulersConfig: Generators.RulersGeneratorConfig = {
-      type: Generators.GeneratorType.Rulers,
-      id: 'rulers',
-      data: rulers,
-    }
-
-    const vesselPositionsConfig: Generators.VesselPositionsGeneratorConfig = {
-      type: DataviewType.VesselPositions,
-      id: 'vessel-positions',
-      data: trackArrowsLayer.data,
-      colorMode,
-      ruleColors,
-      projectColors,
-      highlightedTime: trackArrowsLayer.highlightedTime,
-      hiddenLabels,
-    }
-
-    return [...generatorConfigs, rulersConfig, vesselPositionsConfig]
-  }, [
-    generatorConfigs,
-    rulers,
-    trackArrowsLayer,
-    colorMode,
-    ruleColors,
-    projectColors,
-    hiddenLabels,
-  ])
-
-  const { style } = useLayerComposer(
-    generatorConfigsWithRulers,
-    globalConfig,
-    defaultTransformations
-  )
-
-  const styleWithArrows = useMemo(() => {
-    const newStyle: any = {
-      ...style,
-      layers: style?.layers ?? [],
-      sprite:
-        'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-labeler',
-      // .filter((layer) => layer.id !== 'bathymetry'),
-    }
-
-    if (
-      newStyle &&
-      newStyle.sources &&
-      newStyle.layers &&
-      newStyle.sprite ===
-        'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites'
-    ) {
-      newStyle.sprite =
-        'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-labeler'
-    }
-
-    return newStyle
-  }, [style])
 
   const [availableShortcuts, shortcuts] = useMemo(
     () => [
@@ -161,28 +93,65 @@ const Map = (): React.ReactElement<any> => {
     [actionShortcuts]
   )
 
+  const [mapBounds, setMapBounds] = useState<MiniglobeBounds | null>(null)
+  const setBoundsFromViewState = useCallback(() => {
+    if (!deckRef?.current?.deck) {
+      setMapBounds(null)
+      return
+    }
+
+    try {
+      const bounds = deckRef?.current?.deck
+        ?.getViewports?.()
+        .find((v: any) => v.id === MAP_VIEW_ID)
+        ?.getBounds()
+      if (bounds && bounds?.length) {
+        setMapBounds({
+          north: bounds[3],
+          south: bounds[1],
+          west: bounds[0],
+          east: bounds[2],
+        })
+      } else {
+        setMapBounds(null)
+      }
+    } catch (e) {
+      console.warn('[DEBUG] Error calculating bounds:', e)
+      setMapBounds(null)
+    }
+  }, [])
+
+  const throttledSetBoundsFromViewState = useMemo(
+    () => throttle(setBoundsFromViewState, 100),
+    [setBoundsFromViewState]
+  )
+
+  // Update bounds when viewState changes
+  useEffect(() => {
+    throttledSetBoundsFromViewState()
+  }, [viewState, throttledSetBoundsFromViewState])
+
   return (
-    (<div className={styles.container}>
-      {style && (
-        <MapComponent
-          ref={mapRef}
-          latitude={viewport.latitude}
-          longitude={viewport.longitude}
-          zoom={viewport.zoom}
-          onLoad={onLoadCallback}
-          onMove={onViewportChange}
-          mapStyle={styleWithArrows}
-          onClick={onMapClick}
-          onMouseMove={onMapMove}
-        >
-          <MapData coordinates={hoverCenter} floating={true} />
-        </MapComponent>
-      )}
+    <div className={styles.container}>
+      <DeckGL
+        ref={deckRef}
+        views={MAP_VIEW}
+        layers={layers}
+        viewState={viewState}
+        controller={true}
+        getCursor={() => cursor}
+        onViewStateChange={onViewStateChange}
+        onClick={onMapClick}
+        onHover={handleDeckHover}
+        getTooltip={getTooltip}
+        pickingRadius={1}
+      />
+
       <div className={styles.legendContainer}>
         {legengLabels &&
           legengLabels.map((legend) => (
             // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-            (<div
+            <div
               key={legend.id}
               className={cx(styles.legend, {
                 [styles.hidden]: hiddenLabels.includes(legend.id),
@@ -205,12 +174,12 @@ const Map = (): React.ReactElement<any> => {
               {availableShortcuts.includes(legend.id as ActionType) && (
                 <span>({shortcuts[legend.id]})</span>
               )}
-            </div>)
+            </div>
           ))}
       </div>
       <MapControls bounds={mapBounds} />
-    </div>)
-  );
+    </div>
+  )
 }
 
-export default Map
+export default MapComponent
