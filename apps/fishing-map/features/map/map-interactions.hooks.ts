@@ -367,16 +367,6 @@ export const useMapMouseHover = () => {
         }
         const hoverInteraction = getPickingInteraction(info, 'hover')
         if (hoverInteraction) {
-          const eventsInteraction = {
-            ...hoverInteraction,
-            features: hoverInteraction.features?.filter(
-              (f) => f.category === DataviewCategory.Events
-            ),
-          }
-          if (eventsInteraction.features?.length) {
-            setMapHoverFeatures(eventsInteraction)
-            return
-          }
           setMapHoverFeatures(hoverInteraction)
         }
       }, 50),
