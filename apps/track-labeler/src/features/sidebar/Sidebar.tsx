@@ -18,6 +18,7 @@ import { useDeckMap, useMapSetViewState } from '../../features/map/map.hooks'
 import { getActionShortcuts } from '../../features/projects/projects.selectors'
 import {
   disableHighlightedEvent,
+  disableHighlightedTime,
   setHighlightedEvent,
   setHighlightedTime,
 } from '../../features/timebar/timebar.slice'
@@ -147,6 +148,11 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
     },
     [dispatchRedo, dispatchUndo]
   )
+
+  const resetHighlight = useCallback(() => {
+    dispatch(disableHighlightedEvent())
+    dispatch(disableHighlightedTime())
+  }, [dispatch])
 
   const onLabelShortcutPress = useCallback(
     (keyName: string) => {
@@ -293,9 +299,7 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
                       style={style}
                       className={cx(styles.segment, !selectedAction && styles.segmentActivityEmpty)}
                       onMouseEnter={() => onSegmentOver(segment)}
-                      onMouseLeave={() => {
-                        dispatch(disableHighlightedEvent())
-                      }}
+                      onMouseLeave={resetHighlight}
                     >
                       <div className={cx(styles.segmentField, styles.segmentTimestamp)}>
                         <button
@@ -318,10 +322,12 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
                           selectedOption={selectedAction}
                           onRemove={() => {
                             dispatchUpdateActionSelectedTrack(index, '')
+                            resetHighlight()
                             return
                           }}
                           onSelect={(selected: SelectOption) => {
                             dispatchUpdateActionSelectedTrack(index, selected.id as string)
+                            resetHighlight()
                             return
                           }}
                         />
@@ -330,7 +336,10 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
                         <IconButton
                           icon="delete"
                           type="warning"
-                          onClick={() => dispatchDeleteSelectedTrack(index)}
+                          onClick={() => {
+                            dispatchDeleteSelectedTrack(index)
+                            resetHighlight()
+                          }}
                         />
                       </div>
                     </div>
