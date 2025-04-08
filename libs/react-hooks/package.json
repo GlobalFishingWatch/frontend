@@ -10,7 +10,6 @@
     "@globalfishingwatch/api-client": "^6.0.5",
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/dataviews-client": "^16.0.0",
-    "@globalfishingwatch/maplibre-gl": "^3.5.1-gfw.2",
     "@mapbox/tilebelt": "1.x",
     "lodash": "4.x",
     "usehooks-ts": "2.x",

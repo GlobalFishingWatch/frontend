@@ -1,4 +1,3 @@
- 
 const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
@@ -47,7 +46,6 @@ const nextConfig = {
       net: false,
       tls: false,
     }
-    config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
     // config.plugins.push(
     //   new CircularDependencyPlugin({
