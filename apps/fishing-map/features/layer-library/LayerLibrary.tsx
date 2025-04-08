@@ -177,7 +177,8 @@ const LayerLibrary: FC = () => {
       if (!categoryElements.length) return
 
       const target = e.target as HTMLElement
-      const halfViewport = target.clientHeight / 2
+
+      const topViewport = target.clientHeight / 5
       let newCategory = currentCategory
       let newSubcategory: DataviewCategory | null = null
 
@@ -185,7 +186,7 @@ const LayerLibrary: FC = () => {
         const mainElement = document.getElementById(category)
         if (mainElement) {
           const { top } = mainElement.getBoundingClientRect()
-          if (target.contains(mainElement) && top <= halfViewport) {
+          if (target.contains(mainElement) && top <= topViewport) {
             newCategory = category
           }
         }
@@ -194,7 +195,7 @@ const LayerLibrary: FC = () => {
           const subElement = document.getElementById(subcategory)
           if (subElement) {
             const { top } = subElement.getBoundingClientRect()
-            if (target.contains(subElement) && top <= halfViewport) {
+            if (target.contains(subElement) && top <= topViewport) {
               newSubcategory = subcategory
             }
           }
