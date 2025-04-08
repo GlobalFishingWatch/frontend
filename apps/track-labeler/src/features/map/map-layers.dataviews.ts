@@ -19,6 +19,7 @@ const dataviews: UrlDataviewInstance[] = [
     config: {
       type: DataviewType.Basemap,
       color: '#6b67e5',
+      pickable: false,
       layers: [
         {
           id: 'basemap_default',
@@ -40,6 +41,7 @@ const dataviews: UrlDataviewInstance[] = [
     config: {
       type: DataviewType.Context,
       color: '#93c96c',
+      pickable: false,
       layers: [
         {
           id: 'eez-areas',
@@ -255,6 +257,7 @@ const dataviews: UrlDataviewInstance[] = [
     config: {
       type: DataviewType.Context,
       color: '#e5777c',
+      pickable: false,
       layers: [
         {
           id: 'mpa',
@@ -373,6 +376,7 @@ const dataviews: UrlDataviewInstance[] = [
     config: {
       type: DataviewType.Context,
       color: '#6b67e5',
+      pickable: false,
       layers: [
         {
           id: 'tuna-rfmo',

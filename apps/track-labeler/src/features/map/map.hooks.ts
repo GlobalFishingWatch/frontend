@@ -51,8 +51,8 @@ export const useMapClick = () => {
   const onEventClick = useCallback(
     (feature: TrackLabelerPoint) => {
       onEventPointClick(segments, feature.timestamp, {
-        latitude: feature.position[0],
-        longitude: feature.position[1],
+        latitude: feature.position?.[0],
+        longitude: feature.position?.[1],
       })
     },
     [onEventPointClick, segments]

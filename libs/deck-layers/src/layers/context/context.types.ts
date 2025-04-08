@@ -30,6 +30,7 @@ export type ContextLayerProps = DeckLayerProps<{
   layers: ContextLayerConfig[]
   color: string
   thickness: number
+  pickable?: boolean
   idProperty?: string
   valueProperties?: string[]
   highlightedFeatures?: ContextPickingObject[]
