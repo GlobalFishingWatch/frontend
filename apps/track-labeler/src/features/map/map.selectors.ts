@@ -151,7 +151,9 @@ export const selectVesselDirectionPointsLayer = createSelector(
         },
       } as Feature<Point, GeoJsonProperties>
     })
-    return [...originalArrows, ...arrows]
+    return [...originalArrows, ...arrows].sort(
+      (a, b) => a.properties?.timestamp - b.properties?.timestamp
+    )
   }
 )
 
