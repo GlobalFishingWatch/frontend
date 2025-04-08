@@ -4,6 +4,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getEventDescriptionComponent } from 'utils/events'
@@ -29,7 +30,18 @@ function ClusterEventTooltipRow({ feature, showFeaturesDetails }: ClusterEventTo
     <div className={styles.popupSection}>
       <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
       <div className={styles.popupSectionContent}>
-        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        {showFeaturesDetails ? (
+          <h3 className={styles.popupSectionTitle}>{title}</h3>
+        ) : (
+          feature.count && (
+            <div className={styles.row}>
+              <span className={styles.rowText}>
+                <I18nNumber number={feature.count} />{' '}
+                {t('event.loitering', { count: feature.count })}
+              </span>
+            </div>
+          )
+        )}
         {showFeaturesDetails && (
           <div className={styles.row}>
             {event?.vessel ? (

@@ -4,6 +4,7 @@ import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
+import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
@@ -49,7 +50,18 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
     <div className={styles.popupSection}>
       <Icon icon="encounters" className={styles.layerIcon} style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
-        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        {showFeaturesDetails ? (
+          <h3 className={styles.popupSectionTitle}>{title}</h3>
+        ) : (
+          feature.count && (
+            <div className={styles.row}>
+              <span className={styles.rowText}>
+                <I18nNumber number={feature.count} />{' '}
+                {t('event.encounter', { count: feature.count })}
+              </span>
+            </div>
+          )
+        )}
         {error && <p className={styles.error}>{error}</p>}
         {showFeaturesDetails && (
           <div className={styles.row}>

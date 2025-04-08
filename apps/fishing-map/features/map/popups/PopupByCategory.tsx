@@ -209,10 +209,12 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               <Fragment>
                 {Object.keys(categoryGroups).length > 0 &&
                   Object.entries(categoryGroups).map(([eventType, group]) => {
+                    const count = group.length === 1 ? group[0].properties.value : group.length
                     const feature = {
                       ...group[0],
                       eventType,
-                      title: `${getDatasetLabel({ id: group[0].datasetId! })} (${group.length})`,
+                      title: getDatasetLabel({ id: group[0].datasetId! }),
+                      count,
                     } as SliceExtendedClusterPickingObject
                     return (
                       <ClusterTooltipRow
