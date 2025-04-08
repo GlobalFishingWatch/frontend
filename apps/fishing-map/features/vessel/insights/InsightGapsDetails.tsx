@@ -59,7 +59,7 @@ const InsightGapsDetails = ({
       />
       {visible && data?.entries && data?.entries?.length > 0 && (
         <ul className={styles.eventDetailsList}>
-          {[...data.entries]
+          {[...data]
             .reverse()
             .map(removeNonTunaRFMO)
             .map((event: VesselEvent) => (

@@ -1,15 +1,8 @@
-import type {
-  Action,
-  AnyAction,  Middleware,
-  ThunkAction,
-  ThunkDispatch} from '@reduxjs/toolkit';
-import {
-  combineReducers,
-  configureStore} from '@reduxjs/toolkit'
+import type { Action, AnyAction, Middleware, ThunkAction, ThunkDispatch } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 import dataviews from '././features/dataviews/dataviews.slice'
 import resources from '././features/dataviews/resources.slice'
-import mapReducer from '././features/map/map.slice'
 import project from '././features/projects/projects.slice'
 import rulers from '././features/rulers/rulers.slice'
 import timebarReducer from '././features/timebar/timebar.slice'
@@ -32,7 +25,6 @@ const rootReducer = combineReducers({
   resources,
   rulers,
   user: userReducer,
-  map: mapReducer,
   vessels,
   project,
   timebar: timebarReducer,

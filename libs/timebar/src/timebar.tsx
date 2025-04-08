@@ -117,6 +117,7 @@ export type TimebarProps = {
   disablePlayback?: boolean
   disabledPlaybackTooltip?: string
   onTogglePlay?: (isPlaying: boolean) => void
+  showLast30DaysBtn?: boolean
   minimumRange?: number
   minimumRangeUnit?: string
   maximumRange?: number
@@ -184,6 +185,7 @@ export class Timebar extends Component<TimebarProps> {
     },
     bookmarkStart: null,
     bookmarkEnd: null,
+    showLast30DaysBtn: true,
     disablePlayback: false,
     disabledPlaybackTooltip: '',
     showPlayback: false,
@@ -391,6 +393,7 @@ export class Timebar extends Component<TimebarProps> {
       maximumRange,
       maximumRangeUnit,
       stickToUnit,
+      showLast30DaysBtn,
       displayWarningWhenInFuture,
       intervals,
       getCurrentInterval,
@@ -492,6 +495,7 @@ export class Timebar extends Component<TimebarProps> {
           start={start}
           end={end}
           labels={labels}
+          showLast30DaysBtn={showLast30DaysBtn}
           onChange={this.notifyChange}
           onMouseLeave={this.props.onMouseLeave}
           onMouseMove={this.props.onMouseMove}

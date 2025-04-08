@@ -10,7 +10,7 @@ import store from '../store'
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
-import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 // function SafeHydrate({ children }) {
 //   return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>

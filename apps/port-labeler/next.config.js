@@ -1,4 +1,3 @@
- 
 const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
@@ -43,7 +42,7 @@ const nextConfig = {
   webpack: function (config) {
     config.resolve.alias = {
       ...config.resolve.alias,
-      'mapbox-gl': '@globalfishingwatch/maplibre-gl',
+      'mapbox-gl': 'maplibre-gl',
     }
     config.resolve.fallback = {
       ...config.resolve.fallback,

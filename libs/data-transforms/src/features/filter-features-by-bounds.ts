@@ -16,7 +16,7 @@ export interface Bounds {
 const MAX_FEATURES_TO_CHECK = 5000
 
 // Copied from below to avoid importing the dependency
-// import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+// import type { GeoJSONFeature } from 'maplibre-gl'
 export declare class GeoJSONFeature<P = Record<string, any>> {
   type: 'Feature'
   _geometry: GeoJSON.Geometry

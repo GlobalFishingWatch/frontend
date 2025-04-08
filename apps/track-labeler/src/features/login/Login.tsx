@@ -16,7 +16,7 @@ const Login: React.FC = (): React.ReactElement<any> => {
   return (
     <div className={styles.container}>
       <div className={styles.textContainer}>
-        <Logo className={styles.logoImage} />
+        <Logo className={styles.logoImage} type="invert" />
         <h1 className={styles.textTitle}>Tracks Labeler</h1>
         <h2 className={styles.textSubtitle}>
           Only registered users can use this tool. Please log in with your Global Fishing Watch

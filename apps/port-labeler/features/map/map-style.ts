@@ -1,5 +1,6 @@
+import type { LayerSpecification } from 'maplibre-gl'
+
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
-import type { LayerSpecification } from '@globalfishingwatch/maplibre-gl'
 
 import { NSLABELS_ENDOPOINT } from 'data/config'
 

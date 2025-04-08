@@ -84,7 +84,6 @@ const nextConfig: NextConfig = {
       tls: false,
     }
     // config.optimization.minimize = false
-    // config.externals = [...config.externals, 'mapbox-gl']
 
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule: any) => rule.test?.test?.('.svg'))

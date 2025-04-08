@@ -28,16 +28,6 @@ export type QueryParams = {
   [query in WorkspaceParam]?: string | number | boolean | null
 }
 
-export type ContextLayer = {
-  id: string
-  label: string
-  color: string
-  active?: boolean
-  visible?: boolean
-  description?: string
-  disabled?: boolean
-}
-
 export type CoordinatePosition = {
   latitude: number
   longitude: number
@@ -47,6 +37,7 @@ export type MapCoordinates = {
   latitude: number
   longitude: number
   zoom: number
+  transitionDuration?: number
 }
 
 export declare type VesselPoint = {

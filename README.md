@@ -4,24 +4,22 @@ This monorepo hosts frontend packages and applications of the <a href="https://g
 
 All of them availables with the `@globalfishingwatch/` prefix:
 
-|                                                 |                                                                                             |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| [api-client](libs/api-client)                   | JS library to simplify GFW API login and resources fetch                                    |
-| [api-types](libs/api-types)                     | API typescript schema definitions                                                           |
-| [data-transforms](libs/data-transforms)         | Set ot shared tools for data transformations                                                |
-| [datasets-client](libs/datasets-client)         | A set of utils for handling api datasets                                                    |
-| [dataviews-client](libs/dataviews-client)       | A set of utils for merge, combine and consume api dataviews into the apps                   |
-| [deck-layer-composer](libs/deck-layer-composer) | Map integration of the deck-layers                                                          |
-| [deck-layers](libs/deck-layers)                 | Deck classes for GFW layers                                                                 |
-| [deck-loaders](libs/deck-loaders)               | Deck loaders for GFW layers                                                                 |
-| [fourwings-aggregate](libs/fourwings-aggregate) | 🗑️ Legacy 🗑️ Logic to turn fourwings tiles or cells into meaningful values for the frontend |
-| [i18n-labels](libs/i18n-labels)                 | GFW shared translations                                                                     |
-| [layer-composer](libs/layer-composer)           | 🗑️ Legacy 🗑️ Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
-| [ocean-areas](libs/ocean-areas)                 | Small library to get ocean area / eez names by viewport or by text search                   |
-| [pbf-decoders](libs/pbf-decoders)               | PBF custom responses parsers                                                                |
-| [react-hooks](libs/react-hooks)                 | Set of hooks to use libraries easily in react                                               |
-| [timebar](libs/timebar)                         | Timebar component, not many more to say                                                     |
-| [ui-components](libs/ui-components)             | Reusable atoms components kit                                                               |
+|                                                 |                                                                           |
+| ----------------------------------------------- | ------------------------------------------------------------------------- |
+| [api-client](libs/api-client)                   | JS library to simplify GFW API login and resources fetch                  |
+| [api-types](libs/api-types)                     | API typescript schema definitions                                         |
+| [data-transforms](libs/data-transforms)         | Set ot shared tools for data transformations                              |
+| [datasets-client](libs/datasets-client)         | A set of utils for handling api datasets                                  |
+| [dataviews-client](libs/dataviews-client)       | A set of utils for merge, combine and consume api dataviews into the apps |
+| [deck-layer-composer](libs/deck-layer-composer) | Map integration of the deck-layers                                        |
+| [deck-layers](libs/deck-layers)                 | Deck classes for GFW layers                                               |
+| [deck-loaders](libs/deck-loaders)               | Deck loaders for GFW layers                                               |
+| [i18n-labels](libs/i18n-labels)                 | GFW shared translations                                                   |
+| [ocean-areas](libs/ocean-areas)                 | Small library to get ocean area / eez names by viewport or by text search |
+| [pbf-decoders](libs/pbf-decoders)               | PBF custom responses parsers                                              |
+| [react-hooks](libs/react-hooks)                 | Set of hooks to use libraries easily in react                             |
+| [timebar](libs/timebar)                         | Timebar component, not many more to say                                   |
+| [ui-components](libs/ui-components)             | Reusable atoms components kit                                             |
 
 ## Applications
 
@@ -33,6 +31,7 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project |
 | [image-labeler](apps/image-labeler)                 | Labeling tool for satellite images     |
 | [port-labeler](apps/port-labeler)                   | Labeling tool for ports                |
+| [track-labeler](apps/track-labeler)                 | Labeling tool for tracks               |
 | [user-groups-admin](applications/user-groups-admin) | Tool to manage user groups with ease   |
 
 To create a new application using a template with sidebar + map + timebar just run:
