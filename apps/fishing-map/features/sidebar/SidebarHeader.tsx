@@ -60,7 +60,7 @@ import {
 import {
   cleanCurrentWorkspaceReportState,
   cleanReportQuery,
-  setHistoryNavigation,
+  setWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
@@ -557,7 +557,7 @@ function CloseSectionButton() {
     // Pop the last workspace visited from the history navigation
     const historyNavigation = workspaceHistoryNavigation.slice(0, -1)
     console.log('🚀 ~ POP:', historyNavigation)
-    dispatch(setHistoryNavigation(historyNavigation))
+    dispatch(setWorkspaceHistoryNavigation(historyNavigation))
   }, [dispatch, dispatchQueryParams, highlightArea, reportAreaIds, workspaceHistoryNavigation])
 
   if (workspaceHistoryNavigation.length && lastWorkspaceVisited.type !== locationType) {

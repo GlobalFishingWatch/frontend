@@ -583,7 +583,7 @@ export const {
   removeGFWStaffOnlyDataviews,
   cleanCurrentWorkspaceReportState,
   cleanCurrentWorkspaceStateBufferParams,
-  setWorkspaceHistoryNavigation: setHistoryNavigation,
+  setWorkspaceHistoryNavigation,
 } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

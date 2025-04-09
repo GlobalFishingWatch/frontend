@@ -6,7 +6,10 @@ import { NOT_FOUND } from 'redux-first-router'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
-import { setHistoryNavigation, setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import {
+  setLastWorkspaceVisited,
+  setWorkspaceHistoryNavigation,
+} from 'features/workspace/workspace.slice'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
 import type { QueryParam, QueryParams } from 'types'
 
@@ -78,21 +81,40 @@ export const routerWorkspaceMiddleware: Middleware =
       const { type, prev } = state.location
       const isHistoryNavigation = routerAction.isHistoryNavigation
 
-      if (!isHistoryNavigation && type !== NOT_FOUND && prev.type) {
+      if (type !== NOT_FOUND) {
         const currentHistoryNavigation = state.workspace?.historyNavigation || []
         const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
-
-        if (
-          routerAction.type !== prev.type &&
-          (!lastHistoryNavigation || lastHistoryNavigation.type !== prev.type)
+        if (!isHistoryNavigation && prev.type) {
+          if (
+            routerAction.type !== prev.type &&
+            (!lastHistoryNavigation || lastHistoryNavigation.type !== prev.type)
+          ) {
+            const newHistoryNavigation: LastWorkspaceVisited = {
+              type: prev.type as ROUTE_TYPES,
+              query: prev.query,
+              payload: prev.payload,
+            }
+            console.log('🚀 ~ PUSH:', newHistoryNavigation)
+            dispatch(
+              setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
+            )
+          }
+        } else if (
+          currentHistoryNavigation.length &&
+          lastHistoryNavigation?.type === routerAction.type
         ) {
           const newHistoryNavigation: LastWorkspaceVisited = {
-            type: prev.type as ROUTE_TYPES,
-            query: prev.query,
-            payload: prev.payload,
+            type: routerAction.type as ROUTE_TYPES,
+            query: routerAction.query,
+            payload: routerAction.payload,
           }
-          console.log('🚀 ~ PUSH:', newHistoryNavigation)
-          dispatch(setHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation]))
+          console.log('🚀 ~ REPLACE:', newHistoryNavigation)
+          dispatch(
+            setWorkspaceHistoryNavigation([
+              ...currentHistoryNavigation.slice(0, -1),
+              newHistoryNavigation,
+            ])
+          )
         }
       }
 
