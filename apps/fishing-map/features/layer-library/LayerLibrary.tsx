@@ -83,9 +83,9 @@ const LayerLibrary: FC = () => {
 
   const extendedCategories = useMemo(() => {
     const userSubcategories = []
+    if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
     if (userGeometries.polygons?.length) userSubcategories.push(DataviewCategory.UserPolygons)
     if (userGeometries.points?.length) userSubcategories.push(DataviewCategory.UserPoints)
-    if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
 
     return [
       ...uniqCategories.map((category) => ({ category, subcategories: [] })),
