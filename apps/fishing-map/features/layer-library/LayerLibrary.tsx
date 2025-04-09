@@ -12,13 +12,17 @@ import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import { CURRENTS_DATAVIEW_SLUG } from 'data/workspaces'
+import { groupDatasetsByGeometryType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
 import { selectLayerLibraryModal } from 'features/modals/modals.slice'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { upperFirst } from 'utils/info'
+
+import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
 
 import styles from './LayerLibrary.module.css'
 
@@ -29,9 +33,16 @@ const LayerLibrary: FC = () => {
   const initialCategory = useSelector(selectLayerLibraryModal)
   const debugOptions = useSelector(selectDebugOptions)
   const isGFWUser = useSelector(selectIsGFWUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
     initialCategory || DataviewCategory.Activity
   )
+  const [currentSubcategory, setCurrentSubcategory] = useState<DataviewCategory | null>(null)
+  const userDatasets = useSelector(selectUserDatasets)
+  const userGeometries = useMemo(() => {
+    return groupDatasetsByGeometryType(userDatasets)
+  }, [userDatasets])
+
   const dataviews = useSelector(selectAllDataviews)
 
   const layersResolved: LibraryLayer[] = useMemo(() => {
@@ -70,24 +81,35 @@ const LayerLibrary: FC = () => {
     [layersResolved]
   )
 
-  const uniqCategoriesPlusUser = useMemo(
-    () => [...uniqCategories, DataviewCategory.User],
-    [uniqCategories]
-  )
+  const extendedCategories = useMemo(() => {
+    const userSubcategories = []
+    if (userGeometries.polygons?.length) userSubcategories.push(DataviewCategory.UserPolygons)
+    if (userGeometries.points?.length) userSubcategories.push(DataviewCategory.UserPoints)
+    if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
+
+    return [
+      ...uniqCategories.map((category) => ({ category, subcategories: [] })),
+      { category: DataviewCategory.VesselGroups, subcategories: [] },
+      {
+        category: DataviewCategory.User,
+        subcategories: userSubcategories,
+      },
+    ]
+  }, [uniqCategories, userGeometries])
 
   const scrollToCategory = useCallback(
     ({
-      categoryElements,
       category,
+      subcategory = null,
       smooth = true,
     }: {
-      categoryElements: HTMLElement[]
       category: DataviewCategory
+      subcategory?: DataviewCategory | null
       smooth?: boolean
     }) => {
-      const targetElement = categoryElements.find((categoryElement) => {
-        return categoryElement.id === category
-      })
+      const targetId = subcategory || category
+      const targetElement = document.getElementById(targetId)
+
       if (targetElement) {
         targetElement.scrollIntoView({
           behavior: smooth ? 'smooth' : 'instant',
@@ -98,16 +120,23 @@ const LayerLibrary: FC = () => {
   )
 
   useEffect(() => {
-    const categoryElements = uniqCategoriesPlusUser.flatMap((category) => {
-      const element = document.getElementById(category)
-      return element || []
+    const categoryElements = extendedCategories.flatMap(({ category, subcategories }) => {
+      const mainElement = document.getElementById(category)
+      const subcategoryElements = subcategories
+        .map((subcat) => document.getElementById(subcat))
+        .filter(Boolean)
+
+      return [mainElement, ...subcategoryElements].filter(
+        (element): element is HTMLElement => element !== null
+      )
     })
     setCategoryElements(categoryElements)
+
     if (currentCategory) {
-      scrollToCategory({ categoryElements, category: currentCategory, smooth: false })
+      scrollToCategory({ category: currentCategory, smooth: false })
     }
     // Running only when categoryElements changes as listening to currentCategory blocks the scroll
-  }, [uniqCategoriesPlusUser])
+  }, [extendedCategories])
 
   const filteredLayers = useMemo(
     () =>
@@ -152,35 +181,50 @@ const LayerLibrary: FC = () => {
   const onLayerListScroll = useCallback(
     (e: React.UIEvent<HTMLElement>) => {
       if (!categoryElements.length) return
-      let current = currentCategory
+
       const target = e.target as HTMLElement
-      const lastElement = categoryElements[categoryElements.length - 1]
-      if (
-        target.scrollTop + target.clientHeight >=
-        target.scrollHeight - lastElement.clientHeight
-      ) {
-        //Ensure last category shows as current if visible even if it's shorter than the scroll viewport
-        current = lastElement.id as DataviewCategory
-      } else {
-        categoryElements.forEach((categoryElement) => {
-          if (target.scrollTop >= categoryElement.offsetTop - target.offsetTop) {
-            current = categoryElement.id as DataviewCategory
+
+      const topViewport = target.clientHeight / 5
+      let newCategory = currentCategory
+      let newSubcategory: DataviewCategory | null = null
+
+      extendedCategories.forEach(({ category, subcategories }) => {
+        const mainElement = document.getElementById(category)
+        if (mainElement) {
+          const { top } = mainElement.getBoundingClientRect()
+          if (target.contains(mainElement) && top <= topViewport) {
+            newCategory = category
+          }
+        }
+
+        subcategories.forEach((subcategory) => {
+          const subElement = document.getElementById(subcategory)
+          if (subElement) {
+            const { top } = subElement.getBoundingClientRect()
+            if (target.contains(subElement) && top <= topViewport) {
+              newSubcategory = subcategory
+            }
           }
         })
-      }
-      setCurrentCategory(current)
+      })
+
+      setCurrentCategory(newCategory)
+      setCurrentSubcategory(newSubcategory)
     },
     [categoryElements, currentCategory]
   )
 
   const onCategoryClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      const category = (e.target as any).dataset.category as DataviewCategory
+      const subcategory = (e.target as any).dataset.subcategory as DataviewCategory | undefined
+
       scrollToCategory({
-        categoryElements,
-        category: (e.target as any).dataset.category as DataviewCategory,
+        category,
+        subcategory: subcategory || null,
       })
     },
-    [categoryElements, scrollToCategory]
+    [scrollToCategory]
   )
 
   return (
@@ -197,20 +241,39 @@ const LayerLibrary: FC = () => {
           />
         </div>
         <div className={styles.categories}>
-          {uniqCategoriesPlusUser.map((category) => (
-            <button
-              className={cx(styles.category, {
-                [styles.currentCategory]: currentCategory === category,
-              })}
-              disabled={
-                category !== DataviewCategory.User && layersByCategory[category].length === 0
-              }
-              data-category={category}
-              onClick={onCategoryClick}
-              key={category}
-            >
-              {t(`common.${category as DataviewCategory}`, upperFirst(category))}
-            </button>
+          {extendedCategories.map(({ category, subcategories }) => (
+            <div key={category}>
+              <button
+                className={cx(styles.category, {
+                  [styles.currentCategory]: currentCategory === category,
+                })}
+                disabled={
+                  category !== DataviewCategory.User &&
+                  category !== DataviewCategory.VesselGroups &&
+                  layersByCategory[category].length === 0
+                }
+                data-category={category}
+                onClick={onCategoryClick}
+              >
+                {t(`common.${category as DataviewCategory}`, upperFirst(category))}
+              </button>
+              {currentCategory === category &&
+                subcategories.length > 0 &&
+                !guestUser &&
+                subcategories.map((subcategory) => (
+                  <button
+                    key={subcategory}
+                    className={cx(styles.subcategory, {
+                      [styles.currentCategory]: currentSubcategory === subcategory,
+                    })}
+                    data-category={category}
+                    data-subcategory={subcategory}
+                    onClick={onCategoryClick}
+                  >
+                    {t(`common.${subcategory}`, upperFirst(subcategory))}
+                  </button>
+                ))}
+            </div>
           ))}
         </div>
       </div>
@@ -233,6 +296,7 @@ const LayerLibrary: FC = () => {
             })}
           </Fragment>
         ))}
+        <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
         <LayerLibraryUserPanel searchQuery={searchQuery} />
       </ul>
     </div>

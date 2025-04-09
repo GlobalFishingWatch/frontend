@@ -217,8 +217,11 @@ export enum DataviewCategory {
   Environment = 'environment',
   Events = 'events',
   User = 'user',
+  UserPoints = 'points',
+  UserPolygons = 'polygons',
+  UserTracks = 'tracks',
   Vessels = 'vessels',
-  VesselGroups = 'vesselGroups',
+  VesselGroups = 'vessel Groups',
   Workspaces = 'workspaces',
   Buffer = 'buffer',
 }
