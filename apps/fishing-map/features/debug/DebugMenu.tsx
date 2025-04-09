@@ -8,11 +8,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { useToggleFeatureFlag } from 'features/debug/debug.hooks'
-import {
-  selectIsGlobalReportsEnabled,
-  selectIsResponsiveVisualizationEnabled,
-} from 'features/debug/debug.selectors'
 import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
@@ -28,9 +23,6 @@ const DebugMenu: React.FC = () => {
   const [datasetId, setDatasetId] = useState<string>('')
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
-  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
-  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
-  const toggleFeatureFlag = useToggleFeatureFlag()
 
   useEffect(() => {
     if (datasetId?.length > 4) {
@@ -44,28 +36,6 @@ const DebugMenu: React.FC = () => {
       <section className={styles.section}>
         {isGFWDeveloper && (
           <Fragment>
-            <div className={styles.header}>
-              <Switch
-                id="option_global_reports"
-                active={isGlobalReportsEnabled}
-                onClick={() => toggleFeatureFlag('globalReports')}
-              />
-              <label htmlFor="option_global_reports">
-                <strong>Feature flag:</strong> Global reports
-              </label>
-            </div>
-            <p>Activates the global reports feature</p>
-            <div className={styles.header}>
-              <Switch
-                id="option_responsive_visualization"
-                active={isResponsiveVisualizationEnabled}
-                onClick={() => toggleFeatureFlag('responsiveVisualization')}
-              />
-              <label htmlFor="option_responsive_visualization">
-                <strong>Feature flag:</strong> Responsive visualization
-              </label>
-            </div>
-            <p>Activates the responsive visualization feature</p>
             <div className={styles.header}>
               <Switch
                 id="option_data_terminology_iframe"

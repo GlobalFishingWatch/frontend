@@ -8,7 +8,6 @@ import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualization
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectIsResponsiveVisualizationEnabled } from 'features/debug/debug.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
@@ -105,7 +104,6 @@ export default function VesselGroupReportInsightCoverageGraph({
   data: VesselGroupInsightResponse['coverage']
 }) {
   const vesselGroup = useSelector(selectVGRData)
-  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
 
   const getIndividualData = useCallback(async () => {
     if (vesselGroup?.vessels.length) {
@@ -124,7 +122,7 @@ export default function VesselGroupReportInsightCoverageGraph({
     <div className={styles.graph} data-test="insights-report-vessels-graph">
       <ResponsiveBarChart
         color={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
-        getIndividualData={isResponsiveVisualizationEnabled ? getIndividualData : undefined}
+        getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()

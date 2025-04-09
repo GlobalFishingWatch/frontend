@@ -23,7 +23,6 @@ import type {
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { selectIsResponsiveVisualizationEnabled } from 'features/debug/debug.selectors'
 import i18n from 'features/i18n/i18n'
 import {
   selectReportBufferOperation,
@@ -163,7 +162,6 @@ export default function EventsReportGraph({
   const interval = getFourwingsInterval(startMillis, endMillis)
   const filtersMemo = useMemoCompare(filters)
   const includesMemo = useMemoCompare(includes)
-  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
   const reportAreaDataset = useSelector(selectReportDatasetId)
   const reportAreaId = useSelector(selectReportAreaId)
   const reportBufferValue = useSelector(selectReportBufferValue)
@@ -230,7 +228,7 @@ export default function EventsReportGraph({
         timeseriesInterval={interval}
         aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
-        getIndividualData={isResponsiveVisualizationEnabled ? getIndividualData : undefined}
+        getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}
         aggregatedTooltip={<AggregatedGraphTooltip />}
         individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
