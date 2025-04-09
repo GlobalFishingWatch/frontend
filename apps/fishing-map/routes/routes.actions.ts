@@ -1,4 +1,5 @@
 import type { RootState } from 'reducers'
+import type { NOT_FOUND } from 'redux-first-router'
 
 import type { TimeRange } from 'features/timebar/timebar.slice'
 import type { AppDispatch } from 'store'
@@ -8,8 +9,9 @@ import type { ROUTE_TYPES } from './routes'
 import { selectLocationPayload, selectLocationQuery, selectLocationType } from './routes.selectors'
 
 export interface UpdateQueryParamsAction {
-  type: ROUTE_TYPES
+  type: ROUTE_TYPES | typeof NOT_FOUND
   query?: QueryParams
+  isHistoryNavigation?: boolean
   replaceQuery?: boolean
   replaceUrl?: boolean
   payload?: any

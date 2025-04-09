@@ -26,6 +26,8 @@ export const selectSuggestWorkspaceSave = (state: RootState) => state.workspace?
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
 export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
 export const selectLastVisitedWorkspace = (state: RootState) => state.workspace?.lastVisited
+export const selectWorkspaceHistoryNavigation = (state: RootState) =>
+  state.workspace?.historyNavigation
 export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace?.customStatus
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {

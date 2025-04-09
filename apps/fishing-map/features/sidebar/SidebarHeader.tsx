@@ -52,14 +52,15 @@ import {
   selectFeatureFlags,
   selectIsDefaultWorkspace,
   selectIsWorkspaceOwner,
-  selectLastVisitedWorkspace,
   selectWorkspace,
   selectWorkspaceDataviewInstances,
+  selectWorkspaceHistoryNavigation,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
   cleanReportQuery,
+  setHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
@@ -69,21 +70,18 @@ import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
-  selectIsAnyReportLocation,
   selectIsAnySearchLocation,
   selectIsAnyVesselLocation,
   selectIsPortReportLocation,
   selectIsStandaloneReportLocation,
   selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
-  selectIsWorkspaceVesselLocation,
   selectLocationCategory,
   selectLocationPayload,
   selectLocationQuery,
   selectLocationType,
 } from 'routes/routes.selectors'
 import type { QueryParams } from 'types'
-import { config } from 'typescript-eslint'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useClipboardNotification } from './sidebar.hooks'
@@ -534,22 +532,50 @@ function CloseVesselButton() {
 
 function CloseSectionButton() {
   const dispatch = useAppDispatch()
-  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const locationType = useSelector(selectLocationType)
+  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
+  console.log('🚀 ~ CloseSectionButton ~ workspaceHistoryNavigation:', workspaceHistoryNavigation)
   const { dispatchQueryParams } = useLocationConnect()
+  const highlightArea = useHighlightReportArea()
+  const reportAreaIds = useSelector(selectReportAreaIds)
+  const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
+
   const onCloseClick = useCallback(() => {
+    resetSidebarScroll()
+
+    // Reset search state
     dispatchQueryParams({ ...EMPTY_FILTERS, userTab: undefined })
     dispatch(cleanVesselSearchResults())
-  }, [dispatch, dispatchQueryParams])
 
-  if (!lastVisitedWorkspace) {
-    return null
+    // Reset report state
+    highlightArea(undefined)
+    dispatch(resetReportData())
+    dispatch(resetVesselGroupReportData())
+    dispatch(resetAreaDetail(reportAreaIds))
+    dispatch(cleanCurrentWorkspaceReportState())
+    dispatch(setVesselEventId(null))
+
+    // Pop the last workspace visited from the history navigation
+    dispatch(setHistoryNavigation(workspaceHistoryNavigation.slice(0, -1)))
+  }, [dispatch, dispatchQueryParams, highlightArea, reportAreaIds, workspaceHistoryNavigation])
+
+  if (workspaceHistoryNavigation.length && lastWorkspaceVisited.type !== locationType) {
+    // console.log('🚀 ~ CloseSectionButton ~ lastWorkspaceVisited:', lastWorkspaceVisited)
+    return (
+      <Link
+        className={styles.workspaceLink}
+        to={{
+          ...lastWorkspaceVisited,
+          isHistoryNavigation: true,
+        }}
+        onClick={onCloseClick}
+      >
+        <IconButton type="border" icon="close" />
+      </Link>
+    )
   }
 
-  return (
-    <Link className={styles.workspaceLink} to={lastVisitedWorkspace} onClick={onCloseClick}>
-      <IconButton type="border" icon="close" />
-    </Link>
-  )
+  return null
 }
 
 function SidebarHeader() {
@@ -561,17 +587,14 @@ function SidebarHeader() {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
-  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
   const { dispatchQueryParams } = useLocationConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const { searchFilters } = useSearchFiltersConnect()
-  const showBackToWorkspaceButton = !isWorkspaceLocation
   const scrollElement = getScrollElement()
 
   useEffect(() => {
@@ -640,8 +663,6 @@ function SidebarHeader() {
     dispatchQueryParams({ searchOption: option.id, ...EMPTY_FILTERS, ...additionalParams })
   }
 
-  const showCloseReportButton = isAnyReportLocation
-
   const sectionHeaderComponent = useMemo(() => {
     if (isAnyVesselLocation) {
       return <VesselHeader />
@@ -679,8 +700,8 @@ function SidebarHeader() {
             )}
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}
-            {showCloseReportButton && <CloseReportButton />}
-            {isWorkspaceVesselLocation && <CloseVesselButton />}
+            {/* {showCloseReportButton && <CloseReportButton />}
+            {isWorkspaceVesselLocation && <CloseVesselButton />} */}
             {isSearchLocation && !readOnly && !isSmallScreen && (
               <Choice
                 options={searchOptions}
@@ -690,10 +711,11 @@ function SidebarHeader() {
                 className={styles.searchOption}
               />
             )}
-            {!isAreaReportLocation &&
+            {/* {!isAreaReportLocation &&
               !isWorkspaceVesselLocation &&
               !showCloseReportButton &&
-              showBackToWorkspaceButton && <CloseSectionButton />}
+              showBackToWorkspaceButton && <CloseSectionButton />} */}
+            <CloseSectionButton />
           </Fragment>
         )}
       </div>

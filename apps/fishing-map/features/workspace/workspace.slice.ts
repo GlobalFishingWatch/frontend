@@ -87,6 +87,7 @@ interface WorkspaceSliceState {
   data: Workspace<AnyWorkspaceState> | null
   password: string | typeof VALID_PASSWORD
   lastVisited: LastWorkspaceVisited | undefined
+  historyNavigation: LastWorkspaceVisited[]
 }
 
 const initialState: WorkspaceSliceState = {
@@ -97,6 +98,7 @@ const initialState: WorkspaceSliceState = {
   data: null,
   password: '',
   lastVisited: undefined,
+  historyNavigation: [],
 }
 
 type RejectedActionPayload = {
@@ -507,6 +509,9 @@ const workspaceSlice = createSlice({
     setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
       state.lastVisited = action.payload
     },
+    setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
+      state.historyNavigation = action.payload
+    },
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
         state.data.dataviewInstances = state.data.dataviewInstances.filter((d) =>
@@ -578,6 +583,7 @@ export const {
   removeGFWStaffOnlyDataviews,
   cleanCurrentWorkspaceReportState,
   cleanCurrentWorkspaceStateBufferParams,
+  setWorkspaceHistoryNavigation: setHistoryNavigation,
 } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

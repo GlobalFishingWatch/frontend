@@ -1,10 +1,12 @@
 import { uniq } from 'es-toolkit'
 import type { RootState } from 'reducers'
 import type { Dispatch, Middleware } from 'redux'
+import { NOT_FOUND } from 'redux-first-router'
 
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 
-import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import { setHistoryNavigation, setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
 import type { QueryParam, QueryParams } from 'types'
 
@@ -73,7 +75,26 @@ export const routerWorkspaceMiddleware: Middleware =
     const isRouterAction = routesActions.includes(routerAction.type)
     if (isRouterAction) {
       const state = getState() as RootState
-      const { prev } = state.location
+      const { type, prev } = state.location
+      const isHistoryNavigation = routerAction.isHistoryNavigation
+
+      if (!isHistoryNavigation && type !== NOT_FOUND && prev.type) {
+        const currentHistoryNavigation = state.workspace?.historyNavigation || []
+        const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
+
+        if (
+          routerAction.type !== prev.type &&
+          (!lastHistoryNavigation || lastHistoryNavigation.type !== prev.type)
+        ) {
+          const newHistoryNavigation: LastWorkspaceVisited = {
+            type: prev.type as ROUTE_TYPES,
+            query: prev.query,
+            payload: prev.payload,
+          }
+          dispatch(setHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation]))
+        }
+      }
+
       const { lastVisited } = state.workspace || {}
       const routesToSaveWorkspace = Object.keys(routesMap).filter(
         (key) => !WORKSPACE_ROUTES.includes(key)
