@@ -29,6 +29,8 @@ export const selectReportVesselsList = createSelector(
           dataviewId: vesselActivity[0]?.dataviewId,
           vesselId: vesselActivity[0]?.vesselId,
           shipName: vesselActivity[0]?.shipName,
+          imo: vesselActivity[0]?.imo,
+          callsign: vesselActivity[0]?.callsign,
           mmsi: vesselActivity[0]?.mmsi,
           flag: vesselActivity[0]?.flag,
           geartype: vesselActivity[0]?.geartype,

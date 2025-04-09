@@ -68,6 +68,8 @@ type FetchReportVesselsThunkParams = {
 }
 
 const REPORT_FIELDS_TO_INCLUDE = [
+  'imo',
+  'callsign',
   'mmsi',
   'dataset',
   'flag',
