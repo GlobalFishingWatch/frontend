@@ -90,7 +90,7 @@ function WorkspacesList() {
                 latitude: 0,
                 longitude: 0,
                 zoom: 0,
-                loadVessels: true,
+                reportLoadVessels: true,
               },
             }
           } else {

@@ -52,9 +52,10 @@ import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsVesselGroupReportLocation,
-  selectUrlLoadVesselsQuery,
+  selectUrlReportLoadVesselsQuery,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -88,7 +89,8 @@ function ActivityReport() {
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
-  const loadVesselsUrlQuery = useSelector(selectUrlLoadVesselsQuery)
+  const reportLoadVessels = useSelector(selectUrlReportLoadVesselsQuery)
+  const { dispatchQueryParams } = useLocationConnect()
 
   // TODO get this from datasets config
   const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
@@ -133,11 +135,12 @@ function ActivityReport() {
   }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
 
   useEffect(() => {
-    if (loadVesselsUrlQuery && reportDataviews) {
+    if (reportLoadVessels && reportDataviews?.length) {
       dispatch(setReportRequestHash(''))
       dispatchFetchReport()
+      dispatchQueryParams({ reportLoadVessels: false })
     }
-  }, [dispatch, dispatchFetchReport, loadVesselsUrlQuery, reportDataviews])
+  }, [dispatch, dispatchFetchReport, reportLoadVessels, reportDataviews, dispatchQueryParams])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {
