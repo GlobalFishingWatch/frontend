@@ -1,8 +1,9 @@
 import { Fragment, useCallback, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -18,9 +19,9 @@ import { selectAllVisibleVesselGroups } from 'features/vessel-groups/vessel-grou
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
@@ -67,7 +68,23 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
 
   const SectionComponent = () => {
     if (guestUser) {
-      return RegisterOrLoginToUpload()
+      return (
+        <div className={styles.login}>
+          <Trans i18nKey="dataset.uploadVesselGroups">
+            <a
+              className={styles.link}
+              href={GFWAPI.getRegisterUrl(
+                typeof window !== 'undefined' ? window.location.toString() : ''
+              )}
+            >
+              Register
+            </a>
+            or
+            <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
+            to create and access your vessel groups.
+          </Trans>
+        </div>
+      )
     }
 
     if (workspaceVesselGroupsStatus === AsyncReducerStatus.Loading) {
