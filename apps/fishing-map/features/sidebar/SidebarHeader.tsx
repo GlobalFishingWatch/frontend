@@ -534,7 +534,6 @@ function CloseSectionButton() {
   const dispatch = useAppDispatch()
   const locationType = useSelector(selectLocationType)
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
-  console.log('🚀 ~ CloseSectionButton ~ workspaceHistoryNavigation:', workspaceHistoryNavigation)
   const { dispatchQueryParams } = useLocationConnect()
   const highlightArea = useHighlightReportArea()
   const reportAreaIds = useSelector(selectReportAreaIds)
@@ -556,7 +555,9 @@ function CloseSectionButton() {
     dispatch(setVesselEventId(null))
 
     // Pop the last workspace visited from the history navigation
-    dispatch(setHistoryNavigation(workspaceHistoryNavigation.slice(0, -1)))
+    const historyNavigation = workspaceHistoryNavigation.slice(0, -1)
+    console.log('🚀 ~ POP:', historyNavigation)
+    dispatch(setHistoryNavigation(historyNavigation))
   }, [dispatch, dispatchQueryParams, highlightArea, reportAreaIds, workspaceHistoryNavigation])
 
   if (workspaceHistoryNavigation.length && lastWorkspaceVisited.type !== locationType) {

@@ -91,6 +91,7 @@ export const routerWorkspaceMiddleware: Middleware =
             query: prev.query,
             payload: prev.payload,
           }
+          console.log('🚀 ~ PUSH:', newHistoryNavigation)
           dispatch(setHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation]))
         }
       }
