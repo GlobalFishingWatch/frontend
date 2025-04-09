@@ -20,7 +20,6 @@ import {
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
-  TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
 import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -38,7 +37,6 @@ const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
-export const VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX = `${VESSEL_DATAVIEW_INSTANCE_PREFIX}encounter-`
 export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
@@ -158,45 +156,6 @@ export const getVesselDataviewInstance = ({
     deleted: false,
   }
   return vesselDataviewInstance
-}
-
-export const getVesselEncounterTrackDataviewInstance = ({
-  vesselId,
-  track,
-  start,
-  end,
-  highlightEventStartTime,
-  highlightEventEndTime,
-}: {
-  vesselId: string
-  track: string
-  start: number
-  end: number
-  highlightEventStartTime?: number
-  highlightEventEndTime?: number
-}): DataviewInstance => {
-  const vesselDataviewInstance: DataviewInstance = {
-    id: `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}`,
-    dataviewId: TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
-    config: {
-      startDate: getUTCDateTime(start).toISO()!,
-      endDate: getUTCDateTime(end).toISO()!,
-      ...(highlightEventStartTime && {
-        highlightEventStartTime: getUTCDateTime(highlightEventStartTime).toISO()!,
-      }),
-      ...(highlightEventEndTime && {
-        highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
-      }),
-    },
-  }
-  const datasetsConfig: DataviewDatasetConfig[] = [
-    {
-      datasetId: track,
-      params: [{ id: 'vesselId', value: vesselId }],
-      endpoint: EndpointId.Tracks,
-    },
-  ]
-  return { ...vesselDataviewInstance, datasetsConfig }
 }
 
 export const getUserPolygonsDataviewInstance = (

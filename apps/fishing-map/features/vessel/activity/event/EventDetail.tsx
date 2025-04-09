@@ -8,9 +8,10 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
-import EventEncounterIcon from 'features/vessel/activity/event/EventEncounterIcon'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import VesselLink from 'features/vessel/VesselLink'
+import VesselPin from 'features/vessel/VesselPin'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import type VesselEvent from './Event'
@@ -88,8 +89,14 @@ const EventDetail = ({ event }: ActivityContentProps) => {
         </label>
         <li>
           <label className={styles.fieldLabel}>{t(`eventInfo.name`, 'Vessel name')}</label>
-          <span>
-            <EventEncounterIcon event={event} className={styles.encounterIcon} />
+          <span className={styles.vesselNameWithPin}>
+            <VesselPin
+              vesselToResolve={{
+                id: id as string,
+                datasetId: (dataset as string) || DEFAULT_VESSEL_IDENTITY_ID,
+              }}
+              size="tiny"
+            />
             <VesselLink vesselId={id} datasetId={dataset}>
               {formatInfoField(name, 'shipname')}
             </VesselLink>

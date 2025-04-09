@@ -31,7 +31,6 @@ import {
   dataviewHasVesselGroupId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
-  getVesselEncounterTrackDataviewInstance,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
@@ -164,22 +163,6 @@ export const selectDataviewInstancesInjected = createSelector(
             vesselDatasets
           )
           dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
-        }
-      }
-
-      if (hasCurrentEvent && currentVesselEvent.type === EventTypes.Encounter) {
-        const encounterVesselId = currentVesselEvent.encounter?.vessel.id
-        if (encounterVesselId && vessel?.track) {
-          const encounterTrackDataviewInstance = getVesselEncounterTrackDataviewInstance({
-            vesselId: encounterVesselId,
-            track: vessel.track,
-            // TODO: make a decision on how much buffer to add
-            start: eventStartDateTime!.minus({ day: 5 }).toMillis(),
-            end: eventEndDateTime!.plus({ day: 5 }).toMillis(),
-            highlightEventStartTime: eventStartDateTime!.toMillis(),
-            highlightEventEndTime: eventEndDateTime!.toMillis(),
-          })
-          dataviewInstancesInjected.push(encounterTrackDataviewInstance)
         }
       }
 
