@@ -98,7 +98,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
         <li>
-          <label className={styles.fieldLabel}>{t(`eventInfo.type`, 'type')}</label>
+          <label className={styles.fieldLabel}>{t(`vessel.shiptype`, 'vessel type')}</label>
           <span>{formatInfoField(type, 'vesselType')}</span>
         </li>
         <div className={styles.divider} />
