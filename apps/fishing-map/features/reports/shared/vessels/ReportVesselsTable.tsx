@@ -42,14 +42,12 @@ import styles from './ReportVesselsTable.module.css'
 type ReportVesselTableProps = {
   vessels: ReportTableVessel[]
   activityUnit?: ReportActivityUnit
-  reportName?: string
   allowSorting?: boolean
 }
 
 export default function ReportVesselsTable({
   vessels,
   activityUnit,
-  reportName,
   allowSorting = true,
 }: ReportVesselTableProps) {
   const { t } = useTranslation()
@@ -281,7 +279,7 @@ export default function ReportVesselsTable({
           })}
         </div>
       </div>
-      <ReportVesselsTableFooter reportName={reportName} activityUnit={activityUnit} />
+      <ReportVesselsTableFooter activityUnit={activityUnit} />
     </Fragment>
   )
 }

@@ -2,8 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import I18nNumber from 'features/i18n/i18nNumber'
-import { selectReportCategory } from 'features/reports/reports.selectors'
-import { ReportCategory } from 'features/reports/reports.types'
+import { selectReportUnit } from 'features/reports/reports.selectors'
 
 import type { ReportTableVessel } from './report-vessels.types'
 
@@ -11,17 +10,9 @@ import styles from './ReportVesselsIndividualTooltip.module.css'
 
 const ReportVesselsIndividualTooltip = ({ data }: { data?: ReportTableVessel }) => {
   const { t } = useTranslation()
-  const reportCategory = useSelector(selectReportCategory)
+  const reportUnit = useSelector(selectReportUnit)
   if (!data) {
     return null
-  }
-  let unit = ''
-  if (reportCategory === ReportCategory.Activity) {
-    unit = t('common.hour', { count: data.value }).toLowerCase()
-  } else if (reportCategory === ReportCategory.Detections) {
-    unit = t('common.detection', { count: data.value }).toLowerCase()
-  } else if (reportCategory === ReportCategory.Events) {
-    unit = t('common.event', { count: data.value }).toLowerCase()
   }
   return (
     <div>
@@ -29,7 +20,8 @@ const ReportVesselsIndividualTooltip = ({ data }: { data?: ReportTableVessel }) 
         <p className={styles.name}>{data.shipName}</p>
         {data.value && (
           <p className={styles.value}>
-            <I18nNumber number={data.value} /> {unit}
+            <I18nNumber number={data.value} />{' '}
+            {t(`common.${reportUnit}`, { count: data.value }).toLowerCase()}
           </p>
         )}
       </div>
