@@ -86,7 +86,6 @@ interface WorkspaceSliceState {
   error: AsyncError
   data: Workspace<AnyWorkspaceState> | null
   password: string | typeof VALID_PASSWORD
-  lastVisited: LastWorkspaceVisited | undefined
   historyNavigation: LastWorkspaceVisited[]
 }
 
@@ -97,7 +96,6 @@ const initialState: WorkspaceSliceState = {
   error: {} as AsyncError,
   data: null,
   password: '',
-  lastVisited: undefined,
   historyNavigation: [],
 }
 
@@ -506,9 +504,6 @@ const workspaceSlice = createSlice({
         state.data.state.reportBufferOperation = undefined
       }
     },
-    setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
-      state.lastVisited = action.payload
-    },
     setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
       state.historyNavigation = action.payload
     },
@@ -578,7 +573,6 @@ export const {
   setWorkspacePassword,
   setWorkspaceSuggestSave,
   resetWorkspaceSlice,
-  setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
   cleanCurrentWorkspaceReportState,

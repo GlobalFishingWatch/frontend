@@ -16,6 +16,7 @@ import {
 } from 'data/workspaces'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import type { UserSettings } from 'features/user/user.slice'
+import { WORKSPACE_ROUTES } from 'routes/routes'
 import { selectIsRouteWithWorkspace, selectLocationQuery } from 'routes/routes.selectors'
 import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -25,11 +26,16 @@ export const selectWorkspacePassword = (state: RootState) => state.workspace?.pa
 export const selectSuggestWorkspaceSave = (state: RootState) => state.workspace?.suggestSave
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
 export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
-export const selectLastVisitedWorkspace = (state: RootState) => state.workspace?.lastVisited
 export const selectWorkspaceHistoryNavigation = (state: RootState) =>
   state.workspace?.historyNavigation
 export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace?.customStatus
 
+export const selectLastVisitedWorkspace = createSelector(
+  [selectWorkspaceHistoryNavigation],
+  (historyNavigation) => {
+    return historyNavigation.findLast((navigation) => WORKSPACE_ROUTES.includes(navigation.type))
+  }
+)
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
 })

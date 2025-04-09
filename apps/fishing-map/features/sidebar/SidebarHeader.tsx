@@ -556,12 +556,10 @@ function CloseSectionButton() {
 
     // Pop the last workspace visited from the history navigation
     const historyNavigation = workspaceHistoryNavigation.slice(0, -1)
-    console.log('🚀 ~ POP:', historyNavigation)
     dispatch(setWorkspaceHistoryNavigation(historyNavigation))
   }, [dispatch, dispatchQueryParams, highlightArea, reportAreaIds, workspaceHistoryNavigation])
 
   if (workspaceHistoryNavigation.length && lastWorkspaceVisited.type !== locationType) {
-    // console.log('🚀 ~ CloseSectionButton ~ lastWorkspaceVisited:', lastWorkspaceVisited)
     return (
       <Link
         className={styles.workspaceLink}

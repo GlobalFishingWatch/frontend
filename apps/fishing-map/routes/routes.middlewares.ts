@@ -6,15 +6,12 @@ import { NOT_FOUND } from 'redux-first-router'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
-import {
-  setLastWorkspaceVisited,
-  setWorkspaceHistoryNavigation,
-} from 'features/workspace/workspace.slice'
+import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
 import type { QueryParam, QueryParams } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
-import { routesMap, WORKSPACE_ROUTES } from './routes'
+import { routesMap } from './routes'
 import type { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -94,35 +91,11 @@ export const routerWorkspaceMiddleware: Middleware =
               query: query,
               payload: payload,
             }
-            console.log('🚀 ~ PUSH:', newHistoryNavigation)
             dispatch(
               setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
             )
           }
         }
-      }
-
-      const { prev } = state.location
-      const { lastVisited } = state.workspace || {}
-      const routesToSaveWorkspace = Object.keys(routesMap).filter(
-        (key) => !WORKSPACE_ROUTES.includes(key)
-      )
-      const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-      if (
-        routesToSaveWorkspace.includes(routerAction.type) &&
-        comesFromWorkspacesRoute &&
-        !lastVisited
-      ) {
-        dispatch(
-          setLastWorkspaceVisited({
-            type: prev.type as ROUTE_TYPES,
-            query: prev.query,
-            payload: prev.payload,
-            replaceQuery: true,
-          })
-        )
-      } else if (WORKSPACE_ROUTES.includes(routerAction.type) && lastVisited) {
-        dispatch(setLastWorkspaceVisited(undefined))
       }
     }
     next(action)
