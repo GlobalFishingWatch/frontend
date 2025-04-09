@@ -78,46 +78,31 @@ export const routerWorkspaceMiddleware: Middleware =
     const isRouterAction = routesActions.includes(routerAction.type)
     if (isRouterAction) {
       const state = getState() as RootState
-      const { type, prev } = state.location
+      const { type, query, payload } = state.location
       const isHistoryNavigation = routerAction.isHistoryNavigation
 
-      if (type !== NOT_FOUND) {
+      if (routerAction.type !== NOT_FOUND && type !== NOT_FOUND) {
         const currentHistoryNavigation = state.workspace?.historyNavigation || []
         const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
-        if (!isHistoryNavigation && prev.type) {
+        if (!isHistoryNavigation && type) {
           if (
-            routerAction.type !== prev.type &&
-            (!lastHistoryNavigation || lastHistoryNavigation.type !== prev.type)
+            routerAction.type !== type &&
+            (!lastHistoryNavigation || lastHistoryNavigation.type !== type)
           ) {
             const newHistoryNavigation: LastWorkspaceVisited = {
-              type: prev.type as ROUTE_TYPES,
-              query: prev.query,
-              payload: prev.payload,
+              type: type as ROUTE_TYPES,
+              query: query,
+              payload: payload,
             }
             console.log('🚀 ~ PUSH:', newHistoryNavigation)
             dispatch(
               setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
             )
           }
-        } else if (
-          currentHistoryNavigation.length &&
-          lastHistoryNavigation?.type === routerAction.type
-        ) {
-          const newHistoryNavigation: LastWorkspaceVisited = {
-            type: routerAction.type as ROUTE_TYPES,
-            query: routerAction.query,
-            payload: routerAction.payload,
-          }
-          console.log('🚀 ~ REPLACE:', newHistoryNavigation)
-          dispatch(
-            setWorkspaceHistoryNavigation([
-              ...currentHistoryNavigation.slice(0, -1),
-              newHistoryNavigation,
-            ])
-          )
         }
       }
 
+      const { prev } = state.location
       const { lastVisited } = state.workspace || {}
       const routesToSaveWorkspace = Object.keys(routesMap).filter(
         (key) => !WORKSPACE_ROUTES.includes(key)

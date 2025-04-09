@@ -8,10 +8,8 @@ import Link from 'redux-first-router-link'
 import type { ReportWorkspaceId } from 'data/highlighted-workspaces/reports'
 import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
-import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 
@@ -23,7 +21,6 @@ import styles from './WorkspacesList.module.css'
 
 function WorkspacesList() {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const setMapCoordinates = useSetMapCoordinates()
   const locationCategory = useSelector(selectLocationCategory)
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
@@ -35,11 +32,8 @@ function WorkspacesList() {
       if (workspace.viewport) {
         setMapCoordinates(workspace.viewport)
       }
-      if (workspace.id === DEFAULT_WORKSPACE_ID) {
-        dispatch(setWorkspaceHistoryNavigation([]))
-      }
     },
-    [dispatch, setMapCoordinates]
+    [setMapCoordinates]
   )
 
   if (!validCategory) {
