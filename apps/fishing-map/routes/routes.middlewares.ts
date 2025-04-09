@@ -1,15 +1,17 @@
 import { uniq } from 'es-toolkit'
 import type { RootState } from 'reducers'
 import type { Dispatch, Middleware } from 'redux'
+import { NOT_FOUND } from 'redux-first-router'
 
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 
-import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
 import type { QueryParam, QueryParams } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
-import { routesMap, WORKSPACE_ROUTES } from './routes'
+import { routesMap } from './routes'
 import type { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -73,27 +75,27 @@ export const routerWorkspaceMiddleware: Middleware =
     const isRouterAction = routesActions.includes(routerAction.type)
     if (isRouterAction) {
       const state = getState() as RootState
-      const { prev } = state.location
-      const { lastVisited } = state.workspace || {}
-      const routesToSaveWorkspace = Object.keys(routesMap).filter(
-        (key) => !WORKSPACE_ROUTES.includes(key)
-      )
-      const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-      if (
-        routesToSaveWorkspace.includes(routerAction.type) &&
-        comesFromWorkspacesRoute &&
-        !lastVisited
-      ) {
-        dispatch(
-          setLastWorkspaceVisited({
-            type: prev.type as ROUTE_TYPES,
-            query: prev.query,
-            payload: prev.payload,
-            replaceQuery: true,
-          })
-        )
-      } else if (WORKSPACE_ROUTES.includes(routerAction.type) && lastVisited) {
-        dispatch(setLastWorkspaceVisited(undefined))
+      const { type, query, payload } = state.location
+      const isHistoryNavigation = routerAction.isHistoryNavigation
+
+      if (routerAction.type !== NOT_FOUND && type !== NOT_FOUND) {
+        const currentHistoryNavigation = state.workspace?.historyNavigation || []
+        const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
+        if (!isHistoryNavigation && type) {
+          if (
+            routerAction.type !== type &&
+            (!lastHistoryNavigation || lastHistoryNavigation.type !== type)
+          ) {
+            const newHistoryNavigation: LastWorkspaceVisited = {
+              type: type as ROUTE_TYPES,
+              query: query,
+              payload: payload,
+            }
+            dispatch(
+              setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
+            )
+          }
+        }
       }
     }
     next(action)
