@@ -21,6 +21,8 @@ interface ActivityContentProps {
   event: VesselEvent
 }
 
+const AUTH_AREAS = ['CCSBT', 'IATTC', 'ICCAT', 'IOTC', 'NPFC', 'SPRFMO', 'WCPFC']
+
 const EventDetail = ({ event }: ActivityContentProps) => {
   const { t } = useTranslation()
   const { getEventDurationDescription } = useActivityEventTranslations()
@@ -66,8 +68,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
   //   </Fragment>
   // )
 
-  // Needed to remove sub-regions (e.g. CCSBT-Primary-Area)
-  const authAreas = event.regions?.rfmo.filter((rfmo) => !rfmo.includes('-')).sort()
+  const authAreas = event.regions?.rfmo.filter((rfmo) => AUTH_AREAS.includes(rfmo)).sort()
 
   if (event.type === EventTypes.Encounter) {
     const { name, id, dataset, flag, ssvid, type } = event.encounter?.vessel || {}
