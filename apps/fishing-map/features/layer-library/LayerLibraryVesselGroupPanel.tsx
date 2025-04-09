@@ -1,0 +1,160 @@
+import { Fragment, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+
+import { useAppDispatch } from 'features/app/app.hooks'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import { selectAllVisibleVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
+import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
+import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
+import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { formatInfoField } from 'utils/info'
+
+import styles from './LayerLibraryVesselGroupPanel.module.css'
+
+const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) => {
+  const { t } = useTranslation()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
+  const dispatch = useAppDispatch()
+  const guestUser = useSelector(selectIsGuestUser)
+
+  const dataviews = useSelector(selectAllVisibleVesselGroups)
+
+  const activeDataviews = useSelector(selectActiveVesselGroupDataviews)
+
+  const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
+
+  const filteredDataview = useMemo(
+    () =>
+      dataviews.filter((dataview) => {
+        return getDatasetLabel(dataview).toLowerCase().includes(searchQuery.toLowerCase())
+      }),
+    [dataviews, searchQuery]
+  )
+  const onAddVesselGroupClick = useCallback(() => {
+    dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+    dispatch(setVesselGroupsModalOpen(true))
+    dispatch(setWorkspaceSuggestSave(true))
+  }, [dispatch])
+
+  const toggleAddToWorkspace = useCallback(
+    (vesselGroupId: string, action: 'remove' | 'add') => {
+      const dataviewInstance = getVesselGroupDataviewInstance(vesselGroupId)
+      if (dataviewInstance && action === 'add') {
+        upsertDataviewInstance(dataviewInstance)
+      } else if (dataviewInstance && action === 'remove') {
+        //TO DO: check if this is the right way to remove the dataview instance
+        deleteDataviewInstance(vesselGroupId)
+      }
+      dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+    },
+    [dispatch, deleteDataviewInstance, upsertDataviewInstance]
+  )
+
+  const SectionComponent = () => {
+    if (guestUser) {
+      return RegisterOrLoginToUpload()
+    }
+
+    if (workspaceVesselGroupsStatus === AsyncReducerStatus.Loading) {
+      return (
+        <div className={cx(styles.placeholder, styles.center)}>
+          <Spinner />
+        </div>
+      )
+    }
+
+    return (
+      <ul className={styles.vesselGroupDatasets}>
+        {filteredDataview.length > 0 ? (
+          filteredDataview?.map((vesselGroup) => {
+            return (
+              <li className={styles.dataset} key={vesselGroup?.id}>
+                <span className={styles.datasetLabel}>
+                  <Icon icon="vessel-group" />
+                  {formatInfoField(vesselGroup?.name, 'shipname')} (
+                  {vesselGroup?.vessels?.length && getVesselGroupVesselsCount(vesselGroup)})
+                </span>
+
+                <div>
+                  <VesselGroupReportLink vesselGroupId={vesselGroup?.id ?? ''}>
+                    <IconButton
+                      tooltip={t(
+                        'vesselGroupReport.clickToSee',
+                        'Click to see the vessel group report'
+                      )}
+                      icon="analysis"
+                      onClick={() => {
+                        dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+                      }}
+                    />
+                  </VesselGroupReportLink>
+
+                  {activeDataviews.find((d) => d.vesselGroup?.id === vesselGroup.id) ? (
+                    <IconButton
+                      tooltip={t(
+                        'search.vesselAlreadyInWorkspace',
+                        'This vessel is already in your workspace'
+                      )}
+                      icon="plus"
+                      onClick={() => toggleAddToWorkspace(vesselGroup.id, 'remove')}
+                      disabled
+                    />
+                  ) : (
+                    <IconButton
+                      tooltip={t('workspace.addLayer', 'Add to workspace')}
+                      icon="plus"
+                      onClick={() => toggleAddToWorkspace(vesselGroup.id, 'add')}
+                    />
+                  )}
+                </div>
+              </li>
+            )
+          })
+        ) : (
+          <div className={styles.placeholder}>
+            {t(
+              'workspace.emptyStateVesselGroups',
+              'Add vessel groups to see group presence and operation footprint.'
+            )}
+          </div>
+        )}
+      </ul>
+    )
+  }
+
+  return (
+    <Fragment>
+      <div className={styles.titleContainer}>
+        <label id={DataviewCategory.VesselGroups} className={styles.categoryLabel}>
+          {t(`common.vesselGroups`, 'Vessel Groups')}
+        </label>
+        <UserLoggedIconButton
+          type="border"
+          icon="add-to-vessel-group"
+          size="medium"
+          tooltip={t('vesselGroup.createNewGroup', 'Create new group')}
+          tooltipPlacement="top"
+          onClick={() => onAddVesselGroupClick()}
+        />
+      </div>
+      <SectionComponent />
+    </Fragment>
+  )
+}
+
+export default LayerLibraryVesselGroupPanel

@@ -25,7 +25,6 @@ export const useFitWorkspaceBounds = () => {
   const urlViewport = useSelector(selectUrlViewport)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const urlTimeRange = useSelector(selectUrlTimeRange)
-
   const { setTimerange } = useTimerangeConnect()
   const setMapCoordinates = useSetMapCoordinates()
 

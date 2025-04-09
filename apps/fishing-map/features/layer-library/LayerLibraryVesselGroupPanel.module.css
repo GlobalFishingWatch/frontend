@@ -4,19 +4,18 @@
   gap: var(--space-S);
 }
 
-.emptyState,
-.userDatasetList {
-  min-height: calc(100vh - 24rem);
-}
-
-.userGeometryList:last-of-type {
-  min-height: calc(100vh - 18rem);
+.vesselGroupDatasets {
+  margin-bottom: 3rem;
 }
 
 .center {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.login {
+  min-height: 15rem;
 }
 
 .categoryLabel {
