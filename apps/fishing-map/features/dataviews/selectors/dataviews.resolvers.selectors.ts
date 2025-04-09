@@ -23,7 +23,7 @@ import {
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { PORTS_FOOTPRINT_DATAVIEW_SLUG, VESSEL_TRACK_DATAVIEW_TEMPLATES } from 'data/workspaces'
+import { PORTS_FOOTPRINT_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -34,6 +34,7 @@ import {
   getVesselEncounterTrackDataviewInstance,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import {
   getVesselGroupActivityDataviewInstance,
   getVesselGroupDataviewInstance,
@@ -71,15 +72,6 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
-
-export const selectVesselTemplateDataviews = createSelector(
-  [selectAllDataviews],
-  (vesselDataviews) => {
-    return vesselDataviews?.filter((dataview) =>
-      VESSEL_TRACK_DATAVIEW_TEMPLATES.includes(dataview.slug)
-    )
-  }
-)
 
 const EMPTY_ARRAY: [] = []
 export const selectWorkspaceDataviewInstancesMerged = createSelector(
@@ -166,10 +158,6 @@ export const selectDataviewInstancesInjected = createSelector(
           highlightEventEndTime: eventEndDateTime?.toMillis(),
           vesselTemplateDataviews,
         })
-        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-          urlVesselId,
-          vesselDatasets
-        )
         if (dataviewInstance) {
           const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
             urlVesselId,

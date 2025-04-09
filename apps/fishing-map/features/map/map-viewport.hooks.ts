@@ -3,23 +3,15 @@ import { useSelector } from 'react-redux'
 import type { MapViewProps, ViewStateMap, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
 import { debounce, throttle } from 'es-toolkit'
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 
-import { DEFAULT_VIEWPORT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { boundsAtom } from 'features/map/map-bounds.hooks'
+import { boundsAtom, viewStateAtom } from 'features/map/map.atoms'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { updateUrlViewport } from 'routes/routes.actions'
-import { getUrlViewstateNumericParam } from 'utils/url'
 
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000
-
-const viewStateAtom = atom<ViewStateMap<MapView>>({
-  longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
-  latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
-  zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
-})
 
 export const useMapViewState = () => {
   return useAtomValue(viewStateAtom)

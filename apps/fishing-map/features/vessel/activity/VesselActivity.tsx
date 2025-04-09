@@ -13,6 +13,7 @@ import {
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import ActivityByType from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
+import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/event/event-scroll.hooks'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
@@ -23,8 +24,6 @@ import type { VesselProfileActivityMode } from '../vessel.types'
 import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
 import styles from './VesselActivity.module.css'
-
-export const ACTIVITY_CONTAINER_ID = 'vessel-activity-container'
 
 const VesselActivity = () => {
   const { t } = useTranslation()

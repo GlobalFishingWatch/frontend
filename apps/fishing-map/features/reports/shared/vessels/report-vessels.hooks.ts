@@ -21,7 +21,7 @@ import {
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import { setResource } from 'features/resources/resources.slice'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'

@@ -10,7 +10,6 @@ import type { EventType } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { setSelectedHighlightedEvent } from 'features/timebar/timebar.slice'
-import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/VesselActivity'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import {
   selectVesselProfileEvents,
@@ -28,6 +27,8 @@ const virtuosoScrollAtom = atom<{
   isScrollingRef: { current: false },
   selectedEventId: undefined,
 })
+
+export const ACTIVITY_CONTAINER_ID = 'vessel-activity-container'
 
 export function useVirtuosoScroll(debouncedTime = 150) {
   const { isScrollingRef, virtuosoRef } = useAtomValue(virtuosoScrollAtom)

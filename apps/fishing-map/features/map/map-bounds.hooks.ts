@@ -1,27 +1,18 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { FlyToInterpolator } from '@deck.gl/core'
 import { fitBounds } from '@math.gl/web-mercator'
-import { atom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
+import { boundsAtom } from 'features/map/map.atoms'
 import { useMapSetViewState, useMapViewport } from 'features/map/map-viewport.hooks'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import type { Bbox } from 'types'
 
 import { MAP_CANVAS_ID } from './map.config'
-
-type BoundsAtom = MiniglobeBounds & { isTransitioning?: boolean }
-
-export const boundsAtom = atom<BoundsAtom>({
-  north: 90,
-  south: -90,
-  west: -180,
-  east: 180,
-  isTransitioning: false,
-})
 
 export const useMapBounds = (): { bounds: MiniglobeBounds } => {
   const [bounds, setBounds] = useAtom(boundsAtom)
