@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -80,7 +81,14 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                       )}
                       <div className={styles.centered}>
                         <span className={styles.rowText}>
-                          <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
+                          <VesselLink
+                            vesselId={event.vessel.id}
+                            datasetId={event.vessel.dataset}
+                            query={{
+                              vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                              vesselSelfReportedId: event.vessel.id,
+                            }}
+                          >
                             {formatInfoField(event.vessel?.name, 'shipname')}
                           </VesselLink>
                         </span>
@@ -106,6 +114,10 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                             <VesselLink
                               vesselId={event.encounter.vessel?.id}
                               datasetId={event.encounter.vessel?.dataset}
+                              query={{
+                                vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                                vesselSelfReportedId: event.encounter.vessel?.id,
+                              }}
                             >
                               {formatInfoField(event.encounter.vessel?.name, 'shipname')}
                             </VesselLink>
@@ -127,6 +139,10 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                   <VesselLink
                     vesselId={event.vessel.id}
                     datasetId={event.vessel.dataset}
+                    query={{
+                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                      vesselSelfReportedId: event.vessel.id,
+                    }}
                     eventId={event.id ? event.id.split('.')[0] : undefined}
                     eventType={'encounter'}
                     showTooltip={false}

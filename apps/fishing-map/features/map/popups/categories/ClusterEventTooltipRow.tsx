@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -54,6 +54,10 @@ function ClusterEventTooltipRow({ feature, showFeaturesDetails }: ClusterEventTo
                 <VesselLink
                   vesselId={event.vessel.id}
                   datasetId={infoDataset?.id}
+                  query={{
+                    vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                    vesselSelfReportedId: event.vessel.id,
+                  }}
                   className={styles.marginRight}
                 >
                   {formatInfoField(event.vessel.name, 'shipname')}
