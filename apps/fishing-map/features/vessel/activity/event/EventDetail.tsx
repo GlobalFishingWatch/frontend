@@ -76,6 +76,12 @@ const EventDetail = ({ event }: ActivityContentProps) => {
       <ul className={styles.detailContainer}>
         <label className={styles.blockLabel}>{t(`eventInfo.eventInfo`, 'Event Info')}</label>
         <TimeFields />
+        <li>
+          <label className={styles.fieldLabel}>
+            {t(`eventInfo.medianSpeedKnots`, 'median speed (knots)')}
+          </label>
+          <span>{event.encounter?.medianSpeedKnots?.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
+        </li>
         <div className={styles.divider} />
         <label className={styles.blockLabel}>
           {t(`eventInfo.encounteredVesselName`, 'Encountered vessel')}
