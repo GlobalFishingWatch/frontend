@@ -15,14 +15,12 @@ import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selecto
 import { setModalOpen } from 'features/modals/modals.slice'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectUserVesselGroups } from 'features/user/selectors/user.permissions.selectors'
-import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import {
   selectVesselGroupsStatusId,
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
-import VesselGroupListTooltip from 'features/vessel-groups/VesselGroupListTooltip'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 

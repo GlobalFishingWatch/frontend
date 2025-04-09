@@ -1,9 +1,8 @@
 import { Fragment, useCallback, useMemo } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -19,13 +18,13 @@ import { selectAllVisibleVesselGroups } from 'features/vessel-groups/vessel-grou
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
-import styles from './LayerLibraryUserPanel.module.css'
+import styles from './LayerLibraryVesselGroupPanel.module.css'
 
 const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) => {
   const { t } = useTranslation()
@@ -47,6 +46,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
     [dataviews, searchQuery]
   )
   const onAddVesselGroupClick = useCallback(() => {
+    dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
     dispatch(setVesselGroupsModalOpen(true))
     dispatch(setWorkspaceSuggestSave(true))
   }, [dispatch])
@@ -57,7 +57,8 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
       if (dataviewInstance && action === 'add') {
         upsertDataviewInstance(dataviewInstance)
       } else if (dataviewInstance && action === 'remove') {
-        deleteDataviewInstance(dataviewInstance.id)
+        //TO DO: check if this is the right way to remove the dataview instance
+        deleteDataviewInstance(vesselGroupId)
       }
       dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
     },
@@ -66,26 +67,19 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
 
   const SectionComponent = () => {
     if (guestUser) {
-      return (
-        <div className={styles.emptyState}>
-          <Trans i18nKey="dataset.uploadVesselGroups">
-            <LocalStorageLoginLink className={styles.link}>Login </LocalStorageLoginLink>
-            to access your vessel groups
-          </Trans>
-        </div>
-      )
+      return RegisterOrLoginToUpload()
     }
 
     if (workspaceVesselGroupsStatus === AsyncReducerStatus.Loading) {
       return (
-        <div className={cx(styles.emptyState, styles.center)}>
+        <div className={cx(styles.placeholder, styles.center)}>
           <Spinner />
         </div>
       )
     }
 
     return (
-      <ul className={styles.userDatasetList}>
+      <ul className={styles.vesselGroupDatasets}>
         {filteredDataview.length > 0 ? (
           filteredDataview?.map((vesselGroup) => {
             return (
@@ -109,12 +103,24 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                       }}
                     />
                   </VesselGroupReportLink>
-                  <IconButton
-                    tooltip={t('workspace.addLayer', 'Add to workspace')}
-                    icon="plus"
-                    onClick={() => toggleAddToWorkspace(vesselGroup.id, 'add')}
-                    disabled={!!activeDataviews.find((d) => d.vesselGroup?.id === vesselGroup.id)}
-                  />
+
+                  {activeDataviews.find((d) => d.vesselGroup?.id === vesselGroup.id) ? (
+                    <IconButton
+                      tooltip={t(
+                        'search.vesselAlreadyInWorkspace',
+                        'This vessel is already in your workspace'
+                      )}
+                      icon="plus"
+                      onClick={() => toggleAddToWorkspace(vesselGroup.id, 'remove')}
+                      disabled
+                    />
+                  ) : (
+                    <IconButton
+                      tooltip={t('workspace.addLayer', 'Add to workspace')}
+                      icon="plus"
+                      onClick={() => toggleAddToWorkspace(vesselGroup.id, 'add')}
+                    />
+                  )}
                 </div>
               </li>
             )

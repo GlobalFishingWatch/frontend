@@ -12,11 +12,13 @@ import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import { CURRENTS_DATAVIEW_SLUG } from 'data/workspaces'
+import { groupDatasetsByGeometryType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
 import { selectLayerLibraryModal } from 'features/modals/modals.slice'
+import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { upperFirst } from 'utils/info'
 
@@ -36,6 +38,10 @@ const LayerLibrary: FC = () => {
     initialCategory || DataviewCategory.Activity
   )
   const [currentSubcategory, setCurrentSubcategory] = useState<DataviewCategory | null>(null)
+  const userDatasets = useSelector(selectUserDatasets)
+  const userGeometries = useMemo(() => {
+    return groupDatasetsByGeometryType(userDatasets)
+  }, [userDatasets])
 
   const dataviews = useSelector(selectAllDataviews)
 
@@ -75,21 +81,21 @@ const LayerLibrary: FC = () => {
     [layersResolved]
   )
 
-  const extendedCategories = useMemo(
-    () => [
+  const extendedCategories = useMemo(() => {
+    const userSubcategories = []
+    if (userGeometries.polygons?.length) userSubcategories.push(DataviewCategory.UserPolygons)
+    if (userGeometries.points?.length) userSubcategories.push(DataviewCategory.UserPoints)
+    if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
+
+    return [
       ...uniqCategories.map((category) => ({ category, subcategories: [] })),
       { category: DataviewCategory.VesselGroups, subcategories: [] },
       {
         category: DataviewCategory.User,
-        subcategories: [
-          DataviewCategory.UserPolygons,
-          DataviewCategory.UserPoints,
-          DataviewCategory.UserTracks,
-        ],
+        subcategories: userSubcategories,
       },
-    ],
-    [uniqCategories]
-  )
+    ]
+  }, [uniqCategories, userGeometries])
 
   const scrollToCategory = useCallback(
     ({
