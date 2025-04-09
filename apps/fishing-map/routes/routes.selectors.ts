@@ -200,6 +200,7 @@ export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
 export const selectUrlBufferValueQuery = selectQueryParam('reportBufferValue')
 export const selectUrlBufferUnitQuery = selectQueryParam('reportBufferUnit')
 export const selectUrlBufferOperationQuery = selectQueryParam('reportBufferOperation')
+export const selectUrlLoadVesselsQuery = selectQueryParam('loadVessels')
 
 // Dataviews
 export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')

@@ -52,7 +52,10 @@ import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import {
+  selectIsVesselGroupReportLocation,
+  selectUrlLoadVesselsQuery,
+} from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector'
@@ -85,6 +88,7 @@ function ActivityReport() {
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const loadVesselsUrlQuery = useSelector(selectUrlLoadVesselsQuery)
 
   // TODO get this from datasets config
   const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
@@ -127,6 +131,13 @@ function ActivityReport() {
       }
     }
   }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
+
+  useEffect(() => {
+    if (loadVesselsUrlQuery && reportDataviews) {
+      dispatch(setReportRequestHash(''))
+      dispatchFetchReport()
+    }
+  }, [dispatch, dispatchFetchReport, loadVesselsUrlQuery, reportDataviews])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {
