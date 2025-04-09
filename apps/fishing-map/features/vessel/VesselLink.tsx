@@ -8,6 +8,7 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
@@ -78,6 +79,11 @@ const VesselLink = ({
       }
       if (onClick) {
         onClick(e, vesselId)
+        trackEvent({
+          category: TrackCategory.SearchVessel,
+          action: 'Click on vessel name after searching for a vessel',
+          label: 'VesselId:' + vesselId,
+        })
       }
     },
     [dispatch, fitBounds, onClick, vesselId, vesselInfoDataId]
