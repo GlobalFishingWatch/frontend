@@ -113,7 +113,7 @@ export type SupportedEnvDatasetSchema =
   | 'period' // species-mm
   | 'scenario' // species-mm
 type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
-type SupportedEventsDatasetSchema = 'duration'
+type SupportedEventsDatasetSchema = 'duration' | 'encounter_type' | 'type'
 
 const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
 const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups', 'period', 'scenario']
@@ -539,6 +539,10 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
   return allowedDatasets
 }
 
+export const getAllDatasetAllowedFields = (dataset: Dataset) => {
+  return [...(dataset.fieldsAllowed || []), ...Object.keys(dataset.filters || {})]
+}
+
 const isDataviewSchemaSupported = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
@@ -547,7 +551,8 @@ const isDataviewSchemaSupported = (
   const schemaSupported = dataview?.datasets
     ?.filter((dataset) => activeDatasets?.includes(dataset.id))
     .every((dataset) => {
-      const fieldAllowed = dataset.fieldsAllowed.includes(schema)
+      const fieldsAllowed = getAllDatasetAllowedFields(dataset)
+      const fieldAllowed = fieldsAllowed.includes(schema)
       const incompatibleSelection = getIncompatibleFilterSelection(dataview, schema)
       return fieldAllowed && incompatibleSelection?.length === 0
     })
@@ -601,7 +606,7 @@ export const getDatasetSchemaItem = (
   schema: SupportedDatasetSchema,
   schemaOrigin: SchemaOriginParam = 'selfReportedInfo'
 ) => {
-  const schemaItem = dataset?.schema?.[schema] as DatasetSchemaItem
+  const schemaItem = (dataset?.schema?.[schema] || dataset?.filters?.[schema]) as DatasetSchemaItem
   if (schemaItem) {
     return schemaItem
   }
@@ -669,7 +674,10 @@ export const isFieldInFieldsAllowed = ({
 }
 
 const datasetHasFieldsAllowed = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  return isFieldInFieldsAllowed({ field: schema, fieldsAllowed: dataset.fieldsAllowed })
+  return isFieldInFieldsAllowed({
+    field: schema,
+    fieldsAllowed: getAllDatasetAllowedFields(dataset),
+  })
 }
 
 const getSupportedSchemaFieldsDatasets = (
@@ -970,7 +978,7 @@ export const getSchemaFiltersInDataview = (
   { vesselGroups, fieldsToInclude, isGuestUser } = {} as GetSchemaInDataviewParams
 ): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
   let fieldsIds = uniq(
-    dataview.datasets?.flatMap((d) => d.fieldsAllowed || []) || []
+    dataview.datasets?.flatMap((dataset) => getAllDatasetAllowedFields(dataset)) || []
   ) as SupportedDatasetSchema[]
   if (fieldsToInclude?.length) {
     fieldsIds = fieldsIds.filter((f) => fieldsToInclude.includes(f))
