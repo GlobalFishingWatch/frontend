@@ -33,7 +33,7 @@ import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { FileType } from 'utils/files'
-import { getFileFromGeojson, getFileName,getFileType } from 'utils/files'
+import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 
 import { TimeFieldsGroup } from './TimeFieldsGroup'
 
@@ -117,7 +117,7 @@ function NewTrackDataset({
               t('datasetUpload.errors.invalidDatesFeatures', {
                 defaultValue:
                   "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-                featureType: t('common.points', 'points'),
+                featureType: t('dataset.typePoints', 'points'),
               })
             )
           } else {
@@ -152,7 +152,7 @@ function NewTrackDataset({
           t('datasetUpload.errors.invalidDatesFeatures', {
             defaultValue:
               "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-            featureType: t('common.points', 'points'),
+            featureType: t('dataset.typePoints', 'points'),
           })
         )
       } else {

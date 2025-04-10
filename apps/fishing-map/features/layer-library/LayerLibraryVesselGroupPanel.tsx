@@ -121,23 +121,11 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                     />
                   </VesselGroupReportLink>
 
-                  {activeDataviews.find((d) => d.vesselGroup?.id === vesselGroup.id) ? (
-                    <IconButton
-                      tooltip={t(
-                        'search.vesselAlreadyInWorkspace',
-                        'This vessel is already in your workspace'
-                      )}
-                      icon="plus"
-                      onClick={() => toggleAddToWorkspace(vesselGroup.id, 'remove')}
-                      disabled
-                    />
-                  ) : (
-                    <IconButton
-                      tooltip={t('workspace.addLayer', 'Add to workspace')}
-                      icon="plus"
-                      onClick={() => toggleAddToWorkspace(vesselGroup.id, 'add')}
-                    />
-                  )}
+                  <IconButton
+                    tooltip={t('workspace.addLayer', 'Add to workspace')}
+                    icon="plus"
+                    onClick={() => toggleAddToWorkspace(vesselGroup.id, 'add')}
+                  />
                 </div>
               </li>
             )
