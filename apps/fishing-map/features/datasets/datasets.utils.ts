@@ -805,7 +805,7 @@ export const getCommonSchemaFieldsInDataview = (
   const cleanSchemaFields =
     compatibilityOperation === 'every' ? intersection(...schemaFields) : uniq(schemaFields.flat())
   const datasetId = removeDatasetVersion(activeDatasets?.[0]?.id as string)
-  const commonSchemaFields = schemaFields
+  let commonSchemaFields = schemaFields
     ? cleanSchemaFields.map((field) => {
         let label =
           schemaType === 'range' || schemaType === 'number'
@@ -820,7 +820,8 @@ export const getCommonSchemaFieldsInDataview = (
           } else if (
             dataview.category !== DataviewCategory.Context &&
             schema !== 'vessel_id' &&
-            schema !== 'speed'
+            schema !== 'speed' &&
+            schema !== 'encounter_type'
           ) {
             label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
           }
@@ -828,6 +829,16 @@ export const getCommonSchemaFieldsInDataview = (
         return { id: field?.toString(), label: label as string }
       })
     : []
+
+  if (schema === 'encounter_type') {
+    commonSchemaFields = commonSchemaFields.filter((field, index, self) => {
+      const [first, second] = field.id.split('-')
+      const reverseId = `${second}-${first}`
+      const isReverse = !self.some((f, i) => i < index && f.id === reverseId)
+      return isReverse
+    })
+  }
+
   return commonSchemaFields.sort(sortFields)
 }
 
