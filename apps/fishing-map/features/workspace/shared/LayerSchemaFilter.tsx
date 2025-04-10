@@ -70,8 +70,8 @@ export const getValueLabelByUnit = (
   { unit, unitLabel = true } = {} as { unit?: string; unitLabel?: boolean }
 ): string => {
   const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
-  if (transformConfig && unitLabel) {
-    return `${formatI18nNumber(getValueByUnit(value, { unit }))} ${transformConfig.label}`
+  if (unitLabel) {
+    return `${formatI18nNumber(getValueByUnit(value, { unit }))} ${transformConfig?.label || unit}`
   }
   return formatI18nNumber(getValueByUnit(value, { unit })) as string
 }

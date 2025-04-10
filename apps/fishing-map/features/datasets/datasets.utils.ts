@@ -870,11 +870,11 @@ const getSchemaOptionsSelectedInDataview = (
     return [
       {
         id: min.toString(),
-        label: formatI18nNumber(min),
+        label: min,
       },
       {
         id: max.toString(),
-        label: formatI18nNumber(max),
+        label: max,
       },
     ]
   }
