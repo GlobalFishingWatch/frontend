@@ -1164,7 +1164,33 @@
     "name": "Événements de rencontre (AIS)",
     "description": "Identifié à partir des données AIS comme des lieux où deux navires (un navire de transport et un navire de pêche) se trouvaient à moins de 500 mètres l'un de l'autre pendant au moins 2 heures et se déplaçaient à une vitesse médiane inférieure à 2 noeuds, à au moins 10 km d'un mouillage côtier.",
     "schema": {
-      "duration": "durée"
+      "duration": "durée",
+      "vessel-types": {
+        "keyword": "vessel-types",
+        "enum": {
+          "CARGO": "CARGO",
+          "DISCREPANCY": "DISCREPANCY",
+          "CARRIER": "CARRIER",
+          "FISHING": "FISHING",
+          "GEAR": "GEAR",
+          "OTHER": "OTHER",
+          "PASSENGER": "PASSENGER",
+          "SEISMIC_VESSEL": "SEISMIC_VESSEL",
+          "SUPPORT": "SUPPORT"
+        }
+      },
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "CARRIER-FISHING": "CARRIER-FISHING",
+          "SUPPORT-FISHING": "SUPPORT-FISHING",
+          "FISHING-CARRIER": "FISHING-CARRIER",
+          "FISHING-BUNKER": "FISHING-BUNKER",
+          "FISHING-FISHING": "FISHING-FISHING",
+          "CARRIER-BUNKER": "CARRIER-BUNKER",
+          "FISHING-SUPPORT": "FISHING-SUPPORT"
+        }
+      }
     }
   },
   "public-global-fishing-effort": {
@@ -1177,7 +1203,23 @@
   },
   "public-global-fishing-events": {
     "name": "Fishing Events (AIS)",
-    "description": "The dataset contains fishing events for AIS"
+    "description": "The dataset contains fishing events for AIS",
+    "schema": {
+      "vessel-types": {
+        "keyword": "vessel-types",
+        "enum": {
+          "CARGO": "CARGO",
+          "DISCREPANCY": "DISCREPANCY",
+          "CARRIER": "CARRIER",
+          "FISHING": "FISHING",
+          "GEAR": "GEAR",
+          "OTHER": "OTHER",
+          "PASSENGER": "PASSENGER",
+          "SEISMIC_VESSEL": "SEISMIC_VESSEL",
+          "SUPPORT": "SUPPORT"
+        }
+      }
+    }
   },
   "public-global-fishing-vessels": {
     "name": "AIS (Fishing Vessels)",
@@ -1196,7 +1238,23 @@
   },
   "public-global-loitering-events": {
     "name": "Loitering Events (AIS)",
-    "description": "The dataset contains loitering events for AIS"
+    "description": "The dataset contains loitering events for AIS",
+    "schema": {
+      "vessel-types": {
+        "keyword": "vessel-types",
+        "enum": {
+          "CARGO": "CARGO",
+          "DISCREPANCY": "DISCREPANCY",
+          "CARRIER": "CARRIER",
+          "FISHING": "FISHING",
+          "GEAR": "GEAR",
+          "OTHER": "OTHER",
+          "PASSENGER": "PASSENGER",
+          "SEISMIC_VESSEL": "SEISMIC_VESSEL",
+          "SUPPORT": "SUPPORT"
+        }
+      }
+    }
   },
   "public-global-nitrate": {
     "name": "Concentration d'azote (NO3)",
@@ -1223,7 +1281,31 @@
   },
   "public-global-port-visits-events": {
     "name": "Port Visits Events (AIS)",
-    "description": "The dataset contains port visits events for AIS (Confidence 2)"
+    "description": "The dataset contains port visits events for AIS (Confidence 2)",
+    "schema": {
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      },
+      "vessel-types": {
+        "keyword": "vessel-types",
+        "enum": {
+          "CARGO": "CARGO",
+          "DISCREPANCY": "DISCREPANCY",
+          "CARRIER": "CARRIER",
+          "FISHING": "FISHING",
+          "GEAR": "GEAR",
+          "OTHER": "OTHER",
+          "PASSENGER": "PASSENGER",
+          "SEISMIC_VESSEL": "SEISMIC_VESSEL",
+          "SUPPORT": "SUPPORT"
+        }
+      }
+    }
   },
   "public-global-ports-footprint": {
     "name": "Anchorages convex hulls by portId",
