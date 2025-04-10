@@ -7,6 +7,7 @@ import {
   selectReportEventsVessels,
 } from 'queries/report-events-stats-api'
 
+import type { DataviewDatasetFilter } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import {
@@ -57,12 +58,30 @@ export const selectFetchEventsVesselsParams = createSelector(
       (dataview) => dataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.id || []
     )
     const filters = eventsDataviews?.flatMap((dataview) => {
-      return {
+      const filter = {
         portId,
         vesselGroupId: reportVesselGroupId,
         ...getDataviewFilters(dataview),
         // TODO:CVP2 add other filters using this
+      } as DataviewDatasetFilter
+
+      const durationSchema = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.schema
+        ?.duration
+      const addMinDuration =
+        durationSchema !== undefined &&
+        filter.duration?.[0] !== undefined &&
+        filter.duration[0].toString() !== durationSchema.enum?.[0].toString()
+      const addMaxDuration =
+        durationSchema !== undefined &&
+        filter?.duration?.[1] !== undefined &&
+        filter.duration[1].toString() !== durationSchema.enum?.[1].toString()
+      if (addMinDuration) {
+        filter.minDuration = parseInt(filter.duration[0])
       }
+      if (addMaxDuration) {
+        filter.maxDuration = parseInt(filter.duration[1])
+      }
+      return filter
     })
 
     return {

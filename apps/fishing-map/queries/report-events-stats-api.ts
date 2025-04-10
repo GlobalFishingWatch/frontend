@@ -14,6 +14,8 @@ export type BaseReportEventsVesselsParamsFilters = {
   encounter_type?: string
   confidence?: number
   flag?: string[]
+  minDuration?: number
+  maxDuration?: number
 }
 export type BaseReportEventsVesselsParams = {
   start: string
@@ -80,6 +82,8 @@ function getBaseStatsQuery({
     ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),
     ...(filters?.confidence && { confidences: [filters.confidence] }),
     ...(filters?.flag && { flags: filters.flag }),
+    ...(filters.minDuration && { 'min-duration': filters.minDuration }),
+    ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
   }
   return query
 }
