@@ -1165,20 +1165,6 @@
     "description": "crwdns83472:0crwdne83472:0",
     "schema": {
       "duration": "crwdns83434:0crwdne83434:0",
-      "vessel-types": {
-        "keyword": "crwdns84328:0crwdne84328:0",
-        "enum": {
-          "CARGO": "crwdns84330:0crwdne84330:0",
-          "DISCREPANCY": "crwdns84332:0crwdne84332:0",
-          "CARRIER": "crwdns84334:0crwdne84334:0",
-          "FISHING": "crwdns84336:0crwdne84336:0",
-          "GEAR": "crwdns84338:0crwdne84338:0",
-          "OTHER": "crwdns84340:0crwdne84340:0",
-          "PASSENGER": "crwdns84342:0crwdne84342:0",
-          "SEISMIC_VESSEL": "crwdns84344:0crwdne84344:0",
-          "SUPPORT": "crwdns84346:0crwdne84346:0"
-        }
-      },
       "encounter_type": {
         "keyword": "crwdns84348:0crwdne84348:0",
         "enum": {
@@ -1205,18 +1191,18 @@
     "name": "crwdns83934:0crwdne83934:0",
     "description": "crwdns83936:0crwdne83936:0",
     "schema": {
-      "vessel-types": {
-        "keyword": "crwdns84364:0crwdne84364:0",
+      "type": {
+        "keyword": "crwdns84432:0crwdne84432:0",
         "enum": {
-          "CARGO": "crwdns84366:0crwdne84366:0",
-          "DISCREPANCY": "crwdns84368:0crwdne84368:0",
-          "CARRIER": "crwdns84370:0crwdne84370:0",
-          "FISHING": "crwdns84372:0crwdne84372:0",
-          "GEAR": "crwdns84374:0crwdne84374:0",
-          "OTHER": "crwdns84376:0crwdne84376:0",
-          "PASSENGER": "crwdns84378:0crwdne84378:0",
-          "SEISMIC_VESSEL": "crwdns84380:0crwdne84380:0",
-          "SUPPORT": "crwdns84382:0crwdne84382:0"
+          "CARGO": "crwdns84434:0crwdne84434:0",
+          "DISCREPANCY": "crwdns84436:0crwdne84436:0",
+          "CARRIER": "crwdns84438:0crwdne84438:0",
+          "FISHING": "crwdns84440:0crwdne84440:0",
+          "GEAR": "crwdns84442:0crwdne84442:0",
+          "OTHER": "crwdns84444:0crwdne84444:0",
+          "PASSENGER": "crwdns84446:0crwdne84446:0",
+          "SEISMIC_VESSEL": "crwdns84448:0crwdne84448:0",
+          "SUPPORT": "crwdns84450:0crwdne84450:0"
         }
       }
     }
@@ -1240,18 +1226,18 @@
     "name": "crwdns66397:0crwdne66397:0",
     "description": "crwdns66399:0crwdne66399:0",
     "schema": {
-      "vessel-types": {
-        "keyword": "crwdns84384:0crwdne84384:0",
+      "type": {
+        "keyword": "crwdns84452:0crwdne84452:0",
         "enum": {
-          "CARGO": "crwdns84386:0crwdne84386:0",
-          "DISCREPANCY": "crwdns84388:0crwdne84388:0",
-          "CARRIER": "crwdns84390:0crwdne84390:0",
-          "FISHING": "crwdns84392:0crwdne84392:0",
-          "GEAR": "crwdns84394:0crwdne84394:0",
-          "OTHER": "crwdns84396:0crwdne84396:0",
-          "PASSENGER": "crwdns84398:0crwdne84398:0",
-          "SEISMIC_VESSEL": "crwdns84400:0crwdne84400:0",
-          "SUPPORT": "crwdns84402:0crwdne84402:0"
+          "CARGO": "crwdns84454:0crwdne84454:0",
+          "DISCREPANCY": "crwdns84456:0crwdne84456:0",
+          "CARRIER": "crwdns84458:0crwdne84458:0",
+          "FISHING": "crwdns84460:0crwdne84460:0",
+          "GEAR": "crwdns84462:0crwdne84462:0",
+          "OTHER": "crwdns84464:0crwdne84464:0",
+          "PASSENGER": "crwdns84466:0crwdne84466:0",
+          "SEISMIC_VESSEL": "crwdns84468:0crwdne84468:0",
+          "SUPPORT": "crwdns84470:0crwdne84470:0"
         }
       }
     }
@@ -1283,26 +1269,26 @@
     "name": "crwdns83804:0crwdne83804:0",
     "description": "crwdns83806:0crwdne83806:0",
     "schema": {
+      "type": {
+        "keyword": "crwdns84472:0crwdne84472:0",
+        "enum": {
+          "CARGO": "crwdns84474:0crwdne84474:0",
+          "DISCREPANCY": "crwdns84476:0crwdne84476:0",
+          "CARRIER": "crwdns84478:0crwdne84478:0",
+          "FISHING": "crwdns84480:0crwdne84480:0",
+          "GEAR": "crwdns84482:0crwdne84482:0",
+          "OTHER": "crwdns84484:0crwdne84484:0",
+          "PASSENGER": "crwdns84486:0crwdne84486:0",
+          "SEISMIC_VESSEL": "crwdns84488:0crwdne84488:0",
+          "SUPPORT": "crwdns84490:0crwdne84490:0"
+        }
+      },
       "confidences": {
         "keyword": "crwdns84404:0crwdne84404:0",
         "enum": {
           "2": "crwdns84406:0crwdne84406:0",
           "3": "crwdns84408:0crwdne84408:0",
           "4": "crwdns84410:0crwdne84410:0"
-        }
-      },
-      "vessel-types": {
-        "keyword": "crwdns84412:0crwdne84412:0",
-        "enum": {
-          "CARGO": "crwdns84414:0crwdne84414:0",
-          "DISCREPANCY": "crwdns84416:0crwdne84416:0",
-          "CARRIER": "crwdns84418:0crwdne84418:0",
-          "FISHING": "crwdns84420:0crwdne84420:0",
-          "GEAR": "crwdns84422:0crwdne84422:0",
-          "OTHER": "crwdns84424:0crwdne84424:0",
-          "PASSENGER": "crwdns84426:0crwdne84426:0",
-          "SEISMIC_VESSEL": "crwdns84428:0crwdne84428:0",
-          "SUPPORT": "crwdns84430:0crwdne84430:0"
         }
       }
     }
