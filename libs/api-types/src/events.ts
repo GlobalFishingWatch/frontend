@@ -55,6 +55,11 @@ export interface EventAuthorization {
   rfmo: string
 }
 
+export interface EventVesselAuthorization {
+  hasPubliclyListedAuthorization: 'true' | 'false'
+  rfmo: string
+}
+
 export interface EventVessel {
   id: string
   ssvid: string
@@ -64,6 +69,7 @@ export interface EventVessel {
   type: EventVesselTypeEnum
   nextPort?: EventNextPort
   authorizations?: EventAuthorization[]
+  publicAuthorizations?: EventVesselAuthorization[]
 }
 
 export type RFMOs =

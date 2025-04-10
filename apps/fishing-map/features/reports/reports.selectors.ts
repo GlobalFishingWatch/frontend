@@ -6,6 +6,7 @@ import {
   selectActiveEventsReportSubCategories,
   selectActiveReportCategories,
 } from 'features/dataviews/selectors/dataviews.reports.selectors'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
   selectIsVesselGroupReportLocation,
   selectLocationAreaId,
@@ -13,7 +14,6 @@ import {
   selectReportId,
 } from 'routes/routes.selectors'
 
-import { WORLD_REGION_ID } from './tabs/activity/reports-activity.slice'
 import {
   selectReportActivitySubCategorySelector,
   selectReportCategorySelector,
@@ -52,7 +52,7 @@ export const selectReportAreaId = createSelector(
   [selectLocationAreaId, selectCurrentReport, selectIsVesselGroupReportLocation],
   (locationAreaId, report, isVesselGroupReportLocation) => {
     if (isVesselGroupReportLocation) {
-      return WORLD_REGION_ID
+      return ENTIRE_WORLD_REPORT_AREA_ID
     }
     return locationAreaId || report?.areaId || ''
   }
@@ -88,6 +88,19 @@ export const selectReportCategory = createSelector(
       return reportCategory as ReportCategory
     }
     return activeCategories[0]
+  }
+)
+
+export const selectReportUnit = createSelector(
+  [selectReportCategory],
+  (reportCategory): 'hour' | 'detection' | 'event' | undefined => {
+    if (reportCategory === ReportCategory.Activity) {
+      return 'hour'
+    } else if (reportCategory === ReportCategory.Detections) {
+      return 'detection'
+    } else if (reportCategory === ReportCategory.Events) {
+      return 'event'
+    }
   }
 )
 

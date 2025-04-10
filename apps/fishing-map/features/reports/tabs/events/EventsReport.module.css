@@ -74,3 +74,8 @@
   gap: var(--space-M);
   flex-direction: column;
 }
+
+.cover {
+  position: absolute;
+  inset: 0;
+}

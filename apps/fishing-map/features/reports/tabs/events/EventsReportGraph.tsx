@@ -23,8 +23,12 @@ import type {
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { selectIsResponsiveVisualizationEnabled } from 'features/debug/debug.selectors'
 import i18n from 'features/i18n/i18n'
+import {
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+} from 'features/reports/report-area/area-reports.selectors'
 import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
@@ -101,10 +105,10 @@ const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: E
             {data.vessel?.flag && <span>({formatInfoField(data.vessel?.flag, 'flag')})</span>}
           </span>
         </div>
-        {eventType === 'encounter' && data.encounter?.vessel?.flag && (
+        {eventType === 'encounter' && data.encounter?.vessel && (
           <div className={styles.property}>
-            <label>{`${formatInfoField(data.encounter?.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}</label>
-            <span>{`${formatInfoField(data.encounter?.vessel?.name, 'shipname')} (${formatInfoField(data.encounter?.vessel?.flag, 'flag')})`}</span>
+            <label>{`${formatInfoField(data.encounter.vessel.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}</label>
+            <span>{`${formatInfoField(data.encounter.vessel.name, 'shipname')} ${data.encounter.vessel.flag ? `(${formatInfoField(data.encounter.vessel.flag, 'flag')}` : ''}`}</span>
           </div>
         )}
       </div>
@@ -158,9 +162,11 @@ export default function EventsReportGraph({
   const interval = getFourwingsInterval(startMillis, endMillis)
   const filtersMemo = useMemoCompare(filters)
   const includesMemo = useMemoCompare(includes)
-  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
   const reportAreaDataset = useSelector(selectReportDatasetId)
   const reportAreaId = useSelector(selectReportAreaId)
+  const reportBufferValue = useSelector(selectReportBufferValue)
+  const reportBufferUnit = useSelector(selectReportBufferUnit)
+  const reportBufferOperation = useSelector(selectReportBufferOperation)
 
   let icon: ReactElement | undefined
   if (eventType === 'encounter') {
@@ -180,9 +186,11 @@ export default function EventsReportGraph({
         end,
         filters: filtersMemo || {},
         dataset: datasetId,
-        // TODO:CVP uncomment once the API takes the parameters
-        // regionDataset: reportAreaDataset,
-        // regionId: reportAreaId,
+        regionDataset: reportAreaDataset,
+        regionId: reportAreaId,
+        bufferValue: reportBufferValue,
+        bufferUnit: reportBufferUnit,
+        bufferOperation: reportBufferOperation,
       }),
       ...(includesMemo && { includes: includesMemo }),
       limit: 1000,
@@ -194,7 +202,19 @@ export default function EventsReportGraph({
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
-  }, [start, end, filtersMemo, datasetId, reportAreaDataset, reportAreaId, includesMemo, interval])
+  }, [
+    start,
+    end,
+    filtersMemo,
+    datasetId,
+    reportAreaDataset,
+    reportAreaId,
+    reportBufferValue,
+    reportBufferUnit,
+    reportBufferOperation,
+    includesMemo,
+    interval,
+  ])
 
   if (!data.length) {
     return null
@@ -208,7 +228,7 @@ export default function EventsReportGraph({
         timeseriesInterval={interval}
         aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
-        getIndividualData={isResponsiveVisualizationEnabled ? getIndividualData : undefined}
+        getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}
         aggregatedTooltip={<AggregatedGraphTooltip />}
         individualTooltip={<IndividualGraphTooltip eventType={eventType} />}

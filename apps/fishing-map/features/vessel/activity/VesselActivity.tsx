@@ -13,13 +13,14 @@ import {
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import ActivityByType from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
+import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/event/event-scroll.hooks'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
+import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import type { VesselProfileActivityMode } from '../vessel.types'
-import { useVesselProfileLayer } from '../vessel-bounds.hooks'
 import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
 import styles from './VesselActivity.module.css'
@@ -107,8 +108,10 @@ const VesselActivity = () => {
           <Spinner />
         </div>
       )}
-      {!eventsLoadingDebounce && activityMode === 'type' && <ActivityByType />}
-      {!eventsLoadingDebounce && activityMode === 'voyage' && <ActivityByVoyage />}
+      <div id={ACTIVITY_CONTAINER_ID}>
+        {!eventsLoadingDebounce && activityMode === 'type' && <ActivityByType />}
+        {!eventsLoadingDebounce && activityMode === 'voyage' && <ActivityByVoyage />}
+      </div>
     </Fragment>
   )
 }

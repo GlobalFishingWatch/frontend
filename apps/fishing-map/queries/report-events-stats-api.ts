@@ -14,6 +14,8 @@ export type BaseReportEventsVesselsParamsFilters = {
   encounter_type?: string
   confidence?: number
   flag?: string[]
+  minDuration?: number
+  maxDuration?: number
 }
 export type BaseReportEventsVesselsParams = {
   start: string
@@ -62,25 +64,26 @@ function getBaseStatsQuery({
   end,
   regionId,
   regionDataset,
-  // bufferValue,
-  // bufferUnit,
-  // bufferOperation,
+  bufferValue,
+  bufferUnit,
+  bufferOperation,
 }: ReportEventsVesselsParams | ReportEventsStatsParams) {
   const query = {
     'start-date': start,
     'end-date': end,
     'time-filter-mode': EVENTS_TIME_FILTER_MODE,
-    ...(regionId && { 'region-id': regionId }),
-    ...(regionDataset && { 'region-dataset': regionDataset }),
-    // TODO:CVP uncomment once the API takes the parameters
-    // ...(bufferValue && { 'buffer-value': bufferValue }),
-    // ...(bufferUnit && { 'buffer-unit': bufferUnit }),
-    // ...(bufferOperation && { 'buffer-operation': bufferOperation }),
+    ...(regionId && { 'region-ids': regionId.split(',') }),
+    ...(regionDataset && { 'region-datasets': regionDataset.split(',') }),
+    ...(bufferValue && { 'buffer-value': bufferValue }),
+    ...(bufferUnit && { 'buffer-unit': bufferUnit.toUpperCase() }),
+    ...(bufferOperation && { 'buffer-operation': bufferOperation.toUpperCase() }),
     ...(filters?.portId && { 'port-ids': [filters.portId] }),
     ...(filters?.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
     ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),
     ...(filters?.confidence && { confidences: [filters.confidence] }),
     ...(filters?.flag && { flags: filters.flag }),
+    ...(filters.minDuration && { 'min-duration': filters.minDuration }),
+    ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
   }
   return query
 }

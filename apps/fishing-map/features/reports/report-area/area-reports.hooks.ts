@@ -292,7 +292,7 @@ export function useFetchReportVessel() {
       filters: reportDataviews.map(({ filter }) => filter),
       vesselGroups: reportDataviews.flatMap(({ vesselGroups }) => vesselGroups || []),
       region: {
-        id: areaId,
+        id: areaId || ENTIRE_WORLD_REPORT_AREA_ID,
         dataset: datasetId,
       },
       dateRange: timerange,

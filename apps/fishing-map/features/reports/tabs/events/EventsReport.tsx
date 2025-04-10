@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -42,7 +42,12 @@ import {
 } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
-import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import {
+  selectReportPortId,
+  selectReportVesselGroupId,
+  selectUrlReportLoadVesselsQuery,
+} from 'routes/routes.selectors'
 
 import styles from './EventsReport.module.css'
 
@@ -68,8 +73,10 @@ function EventsReport() {
   const eventsTimeseries = useSelector(selectEventsTimeseries)
   const totalEvents = useSelector(selectTotalStatsEvents)
   const eventsStatsValueKeys = useSelector(selectEventsStatsValueKeys)
+  const reportLoadVessels = useSelector(selectUrlReportLoadVesselsQuery)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
   const timerangeSupported = getDownloadReportSupported(start, end)
+  const { dispatchQueryParams } = useLocationConnect()
 
   const [reportHash, setReportHash] = useState('idle')
   const reportOutdated = reportHash !== getReportHash(subsection, { start, end })
@@ -81,6 +88,13 @@ function EventsReport() {
   const { error, status: statsStatus } = useGetReportEventsStatsQuery(statsParams, {
     skip: !eventsDataview,
   })
+
+  useEffect(() => {
+    if (reportLoadVessels && eventsDataview) {
+      setReportHash(getReportHash(subsection, { start, end }))
+      dispatchQueryParams({ reportLoadVessels: false })
+    }
+  }, [reportLoadVessels, eventsDataview, subsection, start, end, dispatchQueryParams])
 
   const isLoadingStats = statsStatus === 'pending'
   const isLoadingVessels = vessselStatus === 'pending'

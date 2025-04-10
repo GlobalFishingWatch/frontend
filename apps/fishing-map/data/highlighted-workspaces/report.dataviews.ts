@@ -1,5 +1,8 @@
+import { uniq } from 'es-toolkit'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
+import { EEZ_DATAVIEW_INSTANCE_ID, RFMO_DATAVIEW_INSTANCE_ID } from 'data/workspaces'
 import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
@@ -22,6 +25,26 @@ const REPORT_EVENTS_DATAVIEW_INSTANCES_IDS: string[] = [
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 ]
+
+const CONTEXT_LAYERS_DATAVIEW_INSTANCES_IDS: string[] = [
+  EEZ_DATAVIEW_INSTANCE_ID,
+  RFMO_DATAVIEW_INSTANCE_ID,
+]
+
+const CARRIER_PORTAL_DATAVIEW_INSTANCES_IDS: string[] = [
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  ...CONTEXT_LAYERS_DATAVIEW_INSTANCES_IDS,
+]
+
+export const CARRIER_PORTAL_DATAVIEW_INSTANCES: UrlDataviewInstance[] = uniq([
+  ...REPORT_EVENTS_DATAVIEW_INSTANCES_IDS,
+  ...CONTEXT_LAYERS_DATAVIEW_INSTANCES_IDS,
+]).map((id) => ({
+  id,
+  config: {
+    visible: CARRIER_PORTAL_DATAVIEW_INSTANCES_IDS.includes(id),
+  },
+}))
 
 export const REPORT_EVENTS_DATAVIEW_INSTANCES: UrlDataviewInstance[] =
   REPORT_EVENTS_DATAVIEW_INSTANCES_IDS.map((id) => ({

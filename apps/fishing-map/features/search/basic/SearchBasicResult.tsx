@@ -68,7 +68,6 @@ function SearchBasicResult({
   vesselsSelected,
 }: SearchBasicResultProps) {
   const { t, i18n } = useTranslation()
-  const map = useDeckMap()
   const dispatch = useAppDispatch()
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
@@ -160,7 +159,7 @@ function SearchBasicResult({
       }
       if (isSearchLocation) {
         if (trackBbox) {
-          fitBounds(trackBbox)
+          fitBounds(trackBbox, { fitZoom: true })
         }
         setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
       }

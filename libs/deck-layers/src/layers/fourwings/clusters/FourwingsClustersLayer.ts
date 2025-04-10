@@ -176,7 +176,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
       startTime: this.props.startTime,
       endTime: this.props.endTime,
       eventType: this.props.eventType,
-      uniqueFeatureInteraction: true,
+      uniqueFeatureInteraction: false,
+      groupFeatureInteraction: true,
       clusterMode: this.clusterMode,
       expansionZoom,
     }

@@ -6,7 +6,8 @@ import type {
   IdentityVessel,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type {
   GetDatasetConfigsCallbacks,
   UrlDataviewInstance,
@@ -22,7 +23,7 @@ import {
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { PORTS_FOOTPRINT_DATAVIEW_SLUG, VESSEL_TRACK_DATAVIEW_TEMPLATES } from 'data/workspaces'
+import { PORTS_FOOTPRINT_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -32,6 +33,7 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import {
   getVesselGroupActivityDataviewInstance,
   getVesselGroupDataviewInstance,
@@ -45,7 +47,10 @@ import type {
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
+import {
+  selectCurrentVesselEvent,
+  selectVesselInfoData,
+} from 'features/vessel/selectors/vessel.selectors'
 import { getRelatedIdentityVesselIds, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
 import {
@@ -66,15 +71,6 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
-
-export const selectVesselTemplateDataviews = createSelector(
-  [selectAllDataviews],
-  (vesselDataviews) => {
-    return vesselDataviews?.filter((dataview) =>
-      VESSEL_TRACK_DATAVIEW_TEMPLATES.includes(dataview.slug)
-    )
-  }
-)
 
 const EMPTY_ARRAY: [] = []
 export const selectWorkspaceDataviewInstancesMerged = createSelector(
@@ -104,12 +100,14 @@ export const selectWorkspaceDataviewInstancesMerged = createSelector(
 )
 
 // Inject dataviews on the fly for reports and vessel profile
+// Also for the vessel profile encounter events to see encountered vessel track
 export const selectDataviewInstancesInjected = createSelector(
   [
     selectWorkspaceDataviewInstancesMerged,
     selectVesselTemplateDataviews,
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
+    selectCurrentVesselEvent,
     selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportCategorySelector,
@@ -123,6 +121,7 @@ export const selectDataviewInstancesInjected = createSelector(
     vesselTemplateDataviews,
     isAnyVesselLocation,
     isVesselLocation,
+    currentVesselEvent,
     isPortReportLocation,
     isVesselGroupReportLocation,
     reportCategory,
@@ -132,6 +131,11 @@ export const selectDataviewInstancesInjected = createSelector(
     vessel
   ): UrlDataviewInstance[] | undefined => {
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
+    const hasCurrentEvent = isAnyVesselLocation && currentVesselEvent
+    const eventStartDateTime = hasCurrentEvent
+      ? getUTCDateTime(currentVesselEvent.start)
+      : undefined
+    const eventEndDateTime = hasCurrentEvent ? getUTCDateTime(currentVesselEvent.end) : undefined
     if (isAnyVesselLocation) {
       const existingDataviewInstance = dataviewInstancesInjected?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
@@ -146,11 +150,13 @@ export const selectDataviewInstancesInjected = createSelector(
           relatedVesselIds: getRelatedIdentityVesselIds(vessel),
         }
 
-        const dataviewInstance = getVesselDataviewInstance(
-          { id: urlVesselId },
-          vesselDatasets,
-          vesselTemplateDataviews
-        )
+        const dataviewInstance = getVesselDataviewInstance({
+          vessel: { id: urlVesselId },
+          datasets: vesselDatasets,
+          highlightEventStartTime: eventStartDateTime?.toMillis(),
+          highlightEventEndTime: eventEndDateTime?.toMillis(),
+          vesselTemplateDataviews,
+        })
         if (dataviewInstance) {
           const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
             urlVesselId,
@@ -159,6 +165,7 @@ export const selectDataviewInstancesInjected = createSelector(
           dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
         }
       }
+
       if (isVesselLocation) {
         VESSEL_PROFILE_DATAVIEWS_INSTANCES.forEach((dataviewInstance) => {
           if (!dataviewInstancesInjected.find(({ id }) => id === dataviewInstance.id)) {
@@ -315,6 +322,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       }
       return dataviewInstance
     })
+
     const dataviewInstancesResolved = resolveDataviews(
       dataviewInstancesWithDatasetConfig,
       dataviews,
@@ -345,11 +353,13 @@ export const selectDataviewsResources = createSelector(
 
 const defaultDataviewResolved: UrlDataviewInstance[] = []
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsResources, selectResources],
-  (dataviewsResources, resources) => {
+  [selectDataviewsResources, selectResources, selectIsAnyVesselLocation, selectCurrentVesselEvent],
+  (dataviewsResources, resources, isAnyVesselLocation, currentVesselEvent) => {
     if (!dataviewsResources?.dataviews) {
       return defaultDataviewResolved
     }
+    const hasCurrentEvent = isAnyVesselLocation && currentVesselEvent
+
     const dataviews = dataviewsResources.dataviews.map((dataview) => {
       if (dataview.category !== DataviewCategory.Vessels) {
         return dataview
@@ -367,6 +377,10 @@ export const selectDataviewInstancesResolved = createSelector(
             getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),
             'shipname'
           ),
+          ...(hasCurrentEvent && {
+            highlightEventStartTime: getUTCDateTime(currentVesselEvent.start).toISO()!,
+            highlightEventEndTime: getUTCDateTime(currentVesselEvent.end).toISO()!,
+          }),
         },
       } as UrlDataviewInstance
     })

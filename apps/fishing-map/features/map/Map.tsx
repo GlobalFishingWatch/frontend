@@ -2,7 +2,6 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 
-// import { atom, useAtom } from 'jotai'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   useIsDeckLayersLoading,
@@ -11,7 +10,6 @@ import {
 } from '@globalfishingwatch/deck-layer-composer'
 
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
-// import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapControls from 'features/map/controls/MapControls'
 import DeckGLWrapper from 'features/map/DeckGLWrapper'
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
