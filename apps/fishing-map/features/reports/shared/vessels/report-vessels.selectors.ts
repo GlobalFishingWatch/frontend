@@ -170,6 +170,8 @@ export const selectReportVessels = createSelector(
             (formatInfoField(reportVessel.geartype, 'geartypes') as string) ||
             EMPTY_FIELD_PLACEHOLDER,
           ssvid: reportVessel.mmsi || EMPTY_FIELD_PLACEHOLDER,
+          imo: reportVessel.imo || EMPTY_FIELD_PLACEHOLDER,
+          callsign: reportVessel.callsign || EMPTY_FIELD_PLACEHOLDER,
           flag: reportVessel.flag || EMPTY_FIELD_PLACEHOLDER,
           value: reportVessel.value as number,
           values: reportVessel.values as ReportVesselValues,

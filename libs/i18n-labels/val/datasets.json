@@ -1164,7 +1164,19 @@
     "name": "crwdns66233:0crwdne66233:0",
     "description": "crwdns83472:0crwdne83472:0",
     "schema": {
-      "duration": "crwdns83434:0crwdne83434:0"
+      "duration": "crwdns83434:0crwdne83434:0",
+      "encounter_type": {
+        "keyword": "crwdns84348:0crwdne84348:0",
+        "enum": {
+          "CARRIER-FISHING": "crwdns84350:0crwdne84350:0",
+          "SUPPORT-FISHING": "crwdns84352:0crwdne84352:0",
+          "FISHING-CARRIER": "crwdns84354:0crwdne84354:0",
+          "FISHING-BUNKER": "crwdns84356:0crwdne84356:0",
+          "FISHING-FISHING": "crwdns84358:0crwdne84358:0",
+          "CARRIER-BUNKER": "crwdns84360:0crwdne84360:0",
+          "FISHING-SUPPORT": "crwdns84362:0crwdne84362:0"
+        }
+      }
     }
   },
   "public-global-fishing-effort": {
@@ -1177,7 +1189,23 @@
   },
   "public-global-fishing-events": {
     "name": "crwdns83934:0crwdne83934:0",
-    "description": "crwdns83936:0crwdne83936:0"
+    "description": "crwdns83936:0crwdne83936:0",
+    "schema": {
+      "type": {
+        "keyword": "crwdns84432:0crwdne84432:0",
+        "enum": {
+          "CARGO": "crwdns84434:0crwdne84434:0",
+          "DISCREPANCY": "crwdns84436:0crwdne84436:0",
+          "CARRIER": "crwdns84438:0crwdne84438:0",
+          "FISHING": "crwdns84440:0crwdne84440:0",
+          "GEAR": "crwdns84442:0crwdne84442:0",
+          "OTHER": "crwdns84444:0crwdne84444:0",
+          "PASSENGER": "crwdns84446:0crwdne84446:0",
+          "SEISMIC_VESSEL": "crwdns84448:0crwdne84448:0",
+          "SUPPORT": "crwdns84450:0crwdne84450:0"
+        }
+      }
+    }
   },
   "public-global-fishing-vessels": {
     "name": "crwdns66305:0crwdne66305:0",
@@ -1196,7 +1224,23 @@
   },
   "public-global-loitering-events": {
     "name": "crwdns66397:0crwdne66397:0",
-    "description": "crwdns66399:0crwdne66399:0"
+    "description": "crwdns66399:0crwdne66399:0",
+    "schema": {
+      "type": {
+        "keyword": "crwdns84452:0crwdne84452:0",
+        "enum": {
+          "CARGO": "crwdns84454:0crwdne84454:0",
+          "DISCREPANCY": "crwdns84456:0crwdne84456:0",
+          "CARRIER": "crwdns84458:0crwdne84458:0",
+          "FISHING": "crwdns84460:0crwdne84460:0",
+          "GEAR": "crwdns84462:0crwdne84462:0",
+          "OTHER": "crwdns84464:0crwdne84464:0",
+          "PASSENGER": "crwdns84466:0crwdne84466:0",
+          "SEISMIC_VESSEL": "crwdns84468:0crwdne84468:0",
+          "SUPPORT": "crwdns84470:0crwdne84470:0"
+        }
+      }
+    }
   },
   "public-global-nitrate": {
     "name": "crwdns82830:0crwdne82830:0",
@@ -1223,7 +1267,31 @@
   },
   "public-global-port-visits-events": {
     "name": "crwdns83804:0crwdne83804:0",
-    "description": "crwdns83806:0crwdne83806:0"
+    "description": "crwdns83806:0crwdne83806:0",
+    "schema": {
+      "type": {
+        "keyword": "crwdns84472:0crwdne84472:0",
+        "enum": {
+          "CARGO": "crwdns84474:0crwdne84474:0",
+          "DISCREPANCY": "crwdns84476:0crwdne84476:0",
+          "CARRIER": "crwdns84478:0crwdne84478:0",
+          "FISHING": "crwdns84480:0crwdne84480:0",
+          "GEAR": "crwdns84482:0crwdne84482:0",
+          "OTHER": "crwdns84484:0crwdne84484:0",
+          "PASSENGER": "crwdns84486:0crwdne84486:0",
+          "SEISMIC_VESSEL": "crwdns84488:0crwdne84488:0",
+          "SUPPORT": "crwdns84490:0crwdne84490:0"
+        }
+      },
+      "confidences": {
+        "keyword": "crwdns84404:0crwdne84404:0",
+        "enum": {
+          "2": "crwdns84406:0crwdne84406:0",
+          "3": "crwdns84408:0crwdne84408:0",
+          "4": "crwdns84410:0crwdne84410:0"
+        }
+      }
+    }
   },
   "public-global-ports-footprint": {
     "name": "crwdns84082:0crwdne84082:0",
