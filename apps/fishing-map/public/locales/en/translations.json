@@ -319,7 +319,7 @@
     "typePolygons": " Polygons",
     "typePolygonsContextDescription": "Display one or more areas",
     "typePolygonsDescription": "Display one or more areas coloured by any numerical value in your dataset",
-    "typeTracks": " Lines / Tracks",
+    "typeTracks": "Lines / Tracks",
     "typeTracksDescription": "Display lines or the movement of one or more tracks",
     "upload": "Upload dataset",
     "uploadLogin": "Register or login to upload datasets (free, 2 minutes)",
