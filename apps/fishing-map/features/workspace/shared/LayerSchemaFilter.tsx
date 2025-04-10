@@ -30,7 +30,7 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
-type TransformationUnit = 'minutes'
+type TransformationUnit = 'minutes' | 'hours'
 
 const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
 
@@ -42,8 +42,13 @@ type Transformation = {
 
 const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
   minutes: {
-    in: (v) => v / 60,
-    out: (v) => v * 60,
+    in: (v) => parseFloat(v) / 60,
+    out: (v) => parseFloat(v) * 60,
+    label: t('common.hour_other', 'Hours'),
+  },
+  hours: {
+    in: (v) => parseInt(v),
+    out: (v) => parseInt(v),
     label: t('common.hour_other', 'Hours'),
   },
 }
@@ -240,6 +245,7 @@ function LayerSchemaFilter({
           range={values}
           className={cx(styles.multiSelect, styles.range)}
           initialRange={values}
+          step={unit === 'hours' ? 1 : undefined}
           histogram={id === 'radiance'}
           onCleanClick={() => onClean(id)}
           label={getLabelWithUnit(label, unit)}
