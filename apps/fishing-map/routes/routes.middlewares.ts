@@ -42,7 +42,7 @@ export const routerQueryMiddleware: Middleware =
           featureFlags: uniq([
             ...(prevQuery.featureFlags || []),
             ...(newAction.query?.featureFlags || []),
-          ]),
+          ]) as any,
         }
       }
       const { query, replaceUrl } = routerAction
