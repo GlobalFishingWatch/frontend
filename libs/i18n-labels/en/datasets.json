@@ -1180,15 +1180,15 @@
         }
       },
       "encounter_type": {
-        "keyword": "encounter_type",
+        "keyword": "Vessel types",
         "enum": {
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-BUNKER": "FISHING-BUNKER",
-          "FISHING-FISHING": "FISHING-FISHING",
-          "CARRIER-BUNKER": "CARRIER-BUNKER",
-          "FISHING-SUPPORT": "FISHING-SUPPORT"
+          "CARRIER-FISHING": "Carrier <> Fishing",
+          "SUPPORT-FISHING": "Support <> Fishing",
+          "FISHING-CARRIER": "Fishing <> Carrier",
+          "FISHING-BUNKER": "Fishing <> Bunker",
+          "FISHING-FISHING": "Fishing <> Fishing",
+          "CARRIER-BUNKER": "Carrier <> Bunker",
+          "FISHING-SUPPORT": "Fishing <> Support"
         }
       }
     }
