@@ -8,12 +8,15 @@ import { unparse as unparseCSV } from 'papaparse'
 
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 
-import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { selectReportAreaName } from 'features/reports/report-area/area-reports.selectors'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import {
+  REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+  REPORT_VESSELS_PER_PAGE,
+} from 'features/reports/reports.config'
 import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
 import {
   selectReportCategory,

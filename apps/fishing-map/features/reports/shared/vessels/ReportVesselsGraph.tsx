@@ -10,17 +10,15 @@ import type {
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
-import {
-  REPORT_VESSELS_GRAPH_FLAG,
-  REPORT_VESSELS_GRAPH_GEARTYPE,
-  REPORT_VESSELS_GRAPH_VESSELTYPE,
-} from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'features/reports/reports.config'
 import type {
   ReportState,
@@ -227,6 +225,7 @@ export default function ReportVesselsGraph({
   }
 
   const getAggregatedData = useCallback(async () => {
+    console.log('🚀 ~ getAggregatedData ~ data:', data)
     return data
   }, [data])
 

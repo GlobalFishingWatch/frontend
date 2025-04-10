@@ -8,21 +8,16 @@ import {
   useGetReportEventsVesselsQuery,
 } from 'queries/report-events-stats-api'
 
-import type { EventType } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   selectActiveReportSubCategories,
   selectReportSubCategory,
@@ -34,20 +29,16 @@ import ReportSummary from 'features/reports/shared/summary/ReportSummary'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import {
-  selectEventsStatsValueKeys,
   selectEventsTimeseries,
   selectFetchEventsStatsParams,
   selectFetchEventsVesselsParams,
   selectTotalStatsEvents,
 } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
+import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReportGraphSelector'
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  selectReportPortId,
-  selectReportVesselGroupId,
-  selectUrlReportLoadVesselsQuery,
-} from 'routes/routes.selectors'
+import { selectUrlReportLoadVesselsQuery } from 'routes/routes.selectors'
 
 import styles from './EventsReport.module.css'
 
@@ -60,8 +51,6 @@ function getReportHash(
 
 function EventsReport() {
   const { t } = useTranslation()
-  const portId = useSelector(selectReportPortId)
-  const vesselGroupId = useSelector(selectReportVesselGroupId)
   const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { start, end } = useSelector(selectTimeRange)
@@ -72,7 +61,6 @@ function EventsReport() {
   const statsParams = useSelector(selectFetchEventsStatsParams)
   const eventsTimeseries = useSelector(selectEventsTimeseries)
   const totalEvents = useSelector(selectTotalStatsEvents)
-  const eventsStatsValueKeys = useSelector(selectEventsStatsValueKeys)
   const reportLoadVessels = useSelector(selectUrlReportLoadVesselsQuery)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
   const timerangeSupported = getDownloadReportSupported(start, end)
@@ -98,8 +86,6 @@ function EventsReport() {
 
   const isLoadingStats = statsStatus === 'pending'
   const isLoadingVessels = vessselStatus === 'pending'
-  const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  const eventType = eventDataset?.subcategory as EventType
 
   if (!vesselDatasets.length) {
     return (
@@ -130,12 +116,6 @@ function EventsReport() {
     )
   }
 
-  let color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
-
-  if (eventsDataview?.id === VESSEL_GROUP_ENCOUNTER_EVENTS_ID) {
-    color = 'rgb(247 222 110)' // Needed to make the graph lines more visible
-  }
-
   if (error || !eventsTimeseries || isLoadingStats) {
     return (
       <Fragment>
@@ -160,29 +140,11 @@ function EventsReport() {
         <Fragment>
           <ReportSummary />
           <div className={styles.container}>
-            {eventDataset?.id && (
-              <EventsReportGraph
-                datasetId={eventDataset?.id}
-                filters={{
-                  portId,
-                  vesselGroupId,
-                  ...(eventsDataview && { ...getDataviewFilters(eventsDataview) }),
-                }}
-                includes={[
-                  'id',
-                  'start',
-                  'end',
-                  'vessel',
-                  ...(eventType === 'encounter' ? ['encounter.vessel'] : []),
-                ]}
-                valueKeys={eventsStatsValueKeys}
-                color={color}
-                start={start}
-                end={end}
-                data={eventsTimeseries || []}
-                eventType={eventType}
-              />
-            )}
+            <div className={styles.headerContainer}>
+              <label>{t('common.events', 'Events')}</label>
+              <EventsReportGraphSelector loading={isLoadingVessels} />
+            </div>
+            <EventsReportGraph />
           </div>
           {!timerangeSupported ? (
             <ReportVesselsPlaceholder animate={false}>
