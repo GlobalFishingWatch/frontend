@@ -33,13 +33,12 @@ import {
 import {
   REPORT_EVENTS_GRAPH_DATAVIEW_IDS,
   REPORT_EVENTS_GRAPH_EVOLUTION,
-  REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
-  REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
   REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
-  REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
+  REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS,
 } from 'features/reports/reports.config'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
+import { getFlagById } from 'utils/flags'
 
 export const selectEventsGraphDatasetAreaId = createSelector(
   [selectAllDataviews, selectReportEventsGraph],
@@ -141,17 +140,8 @@ export const selectFetchEventsStatsParams = createSelector(
       includes: [
         reportEventsGraph === REPORT_EVENTS_GRAPH_EVOLUTION ? 'TIME_SERIES' : 'EVENTS_GROUPED',
       ],
-      ...(reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FLAG && {
-        groupBy: 'FLAG',
-      }),
-      ...(reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_RFMO && {
-        groupBy: 'REGION_RFMO',
-      }),
-      ...(reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FAO && {
-        groupBy: 'REGION_FAO',
-      }),
-      ...(reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_EEZ && {
-        groupBy: 'REGION_EEZ',
+      ...(reportEventsGraph !== REPORT_EVENTS_GRAPH_EVOLUTION && {
+        groupBy: REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS[reportEventsGraph],
       }),
     } as GetReportEventParams
   }
@@ -219,9 +209,13 @@ export const selectEventsStatsDataGrouped = createSelector(
 
     return stats?.flatMap(({ groups }, i) =>
       groups?.map(({ name, value }) => {
-        const area = datasetAreas?.find((f) => f.id?.toString() === name)
+        const label =
+          reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FLAG
+            ? getFlagById(name)?.label
+            : datasetAreas?.find((f) => f.id?.toString().toUpperCase() === name.toUpperCase())
+                ?.label
         return {
-          label: area?.label || name,
+          label: label || name,
           value,
           dataviewId: dataviews[i].id,
           color: dataviews[i]?.config?.color,

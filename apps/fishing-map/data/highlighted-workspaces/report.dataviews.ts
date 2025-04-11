@@ -2,7 +2,11 @@ import { uniq } from 'es-toolkit'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import { EEZ_DATAVIEW_INSTANCE_ID, RFMO_DATAVIEW_INSTANCE_ID } from 'data/workspaces'
+import {
+  EEZ_DATAVIEW_INSTANCE_ID,
+  FAO_AREAS_DATAVIEW_INSTANCE_ID,
+  RFMO_DATAVIEW_INSTANCE_ID,
+} from 'data/workspaces'
 import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
@@ -29,6 +33,7 @@ const REPORT_EVENTS_DATAVIEW_INSTANCES_IDS: string[] = [
 const CONTEXT_LAYERS_DATAVIEW_INSTANCES_IDS: string[] = [
   EEZ_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_INSTANCE_ID,
+  FAO_AREAS_DATAVIEW_INSTANCE_ID,
 ]
 
 const CARRIER_PORTAL_DATAVIEW_INSTANCES_IDS: string[] = [

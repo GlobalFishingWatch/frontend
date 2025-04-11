@@ -1,3 +1,5 @@
+import type { StatsGroupBy } from '@globalfishingwatch/api-types'
+
 import { EEZ_DATAVIEW_SLUG, FAO_AREAS_DATAVIEW_SLUG, RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import type { BufferOperation, BufferUnit } from 'types'
 
@@ -28,6 +30,13 @@ export const REPORT_EVENTS_GRAPH_GROUP_BY_FLAG = 'byFlag' as const
 export const REPORT_EVENTS_GRAPH_GROUP_BY_RFMO = 'byRFMO' as const
 export const REPORT_EVENTS_GRAPH_GROUP_BY_FAO = 'byFAO' as const
 export const REPORT_EVENTS_GRAPH_GROUP_BY_EEZ = 'byEEZ' as const
+
+export const REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS: Record<string, StatsGroupBy> = {
+  [REPORT_EVENTS_GRAPH_GROUP_BY_FLAG]: 'FLAG' as const,
+  [REPORT_EVENTS_GRAPH_GROUP_BY_RFMO]: 'REGION_RFMO' as const,
+  [REPORT_EVENTS_GRAPH_GROUP_BY_FAO]: 'REGION_MAJOR_FAO' as const,
+  [REPORT_EVENTS_GRAPH_GROUP_BY_EEZ]: 'REGION_EEZ' as const,
+}
 
 export const REPORT_EVENTS_GRAPH_DATAVIEW_IDS = {
   [REPORT_EVENTS_GRAPH_GROUP_BY_RFMO]: RFMO_DATAVIEW_SLUG,
