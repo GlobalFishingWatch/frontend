@@ -15,7 +15,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
 import { selectReportVesselsFlags } from 'features/reports/shared/vessels/report-vessels.selectors'
 import {
-  selectEventsTimeseries,
+  selectEventsStatsDataGrouped,
   selectTotalEventsVessels,
   selectTotalStatsEvents,
 } from 'features/reports/tabs/events/events-report.selectors'
@@ -28,7 +28,7 @@ export default function ReportSummaryEvents() {
   const totalStatsEvents = useSelector(selectTotalStatsEvents)
   const totalEventsVessels = useSelector(selectTotalEventsVessels)
   const reportVesselsFlags = useSelector(selectReportVesselsFlags)
-  const eventsTimeseries = useSelector(selectEventsTimeseries)
+  const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
 
   // TODO:CVP support multiple events dataviews
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
@@ -52,7 +52,7 @@ export default function ReportSummaryEvents() {
       : ''
 
     if (!totalEventsVessels) {
-      if (!eventsTimeseries?.length) {
+      if (!eventsStatsDataGrouped?.length) {
         return ''
       }
       return t('analysis.summaryEventsNoVessels', {
@@ -88,7 +88,7 @@ export default function ReportSummaryEvents() {
     })
   }, [
     eventType,
-    eventsTimeseries?.length,
+    eventsStatsDataGrouped?.length,
     isPortReportLocation,
     reportVesselsFlags?.size,
     t,

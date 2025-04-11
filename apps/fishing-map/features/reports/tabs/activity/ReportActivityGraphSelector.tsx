@@ -5,14 +5,14 @@ import { useSelector } from 'react-redux'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import {
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
   REPORT_ACTIVITY_GRAPH_EVOLUTION,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
-} from 'data/config'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
+} from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
