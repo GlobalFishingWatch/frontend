@@ -7,25 +7,31 @@ import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { useFetchContextDatasetAreas } from 'features/areas/areas.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import {
+  selectEventsGraphDatasetAreaId,
+  selectEventsStatsDataGrouped,
   selectEventsStatsValueKeys,
-  selectEventsTimeseries,
 } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraphEvolution from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import EventsReportGraphGrouped from 'features/reports/tabs/events/EventsReportGraphGrouped'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 function EventsReportGraph() {
   const portId = useSelector(selectReportPortId)
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { start, end } = useSelector(selectTimeRange)
-  const eventsTimeseries = useSelector(selectEventsTimeseries)
+  const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
   const eventsStatsValueKeys = useSelector(selectEventsStatsValueKeys)
   const reportEventsGraph = useSelector(selectReportEventsGraph)
+  const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
+  const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
 
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const eventType = eventDataset?.subcategory as EventType
@@ -59,6 +65,10 @@ function EventsReportGraph() {
     return null
   }
 
+  if (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) {
+    return <ReportVesselsPlaceholder animate={false} />
+  }
+
   if (reportEventsGraph === 'evolution') {
     return (
       <EventsReportGraphEvolution
@@ -69,7 +79,7 @@ function EventsReportGraph() {
         color={color}
         start={start}
         end={end}
-        data={eventsTimeseries || []}
+        data={eventsStatsDataGrouped || []}
         eventType={eventType}
       />
     )
@@ -83,7 +93,7 @@ function EventsReportGraph() {
       color={color}
       end={end}
       start={start}
-      data={eventsTimeseries || []}
+      data={eventsStatsDataGrouped || []}
       valueKeys={eventsStatsValueKeys}
       eventType={eventType}
     />

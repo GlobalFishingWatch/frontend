@@ -225,7 +225,6 @@ export default function ReportVesselsGraph({
   }
 
   const getAggregatedData = useCallback(async () => {
-    console.log('🚀 ~ getAggregatedData ~ data:', data)
     return data
   }, [data])
 

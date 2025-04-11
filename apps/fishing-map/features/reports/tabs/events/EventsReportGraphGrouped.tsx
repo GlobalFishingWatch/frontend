@@ -25,6 +25,7 @@ import {
   selectReportBufferUnit,
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
+import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 
 import EncounterIcon from './icons/event-encounter.svg'
@@ -42,19 +43,48 @@ const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: E
   return <div className={styles.event}>TODO</div>
 }
 
-const CustomTick = (props: any) => {
-  const { x, y, payload } = props
-
-  return (
-    <text transform={`translate(${x},${y - 3})`}>
-      <tspan textAnchor="middle" x="0" dy={12}>
-        {payload.value}
-      </tspan>
-    </text>
-  )
+type EventsReportGraphGroupedTooltipProps = {
+  active: boolean
+  payload: {
+    name: string
+    dataKey: string
+    label: number
+    value: number
+    payload: any
+    color: string
+    unit: string
+  }[]
+  label: number
 }
 
-export default function EventsReportGraphEvolution({
+const AggregatedGraphTooltip = (props: any) => {
+  const { t } = useTranslation()
+  const { active, payload, label } = props as EventsReportGraphGroupedTooltipProps
+
+  if (active && payload && payload.length) {
+    return (
+      <div className={styles.tooltipContainer}>
+        <p className={styles.tooltipLabel}>{label}</p>
+        <ul>
+          {payload
+            .sort((a: any, b: any) => b.value - a.value)
+            .map(({ value, color }: any, index: number) => {
+              return (
+                <li key={index} className={styles.tooltipValue}>
+                  <span className={styles.tooltipValueDot} style={{ color }}></span>
+                  {formatTooltipValue(value, t('common.events', 'Events').toLowerCase())}
+                </li>
+              )
+            })}
+        </ul>
+      </div>
+    )
+  }
+
+  return null
+}
+
+export default function EventsReportGraphGrouped({
   datasetId,
   filters,
   includes,
@@ -76,7 +106,6 @@ export default function EventsReportGraphEvolution({
   eventType?: EventType
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
-
   const startMillis = DateTime.fromISO(start).toMillis()
   const endMillis = DateTime.fromISO(end).toMillis()
   const interval = getFourwingsInterval(startMillis, endMillis)
@@ -149,9 +178,9 @@ export default function EventsReportGraphEvolution({
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()
         }}
-        barLabel={<CustomTick />}
         labelKey="label"
         individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
+        aggregatedTooltip={<AggregatedGraphTooltip eventType={eventType} />}
         // individualItem={<VesselGraphLink />}
       />
     </div>

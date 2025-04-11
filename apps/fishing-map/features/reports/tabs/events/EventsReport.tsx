@@ -29,7 +29,7 @@ import ReportSummary from 'features/reports/shared/summary/ReportSummary'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import {
-  selectEventsTimeseries,
+  selectEventsStatsDataGrouped,
   selectFetchEventsStatsParams,
   selectFetchEventsVesselsParams,
   selectTotalStatsEvents,
@@ -59,7 +59,7 @@ function EventsReport() {
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
   const params = useSelector(selectFetchEventsVesselsParams)
   const statsParams = useSelector(selectFetchEventsStatsParams)
-  const eventsTimeseries = useSelector(selectEventsTimeseries)
+  const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
   const totalEvents = useSelector(selectTotalStatsEvents)
   const reportLoadVessels = useSelector(selectUrlReportLoadVesselsQuery)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
@@ -116,7 +116,7 @@ function EventsReport() {
     )
   }
 
-  if (error || !eventsTimeseries || isLoadingStats) {
+  if (error || !eventsStatsDataGrouped || isLoadingStats) {
     return (
       <Fragment>
         {showSubsectionSelector && (

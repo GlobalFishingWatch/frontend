@@ -1,3 +1,4 @@
+import { EEZ_DATAVIEW_SLUG, FAO_AREAS_DATAVIEW_SLUG, RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import type { BufferOperation, BufferUnit } from 'types'
 
 import { ReportCategory, type ReportState, type ReportVesselOrderProperty } from './reports.types'
@@ -27,6 +28,12 @@ export const REPORT_EVENTS_GRAPH_GROUP_BY_FLAG = 'byFlag' as const
 export const REPORT_EVENTS_GRAPH_GROUP_BY_RFMO = 'byRFMO' as const
 export const REPORT_EVENTS_GRAPH_GROUP_BY_FAO = 'byFAO' as const
 export const REPORT_EVENTS_GRAPH_GROUP_BY_EEZ = 'byEEZ' as const
+
+export const REPORT_EVENTS_GRAPH_DATAVIEW_IDS = {
+  [REPORT_EVENTS_GRAPH_GROUP_BY_RFMO]: RFMO_DATAVIEW_SLUG,
+  [REPORT_EVENTS_GRAPH_GROUP_BY_FAO]: FAO_AREAS_DATAVIEW_SLUG,
+  [REPORT_EVENTS_GRAPH_GROUP_BY_EEZ]: EEZ_DATAVIEW_SLUG,
+}
 
 export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   // Category

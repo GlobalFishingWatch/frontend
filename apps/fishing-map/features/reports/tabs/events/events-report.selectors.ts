@@ -17,7 +17,10 @@ import {
 } from '@globalfishingwatch/responsive-visualizations'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import type { DatasetArea } from 'features/areas/areas.slice'
+import { selectAreas } from 'features/areas/areas.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
@@ -27,7 +30,39 @@ import {
   selectReportBufferUnit,
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
+import {
+  REPORT_EVENTS_GRAPH_DATAVIEW_IDS,
+  REPORT_EVENTS_GRAPH_EVOLUTION,
+  REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
+  REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
+  REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
+  REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
+} from 'features/reports/reports.config'
+import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
+
+export const selectEventsGraphDatasetAreaId = createSelector(
+  [selectAllDataviews, selectReportEventsGraph],
+  (dataviews, reportEventsGraph) => {
+    const dataviewId =
+      REPORT_EVENTS_GRAPH_DATAVIEW_IDS[
+        reportEventsGraph as keyof typeof REPORT_EVENTS_GRAPH_DATAVIEW_IDS
+      ]
+    const dataview = dataviews.find((d) => d.slug === dataviewId)
+    const layers = dataview?.config?.layers || []
+
+    return layers.length > 1
+      ? layers.find((l) => l.id.includes('area'))?.dataset || ''
+      : layers[0]?.dataset || ''
+  }
+)
+
+export const selectEventsGraphDatasetAreas = createSelector(
+  [selectAreas, selectEventsGraphDatasetAreaId],
+  (areas, datasetAreaId) => {
+    return areas[datasetAreaId]?.list?.data as DatasetArea[]
+  }
+)
 
 export const selectFetchEventsVesselsParams = createSelector(
   [
@@ -98,13 +133,26 @@ export const selectFetchEventsVesselsParams = createSelector(
     } as GetReportEventParams
   }
 )
-
 export const selectFetchEventsStatsParams = createSelector(
-  [selectFetchEventsVesselsParams],
-  (params) => {
+  [selectReportEventsGraph, selectFetchEventsVesselsParams],
+  (reportEventsGraph, params) => {
     return {
       ...params,
-      includes: ['TIME_SERIES'],
+      includes: [
+        reportEventsGraph === REPORT_EVENTS_GRAPH_EVOLUTION ? 'TIME_SERIES' : 'EVENTS_GROUPED',
+      ],
+      ...(reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FLAG && {
+        groupBy: 'FLAG',
+      }),
+      ...(reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_RFMO && {
+        groupBy: 'REGION_RFMO',
+      }),
+      ...(reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FAO && {
+        groupBy: 'REGION_FAO',
+      }),
+      ...(reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_EEZ && {
+        groupBy: 'REGION_EEZ',
+      }),
     } as GetReportEventParams
   }
 )
@@ -135,48 +183,76 @@ export const selectEventsStatsValueKeys = createSelector(
     return dataviews.map((d) => d.id)
   }
 )
-export const selectEventsTimeseries = createSelector(
-  [selectEventsStatsData, selectActiveReportDataviews],
-  (stats, dataviews) => {
+export const selectEventsStatsDataGrouped = createSelector(
+  [
+    selectReportEventsGraph,
+    selectEventsStatsData,
+    selectActiveReportDataviews,
+    selectEventsGraphDatasetAreas,
+  ],
+  (reportEventsGraph, stats, dataviews, datasetAreas) => {
     if (!stats) {
       return
     }
-    const statsByDate = groupBy(
-      stats.flatMap((s, i) =>
-        (s.timeseries || []).map((t) => ({
-          date: t.date,
+    if (reportEventsGraph === REPORT_EVENTS_GRAPH_EVOLUTION) {
+      const statsByDate = groupBy(
+        stats.flatMap((s, i) =>
+          (s.timeseries || []).map((t) => ({
+            date: t.date,
+            dataviewId: dataviews[i].id,
+            color: dataviews[i]?.config?.color,
+            value: t.value,
+          }))
+        ),
+        (s) => s.date
+      )
+      const data: ResponsiveVisualizationData<'aggregated'> = Object.entries(statsByDate).map(
+        ([date, values]) => ({
+          date,
+          ...Object.fromEntries(
+            values.map((s) => [s.dataviewId, { color: s.color, value: s.value }])
+          ),
+        })
+      )
+      return data
+    }
+
+    return stats?.flatMap(({ groups }, i) =>
+      groups?.map(({ name, value }) => {
+        const area = datasetAreas?.find((f) => f.id?.toString() === name)
+        return {
+          label: area?.label || name,
+          value,
           dataviewId: dataviews[i].id,
           color: dataviews[i]?.config?.color,
-          value: t.value,
-        }))
-      ),
-      (s) => s.date
-    )
-    const data: ResponsiveVisualizationData<'aggregated'> = Object.entries(statsByDate).map(
-      ([date, values]) => ({
-        date,
-        ...Object.fromEntries(
-          values.map((s) => [s.dataviewId, { color: s.color, value: s.value }])
-        ),
+        }
       })
-    )
-    return data
+    ) as ResponsiveVisualizationData<'aggregated'>
   }
 )
 
-export const selectTotalStatsEvents = createSelector([selectEventsTimeseries], (timeseries) => {
-  if (!timeseries) {
-    return
+export const selectTotalStatsEvents = createSelector(
+  [selectReportEventsGraph, selectEventsStatsDataGrouped],
+  (reportEventsGraph, statsData) => {
+    if (!statsData) {
+      return
+    }
+    if (reportEventsGraph === REPORT_EVENTS_GRAPH_EVOLUTION) {
+      return statsData?.reduce((acc, eventsDate) => {
+        const { date, ...rest } = eventsDate
+        const value = Object.values(rest as ResponsiveVisualizationAggregatedValue).reduce(
+          (count, item) => count + getResponsiveVisualizationItemValue(item),
+          0
+        )
+        return acc + value
+      }, 0)
+    }
+    return statsData?.reduce((acc, eventsDate) => {
+      const { name, value } = eventsDate
+      return acc + getResponsiveVisualizationItemValue(value)
+    }, 0)
   }
-  return timeseries?.reduce((acc, eventsDate) => {
-    const { date, ...rest } = eventsDate
-    const value = Object.values(rest as ResponsiveVisualizationAggregatedValue).reduce(
-      (count, item) => count + getResponsiveVisualizationItemValue(item),
-      0
-    )
-    return acc + value
-  }, 0)
-})
+)
 
 export const selectEventsVessels = createSelector(
   [selectEventsVesselsData, selectActiveReportDataviews, selectAllDatasets],
