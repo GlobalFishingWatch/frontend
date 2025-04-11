@@ -37,6 +37,7 @@ import {
   REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS,
 } from 'features/reports/reports.config'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
+import { getAggregatedDataWithOthers } from 'features/reports/shared/utils/reports.utils'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
 import { getFlagById } from 'utils/flags'
 
@@ -139,6 +140,7 @@ export const selectFetchEventsStatsParams = createSelector(
       ...params,
       includes: [
         reportEventsGraph === REPORT_EVENTS_GRAPH_EVOLUTION ? 'TIME_SERIES' : 'EVENTS_GROUPED',
+        'TOTAL_COUNT',
       ],
       ...(reportEventsGraph !== REPORT_EVENTS_GRAPH_EVOLUTION && {
         groupBy: REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS[reportEventsGraph],
@@ -207,8 +209,9 @@ export const selectEventsStatsDataGrouped = createSelector(
       return data
     }
 
-    return stats?.flatMap(({ groups }, i) =>
+    const data = stats?.flatMap(({ groups }, i) =>
       groups?.map(({ name, value }) => {
+        const dataview = dataviews[i]
         const label =
           reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FLAG
             ? getFlagById(name)?.label
@@ -216,37 +219,25 @@ export const selectEventsStatsDataGrouped = createSelector(
                 ?.label
         return {
           label: label || name,
-          value,
-          dataviewId: dataviews[i].id,
-          color: dataviews[i]?.config?.color,
+          dataviewId: dataview?.id,
+          color: dataview?.config?.color,
+          [dataview.id]: {
+            value,
+            label: label || name,
+          },
         }
       })
     ) as ResponsiveVisualizationData<'aggregated'>
+    const dataviewIds = dataviews.map((d) => d.id)
+    return getAggregatedDataWithOthers(data, dataviewIds)
   }
 )
 
-export const selectTotalStatsEvents = createSelector(
-  [selectReportEventsGraph, selectEventsStatsDataGrouped],
-  (reportEventsGraph, statsData) => {
-    if (!statsData) {
-      return
-    }
-    if (reportEventsGraph === REPORT_EVENTS_GRAPH_EVOLUTION) {
-      return statsData?.reduce((acc, eventsDate) => {
-        const { date, ...rest } = eventsDate
-        const value = Object.values(rest as ResponsiveVisualizationAggregatedValue).reduce(
-          (count, item) => count + getResponsiveVisualizationItemValue(item),
-          0
-        )
-        return acc + value
-      }, 0)
-    }
-    return statsData?.reduce((acc, eventsDate) => {
-      const { name, value } = eventsDate
-      return acc + getResponsiveVisualizationItemValue(value)
-    }, 0)
-  }
-)
+export const selectTotalStatsEvents = createSelector([selectEventsStatsData], (statsData = []) => {
+  return statsData?.reduce((acc, eventsData) => {
+    return acc + eventsData.numEvents
+  }, 0)
+})
 
 export const selectEventsVessels = createSelector(
   [selectEventsVesselsData, selectActiveReportDataviews, selectAllDatasets],

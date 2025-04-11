@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react'
-import React, { useCallback } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
@@ -17,6 +18,7 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
+import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -26,7 +28,9 @@ import {
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
 import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
+import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 
 import EncounterIcon from './icons/event-encounter.svg'
 import LoiteringIcon from './icons/event-loitering.svg'
@@ -82,6 +86,77 @@ const AggregatedGraphTooltip = (props: any) => {
   }
 
   return null
+}
+
+const ReportGraphTick = (props: any) => {
+  const { x, y, payload, width, visibleTicksCount } = props
+
+  const { t } = useTranslation()
+  const { dispatchQueryParams } = useLocationConnect()
+  const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
+  const isCategoryInteractive =
+    !EMPTY_API_VALUES.includes(payload.value) && payload.value !== OTHERS_CATEGORY_LABEL
+
+  // const getTickLabel = (label: string) => {
+  //   if (label === EMPTY_FIELD_PLACEHOLDER) {
+  //     return t('analysis.unknownProperty', 'Unknown')
+  //   }
+  //   if (EMPTY_API_VALUES.includes(label)) {
+  //     return t('analysis.unknown', 'Unknown')
+  //   }
+  //   switch (property) {
+  //     case 'flag':
+  //       return formatInfoField(label, 'flag') as string
+  //     case 'geartype':
+  //       return formatInfoField(label, 'geartypes') as string
+  //     case 'vesselType':
+  //       return formatInfoField(label, 'vesselType') as string
+  //     default:
+  //       return label
+  //   }
+  // }
+
+  const onLabelClick = () => {
+    if (payload.value !== OTHERS_CATEGORY_LABEL) {
+      // TODO:CVP
+      // dispatchQueryParams({
+      //   [filterQueryParam]: `${FILTER_PROPERTIES[property as ReportVesselsSubCategory]}:${
+      //     payload.value
+      //   }`,
+      //   [pageQueryParam]: 0,
+      // })
+    }
+  }
+
+  const label = isOtherCategory ? t('analysis.others', 'Others') : payload.value
+  const labelChunks = label.split(' ')
+  const labelChunksClean = [labelChunks[0]]
+  labelChunks.slice(1).forEach((chunk: any) => {
+    const currentChunk = labelChunksClean[labelChunksClean.length - 1]
+    if (currentChunk.length + chunk.length >= width / visibleTicksCount / 8) {
+      labelChunksClean.push(chunk)
+    } else {
+      labelChunksClean[labelChunksClean.length - 1] = currentChunk + ' ' + chunk
+    }
+  })
+
+  return (
+    <GFWTooltip content={label} placement="bottom">
+      <text
+        className={cx({ [styles.axisLabel]: isCategoryInteractive })}
+        transform={`translate(${x},${y - 3})`}
+        onClick={onLabelClick}
+      >
+        {labelChunksClean.map((chunk) => (
+          <Fragment key={chunk}>
+            <tspan textAnchor="middle" x="0" dy={12}>
+              {chunk}{' '}
+            </tspan>
+          </Fragment>
+        ))}
+      </text>
+    </GFWTooltip>
+  )
 }
 
 export default function EventsReportGraphGrouped({
@@ -170,15 +245,16 @@ export default function EventsReportGraphGrouped({
   }
 
   return (
-    <div ref={containerRef} className={styles.graph}>
+    <div ref={containerRef} className={cx(styles.graph, styles.groupBy)}>
       <ResponsiveBarChart
         color={color}
-        getIndividualData={getIndividualData}
+        // getIndividualData={getIndividualData}
+        aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()
         }}
-        labelKey="label"
+        barLabel={<ReportGraphTick />}
         individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
         aggregatedTooltip={<AggregatedGraphTooltip eventType={eventType} />}
         // individualItem={<VesselGraphLink />}

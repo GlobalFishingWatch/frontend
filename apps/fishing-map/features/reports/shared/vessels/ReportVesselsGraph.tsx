@@ -25,12 +25,11 @@ import type {
   ReportVesselGraph,
   ReportVesselsSubCategory,
 } from 'features/reports/reports.types'
+import { REPORT_VESSELS_GRAPH_LABEL_KEY } from 'features/reports/shared/utils/reports.utils'
 import ReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
 import { useLocationConnect } from 'routes/routes.hook'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
-
-import { REPORT_GRAPH_LABEL_KEY } from './report-vessels.selectors'
 
 import styles from './ReportVesselsGraph.module.css'
 
@@ -250,7 +249,7 @@ export default function ReportVesselsGraph({
             pageQueryParam={pageQueryParam}
           />
         }
-        labelKey={REPORT_GRAPH_LABEL_KEY}
+        labelKey={REPORT_VESSELS_GRAPH_LABEL_KEY}
         individualTooltip={<ReportVesselsIndividualTooltip />}
         individualItem={<VesselGraphLink />}
         aggregatedTooltip={<ReportBarTooltip type={property} />}

@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
@@ -222,7 +223,7 @@ export default function EventsReportGraphEvolution({
   }
 
   return (
-    <div ref={containerRef} className={styles.graph}>
+    <div ref={containerRef} className={cx(styles.graph, styles.evolution)}>
       <ResponsiveTimeseries
         start={start}
         end={end}

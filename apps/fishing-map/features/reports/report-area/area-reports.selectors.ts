@@ -5,6 +5,7 @@ import { t } from 'i18next'
 import { type Dataset, DataviewCategory, type ReportVessel } from '@globalfishingwatch/api-types'
 import type { BufferOperation, BufferUnit } from '@globalfishingwatch/data-transforms'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { selectAreas } from 'features/areas/areas.slice'
@@ -130,7 +131,7 @@ export const selectReportAreaIds = createSelector(
 
 export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
   [selectActiveReportDataviews, selectUserData],
-  (reportDataviews, userData) => {
+  (reportDataviews, userData): UrlDataviewInstance[] => {
     return reportDataviews
       .map((dataview) => {
         const supportedDatasets = getDatasetsReportSupported(
