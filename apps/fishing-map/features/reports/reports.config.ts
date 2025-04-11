@@ -44,6 +44,16 @@ export const REPORT_EVENTS_GRAPH_DATAVIEW_IDS = {
   [REPORT_EVENTS_GRAPH_GROUP_BY_EEZ]: EEZ_DATAVIEW_SLUG,
 }
 
+export const REPORT_EVENTS_RFMO_AREAS = [
+  'CCSBT',
+  'IATTC',
+  'ICCAT',
+  'IOTC',
+  'NPFC',
+  'SPRFMO',
+  'WCPFC',
+]
+
 export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   // Category
   reportCategory: ReportCategory.Activity,

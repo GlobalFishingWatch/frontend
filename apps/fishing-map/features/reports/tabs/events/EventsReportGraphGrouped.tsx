@@ -21,14 +21,17 @@ import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualization
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
-import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
-import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
+import {
+  EMPTY_API_VALUES,
+  MAX_CATEGORIES,
+  OTHERS_CATEGORY_LABEL,
+} from 'features/reports/reports.config'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 
@@ -38,7 +41,7 @@ import PortVisitIcon from './icons/event-port.svg'
 
 import styles from './EventsReportGraph.module.css'
 
-const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: EventType }) => {
+const IndividualGraphTooltip = ({ data }: { data?: any }) => {
   const { t } = useTranslation()
   if (!data?.vessel) {
     return null
@@ -50,9 +53,8 @@ const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: E
 type EventsReportGraphGroupedTooltipProps = {
   active: boolean
   payload: {
-    name: string
+    label: string
     dataKey: string
-    label: number
     value: number
     payload: any
     color: string
@@ -62,24 +64,54 @@ type EventsReportGraphGroupedTooltipProps = {
 }
 
 const AggregatedGraphTooltip = (props: any) => {
+  const { active, payload: tooltipPayload, label } = props as EventsReportGraphGroupedTooltipProps
   const { t } = useTranslation()
-  const { active, payload, label } = props as EventsReportGraphGroupedTooltipProps
 
-  if (active && payload && payload.length) {
+  const isOthersCategory = tooltipPayload?.some((p) => p.label === OTHERS_CATEGORY_LABEL)
+  let otherLabelCounted = false
+  if (active && tooltipPayload && tooltipPayload.length) {
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{label}</p>
-        <ul>
-          {payload
-            .sort((a: any, b: any) => b.value - a.value)
-            .map(({ value, color }: any, index: number) => {
+        <ul className={isOthersCategory ? styles.maxHeight : ''}>
+          {tooltipPayload
+            .map(({ value, color, payload }, index) => {
+              if (value === 0 || otherLabelCounted) {
+                return null
+              }
+              if (payload.label === OTHERS_CATEGORY_LABEL && payload.others) {
+                otherLabelCounted = true
+                const top = payload.others.slice(0, MAX_CATEGORIES)
+                const restValue = payload.others
+                  .slice(MAX_CATEGORIES)
+                  .reduce((acc: number, curr: { value: number }) => {
+                    return acc + curr.value
+                  }, 0)
+                return (
+                  <Fragment>
+                    {top.map(({ label, value }: { label: string; value: number }) => (
+                      <li key={label} className={styles.tooltipValue}>
+                        {label}: <I18nNumber number={value} />
+                      </li>
+                    ))}
+                    {restValue !== 0 && (
+                      <li key="others" className={styles.tooltipValue}>
+                        {t('analysis.others', 'Others')}: {restValue}
+                      </li>
+                    )}
+                  </Fragment>
+                )
+              }
               return (
                 <li key={index} className={styles.tooltipValue}>
-                  <span className={styles.tooltipValueDot} style={{ color }}></span>
-                  {formatTooltipValue(value, t('common.events', 'Events').toLowerCase())}
+                  {tooltipPayload.length > 1 && (
+                    <span className={styles.tooltipValueDot} style={{ color }}></span>
+                  )}
+                  <I18nNumber number={value} /> {t('common.events', { count: value }).toLowerCase()}
                 </li>
               )
-            })}
+            })
+            .reverse()}
         </ul>
       </div>
     )
@@ -255,8 +287,8 @@ export default function EventsReportGraphGrouped({
           return formatI18nNumber(value).toString()
         }}
         barLabel={<ReportGraphTick />}
-        individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
-        aggregatedTooltip={<AggregatedGraphTooltip eventType={eventType} />}
+        individualTooltip={<IndividualGraphTooltip />}
+        aggregatedTooltip={<AggregatedGraphTooltip />}
         // individualItem={<VesselGraphLink />}
       />
     </div>

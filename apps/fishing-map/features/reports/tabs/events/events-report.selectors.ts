@@ -10,11 +10,7 @@ import {
 import type { DataviewDatasetFilter } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
-import {
-  getResponsiveVisualizationItemValue,
-  type ResponsiveVisualizationAggregatedValue,
-  type ResponsiveVisualizationData,
-} from '@globalfishingwatch/responsive-visualizations'
+import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import type { DatasetArea } from 'features/areas/areas.slice'
@@ -35,6 +31,8 @@ import {
   REPORT_EVENTS_GRAPH_EVOLUTION,
   REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
   REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS,
+  REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
+  REPORT_EVENTS_RFMO_AREAS,
 } from 'features/reports/reports.config'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import { getAggregatedDataWithOthers } from 'features/reports/shared/utils/reports.utils'
@@ -210,7 +208,13 @@ export const selectEventsStatsDataGrouped = createSelector(
     }
 
     const data = stats?.flatMap(({ groups }, i) =>
-      groups?.map(({ name, value }) => {
+      groups?.flatMap(({ name, value }) => {
+        if (
+          reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_RFMO &&
+          !REPORT_EVENTS_RFMO_AREAS.includes(name.toUpperCase())
+        ) {
+          return []
+        }
         const dataview = dataviews[i]
         const label =
           reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FLAG
