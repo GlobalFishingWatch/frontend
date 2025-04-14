@@ -30,7 +30,6 @@ export default function ReportSummaryEvents() {
   const reportVesselsFlags = useSelector(selectReportVesselsFlags)
   const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
 
-  // TODO:CVP support multiple events dataviews
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const eventType = eventDataset?.subcategory as EventType

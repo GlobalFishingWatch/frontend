@@ -1,19 +1,13 @@
 import type { ReactElement } from 'react'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
-import { stringify } from 'qs'
-import {
-  type BaseReportEventsVesselsParamsFilters,
-  getEventsStatsQuery,
-} from 'queries/report-events-stats-api'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
+import { type ApiEvent, DatasetTypes, type EventType } from '@globalfishingwatch/api-types'
 import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
@@ -25,13 +19,8 @@ import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizati
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
-import {
-  selectReportBufferOperation,
-  selectReportBufferUnit,
-  selectReportBufferValue,
-} from 'features/reports/report-area/area-reports.selectors'
 import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
-import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
+import { useFetchEventReportGraphEvents } from 'features/reports/tabs/events/events-report.hooks'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { getTimeLabels } from 'utils/events'
 import { formatInfoField, upperFirst } from 'utils/info'
@@ -143,8 +132,7 @@ const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
 }
 
 export default function EventsReportGraphEvolution({
-  datasetId,
-  filters,
+  dataviews,
   includes,
   color = COLOR_PRIMARY_BLUE,
   end,
@@ -153,8 +141,7 @@ export default function EventsReportGraphEvolution({
   valueKeys,
   eventType,
 }: {
-  datasetId: string
-  filters?: BaseReportEventsVesselsParamsFilters
+  dataviews?: UrlDataviewInstance[]
   includes?: string[]
   color?: string
   end: string
@@ -168,13 +155,10 @@ export default function EventsReportGraphEvolution({
   const startMillis = DateTime.fromISO(start).toMillis()
   const endMillis = DateTime.fromISO(end).toMillis()
   const interval = getFourwingsInterval(startMillis, endMillis)
-  const filtersMemo = useMemoCompare(filters)
   const includesMemo = useMemoCompare(includes)
-  const reportAreaDataset = useSelector(selectReportDatasetId)
-  const reportAreaId = useSelector(selectReportAreaId)
-  const reportBufferValue = useSelector(selectReportBufferValue)
-  const reportBufferUnit = useSelector(selectReportBufferUnit)
-  const reportBufferOperation = useSelector(selectReportBufferOperation)
+  const fetchEventsData = useFetchEventReportGraphEvents()
+
+  const datasetId = dataviews?.[0]?.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
 
   let icon: ReactElement | undefined
   if (eventType === 'encounter') {
@@ -188,41 +172,16 @@ export default function EventsReportGraphEvolution({
   const getAggregatedData = useCallback(async () => data, [data])
 
   const getIndividualData = useCallback(async () => {
-    const params = {
-      ...getEventsStatsQuery({
-        start,
-        end,
-        filters: filtersMemo || {},
-        dataset: datasetId,
-        regionDataset: reportAreaDataset,
-        regionId: reportAreaId,
-        bufferValue: reportBufferValue,
-        bufferUnit: reportBufferUnit,
-        bufferOperation: reportBufferOperation,
-      }),
-      ...(includesMemo && { includes: includesMemo }),
-      limit: 1000,
-      offset: 0,
+    if (!dataviews?.length || !datasetId) {
+      return []
     }
-    const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
-    const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
+    const data = await fetchEventsData({ dataviews, start, end, includes: includesMemo })
+    const groupedData = groupBy(data, (item) => getISODateByInterval(item.start, interval))
 
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
-  }, [
-    start,
-    end,
-    filtersMemo,
-    datasetId,
-    reportAreaDataset,
-    reportAreaId,
-    reportBufferValue,
-    reportBufferUnit,
-    reportBufferOperation,
-    includesMemo,
-    interval,
-  ])
+  }, [dataviews, datasetId, fetchEventsData, start, end, includesMemo, interval])
 
   if (!data.length) {
     return null

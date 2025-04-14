@@ -3,19 +3,9 @@ import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { groupBy } from 'es-toolkit'
-import { DateTime } from 'luxon'
-import { stringify } from 'qs'
-import {
-  type BaseReportEventsVesselsParamsFilters,
-  getEventsStatsQuery,
-} from 'queries/report-events-stats-api'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
-import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
+import { type ApiEvent, type EventType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
@@ -24,19 +14,16 @@ import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
-  selectReportBufferOperation,
-  selectReportBufferUnit,
-  selectReportBufferValue,
-} from 'features/reports/report-area/area-reports.selectors'
-import {
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
   REPORT_EVENTS_GRAPH_EVOLUTION,
   REPORT_EVENTS_RFMO_AREAS,
 } from 'features/reports/reports.config'
-import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import type { ReportEventsGraph } from 'features/reports/reports.types'
-import { useGetEventReportGraphLabel } from 'features/reports/tabs/events/events-report.hooks'
+import {
+  useFetchEventReportGraphEvents,
+  useGetEventReportGraphLabel,
+} from 'features/reports/tabs/events/events-report.hooks'
 import { selectEventsGraphDatasetAreaId } from 'features/reports/tabs/events/events-report.selectors'
 import { EventsReportIndividualGraphTooltip } from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -201,9 +188,7 @@ const ReportGraphTick = (props: any) => {
 }
 
 export default function EventsReportGraphGrouped({
-  dataview,
-  datasetId,
-  filters,
+  dataviews,
   includes,
   color = COLOR_PRIMARY_BLUE,
   end,
@@ -213,9 +198,7 @@ export default function EventsReportGraphGrouped({
   graphType,
   eventType,
 }: {
-  datasetId: string
-  dataview: UrlDataviewInstance
-  filters?: BaseReportEventsVesselsParamsFilters
+  dataviews: UrlDataviewInstance[]
   includes?: string[]
   color?: string
   end: string
@@ -226,45 +209,15 @@ export default function EventsReportGraphGrouped({
   eventType?: EventType
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
-  const filtersMemo = useMemoCompare(filters)
   const includesMemo = useMemoCompare(includes)
-  const reportAreaDataset = useSelector(selectReportDatasetId)
-  const reportAreaId = useSelector(selectReportAreaId)
-  const reportBufferValue = useSelector(selectReportBufferValue)
-  const reportBufferUnit = useSelector(selectReportBufferUnit)
-  const reportBufferOperation = useSelector(selectReportBufferOperation)
-
-  // let icon: ReactElement | undefined
-  // if (eventType === 'encounter') {
-  //   icon = <EncounterIcon />
-  // } else if (eventType === 'loitering') {
-  //   icon = <LoiteringIcon />
-  // } else if (eventType === 'port_visit') {
-  //   icon = <PortVisitIcon />
-  // }
+  const fetchEventsData = useFetchEventReportGraphEvents()
 
   const getAggregatedData = useCallback(async () => data, [data])
 
   const getIndividualData = useCallback(async () => {
-    const params = {
-      ...getEventsStatsQuery({
-        start,
-        end,
-        filters: filtersMemo || {},
-        dataset: datasetId,
-        regionDataset: reportAreaDataset,
-        regionId: reportAreaId,
-        bufferValue: reportBufferValue,
-        bufferUnit: reportBufferUnit,
-        bufferOperation: reportBufferOperation,
-      }),
-      ...(includesMemo && { includes: includesMemo }),
-      limit: 1000,
-      offset: 0,
-    }
-    const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
+    const data = await fetchEventsData({ dataviews, start, end, includes: includesMemo })
     const uniqueIds = new Set<string>()
-    const dataWithoutDuplicates = data.entries.filter((event) => {
+    const dataWithoutDuplicates = data.filter((event) => {
       const id = event.id.split('.')[0]
       if (uniqueIds.has(id)) {
         return false
@@ -272,18 +225,6 @@ export default function EventsReportGraphGrouped({
       uniqueIds.add(id)
       return true
     })
-
-    if (graphType === 'evolution') {
-      const startMillis = DateTime.fromISO(start).toMillis()
-      const endMillis = DateTime.fromISO(end).toMillis()
-      const interval = getFourwingsInterval(startMillis, endMillis)
-      const groupedData = groupBy(dataWithoutDuplicates, (event) => {
-        return getISODateByInterval(event.start, interval)
-      })
-      return Object.entries(groupedData)
-        .map(([date, events]) => ({ date, values: events }))
-        .sort((a, b) => a.date.localeCompare(b.date))
-    }
 
     const groupedData = dataWithoutDuplicates.reduce(
       (acc, event) => {
@@ -316,19 +257,7 @@ export default function EventsReportGraphGrouped({
     return Object.entries(groupedData)
       .map(([label, events]) => ({ label, values: events }))
       .sort((a, b) => b.values.length - a.values.length)
-  }, [
-    start,
-    end,
-    filtersMemo,
-    datasetId,
-    reportAreaDataset,
-    reportAreaId,
-    reportBufferValue,
-    reportBufferUnit,
-    reportBufferOperation,
-    includesMemo,
-    graphType,
-  ])
+  }, [fetchEventsData, dataviews, start, end, includesMemo, graphType])
 
   let icon: ReactElement | undefined
 
@@ -354,9 +283,9 @@ export default function EventsReportGraphGrouped({
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()
         }}
-        barLabel={<ReportGraphTick graphType={graphType} dataview={dataview} />}
+        barLabel={<ReportGraphTick graphType={graphType} dataview={dataviews[0]} />}
         individualTooltip={<EventsReportIndividualGraphTooltip eventType={eventType} />}
-        aggregatedTooltip={<AggregatedGraphTooltip graphType={graphType} dataview={dataview} />}
+        aggregatedTooltip={<AggregatedGraphTooltip graphType={graphType} dataview={dataviews[0]} />}
         individualIcon={icon}
       />
     </div>

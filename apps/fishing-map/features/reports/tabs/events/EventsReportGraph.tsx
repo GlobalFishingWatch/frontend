@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -16,16 +15,15 @@ import {
   selectEventsGraphDatasetAreaId,
   selectEventsStatsDataGrouped,
   selectEventsStatsValueKeys,
+  selectFetchEventsVesselsParams,
   selectIsReportEventsGraphByArea,
 } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraphEvolution from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import EventsReportGraphGrouped from 'features/reports/tabs/events/EventsReportGraphGrouped'
-import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 function EventsReportGraph() {
-  const portId = useSelector(selectReportPortId)
-  const vesselGroupId = useSelector(selectReportVesselGroupId)
+  const eventsDataviews = useSelector(selectActiveReportDataviews)
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { start, end } = useSelector(selectTimeRange)
   const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
@@ -34,6 +32,7 @@ function EventsReportGraph() {
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
   const isReportEventsGraphByArea = useSelector(selectIsReportEventsGraphByArea)
+
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const eventType = eventDataset?.subcategory as EventType
 
@@ -47,15 +46,6 @@ function EventsReportGraph() {
       ...(isReportEventsGraphByArea ? ['regions'] : []),
     ],
     [eventType, isReportEventsGraphByArea]
-  )
-
-  const filters = useMemo(
-    () => ({
-      portId,
-      vesselGroupId,
-      ...(eventsDataview && { ...getDataviewFilters(eventsDataview) }),
-    }),
-    [portId, vesselGroupId, eventsDataview]
   )
 
   let color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
@@ -75,8 +65,7 @@ function EventsReportGraph() {
   if (reportEventsGraph === 'evolution') {
     return (
       <EventsReportGraphEvolution
-        datasetId={eventDataset?.id}
-        filters={filters}
+        dataviews={eventsDataviews}
         includes={includes}
         valueKeys={eventsStatsValueKeys}
         color={color}
@@ -90,9 +79,7 @@ function EventsReportGraph() {
 
   return (
     <EventsReportGraphGrouped
-      dataview={eventsDataview}
-      datasetId={eventDataset?.id}
-      filters={filters}
+      dataviews={eventsDataviews}
       includes={includes}
       color={color}
       end={end}

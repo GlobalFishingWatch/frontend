@@ -1,4 +1,4 @@
-import { cloneElement, type ReactElement,useCallback, useState } from 'react'
+import { cloneElement, type ReactElement, useCallback, useState } from 'react'
 import {
   flip,
   FloatingPortal,
@@ -86,7 +86,11 @@ export function IndividualPoint({
         </FloatingPortal>
       )}
       {item && cloneElement(item, { ...(item.props || {}), data: point } as any)}
-      {icon && <span>{icon}</span>}
+      {icon && (
+        <span style={{ color: point.color }} className={styles.icon}>
+          {icon}
+        </span>
+      )}
     </li>
   )
 }
