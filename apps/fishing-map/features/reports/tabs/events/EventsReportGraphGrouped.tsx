@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -42,6 +43,10 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationQuery } from 'routes/routes.selectors'
+
+import EncounterIcon from './icons/event-encounter.svg'
+import LoiteringIcon from './icons/event-loitering.svg'
+import PortVisitIcon from './icons/event-port.svg'
 
 import styles from './EventsReportGraph.module.css'
 
@@ -325,6 +330,16 @@ export default function EventsReportGraphGrouped({
     graphType,
   ])
 
+  let icon: ReactElement | undefined
+
+  if (eventType === 'encounter') {
+    icon = <EncounterIcon />
+  } else if (eventType === 'loitering') {
+    icon = <LoiteringIcon />
+  } else if (eventType === 'port_visit') {
+    icon = <PortVisitIcon />
+  }
+
   if (!data.length) {
     return null
   }
@@ -342,7 +357,7 @@ export default function EventsReportGraphGrouped({
         barLabel={<ReportGraphTick graphType={graphType} dataview={dataview} />}
         individualTooltip={<EventsReportIndividualGraphTooltip eventType={eventType} />}
         aggregatedTooltip={<AggregatedGraphTooltip graphType={graphType} dataview={dataview} />}
-        // individualItem={<VesselGraphLink />}
+        individualIcon={icon}
       />
     </div>
   )
