@@ -30,6 +30,75 @@ import { getFileType, readBlobAs } from 'utils/files'
 export type DataList = Record<string, any>[]
 export type DataParsed = FeatureCollection | DataList
 
+const NOT_VALID_GEOJSON_FEATURES_ERROR = 'Not valid geojson features'
+
+const validateFeatures = (geoJSON: any, type: DatasetGeometryType) => {
+  const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
+    points: ['Point', 'MultiPoint'],
+    tracks: ['LineString', 'MultiLineString'],
+    polygons: ['Polygon', 'MultiPolygon'],
+  }
+  const flatFeatures: Feature[] = geoJSON.features.flatMap((feature: Feature) => {
+    if (feature.geometry.type === 'GeometryCollection') {
+      return feature.geometry.geometries.map((geometry) => {
+        return { ...feature, geometry }
+      })
+    }
+    return feature
+  })
+  const validFeatures = flatFeatures
+    .map((feature: Feature) => {
+      if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
+        let firstCoord: Position
+        let lastCoord: Position
+        if (feature.geometry.type === 'LineString') {
+          const coords = feature.geometry.coordinates
+          firstCoord = coords[0]
+          lastCoord = coords[coords.length - 1]
+        } else {
+          const coords = feature.geometry.coordinates
+          firstCoord = coords[0][0]
+          lastCoord = coords[coords.length - 1][coords[coords.length - 1].length - 1]
+        }
+        if (
+          type === 'polygons' &&
+          firstCoord &&
+          lastCoord &&
+          firstCoord[0] === lastCoord[0] &&
+          firstCoord[1] === lastCoord[1]
+        ) {
+          const polygon = lineToPolygon(feature.geometry, {
+            properties: feature.properties,
+          })
+          return polygon
+        }
+      }
+      const coordinates2D = (feature.geometry as any).coordinates.map((c: Position) => [c[0], c[1]])
+      return {
+        ...feature,
+        geometry: {
+          ...feature.geometry,
+          coordinates: coordinates2D,
+        },
+      }
+    })
+    .filter((feature: Feature) => {
+      return normalizedTypes[type]?.includes(feature.geometry.type)
+    })
+  if (!validFeatures.length) {
+    throw new Error(NOT_VALID_GEOJSON_FEATURES_ERROR)
+  }
+  return {
+    ...geoJSON,
+    features: validFeatures,
+  }
+}
+
+const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) => {
+  const geoJSON = JSON.parse(fileText)
+  return validateFeatures(geoJSON, type)
+}
+
 export async function getDatasetParsed(
   file: File,
   type: DatasetGeometryTypesSupported
@@ -79,59 +148,6 @@ export async function getDatasetParsed(
     }
     throw new Error('datasetUpload.errors.default')
   }
-}
-
-const validateFeatures = (geoJSON: any, type: DatasetGeometryType) => {
-  const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
-    points: ['Point', 'MultiPoint'],
-    tracks: ['LineString', 'MultiLineString'],
-    polygons: ['Polygon', 'MultiPolygon'],
-  }
-  const validFeatures = geoJSON.features
-    .map((feature: Feature) => {
-      if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
-        let firstCoord: Position
-        let lastCoord: Position
-        if (feature.geometry.type === 'LineString') {
-          const coords = feature.geometry.coordinates
-          firstCoord = coords[0]
-          lastCoord = coords[coords.length - 1]
-        } else {
-          const coords = feature.geometry.coordinates
-          firstCoord = coords[0][0]
-          lastCoord = coords[coords.length - 1][coords[coords.length - 1].length - 1]
-        }
-        if (
-          type === 'polygons' &&
-          firstCoord &&
-          lastCoord &&
-          firstCoord[0] === lastCoord[0] &&
-          firstCoord[1] === lastCoord[1]
-        ) {
-          const polygon = lineToPolygon(feature.geometry, {
-            properties: feature.properties,
-          })
-          return polygon
-        }
-      }
-      return feature
-    })
-    .filter((feature: Feature) => {
-      return normalizedTypes[type]?.includes(feature.geometry.type)
-    })
-  if (!validFeatures.length) {
-    throw new Error(NOT_VALID_GEOJSON_FEATURES_ERROR)
-  }
-  return {
-    ...geoJSON,
-    features: validFeatures,
-  }
-}
-
-const NOT_VALID_GEOJSON_FEATURES_ERROR = 'Not valid geojson features'
-const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) => {
-  const geoJSON = JSON.parse(fileText)
-  return validateFeatures(geoJSON, type)
 }
 
 export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
