@@ -7,6 +7,7 @@ import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
+import { selectIsGlobalReport } from 'features/reports/report-area/area-reports.selectors'
 import {
   REPORT_EVENTS_GRAPH_EVOLUTION,
   REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
@@ -25,6 +26,7 @@ type EventsReportGraphSelectorProps = {
 function EventsReportGraphSelector({ loading = false }: EventsReportGraphSelectorProps) {
   const { dispatchQueryParams } = useLocationConnect()
   const reportEventsGraph = useSelector(selectReportEventsGraph)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
 
@@ -39,21 +41,25 @@ function EventsReportGraphSelector({ loading = false }: EventsReportGraphSelecto
       label: t('analysis.groupByFlag', 'By flag'),
       disabled: loading,
     },
-    {
-      id: REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
-      label: t('analysis.groupByRFMO', 'By RFMO'),
-      disabled: loading,
-    },
-    {
-      id: REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
-      label: t('analysis.groupByFAO', 'By FAO'),
-      disabled: loading,
-    },
-    {
-      id: REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
-      label: t('analysis.groupByEEZ', 'By EEZ'),
-      disabled: loading,
-    },
+    ...(isGlobalReport
+      ? [
+          {
+            id: REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
+            label: t('analysis.groupByRFMO', 'By RFMO'),
+            disabled: loading,
+          },
+          {
+            id: REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
+            label: t('analysis.groupByFAO', 'By FAO'),
+            disabled: loading,
+          },
+          {
+            id: REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
+            label: t('analysis.groupByEEZ', 'By EEZ'),
+            disabled: loading,
+          },
+        ]
+      : []),
   ]
 
   const onSelect = (option: ChoiceOption<ReportEventsGraph>) => {

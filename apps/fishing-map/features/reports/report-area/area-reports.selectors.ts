@@ -344,3 +344,10 @@ export const selectReportAreaStatus = createSelector(
     return areaApiStatus
   }
 )
+
+export const selectIsGlobalReport = createSelector(
+  [selectCurrentReport, selectReportArea],
+  (report, reportArea) => {
+    return !report?.name && reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+  }
+)
