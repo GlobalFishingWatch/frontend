@@ -169,8 +169,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
               id: `${props.id}-highlight-fills`,
               stroked: false,
               pickable: pickable,
-              getPolygonOffset: (params) =>
-                getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
+              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
               getFillColor: hasColorSteps ? this._getFillStepsColor : this._getFillColor,
               updateTriggers: {
                 getFillColor: [highlightedFeatures, filters, color],
