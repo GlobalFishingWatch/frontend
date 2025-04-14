@@ -87,7 +87,13 @@ const AggregatedGraphTooltip = (props: any) => {
   return null
 }
 
-const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: EventType }) => {
+export const EventsReportIndividualGraphTooltip = ({
+  data,
+  eventType,
+}: {
+  data?: ApiEvent
+  eventType?: EventType
+}) => {
   const { t } = useTranslation()
   if (!data?.vessel) {
     return null
@@ -233,7 +239,7 @@ export default function EventsReportGraphEvolution({
         getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}
         aggregatedTooltip={<AggregatedGraphTooltip />}
-        individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
+        individualTooltip={<EventsReportIndividualGraphTooltip eventType={eventType} />}
         color={color}
         individualIcon={icon}
       />

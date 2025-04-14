@@ -11,7 +11,7 @@ import {
 } from 'queries/report-events-stats-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { ApiEvent, APIPagination } from '@globalfishingwatch/api-types'
+import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
 import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
@@ -31,34 +31,19 @@ import {
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
   REPORT_EVENTS_GRAPH_EVOLUTION,
+  REPORT_EVENTS_RFMO_AREAS,
 } from 'features/reports/reports.config'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import type { ReportEventsGraph } from 'features/reports/reports.types'
 import { useGetEventReportGraphLabel } from 'features/reports/tabs/events/events-report.hooks'
 import { selectEventsGraphDatasetAreaId } from 'features/reports/tabs/events/events-report.selectors'
+import { EventsReportIndividualGraphTooltip } from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
 import styles from './EventsReportGraph.module.css'
-
-const IndividualGraphTooltip = ({
-  data,
-  graphType,
-  dataview,
-}: {
-  data?: any
-  graphType?: ReportEventsGraph
-  dataview: UrlDataviewInstance
-}) => {
-  const { t } = useTranslation()
-  if (!data?.vessel) {
-    return null
-  }
-
-  return <div className={styles.event}>TODO</div>
-}
 
 type EventsReportGraphGroupedTooltipProps = {
   active: boolean
@@ -100,7 +85,7 @@ const AggregatedGraphTooltip = (props: any) => {
                     return acc + curr.value
                   }, 0)
                 return (
-                  <Fragment>
+                  <Fragment key={label}>
                     {top.map(({ label, value }: { label: string; value: number }) => (
                       <li key={label} className={styles.tooltipValue}>
                         {getReportAreaLabel(label)}: <I18nNumber number={value} />
@@ -221,6 +206,7 @@ export default function EventsReportGraphGrouped({
   data,
   valueKeys,
   graphType,
+  eventType,
 }: {
   datasetId: string
   dataview: UrlDataviewInstance
@@ -232,11 +218,9 @@ export default function EventsReportGraphGrouped({
   data: ResponsiveVisualizationData<'aggregated'>
   valueKeys: string[]
   graphType?: ReportEventsGraph
+  eventType?: EventType
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
-  const startMillis = DateTime.fromISO(start).toMillis()
-  const endMillis = DateTime.fromISO(end).toMillis()
-  const interval = getFourwingsInterval(startMillis, endMillis)
   const filtersMemo = useMemoCompare(filters)
   const includesMemo = useMemoCompare(includes)
   const reportAreaDataset = useSelector(selectReportDatasetId)
@@ -274,11 +258,59 @@ export default function EventsReportGraphGrouped({
       offset: 0,
     }
     const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
-    const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
+    const uniqueIds = new Set<string>()
+    const dataWithoutDuplicates = data.entries.filter((event) => {
+      const id = event.id.split('.')[0]
+      if (uniqueIds.has(id)) {
+        return false
+      }
+      uniqueIds.add(id)
+      return true
+    })
+
+    if (graphType === 'evolution') {
+      const startMillis = DateTime.fromISO(start).toMillis()
+      const endMillis = DateTime.fromISO(end).toMillis()
+      const interval = getFourwingsInterval(startMillis, endMillis)
+      const groupedData = groupBy(dataWithoutDuplicates, (event) => {
+        return getISODateByInterval(event.start, interval)
+      })
+      return Object.entries(groupedData)
+        .map(([date, events]) => ({ date, values: events }))
+        .sort((a, b) => a.date.localeCompare(b.date))
+    }
+
+    const groupedData = dataWithoutDuplicates.reduce(
+      (acc, event) => {
+        const regions = []
+        if (graphType === 'byFlag') {
+          regions.push(event.vessel.flag)
+        }
+        if (graphType === 'byRFMO' && event.regions?.rfmo) {
+          regions.push(
+            ...event.regions.rfmo.filter((rfmo) => REPORT_EVENTS_RFMO_AREAS.includes(rfmo))
+          )
+        }
+        if (graphType === 'byFAO' && event.regions?.fao) {
+          regions.push(...event.regions.fao)
+        }
+        if (graphType === 'byEEZ' && event.regions?.eez) {
+          regions.push(...event.regions.eez)
+        }
+        regions.forEach((region) => {
+          if (!acc[region]) {
+            acc[region] = []
+          }
+          acc[region].push(event)
+        })
+        return acc
+      },
+      {} as Record<string, ApiEvent[]>
+    )
 
     return Object.entries(groupedData)
-      .map(([date, events]) => ({ date, values: events }))
-      .sort((a, b) => a.date.localeCompare(b.date))
+      .map(([label, events]) => ({ label, values: events }))
+      .sort((a, b) => b.values.length - a.values.length)
   }, [
     start,
     end,
@@ -290,7 +322,7 @@ export default function EventsReportGraphGrouped({
     reportBufferUnit,
     reportBufferOperation,
     includesMemo,
-    interval,
+    graphType,
   ])
 
   if (!data.length) {
@@ -301,14 +333,14 @@ export default function EventsReportGraphGrouped({
     <div ref={containerRef} className={cx(styles.graph, styles.groupBy)}>
       <ResponsiveBarChart
         color={color}
-        // getIndividualData={getIndividualData}
+        getIndividualData={getIndividualData}
         aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()
         }}
         barLabel={<ReportGraphTick graphType={graphType} dataview={dataview} />}
-        individualTooltip={<IndividualGraphTooltip graphType={graphType} dataview={dataview} />}
+        individualTooltip={<EventsReportIndividualGraphTooltip eventType={eventType} />}
         aggregatedTooltip={<AggregatedGraphTooltip graphType={graphType} dataview={dataview} />}
         // individualItem={<VesselGraphLink />}
       />

@@ -10,6 +10,11 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useFetchContextDatasetAreas } from 'features/areas/areas.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import {
+  REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
+  REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
+  REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
+} from 'features/reports/reports.config'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import {
@@ -34,6 +39,10 @@ function EventsReportGraph() {
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
 
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const isGroupByAreaReport =
+    reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_EEZ ||
+    reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_RFMO ||
+    reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FAO
   const eventType = eventDataset?.subcategory as EventType
 
   const includes = useMemo(
@@ -43,8 +52,9 @@ function EventsReportGraph() {
       'end',
       'vessel',
       ...(eventType === 'encounter' ? ['encounter.vessel'] : []),
+      ...(isGroupByAreaReport ? ['regions'] : []),
     ],
-    [eventType]
+    [eventType, isGroupByAreaReport]
   )
 
   const filters = useMemo(
@@ -98,6 +108,7 @@ function EventsReportGraph() {
       data={eventsStatsDataGrouped || []}
       valueKeys={eventsStatsValueKeys}
       graphType={reportEventsGraph}
+      eventType={eventType}
     />
   )
 }
