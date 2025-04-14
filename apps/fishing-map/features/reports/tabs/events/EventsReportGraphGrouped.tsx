@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react'
 import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -12,8 +11,9 @@ import {
 } from 'queries/report-events-stats-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
+import type { ApiEvent, APIPagination } from '@globalfishingwatch/api-types'
 import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
@@ -28,20 +28,30 @@ import {
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
 import {
-  EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
+  REPORT_EVENTS_GRAPH_EVOLUTION,
 } from 'features/reports/reports.config'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
+import type { ReportEventsGraph } from 'features/reports/reports.types'
+import { useGetEventReportGraphLabel } from 'features/reports/tabs/events/events-report.hooks'
+import { selectEventsGraphDatasetAreaId } from 'features/reports/tabs/events/events-report.selectors'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { WORKSPACE_REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
-
-import EncounterIcon from './icons/event-encounter.svg'
-import LoiteringIcon from './icons/event-loitering.svg'
-import PortVisitIcon from './icons/event-port.svg'
+import { selectLocationQuery } from 'routes/routes.selectors'
 
 import styles from './EventsReportGraph.module.css'
 
-const IndividualGraphTooltip = ({ data }: { data?: any }) => {
+const IndividualGraphTooltip = ({
+  data,
+  graphType,
+  dataview,
+}: {
+  data?: any
+  graphType?: ReportEventsGraph
+  dataview: UrlDataviewInstance
+}) => {
   const { t } = useTranslation()
   if (!data?.vessel) {
     return null
@@ -61,18 +71,20 @@ type EventsReportGraphGroupedTooltipProps = {
     unit: string
   }[]
   label: number
+  graphType?: ReportEventsGraph
+  dataview: UrlDataviewInstance
 }
 
 const AggregatedGraphTooltip = (props: any) => {
   const { active, payload: tooltipPayload, label } = props as EventsReportGraphGroupedTooltipProps
   const { t } = useTranslation()
-
+  const getReportAreaLabel = useGetEventReportGraphLabel()
   const isOthersCategory = tooltipPayload?.some((p) => p.label === OTHERS_CATEGORY_LABEL)
   let otherLabelCounted = false
   if (active && tooltipPayload && tooltipPayload.length) {
     return (
       <div className={styles.tooltipContainer}>
-        <p className={styles.tooltipLabel}>{label}</p>
+        <p className={styles.tooltipLabel}>{getReportAreaLabel(label?.toString())}</p>
         <ul className={isOthersCategory ? styles.maxHeight : ''}>
           {tooltipPayload
             .map(({ value, color, payload }, index) => {
@@ -91,7 +103,7 @@ const AggregatedGraphTooltip = (props: any) => {
                   <Fragment>
                     {top.map(({ label, value }: { label: string; value: number }) => (
                       <li key={label} className={styles.tooltipValue}>
-                        {label}: <I18nNumber number={value} />
+                        {getReportAreaLabel(label)}: <I18nNumber number={value} />
                       </li>
                     ))}
                     {restValue !== 0 && (
@@ -121,46 +133,45 @@ const AggregatedGraphTooltip = (props: any) => {
 }
 
 const ReportGraphTick = (props: any) => {
-  const { x, y, payload, width, visibleTicksCount } = props
-
+  const { x, y, payload, width, visibleTicksCount, graphType, dataview } = props
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const getReportAreaLabel = useGetEventReportGraphLabel()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { dispatchLocation } = useLocationConnect()
+  const query = useSelector(selectLocationQuery)
+  const datasetAreaId = useSelector(selectEventsGraphDatasetAreaId)
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
-  const isCategoryInteractive =
-    !EMPTY_API_VALUES.includes(payload.value) && payload.value !== OTHERS_CATEGORY_LABEL
+  const isCategoryInteractive = graphType !== REPORT_EVENTS_GRAPH_EVOLUTION && !isOtherCategory
 
-  // const getTickLabel = (label: string) => {
-  //   if (label === EMPTY_FIELD_PLACEHOLDER) {
-  //     return t('analysis.unknownProperty', 'Unknown')
-  //   }
-  //   if (EMPTY_API_VALUES.includes(label)) {
-  //     return t('analysis.unknown', 'Unknown')
-  //   }
-  //   switch (property) {
-  //     case 'flag':
-  //       return formatInfoField(label, 'flag') as string
-  //     case 'geartype':
-  //       return formatInfoField(label, 'geartypes') as string
-  //     case 'vesselType':
-  //       return formatInfoField(label, 'vesselType') as string
-  //     default:
-  //       return label
-  //   }
-  // }
-
-  const onLabelClick = () => {
-    if (payload.value !== OTHERS_CATEGORY_LABEL) {
-      // TODO:CVP
-      // dispatchQueryParams({
-      //   [filterQueryParam]: `${FILTER_PROPERTIES[property as ReportVesselsSubCategory]}:${
-      //     payload.value
-      //   }`,
-      //   [pageQueryParam]: 0,
-      // })
+  const onLabelClick = async () => {
+    if (!isOtherCategory) {
+      if (graphType === 'byFlag') {
+        const newDataviewConfig = {
+          filters: {
+            ...(dataview.config?.filters || {}),
+            flag: [payload.value],
+          },
+        }
+        upsertDataviewInstance({
+          id: dataview.id,
+          config: newDataviewConfig,
+        })
+      } else if (datasetAreaId) {
+        const areaId = graphType === 'byRFMO' ? payload.value.toUpperCase() : payload.value
+        dispatchLocation(WORKSPACE_REPORT, {
+          payload: { datasetId: datasetAreaId, areaId },
+          query: {
+            ...query,
+            reportEventsGraph: 'evolution',
+          },
+        })
+      }
     }
   }
 
-  const label = isOtherCategory ? t('analysis.others', 'Others') : payload.value
+  const label = isOtherCategory
+    ? t('analysis.others', 'Others')
+    : getReportAreaLabel(payload.value) || ''
   const labelChunks = label.split(' ')
   const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {
@@ -172,16 +183,24 @@ const ReportGraphTick = (props: any) => {
     }
   })
 
+  const tooltip =
+    graphType === 'byFlag'
+      ? `${t('analysis.clickToFilterBy', 'Click to filter by:')} ${label}`
+      : `${t('analysis.clickToSeeAreaReport', 'Click to see the {{area}} report', {
+          area: getReportAreaLabel(payload.value),
+        })}`
+
   return (
-    <GFWTooltip content={label} placement="bottom">
-      <text
-        className={cx({ [styles.axisLabel]: isCategoryInteractive })}
-        transform={`translate(${x},${y - 3})`}
-        onClick={onLabelClick}
-      >
+    <GFWTooltip content={tooltip} placement="bottom">
+      <text transform={`translate(${x},${y - 3})`} onClick={onLabelClick}>
         {labelChunksClean.map((chunk) => (
           <Fragment key={chunk}>
-            <tspan textAnchor="middle" x="0" dy={12}>
+            <tspan
+              textAnchor="middle"
+              x="0"
+              dy={12}
+              className={cx({ [styles.interactiveTick]: isCategoryInteractive })}
+            >
               {chunk}{' '}
             </tspan>
           </Fragment>
@@ -192,6 +211,7 @@ const ReportGraphTick = (props: any) => {
 }
 
 export default function EventsReportGraphGrouped({
+  dataview,
   datasetId,
   filters,
   includes,
@@ -200,9 +220,10 @@ export default function EventsReportGraphGrouped({
   start,
   data,
   valueKeys,
-  eventType,
+  graphType,
 }: {
   datasetId: string
+  dataview: UrlDataviewInstance
   filters?: BaseReportEventsVesselsParamsFilters
   includes?: string[]
   color?: string
@@ -210,7 +231,7 @@ export default function EventsReportGraphGrouped({
   start: string
   data: ResponsiveVisualizationData<'aggregated'>
   valueKeys: string[]
-  eventType?: EventType
+  graphType?: ReportEventsGraph
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const startMillis = DateTime.fromISO(start).toMillis()
@@ -224,14 +245,14 @@ export default function EventsReportGraphGrouped({
   const reportBufferUnit = useSelector(selectReportBufferUnit)
   const reportBufferOperation = useSelector(selectReportBufferOperation)
 
-  let icon: ReactElement | undefined
-  if (eventType === 'encounter') {
-    icon = <EncounterIcon />
-  } else if (eventType === 'loitering') {
-    icon = <LoiteringIcon />
-  } else if (eventType === 'port_visit') {
-    icon = <PortVisitIcon />
-  }
+  // let icon: ReactElement | undefined
+  // if (eventType === 'encounter') {
+  //   icon = <EncounterIcon />
+  // } else if (eventType === 'loitering') {
+  //   icon = <LoiteringIcon />
+  // } else if (eventType === 'port_visit') {
+  //   icon = <PortVisitIcon />
+  // }
 
   const getAggregatedData = useCallback(async () => data, [data])
 
@@ -286,9 +307,9 @@ export default function EventsReportGraphGrouped({
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()
         }}
-        barLabel={<ReportGraphTick />}
-        individualTooltip={<IndividualGraphTooltip />}
-        aggregatedTooltip={<AggregatedGraphTooltip />}
+        barLabel={<ReportGraphTick graphType={graphType} dataview={dataview} />}
+        individualTooltip={<IndividualGraphTooltip graphType={graphType} dataview={dataview} />}
+        aggregatedTooltip={<AggregatedGraphTooltip graphType={graphType} dataview={dataview} />}
         // individualItem={<VesselGraphLink />}
       />
     </div>

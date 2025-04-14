@@ -40,6 +40,10 @@
   fill: var(--color-secondary-blue);
 }
 
+.interactiveTick {
+  cursor: pointer;
+}
+
 .graph.evolution :global(.recharts-tooltip-cursor) {
   stroke: var(--color-secondary-blue);
 }

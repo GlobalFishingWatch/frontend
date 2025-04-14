@@ -29,7 +29,6 @@ import {
 import {
   REPORT_EVENTS_GRAPH_DATAVIEW_IDS,
   REPORT_EVENTS_GRAPH_EVOLUTION,
-  REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
   REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS,
   REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
   REPORT_EVENTS_RFMO_AREAS,
@@ -37,7 +36,6 @@ import {
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import { getAggregatedDataWithOthers } from 'features/reports/shared/utils/reports.utils'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
-import { getFlagById } from 'utils/flags'
 
 export const selectEventsGraphDatasetAreaId = createSelector(
   [selectAllDataviews, selectReportEventsGraph],
@@ -174,13 +172,8 @@ export const selectEventsStatsValueKeys = createSelector(
   }
 )
 export const selectEventsStatsDataGrouped = createSelector(
-  [
-    selectReportEventsGraph,
-    selectEventsStatsData,
-    selectActiveReportDataviews,
-    selectEventsGraphDatasetAreas,
-  ],
-  (reportEventsGraph, stats, dataviews, datasetAreas) => {
+  [selectReportEventsGraph, selectEventsStatsData, selectActiveReportDataviews],
+  (reportEventsGraph, stats, dataviews) => {
     if (!stats) {
       return
     }
@@ -216,18 +209,13 @@ export const selectEventsStatsDataGrouped = createSelector(
           return []
         }
         const dataview = dataviews[i]
-        const label =
-          reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FLAG
-            ? getFlagById(name)?.label
-            : datasetAreas?.find((f) => f.id?.toString().toUpperCase() === name.toUpperCase())
-                ?.label
         return {
-          label: label || name,
+          label: name,
           dataviewId: dataview?.id,
           color: dataview?.config?.color,
           [dataview.id]: {
             value,
-            label: label || name,
+            label: name,
           },
         }
       })

@@ -88,6 +88,7 @@ function EventsReportGraph() {
 
   return (
     <EventsReportGraphGrouped
+      dataview={eventsDataview}
       datasetId={eventDataset?.id}
       filters={filters}
       includes={includes}
@@ -96,7 +97,7 @@ function EventsReportGraph() {
       start={start}
       data={eventsStatsDataGrouped || []}
       valueKeys={eventsStatsValueKeys}
-      eventType={eventType}
+      graphType={reportEventsGraph}
     />
   )
 }

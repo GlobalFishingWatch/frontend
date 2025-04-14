@@ -90,7 +90,7 @@ const ReportBarTooltip = (props: any) => {
                     return acc + curr.value
                   }, 0)
                 return (
-                  <Fragment>
+                  <Fragment key={index}>
                     {top.map(({ name, value }: { name: string; value: number }) => (
                       <li key={name} className={styles.tooltipValue}>
                         {name}: <I18nNumber number={value} />
