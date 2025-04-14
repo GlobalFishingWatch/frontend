@@ -27,7 +27,7 @@ import {
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
 import {
-  REPORT_EVENTS_GRAPH_DATAVIEW_IDS,
+  REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS,
   REPORT_EVENTS_GRAPH_EVOLUTION,
   REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS,
   REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
@@ -41,8 +41,8 @@ export const selectEventsGraphDatasetAreaId = createSelector(
   [selectAllDataviews, selectReportEventsGraph],
   (dataviews, reportEventsGraph) => {
     const dataviewId =
-      REPORT_EVENTS_GRAPH_DATAVIEW_IDS[
-        reportEventsGraph as keyof typeof REPORT_EVENTS_GRAPH_DATAVIEW_IDS
+      REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS[
+        reportEventsGraph as keyof typeof REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS
       ]
     const dataview = dataviews.find((d) => d.slug === dataviewId)
     const layers = dataview?.config?.layers || []
@@ -57,6 +57,13 @@ export const selectEventsGraphDatasetAreas = createSelector(
   [selectAreas, selectEventsGraphDatasetAreaId],
   (areas, datasetAreaId) => {
     return areas[datasetAreaId]?.list?.data as DatasetArea[]
+  }
+)
+
+export const selectIsReportEventsGraphByArea = createSelector(
+  [selectReportEventsGraph],
+  (reportEventsGraph) => {
+    return Object.keys(REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS).includes(reportEventsGraph as any)
   }
 )
 

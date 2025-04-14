@@ -10,17 +10,13 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useFetchContextDatasetAreas } from 'features/areas/areas.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import {
-  REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
-  REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
-  REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
-} from 'features/reports/reports.config'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import {
   selectEventsGraphDatasetAreaId,
   selectEventsStatsDataGrouped,
   selectEventsStatsValueKeys,
+  selectIsReportEventsGraphByArea,
 } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraphEvolution from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import EventsReportGraphGrouped from 'features/reports/tabs/events/EventsReportGraphGrouped'
@@ -37,12 +33,8 @@ function EventsReportGraph() {
   const reportEventsGraph = useSelector(selectReportEventsGraph)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
-
+  const isReportEventsGraphByArea = useSelector(selectIsReportEventsGraphByArea)
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  const isGroupByAreaReport =
-    reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_EEZ ||
-    reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_RFMO ||
-    reportEventsGraph === REPORT_EVENTS_GRAPH_GROUP_BY_FAO
   const eventType = eventDataset?.subcategory as EventType
 
   const includes = useMemo(
@@ -52,9 +44,9 @@ function EventsReportGraph() {
       'end',
       'vessel',
       ...(eventType === 'encounter' ? ['encounter.vessel'] : []),
-      ...(isGroupByAreaReport ? ['regions'] : []),
+      ...(isReportEventsGraphByArea ? ['regions'] : []),
     ],
-    [eventType, isGroupByAreaReport]
+    [eventType, isReportEventsGraphByArea]
   )
 
   const filters = useMemo(

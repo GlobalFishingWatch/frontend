@@ -291,8 +291,8 @@ export default function EventsReportGraphGrouped({
             ...event.regions.rfmo.filter((rfmo) => REPORT_EVENTS_RFMO_AREAS.includes(rfmo))
           )
         }
-        if (graphType === 'byFAO' && event.regions?.fao) {
-          regions.push(...event.regions.fao)
+        if (graphType === 'byFAO' && event.regions?.majorFao) {
+          regions.push(...event.regions.majorFao)
         }
         if (graphType === 'byEEZ' && event.regions?.eez) {
           regions.push(...event.regions.eez)
