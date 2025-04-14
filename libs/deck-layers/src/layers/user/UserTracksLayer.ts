@@ -86,7 +86,6 @@ export class UserTracksPathLayer<
       `,
       'fs:DECKGL_FILTER_COLOR': /*glsl*/ `
         if (vTime > 0.0 && vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
-          // color = vHighlightColor;
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
       `,
