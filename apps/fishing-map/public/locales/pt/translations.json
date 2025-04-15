@@ -400,6 +400,8 @@
       "filtersHelp": "Selecione as propriedades (ou campos) desse conjunto de dados para poder filtrar dinamicamente as rotas na barra lateral",
       "lineId": "IDs de linha individuais",
       "lineIdHelp": "Selecione a propriedade do seu conjunto de dados que diferencia uma rota da outra",
+      "name": "Line label",
+      "nameHelp": "Select a property to add a label to each line on the map",
       "segmentId": "IDs de segmentos individuais",
       "segmentIdHelp": "Selecione a propriedade do seu conjunto de dados que diferencia um segmento do outro dentro de cada rota (ou seja, viagens)",
       "segmentTimes": "Horários de segmentos de rota",
