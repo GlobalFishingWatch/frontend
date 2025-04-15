@@ -53,7 +53,7 @@ export const useContextInteractions = () => {
         const areaName =
           dataview?.config?.type === DataviewType.UserContext
             ? dataview?.datasets?.[0]?.name
-            : feature.value.toString() || feature.title
+            : feature?.value?.toString() || feature.title || ''
         dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
         dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName }))
         dispatchClickedEvent(null)
