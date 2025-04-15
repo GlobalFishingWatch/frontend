@@ -46,7 +46,7 @@ const getTimerangeFromUrl = (locationUrl = window.location.toString()) => {
     const start = url.searchParams.get('start')
     const end = url.searchParams.get('end')
     if (start && end) {
-      return { start, end }
+      return { start: decodeURIComponent(start), end: decodeURIComponent(end) }
     }
   } catch (e) {
     console.warn(e)
