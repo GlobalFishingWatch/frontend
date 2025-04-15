@@ -179,10 +179,14 @@ const selectIsFishingIndexLocation = createSelector(
   }
 )
 
-export const selectIsWorkspaceIndexLocation = createSelector(
-  [selectIsMarineManagerLocation, selectIsFishingIndexLocation],
-  (isMarineManagerLocation, isFishingIndexLocation) => {
-    return isMarineManagerLocation || isFishingIndexLocation
+const selectIsReportIndexLocation = createSelector([selectLocationCategory], (category) => {
+  return category === WorkspaceCategory.Reports
+})
+
+export const selectIsIndexLocation = createSelector(
+  [selectIsMarineManagerLocation, selectIsFishingIndexLocation, selectIsReportIndexLocation],
+  (isMarineManagerLocation, isFishingIndexLocation, isReportIndexLocation) => {
+    return isMarineManagerLocation || isFishingIndexLocation || isReportIndexLocation
   }
 )
 
