@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { color } from 'color-blend'
 import { stringify } from 'qs'
@@ -26,13 +27,16 @@ import { selectEventsGraphDatasetAreas } from 'features/reports/tabs/events/even
 import { formatInfoField } from 'utils/info'
 
 export function useGetEventReportGraphLabel() {
+  const { t } = useTranslation()
   const reportEventsGraph = useSelector(selectReportEventsGraph)
   const eventsGraphDatasetAreas = useSelector(selectEventsGraphDatasetAreas)
   return useCallback(
     (areaId: string) => {
       switch (reportEventsGraph) {
         case REPORT_EVENTS_GRAPH_GROUP_BY_FLAG:
-          return formatInfoField(areaId, 'flag') as string
+          return areaId
+            ? (formatInfoField(areaId, 'flag') as string)
+            : t('common.unknownProperty', 'Unknown')
         case REPORT_EVENTS_GRAPH_GROUP_BY_RFMO:
         case REPORT_EVENTS_GRAPH_GROUP_BY_FAO:
         case REPORT_EVENTS_GRAPH_GROUP_BY_EEZ:
@@ -43,7 +47,7 @@ export function useGetEventReportGraphLabel() {
           return areaId
       }
     },
-    [eventsGraphDatasetAreas, reportEventsGraph]
+    [eventsGraphDatasetAreas, reportEventsGraph, t]
   )
 }
 
