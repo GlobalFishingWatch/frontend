@@ -400,6 +400,8 @@
       "filtersHelp": "Pilih properti (atau bidang) dataset ini agar dapat memfilter lintasan secara dinamis di bar samping",
       "lineId": "ID jalur individu",
       "lineIdHelp": "Pilih properti dataset Anda yang membedakan setiap lintasan dari yang lainnya",
+      "name": "Line label",
+      "nameHelp": "Select a property to add a label to each line on the map",
       "segmentId": "ID segmen individual",
       "segmentIdHelp": "Pilih properti dataset Anda yang membedakan segmen dalam setiap jalur satu sama lain (yaitu perjalanan)",
       "segmentTimes": "Waktu segment lintasan",

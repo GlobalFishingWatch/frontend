@@ -400,6 +400,8 @@
       "filtersHelp": "Seleccione propiedades (o campos) de este conjunto de datos para poder filtrar las pistas dinámicamente en la barra lateral",
       "lineId": "Identidades de líneas individuales",
       "lineIdHelp": "Seleccione la propiedad de su conjunto de datos que distingue cada pista entre sí",
+      "name": "Line label",
+      "nameHelp": "Select a property to add a label to each line on the map",
       "segmentId": "Identidades de segmentos individuales",
       "segmentIdHelp": "Seleccione la propiedad de su conjunto de datos que distinga los segmentos dentro de cada pista entre sí (por ejemplo, viajes)",
       "segmentTimes": "Horarios de segmentos de pistas",
