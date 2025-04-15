@@ -7,6 +7,19 @@ import type { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import type { JSZipObject } from './zip-to-files'
 import { zipToFiles } from './zip-to-files'
 
+const invalidDataErrorHandler = (type: DatasetGeometryType) => {
+  switch (type) {
+    case 'tracks':
+      throw new Error('datasetUpload.errors.kml.noLineData')
+    case 'points':
+      throw new Error('datasetUpload.errors.kml.noPointData')
+    case 'polygons':
+      throw new Error('datasetUpload.errors.kml.noPolygonData')
+    default:
+      throw new Error('datasetUpload.errors.kml.invalidData')
+  }
+}
+
 export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
   const isKMZ = file.name.endsWith('.kmz')
   const results = [] as Feature<Geometry, GeoJsonProperties>[]
@@ -39,7 +52,12 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
 
       if (hasFeaturesOfDesiredType) {
         const { features } = kml(kmlDoc)
-        results.push(...(features as Feature<Geometry, GeoJsonProperties>[]))
+        results.push(
+          ...(features.map((feature, index) => ({
+            ...feature,
+            properties: { ...(feature.properties || {}), gfw_id: index },
+          })) as Feature<Geometry, GeoJsonProperties>[])
+        )
       } else {
         invalidDataErrorHandler(type)
       }
@@ -49,17 +67,4 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
   }
 
   return featureCollection(results) as FeatureCollection
-}
-
-const invalidDataErrorHandler = (type: DatasetGeometryType) => {
-  switch (type) {
-    case 'tracks':
-      throw new Error('datasetUpload.errors.kml.noLineData')
-    case 'points':
-      throw new Error('datasetUpload.errors.kml.noPointData')
-    case 'polygons':
-      throw new Error('datasetUpload.errors.kml.noPolygonData')
-    default:
-      throw new Error('datasetUpload.errors.kml.invalidData')
-  }
 }

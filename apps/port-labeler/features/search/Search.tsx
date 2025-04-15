@@ -1,8 +1,8 @@
-import { Fragment, useCallback, useMemo,useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
-import type { SelectOption } from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, IconButton, InputText, Select } from '@globalfishingwatch/ui-components'
 
 import { setSelectedPoints } from 'features/labeler/labeler.slice'
@@ -11,16 +11,13 @@ import { useSearchConnect } from './search.hooks'
 
 import styles from './Search.module.css'
 
-interface SearchOptions { }
-
-const Search: React.FC<SearchOptions> = (props) => {
+const Search: React.FC = (props) => {
   const { t, i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const { searchPoints } = useSearchConnect()
   const [searchType, setSearchType] = useState(undefined)
   const [searchValue, setSearchValue] = useState('')
   const dispatch = useDispatch()
-
 
   const options: SelectOption[] = useMemo(() => {
     return [
@@ -53,8 +50,13 @@ const Search: React.FC<SearchOptions> = (props) => {
 
   return (
     <Fragment>
-      <IconButton icon="search" type="default" size="default" className={styles.button} onClick={() => setOpen(!open)}>
-      </IconButton>
+      <IconButton
+        icon="search"
+        type="default"
+        size="default"
+        className={styles.button}
+        onClick={() => setOpen(!open)}
+      ></IconButton>
       {open && (
         <ul className={styles.list}>
           <li>
@@ -63,7 +65,8 @@ const Search: React.FC<SearchOptions> = (props) => {
               selectedOption={searchType}
               onSelect={function (option: SelectOption<any>): void {
                 setSearchType(option)
-              }} />
+              }}
+            />
           </li>
           <li>
             <InputText
@@ -77,12 +80,16 @@ const Search: React.FC<SearchOptions> = (props) => {
           </li>
 
           <li className={styles.buttons}>
-            <Button size='small' onClick={seach} disabled={!searchType || !searchValue}>Search</Button>
-            <Button size='small' type='secondary' onClick={clear}>clear</Button>
+            <Button size="small" onClick={seach} disabled={!searchType || !searchValue}>
+              Search
+            </Button>
+            <Button size="small" type="secondary" onClick={clear}>
+              clear
+            </Button>
           </li>
         </ul>
       )}
-    </Fragment >
+    </Fragment>
   )
 }
 

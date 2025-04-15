@@ -163,7 +163,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
         const datasets = datasetsPromises.flat()
 
         const simplifies = simplify?.split(',')
-        const areaIds = areaId.toString().split(',')
+        const areaIds = areaId?.toString().split(',')
         const areas = await Promise.all(
           datasets.map((dataset, index) =>
             fetchAreaDetail({
@@ -188,7 +188,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
               ? wrapBBoxLongitudes(mergedFeature.bbox as Bbox)
               : wrapGeometryBbox(mergedFeature.geometry)
             const area = {
-              id: areaId.toString(),
+              id: areaId?.toString(),
               name:
                 areaName ||
                 `${t('common.unionOf', 'Union of')} ${listAsSentence(

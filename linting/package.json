@@ -38,11 +38,11 @@
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "devDependencies": {
     "@eslint/compat": "1.x",
-    "@next/eslint-plugin-next": "14.x",
+    "@next/eslint-plugin-next": "15.x",
     "@nx/eslint-plugin": "20.x",
     "eslint": "9.x",
     "eslint-config-next": "15.x",
-    "eslint-config-prettier": "9.x",
+    "eslint-config-prettier": "10.x",
     "eslint-plugin-cypress": "4.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jsx-a11y": "6.x",
@@ -52,7 +52,7 @@
     "prettier-eslint": "16.x",
     "stylelint": "16.x",
     "stylelint-config-css-modules": "4.x",
-    "stylelint-config-standard": "36.x",
+    "stylelint-config-standard": "38.x",
     "typescript-eslint": "8.x"
   }
 }

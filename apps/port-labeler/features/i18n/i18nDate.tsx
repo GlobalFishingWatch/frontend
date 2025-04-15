@@ -2,8 +2,8 @@ import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { DateTimeFormatOptions } from 'luxon';
 import { DateTime } from 'luxon'
-import type { Locale } from 'types'
 
+import type { Locale } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
 import i18n from './i18n'

@@ -270,7 +270,7 @@ const LayerLibrary: FC = () => {
                     data-subcategory={subcategory}
                     onClick={onCategoryClick}
                   >
-                    {t(`common.${subcategory}`, upperFirst(subcategory))}
+                    {t(`dataset.type${subcategory}`, upperFirst(subcategory))}
                   </button>
                 ))}
             </div>
