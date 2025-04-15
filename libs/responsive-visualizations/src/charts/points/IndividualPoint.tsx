@@ -87,7 +87,10 @@ export function IndividualPoint({
       )}
       {item && cloneElement(item, { ...(item.props || {}), data: point } as any)}
       {icon && (
-        <span style={{ color: point.color }} className={styles.icon}>
+        <span
+          style={{ color: point.color, transform: `scale(${pointSize / DEFAULT_POINT_SIZE})` }}
+          className={styles.icon}
+        >
           {icon}
         </span>
       )}
