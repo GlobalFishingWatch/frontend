@@ -2813,7 +2813,7 @@ __metadata:
     html-react-parser: "npm:5.2.3"
     html2canvas: "npm:1.4.1"
     husky: "npm:9.1.7"
-    i18next: "npm:24.2.3"
+    i18next: "npm:25.0.0"
     i18next-browser-languagedetector: "npm:8.0.4"
     i18next-http-backend: "npm:3.0.2"
     intersection-observer: "npm:0.12.2"
@@ -21351,7 +21351,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:24.2.3, i18next@npm:^23.5.1 || ^24.2.0":
+"i18next@npm:25.0.0":
+  version: 25.0.0
+  resolution: "i18next@npm:25.0.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.26.10"
+  peerDependencies:
+    typescript: ^5
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/49fc1bb94661a1253f0decb837fa4ad7b26a09e04dacf29e453bd396ba9c05a5bc38575133a4a893b0b65da143ad0493867d2e2c41a4d3d10f9fce4b71c45fc0
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^23.5.1 || ^24.2.0":
   version: 24.2.3
   resolution: "i18next@npm:24.2.3"
   dependencies:
