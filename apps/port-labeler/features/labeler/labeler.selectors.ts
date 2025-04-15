@@ -1,5 +1,4 @@
 import { createSelector } from "@reduxjs/toolkit"
-import type { PortPosition } from "types"
 
 import {
   selectCountry,
@@ -11,6 +10,7 @@ import {
   selectSubareas,
   selectSubareaValues
 } from "features/labeler/labeler.slice"
+import type { PortPosition } from "types"
 
 /**
  * filter the poins by country

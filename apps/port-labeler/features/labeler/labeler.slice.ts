@@ -1,9 +1,10 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit'
-import type { RootState } from 'store'
-import type { PortPosition, PortSubarea } from 'types'
 
 import type { SelectOption } from '@globalfishingwatch/ui-components'
+
+import type { RootState } from 'store'
+import type { PortPosition, PortSubarea } from 'types'
 
 interface ValuesObject {
   [key: string]: any

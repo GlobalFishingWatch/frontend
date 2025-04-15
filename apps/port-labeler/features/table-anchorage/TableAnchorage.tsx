@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
-import type { PortPosition } from 'types'
 
 import { flags } from '@globalfishingwatch/i18n-labels'
 import type { SelectOption } from '@globalfishingwatch/ui-components';
@@ -18,6 +17,7 @@ import {
   toogleExtraData,
 } from 'features/labeler/labeler.slice'
 import { useMapBounds } from 'features/map/controls/map-controls.hooks'
+import type { PortPosition } from 'types'
 
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
