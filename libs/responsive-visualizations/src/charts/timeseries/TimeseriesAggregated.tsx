@@ -14,6 +14,7 @@ import {
 import { getResponsiveVisualizationItemValue } from '../../lib/density'
 import type { ResponsiveVisualizationAggregatedObjectValue } from '../../types'
 import type { TimeseriesByTypeProps } from '../types'
+import { getContrastSafeLineColor } from '../utils'
 
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 
@@ -99,7 +100,7 @@ export function AggregatedTimeseries({
                 dataKey={dataKey}
                 dot={false}
                 isAnimationActive={false}
-                stroke={lineColor}
+                stroke={getContrastSafeLineColor(lineColor)}
                 strokeWidth={2}
               />
             )
@@ -111,7 +112,7 @@ export function AggregatedTimeseries({
             dataKey={valueKeys}
             dot={false}
             isAnimationActive={false}
-            stroke={color}
+            stroke={getContrastSafeLineColor(color)}
             strokeWidth={2}
           />
         )}

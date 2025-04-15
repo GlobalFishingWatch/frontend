@@ -39,11 +39,7 @@ function EventsReportGraph() {
     [eventType]
   )
 
-  let color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
-
-  if (eventsDataview?.id === VESSEL_GROUP_ENCOUNTER_EVENTS_ID) {
-    color = 'rgb(247 222 110)' // Needed to make the graph lines more visible
-  }
+  const color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
 
   if (!eventDataset) {
     return null
