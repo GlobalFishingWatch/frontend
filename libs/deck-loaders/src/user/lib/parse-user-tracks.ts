@@ -1,7 +1,7 @@
 import type { UserTrack } from '@globalfishingwatch/api-types'
 
 import type { UserTrackBinaryData, UserTrackData } from './types'
-import type { TrackCoordinatesPropertyFilter} from './utils';
+import type { TrackCoordinatesPropertyFilter } from './utils'
 import { filterTrackByCoordinateProperties } from './utils'
 
 export function isNumeric(str: string | number) {
@@ -102,10 +102,12 @@ export const parseUserTrack = (
                     return acc + next.length
                   }, 0)
                 : f.geometry.coordinates.length
-            return f.geometry.type === 'MultiLineString'
-              ? f.properties?.coordinateProperties?.[COORDINATE_PROPERTY_TIMESTAMP]?.flat()
-              : f.properties?.coordinateProperties?.[COORDINATE_PROPERTY_TIMESTAMP] ||
-                  Array(timestampsLength).fill(0)
+            return (
+              (f.geometry.type === 'MultiLineString'
+                ? f.properties?.coordinateProperties?.[COORDINATE_PROPERTY_TIMESTAMP]?.flat()
+                : f.properties?.coordinateProperties?.[COORDINATE_PROPERTY_TIMESTAMP]) ||
+              Array(timestampsLength).fill(0)
+            )
           })
         ),
         size: 1,

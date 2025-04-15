@@ -96,8 +96,8 @@ const VesselLink = ({
         onClick(e, vesselId)
         trackEvent({
           category: TrackCategory.SearchVessel,
-          action: 'Click on vessel name after searching for a vessel',
-          label: 'VesselId:' + vesselId,
+          action: 'vessel search click',
+          label: vesselId,
         })
       }
     },

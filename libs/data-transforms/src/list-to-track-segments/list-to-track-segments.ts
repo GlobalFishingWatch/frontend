@@ -45,17 +45,18 @@ export const listToTrackSegments = ({
     ? sortRecordsByTimestamp({ recordsArray, timestampProperty: startTime })
     : recordsArray
   const groupedLines = groupBy(sortedRecords, (record) => {
-    return `${hasIdGroup ? record[lineId] : 'no_id'}-${record.longitud > 0}`
+    return `${hasIdGroup ? record[lineId] : NO_RECORD_ID}-${record.longitude > 0}`
   })
-  const segments = Object.values(groupedLines).map((line, index) => {
+  const segments = Object.values(groupedLines).map((line, lineIndex) => {
     const groupedSegments = hasSegmentId
       ? groupBy(line, (s) => s[segmentId])
-      : { [Object.keys(groupedLines)[index]]: line }
+      : { [Object.keys(groupedLines)[lineIndex]]: line }
     return Object.values(groupedSegments)
       .map((segment) => {
         return segment.flatMap((dirtyRecord) => {
           const record = normalizePropertiesKeys(dirtyRecord)
-          const recordId = lineId && record[lineId] ? record[lineId] : NO_RECORD_ID
+          const recordId =
+            lineId && record[lineId] ? record[lineId] : `${NO_RECORD_ID}-${lineIndex}`
           if (record[latitude] && record[longitude]) {
             const { [latitude]: latitudeValue, [longitude]: longitudeValue, ...properties } = record
             const coords = parseCoords(latitudeValue, longitudeValue)
@@ -64,16 +65,16 @@ export const listToTrackSegments = ({
               if (startTimeMs !== undefined && isNaN(startTimeMs)) {
                 hasDatesError = true
               }
-              const segmentProperties = {
+              const lineProperties = {
                 ...(hasIdGroup && {
                   [lineId]: properties[lineId],
-                  color: lineColorBarOptions[index % lineColorBarOptions.length].value,
+                  color: lineColorBarOptions[lineIndex % lineColorBarOptions.length].value,
                 }),
                 ...(hasSegmentId && { [segmentId]: properties[segmentId] }),
               }
               return [
                 {
-                  properties: segmentProperties,
+                  properties: lineProperties,
                   // We need the property at the root level for sidebar lines leyend
                   coordinateProperties: properties,
                   latitude: coords.latitude as number,
