@@ -188,7 +188,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
         className={styles.choice}
         onSelect={changeVesselArea}
       />
-      {areaDataview && DATAVIEWS_WARNING.includes(areaDataview?.id) && (
+      {areaDataview && DATAVIEWS_WARNING.includes(areaDataview?.id as any) && (
         <div className={styles.dataWarning}>
           {t(
             `dataview.${areaDataview?.id}.dataWarning` as any,

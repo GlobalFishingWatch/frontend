@@ -62,3 +62,6 @@ export const selectReportVesselsOrderDirection = selectReportStateProperty(
 // Activity
 export const selectReportActivityGraph = selectReportStateProperty('reportActivityGraph')
 export const selectReportTimeComparison = selectReportStateProperty('reportTimeComparison')
+
+// Events
+export const selectReportEventsGraph = selectReportStateProperty('reportEventsGraph')

@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import type { RootState } from 'reducers'
 
-import type { StatsByVessel, StatsIncludes } from '@globalfishingwatch/api-types'
+import type { StatsByVessel, StatsGroupBy, StatsIncludes } from '@globalfishingwatch/api-types'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { BufferOperation, BufferUnit } from 'types'
@@ -36,6 +36,7 @@ export type ReportEventsStatsParams = ReportEventsVesselsParams & {
   dataset: string
   filters: BaseReportEventsVesselsParamsFilters
   includes?: StatsIncludes[]
+  groupBy?: StatsGroupBy
 }
 
 export type ReportEventsStatsResponseGroups = { name: string; value: number }[]
@@ -52,6 +53,7 @@ export type GetReportEventParams = BaseReportEventsVesselsParams & {
   datasets: string[]
   filters?: BaseReportEventsVesselsParamsFilters[]
   includes?: StatsIncludes[]
+  groupBy?: string
 }
 
 export type ReportEventsVesselsResponse = StatsByVessel[]
@@ -116,7 +118,8 @@ export const reportEventsStatsApi = createApi({
           const interval = getFourwingsInterval(startMillis, endMillis)
           const query = {
             ...getEventsStatsQuery({ ...params, dataset, filters: params.filters?.[index] || {} }),
-            includes: params.includes,
+            ...(params.includes && { includes: params.includes }),
+            ...(params.groupBy && { 'group-by': params.groupBy }),
             'timeseries-interval': interval,
           }
           const url = getQueryParamsResolved(query)

@@ -274,7 +274,7 @@ export const selectAllDataviewsInWorkspace = createSelector(
   [selectAllDataviews, selectWorkspaceDataviewInstances, selectAllDatasets],
   (dataviews = [], workspaceDataviewInstances, datasets) => {
     const allWorkspaceDataviews = dataviews?.filter((dataview) => {
-      if (DEFAULT_DATAVIEW_SLUGS.includes(dataview.slug)) {
+      if (DEFAULT_DATAVIEW_SLUGS.includes(dataview.slug as any)) {
         return true
       }
       if (workspaceDataviewInstances?.some((d) => d.dataviewId === dataview.slug)) {

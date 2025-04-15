@@ -62,7 +62,7 @@ const Title = (props: TitleProps) => {
       >
         {showIcon &&
           datasetIcon &&
-          !CONTEXT_LAYERS_DATAVIEWS.includes(dataview.dataviewId as string) && (
+          !CONTEXT_LAYERS_DATAVIEWS.includes(dataview.dataviewId as any) && (
             <Icon icon={datasetIcon} />
           )}
         {title}

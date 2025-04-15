@@ -79,3 +79,9 @@
   position: absolute;
   inset: 0;
 }
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -6,7 +6,7 @@ import type {
   IdentityVessel,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type {
   GetDatasetConfigsCallbacks,
@@ -39,7 +39,11 @@ import {
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstances,
 } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import { selectReportCategorySelector } from 'features/reports/reports.config.selectors'
+import { REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS } from 'features/reports/reports.config'
+import {
+  selectReportCategorySelector,
+  selectReportEventsGraph,
+} from 'features/reports/reports.config.selectors'
 import type {
   ReportActivitySubCategory,
   ReportEventsSubCategory,
@@ -112,6 +116,7 @@ export const selectDataviewInstancesInjected = createSelector(
     selectIsVesselGroupReportLocation,
     selectReportCategorySelector,
     selectReportVesselGroupId,
+    selectReportEventsGraph,
     selectReportPortId,
     selectVesselId,
     selectVesselInfoData,
@@ -126,6 +131,7 @@ export const selectDataviewInstancesInjected = createSelector(
     isVesselGroupReportLocation,
     reportCategory,
     reportVesselGroupId,
+    reportEventsGraph,
     reportPortId,
     urlVesselId,
     vessel
@@ -238,6 +244,21 @@ export const selectDataviewInstancesInjected = createSelector(
         }
       }
       dataviewInstancesInjected.push(footprintDataviewInstance)
+    }
+    // Inject the dataview instance for the events graph report by area
+    const reportAreaDataviewId =
+      REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS[
+        reportEventsGraph as keyof typeof REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS
+      ]
+    if (reportAreaDataviewId) {
+      const contextDataviewInstance: UrlDataviewInstance = {
+        id: `report-event-graph-area`,
+        dataviewId: reportAreaDataviewId,
+        config: {
+          visible: true,
+        },
+      }
+      dataviewInstancesInjected.push(contextDataviewInstance)
     }
     return dataviewInstancesInjected
   }
