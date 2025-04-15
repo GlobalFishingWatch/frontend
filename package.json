@@ -69,6 +69,7 @@
     "@turf/nearest-point": "7.2.0",
     "@turf/simplify": "7.2.0",
     "@turf/turf": "7.2.0",
+    "@turf/truncate": "7.2.0",
     "@turf/union": "7.2.0",
     "abortcontroller-polyfill": "1.7.8",
     "array.prototype.flatmap": "1.3.3",

@@ -1,4 +1,4 @@
-import type { DefaultProps, Layer, LayerProps } from '@deck.gl/core'
+import type { DefaultProps, Layer, LayerProps, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { PathLayerProps } from '@deck.gl/layers'
 import { PathLayer } from '@deck.gl/layers'
@@ -8,15 +8,31 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
-import type { UserTrackBinaryData, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
+import type { ContextFeature } from '@globalfishingwatch/deck-layers'
+import type {
+  UserTrackBinaryData,
+  UserTrackFeature,
+  UserTrackRawData,
+} from '@globalfishingwatch/deck-loaders'
 import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
 
-import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
+import {
+  COLOR_HIGHLIGHT_LINE,
+  COLOR_TRANSPARENT,
+  getLayerGroupOffset,
+  hexToDeckColor,
+  LayerGroup,
+} from '../../utils'
+import { getContextId } from '../context/context.utils'
 import { MAX_FILTER_VALUE } from '../layers.config'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import type { GetSegmentsFromDataParams } from '../vessel/vessel.utils'
 
-import type { UserTrackLayerProps } from './user.types'
+import type {
+  UserLayerPickingInfo,
+  UserLayerPickingObject,
+  UserTrackLayerProps,
+} from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
 const defaultProps: DefaultProps<_UserTrackLayerProps> = {
@@ -86,7 +102,6 @@ export class UserTracksPathLayer<
       `,
       'fs:DECKGL_FILTER_COLOR': /*glsl*/ `
         if (vTime > 0.0 && vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
-          // color = vHighlightColor;
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
       `,
@@ -140,6 +155,25 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
   state!: UserTracksLayerState
+
+  getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
+    const { idProperty, valueProperties } = this.props
+    const feature = this.state.rawData?.features[info.index]
+    if (feature) {
+      const object = {
+        id: getContextId(feature as ContextFeature, idProperty) || info.index,
+        value: valueProperties?.length ? feature?.properties[valueProperties[0]] : undefined,
+        title: this.props.id,
+        color: this.props.color,
+        layerId: this.props.id,
+        datasetId: this.props.layers[0].datasetId,
+        category: this.props.category,
+        subcategory: this.props.subcategory,
+      } as UserLayerPickingObject
+      return { ...info, object }
+    }
+    return { ...info, object: undefined }
+  }
 
   _fetch = async (
     url: string,
@@ -225,12 +259,23 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     return bbox
   }
 
-  _getColorByLineIndex = (_: any, { index }: { index: number }) => {
+  _getColor = (_: any, { index }: { index: number }) => {
+    const { highlightedFeatures, idProperty = 'id', singleTrack } = this.props
     const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)
       ?.index as number
-    return hexToDeckColor(
-      this.state.rawData?.features?.[featureIndex]?.properties?.color || this.props.color
+    const currentFeature = this.state.rawData?.features?.[featureIndex]
+    const isHighlighted = highlightedFeatures?.some(
+      (feature) =>
+        feature.id === currentFeature?.properties?.[idProperty] ||
+        feature.id === currentFeature?.properties?.id
     )
+    if (isHighlighted) {
+      return COLOR_HIGHLIGHT_LINE
+    }
+    const color = singleTrack
+      ? currentFeature?.properties?.color || this.props.color
+      : this.props.color
+    return hexToDeckColor(color)
   }
 
   renderLayers() {
@@ -243,34 +288,51 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       highlightStartTime,
       highlightEndTime,
       singleTrack,
+      pickable,
+      highlightedFeatures,
     } = this.props
 
     return layers.map((layer) => {
       const tilesUrl = new URL(layer.tilesUrl)
       tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))
-      return new UserTracksPathLayer<any>({
-        id: layer.id,
-        data: tilesUrl.toString(),
+
+      const commonProps = {
         _pathType: 'open',
-        fetch: this._fetch,
         widthUnits: 'pixels',
         widthScale: 1,
         startTime,
         endTime,
-        highlightStartTime,
-        highlightEndTime,
-        onError: this._onLayerError,
         wrapLongitude: true,
-        jointRounded: true,
-        capRounded: true,
         widthMinPixels: 1,
-        getWidth: 1,
-        getColor: singleTrack ? this._getColorByLineIndex : hexToDeckColor(color),
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
-        updateTriggers: {
-          getColor: [singleTrack, color],
-        },
-      })
+      } as _UserTrackLayerProps
+
+      return [
+        new UserTracksPathLayer<any>({
+          ...commonProps,
+          id: `${layer.id}-interactive`,
+          data: this.state.binaryData,
+          pickable,
+          getWidth: 5,
+          getColor: COLOR_TRANSPARENT,
+        }),
+        new UserTracksPathLayer<any>({
+          ...commonProps,
+          id: layer.id,
+          data: tilesUrl.toString(),
+          fetch: this._fetch,
+          highlightStartTime,
+          highlightEndTime,
+          onError: this._onLayerError,
+          jointRounded: true,
+          capRounded: true,
+          getWidth: 1.5,
+          getColor: this._getColor,
+          updateTriggers: {
+            getColor: [singleTrack, color, highlightedFeatures],
+          },
+        }),
+      ]
     })
   }
 }

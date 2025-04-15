@@ -1,6 +1,6 @@
 import type { PickingInfo } from '@deck.gl/core'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import type { Feature, MultiPolygon, Polygon } from 'geojson'
+import type { Feature, LineString, MultiLineString, MultiPolygon, Polygon } from 'geojson'
 
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
 
@@ -46,7 +46,10 @@ export type ContextFeatureProperties = {
   link?: string
 }
 
-export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>>
+export type ContextFeature = Feature<
+  Polygon | MultiPolygon | LineString | MultiLineString,
+  Record<string, any>
+>
 
 export type ContextPickingObject = DeckPickingObject<ContextFeature & ContextFeatureProperties>
 

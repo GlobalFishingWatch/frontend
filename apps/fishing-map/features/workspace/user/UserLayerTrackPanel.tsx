@@ -45,7 +45,7 @@ export function useUserLayerTrackMetadata(dataview: UrlDataviewInstance) {
   }) as string
 
   const hasRecordIds = idProperty
-    ? data?.features?.some((f) => f.properties?.id !== NO_RECORD_ID)
+    ? data?.features?.some((f) => !f.properties?.id?.startsWith(NO_RECORD_ID))
     : false
 
   const singleTrack = allTracksActive.length === 1

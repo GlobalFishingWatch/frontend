@@ -36,6 +36,7 @@ import EnvironmentTooltipSection from 'features/map/popups/categories/Environmen
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import UserPointsTooltipSection from 'features/map/popups/categories/UserPointsLayers'
+import UserTracksTooltipSection from 'features/map/popups/categories/UserTracksLayers'
 import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayers'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
 import WorkspacePointsTooltipSection from 'features/map/popups/categories/WorkspacePointsLayers'
@@ -288,6 +289,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 feature.subcategory === DataviewType.UserContext ||
                 feature.subcategory === 'draw-polygons'
             )
+            const userTrackFeatures = (features as UserLayerPickingObject[]).filter(
+              (feature) => feature.subcategory === DataviewType.Track
+            )
             const userBQHeatmapFeatures = (features as FourwingsHeatmapPickingObject[]).filter(
               (feature) =>
                 feature.subcategory === DataviewType.UserContext ||
@@ -297,6 +301,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               <Fragment key={featureCategory}>
                 <UserPointsTooltipSection
                   features={userPointFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+                <UserTracksTooltipSection
+                  features={userTrackFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
                 <UserContextTooltipSection
