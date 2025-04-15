@@ -272,7 +272,7 @@ export default function EventsReportGraphGrouped({
     }
 
     return [...top, others]
-  }, [fetchEventsData, dataviews, start, end, includesMemo, graphType])
+  }, [fetchEventsData, dataviews, start, end, includesMemo, graphType, t])
 
   let icon: ReactElement | undefined
 
