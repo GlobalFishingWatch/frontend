@@ -30,6 +30,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationQuery } from 'routes/routes.selectors'
+import { UNKNOWN } from 'utils/info'
 
 import EncounterIcon from './icons/event-encounter.svg'
 import LoiteringIcon from './icons/event-loitering.svg'
@@ -230,7 +231,7 @@ export default function EventsReportGraphGrouped({
       (acc, event) => {
         const regions = []
         if (graphType === 'byFlag') {
-          regions.push(event.vessel.flag)
+          regions.push(event.vessel.flag || UNKNOWN)
         }
         if (graphType === 'byRFMO' && event.regions?.rfmo) {
           regions.push(
@@ -254,9 +255,22 @@ export default function EventsReportGraphGrouped({
       {} as Record<string, ApiEvent[]>
     )
 
-    return Object.entries(groupedData)
+    const dataGroups = Object.entries(groupedData)
       .map(([label, events]) => ({ label, values: events }))
       .sort((a, b) => b.values.length - a.values.length)
+
+    if (dataGroups.length <= MAX_CATEGORIES) {
+      return dataGroups
+    }
+
+    const top = dataGroups.slice(0, MAX_CATEGORIES)
+    const rest = dataGroups.slice(MAX_CATEGORIES)
+    const others = {
+      label: OTHERS_CATEGORY_LABEL,
+      values: rest.flatMap((other) => other.values),
+    }
+
+    return [...top, others]
   }, [fetchEventsData, dataviews, start, end, includesMemo, graphType])
 
   let icon: ReactElement | undefined
