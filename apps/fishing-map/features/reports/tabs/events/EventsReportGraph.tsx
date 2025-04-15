@@ -15,8 +15,6 @@ import {
   selectEventsGraphDatasetAreaId,
   selectEventsStatsDataGrouped,
   selectEventsStatsValueKeys,
-  selectFetchEventsVesselsParams,
-  selectIsReportEventsGraphByArea,
 } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraphEvolution from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import EventsReportGraphGrouped from 'features/reports/tabs/events/EventsReportGraphGrouped'
@@ -31,7 +29,6 @@ function EventsReportGraph() {
   const reportEventsGraph = useSelector(selectReportEventsGraph)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
-  const isReportEventsGraphByArea = useSelector(selectIsReportEventsGraphByArea)
 
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const eventType = eventDataset?.subcategory as EventType
@@ -42,10 +39,10 @@ function EventsReportGraph() {
       'start',
       'end',
       'vessel',
+      'regions',
       ...(eventType === 'encounter' ? ['encounter.vessel'] : []),
-      ...(isReportEventsGraphByArea ? ['regions'] : []),
     ],
-    [eventType, isReportEventsGraphByArea]
+    [eventType]
   )
 
   let color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE

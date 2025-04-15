@@ -141,13 +141,8 @@ export const selectFetchEventsStatsParams = createSelector(
   (reportEventsGraph, params) => {
     return {
       ...params,
-      includes: [
-        reportEventsGraph === REPORT_EVENTS_GRAPH_EVOLUTION ? 'TIME_SERIES' : 'EVENTS_GROUPED',
-        'TOTAL_COUNT',
-      ],
-      ...(reportEventsGraph !== REPORT_EVENTS_GRAPH_EVOLUTION && {
-        groupBy: REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS[reportEventsGraph],
-      }),
+      includes: ['TIME_SERIES', 'EVENTS_GROUPED', 'TOTAL_COUNT'],
+      groupBy: REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS[reportEventsGraph] || 'FLAG',
     } as GetReportEventParams
   }
 )
