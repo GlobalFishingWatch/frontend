@@ -103,7 +103,7 @@ function ActivityReport() {
     reportRequestHash !==
       getReportRequestHash({
         datasets: reportDataviews.flatMap(({ datasets }) => datasets?.map((d) => d.id) || []),
-        filters: reportDataviews.map((d) => d.filter),
+        filters: (reportDataviews as any[]).map((d) => d.filter),
         dateRange: timerange,
       })
   const hasAuthError = reportError && isAuthError(statusError)

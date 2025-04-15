@@ -8,7 +8,7 @@ export const selectVesselTemplateDataviews = createSelector(
   [selectAllDataviews],
   (vesselDataviews) => {
     return vesselDataviews?.filter((dataview) =>
-      VESSEL_TRACK_DATAVIEW_TEMPLATES.includes(dataview.slug)
+      VESSEL_TRACK_DATAVIEW_TEMPLATES.includes(dataview.slug as any)
     )
   }
 )
