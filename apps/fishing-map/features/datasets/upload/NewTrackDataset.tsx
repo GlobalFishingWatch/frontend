@@ -339,7 +339,22 @@ function NewTrackDataset({
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
         />
-
+        <NewDatasetField
+          datasetMetadata={datasetMetadata}
+          property="valueProperties"
+          label={t('datasetUpload.tracks.name', 'Line label')}
+          onSelect={(selected) => {
+            setDatasetMetadataConfig({ valueProperties: [selected.id] })
+          }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ valueProperties: [] })
+          }}
+          editable={!loading}
+          infoTooltip={t(
+            'datasetUpload.tracks.nameHelp',
+            'Select a property to add a label to each line on the map'
+          )}
+        />
         <MultiSelect
           label={t('datasetUpload.tracks.filters', 'Line filters')}
           placeholder={
