@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
-import type { PortPosition } from 'types'
 import { v4 as uuidv4 } from 'uuid'
 
 import { flags } from '@globalfishingwatch/i18n-labels'
@@ -20,6 +19,7 @@ import {
 } from 'features/labeler/labeler.selectors'
 import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
 import useMapInstance from 'features/map/map-context.hooks'
+import type { PortPosition } from 'types'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 
 import type { SubareaSelectOption } from './components/SubareaSelector';
