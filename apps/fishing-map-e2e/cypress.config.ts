@@ -45,7 +45,6 @@ export default defineConfig({
       on('task', {
         deleteFolder(folderName) {
           console.log('deleting folder %s', folderName)
-
           return new Promise((resolve, reject) => {
             stat(folderName, (err, stats) => {
               if (!err) {
@@ -62,7 +61,6 @@ export default defineConfig({
             })
           })
         },
-
         unzipping: ({ path, file }) =>
           decompress(path + file, path + 'unzip/' + file.replace('.zip', '')),
       })
@@ -79,10 +77,12 @@ export default defineConfig({
         }
       })
     },
-
     env: {
       apiAuthUser: '',
       apiAuthPass: '',
     },
+    // Please ensure you use `cy.origin()` when navigating between domains and remove this option.
+    // See https://docs.cypress.io/app/references/migration-guide#Changes-to-cyorigin
+    injectDocumentDomain: true,
   },
 })
