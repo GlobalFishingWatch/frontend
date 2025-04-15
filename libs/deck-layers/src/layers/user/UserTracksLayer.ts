@@ -3,7 +3,6 @@ import { CompositeLayer } from '@deck.gl/core'
 import type { PathLayerProps } from '@deck.gl/layers'
 import { PathLayer } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
-import { getContextId } from 'libs/deck-layers/src/layers/context/context.utils'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
@@ -24,6 +23,7 @@ import {
   hexToDeckColor,
   LayerGroup,
 } from '../../utils'
+import { getContextId } from '../context/context.utils'
 import { MAX_FILTER_VALUE } from '../layers.config'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import type { GetSegmentsFromDataParams } from '../vessel/vessel.utils'
