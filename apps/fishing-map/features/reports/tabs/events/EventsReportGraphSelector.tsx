@@ -20,10 +20,10 @@ import type { ReportEventsGraph } from 'features/reports/reports.types'
 import { useLocationConnect } from 'routes/routes.hook'
 
 type EventsReportGraphSelectorProps = {
-  loading: boolean
+  disabled: boolean
 }
 
-function EventsReportGraphSelector({ loading = false }: EventsReportGraphSelectorProps) {
+function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelectorProps) {
   const { dispatchQueryParams } = useLocationConnect()
   const reportEventsGraph = useSelector(selectReportEventsGraph)
   const isGlobalReport = useSelector(selectIsGlobalReport)
@@ -34,29 +34,29 @@ function EventsReportGraphSelector({ loading = false }: EventsReportGraphSelecto
     {
       id: REPORT_EVENTS_GRAPH_EVOLUTION,
       label: t('analysis.evolution', 'Evolution'),
-      disabled: loading,
+      disabled,
     },
     {
       id: REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
       label: t('analysis.groupByFlag', 'By flag'),
-      disabled: loading,
+      disabled,
     },
     ...(isGlobalReport
       ? [
           {
             id: REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
             label: t('analysis.groupByRFMO', 'By RFMO'),
-            disabled: loading,
+            disabled,
           },
           {
             id: REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
             label: t('analysis.groupByFAO', 'By FAO'),
-            disabled: loading,
+            disabled,
           },
           {
             id: REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
             label: t('analysis.groupByEEZ', 'By EEZ'),
-            disabled: loading,
+            disabled,
           },
         ]
       : []),

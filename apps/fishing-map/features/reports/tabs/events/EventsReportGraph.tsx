@@ -6,19 +6,15 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { useFetchContextDatasetAreas } from 'features/areas/areas.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
-import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import {
-  selectEventsGraphDatasetAreaId,
   selectEventsStatsDataGrouped,
   selectEventsStatsValueKeys,
 } from 'features/reports/tabs/events/events-report.selectors'
 import EventsReportGraphEvolution from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import EventsReportGraphGrouped from 'features/reports/tabs/events/EventsReportGraphGrouped'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 function EventsReportGraph() {
   const eventsDataviews = useSelector(selectActiveReportDataviews)
@@ -27,8 +23,6 @@ function EventsReportGraph() {
   const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
   const eventsStatsValueKeys = useSelector(selectEventsStatsValueKeys)
   const reportEventsGraph = useSelector(selectReportEventsGraph)
-  const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
-  const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
 
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const eventType = eventDataset?.subcategory as EventType
@@ -53,10 +47,6 @@ function EventsReportGraph() {
 
   if (!eventDataset) {
     return null
-  }
-
-  if (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) {
-    return <ReportVesselsPlaceholder animate={false} />
   }
 
   if (reportEventsGraph === 'evolution') {

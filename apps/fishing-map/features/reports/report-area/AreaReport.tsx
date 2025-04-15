@@ -5,7 +5,7 @@ import { uniq } from 'es-toolkit'
 
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { Tab } from '@globalfishingwatch/ui-components'
-import { Tabs } from '@globalfishingwatch/ui-components'
+import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -164,6 +164,10 @@ export default function Report() {
         title={t('errors.areaLoad', 'There was an error loading the report area')}
       ></ErrorPlaceholder>
     )
+  }
+
+  if (!reportCategory) {
+    return <Spinner />
   }
 
   return (

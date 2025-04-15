@@ -51,7 +51,7 @@ export default function ReportSummaryEvents() {
       : ''
 
     if (!totalEventsVessels) {
-      if (!eventsStatsDataGrouped?.length) {
+      if (eventsStatsDataGrouped === undefined) {
         return ''
       }
       return t('analysis.summaryEventsNoVessels', {
@@ -87,7 +87,7 @@ export default function ReportSummaryEvents() {
     })
   }, [
     eventType,
-    eventsStatsDataGrouped?.length,
+    eventsStatsDataGrouped,
     isPortReportLocation,
     reportVesselsFlags?.size,
     t,
