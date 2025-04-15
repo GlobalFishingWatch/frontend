@@ -11,23 +11,18 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectUserVesselGroups } from 'features/user/selectors/user.permissions.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
-import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import {
   selectVesselGroupsStatusId,
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from '../highlight-panel/highlight-panel.content'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
-import { setWorkspaceSuggestSave } from '../workspace.slice'
 
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
@@ -90,9 +85,6 @@ function VesselGroupSection(): React.ReactElement<any> {
           tooltipPlacement="top"
           onClick={onAddClick}
         />
-        {/* <LayerPanelContainer dataview={MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION}>
-          <span className={styles.highlightSpan}></span>
-        </LayerPanelContainer> */}
       </div>
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
@@ -110,11 +102,16 @@ function VesselGroupSection(): React.ReactElement<any> {
             )
           })
         ) : (
-          <div className={styles.emptyState}>
-            {t(
-              'workspace.emptyStateVesselGroups',
-              'Add vessel groups to see group presence and operation footprint.'
-            )}
+          <div className={cx('print-hidden', styles.header)}>
+            <div className={styles.emptyState}>
+              {t(
+                'workspace.emptyStateVesselGroups',
+                'Add vessel groups to see group presence and operation footprint.'
+              )}
+            </div>
+            <LayerPanelContainer dataview={MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION}>
+              <span className={styles.highlightSpan}></span>
+            </LayerPanelContainer>
           </div>
         )}
       </SortableContext>

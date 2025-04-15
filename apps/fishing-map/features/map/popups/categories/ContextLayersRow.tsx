@@ -40,7 +40,9 @@ const ContextLayersRow = ({
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
           {handleDownloadClick && <ContextLayerDownloadPopupButton onClick={handleDownloadClick} />}
-          <ContextLayerReportLink feature={feature} onClick={handleReportClick} />
+          {handleReportClick && (
+            <ContextLayerReportLink feature={feature} onClick={handleReportClick} />
+          )}
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
               <IconButton icon="info" tooltip={t('common.learnMore', 'Learn more')} size="small" />

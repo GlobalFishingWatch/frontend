@@ -33,7 +33,7 @@ import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { FileType } from 'utils/files'
-import { getFileFromGeojson, getFileName,getFileType } from 'utils/files'
+import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 
 import { TimeFieldsGroup } from './TimeFieldsGroup'
 
@@ -117,7 +117,7 @@ function NewTrackDataset({
               t('datasetUpload.errors.invalidDatesFeatures', {
                 defaultValue:
                   "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-                featureType: t('common.points', 'points'),
+                featureType: t('dataset.typePoints', 'points'),
               })
             )
           } else {
@@ -152,7 +152,7 @@ function NewTrackDataset({
           t('datasetUpload.errors.invalidDatesFeatures', {
             defaultValue:
               "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-            featureType: t('common.points', 'points'),
+            featureType: t('dataset.typePoints', 'points'),
           })
         )
       } else {
@@ -339,7 +339,22 @@ function NewTrackDataset({
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
         />
-
+        <NewDatasetField
+          datasetMetadata={datasetMetadata}
+          property="valueProperties"
+          label={t('datasetUpload.tracks.name', 'Line label')}
+          onSelect={(selected) => {
+            setDatasetMetadataConfig({ valueProperties: [selected.id] })
+          }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ valueProperties: [] })
+          }}
+          editable={!loading}
+          infoTooltip={t(
+            'datasetUpload.tracks.nameHelp',
+            'Select a property to add a label to each line on the map'
+          )}
+        />
         <MultiSelect
           label={t('datasetUpload.tracks.filters', 'Line filters')}
           placeholder={

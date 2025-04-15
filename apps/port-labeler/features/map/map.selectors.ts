@@ -2,12 +2,12 @@ import { createSelector } from "@reduxjs/toolkit"
 import buffer from "@turf/buffer"
 import concave from "@turf/concave"
 import { featureCollection, point } from "@turf/helpers"
-import type { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGeneratorConfig } from "types"
 
 import { flags } from "@globalfishingwatch/i18n-labels"
 
 import { selectPortPointsByCountry, selectPortValuesByCountry, selectSubareaColors, selectSubareaValuesByCountry } from "features/labeler/labeler.selectors"
 import { selectCountry, selectCountryColors, selectMapData, selectSelectedPoints } from "features/labeler/labeler.slice"
+import type { AreaGeneratorConfig, PortPosition, PortPositionFeature, PortPositionsGeneratorConfig } from "types"
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 import { groupBy } from "utils/group-by"
 

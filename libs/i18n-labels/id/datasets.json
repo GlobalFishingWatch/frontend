@@ -1165,20 +1165,6 @@
     "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
     "schema": {
       "duration": "duration",
-      "vessel-types": {
-        "keyword": "vessel-types",
-        "enum": {
-          "CARGO": "CARGO",
-          "DISCREPANCY": "DISCREPANCY",
-          "CARRIER": "CARRIER",
-          "FISHING": "FISHING",
-          "GEAR": "GEAR",
-          "OTHER": "OTHER",
-          "PASSENGER": "PASSENGER",
-          "SEISMIC_VESSEL": "SEISMIC_VESSEL",
-          "SUPPORT": "SUPPORT"
-        }
-      },
       "encounter_type": {
         "keyword": "encounter_type",
         "enum": {
@@ -1205,8 +1191,8 @@
     "name": "Fishing Events (AIS)",
     "description": "The dataset contains fishing events for AIS",
     "schema": {
-      "vessel-types": {
-        "keyword": "vessel-types",
+      "type": {
+        "keyword": "type",
         "enum": {
           "CARGO": "CARGO",
           "DISCREPANCY": "DISCREPANCY",
@@ -1240,8 +1226,8 @@
     "name": "Loitering Events (AIS)",
     "description": "The dataset contains loitering events for AIS",
     "schema": {
-      "vessel-types": {
-        "keyword": "vessel-types",
+      "type": {
+        "keyword": "type",
         "enum": {
           "CARGO": "CARGO",
           "DISCREPANCY": "DISCREPANCY",
@@ -1283,16 +1269,8 @@
     "name": "Port Visits Events (AIS)",
     "description": "The dataset contains port visits events for AIS (Confidence 2)",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
-      "vessel-types": {
-        "keyword": "vessel-types",
+      "type": {
+        "keyword": "type",
         "enum": {
           "CARGO": "CARGO",
           "DISCREPANCY": "DISCREPANCY",
@@ -1303,6 +1281,14 @@
           "PASSENGER": "PASSENGER",
           "SEISMIC_VESSEL": "SEISMIC_VESSEL",
           "SUPPORT": "SUPPORT"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
         }
       }
     }

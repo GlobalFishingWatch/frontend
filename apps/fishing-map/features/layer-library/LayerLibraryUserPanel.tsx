@@ -18,7 +18,6 @@ import {
   getDatasetTypeIcon,
   groupDatasetsByGeometryType,
 } from 'features/datasets/datasets.utils'
-import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
@@ -44,7 +43,6 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   const datasetStatus = useSelector(selectDatasetsStatus)
   const guestUser = useSelector(selectIsGuestUser)
   const onAddNewClick = useAddDataset()
-  const activeDataviews = useSelector(selectCustomUserDataviews)
 
   const filteredDatasets = useMemo(
     () =>
@@ -136,7 +134,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             ([geometryType, layer]) => (
               <ul className={styles.userGeometryList} key={geometryType}>
                 <label id={geometryType} className={styles.categoryLabel}>
-                  {t(`common.${geometryType}`, upperFirst(geometryType))}
+                  {t(`dataset.type${geometryType}`, upperFirst(geometryType))}
                 </label>
                 {sortByCreationDate<Dataset>(layer).map((dataset) => {
                   const datasetError = dataset.status === DatasetStatus.Error
@@ -175,17 +173,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                             onClick={() => !datasetError && onInfoClick(dataset)}
                           />
                         )}
-                        {!datasetError &&
-                        !!activeDataviews.find((d) => d.datasets?.[0]?.id === dataset.id) ? (
-                          <IconButton
-                            icon="remove-from-map"
-                            tooltip={t(
-                              'search.vesselAlreadyInWorkspace',
-                              'This vessel is already in your workspace'
-                            )}
-                            disabled
-                          />
-                        ) : (
+                        {!datasetError && (
                           <IconButton
                             icon="view-on-map"
                             onClick={() => onAddToWorkspaceClick(dataset)}
