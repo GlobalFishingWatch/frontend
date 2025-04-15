@@ -92,11 +92,18 @@ function EventsReport() {
   const isLoadingVessels = vessselStatus === 'pending'
   const noEvents = !isLoadingStats && totalEvents !== undefined && totalEvents === 0
 
-  const graph = useMemo(
-    () =>
-      (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) || isLoadingStats ? (
-        <ReportActivityPlaceholder showHeader={false} />
-      ) : noEvents ? (
+  const graph = useMemo(() => {
+    if (statsError) {
+      return <p className={styles.error}>{(statsError as any).message}</p>
+    }
+    if (
+      (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) ||
+      isLoadingStats
+    ) {
+      return <ReportActivityPlaceholder showHeader={false} />
+    }
+    if (noEvents) {
+      return (
         <div className={styles.emptyState}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -110,11 +117,11 @@ function EventsReport() {
             'There are no events fully contained in your timerange.'
           )}
         </div>
-      ) : (
-        <EventsReportGraph />
-      ),
-    [datasetAreas?.status, datasetAreasId, isLoadingStats, noEvents, t]
-  )
+      )
+    }
+    return <EventsReportGraph />
+  }, [datasetAreas?.status, datasetAreasId, isLoadingStats, noEvents, statsError, t])
+
   if (!vesselDatasets.length) {
     return (
       <Fragment>
@@ -143,22 +150,6 @@ function EventsReport() {
       </div>
     )
   }
-
-  // if (statsError || !eventsStatsDataGrouped || isLoadingStats) {
-  //   return (
-  //     <Fragment>
-  //       {showSubsectionSelector && (
-  //         <div className={styles.selector}>
-  //           <EventsReportSubsectionSelector />
-  //         </div>
-  //       )}
-  //       {isLoadingStats && <ReportEventsPlaceholder />}
-  //       {statsError && !isLoadingStats ? (
-  //         <p className={styles.error}>{(statsError as any).message}</p>
-  //       ) : null}
-  //     </Fragment>
-  //   )
-  // }
 
   return (
     <Fragment>
