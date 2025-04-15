@@ -1,0 +1,71 @@
+.tableContainer {
+  margin-top: 1.5rem;
+  min-height: 42rem;
+}
+
+.portsTable {
+  width: 100%;
+  border-collapse: collapse;
+  display: grid;
+  grid-template-columns: 1fr 1fr max-content;
+}
+
+.header {
+  text-align: left;
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.portsTable > div:not(.header) {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 4rem;
+  padding-block: 0.5rem;
+}
+
+.portsTable > div:not(.header, .icon) {
+  overflow: hidden;
+  padding-block: 0.8rem;
+}
+
+.portsTable > div:not(.header, .icon, .right) {
+  padding-right: 1rem;
+}
+
+.right {
+  text-align: right;
+}
+
+.footer {
+  margin-top: var(--space-S);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  font: var(--font-S);
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.noWrap {
+  white-space: nowrap;
+}

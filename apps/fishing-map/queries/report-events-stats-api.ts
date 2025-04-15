@@ -53,7 +53,19 @@ export type GetReportEventParams = BaseReportEventsVesselsParams & {
   datasets: string[]
   filters?: BaseReportEventsVesselsParamsFilters[]
   includes?: StatsIncludes[]
-  groupBy?: string
+  groupBy?:
+    | 'FLAG'
+    | 'GEARTYPE'
+    | 'REGION_EEZ'
+    | 'REGION_EEZ12NM'
+    | 'REGION_FAO'
+    | 'REGION_HIGH_SEAS'
+    | 'REGION_MAJOR_FAO'
+    | 'REGION_MPA'
+    | 'REGION_MPA_NO_TAKE'
+    | 'REGION_MPA_NO_TAKE_PARTIAL'
+    | 'REGION_RFMO'
+    | 'NEXT_PORT_ID'
 }
 
 export type ReportEventsVesselsResponse = StatsByVessel[]
@@ -167,3 +179,6 @@ export const selectReportEventsStats = (params: GetReportEventParams) =>
 
 export const selectReportEventsVessels = (params: GetReportEventParams) =>
   reportEventsStatsApi.endpoints.getReportEventsVessels.select(params)
+
+export const selectReportEventsPorts = (params: GetReportEventParams) =>
+  reportEventsStatsApi.endpoints.getReportEventsStats.select(params)

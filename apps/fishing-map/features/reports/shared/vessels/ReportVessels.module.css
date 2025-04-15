@@ -1,5 +1,6 @@
 .container {
   padding: var(--space-M);
+  border-bottom: var(--border);
 }
 
 .titleRow {

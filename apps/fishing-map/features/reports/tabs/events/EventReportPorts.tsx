@@ -1,0 +1,126 @@
+import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
+
+import { IconButton, InputText } from '@globalfishingwatch/ui-components'
+
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { selectReportEventsPortsFilter } from 'features/reports/reports.config.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+
+import {
+  selectFetchEventsPortsStatsParams,
+  selectReportEventsPortsPaginated,
+  selectReportEventsPortsPagination,
+} from './events-report.selectors'
+
+import styles from './EventReportPorts.module.css'
+
+function EventReportPorts() {
+  const { t } = useTranslation()
+  const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
+  const statsParams = useSelector(selectFetchEventsPortsStatsParams)
+  const reportEventsPortsPaginated = useSelector(selectReportEventsPortsPaginated)
+  const reportEventsPortsFilter = useSelector(selectReportEventsPortsFilter)
+  const pagination = useSelector(selectReportEventsPortsPagination)
+  const { dispatchQueryParams } = useLocationConnect()
+  const { error, status } = useGetReportEventsStatsQuery(statsParams, {
+    skip: !eventsDataview,
+  })
+
+  const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatchQueryParams({
+      reportEventsPortsFilter: e.target.value,
+    })
+  }
+
+  const onPrevPageClick = () => {
+    dispatchQueryParams({ reportEventsPortsPage: pagination.page - 1 })
+  }
+  const onNextPageClick = () => {
+    dispatchQueryParams({ reportEventsPortsPage: pagination.page + 1 })
+  }
+
+  const hasLessPortsThanAPage =
+    pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
+  const isLastPaginationPage =
+    pagination?.offset + pagination?.resultsPerPage >= pagination?.totalFiltered
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.headerContainer}>
+        <label>{t('analysis.portsAfterEvents', 'Ports visited after events')}</label>
+        <InputText
+          placeholder={t('analysis.portsSearchPlaceholder', 'Search ports')}
+          value={reportEventsPortsFilter}
+          inputSize="small"
+          onChange={onFilterChange}
+        />
+      </div>
+      <div className={styles.tableContainer}>
+        <div className={styles.portsTable}>
+          <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
+            {t('common.name', 'Name')}
+          </div>
+          <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
+            {t('common.country', 'Country')}
+          </div>
+          <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
+            {t('common.visits', 'Visits')}
+          </div>
+          {reportEventsPortsPaginated?.map((port) => {
+            return (
+              <Fragment key={port.name}>
+                <div>{port.name}</div>
+                <div>{port.country}</div>
+                <div className={styles.right}>{<I18nNumber number={port.value} />}</div>
+              </Fragment>
+            )
+          })}
+        </div>
+      </div>
+      <div className={styles.footer}>
+        <Fragment>
+          <div className={styles.flex}>
+            <IconButton
+              icon="arrow-left"
+              disabled={pagination?.page === 0}
+              className={cx({ [styles.disabled]: pagination?.page === 0 })}
+              onClick={onPrevPageClick}
+              size="medium"
+            />
+            <span className={styles.noWrap}>
+              {`${pagination?.offset + 1} - ${
+                isLastPaginationPage
+                  ? pagination?.totalFiltered
+                  : pagination?.offset + pagination?.resultsPerPage
+              }`}{' '}
+            </span>
+            <IconButton
+              icon="arrow-right"
+              onClick={onNextPageClick}
+              disabled={isLastPaginationPage || hasLessPortsThanAPage}
+              className={cx({
+                [styles.disabled]: isLastPaginationPage || hasLessPortsThanAPage,
+              })}
+              size="medium"
+            />
+          </div>
+          <span className={cx(styles.noWrap, styles.right)}>
+            {reportEventsPortsFilter && (
+              <Fragment>
+                <I18nNumber number={pagination.totalFiltered} /> {t('common.of', 'of')}{' '}
+              </Fragment>
+            )}
+            <I18nNumber number={pagination.total} /> {t('event.port', { count: pagination?.total })}
+          </span>
+        </Fragment>
+      </div>
+    </div>
+  )
+}
+
+export default EventReportPorts

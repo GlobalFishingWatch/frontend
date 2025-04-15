@@ -30,6 +30,7 @@ import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/Repor
 import ReportSummary from 'features/reports/shared/summary/ReportSummary'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
+import EventReportPorts from 'features/reports/tabs/events/EventReportPorts'
 import {
   selectEventsGraphDatasetAreaId,
   selectFetchEventsStatsParams,
@@ -214,6 +215,9 @@ function EventsReport() {
             loading={isLoadingVessels}
           />
         )}
+        <div className={styles.container}>
+          <EventReportPorts />
+        </div>
       </Fragment>
     </Fragment>
   )
