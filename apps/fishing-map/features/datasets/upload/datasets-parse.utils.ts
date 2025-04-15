@@ -1,4 +1,5 @@
 import { lineToPolygon } from '@turf/line-to-polygon'
+import { truncate } from '@turf/truncate'
 import type { Feature, FeatureCollection, Position } from 'geojson'
 import { parse } from 'papaparse'
 
@@ -38,6 +39,7 @@ const validateFeatures = (geoJSON: any, type: DatasetGeometryType) => {
     tracks: ['LineString', 'MultiLineString'],
     polygons: ['Polygon', 'MultiPolygon'],
   }
+
   const flatFeatures: Feature[] = geoJSON.features.flatMap((feature: Feature) => {
     if (feature.geometry.type === 'GeometryCollection') {
       return feature.geometry.geometries.map((geometry) => {
@@ -73,14 +75,10 @@ const validateFeatures = (geoJSON: any, type: DatasetGeometryType) => {
           return polygon
         }
       }
-      const coordinates2D = (feature.geometry as any).coordinates.map((c: Position) => [c[0], c[1]])
-      return {
-        ...feature,
-        geometry: {
-          ...feature.geometry,
-          coordinates: coordinates2D,
-        },
-      }
+      const truncatedFeature = truncate(feature, {
+        coordinates: 2,
+      })
+      return truncatedFeature
     })
     .filter((feature: Feature) => {
       return normalizedTypes[type]?.includes(feature.geometry.type)
