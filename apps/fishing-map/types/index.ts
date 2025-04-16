@@ -39,7 +39,7 @@ type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 
 type BivariateDataviews = [string, string] | null
 
-export type FeatureFlag = never // name_of_feature_flag
+export type FeatureFlag = 'vesselClassInfo'
 export interface WorkspaceState extends BaseUrlWorkspace {
   activityVisualizationMode?: FourwingsVisualizationMode
   bivariateDataviews?: BivariateDataviews
