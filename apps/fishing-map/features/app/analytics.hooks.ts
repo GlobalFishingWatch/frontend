@@ -1,9 +1,8 @@
+import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import {
-  trackEvent as trackEventBase,
-  useAnalytics as useAnalyticsBase,
-} from '@globalfishingwatch/react-hooks'
+import { trackEvent as trackEventBase, useAnalyticsInit } from '@globalfishingwatch/react-hooks'
 
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
 import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
@@ -13,6 +12,7 @@ const GOOGLE_ANALYTICS_DEBUG_MODE =
   (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
 
 export enum TrackCategory {
+  General = 'general',
   ActivityData = 'activity_data',
   Analysis = 'analysis',
   DataDownloads = 'data_downloads',
@@ -34,16 +34,51 @@ export enum TrackCategory {
 export const trackEvent = trackEventBase<TrackCategory>
 
 export const useAnalytics = () => {
+  const { i18n } = useTranslation()
   const user = useSelector(selectUserData)
   const logged = useSelector(selectIsUserLogged)
   const locationCategory = useSelector(selectLocationCategory)
 
-  useAnalyticsBase({
+  const { initialized, setConfig } = useAnalyticsInit({
     debugMode: GOOGLE_ANALYTICS_DEBUG_MODE,
     googleMeasurementId: GOOGLE_MEASUREMENT_ID,
     googleTagManagerId: GOOGLE_TAG_MANAGER_ID,
-    logged,
-    pageview: locationCategory,
-    user,
   })
+
+  useEffect(() => {
+    if (initialized && locationCategory) {
+      trackEvent({
+        category: TrackCategory.General,
+        action: 'general',
+        other: {
+          pagetype: locationCategory,
+          language: i18n.language,
+          user_login_state: logged ? 'Logged in' : 'Not logged in',
+          user_id: user?.id,
+          // customer_email: user?.email,
+          // customer_email_hashed: user?.email ? btoa(user.email) : '',
+          organization_type: user?.organization,
+          organization: user?.organization ? btoa(user.organization) : '',
+          country: user?.country,
+          user_group: user?.groups.join(','),
+        },
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialized, locationCategory])
+
+  useEffect(() => {
+    if (initialized && user) {
+      setConfig({
+        user_id: user.id ?? '',
+        user_country: user.country ?? '',
+        user_group: user.groups.join(',') ?? '',
+        user_org_type: user.organizationType ?? '',
+        user_organization: user.organization ?? '',
+        user_language: user.language ?? '',
+      })
+    }
+  }, [initialized, user, setConfig])
+
+  return initialized
 }
