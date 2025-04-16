@@ -31,13 +31,13 @@ const InsightFishing = ({
   const [eventsInNoTakeMpasDetailsVisibility, setEventsInNoTakeMpasDetailsVisibility] =
     useState(false)
   const toggleEventsInNoTakeMpasDetailsVisibility = useCallback(() => {
-    setEventsInNoTakeMpasDetailsVisibility(!eventsInNoTakeMpasDetailsVisibility)
-  }, [eventsInNoTakeMpasDetailsVisibility])
+    setEventsInNoTakeMpasDetailsVisibility((visibility) => !visibility)
+  }, [])
 
   const [eventsInRfmoDetailsVisibility, setEventsInRfmoDetailsVisibility] = useState(false)
   const toggleEventsInRfmoDetailsVisibility = useCallback(() => {
-    setEventsInRfmoDetailsVisibility(!eventsInRfmoDetailsVisibility)
-  }, [eventsInRfmoDetailsVisibility])
+    setEventsInRfmoDetailsVisibility((visibility) => !visibility)
+  }, [])
 
   const eventsInNoTakeMpasDetails = useMemo(() => {
     return eventsInNoTakeMpas

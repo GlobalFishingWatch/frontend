@@ -57,7 +57,7 @@ const InsightGapsDetails = ({
         }
         icon={visible ? 'arrow-top' : 'arrow-down'}
       />
-      {visible && data?.entries && data?.entries?.length > 0 && (
+      {visible && data && data?.length > 0 && (
         <ul className={styles.eventDetailsList}>
           {[...data]
             .reverse()
