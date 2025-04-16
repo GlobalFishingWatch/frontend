@@ -2,10 +2,15 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { trackEvent as trackEventBase, useAnalyticsInit } from '@globalfishingwatch/react-hooks'
 
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
-import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
+import {
+  selectIsGuestUser,
+  selectIsUserLogged,
+  selectUserData,
+} from 'features/user/selectors/user.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
 
 const GOOGLE_ANALYTICS_DEBUG_MODE =
@@ -36,8 +41,8 @@ export const trackEvent = trackEventBase<TrackCategory>
 export const useAnalytics = () => {
   const { i18n } = useTranslation()
   const user = useSelector(selectUserData)
-  const logged = useSelector(selectIsUserLogged)
   const locationType = useSelector(selectLocationType)
+  const isGuestUser = useSelector(selectIsGuestUser)
 
   const { initialized, setConfig } = useAnalyticsInit({
     debugMode: GOOGLE_ANALYTICS_DEBUG_MODE,
@@ -53,14 +58,16 @@ export const useAnalytics = () => {
         other: {
           pagetype: locationType,
           language: i18n.language,
-          user_login_state: logged ? 'Logged in' : 'Not logged in',
-          user_id: user?.id,
-          // customer_email: user?.email,
-          // customer_email_hashed: user?.email ? btoa(user.email) : '',
-          organization_type: user?.organizationType,
-          organization_type_hashed: user?.organizationType ? btoa(user.organizationType) : '',
-          country: user?.country,
-          user_group: user?.groups.join(','),
+          user_login_state: isGuestUser ? 'Not logged in' : 'Logged in',
+          ...(!isGuestUser && {
+            user_id: user?.id,
+            // customer_email: user?.email,
+            // customer_email_hashed: user?.email ? btoa(user.email) : '',
+            organization_type: user?.organizationType,
+            organization_type_hashed: user?.organizationType ? btoa(user.organizationType) : '',
+            country: user?.country,
+            user_group: user?.groups.join(','),
+          }),
         },
       } as any)
     }
@@ -68,17 +75,17 @@ export const useAnalytics = () => {
   }, [initialized, locationType])
 
   useEffect(() => {
-    if (initialized && user) {
+    if (initialized && user && !isGuestUser) {
       setConfig({
         user_id: user.id ?? '',
         user_country: user.country ?? '',
-        user_group: user.groups.join(',') ?? '',
+        user_group: user.groups?.join(',') ?? '',
         user_org_type: user.organizationType ?? '',
         user_organization: user.organization ?? '',
         user_language: user.language ?? '',
       })
     }
-  }, [initialized, user, setConfig])
+  }, [initialized, user, isGuestUser, setConfig])
 
   return initialized
 }
