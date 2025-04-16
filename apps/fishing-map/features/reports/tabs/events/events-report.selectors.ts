@@ -329,8 +329,8 @@ export const selectReportEventsPortsData = createSelector(
       if (!p.name) return []
       return {
         id: p.name,
-        name: formatInfoField(p.name, 'shipname') as string,
-        country: formatInfoField(p.name.split('_')[0].toUpperCase(), 'flag') as string,
+        name: formatInfoField(p.label || p.name, 'port') as string,
+        country: formatInfoField(p.flag, 'flag') as string,
         value: p.value as number,
       }
     })

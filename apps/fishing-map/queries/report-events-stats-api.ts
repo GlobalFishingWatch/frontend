@@ -39,7 +39,12 @@ export type ReportEventsStatsParams = ReportEventsVesselsParams & {
   groupBy?: StatsGroupBy
 }
 
-export type ReportEventsStatsResponseGroups = { name: string; value: number }[]
+export type ReportEventsStatsResponseGroups = {
+  name: string
+  value: number
+  label?: string
+  flag?: string
+}[]
 
 export type ReportEventsStatsResponse = {
   numEvents: number
