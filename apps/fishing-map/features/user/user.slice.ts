@@ -13,6 +13,7 @@ import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
@@ -74,7 +75,18 @@ export const fetchUserThunk = createAsyncThunk(
     }
 
     try {
-      return await GFWAPI.login({ accessToken })
+      const user = await GFWAPI.login({ accessToken })
+      if (accessToken) {
+        trackEvent({
+          category: TrackCategory.User,
+          action: 'login',
+          other: {
+            user_id: user.id,
+            // email: user.email,
+          },
+        })
+      }
+      return user
     } catch (e: any) {
       return await GFWAPI.fetchGuestUser()
     }

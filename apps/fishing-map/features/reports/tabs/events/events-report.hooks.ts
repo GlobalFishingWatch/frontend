@@ -1,14 +1,15 @@
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { color } from 'color-blend'
 import { stringify } from 'qs'
-import { getEventsStatsQuery } from 'queries/report-events-stats-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { type ApiEvent, type APIPagination, DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
   selectReportBufferOperation,
   selectReportBufferUnit,
@@ -26,13 +27,16 @@ import { selectEventsGraphDatasetAreas } from 'features/reports/tabs/events/even
 import { formatInfoField } from 'utils/info'
 
 export function useGetEventReportGraphLabel() {
+  const { t } = useTranslation()
   const reportEventsGraph = useSelector(selectReportEventsGraph)
   const eventsGraphDatasetAreas = useSelector(selectEventsGraphDatasetAreas)
   return useCallback(
     (areaId: string) => {
       switch (reportEventsGraph) {
         case REPORT_EVENTS_GRAPH_GROUP_BY_FLAG:
-          return formatInfoField(areaId, 'flag') as string
+          return areaId
+            ? (formatInfoField(areaId, 'flag') as string)
+            : t('common.unknownProperty', 'Unknown')
         case REPORT_EVENTS_GRAPH_GROUP_BY_RFMO:
         case REPORT_EVENTS_GRAPH_GROUP_BY_FAO:
         case REPORT_EVENTS_GRAPH_GROUP_BY_EEZ:
@@ -43,7 +47,7 @@ export function useGetEventReportGraphLabel() {
           return areaId
       }
     },
-    [eventsGraphDatasetAreas, reportEventsGraph]
+    [eventsGraphDatasetAreas, reportEventsGraph, t]
   )
 }
 
@@ -59,6 +63,7 @@ export function useFetchEventReportGraphEvents() {
   const reportBufferValue = useSelector(selectReportBufferValue)
   const reportBufferUnit = useSelector(selectReportBufferUnit)
   const reportBufferOperation = useSelector(selectReportBufferOperation)
+
   const getIndividualData = useCallback(
     async ({ dataviews, start, end, includes }: FetchEventReportGraphEventsParams) => {
       const datasetId = dataviews?.[0]?.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
@@ -69,18 +74,18 @@ export function useFetchEventReportGraphEvents() {
       const promises = dataviews.map((dataview) => {
         const filters = getDataviewFilters(dataview)
         const params = {
-          ...getEventsStatsQuery({
-            start,
-            end,
-            filters,
-            dataset: datasetId,
-            regionDataset: reportAreaDataset,
-            regionId: reportAreaId,
-            bufferValue: reportBufferValue,
-            bufferUnit: reportBufferUnit,
-            bufferOperation: reportBufferOperation,
-          }),
+          'start-date': start,
+          'end-date': end,
+          datasets: [datasetId],
+          ...filters,
           ...(includes?.length && { includes }),
+          ...(reportAreaId !== ENTIRE_WORLD_REPORT_AREA_ID && {
+            'region-datasets': reportAreaDataset,
+            'region-ids': reportAreaId,
+            'buffer-value': reportBufferValue,
+            'buffer-unit': reportBufferUnit,
+            'buffer-operation': reportBufferOperation,
+          }),
           limit: 1000,
           offset: 0,
         }

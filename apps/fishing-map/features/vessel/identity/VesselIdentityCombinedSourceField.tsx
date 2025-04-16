@@ -7,6 +7,7 @@ import { VesselIdentitySourceEnum, type VesselInfo } from '@globalfishingwatch/a
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { Icon } from '@globalfishingwatch/ui-components'
 
+import { selectIsVesselClassInfoEnable } from 'features/debug/debug.selectors'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
@@ -26,6 +27,7 @@ const VesselIdentityCombinedSourceField = ({
   const { t } = useTranslation()
   const vesselInfo = useSelector(selectVesselInfoData)
   const isGFWUser = useSelector(selectIsGFWUser)
+  const isVesselClassInfoEnable = useSelector(selectIsVesselClassInfoEnable)
   const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
   const combinedSource = identity?.combinedSourcesInfo?.[property]
 
@@ -56,7 +58,7 @@ const VesselIdentityCombinedSourceField = ({
             </Fragment>
           )
 
-          if (isGFWUser && property === 'geartypes') {
+          if (isGFWUser && isVesselClassInfoEnable && property === 'geartypes') {
             const selfReportedGearType = identity?.combinedSourcesInfo?.onFishingListSr?.[index]
               ?.value
               ? t('vessel.gearTypes.fishing', 'Fishing')

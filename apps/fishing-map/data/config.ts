@@ -110,7 +110,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: null,
   userTab: UserTab.Info,
-  featureFlags: [],
+  featureFlags: PUBLIC_WORKSPACE_ENV !== 'production' ? ['vesselClassInfo'] : [],
 }
 
 export const EVENTS_COLORS: Record<string, string> = {

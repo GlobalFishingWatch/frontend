@@ -30,7 +30,6 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationQuery } from 'routes/routes.selectors'
-import { UNKNOWN } from 'utils/info'
 
 import EncounterIcon from './icons/event-encounter.svg'
 import LoiteringIcon from './icons/event-loitering.svg'
@@ -119,10 +118,11 @@ const ReportGraphTick = (props: any) => {
   const query = useSelector(selectLocationQuery)
   const datasetAreaId = useSelector(selectEventsGraphDatasetAreaId)
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
-  const isCategoryInteractive = graphType !== REPORT_EVENTS_GRAPH_EVOLUTION && !isOtherCategory
+  const isCategoryInteractive =
+    payload.value && graphType !== REPORT_EVENTS_GRAPH_EVOLUTION && !isOtherCategory
 
   const onLabelClick = async () => {
-    if (!isOtherCategory) {
+    if (isCategoryInteractive) {
       if (graphType === 'byFlag') {
         const newDataviewConfig = {
           filters: {
@@ -169,7 +169,7 @@ const ReportGraphTick = (props: any) => {
         })}`
 
   return (
-    <GFWTooltip content={tooltip} placement="bottom">
+    <GFWTooltip content={isCategoryInteractive ? tooltip : ''} placement="bottom">
       <text transform={`translate(${x},${y - 3})`} onClick={onLabelClick}>
         {labelChunksClean.map((chunk) => (
           <Fragment key={chunk}>
@@ -209,6 +209,7 @@ export default function EventsReportGraphGrouped({
   graphType?: ReportEventsGraph
   eventType?: EventType
 }) {
+  const { t } = useTranslation()
   const containerRef = React.useRef<HTMLDivElement>(null)
   const includesMemo = useMemoCompare(includes)
   const fetchEventsData = useFetchEventReportGraphEvents()
@@ -231,7 +232,7 @@ export default function EventsReportGraphGrouped({
       (acc, event) => {
         const regions = []
         if (graphType === 'byFlag') {
-          regions.push(event.vessel.flag || UNKNOWN)
+          regions.push(event.vessel?.flag || t('common.unknownProperty', 'Unknown'))
         }
         if (graphType === 'byRFMO' && event.regions?.rfmo) {
           regions.push(
@@ -271,7 +272,7 @@ export default function EventsReportGraphGrouped({
     }
 
     return [...top, others]
-  }, [fetchEventsData, dataviews, start, end, includesMemo, graphType])
+  }, [fetchEventsData, dataviews, start, end, includesMemo, graphType, t])
 
   let icon: ReactElement | undefined
 
