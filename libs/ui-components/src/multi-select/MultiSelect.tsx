@@ -366,7 +366,7 @@ export function MultiSelect(props: MultiSelectProps) {
                         })}
                         {...getItemProps({ item, index: virtualRow.index })}
                       >
-                        {item.label}
+                        <span className={multiSelectStyles.optionItemLabel}>{item.label}</span>
                         {
                           <Icon
                             icon={icon || 'tick'}
