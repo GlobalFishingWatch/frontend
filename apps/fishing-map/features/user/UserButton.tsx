@@ -10,9 +10,9 @@ import {
   selectIsUserExpired,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
+import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { USER } from 'routes/routes'
-import { selectFeatureFlags } from 'routes/routes.selectors'
 
 const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
   const { t } = useTranslation()
