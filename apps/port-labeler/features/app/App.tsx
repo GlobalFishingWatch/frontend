@@ -1,4 +1,4 @@
-import React, { Fragment,useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -10,8 +10,6 @@ import { t } from 'features/i18n/i18n'
 import Sidebar from 'features/sidebar/Sidebar'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { useReplaceLoginUrl } from 'routes/routes.hook'
-
-import { useAnalytics } from './analytics.hooks'
 
 import styles from './App.module.css'
 
@@ -34,7 +32,6 @@ const Main = () => {
 }
 
 function App(): React.ReactElement<any> {
-  useAnalytics()
   useReplaceLoginUrl()
   const dispatch = useAppDispatch()
   const [sidebarOpen, setSidebarOpen] = useState(true)

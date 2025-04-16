@@ -19,7 +19,6 @@ import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
-export const UNKNOWN = 'Unknown'
 
 export const upperFirst = (text: string) => {
   return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : ''

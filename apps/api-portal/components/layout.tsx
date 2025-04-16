@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect } from 'react'
-import { useAnalytics } from 'app/analytics.hooks'
 // import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -40,7 +39,7 @@ const Layout = ({ children }) => {
       router.push(loginLink)
     }
   }, [guestUser, isLoading, logged, loginLink, redirectToLogin, router, user])
-  useAnalytics(user, logged, isLoading)
+
   return (
     <Fragment>
       <Head>

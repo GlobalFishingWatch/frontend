@@ -122,7 +122,7 @@ export const selectDataviewInstancesInjected = createSelector(
     selectVesselInfoData,
   ],
   (
-    dataviewInstances,
+    workspaceDataviewInstancesMerged,
     vesselTemplateDataviews,
     isAnyVesselLocation,
     isVesselLocation,
@@ -133,8 +133,8 @@ export const selectDataviewInstancesInjected = createSelector(
     reportVesselGroupId,
     reportEventsGraph,
     reportPortId,
-    urlVesselId,
-    vessel
+    vesselId,
+    vesselInfoData
   ): UrlDataviewInstance[] | undefined => {
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     const hasCurrentEvent = isAnyVesselLocation && currentVesselEvent
@@ -144,20 +144,20 @@ export const selectDataviewInstancesInjected = createSelector(
     const eventEndDateTime = hasCurrentEvent ? getUTCDateTime(currentVesselEvent.end) : undefined
     if (isAnyVesselLocation) {
       const existingDataviewInstance = dataviewInstancesInjected?.find(
-        ({ id }) => urlVesselId && id.includes(urlVesselId)
+        ({ id }) => vesselId && id.includes(vesselId)
       )
-      if (!existingDataviewInstance && vessel?.identities) {
+      if (!existingDataviewInstance && vesselInfoData?.identities) {
         const vesselDatasets = {
-          info: vessel.info,
-          track: vessel.track,
-          ...(vessel?.events?.length && {
-            events: vessel?.events,
+          info: vesselInfoData.info,
+          track: vesselInfoData.track,
+          ...(vesselInfoData?.events?.length && {
+            events: vesselInfoData?.events,
           }),
-          relatedVesselIds: getRelatedIdentityVesselIds(vessel),
+          relatedVesselIds: getRelatedIdentityVesselIds(vesselInfoData),
         }
 
         const dataviewInstance = getVesselDataviewInstance({
-          vessel: { id: urlVesselId },
+          vessel: { id: vesselId },
           datasets: vesselDatasets,
           highlightEventStartTime: eventStartDateTime?.toMillis(),
           highlightEventEndTime: eventEndDateTime?.toMillis(),
@@ -165,7 +165,7 @@ export const selectDataviewInstancesInjected = createSelector(
         })
         if (dataviewInstance) {
           const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-            urlVesselId,
+            vesselId,
             vesselDatasets
           )
           dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
@@ -181,7 +181,7 @@ export const selectDataviewInstancesInjected = createSelector(
       }
     }
     if (isVesselGroupReportLocation) {
-      let vesselGroupDataviewInstance = dataviewInstances?.find((dataview) =>
+      let vesselGroupDataviewInstance = workspaceDataviewInstancesMerged?.find((dataview) =>
         dataviewHasVesselGroupId(dataview, reportVesselGroupId)
       )
       if (!vesselGroupDataviewInstance) {
@@ -250,7 +250,7 @@ export const selectDataviewInstancesInjected = createSelector(
       REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS[
         reportEventsGraph as keyof typeof REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS
       ]
-    if (reportAreaDataviewId) {
+    if (reportCategory === 'events' && reportAreaDataviewId) {
       const contextDataviewInstance: UrlDataviewInstance = {
         id: `report-event-graph-area`,
         dataviewId: reportAreaDataviewId,
