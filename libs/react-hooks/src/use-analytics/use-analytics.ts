@@ -36,8 +36,8 @@ export const trackEvent = <T>({
    */
   ReactGA.event(snakeCase(action), {
     category: snakeCase((category as string) ?? ''),
-    label: label,
-    value,
+    ...(label && { label }),
+    ...(value && { value }),
     ...other,
   })
 }

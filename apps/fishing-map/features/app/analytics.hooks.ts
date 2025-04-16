@@ -6,7 +6,7 @@ import { trackEvent as trackEventBase, useAnalyticsInit } from '@globalfishingwa
 
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
 import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
-import { selectLocationCategory } from 'routes/routes.selectors'
+import { selectLocationType } from 'routes/routes.selectors'
 
 const GOOGLE_ANALYTICS_DEBUG_MODE =
   (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
@@ -37,7 +37,7 @@ export const useAnalytics = () => {
   const { i18n } = useTranslation()
   const user = useSelector(selectUserData)
   const logged = useSelector(selectIsUserLogged)
-  const locationCategory = useSelector(selectLocationCategory)
+  const locationType = useSelector(selectLocationType)
 
   const { initialized, setConfig } = useAnalyticsInit({
     debugMode: GOOGLE_ANALYTICS_DEBUG_MODE,
@@ -46,26 +46,26 @@ export const useAnalytics = () => {
   })
 
   useEffect(() => {
-    if (initialized && locationCategory) {
+    if (initialized && locationType) {
       trackEvent({
-        category: TrackCategory.General,
+        // category: TrackCategory.General,
         action: 'general',
         other: {
-          pagetype: locationCategory,
+          pagetype: locationType,
           language: i18n.language,
           user_login_state: logged ? 'Logged in' : 'Not logged in',
           user_id: user?.id,
           // customer_email: user?.email,
           // customer_email_hashed: user?.email ? btoa(user.email) : '',
-          organization_type: user?.organization,
-          organization: user?.organization ? btoa(user.organization) : '',
+          organization_type: user?.organizationType,
+          organization_type_hashed: user?.organizationType ? btoa(user.organizationType) : '',
           country: user?.country,
           user_group: user?.groups.join(','),
         },
-      })
+      } as any)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialized, locationCategory])
+  }, [initialized, locationType])
 
   useEffect(() => {
     if (initialized && user) {
