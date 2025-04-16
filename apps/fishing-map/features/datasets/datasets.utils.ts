@@ -104,7 +104,6 @@ export type SupportedEnvDatasetSchema =
   | 'elevation'
   | 'flag'
   | 'vessel_type'
-  | 'next_port_id'
   | 'Height'
   | 'REALM'
   // TODO: remove this when the dataset is updated
@@ -114,7 +113,7 @@ export type SupportedEnvDatasetSchema =
   | 'period' // species-mm
   | 'scenario' // species-mm
 type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
-type SupportedEventsDatasetSchema = 'duration' | 'encounter_type' | 'type'
+type SupportedEventsDatasetSchema = 'duration' | 'encounter_type' | 'type' | 'next_port_id'
 
 const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
 const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups', 'period', 'scenario']
