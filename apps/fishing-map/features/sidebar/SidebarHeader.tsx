@@ -48,6 +48,7 @@ import VesselHeader from 'features/vessel/VesselHeader'
 import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
+  selectFeatureFlags,
   selectIsDefaultWorkspace,
   selectIsWorkspaceOwner,
   selectLastVisitedWorkspace,
@@ -66,7 +67,6 @@ import { HOME, REPORT, WORKSPACE } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
-  selectFeatureFlags,
   selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
   selectIsAnySearchLocation,

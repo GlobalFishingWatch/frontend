@@ -201,7 +201,6 @@ export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstanc
 
 export const selectMapDrawingMode = selectQueryParam('mapDrawing')
 export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
-export const selectFeatureFlags = selectQueryParam('featureFlags')
 
 export const selectIsMapDrawing = createSelector([selectMapDrawingMode], (mapDrawingMode) => {
   return mapDrawingMode === 'polygons' || mapDrawingMode === 'points'

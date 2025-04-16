@@ -12,6 +12,7 @@ import { useToggleFeatureFlag } from 'features/debug/debug.hooks'
 import {
   selectIsGlobalReportsEnabled,
   selectIsResponsiveVisualizationEnabled,
+  selectIsVesselClassInfoEnable,
 } from 'features/debug/debug.selectors'
 import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -28,6 +29,7 @@ const DebugMenu: React.FC = () => {
   const [datasetId, setDatasetId] = useState<string>('')
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
+  const isVesselClassInfoEnabled = useSelector(selectIsVesselClassInfoEnable)
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
   const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
   const toggleFeatureFlag = useToggleFeatureFlag()
@@ -66,6 +68,17 @@ const DebugMenu: React.FC = () => {
               </label>
             </div>
             <p>Activates the responsive visualization feature</p>
+            <div className={styles.header}>
+              <Switch
+                id="option_vessel_class_info"
+                active={isVesselClassInfoEnabled}
+                onClick={() => toggleFeatureFlag('vesselClassInfo')}
+              />
+              <label htmlFor="option_vessel_class_info">
+                <strong>Feature flag:</strong> Vessel class info
+              </label>
+            </div>
+            <p>Activates the vessel class info feature</p>
             <div className={styles.header}>
               <Switch
                 id="option_data_terminology_iframe"

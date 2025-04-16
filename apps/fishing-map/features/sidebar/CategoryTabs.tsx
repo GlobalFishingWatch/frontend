@@ -22,11 +22,10 @@ import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.sl
 import WhatsNew from 'features/sidebar/WhatsNew'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { selectFeatureFlags, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import { SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
-  selectFeatureFlags,
   selectIsAnySearchLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
