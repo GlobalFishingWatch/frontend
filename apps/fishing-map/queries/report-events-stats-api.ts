@@ -16,6 +16,7 @@ export type BaseReportEventsVesselsParamsFilters = {
   flag?: string[]
   minDuration?: number
   maxDuration?: number
+  next_port_id?: string
 }
 export type BaseReportEventsVesselsParams = {
   start: string
@@ -103,6 +104,7 @@ function getBaseStatsQuery({
     ...(filters?.flag && { flags: filters.flag }),
     ...(filters.minDuration && { 'min-duration': filters.minDuration }),
     ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
+    ...(filters?.next_port_id && { 'next-port-ids': filters.next_port_id }),
   }
   return query
 }
