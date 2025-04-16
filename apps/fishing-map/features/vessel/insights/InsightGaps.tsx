@@ -25,8 +25,8 @@ const InsightGaps = ({
   const [eventDetailsVisibility, setEventDetailsVisibility] = useState(false)
 
   const toggleEventDetailsVisibility = useCallback(() => {
-    setEventDetailsVisibility(!eventDetailsVisibility)
-  }, [eventDetailsVisibility])
+    setEventDetailsVisibility((visibility) => !visibility)
+  }, [])
 
   return (
     <div id="gaps" className={styles.insightContainer}>
