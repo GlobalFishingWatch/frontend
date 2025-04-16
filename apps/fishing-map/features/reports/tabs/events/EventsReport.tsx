@@ -69,6 +69,7 @@ function EventsReport() {
   const timerangeSupported = getDownloadReportSupported(start, end)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
+  const showPortsTable = eventsDataview?.datasets?.[0].subcategory !== 'port_visit'
   const { dispatchQueryParams } = useLocationConnect()
 
   const [reportHash, setReportHash] = useState('idle')
@@ -215,9 +216,11 @@ function EventsReport() {
             loading={isLoadingVessels}
           />
         )}
-        <div className={styles.container}>
-          <EventReportPorts />
-        </div>
+        {showPortsTable && (
+          <div className={styles.container}>
+            <EventReportPorts />
+          </div>
+        )}
       </Fragment>
     </Fragment>
   )

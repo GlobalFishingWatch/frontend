@@ -326,7 +326,7 @@ export const selectTotalEventsVessels = createSelector([selectEventsVessels], (e
 export const selectReportEventsPortsData = createSelector(
   [selectEventsPortsStatsData],
   (portsData) => {
-    return portsData?.[0]?.groups.flatMap((p) => {
+    return portsData?.[0]?.groups?.flatMap((p) => {
       if (!p.name) return []
       return {
         id: p.name,
