@@ -69,3 +69,12 @@
 .noWrap {
   white-space: nowrap;
 }
+
+.portName {
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  width: 24rem;
+}

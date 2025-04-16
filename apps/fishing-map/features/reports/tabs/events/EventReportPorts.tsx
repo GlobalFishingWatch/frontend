@@ -10,6 +10,7 @@ import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { selectReportEventsPortsFilter } from 'features/reports/reports.config.selectors'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import {
@@ -23,6 +24,7 @@ import styles from './EventReportPorts.module.css'
 function EventReportPorts() {
   const { t } = useTranslation()
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const statsParams = useSelector(selectFetchEventsPortsStatsParams)
   const reportEventsPortsPaginated = useSelector(selectReportEventsPortsPaginated)
   const reportEventsPortsFilter = useSelector(selectReportEventsPortsFilter)
@@ -54,6 +56,22 @@ function EventReportPorts() {
     dispatchQueryParams({ reportEventsPortsPage: pagination.page + 1 })
   }
 
+  const onTogglePortFilter = (portId: string) => {
+    const isPortInFilter = eventsDataview.config?.filters?.next_port_id?.includes(portId)
+    const newDataviewConfig = {
+      filters: {
+        ...(eventsDataview.config?.filters || {}),
+        next_port_id: isPortInFilter
+          ? eventsDataview.config?.filters?.next_port_id?.filter((id: string) => id !== portId)
+          : [...(eventsDataview.config?.filters?.next_port_id || []), portId],
+      },
+    }
+    upsertDataviewInstance({
+      id: eventsDataview.id,
+      config: newDataviewConfig,
+    })
+  }
+
   const hasLessPortsThanAPage =
     pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
   const isLastPaginationPage =
@@ -69,6 +87,7 @@ function EventReportPorts() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onCleanButtonClick={() => setQuery('')}
+          className={styles.searchInput}
         />
       </div>
       <div className={styles.tableContainer}>
@@ -83,9 +102,22 @@ function EventReportPorts() {
             {t('common.visits', 'Visits')}
           </div>
           {reportEventsPortsPaginated?.map((port) => {
+            const isPortInFilter = eventsDataview.config?.filters?.next_port_id?.includes(port.id)
             return (
-              <Fragment key={port.name}>
-                <div>{port.name}</div>
+              <Fragment key={port.id}>
+                <div className={styles.portName}>
+                  <IconButton
+                    icon={isPortInFilter ? 'filter-on' : 'filter-off'}
+                    size="small"
+                    onClick={() => onTogglePortFilter(port.id)}
+                    tooltip={
+                      isPortInFilter
+                        ? t('event.port_visitedAfterRemove', 'Remove port filter')
+                        : t('event.port_visitedAfterFilter', 'Filter events by port visited after')
+                    }
+                  />
+                  {port.name}
+                </div>
                 <div>{port.country}</div>
                 <div className={styles.right}>{<I18nNumber number={port.value} />}</div>
               </Fragment>
