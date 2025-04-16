@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
+import { matchSorter } from 'match-sorter'
 import type { GetReportEventParams } from 'queries/report-events-stats-api'
 import {
   selectReportEventsPorts,
@@ -340,12 +341,12 @@ export const selectReportEventsPortsData = createSelector(
 export const selectReportEventsPortsFiltered = createSelector(
   [selectReportEventsPortsData, selectReportEventsPortsFilter],
   (ports, filter) => {
+    if (!ports) return []
     if (!filter) return ports
-    return ports?.filter(
-      (p) =>
-        p.name.toLowerCase().includes(filter.toLowerCase()) ||
-        p.country.toLowerCase().includes(filter.toLowerCase())
-    )
+    return matchSorter(ports, filter, {
+      keys: ['name', 'country'],
+      threshold: matchSorter.rankings.CONTAINS,
+    })
   }
 )
 

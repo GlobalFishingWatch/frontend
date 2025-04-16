@@ -1,8 +1,9 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
+import { useDebounce } from 'use-debounce'
 
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
@@ -27,15 +28,24 @@ function EventReportPorts() {
   const reportEventsPortsFilter = useSelector(selectReportEventsPortsFilter)
   const pagination = useSelector(selectReportEventsPortsPagination)
   const { dispatchQueryParams } = useLocationConnect()
+  const [query, setQuery] = useState(reportEventsPortsFilter || '')
+  const [debouncedQuery] = useDebounce(query, 200)
+
   const { error, status } = useGetReportEventsStatsQuery(statsParams, {
     skip: !eventsDataview,
   })
 
-  const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchQueryParams({
-      reportEventsPortsFilter: e.target.value,
-    })
-  }
+  useEffect(() => {
+    if (reportEventsPortsFilter !== query) {
+      setQuery(reportEventsPortsFilter || '')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportEventsPortsFilter])
+
+  useEffect(() => {
+    dispatchQueryParams({ reportEventsPortsFilter: debouncedQuery, reportEventsPortsPage: 0 })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery])
 
   const onPrevPageClick = () => {
     dispatchQueryParams({ reportEventsPortsPage: pagination.page - 1 })
@@ -54,10 +64,11 @@ function EventReportPorts() {
       <div className={styles.headerContainer}>
         <label>{t('analysis.portsAfterEvents', 'Ports visited after events')}</label>
         <InputText
+          type="search"
           placeholder={t('analysis.portsSearchPlaceholder', 'Search ports')}
-          value={reportEventsPortsFilter}
-          inputSize="small"
-          onChange={onFilterChange}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onCleanButtonClick={() => setQuery('')}
         />
       </div>
       <div className={styles.tableContainer}>
