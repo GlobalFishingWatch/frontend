@@ -39,10 +39,10 @@ import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-compone
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
 import { t } from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
+import { getPorts } from 'utils/ports'
 import { capitalize, sortFields } from 'utils/shared'
 
 import styles from '../vessel-groups/VesselGroupModal.module.css'
@@ -104,6 +104,7 @@ export type SupportedEnvDatasetSchema =
   | 'elevation'
   | 'flag'
   | 'vessel_type'
+  | 'next_port_id'
   | 'Height'
   | 'REALM'
   // TODO: remove this when the dataset is updated
@@ -773,6 +774,8 @@ export const getCommonSchemaFieldsInDataview = (
   const activeDatasets = getActiveDatasetsInDataview(dataview)
   if (schema === 'flag') {
     return getFlags()
+  } else if (schema === 'next_port_id') {
+    return getPorts()
   } else if (schema === 'vessel-groups') {
     if (activeDatasets?.every((d) => d.fieldsAllowed?.includes(schema))) {
       if (isGuestUser) {

@@ -560,6 +560,7 @@
     "port_visit_other": "Port visits",
     "port_visitAction": "Docked for",
     "port_visitActionIn": "Visited port {{port}}",
+    "port_visitedAfter": "Port visited after",
     "portAction": "Docked started at {{start}} for {{duration}}",
     "portAt": "Docked at {{port}} started at {{start}} for {{duration}}",
     "seeInCVP": "See in Carrier Vessel Portal",
