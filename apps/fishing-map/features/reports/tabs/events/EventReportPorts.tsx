@@ -101,11 +101,12 @@ function EventReportPorts() {
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
             {t('common.visits', 'Visits')}
           </div>
-          {reportEventsPortsPaginated?.map((port) => {
+          {reportEventsPortsPaginated?.map((port, index) => {
             const isPortInFilter = eventsDataview.config?.filters?.next_port_id?.includes(port.id)
+            const isLastRow = index === reportEventsPortsPaginated.length - 1
             return (
               <Fragment key={port.id}>
-                <div className={styles.portName}>
+                <div className={cx({ [styles.border]: !isLastRow }, styles.portName)}>
                   <IconButton
                     icon={isPortInFilter ? 'filter-on' : 'filter-off'}
                     size="small"
@@ -118,8 +119,10 @@ function EventReportPorts() {
                   />
                   {port.name}
                 </div>
-                <div>{port.country}</div>
-                <div className={styles.right}>{<I18nNumber number={port.value} />}</div>
+                <div className={cx({ [styles.border]: !isLastRow })}>{port.country}</div>
+                <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
+                  {<I18nNumber number={port.value} />}
+                </div>
               </Fragment>
             )
           })}

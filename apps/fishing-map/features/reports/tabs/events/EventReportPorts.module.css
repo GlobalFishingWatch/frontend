@@ -29,20 +29,20 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   height: 4rem;
-  padding-block: 0.5rem;
-}
-
-.portsTable > div:not(.header, .icon) {
   overflow: hidden;
   padding-block: 0.8rem;
 }
 
-.portsTable > div:not(.header, .icon, .right) {
+.portsTable > div:not(.header, .right) {
   padding-right: 1rem;
 }
 
 .right {
   text-align: right;
+}
+
+.border {
+  border-bottom: 1px solid var(--color-terthiary-blue);
 }
 
 .footer {
