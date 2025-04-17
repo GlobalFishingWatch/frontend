@@ -21,7 +21,7 @@ import {
   getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { usePopulateVesselResource } from 'features/reports/shared/vessels/report-vessels.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
@@ -133,16 +133,16 @@ function VesselPin({
           vesselEventsDatasets && vesselEventsDatasets?.length
             ? vesselEventsDatasets.map((d) => d.id)
             : []
-        const vesselDataviewInstance = getVesselDataviewInstance(
-          { id: getVesselId(vesselWithIdentity) },
-          {
+        const vesselDataviewInstance = getVesselDataviewInstance({
+          vessel: { id: getVesselId(vesselWithIdentity) },
+          datasets: {
             info: infoDatasetResolved?.id,
             track: trackDataset?.id,
             ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
             relatedVesselIds: getRelatedIdentityVesselIds(vesselWithIdentity),
           },
-          vesselTemplateDataviews
-        )
+          vesselTemplateDataviews,
+        })
 
         if (vesselDataviewInstance) {
           upsertDataviewInstance(vesselDataviewInstance)

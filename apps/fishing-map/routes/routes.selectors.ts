@@ -179,28 +179,39 @@ const selectIsFishingIndexLocation = createSelector(
   }
 )
 
-export const selectIsWorkspaceIndexLocation = createSelector(
-  [selectIsMarineManagerLocation, selectIsFishingIndexLocation],
-  (isMarineManagerLocation, isFishingIndexLocation) => {
-    return isMarineManagerLocation || isFishingIndexLocation
+const selectIsReportIndexLocation = createSelector(
+  [selectLocationCategory, selectWorkspaceId],
+  (category, workspaceId) => {
+    return category === WorkspaceCategory.Reports && !workspaceId
   }
 )
 
+export const selectIsIndexLocation = createSelector(
+  [selectIsMarineManagerLocation, selectIsFishingIndexLocation, selectIsReportIndexLocation],
+  (isMarineManagerLocation, isFishingIndexLocation, isReportIndexLocation) => {
+    return isMarineManagerLocation || isFishingIndexLocation || isReportIndexLocation
+  }
+)
+
+// App state
 export const selectUserTab = selectQueryParam('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam('zoom')
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
 const selectUrlMapLongitudeQuery = selectQueryParam('longitude')
 export const selectUrlStartQuery = selectQueryParam('start')
 export const selectUrlEndQuery = selectQueryParam('end')
+export const selectMapDrawingMode = selectQueryParam('mapDrawing')
+export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
+
+// Reports
 export const selectUrlBufferValueQuery = selectQueryParam('reportBufferValue')
 export const selectUrlBufferUnitQuery = selectQueryParam('reportBufferUnit')
 export const selectUrlBufferOperationQuery = selectQueryParam('reportBufferOperation')
+export const selectUrlReportLoadVesselsQuery = selectQueryParam('reportLoadVessels')
+
+// Dataviews
 export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
-
 export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
-
-export const selectMapDrawingMode = selectQueryParam('mapDrawing')
-export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
 
 export const selectIsMapDrawing = createSelector([selectMapDrawingMode], (mapDrawingMode) => {
   return mapDrawingMode === 'polygons' || mapDrawingMode === 'points'

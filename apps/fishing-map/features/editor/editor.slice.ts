@@ -1,4 +1,4 @@
-import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import type { RootState } from 'reducers'
 
@@ -42,8 +42,8 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
       `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`
     )
     const filteredDataviews = dataviews.entries.filter(
-      ({ id, slug, category }) =>
-        !TEMPLATE_DATAVIEW_SLUGS.includes(slug) &&
+      ({ slug, category }) =>
+        !TEMPLATE_DATAVIEW_SLUGS.includes(slug as any) &&
         slug !== BASEMAP_DATAVIEW_SLUG &&
         category !== 'vessels'
     )

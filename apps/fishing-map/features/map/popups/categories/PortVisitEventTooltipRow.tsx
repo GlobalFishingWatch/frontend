@@ -5,6 +5,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import I18nNumber from 'features/i18n/i18nNumber'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectIsPortReportLocation } from 'routes/routes.selectors'
@@ -35,7 +36,18 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
     <div className={styles.popupSection}>
       <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
       <div className={styles.popupSectionContent}>
-        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        {showFeaturesDetails ? (
+          <h3 className={styles.popupSectionTitle}>{title}</h3>
+        ) : (
+          feature.count && (
+            <div className={styles.row}>
+              <span className={styles.rowText}>
+                <I18nNumber number={feature.count} />{' '}
+                {t('event.port_visit', { count: feature.count })}
+              </span>
+            </div>
+          )
+        )}
         {error && <p className={styles.error}>{error}</p>}
         {showFeaturesDetails && (
           <VesselsTable

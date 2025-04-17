@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
-} from 'data/config'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+} from 'features/reports/reports.config'
 import {
   selectReportCategory,
   selectReportSubCategory,

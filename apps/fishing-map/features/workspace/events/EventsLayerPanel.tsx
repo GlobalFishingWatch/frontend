@@ -14,6 +14,7 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -40,7 +41,10 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const vesselGroupsOptions = useVesselGroupsOptions()
+  const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
+    vesselGroups: vesselGroupsOptions,
+  })
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
   const showSchemaFilters = filtersAllowed.length > 0

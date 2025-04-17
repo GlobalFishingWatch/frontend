@@ -289,10 +289,10 @@ export function useFetchReportVessel() {
       includes: reportDataviews.flatMap(
         ({ datasets = [] }) => datasets.flatMap(({ unit }) => unit || []) || []
       ),
-      filters: reportDataviews.map(({ filter }) => filter),
-      vesselGroups: reportDataviews.flatMap(({ vesselGroups }) => vesselGroups || []),
+      filters: (reportDataviews as any[]).map(({ filter }) => filter),
+      vesselGroups: (reportDataviews as any[]).flatMap(({ vesselGroups }) => vesselGroups || []),
       region: {
-        id: areaId,
+        id: areaId || ENTIRE_WORLD_REPORT_AREA_ID,
         dataset: datasetId,
       },
       dateRange: timerange,

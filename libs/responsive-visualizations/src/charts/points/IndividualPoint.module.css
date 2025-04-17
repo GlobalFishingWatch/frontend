@@ -19,3 +19,8 @@
   border: var(--border);
   z-index: 100;
 }
+
+.icon svg,
+.icon svg path {
+  fill: currentcolor;
+}

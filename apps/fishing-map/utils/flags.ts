@@ -2,7 +2,7 @@ import flags from 'data/flags'
 import i18n, { t } from 'features/i18n/i18n'
 
 type Flag = { id: string; label: string }
-const getFlagById = (id: string, lng = i18n.language): Flag | undefined => {
+export const getFlagById = (id: string, lng = i18n.language): Flag | undefined => {
   const flag = flags.find((f) => f.id === id)
   if (!flag || !lng) return flag
   return {

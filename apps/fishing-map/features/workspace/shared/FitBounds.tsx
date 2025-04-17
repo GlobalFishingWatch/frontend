@@ -29,7 +29,7 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
       if (layer instanceof UserTracksLayer) {
         const bbox = layer.getBbox()
         if (bbox) {
-          fitBounds(bbox as Bbox, { padding: 60, fitZoom: true })
+          fitBounds(bbox as Bbox, { padding: 60, fitZoom: true, flyTo: true })
         }
         const segments = layer.getSegments()
         if (segments.length) {

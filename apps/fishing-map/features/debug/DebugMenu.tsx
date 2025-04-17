@@ -9,11 +9,7 @@ import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/dataset
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useToggleFeatureFlag } from 'features/debug/debug.hooks'
-import {
-  selectIsGlobalReportsEnabled,
-  selectIsResponsiveVisualizationEnabled,
-  selectIsVesselClassInfoEnable,
-} from 'features/debug/debug.selectors'
+import { selectIsVesselClassInfoEnable } from 'features/debug/debug.selectors'
 import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
@@ -30,8 +26,6 @@ const DebugMenu: React.FC = () => {
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
   const isVesselClassInfoEnabled = useSelector(selectIsVesselClassInfoEnable)
-  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
-  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
   const toggleFeatureFlag = useToggleFeatureFlag()
 
   useEffect(() => {
@@ -46,28 +40,6 @@ const DebugMenu: React.FC = () => {
       <section className={styles.section}>
         {isGFWDeveloper && (
           <Fragment>
-            <div className={styles.header}>
-              <Switch
-                id="option_global_reports"
-                active={isGlobalReportsEnabled}
-                onClick={() => toggleFeatureFlag('globalReports')}
-              />
-              <label htmlFor="option_global_reports">
-                <strong>Feature flag:</strong> Global reports
-              </label>
-            </div>
-            <p>Activates the global reports feature</p>
-            <div className={styles.header}>
-              <Switch
-                id="option_responsive_visualization"
-                active={isResponsiveVisualizationEnabled}
-                onClick={() => toggleFeatureFlag('responsiveVisualization')}
-              />
-              <label htmlFor="option_responsive_visualization">
-                <strong>Feature flag:</strong> Responsive visualization
-              </label>
-            </div>
-            <p>Activates the responsive visualization feature</p>
             <div className={styles.header}>
               <Switch
                 id="option_vessel_class_info"

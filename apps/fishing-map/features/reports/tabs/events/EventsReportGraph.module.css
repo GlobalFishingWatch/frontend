@@ -33,8 +33,23 @@
   margin-right: 0.5rem;
 }
 
-.graph :global(.recharts-tooltip-cursor) {
+.graph tspan {
+  text-transform: uppercase;
+  font: var(--font-XS);
+  line-height: 1.2rem;
+  fill: var(--color-secondary-blue);
+}
+
+.interactiveTick {
+  cursor: pointer;
+}
+
+.graph.evolution :global(.recharts-tooltip-cursor) {
   stroke: var(--color-secondary-blue);
+}
+
+.graph.groupBy :global(.recharts-tooltip-cursor) {
+  fill: var(--color-terthiary-blue);
 }
 
 .event {

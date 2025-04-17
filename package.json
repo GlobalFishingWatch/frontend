@@ -76,6 +76,7 @@
     "auth-middleware": "https://github.com/GlobalFishingWatch/auth-middleware.git#commit=b682991d1a18b4da8a01699fb85629a5ecc849e2",
     "classnames": "2.5.1",
     "color-blend": "4.0.0",
+    "colorjs.io": "^0.5.2",
     "countryflag": "5.0.0",
     "d3": "7.9.0",
     "d3-array": "3.2.4",

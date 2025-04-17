@@ -48,8 +48,8 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
+  selectIsIndexLocation,
   selectIsUserLocation,
-  selectIsWorkspaceIndexLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -234,7 +234,7 @@ const useMapDataviewsLayers = () => {
   const workspaceDataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const bufferDataviews = useSelector(selectMapReportBufferDataviews)
   const workspacesListDataview = useSelector(selectWorkspacesListDataview)
-  const isWorkspaceIndexLocation = useSelector(selectIsWorkspaceIndexLocation)
+  const isIndexLocation = useSelector(selectIsIndexLocation)
   const isUserLocation = useSelector(selectIsUserLocation)
   const showWorkspaceDetail = useSelector(selectShowWorkspaceDetail)
   const workspaceLoading =
@@ -243,7 +243,7 @@ const useMapDataviewsLayers = () => {
   const globalConfig = useGlobalConfigConnect()
 
   const dataviews = useMemo(() => {
-    if (isWorkspaceIndexLocation || isUserLocation) {
+    if (isIndexLocation || isUserLocation) {
       const dataviews = [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
       if (workspacesListDataview) {
         dataviews.push(workspacesListDataview as DataviewInstance)
@@ -256,7 +256,7 @@ const useMapDataviewsLayers = () => {
     return [...(workspaceDataviews || []), ...(bufferDataviews || [])]
   }, [
     bufferDataviews,
-    isWorkspaceIndexLocation,
+    isIndexLocation,
     isUserLocation,
     workspaceDataviews,
     workspaceLoading,

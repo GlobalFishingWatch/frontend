@@ -22,7 +22,6 @@ export function useMapRulersDrag() {
     id: RulerPointProperties['id']
   } | null>(null)
 
-   
   const debouncedUpdate = useCallback(
     throttle((mapRulers) => {
       dispatchQueryParams({ mapRulers })
@@ -51,7 +50,7 @@ export function useMapRulersDrag() {
       const rulerPoint = info.object as RulerPickingObject
       if (rulerPoint) {
         draggedRuler.current = {
-          ruler: rulers.find((r) => Number(r.id) === rulerPoint.properties.id),
+          ruler: rulers?.find((r) => Number(r.id) === rulerPoint.properties.id),
           order: rulerPoint.properties.order,
           id: rulerPoint.properties.id,
         }

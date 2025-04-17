@@ -232,8 +232,7 @@ const TimebarWrapper = () => {
             dispatch(setHighlightedTime({ start, end }))
           }
         } catch (e: any) {
-          console.log(clientX)
-          console.warn(e)
+          console.warn(clientX, e)
         }
       }
     },
@@ -274,15 +273,10 @@ const TimebarWrapper = () => {
 
   const onMouseLeave = useCallback(() => {
     setMouseInside(false)
-  }, [])
-
-  useEffect(() => {
-    if (!isMouseInside && highlightedEventIds) {
-      requestAnimationFrame(() => {
-        dispatchHighlightedEvents(undefined)
-      })
-    }
-  }, [dispatchHighlightedEvents, highlightedEventIds, isMouseInside])
+    requestAnimationFrame(() => {
+      dispatchHighlightedEvents(undefined)
+    })
+  }, [dispatchHighlightedEvents])
 
   const onMouseDown = useCallback(() => {
     rootElement?.classList.add('dragging')

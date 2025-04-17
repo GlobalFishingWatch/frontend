@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import type { RootState } from 'reducers'
 
-import type { StatsByVessel, StatsIncludes } from '@globalfishingwatch/api-types'
+import type { StatsByVessel, StatsGroupBy, StatsIncludes } from '@globalfishingwatch/api-types'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { BufferOperation, BufferUnit } from 'types'
@@ -14,6 +14,8 @@ export type BaseReportEventsVesselsParamsFilters = {
   encounter_type?: string
   confidence?: number
   flag?: string[]
+  minDuration?: number
+  maxDuration?: number
 }
 export type BaseReportEventsVesselsParams = {
   start: string
@@ -34,6 +36,7 @@ export type ReportEventsStatsParams = ReportEventsVesselsParams & {
   dataset: string
   filters: BaseReportEventsVesselsParamsFilters
   includes?: StatsIncludes[]
+  groupBy?: StatsGroupBy
 }
 
 export type ReportEventsStatsResponseGroups = { name: string; value: number }[]
@@ -50,6 +53,7 @@ export type GetReportEventParams = BaseReportEventsVesselsParams & {
   datasets: string[]
   filters?: BaseReportEventsVesselsParamsFilters[]
   includes?: StatsIncludes[]
+  groupBy?: string
 }
 
 export type ReportEventsVesselsResponse = StatsByVessel[]
@@ -62,25 +66,26 @@ function getBaseStatsQuery({
   end,
   regionId,
   regionDataset,
-  // bufferValue,
-  // bufferUnit,
-  // bufferOperation,
+  bufferValue,
+  bufferUnit,
+  bufferOperation,
 }: ReportEventsVesselsParams | ReportEventsStatsParams) {
   const query = {
     'start-date': start,
     'end-date': end,
     'time-filter-mode': EVENTS_TIME_FILTER_MODE,
-    ...(regionId && { 'region-id': regionId }),
-    ...(regionDataset && { 'region-dataset': regionDataset }),
-    // TODO:CVP uncomment once the API takes the parameters
-    // ...(bufferValue && { 'buffer-value': bufferValue }),
-    // ...(bufferUnit && { 'buffer-unit': bufferUnit }),
-    // ...(bufferOperation && { 'buffer-operation': bufferOperation }),
+    ...(regionId && { 'region-ids': regionId.split(',') }),
+    ...(regionDataset && { 'region-datasets': regionDataset.split(',') }),
+    ...(bufferValue && { 'buffer-value': bufferValue }),
+    ...(bufferUnit && { 'buffer-unit': bufferUnit.toUpperCase() }),
+    ...(bufferOperation && { 'buffer-operation': bufferOperation.toUpperCase() }),
     ...(filters?.portId && { 'port-ids': [filters.portId] }),
     ...(filters?.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
     ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),
     ...(filters?.confidence && { confidences: [filters.confidence] }),
     ...(filters?.flag && { flags: filters.flag }),
+    ...(filters.minDuration && { 'min-duration': filters.minDuration }),
+    ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
   }
   return query
 }
@@ -113,7 +118,8 @@ export const reportEventsStatsApi = createApi({
           const interval = getFourwingsInterval(startMillis, endMillis)
           const query = {
             ...getEventsStatsQuery({ ...params, dataset, filters: params.filters?.[index] || {} }),
-            includes: params.includes,
+            ...(params.includes && { includes: params.includes }),
+            ...(params.groupBy && { 'group-by': params.groupBy }),
             'timeseries-interval': interval,
           }
           const url = getQueryParamsResolved(query)

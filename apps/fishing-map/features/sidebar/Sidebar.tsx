@@ -31,15 +31,15 @@ import SidebarHeader from './SidebarHeader'
 import styles from './Sidebar.module.css'
 
 const AreaReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-area/AreaReport')
+  () => import(/* webpackChunkName: "AreaReport" */ 'features/reports/report-area/AreaReport')
 )
 const PortsReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-port/PortsReport')
+  () => import(/* webpackChunkName: "PortsReport" */ 'features/reports/report-port/PortsReport')
 )
 const VesselGroupReport = dynamic(
   () =>
     import(
-      /* webpackChunkName: "Report" */ 'features/reports/report-vessel-group/VesselGroupReport'
+      /* webpackChunkName: "VesselGroupReport" */ 'features/reports/report-vessel-group/VesselGroupReport'
     )
 )
 const VesselProfile = dynamic(

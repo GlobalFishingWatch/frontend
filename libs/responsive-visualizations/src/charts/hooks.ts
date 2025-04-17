@@ -129,6 +129,10 @@ export function useResponsiveVisualizationData({
               setIndividualItemSize(individualItemSize)
             }
             setData(individualData)
+          } else {
+            setIsIndividualSupported(false)
+            setIndividualItemSize(DEFAULT_POINT_SIZE)
+            setData(aggregatedData)
           }
         } else {
           setIsIndividualSupported(false)

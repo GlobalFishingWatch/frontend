@@ -52,7 +52,11 @@ import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import {
+  selectIsVesselGroupReportLocation,
+  selectUrlReportLoadVesselsQuery,
+} from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector'
@@ -85,6 +89,8 @@ function ActivityReport() {
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const reportLoadVessels = useSelector(selectUrlReportLoadVesselsQuery)
+  const { dispatchQueryParams } = useLocationConnect()
 
   // TODO get this from datasets config
   const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
@@ -97,7 +103,7 @@ function ActivityReport() {
     reportRequestHash !==
       getReportRequestHash({
         datasets: reportDataviews.flatMap(({ datasets }) => datasets?.map((d) => d.id) || []),
-        filters: reportDataviews.map((d) => d.filter),
+        filters: (reportDataviews as any[]).map((d) => d.filter),
         dateRange: timerange,
       })
   const hasAuthError = reportError && isAuthError(statusError)
@@ -127,6 +133,14 @@ function ActivityReport() {
       }
     }
   }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
+
+  useEffect(() => {
+    if (reportLoadVessels && reportDataviews?.length) {
+      dispatch(setReportRequestHash(''))
+      dispatchFetchReport()
+      dispatchQueryParams({ reportLoadVessels: false })
+    }
+  }, [dispatch, dispatchFetchReport, reportLoadVessels, reportDataviews, dispatchQueryParams])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {

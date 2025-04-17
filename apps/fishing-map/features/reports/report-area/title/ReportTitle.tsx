@@ -21,6 +21,7 @@ import {
   NAUTICAL_MILES,
 } from 'features/reports/report-area/area-reports.config'
 import {
+  selectIsGlobalReport,
   selectReportArea,
   selectReportAreaDataviews,
   selectReportAreaStatus,
@@ -29,7 +30,7 @@ import {
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
 import { DEFAULT_BUFFER_OPERATION } from 'features/reports/reports.config'
-import { selectCurrentReport, selectReportCategory } from 'features/reports/reports.selectors'
+import { selectCurrentReport } from 'features/reports/reports.selectors'
 import AreaReportSearch from 'features/reports/shared/area-search/AreaReportSearch'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import {
@@ -62,10 +63,10 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const highlightArea = useHighlightReportArea()
   const fitAreaInViewport = useFitAreaInViewport()
   const reportId = useSelector(selectReportId)
-  const reportCategory = useSelector(selectReportCategory)
   const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
   const previewBuffer = useSelector(selectReportPreviewBuffer)
   const urlBufferValue = useSelector(selectReportBufferValue)
@@ -189,7 +190,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
       return ''
     }
     let areaName = report?.name
-    if (!areaName && reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
+    if (isGlobalReport) {
       return t('common.globalReport', 'Global report')
     }
     const propertyToInclude = getDatasetConfigurationProperty({
@@ -254,13 +255,14 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   }, [
     reportId,
     report,
-    reportArea,
+    isGlobalReport,
     dataset,
     urlBufferValue,
     urlBufferOperation,
     t,
     areaDataview?.config?.type,
     reportAreaStatus,
+    reportArea,
     urlBufferUnit,
   ])
 
@@ -334,8 +336,6 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                   onClick={handleTooltipShow}
                   // onHide: handleTooltipHide,
                   type="border-secondary"
-                  tooltip={reportCategory === 'events' ? t('common.comingSoon', 'Coming soon') : ''}
-                  disabled={reportCategory === 'events'}
                   size="small"
                   className={styles.actionButton}
                 >

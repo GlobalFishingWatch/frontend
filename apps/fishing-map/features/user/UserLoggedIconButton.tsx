@@ -12,8 +12,9 @@ import styles from './User.module.css'
 
 type UserLoggedIconButton = IconButtonProps & {
   loginTooltip?: string
-  onToggleClick?: () => void
   disabled?: boolean
+  // Needed to avoid react warnings when cloning the component and used in a parent
+  onToggleClick?: () => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

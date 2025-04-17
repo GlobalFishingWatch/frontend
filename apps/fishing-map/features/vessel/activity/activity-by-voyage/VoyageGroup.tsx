@@ -28,9 +28,9 @@ interface EventProps {
 const VoyageGroup: React.FC<EventProps> = ({
   events,
   expanded = false,
-  onMapClick = () => {},
-  onMapHover = () => {},
-  onToggleClick = () => {},
+  onMapClick,
+  onMapHover,
+  onToggleClick,
 }): React.ReactElement<any> => {
   const { t } = useTranslation()
   const vesselId = useSelector(selectVesselInfoDataId)
@@ -41,8 +41,12 @@ const VoyageGroup: React.FC<EventProps> = ({
     const parts: string[] = []
     const firstVoyageEvent = events[events.length - 1]
     const latestVoyageEvent = events[0]
-    const voyageStart = firstVoyageEvent.port_visit?.intermediateAnchorage?.name
-    const voyageEnd = latestVoyageEvent.port_visit?.intermediateAnchorage?.name
+    const voyageStart =
+      firstVoyageEvent.port_visit?.intermediateAnchorage?.name ||
+      firstVoyageEvent.port_visit?.intermediateAnchorage?.id
+    const voyageEnd =
+      latestVoyageEvent.port_visit?.intermediateAnchorage?.name ||
+      latestVoyageEvent.port_visit?.intermediateAnchorage?.id
     const startDate = voyageStart ? firstVoyageEvent.end : start
     const endDate = voyageEnd ? latestVoyageEvent.start : end
     const eventCount = events.filter((e) => e.type !== EventTypes.Port).length
@@ -72,7 +76,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   }
 
   const onToggle = useCallback(
-    () => (hasEvents ? onToggleClick(voyageId) : {}),
+    () => (hasEvents ? onToggleClick?.(voyageId) : {}),
     [hasEvents, onToggleClick, voyageId]
   )
 
@@ -80,7 +84,7 @@ const VoyageGroup: React.FC<EventProps> = ({
     (e: React.MouseEvent) => {
       e.stopPropagation()
       if (hasEvents) {
-        onMapClick(voyageId)
+        onMapClick?.(voyageId)
       }
       if (!expanded) {
         onToggle()
@@ -89,13 +93,23 @@ const VoyageGroup: React.FC<EventProps> = ({
     [hasEvents, expanded, onMapClick, voyageId, onToggle]
   )
 
+  const handleMouseEnter = useCallback(() => {
+    onMapHover?.(voyageId)
+  }, [onMapHover, voyageId])
+
+  const handleMouseLeave = useCallback(() => {
+    onMapHover?.(undefined)
+  }, [onMapHover])
+
   return (
     <li className={cx(styles.eventGroup, { [styles.open]: expanded })}>
       <div
         className={styles.header}
         onClick={onToggle}
-        onMouseEnter={() => onMapHover(voyageId)}
-        onMouseLeave={() => onMapHover(undefined)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        role="button"
+        tabIndex={0}
       >
         <p className={styles.title}>{voyageLabel}</p>
         {hasEvents && (

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import React from 'react'
 import { BarChart, ResponsiveContainer, XAxis } from 'recharts'
 
@@ -8,7 +9,10 @@ import type { BarChartByTypeProps } from '../types'
 
 import styles from './BarChartIndividual.module.css'
 
-type IndividualBarChartProps = BarChartByTypeProps<'individual'> & { pointSize?: number }
+type IndividualBarChartProps = BarChartByTypeProps<'individual'> & {
+  pointSize?: number
+  icon?: ReactElement
+}
 
 export function IndividualBarChart({
   data,
@@ -21,6 +25,7 @@ export function IndividualBarChart({
   customItem,
   pointSize,
   onClick,
+  icon,
 }: IndividualBarChartProps) {
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -58,6 +63,7 @@ export function IndividualBarChart({
                         tooltip={customTooltip}
                         item={customItem}
                         onClick={onClick}
+                        icon={icon}
                       />
                     ))}
                   </ul>

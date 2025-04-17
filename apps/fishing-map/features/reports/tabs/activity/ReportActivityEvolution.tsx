@@ -14,6 +14,7 @@ import {
 } from 'recharts'
 
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
 
 import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
@@ -111,7 +112,7 @@ const ReportActivityEvolution: React.FC<{
               unit={legend?.unit}
               dot={false}
               isAnimationActive={false}
-              stroke={legend?.color}
+              stroke={getContrastSafeLineColor(legend?.color as string)}
               strokeWidth={2}
             />
           ))}

@@ -8,12 +8,22 @@ import { unparse as unparseCSV } from 'papaparse'
 
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 
-import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
+import { selectReportAreaName } from 'features/reports/report-area/area-reports.selectors'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import {
+  REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+  REPORT_VESSELS_PER_PAGE,
+} from 'features/reports/reports.config'
 import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
+import {
+  selectReportCategory,
+  selectReportSubCategory,
+  selectReportUnit,
+} from 'features/reports/reports.selectors'
+import { ReportCategory } from 'features/reports/reports.types'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
@@ -28,16 +38,16 @@ import ReportVesselsTablePinAll from './ReportVesselsTablePin'
 import styles from './ReportVesselsTableFooter.module.css'
 
 type ReportVesselsTableFooterProps = {
-  reportName?: string
   activityUnit?: string
 }
 
-export default function ReportVesselsTableFooter({
-  reportName = 'vessel-report',
-  activityUnit,
-}: ReportVesselsTableFooterProps) {
+export default function ReportVesselsTableFooter({ activityUnit }: ReportVesselsTableFooterProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const reportCategory = useSelector(selectReportCategory)
+  const reportSubCategory = useSelector(selectReportSubCategory)
+  const reportAreaName = useSelector(selectReportAreaName)
+  const reportUnit = useSelector(selectReportUnit)
   const vesselGroup = useSelector(selectVGRData)
   const allVessels = useSelector(selectReportVessels)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
@@ -58,27 +68,33 @@ export default function ReportVesselsTableFooter({
 
   if (!allVessels?.length) return null
 
+  const extendedFields = reportCategory !== ReportCategory.Events
+
   const onDownloadVesselsClick = () => {
-    const vessels = allVessels?.map((vessel) => {
-      return {
-        name: vessel.shipName,
-        MMSI: vessel.ssvid,
-        flag: vessel.flag,
-        'flag translated': vessel.flagTranslated,
-        IMO: vessel.imo,
-        'call sign': vessel.callsign,
-        'GFW vessel type': vessel.vesselType,
-        'GFW gear type': vessel.geartype,
-        ...(activityUnit ? { value: vessel.value } : {}),
-        sources: vessel.source,
-        vesselId: vessel.id,
-        dataset: vessel.datasetId,
-      }
-    })
+    const vessels = allVessels
+      ?.toSorted((a, b) => (b.value || 0) - (a.value || 0))
+      .map((vessel) => {
+        return {
+          name: vessel.shipName,
+          MMSI: vessel.ssvid,
+          flag: vessel.flag,
+          'flag translated': vessel.flagTranslated,
+          'GFW vessel type': vessel.vesselType,
+          ...(extendedFields && { 'GFW gear type': vessel.geartype }),
+          ...(activityUnit && {
+            [reportUnit ? t(`common.${reportUnit}_other`) : 'value']: vessel.value,
+          }),
+          vesselId: vessel.id,
+          dataset: vessel.datasetId,
+        }
+      })
     if (vessels?.length) {
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${reportName}-${start}-${end}.csv`)
+      const fileName = [reportSubCategory, `${reportUnit}s`, reportAreaName || 'global', start, end]
+        .filter(Boolean)
+        .join('-')
+      saveAs(blob, `${fileName}.csv`)
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: 'vessel_report_download_csv',
