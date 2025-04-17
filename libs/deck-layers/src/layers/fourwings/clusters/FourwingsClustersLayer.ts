@@ -163,7 +163,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
     const object = {
       ...(info.object || ({} as FourwingsClusterFeature)),
-      id: info.object?.properties.id || `${(info.object?.geometry?.coordinates || []).join('-')}`,
+      id: `${this.id}-${info.object?.properties.id || (info.object?.geometry?.coordinates || []).join('-')}`,
       ...(this.clusterMode === 'positions' &&
         info.object?.properties.id && {
           eventId: info.object?.properties.id,
