@@ -249,7 +249,7 @@ export enum DatasetSubCategory {
 
 export interface DatasetFile {
   name: string
-  size: number
+  size: number | string
   lastUpdate: string
 }
 

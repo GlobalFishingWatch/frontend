@@ -1,16 +1,18 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
 import { useParams } from '@tanstack/react-router'
+import { isNumber } from 'lodash'
 import { DateTime } from 'luxon'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { Dataset } from '@globalfishingwatch/api-types'
+import type { Dataset, DatasetFile } from '@globalfishingwatch/api-types'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import ApiBanner from '../../components/api-banner/api-banner'
 import Loader from '../../components/loader/loader'
-import Table from '../../components/table/table'
+import Table, { type TableData } from '../../components/table/table'
 import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config.js'
 import { getUTCString } from '../../utils/dates.js'
 
@@ -28,11 +30,78 @@ function formatBytes(bytes: number, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 
+const insertIntoTree = (
+  tree: TableData[],
+  parts: string[],
+  fullPath: string,
+  size: number,
+  lastUpdate: string
+) => {
+  let currentLevel = tree
+
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i]
+    const isFolder = i < parts.length - 1 || fullPath.endsWith('/')
+
+    let existing = currentLevel.find((node) => node.name === part)
+
+    if (!existing) {
+      const node: TableData = {
+        name: part,
+        path: parts.slice(0, i + 1).join('/'),
+        isFolder,
+        lastUpdate: isFolder ? '---' : DateTime.fromISO(lastUpdate).toFormat('M/dd/yyyy'),
+        size: isFolder ? '-' : size,
+        ...(isFolder ? { subRows: [] } : {}),
+      }
+
+      currentLevel.push(node)
+      existing = node
+    }
+
+    if (existing.isFolder) {
+      currentLevel = existing.subRows!
+    }
+  }
+}
+
+// Final function to build the tree from your API response
+const buildFileTree = (files: DatasetFile[]): TableData[] => {
+  const tree: TableData[] = []
+
+  files.forEach((file) => {
+    const cleanPath = file.name.endsWith('/') ? file.name.slice(0, -1) : file.name
+    const parts = cleanPath.split('/')
+
+    insertIntoTree(tree, parts, file.name, Number(file.size), file.lastUpdate)
+  })
+
+  return tree
+}
+
 const columns = [
   {
     id: 'name',
     Header: 'Name',
-    accessor: (row: any) => `${row.name} (${formatBytes(row.size)})`,
+    accessor: (row: any) => `${row.name}${isNumber(row.size) ? ` (${formatBytes(row.size)})` : ''}`,
+    Cell: ({ row }: { row: any }) => (
+      <span
+        style={{
+          paddingLeft: `${row.depth * 3}rem`,
+          display: 'flex',
+          gap: '1rem',
+          alignItems: 'center',
+        }}
+      >
+        {`${row.values.name}`}
+        {row.canExpand &&
+          (row.isExpanded ? (
+            <IconButton icon="arrow-top" size="small" type="invert" />
+          ) : (
+            <IconButton icon="arrow-down" size="small" type="invert" />
+          ))}
+      </span>
+    ),
   },
   {
     id: 'date',
@@ -52,10 +121,7 @@ function DatasetPage() {
     const formatDataset = (dataset: Dataset) => {
       const formatedDataset = {
         ...dataset,
-        files: dataset.files?.map((file) => ({
-          ...file,
-          lastUpdate: DateTime.fromISO(file.lastUpdate).toFormat('M/dd/yyyy'),
-        })),
+        files: buildFileTree(dataset.files || []),
       }
       return formatedDataset
     }
@@ -101,8 +167,11 @@ function DatasetPage() {
                 Download dataset
               </a>
               <br /> */}
+
             <label>Individual Files (Select up to {MAX_DOWNLOAD_FILES_LIMIT})</label>
-            {dataset && dataset.files && <Table columns={columns} data={dataset.files as any} />}
+            {dataset && dataset.files && (
+              <Table columns={columns} data={dataset.files as TableData[]} />
+            )}
             <ApiBanner />
           </div>
         </div>

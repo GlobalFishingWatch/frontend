@@ -7,13 +7,24 @@ import type {
   TableInstance,
   TableOptions,
   TableState,
+  UseExpandedInstanceProps,
+  UseExpandedOptions,
+  UseExpandedRowProps,
+  UseExpandedState,
   UseGlobalFiltersInstanceProps,
   UseGlobalFiltersState,
   UseRowSelectInstanceProps,
   UseSortByColumnProps,
   UseSortByInstanceProps,
 } from 'react-table'
-import { useFlexLayout, useGlobalFilter, useRowSelect, useSortBy, useTable } from 'react-table'
+import {
+  useExpanded,
+  useFlexLayout,
+  useGlobalFilter,
+  useRowSelect,
+  useSortBy,
+  useTable,
+} from 'react-table'
 import { FixedSizeList } from 'react-window'
 import { useParams } from '@tanstack/react-router'
 import escapeRegExp from 'lodash/escapeRegExp'
@@ -29,22 +40,28 @@ import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config'
 
 import styles from './table.module.scss'
 
-type TableData = {
+export type TableData = {
   name: string
   path: string
-  date: string
-  size: string
+  size: number | string
+  lastUpdate: string
+  subRows?: TableData[]
   [key: string]: any
 }
 
-type ExtendedTableState = TableState<TableData> & UseGlobalFiltersState<TableData>
+type ExtendedTableState = TableState<TableData> &
+  UseGlobalFiltersState<TableData> &
+  UseExpandedState<TableData>
 
 type TableInstanceWithHooks = TableInstance<TableData> &
   UseGlobalFiltersInstanceProps<TableData> &
   UseSortByInstanceProps<TableData> &
+  UseExpandedInstanceProps<TableData> &
   UseRowSelectInstanceProps<TableData>
 
 type ExtendedHeaderGroup = HeaderGroup<TableData> & UseSortByColumnProps<TableData>
+
+type ExtendedRow = Row<TableData> & UseExpandedRowProps<TableData>
 
 type IndeterminateCheckboxProps = {
   indeterminate?: boolean
@@ -120,7 +137,7 @@ function Table({ columns, data }: TableProps) {
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
 
   const initialState = {
-    sortBy: [{ id: 'date', desc: true }],
+    sortBy: [{ id: 'lastUpdated', desc: true }],
   }
 
   const defaultColumn = {
@@ -134,9 +151,10 @@ function Table({ columns, data }: TableProps) {
       defaultColumn,
       initialState,
       globalFilter: fuzzyTextFilterFn,
-    } as TableOptions<TableData>,
+    } as TableOptions<TableData> & UseExpandedOptions<TableData>,
     useGlobalFilter,
     useSortBy,
+    useExpanded,
     useFlexLayout,
     useRowSelect,
     (hooks: Hooks<TableData>) => {
@@ -251,7 +269,10 @@ function Table({ columns, data }: TableProps) {
 
         <div>
           {headerGroups.map((headerGroup, index) => (
-            <div {...headerGroup.getHeaderGroupProps()} key={`${headerGroup.id}-${index}`}>
+            <div
+              {...(headerGroup as ExtendedHeaderGroup).getHeaderGroupProps()}
+              key={`${headerGroup.id}-${index}`}
+            >
               {headerGroup.headers.map((column) => {
                 const extendedColumn = column as ExtendedHeaderGroup
                 const sortByProps = extendedColumn.getSortByToggleProps?.() || {}
@@ -289,7 +310,7 @@ function Table({ columns, data }: TableProps) {
           {...getTableBodyProps()}
         >
           {({ index, style }) => {
-            const row = rows[index]
+            const row = rows[index] as ExtendedRow
             prepareRow(row)
             return (
               <div {...row.getRowProps({ style })} key={row.id} className={styles.tr}>
@@ -302,9 +323,16 @@ function Table({ columns, data }: TableProps) {
                       title={cell.value}
                     >
                       {cell.column.id === 'name' ? (
-                        <button onClick={() => downloadSingleFile(cell.row.original.path)}>
+                        <div
+                          onClick={() =>
+                            row.canExpand
+                              ? row.toggleRowExpanded(!row.isExpanded)
+                              : downloadSingleFile(cell.row.original.path)
+                          }
+                          style={{ cursor: 'pointer' }}
+                        >
                           {cell.render('Cell')}
-                        </button>
+                        </div>
                       ) : (
                         cell.render('Cell')
                       )}

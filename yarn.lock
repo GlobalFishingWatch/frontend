@@ -2762,7 +2762,7 @@ __metadata:
     "@types/react-image-gallery": "npm:1.2.4"
     "@types/react-map-gl": "npm:6.1.7"
     "@types/react-modal": "npm:3.16.3"
-    "@types/react-table": "npm:7.7.20"
+    "@types/react-table": "npm:^7.7.20"
     "@types/react-window": "npm:1.8.8"
     "@types/redux-first-router": "npm:2.1.12"
     "@types/redux-first-router-link": "npm:1.4.9"
@@ -2868,7 +2868,7 @@ __metadata:
     react-range: "npm:1.10.0"
     react-redux: "npm:9.2.0"
     react-sticky-el: "npm:2.1.1"
-    react-table: "npm:7.8.0"
+    react-table: "npm:^7.8.0"
     react-toastify: "npm:11.0.5"
     react-virtualized-auto-sizer: "npm:1.0.26"
     react-virtuoso: "npm:4.12.6"
@@ -12584,7 +12584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-table@npm:7.7.20":
+"@types/react-table@npm:^7.7.20":
   version: 7.7.20
   resolution: "@types/react-table@npm:7.7.20"
   dependencies:
@@ -28497,7 +28497,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-table@npm:7.8.0":
+"react-table@npm:^7.8.0":
   version: 7.8.0
   resolution: "react-table@npm:7.8.0"
   peerDependencies:
