@@ -10,6 +10,26 @@
   grid-template-columns: 1fr 1fr max-content;
 }
 
+.cover {
+  position: absolute;
+  inset: 0;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: var(--space-S);
+  padding: var(--space-L);
+  justify-content: center;
+  align-items: center;
+}
+
+.top {
+  justify-content: unset;
+  padding-top: 12rem;
+}
+
 .header {
   text-align: left;
   font: var(--font-S);
@@ -23,6 +43,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.tablePlaceholder {
+  padding-inline: 0;
 }
 
 .portsTable > div:not(.header) {

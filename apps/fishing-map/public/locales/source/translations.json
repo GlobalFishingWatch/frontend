@@ -751,6 +751,11 @@
     "seePortReport": "See all entry events to this port",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
   },
+  "eventsReport": {
+    "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "newTimeRangePorts": "Click the button to see the ports visited after events",
+    "seePorts": "See ports"
+  },
   "search": {
     "advanced": "Advanced",
     "advancedDisabled": "You need to <1>login</1> to use advanced search",

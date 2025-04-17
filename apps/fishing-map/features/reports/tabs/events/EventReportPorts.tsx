@@ -5,11 +5,13 @@ import cx from 'classnames'
 import { useGetReportEventsStatsQuery } from 'queries/report-events-stats-api'
 import { useDebounce } from 'use-debounce'
 
-import { IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { selectReportEventsPortsFilter } from 'features/reports/reports.config.selectors'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+import { useReportHash } from 'features/reports/tabs/events/events-report.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 
@@ -30,11 +32,13 @@ function EventReportPorts() {
   const reportEventsPortsFilter = useSelector(selectReportEventsPortsFilter)
   const pagination = useSelector(selectReportEventsPortsPagination)
   const { dispatchQueryParams } = useLocationConnect()
+
   const [query, setQuery] = useState(reportEventsPortsFilter || '')
   const [debouncedQuery] = useDebounce(query, 200)
+  const { updateReportHash, reportOutdated } = useReportHash()
 
-  const { error, status } = useGetReportEventsStatsQuery(statsParams, {
-    skip: !eventsDataview,
+  const { status } = useGetReportEventsStatsQuery(statsParams, {
+    skip: !eventsDataview || reportOutdated,
   })
 
   useEffect(() => {
@@ -77,6 +81,22 @@ function EventReportPorts() {
   const isLastPaginationPage =
     pagination?.offset + pagination?.resultsPerPage >= pagination?.totalFiltered
 
+  if (reportOutdated) {
+    return (
+      <ReportVesselsPlaceholder animate={false} showGraph={false} showSearch={false}>
+        <div className={cx(styles.cover, styles.center, styles.top)}>
+          <p>
+            {t(
+              'eventsReport.newTimeRangePorts',
+              'Click the button to see the ports visited after events'
+            )}
+          </p>
+          <Button onClick={updateReportHash}>{t('eventsReport.seePorts', 'See ports')}</Button>
+        </div>
+      </ReportVesselsPlaceholder>
+    )
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.headerContainer}>
@@ -90,81 +110,98 @@ function EventReportPorts() {
           className={styles.searchInput}
         />
       </div>
-      <div className={styles.tableContainer}>
-        <div className={styles.portsTable}>
-          <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
-            {t('common.name', 'Name')}
-          </div>
-          <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
-            {t('common.country', 'Country')}
-          </div>
-          <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
-            {t('common.visits', 'Visits')}
-          </div>
-          {reportEventsPortsPaginated?.map((port, index) => {
-            const isPortInFilter = eventsDataview.config?.filters?.next_port_id?.includes(port.id)
-            const isLastRow = index === reportEventsPortsPaginated.length - 1
-            return (
-              <Fragment key={port.id}>
-                <div className={cx({ [styles.border]: !isLastRow }, styles.portName)}>
-                  <IconButton
-                    icon={isPortInFilter ? 'filter-on' : 'filter-off'}
-                    size="small"
-                    onClick={() => onTogglePortFilter(port.id)}
-                    tooltip={
-                      isPortInFilter
-                        ? t('event.port_visitedAfterRemove', 'Remove port filter')
-                        : t('event.port_visitedAfterFilter', 'Filter events by port visited after')
-                    }
-                  />
-                  {port.name}
-                </div>
-                <div className={cx({ [styles.border]: !isLastRow })}>{port.country}</div>
-                <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                  {<I18nNumber number={port.value} />}
-                </div>
-              </Fragment>
-            )
-          })}
-        </div>
-      </div>
-      <div className={styles.footer}>
+      {status !== 'fulfilled' ? (
+        <ReportVesselsPlaceholder
+          className={styles.tablePlaceholder}
+          showGraph={false}
+          showGraphHeader={false}
+          showSearch={false}
+        />
+      ) : (
         <Fragment>
-          <div className={styles.flex}>
-            <IconButton
-              icon="arrow-left"
-              disabled={pagination?.page === 0}
-              className={cx({ [styles.disabled]: pagination?.page === 0 })}
-              onClick={onPrevPageClick}
-              size="medium"
-            />
-            <span className={styles.noWrap}>
-              {`${pagination?.offset + 1} - ${
-                isLastPaginationPage
-                  ? pagination?.totalFiltered
-                  : pagination?.offset + pagination?.resultsPerPage
-              }`}{' '}
-            </span>
-            <IconButton
-              icon="arrow-right"
-              onClick={onNextPageClick}
-              disabled={isLastPaginationPage || hasLessPortsThanAPage}
-              className={cx({
-                [styles.disabled]: isLastPaginationPage || hasLessPortsThanAPage,
+          <div className={styles.tableContainer}>
+            <div className={styles.portsTable}>
+              <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
+                {t('common.name', 'Name')}
+              </div>
+              <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
+                {t('common.country', 'Country')}
+              </div>
+              <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
+                {t('common.visits', 'Visits')}
+              </div>
+              {reportEventsPortsPaginated?.map((port, index) => {
+                const isPortInFilter = eventsDataview.config?.filters?.next_port_id?.includes(
+                  port.id
+                )
+                const isLastRow = index === reportEventsPortsPaginated.length - 1
+                return (
+                  <Fragment key={port.id}>
+                    <div className={cx({ [styles.border]: !isLastRow }, styles.portName)}>
+                      <IconButton
+                        icon={isPortInFilter ? 'filter-on' : 'filter-off'}
+                        size="small"
+                        onClick={() => onTogglePortFilter(port.id)}
+                        tooltip={
+                          isPortInFilter
+                            ? t('event.port_visitedAfterRemove', 'Remove port filter')
+                            : t(
+                                'event.port_visitedAfterFilter',
+                                'Filter events by port visited after'
+                              )
+                        }
+                      />
+                      {port.name}
+                    </div>
+                    <div className={cx({ [styles.border]: !isLastRow })}>{port.country}</div>
+                    <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
+                      {<I18nNumber number={port.value} />}
+                    </div>
+                  </Fragment>
+                )
               })}
-              size="medium"
-            />
+            </div>
           </div>
-          <span className={cx(styles.noWrap, styles.right)}>
-            {reportEventsPortsFilter && (
-              <Fragment>
-                <I18nNumber number={pagination.totalFiltered} /> {t('common.of', 'of')}{' '}
-              </Fragment>
-            )}
-            <I18nNumber number={pagination.total} /> {t('event.port', { count: pagination?.total })}
-          </span>
+          <div className={styles.footer}>
+            <Fragment>
+              <div className={styles.flex}>
+                <IconButton
+                  icon="arrow-left"
+                  disabled={pagination?.page === 0}
+                  className={cx({ [styles.disabled]: pagination?.page === 0 })}
+                  onClick={onPrevPageClick}
+                  size="medium"
+                />
+                <span className={styles.noWrap}>
+                  {`${pagination?.offset + 1} - ${
+                    isLastPaginationPage
+                      ? pagination?.totalFiltered
+                      : pagination?.offset + pagination?.resultsPerPage
+                  }`}{' '}
+                </span>
+                <IconButton
+                  icon="arrow-right"
+                  onClick={onNextPageClick}
+                  disabled={isLastPaginationPage || hasLessPortsThanAPage}
+                  className={cx({
+                    [styles.disabled]: isLastPaginationPage || hasLessPortsThanAPage,
+                  })}
+                  size="medium"
+                />
+              </div>
+              <span className={cx(styles.noWrap, styles.right)}>
+                {reportEventsPortsFilter && (
+                  <Fragment>
+                    <I18nNumber number={pagination.totalFiltered} /> {t('common.of', 'of')}{' '}
+                  </Fragment>
+                )}
+                <I18nNumber number={pagination.total} />{' '}
+                {t('event.port', { count: pagination?.total })}
+              </span>
+            </Fragment>
+          </div>
         </Fragment>
-      </div>
+      )}
     </div>
   )
 }
