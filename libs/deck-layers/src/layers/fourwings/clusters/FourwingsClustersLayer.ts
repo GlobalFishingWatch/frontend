@@ -21,6 +21,7 @@ import type { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfis
 import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
 
 import {
+  COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
   getLayerGroupOffset,
@@ -150,6 +151,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return true
   }
 
+  getClusterId = (feature: FourwingsClusterFeature | undefined) => {
+    return `${this.id}-${feature?.properties.id || (feature?.geometry?.coordinates || []).join('-')}`
+  }
+
   getPickingInfo = ({
     info,
   }: {
@@ -163,7 +168,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
     const object = {
       ...(info.object || ({} as FourwingsClusterFeature)),
-      id: `${this.id}-${info.object?.properties.id || (info.object?.geometry?.coordinates || []).join('-')}`,
+      id: this.getClusterId(info.object),
       ...(this.clusterMode === 'positions' &&
         info.object?.properties.id && {
           eventId: info.object?.properties.id,
@@ -341,6 +346,13 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return this.state.radiusScale?.(d.properties.value) || MIN_CLUSTER_RADIUS
   }
 
+  _getLineColor = (d: FourwingsClusterFeature) => {
+    const isHighlighted = this.props.highlightedFeatures?.some(
+      (feature) => feature.id === this.getClusterId(d)
+    )
+    return isHighlighted ? COLOR_HIGHLIGHT_LINE : DEFAULT_LINE_COLOR
+  }
+
   _getClusterLabel = (d: FourwingsClusterFeature) => {
     if (d.properties.value > 1000000) {
       return `>${Math.floor(d.properties.value / 1000000)}M`
@@ -352,7 +364,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
-    const { color, tilesUrl, eventType = 'encounter' } = this.props
+    const { color, tilesUrl, eventType = 'encounter', highlightedFeatures } = this.props
     const { clusters, points, radiusScale } = this.state
 
     return [
@@ -390,13 +402,14 @@ export class FourwingsClustersLayer extends CompositeLayer<
         radiusMinPixels: MIN_CLUSTER_RADIUS,
         radiusUnits: 'pixels',
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
+        getLineColor: this._getLineColor,
         stroked: true,
-        getLineColor: DEFAULT_LINE_COLOR,
-        lineWidthMinPixels: 0.2,
+        lineWidthMinPixels: 0.5,
         lineWidthUnits: 'pixels',
         pickable: true,
         updateTriggers: {
           getRadius: [radiusScale],
+          getLineColor: [highlightedFeatures],
         },
       }),
       new TextLayer({
