@@ -117,6 +117,9 @@ export type ReportActivityState = {
 
 export type ReportEventsState = {
   reportEventsGraph: ReportEventsGraph
+  reportEventsPortsFilter: string | undefined
+  reportEventsPortsPage: number
+  reportEventsPortsResultsPerPage: number
 }
 
 export type ReportState = ReportCategoryState &

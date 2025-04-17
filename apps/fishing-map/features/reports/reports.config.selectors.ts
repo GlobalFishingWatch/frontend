@@ -65,3 +65,8 @@ export const selectReportTimeComparison = selectReportStateProperty('reportTimeC
 
 // Events
 export const selectReportEventsGraph = selectReportStateProperty('reportEventsGraph')
+export const selectReportEventsPortsFilter = selectReportStateProperty('reportEventsPortsFilter')
+export const selectReportEventsPortsPage = selectReportStateProperty('reportEventsPortsPage')
+export const selectReportEventsPortsResultsPerPage = selectReportStateProperty(
+  'reportEventsPortsResultsPerPage'
+)

@@ -1,11 +1,12 @@
-import React, { Fragment, type JSX,useCallback, useMemo, useRef, useState } from 'react'
+import React, { Fragment, type JSX, useCallback, useMemo, useRef, useState } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import cx from 'classnames'
 import type {
   UseComboboxState,
   UseComboboxStateChange,
   UseComboboxStateChangeTypes,
 } from 'downshift'
-import { useCombobox,useMultipleSelection } from 'downshift'
+import { useCombobox, useMultipleSelection } from 'downshift'
 import { matchSorter } from 'match-sorter'
 
 import type { IconType } from '../icon'
@@ -85,8 +86,8 @@ const getPlaceholderBySelections = (
         })
         .join(', ')
     : selections.length > 1
-    ? `${selections.length} selected`
-    : selections[0]?.label.toString()
+      ? `${selections.length} selected`
+      : selections[0]?.label.toString()
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
@@ -181,7 +182,6 @@ export function MultiSelect(props: MultiSelectProps) {
   const {
     isOpen,
     getToggleButtonProps,
-    getLabelProps,
     getMenuProps,
     getInputProps,
     highlightedIndex,
@@ -244,6 +244,16 @@ export function MultiSelect(props: MultiSelectProps) {
 
   const hasSelectedOptions = selectedOptions && selectedOptions.length > 0
 
+  const listRef = useRef<HTMLUListElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  const rowVirtualizer = useVirtualizer({
+    count: filteredItems.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 40,
+    overscan: 5,
+  })
+
   return (
     <div className={className}>
       <div className={cx(styles.labelContainer, labelContainerClassName)}>
@@ -304,44 +314,74 @@ export function MultiSelect(props: MultiSelectProps) {
             </Fragment>
           )}
         </div>
-        <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
-          {isOpen &&
-            filteredItems.length > 0 &&
-            filteredItems.map((item, index) => {
-              const highlight = highlightedIndex === index
-              const isSelected =
-                hasSelectedOptions &&
-                selectedOptions.some(({ id }) => item.id === id) &&
-                !item.disableSelection
-              const icon =
-                highlight && isSelected
-                  ? 'close'
-                  : (highlight || isSelected) && !item.disableSelection
-                  ? 'tick'
-                  : ('' as IconType)
-              return (
-                <Tooltip key={item.id} content={item.tooltip} placement="top-start">
-                  <li
-                    data-test={`${testId}-option-${item.id}`}
-                    className={cx(styles.optionItem, {
-                      [styles.highlight]: highlight,
-                      [item.className || '']: item.className,
-                    })}
-                    {...getItemProps({ item, index })}
-                  >
-                    {item.label}
-                    {
-                      <Icon
-                        icon={icon || 'tick'}
-                        className={cx(styles.icon, {
-                          [styles.visible]: icon,
+        <ul
+          ref={listRef}
+          {...getMenuProps()}
+          className={cx(styles.optionsContainer, styles[direction])}
+        >
+          {isOpen && filteredItems.length > 0 && (
+            <div
+              ref={scrollRef}
+              style={{
+                maxHeight: '24rem',
+                overflow: 'auto',
+                width: '100%',
+              }}
+            >
+              <div
+                style={{
+                  height: `${rowVirtualizer.getTotalSize()}px`,
+                  width: '100%',
+                  position: 'relative',
+                }}
+              >
+                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                  const item = filteredItems[virtualRow.index]
+                  const highlight = highlightedIndex === virtualRow.index
+                  const isSelected =
+                    hasSelectedOptions &&
+                    selectedOptions.some(({ id }) => item.id === id) &&
+                    !item.disableSelection
+                  const icon =
+                    highlight && isSelected
+                      ? 'close'
+                      : (highlight || isSelected) && !item.disableSelection
+                        ? 'tick'
+                        : ('' as IconType)
+                  return (
+                    <Tooltip key={virtualRow.key} content={item.tooltip} placement="top-start">
+                      <li
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: `${virtualRow.size}px`,
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }}
+                        data-test={`${testId}-option-${item.id}`}
+                        className={cx(styles.optionItem, {
+                          [styles.highlight]: highlight,
+                          [item.className || '']: item.className,
                         })}
-                      />
-                    }
-                  </li>
-                </Tooltip>
-              )
-            })}
+                        {...getItemProps({ item, index: virtualRow.index })}
+                      >
+                        <span className={multiSelectStyles.optionItemLabel}>{item.label}</span>
+                        {
+                          <Icon
+                            icon={icon || 'tick'}
+                            className={cx(styles.icon, {
+                              [styles.visible]: icon,
+                            })}
+                          />
+                        }
+                      </li>
+                    </Tooltip>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </ul>
       </div>
     </div>

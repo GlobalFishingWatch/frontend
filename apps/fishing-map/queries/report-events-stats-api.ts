@@ -16,6 +16,7 @@ export type BaseReportEventsVesselsParamsFilters = {
   flag?: string[]
   minDuration?: number
   maxDuration?: number
+  next_port_id?: string
 }
 export type BaseReportEventsVesselsParams = {
   start: string
@@ -39,7 +40,12 @@ export type ReportEventsStatsParams = ReportEventsVesselsParams & {
   groupBy?: StatsGroupBy
 }
 
-export type ReportEventsStatsResponseGroups = { name: string; value: number }[]
+export type ReportEventsStatsResponseGroups = {
+  name: string
+  value: number
+  label?: string
+  flag?: string
+}[]
 
 export type ReportEventsStatsResponse = {
   numEvents: number
@@ -53,7 +59,19 @@ export type GetReportEventParams = BaseReportEventsVesselsParams & {
   datasets: string[]
   filters?: BaseReportEventsVesselsParamsFilters[]
   includes?: StatsIncludes[]
-  groupBy?: string
+  groupBy?:
+    | 'FLAG'
+    | 'GEARTYPE'
+    | 'REGION_EEZ'
+    | 'REGION_EEZ12NM'
+    | 'REGION_FAO'
+    | 'REGION_HIGH_SEAS'
+    | 'REGION_MAJOR_FAO'
+    | 'REGION_MPA'
+    | 'REGION_MPA_NO_TAKE'
+    | 'REGION_MPA_NO_TAKE_PARTIAL'
+    | 'REGION_RFMO'
+    | 'NEXT_PORT_ID'
 }
 
 export type ReportEventsVesselsResponse = StatsByVessel[]
@@ -86,6 +104,7 @@ function getBaseStatsQuery({
     ...(filters?.flag && { flags: filters.flag }),
     ...(filters.minDuration && { 'min-duration': filters.minDuration }),
     ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
+    ...(filters?.next_port_id && { 'next-port-ids': filters.next_port_id }),
   }
   return query
 }
@@ -167,3 +186,6 @@ export const selectReportEventsStats = (params: GetReportEventParams) =>
 
 export const selectReportEventsVessels = (params: GetReportEventParams) =>
   reportEventsStatsApi.endpoints.getReportEventsVessels.select(params)
+
+export const selectReportEventsPorts = (params: GetReportEventParams) =>
+  reportEventsStatsApi.endpoints.getReportEventsStats.select(params)

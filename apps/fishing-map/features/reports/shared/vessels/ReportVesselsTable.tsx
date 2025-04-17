@@ -258,7 +258,7 @@ export default function ReportVesselsTable({
                       values.map((v) =>
                         v.value ? (
                           <Fragment key={v.value}>
-                            {v.color && values.length > 1 && (
+                            {v.color && dataviews?.length > 1 && (
                               <span
                                 className={styles.dot}
                                 style={{ backgroundColor: v.color }}

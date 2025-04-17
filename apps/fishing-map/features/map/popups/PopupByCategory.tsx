@@ -9,6 +9,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextPickingObject,
+  FourwingsClusterPickingObject,
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
   PolygonPickingObject,
@@ -28,9 +29,7 @@ import { getDatasetLabel, getDatasetTitleByDataview } from 'features/datasets/da
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
-import ClusterTooltipRows, {
-  ClusterTooltipRow,
-} from 'features/map/popups/categories/ClusterTooltipRow'
+import { ClusterTooltipRow } from 'features/map/popups/categories/ClusterTooltipRow'
 import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
@@ -191,55 +190,27 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 </div>
               )
             }
-            const { groupedEventFeatures, notGroupedEventFeatures } = features.reduce(
-              (acc, feature) => {
-                if (feature.groupFeatureInteraction) {
-                  acc.groupedEventFeatures.push(feature as SliceExtendedClusterPickingObject)
-                } else {
-                  acc.notGroupedEventFeatures.push(feature as SliceExtendedClusterPickingObject)
-                }
-                return acc
-              },
-              {
-                groupedEventFeatures: [] as SliceExtendedClusterPickingObject[],
-                notGroupedEventFeatures: [] as SliceExtendedClusterPickingObject[],
-              }
-            )
-            const categoryGroups = groupBy(groupedEventFeatures, (f) => f.eventType || '')
             return (
               <Fragment>
-                {Object.keys(categoryGroups).length > 0 &&
-                  Object.entries(categoryGroups).map(([eventType, group]) => {
-                    const count = group.length === 1 ? group[0].properties.value : group.length
-                    const feature = {
-                      ...group[0],
-                      eventType,
-                      title: getDatasetLabel({ id: group[0].datasetId! }),
-                      count,
-                    } as SliceExtendedClusterPickingObject
-                    return (
-                      <ClusterTooltipRow
-                        key={eventType}
-                        feature={feature}
-                        showFeaturesDetails={type === 'click'}
-                        error={
-                          apiEventStatus === AsyncReducerStatus.Error
-                            ? apiEventError || t('errors.genericShort', 'Something went wrong')
-                            : undefined
-                        }
-                      />
-                    )
-                  })}
-                <ClusterTooltipRows
-                  key={featureCategory}
-                  features={notGroupedEventFeatures}
-                  showFeaturesDetails={type === 'click'}
-                  error={
-                    apiEventStatus === AsyncReducerStatus.Error
-                      ? apiEventError || t('errors.genericShort', 'Something went wrong')
-                      : undefined
-                  }
-                />
+                {features.map((f: FourwingsClusterPickingObject) => {
+                  const feature = {
+                    ...f,
+                    title: getDatasetLabel({ id: f.datasetId! }),
+                    count: f?.properties?.value || 1,
+                  } as SliceExtendedClusterPickingObject
+                  return (
+                    <ClusterTooltipRow
+                      key={f.id}
+                      feature={feature}
+                      showFeaturesDetails={type === 'click'}
+                      error={
+                        apiEventStatus === AsyncReducerStatus.Error
+                          ? apiEventError || t('errors.genericShort', 'Something went wrong')
+                          : undefined
+                      }
+                    />
+                  )
+                })}
               </Fragment>
             )
           }

@@ -307,9 +307,9 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
         <a className={styles.reportLink} href={window.location.href}>
           {t('analysis.linkToReport', 'Check the dynamic report here')}
         </a>
-        {reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID && <AreaReportSearch />}
+        {isGlobalReport && <AreaReportSearch />}
         <div className={styles.actions}>
-          {reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && (
+          {!isGlobalReport && (
             <Popover
               open={showBufferTooltip}
               onClickOutside={handleTooltipHide}

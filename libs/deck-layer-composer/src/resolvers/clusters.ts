@@ -42,7 +42,7 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
   FourwingsClustersLayerProps
 > = (
   dataview: UrlDataviewInstance,
-  { start, end, zoom }: ResolverGlobalConfig
+  { start, end, highlightedFeatures }: ResolverGlobalConfig
 ): FourwingsClustersLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
@@ -96,6 +96,7 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
     visible: dataview.config?.visible ?? true,
     tilesUrl: resolveEndpoint(dataset, datasetConfig, { absolute: true }) || '',
     clusterMaxZoomLevels: dataview.config?.clusterMaxZoomLevels,
+    highlightedFeatures,
     maxZoom: FOURWINGS_MAX_ZOOM,
     eventType: dataset.subcategory as FourwingsClusterEventType,
   }

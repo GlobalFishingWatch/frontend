@@ -33,6 +33,13 @@
   top: auto;
 }
 
+.optionItemLabel {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .input {
   flex: 1;
   white-space: nowrap;

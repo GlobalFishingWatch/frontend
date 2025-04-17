@@ -133,54 +133,62 @@ const EventDetail = ({ event }: ActivityContentProps) => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>{formatInfoField(event.vessel.name, 'shipname')}</td>
-              {authAreas?.map((rfmo) => {
-                const mainVesselAuth = event.vessel.publicAuthorizations?.find(
-                  (auth) => auth.rfmo === rfmo
-                )
-                return (
-                  <td key={rfmo}>
-                    {mainVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
-                      <span className={styles.tick}>
-                        <IconButton
-                          icon="tick"
-                          size="tiny"
-                          type="solid"
-                          className={styles.disabled}
-                        />
-                      </span>
-                    ) : (
-                      <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                    )}
-                  </td>
-                )
-              })}
-            </tr>
-            <tr>
-              <td>{formatInfoField(name, 'shipname')}</td>
-              {authAreas?.map((rfmo) => {
-                const secondaryVesselAuth = event.encounter?.vessel?.publicAuthorizations?.find(
-                  (auth) => auth.rfmo === rfmo
-                )
-                return (
-                  <td key={rfmo}>
-                    {secondaryVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
-                      <span className={styles.tick}>
-                        <IconButton
-                          icon="tick"
-                          size="tiny"
-                          type="solid"
-                          className={styles.disabled}
-                        />
-                      </span>
-                    ) : (
-                      <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                    )}
-                  </td>
-                )
-              })}
-            </tr>
+            {authAreas?.length && authAreas.length > 0 ? (
+              <Fragment>
+                <tr>
+                  <td>{formatInfoField(event.vessel.name, 'shipname')}</td>
+                  {authAreas?.map((rfmo) => {
+                    const mainVesselAuth = event.vessel.publicAuthorizations?.find(
+                      (auth) => auth.rfmo === rfmo
+                    )
+                    return (
+                      <td key={rfmo}>
+                        {mainVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
+                          <span className={styles.tick}>
+                            <IconButton
+                              icon="tick"
+                              size="tiny"
+                              type="solid"
+                              className={styles.disabled}
+                            />
+                          </span>
+                        ) : (
+                          <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
+                        )}
+                      </td>
+                    )
+                  })}
+                </tr>
+                <tr>
+                  <td>{formatInfoField(name, 'shipname')}</td>
+                  {authAreas?.map((rfmo) => {
+                    const secondaryVesselAuth = event.encounter?.vessel?.publicAuthorizations?.find(
+                      (auth) => auth.rfmo === rfmo
+                    )
+                    return (
+                      <td key={rfmo}>
+                        {secondaryVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
+                          <span className={styles.tick}>
+                            <IconButton
+                              icon="tick"
+                              size="tiny"
+                              type="solid"
+                              className={styles.disabled}
+                            />
+                          </span>
+                        ) : (
+                          <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
+                        )}
+                      </td>
+                    )
+                  })}
+                </tr>
+              </Fragment>
+            ) : (
+              <p className={styles.secondary}>
+                {t('eventInfo.authorizationEmpty', 'No authorization data available')}
+              </p>
+            )}
           </tbody>
         </table>
       </ul>
