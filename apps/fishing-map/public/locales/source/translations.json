@@ -570,6 +570,7 @@
   },
   "eventInfo": {
     "authorization": "authorization",
+    "authorizationEmpty": "No authorization data available",
     "averageSpeedKnots": "avg speed (knots)",
     "depth": "depth",
     "distanceFromPortKm": "distanceFromPortKm",
