@@ -197,7 +197,7 @@ export default function EventsReportGraphEvolution({
         getAggregatedData={getAggregatedData}
         getIndividualData={getIndividualData}
         tickLabelFormatter={formatDateTicks}
-        aggregatedTooltip={<AggregatedGraphTooltip />}
+        aggregatedTooltip={<AggregatedGraphTooltip timeChunkInterval={interval} />}
         individualTooltip={<EventsReportIndividualGraphTooltip eventType={eventType} />}
         color={color}
         individualIcon={icon}
