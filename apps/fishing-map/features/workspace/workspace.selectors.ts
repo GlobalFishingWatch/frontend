@@ -132,3 +132,4 @@ export const selectWorkspaceVisibleEventsArray = createSelector(
 )
 
 export const selectDaysFromLatest = selectWorkspaceStateProperty('daysFromLatest')
+export const selectFeatureFlags = selectWorkspaceStateProperty('featureFlags')

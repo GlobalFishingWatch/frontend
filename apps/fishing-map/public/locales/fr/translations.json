@@ -400,6 +400,8 @@
       "filtersHelp": "Sélectionnez les propriétés (ou champs) de ce jeu de données pour pouvoir filtrer dynamiquement les tracés dans la barre latérale",
       "lineId": "Identités de lignes individuelles",
       "lineIdHelp": "Sélectionnez la propriété de votre jeu de données qui différencie chaque tracé l'un de l'autre",
+      "name": "Line label",
+      "nameHelp": "Select a property to add a label to each line on the map",
       "segmentId": "Identités de segments individuels",
       "segmentIdHelp": "Sélectionnez la propriété de votre jeu de données qui différencie les segments dans chaque tracé (p. ex., voyages)",
       "segmentTimes": "Horaires des segments de tracés",
