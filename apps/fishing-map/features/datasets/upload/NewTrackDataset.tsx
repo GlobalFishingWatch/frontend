@@ -25,6 +25,7 @@ import {
   useDatasetMetadataOptions,
 } from 'features/datasets/upload/datasets-upload.hooks'
 import {
+  getDatasetMetadataValidations,
   getMetadataFromDataset,
   getTracksDatasetMetadata,
 } from 'features/datasets/upload/datasets-upload.utils'
@@ -95,6 +96,8 @@ function NewTrackDataset({
     dataset: datasetMetadata,
     property: 'endTime',
   })
+
+  const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
 
   const handleRawData = useCallback(
     async (file: File) => {
@@ -255,6 +258,7 @@ function NewTrackDataset({
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}
           disabled={loading}
         />
+        {errors.name && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.name}</p>}
         {isCSVFile && (
           <div className={styles.row}>
             <NewDatasetField
@@ -403,7 +407,7 @@ function NewTrackDataset({
         <Button
           className={styles.saveBtn}
           onClick={onConfirmClick}
-          disabled={!datasetMetadata || error !== ''}
+          disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
         >
           {t('common.confirm', 'Confirm') as string}

@@ -30,8 +30,25 @@ import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-cl
 import type { AreaGeometry } from 'features/areas/areas.slice'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import { t } from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'
 import type { FileType } from 'utils/files'
+
+export const MIN_NAME_LENGTH = 3
+
+export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) {
+  const errors = {
+    name:
+      datasetMetadata.name && datasetMetadata.name.length < MIN_NAME_LENGTH
+        ? t('datasetUpload.errors.name', {
+            min: MIN_NAME_LENGTH,
+            defaultValue: 'Dataset name must be at least {{min}} characters long',
+          })
+        : null,
+  }
+  const isValid = Object.values(errors).every((error) => !error)
+  return { isValid, errors }
+}
 
 type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
 
