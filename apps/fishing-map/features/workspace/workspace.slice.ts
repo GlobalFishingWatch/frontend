@@ -75,7 +75,7 @@ export type LastWorkspaceVisited = {
   type: ROUTE_TYPES
   payload: any
   query: any
-  pathname: string
+  pathname?: string
 }
 
 interface WorkspaceSliceState {
