@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { color } from 'color-blend'
 import { stringify } from 'qs'
+import { parseEventsFilters } from 'queries/report-events-stats-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { type ApiEvent, type APIPagination, DatasetTypes } from '@globalfishingwatch/api-types'
@@ -83,15 +84,16 @@ export function useFetchEventReportGraphEvents() {
           'start-date': start,
           'end-date': end,
           datasets: [datasetId],
-          ...filters,
           ...(includes?.length && { includes }),
-          ...(reportAreaId !== ENTIRE_WORLD_REPORT_AREA_ID && {
-            'region-datasets': reportAreaDataset,
-            'region-ids': reportAreaId,
-            'buffer-value': reportBufferValue,
-            'buffer-unit': reportBufferUnit,
-            'buffer-operation': reportBufferOperation,
-          }),
+          ...parseEventsFilters(filters),
+          ...(reportAreaId &&
+            reportAreaId !== ENTIRE_WORLD_REPORT_AREA_ID && {
+              'region-datasets': reportAreaDataset,
+              'region-ids': reportAreaId,
+              'buffer-value': reportBufferValue,
+              'buffer-unit': reportBufferUnit,
+              'buffer-operation': reportBufferOperation,
+            }),
           limit: 1000,
           offset: 0,
         }

@@ -18,6 +18,7 @@ export type BaseReportEventsVesselsParamsFilters = {
   maxDuration?: number
   next_port_id?: string
 }
+
 export type BaseReportEventsVesselsParams = {
   start: string
   end: string
@@ -78,6 +79,22 @@ export type ReportEventsVesselsResponse = StatsByVessel[]
 
 export const EVENTS_TIME_FILTER_MODE = 'START-DATE'
 
+export function parseEventsFilters(filters: BaseReportEventsVesselsParamsFilters) {
+  if (!filters) {
+    return {}
+  }
+  return {
+    ...(filters.confidence && { confidences: [filters.confidence] }),
+    ...(filters.encounter_type && { 'encounter-types': filters.encounter_type }),
+    ...(filters.flag && { flags: filters.flag }),
+    ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
+    ...(filters.minDuration && { 'min-duration': filters.minDuration }),
+    ...(filters.next_port_id && { 'next-port-ids': filters.next_port_id }),
+    ...(filters.portId && { 'port-ids': [filters.portId] }),
+    ...(filters.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
+  }
+}
+
 function getBaseStatsQuery({
   filters,
   start,
@@ -97,14 +114,7 @@ function getBaseStatsQuery({
     ...(bufferValue && { 'buffer-value': bufferValue }),
     ...(bufferUnit && { 'buffer-unit': bufferUnit.toUpperCase() }),
     ...(bufferOperation && { 'buffer-operation': bufferOperation.toUpperCase() }),
-    ...(filters?.portId && { 'port-ids': [filters.portId] }),
-    ...(filters?.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
-    ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),
-    ...(filters?.confidence && { confidences: [filters.confidence] }),
-    ...(filters?.flag && { flags: filters.flag }),
-    ...(filters.minDuration && { 'min-duration': filters.minDuration }),
-    ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
-    ...(filters?.next_port_id && { 'next-port-ids': filters.next_port_id }),
+    ...parseEventsFilters(filters),
   }
   return query
 }
