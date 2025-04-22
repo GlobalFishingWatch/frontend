@@ -29,6 +29,7 @@ import {
   SAR_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
+import { PM_LABELS_DATAVIEW_ID } from 'features/dataviews/dataviews.mock'
 import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
@@ -166,7 +167,8 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         visible: false,
       },
-      dataviewId: BASEMAP_LABELS_DATAVIEW_SLUG,
+      // dataviewId: BASEMAP_LABELS_DATAVIEW_SLUG,
+      dataviewId: PM_LABELS_DATAVIEW_ID,
     },
   ],
 }
