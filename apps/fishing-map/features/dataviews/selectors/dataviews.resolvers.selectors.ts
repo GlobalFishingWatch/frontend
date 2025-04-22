@@ -75,6 +75,7 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
+import { createDeepEqualSelector } from 'utils/selectors'
 
 const EMPTY_ARRAY: [] = []
 export const selectWorkspaceDataviewInstancesMerged = createSelector(
@@ -264,7 +265,7 @@ export const selectDataviewInstancesInjected = createSelector(
   }
 )
 
-export const selectDataviewInstancesMerged = createSelector(
+export const selectDataviewInstancesMerged = createDeepEqualSelector(
   [selectWorkspaceDataviewInstancesMerged, selectDataviewInstancesInjected],
   (
     dataviewInstances = EMPTY_ARRAY,

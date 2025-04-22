@@ -30,11 +30,11 @@ import { TimebarVisualisations } from 'types'
 
 import type { TimeRange } from './timebar.slice'
 import {
-  changeSettings,
   disableHighlightedTime,
   selectHasChangedSettingsOnce,
   selectHighlightedEvents,
   selectHighlightedTime,
+  setHasChangedSettings,
   setHighlightedEvents,
 } from './timebar.slice'
 
@@ -184,6 +184,7 @@ export const useHighlightedEventsConnect = () => {
 export const useTimebarVisualisationConnect = () => {
   const dispatch = useAppDispatch()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
+  const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
   const { dispatchQueryParams } = useLocationConnect()
   const dispatchTimebarVisualisation = useCallback(
@@ -191,11 +192,11 @@ export const useTimebarVisualisationConnect = () => {
       if (timebarVisualisation !== newTimebarVisualisation) {
         dispatchQueryParams({ timebarVisualisation: newTimebarVisualisation })
       }
-      if (!automated) {
-        dispatch(changeSettings())
+      if (!automated && !hasChangedSettingsOnce) {
+        dispatch(setHasChangedSettings())
       }
     },
-    [timebarVisualisation, dispatchQueryParams, dispatch]
+    [timebarVisualisation, dispatchQueryParams, hasChangedSettingsOnce, dispatch]
   )
 
   return useMemo(
