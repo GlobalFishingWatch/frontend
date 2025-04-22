@@ -16,9 +16,6 @@
 }
 
 .tagsContainer {
-  display: flex;
-  gap: var(--space-S) var(--space-M);
-  flex-wrap: wrap;
   border-bottom: var(--border);
   padding: var(--space-M);
   padding-top: var(--space-XS);

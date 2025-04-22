@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -30,40 +30,38 @@ export default function ReportSummaryTags({ dataview, availableFields }: LayerPa
 
   return (
     <div className={styles.row}>
-      <div className={styles.content}>
-        <span className={styles.dot} style={{ color: dataview.config?.color }} />
-        <div className={styles.filters}>
-          <DatasetFilterSource dataview={dataview} />
-          <DatasetFlagField dataview={dataview} />
-          {availableFields.map((field) => (
-            <DatasetSchemaField
-              key={field[0]}
-              dataview={dataview}
-              field={field[0] as SupportedDatasetSchema}
-              label={t(field[1] as any, field[2])}
-            />
-          ))}
-          <ExpandedContainer
-            onClickOutside={onToggleFiltersUIOpen}
-            visible={filtersUIOpen}
-            className={styles.expandedContainer}
-            component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
-          >
-            <IconButton
-              icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
-              size="small"
-              onClick={onToggleFiltersUIOpen}
-              className="print-hidden"
-              tooltip={
-                filtersUIOpen
-                  ? t('layer.filterClose', 'Close filters UI')
-                  : t('layer.filterOpen', 'Open filters UI')
-              }
-              tooltipPlacement="top"
-            />
-          </ExpandedContainer>
-        </div>
-      </div>
+      <span className={styles.dot} style={{ color: dataview.config?.color }} />
+      <Fragment>
+        <DatasetFilterSource dataview={dataview} />
+        <DatasetFlagField dataview={dataview} />
+        {availableFields.map((field) => (
+          <DatasetSchemaField
+            key={field[0]}
+            dataview={dataview}
+            field={field[0] as SupportedDatasetSchema}
+            label={t(field[1] as any, field[2])}
+          />
+        ))}
+        <ExpandedContainer
+          onClickOutside={onToggleFiltersUIOpen}
+          visible={filtersUIOpen}
+          className={styles.expandedContainer}
+          component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
+        >
+          <IconButton
+            icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
+            size="small"
+            onClick={onToggleFiltersUIOpen}
+            className="print-hidden"
+            tooltip={
+              filtersUIOpen
+                ? t('layer.filterClose', 'Close filters UI')
+                : t('layer.filterOpen', 'Open filters UI')
+            }
+            tooltipPlacement="top"
+          />
+        </ExpandedContainer>
+      </Fragment>
     </div>
   )
 }

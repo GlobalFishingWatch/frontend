@@ -1,12 +1,9 @@
 .row {
-  min-width: max-content;
-}
-
-.content {
   position: relative;
   display: flex;
   flex-wrap: wrap;
   padding-left: var(--space-M);
+  width: 100%;
 }
 
 .dataset {
