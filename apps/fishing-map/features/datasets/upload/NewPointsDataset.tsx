@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import type { FeatureCollection, Point } from 'geojson'
 
 import {
@@ -22,6 +23,7 @@ import {
   useDatasetMetadataOptions,
 } from 'features/datasets/upload/datasets-upload.hooks'
 import {
+  getDatasetMetadataValidations,
   getMetadataFromDataset,
   getPointsDatasetMetadata,
   parseGeoJsonProperties,
@@ -70,6 +72,7 @@ function NewPointDataset({
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const fileType = getFileType(file)
   const isCSVFile = fileType === 'CSV' || sourceFormat === 'CSV'
+  const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
 
   const latitudeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -246,6 +249,7 @@ function NewPointDataset({
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         disabled={loading}
       />
+      {errors.name && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.name}</p>}
       {isCSVFile && (
         <div className={styles.row}>
           <NewDatasetField
@@ -415,7 +419,7 @@ function NewPointDataset({
         <Button
           className={styles.saveBtn}
           onClick={onConfirmClick}
-          disabled={!datasetMetadata || error !== ''}
+          disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
         >
           {t('common.confirm', 'Confirm') as string}
