@@ -2683,6 +2683,7 @@ __metadata:
     "@loaders.gl/json": "npm:4.3.3"
     "@loaders.gl/loader-utils": "npm:4.3.3"
     "@loaders.gl/mvt": "npm:4.3.3"
+    "@loaders.gl/pmtiles": "npm:^4.3.3"
     "@loaders.gl/schema": "npm:4.3.3"
     "@loaders.gl/worker-utils": "npm:4.3.3"
     "@mapbox/geojson-area": "npm:0.2.2"
@@ -4154,6 +4155,21 @@ __metadata:
   peerDependencies:
     "@loaders.gl/core": ^4.3.0
   checksum: 10/24fa72b8916d80d9289eec911c0172ff0f4b9728bb3691fad597770121a98cf0abd3ca49182fd06d5546a3eec474bfdbbaaa9b39fb9f5fe0ef333b2f294575cd
+  languageName: node
+  linkType: hard
+
+"@loaders.gl/pmtiles@npm:^4.3.3":
+  version: 4.3.3
+  resolution: "@loaders.gl/pmtiles@npm:4.3.3"
+  dependencies:
+    "@loaders.gl/images": "npm:4.3.3"
+    "@loaders.gl/loader-utils": "npm:4.3.3"
+    "@loaders.gl/mvt": "npm:4.3.3"
+    "@loaders.gl/schema": "npm:4.3.3"
+    pmtiles: "npm:^3.0.4"
+  peerDependencies:
+    "@loaders.gl/core": ^4.3.0
+  checksum: 10/c0f592487b0e2571218c67b206288c956b2a577141de6b3401b339be9f8d46a420c3fcace4575b61ecdea430d64a93c580ac028f187a5ea828b58cc3df751b0f
   languageName: node
   linkType: hard
 
@@ -12350,6 +12366,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/leaflet@npm:^1.9.8":
+  version: 1.9.17
+  resolution: "@types/leaflet@npm:1.9.17"
+  dependencies:
+    "@types/geojson": "npm:*"
+  checksum: 10/6520b42c98a31340f49e456cc8e4c1a2a73f4ff262ca7293fbd9aa931fc34dd61699a70e9c67110773092bd6c397911918690e339b0c3fa1bc471ef21fd55932
+  languageName: node
+  linkType: hard
+
 "@types/lodash@npm:4.17.16":
   version: 4.17.16
   resolution: "@types/lodash@npm:4.17.16"
@@ -19412,7 +19437,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fflate@npm:^0.8.2":
+"fflate@npm:^0.8.0, fflate@npm:^0.8.2":
   version: 0.8.2
   resolution: "fflate@npm:0.8.2"
   checksum: 10/2bd26ba6d235d428de793c6a0cd1aaa96a06269ebd4e21b46c8fd1bd136abc631acf27e188d47c3936db090bf3e1ede11d15ce9eae9bffdc4bfe1b9dc66ca9cb
@@ -26821,6 +26846,16 @@ __metadata:
   dependencies:
     find-up: "npm:^6.3.0"
   checksum: 10/94298b20a446bfbbd66604474de8a0cdd3b8d251225170970f15d9646f633e056c80520dd5b4c1d1050c9fed8f6a9e5054b141c93806439452efe72e57562c03
+  languageName: node
+  linkType: hard
+
+"pmtiles@npm:^3.0.4":
+  version: 3.2.1
+  resolution: "pmtiles@npm:3.2.1"
+  dependencies:
+    "@types/leaflet": "npm:^1.9.8"
+    fflate: "npm:^0.8.0"
+  checksum: 10/2bdb19c2a6457949ca2ac91bab6289220acf024fc775dfbd4c646181f212a7e474b711d1169c59d92f29110e372b5b828bd41cc93539e4c21ecf6414f2f70f04
   languageName: node
   linkType: hard
 

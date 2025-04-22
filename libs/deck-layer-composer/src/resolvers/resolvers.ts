@@ -10,6 +10,7 @@ import {
   FourwingsCurrentsTileLayer,
   FourwingsLayer,
   GraticulesLayer,
+  PMTilesLayer,
   PolygonsLayer,
   UserContextTileLayer,
   UserPointsTileLayer,
@@ -24,6 +25,7 @@ import { resolveDeckContextLayerProps } from './context'
 import { resolveDeckCurrentsLayerProps } from './currents'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckGraticulesLayerProps } from './graticules'
+import { resolveDeckPMTilesLayerProps } from './pm-tiles'
 import { resolveDeckPolygonsLayerProps } from './polygons'
 import { resolveDeckTileClusterLayerProps } from './tile-cluster'
 import type { ResolverGlobalConfig } from './types'
@@ -76,6 +78,11 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.Context) {
     const deckLayerProps = resolveDeckContextLayerProps(dataview, layerConfig)
     const layer = new ContextLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.PMTiles) {
+    const deckLayerProps = resolveDeckPMTilesLayerProps(dataview, layerConfig)
+    const layer = new PMTilesLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Polygons) {
