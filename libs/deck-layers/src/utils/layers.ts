@@ -18,7 +18,10 @@ export function getPickedFeatureToHighlight(
   { idProperty = 'gfw_id', datasetId } = {} as { idProperty?: string; datasetId?: string }
 ) {
   return pickedFeatures?.some((f) => {
-    if (f.properties?.[idProperty] === data.properties?.[idProperty]) {
+    if (
+      f.id === data.properties?.[idProperty] ||
+      f.properties?.[idProperty] === data.properties?.[idProperty]
+    ) {
       return true
     }
     if (!datasetId || !f.properties?.datasetIds?.length) {

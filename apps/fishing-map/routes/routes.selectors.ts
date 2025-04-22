@@ -4,6 +4,7 @@ import type { Query } from 'redux-first-router'
 
 import { WorkspaceCategory } from 'data/workspaces'
 import type { QueryParams, WorkspaceParam } from 'types'
+import { createDeepEqualSelector } from 'utils/selectors'
 
 import type { ROUTE_TYPES } from './routes'
 import {
@@ -115,7 +116,7 @@ export const selectLocationQuery = createSelector(
 
 type QueryParamProperty<P extends WorkspaceParam> = Required<QueryParams>[P]
 export function selectQueryParam<P extends WorkspaceParam>(param: P) {
-  return createSelector([selectLocationQuery], (query: any): QueryParamProperty<P> => {
+  return createDeepEqualSelector([selectLocationQuery], (query: any): QueryParamProperty<P> => {
     return query?.[param] as QueryParamProperty<P>
   })
 }

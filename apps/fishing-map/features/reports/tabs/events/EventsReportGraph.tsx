@@ -7,7 +7,6 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { VESSEL_GROUP_ENCOUNTER_EVENTS_ID } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import {
   selectEventsStatsDataGrouped,

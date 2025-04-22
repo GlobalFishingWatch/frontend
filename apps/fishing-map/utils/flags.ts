@@ -18,14 +18,12 @@ export const getFlagsByIds = (ids: string[], lng = i18n.language): Flag[] =>
   })
 
 export const getFlags = (lng = i18n.language): Flag[] =>
-  flags
-    .map((flag) => {
-      return {
-        ...flag,
-        label: t(`flags:${flag.id}`, { lng, defaultValue: flag.label }) as string,
-      }
-    })
-    .sort((a, b) => a.label.localeCompare(b.label))
+  flags.map((flag) => {
+    return {
+      ...flag,
+      label: t(`flags:${flag.id}`, { lng, defaultValue: flag.label }) as string,
+    }
+  })
 
 export function cleanFlagState(flagState: string) {
   return flagState.replace(/,/g, '')

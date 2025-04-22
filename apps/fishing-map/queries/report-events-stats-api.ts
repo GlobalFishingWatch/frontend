@@ -16,7 +16,9 @@ export type BaseReportEventsVesselsParamsFilters = {
   flag?: string[]
   minDuration?: number
   maxDuration?: number
+  next_port_id?: string
 }
+
 export type BaseReportEventsVesselsParams = {
   start: string
   end: string
@@ -39,7 +41,12 @@ export type ReportEventsStatsParams = ReportEventsVesselsParams & {
   groupBy?: StatsGroupBy
 }
 
-export type ReportEventsStatsResponseGroups = { name: string; value: number }[]
+export type ReportEventsStatsResponseGroups = {
+  name: string
+  value: number
+  label?: string
+  flag?: string
+}[]
 
 export type ReportEventsStatsResponse = {
   numEvents: number
@@ -53,12 +60,40 @@ export type GetReportEventParams = BaseReportEventsVesselsParams & {
   datasets: string[]
   filters?: BaseReportEventsVesselsParamsFilters[]
   includes?: StatsIncludes[]
-  groupBy?: string
+  groupBy?:
+    | 'FLAG'
+    | 'GEARTYPE'
+    | 'REGION_EEZ'
+    | 'REGION_EEZ12NM'
+    | 'REGION_FAO'
+    | 'REGION_HIGH_SEAS'
+    | 'REGION_MAJOR_FAO'
+    | 'REGION_MPA'
+    | 'REGION_MPA_NO_TAKE'
+    | 'REGION_MPA_NO_TAKE_PARTIAL'
+    | 'REGION_RFMO'
+    | 'NEXT_PORT_ID'
 }
 
 export type ReportEventsVesselsResponse = StatsByVessel[]
 
 export const EVENTS_TIME_FILTER_MODE = 'START-DATE'
+
+export function parseEventsFilters(filters: BaseReportEventsVesselsParamsFilters) {
+  if (!filters) {
+    return {}
+  }
+  return {
+    ...(filters.confidence && { confidences: [filters.confidence] }),
+    ...(filters.encounter_type && { 'encounter-types': filters.encounter_type }),
+    ...(filters.flag && { flags: filters.flag }),
+    ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
+    ...(filters.minDuration && { 'min-duration': filters.minDuration }),
+    ...(filters.next_port_id && { 'next-port-ids': filters.next_port_id }),
+    ...(filters.portId && { 'port-ids': [filters.portId] }),
+    ...(filters.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
+  }
+}
 
 function getBaseStatsQuery({
   filters,
@@ -79,13 +114,7 @@ function getBaseStatsQuery({
     ...(bufferValue && { 'buffer-value': bufferValue }),
     ...(bufferUnit && { 'buffer-unit': bufferUnit.toUpperCase() }),
     ...(bufferOperation && { 'buffer-operation': bufferOperation.toUpperCase() }),
-    ...(filters?.portId && { 'port-ids': [filters.portId] }),
-    ...(filters?.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
-    ...(filters?.encounter_type && { 'encounter-types': filters.encounter_type }),
-    ...(filters?.confidence && { confidences: [filters.confidence] }),
-    ...(filters?.flag && { flags: filters.flag }),
-    ...(filters.minDuration && { 'min-duration': filters.minDuration }),
-    ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
+    ...parseEventsFilters(filters),
   }
   return query
 }
@@ -167,3 +196,6 @@ export const selectReportEventsStats = (params: GetReportEventParams) =>
 
 export const selectReportEventsVessels = (params: GetReportEventParams) =>
   reportEventsStatsApi.endpoints.getReportEventsVessels.select(params)
+
+export const selectReportEventsPorts = (params: GetReportEventParams) =>
+  reportEventsStatsApi.endpoints.getReportEventsStats.select(params)

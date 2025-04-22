@@ -37,7 +37,7 @@ const slice = createSlice({
     disableHighlightedTime: (state) => {
       state.highlightedTime = undefined
     },
-    changeSettings: (state) => {
+    setHasChangedSettings: (state) => {
       state.hasChangedSettingsOnce = true
     },
   },
@@ -48,7 +48,7 @@ export const {
   setSelectedHighlightedEvent,
   setHighlightedEvents,
   disableHighlightedTime,
-  changeSettings,
+  setHasChangedSettings,
 } = slice.actions
 
 export default slice.reducer

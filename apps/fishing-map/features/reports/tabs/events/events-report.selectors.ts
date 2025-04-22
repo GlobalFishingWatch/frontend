@@ -1,7 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
+import { matchSorter } from 'match-sorter'
 import type { GetReportEventParams } from 'queries/report-events-stats-api'
 import {
+  selectReportEventsPorts,
   selectReportEventsStats,
   selectReportEventsStatsApiSlice,
   selectReportEventsVessels,
@@ -33,9 +35,15 @@ import {
   REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
   REPORT_EVENTS_RFMO_AREAS,
 } from 'features/reports/reports.config'
-import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
+import {
+  selectReportEventsGraph,
+  selectReportEventsPortsFilter,
+  selectReportEventsPortsPage,
+  selectReportEventsPortsResultsPerPage,
+} from 'features/reports/reports.config.selectors'
 import { getAggregatedDataWithOthers } from 'features/reports/shared/utils/reports.utils'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
+import { formatInfoField } from 'utils/info'
 
 export const selectEventsGraphDatasetAreaId = createSelector(
   [selectAllDataviews, selectReportEventsGraph],
@@ -136,6 +144,7 @@ export const selectFetchEventsVesselsParams = createSelector(
     } as GetReportEventParams
   }
 )
+
 export const selectFetchEventsStatsParams = createSelector(
   [selectReportEventsGraph, selectFetchEventsVesselsParams],
   (reportEventsGraph, params) => {
@@ -143,6 +152,17 @@ export const selectFetchEventsStatsParams = createSelector(
       ...params,
       includes: ['TIME_SERIES', 'EVENTS_GROUPED', 'TOTAL_COUNT'],
       groupBy: REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS[reportEventsGraph] || 'FLAG',
+    } as GetReportEventParams
+  }
+)
+
+export const selectFetchEventsPortsStatsParams = createSelector(
+  [selectFetchEventsVesselsParams],
+  (params) => {
+    return {
+      ...params,
+      includes: ['EVENTS_GROUPED'],
+      groupBy: 'NEXT_PORT_ID',
     } as GetReportEventParams
   }
 )
@@ -157,6 +177,16 @@ export const selectEventsVesselsData = createSelector(
   }
 )
 
+export const selectEventsPortsData = createSelector(
+  [selectReportEventsStatsApiSlice, selectFetchEventsPortsStatsParams],
+  (reportEventsStatsApi, params) => {
+    if (!params) {
+      return
+    }
+    return selectReportEventsPorts(params)({ reportEventsStatsApi })?.data
+  }
+)
+
 export const selectEventsStatsData = createSelector(
   [selectReportEventsStatsApiSlice, selectFetchEventsStatsParams],
   (reportEventsStatsApi, params) => {
@@ -164,6 +194,16 @@ export const selectEventsStatsData = createSelector(
       return
     }
     return selectReportEventsStats(params)({ reportEventsStatsApi })?.data
+  }
+)
+
+export const selectEventsPortsStatsData = createSelector(
+  [selectReportEventsStatsApiSlice, selectFetchEventsPortsStatsParams],
+  (reportEventsStatsApi, params) => {
+    if (!params) {
+      return
+    }
+    return selectReportEventsPorts(params)({ reportEventsStatsApi })?.data
   }
 )
 
@@ -282,3 +322,63 @@ export const selectEventsVessels = createSelector(
 export const selectTotalEventsVessels = createSelector([selectEventsVessels], (eventsVessels) => {
   return eventsVessels?.length
 })
+
+export const selectReportEventsPortsData = createSelector(
+  [selectEventsPortsStatsData],
+  (portsData) => {
+    return portsData?.[0]?.groups?.flatMap((p) => {
+      if (!p.name) return []
+      return {
+        id: p.name,
+        name: formatInfoField(p.label || p.name, 'port') as string,
+        country: formatInfoField(p.flag, 'flag') as string,
+        value: p.value as number,
+      }
+    })
+  }
+)
+
+export const selectReportEventsPortsFiltered = createSelector(
+  [selectReportEventsPortsData, selectReportEventsPortsFilter],
+  (ports, filter) => {
+    if (!ports) return []
+    if (!filter) return ports
+    return matchSorter(ports, filter, {
+      keys: ['name', 'country'],
+      threshold: matchSorter.rankings.CONTAINS,
+    })
+  }
+)
+
+export const selectReportEventsPortsPaginated = createSelector(
+  [
+    selectReportEventsPortsFiltered,
+    selectReportEventsPortsPage,
+    selectReportEventsPortsResultsPerPage,
+  ],
+  (ports, page, resultsPerPage) => {
+    if (!ports?.length) return []
+    return ports.slice(resultsPerPage * page, resultsPerPage * (page + 1))
+  }
+)
+
+export const selectReportEventsPortsPagination = createSelector(
+  [
+    selectReportEventsPortsPaginated,
+    selectReportEventsPortsData,
+    selectReportEventsPortsFiltered,
+    selectReportEventsPortsPage,
+    selectReportEventsPortsResultsPerPage,
+  ],
+  (ports, allPorts, allPortsFiltered, page = 0, resultsPerPage) => {
+    return {
+      page,
+      offset: resultsPerPage * page,
+      resultsPerPage:
+        typeof resultsPerPage === 'number' ? resultsPerPage : parseInt(resultsPerPage),
+      resultsNumber: ports?.length,
+      totalFiltered: allPortsFiltered?.length || 0,
+      total: allPorts?.length || 0,
+    }
+  }
+)

@@ -135,7 +135,7 @@ export default function Report() {
       ) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment)
         dispatchTimebarSelectedEnvId(reportDataviews[0]?.id)
-      } else {
+      } else if (category === ReportCategory.Activity || category === ReportCategory.Detections) {
         dispatchTimebarVisualisation(
           category === ReportCategory.Detections
             ? TimebarVisualisations.HeatmapDetections

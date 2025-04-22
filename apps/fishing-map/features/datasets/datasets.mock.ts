@@ -1,6 +1,480 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 
-const datasets: Dataset[] = []
+const datasets: Dataset[] = [
+  {
+    alias: ['public-global-encounters-events:latest'],
+    id: 'public-global-encounters-events:v3.0',
+    name: 'Encounter Events. (AIS)',
+    type: 'events:v1',
+    description:
+      'Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.',
+    startDate: '2012-01-01T00:00:01.000Z',
+    endDate: null,
+    unit: 'NA',
+    status: 'done',
+    importLogs: null,
+    category: 'event',
+    subcategory: 'encounter',
+    source: 'Global Fishing Watch - AIS',
+    ownerId: 0,
+    ownerType: 'super-user',
+    configuration: {
+      id: '',
+      max: 0,
+      min: 0,
+      ttl: 0,
+      band: '',
+      srid: null,
+      type: 'encounter',
+      scale: 0,
+      table: 'encounter_events_v2',
+      fields: null,
+      format: null,
+      images: null,
+      offset: 0,
+      source: 'clickhouse',
+      maxZoom: 12,
+      filePath: null,
+      function: null,
+      latitude: null,
+      numBytes: null,
+      gcsFolder: '',
+      intervals: [],
+      longitude: null,
+      numLayers: null,
+      tileScale: 0,
+      timestamp: null,
+      translate: true,
+      bulkConfig: null,
+      idProperty: '',
+      indexBoost: null,
+      tileOffset: 0,
+      emailGroups: [],
+      geometryType: null,
+      documentation: {
+        type: 'events',
+        enable: true,
+        status: 'Active',
+        queries: [
+          'https://github.com/GlobalFishingWatch/pipe-events/blob/master/assets/bigquery/encounter-events.sql.j2',
+        ],
+        provider: 'AIS',
+      },
+      geometryColumn: 'event_mean_position',
+      insightSources: [],
+      configurationUI: null,
+      valueProperties: null,
+      propertyToInclude: null,
+      disableInteraction: false,
+      apiSupportedVersions: ['v3'],
+      propertyToIncludeRange: null,
+    },
+    relatedDatasets: [
+      {
+        id: 'public-global-vessel-identity:v3.0',
+        type: 'vessels:v1',
+      },
+    ],
+    schema: {
+      flag: {
+        type: 'string',
+        maxLength: 3,
+        minLength: 3,
+      },
+      fields: [],
+      duration: {
+        enum: [2, 48],
+        type: 'range',
+        unit: 'hours',
+      },
+      event_id: {
+        type: 'string',
+        minLength: 3,
+      },
+      event_end: {
+        type: 'string',
+        format: 'date-time',
+      },
+      vessel_id: {
+        type: 'string',
+        minLength: 3,
+      },
+      event_info: {
+        type: 'object',
+        properties: {
+          anchorage: {
+            id: {
+              type: 'string',
+            },
+            flag: {
+              type: 'string',
+            },
+            name: {
+              type: 'string',
+            },
+            top_destination: {
+              type: 'string',
+            },
+          },
+          anchorage_lat: {
+            type: 'number',
+          },
+          anchorage_lon: {
+            type: 'number',
+          },
+        },
+      },
+      event_type: {
+        enum: ['port'],
+        type: 'string',
+        minLength: 3,
+      },
+      event_start: {
+        type: 'string',
+        format: 'date-time',
+      },
+      event_vessels: {
+        type: 'array',
+        contains: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+            },
+            name: {
+              type: 'string',
+            },
+            ssvid: {
+              type: 'string',
+            },
+          },
+        },
+      },
+      'vessel-groups': {
+        type: 'string',
+      },
+      next_port_id: {
+        type: 'string',
+      },
+      event_mean_position: {
+        type: 'string',
+      },
+    },
+    fieldsAllowed: ['duration', 'flag', 'vessel-groups', 'next_port_id'],
+    filters: {
+      encounter_type: {
+        enum: [
+          'CARRIER-FISHING',
+          'SUPPORT-FISHING',
+          'FISHING-CARRIER',
+          'FISHING-BUNKER',
+          'FISHING-FISHING',
+          'CARRIER-BUNKER',
+          'FISHING-SUPPORT',
+        ],
+        type: 'string',
+        array: true,
+      },
+    },
+    createdAt: '2024-04-25T09:38:59.733Z',
+    endpoints: [
+      {
+        id: 'events-stats',
+        description: 'Endpoint to retrieve events stats',
+        downloadable: true,
+        method: 'GET',
+        pathTemplate: '/v3/events/stats',
+        params: [],
+        query: [
+          {
+            label: 'datasets',
+            id: 'datasets',
+            type: 'string',
+            required: true,
+            array: true,
+          },
+          {
+            label: 'vessels',
+            id: 'vessels',
+            type: 'string',
+            array: true,
+            required: true,
+          },
+          {
+            label: 'types',
+            id: 'types',
+            type: 'string',
+            array: true,
+            required: false,
+            enum: ['encounter', 'port', 'loitering'],
+          },
+          {
+            label: 'vessel-types',
+            id: 'vessel-types',
+            type: 'string',
+            array: true,
+            required: false,
+            enum: [
+              'BUNKER',
+              'CARGO',
+              'DISCREPANCY',
+              'CARRIER',
+              'FISHING',
+              'GEAR',
+              'OTHER',
+              'PASSENGER',
+              'SEISMIC_VESSEL',
+              'SUPPORT',
+            ],
+          },
+          {
+            label: 'start-date',
+            id: 'start-date',
+            type: 'Date ISO',
+            required: true,
+          },
+          {
+            label: 'end-date',
+            id: 'end-date',
+            type: 'Date ISO',
+            required: true,
+          },
+          {
+            label: 'bounds',
+            id: 'bounds',
+            type: 'number',
+            array: true,
+          },
+          {
+            label: 'interval',
+            id: 'interval',
+            type: 'string',
+            default: 'month',
+          },
+        ],
+      },
+      {
+        id: 'events',
+        description: 'Endpoint to retrieve a list of events information',
+        downloadable: true,
+        method: 'GET',
+        pathTemplate: '/v3/events',
+        query: [
+          {
+            label: 'datasets',
+            id: 'datasets',
+            type: 'string',
+            required: true,
+            array: true,
+          },
+          {
+            label: 'vessels',
+            id: 'vessels',
+            type: 'string',
+            array: true,
+            required: true,
+          },
+          {
+            label: 'types',
+            id: 'types',
+            type: 'string',
+            array: true,
+            enum: ['loitering', 'encounter', 'port', 'fishing'],
+          },
+          {
+            label: 'outputParam',
+            id: 'output-param',
+            type: 'string',
+            default: 'json',
+            enum: ['csv', 'json'],
+          },
+          {
+            label: 'timeFormat',
+            id: 'time-format',
+            type: 'string',
+            default: 'timestamp',
+            enum: ['timestamp', 'default'],
+          },
+          {
+            label: 'Confidences',
+            id: 'confidences',
+            type: 'number',
+            default: 4,
+            array: true,
+          },
+        ],
+      },
+      {
+        id: 'events-detail',
+        description: 'Endpoint to retrieve a particular event information',
+        downloadable: true,
+        method: 'GET',
+        pathTemplate: '/v3/events/{{eventId}}',
+        params: [
+          {
+            label: 'Event id',
+            id: 'eventId',
+            type: 'string',
+          },
+        ],
+        query: [
+          {
+            label: 'dataset',
+            id: 'dataset',
+            type: 'string',
+            required: true,
+            array: false,
+          },
+          {
+            label: 'output-param',
+            id: 'output-param',
+            type: 'string',
+            default: 'json',
+            enum: ['csv', 'json'],
+          },
+          {
+            label: 'time-format',
+            id: 'time-format',
+            type: 'string',
+            default: 'timestamp',
+            enum: ['timestamp', 'default'],
+          },
+        ],
+      },
+      {
+        id: 'events-cluster-tiles',
+        description: 'Endpoint to retrieve events cluster tiles',
+        downloadable: false,
+        method: 'GET',
+        pathTemplate: '/v3/4wings/tile/{{type}}/{{z}}/{{x}}/{{y}}',
+        params: [
+          {
+            label: 'Type',
+            id: 'type',
+            type: 'string',
+            enum: ['heatmap', 'position'],
+          },
+          {
+            label: 'Z',
+            id: 'z',
+            type: 'number',
+          },
+          {
+            label: 'X',
+            id: 'x',
+            type: 'number',
+          },
+          {
+            label: 'Y',
+            id: 'y',
+            type: 'number',
+          },
+        ],
+        query: [
+          {
+            label: 'datasets',
+            id: 'datasets',
+            type: '4wings-datasets',
+            required: true,
+          },
+          {
+            label: 'filters',
+            id: 'filters',
+            type: 'sql',
+            required: false,
+          },
+          {
+            label: 'date-range',
+            id: 'date-range',
+            type: 'string',
+            required: false,
+          },
+          {
+            label: 'format',
+            id: 'format',
+            type: 'string',
+            required: false,
+            enum: ['INTARRAY', 'MVT', '4WINGS'],
+          },
+          {
+            label: 'temporal-aggregation',
+            id: 'temporal-aggregation',
+            type: 'boolean',
+            required: false,
+            default: false,
+          },
+        ],
+      },
+      {
+        id: 'events-cluster-interaction',
+        description: 'Endpoint to retrieve events ids from a 4wings cell',
+        downloadable: true,
+        method: 'GET',
+        pathTemplate: '/v3/4wings/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
+        params: [
+          {
+            label: 'Z',
+            id: 'z',
+            type: 'number',
+          },
+          {
+            label: 'X',
+            id: 'x',
+            type: 'number',
+          },
+          {
+            label: 'Y',
+            id: 'y',
+            type: 'number',
+          },
+          {
+            label: 'cols',
+            id: 'cols',
+            type: 'number',
+          },
+          {
+            label: 'rows',
+            id: 'rows',
+            type: 'number',
+          },
+        ],
+        query: [
+          {
+            label: 'datasets',
+            id: 'datasets',
+            type: '4wings-datasets',
+            required: true,
+          },
+          {
+            label: 'filters',
+            id: 'filters',
+            type: 'sql',
+            required: false,
+          },
+          {
+            label: 'date-range',
+            id: 'date-range',
+            type: 'string',
+            required: false,
+          },
+          {
+            label: 'vessel-groups',
+            id: 'vessel-groups',
+            type: '4wings-datasets',
+            required: false,
+          },
+          {
+            label: 'groupBy',
+            id: 'group-by',
+            type: 'string',
+            enum: ['id', 'vesselId'],
+            required: false,
+          },
+        ],
+      },
+    ],
+  },
+]
 
 export default datasets
