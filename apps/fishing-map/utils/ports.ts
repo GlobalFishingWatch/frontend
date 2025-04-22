@@ -1,3 +1,5 @@
+import memoizeOne from 'memoize-one'
+
 import ports from 'data/ports'
 import i18n, { t } from 'features/i18n/i18n'
 import { formatInfoField } from 'utils/info'
@@ -24,4 +26,6 @@ export const getPortsByIds = (ids: string[], lng = i18n.language): Port[] =>
     return port || []
   })
 
-export const getPorts = (lng = i18n.language): Port[] => ports.map((port) => parsePort(port, lng))
+export const getPorts = memoizeOne((lng = i18n.language): Port[] =>
+  ports.map((port) => parsePort(port, lng))
+)

@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -40,7 +40,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
     vesselGroups: vesselGroupsOptions,
     isGuestUser,
   })
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed } = useMemo(() => getSchemaFiltersInDataview(dataview), [dataview])
 
   let valuesSelected = Array.isArray(schemaFieldSelected)
     ? schemaFieldSelected.sort((a, b) => a.label - b.label)

@@ -374,7 +374,7 @@ export const selectDataviewsResources = createSelector(
 )
 
 const defaultDataviewResolved: UrlDataviewInstance[] = []
-export const selectDataviewInstancesResolved = createSelector(
+export const selectDataviewInstancesResolved = createDeepEqualSelector(
   [selectDataviewsResources, selectResources, selectIsAnyVesselLocation, selectCurrentVesselEvent],
   (dataviewsResources, resources, isAnyVesselLocation, currentVesselEvent) => {
     if (!dataviewsResources?.dataviews) {
