@@ -1,5 +1,3 @@
-import type { FourwingsClusterPickingObject } from 'libs/deck-layers/src/layers/fourwings/clusters/fourwings-clusters.types'
-
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
 import type { ColorRampsIds } from '../../utils'
 
@@ -75,5 +73,4 @@ export type FourwingsPickingObject = DeckPickingObject<
   | FourwingsHeatmapPickingObject
   | FourwingsHeatmapStaticPickingObject
   | FourwingsPositionsPickingObject
-  | FourwingsClusterPickingObject
 >

@@ -71,7 +71,9 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
           : (colorRange || []).map((range) =>
               (range as FourwingsColorObject[]).map((color) => rgbaToString(color))
             ),
-      currentValues: (interaction as FourwingsPickingObject)?.sublayers?.map((s: any) => s.value),
+      currentValues: (interaction as FourwingsPickingObject)?.sublayers?.map(
+        (s) => s.value as number
+      ),
       label,
     }
   })

@@ -192,7 +192,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             }
             return (
               <Fragment>
-                {features.map((f: FourwingsClusterPickingObject) => {
+                {(features as FourwingsClusterPickingObject[]).map((f) => {
                   const feature = {
                     ...f,
                     title: getDatasetLabel({ id: f.datasetId! }),
