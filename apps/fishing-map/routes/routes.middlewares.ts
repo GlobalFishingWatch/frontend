@@ -11,7 +11,7 @@ import { REPLACE_URL_PARAMS } from 'routes/routes.config'
 import type { QueryParam, QueryParams } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
-import { routesMap } from './routes'
+import { routesMap, WORKSPACE_ROUTES } from './routes'
 import type { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -72,30 +72,38 @@ export const routerWorkspaceMiddleware: Middleware =
     const routerAction = action as UpdateQueryParamsAction
     const routesActions = Object.keys(routesMap)
     // check if action type matches a route type
+    const state = getState() as RootState
+    const { type, query, payload, pathname } = state.location
     const isRouterAction = routesActions.includes(routerAction.type)
-    if (isRouterAction) {
-      const state = getState() as RootState
-      const { type, query, payload } = state.location
-      const isHistoryNavigation = routerAction.isHistoryNavigation
-
-      if (routerAction.type !== NOT_FOUND && type !== NOT_FOUND) {
-        const currentHistoryNavigation = state.workspace?.historyNavigation || []
-        const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
-        if (!isHistoryNavigation && type) {
-          if (
-            routerAction.type !== type &&
-            (!lastHistoryNavigation || lastHistoryNavigation.type !== type)
-          ) {
-            const newHistoryNavigation: LastWorkspaceVisited = {
-              type: type as ROUTE_TYPES,
-              query: query,
-              payload: payload,
-            }
-            dispatch(
-              setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
-            )
-          }
+    const isNotInitialLoad = type && routerAction.type !== NOT_FOUND && type !== NOT_FOUND
+    if (isRouterAction && !routerAction.isHistoryNavigation && isNotInitialLoad) {
+      const currentHistoryNavigation = state.workspace?.historyNavigation || []
+      const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
+      const isDifferentRoute =
+        routerAction.type !== type ||
+        Object.entries(routerAction.payload).some(([key, value]) => value !== payload[key])
+      if (
+        isDifferentRoute &&
+        (!lastHistoryNavigation || lastHistoryNavigation.pathname !== pathname)
+      ) {
+        const newHistoryNavigation: LastWorkspaceVisited = {
+          pathname,
+          type: type as ROUTE_TYPES,
+          query: query,
+          payload: payload,
         }
+        dispatch(setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation]))
+      } else if (lastHistoryNavigation && WORKSPACE_ROUTES.includes(lastHistoryNavigation.type)) {
+        const updatedHistoryNavigation: LastWorkspaceVisited = {
+          ...lastHistoryNavigation,
+          query: routerAction.query,
+        }
+        dispatch(
+          setWorkspaceHistoryNavigation([
+            ...currentHistoryNavigation.slice(0, -1),
+            updatedHistoryNavigation,
+          ])
+        )
       }
     }
     next(action)

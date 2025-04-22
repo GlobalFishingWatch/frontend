@@ -353,6 +353,7 @@ function ShareWorkspaceButton() {
 }
 
 function cleanReportPayload(payload: Record<string, any>) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { areaId, datasetId, reportId, ...rest } = payload || {}
   return rest
 }
@@ -360,7 +361,6 @@ function cleanReportPayload(payload: Record<string, any>) {
 function CloseSectionButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const locationType = useSelector(selectLocationType)
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
@@ -424,7 +424,7 @@ function CloseSectionButton() {
     workspaceHistoryNavigation,
   ])
 
-  if (workspaceHistoryNavigation.length && lastWorkspaceVisited.type !== locationType) {
+  if (workspaceHistoryNavigation.length) {
     return (
       <Link
         className={styles.workspaceLink}
