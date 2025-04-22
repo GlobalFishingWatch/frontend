@@ -333,6 +333,7 @@
     "date": "Date",
     "dateRange": "Plage de temps",
     "errors": {
+      "name": "Dataset name must be at least {{min}} characters long",
       "csv": {
         "invalidData": "CSV data does not have a valid structure"
       },
