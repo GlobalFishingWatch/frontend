@@ -185,9 +185,13 @@ const EventDetail = ({ event }: ActivityContentProps) => {
                 </tr>
               </Fragment>
             ) : (
-              <p className={styles.secondary}>
-                {t('eventInfo.authorizationEmpty', 'No authorization data available')}
-              </p>
+              <tr>
+                <td>
+                  <p className={styles.secondary}>
+                    {t('eventInfo.authorizationEmpty', 'No authorization data available')}
+                  </p>
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
