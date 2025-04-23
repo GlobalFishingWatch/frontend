@@ -157,7 +157,7 @@ export const selectLocationDatasetId = createSelector([selectLocationPayload], (
 )
 
 export const selectLocationAreaId = createSelector([selectLocationPayload], (payload) =>
-  payload?.areaId ? decodeURIComponent(payload?.areaId) : ''
+  payload?.areaId !== undefined ? decodeURIComponent(payload?.areaId) : ''
 )
 
 export const isValidLocationCategory = createSelector(
