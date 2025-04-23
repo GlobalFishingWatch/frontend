@@ -9,4 +9,4 @@ export enum BasemapType {
 }
 
 export type _BasemapLayerProps = DeckLayerProps<{ basemap: BasemapType }>
-export type _BasemapLabelsLayerProps = DeckLayerProps<{ locale?: Locale }>
+export type _BasemapLabelsLayerProps = DeckLayerProps<{ locale?: Locale; tilesUrl: string }>

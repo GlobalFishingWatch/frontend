@@ -244,9 +244,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const contextFeatures = (features as ContextPickingObject[]).filter(
               (feature) => feature.subcategory !== DataviewType.UserPoints
             )
-            const pmtilesFeatures = (features as ContextPickingObject[]).filter(
-              (feature) => feature.subcategory === DataviewType.PMTiles
-            )
             const pointFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.UserPoints
             )
@@ -259,10 +256,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
 
             return (
               <Fragment key={featureCategory}>
-                <ContextTooltipSection
-                  features={pmtilesFeatures}
-                  showFeaturesDetails={type === 'click'}
-                />
                 <ContextTooltipSection
                   features={contextFeatures}
                   showFeaturesDetails={type === 'click'}

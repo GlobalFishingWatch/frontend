@@ -1,5 +1,5 @@
 import type { Dataview } from '@globalfishingwatch/api-types'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 
 import { PM_LABELS_DATASET_ID } from 'features/datasets/datasets.mock'
 
@@ -12,14 +12,7 @@ const dataviews: Dataview[] = [
     slug: 'pm-labels',
     app: 'fishing-map',
     config: {
-      type: 'PM_TILES',
-      color: '#00FFBC',
-      layers: [
-        {
-          id: 'eez-areas',
-          dataset: 'labels',
-        },
-      ],
+      type: DataviewType.BasemapLabels,
     },
     datasetsConfig: [
       {

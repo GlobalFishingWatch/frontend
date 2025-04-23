@@ -27,7 +27,6 @@ export enum DataviewType {
   Heatmap = 'HEATMAP',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
   HeatmapStatic = 'HEATMAP_STATIC',
-  PMTiles = 'PM_TILES',
   Polygons = 'POLYGONS',
   Rulers = 'RULERS',
   TileCluster = 'TILE_CLUSTER',
