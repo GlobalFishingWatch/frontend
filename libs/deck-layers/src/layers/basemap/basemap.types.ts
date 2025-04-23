@@ -15,7 +15,7 @@ export type BasemapLayerProperties = {
    * Rank from 0 to 2000
    */
   populationRank: number
-  scalerank: number
+  size: number
   name: string
 } & {
   [K in `name_${Locale}`]?: string
