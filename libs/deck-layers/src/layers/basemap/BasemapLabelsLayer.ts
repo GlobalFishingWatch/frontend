@@ -1,22 +1,17 @@
 import { CompositeLayer } from '@deck.gl/core'
+import { CollisionFilterExtension } from '@deck.gl/extensions'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import type { Feature, Point } from 'geojson'
 
-import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { Locale } from '@globalfishingwatch/api-types'
 
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { PMTilesLayer } from '../pm-tiles'
 import { LabelLayer } from '../vessel/LabelLayer'
 
-import type { _BasemapLabelsLayerProps } from './basemap.types'
+import type { _BasemapLabelsLayerProps, BasemapLayerFeature } from './basemap.types'
 
 export type BaseMapLabelsLayerProps = Omit<TileLayerProps, 'data'> & _BasemapLabelsLayerProps
-
-export const getLabelsTilesUrlByLocale = (locale: Locale = Locale.en) => {
-  return `${API_GATEWAY}/${API_VERSION}/tileset/nslabels/tile?locale=${locale}&x={x}&y={y}&z={z}`
-}
 
 export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> {
   static layerName = 'BasemapLabelsLayer'
@@ -60,27 +55,29 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
         id: BaseMapLabelsLayer.layerName,
         data: this.props.tilesUrl,
         minZoom: 0,
-        maxZoom: 22,
+        maxZoom: 12,
         maxRequests: 100,
         debounceTime: 200,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
         renderSubLayers: (props: any) => {
           return [
-            new LabelLayer<Feature<Point, any>>({
+            new LabelLayer<BasemapLayerFeature>({
               id: `${props.id}-labels`,
               data: props.data?.features,
-              getText: (d) => d.properties?.[`name[${this.props.locale}]`] || d.properties?.name,
-              getColor: [255, 255, 255],
+              getText: (d) =>
+                d.properties?.[`name_${this.props.locale as Locale}`] || d.properties?.name,
               pickable: false,
-              getSize: 12,
-              getTextAnchor: 'middle',
-              getAlignmentBaseline: 'center',
-              fontFamily: 'Roboto',
-              outlineWidth: 2,
-              outlineColor: [0, 0, 0, 200],
-              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Label, params),
-              fontSettings: { sdf: true, smoothing: 0.2, buffer: 10 },
-              sizeUnits: 'pixels',
+              extensions: [new CollisionFilterExtension()],
+              backgroundPadding: [20, 20],
+              getPixelOffset: [0, 0],
+              collisionTestProps: { sizeScale: 3 },
+              maxWidth: 10,
+              getSize: (d) => {
+                return 20 - d.properties.scalerank
+              },
+              getCollisionPriority: (d) => {
+                return d.properties.populationRank - 1000
+              },
             }),
           ]
         },

@@ -1,4 +1,4 @@
-import type { LayerContext, LayerProps, LayersList, PickingInfo } from '@deck.gl/core'
+import type { Accessor, LayerContext, LayerProps, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TextLayerProps } from '@deck.gl/layers'
 import { TextLayer } from '@deck.gl/layers'
@@ -14,6 +14,8 @@ type LabelLayerState = {
 
 type LabelLayerProps<DataT> = {
   getPickingInfo?: ({ info }: { info: PickingInfo<DataT> }) => typeof info
+  getCollisionPriority?: Accessor<DataT, number>
+  collisionTestProps?: Record<TextLayerProps, number>
 }
 
 export class LabelLayer<DataT = unknown> extends CompositeLayer<

@@ -63,7 +63,7 @@ const datasets: Dataset[] = [
         method: 'GET',
         // pathTemplate: '/v3/datasets/public-eez-areas/pm-tiles/{{z}}/{{x}}/{{y}}',
         pathTemplate:
-          'https://storage.googleapis.com/public-tiles/locations-basemap/locations_new.pmtile',
+          'https://storage.googleapis.com/public-tiles/locations-basemap/locations_10.pmtile',
         params: [],
         query: [],
       },
