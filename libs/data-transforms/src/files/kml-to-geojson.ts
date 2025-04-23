@@ -55,7 +55,7 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
         results.push(
           ...(features.map((feature, index) => ({
             ...feature,
-            properties: { ...(feature.properties || {}), gfw_id: index },
+            properties: { ...(feature.properties || {}), gfw_id: index + 1 },
           })) as Feature<Geometry, GeoJsonProperties>[])
         )
       } else {
