@@ -10,13 +10,22 @@ export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLab
   dataview
 ) => {
   const dataset = findDatasetByType(dataview.datasets, DatasetTypes.PMTiles) as Dataset
-  const datasetConfig = dataview.datasetsConfig?.find(
-    (datasetConfig) =>
-      datasetConfig.endpoint === EndpointId.PmTiles ||
-      datasetConfig.endpoint === EndpointId.ContextTiles
-  )
-  const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+  if (!dataset) {
+    throw new Error('Dataset not found for basemap labels layer')
+  }
 
+  const datasetConfig = {
+    endpoint: EndpointId.PmTiles,
+    datasetId: dataset.id,
+    query: [],
+    params: [
+      {
+        id: 'file_path',
+        value: dataset.configuration?.filePath as string,
+      },
+    ],
+  }
+  const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
   return {
     id: dataview.id,
     tilesUrl,

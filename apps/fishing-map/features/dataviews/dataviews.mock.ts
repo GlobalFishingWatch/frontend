@@ -1,8 +1,6 @@
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 
-import { PM_LABELS_DATASET_ID } from 'features/datasets/datasets.mock'
-
 export const PM_LABELS_DATAVIEW_ID = 1111111
 
 const dataviews: Dataview[] = [
@@ -17,9 +15,14 @@ const dataviews: Dataview[] = [
     datasetsConfig: [
       {
         query: [],
-        params: [],
+        params: [
+          {
+            id: 'file_path',
+            value: '',
+          },
+        ],
         endpoint: 'pm-tiles',
-        datasetId: PM_LABELS_DATASET_ID,
+        datasetId: 'public-location-labels',
       },
     ],
     description: 'Labels',
