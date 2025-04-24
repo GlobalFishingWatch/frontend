@@ -13,6 +13,7 @@ import {
   TemporalResolution,
 } from 'features/download/downloadActivity.config'
 import type { DateRange } from 'features/download/downloadActivity.slice'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import type { BufferOperation, BufferUnit } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -80,8 +81,6 @@ const REPORT_FIELDS_TO_INCLUDE = [
   'vesselType',
 ]
 
-export const WORLD_REGION_ID = 'region-world'
-
 export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
   const {
     region,
@@ -115,7 +114,7 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
       'spatial-resolution': spatialResolution,
       'spatial-aggregation': spatialAggregation,
       format: format,
-      ...(region.id === WORLD_REGION_ID
+      ...(region.id === ENTIRE_WORLD_REPORT_AREA_ID
         ? { 'region-world': true }
         : {
             'region-id': region.id,

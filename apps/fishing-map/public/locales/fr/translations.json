@@ -174,6 +174,7 @@
     "include": "Inclure",
     "insights": "Indicateurs",
     "knots": "nœuds",
+    "km": "km",
     "latestDays_one": "Dernier {{count}} jour",
     "latestDays_other": "Derniers {{count}} jours",
     "latitude": "Latitude",
@@ -333,6 +334,7 @@
     "date": "Date",
     "dateRange": "Plage de temps",
     "errors": {
+      "name": "Dataset name must be at least {{min}} characters long",
       "csv": {
         "invalidData": "CSV data does not have a valid structure"
       },
@@ -639,6 +641,7 @@
     "color_change": "Modifier la couleur",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
+    "minimumDistanceFromPort": "Minimum distance from port",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
