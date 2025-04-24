@@ -1,19 +1,16 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
 import cx from 'classnames'
 import parse from 'html-react-parser'
 
-import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   DEFAULT_BUFFER_VALUE,
@@ -22,8 +19,6 @@ import {
 } from 'features/reports/report-area/area-reports.config'
 import {
   selectReportArea,
-  selectReportAreaDataviews,
-  selectReportAreaStatus,
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
@@ -40,11 +35,9 @@ import {
 import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectReportId } from 'routes/routes.selectors'
 import type { BufferOperation, BufferUnit } from 'types'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { useFitAreaInViewport, useHighlightReportArea } from '../area-reports.hooks'
+import { useFitAreaInViewport, useHighlightReportArea, useReportTitle } from '../area-reports.hooks'
 
 import { BufferButtonTooltip } from './BufferButonTooltip'
 
@@ -61,12 +54,10 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const loading = useReportFeaturesLoading()
   const highlightArea = useHighlightReportArea()
   const fitAreaInViewport = useFitAreaInViewport()
-  const reportId = useSelector(selectReportId)
   const reportCategory = useSelector(selectReportCategory)
-  const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
-  const reportAreaStatus = useSelector(selectReportAreaStatus)
+  const reportTitle = useReportTitle()
   const previewBuffer = useSelector(selectReportPreviewBuffer)
   const urlBufferValue = useSelector(selectReportBufferValue)
   const urlBufferUnit = useSelector(selectReportBufferUnit)
@@ -182,87 +173,6 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceStateBufferParams())
   }, [dispatch, dispatchQueryParams, highlightArea, reportArea])
-
-  const dataset = areaDataview?.datasets?.[0]
-  const reportTitle = useMemo(() => {
-    if (reportId && !report) {
-      return ''
-    }
-    let areaName = report?.name
-    if (!areaName && reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
-      return t('common.globalReport', 'Global report')
-    }
-    const propertyToInclude = getDatasetConfigurationProperty({
-      dataset,
-      property: 'propertyToInclude',
-    }) as string
-    const valueProperties = getDatasetConfigurationProperty({
-      dataset,
-      property: 'valueProperties',
-    })
-    const valueProperty = Array.isArray(valueProperties) ? valueProperties[0] : valueProperties
-
-    if (!areaName) {
-      if (
-        areaDataview?.config?.type === DataviewType.Context ||
-        areaDataview?.config?.type === DataviewType.UserContext ||
-        areaDataview?.config?.type === DataviewType.UserPoints
-      ) {
-        if (reportAreaStatus === AsyncReducerStatus.Finished) {
-          if (dataset?.source === DRAW_DATASET_SOURCE) {
-            areaName = getDatasetLabel(dataset)
-          } else {
-            const propertyValue =
-              reportArea?.properties?.[propertyToInclude] ||
-              reportArea?.properties?.[valueProperty] ||
-              (reportArea as any)?.[propertyToInclude?.toLowerCase()] ||
-              (reportArea as any)?.[valueProperty?.toLowerCase()]
-            areaName =
-              propertyValue && typeof propertyValue === 'string'
-                ? propertyValue
-                : getDatasetLabel(dataset)
-          }
-        }
-      } else {
-        areaName = reportArea?.name || ''
-      }
-    }
-
-    if (!urlBufferValue) {
-      return areaName
-    }
-    if (areaName && urlBufferOperation === 'difference') {
-      return `${urlBufferValue} ${t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} ${t(
-        `analysis.around`,
-        'around'
-      )} ${areaName}`
-    }
-    if (areaName && urlBufferOperation === 'dissolve') {
-      if (urlBufferValue > 0) {
-        return `${areaName} ${t('common.and', 'and')} ${urlBufferValue} ${t(
-          `analysis.${urlBufferUnit}` as any,
-          urlBufferUnit
-        )} ${t('analysis.around', 'around')}`
-      } else {
-        return `${areaName} ${t('common.minus', 'minus')} ${Math.abs(urlBufferValue)} ${t(
-          `analysis.${urlBufferUnit}` as any,
-          urlBufferUnit
-        )}`
-      }
-    }
-    return ''
-  }, [
-    reportId,
-    report,
-    reportArea,
-    dataset,
-    urlBufferValue,
-    urlBufferOperation,
-    t,
-    areaDataview?.config?.type,
-    reportAreaStatus,
-    urlBufferUnit,
-  ])
 
   const reportDescription =
     typeof report?.description === 'string' && report?.description.length
