@@ -39,8 +39,9 @@ export type EventType = `${EventTypes}`
 
 export interface EventNextPort {
   id: string
-  iso: string
-  label: string
+  flag: string
+  name: string
+  portVisitEventId: string
 }
 
 export enum EventVesselTypeEnum {

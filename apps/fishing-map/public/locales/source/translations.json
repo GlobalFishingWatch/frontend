@@ -584,6 +584,7 @@
     "mmsi": "MMSI",
     "port_entry": "Port entry",
     "port_exit": "Port exit",
+    "portVisitedAfter": "Port visited after",
     "speed": "speed",
     "ssvid": "ssvid",
     "start": "start",
