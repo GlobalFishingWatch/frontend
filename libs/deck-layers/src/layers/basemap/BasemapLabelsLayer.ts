@@ -57,7 +57,18 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
                 d.properties?.[`name_${this.props.locale as Locale}`] || d.properties?.name,
               pickable: false,
               extensions: [new CollisionFilterExtension()],
-              getPixelOffset: [0, 0],
+              transitions: {},
+              getPixelOffset: (d) => {
+                if (
+                  this.context.viewport.zoom < 5 &&
+                  d.properties.type === 'country' &&
+                  d.geometry.coordinates[0] + d.properties.name.length / 2 >= 175
+                ) {
+                  // Fixes countries antimeridian cutted off names
+                  return [-20, 0]
+                }
+                return [0, 0]
+              },
               collisionTestProps: { sizeScale: 5 },
               getColor: (d) => this._getColor(d),
               maxWidth: 8,
