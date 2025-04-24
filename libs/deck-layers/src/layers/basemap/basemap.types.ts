@@ -15,6 +15,7 @@ export type BasemapLayerProperties = {
    * Rank from 0 to 2000
    */
   populationRank: number
+  type: 'country' | 'place' | 'sea'
   size: number
   name: string
 } & {

@@ -1,3 +1,4 @@
+import type { Color } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { CollisionFilterExtension } from '@deck.gl/extensions'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
@@ -17,6 +18,16 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
   static layerName = 'BasemapLabelsLayer'
   static defaultProps = {
     locale: Locale.en,
+  }
+
+  _getColor(d: BasemapLayerFeature): Color {
+    if (d.properties?.type === 'country') {
+      return [157, 203, 226]
+    } else if (d.properties?.type === 'place') {
+      return [106, 152, 184]
+    }
+    // sea
+    return [7, 119, 142]
   }
 
   renderLayers() {
@@ -48,9 +59,10 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
               extensions: [new CollisionFilterExtension()],
               getPixelOffset: [0, 0],
               collisionTestProps: { sizeScale: 5 },
+              getColor: (d) => this._getColor(d),
               maxWidth: 8,
               getSize: (d) => d.properties?.size,
-              getCollisionPriority: (d) => d.properties?.populationRank,
+              getCollisionPriority: (d) => d.properties?.populationRank || 0,
               updateTriggers: {
                 getText: [this.props.locale],
               },
