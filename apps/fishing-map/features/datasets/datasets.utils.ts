@@ -8,6 +8,7 @@ import type {
   DatasetSchema,
   DatasetSchemaItem,
   DatasetSchemaItemEnum,
+  DatasetSchemaItemOperation,
   DatasetSchemaType,
   Dataview,
   DataviewDatasetConfig,
@@ -95,6 +96,7 @@ type SupportedActivityDatasetSchema =
   | 'ssvid'
   | 'imo'
   | 'label'
+  | 'distance_from_port_km'
 
 // Speed flag and vessels only added to debug purposes of vessel speed dataset
 // Context env layers filtesr: Seamounts => height & Ecoregions => REALM
@@ -649,7 +651,7 @@ const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema
     const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
     return schemaEnum !== undefined && schemaEnum.length > 0
   }
-  return schemaConfig.type === 'string'
+  return schemaConfig.type === 'string' || schemaConfig.type === 'number'
 }
 
 export const isFieldInFieldsAllowed = ({
@@ -881,9 +883,12 @@ const getSchemaOptionsSelectedInDataview = (
     ]
   }
 
-  return options?.filter((option) =>
-    dataview.config?.filters?.[schema]?.map((o: string) => o?.toString())?.includes(option.id)
-  )
+  return options?.filter((option) => {
+    const filterValues = dataview.config?.filters?.[schema] as string | string[]
+    return Array.isArray(filterValues)
+      ? filterValues.includes(option.id)
+      : filterValues?.toString() === option.id
+  })
 }
 
 export const getSchemaFilterOperationInDataview = (
@@ -903,6 +908,14 @@ export const getSchemaFilterOperationInDataview = (
 
 const getSchemaFilterSingleSelection = (schema: SupportedDatasetSchema) => {
   return SINGLE_SELECTION_SCHEMAS.includes(schema)
+}
+
+const getSchemaFilterOperation = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema
+) => {
+  const schemaConfig = getDatasetSchemaItem(dataview.datasets?.[0] as Dataset, schema)
+  return schemaConfig?.operation
 }
 
 export const getSchemaFilterUnitInDataview = (
@@ -929,8 +942,9 @@ export type SchemaFilter = {
   disabled: boolean
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
-  filterOperator: FilterOperator
   unit?: string
+  operation?: DatasetSchemaItemOperation
+  filterOperator: FilterOperator
   singleSelection?: boolean
 }
 export const getFiltersBySchema = (
@@ -951,6 +965,7 @@ export const getFiltersBySchema = (
   })
   const type = getCommonSchemaTypeInDataview(dataview, schema) as DatasetSchemaType
   const singleSelection = getSchemaFilterSingleSelection(schema)
+  const operation = getSchemaFilterOperation(dataview, schema)
   const filterOperator = getSchemaFilterOperationInDataview(dataview, schema) as FilterOperator
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
@@ -981,6 +996,7 @@ export const getFiltersBySchema = (
     options,
     optionsSelected,
     type,
+    operation,
     filterOperator,
     singleSelection,
   }

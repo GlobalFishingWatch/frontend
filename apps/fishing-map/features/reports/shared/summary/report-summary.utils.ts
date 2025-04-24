@@ -28,6 +28,7 @@ export const FIELDS: [SupportedDatasetSchema, string, string][] = [
   ['duration', 'eventInfo.duration', 'Duration'],
   ['encounter_type', 'vessel.vesselType_other', 'Vessel types'],
   ['next_port_id', 'event.port_visitedAfter', 'Port visited after'],
+  ['distance_from_port_km', 'layer.minimumDistanceFromPort', 'Minimum distance from port'],
 ]
 
 const getSerializedDatasets = (dataview: UrlDataviewInstance) => {

@@ -174,6 +174,7 @@
     "include": "crwdns59787:0crwdne59787:0",
     "insights": "crwdns83818:0crwdne83818:0",
     "knots": "crwdns84034:0crwdne84034:0",
+    "km": "crwdns84498:0crwdne84498:0",
     "latestDays_one": "crwdns83264:0{{count}}crwdne83264:0",
     "latestDays_other": "crwdns83266:0{{count}}crwdne83266:0",
     "latitude": "crwdns59789:0crwdne59789:0",
@@ -333,6 +334,7 @@
     "date": "crwdns82702:0crwdne82702:0",
     "dateRange": "crwdns82704:0crwdne82704:0",
     "errors": {
+      "name": "crwdns84496:0{{min}}crwdne84496:0",
       "csv": {
         "invalidData": "crwdns84010:0crwdne84010:0"
       },
@@ -639,6 +641,7 @@
     "color_change": "crwdns60267:0crwdne60267:0",
     "colorSelectCustom": "crwdns84111:0crwdne84111:0",
     "colorSelectPredefined": "crwdns84113:0crwdne84113:0",
+    "minimumDistanceFromPort": "crwdns84500:0crwdne84500:0",
     "drawAddPoint": "crwdns84014:0crwdne84014:0",
     "drawAddPolygon": "crwdns84016:0crwdne84016:0",
     "drawDelete": "crwdns84018:0crwdne84018:0",

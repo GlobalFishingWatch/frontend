@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import type { FeatureCollection, Polygon } from 'geojson'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
@@ -19,6 +20,7 @@ import {
   useDatasetMetadataOptions,
 } from 'features/datasets/upload/datasets-upload.hooks'
 import {
+  getDatasetMetadataValidations,
   getMetadataFromDataset,
   getPolygonsDatasetMetadata,
   parseGeoJsonProperties,
@@ -57,6 +59,7 @@ function NewPolygonDataset({
   const isPublic = !!datasetMetadata?.public
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
   const fileType = getFileType(file)
+  const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
 
   const timeFilterType = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -173,6 +176,7 @@ function NewPolygonDataset({
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         disabled={loading}
       />
+      {errors.name && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.name}</p>}
       <Collapsable
         className={styles.optional}
         label={t('datasetUpload.optionalFields', 'Optional fields')}
@@ -276,7 +280,7 @@ function NewPolygonDataset({
         <Button
           className={styles.saveBtn}
           onClick={onConfirmClick}
-          disabled={!datasetMetadata || error !== ''}
+          disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
         >
           {t('common.confirm', 'Confirm') as string}
