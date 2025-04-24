@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { EXCLUDE_FILTER_ID, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { getOperationLabel } from '@globalfishingwatch/dataviews-client'
 import type {
   ChoiceOption,
   MultiSelectOption,
@@ -30,14 +31,14 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
-type TransformationUnit = 'minutes'
+type TransformationUnit = 'minutes' | 'km'
 
 const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
 
 type Transformation = {
-  in: (v: any) => number
-  out: (v: any) => number
-  label: string
+  in?: (v: any) => number
+  out?: (v: any) => number
+  label: string | ((v: any) => string)
 }
 
 const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
@@ -46,6 +47,9 @@ const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> 
     out: (v) => v * 60,
     label: t('common.hour_other', 'Hours'),
   },
+  km: {
+    label: t('common.km', 'km'),
+  },
 }
 
 const getValueByUnit = (
@@ -53,20 +57,28 @@ const getValueByUnit = (
   { unit, transformDirection = 'in' } = {} as { unit?: string; transformDirection?: 'in' | 'out' }
 ): number => {
   const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
-  if (transformConfig) {
-    return VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit][transformDirection](value)
+  if (transformConfig?.[transformDirection]) {
+    return transformConfig[transformDirection](value)
   }
   if (typeof value === 'number') return value
   return parseFloat(value)
+}
+
+const getLabelByUnit = (value: string | number, { unit } = {} as { unit?: string }): string => {
+  const label = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label
+  if (!label) return ''
+  if (typeof label === 'function') {
+    return label(value)
+  }
+  return label
 }
 
 export const getValueLabelByUnit = (
   value: string | number,
   { unit, unitLabel = true } = {} as { unit?: string; unitLabel?: boolean }
 ): string => {
-  const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
-  if (transformConfig && unitLabel) {
-    return `${formatI18nNumber(getValueByUnit(value, { unit }))} ${transformConfig.label}`
+  if (unitLabel) {
+    return `${formatI18nNumber(getValueByUnit(value, { unit }))} ${getLabelByUnit(value, { unit })}`
   }
   return formatI18nNumber(getValueByUnit(value, { unit })) as string
 }
@@ -107,7 +119,11 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
     }
   }
   const schemaMin = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) ?? 0
-  const schemaMax = getValueByUnit(schemaFilter.options?.[1]?.id, { unit: schemaFilter.unit }) ?? 1
+  const schemaMaxValue =
+    schemaFilter.options.length === 2
+      ? schemaFilter.options?.[1]?.id
+      : schemaFilter.options?.[schemaFilter.options.length - 1]?.id
+  const schemaMax = getValueByUnit(schemaMaxValue, { unit: schemaFilter.unit }) ?? 1
   const supportsRounding = Math.abs(schemaMax - schemaMin) > 1
   const min = supportsRounding ? getSchemaValueRounded(schemaMin) : schemaMin
   const max = supportsRounding ? getSchemaValueRounded(schemaMax) : schemaMax
@@ -157,7 +173,7 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
           .sort((a, b) => a - b)
       : optionValues
 
-  if (optionValues.length === 1) {
+  if (schemaFilter.type === 'number' || optionValues.length === 1) {
     return rangeValues
   }
   const minValue = rangeValues[0] < min ? min : rangeValues[0]
@@ -204,12 +220,12 @@ function LayerSchemaFilter({
 
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues | number) => {
+      const filterRange = getRangeLimitsBySchema(schemaFilter)
       if (Array.isArray(rangeSelected)) {
-        const filterRange = getRangeLimitsBySchema(schemaFilter)
         if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
           onClean(id)
-        } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
-          const selection = getValueByUnit(rangeSelected, { unit, transformDirection: 'out' })
+        } else if (rangeSelected.length === 1 && !Number.isNaN(rangeSelected[0])) {
+          const selection = getValueByUnit(rangeSelected[0], { unit, transformDirection: 'out' })
           onSelect({ filterKey: id, selection, singleValue: true })
         } else {
           const selection = rangeSelected.map((range: number) => ({
@@ -221,10 +237,14 @@ function LayerSchemaFilter({
           onSelect({ filterKey: id, selection })
         }
       } else {
-        onSelect({ filterKey: id, selection: rangeSelected })
+        if (rangeSelected === filterRange[0]) {
+          onClean(id)
+        } else {
+          onSelect({ filterKey: id, selection: rangeSelected, singleValue: type === 'number' })
+        }
       }
     },
-    [id, onClean, onSelect, schemaFilter, unit]
+    [id, onClean, onSelect, schemaFilter, type, unit]
   )
 
   if (!showSchemaFilter(schemaFilter)) {
@@ -254,12 +274,14 @@ function LayerSchemaFilter({
   if (type === 'number') {
     const initialValue = getValueByUnit(getRangeBySchema(schemaFilter)[0], { unit })
     const minValue = getValueByUnit(getRangeLimitsBySchema(schemaFilter)[0], { unit })
+    const operationLabel = getOperationLabel(schemaFilter.operation)
     const maxValue = getValueByUnit(getRangeLimitsBySchema(schemaFilter)[1], { unit })
     return (
       <Slider
         className={styles.multiSelect}
         initialValue={initialValue}
         label={getLabelWithUnit(label, unit)}
+        operationLabel={operationLabel}
         config={{
           steps: [minValue, maxValue],
           min: minValue,

@@ -25,6 +25,7 @@ export const FIELDS: [SupportedDatasetSchema, string, string][] = [
   ['neural_vessel_type', 'vessel.neural_vessel_type', 'SAR vessel type'],
   ['vessel_type', 'vessel.vesselType_other', 'Vessel types'],
   ['speed', 'layer.speed', 'Speed'],
+  ['distance_from_port_km', 'layer.minimumDistanceFromPort', 'Minimum distance from port'],
 ]
 
 const getSerializedDatasets = (dataview: UrlDataviewInstance) => {
