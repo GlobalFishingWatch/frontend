@@ -16,7 +16,7 @@ import type {
 } from './layers/fourwings'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
 import type { PMTilePickingInfo, PMTilePickingObject } from './layers/pm-tiles/pm-tiles.types'
-import type PMTilesLayer from './layers/pm-tiles/PMTilesLayer'
+import type { PMTilesLayer } from './layers/pm-tiles/PMTilesLayer'
 import type { RulerPickingInfo, RulerPickingObject } from './layers/rulers'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
 import type { UserLayerPickingObject } from './layers/user'
