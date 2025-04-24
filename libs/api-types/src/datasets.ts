@@ -200,6 +200,7 @@ export type DatasetSchemaType =
 export type DatasetSchemaFormat = 'date-time' | 'latitude' | 'longitude'
 
 export type DatasetSchemaItemEnum = (string | number | boolean)[]
+export type DatasetSchemaItemOperation = 'gt' | 'lt' | 'gte' | 'lte'
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
   enum?: DatasetSchemaItemEnum
@@ -211,6 +212,7 @@ export type DatasetSchemaItem = {
   stats?: boolean
   unit?: string
   singleSelection?: boolean
+  operation?: DatasetSchemaItemOperation
   items?: { type: DatasetSchemaType; enum: string[] }
   properties?: Record<string, DatasetSchemaItem>
 }

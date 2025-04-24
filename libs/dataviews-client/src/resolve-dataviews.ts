@@ -4,6 +4,7 @@ import type {
   Dataset,
   DatasetSchema,
   DatasetSchemaItem,
+  DatasetSchemaItemOperation,
   Dataview,
   DataviewDatasetConfig,
   DataviewDatasetFilter,
@@ -340,6 +341,15 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
+export function getOperationLabel(operation?: DatasetSchemaItemOperation) {
+  if (!operation) return ''
+  return operation === 'gt' ? '>' : operation === 'lt' ? '<' : operation === 'gte' ? '≥' : '≤'
+}
+
+export function getOperationOperator(operation: DatasetSchemaItemOperation) {
+  return operation === 'gt' ? '>' : operation === 'lt' ? '<' : operation === 'gte' ? '>=' : '<='
+}
+
 export function getDataviewFilters(dataview: UrlDataviewInstance): DataviewDatasetFilter {
   if (!dataview) return {}
   const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce(
@@ -396,8 +406,13 @@ export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDa
           return `${queryFilterKey} <= ${maxValue}`
         }
       }
+
       const filterOperator = dataview.config?.filterOperators?.[filterKey] || INCLUDE_FILTER_ID
       const hasNumericFilterValues = filterValues.every((v: any) => isNumeric(v))
+      if (hasNumericFilterValues && datasetSchema?.type === 'number' && datasetSchema?.operation) {
+        const operator = getOperationOperator(datasetSchema.operation)
+        return `${queryFilterKey} ${operator} ${filterValues[0]}`
+      }
       const query = `${queryFilterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
         .map((f: string) => (hasNumericFilterValues ? `${f}` : `'${f}'`))
         .join(', ')})`
