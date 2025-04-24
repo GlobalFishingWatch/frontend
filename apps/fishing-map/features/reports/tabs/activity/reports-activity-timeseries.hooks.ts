@@ -26,7 +26,10 @@ import {
 
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
-import { useReportAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
+import {
+  useReportAreaInViewport,
+  useReportTitle,
+} from 'features/reports/report-area/area-reports.hooks'
 import {
   selectReportArea,
   selectReportBufferHash,
@@ -229,7 +232,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const isAreaInViewport = useReportAreaInViewport()
   const { start, end } = useTimerangeConnect()
   const interval = getFourwingsInterval(start, end)
-
+  const reportTitle = useReportTitle()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const timeComparisonHash = useSelector(selectTimeComparisonHash)
@@ -264,7 +267,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     }))
     // We want to clean the reportState when any of these params changes to avoid using old data until it loads
   }, [
-    area?.id,
+    area,
     interval,
     reportCategory,
     reportSubCategory,
@@ -276,12 +279,13 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   ])
 
   useEffect(() => {
-    const newHash = area?.id
-      ? `${area?.id}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${instancesChunkHash}|${isLoaded}|${reportBufferHash}`
+    const newHash = area
+      ? `${reportTitle}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${instancesChunkHash}|${isLoaded}|${reportBufferHash}`
       : ''
     reportStateCacheHash.current = newHash
   }, [
-    area?.id,
+    area,
+    reportTitle,
     isLoaded,
     reportCategory,
     reportSubCategory,

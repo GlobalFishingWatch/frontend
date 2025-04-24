@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 
-import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
+import {
+  type Dataset,
+  type Dataview,
+  DataviewType,
+  DRAW_DATASET_SOURCE,
+} from '@globalfishingwatch/api-types'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
@@ -17,6 +24,7 @@ import {
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/areas/areas.slice'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectVGReportActivityDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
@@ -43,6 +51,7 @@ import {
   selectPortReportFootprintArea,
   selectPortReportFootprintDatasetId,
 } from 'features/reports/report-port/ports-report.selectors'
+import { selectCurrentReport } from 'features/reports/reports.selectors'
 import {
   fetchReportVesselsThunk,
   getReportQuery,
@@ -53,6 +62,7 @@ import {
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
+  selectReportId,
   selectReportPortId,
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
@@ -363,4 +373,98 @@ export function usePortsReportAreaFootprintFitBounds() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, bboxHash])
+}
+
+export function useReportTitle() {
+  const { t } = useTranslation()
+  const report = useSelector(selectCurrentReport)
+  const reportArea = useSelector(selectReportArea)
+  const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
+  const reportId = useSelector(selectReportId)
+  const reportAreaStatus = useSelector(selectReportAreaStatus)
+  const urlBufferValue = useSelector(selectReportBufferValue)
+  const urlBufferOperation = useSelector(selectReportBufferOperation)
+  const urlBufferUnit = useSelector(selectReportBufferUnit)
+  const dataset = areaDataview?.datasets?.[0]
+  const reportTitle = useMemo(() => {
+    if (reportId && !report) {
+      return ''
+    }
+    let areaName = report?.name
+    if (!areaName && reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID) {
+      return t('common.globalReport', 'Global report')
+    }
+    const propertyToInclude = getDatasetConfigurationProperty({
+      dataset,
+      property: 'propertyToInclude',
+    }) as string
+    const valueProperties = getDatasetConfigurationProperty({
+      dataset,
+      property: 'valueProperties',
+    })
+    const valueProperty = Array.isArray(valueProperties) ? valueProperties[0] : valueProperties
+
+    if (!areaName) {
+      if (
+        areaDataview?.config?.type === DataviewType.Context ||
+        areaDataview?.config?.type === DataviewType.UserContext ||
+        areaDataview?.config?.type === DataviewType.UserPoints
+      ) {
+        if (reportAreaStatus === AsyncReducerStatus.Finished) {
+          if (dataset?.source === DRAW_DATASET_SOURCE) {
+            areaName = getDatasetLabel(dataset)
+          } else {
+            const propertyValue =
+              reportArea?.properties?.[propertyToInclude] ||
+              reportArea?.properties?.[valueProperty] ||
+              (reportArea as any)?.[propertyToInclude?.toLowerCase()] ||
+              (reportArea as any)?.[valueProperty?.toLowerCase()]
+            areaName =
+              propertyValue && typeof propertyValue === 'string'
+                ? propertyValue
+                : getDatasetLabel(dataset)
+          }
+        }
+      } else {
+        areaName = reportArea?.name || ''
+      }
+    }
+
+    if (!urlBufferValue) {
+      return areaName
+    }
+    if (areaName && urlBufferOperation === 'difference') {
+      return `${urlBufferValue} ${t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} ${t(
+        `analysis.around`,
+        'around'
+      )} ${areaName}`
+    }
+    if (areaName && urlBufferOperation === 'dissolve') {
+      if (urlBufferValue > 0) {
+        return `${areaName} ${t('common.and', 'and')} ${urlBufferValue} ${t(
+          `analysis.${urlBufferUnit}` as any,
+          urlBufferUnit
+        )} ${t('analysis.around', 'around')}`
+      } else {
+        return `${areaName} ${t('common.minus', 'minus')} ${Math.abs(urlBufferValue)} ${t(
+          `analysis.${urlBufferUnit}` as any,
+          urlBufferUnit
+        )}`
+      }
+    }
+    return ''
+  }, [
+    reportId,
+    report,
+    reportArea,
+    dataset,
+    urlBufferValue,
+    urlBufferOperation,
+    t,
+    areaDataview?.config?.type,
+    reportAreaStatus,
+    urlBufferUnit,
+  ])
+
+  return reportTitle
 }
