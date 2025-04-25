@@ -34,6 +34,7 @@ import {
   selectReportVesselsData,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
+import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
   selectIsVesselGroupReportLocation,
   selectUrlBufferOperationQuery,
@@ -326,8 +327,11 @@ export const selectHasReportBuffer = createSelector(
 )
 
 export const selectReportArea = createSelector(
-  [selectReportAreaData, selectHasReportBuffer, selectReportBufferArea],
-  (area, hasReportBuffer, bufferedArea) => {
+  [selectReportAreaData, selectHasReportBuffer, selectReportBufferArea, selectIsWorkspaceReady],
+  (area, hasReportBuffer, bufferedArea, isWorkspaceReady) => {
+    if (!isWorkspaceReady) {
+      return undefined
+    }
     if (hasReportBuffer) {
       return bufferedArea
     }
