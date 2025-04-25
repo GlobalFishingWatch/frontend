@@ -431,11 +431,14 @@ function CloseSectionButton() {
         to={{
           ...lastWorkspaceVisited,
           payload: {
-            ...cleanReportPayload(lastWorkspaceVisited.payload),
+            ...(lastWorkspaceVisited.type !== 'REPORT'
+              ? cleanReportPayload(lastWorkspaceVisited.payload)
+              : lastWorkspaceVisited.payload),
           },
           query: {
-            ...cleanReportQuery(lastWorkspaceVisited.query),
-            ...EMPTY_FILTERS,
+            ...(lastWorkspaceVisited.type !== 'REPORT'
+              ? { ...cleanReportQuery(lastWorkspaceVisited.query), ...EMPTY_FILTERS }
+              : lastWorkspaceVisited.query),
             featureFlags,
           },
           isHistoryNavigation: true,
