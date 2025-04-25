@@ -191,7 +191,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               )
             }
             return (
-              <Fragment>
+              <Fragment key={featureCategory}>
                 {(features as FourwingsClusterPickingObject[]).map((f) => {
                   const feature = {
                     ...f,

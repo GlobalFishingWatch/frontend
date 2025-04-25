@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
@@ -267,7 +267,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
         </div>
       </div>
       {reportDescription && !isSticky && (
-        <p>
+        <Fragment>
           <span
             className={cx(styles.description, { [styles.expanded]: expandedDescription })}
             ref={descriptionRef}
@@ -286,7 +286,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                 : t('common.seeMore', 'See more')}
             </span>
           )}
-        </p>
+        </Fragment>
       )}
     </div>
   )
