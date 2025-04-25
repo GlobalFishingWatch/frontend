@@ -40,7 +40,7 @@ export const useFeatureFlagsToast = () => {
     if (featureFlags?.length > 0 && !debugActive && !toastDismissed) {
       if (!toastId.current) {
         toastId.current = toast(
-          <p>⚠️ You are using the following experimental features: {featureFlags.join(', ')} </p>,
+          <p>⚠️ You are using the following beta features: {featureFlags.join(', ')} </p>,
           {
             toastId: 'featureFlags',
             autoClose: false,
@@ -52,9 +52,7 @@ export const useFeatureFlagsToast = () => {
         )
       } else {
         toast.update(toastId.current, {
-          render: (
-            <p>⚠️ You are using the following experimental features: {featureFlags.join(', ')} </p>
-          ),
+          render: <p>⚠️ You are using the following beta features: {featureFlags.join(', ')} </p>,
         })
       }
     }
