@@ -35,3 +35,7 @@
   padding: var(--space-S);
   border-radius: var(--border-radius);
 }
+
+.tag {
+  margin-right: 0.5rem;
+}

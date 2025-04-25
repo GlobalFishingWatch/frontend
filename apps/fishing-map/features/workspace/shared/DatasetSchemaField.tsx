@@ -1,6 +1,7 @@
 import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -27,9 +28,15 @@ type LayerPanelProps = {
   dataview: UrlDataviewInstance
   field: SupportedDatasetSchema
   label: string
+  className?: string
 }
 
-function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.ReactElement<any> {
+function DatasetSchemaField({
+  dataview,
+  field,
+  label,
+  className = '',
+}: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isGuestUser = useSelector(selectIsGuestUser)
@@ -106,7 +113,7 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
   return (
     <Fragment>
       {valuesSelected.length > 0 && (
-        <div className={styles.filter}>
+        <div className={cx(styles.filter, className)}>
           <label>
             {label}
             {filterOperation === EXCLUDE_FILTER_ID && ` (${t('common.excluded', 'Excluded')})`}

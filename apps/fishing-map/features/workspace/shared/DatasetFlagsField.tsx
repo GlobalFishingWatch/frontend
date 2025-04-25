@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 
 import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -15,9 +16,14 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 type DatasetFlagFieldProps = {
   dataview: UrlDataviewInstance
   showWhenEmpty?: boolean
+  className?: string
 }
 
-function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldProps) {
+function DatasetFlagField({
+  dataview,
+  showWhenEmpty = false,
+  className = '',
+}: DatasetFlagFieldProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const filterOperation = getSchemaFilterOperationInDataview(dataview, 'flag')
@@ -48,7 +54,7 @@ function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldP
   }
 
   return (
-    <div className={styles.filter}>
+    <div className={cx(styles.filter, className)}>
       <label>
         {t('layer.flagState_other', 'Flag States')}
         {filterOperation === EXCLUDE_FILTER_ID &&

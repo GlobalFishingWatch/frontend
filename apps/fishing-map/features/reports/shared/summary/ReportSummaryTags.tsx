@@ -35,14 +35,15 @@ export default function ReportSummaryTags({ dataview, availableFields }: LayerPa
     <div className={styles.row}>
       <span className={styles.dot} style={{ color: dataview.config?.color }} />
       <Fragment>
-        <DatasetFilterSource dataview={dataview} />
-        <DatasetFlagField dataview={dataview} />
+        <DatasetFilterSource dataview={dataview} className={styles.tag} />
+        <DatasetFlagField dataview={dataview} className={styles.tag} />
         {availableFields.map((field) => (
           <DatasetSchemaField
             key={field[0]}
             dataview={dataview}
             field={field[0] as SupportedDatasetSchema}
             label={t(field[1] as any, field[2])}
+            className={styles.tag}
           />
         ))}
         {isGlobalReportsEnabled && (
