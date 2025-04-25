@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -27,6 +29,7 @@ const AUTH_AREAS = ['CCSBT', 'IATTC', 'ICCAT', 'IOTC', 'NPFC', 'SPRFMO', 'WCPFC'
 const EventDetail = ({ event }: ActivityContentProps) => {
   const { t } = useTranslation()
   const { getEventDurationDescription } = useActivityEventTranslations()
+  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
 
   const TimeFields = ({ type }: { type?: EventType }) => (
     <Fragment>
@@ -83,16 +86,18 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           </label>
           <span>{event.encounter?.medianSpeedKnots?.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        <li>
-          <label className={styles.fieldLabel}>
-            {t(`eventInfo.portVisitedAfter`, 'Port visited after')}
-          </label>
-          <span>
-            {event.vessel.nextPort
-              ? `${formatInfoField(event.vessel.nextPort?.name, 'port')} (${formatInfoField(event.vessel.nextPort?.flag, 'flag')})`
-              : EMPTY_FIELD_PLACEHOLDER}
-          </span>
-        </li>
+        {isGlobalReportsEnabled && (
+          <li>
+            <label className={styles.fieldLabel}>
+              {t(`eventInfo.portVisitedAfter`, 'Port visited after')}
+            </label>
+            <span>
+              {event.vessel.nextPort
+                ? `${formatInfoField(event.vessel.nextPort?.name, 'port')} (${formatInfoField(event.vessel.nextPort?.flag, 'flag')})`
+                : EMPTY_FIELD_PLACEHOLDER}
+            </span>
+          </li>
+        )}
         <div className={styles.divider} />
         <label className={styles.blockLabel}>
           {t(`eventInfo.encounteredVesselName`, 'Encountered vessel')}
