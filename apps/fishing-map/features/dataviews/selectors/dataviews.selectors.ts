@@ -33,6 +33,7 @@ import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { getReportVesselGroupVisibleDataviews } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
@@ -216,8 +217,8 @@ export const selectActiveTemporalgridDataviews: (
 )
 
 export const selectReportLayersVisible = createSelector(
-  [selectAllDataviewInstancesResolved],
-  (allDataviewInstancesResolved) => {
+  [selectAllDataviewInstancesResolved, selectIsGlobalReportsEnabled],
+  (allDataviewInstancesResolved, isGlobalReportsEnabled) => {
     return allDataviewInstancesResolved?.filter(({ config }) => {
       const isVisible = config?.visible === true
       if (!isVisible) {
@@ -227,7 +228,7 @@ export const selectReportLayersVisible = createSelector(
         config?.type === DataviewType.HeatmapAnimated ||
         config?.type === DataviewType.HeatmapStatic ||
         config?.type === DataviewType.Currents ||
-        config?.type === DataviewType.FourwingsTileCluster
+        (config?.type === DataviewType.FourwingsTileCluster && isGlobalReportsEnabled)
       )
     })
   }

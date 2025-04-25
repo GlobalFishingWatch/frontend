@@ -10,6 +10,7 @@ import { MARINE_MANAGER_WORKSPACES } from 'data/highlighted-workspaces/marine-ma
 import type { ReportWorkspace } from 'data/highlighted-workspaces/reports'
 import { REPORTS_INDEX } from 'data/highlighted-workspaces/reports'
 import { WorkspaceCategory } from 'data/workspaces'
+import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { t } from 'features/i18n/i18n'
 import type { ReportCategory } from 'features/reports/reports.types'
 import {
@@ -48,15 +49,15 @@ export type HighlightedWorkspaces = {
 }
 
 export const selectHighlightedWorkspaces = createSelector(
-  [selectLanguage],
-  (locale): HighlightedWorkspaces[] => {
+  [selectLanguage, selectIsGlobalReportsEnabled],
+  (locale, isGlobalReportsEnabled): HighlightedWorkspaces[] => {
     const WORKSPACES_BY_CATEGORY: Record<
       HighlightedWorkspaceCategory,
       (MarineManagerWorkspace | FishingMapWorkspace | ReportWorkspace)[]
     > = {
       'fishing-activity': FISHING_MAP_WORKSPACES,
       'marine-manager': MARINE_MANAGER_WORKSPACES,
-      reports: REPORTS_INDEX,
+      reports: isGlobalReportsEnabled ? REPORTS_INDEX : [],
     }
     return Object.entries(WORKSPACES_BY_CATEGORY).map(([category, workspaces]) => {
       return {
