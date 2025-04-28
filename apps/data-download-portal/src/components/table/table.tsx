@@ -282,7 +282,7 @@ function Table({ columns, data }: TableProps) {
                     key={column.id}
                     className={styles.th}
                   >
-                    {column.render('Header')}{' '}
+                    {column.render('Header')}
                     {column.id !== 'selection' && (
                       <span className={styles.sort}>
                         {extendedColumn.isSorted ? (
