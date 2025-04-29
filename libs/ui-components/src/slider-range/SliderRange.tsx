@@ -1,5 +1,5 @@
-import { useCallback, useEffect,useMemo, useState } from 'react'
-import { getTrackBackground,Range } from 'react-range'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { getTrackBackground, Range } from 'react-range'
 import cx from 'classnames'
 
 import { IconButton } from '../icon-button'
@@ -21,6 +21,7 @@ interface SliderRangeProps {
   initialRange: SliderRangeValues
   range?: SliderRangeValues
   config: SliderRangeConfig
+  step?: number
   onChange: (range: SliderRangeValues) => void
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
@@ -68,6 +69,7 @@ export function SliderRange(props: SliderRangeProps) {
     config = {},
     onChange,
     onCleanClick,
+    step,
     className,
     histogram,
     thumbsSize = 'default',
@@ -134,6 +136,7 @@ export function SliderRange(props: SliderRangeProps) {
   )
 
   const areDefaultValues = internalValues[0] === min && internalValues[1] === max
+  const inputStep = step || precisionConfig.step
   return (
     <div className={className}>
       {label && (
@@ -159,7 +162,7 @@ export function SliderRange(props: SliderRangeProps) {
         )}
         <Range
           values={internalValues}
-          step={precisionConfig.step}
+          step={inputStep}
           min={min}
           max={max}
           onChange={handleChange}
@@ -207,16 +210,21 @@ export function SliderRange(props: SliderRangeProps) {
         <div className={styles.rangeContainerInputs}>
           <InputText
             value={internalValues?.[0]}
-            step={precisionConfig.step.toString()}
+            step={inputStep.toString()}
             onChange={onInitialRangeInputChange}
             type="number"
           />
-          <InputText
-            value={internalValues?.[1]}
-            step={precisionConfig.step.toString()}
-            onChange={onFinalRangeInputChange}
-            type="number"
-          />
+          <div className={styles.inputWithOverlayContainer}>
+            <InputText
+              value={internalValues?.[1]}
+              step={inputStep.toString()}
+              onChange={onFinalRangeInputChange}
+              type="number"
+            />
+            {internalValues?.[1] === max && (
+              <div className={styles.inputWithOverlay}>{`${internalValues?.[1]}+`}</div>
+            )}
+          </div>
         </div>
       )}
     </div>
