@@ -31,7 +31,6 @@ import escapeRegExp from 'lodash/escapeRegExp'
 import { matchSorter } from 'match-sorter'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
@@ -46,7 +45,6 @@ export type TableData = {
   path: string
   size: number | string
   lastUpdate: string
-  depth: number
   subRows?: TableData[]
   [key: string]: any
 }
@@ -96,9 +94,39 @@ const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, IndeterminateCh
 IndeterminateCheckbox.displayName = 'IndeterminateCheckbox'
 
 function fuzzyTextFilterFn(rows: Row<TableData>[], id: string[], filterValue: string) {
-  return matchSorter(rows, filterValue, {
-    keys: id.map((i) => `values.${i}`),
-    threshold: matchSorter.rankings.CONTAINS,
+  const allRows: Row<TableData>[] = []
+
+  function collectAllRows(rows: Row<TableData>[]) {
+    for (const row of rows) {
+      allRows.push(row)
+      if (row.subRows && row.subRows.length > 0) {
+        collectAllRows(row.subRows)
+      }
+    }
+  }
+
+  collectAllRows(rows)
+
+  if (!filterValue || !filterValue.trim()) {
+    return rows
+  }
+
+  const normalizedFilterValue = filterValue.trim().toLowerCase()
+
+  function rowMatches(row: Row<TableData>, parentRow?: Row<TableData>): boolean {
+    return (
+      Object.values(row.values).some(
+        (cellValue) =>
+          typeof cellValue === 'string' && cellValue.toLowerCase().includes(normalizedFilterValue)
+      ) ||
+      (row.subRows && row.subRows.some((subRow) => rowMatches(subRow, row))) ||
+      (parentRow ? rowMatches(parentRow) : false)
+    )
+  }
+
+  return rows.filter((row) => {
+    const parentRow = allRows.find(({ subRows }) => subRows && subRows.includes(row))
+    return rowMatches(row, parentRow)
   })
 }
 
@@ -243,7 +271,7 @@ function Table({ columns, data }: TableProps) {
   }, [datasetId, downloadSingleFile, selectedFlatRows])
 
   const rowSelectedCount = selectedFlatRows.filter((row) => (row as ExtendedRow).depth === 0).length
-
+  console.log(rows)
   return (
     <div>
       <div {...getTableProps()} className={styles.table}>
