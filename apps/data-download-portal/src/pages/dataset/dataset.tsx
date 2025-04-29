@@ -129,9 +129,8 @@ const insertIntoTree = (
       const node: TableData = {
         name: part,
         path: parts.slice(0, i + 1).join('/'),
-        isFolder,
-        lastUpdate: isFolder ? '---' : DateTime.fromISO(lastUpdate).toFormat('M/dd/yyyy'),
-        size: isFolder ? '-' : size,
+        lastUpdate: lastUpdate ? DateTime.fromISO(lastUpdate).toFormat('M/dd/yyyy') : '---',
+        size: size || '-',
         ...(isFolder ? { subRows: [] } : {}),
       }
 
@@ -139,13 +138,12 @@ const insertIntoTree = (
       existing = node
     }
 
-    if (existing.isFolder) {
+    if (existing.subRows) {
       currentLevel = existing.subRows!
     }
   }
 }
 
-// Final function to build the tree from your API response
 const buildFileTree = (files: DatasetFile[]): TableData[] => {
   const tree: TableData[] = []
 
@@ -167,7 +165,7 @@ const columns = [
     Cell: ({ row }: { row: any }) => (
       <span
         style={{
-          paddingLeft: `${row.depth * 3}rem`,
+          paddingLeft: `${row.depth * 1}rem`,
           display: 'flex',
           gap: '1rem',
           alignItems: 'center',

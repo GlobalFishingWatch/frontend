@@ -31,6 +31,7 @@ import escapeRegExp from 'lodash/escapeRegExp'
 import { matchSorter } from 'match-sorter'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
@@ -45,6 +46,7 @@ export type TableData = {
   path: string
   size: number | string
   lastUpdate: string
+  depth: number
   subRows?: TableData[]
   [key: string]: any
 }
@@ -194,7 +196,7 @@ function Table({ columns, data }: TableProps) {
     (path: string) => {
       if (path) {
         setDownloadLoading(true)
-        GFWAPI.fetch<{ url: string }>(`/download/datasets/${datasetId}/download/${path}`)
+        GFWAPI.fetch<{ url: string }>(`/download/datasets/${datasetId}/download?file-path=${path}`)
           .then(({ url }) => {
             const downloadWindow = window.open(url, '_blank')
             if (downloadWindow) {
@@ -240,6 +242,8 @@ function Table({ columns, data }: TableProps) {
     }
   }, [datasetId, downloadSingleFile, selectedFlatRows])
 
+  const rowSelectedCount = selectedFlatRows.filter((row) => (row as ExtendedRow).depth === 0).length
+
   return (
     <div>
       <div {...getTableProps()} className={styles.table}>
@@ -283,7 +287,7 @@ function Table({ columns, data }: TableProps) {
                     className={styles.th}
                   >
                     {column.render('Header')}
-                    {column.id !== 'selection' && (
+                    {column.id !== 'selection' && column.id !== 'download-button' && (
                       <span className={styles.sort}>
                         {extendedColumn.isSorted ? (
                           extendedColumn.isSortedDesc ? (
@@ -346,12 +350,10 @@ function Table({ columns, data }: TableProps) {
       </div>
       <div className={styles.actionFooter}>
         <span className={styles.filesInfo}>
-          {rows && <span>{`${rows.length} file${rows.length > 1 ? 's' : ''} shown`}</span>}
+          {rows && <span>{`${rows.length} item${rows.length > 1 ? 's' : ''} shown`}</span>}
           <br />
           {selectedFlatRows.length > 0 && (
-            <span>{`${selectedFlatRows.length} file${
-              selectedFlatRows.length > 1 ? 's' : ''
-            } selected`}</span>
+            <span>{`${rowSelectedCount} item${rowSelectedCount > 1 ? 's' : ''} selected`}</span>
           )}
         </span>
         <button onClick={onDownloadClick} disabled={!selectedFlatRows.length || downloadLoading}>
