@@ -130,86 +130,89 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           <span>{formatInfoField(type, 'vesselType')}</span>
         </li>
         <div className={styles.divider} />
-        <table className={styles.authTable}>
-          <thead>
-            <tr>
-              <th>
-                <label>
-                  {t('eventInfo.authorization', 'authorization')}
-                  <DataTerminology
-                    title={t('eventInfo.authorization', 'authorization')}
-                    terminologyKey="authorization"
-                  />
-                </label>
-              </th>
-              {authAreas?.map((rfmo) => {
-                return <th key={rfmo}>{rfmo}</th>
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {authAreas?.length && authAreas.length > 0 ? (
-              <Fragment>
-                <tr>
-                  <td>{formatInfoField(event.vessel.name, 'shipname')}</td>
-                  {authAreas?.map((rfmo) => {
-                    const mainVesselAuth = event.vessel.publicAuthorizations?.find(
-                      (auth) => auth.rfmo === rfmo
-                    )
-                    return (
-                      <td key={rfmo}>
-                        {mainVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
-                          <span className={styles.tick}>
-                            <IconButton
-                              icon="tick"
-                              size="tiny"
-                              type="solid"
-                              className={styles.disabled}
-                            />
-                          </span>
-                        ) : (
-                          <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                        )}
-                      </td>
-                    )
-                  })}
-                </tr>
-                <tr>
-                  <td>{formatInfoField(name, 'shipname')}</td>
-                  {authAreas?.map((rfmo) => {
-                    const secondaryVesselAuth = event.encounter?.vessel?.publicAuthorizations?.find(
-                      (auth) => auth.rfmo === rfmo
-                    )
-                    return (
-                      <td key={rfmo}>
-                        {secondaryVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
-                          <span className={styles.tick}>
-                            <IconButton
-                              icon="tick"
-                              size="tiny"
-                              type="solid"
-                              className={styles.disabled}
-                            />
-                          </span>
-                        ) : (
-                          <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                        )}
-                      </td>
-                    )
-                  })}
-                </tr>
-              </Fragment>
-            ) : (
+        {isGlobalReportsEnabled && (
+          <table className={styles.authTable}>
+            <thead>
               <tr>
-                <td>
-                  <p className={styles.secondary}>
-                    {t('eventInfo.authorizationEmpty', 'No authorization data available')}
-                  </p>
-                </td>
+                <th>
+                  <label>
+                    {t('eventInfo.authorization', 'authorization')}
+                    <DataTerminology
+                      title={t('eventInfo.authorization', 'authorization')}
+                      terminologyKey="authorization"
+                    />
+                  </label>
+                </th>
+                {authAreas?.map((rfmo) => {
+                  return <th key={rfmo}>{rfmo}</th>
+                })}
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {authAreas?.length && authAreas.length > 0 ? (
+                <Fragment>
+                  <tr>
+                    <td>{formatInfoField(event.vessel.name, 'shipname')}</td>
+                    {authAreas?.map((rfmo) => {
+                      const mainVesselAuth = event.vessel.publicAuthorizations?.find(
+                        (auth) => auth.rfmo === rfmo
+                      )
+                      return (
+                        <td key={rfmo}>
+                          {mainVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
+                            <span className={styles.tick}>
+                              <IconButton
+                                icon="tick"
+                                size="tiny"
+                                type="solid"
+                                className={styles.disabled}
+                              />
+                            </span>
+                          ) : (
+                            <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
+                          )}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                  <tr>
+                    <td>{formatInfoField(name, 'shipname')}</td>
+                    {authAreas?.map((rfmo) => {
+                      const secondaryVesselAuth =
+                        event.encounter?.vessel?.publicAuthorizations?.find(
+                          (auth) => auth.rfmo === rfmo
+                        )
+                      return (
+                        <td key={rfmo}>
+                          {secondaryVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
+                            <span className={styles.tick}>
+                              <IconButton
+                                icon="tick"
+                                size="tiny"
+                                type="solid"
+                                className={styles.disabled}
+                              />
+                            </span>
+                          ) : (
+                            <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
+                          )}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                </Fragment>
+              ) : (
+                <tr>
+                  <td>
+                    <p className={styles.secondary}>
+                      {t('eventInfo.authorizationEmpty', 'No authorization data available')}
+                    </p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
       </ul>
     )
   } else if (event.type === EventTypes.Fishing) {
