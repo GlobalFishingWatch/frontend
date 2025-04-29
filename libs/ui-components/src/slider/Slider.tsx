@@ -62,6 +62,7 @@ export function Slider(props: SliderProps) {
       .domain(steps.map((_, i) => (max / (steps.length - 1)) * i))
       .range(steps)
       .nice()
+      .clamp(true)
   }, [max, steps])
 
   const initialValueScaled = [scale.invert(initialValue)]
