@@ -31,7 +31,7 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
-type TransformationUnit = 'minutes' | 'km'
+type TransformationUnit = 'minutes' | 'km' | 'hours'
 
 const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
 
@@ -45,6 +45,11 @@ const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> 
   minutes: {
     in: (v) => v / 60,
     out: (v) => v * 60,
+    label: t('common.hour_other', 'Hours'),
+  },
+  hours: {
+    in: (v) => parseInt(v),
+    out: (v) => parseInt(v),
     label: t('common.hour_other', 'Hours'),
   },
   km: {
