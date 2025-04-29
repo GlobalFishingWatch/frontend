@@ -265,6 +265,7 @@ function LayerSchemaFilter({
           range={values}
           className={cx(styles.multiSelect, styles.range)}
           initialRange={values}
+          step={unit === 'hours' ? 1 : undefined}
           histogram={id === 'radiance'}
           onCleanClick={() => onClean(id)}
           label={getLabelWithUnit(label, unit)}
