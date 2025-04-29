@@ -150,6 +150,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     activeIndex,
   } = useLayerPanelDataviewSort(dataview.id)
 
+  console.log('🚀 ~ LayerPanel ~ dataview:', dataview)
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
@@ -329,9 +330,20 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           {DATAVIEWS_WARNING.includes(dataview?.id) && (
             <Fragment>
               <div>
-                {t(
-                  `dataview.${dataview?.id}.dataWarning` as any,
-                  'This platform uses a reference layer from an external source.'
+                {/* TODO: remove this once validated */}
+                {dataview?.id === 'basemap-labels' ? (
+                  <span>
+                    This platform uses location labels from{' '}
+                    <a target="_blank" href="https://www.geonames.org/">
+                      {' '}
+                      www.geonames.org
+                    </a>
+                  </span>
+                ) : (
+                  t(
+                    `dataview.${dataview?.id}.dataWarning` as any,
+                    'This platform uses a reference layer from an external source.'
+                  )
                 )}
               </div>
               <div className={cx('print-hidden', styles.dataWarningLinks)}>
@@ -349,10 +361,21 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                   onClose={onDataWarningModalClose}
                   contentClassName={styles.modalContent}
                 >
-                  {parse(
-                    t(
-                      `dataview.${dataview?.id}.dataWarningDetail` as any,
-                      'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
+                  {/* TODO: remove this once validated */}
+                  {dataview?.id === 'basemap-labels' ? (
+                    <span>
+                      This platform uses location labels from{' '}
+                      <a target="_blank" href="https://www.geonames.org/">
+                        {' '}
+                        Geonames
+                      </a>
+                    </span>
+                  ) : (
+                    parse(
+                      t(
+                        `dataview.${dataview?.id}.dataWarningDetail` as any,
+                        'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
+                      )
                     )
                   )}
                 </Modal>
