@@ -286,7 +286,6 @@ const VesselIdentity = () => {
             <a
               href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}
               target="_blank"
-              rel="noreferrer"
             >
               Marine Traffic
               <Icon icon="external-link" type="default" />
@@ -294,7 +293,6 @@ const VesselIdentity = () => {
             <a
               href={`https://sc-production.skylight.earth/vesselsearch?mmsi=${vesselIdentity?.ssvid}`}
               target="_blank"
-              rel="noreferrer"
             >
               Skylight
               <Icon icon="external-link" type="default" />
@@ -302,7 +300,6 @@ const VesselIdentity = () => {
             <a
               href={`https://app.triton.fish/search?name=${vesselIdentity?.ssvid}`}
               target="_blank"
-              rel="noreferrer"
             >
               Triton
               <Icon icon="external-link" type="default" />
