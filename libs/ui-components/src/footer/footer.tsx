@@ -100,6 +100,7 @@ export const Footer = () => (
       </div>
     </div>
     <div className={styles.footerLinksContainer}>
+      <a href="https://globalfishingwatch.org/careers/">Careers</a>{' '}
       <a href="https://globalfishingwatch.org/support-us/">Support Us</a>{' '}
       <a href="https://globalfishingwatch.org/contact-us/">Contact Us</a>{' '}
       <a href="https://globalfishingwatch.org/terms-of-use/">Terms of Use</a>{' '}
@@ -108,7 +109,7 @@ export const Footer = () => (
       <a href="https://globalfishingwatch.org/sitemap/">Sitemap</a>
     </div>
     <p className={styles.footerText}>
-      © 2016 -2024 Global Fishing Watch. Founded by Oceana, SkyTruth and Google
+      © 2016 -2025 Global Fishing Watch. Founded by Oceana, SkyTruth and Google
     </p>
   </section>
 )
