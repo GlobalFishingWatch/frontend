@@ -20,7 +20,6 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { useUserExpiredToast } from 'features/user/user-expired.hooks'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
@@ -61,7 +60,6 @@ function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   useUserExpiredToast()
   useMigrateWorkspaceToast()
-  useFeatureFlagsToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)

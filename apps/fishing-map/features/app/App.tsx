@@ -12,6 +12,7 @@ import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
+import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
@@ -81,6 +82,7 @@ function App() {
   useReplaceLoginUrl()
   useBeforeUnload()
   useUserLanguageUpdate()
+  useFeatureFlagsToast()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
@@ -191,7 +193,7 @@ function App() {
       return t('search.title', 'Search')
     if (locationType === VESSEL || locationType === WORKSPACE_VESSEL)
       return t('vessel.title', 'Vessel profile')
-    if (isAreaReportLocation) return t('analysis.title', 'Analysis')
+    if (isAreaReportLocation) return t('analysis.title', 'Report')
     return t('common.layerList', 'Layer list')
   }, [locationType, isAreaReportLocation])
 
