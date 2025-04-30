@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { DurationUnit } from 'luxon'
+import type { DateTimeUnit, DurationUnit } from 'luxon'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
@@ -65,7 +65,10 @@ export function useFullTimeseries({
     return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
-        const d = startDate.plus({ [timeseriesInterval]: i }).toISO()
+        const d = startDate
+          .plus({ [timeseriesInterval]: i })
+          .startOf(timeseriesInterval as DateTimeUnit)
+          .toISO()
         const values = Object.fromEntries(
           valueKeys.map((valueKey) => {
             const dataValue = data.find((item) =>
