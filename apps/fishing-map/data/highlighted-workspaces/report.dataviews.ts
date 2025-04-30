@@ -23,13 +23,13 @@ const REPORT_EVENTS_DATAVIEW_INSTANCES_IDS: string[] = [
   PORT_VISITS_EVENTS_SOURCE_ID,
 ]
 
-export const CARRIER_PORTAL_DATAVIEW_INSTANCES: UrlDataviewInstance[] =
-  REPORT_EVENTS_DATAVIEW_INSTANCES_IDS.map((id) => ({
-    id,
-    config: {
-      visible: ENCOUNTER_EVENTS_SOURCE_ID.includes(id),
-    },
-  }))
+// export const CARRIER_PORTAL_DATAVIEW_INSTANCES: UrlDataviewInstance[] =
+//   REPORT_EVENTS_DATAVIEW_INSTANCES_IDS.map((id) => ({
+//     id,
+//     config: {
+//       visible: ENCOUNTER_EVENTS_SOURCE_ID.includes(id),
+//     },
+//   }))
 
 export const REPORT_EVENTS_DATAVIEW_INSTANCES: UrlDataviewInstance[] =
   REPORT_EVENTS_DATAVIEW_INSTANCES_IDS.map((id) => ({
