@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   getAccessTokenFromUrl,
@@ -47,4 +47,24 @@ export const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => 
   }, [APIClient])
 
   return state
+}
+
+//TODO CREATE LOGOUT FUNCTION
+export const useGFWLogout = (APIClient: typeof GFWAPI = GFWAPI) => {
+  const [state, setState] = useState<GFWLoginHook>({
+    logged: false,
+    loading: true,
+    user: null,
+    error: undefined,
+  })
+
+  useEffect(() => {
+    APIClient.logout()
+      .then(() => {
+        setState((state) => ({ ...state, logged: false, loading: false }))
+      })
+      .catch((e) => {
+        setState((state) => ({ ...state, loading: false, error: e }))
+      })
+  }, [APIClient])
 }
