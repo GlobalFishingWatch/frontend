@@ -65,6 +65,7 @@
     "searchHelpExamples": "e.g. \"flag:china, gear:trawlers\", \"-spain\", \"cargo|passenger\"...",
     "searchPlaceholder": "Filter vessels by name, MMSI, flag or gear type",
     "see": "See report",
+    "seeGlobal": "See global report",
     "seeVessels": "See vessels",
     "share": "Share report",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",

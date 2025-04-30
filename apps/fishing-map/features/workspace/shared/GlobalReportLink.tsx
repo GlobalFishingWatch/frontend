@@ -50,7 +50,7 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
         icon="analysis"
         type="border"
         size="medium"
-        tooltip={t('analysis.see', 'See report')}
+        tooltip={t('analysis.seeGlobal', 'See global report')}
         tooltipPlacement="top"
       />
     </Link>
