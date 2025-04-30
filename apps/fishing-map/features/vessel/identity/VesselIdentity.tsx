@@ -266,10 +266,7 @@ const VesselIdentity = () => {
                     )}
                   >
                     <div>
-                      <label>{`${registrySourceData?.key} ${t(
-                        `vessel.extraInfo`,
-                        'has more information'
-                      )}`}</label>
+                      <label>{t(`vessel.extraInfo`, 'has more information')}</label>
                       <p>{registrySourceData?.contact}</p>
                     </div>
                   </Tooltip>
