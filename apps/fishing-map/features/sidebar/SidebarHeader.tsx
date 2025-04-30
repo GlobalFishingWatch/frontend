@@ -61,7 +61,14 @@ import {
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import type { ROUTE_TYPES } from 'routes/routes'
-import { REPORT, VESSEL, WORKSPACE, WORKSPACE_REPORT, WORKSPACES_LIST } from 'routes/routes'
+import {
+  REPORT,
+  VESSEL,
+  WORKSPACE,
+  WORKSPACE_REPORT,
+  WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
+} from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -375,7 +382,7 @@ function NavigateToWorkspaceButton() {
   const isAnyWorkspaceReportLocation = useSelector(selectIsAnyWorkspaceReportLocation)
   const workspaceId = useSelector(selectWorkspaceId)
   const locationQuery = useSelector(selectLocationQuery)
-  const locationPayload = useSelector(selectLocationPayload)
+  const locationCategory = useSelector(selectLocationCategory)
   const hasVesselProfileInstancePinned = useSelector(selectHasVesselProfileInstancePinned)
   const featureFlags = useSelector(selectFeatureFlags)
 
@@ -388,7 +395,7 @@ function NavigateToWorkspaceButton() {
       type: WORKSPACE as ROUTE_TYPES,
       payload: {
         workspaceId: workspaceId,
-        category: locationPayload?.category || DEFAULT_WORKSPACE_CATEGORY,
+        category: locationCategory || DEFAULT_WORKSPACE_CATEGORY,
       },
       query: {
         ...cleanReportQuery(locationQuery),
@@ -396,61 +403,67 @@ function NavigateToWorkspaceButton() {
         ...DEFAULT_VESSEL_STATE,
         featureFlags,
       },
+      isHistoryNavigation: true,
     }),
-    [featureFlags, locationPayload?.category, locationQuery, workspaceId]
+    [featureFlags, locationCategory, locationQuery, workspaceId]
   )
 
-  const onNavigateToWorkspaceClick = useCallback(() => {
-    if (!hasVesselProfileInstancePinned) {
-      const { type, payload, query } = linkTo
-      if (
-        vesselDataviewInstance &&
-        window.confirm(
-          t('vessel.confirmationClose', 'Do you want to keep this vessel in your workspace?')
-        ) === true
-      ) {
-        const cleanVesselDataviewInstance = {
-          ...vesselDataviewInstance,
-          config: {
-            ...vesselDataviewInstance?.config,
-            highlightEventStartTime: undefined,
-            highlightEventEndTime: undefined,
-          },
-        }
-        dispatch(
-          updateLocation(type, {
-            payload,
-            query: {
-              ...query,
-              dataviewInstances: [
-                ...(query.dataviewInstances || []),
-                ...(cleanVesselDataviewInstance ? [cleanVesselDataviewInstance] : []),
-              ],
-            },
-          })
-        )
-      } else {
-        dispatch(updateLocation(type, { payload, query }))
-      }
-    }
+  const resetState = useCallback(() => {
     resetSidebarScroll()
     dispatch(resetVesselState())
-  }, [dispatch, hasVesselProfileInstancePinned, linkTo, t, vesselDataviewInstance])
+  }, [dispatch])
 
-  if (workspaceId && (isWorkspaceVesselLocation || isAnyWorkspaceReportLocation)) {
-    return hasVesselProfileInstancePinned ? (
-      <Link className={styles.workspaceLink} to={linkTo} onClick={onNavigateToWorkspaceClick}>
-        <IconButton className="print-hidden" type="border" icon="close" tooltip={tooltip} />
-      </Link>
-    ) : (
+  const onPinVesselToWorkspaceAndNavigateClick = useCallback(() => {
+    const { type, payload, query } = linkTo
+    const params = { payload, query, isHistoryNavigation: true }
+    if (
+      vesselDataviewInstance &&
+      window.confirm(
+        t('vessel.confirmationClose', 'Do you want to keep this vessel in your workspace?')
+      ) === true
+    ) {
+      const cleanVesselDataviewInstance = {
+        ...vesselDataviewInstance,
+        config: {
+          ...vesselDataviewInstance?.config,
+          highlightEventStartTime: undefined,
+          highlightEventEndTime: undefined,
+        },
+      }
+      params.query = {
+        ...query,
+        dataviewInstances: [
+          ...(query.dataviewInstances || []),
+          ...(cleanVesselDataviewInstance ? [cleanVesselDataviewInstance] : []),
+        ],
+      }
+    }
+    dispatch(updateLocation(type, params))
+    resetState()
+  }, [dispatch, linkTo, resetState, t, vesselDataviewInstance])
+
+  if (
+    workspaceId &&
+    (isWorkspaceVesselLocation ||
+      (isAnyWorkspaceReportLocation && locationCategory !== WorkspaceCategory.Reports))
+  ) {
+    return isWorkspaceVesselLocation && !hasVesselProfileInstancePinned ? (
       // Can't use Link because we need to intercept the navigation to show the confirmation dialog
       <IconButton
         icon="close"
         type="border"
-        onClick={onNavigateToWorkspaceClick}
+        onClick={resetState}
         className={cx(styles.workspaceLink, 'print-hidden')}
-        tooltip={t('vessel.close', 'Close vessel and go back to workspace')}
+        tooltip={tooltip}
       />
+    ) : (
+      <Link
+        className={styles.workspaceLink}
+        to={linkTo}
+        onClick={onPinVesselToWorkspaceAndNavigateClick}
+      >
+        <IconButton className="print-hidden" type="border" icon="close" tooltip={tooltip} />
+      </Link>
     )
   }
   return null
@@ -516,7 +529,7 @@ function CloseSectionButton() {
 
   if (workspaceHistoryNavigation.length) {
     const previousLocation =
-      lastWorkspaceVisited.type === VESSEL
+      lastWorkspaceVisited.type === VESSEL || lastWorkspaceVisited.type === WORKSPACE_VESSEL
         ? t('vessel.title', 'Vessel profile')
         : lastWorkspaceVisited.type === REPORT || lastWorkspaceVisited.type === WORKSPACE_REPORT
           ? t('analysis.title', 'Report')
