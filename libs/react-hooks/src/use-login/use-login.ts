@@ -49,7 +49,6 @@ export const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => 
   return state
 }
 
-//TODO CREATE LOGOUT FUNCTION
 export const logoutUser = async () => {
   await GFWAPI.logout()
   window.location.href = GFWAPI.getLoginUrl(window.location.toString())

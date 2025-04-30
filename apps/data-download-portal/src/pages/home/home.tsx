@@ -8,6 +8,7 @@ import { Button, Icon, IconButton, InputText, Tag } from '@globalfishingwatch/ui
 
 import Loader from '../../components/loader/loader'
 import { getUTCString } from '../../utils/dates'
+import { sortByLastUpdated, sortDatasets } from '../../utils/sorting'
 import { getHighlightedText } from '../../utils/text'
 
 import styles from './home.module.css'
@@ -16,14 +17,28 @@ function HomePage() {
   const [datasets, setDatasets] = useState<Dataset[]>([])
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+
+  const { logged, user, loading: loginLoading } = useGFWLogin(GFWAPI)
+  const handleLoginRedirect = () => {
+    if (!logged && typeof window !== 'undefined') {
+      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+    }
+  }
+
   const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('asc')
-  const { logged, user } = useGFWLogin(GFWAPI)
+  const [sortBy, setSortBy] = useState<'name' | 'lastUpdated'>('lastUpdated')
+
+  const handleSortClick = (direction: 'asc' | 'desc', sortBy: 'name' | 'lastUpdated') => {
+    setSortBy(sortBy)
+    setOrderDirection(direction)
+  }
 
   useEffect(() => {
     setLoading(true)
     GFWAPI.fetch<Dataset[]>(`/download/datasets`)
       .then((data) => {
-        setDatasets(data)
+        const sortedData = sortByLastUpdated(data)
+        setDatasets(sortedData)
         setLoading(false)
       })
       .catch((e) => {
@@ -31,41 +46,18 @@ function HomePage() {
       })
   }, [])
 
-  const handleSortClick = (direction: 'asc' | 'desc') => {
-    setOrderDirection(direction)
-    const sortedDatasets = [...datasets].sort((a, b) => {
-      const nameA = a.name.toLowerCase()
-      const nameB = b.name.toLowerCase()
-      if (direction === 'asc') {
-        return nameA < nameB ? -1 : nameA > nameB ? 1 : 0
-      } else {
-        return nameA > nameB ? -1 : nameA < nameB ? 1 : 0
-      }
+  const filteredDatasets = useMemo(() => {
+    const filtered = datasets.filter((dataset) => {
+      const name = dataset.name.toLowerCase()
+      const description = dataset.description.toLowerCase()
+      return (
+        name.includes(searchQuery.toLowerCase()) || description.includes(searchQuery.toLowerCase())
+      )
     })
-    setDatasets(sortedDatasets)
-    // dispatchQueryParams({
-    //   orderBy: 'name',
-    // })
-  }
 
-  const handleLoginRedirect = () => {
-    if (!logged && typeof window !== 'undefined') {
-      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
-    }
-  }
+    return sortDatasets(filtered, sortBy, orderDirection)
+  }, [datasets, searchQuery, sortBy, orderDirection])
 
-  const filteredDatasets = useMemo(
-    () =>
-      datasets.filter((dataset) => {
-        const name = dataset.name.toLowerCase()
-        const description = dataset.description.toLowerCase()
-        return (
-          name.includes(searchQuery.toLowerCase()) ||
-          description.includes(searchQuery.toLowerCase())
-        )
-      }),
-    [datasets, searchQuery]
-  )
   return (
     <Fragment>
       <div className={styles.topBar}>
@@ -80,12 +72,14 @@ function HomePage() {
           <IconButton
             type="border"
             icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
-            onClick={() => handleSortClick(orderDirection === 'asc' ? 'desc' : 'asc')}
+            onClick={() => handleSortClick(orderDirection === 'asc' ? 'desc' : 'asc', 'name')}
             className={styles.sortIcon}
           />
         </div>
         <div>
-          {logged ? (
+          {loginLoading ? (
+            <Loader />
+          ) : logged || user ? (
             <div className={styles.loggedIn}>
               <p>
                 You’re logged in as {user?.email},<br />
@@ -111,10 +105,10 @@ function HomePage() {
           )}
         </div>
       </div>
-      {loading && <Loader />}
+      {(loading || loginLoading) && <Loader />}
       <div className={styles.cardsContainer}>
-        {datasets &&
-          datasets.map((dataset) => {
+        {filteredDatasets &&
+          filteredDatasets.map((dataset) => {
             const { id, name, description, lastUpdated } = dataset
             return (
               <Link
@@ -128,7 +122,7 @@ function HomePage() {
                 </h2>
                 <div className={styles.description}>
                   <p> {getHighlightedText(description as string, searchQuery, styles)}</p>
-                  {/* TODO add monthly/daily updates when attribute is created V*/}
+                  {/* TODO add update frequency when attribute is created V*/}
                   {lastUpdated && <Tag className={styles.tag}>MONTHLY UPDATES</Tag>}
                 </div>
                 <div className={styles.cardFooter}>
