@@ -24,7 +24,6 @@ import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useDeckMap } from 'features/map/map-context.hooks'
 import TrackFootprint from 'features/search/basic/TrackFootprint'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -71,7 +70,7 @@ function SearchBasicResult({
   const dispatch = useAppDispatch()
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
-  const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
+  const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
   const fitBounds = useMapFitBounds()
@@ -141,23 +140,25 @@ function SearchBasicResult({
   } else if (isSelected) {
     tooltip = t('search.vesselSelected', 'Vessel selected')
   }
-  const { onClick, onMouseDown, ...itemProps } = getItemProps({ item: vessel, index })
+  const { onClick, ...itemProps } = getItemProps({ item: vessel, index })
 
   const vesselQuery = useMemo(() => {
-    const query = { start: transmissionDateFrom, end: transmissionDateTo }
+    const query = isStandaloneSearchLocation
+      ? { start: transmissionDateFrom, end: transmissionDateTo }
+      : {}
     if (trackBbox) {
       const coordinates = getMapCoordinatesFromBounds(trackBbox)
       return { ...query, ...coordinates }
     }
     return query
-  }, [trackBbox, transmissionDateFrom, transmissionDateTo])
+  }, [isStandaloneSearchLocation, trackBbox, transmissionDateFrom, transmissionDateTo])
 
   const onVesselClick = useCallback(
     (e: MouseEvent) => {
       if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
         dispatch(cleanVesselSearchResults())
       }
-      if (isSearchLocation) {
+      if (isStandaloneSearchLocation) {
         if (trackBbox) {
           fitBounds(trackBbox, { fitZoom: true })
         }
@@ -167,7 +168,7 @@ function SearchBasicResult({
     [
       dispatch,
       fitBounds,
-      isSearchLocation,
+      isStandaloneSearchLocation,
       setTimerange,
       trackBbox,
       transmissionDateFrom,
@@ -221,7 +222,7 @@ function SearchBasicResult({
               datasetId={dataset?.id}
               onClick={onVesselClick}
               query={vesselQuery}
-              fitBounds={isSearchLocation}
+              fitBounds={isStandaloneSearchLocation}
             >
               {name}
             </VesselLink>
