@@ -63,12 +63,10 @@ export const resolveEndpoint = (
         }
       }
     })
-
     // To avoid duplicating query in every config when we already have the datasetId
     if (
       endpoint.query.some((q) => q.id === 'datasets') &&
       !resolvedQuery.toString().includes('datasets') &&
-      !resolvedQuery.toString().includes('dataset=') &&
       datasetConfig.datasetId
     ) {
       const datasetString = API_VERSION === 'v2' ? 'datasets' : 'datasets[0]'

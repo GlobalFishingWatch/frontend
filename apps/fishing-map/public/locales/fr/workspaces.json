@@ -27,7 +27,7 @@
     },
     "events-report": {
       "name": "Global Vessel Events",
-      "description": "TODO TODO TODO Something something about encounters, loitering, gaps, port visits and all that..."
+      "description": "Global activity on vessel events based on automatic identification system (AIS) , including encounters between two vessels, loitering and port visits."
     }
   },
   "marine-manager": {
