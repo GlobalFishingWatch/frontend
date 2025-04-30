@@ -271,7 +271,7 @@ function Table({ columns, data }: TableProps) {
   }, [datasetId, downloadSingleFile, selectedFlatRows])
 
   const rowSelectedCount = selectedFlatRows.filter((row) => (row as ExtendedRow).depth === 0).length
-  console.log(rows)
+
   return (
     <div>
       <div {...getTableProps()} className={styles.table}>

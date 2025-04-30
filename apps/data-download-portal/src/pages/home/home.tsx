@@ -120,8 +120,11 @@ function HomePage() {
                 <h2 className={styles.title}>
                   {getHighlightedText(name as string, searchQuery, styles)}
                 </h2>
-                <div className={styles.description}>
-                  <p> {getHighlightedText(description as string, searchQuery, styles)}</p>
+                <div>
+                  <p className={styles.description}>
+                    {' '}
+                    {getHighlightedText(description as string, searchQuery, styles)}
+                  </p>
                   {/* TODO add update frequency when attribute is created V*/}
                   {lastUpdated && <Tag className={styles.tag}>MONTHLY UPDATES</Tag>}
                 </div>

@@ -68,7 +68,8 @@
 }
 
 .tag {
-  margin-top: 1.5rem;
+  width: fit-content;
+  margin: 1rem 0;
   padding: 0.2rem 0.5rem;
   background-color: var(--color-terthiary-blue);
 }
@@ -76,11 +77,11 @@
 .description {
   flex: 1;
   color: var(--secondary-color);
-  max-height: calc(12em);
+  max-height: calc(10.5em);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 8;
+  -webkit-line-clamp: 7;
   -webkit-box-orient: vertical;
   white-space: normal;
   line-height: 1.5em;
