@@ -50,21 +50,7 @@ export const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => 
 }
 
 //TODO CREATE LOGOUT FUNCTION
-export const useGFWLogout = (APIClient: typeof GFWAPI = GFWAPI) => {
-  const [state, setState] = useState<GFWLoginHook>({
-    logged: false,
-    loading: true,
-    user: null,
-    error: undefined,
-  })
-
-  useEffect(() => {
-    APIClient.logout()
-      .then(() => {
-        setState((state) => ({ ...state, logged: false, loading: false }))
-      })
-      .catch((e) => {
-        setState((state) => ({ ...state, loading: false, error: e }))
-      })
-  }, [APIClient])
+export const logoutUser = async () => {
+  await GFWAPI.logout()
+  window.location.href = GFWAPI.getLoginUrl(window.location.toString())
 }

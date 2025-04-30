@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { useGFWLogin } from '@globalfishingwatch/react-hooks/use-login'
+import { logoutUser, useGFWLogin } from '@globalfishingwatch/react-hooks/use-login'
 import { Button, Icon, IconButton, InputText, Tag } from '@globalfishingwatch/ui-components'
 
 import Loader from '../../components/loader/loader'
@@ -48,6 +48,12 @@ function HomePage() {
     // })
   }
 
+  const handleLoginRedirect = () => {
+    if (!logged && typeof window !== 'undefined') {
+      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+    }
+  }
+
   const filteredDatasets = useMemo(
     () =>
       datasets.filter((dataset) => {
@@ -60,7 +66,6 @@ function HomePage() {
       }),
     [datasets, searchQuery]
   )
-
   return (
     <Fragment>
       <div className={styles.topBar}>
@@ -90,7 +95,7 @@ function HomePage() {
                 type="button"
                 className={styles.logoutButton}
                 onClick={() => {
-                  // TODO: Implement logout logic here
+                  logoutUser()
                 }}
               >
                 log out
@@ -99,15 +104,7 @@ function HomePage() {
           ) : (
             <div className={styles.container}>
               <p className={styles.loggedIn}>Can’t find a dataset you’re looking for?</p>
-              <Button
-                onClick={() => {
-                  if (!logged && !loading && typeof window !== 'undefined') {
-                    window.location.href = GFWAPI.getLoginUrl(window.location.toString())
-                  }
-                }}
-                type="secondary"
-                size="medium"
-              >
+              <Button onClick={() => handleLoginRedirect()} type="secondary" size="medium">
                 <Icon icon={'user'} /> LOG IN
               </Button>
             </div>

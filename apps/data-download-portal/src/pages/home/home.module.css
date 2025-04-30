@@ -52,8 +52,9 @@
 
 .logoutButton {
   position: relative;
-  top: -20px;
+  top: -10px;
   left: 22px;
+  height: 0;
   background: none;
   text-decoration: underline;
   color: var(--color-primary-blue);
