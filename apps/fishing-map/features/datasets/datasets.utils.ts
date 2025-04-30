@@ -118,6 +118,13 @@ type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
 type SupportedEventsDatasetSchema = 'duration' | 'encounter_type' | 'type' | 'next_port_id'
 
 const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
+const EVENTS_DATASETS_SCHEMAS: SupportedEventsDatasetSchema[] = [
+  'duration',
+  'encounter_type',
+  'type',
+  'next_port_id',
+]
+const DATASETS_SCHEMAS = [...CONTEXT_DATASETS_SCHEMAS, ...EVENTS_DATASETS_SCHEMAS]
 const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups', 'period', 'scenario']
 
 type SchemaCompatibilityOperation = 'every' | 'some'
@@ -981,8 +988,8 @@ export const getFiltersBySchema = (
     incompatibleFilterSelection !== undefined && incompatibleFilterSelection?.length > 0
   const disabled = !hasDatasetsWithSchema || hasIncompatibleFilterSelection
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id as string)
-  let label: string = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
-    ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
+  let label: string = DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
+    ? t(`datasets:${datasetId}.schema.${schema}.keyword`, capitalize(lowerCase(schema.toString())))
     : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect
   if (schema === 'vessel-groups') {
     label = t('vesselGroup.vesselGroup', 'Vessel Group')
