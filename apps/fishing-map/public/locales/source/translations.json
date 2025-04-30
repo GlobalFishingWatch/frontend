@@ -75,7 +75,7 @@
     "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
-    "title": "Analysis",
+    "title": "Report",
     "unknown": "Unknown",
     "unknownProperty": "Unknown"
   },
@@ -203,6 +203,7 @@
     "months_other": "months",
     "more": "more",
     "name": "Name",
+    "navigateBackTo": "back to {{section}}",
     "none": "None",
     "of": "of",
     "onlyMe": "Only me",
@@ -1242,6 +1243,7 @@
     "emptyStateUser": "Upload custom datasets clicking on the plus icon.",
     "emptyStateVesselGroups": "Add vessel groups to see group presence and operation footprint.",
     "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
+    "list": "Workspaces list",
     "marineManagerLink": "See marine manager portal",
     "migrationDisclaimer": "Update your workspace to view the latest data and features.",
     "migrationDisclaimerNote": "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>",
@@ -1275,6 +1277,7 @@
       "marine-manager": "Marine Manager is a new technology portal to support the effective design, management and monitoring of protected areas.",
       "search": "Search by vessel name or identification code."
     },
+    "title": "Workspace",
     "title_other": "Workspaces",
     "update": "Update",
     "uploadPublic": "Allow other users to see this workspace",
