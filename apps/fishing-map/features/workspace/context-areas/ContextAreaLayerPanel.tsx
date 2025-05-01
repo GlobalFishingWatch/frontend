@@ -150,7 +150,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     activeIndex,
   } = useLayerPanelDataviewSort(dataview.id)
 
-  console.log('🚀 ~ LayerPanel ~ dataview:', dataview)
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,

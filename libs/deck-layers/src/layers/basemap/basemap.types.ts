@@ -12,10 +12,10 @@ export enum BasemapType {
 
 export type BasemapLayerProperties = {
   /**
-   * Rank from 0 to 2000
+   * Rank from -1000 to 1000
    */
   populationRank: number
-  type: 'country' | 'place' | 'sea'
+  type: 'country' | 'state' | 'place' | 'sea'
   size: number
   name: string
 } & {

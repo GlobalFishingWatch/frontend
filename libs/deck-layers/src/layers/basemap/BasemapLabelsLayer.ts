@@ -21,13 +21,15 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
   }
 
   _getColor(d: BasemapLayerFeature): Color {
-    if (d.properties?.type === 'country') {
-      return [157, 203, 226]
+    if (d.properties?.type === 'sea') {
+      return [7, 119, 142]
     } else if (d.properties?.type === 'place') {
       return [106, 152, 184]
+    } else if (d.properties?.type === 'state') {
+      return [120, 168, 200]
     }
-    // sea
-    return [7, 119, 142]
+    // country
+    return [157, 203, 226]
   }
 
   renderLayers() {
@@ -62,10 +64,10 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
                 if (
                   this.context.viewport.zoom < 5 &&
                   d.properties.type === 'country' &&
-                  d.geometry.coordinates[0] + d.properties.name.length / 2 >= 175
+                  d.geometry.coordinates[0] + Math.min(d.properties.name?.length, 8) / 2 >= 175
                 ) {
                   // Fixes countries antimeridian cutted off names
-                  return [-20, 0]
+                  return [-d.properties.name?.length * 3, 0]
                 }
                 return [0, 0]
               },
