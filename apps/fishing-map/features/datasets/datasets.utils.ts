@@ -989,10 +989,14 @@ export const getFiltersBySchema = (
   const disabled = !hasDatasetsWithSchema || hasIncompatibleFilterSelection
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id as string)
   let label: string = DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
-    ? t(`datasets:${datasetId}.schema.${schema}.keyword`, capitalize(lowerCase(schema.toString())))
+    ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
     : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect
   if (schema === 'vessel-groups') {
     label = t('vesselGroup.vesselGroup', 'Vessel Group')
+  }
+  // TODO: remove this once dataset includes translations
+  if (schema === 'next_port_id') {
+    label = t('layer.next_port_id', 'Next port id')
   }
 
   return {

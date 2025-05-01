@@ -681,6 +681,7 @@
     "nameLengthError_one": "Layer name requires at least {{count}} characters",
     "nameLengthError_other": "Layer name requires at least {{count}} characters",
     "nameRequired": "Layer name is required",
+    "next_port_id": "Next port id",
     "period": "Period",
     "properties": {
       "color": "Color",
