@@ -333,9 +333,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                 {dataview?.id === 'basemap-labels' ? (
                   <span>
                     This platform uses location labels from{' '}
-                    <a target="_blank" href="https://www.geonames.org/">
-                      {' '}
-                      www.geonames.org
+                    <a target="_blank" href="https://www.naturalearthdata.com/">
+                      Natural Earth
                     </a>
                   </span>
                 ) : (
@@ -364,9 +363,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                   {dataview?.id === 'basemap-labels' ? (
                     <span>
                       This platform uses location labels from{' '}
-                      <a target="_blank" href="https://www.geonames.org/">
-                        {' '}
-                        Geonames
+                      <a target="_blank" href="https://www.naturalearthdata.com/">
+                        Natural Earth
                       </a>
                     </span>
                   ) : (
