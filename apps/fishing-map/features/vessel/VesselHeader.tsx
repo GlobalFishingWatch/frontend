@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { uniqBy } from 'es-toolkit'
 
 import type { RegistryImage } from '@globalfishingwatch/api-types'
@@ -41,7 +42,7 @@ import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 
 import styles from './VesselHeader.module.css'
 
-const VesselHeader = () => {
+const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
@@ -141,7 +142,7 @@ const VesselHeader = () => {
   }
 
   return (
-    <div className={styles.summaryContainer}>
+    <div className={cx(styles.summaryContainer, { [styles.sticky]: isSticky })}>
       {allVesselImages.length > 0 && (
         <div
           className={styles.imageSliderContainer}

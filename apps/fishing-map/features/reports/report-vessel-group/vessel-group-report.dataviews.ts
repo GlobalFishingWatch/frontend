@@ -1,11 +1,7 @@
-import type {
-  ColorCyclingType,
-  DataviewInstance,
-  DataviewType,
-} from '@globalfishingwatch/api-types'
+import type { DataviewInstance, DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { ColorRampId } from '@globalfishingwatch/deck-layers'
+import { type ColorRampId, HEATMAP_COLORS_BY_ID } from '@globalfishingwatch/deck-layers'
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import {
@@ -106,7 +102,7 @@ export const getVesselGroupDataviewInstance = (
       id: `${VESSEL_GROUP_DATAVIEW_PREFIX}${Date.now()}`,
       category: DataviewCategory.VesselGroups,
       config: {
-        colorCyclingType: 'fill' as ColorCyclingType,
+        color: HEATMAP_COLORS_BY_ID.salmon,
         visible: true,
         filters: {
           'vessel-groups': [vesselGroupId],

@@ -364,7 +364,6 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         )
       }
       onRowSelectionChange={undefined}
-      enableColumnResizing
       selectAllMode="all"
       getRowId={(row, index) => `${index}-${row.id}`}
       initialState={{ columnPinning: { left: [PINNED_COLUMN] } }}
@@ -394,7 +393,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           color: 'var(--color-secondary-blue)',
         },
       })}
-      muiTableBodyRowProps={({ row }) => ({
+      muiTableBodyRowProps={() => ({
         sx: {
           backgroundColor: 'transparent',
           ':hover': {
