@@ -11,7 +11,7 @@ import React, {
 import Hotkeys from 'react-hot-keys'
 import { useSelector } from 'react-redux'
 import type { NumberValue } from 'd3-scale'
-import { debounce } from 'es-toolkit'
+import { throttle } from 'es-toolkit'
 import Slider from 'rc-slider'
 
 import { timebar as timebarLabels } from '@globalfishingwatch/i18n-labels'
@@ -110,7 +110,7 @@ const TimebarWrapper = () => {
 
   const debouncedDispatchTimerange = useMemo(
     () =>
-      debounce((timerange: { start: string; end: string }) => dispatchTimerange(timerange), 1000),
+      throttle((timerange: { start: string; end: string }) => dispatchTimerange(timerange), 200),
     [dispatchTimerange]
   )
 
