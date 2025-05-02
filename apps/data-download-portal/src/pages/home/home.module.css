@@ -41,7 +41,7 @@
   text-align: end;
   max-width: 50rem;
   line-height: 20px;
-  opacity: 0.65;
+  color: var(--color-secondary-blue);
 }
 
 .container {
@@ -51,16 +51,8 @@
 }
 
 .logoutButton {
-  position: relative;
-  top: -10px;
-  left: 22px;
-  height: 0;
-  background: none;
   text-decoration: underline;
-  color: var(--color-primary-blue);
-  line-height: 20px;
-  text-transform: none;
-  padding: 0%;
+  cursor: pointer;
 }
 
 .logoutButton:hover {
@@ -104,4 +96,8 @@
 
 .seeMore:hover {
   color: var(--link-hover-color);
+}
+
+.sortIcon:hover {
+  color: var(--color-primary-blue);
 }

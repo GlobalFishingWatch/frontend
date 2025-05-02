@@ -25,12 +25,10 @@ function HomePage() {
     }
   }
 
-  const [orderDirection, setOrderDirection] = useState<'asc' | 'desc'>('asc')
-  const [sortBy, setSortBy] = useState<'name' | 'lastUpdated'>('lastUpdated')
+  const [sortBy, setSortBy] = useState<'name' | 'lastUpdated'>('name')
 
-  const handleSortClick = (direction: 'asc' | 'desc', sortBy: 'name' | 'lastUpdated') => {
+  const handleSortClick = (sortBy: 'name' | 'lastUpdated') => {
     setSortBy(sortBy)
-    setOrderDirection(direction)
   }
 
   useEffect(() => {
@@ -55,8 +53,8 @@ function HomePage() {
       )
     })
 
-    return sortDatasets(filtered, sortBy, orderDirection)
-  }, [datasets, searchQuery, sortBy, orderDirection])
+    return sortDatasets(filtered, sortBy, 'asc')
+  }, [datasets, searchQuery, sortBy])
 
   return (
     <Fragment>
@@ -71,8 +69,9 @@ function HomePage() {
           />
           <IconButton
             type="border"
-            icon={orderDirection === 'asc' ? 'sort-asc' : 'sort-desc'}
-            onClick={() => handleSortClick(orderDirection === 'asc' ? 'desc' : 'asc', 'name')}
+            icon={sortBy === 'name' ? 'history' : 'sort-desc'}
+            onClick={() => handleSortClick(sortBy === 'name' ? 'lastUpdated' : 'name')}
+            tooltip={sortBy === 'name' ? 'Sort by last updated' : 'Sort by name'}
             className={styles.sortIcon}
           />
         </div>
@@ -83,17 +82,18 @@ function HomePage() {
             <div className={styles.loggedIn}>
               <p>
                 You’re logged in as {user?.email},<br />
+                <span
+                  role="button"
+                  tabIndex={0}
+                  className={styles.logoutButton}
+                  onClick={() => {
+                    logoutUser()
+                  }}
+                >
+                  log out
+                </span>{' '}
                 and try a different account if you can't find a dataset.
               </p>
-              <button
-                type="button"
-                className={styles.logoutButton}
-                onClick={() => {
-                  logoutUser()
-                }}
-              >
-                log out
-              </button>
             </div>
           ) : (
             <div className={styles.container}>
