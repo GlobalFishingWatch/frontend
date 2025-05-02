@@ -19,6 +19,9 @@
   border-bottom: var(--border);
   padding: var(--space-M);
   padding-top: var(--space-XS);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-M);
 }
 
 .sticky {
