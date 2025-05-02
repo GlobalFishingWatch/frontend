@@ -89,7 +89,6 @@ export const getValueLabelByUnit = (
 }
 
 export const getLabelWithUnit = (label: string, unit?: string): string => {
-  console.log('🚀 ~ getLabelWithUnit ~ label:', label)
   const translatedLabel = t(`layer.${label}`, label)
   if (unit) {
     return `${translatedLabel} (${
