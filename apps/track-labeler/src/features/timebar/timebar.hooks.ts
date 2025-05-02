@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { SelectedTrackType } from '../../features/vessels/selectedTracks.slice'
@@ -24,47 +24,73 @@ import { getVesselTrackData } from '../tracks/tracks.selectors'
 export const useTimerangeConnect = () => {
   const dispatch = useAppDispatch()
   const dateRange = useSelector(getDateRange)
-  // TODO needs to be debounced like viewport
-  const dispatchTimerange = ({ start, end }: { start: string; end: string }) => {
-    if (start !== dateRange.start || end !== dateRange.end) {
+
+  const dispatchTimerange = useCallback(
+    ({ start, end }: { start: string; end: string }) => {
       dispatch(updateQueryParams({ start, end }))
-    }
-  }
+    },
+    [dispatch]
+  )
 
-  const dispachHours = (hours: number[]) => {
-    dispatch(updateQueryParams({ fromHour: hours[0].toString(), toHour: hours[1].toString() }))
-  }
-  const dispachElevation = (elevations: number[]) => {
-    dispatch(
-      updateQueryParams({
-        minElevation: elevations[0].toString(),
-        maxElevation: elevations[1].toString(),
-      })
-    )
-  }
+  const dispachHours = useCallback(
+    (hours: number[]) => {
+      dispatch(updateQueryParams({ fromHour: hours[0].toString(), toHour: hours[1].toString() }))
+    },
+    [dispatch]
+  )
 
-  const dispachDistanceFromPort = (distance: number[]) => {
-    dispatch(
-      updateQueryParams({
-        minDistanceFromPort: distance[0].toString(),
-        maxDistanceFromPort: distance[1].toString(),
-      })
-    )
-  }
-  const dispatchSpeed = (speed: number[]) => {
-    dispatch(updateQueryParams({ minSpeed: speed[0].toString() }))
-    dispatch(updateQueryParams({ maxSpeed: speed[1].toString() }))
-  }
+  const dispachElevation = useCallback(
+    (elevations: number[]) => {
+      dispatch(
+        updateQueryParams({
+          minElevation: elevations[0].toString(),
+          maxElevation: elevations[1].toString(),
+        })
+      )
+    },
+    [dispatch]
+  )
 
-  return {
-    start: dateRange.start,
-    end: dateRange.end,
-    dispatchTimerange,
-    dispatchSpeed,
-    dispachHours,
-    dispachElevation,
-    dispachDistanceFromPort,
-  }
+  const dispachDistanceFromPort = useCallback(
+    (distance: number[]) => {
+      dispatch(
+        updateQueryParams({
+          minDistanceFromPort: distance[0].toString(),
+          maxDistanceFromPort: distance[1].toString(),
+        })
+      )
+    },
+    [dispatch]
+  )
+
+  const dispatchSpeed = useCallback(
+    (speed: number[]) => {
+      dispatch(updateQueryParams({ minSpeed: speed[0].toString() }))
+      dispatch(updateQueryParams({ maxSpeed: speed[1].toString() }))
+    },
+    [dispatch]
+  )
+
+  return useMemo(
+    () => ({
+      start: dateRange.start,
+      end: dateRange.end,
+      dispatchTimerange,
+      dispatchSpeed,
+      dispachHours,
+      dispachElevation,
+      dispachDistanceFromPort,
+    }),
+    [
+      dateRange?.end,
+      dateRange?.start,
+      dispatchTimerange,
+      dispatchSpeed,
+      dispachDistanceFromPort,
+      dispachElevation,
+      dispachHours,
+    ]
+  )
 }
 
 export const useTimebarModeConnect = () => {

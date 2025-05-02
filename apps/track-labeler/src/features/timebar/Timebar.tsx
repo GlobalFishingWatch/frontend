@@ -1,8 +1,10 @@
-import React, { createRef, Fragment, memo, useContext, useEffect } from 'react'
+import React, { createRef, Fragment, memo, useContext, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import type { NumberValue } from 'd3-scale'
+import { debounce } from 'es-toolkit'
 import Slider from 'rc-slider'
 
+import type { TimebarProps } from '@globalfishingwatch/timebar'
 import { Timebar, TimebarHighlighter, TimelineContext } from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'
@@ -77,11 +79,28 @@ const TimebarWrapper = () => {
     dispachElevation,
     dispachDistanceFromPort,
   } = useTimerangeConnect()
+
+  const [localRange, setLocalRange] = useState({
+    start,
+    end,
+  })
+
   const highlightedTime = useSelector(selectHighlightedTime)
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const { filterMode } = useTimebarModeConnect()
 
   const dispatch = useAppDispatch()
+
+  const debouncedDispatchTimerange = useMemo(
+    () =>
+      debounce((timerange: { start: string; end: string }) => dispatchTimerange(timerange), 1000),
+    [dispatchTimerange]
+  )
+
+  const onTimebarChange: TimebarProps['onChange'] = ({ start, end }) => {
+    setLocalRange({ start, end })
+    debouncedDispatchTimerange({ start, end })
+  }
 
   const myRef = createRef<any>()
   const { minSpeed, maxSpeed } = useSelector(selectFilteredSpeed)
@@ -120,12 +139,12 @@ const TimebarWrapper = () => {
       <div className={styles.timebarContainer}>
         {tooltip && <div className={styles.pointTooltip}>{tooltip}</div>}
         <Timebar
-          start={start}
-          end={end}
+          start={localRange?.start}
+          end={localRange?.end}
           showPlayback={false}
           absoluteStart={absoluteStart.toISOString()}
           absoluteEnd={absoluteEnd.toISOString()}
-          onChange={dispatchTimerange}
+          onChange={onTimebarChange}
           isResizable={true}
           showLast30DaysBtn={false}
           defaultHeight={TIMEBAR_DEFAULT_HEIGHT}
