@@ -17,7 +17,6 @@ import { ActionType } from '../../types'
 
 export const extractVesselDirectionPoints = (
   vesselTrack: LayersData[] | null,
-  date: { start: number; end: number },
   selectedtracks?: SelectedTrackType[]
 ): VesselPoint[] => {
   if (!vesselTrack) {
@@ -28,8 +27,6 @@ export const extractVesselDirectionPoints = (
       if (
         vesselMovement !== null &&
         vesselMovement.timestamp &&
-        date.start <= vesselMovement.timestamp &&
-        date.end >= vesselMovement.timestamp &&
         vesselMovement.course !== undefined &&
         vesselMovement.course !== null
       ) {
@@ -65,25 +62,48 @@ export const extractVesselDirectionPoints = (
   return eventsWithRenderingInfo
 }
 
+export const extractVesselDirectionPointsByDateRange = (
+  vesselTrack: VesselPoint[] | null,
+  { start, end }: { start: number; end: number }
+): VesselPoint[] => {
+  if (!vesselTrack) {
+    return []
+  }
+  return vesselTrack.filter((data) => {
+    return data.timestamp >= start && data.timestamp <= end
+  })
+}
+export const selectAllVesselDirectionPoints = createSelector(
+  [getVesselTrackGeojsonByDateRange, selectedtracks],
+  (trackSegments, selectedTracks) => {
+    return extractVesselDirectionPoints(
+      [{ trackPoints: (trackSegments || [])?.flat(), action: ActionType.untracked }],
+      selectedTracks
+    )
+  }
+)
+
 /**
  * We filter untracked points and return arrows with more data for the right visualization
  */
 export const selectVesselDirectionPoints = createSelector(
-  [getVesselTrackGeojsonByDateRange, getDateRangeTS, selectedtracks],
-  (trackSegments, dates, selectedTracks) =>
-    extractVesselDirectionPoints(
-      [{ trackPoints: (trackSegments || [])?.flat(), action: ActionType.untracked }],
-      dates,
-      selectedTracks
-    )
+  [selectAllVesselDirectionPoints, getDateRangeTS],
+  (points, dates) => {
+    return extractVesselDirectionPointsByDateRange(points, dates)
+  }
+)
+
+export const selectAllVesselDirectionPointsOfSelectedSegments = createSelector(
+  [getVesselParsedTrack],
+  (vesselTrack): VesselPoint[] => extractVesselDirectionPoints(vesselTrack, [])
 )
 
 /**
  * We filter points and return arrows with more data for the right visualization
  */
 export const selectVesselDirectionPointsOfSelectedSegments = createSelector(
-  [getVesselParsedTrack, getDateRangeTS],
-  (vesselTrack, date): VesselPoint[] => extractVesselDirectionPoints(vesselTrack, date, [])
+  [selectAllVesselDirectionPointsOfSelectedSegments, getDateRangeTS],
+  (points, date): VesselPoint[] => extractVesselDirectionPointsByDateRange(points, date)
 )
 
 /**

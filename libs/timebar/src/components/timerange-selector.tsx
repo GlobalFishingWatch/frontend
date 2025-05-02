@@ -202,18 +202,21 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
 
   getDisabledFields = (startDate: DateTime, endDate: DateTime) => {
     const intervalsToCheck: FourwingsInterval[] = ['MONTH', 'DAY']
-    return intervalsToCheck.reduce((acc, limit) => {
-      const limitConfig = LIMITS_BY_INTERVAL[limit]
-      if (limitConfig) {
-        const unit = limitConfig.unit === 'year' ? 'years' : limitConfig.unit
-        const duration = endDate.diff(startDate, [unit])?.[unit]
-        return {
-          ...acc,
-          [limit]: Math.ceil(duration) > limitConfig.value,
+    return intervalsToCheck.reduce(
+      (acc, limit) => {
+        const limitConfig = LIMITS_BY_INTERVAL[limit]
+        if (limitConfig) {
+          const unit = limitConfig.unit === 'year' ? 'years' : limitConfig.unit
+          const duration = endDate.diff(startDate, [unit])?.[unit]
+          return {
+            ...acc,
+            [limit]: Math.ceil(duration) > limitConfig.value,
+          }
         }
-      }
-      return acc
-    }, {} as Record<FourwingsInterval, boolean>)
+        return acc
+      },
+      {} as Record<FourwingsInterval, boolean>
+    )
   }
 
   onStartChange = (e: ChangeEvent<HTMLInputElement>, property: DateProperty) => {
@@ -330,8 +333,10 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
 
     let errorMessage = ''
     if (!startValid || !endValid) {
-      errorMessage = `${labels.selectAValidDate}: ${this.bounds.min.slice(0, 4)} - ${(
-        parseInt(this.bounds.max.slice(0, 4)) + 1
+      errorMessage = `${labels.selectAValidDate}: ${this.bounds.min ? this.bounds.min.slice(0, 4) : ''} - ${(this
+        .bounds.max
+        ? parseInt(this.bounds.max.slice(0, 4)) + 1
+        : DateTime.now().year
       ).toString()}`
     } else if (!startBeforeEnd) {
       errorMessage = labels.endBeforeStart || ''

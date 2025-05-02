@@ -69,7 +69,7 @@ export const DEFAULT_WORKSPACE: AppState = {
   maxSpeed: 15,
   minElevation: -4000,
   maxElevation: 500,
-  hiddenLayers: '',
+  hiddenLayers: 'eez,mpant,cp_rfmo',
   fromHour: 0,
   toHour: 24,
   latitude: -25.54035,
