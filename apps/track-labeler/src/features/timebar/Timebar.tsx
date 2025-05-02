@@ -1,11 +1,26 @@
-import React, { createRef, Fragment, memo, useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  createRef,
+  Fragment,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import Hotkeys from 'react-hot-keys'
 import { useSelector } from 'react-redux'
 import type { NumberValue } from 'd3-scale'
 import { debounce } from 'es-toolkit'
 import Slider from 'rc-slider'
 
 import type { TimebarProps } from '@globalfishingwatch/timebar'
-import { Timebar, TimebarHighlighter, TimelineContext } from '@globalfishingwatch/timebar'
+import {
+  getNextStep,
+  Timebar,
+  TimebarHighlighter,
+  TimelineContext,
+} from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'
 import { useTimebarModeConnect, useTimerangeConnect } from '../../features/timebar/timebar.hooks'
@@ -69,6 +84,7 @@ const DayNightTimebarLayer = () => {
   )
 }
 
+const absoluteStart = new Date('2012-01-01')
 const TimebarWrapper = () => {
   const {
     start,
@@ -97,10 +113,13 @@ const TimebarWrapper = () => {
     [dispatchTimerange]
   )
 
-  const onTimebarChange: TimebarProps['onChange'] = ({ start, end }) => {
-    setLocalRange({ start, end })
-    debouncedDispatchTimerange({ start, end })
-  }
+  const onTimebarChange: TimebarProps['onChange'] = useCallback(
+    ({ start, end }) => {
+      setLocalRange({ start, end })
+      debouncedDispatchTimerange({ start, end })
+    },
+    [debouncedDispatchTimerange]
+  )
 
   const myRef = createRef<any>()
   const { minSpeed, maxSpeed } = useSelector(selectFilteredSpeed)
@@ -131,11 +150,28 @@ const TimebarWrapper = () => {
   }, [myRef])
 
   const tooltip = useSelector(selectTooltip)
-  const absoluteStart = new Date('2012-01-01')
   const absoluteEnd = new Date()
+
+  const onTimebarNavigation = useCallback(
+    (keyName: string) => {
+      const key = keyName.replace('shift+', '')
+      const deltaMultiplicator = key === 'left' ? -1 : 1
+      const { start, end } = getNextStep({
+        start: localRange.start,
+        end: localRange.end,
+        absoluteStart: absoluteStart.toISOString(),
+        deltaMultiplicator,
+      })
+      if (start && end) {
+        onTimebarChange({ start, end })
+      }
+    },
+    [localRange.start, localRange.end, onTimebarChange]
+  )
 
   return (
     <Fragment>
+      <Hotkeys keyName="shift+left,shift+right" onKeyUp={onTimebarNavigation}></Hotkeys>
       <div className={styles.timebarContainer}>
         {tooltip && <div className={styles.pointTooltip}>{tooltip}</div>}
         <Timebar

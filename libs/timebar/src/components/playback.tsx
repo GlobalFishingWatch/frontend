@@ -1,27 +1,17 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
-import { scaleLinear } from 'd3-scale'
-import { DateTime } from 'luxon'
-import memoize from 'memoize-one'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { FOURWINGS_INTERVALS_ORDER,getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
 
-import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
+import { getTimebarStepByDelta } from '../utils'
 
 import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
 
-const BASE_STEP = 0.001
 const SPEED_STEPS = [1, 2, 3, 5, 10]
-
-const MS_IN_INTERVAL = {
-  HOUR: 1000 * 60 * 60,
-  DAY: 1000 * 60 * 60 * 24,
-  YEAR: 1000 * 60 * 60 * 24 * 365,
-}
 
 type PlaybackProps = {
   labels: {
@@ -82,60 +72,39 @@ class Playback extends Component<PlaybackProps> {
     }
   }
 
-  getStep = memoize((start, end, speedStep) => {
-    const baseStepWithSpeed = BASE_STEP * SPEED_STEPS[speedStep]
-    const startMs = getUTCDate(start).getTime()
-    const endMs = getUTCDate(end).getTime()
-
-    const scale = scaleLinear().range([0, 1]).domain([startMs, endMs])
-    const step = scale.invert(baseStepWithSpeed) - startMs
-    return step
-  })
-
   update = (deltaMultiplicator: number, { byIntervals = false } = {}) => {
     const { onTick, start, end, absoluteStart, intervals, getCurrentInterval } = this.props
     if (!start || !end) {
       return
     }
     const { speedStep, loop } = this.state
-    let newStartMs
-    let newEndMs
-    if (byIntervals && getCurrentInterval) {
-      const interval = getCurrentInterval(start, end, intervals)
-      const intervalStartMs =
-        interval === 'MONTH'
-          ? DateTime.fromISO(start, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
-          : MS_IN_INTERVAL[interval]
-      const intervalEndMs =
-        interval === 'MONTH'
-          ? DateTime.fromISO(end, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
-          : MS_IN_INTERVAL[interval]
-      newStartMs = getUTCDate(start).getTime() + intervalStartMs * deltaMultiplicator
-      newEndMs = getUTCDate(end).getTime() + intervalEndMs * deltaMultiplicator
-    } else {
-      const deltaMs = this.getStep(start, end, speedStep) * deltaMultiplicator
-      newStartMs = getUTCDate(start).getTime() + deltaMs
-      newEndMs = getUTCDate(end).getTime() + deltaMs
-    }
-    const currentStartEndDeltaMs = newEndMs - newStartMs
-    const playbackAbsoluteEnd = getUTCDate(Date.now()).toISOString()
-    const { newStartClamped, newEndClamped, clamped } = clampToAbsoluteBoundaries(
-      getUTCDate(newStartMs).toISOString(),
-      getUTCDate(newEndMs).toISOString(),
-      currentStartEndDeltaMs,
+    const {
+      start: newStart,
+      end: newEnd,
+      clamped,
+    } = getTimebarStepByDelta({
+      start,
+      end,
       absoluteStart,
-      playbackAbsoluteEnd
-    )
+      intervals,
+      byIntervals,
+      speedStep,
+      getCurrentInterval,
+      deltaMultiplicator,
+    })
 
-    onTick(newStartClamped, newEndClamped)
+    if (newStart && newEnd) {
+      onTick(newStart, newEnd)
+    }
 
     if (clamped === 'end') {
       if (loop === true) {
+        const currentStartEndDeltaMs = getUTCDate(newStart).getTime() - getUTCDate(newEnd).getTime()
         // start again from absoluteStart
-        const newEnd = getUTCDate(
+        const newEndLoop = getUTCDate(
           getUTCDate(absoluteStart).getTime() + currentStartEndDeltaMs
         ).toISOString()
-        onTick(absoluteStart, newEnd)
+        onTick(absoluteStart, newEndLoop)
       } else {
         this.togglePlay(false)
       }
