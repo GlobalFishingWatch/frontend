@@ -1,7 +1,7 @@
 import type { Dispatch } from 'redux'
 import type { StateGetter } from 'redux-first-router'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { API_VERSION, GFWAPI } from '@globalfishingwatch/api-client'
 
 import { selectIsImportView, selectVessel } from '../../routes/routes.selectors'
 import type { AppState } from '../../types/redux.types'
@@ -12,7 +12,7 @@ import { selectImportedData, setVesselInfo } from './vessels.slice'
 
 // TODO to be finished when the api is ready
 const fetchVesselInfo = async (id: string) => {
-  const url = `/v1/vessels/${id}?datasets=public-global-vessels:v20190502`
+  const url = `/${API_VERSION}/vessels/${id}?datasets=public-global-vessels:v20190502`
   const data: VesselInfo = await GFWAPI.fetch<any>(url).then((r) => {
     //console.log('-------------- VESSEL INFO -----------------')
     //console.log(r)
