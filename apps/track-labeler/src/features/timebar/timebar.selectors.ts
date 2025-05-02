@@ -151,31 +151,33 @@ export const selectRangeFilterLimits = createSelector(
       hours: { min: 0, max: 24 },
     }
 
-    if (vesselPoints.length > 0) {
-      limits.speed = vesselPoints.reduce(
-        (acc, point) => ({
-          min: Math.min(acc.min, point.speed || 0),
-          max: Math.max(acc.max, point.speed || 0),
-        }),
-        { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
-      )
-
-      limits.elevation = vesselPoints.reduce(
-        (acc, point) => ({
-          min: Math.min(acc.min, point.elevation || 0),
-          max: Math.max(acc.max, point.elevation || 0),
-        }),
-        { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
-      )
-
-      limits.distanceFromPort = vesselPoints.reduce(
-        (acc, point) => ({
-          min: Math.min(acc.min, point.distanceFromPort || 0),
-          max: Math.max(acc.max, point.distanceFromPort || 0),
-        }),
-        { min: Number.MAX_VALUE, max: Number.MIN_VALUE }
-      )
+    // Optimize min/max calculation for speed, elevation, and distanceFromPort in a single pass
+    const initialLimits = {
+      speed: { min: Number.MAX_VALUE, max: Number.MIN_VALUE },
+      elevation: { min: Number.MAX_VALUE, max: Number.MIN_VALUE },
+      distanceFromPort: { min: Number.MAX_VALUE, max: Number.MIN_VALUE },
     }
+
+    const combinedLimits = vesselPoints.reduce((acc, point) => {
+      const speed = point.speed || 0
+      const elevation = point.elevation || 0
+      const distanceFromPort = point.distanceFromPort || 0
+
+      acc.speed.min = Math.min(acc.speed.min, speed)
+      acc.speed.max = Math.max(acc.speed.max, speed)
+
+      acc.elevation.min = Math.min(acc.elevation.min, elevation)
+      acc.elevation.max = Math.max(acc.elevation.max, elevation)
+
+      acc.distanceFromPort.min = Math.min(acc.distanceFromPort.min, distanceFromPort)
+      acc.distanceFromPort.max = Math.max(acc.distanceFromPort.max, distanceFromPort)
+
+      return acc
+    }, initialLimits)
+
+    limits.speed = combinedLimits.speed
+    limits.elevation = combinedLimits.elevation
+    limits.distanceFromPort = combinedLimits.distanceFromPort
 
     return limits
   }
