@@ -14,9 +14,10 @@ import type { NumberValue } from 'd3-scale'
 import { debounce } from 'es-toolkit'
 import Slider from 'rc-slider'
 
+import { timebar as timebarLabels } from '@globalfishingwatch/i18n-labels'
 import type { TimebarProps } from '@globalfishingwatch/timebar'
 import {
-  getNextStep,
+  getTimebarStepByDelta,
   Timebar,
   TimebarHighlighter,
   TimelineContext,
@@ -156,7 +157,7 @@ const TimebarWrapper = () => {
     (keyName: string) => {
       const key = keyName.replace('shift+', '')
       const deltaMultiplicator = key === 'left' ? -1 : 1
-      const { start, end } = getNextStep({
+      const { start, end } = getTimebarStepByDelta({
         start: localRange.start,
         end: localRange.end,
         absoluteStart: absoluteStart.toISOString(),
@@ -182,6 +183,7 @@ const TimebarWrapper = () => {
           absoluteEnd={absoluteEnd.toISOString()}
           onChange={onTimebarChange}
           isResizable={true}
+          labels={timebarLabels}
           showLast30DaysBtn={false}
           defaultHeight={TIMEBAR_DEFAULT_HEIGHT}
           trackGraphOrientation={'up'}
