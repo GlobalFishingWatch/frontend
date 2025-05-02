@@ -17,7 +17,7 @@ import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectIsJACUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import {
   selectVesselInfoData,
   selectVesselPrintMode,
@@ -52,6 +52,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
   const isJACUser = useSelector(selectIsJACUser)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
@@ -208,7 +209,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
         </h1>
 
         <div className={styles.actionsContainer}>
-          {isJACUser && <VesselInfoCorrection />}
+          {(isJACUser || isGFWUser) && <VesselInfoCorrection />}
           {vesselProfileDataview && (
             <VesselDownload
               dataview={vesselProfileDataview}
