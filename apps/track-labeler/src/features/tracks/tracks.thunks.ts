@@ -1,12 +1,11 @@
 import type { StateGetter } from 'redux-first-router'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { API_VERSION, GFWAPI } from '@globalfishingwatch/api-client'
 import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
 import { trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 
 import { TRACK_FIELDS } from '../../data/config'
-import type {
-  TrackItem} from '../../features/vessels/vessels.slice';
+import type { TrackItem } from '../../features/vessels/vessels.slice'
 import {
   initVesselTrack,
   selectImportedData,
@@ -36,7 +35,7 @@ const fetchTrack = async (
   }
 
   const trackFields = Object.assign([], TRACK_FIELDS)
-  const url = `/v1/vessels/${id}/tracks?startDate=${start}&endDate=${end}&binary=true&fields=${trackFields}&format=valueArray&wrapLongitudes=false&datasets=${dataset}`
+  const url = `/${API_VERSION}/vessels/${id}/tracks?startDate=${start}&endDate=${end}&binary=true&fields=${trackFields}&format=valueArray&wrapLongitudes=false&datasets=${dataset}`
   const data = await GFWAPI.fetch<number[]>(url, { responseType: 'vessel' }).then((data) => {
     const segments = trackValueArrayToSegments(data, trackFields)
     return segments
