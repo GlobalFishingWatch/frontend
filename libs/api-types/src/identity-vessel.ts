@@ -245,4 +245,5 @@ export interface IdentityVessel {
   registryOwners?: VesselRegistryOwner[]
   operator?: VesselRegistryOperator
   selfReportedInfo: SelfReportedInfo[]
+  recordId?: string
 }

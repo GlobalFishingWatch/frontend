@@ -71,6 +71,7 @@ export type IdentityVesselData = {
     | 'matchCriteria'
     | 'combinedSourcesInfo'
     | 'operator'
+    | 'recordId'
   >
 
 type VesselInfoEntry = {
