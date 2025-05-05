@@ -6,10 +6,12 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "i18n:check": "i18n-check --locales ./public/locales --source source -f i18next -e ./public/locales/val/*",
     "i18n:parser": "i18next",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
+    "@lingual/i18n-check": "^0.8.2",
     "i18next-parser": "9.3.0",
     "source-map-explorer": "2.5.3"
   },

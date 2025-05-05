@@ -76,6 +76,20 @@
         "script": "i18n:parser"
       }
     },
+    "i18n:check": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "i18n:check"
+      },
+      "configurations": {
+        "summary": {
+          "args": ["-r", "summary"]
+        },
+        "default": {
+          "args": []
+        }
+      }
+    },
     "prepare-serve": {
       "executor": "nx:run-commands",
       "options": {
