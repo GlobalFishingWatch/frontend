@@ -388,7 +388,7 @@
       "opacity": "Polygon opacity"
     },
     "processingData": "Processing data...",
-    "segment": "",
+    "segment": "segment",
     "time": "{{geometryType}} time",
     "timeEnd": "{{geometryType}} end",
     "timePeriodType": "Time filter",
