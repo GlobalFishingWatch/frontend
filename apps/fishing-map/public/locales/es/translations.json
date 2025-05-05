@@ -388,7 +388,7 @@
       "opacity": "Opacidad del polígono"
     },
     "processingData": "Procesando datos...",
-    "segment": "",
+    "segment": "segment",
     "time": "Hora de {{geometryType}}",
     "timeEnd": "Fin de {{geometryType}}",
     "timePeriodType": "Filtro de tiempo",
