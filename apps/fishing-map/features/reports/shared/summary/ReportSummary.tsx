@@ -4,7 +4,6 @@ import Sticky from 'react-sticky-el'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
-import { FIELDS } from 'features/reports/shared/summary/report-summary.utils'
 import ReportSummaryActivity from 'features/reports/shared/summary/ReportSummaryActivity'
 import ReportSummaryEvents from 'features/reports/shared/summary/ReportSummaryEvents'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
@@ -44,12 +43,7 @@ export default function ReportSummary({
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
           <div className={styles.tagsContainer}>
             {dataviews?.map((dataview, index) => (
-              <ReportSummaryTags
-                key={dataview.id}
-                dataview={dataview}
-                index={index}
-                availableFields={FIELDS}
-              />
+              <ReportSummaryTags key={dataview.id} dataview={dataview} index={index} />
             ))}
           </div>
         </Sticky>

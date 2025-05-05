@@ -39,7 +39,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
-import { t } from 'features/i18n/i18n'
+import i18n, { t } from 'features/i18n/i18n'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
@@ -116,15 +116,6 @@ export type SupportedEnvDatasetSchema =
   | 'scenario' // species-mm
 type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
 type SupportedEventsDatasetSchema = 'duration' | 'encounter_type' | 'type' | 'next_port_id'
-
-const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
-const EVENTS_DATASETS_SCHEMAS: SupportedEventsDatasetSchema[] = [
-  'duration',
-  'encounter_type',
-  'type',
-  'next_port_id',
-]
-const DATASETS_SCHEMAS = [...CONTEXT_DATASETS_SCHEMAS, ...EVENTS_DATASETS_SCHEMAS]
 const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups', 'period', 'scenario']
 
 type SchemaCompatibilityOperation = 'every' | 'some'
@@ -942,6 +933,16 @@ export const getSchemaFieldsSelectedInDataview = (
   return optionsSelected
 }
 
+export const getSchemaFieldLabel = (schema: SupportedDatasetSchema, datasetId: string) => {
+  if (datasetId && i18n.exists(`datasets:${datasetId}.schema.${schema}.keyword`)) {
+    return t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
+  }
+  if (i18n.exists(`vessel.${schema}`)) {
+    return t(`vessel.${schema}`, { defaultValue: schema, count: 2 })
+  }
+  return t(`layer.${schema}`, schema)
+}
+
 export type SchemaFilter = {
   type: DatasetSchemaType
   id: SupportedDatasetSchema
@@ -988,16 +989,7 @@ export const getFiltersBySchema = (
     incompatibleFilterSelection !== undefined && incompatibleFilterSelection?.length > 0
   const disabled = !hasDatasetsWithSchema || hasIncompatibleFilterSelection
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id as string)
-  let label: string = DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
-    ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
-    : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect
-  if (schema === 'vessel-groups') {
-    label = t('vesselGroup.vesselGroup', 'Vessel Group')
-  }
-  // TODO: remove this once dataset includes translations
-  if (schema === 'next_port_id') {
-    label = t('layer.next_port_id', 'Next port id')
-  }
+  const label = getSchemaFieldLabel(schema, datasetId)
 
   return {
     id: schema,

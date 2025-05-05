@@ -6,9 +6,8 @@ import cx from 'classnames'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
-import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
@@ -19,10 +18,9 @@ import styles from './ReportSummaryTags.module.css'
 type LayerPanelProps = {
   index: number
   dataview: UrlDataviewInstance
-  availableFields: string[][]
 }
 
-export default function ReportSummaryTags({ dataview, availableFields }: LayerPanelProps) {
+export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
   const { t } = useTranslation()
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
 
@@ -31,6 +29,8 @@ export default function ReportSummaryTags({ dataview, availableFields }: LayerPa
   const onToggleFiltersUIOpen = () => {
     setFiltersUIOpen(!filtersUIOpen)
   }
+
+  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
 
   return (
     <div className={styles.row}>
@@ -60,13 +60,12 @@ export default function ReportSummaryTags({ dataview, availableFields }: LayerPa
       </div>
       <Fragment>
         <DatasetFilterSource dataview={dataview} className={styles.tag} />
-        <DatasetFlagField dataview={dataview} className={styles.tag} />
-        {availableFields.map((field) => (
+        {filtersAllowed.map(({ id, label }) => (
           <DatasetSchemaField
-            key={field[0]}
+            key={id}
             dataview={dataview}
-            field={field[0] as SupportedDatasetSchema}
-            label={t(field[1] as any, field[2])}
+            field={id}
+            label={label}
             className={styles.tag}
           />
         ))}
