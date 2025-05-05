@@ -124,3 +124,8 @@
 .extendedInfo {
   font: var(--font-S);
 }
+
+.gfwOnly {
+  display: inline-block;
+  margin: var(--space-XS) 0;
+}

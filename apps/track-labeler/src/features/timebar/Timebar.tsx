@@ -1,9 +1,27 @@
-import React, { createRef, Fragment, memo, useContext, useEffect } from 'react'
+import React, {
+  createRef,
+  Fragment,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import Hotkeys from 'react-hot-keys'
 import { useSelector } from 'react-redux'
 import type { NumberValue } from 'd3-scale'
+import { throttle } from 'es-toolkit'
 import Slider from 'rc-slider'
 
-import { Timebar, TimebarHighlighter, TimelineContext } from '@globalfishingwatch/timebar'
+import { timebar as timebarLabels } from '@globalfishingwatch/i18n-labels'
+import type { TimebarProps } from '@globalfishingwatch/timebar'
+import {
+  getTimebarStepByDelta,
+  Timebar,
+  TimebarHighlighter,
+  TimelineContext,
+} from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'
 import { useTimebarModeConnect, useTimerangeConnect } from '../../features/timebar/timebar.hooks'
@@ -67,6 +85,7 @@ const DayNightTimebarLayer = () => {
   )
 }
 
+const absoluteStart = new Date('2012-01-01')
 const TimebarWrapper = () => {
   const {
     start,
@@ -77,11 +96,31 @@ const TimebarWrapper = () => {
     dispachElevation,
     dispachDistanceFromPort,
   } = useTimerangeConnect()
+
+  const [localRange, setLocalRange] = useState({
+    start,
+    end,
+  })
+
   const highlightedTime = useSelector(selectHighlightedTime)
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const { filterMode } = useTimebarModeConnect()
 
   const dispatch = useAppDispatch()
+
+  const debouncedDispatchTimerange = useMemo(
+    () =>
+      throttle((timerange: { start: string; end: string }) => dispatchTimerange(timerange), 200),
+    [dispatchTimerange]
+  )
+
+  const onTimebarChange: TimebarProps['onChange'] = useCallback(
+    ({ start, end }) => {
+      setLocalRange({ start, end })
+      debouncedDispatchTimerange({ start, end })
+    },
+    [debouncedDispatchTimerange]
+  )
 
   const myRef = createRef<any>()
   const { minSpeed, maxSpeed } = useSelector(selectFilteredSpeed)
@@ -112,21 +151,39 @@ const TimebarWrapper = () => {
   }, [myRef])
 
   const tooltip = useSelector(selectTooltip)
-  const absoluteStart = new Date('2012-01-01')
   const absoluteEnd = new Date()
+
+  const onTimebarNavigation = useCallback(
+    (keyName: string) => {
+      const key = keyName.replace('shift+', '')
+      const deltaMultiplicator = key === 'left' ? -1 : 1
+      const { start, end } = getTimebarStepByDelta({
+        start: localRange.start,
+        end: localRange.end,
+        absoluteStart: absoluteStart.toISOString(),
+        deltaMultiplicator,
+      })
+      if (start && end) {
+        onTimebarChange({ start, end })
+      }
+    },
+    [localRange.start, localRange.end, onTimebarChange]
+  )
 
   return (
     <Fragment>
+      <Hotkeys keyName="shift+left,shift+right" onKeyUp={onTimebarNavigation}></Hotkeys>
       <div className={styles.timebarContainer}>
         {tooltip && <div className={styles.pointTooltip}>{tooltip}</div>}
         <Timebar
-          start={start}
-          end={end}
+          start={localRange?.start}
+          end={localRange?.end}
           showPlayback={false}
           absoluteStart={absoluteStart.toISOString()}
           absoluteEnd={absoluteEnd.toISOString()}
-          onChange={dispatchTimerange}
+          onChange={onTimebarChange}
           isResizable={true}
+          labels={timebarLabels}
           showLast30DaysBtn={false}
           defaultHeight={TIMEBAR_DEFAULT_HEIGHT}
           trackGraphOrientation={'up'}
