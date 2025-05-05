@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { t } from 'i18next'
 
 import type {
   VesselRegistryOperator,
@@ -12,6 +12,8 @@ import type {
 import I18nDate from 'features/i18n/i18nDate'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
 import type { VesselLastIdentity } from 'features/search/search.slice'
+import GFWOnly from 'features/user/GFWOnly'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import type { VesselRenderField } from '../vessel.config'
@@ -66,6 +68,7 @@ const VesselRegistryField = ({
   showLabel?: boolean
 }) => {
   const { t } = useTranslation()
+  const isGFWUser = useSelector(selectIsGFWUser)
   const { key, label, terminologyKey } = registryField
   const { getRegionTranslationsById } = useRegionTranslationsById()
   if (key === 'operator') {
@@ -78,6 +81,24 @@ const VesselRegistryField = ({
           </div>
         )}
         <RegistryOperatorField registryField={registryField} vesselIdentity={vesselIdentity} />
+      </div>
+    )
+  }
+  if (key === 'recordId') {
+    if (!isGFWUser) {
+      return null
+    }
+    return (
+      <div className={cx(styles.fieldGroupContainer, styles.flex)} key={key}>
+        {showLabel && (
+          <div className={styles.labelContainer}>
+            <label>
+              {t(`vessel.recordId`, 'Record ID')}
+              <GFWOnly userGroup="gfw" />
+            </label>
+          </div>
+        )}
+        {vesselIdentity.recordId && <VesselIdentityField value={vesselIdentity.recordId} />}
       </div>
     )
   }
