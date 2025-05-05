@@ -102,7 +102,7 @@ const VesselIdentityCombinedSourceField = ({
                 {geartypesExpanded === index && (
                   <ul className={styles.extendedInfo}>
                     <li>
-                      <GFWOnly className={styles.gfwOnly} />
+                      <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
                     </li>
                     <li>
                       <span className={styles.secondary}>AIS self-reported: </span>

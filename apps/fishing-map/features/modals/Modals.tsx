@@ -129,7 +129,7 @@ const AppModals = () => {
           title={
             <Fragment>
               Secret debug menu 🤖
-              <GFWOnly />
+              <GFWOnly userGroup="gfw" />
             </Fragment>
           }
           isOpen={debugActive && !anyAppModalOpen}
@@ -145,7 +145,7 @@ const AppModals = () => {
           title={
             <Fragment>
               Workspace editor 📝
-              <GFWOnly />
+              <GFWOnly userGroup="gfw" />
             </Fragment>
           }
           isOpen={editorActive && !anyAppModalOpen}
@@ -161,7 +161,7 @@ const AppModals = () => {
           title={
             <Fragment>
               Big query datasets creation 🧠
-              <GFWOnly />
+              <GFWOnly userGroup="gfw" />
             </Fragment>
           }
           isOpen={bigqueryActive && !anyAppModalOpen}

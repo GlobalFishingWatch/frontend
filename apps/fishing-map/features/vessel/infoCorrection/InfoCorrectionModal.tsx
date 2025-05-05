@@ -228,7 +228,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
       title={
         <Fragment>
           {t('vessel.infoCorrection.title', 'Vessel Info Correction')}
-          <GFWOnly />
+          <GFWOnly userGroup="any" />
         </Fragment>
       }
       isOpen={isOpen}

@@ -94,7 +94,7 @@ const VesselRegistryField = ({
           <div className={styles.labelContainer}>
             <label>
               {t(`vessel.recordId`, 'Record ID')}
-              <GFWOnly />
+              <GFWOnly userGroup="gfw" />
             </label>
           </div>
         )}
