@@ -3,7 +3,6 @@ import cx from 'classnames'
 
 import { Icon } from '@globalfishingwatch/ui-components'
 
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { LocaleLabels } from 'features/i18n/i18n'
 import type { Locale } from 'types'
 
@@ -20,11 +19,6 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
   const toggleLanguage = (lang: Locale) => {
-    trackEvent({
-      category: TrackCategory.I18n,
-      action: `Change language`,
-      label: lang,
-    })
     i18n.changeLanguage(lang)
   }
   return (
