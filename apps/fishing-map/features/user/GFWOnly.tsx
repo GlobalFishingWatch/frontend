@@ -13,7 +13,7 @@ type GFWOnlyProps = {
   type?: 'default' | 'only-icon'
   style?: IconProps['style']
   className?: string
-  userGroup?: 'gfw' | 'jac'
+  userGroup?: 'gfw' | 'jac' | 'any'
 }
 
 const defaultIconProps: IconProps = {
@@ -23,7 +23,7 @@ const defaultIconProps: IconProps = {
 }
 
 function GFWOnly(props: GFWOnlyProps) {
-  const { type = 'default', style = {}, className = '', userGroup = 'gfw' } = props
+  const { type = 'default', style = {}, className = '', userGroup } = props
   const { t } = useTranslation()
   const gfwUser = useSelector(selectIsGFWUser)
   const jacUser = useSelector(selectIsJACUser)
@@ -35,6 +35,12 @@ function GFWOnly(props: GFWOnlyProps) {
     disclaimerText = t('common.onlyVisibleForJAC', 'Only visible for JAC users')
   } else if (userGroup === 'gfw') {
     disclaimerText = t('common.onlyVisibleForGFW', 'Only visible for GFW users')
+  } else if (userGroup === 'any') {
+    if (gfwUser) {
+      disclaimerText = t('common.onlyVisibleForGFW', 'Only visible for GFW users')
+    } else if (jacUser) {
+      disclaimerText = t('common.onlyVisibleForJAC', 'Only visible for JAC users')
+    }
   }
 
   if (type === 'only-icon') {

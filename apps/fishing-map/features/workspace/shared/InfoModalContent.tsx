@@ -43,7 +43,7 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
         <div className={styles.content}>
           <div className={styles.queriesContainer}>
             <h2 className={styles.subtitle}>Queries used</h2>
-            <GFWOnly />
+            <GFWOnly userGroup="gfw" />
           </div>
           {queries?.map((query: string, index: number) => (
             <div key={index}>

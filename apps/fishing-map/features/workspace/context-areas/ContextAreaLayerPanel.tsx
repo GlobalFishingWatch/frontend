@@ -241,7 +241,12 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           testId={`context-layer-${dataview.id}`}
         />
         {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
-          <GFWOnly type="only-icon" style={{ transform: 'none' }} className={styles.gfwIcon} />
+          <GFWOnly
+            type="only-icon"
+            style={{ transform: 'none' }}
+            className={styles.gfwIcon}
+            userGroup="gfw"
+          />
         )}
         <Title
           title={title}

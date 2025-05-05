@@ -200,7 +200,7 @@ function VesselLayerPanel({
     if (dataview?.datasetsConfig?.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
       return (
         <Fragment>
-          <GFWOnly type="only-icon" />
+          <GFWOnly type="only-icon" userGroup="gfw" />
           {vesselLabel}
           {otherVesselsLabel && <span className={styles.secondary}>{otherVesselsLabel}</span>}
         </Fragment>
