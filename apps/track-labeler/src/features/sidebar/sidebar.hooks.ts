@@ -129,9 +129,7 @@ export const useSelectedTracksConnect = () => {
       )
       body.append('vesselId', vesselId)
       body.append('customFilename', vesselId + '_' + user?.email)
-      // TODO: move to v3 once the API is fixed
-      // const url = `/${API_VERSION}/labels/uploads`
-      const url = `/v2/labels/uploads`
+      const url = `/${API_VERSION}/labels/uploads`
       const response = await GFWAPI.fetch<any>(url, {
         method: 'POST',
         requestType: 'formData',
