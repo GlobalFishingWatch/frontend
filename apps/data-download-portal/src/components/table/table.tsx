@@ -7,13 +7,24 @@ import type {
   TableInstance,
   TableOptions,
   TableState,
+  UseExpandedInstanceProps,
+  UseExpandedOptions,
+  UseExpandedRowProps,
+  UseExpandedState,
   UseGlobalFiltersInstanceProps,
   UseGlobalFiltersState,
   UseRowSelectInstanceProps,
   UseSortByColumnProps,
   UseSortByInstanceProps,
 } from 'react-table'
-import { useFlexLayout, useGlobalFilter, useRowSelect, useSortBy, useTable } from 'react-table'
+import {
+  useExpanded,
+  useFlexLayout,
+  useGlobalFilter,
+  useRowSelect,
+  useSortBy,
+  useTable,
+} from 'react-table'
 import { FixedSizeList } from 'react-window'
 import { useParams } from '@tanstack/react-router'
 import escapeRegExp from 'lodash/escapeRegExp'
@@ -29,22 +40,28 @@ import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config'
 
 import styles from './table.module.scss'
 
-type TableData = {
+export type TableData = {
   name: string
   path: string
-  date: string
-  size: string
+  size: number | string
+  lastUpdate: string
+  subRows?: TableData[]
   [key: string]: any
 }
 
-type ExtendedTableState = TableState<TableData> & UseGlobalFiltersState<TableData>
+type ExtendedTableState = TableState<TableData> &
+  UseGlobalFiltersState<TableData> &
+  UseExpandedState<TableData>
 
 type TableInstanceWithHooks = TableInstance<TableData> &
   UseGlobalFiltersInstanceProps<TableData> &
   UseSortByInstanceProps<TableData> &
+  UseExpandedInstanceProps<TableData> &
   UseRowSelectInstanceProps<TableData>
 
 type ExtendedHeaderGroup = HeaderGroup<TableData> & UseSortByColumnProps<TableData>
+
+type ExtendedRow = Row<TableData> & UseExpandedRowProps<TableData>
 
 type IndeterminateCheckboxProps = {
   indeterminate?: boolean
@@ -77,9 +94,39 @@ const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, IndeterminateCh
 IndeterminateCheckbox.displayName = 'IndeterminateCheckbox'
 
 function fuzzyTextFilterFn(rows: Row<TableData>[], id: string[], filterValue: string) {
-  return matchSorter(rows, filterValue, {
-    keys: id.map((i) => `values.${i}`),
-    threshold: matchSorter.rankings.CONTAINS,
+  const allRows: Row<TableData>[] = []
+
+  function collectAllRows(rows: Row<TableData>[]) {
+    for (const row of rows) {
+      allRows.push(row)
+      if (row.subRows && row.subRows.length > 0) {
+        collectAllRows(row.subRows)
+      }
+    }
+  }
+
+  collectAllRows(rows)
+
+  if (!filterValue || !filterValue.trim()) {
+    return rows
+  }
+
+  const normalizedFilterValue = filterValue.trim().toLowerCase()
+
+  function rowMatches(row: Row<TableData>, parentRow?: Row<TableData>): boolean {
+    return (
+      Object.values(row.values).some(
+        (cellValue) =>
+          typeof cellValue === 'string' && cellValue.toLowerCase().includes(normalizedFilterValue)
+      ) ||
+      (row.subRows && row.subRows.some((subRow) => rowMatches(subRow, row))) ||
+      (parentRow ? rowMatches(parentRow) : false)
+    )
+  }
+
+  return rows.filter((row) => {
+    const parentRow = allRows.find(({ subRows }) => subRows && subRows.includes(row))
+    return rowMatches(row, parentRow)
   })
 }
 
@@ -120,7 +167,7 @@ function Table({ columns, data }: TableProps) {
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
 
   const initialState = {
-    sortBy: [{ id: 'date', desc: true }],
+    sortBy: [{ id: 'lastUpdated', desc: true }],
   }
 
   const defaultColumn = {
@@ -134,9 +181,10 @@ function Table({ columns, data }: TableProps) {
       defaultColumn,
       initialState,
       globalFilter: fuzzyTextFilterFn,
-    } as TableOptions<TableData>,
+    } as TableOptions<TableData> & UseExpandedOptions<TableData>,
     useGlobalFilter,
     useSortBy,
+    useExpanded,
     useFlexLayout,
     useRowSelect,
     (hooks: Hooks<TableData>) => {
@@ -176,7 +224,7 @@ function Table({ columns, data }: TableProps) {
     (path: string) => {
       if (path) {
         setDownloadLoading(true)
-        GFWAPI.fetch<{ url: string }>(`/download/datasets/${datasetId}/download/${path}`)
+        GFWAPI.fetch<{ url: string }>(`/download/datasets/${datasetId}/download?file-path=${path}`)
           .then(({ url }) => {
             const downloadWindow = window.open(url, '_blank')
             if (downloadWindow) {
@@ -222,6 +270,29 @@ function Table({ columns, data }: TableProps) {
     }
   }, [datasetId, downloadSingleFile, selectedFlatRows])
 
+  // Count the total number of selected files (not folders), including files in collapsed folders if the folder is selected
+  // Count selected files, but avoid double-counting files that are descendants of other selected rows
+  const countedRowIds = new Set<string>()
+  const rowSelectedCount = selectedFlatRows.reduce((count, row) => {
+    const original = row.original as TableData
+    const countFiles = (rows: TableData[]): number =>
+      rows.reduce((acc, r) => {
+        if (countedRowIds.has(r.path)) return acc
+        countedRowIds.add(r.path)
+        if (!r.subRows || r.subRows.length === 0) return acc + 1
+        return acc + countFiles(r.subRows)
+      }, 0)
+
+    if ((!original.subRows || original.subRows.length === 0) && !countedRowIds.has(original.path)) {
+      countedRowIds.add(original.path)
+      return count + 1
+    }
+    if (!original.isExpanded && original.subRows && original.subRows.length > 0) {
+      return count + countFiles(original.subRows)
+    }
+    return count
+  }, 0)
+
   return (
     <div>
       <div {...getTableProps()} className={styles.table}>
@@ -251,7 +322,10 @@ function Table({ columns, data }: TableProps) {
 
         <div>
           {headerGroups.map((headerGroup, index) => (
-            <div {...headerGroup.getHeaderGroupProps()} key={`${headerGroup.id}-${index}`}>
+            <div
+              {...(headerGroup as ExtendedHeaderGroup).getHeaderGroupProps()}
+              key={`${headerGroup.id}-${index}`}
+            >
               {headerGroup.headers.map((column) => {
                 const extendedColumn = column as ExtendedHeaderGroup
                 const sortByProps = extendedColumn.getSortByToggleProps?.() || {}
@@ -261,8 +335,8 @@ function Table({ columns, data }: TableProps) {
                     key={column.id}
                     className={styles.th}
                   >
-                    {column.render('Header')}{' '}
-                    {column.id !== 'selection' && (
+                    {column.render('Header')}
+                    {column.id !== 'selection' && column.id !== 'download-button' && (
                       <span className={styles.sort}>
                         {extendedColumn.isSorted ? (
                           extendedColumn.isSortedDesc ? (
@@ -289,7 +363,7 @@ function Table({ columns, data }: TableProps) {
           {...getTableBodyProps()}
         >
           {({ index, style }) => {
-            const row = rows[index]
+            const row = rows[index] as ExtendedRow
             prepareRow(row)
             return (
               <div {...row.getRowProps({ style })} key={row.id} className={styles.tr}>
@@ -302,9 +376,16 @@ function Table({ columns, data }: TableProps) {
                       title={cell.value}
                     >
                       {cell.column.id === 'name' ? (
-                        <button onClick={() => downloadSingleFile(cell.row.original.path)}>
+                        <div
+                          onClick={() =>
+                            row.canExpand
+                              ? row.toggleRowExpanded(!row.isExpanded)
+                              : downloadSingleFile(cell.row.original.path)
+                          }
+                          style={{ cursor: 'pointer' }}
+                        >
                           {cell.render('Cell')}
-                        </button>
+                        </div>
                       ) : (
                         cell.render('Cell')
                       )}
@@ -318,12 +399,10 @@ function Table({ columns, data }: TableProps) {
       </div>
       <div className={styles.actionFooter}>
         <span className={styles.filesInfo}>
-          {rows && <span>{`${rows.length} file${rows.length > 1 ? 's' : ''} shown`}</span>}
+          {rows && <span>{`${rows.length} item${rows.length > 1 ? 's' : ''} shown`}</span>}
           <br />
           {selectedFlatRows.length > 0 && (
-            <span>{`${selectedFlatRows.length} file${
-              selectedFlatRows.length > 1 ? 's' : ''
-            } selected`}</span>
+            <span>{`${rowSelectedCount} file${rowSelectedCount > 1 ? 's' : ''} selected`}</span>
           )}
         </span>
         <button onClick={onDownloadClick} disabled={!selectedFlatRows.length || downloadLoading}>

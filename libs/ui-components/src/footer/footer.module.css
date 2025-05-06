@@ -1,7 +1,14 @@
 .footer {
   width: 100%;
-  background-color: var(--color-primary-blue);
-  padding: 3rem 0;
+  background-color: var(--color-primary-blue-hover);
+
+  /* transition:
+    background 0.3s,
+    border 0.3s,
+    border-radius 0.3s,
+    box-shadow 0.3s;
+  color: #ffffff; */
+  padding: 40px 0;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -16,7 +23,7 @@
   gap: 3rem;
   justify-content: center;
   align-items: center;
-  padding: 3rem 0;
+  padding: 0.5rem 0 3rem;
 }
 
 .socialIconWrapper {
