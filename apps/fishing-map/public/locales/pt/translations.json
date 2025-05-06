@@ -413,8 +413,8 @@
   },
   "dataview": {
     "basemap-labels": {
-      "dataWarning": "This platform uses location labels from Natural Earth.",
-      "dataWarningDetail": "This platform uses location labels from <a target='_blank' href='https://www.naturalearthdata.com/'> Natural Earth</a>.",
+      "dataWarning": "Esta plataforma usa nomes de localização do Natural Earth.",
+      "dataWarningDetail": "Esta plataforma usa nomes de localização do <a target='_blank' href='https://www.naturalearthdata.com/'> Natural Earth</a>.",
       "title": "Localizações"
     },
     "context-layer-eez": {
