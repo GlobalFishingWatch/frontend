@@ -67,3 +67,15 @@
   display: flex;
   gap: var(--space-S);
 }
+
+.inputWithOverlayContainer {
+  position: relative;
+}
+
+.inputWithOverlay {
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0.6rem;
+}

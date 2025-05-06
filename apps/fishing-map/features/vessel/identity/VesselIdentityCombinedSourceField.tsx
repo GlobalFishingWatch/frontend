@@ -2,6 +2,7 @@
 import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
 
 import { VesselIdentitySourceEnum, type VesselInfo } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
@@ -9,6 +10,7 @@ import { Icon } from '@globalfishingwatch/ui-components'
 
 import { selectIsVesselClassInfoEnable } from 'features/debug/debug.selectors'
 import type { VesselLastIdentity } from 'features/search/search.slice'
+import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
@@ -50,11 +52,23 @@ const VesselIdentityCombinedSourceField = ({
         .sort((a, b) => (a.yearTo < b.yearTo ? 1 : -1))
         .map((source, index) => {
           const { name, yearTo, yearFrom } = source
+          const startDate = DateTime.fromISO(identity.transmissionDateFrom)
+          const endDate = DateTime.fromISO(identity.transmissionDateTo)
+          const sourceYearFrom = DateTime.fromISO(yearFrom.toString())
+          const sourceYearTo = DateTime.fromISO(yearTo.toString()).endOf('year')
+          const sourceOverlapsTimeRange =
+            sourceYearFrom.toMillis() <= endDate.toMillis() &&
+            sourceYearTo.toMillis() >= startDate.toMillis()
+
+          if (!sourceOverlapsTimeRange) {
+            return null
+          }
+
           const dates = yearTo === yearFrom ? yearTo : `${yearFrom} - ${yearTo}`
           const Component = (
             <Fragment>
               <VesselIdentityField value={formatInfoField(name, property) as string} />{' '}
-              {combinedSource?.length > 1 && <span className={styles.secondary}>({dates})</span>}
+              <span className={styles.secondary}>({dates})</span>
             </Fragment>
           )
 
@@ -88,19 +102,18 @@ const VesselIdentityCombinedSourceField = ({
                 {geartypesExpanded === index && (
                   <ul className={styles.extendedInfo}>
                     <li>
-                      <span className={styles.secondary}>
-                        {t('vessel.infoSources.selfReported', 'Self Reported')}:{' '}
-                      </span>
+                      <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
+                    </li>
+                    <li>
+                      <span className={styles.secondary}>AIS self-reported: </span>
                       {selfReportedGearType}
                     </li>
                     <li>
-                      <span className={styles.secondary}>Neural Net: </span>
+                      <span className={styles.secondary}>Machine learning estimate: </span>
                       {formatInfoField(neuralNetGearType, property) as string}
                     </li>
                     <li>
-                      <span className={styles.secondary}>
-                        {t('vessel.infoSources.registry', 'Registry')}:{' '}
-                      </span>
+                      <span className={styles.secondary}>Aggregated registry: </span>
                       {formatInfoField(registryGearType, property) as string}
                     </li>
                     <li>

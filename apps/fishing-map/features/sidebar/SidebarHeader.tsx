@@ -628,7 +628,7 @@ function SidebarHeader() {
 
   const sectionHeaderComponent = useMemo(() => {
     if (isAnyVesselLocation) {
-      return <VesselHeader />
+      return <VesselHeader isSticky={isSticky} />
     }
     if (isAreaReportLocation) {
       return <ReportTitle isSticky={isSticky} />

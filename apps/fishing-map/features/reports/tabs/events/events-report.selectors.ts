@@ -18,6 +18,7 @@ import {
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
   type ReportVesselWithDatasets,
   selectReportAreaIds,
@@ -25,7 +26,6 @@ import {
   selectReportBufferUnit,
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
-import { WORLD_REGION_ID } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
 
 export const selectFetchEventsVesselsParams = createSelector(
@@ -68,7 +68,8 @@ export const selectFetchEventsVesselsParams = createSelector(
     return {
       start,
       end,
-      regionId: reportAreaIds.areaId !== WORLD_REGION_ID ? reportAreaIds.areaId : undefined,
+      regionId:
+        reportAreaIds.areaId !== ENTIRE_WORLD_REPORT_AREA_ID ? reportAreaIds.areaId : undefined,
       regionDataset: reportAreaIds.datasetId,
       bufferValue,
       bufferUnit,

@@ -174,6 +174,7 @@
     "include": "Memasukkan",
     "insights": "Insights",
     "knots": "knots",
+    "km": "km",
     "latestDays_one": "Latest {{count}} day",
     "latestDays_other": "Latest {{count}} days",
     "latitude": "Lintang",
@@ -333,6 +334,7 @@
     "date": "Tanggal",
     "dateRange": "Date Range",
     "errors": {
+      "name": "Dataset name must be at least {{min}} characters long",
       "csv": {
         "invalidData": "CSV data does not have a valid structure"
       },
@@ -386,7 +388,7 @@
       "opacity": "Opasitas poligon"
     },
     "processingData": "Memproses data...",
-    "segment": "",
+    "segment": "segment",
     "time": "Waktu {{geometryType}}",
     "timeEnd": "Akhiri {{geometryType}}",
     "timePeriodType": "Filter waktu",
@@ -417,15 +419,15 @@
     },
     "context-layer-eez": {
       "dataWarning": "Platform ini menggunakan lapisan referensi ZEE dari Marine Regions",
-      "dataWarningDetail": "Platform ini menggunakan lapisan referensi (shapefiles) dari Marine Regions untuk zona ekonomi eksklusif dan batasnya. Penunjukan yang digunakan dan penyajian materi pada platform ini tidak menyiratkan ekspresi pendapat apa pun dari pihak Global Fishing Watch mengenai status hukum negara, wilayah, kota atau wilayah mana pun atau otoritasnya, atau mengenai delimitasi batas-batas atau perbatasan. Untuk melihat lapisan referensi asli, silakan kunjungi <a href='http://www.marineregions.org'>www.marineregions.org</a>. Jika Anda menganggap lapisan referensi ini tidak berlaku untuk tujuan Anda, platform ini memungkinkan lapisan referensi khusus untuk diunggah. Gambar atau unggah lapisan referensi Anda sendiri menggunakan ikon '+' di bilah sisi kiri. Pelajari lebih lanjut di <a href='https://globalfishingwatch.org/tutorials/'>tutorial</a> dan <a href='https://globalfishingwatch.org/help-faqs/'>FAQ</a kami >."
+      "dataWarningDetail": "Platform ini menggunakan lapisan referensi (shapefiles) dari Marine Regions untuk zona ekonomi eksklusif dan batasnya. Penunjukan yang digunakan dan penyajian materi pada platform ini tidak menyiratkan ekspresi pendapat apa pun dari pihak Global Fishing Watch mengenai status hukum negara, wilayah, kota atau wilayah mana pun atau otoritasnya, atau mengenai delimitasi batas-batas atau perbatasan. Untuk melihat lapisan referensi asli, silakan kunjungi <a href='http://www.marineregions.org'>www.marineregions.org</a>. Jika Anda menganggap lapisan referensi ini tidak berlaku untuk tujuan Anda, platform ini memungkinkan lapisan referensi khusus untuk diunggah. Gambar atau unggah lapisan referensi Anda sendiri menggunakan ikon '+' di bilah sisi kiri. Pelajari lebih lanjut di <a href='https://globalfishingwatch.org/tutorials/'>tutorial</a> dan <a href='https://globalfishingwatch.org/help-faqs/'>FAQ</a>."
     },
     "context-layer-mpa": {
       "dataWarning": "Platform ini menggunakan lapisan referensi KKL (Kawasan Konservasi Laut) dari World Database on Protected Areas.",
-      "dataWarningDetail": "Platform ini menggunakan lapisan referensi (shapefiles) dari World Database on Protected Areas untuk kawasan perlindungan laut. Penunjukan yang digunakan dan penyajian materi pada platform ini tidak menyiratkan ekspresi pendapat apa pun dari pihak Global Fishing Watch mengenai status hukum negara, wilayah, kota atau wilayah mana pun atau otoritasnya, atau mengenai delimitasi batas-batas atau perbatasan. Untuk melihat lapisan referensi asli, kunjungi <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Jika Anda menganggap lapisan referensi ini tidak berlaku untuk tujuan Anda, platform ini memungkinkan lapisan referensi khusus untuk diunggah. Gambar atau unggah lapisan referensi Anda sendiri menggunakan ikon '+' di bilah sisi kiri. Pelajari lebih lanjut di <a href='https://globalfishingwatch.org/tutorials/'>tutorial</a> dan <a href='https://globalfishingwatch.org/help-faqs/'>FAQ</a kami >."
+      "dataWarningDetail": "Platform ini menggunakan lapisan referensi (shapefiles) dari World Database on Protected Areas untuk kawasan perlindungan laut. Penunjukan yang digunakan dan penyajian materi pada platform ini tidak menyiratkan ekspresi pendapat apa pun dari pihak Global Fishing Watch mengenai status hukum negara, wilayah, kota atau wilayah mana pun atau otoritasnya, atau mengenai delimitasi batas-batas atau perbatasan. Untuk melihat lapisan referensi asli, kunjungi <a href='http://www.protectedplanet.net'>www.protectedplanet.net</a>. Jika Anda menganggap lapisan referensi ini tidak berlaku untuk tujuan Anda, platform ini memungkinkan lapisan referensi khusus untuk diunggah. Gambar atau unggah lapisan referensi Anda sendiri menggunakan ikon '+' di bilah sisi kiri. Pelajari lebih lanjut di <a href='https://globalfishingwatch.org/tutorials/'>tutorial</a> dan <a href='https://globalfishingwatch.org/help-faqs/'>FAQ</a>."
     },
     "context-layer-protectedseas": {
       "dataWarning": "Platform ini menggunakan lapisan referensi KKP/MPA dari ProtectedSeas Navigator",
-      "dataWarningDetail": "Platform ini menggunakan lapisan referensi (shapefiles) dari ProtectedSeas Navigator untuk kawasan perlindungan laut. Penunjukan yang digunakan dan penyajian materi pada platform ini tidak menyiratkan ekspresi pendapat apa pun dari pihak Global Fishing Watch mengenai status hukum negara, wilayah, kota atau wilayah mana pun atau otoritasnya, atau mengenai delimitasi batas-batas atau perbatasan. Untuk melihat lapisan referensi asli, kunjungi  <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Jika Anda menganggap lapisan referensi ini tidak berlaku untuk tujuan Anda, platform ini memungkinkan lapisan referensi khusus untuk diunggah. Gambar atau unggah lapisan referensi Anda sendiri menggunakan ikon '+' di bilah sisi kiri. Pelajari lebih lanjut di <a href='https://globalfishingwatch.org/tutorials/'>tutorial</a> dan <a href='https://globalfishingwatch.org/help-faqs/'>FAQ</a kami >."
+      "dataWarningDetail": "Platform ini menggunakan lapisan referensi (shapefiles) dari ProtectedSeas Navigator untuk kawasan perlindungan laut. Penunjukan yang digunakan dan penyajian materi pada platform ini tidak menyiratkan ekspresi pendapat apa pun dari pihak Global Fishing Watch mengenai status hukum negara, wilayah, kota atau wilayah mana pun atau otoritasnya, atau mengenai delimitasi batas-batas atau perbatasan. Untuk melihat lapisan referensi asli, kunjungi  <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Jika Anda menganggap lapisan referensi ini tidak berlaku untuk tujuan Anda, platform ini memungkinkan lapisan referensi khusus untuk diunggah. Gambar atau unggah lapisan referensi Anda sendiri menggunakan ikon '+' di bilah sisi kiri. Pelajari lebih lanjut di <a href='https://globalfishingwatch.org/tutorials/'>tutorial</a> dan <a href='https://globalfishingwatch.org/help-faqs/'>FAQ</a>."
     }
   },
   "download": {
@@ -639,6 +641,7 @@
     "color_change": "Ganti warna",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
+    "minimumDistanceFromPort": "Minimum distance from port",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",

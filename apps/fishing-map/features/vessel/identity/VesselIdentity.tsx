@@ -14,6 +14,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { useVesselIdentityTabs } from 'features/vessel/identity/vessel-identity.hooks'
@@ -58,6 +59,7 @@ const VesselIdentity = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const { setTimerange } = useTimerangeConnect()
   const { identityTabs } = useVesselIdentityTabs()
+  const isGFWUser = useSelector(selectIsGFWUser)
 
   const vesselIdentity = getCurrentIdentityVessel(vesselData, {
     identityId,
@@ -194,52 +196,62 @@ const VesselIdentity = () => {
         </div>
         {vesselIdentity && (
           <div className={styles.fields}>
-            {identityFields?.map((fieldGroup, index) => (
-              <div key={index} className={cx(styles.fieldGroupContainer, styles.fieldGroup)}>
-                {/* TODO: make fields more dynamic to account for VMS */}
-                {fieldGroup.map((field) => {
-                  let label = field.label || field.key
-                  if (
-                    identitySource === VesselIdentitySourceEnum.SelfReported &&
-                    (label === 'geartypes' || label === 'shiptypes')
-                  ) {
-                    label = 'gfw_' + label
-                  }
-                  const key = field.key as keyof VesselLastIdentity
-                  let value = vesselIdentity[key] as string
-                  if (key === 'depthM' || key === 'builtYear') {
-                    value =
-                      (vesselIdentity[key] as any) === API_LOGIN_REQUIRED
-                        ? API_LOGIN_REQUIRED
-                        : vesselIdentity[key]?.value?.toString()
-                  }
-                  return (
-                    <div key={field.key}>
-                      <div className={styles.labelContainer}>
-                        <label>{t(`vessel.${label}` as any, label)}</label>
-                        {field.terminologyKey && (
-                          <DataTerminology
-                            title={t(`vessel.${label}`, label) as string}
-                            terminologyKey={field.terminologyKey}
+            {identityFields?.map((fieldGroup, index) => {
+              const twoColumns =
+                isGFWUser &&
+                fieldGroup.some((field) => field.key === 'shiptypes' || field.key === 'geartypes')
+              return (
+                <div
+                  key={index}
+                  className={cx(styles.fieldGroupContainer, styles.fieldGroup, {
+                    [styles.twoColumns]: twoColumns,
+                  })}
+                >
+                  {/* TODO: make fields more dynamic to account for VMS */}
+                  {fieldGroup.map((field) => {
+                    let label = field.label || field.key
+                    if (
+                      identitySource === VesselIdentitySourceEnum.SelfReported &&
+                      (label === 'geartypes' || label === 'shiptypes')
+                    ) {
+                      label = 'gfw_' + label
+                    }
+                    const key = field.key as keyof VesselLastIdentity
+                    let value = vesselIdentity[key] as string
+                    if (key === 'depthM' || key === 'builtYear') {
+                      value =
+                        (vesselIdentity[key] as any) === API_LOGIN_REQUIRED
+                          ? API_LOGIN_REQUIRED
+                          : vesselIdentity[key]?.value?.toString()
+                    }
+                    return (
+                      <div key={field.key}>
+                        <div className={styles.labelContainer}>
+                          <label>{t(`vessel.${label}` as any, label)}</label>
+                          {field.terminologyKey && (
+                            <DataTerminology
+                              title={t(`vessel.${label}`, label) as string}
+                              terminologyKey={field.terminologyKey}
+                            />
+                          )}
+                        </div>
+                        {key === 'shiptypes' || key === 'geartypes' ? (
+                          <VesselTypesField
+                            vesselIdentity={vesselIdentity}
+                            fieldKey={key}
+                            identitySource={identitySource}
+                          />
+                        ) : (
+                          <VesselIdentityField
+                            value={formatInfoField(value, label as any) as string}
                           />
                         )}
                       </div>
-                      {key === 'shiptypes' || key === 'geartypes' ? (
-                        <VesselTypesField
-                          vesselIdentity={vesselIdentity}
-                          fieldKey={key}
-                          identitySource={identitySource}
-                        />
-                      ) : (
-                        <VesselIdentityField
-                          value={formatInfoField(value, label as any) as string}
-                        />
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            ))}
+                    )
+                  })}
+                </div>
+              )
+            })}
             {identitySource === VesselIdentitySourceEnum.Registry &&
               REGISTRY_FIELD_GROUPS.map((registryField) => {
                 return (
@@ -266,10 +278,7 @@ const VesselIdentity = () => {
                     )}
                   >
                     <div>
-                      <label>{`${registrySourceData?.key} ${t(
-                        `vessel.extraInfo`,
-                        'has more information'
-                      )}`}</label>
+                      <label>{t(`vessel.extraInfo`, 'has more information')}</label>
                       <p>{registrySourceData?.contact}</p>
                     </div>
                   </Tooltip>
@@ -286,7 +295,6 @@ const VesselIdentity = () => {
             <a
               href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}
               target="_blank"
-              rel="noreferrer"
             >
               Marine Traffic
               <Icon icon="external-link" type="default" />
@@ -294,7 +302,6 @@ const VesselIdentity = () => {
             <a
               href={`https://sc-production.skylight.earth/vesselsearch?mmsi=${vesselIdentity?.ssvid}`}
               target="_blank"
-              rel="noreferrer"
             >
               Skylight
               <Icon icon="external-link" type="default" />
@@ -302,7 +309,6 @@ const VesselIdentity = () => {
             <a
               href={`https://app.triton.fish/search?name=${vesselIdentity?.ssvid}`}
               target="_blank"
-              rel="noreferrer"
             >
               Triton
               <Icon icon="external-link" type="default" />
