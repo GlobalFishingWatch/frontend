@@ -413,8 +413,8 @@
   },
   "dataview": {
     "basemap-labels": {
-      "dataWarning": "Cette plateforme utilise les libellés de localisation de Google Maps.",
-      "dataWarningDetail": "Cette plateforme utilise les libellés de localisation provenant de Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> En savoir plus.</a>",
+      "dataWarning": "Cette plateforme utilise les libellés de localisation de Natural Earth.",
+      "dataWarningDetail": "Cette plateforme utilise les libellés de localisation provenant de <a target='_blank' href='https://www.naturalearthdata.com/'> Natural Earh</a>.",
       "title": "Emplacements"
     },
     "context-layer-eez": {

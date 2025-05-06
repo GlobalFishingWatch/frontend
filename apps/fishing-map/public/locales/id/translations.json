@@ -413,8 +413,8 @@
   },
   "dataview": {
     "basemap-labels": {
-      "dataWarning": "Platform ini menggunakan label lokasi dari Google Maps.",
-      "dataWarningDetail": "Platform ini menggunakan label lokasi dari Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Pelajari lebih lanjut.</a>",
+      "dataWarning": "Platform ini menggunakan label lokasi dari Natural Earth.",
+      "dataWarningDetail": "Platform ini menggunakan label lokasi dari <a target='_blank' href='https://www.naturalearthdata.com/'> Natural Earth</a>.",
       "title": "Lokasi"
     },
     "context-layer-eez": {
