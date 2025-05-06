@@ -413,8 +413,8 @@
   },
   "dataview": {
     "basemap-labels": {
-      "dataWarning": "Esta plataforma usa nomes de localização do Google Maps.",
-      "dataWarningDetail": "Esta plataforma usa nomes de localização do Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Saiba mais.</a>",
+      "dataWarning": "Esta plataforma usa nomes de localização do Natural Earth.",
+      "dataWarningDetail": "Esta plataforma usa nomes de localização do <a target='_blank' href='https://www.naturalearthdata.com/'> Natural Earth</a>.",
       "title": "Localizações"
     },
     "context-layer-eez": {

@@ -413,8 +413,8 @@
   },
   "dataview": {
     "basemap-labels": {
-      "dataWarning": "Esta plataforma utiliza etiquetas de ubicación de Google Maps.",
-      "dataWarningDetail": "Esta plataforma utiliza etiquetas de ubicación de Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Más información.</a>",
+      "dataWarning": "Esta plataforma utiliza etiquetas de ubicación de Natural Earth.",
+      "dataWarningDetail": "Esta plataforma utiliza etiquetas de ubicación de <a target='_blank' href='https://www.naturalearthdata.com/'> Natural Earth</a>.",
       "title": "Ubicaciones"
     },
     "context-layer-eez": {
