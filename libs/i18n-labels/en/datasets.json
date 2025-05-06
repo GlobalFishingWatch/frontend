@@ -1550,6 +1550,10 @@
     "name": "Inshore Fishing Zone",
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)"
   },
+  "public-location-labels": {
+    "name": "Location Labels",
+    "description": "Combination of countries, places and seas dataset labels"
+  },
   "public-mangroves": {
     "name": "Mangroves",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Mangroves are trees or shrubs that can survive in saline environments and typically grow within the intertidal zone of tropical and subtropical regions. Considered blue carbon habitats, mangrove forests improve water quality, stabilize and protect coastlines, and provide shelter for birds, animals and marine organisms. This dataset uses earth observation satellite imagery to show the global distribution of mangroves.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/4'>Giri C, Ochieng E, Tieszen LL, Zhu Z, Singh A, Loveland T, Masek J, Duke N (2011). Status and distribution of mangrove forests of the world using earth observation satellite data (version 1.4, updated by UNEP-WCMC). Global Ecology and Biogeography 20: 154-159. DOI: https://doi.org/10.34892/1411-w728.</a></li>"
