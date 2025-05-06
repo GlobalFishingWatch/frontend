@@ -1,10 +1,14 @@
-import { Fragment,useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import type { Workspace } from '@globalfishingwatch/api-types'
-import { DataviewType , WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+import {
+  DataviewType,
+  WORKSPACE_PRIVATE_ACCESS,
+  WORKSPACE_PUBLIC_ACCESS,
+} from '@globalfishingwatch/api-types'
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 
 import {
@@ -17,7 +21,7 @@ import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.work
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
-import { selectIsGuestUser,selectUserData } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
@@ -163,7 +167,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     try {
       let url = window.location.href
 
-      if (guestUser) {
+      if (!guestUser) {
         const createWorkspaceAction = await dispatch(
           createWorkspaceThunk({
             ...parseUpsertWorkspace(currentWorkspace),
