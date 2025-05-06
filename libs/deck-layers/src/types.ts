@@ -4,7 +4,7 @@ import type { DataviewCategory, DataviewType } from '@globalfishingwatch/api-typ
 import type { PolygonPickingObject } from '@globalfishingwatch/deck-layers'
 
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
-import type { ContextPickingInfo,ContextPickingObject } from './layers/context'
+import type { ContextPickingInfo, ContextPickingObject } from './layers/context'
 import type { ContextLayer } from './layers/context/ContextLayer'
 import type { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
 import type {
@@ -15,10 +15,12 @@ import type {
   FourwingsPickingObject,
 } from './layers/fourwings'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
-import type { RulerPickingInfo,RulerPickingObject } from './layers/rulers'
+import type { PMTilePickingInfo, PMTilePickingObject } from './layers/pm-tiles/pm-tiles.types'
+import type { PMTilesLayer } from './layers/pm-tiles/PMTilesLayer'
+import type { RulerPickingInfo, RulerPickingObject } from './layers/rulers'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
 import type { UserLayerPickingObject } from './layers/user'
-import type { VesselEventPickingInfo,VesselEventPickingObject } from './layers/vessel'
+import type { VesselEventPickingInfo, VesselEventPickingObject } from './layers/vessel'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
@@ -47,6 +49,7 @@ export type AnyDeckLayer<D extends object = object> =
   | FourwingsLayer
   | VesselLayer
   | RulersLayer
+  | PMTilesLayer
 
 export type LayerWithIndependentSublayersLoadState = VesselLayer
 
@@ -59,6 +62,7 @@ export type DeckLayerPickingObject =
   | VesselEventPickingObject
   | DrawPickingObject
   | PolygonPickingObject
+  | PMTilePickingObject
 
 export type DeckLayerInteractionPickingInfo =
   | (FourwingsPickingInfo & { layer: FourwingsLayer })
@@ -67,3 +71,4 @@ export type DeckLayerInteractionPickingInfo =
   | (RulerPickingInfo & { layer: RulersLayer })
   | (VesselEventPickingInfo & { layer: VesselLayer })
   | (DrawPickingInfo & { layer: DrawLayer })
+  | (PMTilePickingInfo & { layer: PMTilesLayer })

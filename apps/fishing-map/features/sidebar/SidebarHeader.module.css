@@ -60,7 +60,7 @@
 
 .sticky {
   background-color: var(--color-white);
-  z-index: 2;
+  z-index: 3;
 }
 
 @media print {

@@ -253,6 +253,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 feature.subcategory === DataviewType.UserContext &&
                 !contextFeatures.includes(feature as ContextPickingObject)
             )
+
             return (
               <Fragment key={featureCategory}>
                 <ContextTooltipSection
