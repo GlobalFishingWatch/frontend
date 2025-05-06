@@ -40,7 +40,7 @@ export enum EndpointId {
   FourwingsLegend = '4wings-legend',
   FourwingsTiles = '4wings-tiles',
   Tracks = 'tracks',
-  PmTiles = 'pm-tiles',
+  PMTiles = 'pm-tiles',
   UserTracks = 'user-tracks-data',
   Vessel = 'vessel',
   VesselAdvancedSearch = 'advanced-search-vessels',

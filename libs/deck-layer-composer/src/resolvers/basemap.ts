@@ -15,7 +15,7 @@ export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLab
   }
 
   const datasetConfig = {
-    endpoint: EndpointId.PmTiles,
+    endpoint: EndpointId.PMTiles,
     datasetId: dataset.id,
     query: [],
     params: [
