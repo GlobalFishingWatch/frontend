@@ -40,6 +40,7 @@ export enum EndpointId {
   FourwingsLegend = '4wings-legend',
   FourwingsTiles = '4wings-tiles',
   Tracks = 'tracks',
+  PMTiles = 'pm-tiles',
   UserTracks = 'user-tracks-data',
   Vessel = 'vessel',
   VesselAdvancedSearch = 'advanced-search-vessels',
@@ -66,6 +67,7 @@ export enum DatasetTypes {
   Tracks = 'tracks:v1',
   Fourwings = '4wings:v1',
   Context = 'context-layer:v1',
+  PMTiles = 'pm-tiles:v1',
   UserContext = 'user-context-layer:v1',
   TemporalContext = 'temporal-context-layer:v1',
   Download = 'data-download:v1',
@@ -251,7 +253,7 @@ export enum DatasetSubCategory {
 
 export interface DatasetFile {
   name: string
-  size: number
+  size: number | string
   lastUpdate: string
 }
 

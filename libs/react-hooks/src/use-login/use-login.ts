@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   getAccessTokenFromUrl,
@@ -47,4 +47,9 @@ export const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => 
   }, [APIClient])
 
   return state
+}
+
+export const logoutUser = async () => {
+  await GFWAPI.logout()
+  window.location.href = GFWAPI.getLoginUrl(window.location.toString())
 }

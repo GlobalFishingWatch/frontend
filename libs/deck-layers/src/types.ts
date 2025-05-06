@@ -15,6 +15,8 @@ import type {
   FourwingsPickingObject,
 } from './layers/fourwings'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
+import type { PMTilePickingInfo, PMTilePickingObject } from './layers/pm-tiles/pm-tiles.types'
+import type { PMTilesLayer } from './layers/pm-tiles/PMTilesLayer'
 import type { RulerPickingInfo, RulerPickingObject } from './layers/rulers'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
 import type { UserLayerPickingObject } from './layers/user'
@@ -49,6 +51,7 @@ export type AnyDeckLayer<D extends object = object> =
   | FourwingsLayer
   | VesselLayer
   | RulersLayer
+  | PMTilesLayer
 
 export type LayerWithIndependentSublayersLoadState = VesselLayer
 
@@ -61,6 +64,7 @@ export type DeckLayerPickingObject =
   | VesselEventPickingObject
   | DrawPickingObject
   | PolygonPickingObject
+  | PMTilePickingObject
 
 export type DeckLayerInteractionPickingInfo =
   | (FourwingsPickingInfo & { layer: FourwingsLayer })
@@ -69,3 +73,4 @@ export type DeckLayerInteractionPickingInfo =
   | (RulerPickingInfo & { layer: RulersLayer })
   | (VesselEventPickingInfo & { layer: VesselLayer })
   | (DrawPickingInfo & { layer: DrawLayer })
+  | (PMTilePickingInfo & { layer: PMTilesLayer })

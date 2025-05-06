@@ -1,5 +1,5 @@
 import type { Dataview } from '@globalfishingwatch/api-types'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 
 const dataviews: Dataview[] = []
 
