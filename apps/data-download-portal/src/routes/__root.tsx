@@ -14,9 +14,9 @@ import styles from '../app.module.css'
 function RootComponent() {
   const { loading, logged } = useGFWLogin(GFWAPI)
 
-  // if (!logged && !loading) {
-  //   return <Login />
-  // }
+  if (!logged && !loading) {
+    return <Login />
+  }
 
   return (
     <Fragment>

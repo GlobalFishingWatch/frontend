@@ -270,7 +270,28 @@ function Table({ columns, data }: TableProps) {
     }
   }, [datasetId, downloadSingleFile, selectedFlatRows])
 
-  const rowSelectedCount = selectedFlatRows.filter((row) => (row as ExtendedRow).depth === 0).length
+  // Count the total number of selected files (not folders), including files in collapsed folders if the folder is selected
+  // Count selected files, but avoid double-counting files that are descendants of other selected rows
+  const countedRowIds = new Set<string>()
+  const rowSelectedCount = selectedFlatRows.reduce((count, row) => {
+    const original = row.original as TableData
+    const countFiles = (rows: TableData[]): number =>
+      rows.reduce((acc, r) => {
+        if (countedRowIds.has(r.path)) return acc
+        countedRowIds.add(r.path)
+        if (!r.subRows || r.subRows.length === 0) return acc + 1
+        return acc + countFiles(r.subRows)
+      }, 0)
+
+    if ((!original.subRows || original.subRows.length === 0) && !countedRowIds.has(original.path)) {
+      countedRowIds.add(original.path)
+      return count + 1
+    }
+    if (!original.isExpanded && original.subRows && original.subRows.length > 0) {
+      return count + countFiles(original.subRows)
+    }
+    return count
+  }, 0)
 
   return (
     <div>
@@ -381,7 +402,7 @@ function Table({ columns, data }: TableProps) {
           {rows && <span>{`${rows.length} item${rows.length > 1 ? 's' : ''} shown`}</span>}
           <br />
           {selectedFlatRows.length > 0 && (
-            <span>{`${rowSelectedCount} item${rowSelectedCount > 1 ? 's' : ''} selected`}</span>
+            <span>{`${rowSelectedCount} file${rowSelectedCount > 1 ? 's' : ''} selected`}</span>
           )}
         </span>
         <button onClick={onDownloadClick} disabled={!selectedFlatRows.length || downloadLoading}>
