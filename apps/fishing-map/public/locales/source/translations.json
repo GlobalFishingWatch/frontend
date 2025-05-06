@@ -413,8 +413,8 @@
   },
   "dataview": {
     "basemap-labels": {
-      "dataWarning": "This platform uses location labels from Natural Earth.",
-      "dataWarningDetail": "This platform uses location labels from <a target='_blank' href='https://www.naturalearthdata.com/'> Natural Earth</a>.",
+      "dataWarning": "This platform uses location labels from Google Maps.",
+      "dataWarningDetail": "This platform uses location labels from Google Maps. <a target='_blank' href='https://developers.google.com/maps/documentation/tile/overview'> Learn more.</a>",
       "title": "Locations"
     },
     "context-layer-eez": {
