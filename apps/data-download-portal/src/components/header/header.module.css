@@ -1,6 +1,5 @@
 .Header {
   height: var(--header-band-height);
-  background: #eff5f8;
   font-family: var(--GFW-font-family);
   font-weight: 400;
 }
