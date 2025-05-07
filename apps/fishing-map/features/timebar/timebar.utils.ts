@@ -94,9 +94,9 @@ export function getGraphDataFromFourwingsPositions(
       )
       if (!data[date]) {
         data[date] = { date }
-      }
-      if (!data[date][layer]) {
-        data[date][layer] = 0
+        for (let i = 0; i < sublayersLength; i++) {
+          data[date][i] = 0
+        }
       }
       data[date][layer] += value
     }
