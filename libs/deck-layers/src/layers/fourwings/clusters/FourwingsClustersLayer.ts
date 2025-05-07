@@ -18,6 +18,7 @@ import Supercluster from 'supercluster'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsClustersLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
@@ -169,10 +170,26 @@ export class FourwingsClustersLayer extends CompositeLayer<
     info: PickingInfo<FourwingsClusterFeature>
   }): FourwingsClusterPickingInfo => {
     let expansionZoom: number | undefined
+    let expansionBounds: Bbox | undefined
     if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
       expansionZoom = this.state.clusterIndex.getClusterExpansionZoom(
         info.object?.properties.cluster_id
       )
+      const points = this.state.clusterIndex.getLeaves(info.object?.properties.cluster_id)
+      if (points.length) {
+        const bounds = points.reduce(
+          (acc, point) => {
+            return [
+              Math.min(acc[0], point.geometry?.coordinates[0]),
+              Math.min(acc[1], point.geometry?.coordinates[1]),
+              Math.max(acc[2], point.geometry?.coordinates[0]),
+              Math.max(acc[3], point.geometry?.coordinates[1]),
+            ] as Bbox
+          },
+          [Infinity, Infinity, -Infinity, -Infinity] as Bbox
+        )
+        expansionBounds = bounds
+      }
     }
     const object = {
       ...(info.object || ({} as FourwingsClusterFeature)),
@@ -193,6 +210,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       groupFeatureInteraction: true,
       clusterMode: this.clusterMode,
       expansionZoom,
+      expansionBounds,
     }
     return { ...info, object }
   }

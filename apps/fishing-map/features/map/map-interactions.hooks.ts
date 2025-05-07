@@ -30,6 +30,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setHintDismissed } from 'features/help/hints.slice'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
@@ -111,6 +112,7 @@ export const useClickedEventConnect = () => {
   const fishingInteractionStatus = useSelector(selectActivityInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const setMapCoordinates = useSetMapCoordinates()
+  const fitMapBounds = useMapFitBounds()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
@@ -164,16 +166,24 @@ export const useClickedEventConnect = () => {
 
       if (clusterFeature) {
         if (isTilesClusterLayerCluster(clusterFeature)) {
-          const { expansionZoom } = clusterFeature
-          const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
-          const expansionZoomValue =
-            expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
-          if (!areTilesClusterLoading && expansionZoomValue) {
-            setMapCoordinates({
-              latitude: event.latitude,
-              longitude: event.longitude,
-              zoom: expansionZoomValue,
+          const { expansionZoom, expansionBounds } = clusterFeature
+          if (expansionBounds?.length) {
+            fitMapBounds(expansionBounds, {
+              padding: 120,
+              fitZoom: true,
+              flyTo: true,
             })
+          } else {
+            const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
+            const expansionZoomValue =
+              expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
+            if (!areTilesClusterLoading && expansionZoomValue) {
+              setMapCoordinates({
+                latitude: event.latitude,
+                longitude: event.longitude,
+                zoom: expansionZoomValue,
+              })
+            }
           }
           return
         } else if (clusterFeature.clusterMode === 'country') {
@@ -267,6 +277,7 @@ export const useClickedEventConnect = () => {
       addMapAnnotation,
       addErrorNotification,
       onRulerMapClick,
+      fitMapBounds,
       areTilesClusterLoading,
       setMapCoordinates,
       clickedEvent,
