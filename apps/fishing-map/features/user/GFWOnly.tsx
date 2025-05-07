@@ -44,7 +44,7 @@ function GFWOnly(props: GFWOnlyProps) {
   }
 
   if (type === 'only-icon') {
-    return jacUser ? (
+    return userGroup === 'jac' ? (
       <span title={disclaimerText}>🔓</span>
     ) : (
       <Icon
@@ -57,7 +57,7 @@ function GFWOnly(props: GFWOnlyProps) {
   }
   return (
     <span className={cx(styles.GFWOnly, className)}>
-      {jacUser ? `🔓` : <Icon {...defaultIconProps} />}
+      {userGroup === 'jac' ? `🔓` : <Icon {...defaultIconProps} />}
       {disclaimerText}
     </span>
   )
