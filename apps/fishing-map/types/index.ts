@@ -96,6 +96,7 @@ export type QueryParam = keyof QueryParams
 export enum TimebarVisualisations {
   HeatmapActivity = 'heatmap',
   HeatmapDetections = 'heatmapDetections',
+  Events = 'events',
   Vessel = 'vessel',
   VesselGroup = 'vesselGroup',
   Environment = 'environment',

@@ -18,7 +18,9 @@ import Supercluster from 'supercluster'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
-import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FourwingsClustersLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import {
   COLOR_HIGHLIGHT_LINE,
@@ -37,7 +39,7 @@ import {
   MAX_ZOOM_TO_CLUSTER_POINTS,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
 } from '../fourwings.config'
-import { getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
+import { getIntervalFrames, getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
 
 import type {
   FourwingsClusterEventType,
@@ -52,6 +54,7 @@ type FourwingsClustersTileLayerState = {
   error: string
   clusterIndex: Supercluster
   viewportLoaded: boolean
+  data: FourwingsPointFeature[]
   clusters?: FourwingsClusterFeature[]
   points?: FourwingsPointFeature[]
   radiusScale?: ScalePower<number, number>
@@ -124,6 +127,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return clusterMode
   }
 
+  get interval(): FourwingsInterval {
+    return getFourwingsInterval(this.props.startTime, this.props.endTime)
+  }
+
   getError(): string {
     return this.state.error
   }
@@ -132,6 +139,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     super.initializeState(context)
     this.state = {
       error: '',
+      data: [],
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 70,
@@ -202,6 +210,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     if (this.clusterMode === 'positions' && data.length < MAX_INDIVIDUAL_POINTS) {
       requestAnimationFrame(() => {
         this.setState({
+          data,
           viewportLoaded: true,
           points: data,
           clusters: undefined,
@@ -230,6 +239,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       .range([MIN_CLUSTER_RADIUS, MAX_CLUSTER_RADIUS])
     requestAnimationFrame(() => {
       this.setState({
+        data,
         viewportLoaded: true,
         clusters,
         points,
@@ -253,6 +263,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     let rows: number = 0
     let scale: number = 0
     let offset: number = 0
+    let noDataValue: number = 0
     try {
       const response = await GFWAPI.fetch<any>(url, {
         signal,
@@ -274,6 +285,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
       if (response.headers.get('X-offset') && !offset) {
         offset = parseInt(response.headers.get('X-offset') as string)
       }
+      if (response.headers.get('X-empty-value') && !noDataValue) {
+        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      }
 
       if (signal?.aborted) {
         return
@@ -283,13 +297,15 @@ export class FourwingsClustersLayer extends CompositeLayer<
         return
       }
       return await parse(data, FourwingsClustersLoader, {
-        worker: true,
+        worker: false,
         fourwingsClusters: {
           cols,
           rows,
           scale,
           offset,
           tile,
+          interval: this.interval,
+          noDataValue,
         },
       })
     } catch (error: any) {
@@ -334,7 +350,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
     url = url
       ?.replace('{{type}}', 'heatmap')
-      .concat(`&format=4WINGS&temporal-aggregation=true&geolocation=${this.clusterMode}`)
+      .concat(`&format=4WINGS&interval=${this.interval}&geolocation=${this.clusterMode}`)
     return this._fetchClusters(url!, { signal: tile.signal, tile })
   }
 
@@ -431,7 +447,22 @@ export class FourwingsClustersLayer extends CompositeLayer<
     ]
   }
 
+  getData() {
+    return this.state.data as FourwingsPointFeature[]
+  }
+
   getViewportData() {
+    const data = this.getData()
+    const { viewport } = this.context
+    const [west, north] = viewport.unproject([0, 0])
+    const [east, south] = viewport.unproject([viewport.width, viewport.height])
+    if (data?.length) {
+      const dataFiltered = filterFeaturesByBounds({
+        features: data as any,
+        bounds: { north, south, west, east },
+      })
+      return dataFiltered as FourwingsPointFeature[]
+    }
     return []
   }
 }

@@ -4,6 +4,7 @@ import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
 import type {
   FourwingsFeature,
   FourwingsInterval,
+  FourwingsPointFeature,
   FourwingsPositionFeature,
   FourwingsValuesAndDatesFeature,
 } from '@globalfishingwatch/deck-loaders'
@@ -31,13 +32,13 @@ function getDatesPopulated({
   start,
   end,
   interval,
-  sublayerLength,
+  sublayersLength,
   count = true,
 }: {
   start: number
   end: number
   interval: FourwingsInterval
-  sublayerLength: number
+  sublayersLength: number
   count?: boolean
 }): FeatureDates {
   const data = {} as FeatureDates
@@ -52,9 +53,9 @@ function getDatesPopulated({
   while (date <= endPlusOne) {
     data[date] = { date }
     if (count) {
-      data[date].count = Array(sublayerLength).fill(0)
+      data[date].count = Array(sublayersLength).fill(0)
     }
-    for (let i = 0; i < sublayerLength; i++) {
+    for (let i = 0; i < sublayersLength; i++) {
       data[date][i] = 0
     }
     date = Math.min(
@@ -68,29 +69,34 @@ function getDatesPopulated({
 }
 
 export function getGraphDataFromFourwingsPositions(
-  features: FourwingsPositionFeature[],
+  features: FourwingsPositionFeature[] | FourwingsPointFeature[],
   {
     start,
     end,
     interval,
-    sublayers,
-  }: Pick<GetGraphDataFromFourwingsFeaturesParams, 'start' | 'end' | 'interval' | 'sublayers'>
+    sublayersLength,
+  }: Pick<GetGraphDataFromFourwingsFeaturesParams, 'start' | 'end' | 'interval'> & {
+    sublayersLength: number
+  }
 ): ActivityTimeseriesFrame[] {
   if (!features?.length || !start || !end) {
     return []
   }
-  const sublayerLength = sublayers.length
-  const data = getDatesPopulated({ start, end, interval, sublayerLength, count: false })
+  const data = getDatesPopulated({ start, end, interval, sublayersLength, count: false })
 
   features.forEach((feature) => {
-    const { htime, value, layer } = feature.properties
+    const { htime, value, layer = 0 } = feature.properties
     if (htime && value) {
       const date = getDateInIntervalResolution(
+        // Always using HOUR as data is coming from the raw table
         CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(htime),
         interval
       )
       if (!data[date]) {
         data[date] = { date }
+      }
+      if (!data[date][layer]) {
+        data[date][layer] = 0
       }
       data[date][layer] += value
     }
@@ -116,12 +122,12 @@ export function getGraphDataFromFourwingsHeatmap(
     return []
   }
 
-  const sublayerLength = sublayers.length
+  const sublayersLength = sublayers.length
   const data = {
-    ...getDatesPopulated({ start, end, interval, sublayerLength }),
+    ...getDatesPopulated({ start, end, interval, sublayersLength }),
     ...(compareStart &&
       compareEnd && {
-        ...getDatesPopulated({ start: compareStart, end: compareEnd, interval, sublayerLength }),
+        ...getDatesPopulated({ start: compareStart, end: compareEnd, interval, sublayersLength }),
       }),
   }
 

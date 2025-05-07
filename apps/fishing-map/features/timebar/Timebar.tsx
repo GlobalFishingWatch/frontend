@@ -1,4 +1,4 @@
-import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
@@ -49,6 +49,7 @@ import {
   useTimebarVesselTracks,
   useTimebarVesselTracksGraph,
 } from 'features/timebar/timebar-vessel.hooks'
+import TimebarClusterEventsGraph from 'features/timebar/TimebarClusterEventsGraph'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'routes/routes.selectors'
@@ -402,6 +403,9 @@ const TimebarWrapper = () => {
           <TimebarActivityGraph visualisation={timebarVisualisation} />
         )}
         {timebarVisualisation === TimebarVisualisations.Vessel && tracksComponents}
+        {timebarVisualisation === TimebarVisualisations.Events && (
+          <TimebarClusterEventsGraph visualisation={timebarVisualisation} />
+        )}
         <TimebarHighlighterWrapper showTooltip={isMouseInside} />
       </Fragment>
     )

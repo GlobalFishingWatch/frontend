@@ -25,8 +25,9 @@ export const FourwingsClustersWorkerLoader: Loader = {
       rows: 53,
       scale: 1,
       offset: 0,
-      noDataValue: 0,
+      noDataValue: undefined,
       tile: undefined,
+      temporalAggregation: false,
     } as ParseFourwingsClustersOptions,
   } as FourwingsClustersLoaderOptions,
 }

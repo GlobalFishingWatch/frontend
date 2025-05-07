@@ -40,8 +40,10 @@ export type ParseFourwingsOptions = {
 
 export type ParseFourwingsClustersOptions = Omit<
   ParseFourwingsOptions,
-  'interval' | 'aggregationOperation' | 'sublayers' | 'initialTimeRange' | 'bufferedStartDate'
->
+  'aggregationOperation' | 'sublayers' | 'initialTimeRange' | 'bufferedStartDate'
+> & {
+  temporalAggregation?: boolean
+}
 
 export type FourwingsLoaderOptions = LoaderOptions & {
   fourwings?: ParseFourwingsOptions
@@ -72,6 +74,7 @@ export type FourwingsPositionFeatureProperties = {
 export type FourwingsPointFeatureProperties = {
   id: number
   value: number
+  htime?: number
   [key: string]: any
 }
 

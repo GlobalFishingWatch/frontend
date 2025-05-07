@@ -12,6 +12,7 @@ import TimelineContext from '../../timelineContext'
 import type {
   ActivityTimeseriesFrame,
   HighlighterCallback,
+  HighlighterIconCallback,
   TimebarChartChunk,
   TimebarChartData,
   TimebarChartItem,
@@ -195,7 +196,7 @@ export const useTimeseriesToChartData = (
   data: ActivityTimeseriesFrame[],
   dataviews: UrlDataviewInstance[],
   highlighterCallback?: HighlighterCallback,
-  highlighterIconCallback?: HighlighterCallback
+  highlighterIconCallback?: HighlighterIconCallback
 ): TimebarChartData => {
   return useMemo(() => {
     if (!data || !data.length || !dataviews?.length) return []

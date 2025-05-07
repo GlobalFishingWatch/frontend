@@ -9,7 +9,7 @@ import type { TimelineScale } from '../timelineContext'
 import TimelineContext from '../timelineContext'
 
 import { useTimeseriesToChartData } from './common/hooks'
-import type { HighlighterCallback, Timeseries } from './common/types'
+import type { HighlighterCallback, HighlighterIconCallback, Timeseries } from './common/types'
 import { useUpdateChartsData } from './chartsData.atom'
 
 const MARGIN_BOTTOM = 20
@@ -66,7 +66,7 @@ const StackedActivity = ({
   timeseries: Timeseries
   dataviews: UrlDataviewInstance[]
   highlighterCallback?: HighlighterCallback
-  highlighterIconCallback?: HighlighterCallback
+  highlighterIconCallback?: HighlighterIconCallback
 }) => {
   // todo replace with outerScale hook
   const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
