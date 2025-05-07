@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -59,6 +60,17 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
                 {t('event.encounter', { count: feature.count })}
+                {!feature.properties.cluster && feature.properties.htime && (
+                  <span>
+                    {' '}
+                    {t('common.at', 'at')}{' '}
+                    <I18nDate
+                      date={CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(
+                        feature.properties.htime
+                      )}
+                    />
+                  </span>
+                )}
               </span>
             </div>
           )

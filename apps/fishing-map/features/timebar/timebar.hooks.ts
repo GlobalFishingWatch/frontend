@@ -17,6 +17,7 @@ import {
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
+  selectActiveEventsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -264,6 +265,7 @@ export const useTimebarVisualisation = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
+  const activeEventsDataviews = useSelector(selectActiveEventsDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
@@ -275,7 +277,7 @@ export const useTimebarVisualisation = () => {
   const prevActiveVesselGroupDataviewsNum = usePrevious(activeVesselGroupDataviews.length)
   const prevActiveTrackDataviewsNum = usePrevious(activeTrackDataviews.length)
   const prevactiveEnvDataviewsNum = usePrevious(activeEnvDataviews.length)
-
+  const prevActiveEventsDataviewsNum = usePrevious(activeEventsDataviews.length)
   useEffect(() => {
     // Fallback mechanism to avoid empty timebar
     if (
@@ -286,7 +288,8 @@ export const useTimebarVisualisation = () => {
       (timebarVisualisation === TimebarVisualisations.VesselGroup &&
         !activeVesselGroupDataviews?.length) ||
       (timebarVisualisation === TimebarVisualisations.Vessel && !activeTrackDataviews?.length) ||
-      (timebarVisualisation === TimebarVisualisations.Environment && !activeEnvDataviews?.length)
+      (timebarVisualisation === TimebarVisualisations.Environment && !activeEnvDataviews?.length) ||
+      (timebarVisualisation === TimebarVisualisations.Events && !activeEventsDataviews?.length)
     ) {
       if (activeActivityDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
@@ -298,6 +301,8 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
+      } else if (activeEventsDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Events, true)
       }
     } else if (!hasChangedSettingsOnce) {
       if (activeActivityDataviews.length === 1 && prevActiveHeatmapDataviewsNum === 0) {
@@ -313,6 +318,8 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews.length === 1 && prevactiveEnvDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
+      } else if (activeEventsDataviews.length === 1 && prevActiveEventsDataviewsNum === 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Events, true)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

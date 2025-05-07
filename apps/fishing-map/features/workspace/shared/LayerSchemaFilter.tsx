@@ -33,7 +33,11 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
 
 type TransformationUnit = 'minutes' | 'hours' | 'km'
 
-const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
+const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = [
+  'matched',
+  'neural_vessel_type',
+  'encounter_type',
+]
 
 type Transformation = {
   in?: (v: any) => number
@@ -322,7 +326,11 @@ function LayerSchemaFilter({
 
   return (
     <div className={cx(styles.relative, styles.multiSelect)}>
-      <div className={styles.labelContainer}>
+      <div
+        className={cx(styles.labelContainer, {
+          experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
+        })}
+      >
         <label>{getLabelWithUnit(label, unit)}</label>
         {filterOperator && (
           <Choice
@@ -344,9 +352,6 @@ function LayerSchemaFilter({
           })}
           options={sortedOptions}
           selectedOption={optionsSelected[0]}
-          className={cx({
-            experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
-          })}
           labelContainerClassName={styles.labelContainer}
           onSelect={(selection) => onSelect({ filterKey: id, selection, singleValue: true })}
           onCleanClick={() => onClean(id)}
@@ -359,9 +364,6 @@ function LayerSchemaFilter({
             selection: optionsSelected.map(({ id }) => id),
             options,
             filterOperator,
-          })}
-          className={cx({
-            experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
           })}
           options={options}
           selectedOptions={optionsSelected}
