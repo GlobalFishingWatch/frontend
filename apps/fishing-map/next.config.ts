@@ -130,9 +130,10 @@ const nextConfig: NextConfig = {
   // to deploy on a node server
   output: 'standalone',
   outputFileTracingRoot: join(__dirname, '../../'),
-  devIndicators: {
-    position: 'top-left',
-  },
+  // devIndicators: {
+  //   position: 'top-left',
+  // },
+  devIndicators: false,
   turbopack: {
     rules: {
       '*.svg': {
