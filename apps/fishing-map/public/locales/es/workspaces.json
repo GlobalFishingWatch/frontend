@@ -5,6 +5,11 @@
       "description": "Seguimiento de la pesca comercial casi en tiempo real basada en el sistema de identificación automática (AIS por sus siglas en Inglés) global y el sistema de seguimiento de embarcaciones (VMS) de nuestros países socios.",
       "cta": "Explora el mapa"
     },
+    "carrier-portal-public": {
+      "name": "Carrier Vessel Portal",
+      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
+      "cta": "Explore the carrier vessel portal"
+    },
     "deep-sea-mining-public": {
       "name": "Deep Sea Mining Watch",
       "description": "Deep Sea Mining Watch aims to increase transparency in the nascent industry of seabed mining for critical minerals by highlighting historical and ongoing vessel activity in high seas areas that are currently slated for mineral exploration. ",
