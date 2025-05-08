@@ -1,0 +1,28 @@
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4rem;
+  align-items: center;
+}
+
+.loggedIn {
+  text-align: end;
+  max-width: 50rem;
+  line-height: 20px;
+  color: var(--color-secondary-blue);
+}
+
+.logoutButton {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.logoutButton:hover {
+  color: var(--color-primary-blue);
+}
+
+.container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
