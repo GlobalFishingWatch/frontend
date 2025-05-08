@@ -20,6 +20,10 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
   const fitAreaInViewport = useFitAreaInViewport()
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
 
+  if (!isGlobalReportsEnabled) {
+    return null
+  }
+
   const reportLinkTo = {
     type: WORKSPACE_REPORT,
     payload: {
@@ -40,17 +44,13 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
     resetSidebarScroll()
   }
 
-  if (!isGlobalReportsEnabled) {
-    return null
-  }
-
   return (
     <Link to={reportLinkTo} onClick={handleOnClick}>
       <IconButton
         icon="analysis"
         type="border"
         size="medium"
-        tooltip={t('analysis.see', 'See report')}
+        tooltip={t('analysis.seeGlobal', 'See global report')}
         tooltipPlacement="top"
       />
     </Link>

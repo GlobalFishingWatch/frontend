@@ -282,7 +282,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         if (navigateToWorkspace && dataviewInstance) {
           if (workspaceToNavigate) {
             const { type, ...rest } = workspaceToNavigate
-            const { query, payload, replaceQuery } = rest
+            const { query, payload } = rest
             const dataviewInstancesMerged = mergeDataviewIntancesToUpsert(
               dataviewInstance,
               rest.query.dataviewInstances
@@ -292,7 +292,6 @@ function VesselGroupModal(): React.ReactElement<any> {
               updateLocation(type as ROUTE_TYPES, {
                 query: { ...query, dataviewInstances: dataviewInstancesMerged },
                 payload,
-                replaceQuery,
               })
             )
             dispatch(setWorkspaceSuggestSave(true))

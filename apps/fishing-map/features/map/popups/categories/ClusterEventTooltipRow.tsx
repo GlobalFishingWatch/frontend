@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next'
 
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
+import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getEventDescriptionComponent } from 'utils/events'
@@ -24,12 +27,34 @@ function ClusterEventTooltipRow({ feature, showFeaturesDetails }: ClusterEventTo
   const { datasetId, event, color } = feature
   const title = getDatasetLabel({ id: datasetId! })
   const infoDataset = event?.dataset.relatedDatasets?.find((d) => d.type === DatasetTypes.Vessels)
+  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
 
   return (
     <div className={styles.popupSection}>
       <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
       <div className={styles.popupSectionContent}>
-        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        {showFeaturesDetails ? (
+          <h3 className={styles.popupSectionTitle}>{title}</h3>
+        ) : (
+          feature.count && (
+            <div className={styles.row}>
+              <span className={styles.rowText}>
+                <I18nNumber number={feature.count} />{' '}
+                {t('event.loitering', { count: feature.count })}
+                {!feature.properties.cluster && feature.properties.htime && interval && (
+                  <span className={styles.rowTextSecondary}>
+                    {' '}
+                    {formatDateForInterval(
+                      CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
+                      interval
+                    )}
+                    {interval === 'HOUR' && ' UTC'}
+                  </span>
+                )}
+              </span>
+            </div>
+          )
+        )}
         {showFeaturesDetails && (
           <div className={styles.row}>
             {event?.vessel ? (
@@ -42,6 +67,10 @@ function ClusterEventTooltipRow({ feature, showFeaturesDetails }: ClusterEventTo
                 <VesselLink
                   vesselId={event.vessel.id}
                   datasetId={infoDataset?.id}
+                  query={{
+                    vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                    vesselSelfReportedId: event.vessel.id,
+                  }}
                   className={styles.marginRight}
                 >
                   {formatInfoField(event.vessel.name, 'shipname')}

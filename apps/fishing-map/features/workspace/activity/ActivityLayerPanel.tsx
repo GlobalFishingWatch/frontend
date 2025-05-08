@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -15,8 +15,10 @@ import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
-import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import {
+  getDatasetTitleByDataview,
+  getSchemaFiltersInDataview,
+} from 'features/datasets/datasets.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
@@ -31,7 +33,6 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
-import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import InfoModal from '../shared/InfoModal'
@@ -164,29 +165,7 @@ function ActivityLayerPanel({
     getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
-
-  const datasetFields = useMemo(() => {
-    const fields: { field: SupportedDatasetSchema; label: string }[] = [
-      { field: 'radiance', label: t('layer.radiance', 'Radiance') },
-      { field: 'geartype', label: t('layer.gearType_other', 'Gear types') },
-      { field: 'speed', label: t('layer.speed', 'Speed') },
-      { field: 'fleet', label: t('layer.fleet_other', 'Fleets') },
-      { field: 'shiptype', label: t('vessel.shiptype', 'Ship type') },
-      { field: 'origin', label: t('vessel.origin', 'Origin') },
-      { field: 'matched', label: t('vessel.matched', 'Matched') },
-      { field: 'source', label: t('vessel.source', 'Source') },
-      { field: 'target_species', label: t('vessel.target_species', 'Target species') },
-      { field: 'license_category', label: t('vessel.license_category', 'License category') },
-      { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
-      { field: 'vessel-groups', label: t('vesselGroup.vesselGroup', 'Vessel Group') },
-      { field: 'neural_vessel_type', label: t('vessel.neuralVesselType', 'Neural vessel type') },
-      {
-        field: 'distance_from_port_km',
-        label: t('layer.minimumDistanceFromPort', 'Minimum distance from port'),
-      },
-    ]
-    return fields
-  }, [t])
+  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
 
   return (
     <div
@@ -364,14 +343,8 @@ function ActivityLayerPanel({
                 <div className={styles.filters}>
                   <OutOfTimerangeDisclaimer dataview={dataview} />
                   <DatasetFilterSource dataview={dataview} />
-                  <DatasetFlagField dataview={dataview} />
-                  {datasetFields.map(({ field, label }) => (
-                    <DatasetSchemaField
-                      key={field}
-                      dataview={dataview}
-                      field={field}
-                      label={label}
-                    />
+                  {filtersAllowed.map(({ id, label }) => (
+                    <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                   ))}
                 </div>
               </div>

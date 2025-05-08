@@ -27,7 +27,7 @@ export type OceanAreaBBox = [number, number, number, number]
 export interface OceanAreaProperties {
   type: OceanAreaType
   name: string
-  area?: number
+  area?: number | string
   mrgid?: string
   bounds?: OceanAreaBBox
 }

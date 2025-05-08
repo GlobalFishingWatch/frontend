@@ -1,9 +1,13 @@
 import { useTranslation } from 'react-i18next'
 
-import { Icon } from '@globalfishingwatch/ui-components'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
+import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
+import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
@@ -42,14 +46,35 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
   const { t } = useTranslation()
 
   const event = parseEncounterEvent(feature.event)
-
-  const title = getDatasetLabel({ id: feature.datasetId! })
+  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
+  const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
 
   return (
     <div className={styles.popupSection}>
       <Icon icon="encounters" className={styles.layerIcon} style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
-        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        {showFeaturesDetails ? (
+          <h3 className={styles.popupSectionTitle}>{title}</h3>
+        ) : (
+          feature.count && (
+            <div className={styles.row}>
+              <span className={styles.rowText}>
+                <I18nNumber number={feature.count} />{' '}
+                {t('event.encounter', { count: feature.count })}
+                {!feature.properties.cluster && feature.properties.htime && interval && (
+                  <span className={styles.rowTextSecondary}>
+                    {' '}
+                    {formatDateForInterval(
+                      CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
+                      interval
+                    )}
+                    {interval === 'HOUR' && ' UTC'}
+                  </span>
+                )}
+              </span>
+            </div>
+          )
+        )}
         {error && <p className={styles.error}>{error}</p>}
         {showFeaturesDetails && (
           <div className={styles.row}>
@@ -61,12 +86,21 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                 <div className={styles.flex}>
                   {event.vessel && (
                     <div className={styles.rowColum}>
-                      <p className={styles.rowTitle}>
-                        {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
-                      </p>
+                      {event.vessel.type && (
+                        <p className={styles.rowTitle}>
+                          {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
+                        </p>
+                      )}
                       <div className={styles.centered}>
                         <span className={styles.rowText}>
-                          <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
+                          <VesselLink
+                            vesselId={event.vessel.id}
+                            datasetId={event.vessel.dataset}
+                            query={{
+                              vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                              vesselSelfReportedId: event.vessel.id,
+                            }}
+                          >
                             {formatInfoField(event.vessel?.name, 'shipname')}
                           </VesselLink>
                         </span>
@@ -92,6 +126,10 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                             <VesselLink
                               vesselId={event.encounter.vessel?.id}
                               datasetId={event.encounter.vessel?.dataset}
+                              query={{
+                                vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                                vesselSelfReportedId: event.encounter.vessel?.id,
+                              }}
                             >
                               {formatInfoField(event.encounter.vessel?.name, 'shipname')}
                             </VesselLink>
@@ -110,12 +148,22 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
                   )}
                 </div>
                 <div className={styles.row}>
-                  {/* TODO: Add link to vessel portal in case we support it */}
-                  {/* <VesselLink vesselId={event.vessel.id} datasetId={event.vessel.dataset}>
+                  <VesselLink
+                    vesselId={event.vessel.id}
+                    datasetId={event.vessel.dataset}
+                    query={{
+                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                      vesselSelfReportedId: event.vessel.id,
+                    }}
+                    eventId={event.id ? event.id.split('.')[0] : undefined}
+                    eventType={'encounter'}
+                    showTooltip={false}
+                    className={styles.btnLarge}
+                  >
                     <Button target="_blank" size="small" className={styles.btnLarge}>
                       {t('common.seeMore', 'See more')}
                     </Button>
-                  </VesselLink> */}
+                  </VesselLink>
                 </div>
               </div>
             ) : (

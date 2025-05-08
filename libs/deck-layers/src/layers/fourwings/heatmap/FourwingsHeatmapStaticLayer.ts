@@ -73,6 +73,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       colorRanges: this._getColorRanges(),
       scales: [],
       rampDirty: false,
+      viewportLoaded: false,
     }
   }
 

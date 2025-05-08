@@ -10,7 +10,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
@@ -47,19 +47,16 @@ function SearchActions() {
           ? eventsRelatedDatasets.map((d) => d.id)
           : []
       const trackDatasetId = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)?.id
-      const vesselDataviewInstance = getVesselDataviewInstance(
+      const vesselDataviewInstance = getVesselDataviewInstance({
         vessel,
-        {
+        datasets: {
           track: trackDatasetId,
           info: vessel.dataset.id,
           ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
           relatedVesselIds: getRelatedIdentityVesselIds(vessel),
         },
-        vesselTemplateDataviews
-      )
-      if (!vesselDataviewInstance) {
-        return []
-      }
+        vesselTemplateDataviews,
+      })
       return vesselDataviewInstance
     })
     addNewDataviewInstances(instances)

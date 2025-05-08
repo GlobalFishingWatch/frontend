@@ -124,6 +124,7 @@ export type FourwingsTileLayerState = {
   comparisonMode?: FourwingsComparisonMode
   scales?: FourwinsTileLayerScale[]
   rampDirty?: boolean
+  viewportLoaded: boolean
 }
 
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {

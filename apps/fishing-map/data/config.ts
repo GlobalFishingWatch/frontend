@@ -30,15 +30,6 @@ export const REPORT_DAYS_LIMIT =
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
 
-export const REPORT_VESSELS_PER_PAGE = 10
-export const REPORT_SHOW_MORE_VESSELS_PER_PAGE = REPORT_VESSELS_PER_PAGE * 5
-export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype' as const
-export const REPORT_VESSELS_GRAPH_VESSELTYPE = 'vesselType' as const
-export const REPORT_VESSELS_GRAPH_FLAG = 'flag' as const
-export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution' as const
-export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter' as const
-export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison' as const
-
 // Local storage keys
 export const HINTS = 'hints'
 export const USER_SETTINGS = 'userSettings'
@@ -119,7 +110,10 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: null,
   userTab: UserTab.Info,
-  featureFlags: PUBLIC_WORKSPACE_ENV !== 'production' ? ['vesselClassInfo'] : [],
+  featureFlags:
+    PUBLIC_WORKSPACE_ENV !== 'production'
+      ? ['globalReports', 'vesselClassInfo']
+      : ['globalReports'],
 }
 
 export const EVENTS_COLORS: Record<string, string> = {

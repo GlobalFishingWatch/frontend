@@ -1,5 +1,6 @@
 import type { MouseEvent } from 'react'
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
 
@@ -7,7 +8,7 @@ import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { Tooltip } from '../tooltip'
 
-import type { SelectOnChange,SelectOption } from './index'
+import type { SelectOnChange, SelectOption } from './index'
 
 import styles from './Select.module.css'
 
@@ -57,23 +58,15 @@ export function Select(props: SelectProps) {
     type = 'primary',
     infoTooltip,
   } = props
-  const {
-    isOpen,
-    selectItem,
-    highlightedIndex,
-    getToggleButtonProps,
-    getLabelProps,
-    getMenuProps,
-    getItemProps,
-  } = useSelect<SelectOption | null>({
-    ...((id && { id }) || {}),
-    items: options,
-    onSelectedItemChange: ({ selectedItem }) => {
-      if (!disabled && selectedItem && !selectedItem.disabled) {
-        handleChange(selectedItem)
-        selectItem(null)
-      }
-    },
+
+  const listRef = useRef<HTMLUListElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  const rowVirtualizer = useVirtualizer({
+    count: options.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 40,
+    overscan: 5,
   })
 
   const handleChange = useCallback(
@@ -86,6 +79,18 @@ export function Select(props: SelectProps) {
     },
     [onRemove, onSelect, selectedOption]
   )
+
+  const { isOpen, selectItem, highlightedIndex, getToggleButtonProps, getMenuProps, getItemProps } =
+    useSelect<SelectOption | null>({
+      ...((id && { id }) || {}),
+      items: options,
+      onSelectedItemChange: ({ selectedItem }) => {
+        if (!disabled && selectedItem && !selectedItem.disabled) {
+          handleChange(selectedItem)
+          selectItem(null)
+        }
+      },
+    })
 
   const handleToggleButtonClick = useCallback(
     (e: MouseEvent) => {
@@ -144,37 +149,63 @@ export function Select(props: SelectProps) {
           )}
         </div>
         <ul
+          ref={listRef}
           {...getMenuProps()}
           className={cx(styles.optionsContainer, styles[direction], styles[align])}
         >
-          {!disabled &&
-            isOpen &&
-            options.length > 0 &&
-            options.map((item, index) => {
-              const highlight = highlightedIndex === index
-              const selected = isItemSelected(selectedOption, item)
-              const itemDisabled = disabled || item.disabled
-              return (
-                <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
-                  <li
-                    className={cx(styles.optionItem, {
-                      [styles.selected]: selected,
-                      [styles.highlight]: highlight,
-                      [styles.notAllowed]: itemDisabled,
-                    })}
-                    {...getItemProps({ item, index })}
-                  >
-                    {item.label}
-                    <Icon
-                      icon={selected ? 'close' : 'tick'}
-                      className={cx(styles.icon, {
-                        [styles.visible]: highlight && !itemDisabled && onRemove,
-                      })}
-                    />
-                  </li>
-                </Tooltip>
-              )
-            })}
+          {!disabled && isOpen && options.length > 0 && (
+            <div
+              ref={scrollRef}
+              style={{
+                maxHeight: '24rem',
+                overflow: 'auto',
+                width: '100%',
+              }}
+            >
+              <div
+                style={{
+                  height: `${rowVirtualizer.getTotalSize()}px`,
+                  width: '100%',
+                  position: 'relative',
+                }}
+              >
+                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                  const item = options[virtualRow.index]
+                  const highlight = highlightedIndex === virtualRow.index
+                  const selected = isItemSelected(selectedOption, item)
+                  const itemDisabled = disabled || item.disabled
+                  return (
+                    <Tooltip key={virtualRow.key} content={item.tooltip} placement="top-start">
+                      <li
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: `${virtualRow.size}px`,
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }}
+                        className={cx(styles.optionItem, {
+                          [styles.selected]: selected,
+                          [styles.highlight]: highlight,
+                          [styles.notAllowed]: itemDisabled,
+                        })}
+                        {...getItemProps({ item, index: virtualRow.index })}
+                      >
+                        {item.label}
+                        <Icon
+                          icon={selected ? 'close' : 'tick'}
+                          className={cx(styles.icon, {
+                            [styles.visible]: highlight && !itemDisabled && onRemove,
+                          })}
+                        />
+                      </li>
+                    </Tooltip>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </ul>
       </div>
     </div>

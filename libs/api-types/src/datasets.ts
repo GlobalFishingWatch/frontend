@@ -282,6 +282,7 @@ export interface Dataset {
   configuration: AnyDatasetConfiguration | null
   relatedDatasets: RelatedDataset[] | null
   fieldsAllowed: string[]
+  filters: Record<string, DatasetSchemaItem>
 }
 
 export interface ThinningConfig {

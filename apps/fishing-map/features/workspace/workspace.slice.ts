@@ -75,7 +75,7 @@ export type LastWorkspaceVisited = {
   type: ROUTE_TYPES
   payload: any
   query: any
-  replaceQuery?: boolean
+  pathname?: string
 }
 
 interface WorkspaceSliceState {
@@ -86,7 +86,7 @@ interface WorkspaceSliceState {
   error: AsyncError
   data: Workspace<AnyWorkspaceState> | null
   password: string | typeof VALID_PASSWORD
-  lastVisited: LastWorkspaceVisited | undefined
+  historyNavigation: LastWorkspaceVisited[]
 }
 
 const initialState: WorkspaceSliceState = {
@@ -96,7 +96,7 @@ const initialState: WorkspaceSliceState = {
   error: {} as AsyncError,
   data: null,
   password: '',
-  lastVisited: undefined,
+  historyNavigation: [],
 }
 
 type RejectedActionPayload = {
@@ -504,8 +504,8 @@ const workspaceSlice = createSlice({
         state.data.state.reportBufferOperation = undefined
       }
     },
-    setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
-      state.lastVisited = action.payload
+    setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
+      state.historyNavigation = action.payload
     },
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
@@ -573,11 +573,11 @@ export const {
   setWorkspacePassword,
   setWorkspaceSuggestSave,
   resetWorkspaceSlice,
-  setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
   cleanCurrentWorkspaceReportState,
   cleanCurrentWorkspaceStateBufferParams,
+  setWorkspaceHistoryNavigation,
 } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

@@ -18,6 +18,7 @@ import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
+  selectActiveEventsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -35,6 +36,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
     [
       selectActiveActivityDataviews,
       selectActiveDetectionsDataviews,
+      selectActiveEventsDataviews,
       selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
       selectActiveVesselGroupDataviews,
       selectTimebarSelectedEnvId,
@@ -43,6 +45,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
     (
       activityDataviews,
       detectionsDataviews,
+      eventsDataviews,
       environmentDataviews,
       vesselGroupDataviews,
       timebarSelectedEnvId,
@@ -53,6 +56,9 @@ export const selectActiveActivityDataviewsByVisualisation = (
       }
       if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
         return detectionsDataviews
+      }
+      if (timebarVisualisation === TimebarVisualisations.Events) {
+        return eventsDataviews
       }
       if (timebarVisualisation === TimebarVisualisations.VesselGroup) {
         const selectedVGDataview =
@@ -109,6 +115,7 @@ export const selectTimebarSelectedDataviews = createSelector(
     selectTimebarSelectedVGId,
     selectActiveDetectionsDataviews,
     selectActiveActivityDataviews,
+    selectActiveEventsDataviews,
     selectActiveVesselGroupDataviews,
     selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
     selectReportCategory,
@@ -120,6 +127,7 @@ export const selectTimebarSelectedDataviews = createSelector(
     timebarSelectedVGId,
     detectionsDataviews,
     activityDataviews,
+    eventsDataviews,
     vesselGroupDataviews,
     environmentalDataviews,
     reportCategory,
@@ -134,6 +142,9 @@ export const selectTimebarSelectedDataviews = createSelector(
     }
     if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
       return detectionsDataviews
+    }
+    if (timebarVisualisation === TimebarVisualisations.Events) {
+      return eventsDataviews
     }
 
     return isAreaReportLocation

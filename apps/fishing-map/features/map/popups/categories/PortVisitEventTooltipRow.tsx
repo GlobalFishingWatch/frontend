@@ -2,9 +2,12 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
+import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import I18nNumber from 'features/i18n/i18nNumber'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectIsPortReportLocation } from 'routes/routes.selectors'
@@ -30,12 +33,33 @@ function PortVisitEventTooltipRow({ feature, showFeaturesDetails, error }: PortV
   const { datasetId, event, color } = feature
   const title = getDatasetLabel({ id: datasetId! })
   const isGFWUser = useSelector(selectIsGFWUser)
-
+  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   return (
     <div className={styles.popupSection}>
       <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
       <div className={styles.popupSectionContent}>
-        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
+        {showFeaturesDetails ? (
+          <h3 className={styles.popupSectionTitle}>{title}</h3>
+        ) : (
+          feature.count && (
+            <div className={styles.row}>
+              <span className={styles.rowText}>
+                <I18nNumber number={feature.count} />{' '}
+                {t('event.port_visit', { count: feature.count })}
+                {!feature.properties.cluster && feature.properties.htime && interval && (
+                  <span className={styles.rowTextSecondary}>
+                    {' '}
+                    {formatDateForInterval(
+                      CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
+                      interval
+                    )}
+                    {interval === 'HOUR' && ' UTC'}
+                  </span>
+                )}
+              </span>
+            </div>
+          )
+        )}
         {error && <p className={styles.error}>{error}</p>}
         {showFeaturesDetails && (
           <VesselsTable

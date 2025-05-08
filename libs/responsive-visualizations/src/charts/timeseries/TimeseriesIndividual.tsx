@@ -73,7 +73,7 @@ export function IndividualTimeseries({
                       <IndividualPoint
                         key={pointIndex}
                         point={point}
-                        color={color}
+                        color={point.color || color}
                         tooltip={customTooltip}
                         icon={icon}
                       />

@@ -14,7 +14,7 @@ import { selectReportDataviewsWithPermissions } from 'features/reports/report-ar
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
-import { getCommonProperties } from 'features/reports/shared/summary/report-summary.utils'
+import { getHasAllSourcesInCommon } from 'features/reports/shared/summary/report-summary.utils'
 import {
   getReportRequestHash,
   selectReportRequestHash,
@@ -59,17 +59,12 @@ export default function ReportSummaryActivity({
     reportRequestHash !==
     getReportRequestHash({
       datasets: reportDataviews.flatMap(({ datasets }) => datasets?.map((d) => d.id) || []),
-      filters: reportDataviews.map((d) => d.filter),
+      filters: (reportDataviews as any[]).map((d) => d.filter),
       dateRange: timerange,
     })
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
 
-  const commonProperties = useMemo(() => {
-    return getCommonProperties(dataviews).filter(
-      (property) =>
-        !dataviews[0].config?.filters?.[property] || !PROPERTIES_EXCLUDED.includes(property)
-    )
-  }, [dataviews])
+  const hasAllSourcesInCommon = getHasAllSourcesInCommon(dataviews)
 
   const activitySummary = useMemo(() => {
     if (!dataviews.length || !layersTimeseriesFiltered?.length) return
@@ -109,7 +104,7 @@ export default function ReportSummaryActivity({
         activityType: datasetTitle,
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
-        sources: commonProperties.includes('source')
+        sources: hasAllSourcesInCommon
           ? ` (${listAsSentence(
               getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
             )})`
@@ -180,7 +175,7 @@ export default function ReportSummaryActivity({
     activityUnit,
     timerange?.start,
     timerange?.end,
-    commonProperties,
+    hasAllSourcesInCommon,
   ])
 
   return activitySummary ? htmlParser(activitySummary) : <ReportSummaryPlaceholder />

@@ -1,10 +1,12 @@
 import { uniq } from 'es-toolkit'
 import type { RootState } from 'reducers'
 import type { Dispatch, Middleware } from 'redux'
+import { NOT_FOUND } from 'redux-first-router'
 
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 
-import { setLastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
 import type { QueryParam, QueryParams } from 'types'
 
@@ -40,7 +42,7 @@ export const routerQueryMiddleware: Middleware =
           featureFlags: uniq([
             ...(prevQuery.featureFlags || []),
             ...(newAction.query?.featureFlags || []),
-          ]),
+          ]) as any,
         }
       }
       const { query, replaceUrl } = routerAction
@@ -70,30 +72,38 @@ export const routerWorkspaceMiddleware: Middleware =
     const routerAction = action as UpdateQueryParamsAction
     const routesActions = Object.keys(routesMap)
     // check if action type matches a route type
+    const state = getState() as RootState
+    const { type, query, payload, pathname } = state.location
     const isRouterAction = routesActions.includes(routerAction.type)
-    if (isRouterAction) {
-      const state = getState() as RootState
-      const { prev } = state.location
-      const { lastVisited } = state.workspace || {}
-      const routesToSaveWorkspace = Object.keys(routesMap).filter(
-        (key) => !WORKSPACE_ROUTES.includes(key)
-      )
-      const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
+    const isNotInitialLoad = type && routerAction.type !== NOT_FOUND && type !== NOT_FOUND
+    if (isRouterAction && !routerAction.isHistoryNavigation && isNotInitialLoad) {
+      const currentHistoryNavigation = state.workspace?.historyNavigation || []
+      const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
+      const isDifferentRoute =
+        routerAction.type !== type ||
+        Object.entries(routerAction.payload).some(([key, value]) => value !== payload[key])
       if (
-        routesToSaveWorkspace.includes(routerAction.type) &&
-        comesFromWorkspacesRoute &&
-        !lastVisited
+        isDifferentRoute &&
+        (!lastHistoryNavigation || lastHistoryNavigation.pathname !== pathname)
       ) {
+        const newHistoryNavigation: LastWorkspaceVisited = {
+          pathname,
+          type: type as ROUTE_TYPES,
+          query: query,
+          payload: payload,
+        }
+        dispatch(setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation]))
+      } else if (lastHistoryNavigation && WORKSPACE_ROUTES.includes(lastHistoryNavigation.type)) {
+        const updatedHistoryNavigation: LastWorkspaceVisited = {
+          ...lastHistoryNavigation,
+          query: routerAction.query,
+        }
         dispatch(
-          setLastWorkspaceVisited({
-            type: prev.type as ROUTE_TYPES,
-            query: prev.query,
-            payload: prev.payload,
-            replaceQuery: true,
-          })
+          setWorkspaceHistoryNavigation([
+            ...currentHistoryNavigation.slice(0, -1),
+            updatedHistoryNavigation,
+          ])
         )
-      } else if (WORKSPACE_ROUTES.includes(routerAction.type) && lastVisited) {
-        dispatch(setLastWorkspaceVisited(undefined))
       }
     }
     next(action)

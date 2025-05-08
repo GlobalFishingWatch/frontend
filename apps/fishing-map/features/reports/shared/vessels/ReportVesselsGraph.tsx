@@ -1,6 +1,5 @@
 import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type {
@@ -11,30 +10,26 @@ import type {
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
-import {
-  REPORT_VESSELS_GRAPH_FLAG,
-  REPORT_VESSELS_GRAPH_GEARTYPE,
-  REPORT_VESSELS_GRAPH_VESSELTYPE,
-} from 'data/config'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { selectIsResponsiveVisualizationEnabled } from 'features/debug/debug.selectors'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'features/reports/reports.config'
 import type {
   ReportState,
   ReportVesselGraph,
   ReportVesselsSubCategory,
 } from 'features/reports/reports.types'
+import { REPORT_VESSELS_GRAPH_LABEL_KEY } from 'features/reports/shared/utils/reports.utils'
 import ReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
 import { useLocationConnect } from 'routes/routes.hook'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
-
-import { REPORT_GRAPH_LABEL_KEY } from './report-vessels.selectors'
 
 import styles from './ReportVesselsGraph.module.css'
 
@@ -95,7 +90,7 @@ const ReportBarTooltip = (props: any) => {
                     return acc + curr.value
                   }, 0)
                 return (
-                  <Fragment>
+                  <Fragment key={index}>
                     {top.map(({ name, value }: { name: string; value: number }) => (
                       <li key={name} className={styles.tooltipValue}>
                         {name}: <I18nNumber number={value} />
@@ -218,8 +213,6 @@ export default function ReportVesselsGraph({
   pageQueryParam = 'reportVesselPage',
 }: ReportVesselsGraphProps) {
   const { dispatchQueryParams } = useLocationConnect()
-  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
-
   const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
     const propertyParam = FILTER_PROPERTIES[property as ReportVesselsSubCategory]
     if (payload && propertyParam && payload?.name !== OTHERS_CATEGORY_LABEL) {
@@ -243,7 +236,7 @@ export default function ReportVesselsGraph({
       <ResponsiveBarChart
         color={color}
         aggregatedValueKey={aggregatedValueKey}
-        getIndividualData={isResponsiveVisualizationEnabled ? getIndividualData : undefined}
+        getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         onAggregatedItemClick={onBarClick}
         barValueFormatter={(value: any) => {
@@ -256,7 +249,7 @@ export default function ReportVesselsGraph({
             pageQueryParam={pageQueryParam}
           />
         }
-        labelKey={REPORT_GRAPH_LABEL_KEY}
+        labelKey={REPORT_VESSELS_GRAPH_LABEL_KEY}
         individualTooltip={<ReportVesselsIndividualTooltip />}
         individualItem={<VesselGraphLink />}
         aggregatedTooltip={<ReportBarTooltip type={property} />}
