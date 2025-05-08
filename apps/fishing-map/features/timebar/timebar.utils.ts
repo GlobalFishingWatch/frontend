@@ -1,4 +1,4 @@
-import type { DurationUnit } from 'luxon'
+import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
 import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
@@ -44,10 +44,12 @@ function getDatesPopulated({
 }): FeatureDates {
   const data = {} as FeatureDates
   const now = DateTime.now().toUTC().toMillis()
-  let date = getUTCDateTime(start).toMillis()
+  let date = getUTCDateTime(start)
+    .startOf(interval as DateTimeUnit)
+    .toMillis()
 
   const startDate = getUTCDateTime(start)
-  const endDate = getUTCDateTime(end)
+  const endDate = getUTCDateTime(end ? end : now)
 
   const intervalDiff = Math.ceil(
     Object.values(
