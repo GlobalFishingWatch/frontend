@@ -40,7 +40,7 @@ export type ParseFourwingsOptions = {
 
 export type ParseFourwingsClustersOptions = Omit<
   ParseFourwingsOptions,
-  'aggregationOperation' | 'sublayers' | 'initialTimeRange' | 'bufferedStartDate'
+  'aggregationOperation' | 'sublayers' | 'initialTimeRange' | 'bufferedStartDate' | 'buffersLength'
 > & {
   temporalAggregation?: boolean
 }

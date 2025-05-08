@@ -25,6 +25,7 @@ export const FourwingsClustersWorkerLoader: Loader = {
       rows: 53,
       scale: 1,
       offset: 0,
+      interval: 'HOUR',
       noDataValue: undefined,
       tile: undefined,
       temporalAggregation: false,
