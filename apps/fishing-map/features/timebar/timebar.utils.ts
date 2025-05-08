@@ -1,3 +1,4 @@
+import type { DurationUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
 import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
@@ -44,26 +45,35 @@ function getDatesPopulated({
   const data = {} as FeatureDates
   const now = DateTime.now().toUTC().toMillis()
   let date = getUTCDateTime(start).toMillis()
-  const endPlusOne = Math.min(
-    getUTCDateTime(end)
-      .plus({ [interval]: 1 })
-      .toMillis(),
-    now
+
+  const startDate = getUTCDateTime(start)
+  const endDate = getUTCDateTime(end)
+
+  const intervalDiff = Math.ceil(
+    Object.values(
+      endDate
+        .diff(startDate, interval.toLowerCase() as DurationUnit, {
+          conversionAccuracy: 'longterm',
+        })
+        .toObject()
+    )[0]
   )
+  const endPlusOne = getUTCDateTime(start)
+    .plus({ [interval]: intervalDiff })
+    .toMillis()
+
   while (date <= endPlusOne) {
-    data[date] = { date }
+    const dateToUse = date > now ? now : date
+    data[dateToUse] = { date: dateToUse }
     if (count) {
-      data[date].count = Array(sublayersLength).fill(0)
+      data[dateToUse].count = Array(sublayersLength).fill(0)
     }
     for (let i = 0; i < sublayersLength; i++) {
-      data[date][i] = 0
+      data[dateToUse][i] = 0
     }
-    date = Math.min(
-      getUTCDateTime(date)
-        .plus({ [interval]: 1 })
-        .toMillis(),
-      now + 1
-    )
+    date = getUTCDateTime(date)
+      .plus({ [interval]: 1 })
+      .toMillis()
   }
   return data
 }
