@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
 
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
+import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -25,6 +27,7 @@ function ClusterEventTooltipRow({ feature, showFeaturesDetails }: ClusterEventTo
   const { datasetId, event, color } = feature
   const title = getDatasetLabel({ id: datasetId! })
   const infoDataset = event?.dataset.relatedDatasets?.find((d) => d.type === DatasetTypes.Vessels)
+  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
 
   return (
     <div className={styles.popupSection}>
@@ -38,6 +41,16 @@ function ClusterEventTooltipRow({ feature, showFeaturesDetails }: ClusterEventTo
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
                 {t('event.loitering', { count: feature.count })}
+                {!feature.properties.cluster && feature.properties.htime && interval && (
+                  <span className={styles.rowTextSecondary}>
+                    {' '}
+                    {formatDateForInterval(
+                      CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
+                      interval
+                    )}
+                    {interval === 'HOUR' && ' UTC'}
+                  </span>
+                )}
               </span>
             </div>
           )

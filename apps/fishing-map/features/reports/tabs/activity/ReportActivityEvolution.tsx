@@ -13,6 +13,7 @@ import {
   YAxis,
 } from 'recharts'
 
+import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
 
@@ -20,7 +21,7 @@ import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
+import { getUTCDateTime } from 'utils/dates'
 
 import EvolutionGraphTooltip from './EvolutionGraphTooltip'
 

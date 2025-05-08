@@ -98,20 +98,24 @@ export const getISODateByInterval = (
   }
 }
 
-export const formatDateForInterval = (date: DateTime, timeChunkInterval: FourwingsInterval) => {
+export const formatDateForInterval = (
+  date: DateTime | SupportedDateType,
+  timeChunkInterval: FourwingsInterval
+) => {
+  const dateTime = DateTime.isDateTime(date) ? date : getUTCDateTime(date)
   let formattedTick = ''
   switch (timeChunkInterval) {
     case 'YEAR':
-      formattedTick = date.year.toString()
+      formattedTick = dateTime.year.toString()
       break
     case 'MONTH':
-      formattedTick = date.toFormat('LLL y')
+      formattedTick = dateTime.toFormat('LLL y')
       break
     case 'HOUR':
-      formattedTick = date.toLocaleString(DateTime.DATETIME_MED)
+      formattedTick = dateTime.toLocaleString(DateTime.DATETIME_MED)
       break
     default:
-      formattedTick = date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
+      formattedTick = dateTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
       break
   }
   return formattedTick

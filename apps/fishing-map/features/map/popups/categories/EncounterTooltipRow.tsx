@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
+import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
+import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -45,7 +46,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
   const { t } = useTranslation()
 
   const event = parseEncounterEvent(feature.event)
-
+  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
 
   return (
@@ -60,15 +61,14 @@ function EncounterTooltipRow({ feature, showFeaturesDetails, error }: EncounterT
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
                 {t('event.encounter', { count: feature.count })}
-                {!feature.properties.cluster && feature.properties.htime && (
-                  <span>
+                {!feature.properties.cluster && feature.properties.htime && interval && (
+                  <span className={styles.rowTextSecondary}>
                     {' '}
-                    {t('common.at', 'at')}{' '}
-                    <I18nDate
-                      date={CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(
-                        feature.properties.htime
-                      )}
-                    />
+                    {formatDateForInterval(
+                      CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
+                      interval
+                    )}
+                    {interval === 'HOUR' && ' UTC'}
                   </span>
                 )}
               </span>
