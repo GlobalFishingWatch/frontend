@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { logoutUser, useGFWLogin } from '@globalfishingwatch/react-hooks/use-login'
+import { logoutUser, useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import Loader from '../loader/loader'

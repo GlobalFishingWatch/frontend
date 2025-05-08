@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset, DatasetFile } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import ApiBanner from '../../components/api-banner/api-banner'
 import Loader from '../../components/loader/loader'
