@@ -16,7 +16,7 @@ export const FourwingsClustersWorkerLoader: Loader = {
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: false,
+  worker: true,
   category: 'geometry',
   options: {
     fourwingsClusters: {
