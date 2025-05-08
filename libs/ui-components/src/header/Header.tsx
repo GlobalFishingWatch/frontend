@@ -1,4 +1,5 @@
 import React, { Fragment, type JSX } from 'react'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { Icon } from '../icon'
@@ -154,6 +155,7 @@ interface HeaderProps {
   children?: React.ReactNode
   inverted?: boolean
   className?: string
+  homeRedirectURL?: string
 }
 interface HeaderMenuItemProps {
   index: number
@@ -208,7 +210,12 @@ export function HeaderMenuItem({ index, item }: HeaderMenuItemProps): JSX.Elemen
   )
 }
 
-export function Header({ children, inverted = false, className = '' }: HeaderProps) {
+export function Header({
+  children,
+  inverted = false,
+  className = '',
+  homeRedirectURL = 'https://globalfishingwatch.org',
+}: HeaderProps) {
   return (
     <div
       className={cx(
@@ -218,9 +225,9 @@ export function Header({ children, inverted = false, className = '' }: HeaderPro
       )}
     >
       <header className={styles.gfwHeader}>
-        <a className={styles.appLogo} href="https://globalfishingwatch.org">
+        <Link to={homeRedirectURL} className={styles.appLogo}>
           <span className={styles.screenReaderOnly}>Home</span>
-        </a>
+        </Link>
         <a className={styles.screenReaderOnly} href="#main">
           Skip navigation links
         </a>
