@@ -6,6 +6,7 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 import { IconButton, InputText, Tag } from '@globalfishingwatch/ui-components'
 
 import Loader from '../../components/loader/loader'
+import { useGFWLogin } from '../../components/login/use-login'
 import TopBar from '../../components/topBar/topBar'
 import { getUTCString } from '../../utils/dates'
 import { sortByLastUpdated, sortDatasets } from '../../utils/sorting'
@@ -17,6 +18,7 @@ function HomePage() {
   const [datasets, setDatasets] = useState<Dataset[]>([])
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const { logged } = useGFWLogin(GFWAPI)
 
   const [sortBy, setSortBy] = useState<'name' | 'lastUpdated'>('name')
 
@@ -69,9 +71,13 @@ function HomePage() {
           />
         </div>
       </TopBar>
-      {loading && <Loader />}
       <div className={styles.cardsContainer}>
-        {filteredDatasets &&
+        {!logged ? (
+          <>Login to view the datasets</>
+        ) : loading ? (
+          <Loader />
+        ) : (
+          filteredDatasets &&
           filteredDatasets.map((dataset) => {
             const { id, name, description, lastUpdated } = dataset
             return (
@@ -90,7 +96,7 @@ function HomePage() {
                     {getHighlightedText(description as string, searchQuery, styles)}
                   </p>
                   {/* TODO add update frequency when attribute is created V*/}
-                  {lastUpdated && <Tag className={styles.tag}>MONTHLY UPDATES</Tag>}
+                  {/* {lastUpdated && <Tag className={styles.tag}>MONTHLY UPDATES</Tag>} */}
                 </div>
                 <div className={styles.cardFooter}>
                   <div className={styles.lastUpdate}>
@@ -101,7 +107,8 @@ function HomePage() {
                 </div>
               </Link>
             )
-          })}
+          })
+        )}
       </div>
     </Fragment>
   )
