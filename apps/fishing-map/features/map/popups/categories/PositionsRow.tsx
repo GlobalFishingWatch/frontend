@@ -2,19 +2,19 @@ import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import { DateTime } from 'luxon'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
 } from '@globalfishingwatch/deck-layers'
+import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import I18nDate from 'features/i18n/i18nDate'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
 
@@ -46,6 +46,7 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
     }
     return []
   })
+  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
 
   return (
     <Fragment>
@@ -65,12 +66,16 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
               )}
               <span>
                 <span className={popupStyles.marginRight}>{shipname}</span>
-                <span className={popupStyles.secondary}>
-                  <I18nDate
-                    date={feature.properties.htime * 1000 * 60 * 60}
-                    format={DateTime.DATETIME_MED}
-                  />
-                </span>
+                {feature.properties.htime && (
+                  <span className={popupStyles.secondary}>
+                    {' '}
+                    {formatDateForInterval(
+                      CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
+                      interval
+                    )}
+                    {interval === 'HOUR' && ' UTC'}
+                  </span>
+                )}
               </span>
             </span>
           </div>

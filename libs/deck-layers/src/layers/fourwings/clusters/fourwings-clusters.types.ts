@@ -30,6 +30,7 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
   clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
   maxZoom: number
   highlightedFeatures?: DeckLayerPickingObject[]
+  temporalAggregation?: boolean
 }>
 
 export type FourwingsClusterProperties = {

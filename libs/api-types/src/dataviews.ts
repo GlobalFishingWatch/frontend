@@ -148,6 +148,9 @@ export interface DataviewConfig<Type = DataviewType> {
   highlightEventStartTime?: string
   highlightEventEndTime?: string
 
+  /** Requests fourwings events datasets aggregated  */
+  eventsTemporalAggregation?: boolean
+
   pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>
   /** Fourwings layers merged, needed for Activity or Detections */
