@@ -171,7 +171,6 @@ function DatasetPage() {
               </a>
               <br /> */}
 
-              <label>Individual Files (Select up to {MAX_DOWNLOAD_FILES_LIMIT})</label>
               {dataset && dataset.files && (
                 <Table columns={columns} data={dataset.files as TableData[]} />
               )}

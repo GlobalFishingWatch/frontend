@@ -91,9 +91,7 @@ const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, IndeterminateCh
     return (
       <div className={styles.checkbox}>
         <input id={inputID} type="checkbox" ref={resolvedRef} {...rest} />
-        <label htmlFor={inputID} title={title}>
-          {title}
-        </label>
+        <label htmlFor={inputID}></label>
       </div>
     )
   }
@@ -181,9 +179,7 @@ function Table({ columns, data }: TableProps) {
 
   const defaultColumn = useMemo(
     () => ({
-      minWidth: 25,
       width: 150,
-      maxWidth: 200,
       Cell: HighlightedCell,
     }),
     []
@@ -211,13 +207,12 @@ function Table({ columns, data }: TableProps) {
           id: 'selection',
           width: 20,
           Header: () => '',
-          Cell: ({ row, selectedFlatRows }: any) => {
-            const disabled = selectedFlatRows.length >= MAX_DOWNLOAD_FILES_LIMIT && !row.isSelected
+          Cell: ({ row }: any) => {
             return (
               <IndeterminateCheckbox
                 {...row.getToggleRowSelectedProps()}
-                disabled={disabled || !logged}
-                title={disabled ? 'Maximum file download limit reached' : ''}
+                disabled={!logged}
+                title=""
               />
             )
           },
@@ -229,6 +224,7 @@ function Table({ columns, data }: TableProps) {
 
   const {
     rows,
+    flatRows,
     state,
     prepareRow,
     headerGroups,
@@ -354,14 +350,14 @@ function Table({ columns, data }: TableProps) {
                     className={styles.th}
                   >
                     {column.render('Header')}
-                    {column.id !== 'selection' && (
+                    {column.id !== 'selection' && column.id !== 'name' && (
                       <div
                         {...extendedColumn.getResizerProps()}
                         className={`${styles.resizer} ${extendedColumn.isResizing ? styles.isResizing : ''}`}
                       />
                     )}
 
-                    {column.id !== 'selection' && column.id !== 'name' && (
+                    {column.id !== 'selection' && (
                       <span className={styles.sort}>
                         {extendedColumn.isSorted ? (
                           extendedColumn.isSortedDesc ? (
@@ -426,7 +422,9 @@ function Table({ columns, data }: TableProps) {
       </div>
       <div className={styles.actionFooter}>
         <span className={styles.filesInfo}>
-          {rows && <span>{`${rows.length} item${rows.length > 1 ? 's' : ''} shown`}</span>}
+          {flatRows && (
+            <span>{`${flatRows.filter((r) => !r.subRows.length).length} file${rows.length > 1 ? 's' : ''} available for download`}</span>
+          )}
           <br />
           {selectedFlatRows.length > 0 && (
             <span>{`${rowSelectedCount} file${rowSelectedCount > 1 ? 's' : ''} selected`}</span>
