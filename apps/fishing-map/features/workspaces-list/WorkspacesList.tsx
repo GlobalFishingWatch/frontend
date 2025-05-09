@@ -76,7 +76,7 @@ function WorkspacesList() {
             img,
           } = highlightedWorkspace
           const isLegacyCVPWorkspace = id === LEGACY_CVP_WORKSPACE_ID
-          if (!visible || (isLegacyCVPWorkspace && !isGlobalReportsEnabled)) {
+          if (!visible || (isLegacyCVPWorkspace && isGlobalReportsEnabled)) {
             return null
           }
 
