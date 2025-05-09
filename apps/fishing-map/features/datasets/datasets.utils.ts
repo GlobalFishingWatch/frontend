@@ -545,8 +545,9 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
 }
 
 export const getAllDatasetAllowedFields = (dataset: Dataset) => {
-  // return [...(dataset.fieldsAllowed || []), ...Object.keys(dataset.filters || {})]
-  return dataset.fieldsAllowed || []
+  // TODO: make a decision how we manage filters in terraform that don't want to be shown in the UI
+  // return dataset.fieldsAllowed || []
+  return [...(dataset.fieldsAllowed || []), ...Object.keys(dataset.filters || {})]
 }
 
 const isDataviewSchemaSupported = (
