@@ -40,7 +40,7 @@ import {
   MAX_ZOOM_TO_CLUSTER_POINTS,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
 } from '../fourwings.config'
-import { getIntervalFrames, getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
+import { getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
 
 import type {
   FourwingsClusterEventType,
@@ -315,15 +315,16 @@ export class FourwingsClustersLayer extends CompositeLayer<
         return
       }
       return await parse(data, FourwingsClustersLoader, {
-        worker: true,
+        worker: false,
         fourwingsClusters: {
           cols,
           rows,
           scale,
           offset,
           tile,
-          interval: this.interval,
           noDataValue,
+          interval: this.interval,
+          temporalAggregation: this.props.temporalAggregation,
         },
       })
     } catch (error: any) {
@@ -369,6 +370,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
     url = url
       ?.replace('{{type}}', 'heatmap')
       .concat(`&format=4WINGS&interval=${this.interval}&geolocation=${this.clusterMode}`)
+    if (this.props.temporalAggregation) {
+      url = url?.concat(`&temporal-aggregation=true`)
+    }
     return this._fetchClusters(url!, { signal: tile.signal, tile })
   }
 
