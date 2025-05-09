@@ -7,7 +7,6 @@ import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/de
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
@@ -55,10 +54,12 @@ function EncounterTooltipRow({
   const event = parseEncounterEvent(feature.event)
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
-  const date = formatDateForInterval(
-    CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
-    interval
-  )
+  const date = feature.properties.htime
+    ? formatDateForInterval(
+        CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
+        interval
+      )
+    : ''
 
   return (
     <div className={styles.popupSection}>
