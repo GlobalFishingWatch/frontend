@@ -218,17 +218,8 @@ export default function EventsReportGraphGrouped({
 
   const getIndividualData = useCallback(async () => {
     const data = await fetchEventsData({ dataviews, start, end, includes: includesMemo })
-    const uniqueIds = new Set<string>()
-    const dataWithoutDuplicates = data.filter((event) => {
-      const id = event.id.split('.')[0]
-      if (uniqueIds.has(id)) {
-        return false
-      }
-      uniqueIds.add(id)
-      return true
-    })
 
-    const groupedData = dataWithoutDuplicates.reduce(
+    const groupedData = data.reduce(
       (acc, event) => {
         const regions = []
         if (graphType === 'byFlag') {

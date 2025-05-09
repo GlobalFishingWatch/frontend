@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { color } from 'color-blend'
+import { uniqBy } from 'es-toolkit'
 import { stringify } from 'qs'
 import { parseEventsFilters } from 'queries/report-events-stats-api'
 
@@ -88,11 +89,11 @@ export function useFetchEventReportGraphEvents() {
           ...parseEventsFilters(filters),
           ...(reportAreaId &&
             reportAreaId !== ENTIRE_WORLD_REPORT_AREA_ID && {
-              'region-datasets': reportAreaDataset,
-              'region-ids': reportAreaId,
+              'region-datasets': [reportAreaDataset],
+              'region-ids': [reportAreaId],
               'buffer-value': reportBufferValue,
-              'buffer-unit': reportBufferUnit,
-              'buffer-operation': reportBufferOperation,
+              'buffer-unit': reportBufferUnit.toUpperCase(),
+              'buffer-operation': reportBufferOperation.toUpperCase(),
             }),
           limit: 1000,
           offset: 0,
@@ -108,7 +109,7 @@ export function useFetchEventReportGraphEvents() {
             })
           : []
       })
-      return data
+      return uniqBy(data, (event) => event.id.split('.')[0])
     },
     [reportAreaDataset, reportAreaId, reportBufferValue, reportBufferUnit, reportBufferOperation]
   )

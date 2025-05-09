@@ -37,6 +37,7 @@ import IconArrowUp from '../../assets/icons/arrow-up.svg'
 import IconClose from '../../assets/icons/close.svg'
 import IconSearch from '../../assets/icons/search.svg'
 import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config'
+import { useGFWLogin } from '../login/use-login'
 
 import styles from './table.module.scss'
 
@@ -165,6 +166,7 @@ function Table({ columns, data }: TableProps) {
   const [searchInput, setSearchInput] = useState(false)
   const [downloadLoading, setDownloadLoading] = useState(false)
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
+  const { logged } = useGFWLogin(GFWAPI)
 
   const initialState = {
     sortBy: [{ id: 'lastUpdated', desc: true }],
@@ -198,7 +200,7 @@ function Table({ columns, data }: TableProps) {
             return (
               <IndeterminateCheckbox
                 {...row.getToggleRowSelectedProps()}
-                disabled={disabled}
+                disabled={disabled || !logged}
                 title={disabled ? 'Maximum file download limit reached' : ''}
               />
             )
@@ -376,11 +378,12 @@ function Table({ columns, data }: TableProps) {
                       title={cell.value}
                     >
                       {cell.column.id === 'name' ? (
+                        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
                         <div
                           onClick={() =>
                             row.canExpand
                               ? row.toggleRowExpanded(!row.isExpanded)
-                              : downloadSingleFile(cell.row.original.path)
+                              : logged && downloadSingleFile(cell.row.original.path)
                           }
                           style={{ cursor: 'pointer' }}
                         >
@@ -405,8 +408,11 @@ function Table({ columns, data }: TableProps) {
             <span>{`${rowSelectedCount} file${rowSelectedCount > 1 ? 's' : ''} selected`}</span>
           )}
         </span>
-        <button onClick={onDownloadClick} disabled={!selectedFlatRows.length || downloadLoading}>
-          Download
+        <button
+          onClick={onDownloadClick}
+          disabled={!selectedFlatRows.length || downloadLoading || !logged}
+        >
+          {logged ? 'Download' : 'Login to download'}
         </button>
       </div>
     </div>
