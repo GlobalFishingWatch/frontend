@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { groupBy, uniqBy } from 'es-toolkit'
 
 import type { DatasetSubCategory } from '@globalfishingwatch/api-types'
@@ -190,6 +191,42 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 </div>
               )
             }
+            if (type === 'click') {
+              const feature = {
+                ...features[0],
+                title: getDatasetLabel({
+                  id: (features[0] as FourwingsClusterPickingObject).datasetId!,
+                }),
+                count: (features[0] as FourwingsClusterPickingObject)?.properties?.value || 1,
+              } as SliceExtendedClusterPickingObject
+              const moreFeatures = (features as FourwingsClusterPickingObject[]).slice(1)
+              return (
+                <Fragment key={featureCategory}>
+                  <ClusterTooltipRow
+                    feature={
+                      {
+                        ...feature,
+                        title: getDatasetLabel({
+                          id: feature.datasetId!,
+                        }),
+                        count: feature?.properties?.value || 1,
+                      } as SliceExtendedClusterPickingObject
+                    }
+                    showFeaturesDetails={type === 'click'}
+                    error={
+                      apiEventStatus === AsyncReducerStatus.Error
+                        ? apiEventError || t('errors.genericShort', 'Something went wrong')
+                        : undefined
+                    }
+                  />
+                  {moreFeatures.length > 0 && (
+                    <div className={cx(styles.popupSection, styles.secondary)}>
+                      + {moreFeatures.length} {t('common.more', 'more')}
+                    </div>
+                  )}
+                </Fragment>
+              )
+            }
             return (
               <Fragment key={featureCategory}>
                 {(features as FourwingsClusterPickingObject[]).map((f) => {
@@ -202,7 +239,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     <ClusterTooltipRow
                       key={f.id}
                       feature={feature}
-                      showFeaturesDetails={type === 'click'}
+                      showFeaturesDetails={false}
                       error={
                         apiEventStatus === AsyncReducerStatus.Error
                           ? apiEventError || t('errors.genericShort', 'Something went wrong')
