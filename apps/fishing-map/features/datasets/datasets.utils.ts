@@ -545,7 +545,8 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
 }
 
 export const getAllDatasetAllowedFields = (dataset: Dataset) => {
-  return [...(dataset.fieldsAllowed || []), ...Object.keys(dataset.filters || {})]
+  // return [...(dataset.fieldsAllowed || []), ...Object.keys(dataset.filters || {})]
+  return dataset.fieldsAllowed || []
 }
 
 const isDataviewSchemaSupported = (
