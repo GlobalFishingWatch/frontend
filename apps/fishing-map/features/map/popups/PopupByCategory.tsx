@@ -9,7 +9,6 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextPickingObject,
-  FourwingsClusterPickingObject,
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
   PolygonPickingObject,
@@ -22,14 +21,13 @@ import {
   FourwingsComparisonMode,
   POSITIONS_ID,
 } from '@globalfishingwatch/deck-layers'
-import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { getDatasetLabel, getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
-import { ClusterTooltipRow } from 'features/map/popups/categories/ClusterTooltipRow'
+import ClusterEventTooltip from 'features/map/popups/categories/ClusterEventTooltip'
 import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
@@ -183,35 +181,18 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             })
           }
           case DataviewCategory.Events: {
-            if (apiEventStatus === AsyncReducerStatus.Loading) {
-              return (
-                <div key={featureCategory} className={styles.loading}>
-                  <Spinner size="small" />
-                </div>
-              )
-            }
             return (
-              <Fragment key={featureCategory}>
-                {(features as FourwingsClusterPickingObject[]).map((f) => {
-                  const feature = {
-                    ...f,
-                    title: getDatasetLabel({ id: f.datasetId! }),
-                    count: f?.properties?.value || 1,
-                  } as SliceExtendedClusterPickingObject
-                  return (
-                    <ClusterTooltipRow
-                      key={f.id}
-                      feature={feature}
-                      showFeaturesDetails={type === 'click'}
-                      error={
-                        apiEventStatus === AsyncReducerStatus.Error
-                          ? apiEventError || t('errors.genericShort', 'Something went wrong')
-                          : undefined
-                      }
-                    />
-                  )
-                })}
-              </Fragment>
+              <ClusterEventTooltip
+                key={featureCategory}
+                features={features as SliceExtendedClusterPickingObject[]}
+                showFeaturesDetails={type === 'click'}
+                error={
+                  apiEventStatus === AsyncReducerStatus.Error
+                    ? apiEventError || t('errors.genericShort', 'Something went wrong')
+                    : undefined
+                }
+                loading={apiEventStatus === AsyncReducerStatus.Loading}
+              />
             )
           }
           case DataviewCategory.Environment: {

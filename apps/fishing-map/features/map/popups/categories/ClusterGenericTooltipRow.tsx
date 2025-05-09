@@ -1,4 +1,6 @@
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Fragment } from 'react'
+
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import I18nNumber from 'features/i18n/i18nNumber'
 
@@ -10,9 +12,15 @@ type EncountersLayerProps = {
   feature: SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
   showFeaturesDetails: boolean
   error?: string
+  loading?: boolean
 }
 
-function GenericClusterTooltipRow({ feature, showFeaturesDetails, error }: EncountersLayerProps) {
+function GenericClusterTooltipRow({
+  feature,
+  showFeaturesDetails,
+  error,
+  loading,
+}: EncountersLayerProps) {
   return (
     <div className={styles.popupSection}>
       <Icon icon="clusters" style={{ color: feature.color }} />
@@ -29,21 +37,26 @@ function GenericClusterTooltipRow({ feature, showFeaturesDetails, error }: Encou
           )
         )}
         {error && <p className={styles.error}>{error}</p>}
-        {showFeaturesDetails && feature.properties && (
-          <div className={styles.row}>
-            <ul className={styles.list}>
-              {Object.entries(feature.properties).map(([key, value]) => {
-                if (key === 'count' || key === 'expansionZoom') {
-                  return null
-                }
-                return (
-                  <li key={key}>
-                    <span className={styles.strong}>{key}</span>: {JSON.stringify(value)}
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
+        {loading ? (
+          <Spinner className={styles.eventSpinner} inline size="small" />
+        ) : (
+          showFeaturesDetails &&
+          feature.properties && (
+            <div className={styles.row}>
+              <ul className={styles.list}>
+                {Object.entries(feature.properties).map(([key, value]) => {
+                  if (key === 'count' || key === 'expansionZoom') {
+                    return null
+                  }
+                  return (
+                    <li key={key}>
+                      <span className={styles.strong}>{key}</span>: {JSON.stringify(value)}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )
         )}
       </div>
     </div>
