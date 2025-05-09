@@ -296,3 +296,7 @@
   display: block;
   width: 100%;
 }
+
+.eventSpinner {
+  margin-top: 1rem;
+}
