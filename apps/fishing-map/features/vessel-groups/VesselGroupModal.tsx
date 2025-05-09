@@ -285,7 +285,7 @@ function VesselGroupModal(): React.ReactElement<any> {
             const { query, payload } = rest
             const dataviewInstancesMerged = mergeDataviewIntancesToUpsert(
               dataviewInstance,
-              rest.query.dataviewInstances
+              rest.query.dataviewInstances!
             )
 
             dispatch(

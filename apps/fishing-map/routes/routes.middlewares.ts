@@ -8,6 +8,7 @@ import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
+import type { LinkToPayload } from 'routes/routes.types'
 import type { QueryParam, QueryParams } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
@@ -89,14 +90,14 @@ export const routerWorkspaceMiddleware: Middleware =
         const newHistoryNavigation: LastWorkspaceVisited = {
           pathname,
           type: type as ROUTE_TYPES,
-          query: query,
-          payload: payload,
+          query: query!,
+          payload: payload as LinkToPayload,
         }
         dispatch(setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation]))
       } else if (lastHistoryNavigation && WORKSPACE_ROUTES.includes(lastHistoryNavigation.type)) {
         const updatedHistoryNavigation: LastWorkspaceVisited = {
           ...lastHistoryNavigation,
-          query: routerAction.query,
+          query: routerAction.query!,
         }
         dispatch(
           setWorkspaceHistoryNavigation([
