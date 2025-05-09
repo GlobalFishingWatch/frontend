@@ -83,11 +83,11 @@ import {
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectLocationCategory,
-  selectLocationPayload,
   selectLocationQuery,
   selectLocationType,
   selectWorkspaceId,
 } from 'routes/routes.selectors'
+import type { LinkTo } from 'routes/routes.types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useClipboardNotification } from './sidebar.hooks'
@@ -277,37 +277,6 @@ function SaveWorkspaceButton() {
       </Popover>
     </Fragment>
   )
-
-  // return (
-  //   <Fragment>
-  //     <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
-  //       <IconButton
-  //         icon={showClipboardNotification ? 'tick' : 'save'}
-  //         size="medium"
-  //         className="print-hidden"
-  //         onClick={onSaveClick}
-  //         loading={reportStatus === AsyncReducerStatus.Loading}
-  //         tooltip={
-  //           showClipboardNotification
-  //             ? t(
-  //                 'workspace.saved',
-  //                 "The workspace was saved and it's available in your user profile"
-  //               )
-  //             : t('analysis.save', 'Save this report')
-  //         }
-  //         tooltipPlacement="bottom"
-  //       />
-  //     </LoginButtonWrapper>
-  //     {showReportCreateModal && (
-  //       <NewReportModal
-  //         isOpen={showReportCreateModal}
-  //         onClose={onCloseCreateReport}
-  //         onFinish={onSaveCreateReport}
-  //         report={report}
-  //       />
-  //     )}
-  //   </Fragment>
-  // )
 }
 
 function ShareWorkspaceButton() {
@@ -374,10 +343,55 @@ function cleanReportPayload(payload: Record<string, any>) {
   return rest
 }
 
-function NavigateToWorkspaceButton() {
+function usePinVesselProfileToWorkspace() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselDataviewInstance = useSelector(selectVesselProfileDataviewIntance)
+
+  const resetState = useCallback(() => {
+    resetSidebarScroll()
+    dispatch(resetVesselState())
+  }, [dispatch])
+
+  const onPinVesselToWorkspaceAndNavigateClick = useCallback(
+    (linkTo: LinkTo) => {
+      const { type, payload, query } = linkTo
+      const params = { payload, query, isHistoryNavigation: true }
+      if (
+        vesselDataviewInstance &&
+        window.confirm(
+          t('vessel.confirmationClose', 'Do you want to keep this vessel in your workspace?')
+        ) === true
+      ) {
+        const cleanVesselDataviewInstance = {
+          ...vesselDataviewInstance,
+          config: {
+            ...vesselDataviewInstance?.config,
+            highlightEventStartTime: undefined,
+            highlightEventEndTime: undefined,
+          },
+        }
+        params.query = {
+          ...query,
+          dataviewInstances: [
+            ...(query.dataviewInstances || []),
+            ...(cleanVesselDataviewInstance ? [cleanVesselDataviewInstance] : []),
+          ],
+        }
+      }
+      dispatch(updateLocation(type, params))
+      resetState()
+    },
+    [dispatch, resetState, t, vesselDataviewInstance]
+  )
+
+  return onPinVesselToWorkspaceAndNavigateClick
+}
+
+function NavigateToWorkspaceButton() {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const onPinVesselToWorkspaceAndNavigateClick = usePinVesselProfileToWorkspace()
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const isAnyWorkspaceReportLocation = useSelector(selectIsAnyWorkspaceReportLocation)
   const workspaceId = useSelector(selectWorkspaceId)
@@ -413,35 +427,6 @@ function NavigateToWorkspaceButton() {
     dispatch(resetVesselState())
   }, [dispatch])
 
-  const onPinVesselToWorkspaceAndNavigateClick = useCallback(() => {
-    const { type, payload, query } = linkTo
-    const params = { payload, query, isHistoryNavigation: true }
-    if (
-      vesselDataviewInstance &&
-      window.confirm(
-        t('vessel.confirmationClose', 'Do you want to keep this vessel in your workspace?')
-      ) === true
-    ) {
-      const cleanVesselDataviewInstance = {
-        ...vesselDataviewInstance,
-        config: {
-          ...vesselDataviewInstance?.config,
-          highlightEventStartTime: undefined,
-          highlightEventEndTime: undefined,
-        },
-      }
-      params.query = {
-        ...query,
-        dataviewInstances: [
-          ...(query.dataviewInstances || []),
-          ...(cleanVesselDataviewInstance ? [cleanVesselDataviewInstance] : []),
-        ],
-      }
-    }
-    dispatch(updateLocation(type, params))
-    resetState()
-  }, [dispatch, linkTo, resetState, t, vesselDataviewInstance])
-
   if (
     workspaceId &&
     (isWorkspaceVesselLocation ||
@@ -452,16 +437,12 @@ function NavigateToWorkspaceButton() {
       <IconButton
         icon="close"
         type="border"
-        onClick={resetState}
+        onClick={() => onPinVesselToWorkspaceAndNavigateClick(linkTo)}
         className={cx(styles.workspaceLink, 'print-hidden')}
         tooltip={tooltip}
       />
     ) : (
-      <Link
-        className={styles.workspaceLink}
-        to={linkTo}
-        onClick={onPinVesselToWorkspaceAndNavigateClick}
-      >
+      <Link className={styles.workspaceLink} to={linkTo} onClick={resetState}>
         <IconButton className="print-hidden" type="border" icon="close" tooltip={tooltip} />
       </Link>
     )
@@ -476,6 +457,9 @@ function CloseSectionButton() {
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
+  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const hasVesselProfileInstancePinned = useSelector(selectHasVesselProfileInstancePinned)
+  const onPinVesselToWorkspaceAndNavigateClick = usePinVesselProfileToWorkspace()
   const { dispatchQueryParams } = useLocationConnect()
   const highlightArea = useHighlightReportArea()
   const featureFlags = useSelector(selectFeatureFlags)
@@ -536,30 +520,42 @@ function CloseSectionButton() {
           : lastWorkspaceVisited.type === WORKSPACES_LIST
             ? t('workspace.list', 'Workspaces list')
             : t('workspace.title', 'Workspace')
+
     const tooltip = t('navigateBackTo', 'Go back to {{section}}', {
       section: previousLocation.toLocaleLowerCase(),
     })
 
+    const linkTo = {
+      ...lastWorkspaceVisited,
+      payload: {
+        ...(lastWorkspaceVisited.type !== 'REPORT'
+          ? cleanReportPayload(lastWorkspaceVisited.payload)
+          : lastWorkspaceVisited.payload),
+      },
+      query: {
+        ...(lastWorkspaceVisited.type !== 'REPORT'
+          ? { ...cleanReportQuery(lastWorkspaceVisited.query), ...EMPTY_FILTERS }
+          : lastWorkspaceVisited.query),
+        featureFlags,
+      },
+      isHistoryNavigation: true,
+    }
+
+    if (isWorkspaceVesselLocation && !hasVesselProfileInstancePinned) {
+      // Can't use Link because we need to intercept the navigation to show the confirmation dialog
+      return (
+        <IconButton
+          icon="close"
+          type="border"
+          onClick={() => onPinVesselToWorkspaceAndNavigateClick(linkTo)}
+          className={cx(styles.workspaceLink, 'print-hidden')}
+          tooltip={tooltip}
+        />
+      )
+    }
+
     return (
-      <Link
-        className={styles.workspaceLink}
-        to={{
-          ...lastWorkspaceVisited,
-          payload: {
-            ...(lastWorkspaceVisited.type !== 'REPORT'
-              ? cleanReportPayload(lastWorkspaceVisited.payload)
-              : lastWorkspaceVisited.payload),
-          },
-          query: {
-            ...(lastWorkspaceVisited.type !== 'REPORT'
-              ? { ...cleanReportQuery(lastWorkspaceVisited.query), ...EMPTY_FILTERS }
-              : lastWorkspaceVisited.query),
-            featureFlags,
-          },
-          isHistoryNavigation: true,
-        }}
-        onClick={onCloseClick}
-      >
+      <Link className={styles.workspaceLink} to={linkTo} onClick={onCloseClick}>
         <IconButton className="print-hidden" type="border" icon="close" tooltip={tooltip} />
       </Link>
     )

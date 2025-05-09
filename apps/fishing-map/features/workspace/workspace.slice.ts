@@ -49,7 +49,6 @@ import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import type { ROUTE_TYPES } from 'routes/routes'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import {
@@ -58,6 +57,7 @@ import {
   selectReportId,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
+import type { LinkTo } from 'routes/routes.types'
 import type { AppDispatch } from 'store'
 import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
@@ -71,10 +71,7 @@ import {
 } from './workspace.selectors'
 import { parseUpsertWorkspace } from './workspace.utils'
 
-export type LastWorkspaceVisited = {
-  type: ROUTE_TYPES
-  payload: any
-  query: any
+export type LastWorkspaceVisited = LinkTo & {
   pathname?: string
 }
 
