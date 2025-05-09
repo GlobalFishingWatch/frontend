@@ -28,7 +28,6 @@ import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { t as trans } from 'features/i18n/i18n'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
 import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
@@ -51,7 +50,6 @@ function WorkspaceWizard() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
-  const map = useDeckMap()
   const featureFlags = useSelector(selectFeatureFlags)
   const viewState = useMapViewState()
   const dataviews = useSelector(selectAllDataviews)
@@ -71,7 +69,7 @@ function WorkspaceWizard() {
     if (inputValue === '') {
       setSelectedItem(null)
       setAreasMatching([])
-      fitBounds([-90, -180, 90, 180])
+      fitBounds([-90, -180, 90, 180], { fitZoom: true })
     } else {
       updateMatchingAreas(inputValue as string)
     }
@@ -92,7 +90,7 @@ function WorkspaceWizard() {
     if (selectedItem) {
       const bounds = selectedItem?.properties.bounds
       if (bounds) {
-        fitBounds(bounds)
+        fitBounds(bounds, { fitZoom: true })
       }
     }
   }

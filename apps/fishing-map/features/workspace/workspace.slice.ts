@@ -49,7 +49,6 @@ import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import type { ROUTE_TYPES } from 'routes/routes'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
 import {
@@ -58,6 +57,7 @@ import {
   selectReportId,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
+import type { LinkTo } from 'routes/routes.types'
 import type { AppDispatch } from 'store'
 import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
@@ -71,11 +71,8 @@ import {
 } from './workspace.selectors'
 import { parseUpsertWorkspace } from './workspace.utils'
 
-export type LastWorkspaceVisited = {
-  type: ROUTE_TYPES
-  payload: any
-  query: any
-  replaceQuery?: boolean
+export type LastWorkspaceVisited = LinkTo & {
+  pathname?: string
 }
 
 interface WorkspaceSliceState {
@@ -86,7 +83,7 @@ interface WorkspaceSliceState {
   error: AsyncError
   data: Workspace<AnyWorkspaceState> | null
   password: string | typeof VALID_PASSWORD
-  lastVisited: LastWorkspaceVisited | undefined
+  historyNavigation: LastWorkspaceVisited[]
 }
 
 const initialState: WorkspaceSliceState = {
@@ -96,7 +93,7 @@ const initialState: WorkspaceSliceState = {
   error: {} as AsyncError,
   data: null,
   password: '',
-  lastVisited: undefined,
+  historyNavigation: [],
 }
 
 type RejectedActionPayload = {
@@ -504,8 +501,8 @@ const workspaceSlice = createSlice({
         state.data.state.reportBufferOperation = undefined
       }
     },
-    setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
-      state.lastVisited = action.payload
+    setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
+      state.historyNavigation = action.payload
     },
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
@@ -573,11 +570,11 @@ export const {
   setWorkspacePassword,
   setWorkspaceSuggestSave,
   resetWorkspaceSlice,
-  setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
   cleanCurrentWorkspaceReportState,
   cleanCurrentWorkspaceStateBufferParams,
+  setWorkspaceHistoryNavigation,
 } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

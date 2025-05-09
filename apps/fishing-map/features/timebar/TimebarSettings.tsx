@@ -16,6 +16,7 @@ import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
+  selectActiveEventsDataviews,
   selectActiveVesselGroupDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -66,6 +67,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeActivityDataviews = useSelector(selectActiveActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
+  const activeEventsDataviews = useSelector(selectActiveEventsDataviews)
   const activeEnvironmentalDataviews = useSelector(
     selectActiveHeatmapEnvironmentalDataviewsWithoutStatic
   )
@@ -91,22 +93,16 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const closeOptions = () => {
     setOptionsPanelOpen(false)
   }
-  const setHeatmapActivityActive = () => {
-    dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity)
+
+  const setTimebarSectionActive = (section: TimebarVisualisations) => {
+    dispatchTimebarVisualisation(section)
     trackEvent({
       category: TrackCategory.Timebar,
       action: 'select_timebar_settings',
-      label: `${TimebarVisualisations.HeatmapActivity}`,
+      label: `${section}`,
     })
   }
-  const setHeatmapDetectionsActive = () => {
-    dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections)
-    trackEvent({
-      category: TrackCategory.Timebar,
-      action: 'select_timebar_settings',
-      label: `${TimebarVisualisations.HeatmapDetections}`,
-    })
-  }
+
   const setEnvironmentActive = (environmentalDataviewId: string) => {
     dispatchTimebarVisualisation(TimebarVisualisations.Environment)
     dispatchTimebarSelectedEnvId(environmentalDataviewId)
@@ -215,7 +211,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   disabled={!activeActivityDataviews?.length}
                   active={timebarVisualisation === TimebarVisualisations.HeatmapActivity}
                   tooltip={activityTooltipLabel}
-                  onClick={setHeatmapActivityActive}
+                  onClick={() => setTimebarSectionActive(TimebarVisualisations.HeatmapActivity)}
                 />
                 <Radio
                   label={
@@ -229,7 +225,21 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   disabled={!activeDetectionsDataviews?.length}
                   active={timebarVisualisation === TimebarVisualisations.HeatmapDetections}
                   tooltip={detectionsTooltipLabel}
-                  onClick={setHeatmapDetectionsActive}
+                  onClick={() => setTimebarSectionActive(TimebarVisualisations.HeatmapDetections)}
+                />
+                <Radio
+                  label={
+                    <Icon
+                      SvgIcon={AreaIcon}
+                      label={t('common.events', 'Events')}
+                      color={activeEventsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
+                      disabled={!activeEventsDataviews?.length}
+                    />
+                  }
+                  disabled={!activeEventsDataviews?.length}
+                  active={timebarVisualisation === TimebarVisualisations.Events}
+                  tooltip={detectionsTooltipLabel}
+                  onClick={() => setTimebarSectionActive(TimebarVisualisations.Events)}
                 />
                 {activeVesselGroupDataviews.map((vgDataview) => {
                   return (

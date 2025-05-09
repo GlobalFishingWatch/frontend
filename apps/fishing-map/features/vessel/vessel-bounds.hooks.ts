@@ -2,29 +2,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import type { VesselLayer } from '@globalfishingwatch/deck-layers'
-
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useSetTimerange, useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectVesselFitBoundsOnLoad,
   selectVesselInfoData,
 } from 'features/vessel/selectors/vessel.selectors'
+import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsVesselLocation, selectUrlTimeRange, selectVesselId } from 'routes/routes.selectors'
+import { selectIsVesselLocation, selectUrlTimeRange } from 'routes/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
-
-export const useVesselProfileLayer = () => {
-  const vesselId = useSelector(selectVesselId)
-  const vesselLayer = useGetDeckLayer<VesselLayer>(`${VESSEL_LAYER_PREFIX}${vesselId}`)
-  return vesselLayer
-}
 
 export const useVesselProfileBbox = () => {
   const vesselLayer = useVesselProfileLayer()

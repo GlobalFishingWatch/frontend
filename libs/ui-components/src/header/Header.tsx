@@ -1,4 +1,5 @@
 import React, { Fragment, type JSX } from 'react'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { Icon } from '../icon'
@@ -12,7 +13,7 @@ const navigation = [
       {
         label: 'what we do',
         items: [
-          { label: '2030 strategy', href: 'https://globalfishingwatch.org/2030-strategy' },
+          { label: 'Biodiversity', href: 'https://globalfishingwatch.org/biodiversity' },
           { label: 'country outreach', href: 'https://globalfishingwatch.org/country-outreach' },
           {
             label: 'global ocean mapping',
@@ -22,7 +23,10 @@ const navigation = [
             label: 'international policy',
             href: 'https://globalfishingwatch.org/international-policy',
           },
-          { label: 'our approach', href: 'https://globalfishingwatch.org/our-approach' },
+          {
+            label: 'Open ocean project',
+            href: 'https://globalfishingwatch.org/open-ocean-project/',
+          },
           { label: 'transparency', href: 'https://globalfishingwatch.org/transparency' },
         ],
       },
@@ -41,6 +45,10 @@ const navigation = [
           {
             label: 'Joint Analytical Cell',
             href: 'https://globalfishingwatch.org/joint-analytical-cell',
+          },
+          {
+            label: 'Our Global Footprint',
+            href: 'https://globalfishingwatch.org/our-global-footprint/',
           },
         ],
       },
@@ -62,6 +70,10 @@ const navigation = [
           {
             label: 'Carrier Vessels',
             href: 'https://globalfishingwatch.org/carrier-vessels-portal',
+          },
+          {
+            label: 'Vessel Viewer',
+            href: 'https://globalfishingwatch.org/vessel-viewer-tool/',
           },
         ],
       },
@@ -86,19 +98,23 @@ const navigation = [
       },
     ],
   },
-  { label: 'newsroom', href: 'https://globalfishingwatch.org/newsroom' },
+  { label: 'Media Center', href: 'https://globalfishingwatch.org/mediacenter' },
   { label: 'stories & updates', href: 'https://globalfishingwatch.org/stories-and-updates' },
   {
     label: 'about',
-
     items: [
       {
         label: 'Who we are',
         items: [
           {
-            label: 'A Vision for Our Global Ocean',
-            href: 'https://globalfishingwatch.org/a-vision-for-our-global-ocean',
+            label: '2030 Strategy',
+            href: 'https://globalfishingwatch.org/2030-strategy/',
           },
+          {
+            label: 'Our Mission',
+            href: 'https://globalfishingwatch.org/a-vision-for-our-global-ocean/',
+          },
+          { label: 'Our Approach', href: 'https://globalfishingwatch.org/our-approach/' },
           { label: 'Careers', href: 'https://globalfishingwatch.org/careers' },
         ],
       },
@@ -117,8 +133,8 @@ const navigation = [
         label: 'Reporting',
         items: [
           {
-            label: 'Annual Report 2023',
-            href: 'https://globalfishingwatch.org/annual-report-2023',
+            label: 'Annual Reports',
+            href: 'https://globalfishingwatch.org/annual-reports/',
           },
           { label: 'Financials', href: 'https://globalfishingwatch.org/financials' },
         ],
@@ -139,48 +155,11 @@ interface HeaderProps {
   children?: React.ReactNode
   inverted?: boolean
   className?: string
+  homeRedirectURL?: string
 }
 interface HeaderMenuItemProps {
   index: number
   item: MenuItem
-}
-
-export function Header({ children, inverted = false, className = '' }: HeaderProps) {
-  return (
-    <div
-      className={cx(
-        styles.gfwHeaderContainer,
-        { [styles.gfwHeaderContainerInverted]: inverted },
-        className
-      )}
-    >
-      <header className={styles.gfwHeader}>
-        <div className={styles.whiteBg}></div>
-        <a className={styles.appLogo} href="https://globalfishingwatch.org">
-          <span className={styles.screenReaderOnly}>Home</span>
-        </a>
-        <a className={styles.screenReaderOnly} href="#main">
-          Skip navigation links
-        </a>
-
-        <div className={styles.navContainer}>
-          <input className={cx(styles.navMobile, styles.navMobileMenuAction)} type="checkbox" />
-          <div className={cx(styles.navMobile, styles.navMobileMenuIcon)}>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-
-          <nav className={styles.nav} role="navigation" aria-label="main menu">
-            <ul className={styles.navList} role="menubar">
-              {navigation.map((item, index) => HeaderMenuItem({ index, item }))}
-              {!!children && children}
-            </ul>
-          </nav>
-        </div>
-      </header>
-    </div>
-  )
 }
 
 export function HeaderMenuItem({ index, item }: HeaderMenuItemProps): JSX.Element {
@@ -228,5 +207,50 @@ export function HeaderMenuItem({ index, item }: HeaderMenuItemProps): JSX.Elemen
         </Fragment>
       )}
     </li>
+  )
+}
+
+export function Header({
+  children,
+  inverted = false,
+  className = '',
+  homeRedirectURL = 'https://globalfishingwatch.org',
+}: HeaderProps) {
+  return (
+    <div
+      className={cx(
+        styles.gfwHeaderContainer,
+        { [styles.gfwHeaderContainerInverted]: inverted },
+        className
+      )}
+    >
+      <header className={styles.gfwHeader}>
+        <Link to={homeRedirectURL} className={styles.appLogo}>
+          <span className={styles.screenReaderOnly}>Home</span>
+        </Link>
+        <a className={styles.screenReaderOnly} href="#main">
+          Skip navigation links
+        </a>
+
+        <div className={styles.navContainer}>
+          <input className={cx(styles.navMobile, styles.navMobileMenuAction)} type="checkbox" />
+          <div className={cx(styles.navMobile, styles.navMobileMenuIcon)}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <nav className={styles.nav} role="navigation" aria-label="main menu">
+            <ul className={styles.navList} role="menubar">
+              {navigation.map((item, index) => HeaderMenuItem({ index, item }))}
+              {!!children && children}
+            </ul>
+          </nav>
+          <a href="https://globalfishingwatch.org/our-map/" className={styles.exploreButton}>
+            EXPLORE MAP
+          </a>
+        </div>
+      </header>
+    </div>
   )
 }

@@ -24,13 +24,13 @@ import { listAsSentence } from 'utils/shared'
 
 export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
-interface DatasetArea {
+export interface DatasetArea {
   id: string
   label: string
   bbox?: Bbox
 }
 
-interface DatasetAreaList {
+export interface DatasetAreaList {
   status: AsyncReducerStatus
   data: DrawnDatasetGeometry | DatasetArea[]
 }
@@ -232,20 +232,27 @@ export const fetchAreaDetailThunk = createAsyncThunk(
   }
 )
 
-type FetchDatasetAreasThunkParam = { datasetId: string; include?: string[] }
+type FetchDatasetAreasThunkParam = {
+  datasetId: string
+  include?: string[]
+  areaType?: 'user' | 'context'
+}
 export const fetchDatasetAreasThunk = createAsyncThunk(
   'areas/datasetFetch',
   async (
     {
       datasetId,
       include = ['bbox'],
+      areaType = 'user',
     }: FetchDatasetAreasThunkParam = {} as FetchDatasetAreasThunkParam,
     { signal, rejectWithValue }
   ) => {
     try {
+      const isContextLayer = areaType === 'context'
+      const endpointPath = isContextLayer ? '/context-layers' : '/user-context-layers'
       const datasetAreas = await GFWAPI.fetch<DatasetArea[] | DrawnDatasetGeometry>(
-        `/datasets/${datasetId}/user-context-layers${
-          include?.length ? `?includes=${include.join(',')}&cache=false` : ''
+        `/datasets/${datasetId}${endpointPath}${
+          include?.length && !isContextLayer ? `?includes=${include.join(',')}&cache=false` : ''
         }`,
         { signal, cache: 'no-cache' }
       )

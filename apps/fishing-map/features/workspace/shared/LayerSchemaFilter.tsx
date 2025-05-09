@@ -31,7 +31,7 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
-type TransformationUnit = 'minutes' | 'km' | 'hours'
+type TransformationUnit = 'minutes' | 'hours' | 'km'
 
 const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
 
@@ -43,8 +43,8 @@ type Transformation = {
 
 const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
   minutes: {
-    in: (v) => v / 60,
-    out: (v) => v * 60,
+    in: (v) => parseFloat(v) / 60,
+    out: (v) => parseFloat(v) * 60,
     label: t('common.hour_other', 'Hours'),
   },
   hours: {
@@ -75,7 +75,7 @@ const getLabelByUnit = (value: string | number, { unit } = {} as { unit?: string
   if (typeof label === 'function') {
     return label(value)
   }
-  return label
+  return label || unit || ''
 }
 
 export const getValueLabelByUnit = (
@@ -322,7 +322,11 @@ function LayerSchemaFilter({
 
   return (
     <div className={cx(styles.relative, styles.multiSelect)}>
-      <div className={styles.labelContainer}>
+      <div
+        className={cx(styles.labelContainer, {
+          experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
+        })}
+      >
         <label>{getLabelWithUnit(label, unit)}</label>
         {filterOperator && (
           <Choice
@@ -344,9 +348,6 @@ function LayerSchemaFilter({
           })}
           options={sortedOptions}
           selectedOption={optionsSelected[0]}
-          className={cx({
-            experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
-          })}
           labelContainerClassName={styles.labelContainer}
           onSelect={(selection) => onSelect({ filterKey: id, selection, singleValue: true })}
           onCleanClick={() => onClean(id)}
@@ -359,9 +360,6 @@ function LayerSchemaFilter({
             selection: optionsSelected.map(({ id }) => id),
             options,
             filterOperator,
-          })}
-          className={cx({
-            experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
           })}
           options={options}
           selectedOptions={optionsSelected}

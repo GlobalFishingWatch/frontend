@@ -130,18 +130,19 @@ const nextConfig: NextConfig = {
   // to deploy on a node server
   output: 'standalone',
   outputFileTracingRoot: join(__dirname, '../../'),
-  devIndicators: {
-    position: 'top-left',
-  },
-  experimental: {
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  // devIndicators: {
+  //   position: 'top-left',
+  // },
+  devIndicators: false,
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
+  },
+  experimental: {
     esmExternals: true,
     optimizePackageImports: [
       '@globalfishingwatch/api-client',
@@ -167,6 +168,7 @@ const nextConfig: NextConfig = {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 const configWithNx = withNx({ ...nextConfig, nx: { svgr: false } })
+// const configWithNx = withNx(withBundleAnalyzer({ ...nextConfig, nx: { svgr: false } }))
 
 module.exports = async (...args: any) => {
   return {

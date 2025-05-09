@@ -3,6 +3,7 @@ import { sample } from 'simple-statistics'
 import type {
   FourwingsFeature,
   FourwingsFeatureProperties,
+  FourwingsPointFeature,
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
@@ -41,12 +42,16 @@ export const filterFeaturesByBounds = ({
   onlyValuesAndDates = false,
   sampleData = false,
 }: {
-  features: GeoJSONFeature[] | FourwingsFeature[] | FourwingsStaticFeature[]
+  features:
+    | GeoJSONFeature[]
+    | FourwingsFeature[]
+    | FourwingsStaticFeature[]
+    | FourwingsPointFeature[]
   bounds: Bounds
   onlyValuesAndDates?: boolean
   sampleData?: boolean
 }) => {
-  if (!bounds) {
+  if (!bounds || !features?.length) {
     return []
   }
   const { north, east, south, west } = bounds
@@ -58,8 +63,17 @@ export const filterFeaturesByBounds = ({
     : features
 
   return featuresToCheck.flatMap((f) => {
-    const lon = (f as any)?.coordinates?.[0] || (f as GeoJSONFeature).properties?.lon
-    const lat = (f as any)?.coordinates?.[1] || (f as GeoJSONFeature).properties?.lat
+    if (!f) {
+      return []
+    }
+    const lon =
+      (f as FourwingsPointFeature).geometry?.coordinates[0] ||
+      (f as FourwingsFeature)?.coordinates?.[0] ||
+      (f as GeoJSONFeature).properties?.lon
+    const lat =
+      (f as FourwingsPointFeature).geometry?.coordinates[1] ||
+      (f as FourwingsFeature)?.coordinates?.[1] ||
+      (f as GeoJSONFeature).properties?.lat
     if (lat < south || lat > north) {
       return []
     }
@@ -75,7 +89,7 @@ export const filterFeaturesByBounds = ({
     if (onlyValuesAndDates) {
       return isInBounds
         ? [
-            f.properties.values.map((sublayerValues: number[], sublayerIndex: number) => {
+            f.properties.values?.map((sublayerValues: number[], sublayerIndex: number) => {
               return [
                 sublayerValues,
                 (f.properties as FourwingsFeatureProperties).dates?.[sublayerIndex],

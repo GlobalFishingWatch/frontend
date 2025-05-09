@@ -11,7 +11,7 @@ import type {
 import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
+import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
@@ -100,7 +100,9 @@ export const getVesselDataviewInstanceDatasetConfig = (
 
 const vesselDataviewInstanceTemplate = (
   dataviewSlug: Dataview['slug'],
-  datasets: VesselInstanceDatasets
+  datasets: VesselInstanceDatasets,
+  highlightEventStartTime?: number,
+  highlightEventEndTime?: number
 ) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
@@ -109,18 +111,32 @@ const vesselDataviewInstanceTemplate = (
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
       ...datasets,
+      ...(highlightEventStartTime && {
+        highlightEventStartTime: getUTCDateTime(highlightEventStartTime).toISO()!,
+      }),
+      ...(highlightEventEndTime && {
+        highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
+      }),
     },
   }
 }
 const getVesselDataviewInstanceId = (vesselId: string) =>
   `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
 
-export const getVesselDataviewInstance = (
-  vessel: { id: string },
-  datasets: VesselInstanceDatasets,
-  vesselDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
-): DataviewInstance | null => {
-  let dataviewTemplate = vesselDataviews.find((dataview) => {
+export const getVesselDataviewInstance = ({
+  vessel,
+  datasets,
+  highlightEventStartTime,
+  highlightEventEndTime,
+  vesselTemplateDataviews,
+}: {
+  vessel: { id: string }
+  datasets: VesselInstanceDatasets
+  highlightEventStartTime?: number
+  highlightEventEndTime?: number
+  vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+}): DataviewInstance => {
+  let dataviewTemplate = vesselTemplateDataviews.find((dataview) => {
     return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
   })?.slug
   if (!dataviewTemplate) {
@@ -129,10 +145,14 @@ export const getVesselDataviewInstance = (
     )
     dataviewTemplate = TEMPLATE_VESSEL_DATAVIEW_SLUG
   }
-
   const vesselDataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
-    ...vesselDataviewInstanceTemplate(dataviewTemplate, datasets),
+    ...vesselDataviewInstanceTemplate(
+      dataviewTemplate,
+      datasets,
+      highlightEventStartTime,
+      highlightEventEndTime
+    ),
     deleted: false,
   }
   return vesselDataviewInstance

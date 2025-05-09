@@ -7,7 +7,9 @@
 
 .card {
   background: var(--white);
-  box-shadow: 0 2px 4px 0 rgba(34, 68, 126, 0.2), 0 7px 15px 0 rgba(34, 68, 126, 0.1);
+  box-shadow:
+    0 2px 4px 0 rgb(34, 68, 126, 0.2),
+    0 7px 15px 0 rgb(34, 68, 126, 0.1);
   height: 36rem;
   padding: 2rem 1.5rem 1.5rem;
   position: relative;
@@ -16,16 +18,43 @@
 }
 
 .title {
-  font: var(--GFW-font-L);
   margin-bottom: 1rem;
+}
+
+.searchInput {
+  width: 35rem;
+}
+
+.highlighted {
+  display: inline-block;
+  background: var(--color-highlight-blue);
+}
+
+.container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.tag {
+  width: fit-content;
+  margin: 1rem 0;
+  padding: 0.2rem 0.5rem;
+  background-color: var(--color-terthiary-blue);
 }
 
 .description {
   flex: 1;
   color: var(--secondary-color);
-  max-height: 70%;
+  max-height: calc(10.5em);
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  line-height: 1.5em;
+  position: relative;
 }
 
 .cardFooter {
@@ -44,4 +73,8 @@
 
 .seeMore:hover {
   color: var(--link-hover-color);
+}
+
+.sortIcon:hover {
+  color: var(--color-primary-blue);
 }

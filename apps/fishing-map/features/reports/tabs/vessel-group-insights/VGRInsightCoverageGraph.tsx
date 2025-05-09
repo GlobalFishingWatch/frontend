@@ -8,12 +8,13 @@ import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualization
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectIsResponsiveVisualizationEnabled } from 'features/debug/debug.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
+import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
+import { formatInfoField } from 'utils/info'
 import { weightedMean } from 'utils/statistics'
 
 import styles from './VGRInsightCoverageGraph.module.css'
@@ -72,6 +73,7 @@ function getDataByCoverage(
     name: d.name,
     vessel: d.vessel,
     value: parseCoverageGraphValueBucket(weightedMean(d.values, d.counts)),
+    originalValue: weightedMean(d.values, d.counts),
   }))
 
   return groupBy(dataByCoverage, (entry) => entry.value!)
@@ -95,7 +97,17 @@ function parseCoverageGraphIndividualData(
   const groupedDataByCoverage = getDataByCoverage(data, vessels)
   return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
     label: key,
-    values: (groupedDataByCoverage[key] || []).map((d) => d.vessel),
+    values: (groupedDataByCoverage[key] || []).map((d) => {
+      const vessel = getSearchIdentityResolved(d.vessel.identity)
+      return {
+        shipName: formatInfoField(vessel.shipname, 'shipname'),
+        ssvid: vessel.ssvid,
+        flagTranslated: formatInfoField(vessel.flag, 'flag'),
+        vesselType: formatInfoField(vessel.shiptypes, 'shiptypes'),
+        geartype: formatInfoField(vessel.geartypes, 'geartypes'),
+        value: d.originalValue,
+      }
+    }),
   }))
 }
 
@@ -105,7 +117,6 @@ export default function VesselGroupReportInsightCoverageGraph({
   data: VesselGroupInsightResponse['coverage']
 }) {
   const vesselGroup = useSelector(selectVGRData)
-  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
 
   const getIndividualData = useCallback(async () => {
     if (vesselGroup?.vessels.length) {
@@ -124,7 +135,7 @@ export default function VesselGroupReportInsightCoverageGraph({
     <div className={styles.graph} data-test="insights-report-vessels-graph">
       <ResponsiveBarChart
         color={reportDataview?.config?.color || COLOR_PRIMARY_BLUE}
-        getIndividualData={isResponsiveVisualizationEnabled ? getIndividualData : undefined}
+        getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()

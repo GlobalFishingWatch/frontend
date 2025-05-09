@@ -1,4 +1,5 @@
 import type { RootState } from 'reducers'
+import type { NOT_FOUND } from 'redux-first-router'
 
 import type { TimeRange } from 'features/timebar/timebar.slice'
 import type { AppDispatch } from 'store'
@@ -8,8 +9,9 @@ import type { ROUTE_TYPES } from './routes'
 import { selectLocationPayload, selectLocationQuery, selectLocationType } from './routes.selectors'
 
 export interface UpdateQueryParamsAction {
-  type: ROUTE_TYPES
+  type: ROUTE_TYPES | typeof NOT_FOUND
   query?: QueryParams
+  isHistoryNavigation?: boolean
   replaceQuery?: boolean
   replaceUrl?: boolean
   payload?: any
@@ -23,7 +25,7 @@ export interface UpdateQueryParamsAction {
 
 type UpdateLocationOptions = Pick<
   UpdateQueryParamsAction,
-  'query' | 'payload' | 'replaceQuery' | 'replaceUrl'
+  'query' | 'payload' | 'replaceQuery' | 'replaceUrl' | 'isHistoryNavigation'
 >
 
 export function updateLocation(
@@ -33,9 +35,10 @@ export function updateLocation(
     payload = {},
     replaceQuery = false,
     replaceUrl = false,
+    isHistoryNavigation = false,
   } = {} as UpdateLocationOptions
 ) {
-  return { type, query, payload, replaceQuery, replaceUrl }
+  return { type, query, payload, replaceQuery, replaceUrl, isHistoryNavigation }
 }
 
 export function updateQueryParam(query: QueryParams = {}) {
@@ -62,7 +65,9 @@ const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState
     const state = getState()
     const locationType = selectLocationType(state)
     const payload = selectLocationPayload(state)
-    dispatch(updateLocation(locationType, { query: { ...viewport }, payload }))
+    dispatch(
+      updateLocation(locationType, { query: { ...viewport }, payload, isHistoryNavigation: true })
+    )
   }
 }
 
@@ -72,7 +77,13 @@ const updateUrlTimerange: any = (dispatch: AppDispatch, getState: () => RootStat
     const locationType = selectLocationType(state)
     const payload = selectLocationPayload(state)
     const query = selectLocationQuery(state)
-    dispatch(updateLocation(locationType, { query: { ...query, ...timerange }, payload }))
+    dispatch(
+      updateLocation(locationType, {
+        query: { ...query, ...timerange },
+        payload,
+        isHistoryNavigation: true,
+      })
+    )
   }
 }
 

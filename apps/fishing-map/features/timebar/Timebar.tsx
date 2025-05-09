@@ -1,4 +1,4 @@
-import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
@@ -49,6 +49,7 @@ import {
   useTimebarVesselTracks,
   useTimebarVesselTracksGraph,
 } from 'features/timebar/timebar-vessel.hooks'
+import TimebarClusterEventsGraph from 'features/timebar/TimebarClusterEventsGraph'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'routes/routes.selectors'
@@ -232,8 +233,7 @@ const TimebarWrapper = () => {
             dispatch(setHighlightedTime({ start, end }))
           }
         } catch (e: any) {
-          console.log(clientX)
-          console.warn(e)
+          console.warn(clientX, e)
         }
       }
     },
@@ -274,15 +274,10 @@ const TimebarWrapper = () => {
 
   const onMouseLeave = useCallback(() => {
     setMouseInside(false)
-  }, [])
-
-  useEffect(() => {
-    if (!isMouseInside && highlightedEventIds) {
-      requestAnimationFrame(() => {
-        dispatchHighlightedEvents(undefined)
-      })
-    }
-  }, [dispatchHighlightedEvents, highlightedEventIds, isMouseInside])
+    requestAnimationFrame(() => {
+      dispatchHighlightedEvents(undefined)
+    })
+  }, [dispatchHighlightedEvents])
 
   const onMouseDown = useCallback(() => {
     rootElement?.classList.add('dragging')
@@ -327,8 +322,9 @@ const TimebarWrapper = () => {
   }, [timebarGraph, tracksGraphsData])
 
   const trackGraphOrientation = useMemo<TrackGraphOrientation>(() => {
-    if (tracksGraphsData && (tracksGraphsData.length === 0 || tracksGraphsData.length > 2))
+    if (tracksGraphsData && (tracksGraphsData.length === 0 || tracksGraphsData.length > 2)) {
       return 'mirrored'
+    }
     return {
       none: 'mirrored',
       speed: 'mirrored',
@@ -408,6 +404,9 @@ const TimebarWrapper = () => {
           <TimebarActivityGraph visualisation={timebarVisualisation} />
         )}
         {timebarVisualisation === TimebarVisualisations.Vessel && tracksComponents}
+        {timebarVisualisation === TimebarVisualisations.Events && (
+          <TimebarClusterEventsGraph visualisation={timebarVisualisation} />
+        )}
         <TimebarHighlighterWrapper showTooltip={isMouseInside} />
       </Fragment>
     )

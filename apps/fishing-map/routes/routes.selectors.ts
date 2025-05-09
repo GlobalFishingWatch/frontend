@@ -4,6 +4,7 @@ import type { Query } from 'redux-first-router'
 
 import { WorkspaceCategory } from 'data/workspaces'
 import type { QueryParams, WorkspaceParam } from 'types'
+import { createDeepEqualSelector } from 'utils/selectors'
 
 import type { ROUTE_TYPES } from './routes'
 import {
@@ -83,6 +84,12 @@ export const selectIsAnyReportLocation = createSelector(
     isAreaReportLocation || isPortReportLocation || isVesselGroupReportLocation
 )
 
+export const selectIsAnyWorkspaceReportLocation = createSelector(
+  [selectIsWorkspaceReportLocation, selectIsPortReportLocation, selectIsVesselGroupReportLocation],
+  (isAreaReportLocation, isPortReportLocation, isVesselGroupReportLocation) =>
+    isAreaReportLocation || isPortReportLocation || isVesselGroupReportLocation
+)
+
 export const selectIsWorkspacesListLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === WORKSPACES_LIST
@@ -115,7 +122,7 @@ export const selectLocationQuery = createSelector(
 
 type QueryParamProperty<P extends WorkspaceParam> = Required<QueryParams>[P]
 export function selectQueryParam<P extends WorkspaceParam>(param: P) {
-  return createSelector([selectLocationQuery], (query: any): QueryParamProperty<P> => {
+  return createDeepEqualSelector([selectLocationQuery], (query: any): QueryParamProperty<P> => {
     return query?.[param] as QueryParamProperty<P>
   })
 }
@@ -179,28 +186,39 @@ const selectIsFishingIndexLocation = createSelector(
   }
 )
 
-export const selectIsWorkspaceIndexLocation = createSelector(
-  [selectIsMarineManagerLocation, selectIsFishingIndexLocation],
-  (isMarineManagerLocation, isFishingIndexLocation) => {
-    return isMarineManagerLocation || isFishingIndexLocation
+const selectIsReportIndexLocation = createSelector(
+  [selectLocationCategory, selectWorkspaceId],
+  (category, workspaceId) => {
+    return category === WorkspaceCategory.Reports && !workspaceId
   }
 )
 
+export const selectIsIndexLocation = createSelector(
+  [selectIsMarineManagerLocation, selectIsFishingIndexLocation, selectIsReportIndexLocation],
+  (isMarineManagerLocation, isFishingIndexLocation, isReportIndexLocation) => {
+    return isMarineManagerLocation || isFishingIndexLocation || isReportIndexLocation
+  }
+)
+
+// App state
 export const selectUserTab = selectQueryParam('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam('zoom')
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
 const selectUrlMapLongitudeQuery = selectQueryParam('longitude')
 export const selectUrlStartQuery = selectQueryParam('start')
 export const selectUrlEndQuery = selectQueryParam('end')
+export const selectMapDrawingMode = selectQueryParam('mapDrawing')
+export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
+
+// Reports
 export const selectUrlBufferValueQuery = selectQueryParam('reportBufferValue')
 export const selectUrlBufferUnitQuery = selectQueryParam('reportBufferUnit')
 export const selectUrlBufferOperationQuery = selectQueryParam('reportBufferOperation')
+export const selectUrlReportLoadVesselsQuery = selectQueryParam('reportLoadVessels')
+
+// Dataviews
 export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
-
 export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
-
-export const selectMapDrawingMode = selectQueryParam('mapDrawing')
-export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
 
 export const selectIsMapDrawing = createSelector([selectMapDrawingMode], (mapDrawingMode) => {
   return mapDrawingMode === 'polygons' || mapDrawingMode === 'points'

@@ -8,5 +8,3 @@ export const selectIsFeatureFlagEnabled = (flag: FeatureFlag) =>
 
 export const selectIsVesselClassInfoEnable = selectIsFeatureFlagEnabled('vesselClassInfo')
 export const selectIsGlobalReportsEnabled = selectIsFeatureFlagEnabled('globalReports')
-export const selectIsResponsiveVisualizationEnabled =
-  selectIsFeatureFlagEnabled('responsiveVisualization')

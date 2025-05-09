@@ -2,11 +2,12 @@
 import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { DateTime } from 'luxon'
 
 import { VesselIdentitySourceEnum, type VesselInfo } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectIsVesselClassInfoEnable } from 'features/debug/debug.selectors'
 import type { VesselLastIdentity } from 'features/search/search.slice'
@@ -105,19 +106,33 @@ const VesselIdentityCombinedSourceField = ({
                       <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
                     </li>
                     <li>
-                      <span className={styles.secondary}>AIS self-reported: </span>
-                      {selfReportedGearType}
-                    </li>
-                    <li>
-                      <span className={styles.secondary}>Machine learning estimate: </span>
+                      <Tooltip content="Vessel class inferred by the machine learning model.">
+                        <span className={cx(styles.secondary, styles.help)}>
+                          Machine learning estimate:{' '}
+                        </span>
+                      </Tooltip>
                       {formatInfoField(neuralNetGearType, property) as string}
                     </li>
                     <li>
-                      <span className={styles.secondary}>Aggregated registry: </span>
+                      <Tooltip content="Data pulled from the vi_ssvid table — an MMSI-based aggregate from available registries. This is for comparison with the “Registry” tab gear, which aggregates at the hull level.">
+                        <span className={cx(styles.secondary, styles.help)}>
+                          Aggregated registry:{' '}
+                        </span>
+                      </Tooltip>
                       {formatInfoField(registryGearType, property) as string}
                     </li>
                     <li>
-                      <span className={styles.secondary}>BQ Source: </span>
+                      <Tooltip content="Vessel self-reports as a fishing vessel in AIS messages 98% or more of the time.">
+                        <span className={cx(styles.secondary, styles.help)}>
+                          AIS self-reported:{' '}
+                        </span>
+                      </Tooltip>
+                      {selfReportedGearType}
+                    </li>
+                    <li>
+                      <Tooltip content="Data table and specific field the GFW gear type value is populated from">
+                        <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
+                      </Tooltip>
                       {bqSource.toLowerCase()}
                     </li>
                   </ul>

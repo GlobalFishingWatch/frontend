@@ -2,7 +2,7 @@ import flags from 'data/flags'
 import i18n, { t } from 'features/i18n/i18n'
 
 type Flag = { id: string; label: string }
-const getFlagById = (id: string, lng = i18n.language): Flag | undefined => {
+export const getFlagById = (id: string, lng = i18n.language): Flag | undefined => {
   const flag = flags.find((f) => f.id === id)
   if (!flag || !lng) return flag
   return {
@@ -18,14 +18,12 @@ export const getFlagsByIds = (ids: string[], lng = i18n.language): Flag[] =>
   })
 
 export const getFlags = (lng = i18n.language): Flag[] =>
-  flags
-    .map((flag) => {
-      return {
-        ...flag,
-        label: t(`flags:${flag.id}`, { lng, defaultValue: flag.label }) as string,
-      }
-    })
-    .sort((a, b) => a.label.localeCompare(b.label))
+  flags.map((flag) => {
+    return {
+      ...flag,
+      label: t(`flags:${flag.id}`, { lng, defaultValue: flag.label }) as string,
+    }
+  })
 
 export function cleanFlagState(flagState: string) {
   return flagState.replace(/,/g, '')

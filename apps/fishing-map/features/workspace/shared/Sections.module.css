@@ -77,6 +77,10 @@
   padding: var(--space-L) var(--space-S);
 }
 
+.emptyStateVesselGroups {
+  padding: 0;
+}
+
 .disclaimer {
   background-color: var(--color-help-yellow);
   padding: 0 var(--space-XS);

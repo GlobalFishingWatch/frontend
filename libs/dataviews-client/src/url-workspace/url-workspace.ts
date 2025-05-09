@@ -278,6 +278,12 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   if (breaks) {
     config.breaks = breaks
   }
+  if (dataview.config?.color !== undefined) {
+    config.color = decodeURIComponent(dataview.config?.color)
+  }
+  if (dataview.config?.datasets !== undefined && dataview.config?.datasets.length) {
+    config.datasets = dataview.config?.datasets.map((datasetId) => decodeURIComponent(datasetId))
+  }
   if (dataview.config?.maxVisibleValue !== undefined) {
     config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue as any)
   }

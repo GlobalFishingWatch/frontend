@@ -1,7 +1,7 @@
 [
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "OSPESCA" },
+    "properties": { "type": "rfmo", "name": "OSPESCA", "area": "OSPESCA" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -17,7 +17,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "PICES" },
+    "properties": { "type": "rfmo", "name": "PICES", "area": "PICES" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -33,7 +33,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "LVFO" },
+    "properties": { "type": "rfmo", "name": "LVFO", "area": "LVFO" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -49,7 +49,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "CCAMLR" },
+    "properties": { "type": "rfmo", "name": "CCAMLR", "area": "CCAMLR" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -65,7 +65,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "CACFISH" },
+    "properties": { "type": "rfmo", "name": "CACFISH", "area": "CACFISH" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -81,7 +81,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "ACAP" },
+    "properties": { "type": "rfmo", "name": "ACAP", "area": "ACAP" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -97,7 +97,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "MRC" },
+    "properties": { "type": "rfmo", "name": "MRC", "area": "MRC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -113,7 +113,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "NACA" },
+    "properties": { "type": "rfmo", "name": "NACA", "area": "NACA" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -129,7 +129,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "SPC" },
+    "properties": { "type": "rfmo", "name": "SPC", "area": "SPC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -145,7 +145,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "IWC" },
+    "properties": { "type": "rfmo", "name": "IWC", "area": "IWC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -161,7 +161,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "LTA" },
+    "properties": { "type": "rfmo", "name": "LTA", "area": "LTA" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -177,7 +177,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "FFA" },
+    "properties": { "type": "rfmo", "name": "FFA", "area": "FFA" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -193,7 +193,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "SEAFDEC" },
+    "properties": { "type": "rfmo", "name": "SEAFDEC", "area": "SEAFDEC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -209,7 +209,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "NASCO" },
+    "properties": { "type": "rfmo", "name": "NASCO", "area": "NASCO" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -225,7 +225,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "SIOFA" },
+    "properties": { "type": "rfmo", "name": "SIOFA", "area": "SIOFA" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -241,7 +241,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "CTMFM" },
+    "properties": { "type": "rfmo", "name": "CTMFM", "area": "CTMFM" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -257,7 +257,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "GFCM" },
+    "properties": { "type": "rfmo", "name": "GFCM", "area": "GFCM" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -273,7 +273,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "IATTC" },
+    "properties": { "type": "rfmo", "name": "IATTC", "area": "IATTC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -289,7 +289,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "IPHC" },
+    "properties": { "type": "rfmo", "name": "IPHC", "area": "IPHC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -305,7 +305,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "SWIOFC" },
+    "properties": { "type": "rfmo", "name": "SWIOFC", "area": "SWIOFC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -321,7 +321,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "NPAFC" },
+    "properties": { "type": "rfmo", "name": "NPAFC", "area": "NPAFC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -337,7 +337,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "COREP" },
+    "properties": { "type": "rfmo", "name": "COREP", "area": "COREP" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -353,7 +353,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "CCBSP" },
+    "properties": { "type": "rfmo", "name": "CCBSP", "area": "CCBSP" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -369,7 +369,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "FCWC" },
+    "properties": { "type": "rfmo", "name": "FCWC", "area": "FCWC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -385,7 +385,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "ICES" },
+    "properties": { "type": "rfmo", "name": "ICES", "area": "ICES" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -401,7 +401,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "CRFM" },
+    "properties": { "type": "rfmo", "name": "CRFM", "area": "CRFM" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -417,7 +417,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "NAFO" },
+    "properties": { "type": "rfmo", "name": "NAFO", "area": "NAFO" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -433,7 +433,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "PERSGA" },
+    "properties": { "type": "rfmo", "name": "PERSGA", "area": "PERSGA" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -449,7 +449,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "SRFC" },
+    "properties": { "type": "rfmo", "name": "SRFC", "area": "SRFC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -465,7 +465,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "CPPS" },
+    "properties": { "type": "rfmo", "name": "CPPS", "area": "CPPS" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -481,7 +481,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "EIFAAC" },
+    "properties": { "type": "rfmo", "name": "EIFAAC", "area": "EIFAAC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -497,7 +497,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "SPRFMO" },
+    "properties": { "type": "rfmo", "name": "SPRFMO", "area": "SPRFMO" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -513,7 +513,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "RECOFI" },
+    "properties": { "type": "rfmo", "name": "RECOFI", "area": "RECOFI" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -529,7 +529,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "IOTC" },
+    "properties": { "type": "rfmo", "name": "IOTC", "area": "IOTC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -545,7 +545,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "NAMMCO" },
+    "properties": { "type": "rfmo", "name": "NAMMCO", "area": "NAMMCO" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -561,7 +561,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "APFIC" },
+    "properties": { "type": "rfmo", "name": "APFIC", "area": "APFIC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -577,7 +577,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "NEAFC" },
+    "properties": { "type": "rfmo", "name": "NEAFC", "area": "NEAFC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -593,7 +593,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "WCPFC" },
+    "properties": { "type": "rfmo", "name": "WCPFC", "area": "WCPFC" },
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -609,7 +609,7 @@
   },
   {
     "type": "Feature",
-    "properties": { "type": "rfmo", "name": "ICCAT" },
+    "properties": { "type": "rfmo", "name": "ICCAT", "area": "ICCAT" },
     "geometry": {
       "coordinates": [
         [

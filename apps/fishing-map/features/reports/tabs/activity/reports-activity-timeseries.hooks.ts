@@ -253,10 +253,12 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     () => reportLayers.map((l) => l.instance),
     // We need to update the instances when the instancesChunkHash or the reportBufferHash changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [reportLayers, instancesChunkHash, reportBufferHash]
+    [reportLayers, instancesChunkHash, reportBufferHash, isAreaInViewport]
   )
 
-  const isLoaded = instances?.length ? instances.every((i) => i.isLoaded) : false
+  const isLoaded = reportLayers?.length
+    ? reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded)
+    : false
 
   useLayoutEffect(() => {
     reportStateCacheHash.current = ''

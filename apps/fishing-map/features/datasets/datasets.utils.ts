@@ -39,11 +39,11 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
-import { t } from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import i18n, { t } from 'features/i18n/i18n'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
+import { getPorts } from 'utils/ports'
 import { capitalize, sortFields } from 'utils/shared'
 
 import styles from '../vessel-groups/VesselGroupModal.module.css'
@@ -115,10 +115,13 @@ export type SupportedEnvDatasetSchema =
   | 'period' // species-mm
   | 'scenario' // species-mm
 type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
-type SupportedEventsDatasetSchema = 'duration'
+type SupportedEventsDatasetSchema = 'duration' | 'encounter_type' | 'type' | 'next_port_id'
 
-const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
 const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups', 'period', 'scenario']
+
+const EXPERIMENTAL_FIELDS_BY_SCHEMA: { [key in SupportedDatasetSchema]?: string[] } = {
+  encounter_type: ['FISHING-BUNKER', 'FISHING-FISHING', 'CARRIER-BUNKER'],
+}
 
 type SchemaCompatibilityOperation = 'every' | 'some'
 type SchemaOriginParam = keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'> | 'all'
@@ -541,6 +544,10 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
   return allowedDatasets
 }
 
+export const getAllDatasetAllowedFields = (dataset: Dataset) => {
+  return [...(dataset.fieldsAllowed || []), ...Object.keys(dataset.filters || {})]
+}
+
 const isDataviewSchemaSupported = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
@@ -549,7 +556,8 @@ const isDataviewSchemaSupported = (
   const schemaSupported = dataview?.datasets
     ?.filter((dataset) => activeDatasets?.includes(dataset.id))
     .every((dataset) => {
-      const fieldAllowed = dataset.fieldsAllowed.includes(schema)
+      const fieldsAllowed = getAllDatasetAllowedFields(dataset)
+      const fieldAllowed = fieldsAllowed.includes(schema)
       const incompatibleSelection = getIncompatibleFilterSelection(dataview, schema)
       return fieldAllowed && incompatibleSelection?.length === 0
     })
@@ -603,7 +611,7 @@ export const getDatasetSchemaItem = (
   schema: SupportedDatasetSchema,
   schemaOrigin: SchemaOriginParam = 'selfReportedInfo'
 ) => {
-  const schemaItem = dataset?.schema?.[schema] as DatasetSchemaItem
+  const schemaItem = (dataset?.schema?.[schema] || dataset?.filters?.[schema]) as DatasetSchemaItem
   if (schemaItem) {
     return schemaItem
   }
@@ -671,7 +679,10 @@ export const isFieldInFieldsAllowed = ({
 }
 
 const datasetHasFieldsAllowed = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  return isFieldInFieldsAllowed({ field: schema, fieldsAllowed: dataset.fieldsAllowed })
+  return isFieldInFieldsAllowed({
+    field: schema,
+    fieldsAllowed: getAllDatasetAllowedFields(dataset),
+  })
 }
 
 const getSupportedSchemaFieldsDatasets = (
@@ -767,6 +778,8 @@ export const getCommonSchemaFieldsInDataview = (
   const activeDatasets = getActiveDatasetsInDataview(dataview)
   if (schema === 'flag') {
     return getFlags()
+  } else if (schema === 'next_port_id') {
+    return getPorts()
   } else if (schema === 'vessel-groups') {
     if (activeDatasets?.every((d) => d.fieldsAllowed?.includes(schema))) {
       if (isGuestUser) {
@@ -799,12 +812,15 @@ export const getCommonSchemaFieldsInDataview = (
   const cleanSchemaFields =
     compatibilityOperation === 'every' ? intersection(...schemaFields) : uniq(schemaFields.flat())
   const datasetId = removeDatasetVersion(activeDatasets?.[0]?.id as string)
-  const commonSchemaFields = schemaFields
+  let commonSchemaFields = schemaFields
     ? cleanSchemaFields.map((field) => {
         let label =
           schemaType === 'range' || schemaType === 'number'
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field?.toString())
+        if (EXPERIMENTAL_FIELDS_BY_SCHEMA[schema]?.includes(field as string)) {
+          label += ' (Experimental)'
+        }
         if (label === field) {
           if (schema === 'geartypes' || schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
@@ -814,7 +830,8 @@ export const getCommonSchemaFieldsInDataview = (
           } else if (
             dataview.category !== DataviewCategory.Context &&
             schema !== 'vessel_id' &&
-            schema !== 'speed'
+            schema !== 'speed' &&
+            schema !== 'encounter_type'
           ) {
             label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
           }
@@ -822,6 +839,16 @@ export const getCommonSchemaFieldsInDataview = (
         return { id: field?.toString(), label: label as string }
       })
     : []
+
+  if (schema === 'encounter_type') {
+    commonSchemaFields = commonSchemaFields.filter((field, index, self) => {
+      const [first, second] = field.id.split('-')
+      const reverseId = `${second}-${first}`
+      const isReverse = !self.some((f, i) => i < index && f.id === reverseId)
+      return isReverse
+    })
+  }
+
   return commonSchemaFields.sort(sortFields)
 }
 
@@ -853,11 +880,11 @@ const getSchemaOptionsSelectedInDataview = (
     return [
       {
         id: min.toString(),
-        label: formatI18nNumber(min),
+        label: min,
       },
       {
         id: max.toString(),
-        label: formatI18nNumber(max),
+        label: max,
       },
     ]
   }
@@ -914,6 +941,16 @@ export const getSchemaFieldsSelectedInDataview = (
   return optionsSelected
 }
 
+export const getSchemaFieldLabel = (schema: SupportedDatasetSchema, datasetId: string) => {
+  if (datasetId && i18n.exists(`datasets:${datasetId}.schema.${schema}.keyword`)) {
+    return t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
+  }
+  if (i18n.exists(`vessel.${schema}`)) {
+    return t(`vessel.${schema}`, { defaultValue: schema, count: 2 })
+  }
+  return t(`layer.${schema}`, schema)
+}
+
 export type SchemaFilter = {
   type: DatasetSchemaType
   id: SupportedDatasetSchema
@@ -960,12 +997,7 @@ export const getFiltersBySchema = (
     incompatibleFilterSelection !== undefined && incompatibleFilterSelection?.length > 0
   const disabled = !hasDatasetsWithSchema || hasIncompatibleFilterSelection
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)?.[0]?.id as string)
-  let label: string = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
-    ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
-    : t(`vessel.${schema}`, { defaultValue: schema, count: 2 }) // We always want to show the plural for the multiselect
-  if (schema === 'vessel-groups') {
-    label = t('vesselGroup.vesselGroup', 'Vessel Group')
-  }
+  const label = getSchemaFieldLabel(schema, datasetId)
 
   return {
     id: schema,
@@ -986,7 +1018,7 @@ export const getSchemaFiltersInDataview = (
   { vesselGroups, fieldsToInclude, isGuestUser } = {} as GetSchemaInDataviewParams
 ): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
   let fieldsIds = uniq(
-    dataview.datasets?.flatMap((d) => d.fieldsAllowed || []) || []
+    dataview.datasets?.flatMap((dataset) => getAllDatasetAllowedFields(dataset)) || []
   ) as SupportedDatasetSchema[]
   if (fieldsToInclude?.length) {
     fieldsIds = fieldsIds.filter((f) => fieldsToInclude.includes(f))

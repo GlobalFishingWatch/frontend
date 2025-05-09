@@ -6,9 +6,9 @@
       "cta": "crwdns84145:0crwdne84145:0"
     },
     "carrier-portal-public": {
-      "name": "crwdns84147:0crwdne84147:0",
-      "description": "crwdns84149:0crwdne84149:0",
-      "cta": "crwdns84151:0crwdne84151:0"
+      "name": "crwdns84586:0crwdne84586:0",
+      "description": "crwdns84588:0crwdne84588:0",
+      "cta": "crwdns84590:0crwdne84590:0"
     },
     "deep-sea-mining-public": {
       "name": "crwdns84231:0crwdne84231:0",
@@ -17,6 +17,11 @@
     }
   },
   "reports": {
+    "carrier-portal-report": {
+      "name": "crwdns84580:0crwdne84580:0",
+      "description": "crwdns84582:0crwdne84582:0",
+      "cta": "crwdns84584:0crwdne84584:0"
+    },
     "activity-report": {
       "name": "crwdns84159:0crwdne84159:0",
       "description": "crwdns84161:0crwdne84161:0"

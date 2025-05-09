@@ -5,6 +5,7 @@ import { t } from 'i18next'
 import { type Dataset, DataviewCategory, type ReportVessel } from '@globalfishingwatch/api-types'
 import type { BufferOperation, BufferUnit } from '@globalfishingwatch/data-transforms'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { selectAreas } from 'features/areas/areas.slice'
@@ -33,6 +34,7 @@ import {
   selectReportVesselsData,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
+import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
   selectIsVesselGroupReportLocation,
   selectUrlBufferOperationQuery,
@@ -130,7 +132,7 @@ export const selectReportAreaIds = createSelector(
 
 export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
   [selectActiveReportDataviews, selectUserData],
-  (reportDataviews, userData) => {
+  (reportDataviews, userData): UrlDataviewInstance[] => {
     return reportDataviews
       .map((dataview) => {
         const supportedDatasets = getDatasetsReportSupported(
@@ -325,8 +327,11 @@ export const selectHasReportBuffer = createSelector(
 )
 
 export const selectReportArea = createSelector(
-  [selectReportAreaData, selectHasReportBuffer, selectReportBufferArea],
-  (area, hasReportBuffer, bufferedArea) => {
+  [selectReportAreaData, selectHasReportBuffer, selectReportBufferArea, selectIsWorkspaceReady],
+  (area, hasReportBuffer, bufferedArea, isWorkspaceReady) => {
+    if (!isWorkspaceReady) {
+      return undefined
+    }
     if (hasReportBuffer) {
       return bufferedArea
     }
@@ -341,5 +346,12 @@ export const selectReportAreaStatus = createSelector(
       return AsyncReducerStatus.Finished
     }
     return areaApiStatus
+  }
+)
+
+export const selectIsGlobalReport = createSelector(
+  [selectCurrentReport, selectReportArea],
+  (report, reportArea) => {
+    return !report?.name && reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
   }
 )

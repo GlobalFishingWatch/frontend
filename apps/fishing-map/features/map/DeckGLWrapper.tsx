@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { type FilterContext } from '@deck.gl/core'
+import type { FilterContext, ViewStateChangeParameters } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
 
@@ -22,7 +22,6 @@ import MapAnnotations from 'features/map/overlays/annotations/Annotations'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
-import type { MapCoordinates } from 'types'
 
 const DeckGLWrapper = () => {
   const deckRef = useRef<DeckGLRef>(null)
@@ -33,12 +32,20 @@ const DeckGLWrapper = () => {
   const areReportFeaturesLoading = useReportFeaturesLoading()
 
   const onViewStateChange = useCallback(
-    (params: any) => {
-      // add transitionDuration: 0 to avoid unresponsive zoom
-      // https://github.com/visgl/deck.gl/issues/7158#issuecomment-1329722960
-      setViewState({ ...(params.viewState as MapCoordinates), transitionDuration: 0 })
+    (params: ViewStateChangeParameters<any>) => {
+      if (params.interactionState.isZooming || !params.interactionState.inTransition) {
+        // https://github.com/visgl/deck.gl/issues/7158#issuecomment-2305388963
+        // add transitionDuration: 0 to avoid unresponsive zoom
+        setViewState({
+          ...viewState,
+          ...params.viewState,
+          transitionDuration: 0,
+        })
+      } else {
+        setViewState({ ...viewState, ...params.viewState })
+      }
     },
-    [setViewState]
+    [setViewState, viewState]
   )
   const onMapClick = useMapMouseClick()
   const { onMouseMove } = useMapMouseHover()

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import parse from 'html-react-parser'
-import { Bar, BarChart, LabelList,Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, LabelList, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts'
 
 import type { RegionType } from '@globalfishingwatch/api-types'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
@@ -51,7 +51,7 @@ const AreaTick = ({ y, payload }: any) => {
 
   const fitBoundsOnEvents = useCallback(() => {
     const bounds = eventsToBbox(areaEvents)
-    fitBounds(bounds)
+    fitBounds(bounds, { fitZoom: true })
   }, [areaEvents, fitBounds])
 
   const setHighlightEvents = useCallback(() => {
@@ -188,7 +188,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
         className={styles.choice}
         onSelect={changeVesselArea}
       />
-      {areaDataview && DATAVIEWS_WARNING.includes(areaDataview?.id) && (
+      {areaDataview && DATAVIEWS_WARNING.includes(areaDataview?.id as any) && (
         <div className={styles.dataWarning}>
           {t(
             `dataview.${areaDataview?.id}.dataWarning` as any,
