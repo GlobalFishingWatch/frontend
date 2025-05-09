@@ -116,7 +116,12 @@ export type SupportedEnvDatasetSchema =
   | 'scenario' // species-mm
 type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
 type SupportedEventsDatasetSchema = 'duration' | 'encounter_type' | 'type' | 'next_port_id'
+
 const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups', 'period', 'scenario']
+
+const EXPERIMENTAL_FIELDS_BY_SCHEMA: { [key in SupportedDatasetSchema]?: string[] } = {
+  encounter_type: ['FISHING-BUNKER', 'FISHING-FISHING', 'CARRIER-BUNKER'],
+}
 
 type SchemaCompatibilityOperation = 'every' | 'some'
 type SchemaOriginParam = keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'> | 'all'
@@ -813,6 +818,9 @@ export const getCommonSchemaFieldsInDataview = (
           schemaType === 'range' || schemaType === 'number'
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field?.toString())
+        if (EXPERIMENTAL_FIELDS_BY_SCHEMA[schema]?.includes(field as string)) {
+          label += ' (Experimental)'
+        }
         if (label === field) {
           if (schema === 'geartypes' || schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
