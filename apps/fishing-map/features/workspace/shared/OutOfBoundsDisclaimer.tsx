@@ -80,10 +80,7 @@ const OutOfTimerangeDisclaimer = ({
     return null
   }
 
-  const datasetInTimerange =
-    (start >= extentStart && start <= extentEnd) ||
-    (end >= extentStart && end <= extentEnd) ||
-    (start <= extentStart && end >= extentEnd)
+  const datasetInTimerange = start < extentEnd && end > extentStart
 
   return datasetInTimerange ? null : (
     <span className={cx(styles.dataWarning, styles.error, className)}>
