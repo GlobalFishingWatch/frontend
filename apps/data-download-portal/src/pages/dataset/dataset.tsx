@@ -80,13 +80,13 @@ const columns = [
   {
     id: 'name',
     Header: 'Name',
-    accessor: (row: any) => `${row.name}${isNumber(row.size) ? ` (${formatBytes(row.size)})` : ''}`,
+    accessor: (row: any) => row.name,
     Cell: ({ row }: { row: any }) => (
       <span
         style={{
-          paddingLeft: `${row.depth * 1}rem`,
+          paddingLeft: `${row.depth * 1.3}rem`,
           display: 'flex',
-          gap: '1rem',
+          gap: '0.5rem',
           alignItems: 'center',
         }}
       >
@@ -101,7 +101,14 @@ const columns = [
     ),
   },
   {
+    id: 'size',
+    width: 60,
+    Header: 'Size',
+    accessor: (row: any) => (isNumber(row.size) ? formatBytes(row.size) : '--'),
+  },
+  {
     id: 'date',
+    width: 80,
     Header: 'Date',
     accessor: (row: any) => row.lastUpdate,
   },

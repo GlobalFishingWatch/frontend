@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type {
   Column,
   HeaderGroup,
@@ -13,6 +13,9 @@ import type {
   UseExpandedState,
   UseGlobalFiltersInstanceProps,
   UseGlobalFiltersState,
+  UseResizeColumnsColumnOptions,
+  UseResizeColumnsColumnProps,
+  UseResizeColumnsState,
   UseRowSelectInstanceProps,
   UseSortByColumnProps,
   UseSortByInstanceProps,
@@ -21,6 +24,7 @@ import {
   useExpanded,
   useFlexLayout,
   useGlobalFilter,
+  useResizeColumns,
   useRowSelect,
   useSortBy,
   useTable,
@@ -52,7 +56,8 @@ export type TableData = {
 
 type ExtendedTableState = TableState<TableData> &
   UseGlobalFiltersState<TableData> &
-  UseExpandedState<TableData>
+  UseExpandedState<TableData> &
+  UseResizeColumnsState<TableData>
 
 type TableInstanceWithHooks = TableInstance<TableData> &
   UseGlobalFiltersInstanceProps<TableData> &
@@ -60,7 +65,9 @@ type TableInstanceWithHooks = TableInstance<TableData> &
   UseExpandedInstanceProps<TableData> &
   UseRowSelectInstanceProps<TableData>
 
-type ExtendedHeaderGroup = HeaderGroup<TableData> & UseSortByColumnProps<TableData>
+type ExtendedHeaderGroup = HeaderGroup<TableData> &
+  UseSortByColumnProps<TableData> &
+  UseResizeColumnsColumnProps<TableData>
 
 type ExtendedRow = Row<TableData> & UseExpandedRowProps<TableData>
 
@@ -172,9 +179,15 @@ function Table({ columns, data }: TableProps) {
     sortBy: [{ id: 'lastUpdated', desc: true }],
   }
 
-  const defaultColumn = {
-    Cell: HighlightedCell,
-  }
+  const defaultColumn = useMemo(
+    () => ({
+      minWidth: 25,
+      width: 150,
+      maxWidth: 200,
+      Cell: HighlightedCell,
+    }),
+    []
+  )
 
   const tableInstance = useTable(
     {
@@ -183,17 +196,20 @@ function Table({ columns, data }: TableProps) {
       defaultColumn,
       initialState,
       globalFilter: fuzzyTextFilterFn,
-    } as TableOptions<TableData> & UseExpandedOptions<TableData>,
+    } as TableOptions<TableData> &
+      UseExpandedOptions<TableData> &
+      UseResizeColumnsColumnOptions<TableData>,
     useGlobalFilter,
     useSortBy,
     useExpanded,
     useFlexLayout,
     useRowSelect,
+    useResizeColumns,
     (hooks: Hooks<TableData>) => {
       hooks.visibleColumns.push((columns: Column<TableData>[]) => [
         {
           id: 'selection',
-          width: 25,
+          width: 20,
           Header: () => '',
           Cell: ({ row, selectedFlatRows }: any) => {
             const disabled = selectedFlatRows.length >= MAX_DOWNLOAD_FILES_LIMIT && !row.isSelected
@@ -338,7 +354,14 @@ function Table({ columns, data }: TableProps) {
                     className={styles.th}
                   >
                     {column.render('Header')}
-                    {column.id !== 'selection' && column.id !== 'download-button' && (
+                    {column.id !== 'selection' && (
+                      <div
+                        {...extendedColumn.getResizerProps()}
+                        className={`${styles.resizer} ${extendedColumn.isResizing ? styles.isResizing : ''}`}
+                      />
+                    )}
+
+                    {column.id !== 'selection' && column.id !== 'name' && (
                       <span className={styles.sort}>
                         {extendedColumn.isSorted ? (
                           extendedColumn.isSortedDesc ? (
@@ -386,6 +409,7 @@ function Table({ columns, data }: TableProps) {
                               : logged && downloadSingleFile(cell.row.original.path)
                           }
                           style={{ cursor: 'pointer' }}
+                          className={row.canExpand ? styles.folder : undefined}
                         >
                           {cell.render('Cell')}
                         </div>
