@@ -33,11 +33,7 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
 
 type TransformationUnit = 'minutes' | 'hours' | 'km'
 
-const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = [
-  'matched',
-  'neural_vessel_type',
-  'encounter_type',
-]
+const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
 
 type Transformation = {
   in?: (v: any) => number
