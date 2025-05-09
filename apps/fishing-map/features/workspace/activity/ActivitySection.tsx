@@ -12,6 +12,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getIsPositionSupportedInDataview } from 'features/dataviews/dataviews.utils'
 import {
+  selectActiveActivityDataviews,
   selectActivityDataviews,
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -35,12 +36,13 @@ function ActivitySection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
+  const activeDataviews = useSelector(selectActiveActivityDataviews)
   const detectionsDataviews = useSelector(selectDetectionsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
 
-  const positionsSupported = dataviews.every((dataview) =>
+  const positionsSupported = activeDataviews.every((dataview) =>
     getIsPositionSupportedInDataview(dataview)
   )
 

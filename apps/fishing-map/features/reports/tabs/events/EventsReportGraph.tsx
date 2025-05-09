@@ -1,220 +1,77 @@
-import type { ReactElement } from 'react'
-import React, { useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { groupBy } from 'es-toolkit'
-import { DateTime } from 'luxon'
-import { stringify } from 'qs'
-import {
-  type BaseReportEventsVesselsParamsFilters,
-  getEventsStatsQuery,
-} from 'queries/report-events-stats-api'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { ApiEvent, APIPagination, EventType } from '@globalfishingwatch/api-types'
-import { getISODateByInterval } from '@globalfishingwatch/data-transforms'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { useMemoCompare } from '@globalfishingwatch/react-hooks'
-import type {
-  BaseResponsiveTimeseriesProps,
-  ResponsiveVisualizationData,
-} from '@globalfishingwatch/responsive-visualizations'
-import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
+import type { EventType } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import { selectIsResponsiveVisualizationEnabled } from 'features/debug/debug.selectors'
-import i18n from 'features/i18n/i18n'
-import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
-import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
-import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
-import { getTimeLabels } from 'utils/events'
-import { formatInfoField, upperFirst } from 'utils/info'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
+import {
+  selectEventsStatsDataGrouped,
+  selectEventsStatsValueKeys,
+} from 'features/reports/tabs/events/events-report.selectors'
+import EventsReportGraphEvolution from 'features/reports/tabs/events/EventsReportGraphEvolution'
+import EventsReportGraphGrouped from 'features/reports/tabs/events/EventsReportGraphGrouped'
 
-import EncounterIcon from './icons/event-encounter.svg'
-import LoiteringIcon from './icons/event-loitering.svg'
-import PortVisitIcon from './icons/event-port.svg'
+function EventsReportGraph() {
+  const eventsDataviews = useSelector(selectActiveReportDataviews)
+  const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
+  const { start, end } = useSelector(selectTimeRange)
+  const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
+  const eventsStatsValueKeys = useSelector(selectEventsStatsValueKeys)
+  const reportEventsGraph = useSelector(selectReportEventsGraph)
 
-import styles from './EventsReportGraph.module.css'
+  const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const eventType = eventDataset?.subcategory as EventType
 
-type EventsReportGraphTooltipProps = {
-  active: boolean
-  payload: {
-    name: string
-    dataKey: string
-    label: number
-    value: number
-    payload: any
-    color: string
-    unit: string
-  }[]
-  label: number
-  timeChunkInterval: FourwingsInterval
-}
+  const includes = useMemo(
+    () => [
+      'id',
+      'start',
+      'end',
+      'vessel',
+      'regions',
+      ...(eventType === 'encounter' ? ['encounter.vessel'] : []),
+    ],
+    [eventType]
+  )
 
-const AggregatedGraphTooltip = (props: any) => {
-  const { t } = useTranslation()
-  const { active, payload, label, timeChunkInterval } = props as EventsReportGraphTooltipProps
+  const color = eventsDataview?.config?.color || COLOR_PRIMARY_BLUE
 
-  if (active && payload && payload.length) {
-    const date = getUTCDateTime(label).setLocale(i18n.language)
-    const formattedLabel = formatDateForInterval(date, timeChunkInterval)
+  if (!eventDataset) {
+    return null
+  }
+
+  if (reportEventsGraph === 'evolution') {
     return (
-      <div className={styles.tooltipContainer}>
-        <p className={styles.tooltipLabel}>{formattedLabel}</p>
-        <ul>
-          {payload
-            .sort((a: any, b: any) => b.value - a.value)
-            .map(({ value, color }: any, index: number) => {
-              return (
-                <li key={index} className={styles.tooltipValue}>
-                  <span className={styles.tooltipValueDot} style={{ color }}></span>
-                  {formatTooltipValue(value, t('common.events', 'Events').toLowerCase())}
-                </li>
-              )
-            })}
-        </ul>
-      </div>
+      <EventsReportGraphEvolution
+        dataviews={eventsDataviews}
+        includes={includes}
+        valueKeys={eventsStatsValueKeys}
+        color={color}
+        start={start}
+        end={end}
+        data={eventsStatsDataGrouped || []}
+        eventType={eventType}
+      />
     )
   }
 
-  return null
-}
-
-const IndividualGraphTooltip = ({ data, eventType }: { data?: any; eventType?: EventType }) => {
-  const { t } = useTranslation()
-  if (!data?.vessel) {
-    return null
-  }
-  const { start, duration } = getTimeLabels({ start: data.start, end: data.end })
-
   return (
-    <div className={styles.event}>
-      {eventType && upperFirst(t(`event.${eventType}`, eventType))}
-      <div className={styles.properties}>
-        <div className={styles.property}>
-          <label>
-            {`${formatInfoField(data.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}
-          </label>
-          <span>
-            {formatInfoField(data.vessel?.name, 'shipname')}{' '}
-            {data.vessel?.flag && <span>({formatInfoField(data.vessel?.flag, 'flag')})</span>}
-          </span>
-        </div>
-        {eventType === 'encounter' && data.encounter?.vessel?.flag && (
-          <div className={styles.property}>
-            <label>{`${formatInfoField(data.encounter?.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}</label>
-            <span>{`${formatInfoField(data.encounter?.vessel?.name, 'shipname')} (${formatInfoField(data.encounter?.vessel?.flag, 'flag')})`}</span>
-          </div>
-        )}
-      </div>
-      <div className={styles.properties}>
-        <div className={styles.property}>
-          <label>{t('eventInfo.start', 'Start')}</label>
-          <span>{start}</span>
-        </div>
-        <div className={styles.property}>
-          <label>{t('eventInfo.duration', 'Duration')}</label>
-          <span>{duration}</span>
-        </div>
-      </div>
-    </div>
+    <EventsReportGraphGrouped
+      dataviews={eventsDataviews}
+      includes={includes}
+      color={color}
+      end={end}
+      start={start}
+      data={eventsStatsDataGrouped || []}
+      valueKeys={eventsStatsValueKeys}
+      graphType={reportEventsGraph}
+      eventType={eventType}
+    />
   )
 }
 
-const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
-  tick,
-  timeChunkInterval
-) => {
-  const date = getUTCDateTime(tick).setLocale(i18n.language)
-  return formatDateForInterval(date, timeChunkInterval)
-}
-
-export default function EventsReportGraph({
-  datasetId,
-  filters,
-  includes,
-  color = COLOR_PRIMARY_BLUE,
-  end,
-  start,
-  data,
-  valueKeys,
-  eventType,
-}: {
-  datasetId: string
-  filters?: BaseReportEventsVesselsParamsFilters
-  includes?: string[]
-  color?: string
-  end: string
-  start: string
-  data: ResponsiveVisualizationData<'aggregated'>
-  valueKeys: string[]
-  eventType?: EventType
-}) {
-  const containerRef = React.useRef<HTMLDivElement>(null)
-
-  const startMillis = DateTime.fromISO(start).toMillis()
-  const endMillis = DateTime.fromISO(end).toMillis()
-  const interval = getFourwingsInterval(startMillis, endMillis)
-  const filtersMemo = useMemoCompare(filters)
-  const includesMemo = useMemoCompare(includes)
-  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
-  const reportAreaDataset = useSelector(selectReportDatasetId)
-  const reportAreaId = useSelector(selectReportAreaId)
-
-  let icon: ReactElement | undefined
-  if (eventType === 'encounter') {
-    icon = <EncounterIcon />
-  } else if (eventType === 'loitering') {
-    icon = <LoiteringIcon />
-  } else if (eventType === 'port_visit') {
-    icon = <PortVisitIcon />
-  }
-
-  const getAggregatedData = useCallback(async () => data, [data])
-
-  const getIndividualData = useCallback(async () => {
-    const params = {
-      ...getEventsStatsQuery({
-        start,
-        end,
-        filters: filtersMemo || {},
-        dataset: datasetId,
-        // TODO:CVP uncomment once the API takes the parameters
-        // regionDataset: reportAreaDataset,
-        // regionId: reportAreaId,
-      }),
-      ...(includesMemo && { includes: includesMemo }),
-      limit: 1000,
-      offset: 0,
-    }
-    const data = await GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
-    const groupedData = groupBy(data.entries, (item) => getISODateByInterval(item.start, interval))
-
-    return Object.entries(groupedData)
-      .map(([date, events]) => ({ date, values: events }))
-      .sort((a, b) => a.date.localeCompare(b.date))
-  }, [start, end, filtersMemo, datasetId, reportAreaDataset, reportAreaId, includesMemo, interval])
-
-  if (!data.length) {
-    return null
-  }
-
-  return (
-    <div ref={containerRef} className={styles.graph}>
-      <ResponsiveTimeseries
-        start={start}
-        end={end}
-        timeseriesInterval={interval}
-        aggregatedValueKey={valueKeys}
-        getAggregatedData={getAggregatedData}
-        getIndividualData={isResponsiveVisualizationEnabled ? getIndividualData : undefined}
-        tickLabelFormatter={formatDateTicks}
-        aggregatedTooltip={<AggregatedGraphTooltip />}
-        individualTooltip={<IndividualGraphTooltip eventType={eventType} />}
-        color={color}
-        individualIcon={icon}
-      />
-    </div>
-  )
-}
+export default EventsReportGraph

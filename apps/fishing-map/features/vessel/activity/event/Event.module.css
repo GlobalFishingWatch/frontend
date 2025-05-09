@@ -1,5 +1,5 @@
 .event {
-  padding: var(--space-XS) 1.5rem var(--space-XS) var(--space-M);
+  padding: var(--space-L) 1.5rem var(--space-L) var(--space-M);
   position: relative;
   color: var(--color-secondary-blue);
   transition: color 200ms ease-in;
@@ -10,6 +10,11 @@
   opacity: var(--opacity-secondary);
   transition: opacity 200ms ease-in;
   margin-left: auto;
+  display: none;
+}
+
+.event.expanded .actions,
+.event:hover .actions {
   display: flex;
 }
 
@@ -43,20 +48,59 @@
   flex: 1;
 }
 
-.description a {
-  text-decoration: underline;
-}
-
 .detailContainer {
+  padding-left: var(--space-L);
+  padding-block: var(--space-S);
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-S) var(--space-M);
-  padding-left: var(--space-L);
-  padding-block: var(--space-S);
+  font: var(--font-S);
+}
+
+.fieldLabel {
+  font-size: 1.2rem;
+}
+
+.detailContainer a {
+  text-decoration: underline;
 }
 
 .region {
   cursor: help;
+}
+
+.vesselNameWithPin {
+  display: flex;
+  align-items: center;
+}
+
+.blockLabel {
+  width: 100%;
+}
+
+.authTable {
+  width: 100%;
+}
+
+.tick {
+  position: relative;
+  top: 0.4rem;
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.divider {
+  width: 100%;
+  height: 0.1rem;
+  margin-block: var(--space-S);
+  margin-right: var(--space-S);
+  background-color: var(--color-border);
 }
 
 @media print {

@@ -259,8 +259,20 @@ function LayerFilters({
         filterValues = [selection.id]
       }
     } else {
-      const value = typeof selection === 'number' ? selection : selection.id
-      filterValues = [...(dataview.config?.filters?.[filterKey] || []), value]
+      let value: string[] = typeof selection === 'number' ? [selection] : [selection.id]
+      if (filterKey === 'encounter_type') {
+        // For encounter_type we need to add the reverse value to ensure both types are included
+        const [first, second] = (selection as MultiSelectOption).id.split('-')
+        if (first && second) {
+          if (first === second) {
+            // when equal not need to add the reverse value
+            value = [`${first}-${second}`]
+          } else {
+            value = [`${first}-${second}`, `${second}-${first}`]
+          }
+        }
+      }
+      filterValues = [...(dataview.config?.filters?.[filterKey] || []), ...value]
     }
     const newDataviewConfig = {
       filters: {

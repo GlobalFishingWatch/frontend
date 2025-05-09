@@ -4,9 +4,18 @@
   height: calc(100vh - var(--header-height) - var(--tabs-height));
 }
 
+.event {
+  background-color: rgba(var(--primary-blue-rgb), 0.03);
+}
+
 .eventExpanded {
-  background-color: var(--color-white);
+  background-color: transparent;
   color: var(--color-primary-blue);
+  box-shadow: var(--box-shadow);
+}
+
+.eventExpanded::after {
+  background-color: transparent;
 }
 
 .event::after {
@@ -20,7 +29,7 @@
   transition: background-color 200ms ease-in;
 }
 
-.event:hover::after {
+.event:not(.eventExpanded):hover::after {
   background-color: var(--color-border-extra-thick);
 }
 

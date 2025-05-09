@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import type { DataviewInstance, EventType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -12,7 +12,12 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
-import { resetVesselState, setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
+import {
+  resetVesselState,
+  setVesselEventId,
+  setVesselEventType,
+  setVesselFitBoundsOnLoad,
+} from 'features/vessel/vessel.slice'
 import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 import {
   selectCurrentWorkspaceCategory,
@@ -29,32 +34,36 @@ import type { QueryParams } from 'types'
 import styles from './Vessel.module.css'
 
 type VesselLinkProps = {
+  children?: any
+  className?: string
   datasetId?: string
   dataviewId?: string
-  vesselId?: string
-  identity?: VesselDataIdentity
-  children?: any
-  onClick?: (e: MouseEvent, vesselId?: string) => void
-  tooltip?: React.ReactNode
+  eventId?: string
+  eventType?: EventType
   fitBounds?: boolean
-  className?: string
+  identity?: VesselDataIdentity
+  onClick?: (e: MouseEvent, vesselId?: string) => void
   query?: Partial<Record<keyof QueryParams, string | number>>
-  testId?: string
   showTooltip?: boolean
+  testId?: string
+  tooltip?: React.ReactNode
+  vesselId?: string
 }
 const VesselLink = ({
-  vesselId: vesselIdProp,
+  children = '',
+  className = '',
   datasetId,
   dataviewId,
-  identity,
-  children = '',
-  onClick,
-  tooltip,
+  eventId,
+  eventType,
   fitBounds = false,
-  className = '',
+  identity,
+  onClick,
   query,
-  testId = 'link-vessel-profile',
   showTooltip = true,
+  testId = 'link-vessel-profile',
+  tooltip,
+  vesselId: vesselIdProp,
 }: VesselLinkProps) => {
   const { t } = useTranslation()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
@@ -74,6 +83,12 @@ const VesselLink = ({
         if (vesselId !== vesselInfoDataId) {
           dispatch(resetVesselState())
         }
+        if (eventId) {
+          dispatch(setVesselEventId(eventId))
+        }
+        if (eventType) {
+          dispatch(setVesselEventType(eventType))
+        }
         // This needs to happen after dispatch resetVesselState so there is no override
         dispatch(setVesselFitBoundsOnLoad(fitBounds))
       }
@@ -86,7 +101,7 @@ const VesselLink = ({
         })
       }
     },
-    [dispatch, fitBounds, onClick, vesselId, vesselInfoDataId]
+    [dispatch, eventId, eventType, fitBounds, onClick, vesselId, vesselInfoDataId]
   )
 
   if (!vesselId) return children

@@ -17,6 +17,11 @@
     }
   },
   "reports": {
+    "carrier-portal-report": {
+      "name": "Carrier Vessel Portal",
+      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
+      "cta": "Explore the carrier vessel portal"
+    },
     "activity-report": {
       "name": "Global Vessel Activity",
       "description": "Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries."

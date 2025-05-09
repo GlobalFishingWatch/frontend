@@ -1,7 +1,7 @@
 export const SCROLL_CONTAINER_DOM_ID = 'scroll-container'
 
-export function getScrollElement() {
-  return document.getElementById(SCROLL_CONTAINER_DOM_ID) as HTMLElement
+export function getScrollElement(id = SCROLL_CONTAINER_DOM_ID) {
+  return document.getElementById(id) as HTMLElement
 }
 
 export function resetSidebarScroll() {

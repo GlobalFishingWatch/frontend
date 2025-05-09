@@ -11,7 +11,6 @@ import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors
 import { useToggleFeatureFlag } from 'features/debug/debug.hooks'
 import {
   selectIsGlobalReportsEnabled,
-  selectIsResponsiveVisualizationEnabled,
   selectIsVesselClassInfoEnable,
 } from 'features/debug/debug.selectors'
 import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
@@ -29,9 +28,8 @@ const DebugMenu: React.FC = () => {
   const [datasetId, setDatasetId] = useState<string>('')
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
-  const isVesselClassInfoEnabled = useSelector(selectIsVesselClassInfoEnable)
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
-  const isResponsiveVisualizationEnabled = useSelector(selectIsResponsiveVisualizationEnabled)
+  const isVesselClassInfoEnabled = useSelector(selectIsVesselClassInfoEnable)
   const toggleFeatureFlag = useToggleFeatureFlag()
 
   useEffect(() => {
@@ -56,18 +54,7 @@ const DebugMenu: React.FC = () => {
                 <strong>Feature flag:</strong> Global reports
               </label>
             </div>
-            <p>Activates the global reports feature</p>
-            <div className={styles.header}>
-              <Switch
-                id="option_responsive_visualization"
-                active={isResponsiveVisualizationEnabled}
-                onClick={() => toggleFeatureFlag('responsiveVisualization')}
-              />
-              <label htmlFor="option_responsive_visualization">
-                <strong>Feature flag:</strong> Responsive visualization
-              </label>
-            </div>
-            <p>Activates the responsive visualization feature</p>
+            <p>Activates the global reports feature: aka CVP</p>
             <div className={styles.header}>
               <Switch
                 id="option_vessel_class_info"

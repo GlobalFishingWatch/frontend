@@ -21,15 +21,15 @@ export enum DataviewType {
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
   Currents = 'CURRENTS',
+  FourwingsTileCluster = 'FOURWINGS_TILE_CLUSTER',
   GL = 'GL',
   Graticules = 'GRATICULES',
   Heatmap = 'HEATMAP',
-  HeatmapStatic = 'HEATMAP_STATIC',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
+  HeatmapStatic = 'HEATMAP_STATIC',
   Polygons = 'POLYGONS',
   Rulers = 'RULERS',
   TileCluster = 'TILE_CLUSTER',
-  FourwingsTileCluster = 'FOURWINGS_TILE_CLUSTER',
   Track = 'TRACK',
   UserContext = 'USER_CONTEXT',
   UserPoints = 'USER_POINTS',
@@ -139,6 +139,14 @@ export interface DataviewConfig<Type = DataviewType> {
   track?: string
   events?: string[]
   relatedVesselIds?: string[]
+
+  /** Vessels to override the globalconfig start and end */
+  startDate?: string
+  endDate?: string
+
+  /** Vessels to override the globalconfig start and end */
+  highlightEventStartTime?: string
+  highlightEventEndTime?: string
 
   pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>

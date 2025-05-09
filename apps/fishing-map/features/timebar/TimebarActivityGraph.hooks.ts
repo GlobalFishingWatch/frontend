@@ -10,10 +10,9 @@ import {
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
-import { useMapViewport } from 'features/map/map-viewport.hooks'
+import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectTimebarSelectedDataviews,
@@ -29,12 +28,11 @@ const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
 
 export const useHeatmapActivityGraph = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
-  const viewport = useMapViewport()
+  const viewport = useSelector(selectViewport)
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
     return [viewport.zoom, viewport.latitude, viewport.longitude].map((v) => v.toFixed(2)).join(',')
   }, [viewport])
-  const debouncedViewportChangeHash = useDebounce(viewportChangeHash, 400)
   const dataviews = useSelector(selectTimebarSelectedDataviews)
   const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
   const timerange = useTimerangeConnect()
@@ -53,7 +51,7 @@ export const useHeatmapActivityGraph = () => {
           start: chunk.bufferedStart,
           end: chunk.bufferedEnd,
           interval: chunk.interval,
-          sublayers: instance.props.sublayers,
+          sublayersLength: instance.props.sublayers.length,
         }) || EMPTY_ACTIVITY_DATA
       setData(data)
     },
@@ -104,7 +102,7 @@ export const useHeatmapActivityGraph = () => {
     loaded,
     id,
     visualizationMode,
-    debouncedViewportChangeHash,
+    viewportChangeHash,
     instance?.props.minVisibleValue,
     instance?.props.maxVisibleValue,
   ])

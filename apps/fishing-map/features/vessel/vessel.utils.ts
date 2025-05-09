@@ -10,7 +10,7 @@ import type {
   VesselRegistryProperty,
   VesselType,
 } from '@globalfishingwatch/api-types'
-import { API_LOGIN_REQUIRED , VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
 
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
@@ -187,12 +187,12 @@ function getVesselCombinedSourceProperty(
 type VesselProperty<P extends VesselIdentityProperty> = P extends 'shiptypes'
   ? VesselType[]
   : P extends 'geartypes'
-  ? GearType[]
-  : P extends number
-  ? number
-  : P extends string
-  ? string
-  : undefined
+    ? GearType[]
+    : P extends number
+      ? number
+      : P extends string
+        ? string
+        : undefined
 export function getVesselProperty<P extends VesselIdentityProperty>(
   vessel: VesselsParamsSupported | null,
   property: P,
@@ -328,7 +328,8 @@ export function filterRegistryInfoByDateAndSSVID(
 }
 
 export const getOtherVesselNames = (vessel: VesselsParamsSupported, currentName?: string) => {
-  const currentNShipname = currentName || getSearchIdentityResolved(vessel)?.nShipname
+  const currentNShipname =
+    currentName !== undefined ? currentName : getSearchIdentityResolved(vessel)?.nShipname
   const uniqIdentitiesByNormalisedName = uniqBy(getVesselIdentities(vessel), (i) => i.nShipname)
   const otherIdentities = uniqIdentitiesByNormalisedName.filter(
     (i) => i.nShipname !== currentNShipname

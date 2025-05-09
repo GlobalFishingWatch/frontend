@@ -8,6 +8,7 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
   ApiEvent,
   Dataset,
+  EventType,
   GearType,
   IdentityVessel,
   RegistryExtraFields,
@@ -38,7 +39,7 @@ import {
   getVesselDataviewInstance,
   getVesselInfoDataviewInstanceDatasetConfig,
 } from 'features/dataviews/dataviews.utils'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
@@ -87,12 +88,18 @@ type VesselState = {
   fitBoundsOnLoad: boolean
   printMode: boolean
   data: VesselInfoState
+  eventId: string | null
+  eventType: EventType | null
+  voyage: number | null
 }
 
 const initialState: VesselState = {
   fitBoundsOnLoad: true,
   printMode: false,
   data: {},
+  eventId: null,
+  eventType: null,
+  voyage: null,
 }
 
 type VesselSliceState = { vessel: VesselState }
@@ -156,11 +163,11 @@ export const fetchVesselInfoThunk = createAsyncThunk(
               cache: 'reload',
             })
 
-        const dataviewId = getVesselDataviewInstance(
-          { id: vesselId },
-          {},
-          vesselTemplateDataviews
-        )?.id
+        const dataviewId = getVesselDataviewInstance({
+          vessel: { id: vesselId },
+          datasets: {},
+          vesselTemplateDataviews,
+        })?.id
         if (!dataviewId) {
           return rejectWithValue({ message: 'Error getting dataview id' })
         }
@@ -218,6 +225,15 @@ const vesselSlice = createSlice({
     setVesselFitBoundsOnLoad: (state, action: PayloadAction<boolean>) => {
       state.fitBoundsOnLoad = action.payload
     },
+    setVesselEventId: (state, action: PayloadAction<string | null>) => {
+      state.eventId = action.payload
+    },
+    setVesselVoyage: (state, action: PayloadAction<number | null>) => {
+      state.voyage = action.payload
+    },
+    setVesselEventType: (state, action: PayloadAction<EventType | null>) => {
+      state.eventType = action.payload
+    },
     setVesselEvents: (state, action: PayloadAction<{ vesselId: string; events: ApiEvent[] }>) => {
       const { vesselId, events } = action.payload || {}
       if (!state.data[vesselId]) {
@@ -270,9 +286,19 @@ const vesselSlice = createSlice({
   },
 })
 
-export const { setVesselFitBoundsOnLoad, setVesselPrintMode, resetVesselState, setVesselEvents } =
-  vesselSlice.actions
+export const {
+  setVesselFitBoundsOnLoad,
+  setVesselPrintMode,
+  resetVesselState,
+  setVesselEvents,
+  setVesselEventId,
+  setVesselEventType,
+  setVesselVoyage,
+} = vesselSlice.actions
 
 export const selectVesselSlice = (state: RootState) => state.vessel
+export const selectVesselEventId = (state: RootState) => state.vessel.eventId
+export const selectVesselEventType = (state: RootState) => state.vessel.eventType
+export const selectVesselVoyage = (state: RootState) => state.vessel.voyage
 
 export default vesselSlice.reducer

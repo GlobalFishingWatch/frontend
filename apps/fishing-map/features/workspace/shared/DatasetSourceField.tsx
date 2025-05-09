@@ -13,9 +13,10 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 type DatasetFilterSourceProps = {
   dataview: UrlDataviewInstance
   hideColor?: boolean
+  className?: string
 }
 
-function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) {
+function DatasetFilterSource({ dataview, hideColor, className = '' }: DatasetFilterSourceProps) {
   const { t } = useTranslation()
   const sourcesSelected: TagItem[] = getSourcesSelectedInDataview(dataview)
   const nonVmsSources = sourcesSelected.filter((source) => !source.label.includes('VMS'))
@@ -38,7 +39,7 @@ function DatasetFilterSource({ dataview, hideColor }: DatasetFilterSourceProps) 
   }
 
   return (
-    <div className={styles.filter} data-test="source-tags">
+    <div className={cx(styles.filter, className)} data-test="source-tags">
       <label>{t('layer.source', 'Sources')}</label>
       {/* Rendering both so the unmerged one is visible in printing */}
       <TagList

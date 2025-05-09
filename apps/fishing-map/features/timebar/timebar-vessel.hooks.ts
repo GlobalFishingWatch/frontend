@@ -16,7 +16,7 @@ import type {
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
-  selectAllActiveTrackDataviews,
+  selectTimebarTrackDataviews,
   selectVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { t } from 'features/i18n/i18n'
@@ -47,7 +47,7 @@ export const useVesselTracksLayers = () => {
 }
 
 export const useTimebarTracksLayers = () => {
-  const dataviews = useSelector(selectAllActiveTrackDataviews)
+  const dataviews = useSelector(selectTimebarTrackDataviews)
   const ids = useMemo(() => {
     return dataviews.map((d) => d.id)
   }, [dataviews])

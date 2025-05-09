@@ -86,6 +86,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     this.state = {
       error: '',
       scales: [],
+      viewportLoaded: false,
       tilesCache: getTileDataCache({
         zoom: Math.round(this.context.viewport.zoom),
         startTime: this.props.startTime,
@@ -101,7 +102,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   get isLoaded(): boolean {
-    return super.isLoaded && !this.state.rampDirty
+    return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
   }
 
   getError(): string {
@@ -289,9 +290,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       if (avgChange > DYNAMIC_RAMP_CHANGE_THRESHOLD) {
         const colorRanges = this._getColorRanges()
         const scales = this._getColorScales(newColorDomain, colorRanges)
-        this.setState({ colorDomain: newColorDomain, colorRanges, scales, rampDirty: false })
+        this.setState({
+          colorDomain: newColorDomain,
+          colorRanges,
+          scales,
+          rampDirty: false,
+          viewportLoaded: true,
+        })
       } else {
-        this.setState({ rampDirty: false })
+        this.setState({ rampDirty: false, viewportLoaded: true })
       }
     })
   }, 500)
@@ -642,13 +649,21 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const isCompareStartOutRange = compareStart ? compareStart <= tilesCache.compareStart! : false
     const isCompareEndOutRange = compareEnd ? compareEnd <= tilesCache.compareEnd! : false
     const isEndOutRange = endTime > tilesCache.end
+    const isDifferentZoom = zoom !== tilesCache.zoom
     const needsCacheKeyUpdate =
       isStartOutRange ||
       isCompareStartOutRange ||
       isEndOutRange ||
       isCompareEndOutRange ||
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
-      zoom !== tilesCache.zoom
+      isDifferentZoom
+    if (isDifferentZoom) {
+      requestAnimationFrame(() => {
+        this.setState({
+          viewportLoaded: false,
+        })
+      })
+    }
     if (needsCacheKeyUpdate) {
       requestAnimationFrame(() => {
         this.setState({

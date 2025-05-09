@@ -100,7 +100,10 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const onAddNewClick = useAddDataset()
   const layerActive = dataview?.config?.visible ?? true
   const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
+    (d) =>
+      d.type === DatasetTypes.Context ||
+      d.type === DatasetTypes.UserContext ||
+      d.type === DatasetTypes.PMTiles
   )
 
   const layerLoaded = contextLayer?.loaded
@@ -322,56 +325,55 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           validate="start"
         />
       )}
-      {layerActive && (DATAVIEWS_WARNING.includes(dataview?.id) || hasSchemaFilterSelection) && (
-        <div
-          className={cx(styles.properties, styles.dataWarning, styles.drag, {
-            [styles.dragging]: isSorting && activeIndex > -1,
-          })}
-        >
-          {DATAVIEWS_WARNING.includes(dataview?.id) && (
-            <Fragment>
-              <div>
+      {layerActive &&
+        (DATAVIEWS_WARNING.includes(dataview?.id as any) || hasSchemaFilterSelection) && (
+          <div
+            className={cx(styles.properties, styles.dataWarning, styles.drag, {
+              [styles.dragging]: isSorting && activeIndex > -1,
+            })}
+          >
+            {DATAVIEWS_WARNING.includes(dataview?.id as any) && (
+              <Fragment>
                 {t(
                   `dataview.${dataview?.id}.dataWarning` as any,
                   'This platform uses a reference layer from an external source.'
                 )}
-              </div>
-              <div className={cx('print-hidden', styles.dataWarningLinks)}>
-                <button onClick={onAddNewClick}>
-                  {t('dataset.uploadYourOwn', 'Upload your own')}
-                </button>{' '}
-                |{' '}
-                <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
-                  {t('common.learnMore', 'Learn more')}
-                </button>
-                <Modal
-                  appSelector={ROOT_DOM_ELEMENT}
-                  title={title}
-                  isOpen={modalDataWarningOpen}
-                  onClose={onDataWarningModalClose}
-                  contentClassName={styles.modalContent}
-                >
-                  {parse(
-                    t(
-                      `dataview.${dataview?.id}.dataWarningDetail` as any,
-                      'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
-                    )
-                  )}
-                </Modal>
-              </div>
-            </Fragment>
-          )}
-          {hasSchemaFilterSelection && (
-            <div className={styles.filters}>
+                <div className={cx('print-hidden', styles.dataWarningLinks)}>
+                  <button onClick={onAddNewClick}>
+                    {t('dataset.uploadYourOwn', 'Upload your own')}
+                  </button>{' '}
+                  |{' '}
+                  <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
+                    {t('common.learnMore', 'Learn more')}
+                  </button>
+                  <Modal
+                    appSelector={ROOT_DOM_ELEMENT}
+                    title={title}
+                    isOpen={modalDataWarningOpen}
+                    onClose={onDataWarningModalClose}
+                    contentClassName={styles.modalContent}
+                  >
+                    {parse(
+                      t(
+                        `dataview.${dataview?.id}.dataWarningDetail` as any,
+                        'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
+                      )
+                    )}
+                  </Modal>
+                </div>
+              </Fragment>
+            )}
+            {hasSchemaFilterSelection && (
               <div className={styles.filters}>
-                {filtersAllowed.map(({ id, label }) => (
-                  <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
-                ))}
+                <div className={styles.filters}>
+                  {filtersAllowed.map(({ id, label }) => (
+                    <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
       {debugOptions.areasOnScreen && layerActive && isContextAreaDataview && (
         <div
           className={cx(styles.closestAreas, styles.properties, 'print-hidden')}

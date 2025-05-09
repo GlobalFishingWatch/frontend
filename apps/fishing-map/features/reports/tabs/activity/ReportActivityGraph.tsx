@@ -101,9 +101,8 @@ export default function ReportActivity() {
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
-          {hasError
-            ? t('errors.layerLoading', 'There was an error loading the layer')
-            : t('analysis.noDataByArea', 'No data available for the selected area')}
+          {hasError && t('errors.layerLoading', 'There was an error loading the layer')}
+          {/* : t('analysis.noDataByArea', 'No data available for the selected area')} */}
         </ReportActivityPlaceholder>
       ) : (
         <GraphComponent

@@ -5,6 +5,7 @@ import type {
   ResourceStatus,
   Vessel,
 } from '@globalfishingwatch/api-types'
+import type { IconType } from '@globalfishingwatch/ui-components'
 
 export type TrackChunkProps = {
   id?: string
@@ -58,6 +59,7 @@ export type HighlighterCallbackFnArgs = {
 
 export type HighlighterCallbackFn = (args: HighlighterCallbackFnArgs) => string
 export type HighlighterCallback = string | HighlighterCallbackFn
+export type HighlighterIconCallback = IconType | ((args: HighlighterCallbackFnArgs) => IconType)
 
 export type HighlighterDateCallback = (timestamp: number) => string
 
@@ -69,7 +71,7 @@ export type TimebarChartItem<T = void> = {
   y?: number
   defaultLabel?: string
   getHighlighterLabel?: HighlighterCallback
-  getHighlighterIcon?: HighlighterCallback
+  getHighlighterIcon?: HighlighterIconCallback
   props?: any
   filters?: {
     minSpeedFilter?: number
