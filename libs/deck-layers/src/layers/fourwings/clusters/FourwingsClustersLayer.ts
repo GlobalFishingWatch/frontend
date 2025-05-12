@@ -181,10 +181,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
         const bounds = points.reduce(
           (acc, point) => {
             return [
-              Math.min(acc[0], point.geometry?.coordinates[0]),
-              Math.min(acc[1], point.geometry?.coordinates[1]),
-              Math.max(acc[2], point.geometry?.coordinates[0]),
-              Math.max(acc[3], point.geometry?.coordinates[1]),
+              Math.min(acc[0], point.properties.cellBounds?.[0]),
+              Math.min(acc[1], point.properties.cellBounds?.[1]),
+              Math.max(acc[2], point.properties.cellBounds?.[2]),
+              Math.max(acc[3], point.properties.cellBounds?.[3]),
             ] as Bbox
           },
           [Infinity, Infinity, -Infinity, -Infinity] as Bbox
@@ -392,6 +392,13 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return isHighlighted ? COLOR_HIGHLIGHT_LINE : DEFAULT_LINE_COLOR
   }
 
+  _getColor = (d: FourwingsClusterFeature) => {
+    const isHighlighted = this.props.highlightedFeatures?.some(
+      (feature) => feature.id === this.getClusterId(d)
+    )
+    return isHighlighted ? COLOR_HIGHLIGHT_LINE : hexToDeckColor(this.props.color)
+  }
+
   _getClusterLabel = (d: FourwingsClusterFeature) => {
     if (d.properties.value > 1000000) {
       return `>${Math.floor(d.properties.value / 1000000)}M`
@@ -428,9 +435,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
         iconAtlas: `${PATH_BASENAME}/events-color-sprite.png`,
         iconMapping: ICON_MAPPING,
         getIcon: () => eventType,
-        getColor: hexToDeckColor(color),
+        getColor: this._getColor,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         pickable: true,
+        updateTriggers: {
+          getColor: [highlightedFeatures],
+        },
       }),
       new ScatterplotLayer({
         id: `${this.props.id}-${CLUSTER_LAYER_ID}`,

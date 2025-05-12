@@ -169,7 +169,6 @@ export const useClickedEventConnect = () => {
           const { expansionZoom, expansionBounds } = clusterFeature
           if (expansionBounds?.length) {
             fitMapBounds(expansionBounds, {
-              padding: 120,
               fitZoom: true,
               flyTo: true,
             })
