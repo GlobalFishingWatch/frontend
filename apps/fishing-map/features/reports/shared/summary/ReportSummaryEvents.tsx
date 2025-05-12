@@ -92,6 +92,7 @@ export default function ReportSummaryEvents() {
     eventType,
     eventsStatsDataGrouped,
     isPortReportLocation,
+    reportAreaId,
     reportVesselsFlags?.size,
     t,
     timerange?.end,
