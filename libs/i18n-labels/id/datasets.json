@@ -1164,7 +1164,14 @@
     "name": "Encounter Events. (AIS)",
     "description": "<h2>Overview</h2> <ul> <li> <h3>Encounter events describe when AIS data shows two vessels that appear to be meeting at sea. Encounter events can be indicative of potential transshipment events.</h3> </li> <li> <h3>Global Fishing Watch records an event as an encounter when two vessels are detected within 500 meters of each other for at least 2 hours, travelling at a median speed of less than 2 knots, whilst at least 10 kilometers (5.4 nautical miles) from a coastal anchorage.</h3> </li> <li> <h3>Filter for encounter events between different vessel types.</h3> </li> <li> <h3>View details on the encounter, such as location of the event and details of the encountered vessel, by clicking on the 'i' icon associated with the encounter.</h3> </li> </ul> <h2>Caveats</h2> <ul> <li> <h3>There may be many other reasons (i.e. not transshipment activity) why two vessels encounter each other at sea. Vessels may have encounters to exchange equipment or for crew safety.</h3> </li> <li> <h3>Given the different reasons that vessels may meet at sea, these events are intended to support further review of activity and should not be used in isolation.</h3> </li> <li> <h3>Sometimes transshipment events fall below the criteria used to define an encounter event, and therefore may not appear in our data. It is important to corroborate encounter events with other sources of information, such as RFMO transshipment records.</h3> </li> <li> <h3>If transmission data is poor, the average location can be inconsistent with the vessel track and the event may appear slightly alongside the track.</h3> </li> </ul> <h2>Learn more</h2> <p>You can read more about transshipment behaviour from our <a href='http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf'>report</a> or <a href='https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full'>scientific publication</a>.</p>",
     "schema": {
-      "duration": "duration",
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
       "encounter_type": {
         "keyword": "encounter_type",
         "enum": {
@@ -1226,6 +1233,14 @@
     "name": "Loitering Events (AIS)",
     "description": "<h2>Overview</h2> <ul> <li> <h3> Loitering events are recorded when one vessel shows signs of potential encounters, or meeting another vessel at sea, but there is no second vessel detected. </h3> </li> <li> <h3>Loitering events are based on speed and distance from shore.</h3> </li> <li> <h3> A loitering event is recorded when a vessel travels at an average speed of less than 2 knots over 20 nautical miles (37.04 kilometers) from shore. </h3> </li> <li> <h3> There may be many reasons a loitering event is recorded, so results should be interpreted with caution. </h3> </li> </ul> <h2>Caveats</h2> <ul> <li> <h3>There may be many reasons a vessel slows down away from shore.</h3> </li> <li> <h3> Loitering events are indicative, and the vessel may not be meeting any other vessels at the time of the event. </h3> </li> <li> <h3> Other events in which a vessel may remain fairly stationary or moving slowly include maintenance, poor weather or waiting for owner instruction. </h3> </li> <li> <h3> Loitering events for fishing vessels may be associated with normal fishing behavior, as fishing vessels often move slowly during fishing operations. </h3> </li> <li> <h3> Due to the individual definitions of loitering events and encounter events, it is possible for a loitering event to overlap with an encounter event, representing the same activity, or the loitering event may encompass one or more encounter events. </h3> </li> <li> <h3> If transmission data is poor, the average location can be inconsistent with the vessel track and the event may appear slightly alongside the track. </h3> </li> </ul>",
     "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
       "type": {
         "keyword": "type",
         "enum": {
@@ -1269,6 +1284,13 @@
     "name": "Port Visits Events (AIS)",
     "description": "<h2>Overview</h2> <ul> <li> <p> Movements in and out of a port are automatically detected by Global Fishing Watch and categorized according to four distinct types of events: port entry, port stop, port gap (i.e. a gap in AIS transmission while in port) and port exit. </p> </li> <li><p>These port-related events are combined into port visit events.</p></li> <li> <p>Port visits are shown when AIS transmissions indicate a vessel is:</p> <ul> <li> <p>Within 3 kilometers from an anchorage point at the port entry;</p> </li> <li><p>Within 4 kilometers from a port exit; and,</p></li> <li> <p> Has a \"port gap\" with no AIS transmission of 4 hours or more, to account for vessels turning off their AIS when at port; or, </p> </li> <li> <p> A \"port stop\" which is measured as beginning with a speed of less than 0.2 knots that increases to a speed of over 0.5 knots. </p> </li> </ul> </li> <li> <p> Port stops are included to differentiate between port visits and coastal transits. </p> </li> </ul> <h2>Caveats</h2> <ul> <li> <p> Only 'high confidence' port visits are shown on the Global Fishing Watch map. This is determined when a vessel is identified with AIS that has a port entry, stop or gap, and exit from the port. </p> </li> <li> <p> Global Fishing Watch has currently excluded lower confidence port visits that can be caused by \"noisy\" or incomplete AIS transmission and suggest port visits when they didn't occur. </p> </li> <li> <p> Global Fishing Watch anchorages dataset may not include all true anchorages, and therefore some port visits may be missing from events. </p> </li> </ul> <h2>Learn more</h2> <p> <a href='https://globalfishingwatch.org/datasets-and-code-anchorages/' >Learn more about anchorages, ports and voyages.</a > </p>",
     "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
       "type": {
         "keyword": "type",
         "enum": {
@@ -1281,14 +1303,6 @@
           "PASSENGER": "PASSENGER",
           "SEISMIC_VESSEL": "SEISMIC_VESSEL",
           "SUPPORT": "SUPPORT"
-        }
-      },
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
         }
       }
     }
