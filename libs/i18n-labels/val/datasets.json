@@ -1162,7 +1162,7 @@
   },
   "public-global-encounters-events": {
     "name": "crwdns66233:0crwdne66233:0",
-    "description": "crwdns84592:0crwdne84592:0",
+    "description": "crwdns84600:0crwdne84600:0",
     "schema": {
       "duration": "crwdns83434:0crwdne83434:0",
       "encounter_type": {
@@ -1224,7 +1224,7 @@
   },
   "public-global-loitering-events": {
     "name": "crwdns66397:0crwdne66397:0",
-    "description": "crwdns84596:0crwdne84596:0",
+    "description": "crwdns84602:0crwdne84602:0",
     "schema": {
       "type": {
         "keyword": "crwdns84452:0crwdne84452:0",
@@ -1267,7 +1267,7 @@
   },
   "public-global-port-visits-events": {
     "name": "crwdns83804:0crwdne83804:0",
-    "description": "crwdns84598:0crwdne84598:0",
+    "description": "crwdns84604:0crwdne84604:0",
     "schema": {
       "type": {
         "keyword": "crwdns84472:0crwdne84472:0",
