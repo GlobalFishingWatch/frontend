@@ -3,7 +3,12 @@ import Pbf from 'pbf'
 
 import { CONFIG_BY_INTERVAL } from '../helpers'
 import type { BBox } from '../helpers/cells'
-import { generateUniqueId, getCellPointCoordinates, getCellProperties } from '../helpers/cells'
+import {
+  generateUniqueId,
+  getCellBounds,
+  getCellPointCoordinates,
+  getCellProperties,
+} from '../helpers/cells'
 
 import { CELL_END_INDEX, CELL_START_INDEX, NO_DATA_VALUE } from './parse-fourwings'
 import type {
@@ -63,6 +68,12 @@ export const getPointsTemporalAggregated = (
           // TODO:deck remove the round as won't be needed with real data
           value: Math.round(offset + value * scale),
           id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
+          cellBounds: getCellBounds({
+            cellIndex: cellNum,
+            cols,
+            rows,
+            tileBBox,
+          }),
           tile: tile?.index,
           col,
           row,
@@ -137,6 +148,12 @@ export const getPoints = (
               value: Math.round(offset + pointValue * scale),
               id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum + j),
               tile: tile?.index,
+              cellBounds: getCellBounds({
+                cellIndex: cellNum,
+                cols,
+                rows,
+                tileBBox,
+              }),
               htime,
               col,
               row,
