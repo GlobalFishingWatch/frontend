@@ -172,10 +172,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
     let expansionZoom: number | undefined
     let expansionBounds: Bbox | undefined
     if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
-      expansionZoom = this.state.clusterIndex.getClusterExpansionZoom(
-        info.object?.properties.cluster_id
+      expansionZoom = Math.min(
+        this.state.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id),
+        this.props.maxZoom
       )
-      const points = this.state.clusterIndex.getLeaves(info.object?.properties.cluster_id)
+      const points = this.state.clusterIndex.getLeaves(info.object?.properties.cluster_id, Infinity)
       if (points.length) {
         const bounds = points.reduce(
           (acc, point) => {
