@@ -47,10 +47,14 @@ export function useGetEventReportGraphLabel() {
             : t('common.unknownProperty', 'Unknown')
         case REPORT_EVENTS_GRAPH_GROUP_BY_RFMO:
         case REPORT_EVENTS_GRAPH_GROUP_BY_FAO:
-        case REPORT_EVENTS_GRAPH_GROUP_BY_EEZ:
           return eventsGraphDatasetAreas?.find(
             (f) => f.id?.toString().toUpperCase() === areaId?.toUpperCase()
           )?.label
+        case REPORT_EVENTS_GRAPH_GROUP_BY_EEZ:
+          return eventsGraphDatasetAreas
+            ?.find((f) => f.id?.toString().toUpperCase() === areaId?.toUpperCase())
+            ?.label.replace('Exclusive Economic Zone', 'EEZ')
+            .trim()
         default:
           return areaId
       }
