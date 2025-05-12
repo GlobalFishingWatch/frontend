@@ -84,7 +84,7 @@ export function parseEventsFilters(filters: BaseReportEventsVesselsParamsFilters
     return {}
   }
   return {
-    ...(filters.confidence && { confidences: [filters.confidence] }),
+    ...(filters.confidence && { confidences: filters.confidence }),
     ...(filters.encounter_type && { 'encounter-types': filters.encounter_type }),
     ...(filters.flag && { flags: filters.flag }),
     ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
