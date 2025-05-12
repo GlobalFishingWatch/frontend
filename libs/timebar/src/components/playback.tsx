@@ -88,7 +88,7 @@ class Playback extends Component<PlaybackProps> {
       absoluteStart,
       intervals,
       byIntervals,
-      speedStep,
+      speedStep: SPEED_STEPS[speedStep],
       getCurrentInterval,
       deltaMultiplicator,
     })
