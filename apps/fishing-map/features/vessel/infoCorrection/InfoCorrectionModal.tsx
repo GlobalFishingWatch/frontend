@@ -76,16 +76,7 @@ const VALID_REGISTRY_FIELDS = [
   'other',
 ]
 
-const VALID_AIS_FIELDS = [
-  'shipname',
-  'flag',
-  'ssvid',
-  'imo',
-  'callsign',
-  'geartypes',
-  'shiptypes',
-  'other',
-]
+const VALID_AIS_FIELDS = ['geartypes', 'shiptypes']
 
 function formatTransmissionDate(vesselIdentity: VesselLastIdentity, format: boolean = false) {
   if (!vesselIdentity) return ''
@@ -206,7 +197,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
         }))
       : identitySource === VesselIdentitySourceEnum.SelfReported
         ? VALID_AIS_FIELDS.map((key) => ({
-            label: t(`vessel.${key}` as any, key),
+            label: t(`vessel.ais-${key}` as any, key),
             id: key,
           }))
         : []

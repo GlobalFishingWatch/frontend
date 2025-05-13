@@ -926,6 +926,7 @@
     "gearType": "Gear Type",
     "gearType_short": "gear",
     "geartypes": "Gear types",
+    "ais-geartypes": "GFW Gear Types",
     "gearTypes": {
       "bunker": "Bunker or tanker",
       "bunker_or_tanker": "Bunker",
@@ -1108,6 +1109,7 @@
     "shipname": "Name",
     "shiptype": "Vessel type",
     "shiptypes": "Ship types",
+    "ais-shiptypes": "GFW Vessel Types",
     "showOtherLayers": "Show other layers",
     "sortAsc": "Sort vessels alphabetically (ascending)",
     "sortDesc": "Sort vessels alphabetically (descending)",
