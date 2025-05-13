@@ -144,7 +144,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 70,
-        maxZoom: this.props.maxZoom - 1,
+        maxZoom: 24,
         reduce: (accumulated, props) => {
           return (accumulated.value += props.value)
         },
@@ -172,12 +172,15 @@ export class FourwingsClustersLayer extends CompositeLayer<
     let expansionZoom: number | undefined
     let expansionBounds: Bbox | undefined
     if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
-      expansionZoom = Math.min(
-        this.state.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id),
-        this.props.maxZoom
-      )
       const points = this.state.clusterIndex.getLeaves(info.object?.properties.cluster_id, Infinity)
-      if (points.length) {
+      const areAllPointsInSameCell =
+        points?.length > 0 &&
+        points.every((p) => p.properties.cellNum === points[0].properties.cellNum)
+      if (!areAllPointsInSameCell) {
+        expansionZoom = Math.min(
+          this.state.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id),
+          this.props.maxZoom
+        )
         const bounds = points.reduce(
           (acc, point) => {
             return [
