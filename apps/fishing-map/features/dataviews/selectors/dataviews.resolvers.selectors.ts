@@ -6,7 +6,7 @@ import type {
   IdentityVessel,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type {
   GetDatasetConfigsCallbacks,
@@ -31,6 +31,8 @@ import {
   dataviewHasVesselGroupId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
+  getVesselEncounterTrackDataviewInstance,
+  hasVesselProfileInstance,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
@@ -144,7 +146,7 @@ export const selectDataviewInstancesInjected = createSelector(
       : undefined
     const eventEndDateTime = hasCurrentEvent ? getUTCDateTime(currentVesselEvent.end) : undefined
     if (isAnyVesselLocation) {
-      const existingDataviewInstance = dataviewInstancesInjected?.find(
+      const existingDataviewInstance = workspaceDataviewInstancesMerged?.find(
         ({ id }) => vesselId && id.includes(vesselId)
       )
       if (!existingDataviewInstance && vesselInfoData?.identities) {
@@ -170,6 +172,26 @@ export const selectDataviewInstancesInjected = createSelector(
             vesselDatasets
           )
           dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
+        }
+      }
+
+      if (hasCurrentEvent && currentVesselEvent.type === EventTypes.Encounter) {
+        const encounterVesselId = currentVesselEvent.encounter?.vessel.id
+        const isEncounterInstanceInWorkspace = hasVesselProfileInstance({
+          dataviews: workspaceDataviewInstancesMerged!,
+          vesselId: encounterVesselId!,
+          origin: 'vesselProfile',
+        })
+        if (encounterVesselId && vesselInfoData?.track && !isEncounterInstanceInWorkspace) {
+          const encounterTrackDataviewInstance = getVesselEncounterTrackDataviewInstance({
+            vesselId: encounterVesselId,
+            track: vesselInfoData.track,
+            start: eventStartDateTime!.minus({ month: 1 }).toMillis(),
+            end: eventEndDateTime!.plus({ month: 1 }).toMillis(),
+            highlightEventStartTime: eventStartDateTime!.toMillis(),
+            highlightEventEndTime: eventEndDateTime!.toMillis(),
+          })
+          dataviewInstancesInjected.push(encounterTrackDataviewInstance)
         }
       }
 
@@ -310,6 +332,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return EMPTY_ARRAY
     }
+
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
         dataviewInstance &&
@@ -358,6 +381,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       dataviewInstancesResolved,
       callbacks
     )
+
     return dataviewInstancesResolvedExtended
   }
 )
@@ -381,7 +405,6 @@ export const selectDataviewInstancesResolved = createDeepEqualSelector(
       return defaultDataviewResolved
     }
     const hasCurrentEvent = isAnyVesselLocation && currentVesselEvent
-
     const dataviews = dataviewsResources.dataviews.map((dataview) => {
       if (dataview.category !== DataviewCategory.Vessels) {
         return dataview

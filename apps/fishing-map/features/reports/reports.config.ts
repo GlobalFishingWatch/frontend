@@ -72,8 +72,6 @@ export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   portsReportName: undefined,
   portsReportCountry: undefined,
   portsReportDatasetId: undefined,
-  // Vessel Group
-  viewOnlyVesselGroup: false,
   // Vessels
   reportVesselFilter: undefined,
   reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,

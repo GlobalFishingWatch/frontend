@@ -4,7 +4,12 @@ import { useSelector } from 'react-redux'
 import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { APIPagination, Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
+import type {
+  APIPagination,
+  Dataset,
+  DataviewInstanceOrigin,
+  IdentityVessel,
+} from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -16,9 +21,9 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
+  getVesselDataview,
   getVesselDataviewInstance,
   getVesselInfoDataviewInstanceDatasetConfig,
-  getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
@@ -37,8 +42,21 @@ export type VesselToResolve = {
 }
 export type VesselToSearch = { id: string; name?: string; flag?: string; datasets?: string[] }
 export type VesselPinClickProps = {
-  vesselInWorkspace?: UrlDataviewInstance | null | undefined
+  dataviewInstance?: UrlDataviewInstance | null | undefined
   vesselId?: string
+}
+
+export type VesselPinOnClickCb = ({ vesselId, dataviewInstance }: VesselPinClickProps) => void
+
+type VesselPinProps = {
+  vessel?: IdentityVessel | ExtendedFeatureVessel
+  vesselToResolve?: VesselToResolve
+  vesselToSearch?: VesselToSearch
+  className?: string
+  disabled?: boolean
+  size?: IconButtonSize
+  origin?: DataviewInstanceOrigin
+  onClick?: VesselPinOnClickCb
 }
 // Supports both options:
 // 1. When identity vessel already available: <VesselPin vessel={vessel} />
@@ -51,16 +69,9 @@ function VesselPin({
   disabled,
   className = '',
   size = 'small',
+  origin,
   onClick,
-}: {
-  vessel?: IdentityVessel | ExtendedFeatureVessel
-  vesselToResolve?: VesselToResolve
-  vesselToSearch?: VesselToSearch
-  className?: string
-  disabled?: boolean
-  size?: IconButtonSize
-  onClick?: ({ vesselInWorkspace, vesselId }: VesselPinClickProps) => void
-}) {
+}: VesselPinProps) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -73,17 +84,28 @@ function VesselPin({
       ? vessel?.dataset
       : vessel?.dataset?.id || vesselToResolve?.datasetId || ''
   const infoDataset = useSelector(selectDatasetById(infoDatasetId))
-  const vesselInWorkspace = getVesselInWorkspace(
-    vesselsInWorkspace,
-    vessel ? getVesselId(vessel) : vesselToResolve?.id || vesselToSearch?.id || ''
-  )
+  const vesselInstanceId = vessel
+    ? getVesselId(vessel)
+    : vesselToResolve?.id || vesselToSearch?.id || ''
+  const vesselInWorkspaceSameOriginDataview = getVesselDataview({
+    dataviews: vesselsInWorkspace,
+    vesselId: vesselInstanceId,
+    origin,
+  })
 
   const onPinClick = async () => {
+    let dataviewInstance = vesselInWorkspaceSameOriginDataview
     let vesselWithIdentity = vessel ? ({ ...vessel } as IdentityVessel) : undefined
     let infoDatasetIdResolved = infoDatasetId
     let infoDatasetResolved = infoDataset ? ({ ...infoDataset } as Dataset) : undefined
-    if (vesselInWorkspace) {
-      deleteDataviewInstance(vesselInWorkspace.id)
+    const vesselInWorkspaceDataview = getVesselDataview({
+      dataviews: vesselsInWorkspace,
+      vesselId: vesselInstanceId,
+    })
+    if (vesselInWorkspaceSameOriginDataview) {
+      deleteDataviewInstance(vesselInWorkspaceSameOriginDataview.id)
+    } else if (vesselInWorkspaceDataview) {
+      upsertDataviewInstance({ id: vesselInWorkspaceDataview.id, origin })
     } else {
       if (!vesselWithIdentity && vesselToSearch) {
         setLoading(true)
@@ -141,11 +163,13 @@ function VesselPin({
             ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
             relatedVesselIds: getRelatedIdentityVesselIds(vesselWithIdentity),
           },
+          origin,
           vesselTemplateDataviews,
         })
 
         if (vesselDataviewInstance) {
           upsertDataviewInstance(vesselDataviewInstance)
+          dataviewInstance = vesselDataviewInstance
           populateVesselInfoResource(
             vesselWithIdentity,
             vesselDataviewInstance,
@@ -164,20 +188,25 @@ function VesselPin({
     }
     setLoading(false)
     dispatch(setWorkspaceSuggestSave(true))
-    onClick?.({ vesselInWorkspace, vesselId: getVesselId(vessel as IdentityVessel) })
+    onClick?.({
+      vesselId: getVesselId(vessel as IdentityVessel),
+      dataviewInstance,
+    })
   }
 
   return (
     <IconButton
-      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
+      icon={vesselInWorkspaceSameOriginDataview ? 'pin-filled' : 'pin'}
       loading={loading}
       disabled={disabled}
       className={className}
       style={{
-        color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
+        color: vesselInWorkspaceSameOriginDataview
+          ? vesselInWorkspaceSameOriginDataview.config?.color
+          : '',
       }}
       tooltip={
-        vesselInWorkspace
+        vesselInWorkspaceSameOriginDataview
           ? t('search.vesselAlreadyInWorkspace', 'This vessel is already in your workspace')
           : t('vessel.addToWorkspace', 'Add vessel to view')
       }

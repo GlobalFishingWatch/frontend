@@ -332,7 +332,7 @@ export const getOtherVesselNames = (vessel: VesselsParamsSupported, currentName?
     currentName !== undefined ? currentName : getSearchIdentityResolved(vessel)?.nShipname
   const uniqIdentitiesByNormalisedName = uniqBy(getVesselIdentities(vessel), (i) => i.nShipname)
   const otherIdentities = uniqIdentitiesByNormalisedName.filter(
-    (i) => i.nShipname !== currentNShipname
+    (i) => i.nShipname && i.nShipname !== currentNShipname
   )
 
   return otherIdentities?.length ? otherIdentities.map((i) => i.shipname) : ([] as string[])

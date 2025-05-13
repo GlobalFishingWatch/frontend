@@ -79,10 +79,7 @@ export default function ReportVesselsTable({
     })
   }
 
-  const onPinClick = ({ vesselInWorkspace, vesselId }: VesselPinClickProps) => {
-    if (!vesselInWorkspace) {
-      dispatchQueryParams({ viewOnlyVesselGroup: false })
-    }
+  const onPinClick = ({ vesselId }: VesselPinClickProps) => {
     trackEvent({
       category: TrackCategory.VesselGroupReport,
       action: `vessel_report_pin_vessel`,

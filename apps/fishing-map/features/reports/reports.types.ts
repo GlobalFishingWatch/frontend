@@ -67,11 +67,6 @@ export type PortsReportState = {
   portsReportDatasetId: string | undefined
 }
 
-// VESSEL GROUP REPORT
-export type VesselGroupReportState = {
-  viewOnlyVesselGroup: boolean
-}
-
 // REPORT VESSELS
 export type ReportVesselOrderProperty = 'shipname' | 'flag' | 'shiptype'
 export type ReportVesselOrderDirection = 'asc' | 'desc'
@@ -128,7 +123,6 @@ export type ReportState = ReportCategoryState &
   ReportActivityState &
   ReportEventsState &
   AreaReportState &
-  PortsReportState &
-  VesselGroupReportState
+  PortsReportState
 
 export type ReportStateProperty = keyof ReportState
