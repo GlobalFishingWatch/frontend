@@ -600,7 +600,8 @@
     "ssvid": "ssvid",
     "start": "Début",
     "totalDistanceKm": "distance totale (km)",
-    "type": "shiptype"
+    "type": "shiptype",
+    "trackDisclaimer": "Encountered vessel track shows one month before and after the event."
   },
   "eventsReport": {
     "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -1194,6 +1195,7 @@
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce groupe de navires lorsque vous partagez un espace de travail",
     "vesselAddedToGroup": "Votre groupe de navires a été mis à jour",
     "vesselGroup": "Groupe de navires",
+    "vesselGroupProfile": "Vessel group profile",
     "vesselGroups": "Groupes de navires"
   },
   "vesselGroupReport": {
