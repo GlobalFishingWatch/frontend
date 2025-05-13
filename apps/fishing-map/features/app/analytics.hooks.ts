@@ -51,14 +51,14 @@ export const useAnalytics = () => {
   })
 
   useEffect(() => {
-    if (initialized && locationType) {
+    if (initialized && locationType && (isGuestUser || (user && user.id))) {
       trackEvent({
-        // category: TrackCategory.General,
+        category: TrackCategory.General,
         action: 'general',
         other: {
           pagetype: locationType,
           language: i18n.language,
-          user_login_state: isGuestUser ? 'Not logged in' : 'Logged in',
+          user_login_state: isGuestUser ? 'logged out' : 'Logged in',
           ...(!isGuestUser && {
             user_id: user?.id,
             // customer_email: user?.email,
@@ -72,7 +72,7 @@ export const useAnalytics = () => {
       } as any)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialized, locationType])
+  }, [initialized, locationType, user, isGuestUser])
 
   useEffect(() => {
     if (initialized && user && !isGuestUser) {

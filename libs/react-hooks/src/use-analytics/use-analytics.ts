@@ -34,6 +34,13 @@ export const trackEvent = <T>({
    *
    * https://github.com/codler/react-ga4/issues/15
    */
+  console.log('trackEvent', {
+    category,
+    action,
+    label,
+    value,
+    other,
+  })
   ReactGA.event(snakeCase(action), {
     ...(category && { category: snakeCase((category as string) ?? '') }),
     ...(label && { label }),
