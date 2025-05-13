@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { VESSEL_GROUP_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -20,9 +21,18 @@ function VesselGroupReportLink({ children, vesselGroupId }: VesselGroupReportLin
   const workspace = useSelector(selectWorkspace)
   const query = useSelector(selectLocationQuery)
 
+  const analysisRedirect = () => {
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `access_vessel_group_profile`,
+      other: { vesselGroupId: vesselGroupId },
+    })
+  }
+
   if (!workspace || !vesselGroupId) {
     return children
   }
+
   return (
     <Link
       className={styles.link}
@@ -35,6 +45,7 @@ function VesselGroupReportLink({ children, vesselGroupId }: VesselGroupReportLin
         },
         query: { ...query, reportCategory: ReportCategory.VesselGroup },
       }}
+      onClick={analysisRedirect}
     >
       {children}
     </Link>
