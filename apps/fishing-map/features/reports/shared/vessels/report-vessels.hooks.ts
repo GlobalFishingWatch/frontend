@@ -16,9 +16,9 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
+  getVesselDataview,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
-  getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
@@ -143,7 +143,11 @@ export default function usePinReportVessels() {
   const unPinVessels = useCallback(
     (vessels: ReportTableVessel[]) => {
       const pinnedVesselsInstances = vessels.flatMap(
-        (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.id!) || []
+        (vessel) =>
+          getVesselDataview({
+            dataviews: allVesselsInWorkspace,
+            vesselId: vessel.id!,
+          }) || []
       )
       deleteDataviewInstance(pinnedVesselsInstances.map((v) => v.id))
       dispatch(setWorkspaceSuggestSave(true))

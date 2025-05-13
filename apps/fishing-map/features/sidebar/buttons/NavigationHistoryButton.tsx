@@ -17,7 +17,10 @@ import { resetReportData } from 'features/reports/tabs/activity/reports-activity
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { usePinVesselProfileToWorkspace } from 'features/sidebar/sidebar-header.hooks'
+import {
+  cleanVesselProfileDataviewInstances,
+  usePinVesselProfileToWorkspace,
+} from 'features/sidebar/sidebar-header.hooks'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
 import {
   selectFeatureFlags,
@@ -34,6 +37,7 @@ import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsRouteWithWorkspace,
+  selectIsVesselGroupReportLocation,
   selectIsWorkspaceVesselLocation,
 } from 'routes/routes.selectors'
 
@@ -54,6 +58,7 @@ function NavigationHistoryButton() {
   const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const hasVesselProfileInstancePinned = useSelector(selectHasVesselProfileInstancePinned)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const onPinVesselToWorkspaceAndNavigateClick = usePinVesselProfileToWorkspace()
   const { dispatchQueryParams } = useLocationConnect()
   const highlightArea = useHighlightReportArea()
@@ -66,9 +71,11 @@ function NavigationHistoryButton() {
       ? 'close_vessel_panel'
       : isAnyReportLocation
         ? 'close_report_panel'
-        : isRouteWithWorkspace
-          ? 'close_workspace'
-          : ''
+        : isVesselGroupReportLocation
+          ? 'close_vessel_group_report_panel'
+          : isRouteWithWorkspace
+            ? 'close_workspace'
+            : ''
 
     if (analyticsAction) {
       trackEvent({
@@ -76,7 +83,7 @@ function NavigationHistoryButton() {
         action: analyticsAction,
       })
     }
-  }, [isAnyVesselLocation, isAnyReportLocation, isRouteWithWorkspace])
+  }, [isAnyVesselLocation, isAnyReportLocation, isVesselGroupReportLocation, isRouteWithWorkspace])
 
   const onCloseClick = useCallback(() => {
     resetSidebarScroll()
@@ -112,14 +119,22 @@ function NavigationHistoryButton() {
         ? t('vessel.title', 'Vessel profile')
         : lastWorkspaceVisited.type === REPORT || lastWorkspaceVisited.type === WORKSPACE_REPORT
           ? t('analysis.title', 'Report')
-          : lastWorkspaceVisited.type === WORKSPACES_LIST
-            ? t('workspace.list', 'Workspaces list')
-            : t('workspace.title', 'Workspace')
+          : isVesselGroupReportLocation
+            ? t('vesselGroup.vesselGroupProfile', 'Vessel group profile')
+            : lastWorkspaceVisited.type === WORKSPACES_LIST
+              ? t('workspace.list', 'Workspaces list')
+              : t('workspace.title', 'Workspace')
 
     const tooltip = t('navigateBackTo', 'Go back to {{section}}', {
       section: previousLocation.toLocaleLowerCase(),
     })
 
+    const query = {
+      ...(lastWorkspaceVisited.type !== 'REPORT'
+        ? { ...cleanReportQuery(lastWorkspaceVisited.query), ...EMPTY_FILTERS }
+        : lastWorkspaceVisited.query),
+      featureFlags,
+    }
     const linkTo = {
       ...lastWorkspaceVisited,
       payload: {
@@ -128,10 +143,8 @@ function NavigationHistoryButton() {
           : lastWorkspaceVisited.payload),
       },
       query: {
-        ...(lastWorkspaceVisited.type !== 'REPORT'
-          ? { ...cleanReportQuery(lastWorkspaceVisited.query), ...EMPTY_FILTERS }
-          : lastWorkspaceVisited.query),
-        featureFlags,
+        ...query,
+        dataviewInstances: cleanVesselProfileDataviewInstances(query.dataviewInstances),
       },
       isHistoryNavigation: true,
     }

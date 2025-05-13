@@ -563,6 +563,7 @@ export function resolveDataviews(
         config,
         datasets: dataviewDatasets,
         vesselGroup,
+        origin: dataviewInstance.origin,
         datasetsConfig,
       }
       return resolvedDataview

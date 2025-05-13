@@ -21,7 +21,6 @@ import { selectViewOnlyVesselGroup } from 'features/reports/reports.config.selec
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
-import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
   selectIsAnyReportLocation,
@@ -69,7 +68,6 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectReportCategory,
     selectReportSubCategory,
     selectIsAnyVesselLocation,
-    selectViewOnlyVessel,
     selectVesselId,
     selectCurrentVesselEvent,
     selectIsPortReportLocation,
@@ -84,7 +82,6 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     reportCategory,
     reportSubCategory,
     isVesselLocation,
-    viewOnlyVessel,
     vesselId,
     currentVesselEvent,
     isPortReportLocation,
@@ -102,15 +99,22 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           d.slug === BASEMAP_DATAVIEW_SLUG
       )
     }
-    if (isVesselLocation && viewOnlyVessel && vesselId !== undefined) {
-      return visibleDataviews.filter(({ id, config }) => {
+    if (isVesselLocation && vesselId !== undefined) {
+      const filteredDataviews = visibleDataviews.filter(({ id, config, origin }) => {
         if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
           return true
         }
         const isSameVessel = id.includes(vesselId)
-        const isEncounterVesselTrack = id.includes(currentVesselEvent?.encounter?.vessel?.id || '')
-        return config?.type === DataviewType.Track && (isSameVessel || isEncounterVesselTrack)
+        const isVesselProfileOrigin = origin === 'vesselProfile'
+        const isEncounterVesselTrack =
+          id.includes(currentVesselEvent?.encounter?.vessel?.id || '') &&
+          id.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+        return (
+          config?.type === DataviewType.Track &&
+          (isSameVessel || isVesselProfileOrigin || isEncounterVesselTrack)
+        )
       })
+      return filteredDataviews
     }
     if (isAnyReportLocation) {
       let reportDataviews = visibleDataviews
@@ -225,11 +229,14 @@ export const selectVesselProfileColor = createSelector(
 )
 
 export const selectActiveTrackDataviews = createDeepEqualSelector(
-  [selectTrackDataviews, selectIsAnyVesselLocation, selectViewOnlyVessel, selectVesselId],
-  (dataviews, isVesselLocation, viewOnlyVessel, vesselId) => {
-    return dataviews?.filter(({ config, id }) => {
-      if (isVesselLocation && viewOnlyVessel) {
-        return id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` && config?.visible
+  [selectTrackDataviews, selectIsAnyVesselLocation, selectVesselId],
+  (dataviews, isAnyVesselLocation, vesselId) => {
+    return dataviews?.filter(({ config, id, origin }) => {
+      if (isAnyVesselLocation) {
+        return (
+          (id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` || origin === 'vesselProfile') &&
+          config?.visible
+        )
       }
       return config?.visible
     })

@@ -11,7 +11,10 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
 import { EMPTY_FILTERS } from 'features/search/search.config'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { usePinVesselProfileToWorkspace } from 'features/sidebar/sidebar-header.hooks'
+import {
+  cleanVesselProfileDataviewInstances,
+  usePinVesselProfileToWorkspace,
+} from 'features/sidebar/sidebar-header.hooks'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { resetVesselState } from 'features/vessel/vessel.slice'
 import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
@@ -44,23 +47,26 @@ function NavigationWorkspaceButton() {
     section: t('workspace.title', 'Workspace').toLocaleLowerCase(),
   })
 
-  const linkTo = useMemo(
-    () => ({
+  const linkTo = useMemo(() => {
+    const query = {
+      ...cleanReportQuery(locationQuery),
+      ...EMPTY_FILTERS,
+      ...DEFAULT_VESSEL_STATE,
+      featureFlags,
+    }
+    return {
       type: WORKSPACE as ROUTE_TYPES,
       payload: {
         workspaceId: workspaceId,
         category: locationCategory || DEFAULT_WORKSPACE_CATEGORY,
       },
       query: {
-        ...cleanReportQuery(locationQuery),
-        ...EMPTY_FILTERS,
-        ...DEFAULT_VESSEL_STATE,
-        featureFlags,
+        ...query,
+        dataviewInstances: cleanVesselProfileDataviewInstances(query.dataviewInstances),
       },
       isHistoryNavigation: true,
-    }),
-    [featureFlags, locationCategory, locationQuery, workspaceId]
-  )
+    }
+  }, [featureFlags, locationCategory, locationQuery, workspaceId])
 
   const resetState = useCallback(() => {
     resetSidebarScroll()
