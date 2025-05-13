@@ -6,7 +6,7 @@ import type {
   IdentityVessel,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type {
   GetDatasetConfigsCallbacks,
@@ -31,6 +31,7 @@ import {
   dataviewHasVesselGroupId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
+  getVesselEncounterTrackDataviewInstance,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
@@ -170,6 +171,24 @@ export const selectDataviewInstancesInjected = createSelector(
             vesselDatasets
           )
           dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
+        }
+      }
+
+      if (hasCurrentEvent && currentVesselEvent.type === EventTypes.Encounter) {
+        const encounterVesselId = currentVesselEvent.encounter?.vessel.id
+        const isEncounterInstanceInWorkspace = workspaceDataviewInstancesMerged?.some(
+          (dataview) => dataview.id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${encounterVesselId}`
+        )
+        if (encounterVesselId && vesselInfoData?.track && !isEncounterInstanceInWorkspace) {
+          const encounterTrackDataviewInstance = getVesselEncounterTrackDataviewInstance({
+            vesselId: encounterVesselId,
+            track: vesselInfoData.track,
+            start: eventStartDateTime!.minus({ month: 1 }).toMillis(),
+            end: eventEndDateTime!.plus({ month: 1 }).toMillis(),
+            highlightEventStartTime: eventStartDateTime!.toMillis(),
+            highlightEventEndTime: eventEndDateTime!.toMillis(),
+          })
+          dataviewInstancesInjected.push(encounterTrackDataviewInstance)
         }
       }
 
