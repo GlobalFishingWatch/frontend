@@ -37,11 +37,8 @@ export const useAnalytics = () => {
   const { i18n } = useTranslation()
   const user = useSelector(selectUserData)
   const locationType = useSelector(selectLocationType)
-  const isGuestUser = useSelector(selectIsGuestUser)
-
   const locationCategory = useSelector(selectCategoryFromRoute)
-
-  console.log(locationCategory)
+  const isGuestUser = useSelector(selectIsGuestUser)
 
   const { initialized, setConfig } = useAnalyticsInit({
     debugMode: GOOGLE_ANALYTICS_DEBUG_MODE,
