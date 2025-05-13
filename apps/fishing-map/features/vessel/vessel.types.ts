@@ -13,7 +13,6 @@ export type VesselProfileState = {
   vesselRelated: VesselRelatedSubsection
   vesselIdentitySource: VesselIdentitySourceEnum
   vesselActivityMode: VesselProfileActivityMode
-  viewOnlyVessel: boolean
   includeRelatedIdentities?: boolean
 }
 

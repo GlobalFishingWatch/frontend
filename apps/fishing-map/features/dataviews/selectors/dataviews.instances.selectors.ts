@@ -17,7 +17,6 @@ import {
   getReportVesselGroupVisibleDataviews,
   isVesselGroupActivityDataview,
 } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import { selectViewOnlyVesselGroup } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
@@ -73,7 +72,6 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportVesselGroupId,
-    selectViewOnlyVesselGroup,
   ],
   (
     hasDeprecatedDataviewInstances,
@@ -86,8 +84,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     currentVesselEvent,
     isPortReportLocation,
     isVesselGroupReportLocation,
-    reportVesselGroupId,
-    viewOnlyVesselGroup
+    reportVesselGroupId
   ) => {
     const visibleDataviews = dataviews.filter((dataview) => dataview.config?.visible)
     if (hasDeprecatedDataviewInstances) {
@@ -118,7 +115,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     }
     if (isAnyReportLocation) {
       let reportDataviews = visibleDataviews
-      if (isVesselGroupReportLocation && viewOnlyVesselGroup && reportVesselGroupId !== undefined) {
+      if (isVesselGroupReportLocation && reportVesselGroupId !== undefined) {
         reportDataviews = getReportVesselGroupVisibleDataviews({
           dataviews: visibleDataviews,
           reportVesselGroupId,
