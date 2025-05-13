@@ -2,16 +2,11 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { trackEvent as trackEventBase, useAnalyticsInit } from '@globalfishingwatch/react-hooks'
 
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
-import {
-  selectIsGuestUser,
-  selectIsUserLogged,
-  selectUserData,
-} from 'features/user/selectors/user.selectors'
-import { selectLocationType } from 'routes/routes.selectors'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { selectCategoryFromRoute, selectLocationType } from 'routes/routes.selectors'
 
 const GOOGLE_ANALYTICS_DEBUG_MODE =
   (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
@@ -44,6 +39,10 @@ export const useAnalytics = () => {
   const locationType = useSelector(selectLocationType)
   const isGuestUser = useSelector(selectIsGuestUser)
 
+  const locationCategory = useSelector(selectCategoryFromRoute)
+
+  console.log(locationCategory)
+
   const { initialized, setConfig } = useAnalyticsInit({
     debugMode: GOOGLE_ANALYTICS_DEBUG_MODE,
     googleMeasurementId: GOOGLE_MEASUREMENT_ID,
@@ -56,7 +55,10 @@ export const useAnalytics = () => {
         category: TrackCategory.General,
         action: 'general',
         other: {
-          pagetype: locationType,
+          pagetype:
+            locationType === 'WORKSPACES_LIST'
+              ? locationType + ' (' + locationCategory + ')'
+              : locationType,
           language: i18n.language,
           user_login_state: isGuestUser ? 'logged out' : 'Logged in',
           ...(!isGuestUser && {
@@ -72,7 +74,7 @@ export const useAnalytics = () => {
       } as any)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialized, locationType, user, isGuestUser])
+  }, [initialized, locationType, user, isGuestUser, locationCategory])
 
   useEffect(() => {
     if (initialized && user && !isGuestUser) {
