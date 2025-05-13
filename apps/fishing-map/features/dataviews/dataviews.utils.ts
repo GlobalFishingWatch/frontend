@@ -6,6 +6,7 @@ import type {
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
+  DataviewInstanceOrigin,
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
@@ -43,8 +44,50 @@ export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
 ]
+
 export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
   return dataview.config?.filters?.['vessel-groups']?.includes(vesselGroupId)
+}
+
+export const getVesselDataviewInstanceId = (vesselId: string) =>
+  `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
+
+export type GetVesselInWorkspaceParams = {
+  dataviews: UrlDataviewInstance[]
+  vesselId: string
+  origin?: DataviewInstanceOrigin
+}
+
+export const getVesselDataview = ({
+  dataviews = [],
+  vesselId = '',
+  origin,
+}: GetVesselInWorkspaceParams) => {
+  if (!vesselId) return null
+  const vesselInWorkspace = dataviews.find((v) => {
+    const vesselDatasetConfig = v.datasetsConfig?.find(
+      (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
+    )
+    const isVesselInEndpointParams =
+      vesselDatasetConfig?.params?.find((p) => p.id === 'vesselId' && p.value === vesselId) !==
+      undefined
+    const matchesOrigin = origin !== undefined ? v.origin === origin : true
+    const isInVesselRelatedIds = v.config?.relatedVesselIds?.includes(vesselId)
+    return (isVesselInEndpointParams || isInVesselRelatedIds) && matchesOrigin
+  })
+  return vesselInWorkspace
+}
+
+export function hasVesselProfileInstance({
+  dataviews = [],
+  vesselId = '',
+  origin,
+}: GetVesselInWorkspaceParams) {
+  return dataviews?.some((dataview) => {
+    const isSameVesselId = dataview.id === getVesselDataviewInstanceId(vesselId)
+    const matchesOrigin = origin !== undefined ? dataview.origin === origin : true
+    return isSameVesselId && matchesOrigin
+  })
 }
 
 export const getVesselInfoDataviewInstanceDatasetConfig = (
@@ -122,8 +165,6 @@ const vesselDataviewInstanceTemplate = (
     },
   }
 }
-const getVesselDataviewInstanceId = (vesselId: string) =>
-  `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
 
 export const getVesselDataviewInstance = ({
   vessel,
@@ -131,23 +172,25 @@ export const getVesselDataviewInstance = ({
   highlightEventStartTime,
   highlightEventEndTime,
   vesselTemplateDataviews,
+  origin,
 }: {
   vessel: { id: string }
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
   highlightEventEndTime?: number
   vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  origin?: DataviewInstanceOrigin
 }): DataviewInstance => {
   let dataviewTemplate = vesselTemplateDataviews.find((dataview) => {
     return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
   })?.slug
   if (!dataviewTemplate) {
-    console.error(
+    console.warn(
       `No dataview template found for vessel ${vessel.id} using default: ${TEMPLATE_VESSEL_DATAVIEW_SLUG}`
     )
     dataviewTemplate = TEMPLATE_VESSEL_DATAVIEW_SLUG
   }
-  const vesselDataviewInstance = {
+  const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate(
       dataviewTemplate,
@@ -156,6 +199,7 @@ export const getVesselDataviewInstance = ({
       highlightEventEndTime
     ),
     deleted: false,
+    ...(origin && { origin }),
   }
   return vesselDataviewInstance
 }
@@ -348,21 +392,6 @@ export const getBigQueryEventsDataviewInstance = (
 export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {
   const datasets = dataview.datasets || []
   return datasets.some(isPrivateDataset)
-}
-
-export const getVesselInWorkspace = (vesselInstances: UrlDataviewInstance[], vesselId: string) => {
-  if (!vesselId) return null
-  const vesselInWorkspace = vesselInstances.find((v) => {
-    const vesselDatasetConfig = v.datasetsConfig?.find(
-      (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
-    )
-    const isVesselInEndpointParams = vesselDatasetConfig?.params?.find(
-      (p) => p.id === 'vesselId' && p.value === vesselId
-    )
-    const isInVesselRelatedIds = v.config?.relatedVesselIds?.includes(vesselId)
-    return isVesselInEndpointParams || isInVesselRelatedIds ? v : undefined
-  })
-  return vesselInWorkspace
 }
 
 export const isBathymetryDataview = (dataview: UrlDataviewInstance) => {

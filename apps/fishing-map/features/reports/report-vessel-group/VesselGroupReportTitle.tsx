@@ -5,11 +5,9 @@ import cx from 'classnames'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
 
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectHasOtherVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePlaceholder'
@@ -27,10 +25,7 @@ import {
   setVesselGroupModalVessels,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
-
-import { selectViewOnlyVesselGroup } from '../reports.config.selectors'
 
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 
@@ -41,10 +36,6 @@ export default function VesselGroupReportTitle() {
   const dispatch = useAppDispatch()
   const vesselGroup = useSelector(selectVGRData)!
   const reportStatus = useSelector(selectVGRStatus)
-  const { dispatchQueryParams } = useLocationConnect()
-  const isSmallScreen = useSmallScreen()
-  const viewOnlyVesselGroup = useSelector(selectViewOnlyVesselGroup)
-  const hasOtherLayers = useSelector(selectHasOtherVesselGroupDataviews)
   const timeRange = useSelector(selectReportVesselGroupTimeRange)
   const flags = useSelector(selectReportVesselGroupFlags)
   const userData = useSelector(selectUserData)
@@ -73,11 +64,6 @@ export default function VesselGroupReportTitle() {
   //     value: `number of vessels: ${vesselGroup?.vessels?.length}`,
   //   })
   // }
-
-  const toggleViewOnlyVesselGroup = () => {
-    if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
-    dispatchQueryParams({ viewOnlyVesselGroup: !viewOnlyVesselGroup })
-  }
 
   if (!vesselGroup || !timeRange || loading || !flags) {
     return (
@@ -125,21 +111,6 @@ export default function VesselGroupReportTitle() {
         </a>
 
         <div className={styles.actions}>
-          {hasOtherLayers && (
-            <IconButton
-              className="print-hidden"
-              type="border"
-              icon={viewOnlyVesselGroup ? 'layers-on' : 'layers-off'}
-              tooltip={
-                viewOnlyVesselGroup
-                  ? t('vessel.showOtherLayers', 'Show other layers')
-                  : t('vessel.hideOtherLayers', 'Hide other layers')
-              }
-              tooltipPlacement="bottom"
-              size="small"
-              onClick={toggleViewOnlyVesselGroup}
-            />
-          )}
           {userIsVesselGroupOwner && (
             <Button
               type="border-secondary"

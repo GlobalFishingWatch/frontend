@@ -1195,6 +1195,7 @@
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselAddedToGroup": "Your vessel group was updated",
     "vesselGroup": "Vessel group",
+    "vesselGroupProfile": "Vessel group profile",
     "vesselGroups": "Vessel groups"
   },
   "vesselGroupReport": {

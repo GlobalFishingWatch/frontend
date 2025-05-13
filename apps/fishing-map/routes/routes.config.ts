@@ -17,8 +17,6 @@ export const REPLACE_URL_PARAMS: QueryParam[] = [
   'reportVesselFilter',
   'reportVesselPage',
   'reportTimeComparison',
-  'viewOnlyVessel',
-  'viewOnlyVesselGroup',
   'activityVisualizationMode',
   'detectionsVisualizationMode',
   'environmentVisualizationMode',

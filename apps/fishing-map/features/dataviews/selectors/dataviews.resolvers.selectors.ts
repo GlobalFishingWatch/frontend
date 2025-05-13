@@ -32,6 +32,7 @@ import {
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   getVesselEncounterTrackDataviewInstance,
+  hasVesselProfileInstance,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
@@ -145,7 +146,7 @@ export const selectDataviewInstancesInjected = createSelector(
       : undefined
     const eventEndDateTime = hasCurrentEvent ? getUTCDateTime(currentVesselEvent.end) : undefined
     if (isAnyVesselLocation) {
-      const existingDataviewInstance = dataviewInstancesInjected?.find(
+      const existingDataviewInstance = workspaceDataviewInstancesMerged?.find(
         ({ id }) => vesselId && id.includes(vesselId)
       )
       if (!existingDataviewInstance && vesselInfoData?.identities) {
@@ -176,9 +177,11 @@ export const selectDataviewInstancesInjected = createSelector(
 
       if (hasCurrentEvent && currentVesselEvent.type === EventTypes.Encounter) {
         const encounterVesselId = currentVesselEvent.encounter?.vessel.id
-        const isEncounterInstanceInWorkspace = workspaceDataviewInstancesMerged?.some(
-          (dataview) => dataview.id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${encounterVesselId}`
-        )
+        const isEncounterInstanceInWorkspace = hasVesselProfileInstance({
+          dataviews: workspaceDataviewInstancesMerged!,
+          vesselId: encounterVesselId!,
+          origin: 'vesselProfile',
+        })
         if (encounterVesselId && vesselInfoData?.track && !isEncounterInstanceInWorkspace) {
           const encounterTrackDataviewInstance = getVesselEncounterTrackDataviewInstance({
             vesselId: encounterVesselId,
@@ -329,6 +332,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return EMPTY_ARRAY
     }
+
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
         dataviewInstance &&
@@ -377,6 +381,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       dataviewInstancesResolved,
       callbacks
     )
+
     return dataviewInstancesResolvedExtended
   }
 )
@@ -400,7 +405,6 @@ export const selectDataviewInstancesResolved = createDeepEqualSelector(
       return defaultDataviewResolved
     }
     const hasCurrentEvent = isAnyVesselLocation && currentVesselEvent
-
     const dataviews = dataviewsResources.dataviews.map((dataview) => {
       if (dataview.category !== DataviewCategory.Vessels) {
         return dataview
