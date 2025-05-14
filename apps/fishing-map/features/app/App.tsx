@@ -30,6 +30,7 @@ import {
   selectWorkspaceCustomStatus,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { useIsPrinting } from 'hooks/screen.hooks'
 import {
   HOME,
   PORT_REPORT,
@@ -117,6 +118,7 @@ function App() {
   const userLogged = useSelector(selectIsUserLogged)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const fitWorkspaceBounds = useFitWorkspaceBounds()
+  const isPrinting = useIsPrinting()
 
   // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
   // probably better to fetch in both components just checking if the workspaceId is already fetched
@@ -203,7 +205,7 @@ function App() {
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
   } else if (isWorkspaceLocation) {
-    asideWidth = '39rem'
+    asideWidth = isPrinting ? '34rem' : '39rem'
   }
 
   if (!i18n.ready) {

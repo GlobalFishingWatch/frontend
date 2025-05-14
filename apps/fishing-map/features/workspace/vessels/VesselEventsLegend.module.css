@@ -86,3 +86,19 @@
 .port_visit > .icon {
   background-image: var(--portIcon);
 }
+
+:global(.printing) .eventsLegend {
+  height: 2rem;
+}
+
+:global(.printing) .eventsLegendSwitch {
+  display: none;
+}
+
+:global(.printing) .eventLegendLabel {
+  margin-left: 0;
+}
+
+:global(.printing) .iconWrapper {
+  transform: translateY(-0.2rem);
+}

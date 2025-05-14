@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { saveAs } from 'file-saver'
 
 import { useDeckMap } from 'features/map/map-context.hooks'
+import { useDOMElement } from 'hooks/dom.hooks'
 import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
 export const useDownloadDomElementAsImage = () => {
@@ -163,4 +164,9 @@ export const useScreenDPI = () => {
   }, [])
 
   return dpi
+}
+
+export const useIsPrinting = () => {
+  const rootElement = useDOMElement()
+  return rootElement !== undefined && rootElement.classList.contains('printing')
 }
