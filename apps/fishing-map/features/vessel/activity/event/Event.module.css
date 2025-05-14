@@ -112,6 +112,10 @@
   line-height: 1.2;
 }
 
+.spinner {
+  margin-right: var(--space-XS);
+}
+
 @media print {
   .event {
     margin-left: var(--space-M);

@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { EVENTS_COLORS } from 'data/config'
 import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
@@ -118,14 +118,18 @@ const EventDetail = ({ event }: ActivityContentProps) => {
         <li>
           <label className={styles.fieldLabel}>{t(`eventInfo.name`, 'Vessel name')}</label>
           <span className={styles.vesselNameWithPin}>
-            <VesselPin
-              vesselToResolve={{
-                id: id as string,
-                datasetId: (dataset as string) || DEFAULT_VESSEL_IDENTITY_ID,
-              }}
-              size="tiny"
-              origin="vesselProfile"
-            />
+            {isLoading && isEncounterInstanceInWorkspace ? (
+              <Spinner size="tiny" className={styles.spinner} />
+            ) : (
+              <VesselPin
+                vesselToResolve={{
+                  id: id as string,
+                  datasetId: (dataset as string) || DEFAULT_VESSEL_IDENTITY_ID,
+                }}
+                size="tiny"
+                origin="vesselProfile"
+              />
+            )}
             <VesselLink vesselId={id} datasetId={dataset}>
               {formatInfoField(name, 'shipname')}
             </VesselLink>
