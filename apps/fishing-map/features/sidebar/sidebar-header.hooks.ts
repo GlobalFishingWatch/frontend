@@ -56,10 +56,7 @@ export function usePinVesselProfileToWorkspace() {
         }
         params.query = {
           ...query,
-          dataviewInstances: [
-            ...(query.dataviewInstances || []),
-            ...(cleanVesselDataviewInstance ? [cleanVesselDataviewInstance] : []),
-          ],
+          dataviewInstances: [...(query.dataviewInstances || []), cleanVesselDataviewInstance],
         }
       }
       dispatch(updateLocation(type, params))
