@@ -600,7 +600,8 @@
     "ssvid": "crwdns69408:0crwdne69408:0",
     "start": "crwdns69412:0crwdne69412:0",
     "totalDistanceKm": "crwdns69414:0crwdne69414:0",
-    "type": "crwdns69416:0crwdne69416:0"
+    "type": "crwdns69416:0crwdne69416:0",
+    "trackDisclaimer": "crwdns84634:0crwdne84634:0"
   },
   "eventsReport": {
     "newTimeRange": "crwdns84554:0{{start}}crwdnd84554:0{{end}}crwdne84554:0",
@@ -1194,6 +1195,7 @@
     "uploadPublic": "crwdns60697:0crwdne60697:0",
     "vesselAddedToGroup": "crwdns83808:0crwdne83808:0",
     "vesselGroup": "crwdns60699:0crwdne60699:0",
+    "vesselGroupProfile": "crwdns84636:0crwdne84636:0",
     "vesselGroups": "crwdns60701:0crwdne60701:0"
   },
   "vesselGroupReport": {
