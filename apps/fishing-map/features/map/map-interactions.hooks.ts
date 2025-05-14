@@ -105,6 +105,7 @@ export const useCancelInteractionPromises = () => {
 
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
+  const eventsDataviews = useSelector(selectEventsDataviews)
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
   const clickedEvent = useSelector(selectClickedEvent)
@@ -165,10 +166,12 @@ export const useClickedEventConnect = () => {
 
       if (clusterFeature) {
         if (clusterFeature.clusterMode === 'country') {
+          const dataview = eventsDataviews?.find((d) => d.id === clusterFeature.layerId)
+          const maxZoomLevel = dataview?.config?.clusterMaxZoomLevels?.country || event.zoom!
           setMapCoordinates({
             latitude: event.latitude,
             longitude: event.longitude,
-            zoom: (event.zoom as number) + 1,
+            zoom: maxZoomLevel + 1,
           })
           return
         } else if (isTilesClusterLayerCluster(clusterFeature)) {

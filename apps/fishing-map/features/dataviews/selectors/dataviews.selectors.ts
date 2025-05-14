@@ -15,8 +15,8 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
+  getVesselDataviewInstanceId,
   isBathymetryDataview,
-  VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import {
   selectActiveActivityDataviews,
@@ -284,7 +284,7 @@ export const selectHasVesselProfileInstancePinned = createSelector(
   (workspaceDataviewInstances = [], urlDataviewInstances = [], vesselId) => {
     const dataviews = [...workspaceDataviewInstances, ...urlDataviewInstances]
     return dataviews?.some(({ config, id }) => {
-      return id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` && config?.visible
+      return id === getVesselDataviewInstanceId(vesselId) && config?.visible
     })
   }
 )

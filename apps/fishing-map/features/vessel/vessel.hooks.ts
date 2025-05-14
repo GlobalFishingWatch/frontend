@@ -6,9 +6,12 @@ import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 
 import {
-  VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX,
+  getEncounteredVesselDataviewInstanceId,
+  getHasVesselProfileInstance,
+  getVesselDataviewInstanceId,
   VESSEL_LAYER_PREFIX,
 } from 'features/dataviews/dataviews.utils'
+import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectCurrentVesselEvent,
   selectVesselInfoData,
@@ -26,11 +29,17 @@ export const useVesselProfileLayer = () => {
 
 export const useVesselProfileEncounterLayer = () => {
   const currentVesselEvent = useSelector(selectCurrentVesselEvent)
-  const vesselLayer = useGetDeckLayer<VesselLayer>(
-    currentVesselEvent
-      ? `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${currentVesselEvent.encounter?.vessel?.id}`
-      : ''
-  )
+  const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const encounteredVesselId = currentVesselEvent?.encounter?.vessel?.id || ''
+  const isEncounterInstanceInWorkspace = getHasVesselProfileInstance({
+    dataviews: activeTrackDataviews!,
+    vesselId: encounteredVesselId!,
+    origin: 'vesselProfile',
+  })
+  const vesselLayerId = isEncounterInstanceInWorkspace
+    ? getVesselDataviewInstanceId(encounteredVesselId)
+    : getEncounteredVesselDataviewInstanceId(encounteredVesselId)
+  const vesselLayer = useGetDeckLayer<VesselLayer>(vesselLayerId)
   return vesselLayer
 }
 

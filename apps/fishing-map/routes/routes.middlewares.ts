@@ -12,7 +12,7 @@ import type { LinkToPayload } from 'routes/routes.types'
 import type { QueryParam, QueryParams } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
-import { routesMap, WORKSPACE_ROUTES } from './routes'
+import { REPORT_ROUTES, routesMap, WORKSPACE_ROUTES } from './routes'
 import type { UpdateQueryParamsAction } from './routes.actions'
 
 export const routerQueryMiddleware: Middleware =
@@ -77,7 +77,7 @@ export const routerWorkspaceMiddleware: Middleware =
     const { type, query, payload, pathname } = state.location
     const isRouterAction = routesActions.includes(routerAction.type)
     const isNotInitialLoad = type && routerAction.type !== NOT_FOUND && type !== NOT_FOUND
-    if (isRouterAction && !routerAction.isHistoryNavigation && isNotInitialLoad) {
+    if (isRouterAction && isNotInitialLoad && !routerAction.skipHistoryNavigation) {
       const currentHistoryNavigation = state.workspace?.historyNavigation || []
       const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
       const isDifferentRoute =
@@ -85,6 +85,7 @@ export const routerWorkspaceMiddleware: Middleware =
         Object.entries(routerAction.payload).some(([key, value]) => value !== payload[key])
       if (
         isDifferentRoute &&
+        !routerAction.isHistoryNavigation &&
         (!lastHistoryNavigation || lastHistoryNavigation.pathname !== pathname)
       ) {
         const newHistoryNavigation: LastWorkspaceVisited = {
@@ -94,17 +95,20 @@ export const routerWorkspaceMiddleware: Middleware =
           payload: payload as LinkToPayload,
         }
         dispatch(setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation]))
-      } else if (lastHistoryNavigation && WORKSPACE_ROUTES.includes(lastHistoryNavigation.type)) {
-        const updatedHistoryNavigation: LastWorkspaceVisited = {
-          ...lastHistoryNavigation,
-          query: routerAction.query!,
-        }
-        dispatch(
-          setWorkspaceHistoryNavigation([
-            ...currentHistoryNavigation.slice(0, -1),
-            updatedHistoryNavigation,
-          ])
-        )
+      } else if (lastHistoryNavigation) {
+        const historyNavigation = routerAction.isHistoryNavigation
+          ? currentHistoryNavigation.slice(0, -1)
+          : currentHistoryNavigation
+        const updatedHistoryNavigation = historyNavigation.map((navigation) => {
+          if ([...WORKSPACE_ROUTES, ...REPORT_ROUTES].includes(lastHistoryNavigation.type)) {
+            return {
+              ...navigation,
+              query: routerAction.query!,
+            }
+          }
+          return navigation
+        })
+        dispatch(setWorkspaceHistoryNavigation(updatedHistoryNavigation))
       }
     }
     next(action)

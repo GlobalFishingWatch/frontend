@@ -53,7 +53,7 @@ function ClusterEventTooltipRow({
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
                 {t('event.loitering', { count: feature.count })}
-                {!date && (
+                {date && (
                   <span className={styles.rowTextSecondary}>
                     {' '}
                     {date}

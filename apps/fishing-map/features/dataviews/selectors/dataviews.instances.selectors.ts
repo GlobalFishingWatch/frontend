@@ -6,8 +6,9 @@ import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import { BASEMAP_DATAVIEW_SLUG, CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import {
-  VESSEL_DATAVIEW_INSTANCE_PREFIX,
-  VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX,
+  getIsEncounteredVesselDataviewInstanceId,
+  getIsVesselDataviewInstanceId,
+  getVesselDataviewInstanceId,
 } from 'features/dataviews/dataviews.utils'
 import {
   getReportCategoryFromDataview,
@@ -105,7 +106,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         const isVesselProfileOrigin = origin === 'vesselProfile'
         const isEncounterVesselTrack =
           id.includes(currentVesselEvent?.encounter?.vessel?.id || '') &&
-          id.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+          getIsEncounteredVesselDataviewInstanceId(id)
         return (
           config?.type === DataviewType.Track &&
           (isSameVessel || isVesselProfileOrigin || isEncounterVesselTrack)
@@ -156,7 +157,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           const matchesSubcategory =
             getReportSubCategoryFromDataview(dataview) === reportSubCategory
           if (isVesselGroupReportLocation) {
-            return matchesSubcategory && dataview.id.includes(VESSEL_DATAVIEW_INSTANCE_PREFIX)
+            return matchesSubcategory && getIsVesselDataviewInstanceId(dataview.id)
           }
           return matchesSubcategory
         }
@@ -181,7 +182,7 @@ export const selectTrackDataviews = selectDataviewInstancesByType(DataviewType.T
 
 export const selectTimebarTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
-    (d) => d.config?.visible && !d.id.includes(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+    (d) => d.config?.visible && !getIsEncounteredVesselDataviewInstanceId(d.id)
   )
 })
 
@@ -231,7 +232,7 @@ export const selectActiveTrackDataviews = createDeepEqualSelector(
     return dataviews?.filter(({ config, id, origin }) => {
       if (isAnyVesselLocation) {
         return (
-          (id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` || origin === 'vesselProfile') &&
+          (id === getVesselDataviewInstanceId(vesselId) || origin === 'vesselProfile') &&
           config?.visible
         )
       }
