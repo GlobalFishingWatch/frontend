@@ -29,12 +29,12 @@ import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
   dataviewHasVesselGroupId,
+  getHasVesselProfileInstance,
   getIsVesselDataviewInstanceId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   getVesselEncounterTrackDataviewInstance,
   getVesselIdFromInstanceId,
-  hasVesselProfileInstance,
 } from 'features/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import {
@@ -183,7 +183,7 @@ export const selectDataviewInstancesInjected = createSelector(
 
       if (hasCurrentEvent && currentVesselEvent.type === EventTypes.Encounter) {
         const encounterVesselId = currentVesselEvent.encounter?.vessel.id
-        const isEncounterInstanceInWorkspace = hasVesselProfileInstance({
+        const isEncounterInstanceInWorkspace = getHasVesselProfileInstance({
           dataviews: workspaceDataviewInstancesMerged!,
           vesselId: encounterVesselId!,
           origin: 'vesselProfile',

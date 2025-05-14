@@ -94,7 +94,7 @@ export const getVesselDataview = ({
   return vesselInWorkspace
 }
 
-export function hasVesselProfileInstance({
+export function getHasVesselProfileInstance({
   dataviews = [],
   vesselId = '',
   origin,

@@ -8,7 +8,7 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { EVENTS_COLORS } from 'data/config'
-import { hasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
+import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -82,7 +82,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
 
   if (event.type === EventTypes.Encounter) {
     const { name, id, dataset, flag, ssvid, type } = event.encounter?.vessel || {}
-    const isEncounterInstanceInWorkspace = hasVesselProfileInstance({
+    const isEncounterInstanceInWorkspace = getHasVesselProfileInstance({
       dataviews: workspaceDataviewInstancesMerged!,
       vesselId: id!,
       origin: 'vesselProfile',
