@@ -56,8 +56,17 @@ export const getVesselIdFromInstanceId = (dataviewInstanceId: string) => {
   return dataviewInstanceId.split(prefix)[1]
 }
 
+export const getIsVesselDataviewInstanceId = (dataviewInstanceId: string) =>
+  dataviewInstanceId.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)
+
+export const getIsEncounteredVesselDataviewInstanceId = (dataviewInstanceId: string) =>
+  dataviewInstanceId.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+
 export const getVesselDataviewInstanceId = (vesselId: string) =>
   `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
+
+export const getEncounteredVesselDataviewInstanceId = (vesselId: string) =>
+  `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
 
 export type GetVesselInWorkspaceParams = {
   dataviews: UrlDataviewInstance[]
@@ -154,14 +163,19 @@ const vesselDataviewInstanceTemplate = (
   dataviewSlug: Dataview['slug'],
   datasets: VesselInstanceDatasets,
   highlightEventStartTime?: number,
-  highlightEventEndTime?: number
+  highlightEventEndTime?: number,
+  color?: string
 ) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
     // panama and peru doesn't show events and needed a workaround to work with this
     dataviewId: dataviewSlug,
     config: {
-      colorCyclingType: 'line' as ColorCyclingType,
+      ...(color
+        ? { color }
+        : {
+            colorCyclingType: 'line' as ColorCyclingType,
+          }),
       ...datasets,
       ...(highlightEventStartTime && {
         highlightEventStartTime: getUTCDateTime(highlightEventStartTime).toISO()!,
@@ -180,6 +194,7 @@ export const getVesselDataviewInstance = ({
   highlightEventEndTime,
   vesselTemplateDataviews,
   origin,
+  color,
 }: {
   vessel: { id: string }
   datasets: VesselInstanceDatasets
@@ -187,23 +202,20 @@ export const getVesselDataviewInstance = ({
   highlightEventEndTime?: number
   vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
   origin?: DataviewInstanceOrigin
+  color?: string
 }): DataviewInstance => {
-  let dataviewTemplate = vesselTemplateDataviews.find((dataview) => {
-    return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
-  })?.slug
-  if (!dataviewTemplate) {
-    console.warn(
-      `No dataview template found for vessel ${vessel.id} using default: ${TEMPLATE_VESSEL_DATAVIEW_SLUG}`
-    )
-    dataviewTemplate = TEMPLATE_VESSEL_DATAVIEW_SLUG
-  }
+  const dataviewTemplate =
+    vesselTemplateDataviews.find((dataview) => {
+      return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
+    })?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
   const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate(
       dataviewTemplate,
       datasets,
       highlightEventStartTime,
-      highlightEventEndTime
+      highlightEventEndTime,
+      color
     ),
     deleted: false,
     ...(origin && { origin }),

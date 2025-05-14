@@ -29,12 +29,12 @@ import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
   dataviewHasVesselGroupId,
+  getIsVesselDataviewInstanceId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   getVesselEncounterTrackDataviewInstance,
   getVesselIdFromInstanceId,
   hasVesselProfileInstance,
-  VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import {
@@ -60,6 +60,7 @@ import {
 } from 'features/vessel/selectors/vessel.selectors'
 import { getRelatedIdentityVesselIds, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
+import { getNextColor } from 'features/workspace/workspace.hook'
 import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
@@ -159,13 +160,17 @@ export const selectDataviewInstancesInjected = createSelector(
           }),
           relatedVesselIds: getRelatedIdentityVesselIds(vesselInfoData),
         }
-
+        const currentColors = (workspaceDataviewInstancesMerged || []).flatMap((dv) =>
+          getIsVesselDataviewInstanceId(dv.id) ? dv.config?.color || [] : []
+        )
+        const nextColor = getNextColor('line', currentColors)
         const dataviewInstance = getVesselDataviewInstance({
           vessel: { id: vesselId },
           datasets: vesselDatasets,
           highlightEventStartTime: eventStartDateTime?.toMillis(),
           highlightEventEndTime: eventEndDateTime?.toMillis(),
           vesselTemplateDataviews,
+          color: nextColor?.value,
         })
         if (dataviewInstance) {
           const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
@@ -335,7 +340,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     }
 
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
-      if (dataviewInstance && dataviewInstance.id?.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)) {
+      if (dataviewInstance && getIsVesselDataviewInstanceId(dataviewInstance.id)) {
         const vesselId = getVesselIdFromInstanceId(dataviewInstance.id)
         // New way to resolve datasetConfig for vessels to avoid storing all
         // the datasetConfig in the instance and save url string characters
