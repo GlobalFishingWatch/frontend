@@ -32,6 +32,7 @@ import {
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   getVesselEncounterTrackDataviewInstance,
+  getVesselIdFromInstanceId,
   hasVesselProfileInstance,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
@@ -334,36 +335,36 @@ export const selectAllDataviewInstancesResolved = createSelector(
     }
 
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
-      if (
-        dataviewInstance &&
-        dataviewInstance.id?.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
-        !dataviewInstance.datasetsConfig?.length &&
-        dataviewInstance.config?.info
-      ) {
-        const vesselId = dataviewInstance.id.split(VESSEL_DATAVIEW_INSTANCE_PREFIX)[1]
+      if (dataviewInstance && dataviewInstance.id?.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)) {
+        const vesselId = getVesselIdFromInstanceId(dataviewInstance.id)
         // New way to resolve datasetConfig for vessels to avoid storing all
         // the datasetConfig in the instance and save url string characters
         const config = { ...dataviewInstance.config }
         // Vessel pined from not logged user but is logged now and the related dataset is available
-        if (loggedUser && !config.track) {
+        if (loggedUser && !config.track && config.info) {
           const dataset = datasets.find((d) => d.id === config.info)
           const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id
           if (trackDatasetId) {
             config.track = trackDatasetId
           }
         }
-        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-          vesselId,
-          config
-        )
-        return {
+        const newDataviewInstance = {
           ...dataviewInstance,
           config: {
             ...dataviewInstance.config,
-            trackThinningZoomConfig,
+            ...(trackThinningZoomConfig && {
+              trackThinningZoomConfig,
+            }),
           },
-          datasetsConfig,
         }
+        if (!dataviewInstance.datasetsConfig?.length) {
+          const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+            vesselId,
+            config
+          )
+          newDataviewInstance.datasetsConfig = datasetsConfig
+        }
+        return newDataviewInstance
       }
       return dataviewInstance
     })
