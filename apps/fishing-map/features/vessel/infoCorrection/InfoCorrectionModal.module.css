@@ -58,3 +58,22 @@
 .secondary {
   color: var(--color-secondary-blue);
 }
+
+.tabTitle {
+  margin-bottom: 3rem;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  grid-gap: 3rem;
+  justify-content: space-evenly;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  font-size: small;
+  min-height: 6.2rem;
+}

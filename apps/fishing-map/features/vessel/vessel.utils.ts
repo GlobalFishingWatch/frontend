@@ -13,6 +13,7 @@ import type {
 import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
 
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { TimeRange } from 'features/timebar/timebar.slice'
@@ -347,4 +348,15 @@ export const getSidebarContentWidth = () => {
 
 export const isFieldLoginRequired = (field: string) => {
   return typeof field === 'string' && field.toUpperCase() === API_LOGIN_REQUIRED
+}
+
+export function formatTransmissionDate(
+  vesselIdentity: VesselLastIdentity,
+  format: boolean = false
+) {
+  if (!vesselIdentity) return ''
+  if (format) {
+    return `${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(vesselIdentity.transmissionDateTo)}`
+  }
+  return `${vesselIdentity.transmissionDateFrom} - ${vesselIdentity.transmissionDateTo}`
 }

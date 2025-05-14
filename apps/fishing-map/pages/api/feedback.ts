@@ -9,9 +9,11 @@ const FEEDBACK_PRIVATE_KEY = process.env.NEXT_SPREADSHEET_PRIVATE_KEY?.replace(/
 
 const FEEDBACK_SPREADSHEET_ID = process.env.NEXT_FEEDBACK_SPREADSHEET_ID || ''
 const ERRORS_SPREADSHEET_ID = process.env.NEXT_MAP_ERRORS_SPREADSHEET_ID || ''
+const MASTER_SPREADSHEET_ID = process.env.NEXT_MASTER_SPREADSHEET_ID || ''
+
 const FEEDBACK_SHEET_TITLE = 'new feedback'
 const ERRORS_SHEET_TITLE = 'errors'
-const CORRECTIONS_SHEET_TITLE = 'vessels corrections'
+const CORRECTIONS_SHEET_TITLE = 'Vessel Identity Correction'
 
 export const loadSpreadsheetDoc = async (id: string) => {
   if (!id) {
@@ -51,6 +53,14 @@ export type FeedbackForm = {
   }
 }
 
+type FeedbackFormData = {
+  reviewer: {
+    name?: string
+    email?: string
+    organization?: string
+  }
+}
+
 export type ApiResponse = {
   success: boolean
   message: string
@@ -75,14 +85,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       })
     }
 
-    const spreadsheetId =
-      type === 'error' || type === 'corrections' ? ERRORS_SPREADSHEET_ID : FEEDBACK_SPREADSHEET_ID
-    const spreadsheetTitle =
-      type === 'error'
-        ? ERRORS_SHEET_TITLE
-        : type === 'corrections'
-          ? CORRECTIONS_SHEET_TITLE
-          : FEEDBACK_SHEET_TITLE
+    let spreadsheetId: string
+    let spreadsheetTitle: string
+
+    switch (type) {
+      case 'error':
+        spreadsheetId = ERRORS_SPREADSHEET_ID
+        spreadsheetTitle = ERRORS_SHEET_TITLE
+        break
+      case 'corrections':
+        spreadsheetId = MASTER_SPREADSHEET_ID
+        spreadsheetTitle = CORRECTIONS_SHEET_TITLE
+        break
+      case 'feedback':
+      default:
+        spreadsheetId = FEEDBACK_SPREADSHEET_ID
+        spreadsheetTitle = FEEDBACK_SHEET_TITLE
+        break
+    }
     const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
 
     const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]

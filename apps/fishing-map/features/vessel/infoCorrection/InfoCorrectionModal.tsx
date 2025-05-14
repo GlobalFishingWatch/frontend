@@ -1,56 +1,54 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { GEAR_TYPES, VESSEL_TYPES, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { GEAR_TYPES, VESSEL_TYPES } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import {
-  Button,
-  Choice,
-  InputDate,
-  InputText,
-  Modal,
-  Select,
-  Tag,
-} from '@globalfishingwatch/ui-components'
+import { Button, InputText, Modal, Select, Tag } from '@globalfishingwatch/ui-components'
 
 import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import type { VesselLastIdentity } from 'features/search/search.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useVesselIdentityChoice } from 'features/vessel/identity/vessel-identity.hooks'
-import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
-import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
-import { useLocationConnect } from 'routes/routes.hook'
+import { formatTransmissionDate, getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 
-import VesselRegistryField from '../identity/VesselRegistryField'
+import VesselIdentityField from '../identity/VesselIdentityField'
 
 import styles from './InfoCorrectionModal.module.css'
 
+type RelevantDataFields = {
+  flag: string
+  shipname: string
+  geartypes: string
+  shiptypes: string
+  ssvid: string
+  imo: string
+  callsign: string
+  comments?: string
+}
+
 type InfoCorrectionSendFormat = {
-  date: string
-  userId?: number | typeof GUEST_USER_TYPE
-  name?: string
-  email?: string
-  vesselId: string
-  source: string
-  sourceCode: string
-  transmissionDate: string
-  field: string | null
-  originalValue: string
-  proposedValue: string
-  description: string
-  url: string
+  reviewer?: {
+    userId?: number | typeof GUEST_USER_TYPE
+    name?: string
+    email?: string
+  }
+  source?: string
+  workspaceLink?: string
+  dateSubmitted?: string
+  transmissionDate?: string
+  vesselId?: string
+
+  originalValues: RelevantDataFields
+  proposedCorrections?: Partial<RelevantDataFields>
 }
 
 type InfoCorrectionModalProps = {
@@ -59,41 +57,28 @@ type InfoCorrectionModalProps = {
 }
 
 const VALID_REGISTRY_FIELDS = [
-  'shipname',
-  'flag',
   'ssvid',
-  'imo',
+  'shipname',
   'callsign',
-  'geartypes',
+  'imo',
+  'flag',
   'shiptypes',
-  'builtYear',
-  'depthM',
-  'lengthM',
-  'tonnageGt',
-  'registryOwners',
-  'operator',
-  'registryPublicAuthorizations',
-  'other',
+  'geartypes',
+
+  // 'builtYear',
+  // 'depthM',
+  // 'lengthM',
+  // 'tonnageGt',
+  // 'registryOwners',
+  // 'operator',
+  // 'registryPublicAuthorizations',
 ]
-
-const VALID_AIS_FIELDS = ['geartypes', 'shiptypes']
-
-function formatTransmissionDate(vesselIdentity: VesselLastIdentity, format: boolean = false) {
-  if (!vesselIdentity) return ''
-  if (format) {
-    return `${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(vesselIdentity.transmissionDateTo)}`
-  }
-  return `${vesselIdentity.transmissionDateFrom} - ${vesselIdentity.transmissionDateTo}`
-}
 
 function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalProps) {
   const { t } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
-  const [loading, setLoading] = useState(false)
-  const [suficientData, setSuficientData] = useState(false)
-  const userData = useSelector(selectUserData)
   const identitySources = useVesselIdentityChoice()
 
   const vesselIdentity = getCurrentIdentityVessel(vesselData, {
@@ -101,66 +86,41 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
     identitySource,
   })
 
-  const [correctedVesselData, setCorrectedVesselData] = useState<InfoCorrectionSendFormat>({
-    date: getUTCDate().toISOString(),
-    ...(userData && {
-      userId: userData.id,
-      email: userData.email,
-      name: `${userData.firstName} ${userData.lastName}`,
-    }),
-    vesselId: vesselIdentity.id,
-    source: vesselIdentity.identitySource,
-    sourceCode: (vesselIdentity.sourceCode || []).join(', ') || '',
-    transmissionDate: formatTransmissionDate(vesselIdentity),
-    field: null,
-    originalValue: '',
-    proposedValue: '',
-    description: '',
-    url: window.location.href,
-  })
+  const [loading, setLoading] = useState(false)
+  const userData = useSelector(selectUserData)
 
-  useEffect(() => {
-    const { proposedValue } = correctedVesselData
-    const hasSuficientData = proposedValue !== undefined && proposedValue !== ''
-    setSuficientData(hasSuficientData)
-  }, [correctedVesselData])
-
-  const { dispatchQueryParams } = useLocationConnect()
-
-  const onSourceClick = useCallback(
-    (choice: ChoiceOption<VesselIdentitySourceEnum>) => {
-      dispatchQueryParams({ vesselIdentitySource: choice.id })
-    },
-    [dispatchQueryParams]
-  )
-
-  useEffect(() => {
-    if (vesselIdentity?.id !== correctedVesselData.vesselId) {
-      setCorrectedVesselData((currentVesselData) => ({
-        ...currentVesselData,
-        vesselId: vesselIdentity.id,
-        transmissionDate: formatTransmissionDate(vesselIdentity),
-        source: identitySource,
-        sourceCode: vesselIdentity.identitySource,
-        field: null,
-        originalValue: '',
-        proposedValue: '',
-        description: '',
-      }))
-    }
-  }, [correctedVesselData.vesselId, vesselIdentity])
+  const [proposedValues, setProposedValues] = useState<Partial<RelevantDataFields>>()
 
   const sendCorrection = async (e: any) => {
     e.preventDefault()
     e.stopPropagation()
     setLoading(true)
     try {
-      const finalFeedbackData = {
-        ...correctedVesselData,
-        userId: correctedVesselData.userId,
-        originalValue: Array.isArray(correctedVesselData.originalValue)
-          ? correctedVesselData.originalValue.join(', ')
-          : correctedVesselData.originalValue,
+      const now = getUTCDate().toISOString()
+
+      const finalFeedbackData: InfoCorrectionSendFormat = {
+        reviewer: userData
+          ? {
+              userId: userData.id,
+              name: `${userData.firstName} ${userData.lastName}`,
+              email: userData.email,
+            }
+          : undefined,
+        source: vesselIdentity.sourceCode?.[0] || '',
+        workspaceLink: window.location.href,
+        dateSubmitted: now,
+        transmissionDate: formatTransmissionDate(vesselIdentity),
+        vesselId: vesselIdentity.id,
+        originalValues: {
+          flag: vesselIdentity.flag || '',
+          shipname: vesselIdentity.shipname || vesselIdentity.nShipname || '',
+          geartypes: (vesselIdentity.geartypes || [])[0] || '',
+          shiptypes: (vesselIdentity.shiptypes || [])[0] || '',
+          ssvid: vesselIdentity.ssvid || '',
+          imo: vesselIdentity.imo || '',
+          callsign: vesselIdentity.callsign || '',
+        },
+        proposedCorrections: proposedValues,
       }
 
       const response = await fetch(`${PATH_BASENAME}/api/feedback`, {
@@ -189,20 +149,6 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
     }
   }
 
-  const identityFields = useMemo(() => {
-    return identitySource === VesselIdentitySourceEnum.Registry
-      ? VALID_REGISTRY_FIELDS.map((key) => ({
-          label: t(`vessel.${key}` as any, key),
-          id: key,
-        }))
-      : identitySource === VesselIdentitySourceEnum.SelfReported
-        ? VALID_AIS_FIELDS.map((key) => ({
-            label: t(`vessel.ais-${key}` as any, key),
-            id: key,
-          }))
-        : []
-  }, [identitySource, t])
-
   const gearSelectOptions = GEAR_TYPES.map((key) => ({
     label: getVesselGearTypeLabel({ geartypes: key }) || key,
     id: key,
@@ -227,7 +173,7 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
       contentClassName={styles.modalContent}
     >
       <div className={styles.container}>
-        <div className={styles.info}>
+        <div>
           <label>{t('common.vessel', 'Vessel')}</label>
           <Tag>
             {formatInfoField(vesselIdentity.shipname || vesselIdentity.nShipname, 'shipname')}{' '}
@@ -236,15 +182,81 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
         </div>
         <div>
           <label>{t('layer.source', 'Source')}</label>
-          <Choice
-            options={identitySources}
-            size="small"
-            activeOption={identitySource}
-            onSelect={onSourceClick}
-          />
+          <div className={styles.columns}>
+            <div>
+              <div className={styles.tabTitle}>
+                <VesselIdentityField
+                  tooltip={vesselIdentity?.sourceCode?.filter(Boolean)?.join(', ')}
+                  className={styles.help}
+                  value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
+                    vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
+                  }`}
+                />
+              </div>
+              {VALID_REGISTRY_FIELDS.map((key) => (
+                <div key={key} className={styles.info}>
+                  {vesselIdentity[key as keyof typeof vesselIdentity] as string}
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.info}>
+              <span>Feedback</span>
+              {VALID_REGISTRY_FIELDS.map((key) =>
+                key === 'geartypes' ? (
+                  <>
+                    <label key={key}>{t(`vessel.${key}` as any, key)}</label>
+                    <Select
+                      placeholder={t('selects.placeholder', 'Select an option')}
+                      options={gearSelectOptions}
+                      selectedOption={gearSelectOptions.find(
+                        (option) => option.label === proposedValues?.[key]
+                      )}
+                      onSelect={(option) =>
+                        setProposedValues({
+                          ...proposedValues,
+                          geartypes: option.label as string,
+                        })
+                      }
+                    />
+                  </>
+                ) : key === 'shiptypes' ? (
+                  <>
+                    <label key={key}>{t(`vessel.${key}` as any, key)}</label>
+                    <Select
+                      placeholder={t('selects.placeholder', 'Select an option')}
+                      options={shipSelectOptions}
+                      selectedOption={shipSelectOptions.find(
+                        (option) => option.label === proposedValues?.[key]
+                      )}
+                      onSelect={(option) =>
+                        setProposedValues({
+                          ...proposedValues,
+                          shiptypes: option.label as string,
+                        })
+                      }
+                    />
+                  </>
+                ) : (
+                  <InputText
+                    label={t(`vessel.${key}` as any, key)}
+                    key={key}
+                    inputSize="small"
+                    className={styles.input}
+                    onChange={(e) =>
+                      setProposedValues({
+                        ...proposedValues,
+                        [key]: e.target.value,
+                      })
+                    }
+                    disabled={loading}
+                  />
+                )
+              )}
+            </div>
+          </div>
         </div>
-        <div>
-          <label>{t('vessel.infoCorrection.field', 'Field')}</label>
+        {/* <label>{t('vessel.infoCorrection.field', 'Field')}</label>
           <Select
             placeholder={t('selects.placeholder', 'Select an option')}
             options={identityFields}
@@ -258,112 +270,21 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
                 originalValue: vesselIdentity[option.id as keyof typeof vesselIdentity] as string,
               })
             }}
-          />
-        </div>
+          /> */}
 
         <div>
-          <label>{t('vessel.infoCorrection.currentValue', 'Current value')}</label>
-          {identitySource === VesselIdentitySourceEnum.Registry &&
-          (correctedVesselData.field === 'registryOwners' ||
-            correctedVesselData.field === 'operator' ||
-            correctedVesselData.field === 'registryPublicAuthorizations') ? (
-            <VesselRegistryField
-              key={'registryOwners'}
-              registryField={{
-                key: correctedVesselData.field,
-              }}
-              vesselIdentity={vesselIdentity}
-              showLabel={false}
-            />
-          ) : correctedVesselData.field === null ? (
-            <span className={styles.secondary}>
-              {t(
-                'vessel.infoCorrection.selectAField',
-                'Please select a field to view its current value'
-              )}
-            </span>
-          ) : (
-            <VesselIdentityField
-              value={
-                formatInfoField(
-                  correctedVesselData.originalValue,
-                  correctedVesselData.field as any
-                ) as string
-              }
-            />
-          )}
-        </div>
-        <div>
-          <label>{t('vessel.infoCorrection.proposedValue', 'Proposed value')}</label>
-          {correctedVesselData.field === 'transmissionDateFrom' ||
-          correctedVesselData.field === 'transmissionDateTo' ? (
-            <InputDate
-              value={correctedVesselData.proposedValue}
-              className={styles.input}
-              onChange={(e) =>
-                setCorrectedVesselData({
-                  ...correctedVesselData,
-                  proposedValue: e.target.value,
-                })
-              }
-              disabled={loading}
-            />
-          ) : correctedVesselData.field === 'geartypes' ? (
-            <Select
-              placeholder={t('selects.placeholder', 'Select an option')}
-              options={gearSelectOptions}
-              selectedOption={gearSelectOptions.find(
-                (option) => option.label === correctedVesselData.proposedValue
-              )}
-              onSelect={(option) =>
-                setCorrectedVesselData({
-                  ...correctedVesselData,
-                  proposedValue: option.label as string,
-                })
-              }
-            />
-          ) : correctedVesselData.field === 'shiptypes' ? (
-            <Select
-              placeholder={t('selects.placeholder', 'Select an option')}
-              options={shipSelectOptions}
-              selectedOption={shipSelectOptions.find(
-                (option) => option.label === correctedVesselData.proposedValue
-              )}
-              onSelect={(option) =>
-                setCorrectedVesselData({
-                  ...correctedVesselData,
-                  proposedValue: option.label as string,
-                })
-              }
-            />
-          ) : (
-            <InputText
-              value={correctedVesselData.proposedValue}
-              className={styles.input}
-              onChange={(e) =>
-                setCorrectedVesselData({
-                  ...correctedVesselData,
-                  proposedValue: e.target.value,
-                })
-              }
-              disabled={loading}
-            />
-          )}
-        </div>
-
-        <div>
-          <label>{t('vessel.infoCorrection.description', 'Description (optional)')}</label>
+          <label>{t('vessel.infoCorrection.analystComments', 'Analyst comments (optional)')}</label>
           <InputText
             placeholder={t(
-              'vessel.infoCorrection.descriptionPlaceholder',
-              'Please describe the source of the correction and the time range it is relevant for.'
+              'vessel.infoCorrection.commentPlaceholder',
+              'Please describe the source of the correction.'
             )}
-            value={correctedVesselData.description}
+            value={proposedValues?.comments || ''}
             className={styles.input}
             onChange={(e) =>
-              setCorrectedVesselData({
-                ...correctedVesselData,
-                description: e.target.value,
+              setProposedValues({
+                ...proposedValues,
+                comments: e.target.value,
               })
             }
             disabled={loading}
@@ -373,11 +294,11 @@ function InfoCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalPro
         <div className={styles.footer}>
           <Button
             tooltip={
-              !suficientData
-                ? t('vessel.infoCorrection.insuficientData', 'Please fill in all mandatory fields')
+              proposedValues === undefined
+                ? t('vessel.infoCorrection.insuficientData', 'Please fill in at least one field')
                 : ''
             }
-            disabled={loading || !suficientData}
+            disabled={loading || proposedValues === undefined}
             onClick={sendCorrection}
             loading={loading}
             className={styles.cta}
