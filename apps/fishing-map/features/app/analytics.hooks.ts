@@ -6,7 +6,7 @@ import { trackEvent as trackEventBase, useAnalyticsInit } from '@globalfishingwa
 
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { selectCategoryFromRoute, selectLocationType } from 'routes/routes.selectors'
+import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 
 const GOOGLE_ANALYTICS_DEBUG_MODE =
   (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
@@ -37,7 +37,7 @@ export const useAnalytics = () => {
   const { i18n } = useTranslation()
   const user = useSelector(selectUserData)
   const locationType = useSelector(selectLocationType)
-  const locationCategory = useSelector(selectCategoryFromRoute)
+  const locationCategory = useSelector(selectLocationCategory)
   const isGuestUser = useSelector(selectIsGuestUser)
 
   const { initialized, setConfig } = useAnalyticsInit({

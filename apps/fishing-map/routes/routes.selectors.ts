@@ -95,11 +95,6 @@ export const selectIsWorkspacesListLocation = createSelector(
   (locationType) => locationType === WORKSPACES_LIST
 )
 
-export const selectCategoryFromRoute = createSelector(
-  [selectLocation],
-  (location) => location.payload?.category
-)
-
 export const selectIsUserLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === USER
