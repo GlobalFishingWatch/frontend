@@ -10,7 +10,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
-import { useHighlightReportArea } from 'features/reports/report-area/area-reports.hooks'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
@@ -60,7 +59,6 @@ function NavigationHistoryButton() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const onPinVesselToWorkspaceAndNavigateClick = usePinVesselProfileToWorkspace()
   const { dispatchQueryParams } = useLocationConnect()
-  const highlightArea = useHighlightReportArea()
   const featureFlags = useSelector(selectFeatureFlags)
   const reportAreaIds = useSelector(selectReportAreaIds)
   const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
@@ -93,8 +91,6 @@ function NavigationHistoryButton() {
 
     dispatch(cleanVesselSearchResults())
 
-    // Reset report state
-    highlightArea(undefined)
     dispatch(resetReportData())
     dispatch(resetVesselGroupReportData())
     dispatch(resetAreaDetail(reportAreaIds))
@@ -102,7 +98,7 @@ function NavigationHistoryButton() {
     dispatch(setVesselEventId(null))
 
     trackAnalytics()
-  }, [dispatch, highlightArea, reportAreaIds, trackAnalytics])
+  }, [dispatch, reportAreaIds, trackAnalytics])
 
   const isPreviousLocationReport = REPORT_ROUTES.includes(lastWorkspaceVisited.type)
 
