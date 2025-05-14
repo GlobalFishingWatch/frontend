@@ -4,7 +4,7 @@ import type { TextLayerProps } from '@deck.gl/layers'
 import { TextLayer } from '@deck.gl/layers'
 import type { Feature, Point } from '@loaders.gl/schema'
 
-import { BLEND_BACKGROUND } from '../../utils'
+import { BLEND_BACKGROUND, getLayerGroupOffset, LayerGroup } from '../../utils'
 import { hexToDeckColor } from '../../utils/colors'
 import { DECK_FONT, loadDeckFont } from '../../utils/fonts'
 
@@ -40,9 +40,7 @@ export class LabelLayer<DataT = unknown> extends CompositeLayer<
     },
     getPixelOffset: [0, -15],
     getPosition: (d: Feature<Point>) => d.geometry.coordinates,
-    parameters: {
-      depthCompare: 'always',
-    },
+    getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
   }
   state!: LabelLayerState
 
