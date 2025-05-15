@@ -33,3 +33,10 @@
   top: 50%;
   left: calc(50% + 5rem);
 }
+
+.logo {
+  position: absolute;
+  top: 0;
+  left: var(--space-XS);
+  z-index: 10;
+}

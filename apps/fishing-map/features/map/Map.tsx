@@ -9,11 +9,14 @@ import {
   useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import MapControls from 'features/map/controls/MapControls'
+import { selectScreenshotAreaId } from 'features/map/controls/screenshot.slice'
 import DeckGLWrapper from 'features/map/DeckGLWrapper'
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
 import MapPopups from 'features/map/popups/MapPopups'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { selectReportAreaStatus } from 'features/reports/report-area/area-reports.selectors'
 import {
   selectIsAnyAreaReportLocation,
@@ -22,6 +25,8 @@ import {
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+import { Logo } from '../../../../libs/ui-components/src/logo/Logo'
 
 import MapInfo from './controls/MapInfo'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
@@ -60,6 +65,8 @@ const MapWrapper = () => {
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
+  const isPrinting = useSelector(selectScreenshotModalOpen)
+  const screenshotAreaId = useSelector(selectScreenshotAreaId)
 
   const mapLoading = useIsDeckLayersLoading()
   const isReportAreaLoading = useMemo(
@@ -74,6 +81,9 @@ const MapWrapper = () => {
       onMouseLeave={onMouseLeave}
       style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
     >
+      {isPrinting && screenshotAreaId !== ROOT_DOM_ELEMENT && (
+        <Logo className={styles.logo} type="invert" />
+      )}
       <DeckGLWrapper />
       {isMapDrawing && (
         <Fragment>
