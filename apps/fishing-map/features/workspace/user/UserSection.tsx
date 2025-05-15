@@ -179,11 +179,11 @@ function UserSection(): React.ReactElement<any> {
           </SortableContext>
         )}
         {guestUser ? (
-          <div className={styles.emptyStateBig}>
+          <div className={cx(styles.emptyStateBig, 'print-hidden')}>
             <RegisterOrLoginToUpload />
           </div>
         ) : !dataviews.length ? (
-          <div className={styles.emptyStateBig}>
+          <div className={cx(styles.emptyStateBig, 'print-hidden')}>
             {t('workspace.emptyStateUser', 'Upload custom datasets clicking on the plus icon.')}
           </div>
         ) : null}

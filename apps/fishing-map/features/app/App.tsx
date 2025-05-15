@@ -19,6 +19,7 @@ import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import AppModals from 'features/modals/Modals'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { selectReportAreaBounds } from 'features/reports/reports.config.selectors'
 import Sidebar from 'features/sidebar/Sidebar'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
@@ -30,7 +31,6 @@ import {
   selectWorkspaceCustomStatus,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { useIsPrinting } from 'hooks/screen.hooks'
 import {
   HOME,
   PORT_REPORT,
@@ -118,7 +118,7 @@ function App() {
   const userLogged = useSelector(selectIsUserLogged)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const fitWorkspaceBounds = useFitWorkspaceBounds()
-  const isPrinting = useIsPrinting()
+  const isPrinting = useSelector(selectScreenshotModalOpen)
 
   // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
   // probably better to fetch in both components just checking if the workspaceId is already fetched

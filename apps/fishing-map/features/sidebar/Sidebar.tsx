@@ -11,11 +11,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
-import { useIsPrinting } from 'hooks/screen.hooks'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -73,7 +73,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const isPrinting = useIsPrinting()
+  const isPrinting = useSelector(selectScreenshotModalOpen)
 
   useEffect(() => {
     if (isUserLogged) {
