@@ -8,6 +8,7 @@ import {
   useSetDeckLayerComposer,
   useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
+import { Logo } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -25,8 +26,6 @@ import {
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-
-import { Logo } from '../../../../libs/ui-components/src/logo/Logo'
 
 import MapInfo from './controls/MapInfo'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
