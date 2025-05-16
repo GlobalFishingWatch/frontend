@@ -927,6 +927,7 @@
     "gearType": "Type d’engin",
     "gearType_short": "engin",
     "geartypes": "Types d’engins",
+    "ais-geartypes": "GFW Gear Types",
     "gearTypes": {
       "bunker": "Ravitailleur ou pétrolier",
       "bunker_or_tanker": "Navire ravitailleur",
@@ -992,7 +993,7 @@
     "hideOtherLayers": "Masquer les autres calques",
     "identityDatesOutOfRange": "Les dates de cette identité ne chevauchent pas votre plage de temps actuelle",
     "imo": "OMI",
-    "infoCorrection": {
+    "vesselCorrection": {
       "currentValue": "Current value",
       "description": "Description (optional)",
       "descriptionPlaceholder": "Please describe the source of the correction and the time range it is relevant for.",
@@ -1109,6 +1110,7 @@
     "shipname": "Nom",
     "shiptype": "Types de navires",
     "shiptypes": "Types de navires",
+    "ais-shiptypes": "GFW Vessel Types",
     "showOtherLayers": "Afficher les autres calques",
     "sortAsc": "Trier les navires par ordre alphabétique (ascendant).",
     "sortDesc": "Trier les navires par ordre alphabétique (décroissant).",
