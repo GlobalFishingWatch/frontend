@@ -28,6 +28,7 @@ import {
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectVesselProfileDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import {
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesMergedOrdered,
@@ -280,11 +281,10 @@ export const selectPrivateDatasetsInWorkspace = createSelector(
 )
 
 export const selectHasVesselProfileInstancePinned = createSelector(
-  [selectWorkspaceDataviewInstances, selectUrlDataviewInstances, selectVesselId],
-  (workspaceDataviewInstances = [], urlDataviewInstances = [], vesselId) => {
-    const dataviews = [...workspaceDataviewInstances, ...urlDataviewInstances]
-    return dataviews?.some(({ config, id }) => {
-      return id === getVesselDataviewInstanceId(vesselId) && config?.visible
+  [selectVesselProfileDataviewInstancesInjected, selectVesselId],
+  (vesselProfileDataviewInstancesInjected = [], vesselId) => {
+    return vesselProfileDataviewInstancesInjected?.every(({ id }) => {
+      return id !== getVesselDataviewInstanceId(vesselId)
     })
   }
 )
