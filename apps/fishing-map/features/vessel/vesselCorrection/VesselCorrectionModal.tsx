@@ -221,6 +221,12 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                             [key]: option.label as string,
                           })
                         }
+                        onCleanClick={() =>
+                          setProposedValues({
+                            ...proposedValues,
+                            [key]: undefined,
+                          })
+                        }
                       />
                     ) : (
                       <InputText
@@ -270,7 +276,11 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                 ? t('vessel.vesselCorrection.insuficientData', 'Please fill in at least one field')
                 : ''
             }
-            disabled={loading || proposedValues === undefined}
+            disabled={
+              loading ||
+              proposedValues === undefined ||
+              Object.values(proposedValues).filter(Boolean).length === 0
+            }
             onClick={sendCorrection}
             loading={loading}
             className={styles.cta}
