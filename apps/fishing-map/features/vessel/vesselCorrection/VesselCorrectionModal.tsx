@@ -158,7 +158,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                   <label>{t('common.value', 'Value')}</label>
                 </th>
                 <th>
-                  <label>{t('common.feedback', 'Feedback')}</label>
+                  <label>{t('layer.vessel_info_correction', 'Suggest a correction')}</label>
                 </th>
               </tr>
             </thead>
