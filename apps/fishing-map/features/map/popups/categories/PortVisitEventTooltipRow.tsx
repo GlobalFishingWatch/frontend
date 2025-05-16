@@ -57,10 +57,7 @@ function PortVisitEventTooltipRow({
                 {!feature.properties.cluster && feature.properties.htime && interval && (
                   <span className={styles.rowTextSecondary}>
                     {' '}
-                    {formatDateForInterval(
-                      CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
-                      interval
-                    )}
+                    {formatDateForInterval(feature.properties.htime * 1000, interval)}
                     {interval === 'HOUR' && ' UTC'}
                   </span>
                 )}

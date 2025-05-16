@@ -55,7 +55,7 @@ function EncounterTooltipRow({
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
   const timestamp = feature.properties.htime
-    ? CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime)
+    ? feature.properties.htime * 1000
     : event?.start
       ? getUTCDateTime(event?.start as string).toMillis()
       : undefined
