@@ -32,7 +32,6 @@ import {
 import { FixedSizeList } from 'react-window'
 import { useParams } from '@tanstack/react-router'
 import escapeRegExp from 'lodash/escapeRegExp'
-import { matchSorter } from 'match-sorter'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
@@ -40,7 +39,7 @@ import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
 import IconClose from '../../assets/icons/close.svg'
 import IconSearch from '../../assets/icons/search.svg'
-import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config'
+import { countSelectedFiles, prepareTableData } from '../../utils/folderConfig'
 import { useGFWLogin } from '../login/use-login'
 
 import styles from './table.module.scss'
@@ -69,7 +68,7 @@ type ExtendedHeaderGroup = HeaderGroup<TableData> &
   UseSortByColumnProps<TableData> &
   UseResizeColumnsColumnProps<TableData>
 
-type ExtendedRow = Row<TableData> & UseExpandedRowProps<TableData>
+type ExtendedRow = Row<TableData> & UseExpandedRowProps<TableData> & { isSelected: boolean }
 
 type IndeterminateCheckboxProps = {
   indeterminate?: boolean
@@ -77,7 +76,7 @@ type IndeterminateCheckboxProps = {
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, IndeterminateCheckboxProps>(
-  ({ indeterminate, title, ...rest }, ref) => {
+  ({ indeterminate, ...rest }, ref) => {
     const defaultRef = useRef<HTMLInputElement>(null)
     const resolvedRef = (ref || defaultRef) as React.RefObject<HTMLInputElement>
     const inputID = Math.random().toString()
@@ -208,13 +207,7 @@ function Table({ columns, data }: TableProps) {
           width: 20,
           Header: () => '',
           Cell: ({ row }: any) => {
-            return (
-              <IndeterminateCheckbox
-                {...row.getToggleRowSelectedProps()}
-                disabled={!logged}
-                title=""
-              />
-            )
+            return <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
           },
         },
         ...columns,
@@ -230,9 +223,11 @@ function Table({ columns, data }: TableProps) {
     headerGroups,
     getTableProps,
     getTableBodyProps,
-    selectedFlatRows,
     setGlobalFilter,
   } = tableInstance
+  const selectedFlatRows = flatRows.filter(
+    (row: Row<TableData>) => (row as ExtendedRow).isSelected && !(row as ExtendedRow).canExpand
+  )
 
   const downloadSingleFile = useCallback(
     (path: string) => {
@@ -282,30 +277,9 @@ function Table({ columns, data }: TableProps) {
         'We are preparing the files you requested, you will receive an email when they are ready'
       )
     }
-  }, [datasetId, downloadSingleFile, selectedFlatRows])
+  }, [datasetId, downloadSingleFile, flatRows])
 
-  // Count the total number of selected files (not folders), including files in collapsed folders if the folder is selected
-  // Count selected files, but avoid double-counting files that are descendants of other selected rows
-  const countedRowIds = new Set<string>()
-  const rowSelectedCount = selectedFlatRows.reduce((count, row) => {
-    const original = row.original as TableData
-    const countFiles = (rows: TableData[]): number =>
-      rows.reduce((acc, r) => {
-        if (countedRowIds.has(r.path)) return acc
-        countedRowIds.add(r.path)
-        if (!r.subRows || r.subRows.length === 0) return acc + 1
-        return acc + countFiles(r.subRows)
-      }, 0)
-
-    if ((!original.subRows || original.subRows.length === 0) && !countedRowIds.has(original.path)) {
-      countedRowIds.add(original.path)
-      return count + 1
-    }
-    if (!original.isExpanded && original.subRows && original.subRows.length > 0) {
-      return count + countFiles(original.subRows)
-    }
-    return count
-  }, 0)
+  const rowSelectedCount = countSelectedFiles(selectedFlatRows)
 
   return (
     <div>
@@ -377,7 +351,7 @@ function Table({ columns, data }: TableProps) {
           ))}
         </div>
         <FixedSizeList
-          height={420}
+          height={500}
           width="100%"
           itemSize={40}
           itemCount={rows.length}
@@ -432,7 +406,7 @@ function Table({ columns, data }: TableProps) {
         </span>
         <button
           onClick={onDownloadClick}
-          disabled={!selectedFlatRows.length || downloadLoading || !logged}
+          disabled={!rowSelectedCount || downloadLoading || !logged}
         >
           {logged ? 'Download' : 'Login to download'}
         </button>
