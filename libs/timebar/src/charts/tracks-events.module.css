@@ -59,31 +59,6 @@
   border-image-slice: 50% 6 fill;
 }
 
-.fishing.thick {
-  height: 6px;
-  min-width: 6px;
-  box-sizing: content-box;
-  border: 0.5px solid var(--timebar-main-background-color-faded);
-}
-
-.fishing.compact {
-  height: 3px;
-  min-width: 3px;
-}
-
-.port_visit.compact {
-  height: 6px;
-  min-width: 6px;
-}
-
-.encounter.compact {
-  border-width: 3px;
-}
-
-.loitering.compact {
-  border-width: 3px;
-}
-
 .encounter:hover,
 .encounter.highlighted,
 .loitering:hover,

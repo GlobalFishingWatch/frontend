@@ -47,8 +47,12 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   border-right: 0.1rem solid var(--timebar-main-background-color);
+  height: 100%;
+}
+
+.timeActions > button {
+  flex: 1;
 }
 
 .timeActions > button:not(:last-of-type) {
@@ -72,16 +76,17 @@
 }
 
 .timebarResizer {
-  height: 5px;
+  height: 10px;
   width: 100%;
-  background-color: var(--timebar-ui-btn-color);
   position: absolute;
-  top: -5px;
+  border-bottom: 1px solid var(--timebar-ui-btn-color-hover);
+  top: -10px;
   left: 0;
   z-index: var(--timebar-z-index);
   cursor: ns-resize;
 }
 
-.timebarResizer:hover {
-  background-color: var(--timebar-ui-btn-color-hover);
+.timebarResizer:hover,
+.resizing {
+  border-bottom: 2px solid var(--color-white);
 }
