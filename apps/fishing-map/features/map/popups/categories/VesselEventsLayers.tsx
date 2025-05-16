@@ -9,7 +9,6 @@ import { Icon } from '@globalfishingwatch/ui-components'
 
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
 import { getEventDescriptionComponent } from 'utils/events'
 import { formatInfoField } from 'utils/info'
@@ -28,8 +27,6 @@ function VesselEventsTooltipSection({
   showFeaturesDetails,
 }: VesselEventsTooltipRowProps) {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
-  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const overflows = features?.length > MAX_TOOLTIP_LIST
   const featuresByType = useMemo(() => {
     const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features
@@ -37,6 +34,7 @@ function VesselEventsTooltipSection({
   }, [overflows, features])
 
   const resources = useSelector(selectVisibleResources)
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
 
   const vesselNamesByType = useMemo(() => {
     return Object.values(featuresByType).map((features) => {
@@ -52,12 +50,6 @@ function VesselEventsTooltipSection({
         : ''
     })
   }, [resources, featuresByType])
-
-  const onVesselPinClick = () => {
-    if (isAnyVesselLocation) {
-      dispatchQueryParams({ viewOnlyVessel: false })
-    }
-  }
 
   return (
     <Fragment>
@@ -78,7 +70,7 @@ function VesselEventsTooltipSection({
               const { description, DescriptionComponent } = getEventDescriptionComponent(
                 feature,
                 '',
-                onVesselPinClick
+                isAnyVesselLocation ? 'vesselProfile' : undefined
               )
               return (
                 <div key={index} className={styles.row}>

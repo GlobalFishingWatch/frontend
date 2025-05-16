@@ -42,9 +42,6 @@ export const selectPortReportName = selectReportStateProperty('portsReportName')
 export const selectPortReportCountry = selectReportStateProperty('portsReportCountry')
 export const selectPortReportDatasetId = selectReportStateProperty('portsReportDatasetId')
 
-// Vessel Group
-export const selectViewOnlyVesselGroup = selectReportStateProperty('viewOnlyVesselGroup')
-
 // Vessels
 export const selectReportVesselGraphSelector = selectReportStateProperty('reportVesselGraph')
 export const selectReportVesselFilter = selectReportStateProperty('reportVesselFilter')
@@ -62,3 +59,11 @@ export const selectReportVesselsOrderDirection = selectReportStateProperty(
 // Activity
 export const selectReportActivityGraph = selectReportStateProperty('reportActivityGraph')
 export const selectReportTimeComparison = selectReportStateProperty('reportTimeComparison')
+
+// Events
+export const selectReportEventsGraph = selectReportStateProperty('reportEventsGraph')
+export const selectReportEventsPortsFilter = selectReportStateProperty('reportEventsPortsFilter')
+export const selectReportEventsPortsPage = selectReportStateProperty('reportEventsPortsPage')
+export const selectReportEventsPortsResultsPerPage = selectReportStateProperty(
+  'reportEventsPortsResultsPerPage'
+)

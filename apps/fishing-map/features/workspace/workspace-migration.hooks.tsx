@@ -185,14 +185,6 @@ export const useMigrateWorkspaceToast = () => {
     toast.dismiss(toastId.current)
   }
 
-  // const dissmissToast = () => {
-  //   trackEvent({
-  //     category: TrackCategory.WorkspaceManagement,
-  //     action: 'Skip workspace migration',
-  //   })
-  //   closeToast()
-  // }
-
   const updateWorkspace = async () => {
     trackEvent({
       category: TrackCategory.WorkspaceManagement,

@@ -56,6 +56,9 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         visible: true,
         datasets: ['public-global-fishing-effort:v3.0'],
+        filters: {
+          distance_from_port_km: '3',
+        },
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
@@ -110,6 +113,8 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
       config: {
         visible: false,
+        // TODO remove this when removing the selectIsGlobalReportsEnabled feature flag
+        eventsTemporalAggregation: true,
       },
     },
     {

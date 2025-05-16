@@ -2,10 +2,11 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
+import dynamic from 'next/dynamic'
 
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { Tab } from '@globalfishingwatch/ui-components'
-import { Tabs } from '@globalfishingwatch/ui-components'
+import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -24,14 +25,11 @@ import {
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
-import ActivityReport from 'features/reports/tabs/activity/ReportActivity'
 import {
   resetReportData,
   selectReportVesselsStatus,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useSetTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
-import ReportEnvironment from 'features/reports/tabs/environment/ReportEnvironment'
-import EventsReport from 'features/reports/tabs/events/EventsReport'
 import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
@@ -46,6 +44,20 @@ import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
+
+const ReportActivity = dynamic(
+  () =>
+    import(/* webpackChunkName: "ReportActivity" */ 'features/reports/tabs/activity/ReportActivity')
+)
+const ReportEnvironment = dynamic(
+  () =>
+    import(
+      /* webpackChunkName: "ReportEnvironment" */ 'features/reports/tabs/environment/ReportEnvironment'
+    )
+)
+const ReportEvents = dynamic(
+  () => import(/* webpackChunkName: "ReportEvents" */ 'features/reports/tabs/events/EventsReport')
+)
 
 export default function Report() {
   useMigrateWorkspaceToast()
@@ -64,7 +76,6 @@ export default function Report() {
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
-
   const reportDataviews = useSelector(selectReportLayersVisible)
   const dataviewCategories = useMemo(
     () => uniq(reportDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
@@ -118,6 +129,9 @@ export default function Report() {
     if (reportArea && !hasReportBuffer) {
       highlightArea(reportArea as ContextFeature)
     }
+    return () => {
+      highlightArea(undefined)
+    }
   }, [highlightArea, reportArea, hasReportBuffer])
 
   const setTimebarVisualizationByCategory = useCallback(
@@ -129,7 +143,7 @@ export default function Report() {
       ) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment)
         dispatchTimebarSelectedEnvId(reportDataviews[0]?.id)
-      } else {
+      } else if (category === ReportCategory.Activity || category === ReportCategory.Detections) {
         dispatchTimebarVisualisation(
           category === ReportCategory.Detections
             ? TimebarVisualisations.HeatmapDetections
@@ -172,6 +186,10 @@ export default function Report() {
     )
   }
 
+  if (!reportCategory) {
+    return <Spinner />
+  }
+
   return (
     <Fragment>
       {filteredCategoryTabs.length > 1 && (
@@ -186,10 +204,10 @@ export default function Report() {
       {reportCategory === ReportCategory.Environment ? (
         <ReportEnvironment />
       ) : reportCategory === ReportCategory.Events ? (
-        <EventsReport />
+        <ReportEvents />
       ) : (
         <div>
-          <ActivityReport />
+          <ReportActivity />
         </div>
       )}
     </Fragment>

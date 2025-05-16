@@ -1,127 +1,105 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { GroupedVirtuoso } from 'react-virtuoso'
+import cx from 'classnames'
 
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
-import { DEFAULT_VIEWPORT } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
-import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
-import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
-import {
-  disableHighlightedTime,
-  setHighlightedEvents,
-  setHighlightedTime,
-} from 'features/timebar/timebar.slice'
-import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
+import { useHighlightedEventsConnect } from 'features/timebar/timebar.hooks'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
 import type VesselEvent from 'features/vessel/activity/event/Event'
 import Event, { EVENT_HEIGHT } from 'features/vessel/activity/event/Event'
-import EventDetail from 'features/vessel/activity/event/EventDetail'
+import { useVesselEventBounds } from 'features/vessel/activity/event/event.bounds'
+import { useEventActivityToggle } from 'features/vessel/activity/event/event-activity.hooks'
+import {
+  useEventsScroll,
+  useVirtuosoScroll,
+} from 'features/vessel/activity/event/event-scroll.hooks'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
-import { selectEventsGroupedByVoyages } from 'features/vessel/activity/vessels-activity.selectors'
+import {
+  selectEventsGroupedByVoyages,
+  selectVirtuosoVesselProfileEventsEvents,
+} from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
-import { getVoyageTimeRange } from 'features/vessel/vessel.utils'
+import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
+import { selectVesselEventId } from 'features/vessel/vessel.slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import { getUTCDateTime } from 'utils/dates'
 
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
   const { t } = useTranslation()
   const voyages = useSelector(selectEventsGroupedByVoyages)
-  const dispatch = useAppDispatch()
 
   const isSmallScreen = useSmallScreen()
   const { dispatchQueryParams } = useLocationConnect()
+  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const visibleEvents = useSelector(selectVisibleEvents)
+  const selectedVesselEventId = useSelector(selectVesselEventId)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
-  const [selectedEvent, setSelectedEvent] = useState<VesselEvent>()
-  const [expandedVoyages, toggleExpandedVoyage] = useExpandedVoyages()
+  const [selectedEventGroup, setSelectedEventGroup] = useEventActivityToggle()
   const fitBounds = useMapFitBounds()
+  const vesselLayer = useVesselProfileLayer()
+  const fitEventBounds = useVesselEventBounds(vesselLayer)
+  const { virtuosoRef } = useVirtuosoScroll()
+  const eventsRef = useRef(new Map<string, HTMLElement>())
 
-  const onInfoClick = useCallback((event: VesselEvent) => {
-    setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
-  }, [])
+  const { events, groupCounts, groups } = useSelector(selectVirtuosoVesselProfileEventsEvents)
 
-  const viewport = useMapViewport()
-  const setMapCoordinates = useSetMapCoordinates()
+  const { selectedEventId, setSelectedEventId, scrollToEvent, handleScroll } = useEventsScroll(
+    eventsRef,
+    virtuosoRef
+  )
+
+  useEffect(() => {
+    if (selectedVesselEventId && events?.length) {
+      scrollToEvent({ eventId: selectedVesselEventId })
+    }
+    // Only run once if selectedVesselEventId is in the url when loaded
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events])
+
+  const handleToggleClick = useCallback(
+    (voyage: number) => {
+      setSelectedEventGroup(voyage !== selectedEventGroup ? ({ voyage } as ActivityEvent) : null)
+    },
+    [setSelectedEventGroup, selectedEventGroup]
+  )
+
+  const handleEventClick = useCallback(
+    (event: VesselEvent) => {
+      setSelectedEventId(event?.id)
+      scrollToEvent({ eventId: event.id })
+      fitEventBounds(event)
+    },
+    [scrollToEvent, setSelectedEventId, fitEventBounds]
+  )
 
   const selectVoyageOnMap = useCallback(
     (voyageId: ActivityEvent['voyage']) => {
       const events = voyages[voyageId]
       const bounds = eventsToBbox(events)
-      fitBounds(bounds)
+      fitBounds(bounds, { fitZoom: true })
       if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
     },
     [dispatchQueryParams, fitBounds, isSmallScreen, voyages]
   )
 
-  const dispatchSetHighlightedEvents = useDebouncedDispatchHighlightedEvent()
-
-  const onVoyageMapHover = useCallback(
-    (voyageId?: ActivityEvent['voyage']) => {
-      const events = voyages[voyageId as number]
-      const { start, end } = getVoyageTimeRange(events)
-      if (start && end) {
-        dispatch(
-          setHighlightedTime({
-            start: getUTCDateTime(start).toISO() as string,
-            end: getUTCDateTime(end).toISO() as string,
-          })
-        )
-        const eventIds = events.map((event) => event.id)
-        dispatchSetHighlightedEvents(eventIds)
-      } else {
-        dispatch(disableHighlightedTime())
-        dispatchSetHighlightedEvents(undefined)
-      }
-    },
-    [dispatchSetHighlightedEvents, dispatch, voyages]
-  )
-
   const onEventMapHover = useCallback(
     (event?: VesselEvent) => {
       if (event?.id) {
-        dispatch(setHighlightedEvents([event.id]))
+        dispatchHighlightedEvents([event.id])
       } else {
-        dispatch(setHighlightedEvents([]))
+        dispatchHighlightedEvents([])
       }
     },
-    [dispatch]
+    [dispatchHighlightedEvents]
   )
-
-  const selectEventOnMap = useCallback(
-    (event: VesselEvent) => {
-      if (viewport?.zoom) {
-        const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
-        setMapCoordinates({
-          latitude: event.coordinates?.[1],
-          longitude: event.coordinates?.[0],
-          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-        })
-        if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
-      }
-    },
-    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport?.zoom]
-  )
-
-  const { events, groupCounts, groups } = useMemo(() => {
-    const eventsExpanded = Object.entries(voyages).map(([voyage, events]) => {
-      return expandedVoyages.includes(parseInt(voyage)) ? events : ([] as ActivityEvent[])
-    })
-    return {
-      events: eventsExpanded.flat(),
-      groupCounts: eventsExpanded.map((events) => events.length),
-      groups: Object.keys(voyages),
-    }
-  }, [expandedVoyages, voyages])
 
   const renderedComponent = useMemo(() => {
     if (!groupCounts.length) {
@@ -140,23 +118,13 @@ const ActivityByVoyage = () => {
           {Object.entries(voyages).map(([voyage, events]) => {
             return (
               <Fragment key={voyage}>
-                <VoyageGroup
-                  key={`${voyage}-group`}
-                  expanded
-                  events={events}
-                  onToggleClick={toggleExpandedVoyage}
-                  onMapClick={selectVoyageOnMap}
-                  onMapHover={onVoyageMapHover}
-                />
+                <VoyageGroup key={`${voyage}-group`} expanded events={events} />
                 {events.map((event, index) => (
                   <Event
                     key={`${voyage}-${index}-${event.id}`}
                     event={event}
-                    onMapHover={onEventMapHover}
-                    onMapClick={selectEventOnMap}
-                    onInfoClick={onInfoClick}
                     className={styles.event}
-                  ></Event>
+                  />
                 ))}
               </Fragment>
             )
@@ -165,61 +133,82 @@ const ActivityByVoyage = () => {
       )
     }
     return (
-      <GroupedVirtuoso
-        useWindowScroll
-        defaultItemHeight={EVENT_HEIGHT}
-        groupCounts={groupCounts}
-        increaseViewportBy={EVENT_HEIGHT * 4}
-        customScrollParent={getScrollElement()}
-        groupContent={(index) => {
-          const events = voyages[groups[index] as any]
-          if (!events) {
-            return null
-          }
-          const expanded = expandedVoyages.includes(index + 1)
-          return (
-            <VoyageGroup
-              key={index}
-              expanded={expanded}
-              events={events}
-              onToggleClick={toggleExpandedVoyage}
-              onMapClick={selectVoyageOnMap}
-              onMapHover={onVoyageMapHover}
-            />
-          )
-        }}
-        itemContent={(index) => {
-          const event = events[index]
-          return (
-            <Event
-              key={event.id}
-              event={event}
-              onMapHover={onEventMapHover}
-              onMapClick={selectEventOnMap}
-              onInfoClick={onInfoClick}
-              className={styles.event}
-            >
-              {selectedEvent?.id === event?.id && <EventDetail event={event} />}
-            </Event>
-          )
-        }}
-      />
+      <Fragment>
+        <GroupedVirtuoso
+          ref={virtuosoRef}
+          useWindowScroll
+          defaultItemHeight={EVENT_HEIGHT}
+          groupCounts={groupCounts}
+          increaseViewportBy={EVENT_HEIGHT * 4}
+          customScrollParent={getScrollElement()}
+          onWheel={handleScroll}
+          rangeChanged={handleScroll}
+          groupContent={(index) => {
+            const events = voyages[groups[index] as any]
+            if (!events) {
+              return null
+            }
+            const expanded = selectedEventGroup === index + 1
+
+            return (
+              <Fragment>
+                <VoyageGroup
+                  key={index}
+                  expanded={expanded}
+                  events={events}
+                  onToggleClick={handleToggleClick}
+                  onMapClick={selectVoyageOnMap}
+                  // onMapHover={onVoyageMapHover}
+                />
+                {!expanded && index === groups.length - 1 && <div style={{ height: '48vh' }}></div>}
+              </Fragment>
+            )
+          }}
+          itemContent={(index, groupIndex) => {
+            const event = events[index]
+            const expanded = selectedEventId ? event?.id.includes(selectedEventId) : false
+            return (
+              <Fragment>
+                <Event
+                  key={event.id}
+                  event={event}
+                  expanded={expanded}
+                  onMapHover={onEventMapHover}
+                  eventsRef={eventsRef.current}
+                  onMapClick={(event, e) => {
+                    if (expanded) {
+                      e.stopPropagation()
+                    }
+                    fitEventBounds(event)
+                  }}
+                  onInfoClick={handleEventClick}
+                  className={cx(styles.event, { [styles.eventExpanded]: expanded })}
+                />
+                {index === events.length - 1 && groupIndex === groups.length - 1 && (
+                  <div style={{ height: '48vh' }}></div>
+                )}
+              </Fragment>
+            )
+          }}
+        />
+      </Fragment>
     )
   }, [
-    events,
-    expandedVoyages,
     groupCounts,
-    groups,
-    onEventMapHover,
-    onInfoClick,
-    onVoyageMapHover,
-    selectEventOnMap,
-    selectVoyageOnMap,
-    selectedEvent?.id,
-    t,
-    toggleExpandedVoyage,
     vesselPrintMode,
+    virtuosoRef,
+    handleScroll,
+    t,
     voyages,
+    groups,
+    selectedEventGroup,
+    handleToggleClick,
+    selectVoyageOnMap,
+    events,
+    selectedEventId,
+    onEventMapHover,
+    handleEventClick,
+    fitEventBounds,
   ])
 
   if (visibleEvents !== 'all' && !visibleEvents.includes('port_visit')) {

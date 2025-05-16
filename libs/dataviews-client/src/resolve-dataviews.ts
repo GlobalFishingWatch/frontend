@@ -470,7 +470,6 @@ export function resolveDataviews(
         )
         return []
       }
-
       const config = {
         ...dataview.config,
         ...dataviewInstance.config,
@@ -564,6 +563,7 @@ export function resolveDataviews(
         config,
         datasets: dataviewDatasets,
         vesselGroup,
+        origin: dataviewInstance.origin,
         datasetsConfig,
       }
       return resolvedDataview

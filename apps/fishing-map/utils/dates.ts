@@ -5,7 +5,7 @@ import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types
 
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
-export { getUTCDateTime, formatDateForInterval } from '@globalfishingwatch/data-transforms'
+export { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 
 type UserCreatedEntities = Dataset | AppWorkspace | VesselGroup | Report
 

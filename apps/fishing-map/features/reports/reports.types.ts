@@ -5,10 +5,15 @@ import type {
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
   REPORT_ACTIVITY_GRAPH_EVOLUTION,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
+  REPORT_EVENTS_GRAPH_EVOLUTION,
+  REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
+  REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
+  REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
+  REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
-} from 'data/config'
+} from 'features/reports/reports.config'
 import type { Bbox, BufferOperation, BufferUnit } from 'types'
 
 // REPORT CATEGORY
@@ -62,11 +67,6 @@ export type PortsReportState = {
   portsReportDatasetId: string | undefined
 }
 
-// VESSEL GROUP REPORT
-export type VesselGroupReportState = {
-  viewOnlyVesselGroup: boolean
-}
-
 // REPORT VESSELS
 export type ReportVesselOrderProperty = 'shipname' | 'flag' | 'shiptype'
 export type ReportVesselOrderDirection = 'asc' | 'desc'
@@ -82,12 +82,21 @@ export type ReportVesselsState = {
   reportVesselResultsPerPage: number
   reportVesselOrderProperty: ReportVesselOrderProperty | undefined
   reportVesselOrderDirection: ReportVesselOrderDirection | undefined
+  reportLoadVessels: boolean | undefined
 }
 // REPORT ACTIVITY
 export type ReportActivityGraph =
   | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION
   | typeof REPORT_ACTIVITY_GRAPH_BEFORE_AFTER
   | typeof REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON
+
+// REPORT EVENTS
+export type ReportEventsGraph =
+  | typeof REPORT_EVENTS_GRAPH_EVOLUTION
+  | typeof REPORT_EVENTS_GRAPH_GROUP_BY_FLAG
+  | typeof REPORT_EVENTS_GRAPH_GROUP_BY_RFMO
+  | typeof REPORT_EVENTS_GRAPH_GROUP_BY_FAO
+  | typeof REPORT_EVENTS_GRAPH_GROUP_BY_EEZ
 
 export type ReportActivityTimeComparison = {
   start: string
@@ -101,12 +110,19 @@ export type ReportActivityState = {
   reportTimeComparison: ReportActivityTimeComparison | undefined
 }
 
+export type ReportEventsState = {
+  reportEventsGraph: ReportEventsGraph
+  reportEventsPortsFilter: string | undefined
+  reportEventsPortsPage: number
+  reportEventsPortsResultsPerPage: number
+}
+
 export type ReportState = ReportCategoryState &
   ReportSubcategoryState &
   ReportVesselsState &
   ReportActivityState &
+  ReportEventsState &
   AreaReportState &
-  PortsReportState &
-  VesselGroupReportState
+  PortsReportState
 
 export type ReportStateProperty = keyof ReportState

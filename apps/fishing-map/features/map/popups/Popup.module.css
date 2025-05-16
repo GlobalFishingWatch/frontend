@@ -31,6 +31,7 @@
   top: -2rem;
   right: -2rem;
   background-color: var(--color-primary-blue);
+  /* stylelint-disable-next-line color-function-alias-notation */
   color: rgba(var(--white-rgb), 0.8);
   opacity: 1;
   border: var(--border-white);
@@ -234,6 +235,10 @@
   overflow: hidden;
 }
 
+.rowTextSecondary {
+  opacity: var(--opacity-secondary);
+}
+
 .rowText a {
   text-decoration: underline;
 }
@@ -290,4 +295,8 @@
   margin-top: var(--space-S);
   display: block;
   width: 100%;
+}
+
+.eventSpinner {
+  margin-top: 1rem;
 }

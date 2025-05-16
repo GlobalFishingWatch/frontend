@@ -11,6 +11,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
@@ -31,15 +32,15 @@ import SidebarHeader from './SidebarHeader'
 import styles from './Sidebar.module.css'
 
 const AreaReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-area/AreaReport')
+  () => import(/* webpackChunkName: "AreaReport" */ 'features/reports/report-area/AreaReport')
 )
 const PortsReport = dynamic(
-  () => import(/* webpackChunkName: "Report" */ 'features/reports/report-port/PortsReport')
+  () => import(/* webpackChunkName: "PortsReport" */ 'features/reports/report-port/PortsReport')
 )
 const VesselGroupReport = dynamic(
   () =>
     import(
-      /* webpackChunkName: "Report" */ 'features/reports/report-vessel-group/VesselGroupReport'
+      /* webpackChunkName: "VesselGroupReport" */ 'features/reports/report-vessel-group/VesselGroupReport'
     )
 )
 const VesselProfile = dynamic(
@@ -72,6 +73,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isPrinting = useSelector(selectScreenshotModalOpen)
 
   useEffect(() => {
     if (isUserLogged) {
@@ -141,7 +143,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     isWorkspacesListLocation,
     isUserLogged,
   ])
-  const showTabs = !readOnly && !isSmallScreen
+  const showTabs = !readOnly && !isSmallScreen && !isPrinting
   return (
     <div className={styles.container}>
       {showTabs && <CategoryTabs onMenuClick={onMenuClick} />}

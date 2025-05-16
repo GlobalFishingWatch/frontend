@@ -9,6 +9,7 @@ export default {
       },
     ],
     'color-function-notation': 'legacy',
+    'color-function-alias-notation': 'with-alpha',
     'selector-class-pattern': '.*',
     'selector-id-pattern': '.*',
     'custom-property-pattern': '.*',

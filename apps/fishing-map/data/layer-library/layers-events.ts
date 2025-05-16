@@ -1,4 +1,4 @@
-import { PATH_BASENAME } from 'data/config'
+import { IS_PRODUCTION_WORKSPACE_ENV, PATH_BASENAME } from 'data/config'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
@@ -18,6 +18,8 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/encounters.jpg`,
     config: {
       color: '#FAE9A0',
+      // TODO remove this when removing the selectIsGlobalReportsEnabled feature flag
+      eventsTemporalAggregation: IS_PRODUCTION_WORKSPACE_ENV,
     },
   },
   {
@@ -26,6 +28,8 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/loitering.jpg`,
     config: {
       color: '#CEA9F9',
+      // TODO remove this when removing the selectIsGlobalReportsEnabled feature flag
+      eventsTemporalAggregation: IS_PRODUCTION_WORKSPACE_ENV,
     },
     onlyGFWUser: true,
   },
@@ -35,6 +39,8 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/port-visits.jpg`,
     config: {
       color: '#9AEEFF',
+      // TODO remove this when removing the selectIsGlobalReportsEnabled feature flag
+      eventsTemporalAggregation: IS_PRODUCTION_WORKSPACE_ENV,
     },
     onlyGFWUser: true,
   },

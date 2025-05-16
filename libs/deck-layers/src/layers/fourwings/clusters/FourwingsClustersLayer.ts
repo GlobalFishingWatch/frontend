@@ -18,9 +18,13 @@ import Supercluster from 'supercluster'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
-import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FourwingsClustersLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import {
+  COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
   getLayerGroupOffset,
@@ -51,6 +55,7 @@ type FourwingsClustersTileLayerState = {
   error: string
   clusterIndex: Supercluster
   viewportLoaded: boolean
+  data: FourwingsPointFeature[]
   clusters?: FourwingsClusterFeature[]
   points?: FourwingsPointFeature[]
   radiusScale?: ScalePower<number, number>
@@ -123,6 +128,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return clusterMode
   }
 
+  get interval(): FourwingsInterval {
+    return getFourwingsInterval(this.props.startTime, this.props.endTime)
+  }
+
   getError(): string {
     return this.state.error
   }
@@ -131,10 +140,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
     super.initializeState(context)
     this.state = {
       error: '',
+      data: [],
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 70,
-        maxZoom: this.props.maxZoom - 1,
+        maxZoom: 24,
         reduce: (accumulated, props) => {
           return (accumulated.value += props.value)
         },
@@ -150,20 +160,44 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return true
   }
 
+  getClusterId = (feature: FourwingsClusterFeature | undefined) => {
+    return `${this.id}-${feature?.properties.id || (feature?.geometry?.coordinates || []).join('-')}`
+  }
+
   getPickingInfo = ({
     info,
   }: {
     info: PickingInfo<FourwingsClusterFeature>
   }): FourwingsClusterPickingInfo => {
     let expansionZoom: number | undefined
+    let expansionBounds: Bbox | undefined
     if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
-      expansionZoom = this.state.clusterIndex.getClusterExpansionZoom(
-        info.object?.properties.cluster_id
-      )
+      const points = this.state.clusterIndex.getLeaves(info.object?.properties.cluster_id, Infinity)
+      const areAllPointsInSameCell =
+        points?.length > 0 &&
+        points.every((p) => p.properties.cellNum === points[0].properties.cellNum)
+      if (!areAllPointsInSameCell) {
+        expansionZoom = Math.min(
+          this.state.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id),
+          this.props.maxZoom
+        )
+        const bounds = points.reduce(
+          (acc, point) => {
+            return [
+              Math.min(acc[0], point.properties.cellBounds?.[0]),
+              Math.min(acc[1], point.properties.cellBounds?.[1]),
+              Math.max(acc[2], point.properties.cellBounds?.[2]),
+              Math.max(acc[3], point.properties.cellBounds?.[3]),
+            ] as Bbox
+          },
+          [Infinity, Infinity, -Infinity, -Infinity] as Bbox
+        )
+        expansionBounds = bounds
+      }
     }
     const object = {
       ...(info.object || ({} as FourwingsClusterFeature)),
-      id: info.object?.properties.id || `${(info.object?.geometry?.coordinates || []).join('-')}`,
+      id: this.getClusterId(info.object),
       ...(this.clusterMode === 'positions' &&
         info.object?.properties.id && {
           eventId: info.object?.properties.id,
@@ -176,9 +210,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
       startTime: this.props.startTime,
       endTime: this.props.endTime,
       eventType: this.props.eventType,
-      uniqueFeatureInteraction: true,
+      uniqueFeatureInteraction: false,
+      groupFeatureInteraction: true,
       clusterMode: this.clusterMode,
       expansionZoom,
+      expansionBounds,
     }
     return { ...info, object }
   }
@@ -196,6 +232,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     if (this.clusterMode === 'positions' && data.length < MAX_INDIVIDUAL_POINTS) {
       requestAnimationFrame(() => {
         this.setState({
+          data,
           viewportLoaded: true,
           points: data,
           clusters: undefined,
@@ -224,6 +261,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       .range([MIN_CLUSTER_RADIUS, MAX_CLUSTER_RADIUS])
     requestAnimationFrame(() => {
       this.setState({
+        data,
         viewportLoaded: true,
         clusters,
         points,
@@ -247,6 +285,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     let rows: number = 0
     let scale: number = 0
     let offset: number = 0
+    let noDataValue: number = 0
     try {
       const response = await GFWAPI.fetch<any>(url, {
         signal,
@@ -268,6 +307,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
       if (response.headers.get('X-offset') && !offset) {
         offset = parseInt(response.headers.get('X-offset') as string)
       }
+      if (response.headers.get('X-empty-value') && !noDataValue) {
+        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      }
 
       if (signal?.aborted) {
         return
@@ -284,6 +326,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
           scale,
           offset,
           tile,
+          noDataValue,
+          interval: this.interval,
+          temporalAggregation: this.props.temporalAggregation,
         },
       })
     } catch (error: any) {
@@ -328,7 +373,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
     url = url
       ?.replace('{{type}}', 'heatmap')
-      .concat(`&format=4WINGS&temporal-aggregation=true&geolocation=${this.clusterMode}`)
+      .concat(`&format=4WINGS&interval=${this.interval}&geolocation=${this.clusterMode}`)
+    if (this.props.temporalAggregation) {
+      url = url?.concat(`&temporal-aggregation=true`)
+    }
     return this._fetchClusters(url!, { signal: tile.signal, tile })
   }
 
@@ -338,6 +386,20 @@ export class FourwingsClustersLayer extends CompositeLayer<
 
   _getRadius = (d: FourwingsClusterFeature) => {
     return this.state.radiusScale?.(d.properties.value) || MIN_CLUSTER_RADIUS
+  }
+
+  _getLineColor = (d: FourwingsClusterFeature) => {
+    const isHighlighted = this.props.highlightedFeatures?.some(
+      (feature) => feature.id === this.getClusterId(d)
+    )
+    return isHighlighted ? COLOR_HIGHLIGHT_LINE : DEFAULT_LINE_COLOR
+  }
+
+  _getColor = (d: FourwingsClusterFeature) => {
+    const isHighlighted = this.props.highlightedFeatures?.some(
+      (feature) => feature.id === this.getClusterId(d)
+    )
+    return isHighlighted ? COLOR_HIGHLIGHT_LINE : hexToDeckColor(this.props.color)
   }
 
   _getClusterLabel = (d: FourwingsClusterFeature) => {
@@ -351,7 +413,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
-    const { color, tilesUrl, eventType = 'encounter' } = this.props
+    const { color, tilesUrl, eventType = 'encounter', highlightedFeatures } = this.props
     const { clusters, points, radiusScale } = this.state
 
     return [
@@ -376,9 +438,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
         iconAtlas: `${PATH_BASENAME}/events-color-sprite.png`,
         iconMapping: ICON_MAPPING,
         getIcon: () => eventType,
-        getColor: hexToDeckColor(color),
+        getColor: this._getColor,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         pickable: true,
+        updateTriggers: {
+          getColor: [highlightedFeatures],
+        },
       }),
       new ScatterplotLayer({
         id: `${this.props.id}-${CLUSTER_LAYER_ID}`,
@@ -389,13 +454,14 @@ export class FourwingsClustersLayer extends CompositeLayer<
         radiusMinPixels: MIN_CLUSTER_RADIUS,
         radiusUnits: 'pixels',
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
+        getLineColor: this._getLineColor,
         stroked: true,
-        getLineColor: DEFAULT_LINE_COLOR,
-        lineWidthMinPixels: 0.2,
+        lineWidthMinPixels: 0.5,
         lineWidthUnits: 'pixels',
         pickable: true,
         updateTriggers: {
           getRadius: [radiusScale],
+          getLineColor: [highlightedFeatures],
         },
       }),
       new TextLayer({
@@ -417,7 +483,22 @@ export class FourwingsClustersLayer extends CompositeLayer<
     ]
   }
 
+  getData() {
+    return this.state.data as FourwingsPointFeature[]
+  }
+
   getViewportData() {
+    const data = this.getData()
+    const { viewport } = this.context
+    const [west, north] = viewport.unproject([0, 0])
+    const [east, south] = viewport.unproject([viewport.width, viewport.height])
+    if (data?.length) {
+      const dataFiltered = filterFeaturesByBounds({
+        features: data as any,
+        bounds: { north, south, west, east },
+      })
+      return dataFiltered as FourwingsPointFeature[]
+    }
     return []
   }
 }

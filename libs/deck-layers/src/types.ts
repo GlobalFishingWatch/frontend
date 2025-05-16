@@ -35,11 +35,13 @@ export type DeckLayerProps<G> = {
 export type DeckPickingObject<G> = {
   id: string
   title?: string
+  count?: number
   layerId: string
   color?: string
   category: DeckLayerCategory
   subcategory?: DeckLayerSubcategory
   uniqueFeatureInteraction?: boolean
+  groupFeatureInteraction?: boolean
 } & G
 
 export type AnyDeckLayer<D extends object = object> =

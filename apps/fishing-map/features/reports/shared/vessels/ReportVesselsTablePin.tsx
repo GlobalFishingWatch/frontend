@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getVesselInWorkspace, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import { getVesselDataview, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import { setPinningVessels } from 'features/reports/tabs/activity/reports-activity.slice'
@@ -29,7 +29,7 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
   const allVesselsInWorkspace = useSelector(selectVesselsDataviews)
   const vesselPinnedIds = allVesselsInWorkspace.map((dI) => dI.id.split(VESSEL_LAYER_PREFIX)[1])
   const vesselDataviewInstancesPinned = vessels.flatMap(
-    (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.id!) || []
+    (vessel) => getVesselDataview({ dataviews: allVesselsInWorkspace, vesselId: vessel.id! }) || []
   )
   const hasAllVesselsInWorkspace = vesselDataviewInstancesPinned?.length
     ? vessels.every(({ id }) => vesselPinnedIds.includes(id))

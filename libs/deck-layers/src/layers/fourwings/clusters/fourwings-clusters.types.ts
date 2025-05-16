@@ -7,8 +7,9 @@ import type {
   EventTypes,
   FourwingsGeolocation,
 } from '@globalfishingwatch/api-types'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 
-import type { DeckLayerProps, DeckPickingObject } from '../../../types'
+import type { DeckLayerPickingObject, DeckLayerProps, DeckPickingObject } from '../../../types'
 
 export type FourwingsClusterEventType =
   | `${EventTypes.Encounter}`
@@ -28,6 +29,8 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
   visible: boolean
   clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
   maxZoom: number
+  highlightedFeatures?: DeckLayerPickingObject[]
+  temporalAggregation?: boolean
 }>
 
 export type FourwingsClusterProperties = {
@@ -36,6 +39,7 @@ export type FourwingsClusterProperties = {
   col: number
   row: number
   tile: Tile2DHeader['index']
+  htime: number
 }
 export type FourwingsClusterFeature = ClusterFeature<FourwingsClusterProperties>
 
@@ -45,6 +49,7 @@ export type FourwingsClusterPickingObject = FourwingsClusterFeature &
     startTime: number
     endTime: number
     expansionZoom?: number
+    expansionBounds?: Bbox
     datasetId?: string
     eventId?: string
     eventType?: FourwingsClusterEventType

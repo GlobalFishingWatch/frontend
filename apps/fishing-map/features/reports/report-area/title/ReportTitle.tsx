@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
@@ -18,13 +18,14 @@ import {
   NAUTICAL_MILES,
 } from 'features/reports/report-area/area-reports.config'
 import {
+  selectIsGlobalReport,
   selectReportArea,
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
 import { DEFAULT_BUFFER_OPERATION } from 'features/reports/reports.config'
-import { selectCurrentReport, selectReportCategory } from 'features/reports/reports.selectors'
+import { selectCurrentReport } from 'features/reports/reports.selectors'
 import AreaReportSearch from 'features/reports/shared/area-search/AreaReportSearch'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import {
@@ -54,7 +55,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const loading = useReportFeaturesLoading()
   const highlightArea = useHighlightReportArea()
   const fitAreaInViewport = useFitAreaInViewport()
-  const reportCategory = useSelector(selectReportCategory)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
   const reportTitle = useReportTitle()
@@ -215,9 +216,9 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
         <a className={styles.reportLink} href={window.location.href}>
           {t('analysis.linkToReport', 'Check the dynamic report here')}
         </a>
-        {reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID && <AreaReportSearch />}
+        {isGlobalReport && <AreaReportSearch />}
         <div className={styles.actions}>
-          {reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && (
+          {!isGlobalReport && (
             <Popover
               open={showBufferTooltip}
               onClickOutside={handleTooltipHide}
@@ -244,8 +245,6 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                   onClick={handleTooltipShow}
                   // onHide: handleTooltipHide,
                   type="border-secondary"
-                  tooltip={reportCategory === 'events' ? t('common.comingSoon', 'Coming soon') : ''}
-                  disabled={reportCategory === 'events'}
                   size="small"
                   className={styles.actionButton}
                 >
@@ -268,7 +267,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
         </div>
       </div>
       {reportDescription && !isSticky && (
-        <p>
+        <Fragment>
           <span
             className={cx(styles.description, { [styles.expanded]: expandedDescription })}
             ref={descriptionRef}
@@ -287,7 +286,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                 : t('common.seeMore', 'See more')}
             </span>
           )}
-        </p>
+        </Fragment>
       )}
     </div>
   )

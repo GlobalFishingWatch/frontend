@@ -42,14 +42,12 @@ import styles from './ReportVesselsTable.module.css'
 type ReportVesselTableProps = {
   vessels: ReportTableVessel[]
   activityUnit?: ReportActivityUnit
-  reportName?: string
   allowSorting?: boolean
 }
 
 export default function ReportVesselsTable({
   vessels,
   activityUnit,
-  reportName,
   allowSorting = true,
 }: ReportVesselTableProps) {
   const { t } = useTranslation()
@@ -81,10 +79,7 @@ export default function ReportVesselsTable({
     })
   }
 
-  const onPinClick = ({ vesselInWorkspace, vesselId }: VesselPinClickProps) => {
-    if (!vesselInWorkspace) {
-      dispatchQueryParams({ viewOnlyVesselGroup: false })
-    }
+  const onPinClick = ({ vesselId }: VesselPinClickProps) => {
     trackEvent({
       category: TrackCategory.VesselGroupReport,
       action: `vessel_report_pin_vessel`,
@@ -259,8 +254,8 @@ export default function ReportVesselsTable({
                     {values.length &&
                       values.map((v) =>
                         v.value ? (
-                          <Fragment>
-                            {v.color && values.length > 1 && (
+                          <Fragment key={v.value}>
+                            {v.color && dataviews?.length > 1 && (
                               <span
                                 className={styles.dot}
                                 style={{ backgroundColor: v.color }}
@@ -281,7 +276,7 @@ export default function ReportVesselsTable({
           })}
         </div>
       </div>
-      <ReportVesselsTableFooter reportName={reportName} activityUnit={activityUnit} />
+      <ReportVesselsTableFooter activityUnit={activityUnit} />
     </Fragment>
   )
 }

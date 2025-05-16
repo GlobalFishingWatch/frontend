@@ -9,6 +9,7 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 
+import { getUTCDateTime } from '../../utils'
 import { colorToVec, hexToDeckColor } from '../../utils/colors'
 import { MAX_FILTER_VALUE } from '../layers.config'
 
@@ -38,6 +39,11 @@ export type _VesselTrackLayerProps<DataT = any> = {
    */
   endTime: number
   /**
+   * Uses the startDate and endDate to define the start and end time of the track without any chunk
+   * @default false
+   */
+  strictTimeRange?: boolean
+  /**
    * The start time to highlight the track in milliseconds
    * @default 0
    */
@@ -47,6 +53,16 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * @default 0
    */
   highlightEndTime?: number
+  /**
+   * The start time of an event to thicken the track in milliseconds
+   * @default 0
+   */
+  highlightEventStartTime?: number
+  /**
+   * The end time of an event to thicken the track in milliseconds
+   * @default 0
+   */
+  highlightEventEndTime?: number
   /**
    * The low speed filter
    * @default 0
@@ -131,6 +147,8 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   startTime: { type: 'number', value: 0, min: 0 },
   highlightStartTime: { type: 'number', value: 0, min: 0 },
   highlightEndTime: { type: 'number', value: 0, min: 0 },
+  highlightEventStartTime: { type: 'number', value: 0, min: 0 },
+  highlightEventEndTime: { type: 'number', value: 0, min: 0 },
   minSpeedFilter: { type: 'number', value: -MAX_FILTER_VALUE, min: 0 },
   maxSpeedFilter: { type: 'number', value: MAX_FILTER_VALUE, min: 0 },
   minElevationFilter: { type: 'number', value: -MAX_FILTER_VALUE, min: 0 },
@@ -155,6 +173,8 @@ const uniformBlock = `
     uniform float endTime;
     uniform float highlightStartTime;
     uniform float highlightEndTime;
+    uniform float highlightEventStartTime;
+    uniform float highlightEventEndTime;
     uniform float minSpeedFilter;
     uniform float maxSpeedFilter;
     uniform float minElevationFilter;
@@ -192,6 +212,8 @@ const trackLayerUniforms = {
     endTime: 'f32',
     highlightStartTime: 'f32',
     highlightEndTime: 'f32',
+    highlightEventStartTime: 'f32',
+    highlightEventEndTime: 'f32',
     minSpeedFilter: 'f32',
     maxSpeedFilter: 'f32',
     minElevationFilter: 'f32',
@@ -238,11 +260,16 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         out float vTime;
         out float vSpeed;
         out float vElevation;
-      `,
-      'vs:#main-end': /*glsl*/ `
+        `,
+      'vs:DECKGL_FILTER_SIZE': /*glsl*/ `
         vTime = instanceTimestamps;
         vSpeed = instanceSpeeds;
         vElevation = instanceElevations;
+        if (vTime > track.highlightEventStartTime && vTime < track.highlightEventEndTime) {
+          size *= 4.0;
+        }
+        `,
+      'vs:#main-end': /*glsl*/ `
         if(vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
           gl_Position.z = 1.0;
         }
@@ -278,6 +305,11 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
         {
           color.a = 0.25;
         }
+
+        // TODO how can we fade the rest of the track?
+        // if(vTime <= track.highlightEventStartTime || vTime >= track.highlightEventEndTime) {
+        //   color.a = 0.25;
+        // }
 
         if (vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
@@ -328,6 +360,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       trackGraphExtent,
       highlightStartTime = 0,
       highlightEndTime = 0,
+      highlightEventStartTime = 0,
+      highlightEventEndTime = 0,
       minSpeedFilter = -MAX_FILTER_VALUE,
       maxSpeedFilter = MAX_FILTER_VALUE,
       minElevationFilter = -MAX_FILTER_VALUE,
@@ -361,6 +395,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
           endTime,
           highlightStartTime,
           highlightEndTime,
+          highlightEventStartTime,
+          highlightEventEndTime,
           minSpeedFilter,
           maxSpeedFilter,
           minElevationFilter,
@@ -389,21 +425,31 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
     return extent
   }
 
-  getBbox() {
+  getBbox(params = {} as { startDate?: number | string; endDate?: number | string }) {
     const data = this.props.data as VesselTrackData
     const positions = data.attributes?.getPath?.value
     const positionsSize = data.attributes?.getPath?.size
     const timestamps = data.attributes?.getTimestamp?.value
     if (!timestamps?.length) return null
 
-    const firstPointIndex = timestamps.findIndex((t) => t > this.props.startTime)
-    const lastPointIndex = timestamps.findLastIndex((t) => t < this.props.endTime)
-    if (firstPointIndex === -1 || lastPointIndex === -1 || firstPointIndex >= lastPointIndex) {
+    const startDate = params?.startDate
+      ? getUTCDateTime(params.startDate).toMillis()
+      : this.props.startTime
+    const endDate = params?.endDate ? getUTCDateTime(params.endDate).toMillis() : this.props.endTime
+    const firstPointIndex = timestamps.findIndex((t) => t > startDate)
+    const lastPointIndex = timestamps.findLastIndex((t) => t < endDate)
+    if (firstPointIndex === -1 || lastPointIndex === -1 || firstPointIndex > lastPointIndex) {
       return null
+    }
+    if (firstPointIndex === lastPointIndex) {
+      const index = firstPointIndex
+      const longitude = positions[index * positionsSize]
+      const latitude = positions[index * positionsSize + 1]
+      return wrapBBoxLongitudes([longitude, latitude, longitude, latitude])
     }
 
     const bounds = [Infinity, Infinity, -Infinity, -Infinity] as Bbox
-    for (let index = firstPointIndex; index <= lastPointIndex; index++) {
+    for (let index = firstPointIndex; index <= lastPointIndex + 1; index++) {
       const longitude = positions[index * positionsSize]
       const latitude = positions[index * positionsSize + 1]
       if (longitude < bounds[0]) bounds[0] = longitude

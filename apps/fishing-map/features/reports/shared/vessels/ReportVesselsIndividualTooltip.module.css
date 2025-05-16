@@ -17,3 +17,13 @@
   color: var(--color-secondary-blue);
   font: var(--font-S);
 }
+
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.value {
+  margin-left: var(--space-S);
+  color: var(--color-secondary-blue);
+}

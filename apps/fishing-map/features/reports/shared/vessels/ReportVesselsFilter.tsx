@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useDebounce } from 'use-debounce'
@@ -30,21 +30,30 @@ export default function ReportVesselsFilter({
   const locationType = useSelector(selectLocationType)
 
   useEffect(() => {
-    dispatchQueryParams({ [filterQueryParam]: debouncedQuery, [pageQueryParam]: 0 })
-    trackEvent({
-      category: TrackCategory.Analysis,
-      action: `Type search into vessel list from ${locationType}`,
-      label: debouncedQuery,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery])
-
-  useEffect(() => {
-    if (filter !== query) {
+    if (filter !== undefined && filter !== query) {
       setQuery(filter || '')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter])
+
+  const prevDebouncedQueryRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    // Prevent firing on initial render
+    if (
+      prevDebouncedQueryRef.current !== null &&
+      debouncedQuery !== prevDebouncedQueryRef.current
+    ) {
+      dispatchQueryParams({ [filterQueryParam]: debouncedQuery, [pageQueryParam]: 0 })
+
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: `Type search into vessel list from ${locationType}`,
+        label: debouncedQuery,
+      })
+    }
+    prevDebouncedQueryRef.current = debouncedQuery
+  }, [debouncedQuery, dispatchQueryParams, filterQueryParam, pageQueryParam, locationType])
 
   return (
     <div className={styles.inputContainer}>

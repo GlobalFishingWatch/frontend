@@ -96,6 +96,7 @@
 .eventDetailsList li {
   padding-left: 0;
   margin-left: var(--space-M);
+  padding-block: var(--space-XS);
 }
 
 .eventDetailsList li:not(:last-child) {

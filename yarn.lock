@@ -3002,6 +3002,7 @@ __metadata:
     "@swc/core": "npm:1.11.24"
     "@swc/helpers": "npm:0.5.17"
     "@tanstack/react-router": "npm:1.119.0"
+    "@tanstack/react-virtual": "npm:^3.13.6"
     "@tanstack/router-devtools": "npm:1.119.1"
     "@tanstack/router-vite-plugin": "npm:1.119.0"
     "@testing-library/jest-dom": "npm:6.6.3"
@@ -3064,6 +3065,7 @@ __metadata:
     circular-dependency-plugin: "npm:5.2.2"
     classnames: "npm:2.5.1"
     color-blend: "npm:4.0.0"
+    colorjs.io: "npm:^0.5.2"
     countryflag: "npm:5.0.0"
     cypress: "npm:14.3.2"
     d3: "npm:7.9.0"
@@ -4233,20 +4235,20 @@ __metadata:
   linkType: hard
 
 "@lingual/i18n-check@npm:^0.8.2":
-  version: 0.8.2
-  resolution: "@lingual/i18n-check@npm:0.8.2"
+  version: 0.8.3
+  resolution: "@lingual/i18n-check@npm:0.8.3"
   dependencies:
     "@formatjs/cli-lib": "npm:^6.6.6"
     "@formatjs/icu-messageformat-parser": "npm:^2.11.2"
     chalk: "npm:^4.1.2"
     commander: "npm:^12.1.0"
-    glob: "npm:^11.0.1"
+    glob: "npm:^11.0.2"
     i18next-parser: "npm:^9.3.0"
     js-yaml: "npm:^4.1.0"
     typescript: "npm:^5.8.3"
   bin:
     i18n-check: dist/bin/index.js
-  checksum: 10/6b80ed306dfd4335a9f4128e2c9a2f6affac84482c4b22e4cbb1add33796962b62ad96c31fa4bd18905414a28a6127d334a0029be03c72f5500b9e4a03b3201e
+  checksum: 10/f8a47efbdbb7e8957d59d891f8de7fb4ed17d84e77d00cc252523b9f0a3ae85e373ceeb7046c2368295c2d9e331529fc65fdf3f77d686dbda62ed9071944a36d
   languageName: node
   linkType: hard
 
@@ -9416,6 +9418,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/react-virtual@npm:^3.13.6":
+  version: 3.13.8
+  resolution: "@tanstack/react-virtual@npm:3.13.8"
+  dependencies:
+    "@tanstack/virtual-core": "npm:3.13.8"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/a68db4cccc0de54ba0da2ae4292671bd4fa339d1cdfab160d8a067d5bb78f77e2f75d234089d4cf45bc688e51f702604c7f2d4031f8e9b8ce82cb71a0fa7b4f0
+  languageName: node
+  linkType: hard
+
 "@tanstack/router-core@npm:1.119.0, @tanstack/router-core@npm:^1.119.0":
   version: 1.119.0
   resolution: "@tanstack/router-core@npm:1.119.0"
@@ -9562,6 +9576,13 @@ __metadata:
   version: 3.11.2
   resolution: "@tanstack/virtual-core@npm:3.11.2"
   checksum: 10/8433044a5c801052ba2e4cdda098cdc8e32adfd3a76ba31af7064bbdda60062fe221a3558096987baa66cd94f528855e887c282cb0f9eb99d3751457c2a62872
+  languageName: node
+  linkType: hard
+
+"@tanstack/virtual-core@npm:3.13.8":
+  version: 3.13.8
+  resolution: "@tanstack/virtual-core@npm:3.13.8"
+  checksum: 10/21982fa3b55bb4a7936a013b5ec151ce636eb108b38b56519391b9ebffc1cbcd81de0472229d237f84fc8c44e61a6a3890dba6371d04d921a61023d506902a0b
   languageName: node
   linkType: hard
 
@@ -12598,11 +12619,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:14 || 16 || 17 || 18 || 20 || 22, @types/node@npm:>=13.7.0":
-  version: 22.15.15
-  resolution: "@types/node@npm:22.15.15"
+  version: 22.15.17
+  resolution: "@types/node@npm:22.15.17"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/26e9c2e272b5cc7b342a6e6708e4551d5346e712bd57c4b49eb08470304325d5ed245f8ae425ea3958cab75240581af56eb39e7bf63d01e1412c056be0b0a562
+  checksum: 10/3f5870ec1ac16b1dd8e5817de81164df9b69e4cf19cce692cb7c9b1af1deaecfd98b591b56155fcc4aa582f7189a4fc0c8d7d3226fa0387403db615a12dd8cb6
   languageName: node
   linkType: hard
 
@@ -15817,7 +15838,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colorjs.io@npm:^0.5.0":
+"colorjs.io@npm:^0.5.0, colorjs.io@npm:^0.5.2":
   version: 0.5.2
   resolution: "colorjs.io@npm:0.5.2"
   checksum: 10/a6f6345865b177d19481008cb299c46ec9ff1fd206f472cd9ef69ddbca65832c81237b19fdcd24f3f9540c3e6343a22eb486cd800f5eab9815ce7c98c16a0f0e
@@ -18004,9 +18025,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.149":
-  version: 1.5.150
-  resolution: "electron-to-chromium@npm:1.5.150"
-  checksum: 10/18c05019a00a2cc7747b39ef9bd95a9146d9fe0701636eedb3abc522d66a7b0415e4f58105d5df4c34f83f033f112dc88f9c24e0714e7059c247286ea392815f
+  version: 1.5.151
+  resolution: "electron-to-chromium@npm:1.5.151"
+  checksum: 10/99c95f6c4c03ac69df9f771fdb901f70848ef6685cfcb0f455ead951439264791cb25f3e074f32224aba5d7fdf9d0bb6e5de07b1c9e01b7d51f64d038365a7c1
   languageName: node
   linkType: hard
 
@@ -20635,7 +20656,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^11.0.0, glob@npm:^11.0.1":
+"glob@npm:^11.0.0, glob@npm:^11.0.2":
   version: 11.0.2
   resolution: "glob@npm:11.0.2"
   dependencies:
@@ -28189,9 +28210,9 @@ __metadata:
   linkType: hard
 
 "property-information@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "property-information@npm:7.0.0"
-  checksum: 10/55f443088456cddc2fe499d6f5895e68cbd465e39dc318ecc63a0d2432d1b918f51fb6d13f8b1adf8a78337bc4e608baa6e46afbe0c6d50d2e38588b2c409f86
+  version: 7.1.0
+  resolution: "property-information@npm:7.1.0"
+  checksum: 10/896d38a52ad7170de73f832d277c69e76a9605d941ebb3f0d6e56271414a7fdf95ff6d2819e68036b8a0c7d2d4d88bf1d4a5765c032cb19c2343567ee3a14b15
   languageName: node
   linkType: hard
 

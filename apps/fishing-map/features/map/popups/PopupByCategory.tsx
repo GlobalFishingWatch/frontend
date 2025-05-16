@@ -21,14 +21,13 @@ import {
   FourwingsComparisonMode,
   POSITIONS_ID,
 } from '@globalfishingwatch/deck-layers'
-import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
-import ClusterTooltipRow from 'features/map/popups/categories/ClusterTooltipRow'
+import ClusterEventTooltip from 'features/map/popups/categories/ClusterEventTooltip'
 import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
@@ -182,15 +181,8 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             })
           }
           case DataviewCategory.Events: {
-            if (apiEventStatus === AsyncReducerStatus.Loading) {
-              return (
-                <div key={featureCategory} className={styles.loading}>
-                  <Spinner size="small" />
-                </div>
-              )
-            }
             return (
-              <ClusterTooltipRow
+              <ClusterEventTooltip
                 key={featureCategory}
                 features={features as SliceExtendedClusterPickingObject[]}
                 showFeaturesDetails={type === 'click'}
@@ -199,6 +191,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     ? apiEventError || t('errors.genericShort', 'Something went wrong')
                     : undefined
                 }
+                loading={apiEventStatus === AsyncReducerStatus.Loading}
               />
             )
           }

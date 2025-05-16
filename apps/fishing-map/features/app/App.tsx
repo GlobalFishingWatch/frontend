@@ -12,12 +12,14 @@ import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
+import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import AppModals from 'features/modals/Modals'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { selectReportAreaBounds } from 'features/reports/reports.config.selectors'
 import Sidebar from 'features/sidebar/Sidebar'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
@@ -81,6 +83,7 @@ function App() {
   useReplaceLoginUrl()
   useBeforeUnload()
   useUserLanguageUpdate()
+  useFeatureFlagsToast()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
@@ -115,6 +118,7 @@ function App() {
   const userLogged = useSelector(selectIsUserLogged)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const fitWorkspaceBounds = useFitWorkspaceBounds()
+  const isPrinting = useSelector(selectScreenshotModalOpen)
 
   // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
   // probably better to fetch in both components just checking if the workspaceId is already fetched
@@ -191,7 +195,7 @@ function App() {
       return t('search.title', 'Search')
     if (locationType === VESSEL || locationType === WORKSPACE_VESSEL)
       return t('vessel.title', 'Vessel profile')
-    if (isAreaReportLocation) return t('analysis.title', 'Analysis')
+    if (isAreaReportLocation) return t('analysis.title', 'Report')
     return t('common.layerList', 'Layer list')
   }, [locationType, isAreaReportLocation])
 
@@ -201,7 +205,7 @@ function App() {
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
   } else if (isWorkspaceLocation) {
-    asideWidth = '39rem'
+    asideWidth = isPrinting ? '34rem' : '39rem'
   }
 
   if (!i18n.ready) {

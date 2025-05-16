@@ -5,9 +5,11 @@ import cx from 'classnames'
 import type { To } from 'redux-first-router-link'
 import Link from 'redux-first-router-link'
 
+import { LEGACY_CVP_WORKSPACE_ID } from 'data/highlighted-workspaces/fishing-activity'
 import type { ReportWorkspaceId } from 'data/highlighted-workspaces/reports'
 import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
@@ -26,6 +28,7 @@ function WorkspacesList() {
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const validCategory = useSelector(isValidLocationCategory)
   const featureFlags = useSelector(selectFeatureFlags)
+  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
 
   const onWorkspaceClick = useCallback(
     (workspace: HighlightedWorkspace) => {
@@ -61,60 +64,31 @@ function WorkspacesList() {
       )}
       <ul>
         {highlightedWorkspaces?.map((highlightedWorkspace) => {
-          const { name, description, cta, reportCategory, dataviewInstances, reportId, img } =
-            highlightedWorkspace
-
-          if (!highlightedWorkspace.visible) {
+          const {
+            id,
+            visible,
+            name,
+            description,
+            cta,
+            reportCategory,
+            dataviewInstances,
+            reportId,
+            img,
+          } = highlightedWorkspace
+          const isLegacyCVPWorkspace = id === LEGACY_CVP_WORKSPACE_ID
+          if (!visible || (isLegacyCVPWorkspace && isGlobalReportsEnabled)) {
             return null
           }
 
-          if (highlightedWorkspace.href) {
-            // TODO: remove all the links and when CVP is migrated to the map
-            return (
-              <li key={highlightedWorkspace.id || name} className={cx(styles.workspace)}>
-                <a
-                  href={highlightedWorkspace.href}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  className={styles.imageLink}
-                >
-                  <img className={styles.image} alt={name} src={img} />
-                </a>
-                <div className={styles.info}>
-                  <a href={highlightedWorkspace.href} rel="noopener noreferrer" target="_blank">
-                    <h3 className={styles.title}>{name}</h3>
-                  </a>
-                  {description && (
-                    <p
-                      className={styles.description}
-                      dangerouslySetInnerHTML={{
-                        __html: description,
-                      }}
-                    ></p>
-                  )}
-                  <div className={styles.linksContainer}>
-                    <a
-                      href={highlightedWorkspace.href}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      className={styles.link}
-                    >
-                      {cta}
-                    </a>
-                  </div>
-                </div>
-              </li>
-            )
-          }
           let linkTo: To
-          if (highlightedWorkspace.id === DEFAULT_WORKSPACE_ID) {
+          if (id === DEFAULT_WORKSPACE_ID) {
             linkTo = {
               type: HOME,
               payload: {},
               query: { featureFlags },
               replaceQuery: true,
             }
-          } else if (REPORT_IDS.includes(highlightedWorkspace.id as ReportWorkspaceId)) {
+          } else if (REPORT_IDS.includes(id as ReportWorkspaceId)) {
             linkTo = {
               type: WORKSPACE_REPORT,
               payload: {
@@ -128,6 +102,7 @@ function WorkspacesList() {
                 latitude: 0,
                 longitude: 0,
                 zoom: 0,
+                reportLoadVessels: true,
               },
             }
           } else {
@@ -135,9 +110,13 @@ function WorkspacesList() {
               type: WORKSPACE,
               payload: {
                 category: locationCategory,
-                workspaceId: highlightedWorkspace.id,
+                workspaceId: highlightedWorkspace.workspaceId || id,
               },
-              query: { featureFlags, ...(highlightedWorkspace.viewport || {}) },
+              query: {
+                featureFlags,
+                ...(dataviewInstances?.length && { dataviewInstances }),
+                ...(highlightedWorkspace.viewport || {}),
+              },
               replaceQuery: true,
             }
           }
@@ -150,19 +129,32 @@ function WorkspacesList() {
                 query: { featureFlags },
               }
             : undefined
+
           return (
-            <li key={highlightedWorkspace.id || name} className={cx(styles.workspace)}>
-              <Link
-                to={linkTo}
-                onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                className={styles.imageLink}
-              >
-                <img className={styles.image} alt={name} src={img} />
-              </Link>
-              <div className={styles.info}>
-                <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
-                  <h3 className={styles.title}>{name}</h3>
+            <li key={id || name} className={cx(styles.workspace)}>
+              {isLegacyCVPWorkspace ? (
+                <a href="https://globalfishingwatch.org/carrier-portal" target="_blank">
+                  <img className={styles.image} alt={name} src={img} />
+                </a>
+              ) : (
+                <Link
+                  to={linkTo}
+                  onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                  className={styles.imageLink}
+                >
+                  <img className={styles.image} alt={name} src={img} />
                 </Link>
+              )}
+              <div className={styles.info}>
+                {isLegacyCVPWorkspace ? (
+                  <a href="https://globalfishingwatch.org/carrier-portal" target="_blank">
+                    <h3 className={styles.title}>{name}</h3>
+                  </a>
+                ) : (
+                  <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
+                    <h3 className={styles.title}>{name}</h3>
+                  </Link>
+                )}
                 {description && (
                   <p
                     className={styles.description}
@@ -172,13 +164,23 @@ function WorkspacesList() {
                   ></p>
                 )}
                 <div className={styles.linksContainer}>
-                  <Link
-                    to={linkTo}
-                    onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                    className={styles.link}
-                  >
-                    {cta}
-                  </Link>
+                  {isLegacyCVPWorkspace ? (
+                    <a
+                      href="https://globalfishingwatch.org/carrier-portal"
+                      className={styles.link}
+                      target="_blank"
+                    >
+                      {cta}
+                    </a>
+                  ) : (
+                    <Link
+                      to={linkTo}
+                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                      className={styles.link}
+                    >
+                      {cta}
+                    </Link>
+                  )}
                   {reportLink && (
                     <Link
                       to={reportLink}

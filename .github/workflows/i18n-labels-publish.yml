@@ -35,10 +35,12 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: |
+          DIR=$(yarn cache dir 2>/dev/null | head -n 1)
+          echo "dir=$DIR" >> $GITHUB_OUTPUT
 
       - name: Cache yarn dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: yarn-cache
         with:
           path: |
@@ -55,10 +57,14 @@ jobs:
         shell: bash
         run: |
           yarn affected:libs
-          LIB_AFFECTED=`cat affected-libs.txt`
+          LIB_AFFECTED=$(cat affected-libs.txt)
           echo LIB_AFFECTED: $LIB_AFFECTED
-          [[ $LIB_AFFECTED = 'i18n-labels' ]] && I18N_LABELS_AFFECTED="true" || I18N_LABELS_AFFECTED="false"
-          echo "##[set-output name=i18n-labels-affected;]$(echo $I18N_LABELS_AFFECTED)"
+          if [[ $LIB_AFFECTED == 'i18n-labels' ]]; then
+            I18N_LABELS_AFFECTED="true"
+          else
+            I18N_LABELS_AFFECTED="false"
+          fi
+          echo "i18n-labels-affected=$I18N_LABELS_AFFECTED" >> $GITHUB_OUTPUT
         id: lib-changes
 
       - name: Bump version

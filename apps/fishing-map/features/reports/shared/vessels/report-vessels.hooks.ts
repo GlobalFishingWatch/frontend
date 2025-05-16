@@ -10,18 +10,17 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
+  getVesselDataview,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
-  getVesselInWorkspace,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import { setResource } from 'features/resources/resources.slice'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
@@ -29,7 +28,7 @@ import {
   fetchAllSearchVessels,
   getAllSearchVesselsUrl,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { getNextColor, useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 
 export const MAX_VESSEL_REPORT_PIN = 50
@@ -95,30 +94,31 @@ export default function usePinReportVessels() {
             vesselEventsDatasets && vesselEventsDatasets?.length
               ? vesselEventsDatasets.map((d) => d.id)
               : []
-          const vesselDataviewInstance = getVesselDataviewInstance(
-            { id: getVesselId(vessel) },
-            {
+          const vesselDataviewInstance = getVesselDataviewInstance({
+            vessel: { id: getVesselId(vessel) },
+            datasets: {
               info: vessel.dataset,
               track: trackDataset?.id,
               ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
               relatedVesselIds: getRelatedIdentityVesselIds(vessel),
             },
-            vesselTemplateDataviews
-          )
+            vesselTemplateDataviews,
+          })
           if (!vesselDataviewInstance?.config) {
             return []
           }
 
-          const { colorCyclingType, ...config } = vesselDataviewInstance.config
+          const currentColors = (allVesselsInWorkspace || []).flatMap(
+            (dv) => dv.config?.color || []
+          )
+          const nextColor = getNextColor('line', currentColors)
           return {
             identity: vessel,
             instance: {
               ...vesselDataviewInstance,
               config: {
-                ...config,
-                color:
-                  LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)]
-                    ?.value,
+                ...vesselDataviewInstance.config,
+                color: nextColor?.value,
                 colorCyclingType: undefined,
               },
             } as DataviewInstance<any>,
@@ -137,13 +137,24 @@ export default function usePinReportVessels() {
         dispatch(setWorkspaceSuggestSave(true))
       }
     },
-    [datasets, dispatch, populateVesselInfoResource, upsertDataviewInstance]
+    [
+      allVesselsInWorkspace,
+      datasets,
+      dispatch,
+      populateVesselInfoResource,
+      upsertDataviewInstance,
+      vesselTemplateDataviews,
+    ]
   )
 
   const unPinVessels = useCallback(
     (vessels: ReportTableVessel[]) => {
       const pinnedVesselsInstances = vessels.flatMap(
-        (vessel) => getVesselInWorkspace(allVesselsInWorkspace, vessel.id!) || []
+        (vessel) =>
+          getVesselDataview({
+            dataviews: allVesselsInWorkspace,
+            vesselId: vessel.id!,
+          }) || []
       )
       deleteDataviewInstance(pinnedVesselsInstances.map((v) => v.id))
       dispatch(setWorkspaceSuggestSave(true))

@@ -10,9 +10,10 @@ import type {
   VesselRegistryProperty,
   VesselType,
 } from '@globalfishingwatch/api-types'
-import { API_LOGIN_REQUIRED , VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
 
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { TimeRange } from 'features/timebar/timebar.slice'
@@ -187,12 +188,12 @@ function getVesselCombinedSourceProperty(
 type VesselProperty<P extends VesselIdentityProperty> = P extends 'shiptypes'
   ? VesselType[]
   : P extends 'geartypes'
-  ? GearType[]
-  : P extends number
-  ? number
-  : P extends string
-  ? string
-  : undefined
+    ? GearType[]
+    : P extends number
+      ? number
+      : P extends string
+        ? string
+        : undefined
 export function getVesselProperty<P extends VesselIdentityProperty>(
   vessel: VesselsParamsSupported | null,
   property: P,
@@ -328,10 +329,11 @@ export function filterRegistryInfoByDateAndSSVID(
 }
 
 export const getOtherVesselNames = (vessel: VesselsParamsSupported, currentName?: string) => {
-  const currentNShipname = currentName || getSearchIdentityResolved(vessel)?.nShipname
+  const currentNShipname =
+    currentName !== undefined ? currentName : getSearchIdentityResolved(vessel)?.nShipname
   const uniqIdentitiesByNormalisedName = uniqBy(getVesselIdentities(vessel), (i) => i.nShipname)
   const otherIdentities = uniqIdentitiesByNormalisedName.filter(
-    (i) => i.nShipname !== currentNShipname
+    (i) => i.nShipname && i.nShipname !== currentNShipname
   )
 
   return otherIdentities?.length ? otherIdentities.map((i) => i.shipname) : ([] as string[])
@@ -346,4 +348,15 @@ export const getSidebarContentWidth = () => {
 
 export const isFieldLoginRequired = (field: string) => {
   return typeof field === 'string' && field.toUpperCase() === API_LOGIN_REQUIRED
+}
+
+export function formatTransmissionDate(
+  vesselIdentity: VesselLastIdentity,
+  format: boolean = false
+) {
+  if (!vesselIdentity) return ''
+  if (format) {
+    return `${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(vesselIdentity.transmissionDateTo)}`
+  }
+  return `${vesselIdentity.transmissionDateFrom} - ${vesselIdentity.transmissionDateTo}`
 }

@@ -30,6 +30,7 @@ import {
 } from '../../utils'
 
 import type { UserLayerFeature, UserPolygonsLayerProps } from './user.types'
+import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
 import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
 
@@ -145,7 +146,9 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   renderLayers() {
-    const { layers, steps, stepsPickValue, filters, color, pickable, thickness } = this.props
+    const { layers, steps, stepsPickValue, filters, color, pickable, thickness, maxZoom } =
+      this.props
+
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
@@ -154,6 +157,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
         id: `${layer.id}-base-layer`,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
+        maxZoom: maxZoom || DEFAULT_USER_TILES_MAX_ZOOM,
         loadOptions: {
           ...getFetchLoadOptions(),
         },

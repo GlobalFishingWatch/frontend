@@ -37,6 +37,10 @@
   flex-wrap: wrap;
 }
 
+.sticky .actionsContainer {
+  display: none;
+}
+
 .reportLink {
   font: var(--font-M);
   text-decoration: underline;
@@ -102,7 +106,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgb(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.5);
   border: none;
   padding: 0;
   cursor: pointer;

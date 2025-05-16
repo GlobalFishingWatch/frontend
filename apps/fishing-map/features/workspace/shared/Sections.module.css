@@ -77,6 +77,10 @@
   padding: var(--space-L) var(--space-S);
 }
 
+.emptyStateVesselGroups {
+  padding: 0;
+}
+
 .disclaimer {
   background-color: var(--color-help-yellow);
   padding: 0 var(--space-XS);
@@ -133,4 +137,12 @@
   font: var(--font-S);
   color: var(--color-secondary-blue);
   padding-inline: var(--space-S);
+}
+
+:global(.printing) .container {
+  padding-block: var(--space-XS);
+}
+
+:global(.printing) .content {
+  padding-block: 0;
 }

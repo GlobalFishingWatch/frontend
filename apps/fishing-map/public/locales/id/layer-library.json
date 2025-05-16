@@ -34,10 +34,15 @@
     "moreInfoLink": "",
     "name": "Wilayah penangkapan ikan utama Organisasi Pangan dan Pertanian (Food and Agriculture Organization/FAO)"
   },
-  "fishing-effort": {
-    "description": "Untuk menentukan “upaya penangkapan ikan yang nyata”, Global Fishing Watch menganalisis data sistem identifikasi otomatis (AIS) dan sistem pemantauan kapal (VMS) yang dikumpulkan dari kapal-kapal yang menurut penelitian kami telah diidentifikasi sebagai diketahui atau mungkin merupakan kapal penangkapan ikan komersial dan menerapkan algoritma deteksi penangkapan ikan berdasarkan perubahan. dalam kecepatan dan arah kapal.",
+  "fishing-effort-ais": {
+    "description": "Untuk menentukan “upaya penangkapan ikan yang nyata”, Global Fishing Watch menganalisis data sistem identifikasi otomatis (AIS) yang dikumpulkan dari kapal-kapal yang menurut penelitian kami telah diidentifikasi sebagai diketahui atau mungkin merupakan kapal penangkapan ikan komersial dan menerapkan algoritma deteksi penangkapan ikan berdasarkan perubahan. dalam kecepatan dan arah kapal.",
     "moreInfoLink": "",
-    "name": "Upaya penangkapan ikan yang nyata"
+    "name": "Upaya penangkapan ikan yang nyata (AIS)"
+  },
+  "fishing-effort-vms": {
+    "description": "Untuk menentukan “upaya penangkapan ikan yang nyata”, Global Fishing Watch menganalisis data sistem pemantauan kapal (VMS) yang dikumpulkan dari kapal-kapal yang menurut penelitian kami telah diidentifikasi sebagai diketahui atau mungkin merupakan kapal penangkapan ikan komersial dan menerapkan algoritma deteksi penangkapan ikan berdasarkan perubahan. dalam kecepatan dan arah kapal.",
+    "moreInfoLink": "",
+    "name": "Upaya penangkapan ikan yang nyata (VMS)"
   },
   "graticules": {
     "description": "Grid atau gratikula garis lintang dan bujur pada interval 1, 5, 10 dan 30° tergantung pada tingkat pembesaran (zoom) peta",
