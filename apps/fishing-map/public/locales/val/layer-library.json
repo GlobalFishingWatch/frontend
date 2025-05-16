@@ -34,10 +34,15 @@
     "moreInfoLink": "crwdns82510:0crwdne82510:0",
     "name": "crwdns82506:0crwdne82506:0"
   },
-  "fishing-effort": {
-    "description": "crwdns82514:0crwdne82514:0",
-    "moreInfoLink": "crwdns82516:0crwdne82516:0",
-    "name": "crwdns82512:0crwdne82512:0"
+  "fishing-effort-ais": {
+    "description": "crwdns84638:0crwdne84638:0",
+    "moreInfoLink": "crwdns84640:0crwdne84640:0",
+    "name": "crwdns84642:0crwdne84642:0"
+  },
+  "fishing-effort-vms": {
+    "description": "crwdns84644:0crwdne84644:0",
+    "moreInfoLink": "crwdns84646:0crwdne84646:0",
+    "name": "crwdns84648:0crwdne84648:0"
   },
   "graticules": {
     "description": "crwdns82520:0crwdne82520:0",

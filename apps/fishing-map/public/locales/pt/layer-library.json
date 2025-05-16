@@ -34,10 +34,15 @@
     "moreInfoLink": "",
     "name": "Principais áreas de pesca da FAO"
   },
-  "fishing-effort": {
-    "description": "Para determinar o “esforço de pesca aparente”, o Global Fishing Watch analisa dados do sistema de identificação automática (AIS) e do sistema de monitoramento de embarcações (VMS) coletados de embarcações que nossa pesquisa identificou como embarcações de pesca comercial conhecidas ou possíveis e aplica um algoritmo de detecção de pesca baseado em mudanças de velocidade e direção da embarcação.",
+  "fishing-effort-ais": {
+    "description": "Para determinar o “esforço de pesca aparente”, o Global Fishing Watch analisa dados do sistema de identificação automática (AIS) coletados de embarcações que nossa pesquisa identificou como embarcações de pesca comercial conhecidas ou possíveis e aplica um algoritmo de detecção de pesca baseado em mudanças de velocidade e direção da embarcação.",
     "moreInfoLink": "",
-    "name": "Esforço de pesca aparente"
+    "name": "Esforço de pesca aparente (AIS)"
+  },
+  "fishing-effort-vms": {
+    "description": "Para determinar o “esforço de pesca aparente”, o Global Fishing Watch analisa dados do sistema de monitoramento de embarcações (VMS) coletados de embarcações que nossa pesquisa identificou como embarcações de pesca comercial conhecidas ou possíveis e aplica um algoritmo de detecção de pesca baseado em mudanças de velocidade e direção da embarcação.",
+    "moreInfoLink": "",
+    "name": "Esforço de pesca aparente (VMS)"
   },
   "graticules": {
     "description": "Grades ou quadrículas de latitude e longitude em intervalos de 1, 5, 10 e 30° dependendo do nível de zoom do mapa",
