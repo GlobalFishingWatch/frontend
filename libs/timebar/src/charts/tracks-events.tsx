@@ -85,7 +85,10 @@ const TracksEvents = ({
   ]) as TimebarChartData<TrackEventChunkProps>
 
   const updateHoveredEvent = useSetAtom(hoveredEventState)
-
+  const eventSize = useMemo(
+    () => Math.round(graphHeight / (tracksEventsWithCoords.length * 2)),
+    [graphHeight, tracksEventsWithCoords.length]
+  )
   const trackEvents = useMemo(() => {
     return tracksEventsWithCoords.map((trackEvents, index) => (
       <div
@@ -102,11 +105,7 @@ const TracksEvents = ({
           } else if (useTrackColor || event.type === 'fishing') {
             color = trackEvents.color as string
           }
-          const eventSize = Math.min(
-            Math.round(graphHeight / (tracksEventsWithCoords.length * 2)),
-            event.type === 'fishing' ? 5 : 15
-          )
-          const borderWidth = Math.max(Math.ceil(eventSize / 2), 3)
+          const eventSizeByType = Math.min(eventSize, event.type === 'fishing' ? 5 : 15)
           return (
             <div
               role="button"
@@ -120,10 +119,10 @@ const TracksEvents = ({
                 {
                   left: `${event.x}px`,
                   width: `${event.width}px`,
-                  height: `${eventSize}px`,
-                  minWidth: `${eventSize}px`,
+                  height: `${eventSizeByType}px`,
+                  minWidth: `${eventSizeByType}px`,
                   ...(event.type !== 'port_visit' && {
-                    borderWidth: `${borderWidth}px`,
+                    borderWidth: `${Math.max(Math.ceil(eventSizeByType / 2), 3)}px`,
                   }),
                   '--background-color': color,
                 } as React.CSSProperties
@@ -143,7 +142,7 @@ const TracksEvents = ({
       </div>
     ))
   }, [
-    graphHeight,
+    eventSize,
     highlightedEventsIds,
     onEventClick,
     tracksEventsWithCoords,
