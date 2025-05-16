@@ -177,7 +177,27 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                     )}
                   </td>
                   <td>
-                    {(vesselIdentity[key as keyof typeof vesselIdentity] as string) || '----'}
+                    {key === 'geartypes'
+                      ? getVesselGearTypeLabel({
+                          geartypes: Array.isArray(vesselIdentity.geartypes)
+                            ? vesselIdentity.geartypes[0]
+                            : vesselIdentity.geartypes,
+                        }) ||
+                        (Array.isArray(vesselIdentity.geartypes)
+                          ? vesselIdentity.geartypes[0]
+                          : vesselIdentity.geartypes) ||
+                        '----'
+                      : key === 'shiptypes'
+                        ? getVesselShipTypeLabel({
+                            shiptypes: Array.isArray(vesselIdentity.shiptypes)
+                              ? vesselIdentity.shiptypes[0]
+                              : vesselIdentity.shiptypes,
+                          }) ||
+                          (Array.isArray(vesselIdentity.shiptypes)
+                            ? vesselIdentity.shiptypes[0]
+                            : vesselIdentity.shiptypes) ||
+                          '----'
+                        : (vesselIdentity[key as keyof typeof vesselIdentity] as string) || '----'}
                   </td>
                   <td>
                     {key === 'geartypes' || key === 'shiptypes' ? (

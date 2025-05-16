@@ -64,6 +64,7 @@ export function Modal(props: ModalProps) {
       shouldCloseOnEsc={shouldCloseOnEsc}
       className={cx(styles.modalContentWrapper, className, {
         [styles.fullScreen]: size === 'fullscreen',
+        [styles.auto]: size === 'auto',
       })}
       appElement={appElement}
       isOpen={isOpen}
