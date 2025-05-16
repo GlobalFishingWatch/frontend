@@ -244,8 +244,8 @@ const vesselSlice = createSlice({
     setVesselPrintMode: (state, action: PayloadAction<boolean>) => {
       state.printMode = action.payload
     },
-    resetVesselState: () => {
-      return initialState
+    resetVesselState: (state) => {
+      return { ...initialState, data: state.data }
     },
   },
   extraReducers: (builder) => {

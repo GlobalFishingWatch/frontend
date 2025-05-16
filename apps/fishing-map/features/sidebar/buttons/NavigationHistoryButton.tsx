@@ -9,17 +9,13 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { resetAreaDetail } from 'features/areas/areas.slice'
-import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import {
-  cleanVesselProfileDataviewInstances,
-  usePinVesselProfileToWorkspace,
-} from 'features/sidebar/sidebar-header.hooks'
+import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
 import {
   selectFeatureFlags,
@@ -36,7 +32,6 @@ import {
   selectIsAnyVesselLocation,
   selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
-  selectIsWorkspaceVesselLocation,
 } from 'routes/routes.selectors'
 
 import styles from '../SidebarHeader.module.css'
@@ -54,10 +49,7 @@ function NavigationHistoryButton() {
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
-  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
-  const hasVesselProfileInstancePinned = useSelector(selectHasVesselProfileInstancePinned)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const onPinVesselToWorkspaceAndNavigateClick = usePinVesselProfileToWorkspace()
   const { dispatchQueryParams } = useLocationConnect()
   const featureFlags = useSelector(selectFeatureFlags)
   const reportAreaIds = useSelector(selectReportAreaIds)
@@ -120,7 +112,7 @@ function NavigationHistoryButton() {
 
     const query = {
       ...(!isPreviousLocationReport
-        ? { ...cleanReportQuery(lastWorkspaceVisited.query || {}), ...EMPTY_FILTERS }
+        ? { ...cleanReportQuery(lastWorkspaceVisited.query || {}), ...EMPTY_SEARCH_FILTERS }
         : lastWorkspaceVisited.query),
       featureFlags,
     }
@@ -138,32 +130,16 @@ function NavigationHistoryButton() {
       isHistoryNavigation: true,
     }
 
-    if (isWorkspaceVesselLocation && !hasVesselProfileInstancePinned) {
-      // Can't use Link because we need to intercept the navigation to show the confirmation dialog
-      return (
-        <IconButton
-          icon="close"
-          type="border"
-          onClick={() => {
-            onPinVesselToWorkspaceAndNavigateClick(linkTo)
-            onCloseClick()
-          }}
-          className={cx(styles.workspaceLink, 'print-hidden')}
-          tooltip={tooltip}
-        />
-      )
-    }
-
     return (
       <Link
-        className={styles.workspaceLink}
+        className={cx(styles.workspaceLink, 'print-hidden')}
         to={linkTo}
         onClick={() => {
           resetQueryParams()
           onCloseClick()
         }}
       >
-        <IconButton className="print-hidden" type="border" icon="close" tooltip={tooltip} />
+        <IconButton type="border" icon="close" tooltip={tooltip} />
       </Link>
     )
   }
