@@ -39,8 +39,7 @@ import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
 import IconClose from '../../assets/icons/close.svg'
 import IconSearch from '../../assets/icons/search.svg'
-import { countSelectedFiles, prepareTableData } from '../../utils/folderConfig'
-import { useGFWLogin } from '../login/use-login'
+import { countSelectedFiles, getFlattenedFiles } from '../../utils/folderConfig'
 
 import styles from './table.module.scss'
 
@@ -164,13 +163,13 @@ function HighlightedCell({ cell, state }: HighlightedCellProps) {
 type TableProps = {
   columns: Column<TableData>[]
   data: TableData[]
+  logged: boolean
 }
 
-function Table({ columns, data }: TableProps) {
+function Table({ columns, data, logged }: TableProps) {
   const [searchInput, setSearchInput] = useState(false)
   const [downloadLoading, setDownloadLoading] = useState(false)
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
-  const { logged } = useGFWLogin(GFWAPI)
 
   const initialState = {
     sortBy: [{ id: 'lastUpdated', desc: true }],
@@ -225,9 +224,8 @@ function Table({ columns, data }: TableProps) {
     getTableBodyProps,
     setGlobalFilter,
   } = tableInstance
-  const selectedFlatRows = flatRows.filter(
-    (row: Row<TableData>) => (row as ExtendedRow).isSelected && !(row as ExtendedRow).canExpand
-  )
+
+  const selectedRows = flatRows.filter((row: Row<TableData>) => (row as ExtendedRow).isSelected)
 
   const downloadSingleFile = useCallback(
     (path: string) => {
@@ -251,13 +249,15 @@ function Table({ columns, data }: TableProps) {
   )
 
   const onDownloadClick = useCallback(() => {
+    const selectedFlatRows = getFlattenedFiles(selectedRows)
+
     if (selectedFlatRows.length === 1) {
-      const { path } = selectedFlatRows[0].original
+      const { path } = selectedFlatRows[0]
       if (path) {
         downloadSingleFile(path)
       }
     } else {
-      const files = selectedFlatRows.map((row) => row.original.path)
+      const files = selectedFlatRows.map((row) => row.path)
       setDownloadLoading(true)
       const params = {
         method: 'POST' as const,
@@ -279,7 +279,7 @@ function Table({ columns, data }: TableProps) {
     }
   }, [datasetId, downloadSingleFile, flatRows])
 
-  const rowSelectedCount = countSelectedFiles(selectedFlatRows)
+  const rowSelectedCount = countSelectedFiles(selectedRows)
 
   return (
     <div>
@@ -400,7 +400,7 @@ function Table({ columns, data }: TableProps) {
             <span>{`${flatRows.filter((r) => !r.subRows.length).length} file${rows.length > 1 ? 's' : ''} available for download`}</span>
           )}
           <br />
-          {selectedFlatRows.length > 0 && (
+          {selectedRows.length > 0 && (
             <span>{`${rowSelectedCount} file${rowSelectedCount > 1 ? 's' : ''} selected`}</span>
           )}
         </span>

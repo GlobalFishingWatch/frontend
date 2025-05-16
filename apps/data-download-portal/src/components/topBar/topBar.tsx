@@ -38,7 +38,7 @@ const TopBar = ({ children }: TopBarProps) => {
                 }}
               >
                 log out
-              </span>{' '}
+              </span>
               and try a different account if you can't find a dataset.
             </p>
           </div>

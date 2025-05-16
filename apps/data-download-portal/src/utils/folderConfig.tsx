@@ -31,8 +31,7 @@ const insertIntoTree = (tree: TableData[], file: DatasetFile) => {
       const node: TableData = {
         ...file,
         name: part,
-        size: isFolder ? 0 : file.size,
-        ...(isFolder ? { subRows: [], updateSize: (size: number) => (node.size = size) } : {}),
+        ...(isFolder ? { subRows: [] } : {}),
       }
 
       currentLevel.push(node)
@@ -55,28 +54,39 @@ export const buildFileTree = (files: DatasetFile[]): TableData[] => {
 
 // Count the total number of selected files (not folders), including files in collapsed folders if the folder is selected
 // Count selected files, but avoid double-counting files that are descendants of other selected rows
-export function countSelectedFiles(selectedFlatRows: Row<TableData>[]) {
-  const countedRowIds = new Set<string>()
-  const rowSelectedCount = selectedFlatRows.reduce((count, row) => {
-    const original = row.original as TableData
-    const countFiles = (rows: TableData[]): number =>
-      rows.reduce((acc, r) => {
-        if (countedRowIds.has(r.path)) return acc
-        countedRowIds.add(r.path)
-        if (!r.subRows || r.subRows.length === 0) return acc + 1
-        return acc + countFiles(r.subRows)
-      }, 0)
+export function getFlattenedFiles(selectedFlatRows: Row<TableData>[]) {
+  const flattenedFiles: TableData[] = []
+  const processedPaths = new Set<string>()
 
-    if ((!original.subRows || original.subRows.length === 0) && !countedRowIds.has(original.path)) {
-      countedRowIds.add(original.path)
-      return count + 1
+  const processRow = (row: Row<TableData>) => {
+    const original = row.original as TableData
+
+    if (
+      (!original.subRows || original.subRows.length === 0) &&
+      !processedPaths.has(original.path)
+    ) {
+      processedPaths.add(original.path)
+      flattenedFiles.push(original)
+    } else if (original.subRows && original.subRows.length > 0) {
+      original.subRows.forEach((subRow) => {
+        if (!processedPaths.has(subRow.path)) {
+          if (!subRow.subRows || subRow.subRows.length === 0) {
+            processedPaths.add(subRow.path)
+            flattenedFiles.push(subRow)
+          } else {
+            processRow({ original: subRow } as Row<TableData>)
+          }
+        }
+      })
     }
-    if (!original.isExpanded && original.subRows && original.subRows.length > 0) {
-      return count + countFiles(original.subRows)
-    }
-    return count
-  }, 0)
-  return rowSelectedCount
+  }
+
+  selectedFlatRows.forEach(processRow)
+  return flattenedFiles
+}
+
+export function countSelectedFiles(selectedFlatRows: Row<TableData>[]) {
+  return getFlattenedFiles(selectedFlatRows).length
 }
 
 export function prepareTableData(files: DatasetFile[]) {

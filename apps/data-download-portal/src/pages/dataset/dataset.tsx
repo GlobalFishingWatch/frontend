@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
+import { useGFWLogin } from '@globalfishingwatch/react-hooks/use-login'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import ApiBanner from '../../components/api-banner/api-banner'
@@ -60,6 +61,7 @@ function DatasetPage() {
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
   const [dataset, setDataset] = useState<Dataset | null>(null)
   const [loading, setLoading] = useState(false)
+  const { logged } = useGFWLogin(GFWAPI)
 
   useEffect(() => {
     setLoading(true)
@@ -75,24 +77,27 @@ function DatasetPage() {
     GFWAPI.fetch<Dataset>(`/download/datasets/${datasetId}`)
       .then((data) => {
         setDataset(formatDataset(data))
-        setLoading(false)
       })
       .catch((e) => {
         console.warn(e)
+      })
+      .finally(() => {
+        setLoading(false)
       })
   }, [datasetId])
 
   return (
     <Fragment>
-      {loading && <Loader />}
-      {dataset && (
-        <>
-          <TopBar>
-            <div>
-              <label>Dataset</label>
-              <h2 className={styles.title}>{dataset.name}</h2>
-            </div>
-          </TopBar>
+      <TopBar>
+        <div>
+          <label>Dataset</label>
+          <h2 className={styles.title}>{dataset?.name || ''}</h2>
+        </div>
+      </TopBar>
+      {loading ? (
+        <Loader />
+      ) : (
+        dataset && (
           <div className={styles.twoColumns}>
             <div className={styles.info}>
               <label>Last Update</label>
@@ -104,12 +109,12 @@ function DatasetPage() {
             </div>
             <div className={styles.files}>
               {dataset && dataset.files && (
-                <Table columns={columns} data={dataset.files as TableData[]} />
+                <Table columns={columns} data={dataset.files as TableData[]} logged={logged} />
               )}
               <ApiBanner />
             </div>
           </div>
-        </>
+        )
       )}
     </Fragment>
   )
