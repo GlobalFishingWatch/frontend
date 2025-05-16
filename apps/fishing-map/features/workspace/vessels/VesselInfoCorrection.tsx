@@ -4,20 +4,26 @@ import { useSelector } from 'react-redux'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectInfoCorrectionModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import { selectVesselCorrectionModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import InfoCorrectionModal from 'features/vessel/infoCorrection/InfoCorrectionModal'
+import VesselCorrectionModal from 'features/vessel/vesselCorrection/VesselCorrectionModal'
 
 function VesselInfoCorrection() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
 
-  const modalOpen = useSelector(selectInfoCorrectionModalOpen)
+  const modalOpen = useSelector(selectVesselCorrectionModalOpen)
 
   const onInfoCorrectionClick = useCallback(() => {
-    if (userData) dispatch(setModalOpen({ id: 'infoCorrection', open: true }))
+    if (userData) dispatch(setModalOpen({ id: 'vesselCorrection', open: true }))
+
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: `click vessel correction modal`,
+    })
   }, [dispatch, userData])
 
   return (
@@ -32,9 +38,9 @@ function VesselInfoCorrection() {
         onClick={onInfoCorrectionClick}
       />
       {modalOpen && (
-        <InfoCorrectionModal
+        <VesselCorrectionModal
           isOpen={modalOpen}
-          onClose={() => dispatch(setModalOpen({ id: 'infoCorrection', open: false }))}
+          onClose={() => dispatch(setModalOpen({ id: 'vesselCorrection', open: false }))}
         />
       )}
     </Fragment>

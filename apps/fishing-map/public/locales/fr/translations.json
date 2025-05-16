@@ -992,7 +992,7 @@
     "hideOtherLayers": "Masquer les autres calques",
     "identityDatesOutOfRange": "Les dates de cette identité ne chevauchent pas votre plage de temps actuelle",
     "imo": "OMI",
-    "infoCorrection": {
+    "vesselCorrection": {
       "currentValue": "Current value",
       "description": "Description (optional)",
       "descriptionPlaceholder": "Please describe the source of the correction and the time range it is relevant for.",

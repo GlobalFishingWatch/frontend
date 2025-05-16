@@ -992,7 +992,7 @@
     "hideOtherLayers": "Ocultar outras camadas",
     "identityDatesOutOfRange": "As datas desta identidade não se sobrepõem ao seu período atual",
     "imo": "IMO",
-    "infoCorrection": {
+    "vesselCorrection": {
       "currentValue": "Current value",
       "description": "Description (optional)",
       "descriptionPlaceholder": "Please describe the source of the correction and the time range it is relevant for.",

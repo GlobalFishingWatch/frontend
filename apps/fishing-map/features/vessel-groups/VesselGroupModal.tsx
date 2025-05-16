@@ -389,7 +389,7 @@ function VesselGroupModal(): React.ReactElement<any> {
       className={styles.modal}
       contentClassName={styles.modalContainer}
       onClose={() => onBackClick('close')}
-      fullScreen={true}
+      size="fullscreen"
     >
       <div className={styles.modalContent}>
         <div className={styles.parameters}>
