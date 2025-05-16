@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import type { RootState } from 'reducers'
 
@@ -10,6 +10,7 @@ import type {
   APIPagination,
   Dataset,
   DataviewDatasetConfig,
+  DetectionThumbnails,
   EventVessel,
   FourwingsEventsInteraction,
   IdentityVessel,
@@ -49,6 +50,7 @@ import {
   getVesselGroupInDataview,
 } from 'features/datasets/datasets.utils'
 import {
+  selectDetectionsDataviews,
   selectEventsDataviews,
   selectVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -132,6 +134,9 @@ type MapState = {
   currentActivityRequestId: string
   apiEventStatus: AsyncReducerStatus
   apiEventError: string
+  apiDetectionStatus: AsyncReducerStatus
+  apiDetectionError: string
+  currentDetectionRequestId: string
 }
 
 const initialState: MapState = {
@@ -143,6 +148,9 @@ const initialState: MapState = {
   currentActivityRequestId: '',
   apiEventStatus: AsyncReducerStatus.Idle,
   apiEventError: '',
+  apiDetectionStatus: AsyncReducerStatus.Idle,
+  apiDetectionError: '',
+  currentDetectionRequestId: '',
 }
 
 type SublayerVessels = {
@@ -645,6 +653,52 @@ export const fetchClusterEventThunk = createAsyncThunk(
   }
 )
 
+export const fetchDetectionThumbnailsThunk = createAsyncThunk<
+  { thumbnails: (DetectionThumbnails | undefined)[] } | undefined,
+  {
+    detectionFeatures: FourwingsPositionsPickingObject[]
+  },
+  {
+    dispatch: AppDispatch
+  }
+>(
+  'map/fetchDetectionThumbnails',
+  async ({ detectionFeatures }, { signal, getState, rejectWithValue }) => {
+    try {
+      const state = getState() as any
+      const detectionsDataviews = selectDetectionsDataviews(state) || []
+      const thumbnails = await Promise.all(
+        detectionFeatures.map(async (detectionFeature) => {
+          const dataview = detectionsDataviews.find((d) => d.id === detectionFeature.layerId)
+          const datasetId = detectionFeature.sublayers?.flatMap((s) => s.datasets)?.[0]
+          const detectionsDataset = dataview?.datasets?.find((d) => d.id === datasetId)
+          const thumbnailDatasetId = getRelatedDatasetByType(
+            detectionsDataset,
+            DatasetTypes.Thumbnails
+          )?.id
+          const thumbnailDataset = selectDatasetById(thumbnailDatasetId as string)(state)
+          if (thumbnailDataset) {
+            const datasetConfig = {
+              datasetId: thumbnailDataset.id,
+              endpoint: EndpointId.Thumbnails,
+              params: [{ id: 'id', value: detectionFeature.properties?.id }],
+            }
+            const url = resolveEndpoint(thumbnailDataset, datasetConfig)
+            if (url) {
+              return await GFWAPI.fetch<DetectionThumbnails>(url, { signal })
+            }
+          }
+          return undefined
+        })
+      )
+
+      return { thumbnails }
+    } catch (e: any) {
+      return rejectWithValue(parseAPIError(e))
+    }
+  }
+)
+
 type BQClusterEvent = Record<string, any>
 export const fetchBQEventThunk = createAsyncThunk<
   BQClusterEvent | undefined,
@@ -823,6 +877,40 @@ const slice = createSlice({
         state.apiActivityStatus = AsyncReducerStatus.Error
         if (action.error.message) {
           state.apiActivityError = action.error.message
+        }
+      }
+    })
+    builder.addCase(fetchDetectionThumbnailsThunk.pending, (state, action) => {
+      state.apiDetectionStatus = AsyncReducerStatus.Loading
+      state.apiDetectionError = ''
+      state.currentDetectionRequestId = action.meta.requestId
+    })
+    builder.addCase(fetchDetectionThumbnailsThunk.fulfilled, (state, action) => {
+      state.apiDetectionStatus = AsyncReducerStatus.Finished
+      state.currentDetectionRequestId = ''
+      if (state?.clicked?.features?.length && action.payload?.thumbnails?.length) {
+        state.clicked.features = state.clicked.features.flatMap((feature, i) => {
+          if (feature.category === 'detections') {
+            const properties = {
+              ...(feature.properties || ({} as any)),
+              thumbnails: action.payload?.thumbnails?.[i],
+            }
+            return { ...feature, properties }
+          }
+          return [feature]
+        })
+      }
+    })
+    builder.addCase(fetchDetectionThumbnailsThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.apiDetectionStatus =
+          state.currentDetectionRequestId !== action.meta.requestId
+            ? AsyncReducerStatus.Loading
+            : AsyncReducerStatus.Idle
+      } else {
+        state.apiDetectionStatus = AsyncReducerStatus.Error
+        if (action.error.message) {
+          state.apiDetectionError = action.error.message
         }
       }
     })

@@ -21,6 +21,7 @@ import type {
   DeckLayerPickingObject,
   FourwingsClusterPickingObject,
   FourwingsHeatmapPickingObject,
+  FourwingsPositionsPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
@@ -46,6 +47,7 @@ import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from '.
 import {
   fetchBQEventThunk,
   fetchClusterEventThunk,
+  fetchDetectionThumbnailsThunk,
   fetchHeatmapInteractionThunk,
   fetchLegacyEncounterEventThunk,
   selectActivityInteractionStatus,
@@ -81,24 +83,35 @@ type InteractionPromise = ThunkDispatch<Promise<any>, any, any> & { abort: any }
 const initialInteractionPromises = {
   activity: undefined,
   events: undefined,
+  detectionPositions: undefined,
 }
 const interactionPromisesAtom = atom<{
   activity: InteractionPromise | undefined
   events: InteractionPromise | undefined
+  detectionPositions: InteractionPromise | undefined
 }>(initialInteractionPromises)
 
 export const useCancelInteractionPromises = () => {
   const [interactionPromises, setInteractionPromises] = useAtom(interactionPromisesAtom)
 
   const cancelPendingInteractionRequests = useCallback(() => {
-    const promisesRef = [interactionPromises.activity, interactionPromises.events]
+    const promisesRef = [
+      interactionPromises.activity,
+      interactionPromises.events,
+      interactionPromises.detectionPositions,
+    ]
     promisesRef.forEach((p) => {
       if (p) {
         p.abort()
       }
     })
     setInteractionPromises(initialInteractionPromises)
-  }, [interactionPromises.events, interactionPromises.activity, setInteractionPromises])
+  }, [
+    interactionPromises.events,
+    interactionPromises.activity,
+    interactionPromises.detectionPositions,
+    setInteractionPromises,
+  ])
 
   return cancelPendingInteractionRequests
 }
@@ -121,6 +134,123 @@ export const useClickedEventConnect = () => {
   const [_, setEventGroup] = useEventActivityToggle()
   // const fishingPromiseRef = useRef<any>()
   // const eventsPromiseRef = useRef<any>()
+
+  const handleHeatmapInteraction = useCallback(
+    (event: InteractionEvent) => {
+      if (!event?.features) {
+        return
+      }
+      // get temporal grid clicked features and order them by sublayerindex
+      const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
+        (feature) => {
+          if (
+            feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
+            feature.visualizationMode === 'positions'
+          ) {
+            return false
+          }
+          const hasVesselInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+            feature.category as DataviewCategory
+          )
+          const isHeatmap =
+            feature.subcategory === DataviewType.Heatmap ||
+            feature.subcategory === DataviewType.HeatmapAnimated ||
+            feature.subcategory === DataviewType.HeatmapStatic
+          return hasVesselInteraction && isHeatmap
+        }
+      )
+
+      if (heatmapFeatures?.length) {
+        dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
+        const heatmapProperties = heatmapFeatures.map((feature) =>
+          feature.category === 'detections' ? 'detections' : 'hours'
+        )
+        const heatmapPromise = dispatch(
+          fetchHeatmapInteractionThunk({ heatmapFeatures, heatmapProperties })
+        )
+        setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise as any }))
+      }
+    },
+    [dispatch, setInteractionPromises]
+  )
+
+  const handleDetectionPositionsInteraction = useCallback(
+    (event: InteractionEvent) => {
+      if (!event?.features) {
+        return
+      }
+      const detectionFeatures = (event.features as FourwingsPositionsPickingObject[]).filter(
+        (feature) => {
+          if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
+            return false
+          }
+          const hasVesselInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+            feature.category as DataviewCategory
+          )
+          const isPositions = feature.visualizationMode === 'positions'
+          return hasVesselInteraction && isPositions
+        }
+      )
+      if (detectionFeatures?.length) {
+        const detectionsPositionPromise = dispatch(
+          fetchDetectionThumbnailsThunk({ detectionFeatures })
+        )
+        setInteractionPromises((prev) => ({
+          ...prev,
+          detectionPositions: detectionsPositionPromise as any,
+        }))
+      }
+    },
+    [dispatch, setInteractionPromises]
+  )
+
+  const handleTileClusterInteraction = useCallback(
+    (event: InteractionEvent) => {
+      if (!event?.features) {
+        return
+      }
+      const tileClusterFeature = event.features.find(
+        (f) => f.category === DataviewCategory.Events && isTilesClusterLayer(f)
+      ) as SliceExtendedClusterPickingObject
+
+      if (tileClusterFeature) {
+        const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
+        // TODO:deck migrate bqPocQuery to FourwingsClusters
+        const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchClusterEventThunk
+        // TODO:deck remove fetchLegacyEncounterEventThunk once fourwings cluster goes to pro
+        const clusterFn =
+          tileClusterFeature?.subcategory === DataviewType.TileCluster
+            ? fetchLegacyEncounterEventThunk
+            : fetchClusterEventThunk
+        const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
+        setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+      }
+    },
+    [dispatch, setInteractionPromises]
+  )
+
+  const handleVesselEventInteraction = useCallback(
+    (event: InteractionEvent) => {
+      if (!event?.features) {
+        return
+      }
+      const vesselEventFeature = event.features.find(
+        (f) =>
+          f.category === DataviewCategory.Vessels && f.subcategory === DataviewType.VesselEvents
+      ) as VesselEventPickingObject
+
+      if (vesselEventFeature) {
+        const eventType = setEventGroup({
+          id: vesselEventFeature.id,
+          type: vesselEventFeature.type,
+        } as ActivityEvent)
+        startTransition(() => {
+          scrollToEvent({ eventId: vesselEventFeature.id, eventType })
+        })
+      }
+    },
+    [setEventGroup, scrollToEvent]
+  )
 
   const dispatchClickedEvent = useCallback(
     (deckEvent: InteractionEvent | null) => {
@@ -206,68 +336,10 @@ export const useClickedEventConnect = () => {
 
       dispatch(setClickedEvent(event))
 
-      // get temporal grid clicked features and order them by sublayerindex
-      const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
-        (feature) => {
-          if (
-            feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
-            feature.visualizationMode === 'positions'
-          ) {
-            return false
-          }
-          const hasVesselInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-            feature.category as DataviewCategory
-          )
-          const isHeatmap =
-            feature.subcategory === DataviewType.Heatmap ||
-            feature.subcategory === DataviewType.HeatmapAnimated ||
-            feature.subcategory === DataviewType.HeatmapStatic
-          return hasVesselInteraction && isHeatmap
-        }
-      )
-
-      if (heatmapFeatures?.length) {
-        dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
-        const heatmapProperties = heatmapFeatures.map((feature) =>
-          feature.category === 'detections' ? 'detections' : 'hours'
-        )
-        const heatmapPromise = dispatch(
-          fetchHeatmapInteractionThunk({ heatmapFeatures, heatmapProperties })
-        )
-        setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise as any }))
-      }
-
-      const tileClusterFeature = event.features.find(
-        (f) => f.category === DataviewCategory.Events && isTilesClusterLayer(f)
-      ) as SliceExtendedClusterPickingObject
-
-      if (tileClusterFeature) {
-        const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
-        // TODO:deck migrate bqPocQuery to FourwingsClusters
-        const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchClusterEventThunk
-        // TODO:deck remove fetchLegacyEncounterEventThunk once fourwings cluster goes to pro
-        const clusterFn =
-          tileClusterFeature?.subcategory === DataviewType.TileCluster
-            ? fetchLegacyEncounterEventThunk
-            : fetchClusterEventThunk
-        const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
-        setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
-      }
-
-      const vesselEventFeature = event.features.find(
-        (f) =>
-          f.category === DataviewCategory.Vessels && f.subcategory === DataviewType.VesselEvents
-      ) as VesselEventPickingObject
-
-      if (vesselEventFeature) {
-        const eventType = setEventGroup({
-          id: vesselEventFeature.id,
-          type: vesselEventFeature.type,
-        } as ActivityEvent)
-        startTransition(() => {
-          scrollToEvent({ eventId: vesselEventFeature.id, eventType })
-        })
-      }
+      handleHeatmapInteraction(event)
+      handleDetectionPositionsInteraction(event)
+      handleTileClusterInteraction(event)
+      handleVesselEventInteraction(event)
     },
     [
       cancelPendingInteractionRequests,
@@ -275,16 +347,18 @@ export const useClickedEventConnect = () => {
       isErrorNotificationEditing,
       rulersEditing,
       dispatch,
+      handleHeatmapInteraction,
+      handleDetectionPositionsInteraction,
+      handleTileClusterInteraction,
+      handleVesselEventInteraction,
       addMapAnnotation,
       addErrorNotification,
       onRulerMapClick,
+      eventsDataviews,
+      setMapCoordinates,
       fitMapBounds,
       areTilesClusterLoading,
-      setMapCoordinates,
       clickedEvent,
-      setInteractionPromises,
-      setEventGroup,
-      scrollToEvent,
     ]
   )
 
