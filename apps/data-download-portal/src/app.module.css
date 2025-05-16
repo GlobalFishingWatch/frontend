@@ -9,6 +9,5 @@
 .column {
   max-width: var(--desktop-max-width);
   margin: 0 auto;
-  padding-left: 5rem;
-  padding-right: 5rem;
+  padding: 0 3rem;
 }

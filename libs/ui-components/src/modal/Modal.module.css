@@ -1,5 +1,5 @@
 .modalOverlay {
-  background: rgb(var(--primary-blue-rgb), 0.85);
+  background: rgba(var(--primary-blue-rgb), 0.85);
   position: fixed;
   inset: 0;
   z-index: 100;
