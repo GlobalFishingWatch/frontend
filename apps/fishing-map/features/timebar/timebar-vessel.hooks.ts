@@ -20,8 +20,9 @@ import {
   selectVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { t } from 'features/i18n/i18n'
+import { useTimebarVisualisationConnect } from 'features/timebar/timebar.hooks'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
-import { TimebarGraphs } from 'types'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventDescription } from 'utils/events'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
@@ -72,6 +73,7 @@ export const useTimebarVesselTracksData = () => {
 
 type VesselTrackAtom = TimebarChartData<any>
 export const useTimebarVesselTracks = () => {
+  const { timebarVisualisation } = useTimebarVisualisationConnect()
   const timebarGraph = useSelector(selectTimebarGraph)
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
   const trackLayers = useTimebarLayers()
@@ -95,7 +97,7 @@ export const useTimebarVesselTracks = () => {
   )
 
   useEffect(() => {
-    if (!trackLayers?.length) {
+    if (!trackLayers?.length || timebarVisualisation !== TimebarVisualisations.Vessel) {
       return
     }
     setVesselTracks((tracks) => {
@@ -113,11 +115,11 @@ export const useTimebarVesselTracks = () => {
       })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksColor])
+  }, [tracksColor, timebarVisualisation])
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      if (trackLayers?.length) {
+      if (trackLayers?.length && timebarVisualisation === TimebarVisualisations.Vessel) {
         const vesselTracks = trackLayers.flatMap(({ instance }) => {
           const loaded =
             instance instanceof VesselLayer
@@ -159,7 +161,7 @@ export const useTimebarVesselTracks = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksLoaded, timebarGraph, tracksColor])
+  }, [tracksLoaded, timebarGraph, tracksColor, timebarVisualisation])
 
   return tracks
 }
@@ -172,6 +174,7 @@ const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnA
   value ? `${value.value} m` : ''
 
 export const useTimebarVesselTracksGraph = () => {
+  const { timebarVisualisation } = useTimebarVisualisationConnect()
   const timebarGraph = useSelector(selectTimebarGraph)
   const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
   const [tracksGraph, setVesselTracksGraph] = useAtom(vesselTracksGraphAtom)
@@ -196,7 +199,11 @@ export const useTimebarVesselTracksGraph = () => {
   )
 
   useEffect(() => {
-    if (!trackLayers?.length) {
+    if (
+      !trackLayers?.length ||
+      trackLayers?.length > 2 ||
+      timebarVisualisation !== TimebarVisualisations.Vessel
+    ) {
       return
     }
     setVesselTracksGraph((tracks) => {
@@ -214,12 +221,17 @@ export const useTimebarVesselTracksGraph = () => {
       })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksColor])
+  }, [tracksColor, timebarVisualisation])
 
   useEffect(() => {
     requestAnimationFrame(() => {
       const showGraph = timebarGraph === TimebarGraphs.Speed || timebarGraph === TimebarGraphs.Depth
-      if (showGraph && trackLayers?.length) {
+      if (
+        showGraph &&
+        trackLayers?.length &&
+        trackLayers?.length <= 2 &&
+        timebarVisualisation === TimebarVisualisations.Vessel
+      ) {
         const vesselTracks = trackLayers.flatMap(({ instance }) => {
           const loaded =
             instance instanceof VesselLayer
@@ -273,7 +285,7 @@ export const useTimebarVesselTracksGraph = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksLoaded, timebarGraph, tracksGraph])
+  }, [tracksLoaded, timebarGraph, tracksGraph, timebarVisualisation])
 
   const tracksFiltersHash = useMemo(() => {
     return activeVesselDataviews
@@ -352,6 +364,7 @@ const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackF
 }
 
 export const useTimebarVesselEvents = () => {
+  const { timebarVisualisation } = useTimebarVisualisationConnect()
   const timebarGraph = useSelector(selectTimebarGraph)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const [timebarVesselEvents, setTimebarVesselEvents] =
@@ -368,7 +381,12 @@ export const useTimebarVesselEvents = () => {
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      if (vessels?.length && vesselsWithEventsLoaded.length && visibleEvents?.length) {
+      if (
+        vessels?.length &&
+        vesselsWithEventsLoaded.length &&
+        visibleEvents?.length &&
+        timebarVisualisation === TimebarVisualisations.Vessel
+      ) {
         const vesselEvents: TimebarChartData<any> = vessels.map(({ instance }) => {
           const isVesselLayer = instance instanceof VesselLayer
           const loaded = isVesselLayer ? instance.getVesselTracksLayersLoaded() : instance.isLoaded
@@ -394,7 +412,7 @@ export const useTimebarVesselEvents = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vesselsWithEventsLoaded, timebarGraph, visibleEvents, eventsColor])
+  }, [vesselsWithEventsLoaded, timebarGraph, visibleEvents, eventsColor, timebarVisualisation])
 
   return timebarVesselEvents
 }
