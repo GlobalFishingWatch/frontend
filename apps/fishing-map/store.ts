@@ -5,7 +5,7 @@ import { createWrapper } from 'next-redux-wrapper'
 import { queriesApiMiddlewares, queriesApiReducers } from 'queries'
 
 import connectedRoutes from 'routes/routes'
-import { routerQueryMiddleware, routerWorkspaceMiddleware } from 'routes/routes.middlewares'
+import routerMiddlewares from 'routes/routes.middlewares'
 
 import { rootReducer } from './reducers'
 
@@ -56,8 +56,7 @@ const makeStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware(defaultMiddlewareOptions).concat(
         ...queriesApiMiddlewares,
-        routerQueryMiddleware,
-        routerWorkspaceMiddleware,
+        ...routerMiddlewares,
         routerMiddleware as Middleware,
         logoutUserMiddleware
       ),
