@@ -148,77 +148,78 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         </div>
 
         <div>
-          <div className={styles.columns}>
-            <div className={styles.info}>
-              <label>{t('common.field', 'Field')}</label>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>
+                  <label>{t('common.field', 'Field')}</label>
+                </th>
+                <th>
+                  <label>{t('common.value', 'Value')}</label>
+                </th>
+                <th>
+                  <label>{t('common.feedback', 'Feedback')}</label>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
               {fields.map((key) => (
-                <label key={key}>
-                  {t(
-                    `vessel.${
-                      identitySource === VesselIdentitySourceEnum.SelfReported &&
-                      (key === 'geartypes' || key === 'shiptypes')
-                        ? 'gfw_' + key
-                        : key
-                    }`,
-                    key
-                  )}
-                </label>
+                <tr key={key}>
+                  <td>
+                    {t(
+                      `vessel.${
+                        identitySource === VesselIdentitySourceEnum.SelfReported &&
+                        (key === 'geartypes' || key === 'shiptypes')
+                          ? 'gfw_' + key
+                          : key
+                      }`,
+                      key
+                    )}
+                  </td>
+                  <td>
+                    {(vesselIdentity[key as keyof typeof vesselIdentity] as string) || '----'}
+                  </td>
+                  <td>
+                    {key === 'geartypes' || key === 'shiptypes' ? (
+                      <Select
+                        placeholder={t('selects.placeholder', 'Select an option')}
+                        type="secondary"
+                        options={
+                          key === 'geartypes'
+                            ? gearSelectOptions
+                            : key === 'shiptypes'
+                              ? shipSelectOptions
+                              : []
+                        }
+                        selectedOption={(key === 'geartypes'
+                          ? gearSelectOptions
+                          : shipSelectOptions
+                        ).find((option) => option.label === proposedValues?.[key])}
+                        onSelect={(option) =>
+                          setProposedValues({
+                            ...proposedValues,
+                            [key]: option.label as string,
+                          })
+                        }
+                      />
+                    ) : (
+                      <InputText
+                        inputSize="small"
+                        className={styles.input}
+                        onChange={(e) =>
+                          setProposedValues({
+                            ...proposedValues,
+                            [key]: e.target.value,
+                          })
+                        }
+                        disabled={loading}
+                      />
+                    )}
+                  </td>
+                </tr>
               ))}
-            </div>
-
-            <div className={styles.info}>
-              <label>{t('common.value', 'Value')}</label>
-              {fields.map((key) => (
-                <div key={key}>
-                  {(vesselIdentity[key as keyof typeof vesselIdentity] as string) || '----'}
-                </div>
-              ))}
-            </div>
-
-            <div className={styles.info}>
-              <label>{t('common.feedback', 'Feedback')}</label>
-              {fields.map((key) =>
-                key === 'geartypes' || key === 'shiptypes' ? (
-                  <Select
-                    // label={t(`vessel.${key}` as any, key)}
-                    placeholder={t('selects.placeholder', 'Select an option')}
-                    type="secondary"
-                    options={
-                      key === 'geartypes'
-                        ? gearSelectOptions
-                        : key === 'shiptypes'
-                          ? shipSelectOptions
-                          : []
-                    }
-                    selectedOption={(key === 'geartypes'
-                      ? gearSelectOptions
-                      : shipSelectOptions
-                    ).find((option) => option.label === proposedValues?.[key])}
-                    onSelect={(option) =>
-                      setProposedValues({
-                        ...proposedValues,
-                        [key]: option.label as string,
-                      })
-                    }
-                  />
-                ) : (
-                  <InputText
-                    // label={t(`vessel.${key}` as any, key)}
-                    key={key}
-                    inputSize="small"
-                    className={styles.input}
-                    onChange={(e) =>
-                      setProposedValues({
-                        ...proposedValues,
-                        [key]: e.target.value,
-                      })
-                    }
-                    disabled={loading}
-                  />
-                )
-              )}
-            </div>
-          </div>
+            </tbody>
+          </table>
         </div>
 
         <div>

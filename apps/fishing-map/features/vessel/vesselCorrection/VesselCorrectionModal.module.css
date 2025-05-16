@@ -22,14 +22,14 @@
   padding: 0 5rem;
 }
 
-.columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 var(--space-M);
 }
 
-.info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-M);
-  font-size: small;
+.table th {
+  text-align: left;
+  font-size: var(--font-S);
+  color: var(--color-dark);
 }
