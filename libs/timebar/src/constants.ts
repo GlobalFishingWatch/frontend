@@ -31,3 +31,4 @@ export const EVENT_INTERVAL_SOURCE: { [key in FourwingsInterval]?: string } = {
 // units are in px
 export const MINIMUM_TIMEBAR_HEIGHT = 70
 export const MAXIMUM_TIMEBAR_HEIGHT = 400
+export const TIMEBAR_HEIGHT_STORAGE_KEY = 'timebar-height'

@@ -85,7 +85,9 @@ const MapControlScreenshot = ({
   )
 
   const onScreenshotClick = useCallback(() => {
-    dispatchQueryParams({ sidebarOpen: true })
+    if (screenshotAreaId === ScrenshotAreaIds.withTimebarAndLegend) {
+      dispatchQueryParams({ sidebarOpen: true })
+    }
     dispatch(setModalOpen({ id: 'screenshot', open: true }))
     generateImage(screenshotAreaId)
   }, [dispatch, dispatchQueryParams, generateImage, screenshotAreaId])
@@ -114,9 +116,12 @@ const MapControlScreenshot = ({
   const onSelectScreenshotArea = useCallback(
     (area: ScrenshotDOMArea) => {
       dispatch(setScreenshotAreaId(area))
+      if (area === ScrenshotAreaIds.withTimebarAndLegend) {
+        dispatchQueryParams({ sidebarOpen: true })
+      }
       generateImage(area)
     },
-    [dispatch, generateImage]
+    [dispatch, dispatchQueryParams, generateImage]
   )
 
   return (

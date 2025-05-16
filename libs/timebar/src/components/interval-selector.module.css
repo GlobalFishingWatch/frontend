@@ -2,9 +2,17 @@
   background-color: var(--timebar-ui-btn-color);
   width: 7rem;
   overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.intervalBtnContainer {
+  flex: 1;
 }
 
 .intervalBtn {
+  height: 100%;
   border: none;
   padding: 0 1rem;
   border-radius: 0;

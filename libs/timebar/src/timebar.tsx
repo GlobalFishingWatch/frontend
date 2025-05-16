@@ -20,6 +20,7 @@ import {
   EVENT_SOURCE,
   MAXIMUM_TIMEBAR_HEIGHT,
   MINIMUM_TIMEBAR_HEIGHT,
+  TIMEBAR_HEIGHT_STORAGE_KEY,
 } from './constants'
 import type { TrackGraphOrientation } from './timelineContext'
 
@@ -215,10 +216,14 @@ export class Timebar extends Component<TimebarProps> {
   constructor(props: TimebarProps) {
     super(props)
     this.interval = null
+    const storedHeight = localStorage.getItem(TIMEBAR_HEIGHT_STORAGE_KEY)
+    const initialHeight = storedHeight
+      ? parseInt(storedHeight)
+      : props.defaultHeight || DEFAULT_HEIGHT
     this.state = {
       showTimeRangeSelector: false,
       absoluteEnd: null,
-      updatedHeight: props.defaultHeight || DEFAULT_HEIGHT,
+      updatedHeight: initialHeight,
       isDragging: false,
       startCursorY: null,
       startHeight: null,
@@ -359,6 +364,7 @@ export class Timebar extends Component<TimebarProps> {
       let newHeight = Math.min(this.state.startHeight + cursorYDelta, MAXIMUM_TIMEBAR_HEIGHT)
       newHeight = Math.max(MINIMUM_TIMEBAR_HEIGHT, newHeight)
       this.setState({ updatedHeight: newHeight })
+      localStorage.setItem(TIMEBAR_HEIGHT_STORAGE_KEY, newHeight.toString())
     }
   }
 
@@ -424,7 +430,7 @@ export class Timebar extends Component<TimebarProps> {
           <div
             role="button"
             tabIndex={0}
-            className={styles.timebarResizer}
+            className={cx(styles.timebarResizer, { [styles.resizing]: this.state.isDragging })}
             onMouseDown={this.handleMouseDown}
           />
         )}
@@ -476,18 +482,16 @@ export class Timebar extends Component<TimebarProps> {
           </button>
         </div>
         <div className={cx('print-hidden', styles.timeActions)}>
-          {
-            intervals && getCurrentInterval ? (
-              <IntervalSelector
-                intervals={intervals}
-                getCurrentInterval={getCurrentInterval}
-                labels={labels.intervals}
-                start={start}
-                end={end}
-                onIntervalClick={this.onIntervalClick}
-              />
-            ) : null // TODO restore + and - buttons as fallback
-          }
+          {intervals && getCurrentInterval ? (
+            <IntervalSelector
+              intervals={intervals}
+              getCurrentInterval={getCurrentInterval}
+              labels={labels.intervals}
+              start={start}
+              end={end}
+              onIntervalClick={this.onIntervalClick}
+            />
+          ) : null}
         </div>
 
         <Timeline
