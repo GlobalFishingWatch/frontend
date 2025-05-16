@@ -35,14 +35,14 @@
     "name": "Principales zones de pêche de la FAO"
   },
   "fishing-effort-ais": {
-    "description": "To determine “apparent fishing effort”, Global Fishing Watch analyzes automatic identification system (AIS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a fishing detection algorithm based on changes in vessel speed and direction.",
+    "description": "Pour déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système d'identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires.",
     "moreInfoLink": "",
-    "name": "Apparent fishing effort (AIS)"
+    "name": "Effort de pêche apparent (AIS)"
   },
   "fishing-effort-vms": {
-    "description": "To determine “apparent fishing effort”, Global Fishing Watch analyzes vessel monitoring system (VMS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a fishing detection algorithm based on changes in vessel speed and direction.",
+    "description": "Pour déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système de surveillance des navires (VMS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires",
     "moreInfoLink": "",
-    "name": "Apparent fishing effort (VMS)"
+    "name": "Effort de pêche apparent (VMS)"
   },
   "graticules": {
     "description": "Grilles ou graticules de latitude et de longitude à des intervalles de 1, 5, 10 et 30° selon le niveau de zoom de la carte",
