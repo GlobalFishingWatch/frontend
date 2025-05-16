@@ -15,8 +15,8 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
+  getVesselDataviewInstanceId,
   isBathymetryDataview,
-  VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import {
   selectActiveActivityDataviews,
@@ -28,46 +28,23 @@ import {
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectVesselProfileDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import {
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesMergedOrdered,
-  selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
-import { getReportVesselGroupVisibleDataviews } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import { selectReportVesselsSubCategory } from 'features/reports/reports.config.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import {
   selectIsVesselGroupReportLocation,
-  selectReportVesselGroupId,
   selectUrlDataviewInstances,
   selectVesselId,
 } from 'routes/routes.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
-
-export const selectHasOtherVesselGroupDataviews = createSelector(
-  [
-    selectDataviewInstancesResolved,
-    selectReportVesselGroupId,
-    selectReportCategory,
-    selectReportVesselsSubCategory,
-  ],
-  (dataviews, reportVesselGroupId, vGRSection, vGRSubsection) => {
-    if (!dataviews?.length) return false
-    const vesselGroupReportDataviews = getReportVesselGroupVisibleDataviews({
-      dataviews,
-      reportVesselGroupId,
-      vesselGroupReportSection: vGRSection,
-      vesselGroupReportSubSection: vGRSubsection,
-    })
-    const workspaceVisibleDataviews = dataviews.filter(({ config }) => config?.visible === true)
-    return workspaceVisibleDataviews.length > vesselGroupReportDataviews.length
-  }
-)
 
 export const selectBasemapLabelsDataviewInstance = createSelector(
   [selectAllDataviewInstancesResolved],
@@ -304,11 +281,10 @@ export const selectPrivateDatasetsInWorkspace = createSelector(
 )
 
 export const selectHasVesselProfileInstancePinned = createSelector(
-  [selectWorkspaceDataviewInstances, selectUrlDataviewInstances, selectVesselId],
-  (workspaceDataviewInstances = [], urlDataviewInstances = [], vesselId) => {
-    const dataviews = [...workspaceDataviewInstances, ...urlDataviewInstances]
-    return dataviews?.some(({ config, id }) => {
-      return id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` && config?.visible
+  [selectVesselProfileDataviewInstancesInjected, selectVesselId],
+  (vesselProfileDataviewInstancesInjected = [], vesselId) => {
+    return vesselProfileDataviewInstancesInjected?.every(({ id }) => {
+      return id !== getVesselDataviewInstanceId(vesselId)
     })
   }
 )

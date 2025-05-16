@@ -11,6 +11,7 @@ import downloadTrackReducer from 'features/download/downloadTrack.slice'
 import editorReducer from 'features/editor/editor.slice'
 import hintsReducer from 'features/help/hints.slice'
 import mapControlsReducer from 'features/map/controls/map-controls.slice'
+import screenshotReducer from 'features/map/controls/screenshot.slice'
 import mapReducer from 'features/map/map.slice'
 import modalsReducer from 'features/modals/modals.slice'
 import regionsReducer from 'features/regions/regions.slice'
@@ -50,6 +51,7 @@ export const rootReducer = combineReducers({
   report: reportReducer,
   reports: reportsReducer,
   resources: resourcesReducer,
+  screenshot: screenshotReducer,
   search: searchReducer,
   timebar: timebarReducer,
   title: titleReducer,

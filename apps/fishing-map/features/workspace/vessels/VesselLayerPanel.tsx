@@ -27,7 +27,7 @@ import {
   isGFWOnlyDataset,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -191,7 +191,7 @@ function VesselLayerPanel({
     (infoResource?.datasetConfig?.params?.find(
       (p: DataviewDatasetConfigParam) => p.id === 'vesselId'
     )?.value as string) ||
-    dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') ||
+    getVesselIdFromInstanceId(dataview.id) ||
     ''
 
   const getVesselTitle = (): ReactNode => {

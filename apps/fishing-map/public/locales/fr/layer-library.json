@@ -34,10 +34,15 @@
     "moreInfoLink": "",
     "name": "Principales zones de pêche de la FAO"
   },
-  "fishing-effort": {
-    "description": "Pour déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système d'identification automatique (AIS) et du système de surveillance des navires (VMS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires.",
+  "fishing-effort-ais": {
+    "description": "Pour déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système d'identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires.",
     "moreInfoLink": "",
-    "name": "Effort de pêche apparent"
+    "name": "Effort de pêche apparent (AIS)"
+  },
+  "fishing-effort-vms": {
+    "description": "Pour déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système de surveillance des navires (VMS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires",
+    "moreInfoLink": "",
+    "name": "Effort de pêche apparent (VMS)"
   },
   "graticules": {
     "description": "Grilles ou graticules de latitude et de longitude à des intervalles de 1, 5, 10 et 30° selon le niveau de zoom de la carte",

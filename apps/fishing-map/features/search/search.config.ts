@@ -7,7 +7,7 @@ export type SearchType = 'basic' | 'advanced'
 export const RESULTS_PER_PAGE = 20
 export const SSVID_LENGTH = 9
 export const IMO_LENGTH = 7
-export const EMPTY_FILTERS = {
+export const EMPTY_SEARCH_FILTERS = {
   id: undefined,
   query: undefined,
   flag: undefined,
@@ -30,5 +30,5 @@ export const EMPTY_FILTERS = {
 
 export const DEFAULT_SEARCH_STATE: VesselSearchState = {
   searchOption: 'basic',
-  ...EMPTY_FILTERS,
+  ...EMPTY_SEARCH_FILTERS,
 }

@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
+import { formatDateForInterval, getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -54,12 +54,12 @@ function EncounterTooltipRow({
   const event = parseEncounterEvent(feature.event)
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
-  const date = feature.properties.htime
-    ? formatDateForInterval(
-        CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
-        interval
-      )
-    : ''
+  const timestamp = feature.properties.htime
+    ? CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime)
+    : event?.start
+      ? getUTCDateTime(event?.start as string).toMillis()
+      : undefined
+  const date = timestamp ? formatDateForInterval(timestamp, interval) : ''
 
   return (
     <div className={styles.popupSection}>

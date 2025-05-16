@@ -68,6 +68,7 @@ export const getPointsTemporalAggregated = (
           // TODO:deck remove the round as won't be needed with real data
           value: Math.round(offset + value * scale),
           id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
+          cellNum,
           cellBounds: getCellBounds({
             cellIndex: cellNum,
             cols,
@@ -148,6 +149,7 @@ export const getPoints = (
               value: Math.round(offset + pointValue * scale),
               id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum + j),
               tile: tile?.index,
+              cellNum,
               cellBounds: getCellBounds({
                 cellIndex: cellNum,
                 cols,

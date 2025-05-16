@@ -49,7 +49,6 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
         maxRequests: 100,
         debounceTime: 200,
         locale: this.props.locale,
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
         renderSubLayers: (props: any) => {
           return [
             new LabelLayer<BasemapLayerFeature>({

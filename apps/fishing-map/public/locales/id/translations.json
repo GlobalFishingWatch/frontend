@@ -600,7 +600,8 @@
     "ssvid": "Identifikasi Kapal Stasiun Kapal (Ship Station Vessel Identification/SSVID)",
     "start": "mulai",
     "totalDistanceKm": "jarak total (km)",
-    "type": "jenis kapal"
+    "type": "jenis kapal",
+    "trackDisclaimer": "Encountered vessel track shows one month before and after the event."
   },
   "eventsReport": {
     "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -1194,6 +1195,7 @@
     "uploadPublic": "Izinkan pengguna lain untuk melihat kelompok kapal ini ketika Anda berbagi ruang kerja",
     "vesselAddedToGroup": "Your vessel group was updated",
     "vesselGroup": "Kelompok kapal",
+    "vesselGroupProfile": "Vessel group profile",
     "vesselGroups": "Kelompok kapal"
   },
   "vesselGroupReport": {

@@ -24,7 +24,6 @@ import {
 import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
-  selectViewOnlyVessel,
 } from 'features/vessel/vessel.config.selectors'
 import { setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
@@ -35,7 +34,6 @@ import VesselGroupAddButton, {
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 
 import styles from './VesselHeader.module.css'
@@ -47,9 +45,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const isSmallScreen = useSmallScreen()
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
-  const viewOnlyVessel = useSelector(selectViewOnlyVessel)
   const vessel = useSelector(selectVesselInfoData)
-  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
@@ -113,9 +109,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
 
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
-  const otherNamesLabel = getVesselOtherNamesLabel(
-    getOtherVesselNames(vessel, nShipname).filter(Boolean)
-  )
+  const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
     if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
@@ -126,11 +120,6 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const onPrintClick = () => {
     dispatch(setVesselPrintMode(true))
     trackAction('print')
-  }
-
-  const setViewOnlyVessel = () => {
-    if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
-    dispatchQueryParams({ viewOnlyVessel: !viewOnlyVessel })
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -216,21 +205,6 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
               vesselTitle={shipname}
               datasetId={vessel.track as string}
               iconType="border"
-            />
-          )}
-          {isWorkspaceVesselLocation && (
-            <IconButton
-              className="print-hidden"
-              type="border"
-              icon={viewOnlyVessel ? 'layers-on' : 'layers-off'}
-              tooltip={
-                viewOnlyVessel
-                  ? t('vessel.showOtherLayers', 'Show other layers')
-                  : t('vessel.hideOtherLayers', 'Hide other layers')
-              }
-              tooltipPlacement="bottom"
-              size="small"
-              onClick={setViewOnlyVessel}
             />
           )}
           <IconButton

@@ -2,16 +2,9 @@ import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { isPrintSupported, useLocalStorage } from '@globalfishingwatch/react-hooks'
-import type { SelectOption } from '@globalfishingwatch/ui-components'
-import {
-  Button,
-  Choice,
-  IconButton,
-  MAIN_DOM_ID,
-  Modal,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
+import { isPrintSupported } from '@globalfishingwatch/react-hooks'
+import type { MAIN_DOM_ID, SelectOption } from '@globalfishingwatch/ui-components'
+import { Button, Choice, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -20,21 +13,18 @@ import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'routes/routes.selectors'
-import { cleantInlineStyles,setInlineStyles } from 'utils/dom'
+import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
-import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
+import type { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 import MapScreenshot, { MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
+
+import { ScrenshotAreaIds, selectScreenshotAreaId, setScreenshotAreaId } from './screenshot.slice'
 
 import styles from './MapControls.module.css'
 
 type ScrenshotArea = 'map' | 'withTimebar' | 'withTimebarAndLegend'
 type ScrenshotDOMArea = typeof ROOT_DOM_ELEMENT | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID
-const ScrenshotAreaIds: Record<ScrenshotArea, ScrenshotDOMArea> = {
-  map: MAP_CONTAINER_ID,
-  withTimebar: MAIN_DOM_ID,
-  withTimebarAndLegend: ROOT_DOM_ELEMENT,
-}
-const SCREENSHOT_AREA_KEY_ID = 'screenShotAreaId'
+
 const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.withTimebarAndLegend
 
 const MapControlScreenshot = ({
@@ -51,10 +41,7 @@ const MapControlScreenshot = ({
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const showScreenshot = !isVesselLocation && !isAnyReportLocation
-  const [screenshotAreaId, setScreenshotAreaId] = useLocalStorage<ScrenshotDOMArea>(
-    SCREENSHOT_AREA_KEY_ID,
-    DEFAULT_SCREENSHOT_AREA
-  )
+  const screenshotAreaId = useSelector(selectScreenshotAreaId)
   const rootElement = useDOMElement()
 
   const SCREENSHOT_AREA_OPTIONS: SelectOption<ScrenshotDOMArea>[] = useMemo(
@@ -105,13 +92,12 @@ const MapControlScreenshot = ({
 
   const handleModalClose = useCallback(() => {
     resetPreviewImage()
-    setScreenshotAreaId(DEFAULT_SCREENSHOT_AREA)
     if (rootElement) {
       rootElement.classList.remove('printing')
       cleantInlineStyles(rootElement)
     }
     dispatch(setModalOpen({ id: 'screenshot', open: false }))
-  }, [dispatch, resetPreviewImage, rootElement, setScreenshotAreaId])
+  }, [dispatch, resetPreviewImage, rootElement])
 
   const onPDFDownloadClick = useCallback(() => {
     handleModalClose()
@@ -127,10 +113,10 @@ const MapControlScreenshot = ({
 
   const onSelectScreenshotArea = useCallback(
     (area: ScrenshotDOMArea) => {
-      setScreenshotAreaId(area)
+      dispatch(setScreenshotAreaId(area))
       generateImage(area)
     },
-    [generateImage, setScreenshotAreaId]
+    [dispatch, generateImage]
   )
 
   return (

@@ -31,7 +31,6 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselSection: 'activity',
   vesselArea: 'eez',
   vesselRelated: 'encounters',
-  viewOnlyVessel: true,
   includeRelatedIdentities: true,
 }
 

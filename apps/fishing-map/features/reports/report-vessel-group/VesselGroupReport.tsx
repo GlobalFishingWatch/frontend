@@ -31,7 +31,7 @@ import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { ReportCategory } from '../reports.types'
-import { selectReportVesselsTimeRange } from '../shared/vessels/report-vessels.selectors'
+import { selectReportVesselGroupTimeRange } from '../shared/vessels/report-vessels.selectors'
 import ReportActivity from '../tabs/activity/ReportActivity'
 
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
@@ -50,7 +50,7 @@ function VesselGroupReport() {
   const reportStatus = useSelector(selectVGRStatus)
   const reportCategory = useSelector(selectReportCategory)
   const reportDataview = useSelector(selectVGRFootprintDataview)
-  const timeRange = useSelector(selectReportVesselsTimeRange)
+  const timeRange = useSelector(selectReportVesselGroupTimeRange)
   const userData = useSelector(selectUserData)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
@@ -82,13 +82,13 @@ function VesselGroupReport() {
     }
   }, [bboxHash, setMapCoordinates])
 
-  useEffect(() => {
-    trackEvent({
-      category: TrackCategory.VesselGroupReport,
-      action: 'update_time_range_from_vessel_group_report',
-      label: getEventLabel([timeRange?.start || '', timeRange?.end || '']),
-    })
-  }, [timeRange])
+  // useEffect(() => {
+  //   trackEvent({
+  //     category: TrackCategory.VesselGroupReport,
+  //     action: 'update_time_range_from_vessel_group_report',
+  //     label: getEventLabel([timeRange?.start || '', timeRange?.end || '']),
+  //   })
+  // }, [timeRange])
 
   const changeTab = useCallback(
     (tab: Tab<ReportCategory>) => {

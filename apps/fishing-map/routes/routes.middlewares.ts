@@ -5,27 +5,36 @@ import { NOT_FOUND } from 'redux-first-router'
 
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 
+import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
+import { t } from 'features/i18n/i18n'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
+import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import type { LinkToPayload } from 'routes/routes.types'
 import type { QueryParam, QueryParams } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
-import { routesMap, WORKSPACE_ROUTES } from './routes'
+import {
+  ALL_WORKSPACE_ROUTES,
+  REPORT_ROUTES,
+  routesMap,
+  VESSEL_ROUTES,
+  WORKSPACE_ROUTES,
+} from './routes'
 import type { UpdateQueryParamsAction } from './routes.actions'
+
+const ROUTES_ACTIONS = Object.keys(routesMap)
 
 export const routerQueryMiddleware: Middleware =
   ({ getState }: { getState: () => RootState }) =>
   (next) =>
   (action) => {
     const routerAction = action as UpdateQueryParamsAction
-    const routesActions = Object.keys(routesMap)
     // check if action type matches a route type
-    const isRouterAction = routesActions.includes(routerAction.type)
-    if (!isRouterAction) {
-      next(action)
-    } else {
+    const isRouterAction = ROUTES_ACTIONS.includes(routerAction.type)
+    if (isRouterAction) {
       const newAction: UpdateQueryParamsAction = { ...routerAction }
 
       const prevQuery = getState().location.query || {}
@@ -62,6 +71,8 @@ export const routerQueryMiddleware: Middleware =
         }
       }
       next(newAction)
+    } else {
+      next(action)
     }
   }
 
@@ -70,42 +81,101 @@ export const routerWorkspaceMiddleware: Middleware =
   ({ getState, dispatch }: { getState: () => RootState; dispatch: Dispatch }) =>
   (next) =>
   (action) => {
-    const routerAction = action as UpdateQueryParamsAction
-    const routesActions = Object.keys(routesMap)
-    // check if action type matches a route type
     const state = getState() as RootState
+    const routerAction = action as UpdateQueryParamsAction
     const { type, query, payload, pathname } = state.location
-    const isRouterAction = routesActions.includes(routerAction.type)
+    const isRouterAction = ROUTES_ACTIONS.includes(routerAction.type)
     const isNotInitialLoad = type && routerAction.type !== NOT_FOUND && type !== NOT_FOUND
-    if (isRouterAction && !routerAction.isHistoryNavigation && isNotInitialLoad) {
-      const currentHistoryNavigation = state.workspace?.historyNavigation || []
-      const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
-      const isDifferentRoute =
-        routerAction.type !== type ||
-        Object.entries(routerAction.payload).some(([key, value]) => value !== payload[key])
+    const newAction: UpdateQueryParamsAction = { ...routerAction }
+
+    if (isRouterAction) {
+      // Pin vessel profile instance when navigating to another page
+      // Needs to happen here instead of other middleware to reuse the same query object
+      const newQuery = { ...(query || {}) }
+
+      const isWorkspaceVesselLocation = selectIsWorkspaceVesselLocation(state)
+      const navigatesToWorkspaceRoute = ALL_WORKSPACE_ROUTES.includes(routerAction.type)
+      const vesselProfileDataviewIntance = selectVesselProfileDataviewIntance(state)
+      const hasVesselProfileInstancePinned = selectHasVesselProfileInstancePinned(state)
+      const navigatesToDifferentLocation = routerAction.type !== state.location.type
+      const navigatesToDifferentVessel =
+        VESSEL_ROUTES.includes(routerAction.type) &&
+        VESSEL_ROUTES.includes(state.location.type) &&
+        routerAction.payload.vesselId !== state.location.payload.vesselId
       if (
-        isDifferentRoute &&
-        (!lastHistoryNavigation || lastHistoryNavigation.pathname !== pathname)
+        isWorkspaceVesselLocation &&
+        navigatesToWorkspaceRoute &&
+        (navigatesToDifferentLocation || navigatesToDifferentVessel) &&
+        vesselProfileDataviewIntance &&
+        !hasVesselProfileInstancePinned
       ) {
-        const newHistoryNavigation: LastWorkspaceVisited = {
-          pathname,
-          type: type as ROUTE_TYPES,
-          query: query!,
-          payload: payload as LinkToPayload,
+        if (
+          window.confirm(
+            t('vessel.confirmationClose', 'Do you want to keep this vessel in your workspace?')
+          ) === true
+        ) {
+          const cleanVesselDataviewInstance = {
+            ...vesselProfileDataviewIntance,
+            config: {
+              ...vesselProfileDataviewIntance?.config,
+              highlightEventStartTime: undefined,
+              highlightEventEndTime: undefined,
+            },
+            datasetsConfig: undefined,
+          }
+          newQuery.dataviewInstances = [
+            ...(newQuery?.dataviewInstances || []),
+            cleanVesselDataviewInstance,
+          ]
+          newAction.query = {
+            ...newAction.query,
+            dataviewInstances: [
+              ...(newAction.query?.dataviewInstances || []),
+              cleanVesselDataviewInstance,
+            ],
+          }
         }
-        dispatch(setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation]))
-      } else if (lastHistoryNavigation && WORKSPACE_ROUTES.includes(lastHistoryNavigation.type)) {
-        const updatedHistoryNavigation: LastWorkspaceVisited = {
-          ...lastHistoryNavigation,
-          query: routerAction.query!,
+      }
+      // End of pin vessel profile instance middleware
+
+      if (isNotInitialLoad && !routerAction.skipHistoryNavigation) {
+        const currentHistoryNavigation = state.workspace?.historyNavigation || []
+        const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
+        const isDifferentRoute =
+          routerAction.type !== type ||
+          Object.entries(routerAction.payload).some(([key, value]) => value !== payload[key])
+        if (
+          isDifferentRoute &&
+          !routerAction.isHistoryNavigation &&
+          (!lastHistoryNavigation || lastHistoryNavigation.pathname !== pathname)
+        ) {
+          const newHistoryNavigation: LastWorkspaceVisited = {
+            pathname,
+            type: type as ROUTE_TYPES,
+            query: newQuery,
+            payload: payload as LinkToPayload,
+          }
+          dispatch(
+            setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
+          )
+        } else if (lastHistoryNavigation) {
+          const historyNavigation = routerAction.isHistoryNavigation
+            ? currentHistoryNavigation.slice(0, -1)
+            : currentHistoryNavigation
+          const updatedHistoryNavigation = historyNavigation.map((navigation) => {
+            if ([...WORKSPACE_ROUTES, ...REPORT_ROUTES].includes(lastHistoryNavigation.type)) {
+              return {
+                ...navigation,
+                query: newAction.query!,
+              }
+            }
+            return navigation
+          })
+          dispatch(setWorkspaceHistoryNavigation(updatedHistoryNavigation))
         }
-        dispatch(
-          setWorkspaceHistoryNavigation([
-            ...currentHistoryNavigation.slice(0, -1),
-            updatedHistoryNavigation,
-          ])
-        )
       }
     }
-    next(action)
+    next(newAction)
   }
+
+export default [routerQueryMiddleware, routerWorkspaceMiddleware]

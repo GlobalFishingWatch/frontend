@@ -23,7 +23,6 @@ import type {
   FourwingsHeatmapPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
-import { FOURWINGS_MAX_ZOOM } from '@globalfishingwatch/deck-layers'
 
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -106,6 +105,7 @@ export const useCancelInteractionPromises = () => {
 
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
+  const eventsDataviews = useSelector(selectEventsDataviews)
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
   const clickedEvent = useSelector(selectClickedEvent)
@@ -165,33 +165,35 @@ export const useClickedEventConnect = () => {
       ) as FourwingsClusterPickingObject
 
       if (clusterFeature) {
-        if (isTilesClusterLayerCluster(clusterFeature)) {
+        if (clusterFeature.clusterMode === 'country') {
+          const dataview = eventsDataviews?.find((d) => d.id === clusterFeature.layerId)
+          const maxZoomLevel = dataview?.config?.clusterMaxZoomLevels?.country || event.zoom!
+          setMapCoordinates({
+            latitude: event.latitude,
+            longitude: event.longitude,
+            zoom: maxZoomLevel + 1,
+          })
+          return
+        } else if (isTilesClusterLayerCluster(clusterFeature)) {
           const { expansionZoom, expansionBounds } = clusterFeature
           if (expansionBounds?.length) {
             fitMapBounds(expansionBounds, {
               fitZoom: true,
               flyTo: true,
             })
+            return
           } else {
             const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
-            const expansionZoomValue =
-              expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
+            const expansionZoomValue = expansionZoom || legacyExpansionZoom
             if (!areTilesClusterLoading && expansionZoomValue) {
               setMapCoordinates({
                 latitude: event.latitude,
                 longitude: event.longitude,
                 zoom: expansionZoomValue,
               })
+              return
             }
           }
-          return
-        } else if (clusterFeature.clusterMode === 'country') {
-          setMapCoordinates({
-            latitude: event.latitude,
-            longitude: event.longitude,
-            zoom: (event.zoom as number) + 1,
-          })
-          return
         }
       }
 
@@ -445,8 +447,10 @@ export const useMapCursor = () => {
         return 'move'
       }
       if (hoverFeatures?.some(isTilesClusterLayer)) {
-        const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some((f) =>
-          isTilesClusterLayerCluster(f)
+        const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some(
+          (f) =>
+            isTilesClusterLayerCluster(f) &&
+            (f.expansionBounds !== undefined || f.expansionZoom !== undefined)
         )
         const isCountryClusterMode = (hoverFeatures as FourwingsClusterPickingObject[]).some(
           (f) => f.clusterMode === 'country'

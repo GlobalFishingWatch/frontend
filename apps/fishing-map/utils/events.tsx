@@ -3,7 +3,7 @@ import { Trans } from 'react-i18next'
 import type { Duration } from 'luxon'
 import { DateTime } from 'luxon'
 
-import type { ApiEvent } from '@globalfishingwatch/api-types'
+import type { ApiEvent, DataviewInstanceOrigin } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
 
@@ -11,6 +11,7 @@ import { EVENTS_COLORS } from 'data/config'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import type { VesselPinOnClickCb } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
 
 import { getUTCDateTime } from './dates'
@@ -158,7 +159,8 @@ export const getEventDescription = ({
 export const getEventDescriptionComponent = (
   event: ApiEvent,
   className = '',
-  onVesselPinClick?: () => void
+  vesselOrigin?: DataviewInstanceOrigin,
+  onVesselPinClick?: VesselPinOnClickCb
 ) => {
   const { start, end, type, encounter } = event
   const { color, colorLabels } = getEventColors({ type })
@@ -183,6 +185,7 @@ export const getEventDescriptionComponent = (
                 vesselToResolve={{ id: encounterVesselId, datasetId: DEFAULT_VESSEL_IDENTITY_ID }}
                 size="tiny"
                 onClick={onVesselPinClick}
+                origin={vesselOrigin}
               />
             ),
           }}
