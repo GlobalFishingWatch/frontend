@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
 
+import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
@@ -15,6 +16,7 @@ import { Icon } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
 
@@ -23,6 +25,19 @@ import popupStyles from '../Popup.module.css'
 type PositionsRowProps = {
   feature: FourwingsPositionsPickingObject
   showFeaturesDetails: boolean
+}
+
+function DetectionThumbnails({ thumbnails }: { thumbnails: DetectionThumbnail[] }) {
+  const detection = thumbnails.find((thumbnail) => thumbnail.name.endsWith('RGB.png'))
+  if (!detection) {
+    return null
+  }
+  return (
+    <div className={popupStyles.secondary}>
+      {/* // TODO get scale from dataset */}
+      <DetectionThumbnailImage url={detection.url} scale={1} />
+    </div>
+  )
 }
 
 function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
@@ -69,16 +84,16 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
                 {feature.properties.htime && (
                   <span className={popupStyles.secondary}>
                     {' '}
-                    {formatDateForInterval(
-                      CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
-                      interval
-                    )}
+                    {formatDateForInterval(feature.properties.htime * 1000, interval)}
                     {interval === 'HOUR' && ' UTC'}
                   </span>
                 )}
               </span>
             </span>
           </div>
+          {feature.category === 'detections' && feature.properties.thumbnails?.length > 0 && (
+            <DetectionThumbnails thumbnails={feature.properties.thumbnails} />
+          )}
         </div>
       </div>
     </Fragment>
