@@ -12,9 +12,9 @@ import {
 import {
   selectDatasetUploadModalOpen,
   selectFeedbackModalOpen,
-  selectInfoCorrectionModalOpen,
   selectLayerLibraryModalOpen,
   selectScreenshotModalOpen,
+  selectVesselCorrectionModalOpen,
 } from 'features/modals/modals.slice'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import type { WelcomeContentKey } from 'features/welcome/welcome.content'
@@ -31,7 +31,7 @@ const selectAppModals = createSelector(
     selectLayerLibraryModalOpen,
     selectDatasetUploadModalOpen,
     selectScreenshotModalOpen,
-    selectInfoCorrectionModalOpen,
+    selectVesselCorrectionModalOpen,
     selectVesselGroupModalOpen,
     selectDownloadTrackModalOpen,
     selectDownloadActivityModalOpen,
@@ -51,7 +51,7 @@ const selectAppModals = createSelector(
       layerLibrary: layerLibraryModalOpen,
       datataset: datasetUploadModalOpen,
       screenshot: screenshotModalOpen,
-      infoCorrection: infoCorrectionModalOpen,
+      vesselCorrection: infoCorrectionModalOpen,
       vesselGroups: vesselGroupsModalOpen,
       downloadTrack: downloadTrackModalOpen,
       downloadActivity: downloadActivityModalOpen,

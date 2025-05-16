@@ -22,7 +22,7 @@ interface ModalProps {
    * Id of the html root selector, normally in CRA 'root'
    */
   appSelector?: string
-  fullScreen?: boolean
+  size?: 'fullscreen' | 'default' | 'auto'
   children: React.ReactNode
   onClose: (e: React.MouseEvent) => void
 }
@@ -42,7 +42,7 @@ export function Modal(props: ModalProps) {
     overlayClassName,
     closeButtonClassName,
     shouldCloseOnEsc = false,
-    fullScreen = false,
+    size = 'default',
     children,
   } = props
   const modalContentId = useId()
@@ -62,7 +62,9 @@ export function Modal(props: ModalProps) {
       overlayClassName={cx(styles.modalOverlay, overlayClassName)}
       shouldCloseOnOverlayClick={shouldCloseOnEsc}
       shouldCloseOnEsc={shouldCloseOnEsc}
-      className={cx(styles.modalContentWrapper, className, { [styles.fullScreen]: fullScreen })}
+      className={cx(styles.modalContentWrapper, className, {
+        [styles.fullScreen]: size === 'fullscreen',
+      })}
       appElement={appElement}
       isOpen={isOpen}
       onRequestClose={onClose}
@@ -84,6 +86,7 @@ export function Modal(props: ModalProps) {
         id={contentId || modalContentId}
         className={cx(styles.content, contentClassName, {
           [styles.contentNoHeader]: !header,
+          [styles.contentAuto]: size === 'auto',
         })}
       >
         {children}

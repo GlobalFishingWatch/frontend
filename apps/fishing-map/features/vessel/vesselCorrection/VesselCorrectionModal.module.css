@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--space-M);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer {
+  margin-top: var(--space-S);
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cta {
+  min-width: 15rem;
+  padding: 0 5rem;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-M);
+  font-size: small;
+}

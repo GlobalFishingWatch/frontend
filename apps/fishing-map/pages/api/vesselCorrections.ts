@@ -2,16 +2,14 @@ import { JWT } from 'google-auth-library'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import type { InfoCorrectionSendFormat } from 'features/vessel/vesselCorrection/VesselCorrection.types'
 
 const FEEDBACK_CLIENT_EMAIL = process.env.NEXT_SPREADSHEET_CLIENT_EMAIL
 const FEEDBACK_PRIVATE_KEY = process.env.NEXT_SPREADSHEET_PRIVATE_KEY?.replace(/\\n/gm, '\n') || ''
 
-const FEEDBACK_SPREADSHEET_ID = process.env.NEXT_FEEDBACK_SPREADSHEET_ID || ''
-const ERRORS_SPREADSHEET_ID = process.env.NEXT_MAP_ERRORS_SPREADSHEET_ID || ''
-const FEEDBACK_SHEET_TITLE = 'new feedback'
-const ERRORS_SHEET_TITLE = 'errors'
-const CORRECTIONS_SHEET_TITLE = 'vessels corrections'
+const MASTER_SPREADSHEET_ID = process.env.NEXT_MASTER_SPREADSHEET_ID || ''
+
+const CORRECTIONS_SHEET_TITLE = 'Vessel Identity Correction'
 
 export const loadSpreadsheetDoc = async (id: string) => {
   if (!id) {
@@ -31,30 +29,10 @@ export const loadSpreadsheetDoc = async (id: string) => {
   return spreadsheetDoc
 }
 
-export type FeedbackDataType = 'feedback' | 'error' | 'corrections'
-export type FeedbackForm = {
-  type: FeedbackDataType
-  data: {
-    date: string
-    userAgent: string
-    resolution: string
-    url?: string
-    userId?: number | typeof GUEST_USER_TYPE
-    name?: string
-    email?: string
-    organization?: string
-    groups?: string
-    role?: string
-    feedbackType?: string
-    issue?: string
-    description?: string
-  }
-}
-
 export type ApiResponse = {
   success: boolean
   message: string
-  data?: FeedbackForm['data']
+  data?: InfoCorrectionSendFormat
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
@@ -66,23 +44,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    const { type, data }: FeedbackForm = req.body || {}
+    const rawData = req.body || {}
+    const data = {
+      reviewer: rawData.reviewer || '',
+      source: rawData.source || '',
+      workspaceLink: rawData.workspaceLink || '',
+      dateSubmitted: rawData.dateSubmitted || '',
+      timeRange: rawData.timeRange || '',
+      vesselId: rawData.vesselId || '',
+      original_flag: rawData.originalValues?.flag || '',
+      original_shipname: rawData.originalValues?.shipname || '',
+      original_geartypes: rawData.originalValues?.geartypes || '',
+      original_shiptypes: rawData.originalValues?.shiptypes || '',
+      original_ssvid: rawData.originalValues?.ssvid || '',
+      original_imo: rawData.originalValues?.imo || '',
+      original_callsign: rawData.originalValues?.callsign || '',
+      proposed_flag: rawData.proposedCorrections?.flag || '',
+      proposed_shipname: rawData.proposedCorrections?.shipname || '',
+      proposed_geartypes: rawData.proposedCorrections?.geartypes || '',
+      proposed_shiptypes: rawData.proposedCorrections?.shiptypes || '',
+      proposed_ssvid: rawData.proposedCorrections?.ssvid || '',
+      proposed_imo: rawData.proposedCorrections?.imo || '',
+      proposed_callsign: rawData.proposedCorrections?.callsign || '',
+    }
 
-    if (!data || !type) {
+    if (!data) {
       return res.status(400).json({
         success: false,
         message: 'Feedback data is required',
       })
     }
 
-    const spreadsheetId =
-      type === 'error' || type === 'corrections' ? ERRORS_SPREADSHEET_ID : FEEDBACK_SPREADSHEET_ID
-    const spreadsheetTitle =
-      type === 'error'
-        ? ERRORS_SHEET_TITLE
-        : type === 'corrections'
-          ? CORRECTIONS_SHEET_TITLE
-          : FEEDBACK_SHEET_TITLE
+    const spreadsheetId: string = MASTER_SPREADSHEET_ID
+    const spreadsheetTitle: string = CORRECTIONS_SHEET_TITLE
+
     const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
 
     const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
@@ -92,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(200).json({
       success: true,
       message: 'Feedback received successfully',
-      data: data,
+      //data: data,
     })
   } catch (error: any) {
     console.error('Feedback submission error:', error.message)

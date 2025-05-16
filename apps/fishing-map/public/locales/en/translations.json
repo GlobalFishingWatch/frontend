@@ -991,7 +991,7 @@
     "hideOtherLayers": "Hide other layers",
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "imo": "IMO",
-    "infoCorrection": {
+    "vesselCorrection": {
       "currentValue": "Current value",
       "description": "Description (optional)",
       "descriptionPlaceholder": "Please describe the source of the correction and the time range it is relevant for.",
