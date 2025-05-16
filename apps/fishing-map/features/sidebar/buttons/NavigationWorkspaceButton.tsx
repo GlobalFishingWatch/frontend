@@ -8,8 +8,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY, WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
-import { EMPTY_FILTERS } from 'features/search/search.config'
+import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import {
   cleanVesselProfileDataviewInstances,
@@ -50,7 +49,7 @@ function NavigationWorkspaceButton() {
   const linkTo = useMemo(() => {
     const query = {
       ...cleanReportQuery(locationQuery),
-      ...EMPTY_FILTERS,
+      ...EMPTY_SEARCH_FILTERS,
       ...DEFAULT_VESSEL_STATE,
       featureFlags,
     }

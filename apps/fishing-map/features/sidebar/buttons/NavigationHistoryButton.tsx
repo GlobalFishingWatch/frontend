@@ -13,7 +13,7 @@ import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selecto
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
-import { EMPTY_FILTERS } from 'features/search/search.config'
+import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import {
@@ -83,7 +83,7 @@ function NavigationHistoryButton() {
   }, [isAnyVesselLocation, isAnyReportLocation, isVesselGroupReportLocation, isRouteWithWorkspace])
 
   const resetQueryParams = useCallback(() => {
-    dispatchQueryParams({ ...EMPTY_FILTERS, userTab: undefined })
+    dispatchQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
   }, [dispatchQueryParams])
 
   const onCloseClick = useCallback(() => {

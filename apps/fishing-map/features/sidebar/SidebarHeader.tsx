@@ -16,7 +16,7 @@ import ReportTitle from 'features/reports/report-area/title/ReportTitle'
 import PortReportHeader from 'features/reports/report-port/PortReportHeader'
 import VesselGroupReportTitle from 'features/reports/report-vessel-group/VesselGroupReportTitle'
 import type { SearchType } from 'features/search/search.config'
-import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
+import { EMPTY_SEARCH_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
@@ -125,7 +125,7 @@ function SidebarHeader() {
       }
     }
     dispatch(cleanVesselSearchResults())
-    dispatchQueryParams({ searchOption: option.id, ...EMPTY_FILTERS, ...additionalParams })
+    dispatchQueryParams({ searchOption: option.id, ...EMPTY_SEARCH_FILTERS, ...additionalParams })
   }
 
   const sectionHeaderComponent = useMemo(() => {
