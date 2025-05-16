@@ -102,15 +102,17 @@ const TracksEvents = ({
           } else if (useTrackColor || event.type === 'fishing') {
             color = trackEvents.color as string
           }
-
+          const eventSize = Math.min(
+            Math.round(graphHeight / (tracksEventsWithCoords.length * 2)),
+            event.type === 'fishing' ? 5 : 15
+          )
+          const borderWidth = Math.max(Math.ceil(eventSize / 2), 3)
           return (
             <div
               role="button"
               tabIndex={0}
               key={event.id}
               className={cx(styles.event, styles[event.type || 'none'], {
-                [styles.thick]: tracksEventsWithCoords.length <= 2,
-                [styles.compact]: tracksEventsWithCoords.length >= 5,
                 [styles.highlighted]:
                   highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
               })}
@@ -118,6 +120,11 @@ const TracksEvents = ({
                 {
                   left: `${event.x}px`,
                   width: `${event.width}px`,
+                  height: `${eventSize}px`,
+                  minWidth: `${eventSize}px`,
+                  ...(event.type !== 'port_visit' && {
+                    borderWidth: `${borderWidth}px`,
+                  }),
                   '--background-color': color,
                 } as React.CSSProperties
               }
@@ -136,6 +143,7 @@ const TracksEvents = ({
       </div>
     ))
   }, [
+    graphHeight,
     highlightedEventsIds,
     onEventClick,
     tracksEventsWithCoords,
