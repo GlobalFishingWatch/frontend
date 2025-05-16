@@ -11,6 +11,34 @@ const MASTER_SPREADSHEET_ID = process.env.NEXT_MASTER_SPREADSHEET_ID || ''
 
 const CORRECTIONS_SHEET_TITLE = 'Vessel Identity Correction'
 
+function mapDataToHeader(header: string, data: any): string {
+  const map: Record<string, any> = {
+    Reviewer: data.reviewer,
+    Source: data.source,
+    'Workspace Link': data.workspaceLink,
+    'Date submitted': data.dateSubmitted,
+    'Time Range': data.timeRange,
+    'Vessel ID': data.vesselId,
+    Flag: data.originalValues?.flag,
+    'Vessel Name': data.originalValues?.shipname,
+    'Gear Type': data.originalValues?.geartypes,
+    'Vessel Type': data.originalValues?.shiptypes,
+    MMSI: data.originalValues?.ssvid,
+    IMO: data.originalValues?.imo,
+    CallSign: data.originalValues?.callsign,
+    'Ssvid/MMSI Corrected': data.proposedCorrections?.ssvid,
+    'Vessel Name Corrected': data.proposedCorrections?.shipname,
+    'Gear Type Corrected': data.proposedCorrections?.geartypes,
+    'Vessel Type Corrected': data.proposedCorrections?.shiptypes,
+    'Flag Corrected': data.proposedCorrections?.flag,
+    'IMO Corrected': data.proposedCorrections?.imo,
+    'CallSign Corrected': data.proposedCorrections?.callsign,
+    'Analyst Comments': data.proposedCorrections?.comments,
+  }
+
+  return map[header] || ''
+}
+
 export const loadSpreadsheetDoc = async (id: string) => {
   if (!id) {
     throw new Error('Spreadsheet id is missing')
@@ -36,6 +64,15 @@ export type ApiResponse = {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+  const rawData = req.body.data || {}
+
+  if (!rawData) {
+    return res.status(400).json({
+      success: false,
+      message: 'Feedback data is required',
+    })
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({
       success: false,
@@ -44,50 +81,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    const rawData = req.body || {}
-    const data = {
-      reviewer: rawData.reviewer || '',
-      source: rawData.source || '',
-      workspaceLink: rawData.workspaceLink || '',
-      dateSubmitted: rawData.dateSubmitted || '',
-      timeRange: rawData.timeRange || '',
-      vesselId: rawData.vesselId || '',
-      original_flag: rawData.originalValues?.flag || '',
-      original_shipname: rawData.originalValues?.shipname || '',
-      original_geartypes: rawData.originalValues?.geartypes || '',
-      original_shiptypes: rawData.originalValues?.shiptypes || '',
-      original_ssvid: rawData.originalValues?.ssvid || '',
-      original_imo: rawData.originalValues?.imo || '',
-      original_callsign: rawData.originalValues?.callsign || '',
-      proposed_flag: rawData.proposedCorrections?.flag || '',
-      proposed_shipname: rawData.proposedCorrections?.shipname || '',
-      proposed_geartypes: rawData.proposedCorrections?.geartypes || '',
-      proposed_shiptypes: rawData.proposedCorrections?.shiptypes || '',
-      proposed_ssvid: rawData.proposedCorrections?.ssvid || '',
-      proposed_imo: rawData.proposedCorrections?.imo || '',
-      proposed_callsign: rawData.proposedCorrections?.callsign || '',
-    }
-
-    if (!data) {
-      return res.status(400).json({
-        success: false,
-        message: 'Feedback data is required',
-      })
-    }
-
     const spreadsheetId: string = MASTER_SPREADSHEET_ID
     const spreadsheetTitle: string = CORRECTIONS_SHEET_TITLE
 
     const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
-
     const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
 
-    await sheet.addRow(data)
+    if (!sheet) {
+      console.error('Sheet not found:', spreadsheetTitle)
+      throw new Error(`Sheet "${spreadsheetTitle}" not found in spreadsheet`)
+    }
+
+    try {
+      await sheet.loadHeaderRow(3)
+      const headers = sheet.headerValues
+
+      const rowToAdd: Record<string, any> = {}
+      for (const header of headers) {
+        rowToAdd[header] = mapDataToHeader(header, rawData)
+      }
+
+      await sheet.addRow(rowToAdd)
+    } catch (error) {
+      console.error('Error adding row:', error)
+      throw error
+    }
 
     return res.status(200).json({
       success: true,
       message: 'Feedback received successfully',
-      //data: data,
     })
   } catch (error: any) {
     console.error('Feedback submission error:', error.message)
