@@ -32,12 +32,8 @@ function DetectionThumbnails({ thumbnails }: { thumbnails: DetectionThumbnail[] 
   if (!detection) {
     return null
   }
-  return (
-    <div className={popupStyles.secondary}>
-      {/* // TODO get scale from dataset */}
-      <DetectionThumbnailImage url={detection.url} scale={1} />
-    </div>
-  )
+  // TODO get scale from dataset
+  return <DetectionThumbnailImage url={detection.url} scale={1} />
 }
 
 function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {

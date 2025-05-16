@@ -19,16 +19,13 @@ const drawEnhancedImageToCanvas = async ({
   canvas?: HTMLCanvasElement | null
 }) => {
   if (!canvas) return
-  // set canvas size based on image
-  canvas.width = img.width
-  canvas.height = img.height
-
-  // draw in image to canvas
-  const ctx = canvas.getContext('2d', { willReadFrequently: true })
+  const ctx = canvas.getContext('2d')
   if (!ctx) return
-  ctx.drawImage(img, 0, 0)
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 
-  const image = await Jimp.read(canvas.toDataURL())
+  const image = await Jimp.read(
+    ctx.getImageData(0, 0, canvas.width, canvas.height).data.buffer as ArrayBuffer
+  )
   image.normalize()
   const imageData = new ImageData(
     new Uint8ClampedArray(image.bitmap.data),
@@ -59,7 +56,7 @@ export function DetectionThumbnail({ url, scale }: DetectionThumbnailProps) {
   return (
     <div className={cx(styles.imgContainer)}>
       <img ref={imgRef} className={styles.img} onLoad={draw} src={url} alt="detection thumbnail" />
-      <canvas className={styles.img} ref={canvasRef} />
+      <canvas ref={canvasRef} className={styles.canvas} />
       {scale !== undefined && canvasRef.current?.width !== undefined && (
         <Fragment>
           <span className={styles.scaleValue}>

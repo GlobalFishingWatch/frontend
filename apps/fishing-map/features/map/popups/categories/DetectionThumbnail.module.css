@@ -1,17 +1,23 @@
 .imgContainer {
   position: relative;
   display: block;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background: var(--color-terthiary-blue);
+  width: 30rem;
+  height: 30rem;
 }
 
 .img {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  object-position: center;
-  transition: all 0.3s ease-out;
+  width: 30rem;
+  height: 30rem;
+  object-fit: cover;
+  visibility: hidden;
+  z-index: 0;
+}
+
+.canvas {
+  position: absolute;
+  width: 30rem;
+  height: 30rem;
 }
 
 .scaleValue {
