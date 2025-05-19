@@ -826,7 +826,7 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajustar rango de tiempo a estas fechas",
     "focusOnThisDay": "Ajustar rango de tiempo a este día",
-    "maxTracksNumber": "Track detail not available for more than {{number}} vessels"
+    "maxTracksNumber": "Detalles de trayectorias no disponibles para más de {{number}} embarcaciones"
   },
   "timebarSettings": {
     "activityDisabled": "Selecciona al menos una capa de actividad",
