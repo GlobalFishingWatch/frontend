@@ -9,7 +9,10 @@ export const upperFirst = (text: string) => {
 }
 
 export function cleanVesselShipname(name: string) {
-  return name?.replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b/g, upperFirst) || ''
+  return (
+    name?.replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)(?:\d+)?\b/g, upperFirst) ||
+    ''
+  )
 }
 
 export function getIsActivityPositionMatched(feature: FourwingsPositionFeature) {
