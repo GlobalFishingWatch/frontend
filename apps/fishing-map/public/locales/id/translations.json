@@ -826,7 +826,7 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Sesuaikan rentang waktu dengan tanggal ini",
     "focusOnThisDay": "Rentang waktu fokus pada hari ini",
-    "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari 10 kapal"
+    "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari {{number}} kapal"
   },
   "timebarSettings": {
     "activityDisabled": "Pilih setidaknya satu lapisan aktivitas",
@@ -927,6 +927,7 @@
     "gearType": "Gear Type",
     "gearType_short": "Peralatan",
     "geartypes": "Jenis peralatan",
+    "ais-geartypes": "GFW Gear Types",
     "gearTypes": {
       "bunker": "Bunker atau tanker",
       "bunker_or_tanker": "Kapal bunker",
@@ -1109,6 +1110,7 @@
     "shipname": "Nama",
     "shiptype": "Jenis Kapal",
     "shiptypes": "Ship types",
+    "ais-shiptypes": "GFW Vessel Types",
     "showOtherLayers": "Tampilkan lapisan lainnya",
     "sortAsc": "Sort vessels alphabetically (ascending)",
     "sortDesc": "Sort vessels alphabetically (descending)",

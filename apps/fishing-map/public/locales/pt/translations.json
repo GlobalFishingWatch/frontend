@@ -826,7 +826,7 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajuste o intervalo de tempo a estas datas",
     "focusOnThisDay": "Focar o intervalo de tempo neste dia",
-    "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de 10 navios"
+    "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de {{number}} navios"
   },
   "timebarSettings": {
     "activityDisabled": "Selecione pelo menos uma camada de atividade",
@@ -927,6 +927,7 @@
     "gearType": "Tipo de petrecho",
     "gearType_short": "petrecho",
     "geartypes": "Petrechos de pesca",
+    "ais-geartypes": "GFW Gear Types",
     "gearTypes": {
       "bunker": "Bunker ou petroleiro",
       "bunker_or_tanker": "Bunker",
@@ -1109,6 +1110,7 @@
     "shipname": "Nome",
     "shiptype": "Tipos de embarcação",
     "shiptypes": "Ship types",
+    "ais-shiptypes": "GFW Vessel Types",
     "showOtherLayers": "Mostrar outras camadas",
     "sortAsc": "Classificar embarcações em ordem alfabética (crescente)",
     "sortDesc": "Classificar embarcações em ordem alfabética (decrescente)",

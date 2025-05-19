@@ -826,7 +826,7 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajustar rango de tiempo a estas fechas",
     "focusOnThisDay": "Ajustar rango de tiempo a este día",
-    "maxTracksNumber": "Detalles de trayectorias no disponibles para más de 10 embarcaciones"
+    "maxTracksNumber": "Detalles de trayectorias no disponibles para más de {{number}} embarcaciones"
   },
   "timebarSettings": {
     "activityDisabled": "Selecciona al menos una capa de actividad",
@@ -927,6 +927,7 @@
     "gearType": "Gear Type",
     "gearType_short": "Arte",
     "geartypes": "Artes de pesca",
+    "ais-geartypes": "GFW Gear Types",
     "gearTypes": {
       "bunker": "Aprovisionamiento o petrolero",
       "bunker_or_tanker": "Aprovisionamiento",
@@ -1109,6 +1110,7 @@
     "shipname": "Nombre",
     "shiptype": "Tipos de embarcaciones",
     "shiptypes": "Ship types",
+    "ais-shiptypes": "GFW Vessel Types",
     "showOtherLayers": "Mostrar otras capas",
     "sortAsc": "Ordenar las embarcaciones alfabéticamente (ascendiendo)",
     "sortDesc": "Ordenar las embarcaciones alfabéticamente (descendiendo)",

@@ -826,7 +826,7 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajuster la plage de temps à ces dates",
     "focusOnThisDay": "Focus sur la plage de ce jour",
-    "maxTracksNumber": "Détail des trajectoires non disponible pour plus de 10 navires"
+    "maxTracksNumber": "Détail des trajectoires non disponible pour plus de {{number}} navires"
   },
   "timebarSettings": {
     "activityDisabled": "Sélectionnez au moins une couche d'activité",
@@ -927,6 +927,7 @@
     "gearType": "Type d’engin",
     "gearType_short": "engin",
     "geartypes": "Types d’engins",
+    "ais-geartypes": "GFW Gear Types",
     "gearTypes": {
       "bunker": "Ravitailleur ou pétrolier",
       "bunker_or_tanker": "Navire ravitailleur",
@@ -1109,6 +1110,7 @@
     "shipname": "Nom",
     "shiptype": "Types de navires",
     "shiptypes": "Types de navires",
+    "ais-shiptypes": "GFW Vessel Types",
     "showOtherLayers": "Afficher les autres calques",
     "sortAsc": "Trier les navires par ordre alphabétique (ascendant).",
     "sortDesc": "Trier les navires par ordre alphabétique (décroissant).",

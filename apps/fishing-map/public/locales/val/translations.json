@@ -826,7 +826,7 @@
     "disablePlaybackVesselGroups": "crwdns84050:0crwdne84050:0",
     "fitOnThisDates": "crwdns60411:0crwdne60411:0",
     "focusOnThisDay": "crwdns60413:0crwdne60413:0",
-    "maxTracksNumber": "crwdns60415:0crwdne60415:0"
+    "maxTracksNumber": "crwdns60415:0{{number}}crwdne60415:0"
   },
   "timebarSettings": {
     "activityDisabled": "crwdns60417:0crwdne60417:0",
@@ -927,6 +927,7 @@
     "gearType": "crwdns83822:0crwdne83822:0",
     "gearType_short": "crwdns60515:0crwdne60515:0",
     "geartypes": "crwdns70110:0crwdne70110:0",
+    "ais-geartypes": "crwdns84650:0crwdne84650:0",
     "gearTypes": {
       "bunker": "crwdns69466:0crwdne69466:0",
       "bunker_or_tanker": "crwdns69468:0crwdne69468:0",
@@ -993,15 +994,15 @@
     "identityDatesOutOfRange": "crwdns69520:0crwdne69520:0",
     "imo": "crwdns60591:0crwdne60591:0",
     "vesselCorrection": {
-      "currentValue": "crwdns84269:0crwdne84269:0",
-      "description": "crwdns84572:0crwdne84572:0",
-      "descriptionPlaceholder": "crwdns84271:0crwdne84271:0",
-      "field": "crwdns84273:0crwdne84273:0",
-      "insuficientData": "crwdns84275:0crwdne84275:0",
-      "proposedValue": "crwdns84277:0crwdne84277:0",
-      "selectAField": "crwdns84281:0crwdne84281:0",
-      "send": "crwdns84279:0crwdne84279:0",
-      "title": "crwdns84283:0crwdne84283:0"
+      "currentValue": "crwdns84652:0crwdne84652:0",
+      "description": "crwdns84654:0crwdne84654:0",
+      "descriptionPlaceholder": "crwdns84656:0crwdne84656:0",
+      "field": "crwdns84658:0crwdne84658:0",
+      "insuficientData": "crwdns84660:0crwdne84660:0",
+      "proposedValue": "crwdns84662:0crwdne84662:0",
+      "selectAField": "crwdns84664:0crwdne84664:0",
+      "send": "crwdns84666:0crwdne84666:0",
+      "title": "crwdns84668:0crwdne84668:0"
     },
     "infoLogin": "crwdns70034:0crwdne70034:0",
     "infoSource": "crwdns69522:0crwdne69522:0",
@@ -1109,6 +1110,7 @@
     "shipname": "crwdns69564:0crwdne69564:0",
     "shiptype": "crwdns60625:0crwdne60625:0",
     "shiptypes": "crwdns70114:0crwdne70114:0",
+    "ais-shiptypes": "crwdns84670:0crwdne84670:0",
     "showOtherLayers": "crwdns69566:0crwdne69566:0",
     "sortAsc": "crwdns83674:0crwdne83674:0",
     "sortDesc": "crwdns83676:0crwdne83676:0",
