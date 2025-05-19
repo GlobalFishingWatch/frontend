@@ -98,6 +98,7 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
     clusterMaxZoomLevels: dataview.config?.clusterMaxZoomLevels,
     highlightedFeatures,
     maxZoom: FOURWINGS_MAX_ZOOM,
+    temporalAggregation: dataview.config?.eventsTemporalAggregation,
     eventType: dataset.subcategory as FourwingsClusterEventType,
   }
 }

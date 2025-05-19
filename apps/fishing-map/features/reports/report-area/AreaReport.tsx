@@ -129,6 +129,9 @@ export default function Report() {
     if (reportArea && !hasReportBuffer) {
       highlightArea(reportArea as ContextFeature)
     }
+    return () => {
+      highlightArea(undefined)
+    }
   }, [highlightArea, reportArea, hasReportBuffer])
 
   const setTimebarVisualizationByCategory = useCallback(

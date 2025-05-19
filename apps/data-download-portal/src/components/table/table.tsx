@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type {
   Column,
   HeaderGroup,
@@ -13,6 +13,9 @@ import type {
   UseExpandedState,
   UseGlobalFiltersInstanceProps,
   UseGlobalFiltersState,
+  UseResizeColumnsColumnOptions,
+  UseResizeColumnsColumnProps,
+  UseResizeColumnsState,
   UseRowSelectInstanceProps,
   UseSortByColumnProps,
   UseSortByInstanceProps,
@@ -21,6 +24,7 @@ import {
   useExpanded,
   useFlexLayout,
   useGlobalFilter,
+  useResizeColumns,
   useRowSelect,
   useSortBy,
   useTable,
@@ -28,7 +32,6 @@ import {
 import { FixedSizeList } from 'react-window'
 import { useParams } from '@tanstack/react-router'
 import escapeRegExp from 'lodash/escapeRegExp'
-import { matchSorter } from 'match-sorter'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
@@ -36,8 +39,7 @@ import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
 import IconClose from '../../assets/icons/close.svg'
 import IconSearch from '../../assets/icons/search.svg'
-import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config'
-import { useGFWLogin } from '../login/use-login'
+import { countSelectedFiles, getFlattenedFiles } from '../../utils/folderConfig'
 
 import styles from './table.module.scss'
 
@@ -52,7 +54,8 @@ export type TableData = {
 
 type ExtendedTableState = TableState<TableData> &
   UseGlobalFiltersState<TableData> &
-  UseExpandedState<TableData>
+  UseExpandedState<TableData> &
+  UseResizeColumnsState<TableData>
 
 type TableInstanceWithHooks = TableInstance<TableData> &
   UseGlobalFiltersInstanceProps<TableData> &
@@ -60,9 +63,11 @@ type TableInstanceWithHooks = TableInstance<TableData> &
   UseExpandedInstanceProps<TableData> &
   UseRowSelectInstanceProps<TableData>
 
-type ExtendedHeaderGroup = HeaderGroup<TableData> & UseSortByColumnProps<TableData>
+type ExtendedHeaderGroup = HeaderGroup<TableData> &
+  UseSortByColumnProps<TableData> &
+  UseResizeColumnsColumnProps<TableData>
 
-type ExtendedRow = Row<TableData> & UseExpandedRowProps<TableData>
+type ExtendedRow = Row<TableData> & UseExpandedRowProps<TableData> & { isSelected: boolean }
 
 type IndeterminateCheckboxProps = {
   indeterminate?: boolean
@@ -70,7 +75,7 @@ type IndeterminateCheckboxProps = {
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, IndeterminateCheckboxProps>(
-  ({ indeterminate, title, ...rest }, ref) => {
+  ({ indeterminate, ...rest }, ref) => {
     const defaultRef = useRef<HTMLInputElement>(null)
     const resolvedRef = (ref || defaultRef) as React.RefObject<HTMLInputElement>
     const inputID = Math.random().toString()
@@ -84,9 +89,7 @@ const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, IndeterminateCh
     return (
       <div className={styles.checkbox}>
         <input id={inputID} type="checkbox" ref={resolvedRef} {...rest} />
-        <label htmlFor={inputID} title={title}>
-          {title}
-        </label>
+        <label htmlFor={inputID}></label>
       </div>
     )
   }
@@ -160,21 +163,25 @@ function HighlightedCell({ cell, state }: HighlightedCellProps) {
 type TableProps = {
   columns: Column<TableData>[]
   data: TableData[]
+  logged: boolean
 }
 
-function Table({ columns, data }: TableProps) {
+function Table({ columns, data, logged }: TableProps) {
   const [searchInput, setSearchInput] = useState(false)
   const [downloadLoading, setDownloadLoading] = useState(false)
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
-  const { logged } = useGFWLogin(GFWAPI)
 
   const initialState = {
     sortBy: [{ id: 'lastUpdated', desc: true }],
   }
 
-  const defaultColumn = {
-    Cell: HighlightedCell,
-  }
+  const defaultColumn = useMemo(
+    () => ({
+      width: 150,
+      Cell: HighlightedCell,
+    }),
+    []
+  )
 
   const tableInstance = useTable(
     {
@@ -183,27 +190,23 @@ function Table({ columns, data }: TableProps) {
       defaultColumn,
       initialState,
       globalFilter: fuzzyTextFilterFn,
-    } as TableOptions<TableData> & UseExpandedOptions<TableData>,
+    } as TableOptions<TableData> &
+      UseExpandedOptions<TableData> &
+      UseResizeColumnsColumnOptions<TableData>,
     useGlobalFilter,
     useSortBy,
     useExpanded,
     useFlexLayout,
     useRowSelect,
+    useResizeColumns,
     (hooks: Hooks<TableData>) => {
       hooks.visibleColumns.push((columns: Column<TableData>[]) => [
         {
           id: 'selection',
-          width: 25,
+          width: 20,
           Header: () => '',
-          Cell: ({ row, selectedFlatRows }: any) => {
-            const disabled = selectedFlatRows.length >= MAX_DOWNLOAD_FILES_LIMIT && !row.isSelected
-            return (
-              <IndeterminateCheckbox
-                {...row.getToggleRowSelectedProps()}
-                disabled={disabled || !logged}
-                title={disabled ? 'Maximum file download limit reached' : ''}
-              />
-            )
+          Cell: ({ row }: any) => {
+            return <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
           },
         },
         ...columns,
@@ -213,14 +216,16 @@ function Table({ columns, data }: TableProps) {
 
   const {
     rows,
+    flatRows,
     state,
     prepareRow,
     headerGroups,
     getTableProps,
     getTableBodyProps,
-    selectedFlatRows,
     setGlobalFilter,
   } = tableInstance
+
+  const selectedRows = flatRows.filter((row: Row<TableData>) => (row as ExtendedRow).isSelected)
 
   const downloadSingleFile = useCallback(
     (path: string) => {
@@ -244,13 +249,15 @@ function Table({ columns, data }: TableProps) {
   )
 
   const onDownloadClick = useCallback(() => {
+    const selectedFlatRows = getFlattenedFiles(selectedRows)
+
     if (selectedFlatRows.length === 1) {
-      const { path } = selectedFlatRows[0].original
+      const { path } = selectedFlatRows[0]
       if (path) {
         downloadSingleFile(path)
       }
     } else {
-      const files = selectedFlatRows.map((row) => row.original.path)
+      const files = selectedFlatRows.map((row) => row.path)
       setDownloadLoading(true)
       const params = {
         method: 'POST' as const,
@@ -270,30 +277,9 @@ function Table({ columns, data }: TableProps) {
         'We are preparing the files you requested, you will receive an email when they are ready'
       )
     }
-  }, [datasetId, downloadSingleFile, selectedFlatRows])
+  }, [datasetId, downloadSingleFile, flatRows])
 
-  // Count the total number of selected files (not folders), including files in collapsed folders if the folder is selected
-  // Count selected files, but avoid double-counting files that are descendants of other selected rows
-  const countedRowIds = new Set<string>()
-  const rowSelectedCount = selectedFlatRows.reduce((count, row) => {
-    const original = row.original as TableData
-    const countFiles = (rows: TableData[]): number =>
-      rows.reduce((acc, r) => {
-        if (countedRowIds.has(r.path)) return acc
-        countedRowIds.add(r.path)
-        if (!r.subRows || r.subRows.length === 0) return acc + 1
-        return acc + countFiles(r.subRows)
-      }, 0)
-
-    if ((!original.subRows || original.subRows.length === 0) && !countedRowIds.has(original.path)) {
-      countedRowIds.add(original.path)
-      return count + 1
-    }
-    if (!original.isExpanded && original.subRows && original.subRows.length > 0) {
-      return count + countFiles(original.subRows)
-    }
-    return count
-  }, 0)
+  const rowSelectedCount = countSelectedFiles(selectedRows)
 
   return (
     <div>
@@ -338,7 +324,14 @@ function Table({ columns, data }: TableProps) {
                     className={styles.th}
                   >
                     {column.render('Header')}
-                    {column.id !== 'selection' && column.id !== 'download-button' && (
+                    {column.id !== 'selection' && column.id !== 'name' && (
+                      <div
+                        {...extendedColumn.getResizerProps()}
+                        className={`${styles.resizer} ${extendedColumn.isResizing ? styles.isResizing : ''}`}
+                      />
+                    )}
+
+                    {column.id !== 'selection' && (
                       <span className={styles.sort}>
                         {extendedColumn.isSorted ? (
                           extendedColumn.isSortedDesc ? (
@@ -358,7 +351,7 @@ function Table({ columns, data }: TableProps) {
           ))}
         </div>
         <FixedSizeList
-          height={420}
+          height={500}
           width="100%"
           itemSize={40}
           itemCount={rows.length}
@@ -386,6 +379,7 @@ function Table({ columns, data }: TableProps) {
                               : logged && downloadSingleFile(cell.row.original.path)
                           }
                           style={{ cursor: 'pointer' }}
+                          className={row.canExpand ? styles.folder : undefined}
                         >
                           {cell.render('Cell')}
                         </div>
@@ -402,15 +396,17 @@ function Table({ columns, data }: TableProps) {
       </div>
       <div className={styles.actionFooter}>
         <span className={styles.filesInfo}>
-          {rows && <span>{`${rows.length} item${rows.length > 1 ? 's' : ''} shown`}</span>}
+          {flatRows && (
+            <span>{`${flatRows.filter((r) => !r.subRows.length).length} file${rows.length > 1 ? 's' : ''} available for download`}</span>
+          )}
           <br />
-          {selectedFlatRows.length > 0 && (
+          {selectedRows.length > 0 && (
             <span>{`${rowSelectedCount} file${rowSelectedCount > 1 ? 's' : ''} selected`}</span>
           )}
         </span>
         <button
           onClick={onDownloadClick}
-          disabled={!selectedFlatRows.length || downloadLoading || !logged}
+          disabled={!rowSelectedCount || downloadLoading || !logged}
         >
           {logged ? 'Download' : 'Login to download'}
         </button>

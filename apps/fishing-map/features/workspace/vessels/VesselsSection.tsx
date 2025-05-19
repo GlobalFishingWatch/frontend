@@ -12,7 +12,7 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspace
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectHasDeprecatedDataviewInstances,
@@ -53,7 +53,7 @@ import styles from 'features/workspace/shared/Sections.module.css'
 const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
   return resources[
     Object.keys(resources).find((key) =>
-      key.includes(dataviewId.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, ''))
+      key.includes(getVesselIdFromInstanceId(dataviewId))
     ) as string
   ]
 }

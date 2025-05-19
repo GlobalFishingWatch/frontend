@@ -204,7 +204,7 @@ function NewDataset() {
       })}
       header={style !== 'transparent'}
       className={style === 'transparent' ? styles.transparentOverlay : undefined}
-      fullScreen={style === 'transparent'}
+      size={style === 'transparent' ? 'fullscreen' : 'default'}
       onClose={onClose}
     >
       {error ? (

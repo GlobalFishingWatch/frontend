@@ -148,6 +148,9 @@ export interface DataviewConfig<Type = DataviewType> {
   highlightEventStartTime?: string
   highlightEventEndTime?: string
 
+  /** Requests fourwings events datasets aggregated  */
+  eventsTemporalAggregation?: boolean
+
   pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>
   /** Fourwings layers merged, needed for Activity or Detections */
@@ -244,6 +247,7 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
   datasetsConfig?: DataviewDatasetConfig[]
 }
 
+export type DataviewInstanceOrigin = 'workspace' | 'vesselProfile'
 export interface DataviewInstance<Type = any>
   extends Partial<Omit<Dataview<Type>, 'id' | 'config'>> {
   id: string
@@ -251,4 +255,6 @@ export interface DataviewInstance<Type = any>
   config?: DataviewConfig<Type>
   datasetsConfig?: DataviewDatasetConfig[]
   datasetsConfigMigration?: DatasetsMigration
+  origin?: DataviewInstanceOrigin
+  deleted?: boolean
 }

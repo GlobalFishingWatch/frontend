@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--space-M);
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-S);
+}
+
+.footer {
+  margin-top: var(--space-S);
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cta {
+  min-width: 15rem;
+  padding: 0 5rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 var(--space-M);
+}
+
+.table th {
+  text-align: left;
+  font-size: var(--font-S);
+  color: var(--color-dark);
+}

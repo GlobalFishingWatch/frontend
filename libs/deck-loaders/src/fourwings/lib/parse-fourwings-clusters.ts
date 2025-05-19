@@ -3,7 +3,12 @@ import Pbf from 'pbf'
 
 import { CONFIG_BY_INTERVAL } from '../helpers'
 import type { BBox } from '../helpers/cells'
-import { generateUniqueId, getCellPointCoordinates, getCellProperties } from '../helpers/cells'
+import {
+  generateUniqueId,
+  getCellBounds,
+  getCellPointCoordinates,
+  getCellProperties,
+} from '../helpers/cells'
 
 import { CELL_END_INDEX, CELL_START_INDEX, NO_DATA_VALUE } from './parse-fourwings'
 import type {
@@ -63,6 +68,13 @@ export const getPointsTemporalAggregated = (
           // TODO:deck remove the round as won't be needed with real data
           value: Math.round(offset + value * scale),
           id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
+          cellNum,
+          cellBounds: getCellBounds({
+            cellIndex: cellNum,
+            cols,
+            rows,
+            tileBBox,
+          }),
           tile: tile?.index,
           col,
           row,
@@ -122,8 +134,8 @@ export const getPoints = (
         tileBBox,
       })
       for (let j = 1; j <= numCellValues; j++) {
-        const htime =
-          CONFIG_BY_INTERVAL[interval]?.getIntervalTimestamp(startFrame + j - 1) / (1000 * 60 * 60)
+        const stime =
+          CONFIG_BY_INTERVAL[interval]?.getIntervalTimestamp(startFrame + j - 1) / (60 * 60)
         const pointValue = intArray[i + j]
         if (pointValue !== 0 && pointValue !== noDataValue) {
           // this number defines the cell value frame
@@ -137,7 +149,14 @@ export const getPoints = (
               value: Math.round(offset + pointValue * scale),
               id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum + j),
               tile: tile?.index,
-              htime,
+              cellNum,
+              cellBounds: getCellBounds({
+                cellIndex: cellNum,
+                cols,
+                rows,
+                tileBBox,
+              }),
+              stime,
               col,
               row,
             },

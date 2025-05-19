@@ -14,7 +14,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { useVesselIdentityTabs } from 'features/vessel/identity/vessel-identity.hooks'
@@ -36,6 +36,7 @@ import {
   filterRegistryInfoByDateAndSSVID,
   getCurrentIdentityVessel,
 } from 'features/vessel/vessel.utils'
+import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import {
@@ -60,6 +61,7 @@ const VesselIdentity = () => {
   const { setTimerange } = useTimerangeConnect()
   const { identityTabs } = useVesselIdentityTabs()
   const isGFWUser = useSelector(selectIsGFWUser)
+  const isJACUser = useSelector(selectIsJACUser)
 
   const vesselIdentity = getCurrentIdentityVessel(vesselData, {
     identityId,
@@ -179,6 +181,8 @@ const VesselIdentity = () => {
             </div>
           </div>
           <div className={styles.actionsContainer}>
+            {(isJACUser || isGFWUser) && <VesselInfoCorrection />}
+
             <UserLoggedIconButton
               type="border"
               icon="download"

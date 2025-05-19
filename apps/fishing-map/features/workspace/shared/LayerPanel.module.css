@@ -64,6 +64,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
+  font: var(--font-M);
   line-height: 2.8rem;
   display: flex;
   align-items: center;
@@ -275,8 +276,24 @@
   }
 }
 
+:global(.printing) .header {
+  margin-block: 0;
+  padding-block: 0;
+  min-height: 3rem;
+}
+
+:global(.printing) .LayerPanel {
+  min-height: 3rem;
+}
+
+:global(.printing) .name {
+  font: var(--font-M);
+  line-height: 1;
+}
+
 :global(.printing) .tagList {
   display: flex;
+  margin-block: 0;
 }
 
 :global(.printing) .mergedTagList {
@@ -292,6 +309,7 @@
 }
 
 :global(.printing) .switch {
+  transform: translateY(-0.4rem);
   width: 1.4rem !important;
   transition: none;
 }
@@ -302,6 +320,10 @@
 
 :global(.printing) .LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
   display: none;
+}
+
+:global(.printing) .properties {
+  padding: 0 var(--space-S);
 }
 
 .faded,

@@ -40,7 +40,7 @@ import {
   MAX_ZOOM_TO_CLUSTER_POINTS,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
 } from '../fourwings.config'
-import { getIntervalFrames, getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
+import { getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
 
 import type {
   FourwingsClusterEventType,
@@ -144,7 +144,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 70,
-        maxZoom: this.props.maxZoom - 1,
+        maxZoom: 24,
         reduce: (accumulated, props) => {
           return (accumulated.value += props.value)
         },
@@ -172,18 +172,22 @@ export class FourwingsClustersLayer extends CompositeLayer<
     let expansionZoom: number | undefined
     let expansionBounds: Bbox | undefined
     if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
-      expansionZoom = this.state.clusterIndex.getClusterExpansionZoom(
-        info.object?.properties.cluster_id
-      )
-      const points = this.state.clusterIndex.getLeaves(info.object?.properties.cluster_id)
-      if (points.length) {
+      const points = this.state.clusterIndex.getLeaves(info.object?.properties.cluster_id, Infinity)
+      const areAllPointsInSameCell =
+        points?.length > 0 &&
+        points.every((p) => p.properties.cellNum === points[0].properties.cellNum)
+      if (!areAllPointsInSameCell) {
+        expansionZoom = Math.min(
+          this.state.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id),
+          this.props.maxZoom
+        )
         const bounds = points.reduce(
           (acc, point) => {
             return [
-              Math.min(acc[0], point.geometry?.coordinates[0]),
-              Math.min(acc[1], point.geometry?.coordinates[1]),
-              Math.max(acc[2], point.geometry?.coordinates[0]),
-              Math.max(acc[3], point.geometry?.coordinates[1]),
+              Math.min(acc[0], point.properties.cellBounds?.[0]),
+              Math.min(acc[1], point.properties.cellBounds?.[1]),
+              Math.max(acc[2], point.properties.cellBounds?.[2]),
+              Math.max(acc[3], point.properties.cellBounds?.[3]),
             ] as Bbox
           },
           [Infinity, Infinity, -Infinity, -Infinity] as Bbox
@@ -322,8 +326,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
           scale,
           offset,
           tile,
-          interval: this.interval,
           noDataValue,
+          interval: this.interval,
+          temporalAggregation: this.props.temporalAggregation,
         },
       })
     } catch (error: any) {
@@ -369,6 +374,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
     url = url
       ?.replace('{{type}}', 'heatmap')
       .concat(`&format=4WINGS&interval=${this.interval}&geolocation=${this.clusterMode}`)
+    if (this.props.temporalAggregation) {
+      url = url?.concat(`&temporal-aggregation=true`)
+    }
     return this._fetchClusters(url!, { signal: tile.signal, tile })
   }
 
@@ -385,6 +393,13 @@ export class FourwingsClustersLayer extends CompositeLayer<
       (feature) => feature.id === this.getClusterId(d)
     )
     return isHighlighted ? COLOR_HIGHLIGHT_LINE : DEFAULT_LINE_COLOR
+  }
+
+  _getColor = (d: FourwingsClusterFeature) => {
+    const isHighlighted = this.props.highlightedFeatures?.some(
+      (feature) => feature.id === this.getClusterId(d)
+    )
+    return isHighlighted ? COLOR_HIGHLIGHT_LINE : hexToDeckColor(this.props.color)
   }
 
   _getClusterLabel = (d: FourwingsClusterFeature) => {
@@ -423,9 +438,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
         iconAtlas: `${PATH_BASENAME}/events-color-sprite.png`,
         iconMapping: ICON_MAPPING,
         getIcon: () => eventType,
-        getColor: hexToDeckColor(color),
+        getColor: this._getColor,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         pickable: true,
+        updateTriggers: {
+          getColor: [highlightedFeatures],
+        },
       }),
       new ScatterplotLayer({
         id: `${this.props.id}-${CLUSTER_LAYER_ID}`,

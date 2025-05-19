@@ -1,7 +1,7 @@
 import cx from 'classnames'
 
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { FOURWINGS_INTERVALS_ORDER,getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import styles from './interval-selector.module.css'
 
@@ -40,7 +40,7 @@ function IntervalSelector({
         const intervalLabel = labels?.[interval.toLowerCase()]
         const titleLabel = labels?.[`${interval.toLowerCase()}Tooltip`]
         return (
-          <li key={interval}>
+          <li key={interval} className={styles.intervalBtnContainer}>
             <button
               className={cx(styles.intervalBtn, {
                 [styles.intervalBtnActive]: active,

@@ -138,3 +138,11 @@
   color: var(--color-secondary-blue);
   padding-inline: var(--space-S);
 }
+
+:global(.printing) .container {
+  padding-block: var(--space-XS);
+}
+
+:global(.printing) .content {
+  padding-block: 0;
+}

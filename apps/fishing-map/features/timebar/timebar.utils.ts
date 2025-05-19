@@ -97,13 +97,9 @@ export function getGraphDataFromFourwingsPositions(
   const data = getDatesPopulated({ start, end, interval, sublayersLength, count: false })
 
   features.forEach((feature) => {
-    const { htime, value, layer = 0 } = feature.properties
-    if (htime && value) {
-      const date = getDateInIntervalResolution(
-        // Always using HOUR as data is coming from the raw table
-        CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(htime),
-        interval
-      )
+    const { stime, value, layer = 0 } = feature.properties
+    if (stime && value) {
+      const date = getDateInIntervalResolution(stime * 1000, interval)
       if (!data[date]) {
         data[date] = { date }
         for (let i = 0; i < sublayersLength; i++) {

@@ -12,10 +12,12 @@ import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualization
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
+import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
+  REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS,
   REPORT_EVENTS_GRAPH_EVOLUTION,
   REPORT_EVENTS_RFMO_AREAS,
 } from 'features/reports/reports.config'
@@ -114,6 +116,7 @@ const ReportGraphTick = (props: any) => {
   const { t } = useTranslation()
   const getReportAreaLabel = useGetEventReportGraphLabel()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const workspace = useSelector(selectWorkspaceWithCurrentState)
   const { dispatchLocation } = useLocationConnect()
   const query = useSelector(selectLocationQuery)
   const datasetAreaId = useSelector(selectEventsGraphDatasetAreaId)
@@ -136,11 +139,30 @@ const ReportGraphTick = (props: any) => {
         })
       } else if (datasetAreaId) {
         const areaId = graphType === 'byRFMO' ? payload.value.toUpperCase() : payload.value
+        const reportAreaDataviewId =
+          REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS[
+            graphType as keyof typeof REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS
+          ]
+        const dataviewInstancesWithAreaLayerVisible = workspace.dataviewInstances.map(
+          (dataviewInstance) => {
+            if (dataviewInstance.dataviewId === reportAreaDataviewId) {
+              return {
+                ...dataviewInstance,
+                config: {
+                  ...dataviewInstance.config,
+                  visible: true,
+                },
+              }
+            }
+            return dataviewInstance
+          }
+        )
         dispatchLocation(WORKSPACE_REPORT, {
           payload: { datasetId: datasetAreaId, areaId },
           query: {
             ...query,
             reportEventsGraph: 'evolution',
+            dataviewInstances: dataviewInstancesWithAreaLayerVisible,
           },
         })
       }

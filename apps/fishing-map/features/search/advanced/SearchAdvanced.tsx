@@ -10,7 +10,7 @@ import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components
 import { useAppDispatch } from 'features/app/app.hooks'
 import SearchAdvancedFilters from 'features/search/advanced/SearchAdvancedFilters'
 import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
-import { EMPTY_FILTERS } from 'features/search/search.config'
+import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import {
   useSearchConnect,
@@ -60,7 +60,7 @@ function SearchAdvanced({
   const ref = useEventKeyListener(['Enter'], fetchResults)
 
   const resetSearchState = useCallback(() => {
-    dispatchQueryParams(EMPTY_FILTERS)
+    dispatchQueryParams(EMPTY_SEARCH_FILTERS)
     dispatch(cleanVesselSearchResults())
   }, [dispatch, dispatchQueryParams])
 

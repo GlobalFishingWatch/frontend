@@ -2,7 +2,7 @@ import { scaleLinear } from 'd3-scale'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { getUTCDate, getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
@@ -81,8 +81,8 @@ export const getTimebarStepByDelta = ({
 
   let newStartMs
   let newEndMs
-  if (byIntervals && getCurrentInterval) {
-    const interval = getCurrentInterval(start, end, intervals)
+  const interval = getCurrentInterval(start, end, intervals)
+  if (byIntervals) {
     const intervalStartMs =
       interval === 'MONTH'
         ? DateTime.fromISO(start, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
@@ -99,13 +99,15 @@ export const getTimebarStepByDelta = ({
     newEndMs = getUTCDate(end).getTime() + deltaMs
   }
   const currentStartEndDeltaMs = newEndMs - newStartMs
-  const playbackAbsoluteEnd = getUTCDate(Date.now()).toISOString()
+  const playbackAbsoluteEnd = getUTCDateTime(Date.now())
+    .endOf(interval.toLowerCase() as DateTimeUnit)
+    .toISO()
   const { newStartClamped, newEndClamped, clamped } = clampToAbsoluteBoundaries(
     getUTCDate(newStartMs).toISOString(),
     getUTCDate(newEndMs).toISOString(),
     currentStartEndDeltaMs,
     absoluteStart,
-    playbackAbsoluteEnd
+    playbackAbsoluteEnd!
   )
 
   return {

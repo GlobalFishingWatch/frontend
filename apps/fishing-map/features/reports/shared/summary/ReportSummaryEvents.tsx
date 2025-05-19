@@ -12,6 +12,7 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { selectReportAreaId } from 'features/reports/reports.selectors'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
 import { selectReportVesselsFlags } from 'features/reports/shared/vessels/report-vessels.selectors'
 import {
@@ -28,6 +29,7 @@ export default function ReportSummaryEvents() {
   const totalStatsEvents = useSelector(selectTotalStatsEvents)
   const totalEventsVessels = useSelector(selectTotalEventsVessels)
   const reportVesselsFlags = useSelector(selectReportVesselsFlags)
+  const reportAreaId = useSelector(selectReportAreaId)
   const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
 
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
@@ -56,9 +58,10 @@ export default function ReportSummaryEvents() {
       }
       return t('analysis.summaryEventsNoVessels', {
         defaultValue:
-          '<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+          '<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity,
         activityUnit,
+        area: !reportAreaId ? t('analysis.globally', 'globally') : '',
         start: startDate,
         end: endDate,
       })
@@ -89,6 +92,7 @@ export default function ReportSummaryEvents() {
     eventType,
     eventsStatsDataGrouped,
     isPortReportLocation,
+    reportAreaId,
     reportVesselsFlags?.size,
     t,
     timerange?.end,

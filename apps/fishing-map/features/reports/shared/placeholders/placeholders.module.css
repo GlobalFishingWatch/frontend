@@ -69,9 +69,9 @@
   border-radius: 0.8rem;
   background: linear-gradient(
     90deg,
-    rgb(var(--primary-blue-rgb), 0.1) 0%,
-    rgb(var(--primary-blue-rgb), 0.2) 40%,
-    rgb(var(--primary-blue-rgb), 0.1) 70%
+    rgba(var(--primary-blue-rgb), 0.1) 0%,
+    rgba(var(--primary-blue-rgb), 0.2) 40%,
+    rgba(var(--primary-blue-rgb), 0.1) 70%
   );
   background-size: 1000px 100%;
 }

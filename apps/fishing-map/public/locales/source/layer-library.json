@@ -34,10 +34,15 @@
     "moreInfoLink": "",
     "name": "FAO major fishing areas"
   },
-  "fishing-effort": {
-    "description": "To determine “apparent fishing effort”, Global Fishing Watch analyzes automatic identification system (AIS) and vessel monitoring system (VMS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a fishing detection algorithm based on changes in vessel speed and direction.",
+  "fishing-effort-ais": {
+    "description": "To determine “apparent fishing effort”, Global Fishing Watch analyzes automatic identification system (AIS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a fishing detection algorithm based on changes in vessel speed and direction.",
     "moreInfoLink": "",
-    "name": "Apparent fishing effort"
+    "name": "Apparent fishing effort (AIS)"
+  },
+  "fishing-effort-vms": {
+    "description": "To determine “apparent fishing effort”, Global Fishing Watch analyzes vessel monitoring system (VMS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a fishing detection algorithm based on changes in vessel speed and direction.",
+    "moreInfoLink": "",
+    "name": "Apparent fishing effort (VMS)"
   },
   "graticules": {
     "description": "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map",

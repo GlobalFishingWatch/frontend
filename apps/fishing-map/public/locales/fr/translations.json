@@ -32,6 +32,7 @@
     "errorPeriodComparisonDateRange": "Erreur de plage de date. Le début de la comparaison doit être après le début de la référence.",
     "errorTooComplex": "Nous ne pouvons pas créer de rapport dynamique pour cette zone, car les informations relatives aux limites sont complexes. Veuillez simplifier votre zone d'intérêt - en téléchargeant un nouveau calque ou en dessinant votre calque sur la carte - et essayez à nouveau de créer le rapport pour résoudre le problème.",
     "evolution": "Évolution",
+    "globally": "globally",
     "groupByEEZ": "By EEZ",
     "groupByFAO": "By FAO",
     "groupByFlag": "par pavillon",
@@ -74,8 +75,8 @@
     "statsDisclaimerDynamic": "Au cours de cette plage de temps, les valeurs minimales et maximales par {{interval}} et lieu à l'intérieur de votre zone étaient {{min}} {{unit}} et {{max}} {{unit}}.",
     "statsDisclaimerStatic": "La valeur moyenne pour votre zone est {{mean}} {{unit}}. Le minimum et le maximum sont {{min}} {{unit}} et {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} navires{{sources}} </strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> d'<strong>{{activityType}}</strong> dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "Cela prend plus de temps que prévu, merci de patienter",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
@@ -599,7 +600,8 @@
     "ssvid": "ssvid",
     "start": "Début",
     "totalDistanceKm": "distance totale (km)",
-    "type": "shiptype"
+    "type": "shiptype",
+    "trackDisclaimer": "Encountered vessel track shows one month before and after the event."
   },
   "eventsReport": {
     "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -824,7 +826,7 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajuster la plage de temps à ces dates",
     "focusOnThisDay": "Focus sur la plage de ce jour",
-    "maxTracksNumber": "Détail des trajectoires non disponible pour plus de 10 navires"
+    "maxTracksNumber": "Détail des trajectoires non disponible pour plus de {{number}} navires"
   },
   "timebarSettings": {
     "activityDisabled": "Sélectionnez au moins une couche d'activité",
@@ -925,6 +927,7 @@
     "gearType": "Type d’engin",
     "gearType_short": "engin",
     "geartypes": "Types d’engins",
+    "ais-geartypes": "GFW Gear Types",
     "gearTypes": {
       "bunker": "Ravitailleur ou pétrolier",
       "bunker_or_tanker": "Navire ravitailleur",
@@ -990,7 +993,7 @@
     "hideOtherLayers": "Masquer les autres calques",
     "identityDatesOutOfRange": "Les dates de cette identité ne chevauchent pas votre plage de temps actuelle",
     "imo": "OMI",
-    "infoCorrection": {
+    "vesselCorrection": {
       "currentValue": "Current value",
       "description": "Description (optional)",
       "descriptionPlaceholder": "Please describe the source of the correction and the time range it is relevant for.",
@@ -1107,6 +1110,7 @@
     "shipname": "Nom",
     "shiptype": "Types de navires",
     "shiptypes": "Types de navires",
+    "ais-shiptypes": "GFW Vessel Types",
     "showOtherLayers": "Afficher les autres calques",
     "sortAsc": "Trier les navires par ordre alphabétique (ascendant).",
     "sortDesc": "Trier les navires par ordre alphabétique (décroissant).",
@@ -1193,6 +1197,7 @@
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce groupe de navires lorsque vous partagez un espace de travail",
     "vesselAddedToGroup": "Votre groupe de navires a été mis à jour",
     "vesselGroup": "Groupe de navires",
+    "vesselGroupProfile": "Vessel group profile",
     "vesselGroups": "Groupes de navires"
   },
   "vesselGroupReport": {
