@@ -96,21 +96,22 @@ export const AVAILABLE_END = DateTime.fromObject(
 
 export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
-  readOnly: false,
-  daysFromLatest: undefined,
-  sidebarOpen: true,
-  mapAnnotationsVisible: true,
-  mapRulersVisible: true,
   activityVisualizationMode: 'heatmap',
+  bivariateDataviews: null,
+  dataviewInstances: undefined,
+  daysFromLatest: undefined,
   detectionsVisualizationMode: 'heatmap',
   environmentVisualizationMode: 'heatmap-low-res',
-  dataviewInstances: undefined,
-  timebarVisualisation: TimebarVisualisations.HeatmapActivity,
-  visibleEvents: 'all',
-  timebarGraph: TimebarGraphs.None,
-  bivariateDataviews: null,
-  userTab: UserTab.Info,
   featureFlags: PUBLIC_WORKSPACE_ENV !== 'production' ? ['vesselClassInfo'] : [],
+  mapAnnotationsVisible: true,
+  mapRulersVisible: true,
+  readOnly: false,
+  reportLoadVessels: false,
+  sidebarOpen: true,
+  timebarGraph: TimebarGraphs.None,
+  timebarVisualisation: TimebarVisualisations.HeatmapActivity,
+  userTab: UserTab.Info,
+  visibleEvents: 'all',
 }
 
 export const EVENTS_COLORS: Record<string, string> = {

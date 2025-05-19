@@ -82,7 +82,6 @@ export type ReportVesselsState = {
   reportVesselResultsPerPage: number
   reportVesselOrderProperty: ReportVesselOrderProperty | undefined
   reportVesselOrderDirection: ReportVesselOrderDirection | undefined
-  reportLoadVessels: boolean | undefined
 }
 // REPORT ACTIVITY
 export type ReportActivityGraph =
