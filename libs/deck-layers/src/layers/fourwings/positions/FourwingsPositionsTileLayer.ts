@@ -214,7 +214,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const { colorScale } = this.state
     const { colorDomain, colorRange } = colorScale as FourwingsTileLayerColorScale
     const { highlightStartTime, highlightEndTime } = this.props
-    const date = CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(d.properties.htime)
+    const date = d.properties.stime * 1000
     if (
       highlightStartTime &&
       highlightEndTime &&
@@ -293,7 +293,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           )
         : []
     })
-    const positions = orderBy(data, ['properties.htime'], ['asc']).filter(Boolean)
+    const positions = orderBy(data, ['properties.stime'], ['asc']).filter(Boolean)
 
     const positionsInViewport = filteredPositionsByViewport(positions, this.context.viewport)
     const lastPositions = this._getLatestVesselPositions(positionsInViewport)

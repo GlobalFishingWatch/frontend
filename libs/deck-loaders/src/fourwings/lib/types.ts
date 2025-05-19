@@ -68,13 +68,13 @@ export type FourwingsFeatureProperties = {
 export type FourwingsPositionFeatureProperties = {
   id: string
   value: number
+  stime: number
   [key: string]: any
 }
 
 export type FourwingsPointFeatureProperties = {
   id: number
   value: number
-  htime?: number
   cellNum: number
   cellBounds: number[]
   [key: string]: any

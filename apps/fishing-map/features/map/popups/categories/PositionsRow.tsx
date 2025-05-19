@@ -5,18 +5,17 @@ import { uniq } from 'es-toolkit'
 
 import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
 } from '@globalfishingwatch/deck-layers'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import I18nDate from 'features/i18n/i18nDate'
 import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
@@ -75,7 +74,6 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
     }
     return []
   })
-  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
 
   return (
     <Fragment>
@@ -95,11 +93,10 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
               )}
               <span>
                 <span className={popupStyles.marginRight}>{shipname}</span>
-                {feature.properties.htime && (
+                {feature.properties.stime && (
                   <span className={popupStyles.secondary}>
                     {' '}
-                    {formatDateForInterval(feature.properties.htime * 1000, interval)}
-                    {interval === 'HOUR' && ' UTC'}
+                    <I18nDate date={feature.properties.stime * 1000} />
                   </span>
                 )}
               </span>
