@@ -50,6 +50,8 @@ import {
   selectActivityInteractionStatus,
   selectApiEventError,
   selectApiEventStatus,
+  selectDetectionsInteractionError,
+  selectDetectionsInteractionStatus,
 } from '../map.slice'
 
 import CurrentsTooltipRow from './categories/CurrentsLayers'
@@ -72,6 +74,8 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const activityInteractionStatus = useSelector(selectActivityInteractionStatus)
   const activityInteractionError = useSelector(selectActivityInteractionError)
+  const detectionsInteractionStatus = useSelector(selectDetectionsInteractionStatus)
+  const detectionsInteractionError = useSelector(selectDetectionsInteractionError)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const apiEventError = useSelector(selectApiEventError)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
@@ -113,11 +117,21 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               featureCategory === DataviewCategory.Detections
                 ? DetectionsTooltipRow
                 : ActivityTooltipRow
+            const interactionStatus =
+              featureCategory === DataviewCategory.Detections
+                ? detectionsInteractionStatus
+                : activityInteractionStatus
+            const interactionError =
+              featureCategory === DataviewCategory.Detections
+                ? detectionsInteractionError
+                : activityInteractionError
             return [...uniqPositionFeatures, ...heatmapFeatures].map((feature, i) => {
               if (feature.visualizationMode === POSITIONS_ID) {
                 return (
                   <PositionsRow
                     key={`${feature.id}-${i}`}
+                    loading={interactionStatus === AsyncReducerStatus.Loading}
+                    error={interactionError}
                     feature={feature as any as FourwingsPositionsPickingObject}
                     showFeaturesDetails={type === 'click'}
                   />
@@ -137,11 +151,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 return (
                   <TooltipComponent
                     key={`${i}-${j}`}
-                    loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                    loading={interactionStatus === AsyncReducerStatus.Loading}
                     error={
-                      activityInteractionStatus === AsyncReducerStatus.Error
-                        ? activityInteractionError ||
-                          t('errors.genericShort', 'Something went wrong')
+                      interactionStatus === AsyncReducerStatus.Error
+                        ? interactionError || t('errors.genericShort', 'Something went wrong')
                         : undefined
                     }
                     feature={{

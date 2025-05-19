@@ -39,7 +39,10 @@ export type FourwingsClusterProperties = {
   col: number
   row: number
   tile: Tile2DHeader['index']
-  htime: number
+  /**
+   * Timestamp of the start of the cluster in seconds
+   */
+  stime: number
 }
 export type FourwingsClusterFeature = ClusterFeature<FourwingsClusterProperties>
 

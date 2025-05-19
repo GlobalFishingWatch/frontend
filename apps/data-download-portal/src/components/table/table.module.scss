@@ -53,13 +53,32 @@
 
     &:last-child {
       flex: unset !important;
-      width: 10rem !important;
+      // width: 10rem !important;
     }
 
     .sort {
       display: inline-block;
       width: 1.1rem;
     }
+    .resizer {
+      display: inline-block;
+      background: none;
+      border-left: 1px solid var(--border-color);
+    
+      width: 10px;
+      height: 100%;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translateX(50%);
+      z-index: 1;
+      touch-action:none;
+    
+      &.isResizing {
+        border-left: 2px solid var(--border-color);
+      }
+    }
+    
   }
 
   .td {
@@ -78,8 +97,10 @@
 
     &:last-child {
       flex: unset !important;
-      width: 10rem !important;
+      // width: 10rem !important;
     }
+
+    
   }
 
   .tr {
@@ -109,6 +130,12 @@
   color: var(--secondary-color);
   line-height: 1.5rem;
 }
+
+.folder {
+  font-weight: bold;
+}
+
+
 
 .checkbox {
   margin-top: 0.3rem;
