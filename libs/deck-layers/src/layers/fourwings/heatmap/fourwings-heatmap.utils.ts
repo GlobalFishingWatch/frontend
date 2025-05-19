@@ -1,6 +1,5 @@
 import type { Color } from '@deck.gl/core'
 import type { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
-import type { Feature } from 'geojson'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 
@@ -286,30 +285,6 @@ export const aggregateCellTimeseries = (
   //     ...(values as any),
   //   }))
   //   .sort((a, b) => a.date - b.date)
-}
-
-const getMillisFromHtime = (htime: number) => {
-  return htime * 1000 * 60 * 60
-}
-
-export const aggregatePositionsTimeseries = (positions: Feature[]) => {
-  if (!positions) {
-    return []
-  }
-  const timeseries = positions.reduce(
-    (acc, position) => {
-      const { htime, value } = position.properties as any
-      const activityStart = getMillisFromHtime(htime)
-      if (acc[activityStart]) {
-        acc[activityStart] += value
-      } else {
-        acc[activityStart] = value
-      }
-      return acc
-    },
-    {} as Record<number, number>
-  )
-  return timeseries
 }
 
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]

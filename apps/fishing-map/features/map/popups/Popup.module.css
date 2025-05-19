@@ -300,3 +300,9 @@
 .eventSpinner {
   margin-top: 1rem;
 }
+
+.detectionThumbnail {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+}
