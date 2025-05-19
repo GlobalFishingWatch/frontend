@@ -24,6 +24,8 @@ import { formatInfoField } from 'utils/info'
 import popupStyles from '../Popup.module.css'
 
 type PositionsRowProps = {
+  loading: boolean
+  error: string
   feature: FourwingsPositionsPickingObject
   showFeaturesDetails: boolean
 }
@@ -42,7 +44,7 @@ function DetectionThumbnails({
   return <DetectionThumbnailImage data={detection.data} scale={scale} />
 }
 
-function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
+function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
   const allDatasets = useSelector(selectAllDatasets)
   const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
   const featureDataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
@@ -103,12 +105,20 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
               </span>
             </span>
           </div>
-          {feature.category === 'detections' && feature.properties.thumbnails?.length > 0 && (
-            <DetectionThumbnails
-              thumbnails={feature.properties.thumbnails}
-              scale={thumbnailsDataset?.configuration?.scale}
-            />
+          {loading && (
+            <div className={popupStyles.loading}>
+              <Spinner size="small" />
+            </div>
           )}
+          {!loading && error && <p className={popupStyles.error}>{error}</p>}
+          {!loading &&
+            feature.category === 'detections' &&
+            feature.properties.thumbnails?.length > 0 && (
+              <DetectionThumbnails
+                thumbnails={feature.properties.thumbnails}
+                scale={thumbnailsDataset?.configuration?.scale}
+              />
+            )}
         </div>
       </div>
     </Fragment>

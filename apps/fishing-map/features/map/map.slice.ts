@@ -987,6 +987,10 @@ export const selectActivityInteractionStatus = (state: { map: MapState }) =>
   state.map.apiActivityStatus
 export const selectActivityInteractionError = (state: { map: MapState }) =>
   state.map.apiActivityError
+export const selectDetectionsInteractionStatus = (state: { map: MapState }) =>
+  state.map.apiDetectionStatus
+export const selectDetectionsInteractionError = (state: { map: MapState }) =>
+  state.map.apiDetectionError
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 export const selectApiEventError = (state: { map: MapState }) => state.map.apiEventError
 
