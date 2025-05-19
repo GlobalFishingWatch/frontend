@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import { Fragment, useRef } from 'react'
 import cx from 'classnames'
-import { Jimp } from 'jimp'
 
 import styles from './DetectionThumbnail.module.css'
 
@@ -20,6 +20,8 @@ const drawEnhancedImageToCanvas = async ({
 }) => {
   if (!canvas) return
   const ctx = canvas.getContext('2d')
+
+  const Jimp = await import('jimp').then((module) => module.Jimp)
   const image = await Jimp.read(img.src)
   image.normalize()
   const imageData = new ImageData(
