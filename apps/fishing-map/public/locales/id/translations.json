@@ -826,7 +826,7 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Sesuaikan rentang waktu dengan tanggal ini",
     "focusOnThisDay": "Rentang waktu fokus pada hari ini",
-    "maxTracksNumber": "Track detail not available for more than {{number}} vessels"
+    "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari {{number}} kapal"
   },
   "timebarSettings": {
     "activityDisabled": "Pilih setidaknya satu lapisan aktivitas",
