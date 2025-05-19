@@ -173,6 +173,7 @@ export interface DatasetConfiguration extends DatasetBackendConfig {
   disableInteraction?: boolean
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
   configurationUI?: DatasetConfigurationUI
+  scale?: number
 }
 
 export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {

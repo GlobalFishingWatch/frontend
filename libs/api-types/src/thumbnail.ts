@@ -1,6 +1,6 @@
 export type DetectionThumbnail = {
   name: string
-  url: string
+  data: string
 }
 
 export type DetectionThumbnails = DetectionThumbnail[]

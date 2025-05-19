@@ -11,11 +11,12 @@ import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
 } from '@globalfishingwatch/deck-layers'
-import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
@@ -27,17 +28,32 @@ type PositionsRowProps = {
   showFeaturesDetails: boolean
 }
 
-function DetectionThumbnails({ thumbnails }: { thumbnails: DetectionThumbnail[] }) {
+function DetectionThumbnails({
+  thumbnails,
+  scale,
+}: {
+  thumbnails: DetectionThumbnail[]
+  scale?: number
+}) {
   const detection = thumbnails.find((thumbnail) => thumbnail.name.endsWith('RGB.png'))
   if (!detection) {
     return null
   }
-  // TODO get scale from dataset
-  return <DetectionThumbnailImage url={detection.url} scale={1} />
+  return <DetectionThumbnailImage data={detection.data} scale={scale} />
 }
 
 function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
   const allDatasets = useSelector(selectAllDatasets)
+  const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
+  const featureDataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
+  const thumbnailsDatasetId = getRelatedDatasetByType(
+    featureDataview?.datasets?.[0],
+    DatasetTypes.Thumbnails
+  )?.id
+  const thumbnailsDataset = thumbnailsDatasetId
+    ? allDatasets.find((dataset) => dataset.id === thumbnailsDatasetId)
+    : undefined
+
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color
   const isPositionMatched =
@@ -88,7 +104,10 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
             </span>
           </div>
           {feature.category === 'detections' && feature.properties.thumbnails?.length > 0 && (
-            <DetectionThumbnails thumbnails={feature.properties.thumbnails} />
+            <DetectionThumbnails
+              thumbnails={feature.properties.thumbnails}
+              scale={thumbnailsDataset?.configuration?.scale}
+            />
           )}
         </div>
       </div>

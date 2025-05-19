@@ -5,7 +5,7 @@ import { Jimp } from 'jimp'
 import styles from './DetectionThumbnail.module.css'
 
 type DetectionThumbnailProps = {
-  url: string
+  data: string
   scale?: number
 }
 
@@ -20,22 +20,17 @@ const drawEnhancedImageToCanvas = async ({
 }) => {
   if (!canvas) return
   const ctx = canvas.getContext('2d')
-  if (!ctx) return
-  ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-
-  const image = await Jimp.read(
-    ctx.getImageData(0, 0, canvas.width, canvas.height).data.buffer as ArrayBuffer
-  )
+  const image = await Jimp.read(img.src)
   image.normalize()
   const imageData = new ImageData(
     new Uint8ClampedArray(image.bitmap.data),
     image.bitmap.width,
     image.bitmap.height
   )
-  ctx.putImageData(imageData, 0, 0)
+  ctx?.putImageData(imageData, 0, 0)
 }
 
-export function DetectionThumbnail({ url, scale }: DetectionThumbnailProps) {
+export function DetectionThumbnail({ data, scale }: DetectionThumbnailProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
 
@@ -45,24 +40,20 @@ export function DetectionThumbnail({ url, scale }: DetectionThumbnailProps) {
       canvas: canvasRef.current,
     })
   }
-  // useEffect(() => {
-  //   imgRef.current?.addEventListener('load', draw)
-
-  //   return () => {
-  //     imgRef.current?.removeEventListener('load', draw)
-  //   }
-  // }, [url])
-
   return (
     <div className={cx(styles.imgContainer)}>
-      <img ref={imgRef} className={styles.img} onLoad={draw} src={url} alt="detection thumbnail" />
-      <canvas ref={canvasRef} className={styles.canvas} />
-      {scale !== undefined && canvasRef.current?.width !== undefined && (
+      <img
+        ref={imgRef}
+        className={styles.img}
+        onLoad={draw}
+        src={`data:${data}`}
+        alt="detection thumbnail"
+      />
+      <canvas ref={canvasRef} className={styles.canvas} width={100} height={100} />
+      {scale !== undefined && (
         <Fragment>
           <span className={styles.scaleValue}>
-            {(scale * canvasRef.current?.width) /
-              (canvasRef.current?.width / SCALE_LINE_WIDTH_PERCENTAGE)}{' '}
-            m
+            {(scale * 100) / (100 / SCALE_LINE_WIDTH_PERCENTAGE)} m
           </span>
           <div className={styles.scaleLine} style={{ width: `${SCALE_LINE_WIDTH_PERCENTAGE}%` }} />
         </Fragment>
