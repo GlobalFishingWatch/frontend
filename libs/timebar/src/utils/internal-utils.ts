@@ -17,7 +17,7 @@ export const clampToAbsoluteBoundaries = (
   const startMs = getTime(start)
   const endMs = getTime(end)
   const absoluteStartMs = getTime(absoluteStart)
-  const absoluteEndMs = getTime(absoluteEnd)
+  const absoluteEndMs = getTime(absoluteEnd) + 1
   let newStartClamped = start
   let newEndClamped = end
   let clamped

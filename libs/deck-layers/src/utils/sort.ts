@@ -57,5 +57,5 @@ export function getLayerGroupOffset(
   group: LayerGroup,
   { layerIndex = 1 } = {} as { layerIndex: number }
 ): [number, number] {
-  return [0, -(LAYER_GROUP_ORDER.indexOf(group) * 100 + layerIndex)]
+  return [0, -(LAYER_GROUP_ORDER.indexOf(group) * 100)]
 }

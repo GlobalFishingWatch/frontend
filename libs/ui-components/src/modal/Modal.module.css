@@ -25,6 +25,10 @@
   height: var(--vh, 1vh) * 100;
 }
 
+.auto {
+  overflow-y: visible !important;
+}
+
 .fullScreen {
   max-width: 140rem;
 }
@@ -78,6 +82,12 @@
   .content {
     height: 50rem;
     max-height: calc(100vh - var(--size-L));
+  }
+
+  .contentAuto {
+    height: auto;
+    max-height: calc(100vh - var(--size-L));
+    overflow-y: visible !important;
   }
 
   .contentNoHeader {

@@ -32,6 +32,7 @@
     "errorPeriodComparisonDateRange": "Erro no intervalo de datas. A comparação deve ser posterior ao início da linha de base.",
     "errorTooComplex": "Não conseguimos criar um relatório dinâmico para esta área porque as informações de limite são complexas. Simplifique sua área de interesse, carregando uma nova camada ou desenhando sua camada no mapa, e tente o relatório novamente para solucionar o problema.",
     "evolution": "evolução",
+    "globally": "globally",
     "groupByEEZ": "By EEZ",
     "groupByFAO": "By FAO",
     "groupByFlag": "por bandeira",
@@ -74,8 +75,8 @@
     "statsDisclaimerDynamic": "Durante esse período, os valores mínimo e máximo em qualquer {{interval}} e local dentro de sua área foram {{min}} {{unit}} e {{max}} {{unit}}.",
     "statsDisclaimerStatic": "O valor médio para a sua área é de {{mean}} {{unit}}. O mínimo e o máximo são {{min}} {{unit}} e {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} embarcações{{sources}} </strong> tiveram <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "Isso está demorando mais do que o esperado. Por favor, aguarde.",
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
@@ -599,7 +600,8 @@
     "ssvid": "ssvid",
     "start": "Início",
     "totalDistanceKm": "distância total (km)",
-    "type": "tipo de embarcação"
+    "type": "tipo de embarcação",
+    "trackDisclaimer": "Encountered vessel track shows one month before and after the event."
   },
   "eventsReport": {
     "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -824,7 +826,7 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajuste o intervalo de tempo a estas datas",
     "focusOnThisDay": "Focar o intervalo de tempo neste dia",
-    "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de 10 navios"
+    "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de {{number}} navios"
   },
   "timebarSettings": {
     "activityDisabled": "Selecione pelo menos uma camada de atividade",
@@ -925,6 +927,7 @@
     "gearType": "Tipo de petrecho",
     "gearType_short": "petrecho",
     "geartypes": "Petrechos de pesca",
+    "ais-geartypes": "GFW Gear Types",
     "gearTypes": {
       "bunker": "Bunker ou petroleiro",
       "bunker_or_tanker": "Bunker",
@@ -990,7 +993,7 @@
     "hideOtherLayers": "Ocultar outras camadas",
     "identityDatesOutOfRange": "As datas desta identidade não se sobrepõem ao seu período atual",
     "imo": "IMO",
-    "infoCorrection": {
+    "vesselCorrection": {
       "currentValue": "Current value",
       "description": "Description (optional)",
       "descriptionPlaceholder": "Please describe the source of the correction and the time range it is relevant for.",
@@ -1107,6 +1110,7 @@
     "shipname": "Nome",
     "shiptype": "Tipos de embarcação",
     "shiptypes": "Ship types",
+    "ais-shiptypes": "GFW Vessel Types",
     "showOtherLayers": "Mostrar outras camadas",
     "sortAsc": "Classificar embarcações em ordem alfabética (crescente)",
     "sortDesc": "Classificar embarcações em ordem alfabética (decrescente)",
@@ -1193,6 +1197,7 @@
     "uploadPublic": "Permitir que outros usuários vejam este grupo de embarcações quando você compartilhar uma área de trabalho",
     "vesselAddedToGroup": "Seu grupo de embarcações foi atualizado",
     "vesselGroup": "Grupo de embarcações",
+    "vesselGroupProfile": "Vessel group profile",
     "vesselGroups": "Grupos de embarcações"
   },
   "vesselGroupReport": {

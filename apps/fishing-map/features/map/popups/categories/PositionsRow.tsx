@@ -2,31 +2,60 @@ import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
+import { DateTime } from 'luxon'
 
+import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
 } from '@globalfishingwatch/deck-layers'
-import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import I18nDate from 'features/i18n/i18nDate'
+import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
 
 import popupStyles from '../Popup.module.css'
 
 type PositionsRowProps = {
+  loading: boolean
+  error: string
   feature: FourwingsPositionsPickingObject
   showFeaturesDetails: boolean
 }
 
-function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
+function DetectionThumbnails({
+  thumbnails,
+  scale,
+}: {
+  thumbnails: DetectionThumbnail[]
+  scale?: number
+}) {
+  const detection = thumbnails.find((thumbnail) => thumbnail.name.endsWith('RGB.png'))
+  if (!detection) {
+    return null
+  }
+  return <DetectionThumbnailImage data={detection.data} scale={scale} />
+}
+
+function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
   const allDatasets = useSelector(selectAllDatasets)
+  const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
+  const featureDataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
+  const thumbnailsDatasetId = getRelatedDatasetByType(
+    featureDataview?.datasets?.[0],
+    DatasetTypes.Thumbnails
+  )?.id
+  const thumbnailsDataset = thumbnailsDatasetId
+    ? allDatasets.find((dataset) => dataset.id === thumbnailsDatasetId)
+    : undefined
+
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color
   const isPositionMatched =
@@ -46,7 +75,6 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
     }
     return []
   })
-  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
 
   return (
     <Fragment>
@@ -66,19 +94,32 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
               )}
               <span>
                 <span className={popupStyles.marginRight}>{shipname}</span>
-                {feature.properties.htime && (
+                {feature.properties.stime && (
                   <span className={popupStyles.secondary}>
                     {' '}
-                    {formatDateForInterval(
-                      CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(feature.properties.htime),
-                      interval
-                    )}
-                    {interval === 'HOUR' && ' UTC'}
+                    <I18nDate
+                      date={feature.properties.stime * 1000}
+                      format={DateTime.DATETIME_MED}
+                    />
                   </span>
                 )}
               </span>
             </span>
           </div>
+          {loading && (
+            <div className={popupStyles.loading}>
+              <Spinner size="small" />
+            </div>
+          )}
+          {!loading && error && <p className={popupStyles.error}>{error}</p>}
+          {!loading &&
+            feature.category === 'detections' &&
+            feature.properties.thumbnails?.length > 0 && (
+              <DetectionThumbnails
+                thumbnails={feature.properties.thumbnails}
+                scale={thumbnailsDataset?.configuration?.scale}
+              />
+            )}
         </div>
       </div>
     </Fragment>

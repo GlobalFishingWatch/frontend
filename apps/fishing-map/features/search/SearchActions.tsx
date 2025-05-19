@@ -11,7 +11,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
-import { EMPTY_FILTERS } from 'features/search/search.config'
+import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -61,7 +61,7 @@ function SearchActions() {
     })
     addNewDataviewInstances(instances)
     dispatch(cleanVesselSearchResults())
-    dispatchQueryParams(EMPTY_FILTERS)
+    dispatchQueryParams(EMPTY_SEARCH_FILTERS)
     trackEvent({
       category: TrackCategory.SearchVessel,
       action: 'Click view on map',

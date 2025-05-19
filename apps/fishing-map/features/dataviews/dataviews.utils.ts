@@ -6,6 +6,7 @@ import type {
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
+  DataviewInstanceOrigin,
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
@@ -20,6 +21,7 @@ import {
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
 import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -37,12 +39,71 @@ const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
+export const VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX = `${VESSEL_DATAVIEW_INSTANCE_PREFIX}encounter-`
 export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
 ]
+
 export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
   return dataview.config?.filters?.['vessel-groups']?.includes(vesselGroupId)
+}
+
+export const getVesselIdFromInstanceId = (dataviewInstanceId: string) => {
+  const prefix = dataviewInstanceId.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+    ? VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX
+    : VESSEL_DATAVIEW_INSTANCE_PREFIX
+  return dataviewInstanceId.split(prefix)[1]
+}
+
+export const getIsVesselDataviewInstanceId = (dataviewInstanceId: string) =>
+  dataviewInstanceId.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)
+
+export const getIsEncounteredVesselDataviewInstanceId = (dataviewInstanceId: string) =>
+  dataviewInstanceId.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+
+export const getVesselDataviewInstanceId = (vesselId: string) =>
+  `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
+
+export const getEncounteredVesselDataviewInstanceId = (vesselId: string) =>
+  `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
+
+export type GetVesselInWorkspaceParams = {
+  dataviews: UrlDataviewInstance[]
+  vesselId: string
+  origin?: DataviewInstanceOrigin
+}
+
+export const getVesselDataview = ({
+  dataviews = [],
+  vesselId = '',
+  origin,
+}: GetVesselInWorkspaceParams) => {
+  if (!vesselId) return null
+  const vesselInWorkspace = dataviews.find((v) => {
+    const vesselDatasetConfig = v.datasetsConfig?.find(
+      (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
+    )
+    const isVesselInEndpointParams =
+      vesselDatasetConfig?.params?.find((p) => p.id === 'vesselId' && p.value === vesselId) !==
+      undefined
+    const matchesOrigin = origin !== undefined ? v.origin === origin : true
+    const isInVesselRelatedIds = v.config?.relatedVesselIds?.includes(vesselId)
+    return (isVesselInEndpointParams || isInVesselRelatedIds) && matchesOrigin
+  })
+  return vesselInWorkspace
+}
+
+export function getHasVesselProfileInstance({
+  dataviews = [],
+  vesselId = '',
+  origin,
+}: GetVesselInWorkspaceParams) {
+  return dataviews?.some((dataview) => {
+    const isSameVesselId = dataview.id === getVesselDataviewInstanceId(vesselId)
+    const matchesOrigin = origin !== undefined ? dataview.origin === origin : true
+    return isSameVesselId && matchesOrigin
+  })
 }
 
 export const getVesselInfoDataviewInstanceDatasetConfig = (
@@ -102,14 +163,19 @@ const vesselDataviewInstanceTemplate = (
   dataviewSlug: Dataview['slug'],
   datasets: VesselInstanceDatasets,
   highlightEventStartTime?: number,
-  highlightEventEndTime?: number
+  highlightEventEndTime?: number,
+  color?: string
 ) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
     // panama and peru doesn't show events and needed a workaround to work with this
     dataviewId: dataviewSlug,
     config: {
-      colorCyclingType: 'line' as ColorCyclingType,
+      ...(color
+        ? { color }
+        : {
+            colorCyclingType: 'line' as ColorCyclingType,
+          }),
       ...datasets,
       ...(highlightEventStartTime && {
         highlightEventStartTime: getUTCDateTime(highlightEventStartTime).toISO()!,
@@ -120,8 +186,6 @@ const vesselDataviewInstanceTemplate = (
     },
   }
 }
-const getVesselDataviewInstanceId = (vesselId: string) =>
-  `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
 
 export const getVesselDataviewInstance = ({
   vessel,
@@ -129,33 +193,73 @@ export const getVesselDataviewInstance = ({
   highlightEventStartTime,
   highlightEventEndTime,
   vesselTemplateDataviews,
+  origin,
+  color,
 }: {
   vessel: { id: string }
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
   highlightEventEndTime?: number
   vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  origin?: DataviewInstanceOrigin
+  color?: string
 }): DataviewInstance => {
-  let dataviewTemplate = vesselTemplateDataviews.find((dataview) => {
-    return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
-  })?.slug
-  if (!dataviewTemplate) {
-    console.error(
-      `No dataview template found for vessel ${vessel.id} using default: ${TEMPLATE_VESSEL_DATAVIEW_SLUG}`
-    )
-    dataviewTemplate = TEMPLATE_VESSEL_DATAVIEW_SLUG
-  }
-  const vesselDataviewInstance = {
+  const dataviewTemplate =
+    vesselTemplateDataviews.find((dataview) => {
+      return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
+    })?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
+  const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate(
       dataviewTemplate,
       datasets,
       highlightEventStartTime,
-      highlightEventEndTime
+      highlightEventEndTime,
+      color
     ),
     deleted: false,
+    ...(origin && { origin }),
   }
   return vesselDataviewInstance
+}
+
+export const getVesselEncounterTrackDataviewInstance = ({
+  vesselId,
+  track,
+  start,
+  end,
+  highlightEventStartTime,
+  highlightEventEndTime,
+}: {
+  vesselId: string
+  track: string
+  start: number
+  end: number
+  highlightEventStartTime?: number
+  highlightEventEndTime?: number
+}): DataviewInstance => {
+  const vesselDataviewInstance: DataviewInstance = {
+    id: `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}`,
+    dataviewId: TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
+    config: {
+      startDate: getUTCDateTime(start).toISO()!,
+      endDate: getUTCDateTime(end).toISO()!,
+      ...(highlightEventStartTime && {
+        highlightEventStartTime: getUTCDateTime(highlightEventStartTime).toISO()!,
+      }),
+      ...(highlightEventEndTime && {
+        highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
+      }),
+    },
+  }
+  const datasetsConfig: DataviewDatasetConfig[] = [
+    {
+      datasetId: track,
+      params: [{ id: 'vesselId', value: vesselId }],
+      endpoint: EndpointId.Tracks,
+    },
+  ]
+  return { ...vesselDataviewInstance, datasetsConfig }
 }
 
 export const getUserPolygonsDataviewInstance = (
@@ -307,21 +411,6 @@ export const getBigQueryEventsDataviewInstance = (
 export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {
   const datasets = dataview.datasets || []
   return datasets.some(isPrivateDataset)
-}
-
-export const getVesselInWorkspace = (vesselInstances: UrlDataviewInstance[], vesselId: string) => {
-  if (!vesselId) return null
-  const vesselInWorkspace = vesselInstances.find((v) => {
-    const vesselDatasetConfig = v.datasetsConfig?.find(
-      (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
-    )
-    const isVesselInEndpointParams = vesselDatasetConfig?.params?.find(
-      (p) => p.id === 'vesselId' && p.value === vesselId
-    )
-    const isInVesselRelatedIds = v.config?.relatedVesselIds?.includes(vesselId)
-    return isVesselInEndpointParams || isInVesselRelatedIds ? v : undefined
-  })
-  return vesselInWorkspace
 }
 
 export const isBathymetryDataview = (dataview: UrlDataviewInstance) => {

@@ -5,11 +5,11 @@
 }
 
 .mapContainer {
-  height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height));
+  height: 100%;
 }
 
 :global(#__next:not(.printing)) .withTimebar {
-  height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--timebar-height));
+  height: 100%;
 }
 
 :global(#__next:not(.printing)) .withSmallScreenSwitch {

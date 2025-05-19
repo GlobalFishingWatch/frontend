@@ -40,6 +40,7 @@ export enum EndpointId {
   FourwingsLegend = '4wings-legend',
   FourwingsTiles = '4wings-tiles',
   Tracks = 'tracks',
+  Thumbnails = 'thumbnails',
   PMTiles = 'pm-tiles',
   UserTracks = 'user-tracks-data',
   Vessel = 'vessel',
@@ -60,18 +61,19 @@ export interface Endpoint {
 }
 
 export enum DatasetTypes {
-  Vessels = 'vessels:v1',
-  VesselGroups = 'vessel-group:v1',
-  Events = 'events:v1',
-  Ports = 'ports:v1',
-  Tracks = 'tracks:v1',
-  Fourwings = '4wings:v1',
   Context = 'context-layer:v1',
-  PMTiles = 'pm-tiles:v1',
-  UserContext = 'user-context-layer:v1',
-  TemporalContext = 'temporal-context-layer:v1',
   Download = 'data-download:v1',
+  Events = 'events:v1',
+  Fourwings = '4wings:v1',
+  PMTiles = 'pm-tiles:v1',
+  Ports = 'ports:v1',
+  TemporalContext = 'temporal-context-layer:v1',
+  Thumbnails = 'thumbnails:v1',
+  Tracks = 'tracks:v1',
+  UserContext = 'user-context-layer:v1',
   UserTracks = 'user-tracks:v1',
+  VesselGroups = 'vessel-group:v1',
+  Vessels = 'vessels:v1',
 }
 
 export enum DatasetStatus {
@@ -171,6 +173,7 @@ export interface DatasetConfiguration extends DatasetBackendConfig {
   disableInteraction?: boolean
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
   configurationUI?: DatasetConfigurationUI
+  scale?: number
 }
 
 export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
@@ -253,6 +256,7 @@ export enum DatasetSubCategory {
 
 export interface DatasetFile {
   name: string
+  path: string
   size: number | string
   lastUpdate: string
 }

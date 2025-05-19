@@ -32,6 +32,7 @@
     "errorPeriodComparisonDateRange": "Kesalahan rentang tanggal. Awal perbandingan harus setelah acuan dasar awal.",
     "errorTooComplex": "Tidak dapat membuat laporan dinamis untuk wilayah ini karena informasi batasnya rumit. Harap sederhanakan wilayah yang Anda minati - dengan mengunggah layer (lapisan) baru atau menggambar layer Anda pada peta - lalu coba buat laporannya lagi untuk menyelesaikan masalah.",
     "evolution": "evolusi",
+    "globally": "globally",
     "groupByEEZ": "By EEZ",
     "groupByFAO": "By FAO",
     "groupByFlag": "berdasarkan bendera",
@@ -74,8 +75,8 @@
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} kapal{{sources}} </strong> selama <strong>{{activityQuantity}} {{activityUnit}}</strong> melakukan <strong>{{activityType}}</strong> di area ini antara <strong>{{start}}</strong> dan <strong>{{end}}</strong>",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
@@ -599,7 +600,8 @@
     "ssvid": "Identifikasi Kapal Stasiun Kapal (Ship Station Vessel Identification/SSVID)",
     "start": "mulai",
     "totalDistanceKm": "jarak total (km)",
-    "type": "jenis kapal"
+    "type": "jenis kapal",
+    "trackDisclaimer": "Encountered vessel track shows one month before and after the event."
   },
   "eventsReport": {
     "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -824,7 +826,7 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Sesuaikan rentang waktu dengan tanggal ini",
     "focusOnThisDay": "Rentang waktu fokus pada hari ini",
-    "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari 10 kapal"
+    "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari {{number}} kapal"
   },
   "timebarSettings": {
     "activityDisabled": "Pilih setidaknya satu lapisan aktivitas",
@@ -925,6 +927,7 @@
     "gearType": "Gear Type",
     "gearType_short": "Peralatan",
     "geartypes": "Jenis peralatan",
+    "ais-geartypes": "GFW Gear Types",
     "gearTypes": {
       "bunker": "Bunker atau tanker",
       "bunker_or_tanker": "Kapal bunker",
@@ -990,7 +993,7 @@
     "hideOtherLayers": "Sembunyikan lapisan lain",
     "identityDatesOutOfRange": "Tanggal untuk identitas ini tidak tumpang tindih dengan rentang waktu Anda saat ini",
     "imo": "IMO",
-    "infoCorrection": {
+    "vesselCorrection": {
       "currentValue": "Current value",
       "description": "Description (optional)",
       "descriptionPlaceholder": "Please describe the source of the correction and the time range it is relevant for.",
@@ -1107,6 +1110,7 @@
     "shipname": "Nama",
     "shiptype": "Jenis Kapal",
     "shiptypes": "Ship types",
+    "ais-shiptypes": "GFW Vessel Types",
     "showOtherLayers": "Tampilkan lapisan lainnya",
     "sortAsc": "Sort vessels alphabetically (ascending)",
     "sortDesc": "Sort vessels alphabetically (descending)",
@@ -1193,6 +1197,7 @@
     "uploadPublic": "Izinkan pengguna lain untuk melihat kelompok kapal ini ketika Anda berbagi ruang kerja",
     "vesselAddedToGroup": "Your vessel group was updated",
     "vesselGroup": "Kelompok kapal",
+    "vesselGroupProfile": "Vessel group profile",
     "vesselGroups": "Kelompok kapal"
   },
   "vesselGroupReport": {

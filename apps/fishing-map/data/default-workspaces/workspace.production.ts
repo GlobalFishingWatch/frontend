@@ -56,6 +56,9 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         visible: true,
         datasets: ['public-global-fishing-effort:v3.0'],
+        filters: {
+          distance_from_port_km: '3',
+        },
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
     },

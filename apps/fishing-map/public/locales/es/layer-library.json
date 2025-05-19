@@ -34,10 +34,15 @@
     "moreInfoLink": "",
     "name": "Zonas de pesca de la FAO"
   },
-  "fishing-effort": {
-    "description": "Para determinar el \"esfuerzo de pesca aparente\", Global Fishing Watch analiza los datos del sistema de identificación automática (AIS) y del sistema de monitoreo de buques (VMS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un algoritmo de detección de pesca basado en los cambios de velocidad y dirección de los buques.",
+  "fishing-effort-ais": {
+    "description": "Para determinar el \"esfuerzo de pesca aparente\", Global Fishing Watch analiza los datos del sistema de identificación automática (AIS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un algoritmo de detección de pesca basado en los cambios de velocidad y dirección de los buques.",
     "moreInfoLink": "",
-    "name": "Esfuerzo de pesca aparente"
+    "name": "Esfuerzo de pesca aparente (AIS)"
+  },
+  "fishing-effort-vms": {
+    "description": "Para determinar el \"esfuerzo de pesca aparente\", Global Fishing Watch analiza los datos del sistema de monitoreo de buques (VMS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un algoritmo de detección de pesca basado en los cambios de velocidad y dirección de los buques.",
+    "moreInfoLink": "",
+    "name": "Esfuerzo de pesca aparente (VMS)"
   },
   "graticules": {
     "description": "Rejillas o cuadrículas de latitud y longitud en intervalos de 1, 5, 10 y 30° dependiendo del nivel de acercamiento del mapa",
