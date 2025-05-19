@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
+import { DateTime } from 'luxon'
 
 import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -96,7 +97,10 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
                 {feature.properties.stime && (
                   <span className={popupStyles.secondary}>
                     {' '}
-                    <I18nDate date={feature.properties.stime * 1000} />
+                    <I18nDate
+                      date={feature.properties.stime * 1000}
+                      format={DateTime.DATETIME_MED}
+                    />
                   </span>
                 )}
               </span>
