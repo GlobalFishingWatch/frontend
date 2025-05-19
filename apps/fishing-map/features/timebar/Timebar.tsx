@@ -353,7 +353,10 @@ const TimebarWrapper = () => {
         <div className={styles.disclaimer}>
           <label className={styles.disclaimerLabel}>
             {upperFirst(
-              t('timebar.maxTracksNumber', 'Track detail not available for more than 20 vessels')
+              t('timebar.maxTracksNumber', {
+                defaultValue: 'Track detail not available for more than {{number}} vessels',
+                number: MAX_TIMEBAR_VESSELS,
+              })
             )}
           </label>
         </div>
@@ -371,13 +374,11 @@ const TimebarWrapper = () => {
           />
         )}
         {events && (
-          <Fragment>
-            <TimebarTracksEvents
-              data={events}
-              highlightedEventsIds={highlightedEventIds}
-              onEventClick={onEventClick}
-            />
-          </Fragment>
+          <TimebarTracksEvents
+            data={events}
+            highlightedEventsIds={highlightedEventIds}
+            onEventClick={onEventClick}
+          />
         )}
       </Fragment>
     )
