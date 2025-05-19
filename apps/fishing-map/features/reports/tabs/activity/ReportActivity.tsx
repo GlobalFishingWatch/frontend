@@ -15,6 +15,7 @@ import { Button } from '@globalfishingwatch/ui-components'
 import { SUPPORT_EMAIL } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectReportLoadVessels } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
@@ -53,10 +54,7 @@ import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  selectIsVesselGroupReportLocation,
-  selectUrlReportLoadVesselsQuery,
-} from 'routes/routes.selectors'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector'
@@ -89,7 +87,7 @@ function ActivityReport() {
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
-  const reportLoadVessels = useSelector(selectUrlReportLoadVesselsQuery)
+  const reportLoadVessels = useSelector(selectReportLoadVessels)
   const { dispatchQueryParams } = useLocationConnect()
 
   // TODO get this from datasets config
