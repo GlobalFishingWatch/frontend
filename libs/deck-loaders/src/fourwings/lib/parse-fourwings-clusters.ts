@@ -134,8 +134,7 @@ export const getPoints = (
         tileBBox,
       })
       for (let j = 1; j <= numCellValues; j++) {
-        const stime =
-          CONFIG_BY_INTERVAL[interval]?.getIntervalTimestamp(startFrame + j - 1) / (60 * 60)
+        const stime = CONFIG_BY_INTERVAL[interval]?.getIntervalTimestamp(startFrame + j - 1) / 1000
         const pointValue = intArray[i + j]
         if (pointValue !== 0 && pointValue !== noDataValue) {
           // this number defines the cell value frame

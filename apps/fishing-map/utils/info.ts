@@ -64,7 +64,7 @@ export const formatInfoField = (
     if (type === 'shipname' || type === 'owner' || type === 'operator' || type === 'port') {
       return fieldValue
         .replace('_', ' ')
-        .replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ,0-9]+)\b/g, upperFirst)
+        .replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)(?:\d+)?\b/g, upperFirst)
     }
     if (type === 'fleet') {
       const fleetClean = fieldValue.replaceAll('_', ' ')

@@ -405,9 +405,7 @@ const TimebarWrapper = () => {
           <TimebarActivityGraph visualisation={timebarVisualisation} />
         )}
         {timebarVisualisation === TimebarVisualisations.Vessel && tracksComponents}
-        {timebarVisualisation === TimebarVisualisations.Events && (
-          <TimebarClusterEventsGraph visualisation={timebarVisualisation} />
-        )}
+        {timebarVisualisation === TimebarVisualisations.Events && <TimebarClusterEventsGraph />}
         <TimebarHighlighterWrapper showTooltip={isMouseInside} />
       </Fragment>
     )

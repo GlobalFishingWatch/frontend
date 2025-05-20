@@ -12,6 +12,7 @@ import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectReportLoadVessels } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useFetchContextDatasetAreas } from 'features/areas/areas.hooks'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
@@ -38,7 +39,6 @@ import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReportGraphSelector'
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectUrlReportLoadVesselsQuery } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './EventsReport.module.css'
@@ -53,7 +53,7 @@ function EventsReport() {
   const params = useSelector(selectFetchEventsVesselsParams)
   const statsParams = useSelector(selectFetchEventsStatsParams)
   const totalEvents = useSelector(selectTotalStatsEvents)
-  const reportLoadVessels = useSelector(selectUrlReportLoadVesselsQuery)
+  const reportLoadVessels = useSelector(selectReportLoadVessels)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
   const timerangeSupported = getDownloadReportSupported(start, end)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
