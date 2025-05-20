@@ -697,7 +697,6 @@
     "geometryError": "crwdns60291:0crwdne60291:0",
     "geometryRequired": "crwdns60293:0crwdne60293:0",
     "height": "crwdns83178:0crwdne83178:0",
-    "minimumDistanceFromPort": "crwdns84500:0crwdne84500:0",
     "name": "crwdns60299:0crwdne60299:0",
     "nameLengthError_one": "crwdns60301:0{{count}}crwdne60301:0",
     "nameLengthError_other": "crwdns60303:0{{count}}crwdne60303:0",
