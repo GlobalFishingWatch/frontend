@@ -42,6 +42,7 @@ export const selectMapRulers = selectWorkspaceStateProperty('mapRulers')
 export const selectAreMapAnnotationsVisible = selectWorkspaceStateProperty('mapAnnotationsVisible')
 export const selectMapAnnotations = selectWorkspaceStateProperty('mapAnnotations')
 export const selectVisibleEvents = selectWorkspaceStateProperty('visibleEvents')
+export const selectReportLoadVessels = selectWorkspaceStateProperty('reportLoadVessels')
 
 export const selectActivityVisualizationMode = createSelector(
   [selectIsAnyAreaReportLocation, selectWorkspaceStateProperty('activityVisualizationMode')],

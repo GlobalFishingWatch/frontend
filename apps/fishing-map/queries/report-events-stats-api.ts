@@ -10,6 +10,10 @@ import type { BufferOperation, BufferUnit } from 'types'
 
 export type BaseReportEventsVesselsParamsFilters = {
   portId?: string
+  /**
+   * Used in dataviews filter instead of stats, needs to maintain both
+   */
+  port_id?: string
   vesselGroupId?: string
   encounter_type?: string
   confidence?: number
@@ -90,7 +94,7 @@ export function parseEventsFilters(filters: BaseReportEventsVesselsParamsFilters
     ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
     ...(filters.minDuration && { 'min-duration': filters.minDuration }),
     ...(filters.next_port_id && { 'next-port-ids': filters.next_port_id }),
-    ...(filters.portId && { 'port-ids': [filters.portId] }),
+    ...((filters.portId || filters.port_id) && { 'port-ids': [filters.portId || filters.port_id] }),
     ...(filters.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
   }
 }

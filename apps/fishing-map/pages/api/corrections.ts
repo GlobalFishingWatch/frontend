@@ -7,7 +7,7 @@ import type { InfoCorrectionSendFormat } from 'features/vessel/vesselCorrection/
 const FEEDBACK_CLIENT_EMAIL = process.env.NEXT_SPREADSHEET_CLIENT_EMAIL
 const FEEDBACK_PRIVATE_KEY = process.env.NEXT_SPREADSHEET_PRIVATE_KEY?.replace(/\\n/gm, '\n') || ''
 
-const MASTER_SPREADSHEET_ID = process.env.NEXT_MASTER_SPREADSHEET_ID || ''
+const IDENTITY_REVIEW_SPREADSHEET_ID = process.env.NEXT_IDENTITY_REVIEW_SPREADSHEET_ID || ''
 
 const CORRECTIONS_SHEET_TITLE = 'Vessel Identity Correction'
 
@@ -81,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    const spreadsheetId: string = MASTER_SPREADSHEET_ID
+    const spreadsheetId: string = IDENTITY_REVIEW_SPREADSHEET_ID
     const spreadsheetTitle: string = CORRECTIONS_SHEET_TITLE
 
     const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)

@@ -67,7 +67,6 @@ export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   reportBufferValue: undefined,
   reportBufferUnit: DEFAULT_BUFFER_UNIT,
   reportBufferOperation: DEFAULT_BUFFER_OPERATION,
-  reportLoadVessels: undefined,
   // Ports
   portsReportName: undefined,
   portsReportCountry: undefined,

@@ -19,27 +19,24 @@ import { formatNumber } from 'utils/info'
 
 import styles from './Timebar.module.css'
 
-const TimebarClusterEventsGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
-  const activeDataviews = useSelector(selectActiveActivityDataviewsByVisualisation(visualisation))
+const TimebarClusterEventsGraph = () => {
+  const activeDataviews = useSelector(
+    selectActiveActivityDataviewsByVisualisation(TimebarVisualisations.Events)
+  )
   const { loading, eventsActivity } = useClusterEventsGraph()
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ value }: HighlighterCallbackFnArgs) => {
       if (!value || !value.value) return ''
-      const maxHighlighterFractionDigits =
-        visualisation === TimebarVisualisations.Environment ? 2 : undefined
       const labels = [
-        formatNumber(value.value, maxHighlighterFractionDigits),
+        formatNumber(value.value),
         t('common.event', { defaultValue: 'event', count: value.value }).toLocaleLowerCase(),
         t('common.onScreen', 'on screen'),
       ]
-      if (visualisation === TimebarVisualisations.Environment) {
-        labels.push(t('common.averageAbbreviated', 'avg.'))
-      }
 
       return labels.join(' ')
     },
-    [visualisation]
+    []
   )
 
   const getActivityHighlighterIconLabel: HighlighterIconCallback = useCallback(
