@@ -124,6 +124,8 @@ steps:
           --set-env-vars \
           NEXT_MAP_ERRORS_SPREADSHEET_ID=${_NEXT_MAP_ERRORS_SPREADSHEET_ID} \
           --set-env-vars \
+          NEXT_IDENTITY_REVIEW_SPREADSHEET_ID=${_NEXT_IDENTITY_REVIEW_SPREADSHEET_ID} \
+          --set-env-vars \
           NEXT_FEEDBACK_SPREADSHEET_ID=${_NEXT_FEEDBACK_SPREADSHEET_ID} \
           --set-env-vars \
           NEXT_SPREADSHEET_CLIENT_EMAIL=${_NEXT_SPREADSHEET_CLIENT_EMAIL} \
