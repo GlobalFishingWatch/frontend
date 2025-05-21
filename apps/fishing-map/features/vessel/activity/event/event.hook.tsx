@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -10,8 +10,10 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
-import type VesselEvent from 'features/vessel/activity/event/Event'
+import PortsReportLink from 'features/reports/report-port/PortsReportLink'
+import type { VesselEvent } from 'features/vessel/activity/event/Event'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { selectVesselEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import { getUTCDateTime } from 'utils/dates'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -32,6 +34,7 @@ export function useActivityEventTranslations() {
   useFetchRegionsData()
   const { t } = useTranslation()
   const { getRegionNamesByType } = useRegionNamesByType()
+  const vesselEventsDatasets = useSelector(selectVesselEventsDatasets)
 
   const getEventRegionDescription = useCallback(
     (event: VesselEvent | GapPosition, regionsPriority = REGIONS_PRIORITY) => {
@@ -107,9 +110,17 @@ export function useActivityEventTranslations() {
           const portLabel = portName
             ? [portName, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
-          return t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
-            port: formatInfoField(portLabel, 'port'),
-          })
+          const portDataset = vesselEventsDatasets?.find((dataset) => dataset.id.includes('port'))
+          return (
+            <Fragment>
+              {t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
+                port: '',
+              })}
+              <PortsReportLink port={{ id, name, country: flag, datasetId: portDataset?.id }}>
+                {formatInfoField(portLabel, 'port')}
+              </PortsReportLink>
+            </Fragment>
+          )
         }
         case EventTypes.Loitering:
           return (

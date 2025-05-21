@@ -9,7 +9,7 @@ import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import type VesselEvent from 'features/vessel/activity/event/Event'
+import type { VesselEvent } from 'features/vessel/activity/event/Event'
 import { useLocationConnect } from 'routes/routes.hook'
 import type { Bbox } from 'types'
 

@@ -20,7 +20,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
-import type VesselEvent from './Event'
+import type { VesselEvent } from './Event'
 
 import styles from './Event.module.css'
 

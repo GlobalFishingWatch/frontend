@@ -25,7 +25,7 @@ import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selector
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { selectVesselEventId } from 'features/vessel/vessel.slice'
 
-import type VesselEvent from '../event/Event'
+import type { VesselEvent } from '../event/Event'
 import Event, { EVENT_HEIGHT } from '../event/Event'
 
 import ActivityGroup from './ActivityGroup'

@@ -69,6 +69,7 @@ function EventsReport() {
   const { error: statsError, status: statsStatus } = useGetReportEventsStatsQuery(statsParams, {
     skip: !eventsDataview,
   })
+  console.log(' statsStatus:', statsStatus)
 
   useEffect(() => {
     if (reportLoadVessels && eventsDataview) {

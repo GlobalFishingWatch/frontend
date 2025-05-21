@@ -4,7 +4,7 @@ import { useGetVesselEventsQuery } from 'queries/vessel-events-api'
 import type { RegionType } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 
-import VesselEvent from 'features/vessel/activity/event/Event'
+import Event from 'features/vessel/activity/event/Event'
 
 import styles from './VGRInsights.module.css'
 
@@ -53,7 +53,7 @@ const VesselGroupReportInsightVesselEvents = ({
   return (
     <ul className={styles.eventDetailsList}>
       {data.map((event) => (
-        <VesselEvent
+        <Event
           key={event.id}
           event={event}
           className={styles.event}

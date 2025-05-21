@@ -216,6 +216,7 @@ export const selectEventsStatsValueKeys = createSelector(
 export const selectEventsStatsDataGrouped = createSelector(
   [selectReportEventsGraph, selectEventsStatsData, selectActiveReportDataviews],
   (reportEventsGraph, stats, dataviews) => {
+    console.log(' stats:', stats)
     if (!stats) {
       return
     }

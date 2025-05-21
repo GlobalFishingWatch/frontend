@@ -18,10 +18,16 @@ export const selectVesselDataset = createSelector(
   }
 )
 
-export const selectVesselHasEventsDatasets = createSelector([selectVesselDataset], (dataset) => {
-  const vesselEventsDatasets = getRelatedDatasetsByType(dataset, DatasetTypes.Events)
-  return vesselEventsDatasets ? vesselEventsDatasets.length > 0 : false
+export const selectVesselEventsDatasets = createSelector([selectVesselDataset], (dataset) => {
+  return getRelatedDatasetsByType(dataset, DatasetTypes.Events)
 })
+
+export const selectVesselHasEventsDatasets = createSelector(
+  [selectVesselEventsDatasets],
+  (datasets) => {
+    return datasets ? datasets.length > 0 : false
+  }
+)
 
 const selectVesselEventsDataSorted = createSelector([selectVesselEventsData], (events) => {
   return events?.toSorted((a, b) => (b.end as number) - (a.end as number))
