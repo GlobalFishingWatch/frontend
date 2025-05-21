@@ -560,9 +560,12 @@
     "loitering_other": "Eventos de deriva",
     "loiteringAction": "à deriva começou em {{start}} por {{duration}}",
     "loiteringActionIn": "Á deriva em {{regionName}}",
-    "minuteAbbreviated": "{{count}}m",
-    "minuteAbbreviated_one": "{{count}}m",
-    "minuteAbbreviated_other": "{{count}}m",
+    "minuteAbbreviated": "{{count}}'",
+    "minuteAbbreviated_one": "{{count}}'",
+    "minuteAbbreviated_other": "{{count}}'",
+    "monthAbbreviated": "{{count}}m",
+    "monthAbbreviated_one": "{{count}}m",
+    "monthAbbreviated_other": "{{count}}m",
     "noData": "Dados não disponíveis",
     "notInCVP": "Este evento aconteceu fora do intervalo de tempo dos dados do Carrier Vessel Portal",
     "port": "Porto",
@@ -581,7 +584,10 @@
     "portAction": "Fundeio começou às {{start}} por {{duration}}",
     "portAt": "Ancorado em {{port}} iniciado às {{start}} por {{duration}}",
     "seeInCVP": "Ver no Carrier Vessel Portal",
-    "unknown": "Evento desconhecido"
+    "unknown": "Evento desconhecido",
+    "yearAbbreviated": "{{count}}y",
+    "yearAbbreviated_one": "{{count}}y",
+    "yearAbbreviated_other": "{{count}}y"
   },
   "eventInfo": {
     "authorization": "autorização",
