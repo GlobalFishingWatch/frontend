@@ -1,3 +1,5 @@
+import { AIS_DATAVIEW_INSTANCE_ID } from 'data/highlighted-workspaces/report.dataviews'
+
 import {
   IS_PRODUCTION_BUILD,
   IS_PRODUCTION_WORKSPACE_ENV,
@@ -47,6 +49,23 @@ const BASE_HIGHLIGHT_CONFIG = {
 // It's important to define a unique dataviewInstanceId and the releaseDateTimestamp
 // so that the popup is shown in production only after that date
 const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
+  {
+    ...BASE_HIGHLIGHT_CONFIG,
+    dataviewInstanceId: AIS_DATAVIEW_INSTANCE_ID,
+    releaseDateTimestamp: Date.parse('2025-05-21T00:00:00Z'),
+    imageUrl: '',
+    learnMoreUrl: ' https://globalfishingwatch.org/faqs/port-buffer-explained',
+    en: {
+      title: 'New Port Buffer Applied',
+      description:
+        'Fishing effort within 3km of ports is now filtered by default to reduce misleading results near anchorages. Change or remove this filter in the activity layer settings.',
+    },
+    es: {
+      title: 'Nuevo búfer de puerto aplicado',
+      description:
+        'El esfuerzo de pesca aparente a menos de 3 km de los puertos ahora se filtra por defecto para reducir los resultados engañosos cerca de los fondeaderos. Cambie o elimine este filtro en la configuración de la capa de actividad.',
+    },
+  },
   {
     ...BASE_HIGHLIGHT_CONFIG,
     dataviewInstanceId: 'vessel-groups',
