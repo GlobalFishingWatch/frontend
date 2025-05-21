@@ -278,7 +278,7 @@
     "view_layer": "Ver la capa",
     "viirs": "Detección de luz nocturna",
     "visibleValues": "Valores visibles",
-    "visits": "Visits",
+    "visits": "Visitas",
     "welcomePopupDisable": "No volver a mostrar",
     "whatsNew": "Novedades",
     "whatsNewWithNewVersion": "Hemos realizado algunos cambios desde la última vez que visitaste el mapa. Haz clic para saber más"
@@ -543,7 +543,7 @@
     "encounterActionWithVessels": "tuvo un encuentro con {{encounterVessel}} a partir de {{start}} por {{duration}}",
     "encounterActionWithVesselsPin": "tuvo un encuentro con <pin></pin>{{encounterVessel}} a partir de {{start}} por {{duration}}",
     "encounterAnotherVessel": "otra embarcación",
-    "encountersShort": "Encounters",
+    "encountersShort": "Encuentros",
     "events": "eventos",
     "fishing": "Eventos de pesca",
     "fishing_other": "Eventos de pesca",
@@ -599,14 +599,14 @@
     "duration": "duración",
     "encounteredVesselName": "embarcación encontrada",
     "end": "Fin",
-    "eventInfo": "Event info",
+    "eventInfo": "Información del evento",
     "flag": "bandera",
     "medianSpeedKnots": "velocidad media (nudos)",
     "mmsi": "MMSI",
-    "name": "Vessel name",
+    "name": "Nombre del buque",
     "port_entry": "Entrada a puerto",
     "port_exit": "Salida de puerto",
-    "portVisitedAfter": "Port visited after",
+    "portVisitedAfter": "Visita a puerto después",
     "speed": "velocidad",
     "ssvid": "ssvid",
     "start": "Inicio",
@@ -617,7 +617,7 @@
   "eventsReport": {
     "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "newTimeRangePorts": "Click the button to see the ports visited after events",
-    "seePorts": "See ports"
+    "seePorts": "Ver puertos"
   },
   "feedback": {
     "descriptionPlaceholder": "Por favor sea tan descriptivo como sea posible.",
@@ -676,19 +676,19 @@
     },
     "areasOnScreen": "Áreas en pantalla",
     "color_change": "Cambiar el color",
-    "colorSelectCustom": "Select custom color",
-    "colorSelectPredefined": "Select predefined color",
+    "colorSelectCustom": "Selecciona un color personalizado",
+    "colorSelectPredefined": "Selecciona color predefinido",
     "distance_from_port_km": "Port Buffer",
-    "drawAddPoint": "Add a point",
-    "drawAddPolygon": "Add a geometry",
-    "drawDelete": "Delete selection",
+    "drawAddPoint": "Añadir un punto",
+    "drawAddPolygon": "Añadir una geometría",
+    "drawDelete": "Borrar selección",
     "drawPoints": "Dibujar puntos",
     "drawPointsLogin": "Register and login to draw a point or group of points (free, 2 minutes)",
     "drawPolygon": "Dibujar una capa",
     "drawPolygonLogin": "Registra e inicia sesión para dibujar una capa (gratis, 2 minutos)",
-    "duration": "Duration",
+    "duration": "Duración",
     "editDraw": "Editar dibujo",
-    "editPointHint": "Click on the point to adjust their coordinates",
+    "editPointHint": "Haga clic en el punto para ajustar sus coordenadas",
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
     "filterOpen": "Abrir los filtros",
@@ -707,13 +707,13 @@
     "nameLengthError_one": "El nombre de la capa requiere al menos {{count}} caracter",
     "nameLengthError_other": "El nombre de la capa requiere al menos {{count}} caracter",
     "nameRequired": "Se requiere el nombre de la capa.",
-    "next_port_id": "Next port id",
+    "next_port_id": "Siguiente id de puerto",
     "period": "Periodo",
     "properties": {
       "color": "Color",
-      "thickness": "Thickness"
+      "thickness": "Grosor"
     },
-    "propertiesChange": "Change properties",
+    "propertiesChange": "Cambiar propiedades",
     "radiance": "Resplandor",
     "REALM": "AMBITO",
     "remove": "Eliminar la capa",
@@ -740,9 +740,9 @@
     "user_track_fit_bounds": "Cambiar la vista y el intervalo de tiempo para ver la trayectoria completa",
     "vessel_fit_bounds": "Centrar mapa en la trayectoria de la embarcación",
     "vessel_fit_bounds_out_of_timerange": "La trayectoria de la embarcación no tiene actividad en el periodo seleccionado. ¿Desea cambiar el periodo para que se ajuste a esta trayectoria?",
-    "vessel_group_fit_bounds": "Center map on vessel group",
-    "vessel_info_correction": "Suggest a correction",
-    "vesselGroup": "Vessel Group"
+    "vessel_group_fit_bounds": "Centrar mapa en el grupo de buques",
+    "vessel_info_correction": "Sugerir una corrección",
+    "vesselGroup": "Grupo de embarcaciones"
   },
   "map": {
     "annotationPlaceholder": "Escriba algo aquí",
@@ -780,11 +780,11 @@
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
-  "navigateBackTo": "Go back to {{section}}",
+  "navigateBackTo": "volver a {{section}}",
   "portsReport": {
     "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "seePortReport": "See all entry events to this port",
+    "seePortReport": "Ver todos los eventos de entrada a este puerto",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
   },
   "search": {
@@ -1144,7 +1144,7 @@
       "proposedValue": "Valor propuesto",
       "selectAField": "Por favor, seleccione un campo para ver su valor actual",
       "send": "Enviar corrección",
-      "title": "Vessel Info Correction"
+      "title": "Corrección de información de buque"
     },
     "vesselType": "Tipos de embarcaciones",
     "vesselType_other": "Tipos de embarcaciones",
@@ -1238,11 +1238,11 @@
       "title": "Vessel group insights"
     },
     "linkDisabled": "Este grupo de buques necesita ser actualizado a los últimos datos disponibles",
-    "linkToReport": "Check the vessel group report here",
+    "linkToReport": "Compruebe el informe del grupo de buques aquí",
     "noData": "Vessel group not found",
-    "notFound": "Vessel group not found",
+    "notFound": "Grupo de buques no encontrado",
     "sources": "Vessel group report sources",
-    "user": "User Vessel Group",
+    "user": "Grupo de buques de usuario",
     "vessels": "Vessel group report vessels"
   },
   "vesselGroups": {
@@ -1262,7 +1262,7 @@
       "fishing-activity": "Highlighted workspaces",
       "marine-manager": "Marine Manager workspaces",
       "reports": "Highlighted reports",
-      "search": "Vessel search"
+      "search": "Búsqueda de embarcaciones"
     },
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "create": "Crear nuevo",
@@ -1275,7 +1275,7 @@
     "emptyStateUser": "Cargar conjuntos de datos personalizados haciendo clic en el icono de más.",
     "emptyStateVesselGroups": "Add vessel groups to see group presence and operation footprint.",
     "emptyStateVessels": "Las embarcaciones seleccionadas en la búsqueda o haciendo clic en el mapa de calor aparecerán aquí.",
-    "list": "Workspaces list",
+    "list": "Lista de espacios de trabajo",
     "marineManagerLink": "Ver el portal",
     "migrationDisclaimer": "Actualice su área de trabajo para ver los últimos datos y características.",
     "migrationDisclaimerNote": "Nota: algunos datos sobre la actividad y la identidad de los barcos pueden variar. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Más información.</a>",
@@ -1301,15 +1301,15 @@
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
     "saveLogin": "Necesita iniciar sesión para guardar la vista actual (gratis y toma 2 minutos)",
     "saveOwnerOnly": "Esta área de trabajo solo puede ser editada por su creador",
-    "sharePrivateDisclaimer": "This workspace contains datasets that require special permissions",
-    "sharePrivatePermissionsRequired": "permissions required",
+    "sharePrivateDisclaimer": "Este área de trabajo contiene conjuntos de datos que requieren permisos especiales",
+    "sharePrivatePermissionsRequired": "Permisos requeridos",
     "siteDescription": {
       "default": "El mapa Global Fishing Watch es la primera plataforma de acceso abierto para la visualización y el análisis del tráfico marítimo y de la actividad humana basada en el comercio marítimo.",
       "fishing-activity": "El mapa Global Fishing Watch es la primera plataforma de acceso abierto para la visualización y el análisis del tráfico marítimo y de la actividad humana basada en el comercio marítimo.",
       "marine-manager": "Marine Manager es un portal de nueva tecnología para apoyar el diseño, manejo y monitoreo efectivo de áreas protegidas.",
       "search": "Buscar por nombre de embarcación o código de identificación."
     },
-    "title": "Workspace",
+    "title": "Espacios de trabajo",
     "title_other": "Espacios de trabajo",
     "update": "Actualizar",
     "uploadPublic": "Permitir a otros usuarios ver este espacio de trabajo",
