@@ -774,7 +774,7 @@
       "withTimebar": "com barra de tempo",
       "withTimebarAndLegend": "Com barra de tempo e legenda"
     },
-    "screenshotDownload": "Descarregar imagem",
+    "screenshotDownload": "Baixar imagem",
     "screenshotPreview": "Pré-visualizar imagem",
     "search": "Procure por oceanos e mares, AMPs ou ZEEs",
     "zoom_in": "Aumentar zoom",
@@ -833,7 +833,7 @@
     "selected": "selecionado"
   },
   "timebar": {
-    "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
+    "disablePlaybackVesselGroups": "Não há suporte para reprodução de camadas de grupo de navios",
     "fitOnThisDates": "Ajuste o intervalo de tempo a estas datas",
     "focusOnThisDay": "Focar o intervalo de tempo neste dia",
     "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de {{number}} navios"
