@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import type { GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
+import type { EventType, GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -110,7 +110,9 @@ export function useActivityEventTranslations() {
           const portLabel = portName
             ? [portName, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
-          const portDataset = vesselEventsDatasets?.find((dataset) => dataset.id.includes('port'))
+          const portDataset = vesselEventsDatasets?.find(
+            (dataset) => (dataset.subcategory as EventType) === 'port_visit'
+          )
           return (
             <Fragment>
               {t(`event.${portType}ActionIn`, `${portType} {{port}}`, {

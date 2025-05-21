@@ -18,9 +18,14 @@ export const selectVesselDataset = createSelector(
   }
 )
 
-export const selectVesselEventsDatasets = createSelector([selectVesselDataset], (dataset) => {
-  return getRelatedDatasetsByType(dataset, DatasetTypes.Events)
-})
+export const selectVesselEventsDatasets = createSelector(
+  [selectVesselDataset, selectAllDatasets],
+  (vesselDataset, datasets) => {
+    const vesselRelatedDatasetIds =
+      getRelatedDatasetsByType(vesselDataset, DatasetTypes.Events)?.map((d) => d.id) || []
+    return datasets.filter((d) => vesselRelatedDatasetIds?.includes(d.id))
+  }
+)
 
 export const selectVesselHasEventsDatasets = createSelector(
   [selectVesselEventsDatasets],
