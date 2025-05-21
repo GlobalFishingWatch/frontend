@@ -239,7 +239,10 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
       dataviewInstancesInjected.push(footprintDataviewInstance)
 
       const hasPortVisitDataviewInstance = workspaceDataviewInstancesMerged?.some(
-        (dataview) => dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
+        (dataview) =>
+          !dataview.deleted &&
+          dataview.config?.visible &&
+          dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
       )
       if (!hasPortVisitDataviewInstance) {
         const portVisitDataviewInstance = {
